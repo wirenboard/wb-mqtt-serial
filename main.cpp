@@ -172,7 +172,6 @@ void TMQTTModbusHandler::UpdateChannelValues() {
 int main(int argc, char *argv[])
 {
 	class TMQTTModbusHandler* mqtt_handler;
-	int rc;
     THandlerConfig handler_config;
     TMQTTModbusHandler::TConfig mqtt_config;
     mqtt_config.Host = "localhost";
@@ -272,17 +271,11 @@ int main(int argc, char *argv[])
     mqtt_config.Id = "wb-modbus";
 	mqtt_handler = new TMQTTModbusHandler(mqtt_config, handler_config);
 
-	while(1){
-		rc = mqtt_handler->loop();
-        cout << "break in a loop! " << rc << endl;
-		if(rc != 0) {
-			mqtt_handler->reconnect();
-		} else {
-            // update current values
-
-            mqtt_handler->UpdateChannelValues();
-        }
-	}
+    cout << "Press Enter to stop..." << endl;
+    mqtt_handler->StartLoop();
+    cin.ignore();
+    cout << "Exiting..." << endl;
+    mqtt_handler->StopLoop();
 
 	mosqpp::lib_cleanup();
 
@@ -290,7 +283,3 @@ int main(int argc, char *argv[])
 }
 //build-dep libmosquittopp-dev libmosquitto-dev
 // dep: libjsoncpp0 libmosquittopp libmosquitto
-
-
-// 2420 2032
-// 6008 2348 1972
