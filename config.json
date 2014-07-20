@@ -1,0 +1,13 @@
+// Configuration options
+{
+    "device_name" : "Modbus Devices",
+
+    "channels" : [
+        {
+            "name" : "Modbus Holding 1"
+        },
+        {
+            "name" : "Modbus Holding 2"
+        }
+    ]
+}
