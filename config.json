@@ -1,13 +1,23 @@
 // Configuration options
 {
     "device_name" : "Modbus Devices",
-
+    "serial_port" : "/tmp/sermaster",
+    "baud_rate": 9600,
+    "parity": "N",
+    "data_bits": 8,
+    "stop_bits": 1,
     "channels" : [
         {
-            "name" : "Modbus Holding 1"
+            "name" : "Modbus Holding 1",
+            "slave" : 1,
+            "type" : "holding",
+            "address" : 1
         },
         {
-            "name" : "Modbus Holding 2"
+            "name" : "Modbus Holding 2",
+            "slave" : 1,
+            "type" : "holding",
+            "address" : 2
         }
     ]
 }

@@ -1,3 +1,5 @@
+#include <unordered_map>
+#include <memory>
 #include <iostream>
 #include <cstdio>
 #include <cstring>
@@ -13,69 +15,67 @@
 
 #include "common/utils.h"
 #include "common/mqtt_wrapper.h"
+#include "modbus_client.h"
 
 using namespace std;
 
 
-struct TModbusRegister
+struct TModbusChannel
 {
+    TModbusChannel(string name, TModbusParameter param)
+        : Name(name), Parameter(param) {}
+
     string Name;
-
-    TModbusRegister()
-        : Name("")
-    {};
-
+    TModbusParameter Parameter;
 };
 
-class THandlerConfig
+struct THandlerConfig
 {
-    public:
-        vector<TModbusRegister> ModbusRegs;
-        void AddRegister(TModbusRegister& modbus_reg) { ModbusRegs.push_back(modbus_reg); };
-
-        string DeviceName;
-
+    void AddRegister(const TModbusChannel& channel) { ModbusChannels.push_back(channel); };
+    string DeviceName;
+    string SerialPort;
+    int BaudRate = 115200;
+    char Parity = 'N';
+    int DataBits = 8;
+    int StopBits = 1;
+    vector<TModbusChannel> ModbusChannels;
 };
 
 class TMQTTModbusHandler : public TMQTTWrapper
 {
-	public:
-        TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_config, const THandlerConfig& handler_config);
-		~TMQTTModbusHandler();
+public:
+    TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_config, const THandlerConfig& handler_config);
+    ~TMQTTModbusHandler();
 
-		void OnConnect(int rc);
-		void OnMessage(const struct mosquitto_message *message);
-		void OnSubscribe(int mid, int qos_count, const int *granted_qos);
+    void OnConnect(int rc);
+    void OnMessage(const struct mosquitto_message *message);
+    void OnSubscribe(int mid, int qos_count, const int *granted_qos);
 
-        void UpdateChannelValues();
-        string GetChannelTopic(const TModbusRegister& modbus_reg);
+    string GetChannelTopic(string name);
+    void Loop();
 
-    private:
-        THandlerConfig Config;
+private:
+    void OnModbusValueChange(const TModbusParameter& param, int value);
+    THandlerConfig Config;
+    unique_ptr<TModbusClient> Client;
+    unordered_map<TModbusParameter, string> ParameterToNameMap;
+    unordered_map<string, TModbusParameter> NameToParameterMap;
 };
-
-
-
-
-
 
 
 TMQTTModbusHandler::TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_config, const THandlerConfig& handler_config)
     : TMQTTWrapper(mqtt_config)
     , Config(handler_config)
+    , Client(new TModbusClient(Config.SerialPort, Config.BaudRate, Config.Parity, Config.DataBits, Config.StopBits))
 {
-    // init gpios
-    // for (const TModbusRegister& modbus_reg : handler_config.ModbusRegs) {
-    //     TSysfsGpio gpio_handler(modbus_reg.Gpio, modbus_reg.Inverted);
-    //     gpio_handler.Export();
-    //     if (gpio_handler.IsExported()) {
-    //         gpio_handler.SetOutput();
-    //         Regs.push_back(make_pair(modbus_reg, gpio_handler));
-    //     } else {
-    //         cerr << "ERROR: unable to export gpio " << modbus_reg.Gpio << endl;
-    //     }
-    // }
-
+    Client->SetCallback([this](const TModbusParameter& param, int value) {
+            OnModbusValueChange(param, value);
+        });
+    for (const auto& channel: Config.ModbusChannels) {
+        ParameterToNameMap[channel.Parameter] = channel.Name;
+        NameToParameterMap[channel.Name] = channel.Parameter;
+        Client->AddParam(channel.Parameter);
+    }
 
 	Connect();
 };
@@ -86,16 +86,25 @@ void TMQTTModbusHandler::OnConnect(int rc)
 	if(rc == 0){
 		/* Only attempt to Subscribe on a successful connect. */
         string prefix = string("/devices/") + MQTTConfig.Id + "/";
-
+        
         // Meta
         Publish(NULL, prefix + "/meta/name", Config.DeviceName, 0, true);
 
 
-        for (TModbusRegister& modbus_reg : Config.ModbusRegs) {
-            string control_prefix = prefix + "controls/" + modbus_reg.Name;
-            Publish(NULL, control_prefix + "/meta/type", "switch", 0, true);
+        for (TModbusChannel& channel : Config.ModbusChannels) {
+            string control_prefix = prefix + "controls/" + channel.Name;
+            switch (channel.Parameter.type) {
+            case TModbusParameter::Type::COIL:
+            case TModbusParameter::Type::DISCRETE_INPUT:
+                Publish(NULL, control_prefix + "/meta/type", "switch", 0, true);
+                break;
+            case TModbusParameter::Type::HOLDING_REGITER:
+            case TModbusParameter::Type::INPUT_REGISTER:
+                Publish(NULL, control_prefix + "/meta/type", "range", 0, true);
+                Publish(NULL, control_prefix + "/meta/max", "65535", 0, true);
+                break;
+            }
             Subscribe(NULL, control_prefix + "/on");
-
         }
 
 //~ /devices/293723-demo/controls/Demo-Switch 0
@@ -120,54 +129,55 @@ void TMQTTModbusHandler::OnMessage(const struct mosquitto_message *message)
           (tokens[2] == MQTTConfig.Id) && (tokens[3] == "controls") &&
           (tokens[5] == "on") )
     {
-        for (TModbusRegister& modbus_reg : Config.ModbusRegs) {
-            if (tokens[4] == modbus_reg.Name) {
-                // auto & gpio_handler = channel_desc.second;
+        const auto& it = NameToParameterMap.find(tokens[4]);
+        if (it == NameToParameterMap.end())
+            return;
 
-                // int val = payload == "0" ? 0 : 1;
-                Publish(NULL, GetChannelTopic(modbus_reg), payload, 0, true);
-                // if (gpio_handler.SetValue(val) == 0) {
-                //     // echo, retained
-                //     Publish(NULL, GetChannelTopic(modbus_reg), payload, 0, true);
-                // }
-
-
-            }
+        const TModbusParameter& param = it->second;
+        int val;
+        try {
+            val = stoi(payload);
+        } catch (exception&) {
+            cerr << "warning: invalid payload for topic " << topic << ": " << payload << endl;
+            return;
         }
+        cout << "setting modbus register: " << param.str() << " <- " << val << endl;
+        Client->SetValue(param, val);
+        Publish(NULL, GetChannelTopic(it->first), payload, 0, true);
     }
 }
 
-void TMQTTModbusHandler::OnSubscribe(int mid, int qos_count, const int *granted_qos)
+void TMQTTModbusHandler::OnSubscribe(int, int, const int *)
 {
 	printf("Subscription succeeded.\n");
 }
 
-string TMQTTModbusHandler::GetChannelTopic(const TModbusRegister& modbus_reg) {
+string TMQTTModbusHandler::GetChannelTopic(string name)
+{
     static string controls_prefix = string("/devices/") + MQTTConfig.Id + "/controls/";
-    return (controls_prefix + modbus_reg.Name);
+    return (controls_prefix + name);
 }
 
-void TMQTTModbusHandler::UpdateChannelValues() {
-    static int did_update = 0;
-    if (did_update++)
+void TMQTTModbusHandler::OnModbusValueChange(const TModbusParameter& param, int value)
+{
+    cout << "modbus value change: " << param.str() << " <- " << value << endl;
+    const auto& it = ParameterToNameMap.find(param);
+    if (it == ParameterToNameMap.end()) {
+        cerr << "warning: unexpected parameter from modbus" << endl;
         return;
-    for (TModbusRegister& modbus_reg : Config.ModbusRegs) {
-        int value = 4242;
-        Publish(NULL, GetChannelTopic(modbus_reg), to_string(value), 0, true); // Publish current value (make retained)
-
-        // vv order matters
-        // int cached = gpio_handler.GetCachedValue();
-        // int value = gpio_handler.GetValue();
-
-        // if (value >= 0) {
-        //     if ( (cached < 0) || (cached != value)) {
-        //         Publish(NULL, GetChannelTopic(modbus_reg), to_string(value), 0, true); // Publish current value (make retained)
-        //     }
-        // }
     }
-
+    // Publish current value (make retained)
+    Publish(NULL, GetChannelTopic(it->second), to_string(value), 0, true);
 }
 
+void TMQTTModbusHandler::Loop()
+{
+    try {
+        Client->Loop();
+    } catch (TModbusException& e) {
+        cerr << "Fatal: " << e.what() << endl;
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -204,17 +214,6 @@ int main(int argc, char *argv[])
             printf ("?? getopt returned character code 0%o ??\n", c);
         }
     }
-    //~ if (optind < argc) {
-        //~ printf ("non-option ARGV-elements: ");
-        //~ while (optind < argc)
-            //~ printf ("%s ", argv[optind++]);
-        //~ printf ("\n");
-    //~ }
-
-
-
-
-
 
     {
         // Let's parse it
@@ -228,9 +227,7 @@ int main(int argc, char *argv[])
 
         ifstream myfile (config_fname);
 
-        bool parsedSuccess = reader.parse(myfile,
-                                       root,
-                                       false);
+        bool parsedSuccess = reader.parse(myfile, root, false);
 
         if(not parsedSuccess)
         {
@@ -243,10 +240,36 @@ int main(int argc, char *argv[])
         }
 
 
+        if (!root.isObject()) {
+            cerr << "malformed config" << endl;
+            return 1;
+        }
+            
+        if (!root.isMember("device_name")) {
+            cerr << "device_name not specified" << endl;
+            return 1;
+        }
         handler_config.DeviceName = root["device_name"].asString();
+        if (!root.isMember("serial_port")) {
+            cerr << "serial_port not specified" << endl;
+            return 1;
+        }
+        handler_config.SerialPort = root["serial_port"].asString();
 
-         // Let's extract the array contained
-         // in the root object
+        if (root.isMember("baud_rate"))
+            handler_config.BaudRate = root["baud_rate"].asInt();
+
+        if (root.isMember("parity"))
+            handler_config.DataBits = root["parity"].asCString()[0]; // FIXME (can be '\0')
+        
+        if (root.isMember("data_bits"))
+            handler_config.DataBits = root["data_bits"].asInt();
+
+        if (root.isMember("stop_bits"))
+            handler_config.StopBits = root["stop_bits"].asInt();
+
+        // Let's extract the array contained
+        // in the root object
         const Json::Value array = root["channels"];
 
          // Iterate over sequence elements and
@@ -254,17 +277,26 @@ int main(int argc, char *argv[])
         for(unsigned int index=0; index<array.size();
              ++index)
         {
-            TModbusRegister modbus_reg;
-            // modbus_reg.Gpio = array[index]["gpio"].asInt();
-            modbus_reg.Name = array[index]["name"].asString();
-            //~ modbus_reg.Inverted = array[index]["inverted"].asString();
-
-            handler_config.AddRegister(modbus_reg);
-
+            string name = array[index]["name"].asString();
+            int address = array[index]["address"].asInt();
+            int slave = array[index]["slave"].asInt();
+            string type_str = array[index]["type"].asString();
+            TModbusParameter::Type type;
+            if (type_str == "coil")
+                type = TModbusParameter::Type::COIL;
+            else if (type_str == "discrete")
+                type = TModbusParameter::Type::DISCRETE_INPUT;
+            else if (type_str == "holding")
+                type = TModbusParameter::Type::HOLDING_REGITER;
+            else if (type_str == "input")
+                type = TModbusParameter::Type::INPUT_REGISTER;
+            else {
+                cerr << "invalid register type: " << type_str << endl;
+                return 1;
+            }
+            handler_config.AddRegister(TModbusChannel(name, TModbusParameter(slave, type, address)));
         }
     }
-
-
 
 	mosqpp::lib_init();
 
@@ -273,7 +305,7 @@ int main(int argc, char *argv[])
 
     cout << "Press Enter to stop..." << endl;
     mqtt_handler->StartLoop();
-    cin.ignore();
+    mqtt_handler->Loop();
     cout << "Exiting..." << endl;
     mqtt_handler->StopLoop();
 
@@ -283,3 +315,9 @@ int main(int argc, char *argv[])
 }
 //build-dep libmosquittopp-dev libmosquitto-dev
 // dep: libjsoncpp0 libmosquittopp libmosquitto
+
+// TBD: fix race condition that occurs after modbus error on startup
+// (slave not active)
+// TBD: check json structure
+// TBD: proper error checking everywhere (catch exceptions, etc.)
+// TBD: automatic tests(?)
