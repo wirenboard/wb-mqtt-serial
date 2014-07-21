@@ -151,8 +151,8 @@ TModbusClient::TModbusClient(std::string device,
     ctx = modbus_new_rtu(device.c_str(), baud_rate, parity, data_bits, stop_bits);
     if (!ctx)
         throw TModbusException("failed to create modbus context");
-    modbus_set_debug(ctx, 1);
-    // modbus_set_error_recovery(ctx, MODBUS_ERROR_RECOVERY_PROTOCOL); // FIXME
+    // modbus_set_debug(ctx, 1);
+    modbus_set_error_recovery(ctx, MODBUS_ERROR_RECOVERY_PROTOCOL); // FIXME
 }
 
 TModbusClient::~TModbusClient()
@@ -177,6 +177,7 @@ void TModbusClient::Connect()
         return;
     if (modbus_connect(ctx) != 0)
         throw TModbusException("couldn't initialize the serial port");
+    modbus_flush(ctx);
     active = true;
 }
 
@@ -203,7 +204,7 @@ void TModbusClient::Loop()
             p.second->Flush(ctx);
             if (p.second->Poll(ctx) && callback)
                 callback(p.first, p.second->Value());
-            usleep(500000); // FIXME
+            usleep(100000); // FIXME
         }
     }
 }
