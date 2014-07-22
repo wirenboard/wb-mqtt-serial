@@ -26,6 +26,7 @@ struct TModbusChannel
         : Name(name), Parameter(param) {}
 
     string Name;
+    string Type;
     TModbusParameter Parameter;
 };
 
@@ -96,11 +97,13 @@ void TMQTTModbusHandler::OnConnect(int rc)
             switch (channel.Parameter.type) {
             case TModbusParameter::Type::COIL:
             case TModbusParameter::Type::DISCRETE_INPUT:
-                Publish(NULL, control_prefix + "/meta/type", "switch", 0, true);
+                Publish(NULL, control_prefix + "/meta/type",
+                        channel.Type.empty() ? "switch" : channel.Type, 0, true);
                 break;
             case TModbusParameter::Type::HOLDING_REGITER:
             case TModbusParameter::Type::INPUT_REGISTER:
-                Publish(NULL, control_prefix + "/meta/type", "range", 0, true);
+                Publish(NULL, control_prefix + "/meta/type",
+                        channel.Type.empty() ? "text" : channel.Type, 0, true);
                 Publish(NULL, control_prefix + "/meta/max", "65535", 0, true);
                 break;
             }
@@ -280,20 +283,23 @@ int main(int argc, char *argv[])
             string name = array[index]["name"].asString();
             int address = array[index]["address"].asInt();
             int slave = array[index]["slave"].asInt();
-            string type_str = array[index]["type"].asString();
+            string reg_type_str = array[index]["reg_type"].asString();
             TModbusParameter::Type type;
-            if (type_str == "coil")
+            if (reg_type_str == "coil")
                 type = TModbusParameter::Type::COIL;
-            else if (type_str == "discrete")
+            else if (reg_type_str == "discrete")
                 type = TModbusParameter::Type::DISCRETE_INPUT;
-            else if (type_str == "holding")
+            else if (reg_type_str == "holding")
                 type = TModbusParameter::Type::HOLDING_REGITER;
-            else if (type_str == "input")
+            else if (reg_type_str == "input")
                 type = TModbusParameter::Type::INPUT_REGISTER;
             else {
-                cerr << "invalid register type: " << type_str << endl;
+                cerr << "invalid register type: " << reg_type_str << endl;
                 return 1;
             }
+            string type_str = array[index]["type"].asString();
+            if (type_str.empty())
+                type_str = "text";
             handler_config.AddRegister(TModbusChannel(name, TModbusParameter(slave, type, address)));
         }
     }
