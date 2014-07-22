@@ -28,7 +28,8 @@
             "slave" : 1,
             "reg_type" : "input",
             "address" : 2,
-            "type": "text"
+            "type": "text",
+            "scale": 0.075
         },
         {
             "name" : "Temp 2",
