@@ -232,7 +232,7 @@ TModbusHandler* TModbusClient::CreateParameterHandler(const TModbusParameter& pa
     case TModbusParameter::Type::HOLDING_REGITER:
         return new THoldingRegisterHandler(param);
     case TModbusParameter::Type::INPUT_REGISTER:
-        return new THoldingRegisterHandler(param);
+        return new TInputRegisterHandler(param);
     default:
         throw TModbusException("bad parameter type");
     }
