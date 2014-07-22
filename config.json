@@ -1,23 +1,41 @@
 // Configuration options
 {
     "device_name" : "Modbus Devices",
-    "serial_port" : "/tmp/sermaster",
+    "serial_port" : "/dev/ttyUSB0",
     "baud_rate": 9600,
     "parity": "N",
     "data_bits": 8,
-    "stop_bits": 1,
+    "stop_bits": 2,
+    "debug": true,
+    "poll_interval": 100,
     "channels" : [
         {
-            "name" : "Modbus Holding 1",
+            "name" : "Temp 1",
             "slave" : 1,
-            "type" : "holding",
-            "address" : 1
+            "reg_type" : "input",
+            "address" : 0,
+            "type": "temperature"
         },
         {
-            "name" : "Modbus Holding 2",
+            "name" : "Illuminance",
             "slave" : 1,
-            "type" : "holding",
-            "address" : 2
+            "reg_type" : "input",
+            "address" : 1,
+            "type": "text"
+        },
+        {
+            "name" : "Pressure",
+            "slave" : 1,
+            "reg_type" : "input",
+            "address" : 2,
+            "type": "text"
+        },
+        {
+            "name" : "Temp 2",
+            "slave" : 1,
+            "reg_type" : "input",
+            "address" : 3,
+            "type": "temperature"
         }
     ]
 }
