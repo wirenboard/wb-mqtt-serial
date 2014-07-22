@@ -146,12 +146,12 @@ TModbusClient::TModbusClient(std::string device,
                              char parity,
                              int data_bits,
                              int stop_bits)
-    : active(false)
+    : active(false),
+      poll_interval(1000)
 {
     ctx = modbus_new_rtu(device.c_str(), baud_rate, parity, data_bits, stop_bits);
     if (!ctx)
         throw TModbusException("failed to create modbus context");
-    // modbus_set_debug(ctx, 1);
     modbus_set_error_recovery(ctx, MODBUS_ERROR_RECOVERY_PROTOCOL); // FIXME
 }
 
@@ -204,7 +204,7 @@ void TModbusClient::Loop()
             p.second->Flush(ctx);
             if (p.second->Poll(ctx) && callback)
                 callback(p.first, p.second->Value());
-            usleep(100000); // FIXME
+            usleep(poll_interval * 1000);
         }
     }
 }
@@ -220,6 +220,14 @@ void TModbusClient::SetValue(const TModbusParameter& param, int value)
 void TModbusClient::SetCallback(const TModbusCallback& _callback)
 {
     callback = _callback;
+}
+
+void TModbusClient::SetPollInterval(int interval) {
+    poll_interval = interval;
+}
+
+void TModbusClient::SetModbusDebug(bool debug) {
+    modbus_set_debug(ctx, debug);
 }
 
 TModbusHandler* TModbusClient::CreateParameterHandler(const TModbusParameter& param)

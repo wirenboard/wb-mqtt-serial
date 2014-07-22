@@ -79,12 +79,15 @@ public:
     void Loop();
     void SetValue(const TModbusParameter& param, int value);
     void SetCallback(const TModbusCallback& _callback);
+    void SetPollInterval(int ms);
+    void SetModbusDebug(bool debug);
 
 private:
     TModbusHandler* CreateParameterHandler(const TModbusParameter& param);
     std::map< TModbusParameter, std::unique_ptr<TModbusHandler> > handlers;
     modbus_t* ctx;
     bool active;
+    int poll_interval = 2000;
     const int MAX_REGS = 65536;
     TModbusCallback callback;
 };

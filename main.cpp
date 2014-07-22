@@ -39,6 +39,8 @@ struct THandlerConfig
     char Parity = 'N';
     int DataBits = 8;
     int StopBits = 1;
+    int PollInterval = 2000;
+    bool Debug = false;
     vector<TModbusChannel> ModbusChannels;
 };
 
@@ -77,6 +79,8 @@ TMQTTModbusHandler::TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_c
         NameToParameterMap[channel.Name] = channel.Parameter;
         Client->AddParam(channel.Parameter);
     }
+    Client->SetPollInterval(handler_config.PollInterval);
+    Client->SetModbusDebug(handler_config.Debug);
 
 	Connect();
 };
@@ -196,9 +200,12 @@ int main(int argc, char *argv[])
     //~ int digit_optind = 0;
     //~ int aopt = 0, bopt = 0;
     //~ char *copt = 0, *dopt = 0;
-    while ( (c = getopt(argc, argv, "c:h:p:")) != -1) {
+    while ( (c = getopt(argc, argv, "dc:h:p:")) != -1) {
         //~ int this_option_optind = optind ? optind : 1;
         switch (c) {
+        case 'd':
+            handler_config.Debug = true;
+            break;
         case 'c':
             printf ("option c with value '%s'\n", optarg);
             config_fname = optarg;
@@ -270,6 +277,12 @@ int main(int argc, char *argv[])
 
         if (root.isMember("stop_bits"))
             handler_config.StopBits = root["stop_bits"].asInt();
+
+        if (root.isMember("poll_interval"))
+            handler_config.PollInterval = root["poll_interval"].asInt();
+
+        if (root.isMember("debug"))
+            handler_config.Debug = handler_config.Debug || root["debug"].asBool();
 
         // Let's extract the array contained
         // in the root object
