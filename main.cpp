@@ -146,16 +146,20 @@ void TMQTTModbusHandler::OnMessage(const struct mosquitto_message *message)
 
         // FIXME: untested
         const TModbusParameter& param = it->second.Parameter;
-        double val;
+        int int_val;
         try {
-            val = stod(payload);
+            if (it->second.Scale == 1)
+                int_val = stoi(payload);
+            else {
+                double val = stod(payload);
+                int_val = round(val / it->second.Scale);
+            }
         } catch (exception&) {
             cerr << "warning: invalid payload for topic " << topic << ": " << payload << endl;
             return;
         }
-        int int_val = min(65535, max(0, (int)round(val / it->second.Scale)));
-        cout << "setting modbus register: " << param.str() << " <- " <<
-            val << "(modbus: " << int_val << ")" << endl;
+        int_val = min(65535, max(0, int_val));
+        cout << "setting modbus register: " << param.str() << " <- " << int_val << endl;
         Client->SetValue(param, int_val);
         Publish(NULL, GetChannelTopic(it->second), payload, 0, true);
     }
