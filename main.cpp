@@ -21,23 +21,34 @@
 
 using namespace std;
 
-
 struct TModbusChannel
 {
     TModbusChannel(string name = "", string type = "text",
-                   double scale = 1, TModbusParameter param = TModbusParameter())
-        : Name(name), Type(type), Scale(scale), Parameter(param) {}
+                   double scale = 1, string device_id = "",
+                   TModbusParameter param = TModbusParameter())
+        : Name(name), Type(type), Scale(scale), DeviceId(device_id), Parameter(param) {}
 
     string Name;
     string Type;
     double Scale;
+    string DeviceId; // FIXME
     TModbusParameter Parameter;
 };
 
+struct TDeviceConfig
+{
+    TDeviceConfig(string name = "")
+        : Name(name) {}
+    void AddChannel(const TModbusChannel& channel) { ModbusChannels.push_back(channel); };
+    string Id;
+    string Name;
+    int SlaveId;
+    vector<TModbusChannel> ModbusChannels;
+};
+    
 struct THandlerConfig
 {
-    void AddChannel(const TModbusChannel& channel) { ModbusChannels.push_back(channel); };
-    string DeviceName;
+    void AddDeviceConfig(const TDeviceConfig& config) { DeviceConfigs.push_back(config); }
     string SerialPort;
     int BaudRate = 115200;
     char Parity = 'N';
@@ -45,7 +56,7 @@ struct THandlerConfig
     int StopBits = 1;
     int PollInterval = 2000;
     bool Debug = false;
-    vector<TModbusChannel> ModbusChannels;
+    vector<TDeviceConfig> DeviceConfigs;
 };
 
 class TMQTTModbusHandler : public TMQTTWrapper
@@ -60,7 +71,6 @@ public:
 
     string GetChannelTopic(const TModbusChannel& channel);
     void Loop();
-
 private:
     void OnModbusValueChange(const TModbusParameter& param, int int_value);
     THandlerConfig Config;
@@ -69,6 +79,29 @@ private:
     unordered_map<string, TModbusChannel> NameToChannelMap;
 };
 
+class TConfigParserException: public exception {
+public:
+    TConfigParserException(string _message): message(_message) {}
+    const char* what () const throw () {
+        return ("Error parsing config file: " + message).c_str();
+    }
+private:
+    string message;
+};
+
+class TConfigParser
+{
+public:
+    TConfigParser(string config_fname): ConfigFileName(config_fname) {}
+    const THandlerConfig& parse();
+    void LoadChannel(TDeviceConfig& device_config, const Json::Value& channel_data);
+    void LoadDevice(const Json::Value& device_data, string default_id);
+    void LoadConfig();
+private:
+    THandlerConfig HandlerConfig;
+    string ConfigFileName;
+    Json::Value root;
+};
 
 TMQTTModbusHandler::TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_config, const THandlerConfig& handler_config)
     : TMQTTWrapper(mqtt_config)
@@ -78,10 +111,12 @@ TMQTTModbusHandler::TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_c
     Client->SetCallback([this](const TModbusParameter& param, int value) {
             OnModbusValueChange(param, value);
         });
-    for (const auto& channel: Config.ModbusChannels) {
-        ParameterToChannelMap[channel.Parameter] = channel;
-        NameToChannelMap[channel.Name] = channel;
-        Client->AddParam(channel.Parameter);
+    for (const auto& device_config: Config.DeviceConfigs) {
+        for (const auto& channel: device_config.ModbusChannels) {
+            ParameterToChannelMap[channel.Parameter] = channel;
+            NameToChannelMap[channel.Name] = channel;
+            Client->AddParam(channel.Parameter);
+        }
     }
     Client->SetPollInterval(handler_config.PollInterval);
     Client->SetModbusDebug(handler_config.Debug);
@@ -92,15 +127,17 @@ TMQTTModbusHandler::TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_c
 void TMQTTModbusHandler::OnConnect(int rc)
 {
 	printf("Connected with code %d.\n", rc);
-	if(rc == 0){
-		/* Only attempt to Subscribe on a successful connect. */
-        string prefix = string("/devices/") + MQTTConfig.Id + "/";
-        
+
+	if(rc != 0)
+        return;
+
+    for (const auto& device_config : Config.DeviceConfigs) {
+        /* Only attempt to Subscribe on a successful connect. */
+        string id = device_config.Id.empty() ? MQTTConfig.Id : device_config.Id;
+        string prefix = string("/devices/") + id + "/";
         // Meta
-        Publish(NULL, prefix + "/meta/name", Config.DeviceName, 0, true);
-
-
-        for (TModbusChannel& channel : Config.ModbusChannels) {
+        Publish(NULL, prefix + "meta/name", device_config.Name, 0, true);
+        for (const auto& channel : device_config.ModbusChannels) {
             string control_prefix = prefix + "controls/" + channel.Name;
             switch (channel.Parameter.type) {
             case TModbusParameter::Type::COIL:
@@ -117,14 +154,11 @@ void TMQTTModbusHandler::OnConnect(int rc)
             }
             Subscribe(NULL, control_prefix + "/on");
         }
+    }
 
 //~ /devices/293723-demo/controls/Demo-Switch 0
 //~ /devices/293723-demo/controls/Demo-Switch/on 1
 //~ /devices/293723-demo/controls/Demo-Switch/meta/type switch
-
-
-
-	}
 }
 
 void TMQTTModbusHandler::OnMessage(const struct mosquitto_message *message)
@@ -132,15 +166,19 @@ void TMQTTModbusHandler::OnMessage(const struct mosquitto_message *message)
     string topic = message->topic;
     string payload = static_cast<const char *>(message->payload);
 
-
     const vector<string>& tokens = StringSplit(topic, '/');
+    if ((tokens.size() != 6) ||
+        (tokens[0] != "") || (tokens[1] != "devices") ||
+        (tokens[3] != "controls") || (tokens[5] != "on"))
+        return;
 
-    if (  (tokens.size() == 6) &&
-          (tokens[0] == "") && (tokens[1] == "devices") &&
-          (tokens[2] == MQTTConfig.Id) && (tokens[3] == "controls") &&
-          (tokens[5] == "on") )
-    {
-        const auto& it = NameToChannelMap.find(tokens[4]);
+    string device_id = tokens[2];
+    string param_name = tokens[4];
+    for(auto device_config : Config.DeviceConfigs) {
+        if (device_config.Id != device_id)
+            continue;
+
+        const auto& it = NameToChannelMap.find(param_name);
         if (it == NameToChannelMap.end())
             return;
 
@@ -172,7 +210,7 @@ void TMQTTModbusHandler::OnSubscribe(int, int, const int *)
 
 string TMQTTModbusHandler::GetChannelTopic(const TModbusChannel& channel)
 {
-    static string controls_prefix = string("/devices/") + MQTTConfig.Id + "/controls/";
+    string controls_prefix = string("/devices/") + channel.DeviceId + "/controls/";
     return (controls_prefix + channel.Name);
 }
 
@@ -193,6 +231,7 @@ void TMQTTModbusHandler::OnModbusValueChange(const TModbusParameter& param, int 
         payload = to_string(value);
     }
     // Publish current value (make retained)
+    cout << "channel " << it->second.Name << " device id: " << it->second.DeviceId << " -- topic: " << GetChannelTopic(it->second) << endl;
     Publish(NULL, GetChannelTopic(it->second), payload, 0, true);
 }
 
@@ -205,100 +244,110 @@ void TMQTTModbusHandler::Loop()
     }
 }
 
-bool ParseConfig(THandlerConfig& handler_config, string config_fname)
+const THandlerConfig& TConfigParser::parse()
 {
     // Let's parse it
-    Json::Value root;
     Json::Reader reader;
 
-    if (config_fname.empty()) {
-        cerr << "Please specify config file with -c option" << endl;
-        return false;
-    }
+    if (ConfigFileName.empty())
+        throw TConfigParserException("Please specify config file with -c option");
 
-    ifstream myfile (config_fname);
+    ifstream myfile (ConfigFileName);
 
     bool parsedSuccess = reader.parse(myfile, root, false);
 
-    if(not parsedSuccess) {
-        // Report failures and their locations
-        // in the document.
-        cerr << "Failed to parse JSON" << endl
-             << reader.getFormatedErrorMessages()
-             << endl;
-        return false;
-    }
+    // Report failures and their locations in the document.
+    if(not parsedSuccess)
+        throw TConfigParserException("Failed to parse JSON: " + reader.getFormatedErrorMessages());
 
+    LoadConfig();
+    return HandlerConfig;
+}
 
-    if (!root.isObject()) {
-        cerr << "malformed config" << endl;
-        return false;
-    }
-            
-    if (!root.isMember("device_name")) {
-        cerr << "device_name not specified" << endl;
-        return false;
-    }
-    handler_config.DeviceName = root["device_name"].asString();
-    if (!root.isMember("serial_port")) {
-        cerr << "serial_port not specified" << endl;
-        return false;
-    }
-    handler_config.SerialPort = root["serial_port"].asString();
+void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value& channel_data)
+{
+    if (!channel_data.isObject())
+        throw TConfigParserException("malformed config");
+
+    string name = channel_data["name"].asString();
+    int address = channel_data["address"].asInt();
+    string reg_type_str = channel_data["reg_type"].asString();
+    TModbusParameter::Type type;
+    if (reg_type_str == "coil")
+        type = TModbusParameter::Type::COIL;
+    else if (reg_type_str == "discrete")
+        type = TModbusParameter::Type::DISCRETE_INPUT;
+    else if (reg_type_str == "holding")
+        type = TModbusParameter::Type::HOLDING_REGITER;
+    else if (reg_type_str == "input")
+        type = TModbusParameter::Type::INPUT_REGISTER;
+    else
+        throw TConfigParserException("invalid register type: " + reg_type_str);
+
+    string type_str = channel_data["type"].asString();
+    if (type_str.empty())
+        type_str = "text";
+    double scale = 1;
+    if (channel_data.isMember("scale"))
+        scale = channel_data["scale"].asDouble(); // TBD: check for zero, too
+
+    TModbusParameter param(device_config.SlaveId, type, address);
+    TModbusChannel channel(name, type_str, scale, device_config.Id, param);
+    cout << "channel " << channel.Name << " device id: " << channel.DeviceId << endl;
+    device_config.AddChannel(channel);
+}
+
+void TConfigParser::LoadDevice(const Json::Value& device_data, string default_id)
+{
+    if (!device_data.isObject())
+        throw TConfigParserException("malformed config");
+
+    if (!device_data.isMember("name"))
+        throw TConfigParserException("device name not specified");
+
+    TDeviceConfig device_config;
+    device_config.Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
+    device_config.Name = device_data["name"].asString();
+    device_config.SlaveId = device_data["slave_id"].asInt();
+
+    const Json::Value array = device_data["channels"];
+    for(unsigned int index = 0; index < array.size(); ++index)
+        LoadChannel(device_config, array[index]);
+
+    HandlerConfig.AddDeviceConfig(device_config);
+}
+
+void TConfigParser::LoadConfig()
+{
+    if (!root.isObject())
+        throw TConfigParserException("malformed config");
+
+    if (!root.isMember("serial_port"))
+        throw TConfigParserException("serial_port not specified");
+
+    HandlerConfig.SerialPort = root["serial_port"].asString();
 
     if (root.isMember("baud_rate"))
-        handler_config.BaudRate = root["baud_rate"].asInt();
+        HandlerConfig.BaudRate = root["baud_rate"].asInt();
 
     if (root.isMember("parity"))
-        handler_config.DataBits = root["parity"].asCString()[0]; // FIXME (can be '\0')
+        HandlerConfig.DataBits = root["parity"].asCString()[0]; // FIXME (can be '\0')
         
     if (root.isMember("data_bits"))
-        handler_config.DataBits = root["data_bits"].asInt();
+        HandlerConfig.DataBits = root["data_bits"].asInt();
 
     if (root.isMember("stop_bits"))
-        handler_config.StopBits = root["stop_bits"].asInt();
+        HandlerConfig.StopBits = root["stop_bits"].asInt();
 
     if (root.isMember("poll_interval"))
-        handler_config.PollInterval = root["poll_interval"].asInt();
+        HandlerConfig.PollInterval = root["poll_interval"].asInt();
 
     if (root.isMember("debug"))
-        handler_config.Debug = handler_config.Debug || root["debug"].asBool();
+        HandlerConfig.Debug = HandlerConfig.Debug || root["debug"].asBool();
 
-    // Let's extract the array contained
-    // in the root object
-    const Json::Value array = root["channels"];
-
-    // Iterate over sequence elements and
-    // print its values
-    for(unsigned int index=0; index<array.size(); ++index) {
-        string name = array[index]["name"].asString();
-        int address = array[index]["address"].asInt();
-        int slave = array[index]["slave"].asInt();
-        string reg_type_str = array[index]["reg_type"].asString();
-        TModbusParameter::Type type;
-        if (reg_type_str == "coil")
-            type = TModbusParameter::Type::COIL;
-        else if (reg_type_str == "discrete")
-            type = TModbusParameter::Type::DISCRETE_INPUT;
-        else if (reg_type_str == "holding")
-            type = TModbusParameter::Type::HOLDING_REGITER;
-        else if (reg_type_str == "input")
-            type = TModbusParameter::Type::INPUT_REGISTER;
-        else {
-            cerr << "invalid register type: " << reg_type_str << endl;
-            return false;
-        }
-        string type_str = array[index]["type"].asString();
-        if (type_str.empty())
-            type_str = "text";
-        double scale = 1;
-        if (array[index].isMember("scale"))
-            scale = array[index]["scale"].asDouble(); // TBD: check for zero, too
-        TModbusChannel channel(name, type_str, scale, TModbusParameter(slave, type, address));
-        handler_config.AddChannel(channel);
-    }
-
-    return true;
+    const Json::Value array = root["devices"];
+    for(unsigned int index = 0; index < array.size(); ++index)
+        LoadDevice(array[index], "wb-modbus-" + to_string(index));
 }
 
 int main(int argc, char *argv[])
@@ -309,7 +358,6 @@ int main(int argc, char *argv[])
     mqtt_config.Host = "localhost";
     mqtt_config.Port = 1883;
     string config_fname;
-
 
     int c;
     //~ int digit_optind = 0;
@@ -340,12 +388,18 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (!ParseConfig(handler_config, config_fname))
+    try {
+        TConfigParser parser(config_fname);
+        handler_config = parser.parse();
+    } catch (const TConfigParserException& e) {
+        cerr << e.what() << endl;
         return 1;
+    }
 
 	mosqpp::lib_init();
 
-    mqtt_config.Id = "wb-modbus";
+    if (mqtt_config.Id.empty())
+        mqtt_config.Id = "wb-modbus";
 	mqtt_handler = new TMQTTModbusHandler(mqtt_config, handler_config);
 
     mqtt_handler->StartLoop();

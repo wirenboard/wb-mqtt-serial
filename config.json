@@ -1,6 +1,5 @@
 // Configuration options
 {
-    "device_name" : "Modbus Devices",
     "serial_port" : "/dev/ttyUSB0",
     "baud_rate": 9600,
     "parity": "N",
@@ -8,77 +7,91 @@
     "stop_bits": 2,
     "debug": true,
     "poll_interval": 100,
-    "channels" : [
+    "devices" : [
         {
-            "name" : "Temp 1",
-            "slave" : 2,
-            "reg_type" : "input",
-            "address" : 0,
-            "type": "temperature"
+            "name": "MSU34+TLP",
+            "id": "msu34tlp",
+            "slave_id": 2,
+            "channels": [
+                {
+                    "name" : "Temp 1",
+                    "slave" : 2,
+                    "reg_type" : "input",
+                    "address" : 0,
+                    "type": "temperature"
+                },
+                {
+                    "name" : "Illuminance",
+                    "slave" : 2,
+                    "reg_type" : "input",
+                    "address" : 1,
+                    "type": "text"
+                },
+                {
+                    "name" : "Pressure",
+                    "slave" : 2,
+                    "reg_type" : "input",
+                    "address" : 2,
+                    "type": "text",
+                    "scale": 0.075
+                },
+                {
+                    "name" : "Temp 2",
+                    "slave" : 2,
+                    "reg_type" : "input",
+                    "address" : 3,
+                    "type": "temperature"
+                }
+            ]
         },
         {
-            "name" : "Illuminance",
-            "slave" : 2,
-            "reg_type" : "input",
-            "address" : 1,
-            "type": "text"
-        },
-        {
-            "name" : "Pressure",
-            "slave" : 2,
-            "reg_type" : "input",
-            "address" : 2,
-            "type": "text",
-            "scale": 0.075
-        },
-        {
-            "name" : "Temp 2",
-            "slave" : 2,
-            "reg_type" : "input",
-            "address" : 3,
-            "type": "temperature"
-        },
-        {
-            "name" : "Relay 0",
-            "slave" : 1,
-            "reg_type" : "coil",
-            "address" : 0,
-            "type": "switch"
-        },
-        {
-            "name" : "Relay 1",
-            "slave" : 1,
-            "reg_type" : "coil",
-            "address" : 1,
-            "type": "switch"
-        },
-        {
-            "name" : "Relay 2",
-            "slave" : 1,
-            "reg_type" : "coil",
-            "address" : 2,
-            "type": "switch"
-        },
-        {
-            "name" : "Input 0",
-            "slave" : 1,
-            "reg_type" : "discrete",
-            "address" : 32,
-            "type": "text"
-        },
-        {
-            "name" : "Input 1",
-            "slave" : 1,
-            "reg_type" : "discrete",
-            "address" : 33,
-            "type": "text"
-        },
-        {
-            "name" : "Input 2",
-            "slave" : 1,
-            "reg_type" : "discrete",
-            "address" : 34,
-            "type": "text"
+            "name": "tM-P3R3",
+            "id": "tmp3r3",
+            "slave_id": 1,
+            "channels": [
+                {
+                    "name" : "Relay 0",
+                    "slave" : 1,
+                    "reg_type" : "coil",
+                    "address" : 0,
+                    "type": "switch"
+                },
+                {
+                    "name" : "Relay 1",
+                    "slave" : 1,
+                    "reg_type" : "coil",
+                    "address" : 1,
+                    "type": "switch"
+                },
+                {
+                    "name" : "Relay 2",
+                    "slave" : 1,
+                    "reg_type" : "coil",
+                    "address" : 2,
+                    "type": "switch"
+                },
+                {
+                    "name" : "Input 0",
+                    "slave" : 1,
+                    "reg_type" : "discrete",
+                    "address" : 32,
+                    "type": "text"
+                },
+                {
+                    "name" : "Input 1",
+                    "slave" : 1,
+                    "reg_type" : "discrete",
+                    "address" : 33,
+                    "type": "text"
+                },
+                {
+                    "name" : "Input 2",
+                    "slave" : 1,
+                    "reg_type" : "discrete",
+                    "address" : 34,
+                    "type": "text"
+                }
+            ]
         }
     ]
 }

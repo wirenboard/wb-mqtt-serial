@@ -53,7 +53,7 @@ namespace std {
     };
 }
 
-class TModbusException {
+class TModbusException: public std::exception {
 public:
     TModbusException(std::string _message): message(_message) {}
     const char* what () const throw ()
