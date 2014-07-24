@@ -174,7 +174,7 @@ void TMQTTModbusHandler::OnMessage(const struct mosquitto_message *message)
 
     string device_id = tokens[2];
     string param_name = tokens[4];
-    for(auto device_config : Config.DeviceConfigs) {
+    for(const auto& device_config : Config.DeviceConfigs) {
         if (device_config.Id != device_id)
             continue;
 
