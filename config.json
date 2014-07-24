@@ -11,21 +11,21 @@
     "channels" : [
         {
             "name" : "Temp 1",
-            "slave" : 1,
+            "slave" : 2,
             "reg_type" : "input",
             "address" : 0,
             "type": "temperature"
         },
         {
             "name" : "Illuminance",
-            "slave" : 1,
+            "slave" : 2,
             "reg_type" : "input",
             "address" : 1,
             "type": "text"
         },
         {
             "name" : "Pressure",
-            "slave" : 1,
+            "slave" : 2,
             "reg_type" : "input",
             "address" : 2,
             "type": "text",
@@ -33,10 +33,52 @@
         },
         {
             "name" : "Temp 2",
-            "slave" : 1,
+            "slave" : 2,
             "reg_type" : "input",
             "address" : 3,
             "type": "temperature"
+        },
+        {
+            "name" : "Relay 0",
+            "slave" : 1,
+            "reg_type" : "coil",
+            "address" : 0,
+            "type": "switch"
+        },
+        {
+            "name" : "Relay 1",
+            "slave" : 1,
+            "reg_type" : "coil",
+            "address" : 1,
+            "type": "switch"
+        },
+        {
+            "name" : "Relay 2",
+            "slave" : 1,
+            "reg_type" : "coil",
+            "address" : 2,
+            "type": "switch"
+        },
+        {
+            "name" : "Input 0",
+            "slave" : 1,
+            "reg_type" : "discrete",
+            "address" : 32,
+            "type": "text"
+        },
+        {
+            "name" : "Input 1",
+            "slave" : 1,
+            "reg_type" : "discrete",
+            "address" : 33,
+            "type": "text"
+        },
+        {
+            "name" : "Input 2",
+            "slave" : 1,
+            "reg_type" : "discrete",
+            "address" : 34,
+            "type": "text"
         }
     ]
 }
