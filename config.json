@@ -1,5 +1,6 @@
 // Configuration options
 {
+    "debug": true,
     "ports": [
         {
             "path" : "/dev/ttyNSC0",
@@ -7,7 +8,6 @@
             "parity": "N",
             "data_bits": 8,
             "stop_bits": 2,
-            "debug": true,
             "poll_interval": 100,
             "devices" : [
                 {
