@@ -79,20 +79,17 @@
                         {
                             "name" : "Input 0",
                             "reg_type" : "discrete",
-                            "address" : 32,
-                            "type": "text"
+                            "address" : 32
                         },
                         {
                             "name" : "Input 1",
                             "reg_type" : "discrete",
-                            "address" : 33,
-                            "type": "text"
+                            "address" : 33
                         },
                         {
                             "name" : "Input 2",
                             "reg_type" : "discrete",
-                            "address" : 34,
-                            "type": "text"
+                            "address" : 34
                         }
                     ]
                 }

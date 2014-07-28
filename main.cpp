@@ -156,13 +156,15 @@ void TModbusPort::PubSubSetup()
         for (const auto& channel : device_config.ModbusChannels) {
             string control_prefix = prefix + "controls/" + channel.Name;
             switch (channel.Parameter.type) {
-            case TModbusParameter::Type::COIL:
             case TModbusParameter::Type::DISCRETE_INPUT:
+                Wrapper->Publish(NULL, control_prefix + "/meta/readonly", "1", 0, true);
+            case TModbusParameter::Type::COIL:
                 Wrapper->Publish(NULL, control_prefix + "/meta/type",
                         channel.Type.empty() ? "switch" : channel.Type, 0, true);
                 break;
-            case TModbusParameter::Type::HOLDING_REGITER:
             case TModbusParameter::Type::INPUT_REGISTER:
+                Wrapper->Publish(NULL, control_prefix + "/meta/readonly", "1", 0, true);
+            case TModbusParameter::Type::HOLDING_REGITER:
                 Wrapper->Publish(NULL, control_prefix + "/meta/type",
                         channel.Type.empty() ? "text" : channel.Type, 0, true);
                 Wrapper->Publish(NULL, control_prefix + "/meta/max", "65535", 0, true);
@@ -335,21 +337,26 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
     string name = channel_data["name"].asString();
     int address = channel_data["address"].asInt();
     string reg_type_str = channel_data["reg_type"].asString();
+    string default_type_str = "text";
     TModbusParameter::Type type;
-    if (reg_type_str == "coil")
+    if (reg_type_str == "coil") {
         type = TModbusParameter::Type::COIL;
-    else if (reg_type_str == "discrete")
+        default_type_str = "switch";
+    } else if (reg_type_str == "discrete") {
         type = TModbusParameter::Type::DISCRETE_INPUT;
-    else if (reg_type_str == "holding")
+        default_type_str = "switch";
+    } else if (reg_type_str == "holding") {
         type = TModbusParameter::Type::HOLDING_REGITER;
-    else if (reg_type_str == "input")
+        default_type_str = "text";
+    } else if (reg_type_str == "input") {
         type = TModbusParameter::Type::INPUT_REGISTER;
-    else
+        default_type_str = "text";
+    } else
         throw TConfigParserException("invalid register type: " + reg_type_str);
 
     string type_str = channel_data["type"].asString();
     if (type_str.empty())
-        type_str = "text";
+        type_str = default_type_str;
     double scale = 1;
     if (channel_data.isMember("scale"))
         scale = channel_data["scale"].asDouble(); // TBD: check for zero, too
