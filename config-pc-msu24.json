@@ -1,0 +1,36 @@
+// Configuration options
+{
+    "debug": true,
+    "ports": [
+        {
+            "path" : "/dev/ttyUSB0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 2,
+            "poll_interval": 100,
+            "devices" : [
+                {
+                    "name": "MSU24",
+                    "id": "msu24",
+                    "slave_id": 34,
+                    "channels": [
+                        {
+                            "name" : "Illuminance",
+                            "reg_type" : "input",
+                            "address" : 0,
+                            "type": "text"
+                        },
+                        {
+                            "name" : "Temp 1",
+                            "reg_type" : "input",
+                            "address" : 1,
+                            "type": "temperature",
+                            "format": "s8"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
