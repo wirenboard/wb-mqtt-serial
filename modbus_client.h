@@ -14,12 +14,14 @@ class TModbusHandler;
 
 struct TModbusParameter
 {
+    enum Format { U16, S16, U8, S8 };
     enum Type { COIL, DISCRETE_INPUT, HOLDING_REGITER, INPUT_REGISTER };
-    TModbusParameter(int _slave = 0, Type _type = COIL, int _address = 0, bool _poll = true)
-        : slave(_slave), type(_type), address(_address), poll(_poll) {}
+    TModbusParameter(int _slave = 0, Type _type = COIL, int _address = 0, Format _format = U16, bool _poll = true)
+        : slave(_slave), type(_type), address(_address), format(_format), poll(_poll) {}
     int slave;
     Type type;
     int address;
+    Format format;
     bool poll;
 
     std::string str() const {

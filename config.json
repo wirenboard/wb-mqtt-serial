@@ -19,7 +19,8 @@
                             "name" : "Temp 1",
                             "reg_type" : "input",
                             "address" : 0,
-                            "type": "temperature"
+                            "type": "temperature",
+                            "format": "s8"
                         },
                         {
                             "name" : "Illuminance",
@@ -38,7 +39,8 @@
                             "name" : "Temp 2",
                             "reg_type" : "input",
                             "address" : 3,
-                            "type": "temperature"
+                            "type": "temperature",
+                            "format": "s8"
                         }
                     ]
                 }

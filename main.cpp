@@ -367,8 +367,18 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
     if (channel_data.isMember("scale"))
         scale = channel_data["scale"].asDouble(); // TBD: check for zero, too
 
+    TModbusParameter::Format format = TModbusParameter::U16;
+    if (channel_data.isMember("format")) {
+        string format_str = channel_data["format"].asString();
+        if (format_str == "s16")
+            format = TModbusParameter::S16;
+        else if (format_str == "u8")
+            format = TModbusParameter::U8;
+        else if (format_str == "s8")
+            format = TModbusParameter::S8;
+    }
 
-    TModbusParameter param(device_config.SlaveId, type, address, should_poll);
+    TModbusParameter param(device_config.SlaveId, type, address, format, should_poll);
     TModbusChannel channel(name, type_str, scale, device_config.Id, param);
     cout << "channel " << channel.Name << " device id: " << channel.DeviceId << endl;
     device_config.AddChannel(channel);

@@ -14,6 +14,8 @@ public:
     void Flush(modbus_t* ctx);
     int Value() const { return value; }
     void SetValue(int v);
+protected:
+    int ConvertValue(uint16_t v) const;
 private:
     int value = 0;
     TModbusParameter param;
@@ -69,6 +71,22 @@ void TModbusHandler::SetValue(int v)
     dirty = true;
 }
 
+int TModbusHandler::ConvertValue(uint16_t v) const
+{
+    switch (param.format) {
+    case TModbusParameter::U16:
+        return v;
+    case TModbusParameter::S16:
+        return (int16_t)v;
+    case TModbusParameter::U8:
+        return v & 255;
+    case TModbusParameter::S8:
+        return (int8_t) v;
+    default:
+        return v;
+    }
+}
+
 class TCoilHandler: public TModbusHandler
 {
 public:
@@ -109,7 +127,7 @@ public:
         uint16_t v;
         if (modbus_read_registers(ctx, Parameter().address, 1, &v) < 1)
             throw TModbusException("failed to read holding register");
-        return v;
+        return ConvertValue(v);
     }
 
     void Write(modbus_t* ctx, int v) {
@@ -140,7 +158,7 @@ public:
         uint16_t v;
         if (modbus_read_input_registers(ctx, Parameter().address, 1, &v) < 1)
             throw TModbusException("failed to read input register");
-        return v;
+        return ConvertValue(v);
     }
 };
 
