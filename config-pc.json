@@ -51,7 +51,7 @@
                             "name" : "Relay 0",
                             "reg_type" : "coil",
                             "address" : 0,
-                            "type": "switch"
+                            "type": "wo-switch"
                         },
                         {
                             "name" : "Relay 1",

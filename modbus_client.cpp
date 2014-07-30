@@ -28,6 +28,9 @@ void TModbusHandler::Write(modbus_t*, int)
 
 bool TModbusHandler::Poll(modbus_t* ctx)
 {
+    if (!param.poll)
+        return false; // write-only register
+
     bool first_poll = !did_read;
     int new_value;
     modbus_set_slave(ctx, param.slave);

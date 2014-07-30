@@ -354,14 +354,21 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
     } else
         throw TConfigParserException("invalid register type: " + reg_type_str);
 
+    bool should_poll = true;
     string type_str = channel_data["type"].asString();
     if (type_str.empty())
         type_str = default_type_str;
+    if (type_str == "wo-switch") {
+        type_str = "switch";
+        should_poll = false;
+    }
+
     double scale = 1;
     if (channel_data.isMember("scale"))
         scale = channel_data["scale"].asDouble(); // TBD: check for zero, too
 
-    TModbusParameter param(device_config.SlaveId, type, address);
+
+    TModbusParameter param(device_config.SlaveId, type, address, should_poll);
     TModbusChannel channel(name, type_str, scale, device_config.Id, param);
     cout << "channel " << channel.Name << " device id: " << channel.DeviceId << endl;
     device_config.AddChannel(channel);
