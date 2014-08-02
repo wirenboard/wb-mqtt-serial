@@ -36,6 +36,10 @@ struct TModbusParameter
     }
 
     bool operator< (const TModbusParameter& param) const {
+        if (slave < param.slave)
+            return true;
+        if (slave > param.slave)
+            return false;
         if (type < param.type)
             return true;
         if (type > param.type)
@@ -44,14 +48,14 @@ struct TModbusParameter
     }
 
     bool operator== (const TModbusParameter& param) const {
-        return type == param.type && address == param.address;
+        return slave == param.slave && type == param.type && address == param.address;
     }
 };
 
 namespace std {
     template <> struct hash<TModbusParameter> {
         size_t operator()(const TModbusParameter& p) const {
-            return hash<int>()(p.type) ^ hash<int>()(p.address);
+            return hash<int>()(p.slave) ^ hash<int>()(p.type) ^ hash<int>()(p.address);
         }
     };
 }
