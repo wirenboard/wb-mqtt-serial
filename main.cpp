@@ -26,14 +26,16 @@ using namespace std;
 struct TModbusChannel
 {
     TModbusChannel(string name = "", string type = "text",
-                   double scale = 1, string device_id = "",
+                   double scale = 1, string device_id = "", int order = 0,
                    TModbusParameter param = TModbusParameter())
-        : Name(name), Type(type), Scale(scale), DeviceId(device_id), Parameter(param) {}
+        : Name(name), Type(type), Scale(scale), DeviceId(device_id),
+          Order(order), Parameter(param) {}
 
     string Name;
     string Type;
     double Scale;
     string DeviceId; // FIXME
+    int Order;
     TModbusParameter Parameter;
 };
 
@@ -41,6 +43,7 @@ struct TDeviceConfig
 {
     TDeviceConfig(string name = "")
         : Name(name) {}
+    int NextOrderValue() const { return ModbusChannels.size() + 1; }
     void AddChannel(const TModbusChannel& channel) { ModbusChannels.push_back(channel); };
     string Id;
     string Name;
@@ -170,6 +173,8 @@ void TModbusPort::PubSubSetup()
                 Wrapper->Publish(NULL, control_prefix + "/meta/max", "65535", 0, true);
                 break;
             }
+            Wrapper->Publish(NULL, control_prefix + "/meta/order",
+                             to_string(channel.Order), 0, true);
             Wrapper->Subscribe(NULL, control_prefix + "/on");
         }
     }
@@ -381,8 +386,9 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
             format = TModbusParameter::S8;
     }
 
+    int order = device_config.NextOrderValue();
     TModbusParameter param(device_config.SlaveId, type, address, format, should_poll);
-    TModbusChannel channel(name, type_str, scale, device_config.Id, param);
+    TModbusChannel channel(name, type_str, scale, device_config.Id, order, param);
     cout << "channel " << channel.Name << " device id: " << channel.DeviceId << endl;
     device_config.AddChannel(channel);
 }
