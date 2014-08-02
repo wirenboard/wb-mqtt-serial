@@ -509,7 +509,7 @@ int main(int argc, char *argv[])
         TConfigParser parser(config_fname);
         handler_config = parser.parse();
     } catch (const TConfigParserException& e) {
-        cerr << e.what() << endl;
+        cerr << "FATAL: " << e.what() << endl;
         return 1;
     }
 
@@ -517,10 +517,16 @@ int main(int argc, char *argv[])
 
     if (mqtt_config.Id.empty())
         mqtt_config.Id = "wb-modbus";
-	mqtt_handler = new TMQTTModbusHandler(mqtt_config, handler_config);
 
-    mqtt_handler->StartLoop();
-    mqtt_handler->Start();
+    try {
+        mqtt_handler = new TMQTTModbusHandler(mqtt_config, handler_config);
+
+        mqtt_handler->StartLoop();
+        mqtt_handler->Start();
+    } catch (const TModbusException& e) {
+        cerr << "FATAL: " << e.what() << endl;
+        return 1;
+    }
 
     for (;;) sleep(1);
 
