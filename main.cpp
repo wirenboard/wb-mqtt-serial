@@ -27,15 +27,16 @@ struct TModbusChannel
 {
     TModbusChannel(string name = "", string type = "text",
                    double scale = 1, string device_id = "", int order = 0,
-                   TModbusParameter param = TModbusParameter())
+                   int on_value = -1, TModbusParameter param = TModbusParameter())
         : Name(name), Type(type), Scale(scale), DeviceId(device_id),
-          Order(order), Parameter(param) {}
+          Order(order), OnValue(on_value), Parameter(param) {}
 
     string Name;
     string Type;
     double Scale;
     string DeviceId; // FIXME
     int Order;
+    int OnValue;
     TModbusParameter Parameter;
 };
 
@@ -246,7 +247,10 @@ void TModbusPort::OnModbusValueChange(const TModbusParameter& param, int int_val
         return;
     }
     string payload;
-    if (it->second.Scale == 1)
+    if (it->second.OnValue >= 0) {
+        payload = int_value == it->second.OnValue ? "1" : "0";
+        cout << "OnValue: " << it->second.OnValue << "; payload: " << payload << endl;
+    } else if (it->second.Scale == 1)
         payload = to_string(int_value);
     else {
         double value = int_value * it->second.Scale;
@@ -254,7 +258,7 @@ void TModbusPort::OnModbusValueChange(const TModbusParameter& param, int int_val
         payload = to_string(value);
     }
     // Publish current value (make retained)
-    cout << "channel " << it->second.Name << " device id: " << it->second.DeviceId << " -- topic: " << GetChannelTopic(it->second) << endl;
+    cout << "channel " << it->second.Name << " device id: " << it->second.DeviceId << " -- topic: " << GetChannelTopic(it->second) << " <-- " << payload << endl;
     Wrapper->Publish(NULL, GetChannelTopic(it->second), payload, 0, true);
 }
 
@@ -375,6 +379,10 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
     if (channel_data.isMember("scale"))
         scale = channel_data["scale"].asDouble(); // TBD: check for zero, too
 
+    int on_value = -1;
+    if (channel_data.isMember("on_value"))
+        on_value = channel_data["on_value"].asInt();
+
     TModbusParameter::Format format = TModbusParameter::U16;
     if (channel_data.isMember("format")) {
         string format_str = channel_data["format"].asString();
@@ -388,7 +396,7 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
 
     int order = device_config.NextOrderValue();
     TModbusParameter param(device_config.SlaveId, type, address, format, should_poll);
-    TModbusChannel channel(name, type_str, scale, device_config.Id, order, param);
+    TModbusChannel channel(name, type_str, scale, device_config.Id, order, on_value, param);
     cout << "channel " << channel.Name << " device id: " << channel.DeviceId << endl;
     device_config.AddChannel(channel);
 }
