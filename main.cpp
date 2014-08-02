@@ -334,6 +334,9 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
     if (!channel_data.isObject())
         throw TConfigParserException("malformed config");
 
+    if (channel_data.isMember("enabled") && !channel_data["enabled"].asBool())
+        return;
+
     string name = channel_data["name"].asString();
     int address = channel_data["address"].asInt();
     string reg_type_str = channel_data["reg_type"].asString();
@@ -394,6 +397,9 @@ void TConfigParser::LoadDevice(TPortConfig& port_config,
     if (!device_data.isMember("name"))
         throw TConfigParserException("device name not specified");
 
+    if (device_data.isMember("enabled") && !device_data["enabled"].asBool())
+        return;
+
     TDeviceConfig device_config;
     device_config.Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
     device_config.Name = device_data["name"].asString();
@@ -414,6 +420,9 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
 
     if (!port_data.isMember("path"))
         throw TConfigParserException("path not specified");
+
+    if (port_data.isMember("enabled") && !port_data["enabled"].asBool())
+        return;
 
     TPortConfig port_config;
     port_config.Path = port_data["path"].asString();
