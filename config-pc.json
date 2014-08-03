@@ -88,7 +88,7 @@
                 },
                 {
                     "name": "DRB88",
-                    "id": "tmp3r3",
+                    "id": "drb88",
                     "enabled": true,
                     "slave_id": 22,
                     "channels": [
