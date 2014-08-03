@@ -5,7 +5,8 @@
 class TModbusHandler
 {
 public:
-    TModbusHandler(const TModbusParameter& _param): param(_param) {}
+    TModbusHandler(const TModbusClient* client, const TModbusParameter& _param)
+        : Client(client), param(_param) {}
     virtual ~TModbusHandler() {}
     virtual int Read(modbus_t* ctx) = 0;
     virtual void Write(modbus_t* ctx, int v);
@@ -16,6 +17,7 @@ public:
     void SetValue(int v);
 protected:
     int ConvertValue(uint16_t v) const;
+    const TModbusClient* Client;
 private:
     int value = 0;
     TModbusParameter param;
@@ -45,7 +47,8 @@ bool TModbusHandler::Poll(modbus_t* ctx)
     did_read = true;
     if (value != new_value) {
         value = new_value;
-        std::cout << "new val for " << param.str() << ": " << new_value << std::endl;
+        if (Client->DebugEnabled())
+            std::cerr << "new val for " << param.str() << ": " << new_value << std::endl;
         return true;
     }
     return first_poll;
@@ -90,7 +93,8 @@ int TModbusHandler::ConvertValue(uint16_t v) const
 class TCoilHandler: public TModbusHandler
 {
 public:
-    TCoilHandler(const TModbusParameter& _param): TModbusHandler(_param) {}
+    TCoilHandler(const TModbusClient* client, const TModbusParameter& _param)
+        : TModbusHandler(client, _param) {}
 
     int Read(modbus_t* ctx) {
         unsigned char b;
@@ -108,7 +112,8 @@ public:
 class TDiscreteInputHandler: public TModbusHandler
 {
 public:
-    TDiscreteInputHandler(const TModbusParameter& _param): TModbusHandler(_param) {}
+    TDiscreteInputHandler(const TModbusClient* client, const TModbusParameter& _param)
+        : TModbusHandler(client, _param) {}
 
     int Read(modbus_t* ctx) {
         uint8_t b;
@@ -121,7 +126,8 @@ public:
 class THoldingRegisterHandler: public TModbusHandler
 {
 public:
-    THoldingRegisterHandler(const TModbusParameter& _param): TModbusHandler(_param) {}
+    THoldingRegisterHandler(const TModbusClient* client, const TModbusParameter& _param)
+        : TModbusHandler(client, _param) {}
 
     int Read(modbus_t* ctx) {
         uint16_t v;
@@ -143,7 +149,8 @@ public:
         // Fatal: Modbus error: failed to write holding register
         // Exiting...
         uint16_t d = (uint16_t)v;
-        std::cout << "write: " << Parameter().str() << std::endl;
+        if (Client->DebugEnabled())
+            std::cerr << "write: " << Parameter().str() << std::endl;
         if (modbus_write_registers(ctx, Parameter().address, 1, &d) < 1)
             throw TModbusException("failed to write holding register");
     }
@@ -152,7 +159,8 @@ public:
 class TInputRegisterHandler: public TModbusHandler
 {
 public:
-    TInputRegisterHandler(const TModbusParameter& _param): TModbusHandler(_param) {}
+    TInputRegisterHandler(const TModbusClient* client, const TModbusParameter& _param)
+        : TModbusHandler(client, _param) {}
 
     int Read(modbus_t* ctx) {
         uint16_t v;
@@ -243,25 +251,32 @@ void TModbusClient::SetCallback(const TModbusCallback& _callback)
     callback = _callback;
 }
 
-void TModbusClient::SetPollInterval(int interval) {
+void TModbusClient::SetPollInterval(int interval)
+{
     poll_interval = interval;
 }
 
-void TModbusClient::SetModbusDebug(bool debug) {
+void TModbusClient::SetModbusDebug(bool debug)
+{
     modbus_set_debug(ctx, debug);
+    Debug = debug;
+}
+
+bool TModbusClient::DebugEnabled() const {
+    return Debug;
 }
 
 TModbusHandler* TModbusClient::CreateParameterHandler(const TModbusParameter& param)
 {
     switch (param.type) {
     case TModbusParameter::Type::COIL:
-        return new TCoilHandler(param);
+        return new TCoilHandler(this, param);
     case TModbusParameter::Type::DISCRETE_INPUT:
-        return new TDiscreteInputHandler(param);
+        return new TDiscreteInputHandler(this, param);
     case TModbusParameter::Type::HOLDING_REGITER:
-        return new THoldingRegisterHandler(param);
+        return new THoldingRegisterHandler(this, param);
     case TModbusParameter::Type::INPUT_REGISTER:
-        return new TInputRegisterHandler(param);
+        return new TInputRegisterHandler(this, param);
     default:
         throw TModbusException("bad parameter type");
     }

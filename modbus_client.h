@@ -88,6 +88,7 @@ public:
     void SetCallback(const TModbusCallback& _callback);
     void SetPollInterval(int ms);
     void SetModbusDebug(bool debug);
+    bool DebugEnabled() const;
 
 private:
     TModbusHandler* CreateParameterHandler(const TModbusParameter& param);
@@ -97,6 +98,7 @@ private:
     int poll_interval = 2000;
     const int MAX_REGS = 65536;
     TModbusCallback callback;
+    bool Debug = false;
 };
 
 #endif /* _MODBUS_CLIENT_H_ */

@@ -61,12 +61,16 @@ struct TPortConfig
     int DataBits = 8;
     int StopBits = 1;
     int PollInterval = 2000;
+    bool Debug = false;
     vector<TDeviceConfig> DeviceConfigs;
 };
 
 struct THandlerConfig
 {
-    void AddPortConfig(const TPortConfig& port_config) { PortConfigs.push_back(port_config); }
+    void AddPortConfig(const TPortConfig& port_config) {
+        PortConfigs.push_back(port_config);
+        PortConfigs[PortConfigs.size() - 1].Debug = Debug;
+    }
     bool Debug = false;
     vector<TPortConfig> PortConfigs;
 };
@@ -87,7 +91,7 @@ private:
     unique_ptr<TModbusClient> Client;
     unordered_map<TModbusParameter, TModbusChannel> ParameterToChannelMap;
     unordered_map<string, TModbusChannel> NameToChannelMap;
-    std::thread worker;
+    std::thread Worker;
 };
 
 class TMQTTModbusHandler : public TMQTTWrapper
@@ -226,7 +230,8 @@ bool TModbusPort::HandleMessage(const string& topic, const string& payload)
         return true;
     }
     int_val = min(65535, max(0, int_val));
-    cout << "setting modbus register: " << param.str() << " <- " << int_val << endl;
+    if (Config.Debug)
+        cerr << "setting modbus register: " << param.str() << " <- " << int_val << endl;
     Client->SetValue(param, int_val);
     Wrapper->Publish(NULL, GetChannelTopic(it->second), payload, 0, true);
     return true;
@@ -240,7 +245,8 @@ string TModbusPort::GetChannelTopic(const TModbusChannel& channel)
 
 void TModbusPort::OnModbusValueChange(const TModbusParameter& param, int int_value)
 {
-    cout << "modbus value change: " << param.str() << " <- " << int_value << endl;
+    if (Config.Debug)
+        cerr << "modbus value change: " << param.str() << " <- " << int_value << endl;
     const auto& it = ParameterToChannelMap.find(param);
     if (it == ParameterToChannelMap.end()) {
         cerr << "warning: unexpected parameter from modbus" << endl;
@@ -249,16 +255,21 @@ void TModbusPort::OnModbusValueChange(const TModbusParameter& param, int int_val
     string payload;
     if (it->second.OnValue >= 0) {
         payload = int_value == it->second.OnValue ? "1" : "0";
-        cout << "OnValue: " << it->second.OnValue << "; payload: " << payload << endl;
+        if (Config.Debug)
+            cerr << "OnValue: " << it->second.OnValue << "; payload: " << payload << endl;
     } else if (it->second.Scale == 1)
         payload = to_string(int_value);
     else {
         double value = int_value * it->second.Scale;
-        cout << "after scaling: " << value << endl;
+        if (Config.Debug)
+            cerr << "after scaling: " << value << endl;
         payload = to_string(value);
     }
     // Publish current value (make retained)
-    cout << "channel " << it->second.Name << " device id: " << it->second.DeviceId << " -- topic: " << GetChannelTopic(it->second) << " <-- " << payload << endl;
+    if (Config.Debug)
+        cerr << "channel " << it->second.Name << " device id: " <<
+            it->second.DeviceId << " -- topic: " << GetChannelTopic(it->second) <<
+            " <-- " << payload << endl;
     Wrapper->Publish(NULL, GetChannelTopic(it->second), payload, 0, true);
 }
 
@@ -273,7 +284,7 @@ void TModbusPort::Loop()
 
 void TModbusPort::Start()
 {
-    worker = std::thread([this]() { Loop(); });
+    Worker = std::thread([this]() { Loop(); });
 }
 
 TMQTTModbusHandler::TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_config, const THandlerConfig& handler_config)
@@ -288,7 +299,8 @@ TMQTTModbusHandler::TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_c
 
 void TMQTTModbusHandler::OnConnect(int rc)
 {
-	printf("Connected with code %d.\n", rc);
+    if (Config.Debug)
+        cerr << "Connected with code " << rc << endl;
 
 	if(rc != 0)
         return;
@@ -309,7 +321,8 @@ void TMQTTModbusHandler::OnMessage(const struct mosquitto_message *message)
 
 void TMQTTModbusHandler::OnSubscribe(int, int, const int *)
 {
-	printf("Subscription succeeded.\n");
+	if (Config.Debug)
+        cerr << "Subscription succeeded." << endl;
 }
 
 void TMQTTModbusHandler::Start()
@@ -399,7 +412,8 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
     int order = device_config.NextOrderValue();
     TModbusParameter param(device_config.SlaveId, type, address, format, should_poll);
     TModbusChannel channel(name, type_str, scale, device_config.Id, order, on_value, param);
-    cout << "channel " << channel.Name << " device id: " << channel.DeviceId << endl;
+    if (HandlerConfig.Debug)
+        cerr << "channel " << channel.Name << " device id: " << channel.DeviceId << endl;
     device_config.AddChannel(channel);
 }
 
@@ -491,6 +505,7 @@ int main(int argc, char *argv[])
     mqtt_config.Host = "localhost";
     mqtt_config.Port = 1883;
     string config_fname;
+    bool debug = false;
 
     int c;
     //~ int digit_optind = 0;
@@ -500,18 +515,15 @@ int main(int argc, char *argv[])
         //~ int this_option_optind = optind ? optind : 1;
         switch (c) {
         case 'd':
-            handler_config.Debug = true;
+            debug = true;
             break;
         case 'c':
-            printf ("option c with value '%s'\n", optarg);
             config_fname = optarg;
             break;
         case 'p':
-            printf ("option p with value '%s'\n", optarg);
             mqtt_config.Port = stoi(optarg);
             break;
         case 'h':
-            printf ("option h with value '%s'\n", optarg);
             mqtt_config.Host = optarg;
             break;
         case '?':
@@ -528,6 +540,8 @@ int main(int argc, char *argv[])
         cerr << "FATAL: " << e.what() << endl;
         return 1;
     }
+
+    handler_config.Debug = handler_config.Debug || debug;
 
 	mosqpp::lib_init();
 
