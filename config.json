@@ -9,6 +9,7 @@
             "data_bits": 8,
             "stop_bits": 2,
             "poll_interval": 100,
+            "enabled": false,
             "devices" : [
                 {
                     "name": "MSU34+TLP",
@@ -58,6 +59,7 @@
                 {
                     "name": "tM-P3R3",
                     "id": "tmp3r3",
+                    "enabled": false,
                     "slave_id": 1,
                     "channels": [
                         {
@@ -92,6 +94,117 @@
                             "name" : "Input 2",
                             "reg_type" : "discrete",
                             "address" : 34
+                        }
+                    ]
+                },
+                {
+                    "name": "DRB88",
+                    "id": "drb88",
+                    "enabled": true,
+                    "slave_id": 22,
+                    "channels": [
+                        {
+                            "name" : "Relay 1",
+                            "reg_type" : "coil",
+                            "address" : 0,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 2",
+                            "reg_type" : "coil",
+                            "address" : 1,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 3",
+                            "reg_type" : "coil",
+                            "address" : 2,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 4",
+                            "reg_type" : "coil",
+                            "address" : 3,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 5",
+                            "reg_type" : "coil",
+                            "address" : 4,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 6",
+                            "reg_type" : "coil",
+                            "address" : 5,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 7",
+                            "reg_type" : "coil",
+                            "address" : 6,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 8",
+                            "reg_type" : "coil",
+                            "address" : 7,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Input 1",
+                            "reg_type" : "input",
+                            "address" : 0,
+                            "type": "text"
+                        },
+                        {
+                            "name" : "Input 2",
+                            "reg_type" : "input",
+                            "address" : 1,
+                            "type": "switch",
+                            "on_value": 101
+                        },
+                        {
+                            "name" : "Input 3",
+                            "reg_type" : "input",
+                            "address" : 2,
+                            "type": "switch",
+                            "on_value": 101
+                        },
+                        {
+                            "name" : "Input 4",
+                            "reg_type" : "input",
+                            "address" : 3,
+                            "type": "switch",
+                            "on_value": 101
+                        },
+                        {
+                            "name" : "Input 5",
+                            "reg_type" : "input",
+                            "address" : 4,
+                            "type": "switch",
+                            "on_value": 101
+                        },
+                        {
+                            "name" : "Input 6",
+                            "reg_type" : "input",
+                            "address" : 5,
+                            "type": "switch",
+                            "on_value": 101
+                        },
+                        {
+                            "name" : "Input 7",
+                            "reg_type" : "input",
+                            "address" : 6,
+                            "type": "switch",
+                            "on_value": 101
+                        },
+                        {
+                            "name" : "Input 8",
+                            "reg_type" : "input",
+                            "address" : 7,
+                            "type": "switch",
+                            "on_value": 101
                         }
                     ]
                 }
