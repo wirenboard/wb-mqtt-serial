@@ -53,7 +53,6 @@
             "parity": "N",
             "data_bits": 8,
             "stop_bits": 1,
-            "debug": true,
             "poll_interval": 100,
             "devices" : [
                 {
