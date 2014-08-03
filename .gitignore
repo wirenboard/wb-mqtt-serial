@@ -3,3 +3,5 @@ wb-homa-gpio/wb-homa-gpio
 wb-homa-modbus/wb-homa-modbus
 wb-homa-ninja-bridge/wb-homa-ninja-bridge
 wb-homa-w1/wb-homa-w1
+debian/files
+debian/wb-homa-drivers*
