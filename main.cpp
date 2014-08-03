@@ -327,6 +327,8 @@ const THandlerConfig& TConfigParser::parse()
         throw TConfigParserException("Please specify config file with -c option");
 
     ifstream myfile (ConfigFileName);
+    if (myfile.fail())
+        throw TConfigParserException("Modbus driver configuration file not found: " + ConfigFileName);
 
     bool parsedSuccess = reader.parse(myfile, root, false);
 
