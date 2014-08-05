@@ -206,6 +206,37 @@
                             "on_value": 101
                         }
                     ]
+                },
+                {
+                    "name": "LC-103",
+                    "id": "lc103",
+                    "enabled": true,
+                    "slave_id": 4,
+                    "channels": [
+                        {
+                            "name" : "Relay 1",
+                            "reg_type" : "coil",
+                            "address" : 0,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 2",
+                            "reg_type" : "coil",
+                            "address" : 1,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 3",
+                            "reg_type" : "coil",
+                            "address" : 2,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Switch AC In",
+                            "reg_type" : "discrete",
+                            "address" : 0
+                        }
+                    ]
                 }
             ]
         }
