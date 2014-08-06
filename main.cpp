@@ -296,7 +296,8 @@ void TModbusPort::Loop()
     try {
         Client->Loop();
     } catch (TModbusException& e) {
-        cerr << "Fatal: " << e.what() << endl;
+        cerr << "FATAL: " << e.what() << ". Stopping event loops." << endl;
+        exit(1);
     }
 }
 
