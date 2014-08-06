@@ -101,64 +101,24 @@
                             "type": "text"
                         }
                     ]
-                }
-            ]
-        },
-        {
-            "path" : "/dev/ttyNSC1",
-            "baud_rate": 9600,
-            "parity": "N",
-            "data_bits": 8,
-            "stop_bits": 1,
-            "poll_interval": 100,
-            "enabled": false,
-            "devices" : [
-                {
-                    "name": "tM-P3R3",
-                    "id": "tmp3r3",
-                    "enabled": false,
-                    "slave_id": 1,
-                    "channels": [
-                        {
-                            "name" : "Relay 0",
-                            "reg_type" : "coil",
-                            "address" : 0,
-                            "type": "switch"
-                        },
-                        {
-                            "name" : "Relay 1",
-                            "reg_type" : "coil",
-                            "address" : 1,
-                            "type": "switch"
-                        },
-                        {
-                            "name" : "Relay 2",
-                            "reg_type" : "coil",
-                            "address" : 2,
-                            "type": "switch"
-                        },
-                        {
-                            "name" : "Input 0",
-                            "reg_type" : "discrete",
-                            "address" : 32
-                        },
-                        {
-                            "name" : "Input 1",
-                            "reg_type" : "discrete",
-                            "address" : 33
-                        },
-                        {
-                            "name" : "Input 2",
-                            "reg_type" : "discrete",
-                            "address" : 34
-                        }
-                    ]
                 },
                 {
                     "name": "DRB88",
                     "id": "drb88",
-                    "enabled": false,
+                    "enabled": true,
                     "slave_id": 22,
+                    "init_items": [
+                        {
+                            "title": "Input 0 type",
+                            "address": 1,
+                            "value": 1 // was: 0
+                        },
+                        {
+                            "title": "Input 0 module",
+                            "address": 3,
+                            "value": 3 // was: 11
+                        }
+                    ],
                     "channels": [
                         {
                             "name" : "Relay 1",
@@ -212,7 +172,8 @@
                             "name" : "Input 1",
                             "reg_type" : "input",
                             "address" : 0,
-                            "type": "text"
+                            "type": "switch",
+                            "on_value": 101
                         },
                         {
                             "name" : "Input 2",
@@ -262,6 +223,58 @@
                             "address" : 7,
                             "type": "switch",
                             "on_value": 101
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path" : "/dev/ttyNSC1",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 1,
+            "poll_interval": 100,
+            "enabled": false,
+            "devices" : [
+                {
+                    "name": "tM-P3R3",
+                    "id": "tmp3r3",
+                    "enabled": false,
+                    "slave_id": 1,
+                    "channels": [
+                        {
+                            "name" : "Relay 0",
+                            "reg_type" : "coil",
+                            "address" : 0,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 1",
+                            "reg_type" : "coil",
+                            "address" : 1,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 2",
+                            "reg_type" : "coil",
+                            "address" : 2,
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Input 0",
+                            "reg_type" : "discrete",
+                            "address" : 32
+                        },
+                        {
+                            "name" : "Input 1",
+                            "reg_type" : "discrete",
+                            "address" : 33
+                        },
+                        {
+                            "name" : "Input 2",
+                            "reg_type" : "discrete",
+                            "address" : 34
                         }
                     ]
                 },
