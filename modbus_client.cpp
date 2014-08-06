@@ -32,7 +32,7 @@ void TModbusHandler::Write(modbus_t*, int)
 
 bool TModbusHandler::Poll(modbus_t* ctx)
 {
-    if (!param.poll)
+    if (!param.poll || dirty)
         return false; // write-only register
 
     bool first_poll = !did_read;
