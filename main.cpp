@@ -27,9 +27,10 @@ struct TModbusChannel
 {
     TModbusChannel(string name = "", string type = "text",
                    double scale = 1, string device_id = "", int order = 0,
-                   int on_value = -1, TModbusParameter param = TModbusParameter())
+                   int on_value = -1, int max = - 1,
+                   TModbusParameter param = TModbusParameter())
         : Name(name), Type(type), Scale(scale), DeviceId(device_id),
-          Order(order), OnValue(on_value), Parameter(param) {}
+          Order(order), OnValue(on_value), Max(max), Parameter(param) {}
 
     string Name;
     string Type;
@@ -37,6 +38,7 @@ struct TModbusChannel
     string DeviceId; // FIXME
     int Order;
     int OnValue;
+    int Max;
     TModbusParameter Parameter;
 };
 
@@ -175,7 +177,9 @@ void TModbusPort::PubSubSetup()
             case TModbusParameter::Type::HOLDING_REGITER:
                 Wrapper->Publish(NULL, control_prefix + "/meta/type",
                         channel.Type.empty() ? "text" : channel.Type, 0, true);
-                Wrapper->Publish(NULL, control_prefix + "/meta/max", "65535", 0, true);
+                Wrapper->Publish(NULL, control_prefix + "/meta/max",
+                                 channel.Max < 0 ? "65535" : to_string(channel.Max),
+                                 0, true);
                 break;
             }
             Wrapper->Publish(NULL, control_prefix + "/meta/order",
@@ -398,6 +402,10 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
     if (channel_data.isMember("on_value"))
         on_value = channel_data["on_value"].asInt();
 
+    int max = -1;
+    if (channel_data.isMember("max"))
+        max = channel_data["max"].asInt();
+
     TModbusParameter::Format format = TModbusParameter::U16;
     if (channel_data.isMember("format")) {
         string format_str = channel_data["format"].asString();
@@ -411,7 +419,7 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
 
     int order = device_config.NextOrderValue();
     TModbusParameter param(device_config.SlaveId, type, address, format, should_poll);
-    TModbusChannel channel(name, type_str, scale, device_config.Id, order, on_value, param);
+    TModbusChannel channel(name, type_str, scale, device_config.Id, order, on_value, max, param);
     if (HandlerConfig.Debug)
         cerr << "channel " << channel.Name << " device id: " << channel.DeviceId << endl;
     device_config.AddChannel(channel);
