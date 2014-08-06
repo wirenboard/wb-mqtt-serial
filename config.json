@@ -107,7 +107,7 @@
                     "id": "drb88",
                     "enabled": true,
                     "slave_id": 22,
-                    "init_items": [
+                    "setup": [
                         {
                             "title": "Input 0 type",
                             "address": 1,

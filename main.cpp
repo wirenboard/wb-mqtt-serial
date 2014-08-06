@@ -42,9 +42,9 @@ struct TModbusChannel
     TModbusParameter Parameter;
 };
 
-struct TDeviceInitItem
+struct TDeviceSetupItem
 {
-    TDeviceInitItem(string name, int address, int value)
+    TDeviceSetupItem(string name, int address, int value)
         : Name(name), Address(address), Value(value) {}
     string Name;
     int Address;
@@ -57,12 +57,12 @@ struct TDeviceConfig
         : Name(name) {}
     int NextOrderValue() const { return ModbusChannels.size() + 1; }
     void AddChannel(const TModbusChannel& channel) { ModbusChannels.push_back(channel); };
-    void AddInitItem(const TDeviceInitItem& item) { InitItems.push_back(item); }
+    void AddSetupItem(const TDeviceSetupItem& item) { SetupItems.push_back(item); }
     string Id;
     string Name;
     int SlaveId;
     vector<TModbusChannel> ModbusChannels;
-    vector<TDeviceInitItem> InitItems;
+    vector<TDeviceSetupItem> SetupItems;
 };
     
 struct TPortConfig
@@ -140,7 +140,7 @@ public:
     TConfigParser(string config_fname): ConfigFileName(config_fname) {}
     const THandlerConfig& parse();
     void LoadChannel(TDeviceConfig& device_config, const Json::Value& channel_data);
-    void LoadInitItem(TDeviceConfig& device_config, const Json::Value& item_data);
+    void LoadSetupItem(TDeviceConfig& device_config, const Json::Value& item_data);
     void LoadDevice(TPortConfig& port_config, const Json::Value& device_data, const string& default_id);
     void LoadPort(const Json::Value& port_data, const string& id_prefix);
     void LoadConfig();
@@ -309,13 +309,13 @@ bool TModbusPort::WriteInitValues()
 {
     bool did_write = false;
     for (const auto& device_config : Config.DeviceConfigs) {
-        for (const auto& init_item : device_config.InitItems) {
+        for (const auto& setup_item : device_config.SetupItems) {
             if (Config.Debug)
-                cerr << "Init: " << init_item.Name << ": holding register " <<
-                    init_item.Address << " <-- " << init_item.Value << endl;
+                cerr << "Init: " << setup_item.Name << ": holding register " <<
+                    setup_item.Address << " <-- " << setup_item.Value << endl;
             Client->WriteHoldingRegister(device_config.SlaveId,
-                                         init_item.Address,
-                                         init_item.Value);
+                                         setup_item.Address,
+                                         setup_item.Value);
             did_write = true;
         }
     }
@@ -469,7 +469,7 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
     device_config.AddChannel(channel);
 }
 
-void TConfigParser::LoadInitItem(TDeviceConfig& device_config, const Json::Value& item_data)
+void TConfigParser::LoadSetupItem(TDeviceConfig& device_config, const Json::Value& item_data)
 {
     if (!item_data.isObject())
         throw TConfigParserException("malformed config");
@@ -482,8 +482,8 @@ void TConfigParser::LoadInitItem(TDeviceConfig& device_config, const Json::Value
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");
     int value = item_data["value"].asInt();
-    TDeviceInitItem item(name, address, value);
-    device_config.AddInitItem(item);
+    TDeviceSetupItem item(name, address, value);
+    device_config.AddSetupItem(item);
 }
 
 void TConfigParser::LoadDevice(TPortConfig& port_config,
@@ -504,10 +504,10 @@ void TConfigParser::LoadDevice(TPortConfig& port_config,
     device_config.Name = device_data["name"].asString();
     device_config.SlaveId = device_data["slave_id"].asInt();
 
-    if (device_data.isMember("init_items")) {
-        const Json::Value array = device_data["init_items"];
+    if (device_data.isMember("setup")) {
+        const Json::Value array = device_data["setup"];
         for(unsigned int index = 0; index < array.size(); ++index)
-            LoadInitItem(device_config, array[index]);
+            LoadSetupItem(device_config, array[index]);
     }
 
     const Json::Value array = device_data["channels"];
@@ -587,13 +587,13 @@ int main(int argc, char *argv[])
     //~ int digit_optind = 0;
     //~ int aopt = 0, bopt = 0;
     //~ char *copt = 0, *dopt = 0;
-    while ( (c = getopt(argc, argv, "dic:h:p:")) != -1) {
+    while ( (c = getopt(argc, argv, "dsc:h:p:")) != -1) {
         //~ int this_option_optind = optind ? optind : 1;
         switch (c) {
         case 'd':
             debug = true;
             break;
-        case 'i':
+        case 's':
             init = true;
             break;
         case 'c':
