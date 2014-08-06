@@ -99,13 +99,13 @@ public:
     int Read(modbus_t* ctx) {
         unsigned char b;
         if (modbus_read_bits(ctx, Parameter().address, 1, &b) < 1)
-            throw TModbusException("failed to read coil");
+            throw TModbusException("failed to read coil " + Parameter().str());
         return b & 1;
     }
 
     void Write(modbus_t* ctx, int v) {
         if (modbus_write_bit(ctx, Parameter().address, v) < 0)
-            throw TModbusException("failed to write coil");
+            throw TModbusException("failed to write coil " + Parameter().str());
     }
 };
 
@@ -118,7 +118,7 @@ public:
     int Read(modbus_t* ctx) {
         uint8_t b;
         if (modbus_read_input_bits(ctx, Parameter().address, 1, &b) < 1)
-            throw TModbusException("failed to read discrete input");
+            throw TModbusException("failed to read discrete input " + Parameter().str());
         return b & 1;
     }
 };
@@ -132,7 +132,7 @@ public:
     int Read(modbus_t* ctx) {
         uint16_t v;
         if (modbus_read_registers(ctx, Parameter().address, 1, &v) < 1)
-            throw TModbusException("failed to read holding register");
+            throw TModbusException("failed to read holding register " + Parameter().str());
         return ConvertValue(v);
     }
 
@@ -152,7 +152,7 @@ public:
         if (Client->DebugEnabled())
             std::cerr << "write: " << Parameter().str() << std::endl;
         if (modbus_write_registers(ctx, Parameter().address, 1, &d) < 1)
-            throw TModbusException("failed to write holding register");
+            throw TModbusException("failed to write holding register " + Parameter().str());
     }
 };
 
@@ -165,7 +165,7 @@ public:
     int Read(modbus_t* ctx) {
         uint16_t v;
         if (modbus_read_input_registers(ctx, Parameter().address, 1, &v) < 1)
-            throw TModbusException("failed to read input register");
+            throw TModbusException("failed to read input register " + Parameter().str());
         return ConvertValue(v);
     }
 };
