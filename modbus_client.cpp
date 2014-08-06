@@ -204,6 +204,8 @@ void TModbusClient::Connect()
 {
     if (active)
         return;
+    if (!handlers.size())
+        throw TModbusException("no parameters defined");
     if (modbus_connect(ctx) != 0)
         throw TModbusException("couldn't initialize the serial port");
     modbus_flush(ctx);
@@ -216,11 +218,8 @@ void TModbusClient::Disconnect()
     active = false;
 }
 
-void TModbusClient::Loop()
+void TModbusClient::Cycle()
 {
-    if (!handlers.size())
-        throw TModbusException("no parameters defined");
-
     Connect();
 
     // FIXME: that's suboptimal polling implementation.
@@ -228,13 +227,11 @@ void TModbusClient::Loop()
     // Note that for multi-register values, all values
     // corresponding to single parameter should be retrieved
     // by single query.
-    for (;;) {
-        for (const auto& p: handlers) {
-            p.second->Flush(ctx);
-            if (p.second->Poll(ctx) && callback)
-                callback(p.first, p.second->Value());
-            usleep(poll_interval * 1000);
-        }
+    for (const auto& p: handlers) {
+        p.second->Flush(ctx);
+        if (p.second->Poll(ctx) && callback)
+            callback(p.first, p.second->Value());
+        usleep(poll_interval * 1000);
     }
 }
 

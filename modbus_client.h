@@ -84,7 +84,7 @@ public:
     void AddParam(const TModbusParameter& param);
     void Connect();
     void Disconnect();
-    void Loop();
+    void Cycle();
     void SetValue(const TModbusParameter& param, int value);
     void SetCallback(const TModbusCallback& _callback);
     void SetPollInterval(int ms);

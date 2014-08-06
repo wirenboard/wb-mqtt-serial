@@ -7,7 +7,6 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include <thread>
 
 #include <getopt.h>
 #include <unistd.h>
@@ -92,8 +91,7 @@ class TModbusPort
 {
 public:
     TModbusPort(TMQTTWrapper* wrapper, const TPortConfig& port_config, bool debug);
-    void Loop();
-    void Start();
+    void Cycle();
     void PubSubSetup();
     bool HandleMessage(const string& topic, const string& payload);
     string GetChannelTopic(const TModbusChannel& channel);
@@ -105,7 +103,6 @@ private:
     unique_ptr<TModbusClient> Client;
     unordered_map<TModbusParameter, TModbusChannel> ParameterToChannelMap;
     unordered_map<string, TModbusChannel> NameToChannelMap;
-    std::thread Worker;
 };
 
 class TMQTTModbusHandler : public TMQTTWrapper
@@ -117,7 +114,7 @@ public:
     void OnMessage(const struct mosquitto_message *message);
     void OnSubscribe(int mid, int qos_count, const int *granted_qos);
 
-    void Start();
+    void ModbusLoop();
     bool WriteInitValues();
 private:
     THandlerConfig Config;
@@ -291,19 +288,14 @@ void TModbusPort::OnModbusValueChange(const TModbusParameter& param, int int_val
     Wrapper->Publish(NULL, GetChannelTopic(it->second), payload, 0, true);
 }
 
-void TModbusPort::Loop()
+void TModbusPort::Cycle()
 {
     try {
-        Client->Loop();
+        Client->Cycle();
     } catch (TModbusException& e) {
         cerr << "FATAL: " << e.what() << ". Stopping event loops." << endl;
         exit(1);
     }
-}
-
-void TModbusPort::Start()
-{
-    Worker = std::thread([this]() { Loop(); });
 }
 
 bool TModbusPort::WriteInitValues()
@@ -362,10 +354,12 @@ void TMQTTModbusHandler::OnSubscribe(int, int, const int *)
         cerr << "Subscription succeeded." << endl;
 }
 
-void TMQTTModbusHandler::Start()
+void TMQTTModbusHandler::ModbusLoop()
 {
-    for (const auto& port: Ports)
-        port->Start();
+    for (;;) {
+        for (const auto& port: Ports)
+            port->Cycle();
+    }
 }
 
 bool TMQTTModbusHandler::WriteInitValues()
@@ -635,7 +629,7 @@ int main(int argc, char *argv[])
                 cerr << "NOTE: no init sections were found for enabled devices" << endl;
         } else {
             mqtt_handler->StartLoop();
-            mqtt_handler->Start();
+            mqtt_handler->ModbusLoop();
         }
     } catch (const TModbusException& e) {
         cerr << "FATAL: " << e.what() << endl;
