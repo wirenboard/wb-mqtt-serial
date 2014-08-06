@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 #include <memory>
 #include <sstream>
 #include <exception>
@@ -89,6 +90,7 @@ public:
     void SetPollInterval(int ms);
     void SetModbusDebug(bool debug);
     bool DebugEnabled() const;
+    void WriteHoldingRegister(int slave, int address, uint16_t value);
 
 private:
     TModbusHandler* CreateParameterHandler(const TModbusParameter& param);

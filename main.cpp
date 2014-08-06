@@ -42,16 +42,27 @@ struct TModbusChannel
     TModbusParameter Parameter;
 };
 
+struct TDeviceInitItem
+{
+    TDeviceInitItem(string name, int address, int value)
+        : Name(name), Address(address), Value(value) {}
+    string Name;
+    int Address;
+    int Value;
+};
+
 struct TDeviceConfig
 {
     TDeviceConfig(string name = "")
         : Name(name) {}
     int NextOrderValue() const { return ModbusChannels.size() + 1; }
     void AddChannel(const TModbusChannel& channel) { ModbusChannels.push_back(channel); };
+    void AddInitItem(const TDeviceInitItem& item) { InitItems.push_back(item); }
     string Id;
     string Name;
     int SlaveId;
     vector<TModbusChannel> ModbusChannels;
+    vector<TDeviceInitItem> InitItems;
 };
     
 struct TPortConfig
@@ -86,6 +97,7 @@ public:
     void PubSubSetup();
     bool HandleMessage(const string& topic, const string& payload);
     string GetChannelTopic(const TModbusChannel& channel);
+    bool WriteInitValues();
 private:
     void OnModbusValueChange(const TModbusParameter& param, int int_value);
     TMQTTWrapper* Wrapper;
@@ -106,6 +118,7 @@ public:
     void OnSubscribe(int mid, int qos_count, const int *granted_qos);
 
     void Start();
+    bool WriteInitValues();
 private:
     THandlerConfig Config;
     vector< unique_ptr<TModbusPort> > Ports;
@@ -127,6 +140,7 @@ public:
     TConfigParser(string config_fname): ConfigFileName(config_fname) {}
     const THandlerConfig& parse();
     void LoadChannel(TDeviceConfig& device_config, const Json::Value& channel_data);
+    void LoadInitItem(TDeviceConfig& device_config, const Json::Value& item_data);
     void LoadDevice(TPortConfig& port_config, const Json::Value& device_data, const string& default_id);
     void LoadPort(const Json::Value& port_data, const string& id_prefix);
     void LoadConfig();
@@ -291,6 +305,24 @@ void TModbusPort::Start()
     Worker = std::thread([this]() { Loop(); });
 }
 
+bool TModbusPort::WriteInitValues()
+{
+    bool did_write = false;
+    for (const auto& device_config : Config.DeviceConfigs) {
+        for (const auto& init_item : device_config.InitItems) {
+            if (Config.Debug)
+                cerr << "Init: " << init_item.Name << ": holding register " <<
+                    init_item.Address << " <-- " << init_item.Value << endl;
+            Client->WriteHoldingRegister(device_config.SlaveId,
+                                         init_item.Address,
+                                         init_item.Value);
+            did_write = true;
+        }
+    }
+
+    return did_write;
+}
+
 TMQTTModbusHandler::TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_config, const THandlerConfig& handler_config)
     : TMQTTWrapper(mqtt_config),
       Config(handler_config)
@@ -333,6 +365,18 @@ void TMQTTModbusHandler::Start()
 {
     for (const auto& port: Ports)
         port->Start();
+}
+
+bool TMQTTModbusHandler::WriteInitValues()
+{
+    bool did_write = false;
+    vector< pair<int, int> > values;
+    for (const auto& port: Ports) {
+        if (port->WriteInitValues())
+            did_write = true;
+    }
+
+    return did_write;
 }
 
 const THandlerConfig& TConfigParser::parse()
@@ -425,6 +469,23 @@ void TConfigParser::LoadChannel(TDeviceConfig& device_config, const Json::Value&
     device_config.AddChannel(channel);
 }
 
+void TConfigParser::LoadInitItem(TDeviceConfig& device_config, const Json::Value& item_data)
+{
+    if (!item_data.isObject())
+        throw TConfigParserException("malformed config");
+
+    string name = item_data.isMember("name") ?
+        item_data["name"].asString() : "<unnamed>";
+    if (!item_data.isMember("address"))
+        throw TConfigParserException("no address specified for init item");
+    int address = item_data["address"].asInt();
+    if (!item_data.isMember("value"))
+        throw TConfigParserException("no reg specified for init item");
+    int value = item_data["value"].asInt();
+    TDeviceInitItem item(name, address, value);
+    device_config.AddInitItem(item);
+}
+
 void TConfigParser::LoadDevice(TPortConfig& port_config,
                                const Json::Value& device_data,
                                const string& default_id)
@@ -442,6 +503,12 @@ void TConfigParser::LoadDevice(TPortConfig& port_config,
     device_config.Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
     device_config.Name = device_data["name"].asString();
     device_config.SlaveId = device_data["slave_id"].asInt();
+
+    if (device_data.isMember("init_items")) {
+        const Json::Value array = device_data["init_items"];
+        for(unsigned int index = 0; index < array.size(); ++index)
+            LoadInitItem(device_config, array[index]);
+    }
 
     const Json::Value array = device_data["channels"];
     for(unsigned int index = 0; index < array.size(); ++index)
@@ -514,16 +581,20 @@ int main(int argc, char *argv[])
     mqtt_config.Port = 1883;
     string config_fname;
     bool debug = false;
+    bool init = false;
 
     int c;
     //~ int digit_optind = 0;
     //~ int aopt = 0, bopt = 0;
     //~ char *copt = 0, *dopt = 0;
-    while ( (c = getopt(argc, argv, "dc:h:p:")) != -1) {
+    while ( (c = getopt(argc, argv, "dic:h:p:")) != -1) {
         //~ int this_option_optind = optind ? optind : 1;
         switch (c) {
         case 'd':
             debug = true;
+            break;
+        case 'i':
+            init = true;
             break;
         case 'c':
             config_fname = optarg;
@@ -558,15 +629,20 @@ int main(int argc, char *argv[])
 
     try {
         mqtt_handler = new TMQTTModbusHandler(mqtt_config, handler_config);
-
-        mqtt_handler->StartLoop();
-        mqtt_handler->Start();
+        if (init) {
+            if (!mqtt_handler->WriteInitValues())
+                cerr << "NOTE: no init sections were found for enabled devices" << endl;
+        } else {
+            mqtt_handler->StartLoop();
+            mqtt_handler->Start();
+        }
     } catch (const TModbusException& e) {
         cerr << "FATAL: " << e.what() << endl;
         return 1;
     }
 
-    for (;;) sleep(1);
+    if (!init)
+        for (;;) sleep(1);
 
 #if 0
     // FIXME: handle Ctrl-C etc.

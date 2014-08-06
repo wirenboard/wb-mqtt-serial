@@ -238,6 +238,15 @@ void TModbusClient::Loop()
     }
 }
 
+void TModbusClient::WriteHoldingRegister(int slave, int address, uint16_t value)
+{
+    Connect();
+    modbus_set_slave(ctx, slave);
+    if (modbus_write_registers(ctx, address, 1, &value) < 1)
+        throw TModbusException("failed to write holding register " +
+                               std::to_string(address));
+}
+
 void TModbusClient::SetValue(const TModbusParameter& param, int value)
 {
     auto it = handlers.find(param);
