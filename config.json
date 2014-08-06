@@ -15,7 +15,7 @@
                     "name": "MSU34+TLP",
                     "id": "msu34tlp",
                     "slave_id": 2,
-                    "enabled": false,
+                    "enabled": true,
                     "channels": [
                         {
                             "name" : "Temp 1",
@@ -41,6 +41,42 @@
                             "name" : "Temp 2",
                             "reg_type" : "input",
                             "address" : 3,
+                            "type": "temperature",
+                            "format": "s8"
+                        }
+                    ]
+                },
+                {
+                    "name": "MSU21",
+                    "id": "msu21",
+                    "slave_id": 24,
+                    "enabled": false,
+                    "channels": [
+                        {
+                            "name" : "Temperature",
+                            "reg_type" : "input",
+                            "address" : 0,
+                            "type": "temperature",
+                            "format": "s8"
+                        }
+                    ]
+                },
+                {
+                    "name": "MSU24",
+                    "id": "msu24",
+                    "slave_id": 34,
+                    "enabled": false,
+                    "channels": [
+                        {
+                            "name" : "Illuminance",
+                            "reg_type" : "input",
+                            "address" : 0,
+                            "type": "text"
+                        },
+                        {
+                            "name" : "Temp 1",
+                            "reg_type" : "input",
+                            "address" : 1,
                             "type": "temperature",
                             "format": "s8"
                         }
