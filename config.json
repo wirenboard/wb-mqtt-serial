@@ -9,12 +9,13 @@
             "data_bits": 8,
             "stop_bits": 2,
             "poll_interval": 10,
-            "enabled": false,
+            "enabled": true,
             "devices" : [
                 {
                     "name": "MSU34+TLP",
                     "id": "msu34tlp",
                     "slave_id": 2,
+                    "enabled": false,
                     "channels": [
                         {
                             "name" : "Temp 1",
@@ -44,6 +45,62 @@
                             "format": "s8"
                         }
                     ]
+                },
+                {
+                    "name": "DDL24",
+                    "id": "ddl24",
+                    "enabled": true,
+                    "slave_id": 23,
+                    "channels": [
+                        {
+                            "name" : "Red",
+                            "reg_type" : "holding",
+                            "address" : 4,
+                            "type": "range",
+                            "max": 255
+                        },
+                        {
+                            "name" : "Green",
+                            "reg_type" : "holding",
+                            "address" : 5,
+                            "type": "range",
+                            "max": 255
+                        },
+                        {
+                            "name" : "Blue",
+                            "reg_type" : "holding",
+                            "address" : 6,
+                            "type": "range",
+                            "max": 255
+                        },
+                        {
+                            "name" : "White",
+                            "reg_type" : "holding",
+                            "address" : 7,
+                            "type": "range",
+                            "max": 255
+                        },
+                        {
+                            "name" : "RGB",
+                            "reg_type" : "holding",
+                            "address" : 8,
+                            "type": "range",
+                            "max": 100
+                        },
+                        {
+                            "name" : "White1",
+                            "reg_type" : "holding",
+                            "address" : 9,
+                            "type": "range",
+                            "max": 100
+                        },
+                        {
+                            "name" : "Voltage",
+                            "reg_type" : "holding",
+                            "address" : 18,
+                            "type": "text"
+                        }
+                    ]
                 }
             ]
         },
@@ -54,6 +111,7 @@
             "data_bits": 8,
             "stop_bits": 1,
             "poll_interval": 100,
+            "enabled": false,
             "devices" : [
                 {
                     "name": "tM-P3R3",
@@ -99,7 +157,7 @@
                 {
                     "name": "DRB88",
                     "id": "drb88",
-                    "enabled": true,
+                    "enabled": false,
                     "slave_id": 22,
                     "channels": [
                         {
@@ -210,7 +268,7 @@
                 {
                     "name": "LC-103",
                     "id": "lc103",
-                    "enabled": true,
+                    "enabled": false,
                     "slave_id": 4,
                     "channels": [
                         {
