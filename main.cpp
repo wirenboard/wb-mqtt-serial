@@ -576,7 +576,6 @@ int main(int argc, char *argv[])
     mqtt_config.Port = 1883;
     string config_fname;
     bool debug = false;
-    bool init = false;
 
     int c;
     //~ int digit_optind = 0;
@@ -587,9 +586,6 @@ int main(int argc, char *argv[])
         switch (c) {
         case 'd':
             debug = true;
-            break;
-        case 's':
-            init = true;
             break;
         case 'c':
             config_fname = optarg;
@@ -624,20 +620,16 @@ int main(int argc, char *argv[])
 
     try {
         mqtt_handler = new TMQTTModbusHandler(mqtt_config, handler_config);
-        if (init) {
-            if (!mqtt_handler->WriteInitValues())
-                cerr << "NOTE: no init sections were found for enabled devices" << endl;
-        } else {
-            mqtt_handler->StartLoop();
-            mqtt_handler->ModbusLoop();
-        }
+        if (mqtt_handler->WriteInitValues() && handler_config.Debug)
+            cerr << "Register-based setup performed." << endl;
+        mqtt_handler->StartLoop();
+        mqtt_handler->ModbusLoop();
     } catch (const TModbusException& e) {
         cerr << "FATAL: " << e.what() << endl;
         return 1;
     }
 
-    if (!init)
-        for (;;) sleep(1);
+    for (;;) sleep(1);
 
 #if 0
     // FIXME: handle Ctrl-C etc.
