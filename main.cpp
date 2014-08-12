@@ -90,7 +90,7 @@ struct THandlerConfig
 class TModbusPort
 {
 public:
-    TModbusPort(TMQTTWrapper* wrapper, const TPortConfig& port_config, bool debug);
+    TModbusPort(TMQTTWrapper* wrapper, const TPortConfig& port_config);
     void Cycle();
     void PubSubSetup();
     bool HandleMessage(const string& topic, const string& payload);
@@ -134,7 +134,8 @@ private:
 class TConfigParser
 {
 public:
-    TConfigParser(string config_fname): ConfigFileName(config_fname) {}
+    TConfigParser(string config_fname, bool force_debug)
+        : ConfigFileName(config_fname) { HandlerConfig.Debug = force_debug; }
     const THandlerConfig& parse();
     void LoadChannel(TDeviceConfig& device_config, const Json::Value& channel_data);
     void LoadSetupItem(TDeviceConfig& device_config, const Json::Value& item_data);
@@ -147,7 +148,7 @@ private:
     Json::Value root;
 };
 
-TModbusPort::TModbusPort(TMQTTWrapper* wrapper, const TPortConfig& port_config, bool debug)
+TModbusPort::TModbusPort(TMQTTWrapper* wrapper, const TPortConfig& port_config)
     : Wrapper(wrapper),
       Config(port_config)
     , Client(new TModbusClient(Config.Path, Config.BaudRate, Config.Parity, Config.DataBits, Config.StopBits))
@@ -163,7 +164,7 @@ TModbusPort::TModbusPort(TMQTTWrapper* wrapper, const TPortConfig& port_config, 
         }
     }
     Client->SetPollInterval(Config.PollInterval);
-    Client->SetModbusDebug(debug);
+    Client->SetModbusDebug(Config.Debug);
 };
 
 void TModbusPort::PubSubSetup()
@@ -321,7 +322,7 @@ TMQTTModbusHandler::TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_c
       Config(handler_config)
 {
     for (const auto& port_config : Config.PortConfigs)
-        Ports.push_back(unique_ptr<TModbusPort>(new TModbusPort(this, port_config, Config.Debug)));
+        Ports.push_back(unique_ptr<TModbusPort>(new TModbusPort(this, port_config)));
 
 	Connect();
 }
@@ -557,8 +558,6 @@ void TConfigParser::LoadConfig()
     if (!root.isMember("ports"))
         throw TConfigParserException("no ports specified");
 
-    // Note that debug mode may be set to true via command
-    // line flag. That's done before parsing the config.
     if (root.isMember("debug"))
         HandlerConfig.Debug = HandlerConfig.Debug || root["debug"].asBool();
 
@@ -604,14 +603,12 @@ int main(int argc, char *argv[])
     }
 
     try {
-        TConfigParser parser(config_fname);
+        TConfigParser parser(config_fname, debug);
         handler_config = parser.parse();
     } catch (const TConfigParserException& e) {
         cerr << "FATAL: " << e.what() << endl;
         return 1;
     }
-
-    handler_config.Debug = handler_config.Debug || debug;
 
 	mosqpp::lib_init();
 
