@@ -51,6 +51,18 @@
                     "id": "msu21",
                     "slave_id": 24,
                     "enabled": false,
+                    "setup": [
+                        {
+                            "title": "Input 0 type",
+                            "address": 1,
+                            "value": 2
+                        },
+                        {
+                            "title": "Input 0 module",
+                            "address": 3,
+                            "value": 6
+                        }
+                    ],
                     "channels": [
                         {
                             "name" : "Temperature",
