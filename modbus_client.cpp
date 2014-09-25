@@ -1,4 +1,5 @@
 #include <iostream>
+#include <mutex>
 #include <unistd.h>
 #include "modbus_client.h"
 
@@ -21,8 +22,9 @@ protected:
 private:
     int value = 0;
     TModbusParameter param;
-    bool dirty = false;
+    volatile bool dirty = false;
     bool did_read = false;
+    std::mutex set_value_mutex;
 };
 
 void TModbusHandler::Write(modbus_t*, int)
@@ -45,18 +47,28 @@ bool TModbusHandler::Poll(modbus_t* ctx)
         return false;
     }
     did_read = true;
+    set_value_mutex.lock();
     if (value != new_value) {
+        if (dirty) {
+            set_value_mutex.unlock();
+            return true;
+        }
         value = new_value;
+        set_value_mutex.unlock();
         if (Client->DebugEnabled())
             std::cerr << "new val for " << param.str() << ": " << new_value << std::endl;
         return true;
-    }
+    } else
+        set_value_mutex.unlock();
     return first_poll;
 }
 
 void TModbusHandler::Flush(modbus_t* ctx)
 {
+    set_value_mutex.lock();
     if (dirty) {
+        dirty = false;
+        set_value_mutex.unlock();
         modbus_set_slave(ctx, param.slave);
         try {
             Write(ctx, value);
@@ -64,12 +76,14 @@ void TModbusHandler::Flush(modbus_t* ctx)
             std::cerr << "TModbusHandler::Flush(): warning: " << e.what() << std::endl;
             return;
         }
-        dirty = false;
     }
+    else
+        set_value_mutex.unlock();
 }
 
 void TModbusHandler::SetValue(int v)
 {
+    std::lock_guard<std::mutex> lock(set_value_mutex);
     value = v;
     dirty = true;
 }
