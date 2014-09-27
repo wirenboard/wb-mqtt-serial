@@ -1,5 +1,4 @@
-#ifndef _MODBUS_CLIENT_H_
-#define _MODBUS_CLIENT_H_
+#pragma once
 
 #include <map>
 #include <string>
@@ -102,5 +101,3 @@ private:
     TModbusCallback callback;
     bool Debug = false;
 };
-
-#endif /* _MODBUS_CLIENT_H_ */
