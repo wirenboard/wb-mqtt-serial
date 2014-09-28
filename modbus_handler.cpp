@@ -1,19 +1,20 @@
 #include "modbus_handler.h"
 
 TMQTTModbusHandler::TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_config,
-                                       const THandlerConfig& handler_config)
+                                       PHandlerConfig handler_config,
+                                       PModbusConnector connector)
     : TMQTTWrapper(mqtt_config),
       Config(handler_config)
 {
-    for (const auto& port_config : Config.PortConfigs)
-        Ports.push_back(std::unique_ptr<TModbusPort>(new TModbusPort(this, port_config)));
+    for (const auto& port_config : Config->PortConfigs)
+        Ports.push_back(std::unique_ptr<TModbusPort>(new TModbusPort(this, port_config, connector)));
 
 	Connect();
 }
 
 void TMQTTModbusHandler::OnConnect(int rc)
 {
-    if (Config.Debug)
+    if (Config->Debug)
         std::cerr << "Connected with code " << rc << std::endl;
 
 	if(rc != 0)
@@ -35,7 +36,7 @@ void TMQTTModbusHandler::OnMessage(const struct mosquitto_message *message)
 
 void TMQTTModbusHandler::OnSubscribe(int, int, const int *)
 {
-	if (Config.Debug)
+	if (Config->Debug)
         std::cerr << "Subscription succeeded." << std::endl;
 }
 

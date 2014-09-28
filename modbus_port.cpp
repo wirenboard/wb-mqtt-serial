@@ -1,57 +1,51 @@
 #include <algorithm>
+#include <sstream>
 
 #include "common/utils.h"
 #include "modbus_port.h"
 #include "common/mqtt_wrapper.h"
 
-TModbusPort::TModbusPort(TMQTTWrapper* wrapper, const TPortConfig& port_config)
+TModbusPort::TModbusPort(TMQTTWrapper* wrapper, PPortConfig port_config,
+                         PModbusConnector connector)
     : Wrapper(wrapper),
-      Config(port_config)
-    , Client(new TModbusClient(Config.Path, Config.BaudRate, Config.Parity, Config.DataBits, Config.StopBits))
+      Config(port_config),
+      Client(new TModbusClient(Config->ConnSettings, connector))
 {
-    Client->SetCallback([this](const TModbusParameter& param, int value) {
-            OnModbusValueChange(param, value);
+    Client->SetCallback([this](const TModbusRegister& reg) {
+            OnModbusValueChange(reg);
         });
-    for (const auto& device_config: Config.DeviceConfigs) {
-        for (const auto& channel: device_config.ModbusChannels) {
-            ParameterToChannelMap[channel.Parameter] = channel;
-            NameToChannelMap[device_config.Id + "/" + channel.Name] = channel;
-            Client->AddParam(channel.Parameter);
+    for (auto device_config: Config->DeviceConfigs) {
+        for (auto channel: device_config->ModbusChannels) {
+            for (auto reg: channel->Registers) {
+                RegisterToChannelMap[reg] = channel;
+                NameToChannelMap[device_config->Id + "/" + channel->Name] = channel;
+                Client->AddRegister(reg);
+            }
         }
     }
-    Client->SetPollInterval(Config.PollInterval);
-    Client->SetModbusDebug(Config.Debug);
+    Client->SetPollInterval(Config->PollInterval);
+    Client->SetModbusDebug(Config->Debug);
 };
 
 void TModbusPort::PubSubSetup()
 {
-    for (const auto& device_config : Config.DeviceConfigs) {
+    for (auto device_config : Config->DeviceConfigs) {
         /* Only attempt to Subscribe on a successful connect. */
-        std::string id = device_config.Id.empty() ? Wrapper->Id() : device_config.Id;
+        std::string id = device_config->Id.empty() ? Wrapper->Id() : device_config->Id;
         std::string prefix = std::string("/devices/") + id + "/";
         // Meta
-        Wrapper->Publish(NULL, prefix + "meta/name", device_config.Name, 0, true);
-        for (const auto& channel : device_config.ModbusChannels) {
-            std::string control_prefix = prefix + "controls/" + channel.Name;
-            switch (channel.Parameter.type) {
-            case TModbusParameter::Type::DISCRETE_INPUT:
+        Wrapper->Publish(NULL, prefix + "meta/name", device_config->Name, 0, true);
+        for (const auto& channel : device_config->ModbusChannels) {
+            std::string control_prefix = prefix + "controls/" + channel->Name;
+            Wrapper->Publish(NULL, control_prefix + "/meta/type", channel->Type, 0, true);
+            if (channel->ReadOnly)
                 Wrapper->Publish(NULL, control_prefix + "/meta/readonly", "1", 0, true);
-            case TModbusParameter::Type::COIL:
-                Wrapper->Publish(NULL, control_prefix + "/meta/type",
-                        channel.Type.empty() ? "switch" : channel.Type, 0, true);
-                break;
-            case TModbusParameter::Type::INPUT_REGISTER:
-                Wrapper->Publish(NULL, control_prefix + "/meta/readonly", "1", 0, true);
-            case TModbusParameter::Type::HOLDING_REGITER:
-                Wrapper->Publish(NULL, control_prefix + "/meta/type",
-                        channel.Type.empty() ? "text" : channel.Type, 0, true);
+            if (channel->Type == "range")
                 Wrapper->Publish(NULL, control_prefix + "/meta/max",
-                                 channel.Max < 0 ? "65535" : std::to_string(channel.Max),
+                                 channel->Max < 0 ? "65535" : std::to_string(channel->Max),
                                  0, true);
-                break;
-            }
             Wrapper->Publish(NULL, control_prefix + "/meta/order",
-                             std::to_string(channel.Order), 0, true);
+                             std::to_string(channel->Order), 0, true);
             Wrapper->Subscribe(NULL, control_prefix + "/on");
         }
     }
@@ -70,44 +64,39 @@ bool TModbusPort::HandleMessage(const std::string& topic, const std::string& pay
         return false;
 
     std::string device_id = tokens[2];
-    std::string param_name = tokens[4];
+    std::string channel_name = tokens[4];
     const auto& dev_config_it =
-        std::find_if(Config.DeviceConfigs.begin(),
-                     Config.DeviceConfigs.end(),
-                     [device_id](const TDeviceConfig &c) {
-                         return c.Id == device_id;
+        std::find_if(Config->DeviceConfigs.begin(),
+                     Config->DeviceConfigs.end(),
+                     [device_id](PDeviceConfig c) {
+                         return c->Id == device_id;
                      });
 
-    if (dev_config_it == Config.DeviceConfigs.end())
+    if (dev_config_it == Config->DeviceConfigs.end())
         return false;
 
-    const auto& it = NameToChannelMap.find(dev_config_it->Id + "/" + param_name);
+    const auto& it = NameToChannelMap.find((*dev_config_it)->Id + "/" + channel_name);
     if (it == NameToChannelMap.end())
         return false;
 
-    // FIXME: untested
-    const TModbusParameter& param = it->second.Parameter;
-    int int_val;
-    try {
-        if (it->second.Scale == 1)
-            int_val = stoi(payload);
-        else {
-            double val = stod(payload);
-            int_val = round(val / it->second.Scale);
-        }
-    } catch (std::exception&) {
-        std::cerr << "warning: invalid payload for topic " << topic << ": " <<
-            payload << std::endl;
+    std::vector<std::string> payload_items = StringSplit(payload, ';');
+
+    if (payload_items.size() != it->second->Registers.size()) {
+        std::cerr << "warning: invalid payload for topic '" << topic <<
+            "': '" << payload << "'" << std::endl;
         // here 'true' means that the message doesn't need to be passed
         // to other port handlers
         return true;
     }
-    int_val = std::min(65535, std::max(0, int_val));
-    if (Config.Debug)
-        std::cerr << "setting modbus register: " << param.str() << " <- " <<
-            int_val << std::endl;
-    Client->SetValue(param, int_val);
-    Wrapper->Publish(NULL, GetChannelTopic(it->second), payload, 0, true);
+
+    for (size_t i = 0; i < it->second->Registers.size(); ++i) {
+        const TModbusRegister& reg = it->second->Registers[i];
+        if (Config->Debug)
+            std::cerr << "setting modbus register: " << reg.ToString() << " <- " <<
+                payload_items[i] << std::endl;
+        Client->SetTextValue(reg, payload_items[i]);
+    }
+    Wrapper->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
     return true;
 }
 
@@ -117,36 +106,46 @@ std::string TModbusPort::GetChannelTopic(const TModbusChannel& channel)
     return (controls_prefix + channel.Name);
 }
 
-void TModbusPort::OnModbusValueChange(const TModbusParameter& param, int int_value)
+void TModbusPort::OnModbusValueChange(const TModbusRegister& reg)
 {
-    if (Config.Debug)
-        std::cerr << "modbus value change: " << param.str() << " <- " <<
-            int_value << std::endl;
-    const auto& it = ParameterToChannelMap.find(param);
-    if (it == ParameterToChannelMap.end()) {
-        std::cerr << "warning: unexpected parameter from modbus" << std::endl;
+    if (Config->Debug)
+        std::cerr << "modbus value change: " << reg.ToString() << " <- " <<
+            Client->GetTextValue(reg) << std::endl;
+
+    auto it = RegisterToChannelMap.find(reg);
+    if (it == RegisterToChannelMap.end()) {
+        std::cerr << "warning: unexpected register from modbus" << std::endl;
         return;
     }
+
     std::string payload;
-    if (it->second.OnValue >= 0) {
-        payload = int_value == it->second.OnValue ? "1" : "0";
-        if (Config.Debug)
-            std::cerr << "OnValue: " << it->second.OnValue << "; payload: " <<
+    if (it->second->OnValue >= 0) {
+        payload = Client->GetRawValue(reg) == it->second->OnValue ? "1" : "0";
+        if (Config->Debug)
+            std::cerr << "OnValue: " << it->second->OnValue << "; payload: " <<
                 payload << std::endl;
-    } else if (it->second.Scale == 1)
-        payload = std::to_string(int_value);
-    else {
-        double value = int_value * it->second.Scale;
-        if (Config.Debug)
-            std::cerr << "after scaling: " << value << std::endl;
-        payload = std::to_string(value);
+    } else {
+        std::stringstream s;
+        for (size_t i = 0; i < it->second->Registers.size(); ++i) {
+            if (i)
+                s << ";";
+            s << Client->GetTextValue(it->second->Registers[i]);
+        }
+        payload = s.str();
     }
+    //     payload = std::to_string(int_value);
+    // else {
+    //     double value = int_value * it->second.Scale;
+    //     if (Config.Debug)
+    //         std::cerr << "after scaling: " << value << std::endl;
+    //     payload = std::to_string(value);
+    // }
     // Publish current value (make retained)
-    if (Config.Debug)
-        std::cerr << "channel " << it->second.Name << " device id: " <<
-            it->second.DeviceId << " -- topic: " << GetChannelTopic(it->second) <<
+    if (Config->Debug)
+        std::cerr << "channel " << it->second->Name << " device id: " <<
+            it->second->DeviceId << " -- topic: " << GetChannelTopic(*it->second) <<
             " <-- " << payload << std::endl;
-    Wrapper->Publish(NULL, GetChannelTopic(it->second), payload, 0, true);
+    Wrapper->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
 }
 
 void TModbusPort::Cycle()
@@ -162,14 +161,14 @@ void TModbusPort::Cycle()
 bool TModbusPort::WriteInitValues()
 {
     bool did_write = false;
-    for (const auto& device_config : Config.DeviceConfigs) {
-        for (const auto& setup_item : device_config.SetupItems) {
-            if (Config.Debug)
-                std::cerr << "Init: " << setup_item.Name << ": holding register " <<
-                    setup_item.Address << " <-- " << setup_item.Value << std::endl;
-            Client->WriteHoldingRegister(device_config.SlaveId,
-                                         setup_item.Address,
-                                         setup_item.Value);
+    for (const auto& device_config : Config->DeviceConfigs) {
+        for (const auto& setup_item : device_config->SetupItems) {
+            if (Config->Debug)
+                std::cerr << "Init: " << setup_item->Name << ": holding register " <<
+                    setup_item->Address << " <-- " << setup_item->Value << std::endl;
+            Client->WriteHoldingRegister(device_config->SlaveId,
+                                         setup_item->Address,
+                                         setup_item->Value);
             did_write = true;
         }
     }

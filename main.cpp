@@ -13,7 +13,6 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	class TMQTTModbusHandler* mqtt_handler;
-    THandlerConfig handler_config;
     TMQTTModbusHandler::TConfig mqtt_config;
     mqtt_config.Host = "localhost";
     mqtt_config.Port = 1883;
@@ -46,6 +45,7 @@ int main(int argc, char *argv[])
         }
     }
 
+    PHandlerConfig handler_config;
     try {
         TConfigParser parser(config_fname, debug);
         handler_config = parser.parse();
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 
     try {
         mqtt_handler = new TMQTTModbusHandler(mqtt_config, handler_config);
-        if (mqtt_handler->WriteInitValues() && handler_config.Debug)
+        if (mqtt_handler->WriteInitValues() && handler_config->Debug)
             cerr << "Register-based setup performed." << endl;
         mqtt_handler->StartLoop();
         mqtt_handler->ModbusLoop();

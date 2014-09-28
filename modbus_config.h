@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <vector>
 #include <exception>
 
@@ -10,21 +11,25 @@
 struct TModbusChannel
 {
     TModbusChannel(std::string name = "", std::string type = "text",
-                   double scale = 1, std::string device_id = "", int order = 0,
-                   int on_value = -1, int max = - 1,
-                   TModbusParameter param = TModbusParameter())
-        : Name(name), Type(type), Scale(scale), DeviceId(device_id),
-          Order(order), OnValue(on_value), Max(max), Parameter(param) {}
+                   std::string device_id = "", int order = 0,
+                   int on_value = -1, int max = - 1, bool read_only = false,
+                   const std::vector<TModbusRegister>& regs =
+                       std::vector<TModbusRegister>())
+        : Name(name), Type(type), DeviceId(device_id),
+          Order(order), OnValue(on_value), Max(max),
+          ReadOnly(read_only), Registers(regs) {}
 
     std::string Name;
     std::string Type;
-    double Scale;
     std::string DeviceId; // FIXME
     int Order;
     int OnValue;
     int Max;
-    TModbusParameter Parameter;
+    bool ReadOnly;
+    std::vector<TModbusRegister> Registers;
 };
+
+typedef std::shared_ptr<TModbusChannel> PModbusChannel;
 
 struct TDeviceSetupItem
 {
@@ -35,44 +40,49 @@ struct TDeviceSetupItem
     int Value;
 };
 
+typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
+
 struct TDeviceConfig
 {
     TDeviceConfig(std::string name = "")
         : Name(name) {}
     int NextOrderValue() const { return ModbusChannels.size() + 1; }
-    void AddChannel(const TModbusChannel& channel) { ModbusChannels.push_back(channel); };
-    void AddSetupItem(const TDeviceSetupItem& item) { SetupItems.push_back(item); }
+    void AddChannel(PModbusChannel channel) { ModbusChannels.push_back(channel); };
+    void AddSetupItem(PDeviceSetupItem item) { SetupItems.push_back(item); }
     std::string Id;
     std::string Name;
     int SlaveId;
-    std::vector<TModbusChannel> ModbusChannels;
-    std::vector<TDeviceSetupItem> SetupItems;
+    std::vector<PModbusChannel> ModbusChannels;
+    std::vector<PDeviceSetupItem> SetupItems;
 };
+
+typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
     
 struct TPortConfig
 {
-    void AddDeviceConfig(const TDeviceConfig& device_config) { DeviceConfigs.push_back(device_config); }
-    std::string Path;
-    int BaudRate = 115200;
-    char Parity = 'N';
-    int DataBits = 8;
-    int StopBits = 1;
+    void AddDeviceConfig(PDeviceConfig device_config) { DeviceConfigs.push_back(device_config); }
+    TModbusConnectionSettings ConnSettings;
     int PollInterval = 2000;
     bool Debug = false;
-    std::vector<TDeviceConfig> DeviceConfigs;
+    std::vector<PDeviceConfig> DeviceConfigs;
 };
+
+typedef std::shared_ptr<TPortConfig> PPortConfig;
 
 struct THandlerConfig
 {
-    void AddPortConfig(const TPortConfig& port_config) {
+    void AddPortConfig(PPortConfig port_config) {
         PortConfigs.push_back(port_config);
-        PortConfigs[PortConfigs.size() - 1].Debug = Debug;
+        PortConfigs[PortConfigs.size() - 1]->Debug = Debug;
     }
     bool Debug = false;
-    std::vector<TPortConfig> PortConfigs;
+    std::vector<PPortConfig> PortConfigs;
 };
 
-class TConfigParserException: public std::exception {
+typedef std::shared_ptr<THandlerConfig> PHandlerConfig;
+
+class TConfigParserException: public std::exception
+{
 public:
     TConfigParserException(std::string _message): message(_message) {}
     const char* what () const throw () {
@@ -86,16 +96,20 @@ class TConfigParser
 {
 public:
     TConfigParser(std::string config_fname, bool force_debug)
-        : ConfigFileName(config_fname) { HandlerConfig.Debug = force_debug; }
-    const THandlerConfig& parse();
-    void LoadChannel(TDeviceConfig& device_config, const Json::Value& channel_data);
-    void LoadSetupItem(TDeviceConfig& device_config, const Json::Value& item_data);
-    void LoadDevice(TPortConfig& port_config, const Json::Value& device_data,
+        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig) {
+        HandlerConfig->Debug = force_debug;
+    }
+    PHandlerConfig parse();
+    TModbusRegister LoadRegister(PDeviceConfig device_config, const Json::Value& register_data,
+                                 std::string& default_type_str);
+    void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data);
+    void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data);
+    void LoadDevice(PPortConfig port_config, const Json::Value& device_data,
                     const std::string& default_id);
     void LoadPort(const Json::Value& port_data, const std::string& id_prefix);
     void LoadConfig();
 private:
-    THandlerConfig HandlerConfig;
     std::string ConfigFileName;
+    PHandlerConfig HandlerConfig;
     Json::Value root;
 };

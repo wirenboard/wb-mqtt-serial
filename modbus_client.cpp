@@ -1,49 +1,158 @@
 #include <iostream>
+#include <cmath>
 #include <mutex>
 #include <unistd.h>
+#include <modbus/modbus.h>
 #include "modbus_client.h"
 
-class TModbusHandler
+TModbusConnector::~TModbusConnector() {}
+
+TModbusContext::~TModbusContext() {}
+
+class TDefaultModbusContext: public TModbusContext {
+public:
+    TDefaultModbusContext(const TModbusConnectionSettings& settings);
+    void Connect();
+    void Disconnect();
+    void SetDebug(bool debug);
+    void SetSlave(int slave);
+    void ReadCoils(int addr, int nb, uint8_t *dest);
+    void WriteCoil(int addr, int value);
+    void ReadDisceteInputs(int addr, int nb, uint8_t *dest);
+    void ReadHoldingRegisters(int addr, int nb, uint16_t *dest);
+    void WriteHoldingRegisters(int addr, int nb, const uint16_t *data);
+    void ReadInputRegisters(int addr, int nb, uint16_t *dest);
+private:
+    modbus_t* InnerContext;
+};
+
+TDefaultModbusContext::TDefaultModbusContext(const TModbusConnectionSettings& settings)
+{
+    InnerContext = modbus_new_rtu(settings.Device.c_str(), settings.BaudRate,
+                                  settings.Parity, settings.DataBits, settings.StopBits);
+    if (!InnerContext)
+        throw TModbusException("failed to create modbus context");
+    modbus_set_error_recovery(InnerContext, MODBUS_ERROR_RECOVERY_PROTOCOL); // FIXME
+}
+
+void TDefaultModbusContext::Connect()
+{
+    if (modbus_connect(InnerContext) != 0)
+        throw TModbusException("couldn't initialize modbus connection");
+    modbus_flush(InnerContext);
+}
+
+void TDefaultModbusContext::Disconnect()
+{
+    modbus_close(InnerContext);
+}
+
+void TDefaultModbusContext::SetDebug(bool debug)
+{
+    modbus_set_debug(InnerContext, debug);
+}
+
+void TDefaultModbusContext::SetSlave(int slave)
+{
+    modbus_set_slave(InnerContext, slave);
+}
+
+void TDefaultModbusContext::ReadCoils(int addr, int nb, uint8_t *dest)
+{
+    if (modbus_read_bits(InnerContext, addr, nb, dest) < nb)
+        throw TModbusException("failed to read " + std::to_string(nb) +
+                               " coil(s) @ " + std::to_string(addr));
+}
+
+void TDefaultModbusContext::WriteCoil(int addr, int value)
+{
+    if (modbus_write_bit(InnerContext, addr, value) < 0)
+        throw TModbusException("failed to write coil @ " + std::to_string(addr));
+}
+
+void TDefaultModbusContext::ReadDisceteInputs(int addr, int nb, uint8_t *dest)
+{
+    if (modbus_read_input_bits(InnerContext, addr, nb, dest) < nb)
+        throw TModbusException("failed to read " + std::to_string(nb) +
+                               "discrete input(s) @ " + std::to_string(addr));
+}
+
+void TDefaultModbusContext::ReadHoldingRegisters(int addr, int nb, uint16_t *dest)
+{
+    if (modbus_read_registers(InnerContext, addr, nb, dest) < nb)
+        throw TModbusException("failed to read " + std::to_string(nb) +
+                               " holding register(s) @ " + std::to_string(addr));
+}
+
+void TDefaultModbusContext::WriteHoldingRegisters(int addr, int nb, const uint16_t *data)
+{
+    if (modbus_write_registers(InnerContext, addr, nb, data) < nb)
+        throw TModbusException("failed to write " + std::to_string(nb) +
+                               " holding register(s) @ " + std::to_string(addr));
+}
+
+void TDefaultModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
+{
+    if (modbus_read_input_registers(InnerContext, addr, 1, dest) < nb)
+        throw TModbusException("failed to read " + std::to_string(nb) +
+                               " input register(s) @ " + std::to_string(addr));
+}
+
+class TDefaultModbusConnector: public TModbusConnector {
+public:
+    PModbusContext CreateContext(const TModbusConnectionSettings& settings);
+};
+
+PModbusContext TDefaultModbusConnector::CreateContext(const TModbusConnectionSettings& settings)
+{
+    return PModbusContext(new TDefaultModbusContext(settings));
+}
+
+class TRegisterHandler
 {
 public:
-    TModbusHandler(const TModbusClient* client, const TModbusParameter& _param)
-        : Client(client), param(_param) {}
-    virtual ~TModbusHandler() {}
-    virtual int Read(modbus_t* ctx) = 0;
-    virtual void Write(modbus_t* ctx, int v);
-    const TModbusParameter& Parameter() const { return param; }
-    bool Poll(modbus_t* ctx);
-    void Flush(modbus_t* ctx);
-    int Value() const { return value; }
-    void SetValue(int v);
+    TRegisterHandler(const TModbusClient* client, const TModbusRegister& _reg)
+        : Client(client), reg(_reg) {}
+    virtual ~TRegisterHandler() {}
+    virtual int Read(PModbusContext ctx) = 0;
+    virtual void Write(PModbusContext ctx, int v);
+    const TModbusRegister& Register() const { return reg; }
+    bool Poll(PModbusContext ctx);
+    void Flush(PModbusContext ctx);
+    int RawValue() const { return value; }
+    double ScaledValue() const { return value * reg.Scale; }
+    std::string TextValue() const;
+    void SetRawValue(int v);
+    void SetScaledValue(double v);
+    void SetTextValue(const std::string& v);
 protected:
     int ConvertValue(uint16_t v) const;
     const TModbusClient* Client;
 private:
     int value = 0;
-    TModbusParameter param;
+    TModbusRegister reg;
     volatile bool dirty = false;
     bool did_read = false;
     std::mutex set_value_mutex;
 };
 
-void TModbusHandler::Write(modbus_t*, int)
+void TRegisterHandler::Write(PModbusContext, int)
 {
-    throw TModbusException("trying to write read-only parameter");
+    throw TModbusException("trying to write read-only register");
 };
 
-bool TModbusHandler::Poll(modbus_t* ctx)
+bool TRegisterHandler::Poll(PModbusContext ctx)
 {
-    if (!param.poll || dirty)
+    if (!reg.Poll || dirty)
         return false; // write-only register
 
     bool first_poll = !did_read;
     int new_value;
-    modbus_set_slave(ctx, param.slave);
+    ctx->SetSlave(reg.Slave);
     try {
         new_value = Read(ctx);
     } catch (const TModbusException& e) {
-        std::cerr << "TModbusHandler::Poll(): warning: " << e.what() << std::endl;
+        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << std::endl;
         return false;
     }
     did_read = true;
@@ -56,24 +165,24 @@ bool TModbusHandler::Poll(modbus_t* ctx)
         value = new_value;
         set_value_mutex.unlock();
         if (Client->DebugEnabled())
-            std::cerr << "new val for " << param.str() << ": " << new_value << std::endl;
+            std::cerr << "new val for " << reg.ToString() << ": " << new_value << std::endl;
         return true;
     } else
         set_value_mutex.unlock();
     return first_poll;
 }
 
-void TModbusHandler::Flush(modbus_t* ctx)
+void TRegisterHandler::Flush(PModbusContext ctx)
 {
     set_value_mutex.lock();
     if (dirty) {
         dirty = false;
         set_value_mutex.unlock();
-        modbus_set_slave(ctx, param.slave);
+        ctx->SetSlave(reg.Slave);
         try {
             Write(ctx, value);
         } catch (const TModbusException& e) {
-            std::cerr << "TModbusHandler::Flush(): warning: " << e.what() << std::endl;
+            std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << std::endl;
             return;
         }
     }
@@ -81,155 +190,150 @@ void TModbusHandler::Flush(modbus_t* ctx)
         set_value_mutex.unlock();
 }
 
-void TModbusHandler::SetValue(int v)
+std::string TRegisterHandler::TextValue() const
+{
+    return reg.Scale == 1 ? std::to_string(RawValue()) : std::to_string(ScaledValue());
+}
+
+void TRegisterHandler::SetRawValue(int v)
 {
     std::lock_guard<std::mutex> lock(set_value_mutex);
     value = v;
     dirty = true;
 }
 
-int TModbusHandler::ConvertValue(uint16_t v) const
+void TRegisterHandler::SetScaledValue(double v)
 {
-    switch (param.format) {
-    case TModbusParameter::U16:
+    SetRawValue(round(v / reg.Scale));
+}
+
+void TRegisterHandler::SetTextValue(const std::string& v)
+{
+    if (reg.Scale == 1)
+        SetRawValue(stoi(v));
+    else
+        SetScaledValue(stod(v));
+}
+
+int TRegisterHandler::ConvertValue(uint16_t v) const
+{
+    switch (reg.Format) {
+    case TModbusRegister::U16:
         return v;
-    case TModbusParameter::S16:
+    case TModbusRegister::S16:
         return (int16_t)v;
-    case TModbusParameter::U8:
+    case TModbusRegister::U8:
         return v & 255;
-    case TModbusParameter::S8:
+    case TModbusRegister::S8:
         return (int8_t) v;
     default:
         return v;
     }
 }
 
-class TCoilHandler: public TModbusHandler
+class TCoilHandler: public TRegisterHandler
 {
 public:
-    TCoilHandler(const TModbusClient* client, const TModbusParameter& _param)
-        : TModbusHandler(client, _param) {}
+    TCoilHandler(const TModbusClient* client, const TModbusRegister& _reg)
+        : TRegisterHandler(client, _reg) {}
 
-    int Read(modbus_t* ctx) {
+    int Read(PModbusContext ctx) {
         unsigned char b;
-        if (modbus_read_bits(ctx, Parameter().address, 1, &b) < 1)
-            throw TModbusException("failed to read coil " + Parameter().str());
+        ctx->ReadCoils(Register().Address, 1, &b);
         return b & 1;
     }
 
-    void Write(modbus_t* ctx, int v) {
-        if (modbus_write_bit(ctx, Parameter().address, v) < 0)
-            throw TModbusException("failed to write coil " + Parameter().str());
+    void Write(PModbusContext ctx, int v) {
+        ctx->WriteCoil(Register().Address, v);
     }
 };
 
-class TDiscreteInputHandler: public TModbusHandler
+class TDiscreteInputHandler: public TRegisterHandler
 {
 public:
-    TDiscreteInputHandler(const TModbusClient* client, const TModbusParameter& _param)
-        : TModbusHandler(client, _param) {}
+    TDiscreteInputHandler(const TModbusClient* client, const TModbusRegister& _reg)
+        : TRegisterHandler(client, _reg) {}
 
-    int Read(modbus_t* ctx) {
+    int Read(PModbusContext ctx) {
         uint8_t b;
-        if (modbus_read_input_bits(ctx, Parameter().address, 1, &b) < 1)
-            throw TModbusException("failed to read discrete input " + Parameter().str());
+        ctx->ReadDisceteInputs(Register().Address, 1, &b);
         return b & 1;
     }
 };
 
-class THoldingRegisterHandler: public TModbusHandler
+class THoldingRegisterHandler: public TRegisterHandler
 {
 public:
-    THoldingRegisterHandler(const TModbusClient* client, const TModbusParameter& _param)
-        : TModbusHandler(client, _param) {}
+    THoldingRegisterHandler(const TModbusClient* client, const TModbusRegister& _reg)
+        : TRegisterHandler(client, _reg) {}
 
-    int Read(modbus_t* ctx) {
+    int Read(PModbusContext ctx) {
         uint16_t v;
-        if (modbus_read_registers(ctx, Parameter().address, 1, &v) < 1)
-            throw TModbusException("failed to read holding register " + Parameter().str());
+        ctx->ReadHoldingRegisters(Register().Address, 1, &v);
         return ConvertValue(v);
     }
 
-    void Write(modbus_t* ctx, int v) {
-        // FIXME: the following code causes an error:
-        // if (modbus_write_register(ctx, Parameter().address, v) < 0)
-        //     throw TModbusException("failed to write holding register");
-        // setting modbus register: <1:holding: 1> <- 30146
-        // <01><03><02><5A><1C><83><2D>
-        // [01][06][00][01][75][C2][7F][0B]
-        // Waiting for a confirmation...
-        // <01><03><02><00><00><B8><44>
-        // Message length not corresponding to the computed length (7 != 8)
-        // Fatal: Modbus error: failed to write holding register
-        // Exiting...
+    void Write(PModbusContext ctx, int v) {
+        // FIXME: use 
         uint16_t d = (uint16_t)v;
         if (Client->DebugEnabled())
-            std::cerr << "write: " << Parameter().str() << std::endl;
-        if (modbus_write_registers(ctx, Parameter().address, 1, &d) < 1)
-            throw TModbusException("failed to write holding register " + Parameter().str());
+            std::cerr << "write: " << Register().ToString() << std::endl;
+        ctx->WriteHoldingRegisters(Register().Address, 1, &d);
     }
 };
 
-class TInputRegisterHandler: public TModbusHandler
+class TInputRegisterHandler: public TRegisterHandler
 {
 public:
-    TInputRegisterHandler(const TModbusClient* client, const TModbusParameter& _param)
-        : TModbusHandler(client, _param) {}
+    TInputRegisterHandler(const TModbusClient* client, const TModbusRegister& _reg)
+        : TRegisterHandler(client, _reg) {}
 
-    int Read(modbus_t* ctx) {
+    int Read(PModbusContext ctx) {
         uint16_t v;
-        if (modbus_read_input_registers(ctx, Parameter().address, 1, &v) < 1)
-            throw TModbusException("failed to read input register " + Parameter().str());
+        ctx->ReadInputRegisters(Register().Address, 1, &v);
         return ConvertValue(v);
     }
 };
 
-TModbusClient::TModbusClient(std::string device,
-                             int baud_rate,
-                             char parity,
-                             int data_bits,
-                             int stop_bits)
-    : active(false),
-      poll_interval(1000)
+TModbusClient::TModbusClient(const TModbusConnectionSettings& settings,
+                             PModbusConnector connector)
+    : Active(false),
+      PollInterval(1000)
 {
-    ctx = modbus_new_rtu(device.c_str(), baud_rate, parity, data_bits, stop_bits);
-    if (!ctx)
-        throw TModbusException("failed to create modbus context");
-    modbus_set_error_recovery(ctx, MODBUS_ERROR_RECOVERY_PROTOCOL); // FIXME
+    if (!connector)
+        connector = PModbusConnector(new TDefaultModbusConnector);
+    Context = connector->CreateContext(settings);
 }
 
 TModbusClient::~TModbusClient()
 {
-    if (active)
+    if (Active)
         Disconnect();
-    modbus_free(ctx);
 }
 
-void TModbusClient::AddParam(const TModbusParameter& param)
+void TModbusClient::AddRegister(const TModbusRegister& reg)
 {
-    if (active)
-        throw TModbusException("can't add parameters to the active client");
-    if (handlers.find(param) != handlers.end())
-        throw TModbusException("duplicate parameter");
-    handlers[param] = std::unique_ptr<TModbusHandler>(CreateParameterHandler(param));
+    if (Active)
+        throw TModbusException("can't add registers to the active client");
+    if (handlers.find(reg) != handlers.end())
+        throw TModbusException("duplicate register");
+    handlers[reg] = std::unique_ptr<TRegisterHandler>(CreateRegisterHandler(reg));
 }
 
 void TModbusClient::Connect()
 {
-    if (active)
+    if (Active)
         return;
     if (!handlers.size())
-        throw TModbusException("no parameters defined");
-    if (modbus_connect(ctx) != 0)
-        throw TModbusException("couldn't initialize the serial port");
-    modbus_flush(ctx);
-    active = true;
+        throw TModbusException("no registers defined");
+    Context->Connect();
+    Active = true;
 }
 
 void TModbusClient::Disconnect()
 {
-    modbus_close(ctx);
-    active = false;
+    Context->Disconnect();
+    Active = false;
 }
 
 void TModbusClient::Cycle()
@@ -239,46 +343,66 @@ void TModbusClient::Cycle()
     // FIXME: that's suboptimal polling implementation.
     // Need to implement bunching of Modbus registers.
     // Note that for multi-register values, all values
-    // corresponding to single parameter should be retrieved
+    // corresponding to single register should be retrieved
     // by single query.
     for (const auto& p: handlers) {
-        p.second->Flush(ctx);
-        if (p.second->Poll(ctx) && callback)
-            callback(p.first, p.second->Value());
-        usleep(poll_interval * 1000);
+        p.second->Flush(Context);
+        if (p.second->Poll(Context) && Callback)
+            Callback(p.first);
+        usleep(PollInterval * 1000);
     }
 }
 
 void TModbusClient::WriteHoldingRegister(int slave, int address, uint16_t value)
 {
     Connect();
-    modbus_set_slave(ctx, slave);
-    if (modbus_write_registers(ctx, address, 1, &value) < 1)
-        throw TModbusException("failed to write holding register " +
-                               std::to_string(address));
+    Context->SetSlave(slave);
+    Context->WriteHoldingRegisters(address, 1, &value);
 }
 
-void TModbusClient::SetValue(const TModbusParameter& param, int value)
+void TModbusClient::SetRawValue(const TModbusRegister& reg, int value)
 {
-    auto it = handlers.find(param);
-    if (it == handlers.end())
-        throw TModbusException("parameter not found");
-    it->second->SetValue(value);
+    GetHandler(reg)->SetRawValue(value);
 }
 
-void TModbusClient::SetCallback(const TModbusCallback& _callback)
+void TModbusClient::SetScaledValue(const TModbusRegister& reg, double value)
 {
-    callback = _callback;
+    GetHandler(reg)->SetScaledValue(value);
+}
+
+void TModbusClient::SetTextValue(const TModbusRegister& reg, const std::string& value)
+{
+    GetHandler(reg)->SetTextValue(value);
+}
+
+int TModbusClient::GetRawValue(const TModbusRegister& reg) const
+{
+    return GetHandler(reg)->RawValue();
+}
+
+double TModbusClient::GetScaledValue(const TModbusRegister& reg) const
+{
+    return GetHandler(reg)->ScaledValue();
+}
+
+std::string TModbusClient::GetTextValue(const TModbusRegister& reg) const
+{
+    return GetHandler(reg)->TextValue();
+}
+
+void TModbusClient::SetCallback(const TModbusCallback& callback)
+{
+    Callback = callback;
 }
 
 void TModbusClient::SetPollInterval(int interval)
 {
-    poll_interval = interval;
+    PollInterval = interval;
 }
 
 void TModbusClient::SetModbusDebug(bool debug)
 {
-    modbus_set_debug(ctx, debug);
+    Context->SetDebug(debug);
     Debug = debug;
 }
 
@@ -286,18 +410,26 @@ bool TModbusClient::DebugEnabled() const {
     return Debug;
 }
 
-TModbusHandler* TModbusClient::CreateParameterHandler(const TModbusParameter& param)
+const std::unique_ptr<TRegisterHandler>& TModbusClient::GetHandler(const TModbusRegister& reg) const
 {
-    switch (param.type) {
-    case TModbusParameter::Type::COIL:
-        return new TCoilHandler(this, param);
-    case TModbusParameter::Type::DISCRETE_INPUT:
-        return new TDiscreteInputHandler(this, param);
-    case TModbusParameter::Type::HOLDING_REGITER:
-        return new THoldingRegisterHandler(this, param);
-    case TModbusParameter::Type::INPUT_REGISTER:
-        return new TInputRegisterHandler(this, param);
+    auto it = handlers.find(reg);
+    if (it == handlers.end())
+        throw TModbusException("register not found");
+    return it->second;
+}
+
+TRegisterHandler* TModbusClient::CreateRegisterHandler(const TModbusRegister& reg)
+{
+    switch (reg.Type) {
+    case TModbusRegister::RegisterType::COIL:
+        return new TCoilHandler(this, reg);
+    case TModbusRegister::RegisterType::DISCRETE_INPUT:
+        return new TDiscreteInputHandler(this, reg);
+    case TModbusRegister::RegisterType::HOLDING_REGITER:
+        return new THoldingRegisterHandler(this, reg);
+    case TModbusRegister::RegisterType::INPUT_REGISTER:
+        return new TInputRegisterHandler(this, reg);
     default:
-        throw TModbusException("bad parameter type");
+        throw TModbusException("bad register type");
     }
 }

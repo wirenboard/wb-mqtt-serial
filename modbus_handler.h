@@ -10,7 +10,9 @@
 class TMQTTModbusHandler : public TMQTTWrapper
 {
 public:
-    TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_config, const THandlerConfig& handler_config);
+    TMQTTModbusHandler(const TMQTTModbusHandler::TConfig& mqtt_config,
+                       PHandlerConfig handler_config,
+                       PModbusConnector connector = 0);
 
     void OnConnect(int rc);
     void OnMessage(const struct mosquitto_message *message);
@@ -19,6 +21,6 @@ public:
     void ModbusLoop();
     bool WriteInitValues();
 private:
-    THandlerConfig Config;
+    PHandlerConfig Config;
     std::vector<std::unique_ptr<TModbusPort>> Ports;
 };
