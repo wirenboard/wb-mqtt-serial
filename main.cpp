@@ -6,14 +6,13 @@
 
 #include <mosquittopp.h>
 
-#include "modbus_handler.h"
+#include "modbus_observer.h"
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-	class TMQTTModbusHandler* mqtt_handler;
-    TMQTTModbusHandler::TConfig mqtt_config;
+    TMQTTClient::TConfig mqtt_config;
     mqtt_config.Host = "localhost";
     mqtt_config.Port = 1883;
     string config_fname;
@@ -59,12 +58,14 @@ int main(int argc, char *argv[])
     if (mqtt_config.Id.empty())
         mqtt_config.Id = "wb-modbus";
 
+    PMQTTClient mqtt_client(new TMQTTClient(mqtt_config));
+
     try {
-        mqtt_handler = new TMQTTModbusHandler(mqtt_config, handler_config);
-        if (mqtt_handler->WriteInitValues() && handler_config->Debug)
+        PMQTTModbusObserver modbus_observer(new TMQTTModbusObserver(mqtt_client, handler_config));
+        if (modbus_observer->WriteInitValues() && handler_config->Debug)
             cerr << "Register-based setup performed." << endl;
-        mqtt_handler->StartLoop();
-        mqtt_handler->ModbusLoop();
+        mqtt_client->StartLoop();
+        modbus_observer->ModbusLoop();
     } catch (const TModbusException& e) {
         cerr << "FATAL: " << e.what() << endl;
         return 1;

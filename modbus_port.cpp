@@ -3,15 +3,13 @@
 
 #include "common/utils.h"
 #include "modbus_port.h"
-#include "common/mqtt_wrapper.h"
 
-TModbusPort::TModbusPort(TMQTTWrapper* wrapper, PPortConfig port_config,
-                         PModbusConnector connector)
-    : Wrapper(wrapper),
+TModbusPort::TModbusPort(PMQTTClientBase mqtt_client, PPortConfig port_config, PModbusConnector connector)
+    : MQTTClient(mqtt_client),
       Config(port_config),
-      Client(new TModbusClient(Config->ConnSettings, connector))
+      ModbusClient(new TModbusClient(Config->ConnSettings, connector))
 {
-    Client->SetCallback([this](const TModbusRegister& reg) {
+    ModbusClient->SetCallback([this](const TModbusRegister& reg) {
             OnModbusValueChange(reg);
         });
     for (auto device_config: Config->DeviceConfigs) {
@@ -19,34 +17,34 @@ TModbusPort::TModbusPort(TMQTTWrapper* wrapper, PPortConfig port_config,
             for (auto reg: channel->Registers) {
                 RegisterToChannelMap[reg] = channel;
                 NameToChannelMap[device_config->Id + "/" + channel->Name] = channel;
-                Client->AddRegister(reg);
+                ModbusClient->AddRegister(reg);
             }
         }
     }
-    Client->SetPollInterval(Config->PollInterval);
-    Client->SetModbusDebug(Config->Debug);
+    ModbusClient->SetPollInterval(Config->PollInterval);
+    ModbusClient->SetModbusDebug(Config->Debug);
 };
 
 void TModbusPort::PubSubSetup()
 {
     for (auto device_config : Config->DeviceConfigs) {
         /* Only attempt to Subscribe on a successful connect. */
-        std::string id = device_config->Id.empty() ? Wrapper->Id() : device_config->Id;
+        std::string id = device_config->Id.empty() ? MQTTClient->Id() : device_config->Id;
         std::string prefix = std::string("/devices/") + id + "/";
         // Meta
-        Wrapper->Publish(NULL, prefix + "meta/name", device_config->Name, 0, true);
+        MQTTClient->Publish(NULL, prefix + "meta/name", device_config->Name, 0, true);
         for (const auto& channel : device_config->ModbusChannels) {
             std::string control_prefix = prefix + "controls/" + channel->Name;
-            Wrapper->Publish(NULL, control_prefix + "/meta/type", channel->Type, 0, true);
+            MQTTClient->Publish(NULL, control_prefix + "/meta/type", channel->Type, 0, true);
             if (channel->ReadOnly)
-                Wrapper->Publish(NULL, control_prefix + "/meta/readonly", "1", 0, true);
+                MQTTClient->Publish(NULL, control_prefix + "/meta/readonly", "1", 0, true);
             if (channel->Type == "range")
-                Wrapper->Publish(NULL, control_prefix + "/meta/max",
+                MQTTClient->Publish(NULL, control_prefix + "/meta/max",
                                  channel->Max < 0 ? "65535" : std::to_string(channel->Max),
                                  0, true);
-            Wrapper->Publish(NULL, control_prefix + "/meta/order",
+            MQTTClient->Publish(NULL, control_prefix + "/meta/order",
                              std::to_string(channel->Order), 0, true);
-            Wrapper->Subscribe(NULL, control_prefix + "/on");
+            MQTTClient->Subscribe(NULL, control_prefix + "/on");
         }
     }
 
@@ -94,9 +92,9 @@ bool TModbusPort::HandleMessage(const std::string& topic, const std::string& pay
         if (Config->Debug)
             std::cerr << "setting modbus register: " << reg.ToString() << " <- " <<
                 payload_items[i] << std::endl;
-        Client->SetTextValue(reg, payload_items[i]);
+        ModbusClient->SetTextValue(reg, payload_items[i]);
     }
-    Wrapper->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
+    MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
     return true;
 }
 
@@ -110,7 +108,7 @@ void TModbusPort::OnModbusValueChange(const TModbusRegister& reg)
 {
     if (Config->Debug)
         std::cerr << "modbus value change: " << reg.ToString() << " <- " <<
-            Client->GetTextValue(reg) << std::endl;
+            ModbusClient->GetTextValue(reg) << std::endl;
 
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
@@ -120,7 +118,7 @@ void TModbusPort::OnModbusValueChange(const TModbusRegister& reg)
 
     std::string payload;
     if (it->second->OnValue >= 0) {
-        payload = Client->GetRawValue(reg) == it->second->OnValue ? "1" : "0";
+        payload = ModbusClient->GetRawValue(reg) == it->second->OnValue ? "1" : "0";
         if (Config->Debug)
             std::cerr << "OnValue: " << it->second->OnValue << "; payload: " <<
                 payload << std::endl;
@@ -129,7 +127,7 @@ void TModbusPort::OnModbusValueChange(const TModbusRegister& reg)
         for (size_t i = 0; i < it->second->Registers.size(); ++i) {
             if (i)
                 s << ";";
-            s << Client->GetTextValue(it->second->Registers[i]);
+            s << ModbusClient->GetTextValue(it->second->Registers[i]);
         }
         payload = s.str();
     }
@@ -145,13 +143,13 @@ void TModbusPort::OnModbusValueChange(const TModbusRegister& reg)
         std::cerr << "channel " << it->second->Name << " device id: " <<
             it->second->DeviceId << " -- topic: " << GetChannelTopic(*it->second) <<
             " <-- " << payload << std::endl;
-    Wrapper->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
+    MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
 }
 
 void TModbusPort::Cycle()
 {
     try {
-        Client->Cycle();
+        ModbusClient->Cycle();
     } catch (TModbusException& e) {
         std::cerr << "FATAL: " << e.what() << ". Stopping event loops." << std::endl;
         exit(1);
@@ -166,7 +164,7 @@ bool TModbusPort::WriteInitValues()
             if (Config->Debug)
                 std::cerr << "Init: " << setup_item->Name << ": holding register " <<
                     setup_item->Address << " <-- " << setup_item->Value << std::endl;
-            Client->WriteHoldingRegister(device_config->SlaveId,
+            ModbusClient->WriteHoldingRegister(device_config->SlaveId,
                                          setup_item->Address,
                                          setup_item->Value);
             did_write = true;
