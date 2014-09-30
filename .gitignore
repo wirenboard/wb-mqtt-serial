@@ -6,4 +6,4 @@ wb-homa-w1/wb-homa-w1
 wb-homa-adc/wb-homa-adc
 debian/files
 debian/wb-homa-drivers*
-test/modbus_test
+test/wb-homa-test
