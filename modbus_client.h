@@ -43,6 +43,7 @@ public:
     virtual void ReadHoldingRegisters(int addr, int nb, uint16_t *dest) = 0;
     virtual void WriteHoldingRegisters(int addr, int nb, const uint16_t *data) = 0;
     virtual void ReadInputRegisters(int addr, int nb, uint16_t *dest) = 0;
+    virtual void USleep(int usec) = 0;
 };
 
 typedef std::shared_ptr<TModbusContext> PModbusContext;
@@ -161,3 +162,5 @@ private:
     TModbusCallback Callback;
     bool Debug = false;
 };
+
+typedef std::shared_ptr<TModbusClient> PModbusClient;

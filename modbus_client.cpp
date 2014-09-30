@@ -22,6 +22,7 @@ public:
     void ReadHoldingRegisters(int addr, int nb, uint16_t *dest);
     void WriteHoldingRegisters(int addr, int nb, const uint16_t *data);
     void ReadInputRegisters(int addr, int nb, uint16_t *dest);
+    void USleep(int usec);
 private:
     modbus_t* InnerContext;
 };
@@ -96,6 +97,11 @@ void TDefaultModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
     if (modbus_read_input_registers(InnerContext, addr, 1, dest) < nb)
         throw TModbusException("failed to read " + std::to_string(nb) +
                                " input register(s) @ " + std::to_string(addr));
+}
+
+void TDefaultModbusContext::USleep(int usec)
+{
+    usleep(usec);
 }
 
 class TDefaultModbusConnector: public TModbusConnector {
@@ -349,7 +355,7 @@ void TModbusClient::Cycle()
         p.second->Flush(Context);
         if (p.second->Poll(Context) && Callback)
             Callback(p.first);
-        usleep(PollInterval * 1000);
+        Context->USleep(PollInterval * 1000);
     }
 }
 
