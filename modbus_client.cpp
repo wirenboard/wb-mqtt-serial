@@ -132,7 +132,8 @@ public:
     void SetScaledValue(double v);
     void SetTextValue(const std::string& v);
 protected:
-    int ConvertValue(uint16_t v) const;
+    int ConvertSlaveValue(uint16_t v) const;
+    uint16_t ConvertMasterValue(int v) const;
     const TModbusClient* Client;
 private:
     int value = 0;
@@ -186,7 +187,7 @@ void TRegisterHandler::Flush(PModbusContext ctx)
         set_value_mutex.unlock();
         ctx->SetSlave(reg.Slave);
         try {
-            Write(ctx, value);
+            Write(ctx, ConvertMasterValue(value));
         } catch (const TModbusException& e) {
             std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << std::endl;
             return;
@@ -221,7 +222,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
         SetScaledValue(stod(v));
 }
 
-int TRegisterHandler::ConvertValue(uint16_t v) const
+int TRegisterHandler::ConvertSlaveValue(uint16_t v) const
 {
     switch (reg.Format) {
     case TModbusRegister::U16:
@@ -232,6 +233,20 @@ int TRegisterHandler::ConvertValue(uint16_t v) const
         return v & 255;
     case TModbusRegister::S8:
         return (int8_t) v;
+    default:
+        return v;
+    }
+}
+
+uint16_t TRegisterHandler::ConvertMasterValue(int v) const
+{
+    switch (reg.Format) {
+    case TModbusRegister::S16:
+        return v & 65535;
+    case TModbusRegister::U8:
+    case TModbusRegister::S8:
+        return v & 255;
+    case TModbusRegister::U16:
     default:
         return v;
     }
@@ -276,7 +291,7 @@ public:
     int Read(PModbusContext ctx) {
         uint16_t v;
         ctx->ReadHoldingRegisters(Register().Address, 1, &v);
-        return ConvertValue(v);
+        return ConvertSlaveValue(v);
     }
 
     void Write(PModbusContext ctx, int v) {
@@ -297,7 +312,7 @@ public:
     int Read(PModbusContext ctx) {
         uint16_t v;
         ctx->ReadInputRegisters(Register().Address, 1, &v);
-        return ConvertValue(v);
+        return ConvertSlaveValue(v);
     }
 };
 
