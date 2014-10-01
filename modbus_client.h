@@ -116,11 +116,12 @@ namespace std {
 
 class TModbusException: public std::exception {
 public:
-    TModbusException(std::string _message): message(_message) {}
+    TModbusException(std::string _message): message("Modbus error: " + _message) {}
     const char* what () const throw ()
     {
-        return ("Modbus error: " + message).c_str();
+        return message.c_str();
     }
+
 private:
     std::string message;
 };
