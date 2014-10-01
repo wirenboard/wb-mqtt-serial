@@ -40,7 +40,7 @@ TModbusRegister TConfigParser::LoadRegister(PDeviceConfig device_config,
         type = TModbusRegister::RegisterType::DISCRETE_INPUT;
         default_type_str = "switch";
     } else if (reg_type_str == "holding") {
-        type = TModbusRegister::RegisterType::HOLDING_REGITER;
+        type = TModbusRegister::RegisterType::HOLDING_REGISTER;
         default_type_str = "text";
     } else if (reg_type_str == "input") {
         type = TModbusRegister::RegisterType::INPUT_REGISTER;

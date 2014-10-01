@@ -431,7 +431,7 @@ TRegisterHandler* TModbusClient::CreateRegisterHandler(const TModbusRegister& re
         return new TCoilHandler(this, reg);
     case TModbusRegister::RegisterType::DISCRETE_INPUT:
         return new TDiscreteInputHandler(this, reg);
-    case TModbusRegister::RegisterType::HOLDING_REGITER:
+    case TModbusRegister::RegisterType::HOLDING_REGISTER:
         return new THoldingRegisterHandler(this, reg);
     case TModbusRegister::RegisterType::INPUT_REGISTER:
         return new TInputRegisterHandler(this, reg);

@@ -60,7 +60,7 @@ typedef std::shared_ptr<TModbusConnector> PModbusConnector;
 struct TModbusRegister
 {
     enum RegisterFormat { U16, S16, U8, S8 };
-    enum RegisterType { COIL, DISCRETE_INPUT, HOLDING_REGITER, INPUT_REGISTER };
+    enum RegisterType { COIL, DISCRETE_INPUT, HOLDING_REGISTER, INPUT_REGISTER };
     TModbusRegister(int slave = 0, RegisterType type = COIL, int address = 0,
                      RegisterFormat format = U16, double scale = 1,
                      bool poll = true)
@@ -83,7 +83,7 @@ struct TModbusRegister
         s << "<" << Slave << ":" <<
             (Type == COIL ? "coil" :
              Type == DISCRETE_INPUT ? "discrete" :
-             Type == HOLDING_REGITER ? "holding" :
+             Type == HOLDING_REGISTER ? "holding" :
              Type == INPUT_REGISTER ? "input" :
              "bad") << ": " << Address << ">";
         return s.str();
