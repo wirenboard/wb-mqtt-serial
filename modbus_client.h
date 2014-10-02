@@ -29,6 +29,11 @@ struct TModbusConnectionSettings
     int StopBits;
 };
 
+inline ::std::ostream& operator<<(::std::ostream& os, const TModbusConnectionSettings& settings) {
+    return os << "<" << settings.Device << " " << settings.BaudRate <<
+        " " << settings.DataBits << " " << settings.Parity << settings.StopBits << ">";
+}
+
 class TModbusContext
 {
 public:
@@ -105,6 +110,10 @@ struct TModbusRegister
         return Slave == reg.Slave && Type == reg.Type && Address == reg.Address;
     }
 };
+
+inline ::std::ostream& operator<<(::std::ostream& os, const TModbusRegister& reg) {
+    return os << reg.ToString();
+}
 
 namespace std {
     template <> struct hash<TModbusRegister> {

@@ -101,25 +101,22 @@
                     "slave_id": 23,
                     "channels": [
                         {
-                            "name" : "Red",
-                            "reg_type" : "holding",
-                            "address" : 4,
-                            "type": "range",
-                            "max": 255
-                        },
-                        {
-                            "name" : "Green",
-                            "reg_type" : "holding",
-                            "address" : 5,
-                            "type": "range",
-                            "max": 255
-                        },
-                        {
-                            "name" : "Blue",
-                            "reg_type" : "holding",
-                            "address" : 6,
-                            "type": "range",
-                            "max": 255
+                            "name" : "RGB",
+                            "type": "rgb",
+                            "consists_of": [
+                                {
+                                    "reg_type" : "holding",
+                                    "address" : 4
+                                },
+                                {
+                                    "reg_type" : "holding",
+                                    "address" : 5
+                                },
+                                {
+                                    "reg_type" : "holding",
+                                    "address" : 6
+                                }
+                            ]
                         },
                         {
                             "name" : "White",
@@ -129,7 +126,7 @@
                             "max": 255
                         },
                         {
-                            "name" : "RGB",
+                            "name" : "RGB_All",
                             "reg_type" : "holding",
                             "address" : 8,
                             "type": "range",
