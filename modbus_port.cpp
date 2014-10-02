@@ -125,9 +125,13 @@ void TModbusPort::OnModbusValueChange(const TModbusRegister& reg)
     } else {
         std::stringstream s;
         for (size_t i = 0; i < it->second->Registers.size(); ++i) {
+            const TModbusRegister& reg = it->second->Registers[i];
+            // avoid publishing incomplete value
+            if (!ModbusClient->DidRead(reg))
+                return;
             if (i)
                 s << ";";
-            s << ModbusClient->GetTextValue(it->second->Registers[i]);
+            s << ModbusClient->GetTextValue(reg);
         }
         payload = s.str();
     }

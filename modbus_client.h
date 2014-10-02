@@ -155,6 +155,7 @@ public:
     int GetRawValue(const TModbusRegister& reg) const;
     double GetScaledValue(const TModbusRegister& reg) const;
     std::string GetTextValue(const TModbusRegister& reg) const;
+    bool DidRead(const TModbusRegister& reg) const;
     void SetCallback(const TModbusCallback& callback);
     void SetPollInterval(int ms);
     void SetModbusDebug(bool debug);

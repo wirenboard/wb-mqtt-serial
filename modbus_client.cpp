@@ -131,6 +131,7 @@ public:
     void SetRawValue(int v);
     void SetScaledValue(double v);
     void SetTextValue(const std::string& v);
+    bool DidRead() const { return did_read; }
 protected:
     int ConvertSlaveValue(uint16_t v) const;
     uint16_t ConvertMasterValue(int v) const;
@@ -409,6 +410,11 @@ double TModbusClient::GetScaledValue(const TModbusRegister& reg) const
 std::string TModbusClient::GetTextValue(const TModbusRegister& reg) const
 {
     return GetHandler(reg)->TextValue();
+}
+
+bool TModbusClient::DidRead(const TModbusRegister& reg) const
+{
+    return GetHandler(reg)->DidRead();
 }
 
 void TModbusClient::SetCallback(const TModbusCallback& callback)
