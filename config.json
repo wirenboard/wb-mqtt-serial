@@ -50,7 +50,7 @@
                     "name": "MSU21",
                     "id": "msu21",
                     "slave_id": 24,
-                    "enabled": false,
+                    "enabled": true,
                     "setup": [
                         {
                             "title": "Input 0 type",
@@ -77,7 +77,7 @@
                     "name": "MSU24",
                     "id": "msu24",
                     "slave_id": 34,
-                    "enabled": false,
+                    "enabled": true,
                     "channels": [
                         {
                             "name" : "Illuminance",
@@ -280,12 +280,12 @@
             "data_bits": 8,
             "stop_bits": 1,
             "poll_interval": 100,
-            "enabled": false,
+            "enabled": true,
             "devices" : [
                 {
                     "name": "tM-P3R3",
                     "id": "tmp3r3",
-                    "enabled": false,
+                    "enabled": true,
                     "slave_id": 1,
                     "channels": [
                         {
@@ -326,7 +326,7 @@
                 {
                     "name": "LC-103",
                     "id": "lc103",
-                    "enabled": false,
+                    "enabled": true,
                     "slave_id": 4,
                     "channels": [
                         {
