@@ -3,7 +3,7 @@
 
 #include "modbus_config.h"
 
-PHandlerConfig TConfigParser::parse()
+PHandlerConfig TConfigParser::Parse()
 {
     // Let's parse it
     Json::Reader reader;
@@ -127,8 +127,8 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
     if (!item_data.isObject())
         throw TConfigParserException("malformed config");
 
-    std::string name = item_data.isMember("name") ?
-        item_data["name"].asString() : "<unnamed>";
+    std::string name = item_data.isMember("title") ?
+        item_data["title"].asString() : "<unnamed>";
     if (!item_data.isMember("address"))
         throw TConfigParserException("no address specified for init item");
     int address = item_data["address"].asInt();

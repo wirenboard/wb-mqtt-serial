@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     PHandlerConfig handler_config;
     try {
         TConfigParser parser(config_fname, debug);
-        handler_config = parser.parse();
+        handler_config = parser.Parse();
     } catch (const TConfigParserException& e) {
         cerr << "FATAL: " << e.what() << endl;
         return 1;

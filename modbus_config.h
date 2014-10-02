@@ -95,11 +95,11 @@ private:
 class TConfigParser
 {
 public:
-    TConfigParser(std::string config_fname, bool force_debug)
+    TConfigParser(const std::string& config_fname, bool force_debug)
         : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig) {
         HandlerConfig->Debug = force_debug;
     }
-    PHandlerConfig parse();
+    PHandlerConfig Parse();
     TModbusRegister LoadRegister(PDeviceConfig device_config, const Json::Value& register_data,
                                  std::string& default_type_str);
     void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data);
