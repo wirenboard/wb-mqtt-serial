@@ -117,8 +117,6 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
     PModbusChannel channel(new TModbusChannel(name, type_str, device_config->Id, order,
                                               on_value, max, registers[0].IsReadOnly(),
                                               registers));
-    if (HandlerConfig->Debug)
-        std::cerr << "channel " << channel->Name << " device id: " << channel->DeviceId << std::endl;
     device_config->AddChannel(channel);
 }
 
