@@ -15,6 +15,7 @@ public:
                         PHandlerConfig handler_config,
                         PModbusConnector connector = 0);
 
+    void SetUp();
     void OnConnect(int rc);
     void OnMessage(const struct mosquitto_message *message);
     void OnSubscribe(int mid, int qos_count, const int *granted_qos);

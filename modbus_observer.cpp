@@ -10,6 +10,10 @@ TMQTTModbusObserver::TMQTTModbusObserver(PMQTTClientBase mqtt_client,
         Ports.push_back(
             std::unique_ptr<TModbusPort>(
                 new TModbusPort(mqtt_client, port_config, connector)));
+}
+
+void TMQTTModbusObserver::SetUp()
+{
     MQTTClient->Observe(shared_from_this());
 	MQTTClient->Connect();
 }

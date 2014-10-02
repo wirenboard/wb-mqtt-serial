@@ -62,6 +62,7 @@ int main(int argc, char *argv[])
 
     try {
         PMQTTModbusObserver modbus_observer(new TMQTTModbusObserver(mqtt_client, handler_config));
+        modbus_observer->SetUp();
         if (modbus_observer->WriteInitValues() && handler_config->Debug)
             cerr << "Register-based setup performed." << endl;
         mqtt_client->StartLoop();
