@@ -122,7 +122,7 @@
                             "name" : "White",
                             "reg_type" : "holding",
                             "address" : 7,
-                            "type": "range",
+                            "type": "dimmer",
                             "max": 255
                         },
                         {
