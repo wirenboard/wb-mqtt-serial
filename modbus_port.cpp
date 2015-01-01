@@ -38,7 +38,7 @@ void TModbusPort::PubSubSetup()
             MQTTClient->Publish(NULL, control_prefix + "/meta/type", channel->Type, 0, true);
             if (channel->ReadOnly)
                 MQTTClient->Publish(NULL, control_prefix + "/meta/readonly", "1", 0, true);
-            if (channel->Type == "range")
+            if (channel->Type == "range" || channel->Type == "dimmer")
                 MQTTClient->Publish(NULL, control_prefix + "/meta/max",
                                  channel->Max < 0 ? "65535" : std::to_string(channel->Max),
                                  0, true);
