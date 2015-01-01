@@ -59,8 +59,8 @@
                         },
                         {
                             "title": "Input 0 module",
-                            "address": 3,
-                            "value": 6
+                            "address": "0x03",
+                            "value": "0x06"
                         }
                     ],
                     "channels": [
@@ -123,7 +123,7 @@
                             "reg_type" : "holding",
                             "address" : 7,
                             "type": "dimmer",
-                            "max": 255
+                            "max": "0xff"
                         },
                         {
                             "name" : "RGB_All",
@@ -327,30 +327,30 @@
                     "name": "LC-103",
                     "id": "lc103",
                     "enabled": true,
-                    "slave_id": 4,
+                    "slave_id": "0x04",
                     "channels": [
                         {
                             "name" : "Relay 1",
                             "reg_type" : "coil",
-                            "address" : 0,
+                            "address" : "0x00",
                             "type": "switch"
                         },
                         {
                             "name" : "Relay 2",
                             "reg_type" : "coil",
-                            "address" : 1,
+                            "address" : "0x01",
                             "type": "switch"
                         },
                         {
                             "name" : "Relay 3",
                             "reg_type" : "coil",
-                            "address" : 2,
+                            "address" : "0x02",
                             "type": "switch"
                         },
                         {
                             "name" : "Switch AC In",
                             "reg_type" : "discrete",
-                            "address" : 0
+                            "address" : "0x00"
                         }
                     ]
                 }

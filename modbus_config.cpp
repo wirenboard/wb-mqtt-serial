@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 #include "modbus_config.h"
+#include "../common/utils.h"
 
 PHandlerConfig TConfigParser::Parse()
 {
@@ -29,7 +31,7 @@ TModbusRegister TConfigParser::LoadRegister(PDeviceConfig device_config,
                                             const Json::Value& register_data,
                                             std::string& default_type_str)
 {
-    int address = register_data["address"].asInt();
+    int address = GetInt(register_data, "address");
     std::string reg_type_str = register_data["reg_type"].asString();
     default_type_str = "text";
     TModbusRegister::RegisterType type;
@@ -106,12 +108,12 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
     if (channel_data.isMember("on_value")) {
         if (registers.size() != 1)
             throw TConfigParserException("can only use on_value for single-valued controls");
-        on_value = channel_data["on_value"].asInt();
+        on_value = GetInt(channel_data, "on_value");
     }
 
     int max = -1;
     if (channel_data.isMember("max"))
-        max = channel_data["max"].asInt();
+        max = GetInt(channel_data, "max");
 
     int order = device_config->NextOrderValue();
     PModbusChannel channel(new TModbusChannel(name, type_str, device_config->Id, order,
@@ -129,10 +131,10 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
         item_data["title"].asString() : "<unnamed>";
     if (!item_data.isMember("address"))
         throw TConfigParserException("no address specified for init item");
-    int address = item_data["address"].asInt();
+    int address = GetInt(item_data, "address");
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");
-    int value = item_data["value"].asInt();
+    int value = GetInt(item_data, "value");
     device_config->AddSetupItem(PDeviceSetupItem(new TDeviceSetupItem(name, address, value)));
 }
 
@@ -152,7 +154,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     PDeviceConfig device_config(new TDeviceConfig);
     device_config->Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
     device_config->Name = device_data["name"].asString();
-    device_config->SlaveId = device_data["slave_id"].asInt();
+    device_config->SlaveId = GetInt(device_data, "slave_id");
 
     if (device_data.isMember("setup")) {
         const Json::Value array = device_data["setup"];
@@ -183,19 +185,19 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
     port_config->ConnSettings.Device = port_data["path"].asString();
 
     if (port_data.isMember("baud_rate"))
-        port_config->ConnSettings.BaudRate = port_data["baud_rate"].asInt();
+        port_config->ConnSettings.BaudRate = GetInt(port_data, "baud_rate");
 
     if (port_data.isMember("parity"))
         port_config->ConnSettings.DataBits = port_data["parity"].asCString()[0]; // FIXME (can be '\0')
         
     if (port_data.isMember("data_bits"))
-        port_config->ConnSettings.DataBits = port_data["data_bits"].asInt();
+        port_config->ConnSettings.DataBits = GetInt(port_data, "data_bits");
 
     if (port_data.isMember("stop_bits"))
-        port_config->ConnSettings.StopBits = port_data["stop_bits"].asInt();
+        port_config->ConnSettings.StopBits = GetInt(port_data, "stop_bits");
 
     if (port_data.isMember("poll_interval"))
-        port_config->PollInterval = port_data["poll_interval"].asInt();
+        port_config->PollInterval = GetInt(port_data, "poll_interval");
 
     const Json::Value array = port_data["devices"];
     for(unsigned int index = 0; index < array.size(); ++index)
@@ -218,4 +220,20 @@ void TConfigParser::LoadConfig()
     const Json::Value array = root["ports"];
     for(unsigned int index = 0; index < array.size(); ++index)
         LoadPort(array[index], "wb-modbus-" + std::to_string(index) + "-");
+}
+
+int TConfigParser::GetInt(const Json::Value& obj, const std::string& key)
+{
+    Json::Value v = obj[key];
+
+    if (v.isInt())
+        return v.asInt();
+
+    if (v.isString()) {
+        try {
+            return std::stoi(v.asString(), 0, 16);
+        } catch (const std::logic_error& e) {}
+    }
+
+    throw TConfigParserException(key + ": plain integer or '0x..' hex string expected");
 }

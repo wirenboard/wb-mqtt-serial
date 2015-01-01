@@ -109,6 +109,8 @@ public:
     void LoadPort(const Json::Value& port_data, const std::string& id_prefix);
     void LoadConfig();
 private:
+    int GetInt(const Json::Value& obj, const std::string& key);
+
     std::string ConfigFileName;
     PHandlerConfig HandlerConfig;
     Json::Value root;
