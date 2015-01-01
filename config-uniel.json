@@ -1,0 +1,169 @@
+// Configuration options
+{
+    "debug": false,
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC1",
+            "type": "uniel",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 1,
+            "poll_interval": 10,
+            "enabled": true,
+            "devices" : [
+                {
+                    "name": "UCH-M121RX/0808",
+                    "id": "uchm121rx",
+                    "slave_id": 1,
+                    "enabled": true,
+                    "setup": [
+                        {
+                            "title": "Relay 0 manual mode",
+                            "address": 2,
+                            "value": 0
+                        },
+                        {
+                            "title": "Relay 1 manual mode",
+                            "address": 3,
+                            "value": 0
+                        },
+                        {
+                            "title": "Relay 2 manual mode",
+                            "address": 4,
+                            "value": 0
+                        },
+                        {
+                            "title": "Relay 3 manual mode",
+                            "address": 5,
+                            "value": 0
+                        },
+                        {
+                            "title": "Relay 4 manual mode",
+                            "address": 6,
+                            "value": 0
+                        },
+                        {
+                            "title": "Relay 5 manual mode",
+                            "address": 7,
+                            "value": 0
+                        },
+                        {
+                            "title": "Relay 6 manual mode",
+                            "address": 8,
+                            "value": 0
+                        },
+                        {
+                            "title": "Relay 7 manual mode",
+                            "address": 9,
+                            "value": 0
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Input 0",
+                            "reg_type": "input",
+                            "address": "0x10"
+                        },
+                        {
+                            "name": "Input 1",
+                            "reg_type": "input",
+                            "address": "0x11"
+                        },
+                        {
+                            "name": "Input 2",
+                            "reg_type": "input",
+                            "address": "0x12"
+                        },
+                        {
+                            "name": "Input 3",
+                            "reg_type": "input",
+                            "address": "0x13"
+                        },
+                        {
+                            "name": "Input 4",
+                            "reg_type": "input",
+                            "address": "0x14"
+                        },
+                        {
+                            "name": "Input 5",
+                            "reg_type": "input",
+                            "address": "0x15"
+                        },
+                        {
+                            "name": "Input 6",
+                            "reg_type": "input",
+                            "address": "0x16"
+                        },
+                        {
+                            "name": "Input 7",
+                            "reg_type": "input",
+                            "address": "0x17"
+                        },
+                        {
+                            "name" : "Relay 0",
+                            "reg_type": "coil",
+                            "address": "0x1a"
+                        },
+                        {
+                            "name" : "Relay 1",
+                            "reg_type": "coil",
+                            "address": "0x1b"
+                        },
+                        {
+                            "name" : "Relay 2",
+                            "reg_type": "coil",
+                            "address": "0x1c"
+                        },
+                        {
+                            "name" : "Relay 3",
+                            "reg_type": "coil",
+                            "address": "0x1d"
+                        },
+                        {
+                            "name" : "Relay 4",
+                            "reg_type": "coil",
+                            "address": "0x1e"
+                        },
+                        {
+                            "name" : "Relay 5",
+                            "reg_type": "coil",
+                            "address": "0x1f"
+                        },
+                        {
+                            "name" : "Relay 6",
+                            "reg_type": "coil",
+                            "address": "0x20"
+                        },
+                        {
+                            "name" : "Relay 7",
+                            "reg_type": "coil",
+                            "address": "0x21"
+                        },
+                        {
+                            "name": "LowThr 0",
+                            "reg_type": "holding",
+                            "address": "0x02",
+                            "type": "range",
+                            "max": "0xff"
+                        },
+                        {
+                            "name": "LowThr 1",
+                            "reg_type": "holding",
+                            "address": "0x03",
+                            "type": "range",
+                            "max": "0xff"
+                        },
+                        {
+                            "name": "LowThr 2",
+                            "reg_type": "holding",
+                            "address": "0x04",
+                            "type": "range",
+                            "max": "0xff"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

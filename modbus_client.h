@@ -66,6 +66,11 @@ public:
 
 typedef std::shared_ptr<TModbusConnector> PModbusConnector;
 
+class TDefaultModbusConnector: public TModbusConnector {
+public:
+    PModbusContext CreateContext(const TModbusConnectionSettings& settings);
+};
+
 struct TModbusRegister
 {
     enum RegisterFormat { U16, S16, U8, S8 };

@@ -23,7 +23,10 @@ public:
     void ModbusLoopOnce();
     void ModbusLoop();
     bool WriteInitValues();
+
 private:
+    PModbusConnector GetConnector(PPortConfig port_config);
+
     PMQTTClientBase MQTTClient;
     PHandlerConfig Config;
     std::vector<std::unique_ptr<TModbusPort>> Ports;

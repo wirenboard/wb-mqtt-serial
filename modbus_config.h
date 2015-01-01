@@ -64,6 +64,7 @@ struct TPortConfig
     TModbusConnectionSettings ConnSettings;
     int PollInterval = 2000;
     bool Debug = false;
+    std::string Type;
     std::vector<PDeviceConfig> DeviceConfigs;
 };
 

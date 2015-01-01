@@ -111,11 +111,6 @@ void TDefaultModbusContext::USleep(int usec)
     usleep(usec);
 }
 
-class TDefaultModbusConnector: public TModbusConnector {
-public:
-    PModbusContext CreateContext(const TModbusConnectionSettings& settings);
-};
-
 PModbusContext TDefaultModbusConnector::CreateContext(const TModbusConnectionSettings& settings)
 {
     return PModbusContext(new TDefaultModbusContext(settings));

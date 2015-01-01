@@ -202,6 +202,9 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
     if (port_data.isMember("poll_interval"))
         port_config->PollInterval = GetInt(port_data, "poll_interval");
 
+    if (port_data.isMember("type"))
+        port_config->Type = port_data["type"].asString();
+
     const Json::Value array = port_data["devices"];
     for(unsigned int index = 0; index < array.size(); ++index)
         LoadDevice(port_config, array[index], id_prefix + std::to_string(index));

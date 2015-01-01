@@ -1,4 +1,5 @@
 #include "modbus_observer.h"
+#include "uniel_context.h"
 
 TMQTTModbusObserver::TMQTTModbusObserver(PMQTTClientBase mqtt_client,
                                          PHandlerConfig handler_config,
@@ -6,10 +7,13 @@ TMQTTModbusObserver::TMQTTModbusObserver(PMQTTClientBase mqtt_client,
     : MQTTClient(mqtt_client),
       Config(handler_config)
 {
-    for (const auto& port_config : Config->PortConfigs)
+    for (const auto& port_config : Config->PortConfigs) {
         Ports.push_back(
             std::unique_ptr<TModbusPort>(
-                new TModbusPort(mqtt_client, port_config, connector)));
+                new TModbusPort(mqtt_client, port_config,
+                                connector ? connector :
+                                GetConnector(port_config))));
+    }
 }
 
 void TMQTTModbusObserver::SetUp()
@@ -68,4 +72,16 @@ bool TMQTTModbusObserver::WriteInitValues()
     }
 
     return did_write;
+}
+
+PModbusConnector TMQTTModbusObserver::GetConnector(PPortConfig port_config)
+{
+    if (port_config->Type == "uniel")
+        return PModbusConnector(new TUnielModbusConnector());
+
+    if (!port_config->Type.empty() && port_config->Type != "modbus")
+        std::cerr << "warning: bad port type '" << port_config->Type <<
+            "', using 'modbus'" << std::endl;
+
+    return PModbusConnector(new TDefaultModbusConnector());
 }
