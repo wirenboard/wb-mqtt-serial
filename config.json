@@ -60,7 +60,7 @@
                         {
                             "title": "Input 0 module",
                             "address": "0x03",
-                            "value": "0x06"
+                            "value": "6"
                         }
                     ],
                     "channels": [
