@@ -89,7 +89,7 @@ void TUnielBus::EnsurePortOpen()
 void TUnielBus::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
 {
     EnsurePortOpen();
-    unsigned char buf[8];
+    uint8_t buf[8];
     buf[0] = buf[1] = 0xff;
     buf[2] = cmd;
     buf[3] = mod;
@@ -130,7 +130,7 @@ uint8_t TUnielBus::ReadByte()
 
 void TUnielBus::ReadResponse(uint8_t cmd, uint8_t* response)
 {
-    unsigned char buf[5];
+    uint8_t buf[5];
     for (;;) {
         if (ReadByte() != 0xff || ReadByte() != 0xff) {
             std::cerr << "uniel: warning: resync" << std::endl;
