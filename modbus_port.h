@@ -16,6 +16,7 @@ public:
     bool HandleMessage(const std::string& topic, const std::string& payload);
     std::string GetChannelTopic(const TModbusChannel& channel);
     bool WriteInitValues();
+
 private:
     void OnModbusValueChange(const TModbusRegister& reg);
     PMQTTClientBase MQTTClient;

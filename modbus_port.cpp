@@ -164,14 +164,19 @@ bool TModbusPort::WriteInitValues()
 {
     bool did_write = false;
     for (const auto& device_config : Config->DeviceConfigs) {
-        for (const auto& setup_item : device_config->SetupItems) {
-            if (Config->Debug)
-                std::cerr << "Init: " << setup_item->Name << ": holding register " <<
-                    setup_item->Address << " <-- " << setup_item->Value << std::endl;
-            ModbusClient->WriteHoldingRegister(device_config->SlaveId,
-                                         setup_item->Address,
-                                         setup_item->Value);
-            did_write = true;
+        try {
+            for (const auto& setup_item : device_config->SetupItems) {
+                if (Config->Debug)
+                    std::cerr << "Init: " << setup_item->Name << ": holding register " <<
+                        setup_item->Address << " <-- " << setup_item->Value << std::endl;
+                ModbusClient->WriteHoldingRegister(device_config->SlaveId,
+                                                   setup_item->Address,
+                                                   setup_item->Value);
+                did_write = true;
+            }
+        } catch (const TModbusException& e) {
+            std::cerr << "WARNING: device '" << device_config->Name <<
+                "' setup failed: " << e.what() << std::endl;
         }
     }
 
