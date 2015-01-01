@@ -196,6 +196,9 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
     if (port_data.isMember("stop_bits"))
         port_config->ConnSettings.StopBits = GetInt(port_data, "stop_bits");
 
+    if (port_data.isMember("response_timeout_ms"))
+        port_config->ConnSettings.ResponseTimeoutMs = GetInt(port_data, "response_timeout_ms");
+
     if (port_data.isMember("poll_interval"))
         port_config->PollInterval = GetInt(port_data, "poll_interval");
 
