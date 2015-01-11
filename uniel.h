@@ -23,7 +23,7 @@ public:
 
 class TUnielBus {
 public:
-    static const int DefaultTimeoutMs = 5000;
+    static const int DefaultTimeoutMs = 1000;
 
     TUnielBus(const std::string& device, int timeout_ms = DefaultTimeoutMs);
     ~TUnielBus();
