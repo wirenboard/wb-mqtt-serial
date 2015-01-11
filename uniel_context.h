@@ -3,6 +3,12 @@
 #include "uniel.h"
 #include "modbus_client.h"
 
+namespace {
+    enum {
+        ADDR_TYPE_BRIGHTNESS = 0x01
+    };
+}
+
 class TUnielModbusContext: public TModbusContext
 {
 public:

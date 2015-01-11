@@ -67,8 +67,11 @@ void TUnielModbusContext::ReadHoldingRegisters(int addr, int nb, uint16_t *dest)
 {
     try {
         Connect();
-        for (int i = 0; i < nb; ++i)
-            *dest++ = Bus.ReadRegister(SlaveAddr, addr + i);
+        for (int i = 0; i < nb; ++i) {
+            // so far, all Uniel address types store register to read
+            // in the low byte
+            *dest++ = Bus.ReadRegister(SlaveAddr, (addr + i) & 0xFF );
+        }
     } catch (const TUnielBusTransientErrorException& e) {
         throw TModbusException(e.what());
     } catch (const TUnielBusException& e) {
@@ -81,8 +84,24 @@ void TUnielModbusContext::WriteHoldingRegisters(int addr, int nb, const uint16_t
 {
     try {
         Connect();
-        for (int i = 0; i < nb; ++i)
-            Bus.WriteRegister(SlaveAddr, addr, *data++);
+        for (int i = 0; i < nb; ++i) {
+            int cur_addr = addr + i;
+            if ( (cur_addr >= 0x00) && (cur_addr <= 0xFF) ) {
+                // address is between 0x00 and 0xFF, so treat it as
+                // normal Uniel register (read via 0x05, write via 0x06)
+                Bus.WriteRegister(SlaveAddr, cur_addr, *data++);
+            } else {
+                int addr_type = cur_addr >> 24;
+                if (addr_type == ADDR_TYPE_BRIGHTNESS ) {
+                    // address is 0x01XXWWRR, where RR is register to read
+                    // via 0x05 cmd, WW - register to write via 0x0A cmd
+                    uint8_t addr_write = (cur_addr & 0xFF00) >> 8;
+                    Bus.SetBrightness(SlaveAddr, addr_write, *data++);
+                } else {
+                    throw TModbusException("unsupported Uniel register address: " + std::to_string(cur_addr));
+                }
+            }
+        }
     } catch (const TUnielBusTransientErrorException& e) {
         throw TModbusException(e.what());
     } catch (const TUnielBusException& e) {
