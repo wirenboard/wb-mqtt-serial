@@ -63,42 +63,42 @@
                         {
                             "name": "Input 0",
                             "reg_type": "input",
-                            "address": "0x10"
+                            "address": "0x0a"
                         },
                         {
                             "name": "Input 1",
                             "reg_type": "input",
-                            "address": "0x11"
+                            "address": "0x0b"
                         },
                         {
                             "name": "Input 2",
                             "reg_type": "input",
-                            "address": "0x12"
+                            "address": "0x0c"
                         },
                         {
                             "name": "Input 3",
                             "reg_type": "input",
-                            "address": "0x13"
+                            "address": "0x0d"
                         },
                         {
                             "name": "Input 4",
                             "reg_type": "input",
-                            "address": "0x14"
+                            "address": "0x0e"
                         },
                         {
                             "name": "Input 5",
                             "reg_type": "input",
-                            "address": "0x15"
+                            "address": "0x0f"
                         },
                         {
                             "name": "Input 6",
                             "reg_type": "input",
-                            "address": "0x16"
+                            "address": "0x10"
                         },
                         {
                             "name": "Input 7",
                             "reg_type": "input",
-                            "address": "0x17"
+                            "address": "0x11"
                         },
                         {
                             "name" : "Relay 0",
@@ -160,135 +160,95 @@
                             "address": "0x04",
                             "type": "range",
                             "max": "0xff"
-                        }
-                    ]
-                },
-                {
-                    "name": "UCH-M141RC/0808",
-                    "id": "uchm141rc",
-                    "slave_id": 2,
-                    "enabled": true,
-
-                    "channels": [
-                        {
-                            "name": "Input 0",
-                            "reg_type": "input",
-                            "address": "0x0A"
                         },
                         {
-                            "name": "Input 1",
-                            "reg_type": "input",
-                            "address": "0x0B"
-                        },
-                        {
-                            "name": "Input 2",
-                            "reg_type": "input",
-                            "address": "0x0C"
-                        },
-                        {
-                            "name": "Input 3",
-                            "reg_type": "input",
-                            "address": "0x0D"
-                        },
-                        {
-                            "name": "Input 4",
-                            "reg_type": "input",
-                            "address": "0x0E"
-                        },
-                        {
-                            "name": "Input 5",
-                            "reg_type": "input",
-                            "address": "0x0F"
-                        },
-                        {
-                            "name": "Input 6",
-                            "reg_type": "input",
-                            "address": "0x10"
-                        },
-                        {
-                            "name": "Input 7",
-                            "reg_type": "input",
-                            "address": "0x11"
-                        },
-
-                        {
-                            "name" : "LED 0",
+                            "name": "LowThr 3",
                             "reg_type": "holding",
-                            "address": "0x01000040",
+                            "address": "0x05",
                             "type": "range",
                             "max": "0xff"
                         },
                         {
-                            "name" : "LED 1",
+                            "name": "LowThr 4",
                             "reg_type": "holding",
-                            "address": "0x01000141",
+                            "address": "0x06",
                             "type": "range",
                             "max": "0xff"
                         },
                         {
-                            "name" : "LED 2",
+                            "name": "LowThr 5",
                             "reg_type": "holding",
-                            "address": "0x01000242",
+                            "address": "0x07",
                             "type": "range",
                             "max": "0xff"
                         },
                         {
-                            "name" : "LED 3",
+                            "name": "LowThr 6",
                             "reg_type": "holding",
-                            "address": "0x01000343",
+                            "address": "0x08",
                             "type": "range",
                             "max": "0xff"
                         },
                         {
-                            "name" : "LED 4",
+                            "name": "LowThr 7",
                             "reg_type": "holding",
-                            "address": "0x01000444",
+                            "address": "0x09",
                             "type": "range",
                             "max": "0xff"
                         },
                         {
-                            "name" : "LED 5",
+                            "name": "HiThr 0",
                             "reg_type": "holding",
-                            "address": "0x01000545",
+                            "address": "0x12",
                             "type": "range",
                             "max": "0xff"
                         },
                         {
-                            "name" : "LED 6",
+                            "name": "HiThr 1",
                             "reg_type": "holding",
-                            "address": "0x01000646",
+                            "address": "0x13",
                             "type": "range",
                             "max": "0xff"
                         },
                         {
-                            "name" : "LED 7",
+                            "name": "HiThr 2",
                             "reg_type": "holding",
-                            "address": "0x01000747",
-                            "type": "range",
-                            "max": "0xff"
-                        },
-
-
-
-
-                        {
-                            "name": "LowThr",
-                            "reg_type": "holding",
-                            "address": "0x02",
+                            "address": "0x14",
                             "type": "range",
                             "max": "0xff"
                         },
                         {
-                            "name": "HighThr",
+                            "name": "HiThr 3",
                             "reg_type": "holding",
-                            "address": "0x03",
+                            "address": "0x15",
                             "type": "range",
                             "max": "0xff"
                         },
                         {
-                            "name": "Fade",
+                            "name": "HiThr 4",
                             "reg_type": "holding",
-                            "address": "0x04",
+                            "address": "0x16",
+                            "type": "range",
+                            "max": "0xff"
+                        },
+                        {
+                            "name": "HiThr 5",
+                            "reg_type": "holding",
+                            "address": "0x17",
+                            "type": "range",
+                            "max": "0xff"
+                        },
+                        {
+                            "name": "HiThr 6",
+                            "reg_type": "holding",
+                            "address": "0x18",
+                            "type": "range",
+                            "max": "0xff"
+                        },
+                        {
+                            "name": "HiThr 7",
+                            "reg_type": "holding",
+                            "address": "0x19",
                             "type": "range",
                             "max": "0xff"
                         }
