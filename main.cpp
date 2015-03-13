@@ -13,6 +13,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     TMQTTClient::TConfig mqtt_config;
+    string templates_folder = "/etc/wb-homa-modbus-templates";
     mqtt_config.Host = "localhost";
     mqtt_config.Port = 1883;
     string config_fname;
@@ -46,7 +47,8 @@ int main(int argc, char *argv[])
 
     PHandlerConfig handler_config;
     try {
-        TConfigParser parser(config_fname, debug);
+        TConfigDeviceParser device_parser(templates_folder, debug);
+        TConfigParser parser(config_fname, debug, device_parser.Parse());
         handler_config = parser.Parse();
     } catch (const TConfigParserException& e) {
         cerr << "FATAL: " << e.what() << endl;

@@ -1,9 +1,71 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
+#include<dirent.h>
+#include<unistd.h>
+#include<sys/stat.h>
+#include<sys/types.h>
+#include<string>
 
 #include "modbus_config.h"
 #include "../common/utils.h"
+
+using namespace std;
+
+TConfigDeviceParser::TConfigDeviceParser(const string& template_config_dir, bool debug)
+    : DirectoryName(template_config_dir),
+      Debug(debug)
+{
+}
+
+map<string, TDeviceJson> TConfigDeviceParser::Parse(){
+    DIR *dir;
+    struct dirent *dirp;
+    struct stat filestat;
+    ifstream input_stream;
+    if ((dir = opendir(DirectoryName.c_str())) == NULL){
+        throw TConfigParserException("Cannot open templates directory");
+    }
+    while ((dirp = readdir(dir))) {
+        string dname = dirp->d_name;
+        if(dname == "." || dname == "..")
+            continue;
+        string filepath = DirectoryName + "/" + dname;
+        if (stat( filepath.c_str(), &filestat )) continue;
+        if (S_ISDIR( filestat.st_mode ))         continue;
+
+        input_stream.open(dirp->d_name);
+        if (!input_stream.is_open()){
+            throw TConfigParserException("Error while trying to open template config file");
+        }
+        Json::Reader reader;
+        bool parsedSuccess = reader.parse(input_stream, root, false);
+
+        // Report failures and their locations in the document.
+        if(not parsedSuccess)
+            throw TConfigParserException("Failed to parse JSON: " + reader.getFormatedErrorMessages());
+
+        LoadDeviceTemplates();
+    }
+    closedir(dir);
+    return Templates;
+}
+
+void TConfigDeviceParser::LoadDeviceTemplates(){
+    if (!root.isObject())
+        throw TConfigParserException("malformed config");
+    if(root.isMember("device_type")){
+        if (!root.isMember("device")){
+            if (Debug)
+                cerr << "incorrect template json\n";
+            return;
+        }
+        Templates[root["device_type"].asString()] = root["device"];
+    }else{
+        if (Debug)
+            cerr << "there is no device_type in json template\n";
+    }
+}
 
 PHandlerConfig TConfigParser::Parse()
 {
@@ -27,7 +89,7 @@ PHandlerConfig TConfigParser::Parse()
     return HandlerConfig;
 }
 
-TModbusRegister TConfigParser::LoadRegister(PDeviceConfig device_config,
+TModbusRegister TConfigActionParser::LoadRegister(PDeviceConfig device_config,
                                             const Json::Value& register_data,
                                             std::string& default_type_str)
 {
@@ -68,7 +130,7 @@ TModbusRegister TConfigParser::LoadRegister(PDeviceConfig device_config,
     return TModbusRegister(device_config->SlaveId, type, address, format, scale, true);
 }
 
-void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
+void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
 {
     if (!channel_data.isObject())
         throw TConfigParserException("malformed config");
@@ -122,7 +184,7 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
     device_config->AddChannel(channel);
 }
 
-void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data)
+void TConfigActionParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data)
 {
     if (!item_data.isObject())
         throw TConfigParserException("malformed config");
@@ -136,6 +198,21 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
         throw TConfigParserException("no reg specified for init item");
     int value = GetInt(item_data, "value");
     device_config->AddSetupItem(PDeviceSetupItem(new TDeviceSetupItem(name, address, value)));
+}
+
+void TConfigActionParser::LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data)
+{
+    if (device_data.isMember("setup")) {
+        const Json::Value array = device_data["setup"];
+        for(unsigned int index = 0; index < array.size(); ++index)
+            LoadSetupItem(device_config, array[index]);
+    }
+
+    const Json::Value array = device_data["channels"];
+    for(unsigned int index = 0; index < array.size(); ++index)
+        LoadChannel(device_config, array[index]);
+
+
 }
 
 void TConfigParser::LoadDevice(PPortConfig port_config,
@@ -155,16 +232,17 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     device_config->Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
     device_config->Name = device_data["name"].asString();
     device_config->SlaveId = GetInt(device_data, "slave_id");
-
-    if (device_data.isMember("setup")) {
-        const Json::Value array = device_data["setup"];
-        for(unsigned int index = 0; index < array.size(); ++index)
-            LoadSetupItem(device_config, array[index]);
+    if (device_data.isMember("device_type")){
+        device_config->DeviceType = device_data["device_type"].asString();
+        std::map<string, TDeviceJson>::iterator it = TemplatesMap.find(device_config->DeviceType);
+        if (it != TemplatesMap.end()){
+            LoadDeviceVectors(device_config, it->second);
+        }
+        else{
+            cerr << "Not found such device_type in templates\n";
+        }
     }
-
-    const Json::Value array = device_data["channels"];
-    for(unsigned int index = 0; index < array.size(); ++index)
-        LoadChannel(device_config, array[index]);
+    LoadDeviceVectors(device_config, device_data);
 
     port_config->AddDeviceConfig(device_config);
 }
@@ -207,7 +285,7 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
 
     const Json::Value array = port_data["devices"];
     for(unsigned int index = 0; index < array.size(); ++index)
-        LoadDevice(port_config, array[index], id_prefix + std::to_string(index));
+            LoadDevice(port_config, array[index], id_prefix + std::to_string(index));
 
     HandlerConfig->AddPortConfig(port_config);
 }
@@ -228,7 +306,7 @@ void TConfigParser::LoadConfig()
         LoadPort(array[index], "wb-modbus-" + std::to_string(index) + "-");
 }
 
-int TConfigParser::GetInt(const Json::Value& obj, const std::string& key)
+int TConfigActionParser::GetInt(const Json::Value& obj, const std::string& key)
 {
     Json::Value v = obj[key];
 
