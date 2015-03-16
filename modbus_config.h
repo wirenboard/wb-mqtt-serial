@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 #include <exception>
-#include<map>
+#include <map>
 
 #include "modbus_client.h"
 #include "jsoncpp/json/json.h"
@@ -109,16 +109,16 @@ class TConfigActionParser
 
 typedef Json::Value TDeviceJson;
 
-class TConfigDeviceParser 
+class TConfigTemplateParser 
 {
     public :
-        TConfigDeviceParser(const std::string& template_config_dir, bool debug);
-        inline ~TConfigDeviceParser() { Templates.clear(); };
+        TConfigTemplateParser(const std::string& template_config_dir, bool debug);
+        inline ~TConfigTemplateParser() { Templates.clear(); };
         std::map<std::string, TDeviceJson> Parse();
 
     private:
         std::string DirectoryName;
-        void LoadDeviceTemplates();
+        void LoadDeviceTemplate(const std::string& filepath);
         bool Debug;
         std::map<std::string, TDeviceJson> Templates;
         Json::Value root;

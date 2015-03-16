@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
     PHandlerConfig handler_config;
     try {
-        TConfigDeviceParser device_parser(templates_folder, debug);
+        TConfigTemplateParser device_parser(templates_folder, debug);
         TConfigParser parser(config_fname, debug, device_parser.Parse());
         handler_config = parser.Parse();
     } catch (const TConfigParserException& e) {

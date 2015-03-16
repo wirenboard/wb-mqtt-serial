@@ -1,24 +1,24 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
-#include<dirent.h>
-#include<unistd.h>
-#include<sys/stat.h>
-#include<sys/types.h>
-#include<string>
+#include <dirent.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <string>
 
 #include "modbus_config.h"
 #include "../common/utils.h"
 
 using namespace std;
 
-TConfigDeviceParser::TConfigDeviceParser(const string& template_config_dir, bool debug)
+TConfigTemplateParser::TConfigTemplateParser(const string& template_config_dir, bool debug)
     : DirectoryName(template_config_dir),
       Debug(debug)
 {
 }
 
-map<string, TDeviceJson> TConfigDeviceParser::Parse(){
+map<string, TDeviceJson> TConfigTemplateParser::Parse(){
     DIR *dir;
     struct dirent *dirp;
     struct stat filestat;
@@ -36,7 +36,7 @@ map<string, TDeviceJson> TConfigDeviceParser::Parse(){
 
         input_stream.open(dirp->d_name);
         if (!input_stream.is_open()){
-            throw TConfigParserException("Error while trying to open template config file");
+            throw TConfigParserException("Error while trying to open template config file " + filepath);
         }
         Json::Reader reader;
         bool parsedSuccess = reader.parse(input_stream, root, false);
@@ -45,25 +45,25 @@ map<string, TDeviceJson> TConfigDeviceParser::Parse(){
         if(not parsedSuccess)
             throw TConfigParserException("Failed to parse JSON: " + reader.getFormatedErrorMessages());
 
-        LoadDeviceTemplates();
+        LoadDeviceTemplate(filepath);
     }
     closedir(dir);
     return Templates;
 }
 
-void TConfigDeviceParser::LoadDeviceTemplates(){
+void TConfigTemplateParser::LoadDeviceTemplate(const string& filepath){
     if (!root.isObject())
-        throw TConfigParserException("malformed config");
+        throw TConfigParserException("malformed config in file " + filepath);
     if(root.isMember("device_type")){
         if (!root.isMember("device")){
             if (Debug)
-                cerr << "incorrect template json\n";
+                cerr << "incorrect template json in file" << filepath << endl;
             return;
         }
         Templates[root["device_type"].asString()] = root["device"];
     }else{
         if (Debug)
-            cerr << "there is no device_type in json template\n";
+            cerr << "there is no device_type in json template in file " << filepath << endl;
     }
 }
 
