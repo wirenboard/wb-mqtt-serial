@@ -18,12 +18,13 @@ TConfigTemplateParser::TConfigTemplateParser(const string& template_config_dir, 
 {
 }
 
-map<string, TDeviceJson> TConfigTemplateParser::Parse(){
+map<string, TDeviceJson> TConfigTemplateParser::Parse()
+{
     DIR *dir;
     struct dirent *dirp;
     struct stat filestat;
     ifstream input_stream;
-    if ((dir = opendir(DirectoryName.c_str())) == NULL){
+    if ((dir = opendir(DirectoryName.c_str())) == NULL) {
         throw TConfigParserException("Cannot open templates directory");
     }
     while ((dirp = readdir(dir))) {
@@ -34,8 +35,8 @@ map<string, TDeviceJson> TConfigTemplateParser::Parse(){
         if (stat( filepath.c_str(), &filestat )) continue;
         if (S_ISDIR( filestat.st_mode ))         continue;
 
-        input_stream.open(dirp->d_name);
-        if (!input_stream.is_open()){
+        input_stream.open(filepath);
+        if (!input_stream.is_open()) {
             throw TConfigParserException("Error while trying to open template config file " + filepath);
         }
         Json::Reader reader;
@@ -51,42 +52,16 @@ map<string, TDeviceJson> TConfigTemplateParser::Parse(){
     return Templates;
 }
 
-void TConfigTemplateParser::LoadDeviceTemplate(const string& filepath){
+void TConfigTemplateParser::LoadDeviceTemplate(const string& filepath)
+{
     if (!root.isObject())
         throw TConfigParserException("malformed config in file " + filepath);
-    if(root.isMember("device_type")){
-        if (!root.isMember("device")){
-            if (Debug)
-                cerr << "incorrect template json in file" << filepath << endl;
-            return;
-        }
-        Templates[root["device_type"].asString()] = root["device"];
-    }else{
+    if (root.isMember("device_type")) { 
+            Templates[root["device_type"].asString()] = root["device"];
+    } else {
         if (Debug)
             cerr << "there is no device_type in json template in file " << filepath << endl;
     }
-}
-
-PHandlerConfig TConfigParser::Parse()
-{
-    // Let's parse it
-    Json::Reader reader;
-
-    if (ConfigFileName.empty())
-        throw TConfigParserException("Please specify config file with -c option");
-
-    std::ifstream myfile (ConfigFileName);
-    if (myfile.fail())
-        throw TConfigParserException("Modbus driver configuration file not found: " + ConfigFileName);
-
-    bool parsedSuccess = reader.parse(myfile, root, false);
-
-    // Report failures and their locations in the document.
-    if(not parsedSuccess)
-        throw TConfigParserException("Failed to parse JSON: " + reader.getFormatedErrorMessages());
-
-    LoadConfig();
-    return HandlerConfig;
 }
 
 TModbusRegister TConfigActionParser::LoadRegister(PDeviceConfig device_config,
@@ -215,27 +190,74 @@ void TConfigActionParser::LoadDeviceVectors(PDeviceConfig device_config, const J
 
 }
 
+int TConfigActionParser::GetInt(const Json::Value& obj, const std::string& key)
+{
+    Json::Value v = obj[key];
+
+    if (v.isInt())
+        return v.asInt();
+
+    if (v.isString()) {
+        try {
+            return std::stoi(v.asString(), 0, 16);
+        } catch (const std::logic_error& e) {}
+    }
+
+    throw TConfigParserException(key + ": plain integer or '0x..' hex string expected");
+}
+
+PHandlerConfig TConfigParser::Parse()
+{
+    // Let's parse it
+    Json::Reader reader;
+
+    if (ConfigFileName.empty())
+        throw TConfigParserException("Please specify config file with -c option");
+
+    std::ifstream myfile (ConfigFileName);
+    if (myfile.fail())
+        throw TConfigParserException("Modbus driver configuration file not found: " + ConfigFileName);
+
+    bool parsedSuccess = reader.parse(myfile, root, false);
+
+    // Report failures and their locations in the document.
+    if(not parsedSuccess)
+        throw TConfigParserException("Failed to parse JSON: " + reader.getFormatedErrorMessages());
+
+    LoadConfig();
+    return HandlerConfig;
+}
+
 void TConfigParser::LoadDevice(PPortConfig port_config,
                                const Json::Value& device_data,
                                const std::string& default_id)
 {
     if (!device_data.isObject())
         throw TConfigParserException("malformed config");
-
-    if (!device_data.isMember("name"))
-        throw TConfigParserException("device name not specified");
-
     if (device_data.isMember("enabled") && !device_data["enabled"].asBool())
         return;
 
     PDeviceConfig device_config(new TDeviceConfig);
     device_config->Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
-    device_config->Name = device_data["name"].asString();
+    device_config->Name = device_data.isMember("name") ? device_data["name"].asString() : "";
     device_config->SlaveId = GetInt(device_data, "slave_id");
     if (device_data.isMember("device_type")){
         device_config->DeviceType = device_data["device_type"].asString();
         std::map<string, TDeviceJson>::iterator it = TemplatesMap.find(device_config->DeviceType);
         if (it != TemplatesMap.end()){
+            if (it->second.isMember("name")) {
+                if (device_config->Name == "")
+                    device_config->Name = it->second["name"].asString() + " " + to_string(device_config->SlaveId);
+            }else {
+                if (device_config->Name == "")
+                    throw TConfigParserException(" Not set the device_name for " + device_config->DeviceType);
+            }
+            if (it->second.isMember("id")) {
+                if (device_config->Id == default_id) 
+                    device_config->Id = it->second["id"].asString() + "_" + to_string(device_config->SlaveId);
+            }
+ 
+
             LoadDeviceVectors(device_config, it->second);
         }
         else{
@@ -304,20 +326,4 @@ void TConfigParser::LoadConfig()
     const Json::Value array = root["ports"];
     for(unsigned int index = 0; index < array.size(); ++index)
         LoadPort(array[index], "wb-modbus-" + std::to_string(index) + "-");
-}
-
-int TConfigActionParser::GetInt(const Json::Value& obj, const std::string& key)
-{
-    Json::Value v = obj[key];
-
-    if (v.isInt())
-        return v.asInt();
-
-    if (v.isString()) {
-        try {
-            return std::stoi(v.asString(), 0, 16);
-        } catch (const std::logic_error& e) {}
-    }
-
-    throw TConfigParserException(key + ": plain integer or '0x..' hex string expected");
 }
