@@ -1,0 +1,45 @@
+// Configuration options
+{
+	"device_type" : "tm-P3R3",
+	"device" : {
+	    "name": "tM-P3R3",
+	    "id": "tmp3r3",
+	    "enabled": true,
+	    "channels": [
+			    {
+				"name" : "Relay 0",
+				"reg_type" : "coil",
+				"address" : 0,
+				"type": "switch"
+			    },
+			    {
+				"name" : "Relay 1",
+				"reg_type" : "coil",
+				"address" : 1,
+				"type": "switch"
+			    },
+			    {
+				"name" : "Relay 2",
+				"reg_type" : "coil",
+				"address" : 2,
+				"type": "switch"
+			    },
+			    {
+				"name" : "Input 0",
+				"reg_type" : "discrete",
+				"address" : 32
+			    },
+			    {
+				"name" : "Input 1",
+				"reg_type" : "discrete",
+				"address" : 33
+			    },
+			    {
+				"name" : "Input 2",
+				"reg_type" : "discrete",
+				"address" : 34
+			    }
+			]
+		    }
+}
+ 

@@ -1,0 +1,35 @@
+// Configuration options
+{
+	"device_type" : "LC-103",
+	"device" : {
+		"name": "LC-103",
+		"id": "lc103",
+	    "enabled": true,
+	    "channels": [
+			    {
+				"name" : "Relay 1",
+				"reg_type" : "coil",
+				"address" : "0x00",
+				"type": "switch"
+			    },
+			    {
+				"name" : "Relay 2",
+				"reg_type" : "coil",
+				"address" : "0x01",
+				"type": "switch"
+			    },
+			    {
+				"name" : "Relay 3",
+				"reg_type" : "coil",
+				"address" : "0x02",
+				"type": "switch"
+			    },
+			    {
+				"name" : "Switch AC In",
+				"reg_type" : "discrete",
+				"address" : "0x00"
+			    }
+	    ]
+	}
+}
+

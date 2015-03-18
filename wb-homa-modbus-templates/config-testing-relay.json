@@ -1,0 +1,19 @@
+// Configuration options
+{
+	"device_type" : "testing",
+	"device" : {
+	    "name" : "TestingRelay",
+	    "id" : "testingRS435",
+	    "enabled" : true,
+	    "channels" : [
+		{
+		    "name" : "Relay 1",
+		    "reg_type" : "coil",
+		    "address" : 0,
+		    "type": "switch"
+		}
+		
+	    ]
+	}
+}
+                    
