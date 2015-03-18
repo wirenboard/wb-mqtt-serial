@@ -1,9 +1,9 @@
 // Configuration options
 {
-	"device_type" : "testing",
+	"device_type" : "wb-mrm2",
 	"device" : {
 	    "name" : "WB-MRM2",
-	    "id" : "WB-MRM2",
+	    "id" : "wb-mrm2",
 	    "enabled" : true,
 	    "channels" : [
 		{
@@ -11,8 +11,13 @@
 		    "reg_type" : "coil",
 		    "address" : 0,
 		    "type": "switch"
+		},
+		{
+		    "name" : "Relay 2",
+		    "reg_type" : "coil",
+		    "address" : 1,
+		    "type": "switch"
 		}
-		
 	    ]
 	}
 }
