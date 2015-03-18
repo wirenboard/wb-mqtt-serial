@@ -23,9 +23,9 @@ map<string, TDeviceJson> TConfigTemplateParser::Parse()
     DIR *dir;
     struct dirent *dirp;
     struct stat filestat;
-    ifstream input_stream;
     if ((dir = opendir(DirectoryName.c_str())) == NULL) {
-        throw TConfigParserException("Cannot open templates directory");
+        cerr << "Cannot open templates directory";
+        exit(EXIT_FAILURE);
     }
     while ((dirp = readdir(dir))) {
         string dname = dirp->d_name;
@@ -35,27 +35,34 @@ map<string, TDeviceJson> TConfigTemplateParser::Parse()
         if (stat( filepath.c_str(), &filestat )) continue;
         if (S_ISDIR( filestat.st_mode ))         continue;
 
+        ifstream input_stream;
         input_stream.open(filepath);
         if (!input_stream.is_open()) {
-            throw TConfigParserException("Error while trying to open template config file " + filepath);
+            cerr << "Error while trying to open template config file " << filepath << endl;
+            continue;
         }
         Json::Reader reader;
+        Json::Value root;
         bool parsedSuccess = reader.parse(input_stream, root, false);
 
         // Report failures and their locations in the document.
-        if(not parsedSuccess)
-            throw TConfigParserException("Failed to parse JSON: " + reader.getFormatedErrorMessages());
+        if(not parsedSuccess) {
+            cerr << "Failed to parse JSON: " << reader.getFormatedErrorMessages() << endl;
+            continue;
+        }
 
-        LoadDeviceTemplate(filepath);
+        LoadDeviceTemplate(root, filepath);
     }
     closedir(dir);
     return Templates;
 }
 
-void TConfigTemplateParser::LoadDeviceTemplate(const string& filepath)
+void TConfigTemplateParser::LoadDeviceTemplate(const Json::Value& root, const string& filepath)
 {
-    if (!root.isObject())
-        throw TConfigParserException("malformed config in file " + filepath);
+    if (!root.isObject()) {
+        cerr << "malformed config in file " + filepath;
+        exit(EXIT_FAILURE);
+    }
     if (root.isMember("device_type")) { 
             Templates[root["device_type"].asString()] = root["device"];
     } else {
@@ -210,7 +217,6 @@ PHandlerConfig TConfigParser::Parse()
 {
     // Let's parse it
     Json::Reader reader;
-
     if (ConfigFileName.empty())
         throw TConfigParserException("Please specify config file with -c option");
 
@@ -256,7 +262,6 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
                 if (device_config->Id == default_id) 
                     device_config->Id = it->second["id"].asString() + "_" + to_string(device_config->SlaveId);
             }
- 
 
             LoadDeviceVectors(device_config, it->second);
         }

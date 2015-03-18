@@ -2,8 +2,8 @@
 {
 	"device_type" : "testing",
 	"device" : {
-	    "name" : "TestingRelay",
-	    "id" : "testingRS435",
+	    "name" : "WB-MRM2",
+	    "id" : "WB-MRM2",
 	    "enabled" : true,
 	    "channels" : [
 		{

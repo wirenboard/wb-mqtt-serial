@@ -117,10 +117,9 @@ class TConfigTemplateParser
 
     private:
         std::string DirectoryName;
-        void LoadDeviceTemplate(const std::string& filepath);
+        void LoadDeviceTemplate(const Json::Value& root, const std::string& filepath);
         bool Debug;
         std::map<std::string, TDeviceJson> Templates;
-        Json::Value root;
 };
 
 
