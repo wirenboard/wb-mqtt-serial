@@ -47,7 +47,7 @@ map<string, TDeviceJson> TConfigTemplateParser::Parse()
 
         // Report failures and their locations in the document.
         if(not parsedSuccess) {
-            cerr << "Failed to parse JSON: " << reader.getFormatedErrorMessages() << endl;
+            cerr << "Failed to parse JSON: " << filepath << " " << reader.getFormatedErrorMessages() << endl;
             continue;
         }
 
@@ -92,7 +92,7 @@ TModbusRegister TConfigActionParser::LoadRegister(PDeviceConfig device_config,
         type = TModbusRegister::RegisterType::INPUT_REGISTER;
         default_type_str = "text";
     } else
-        throw TConfigParserException("invalid register type: " + reg_type_str);
+        throw TConfigParserException("invalid register type: " + reg_type_str + " " + device_config->DeviceType);
 
     TModbusRegister::RegisterFormat format = TModbusRegister::U16;
     if (register_data.isMember("format")) {
@@ -115,10 +115,7 @@ TModbusRegister TConfigActionParser::LoadRegister(PDeviceConfig device_config,
 void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
 {
     if (!channel_data.isObject())
-        throw TConfigParserException("malformed config");
-
-    if (channel_data.isMember("enabled") && !channel_data["enabled"].asBool())
-        return;
+        throw TConfigParserException(string("malformed config") + " " + device_config->DeviceType);
 
     std::string name = channel_data["name"].asString();
     std::string default_type_str;
@@ -131,11 +128,11 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
             if (!index)
                 default_type_str = def_type;
             else if (registers[index].IsReadOnly() != registers[0].IsReadOnly())
-                throw TConfigParserException("can't mix read-only and writable registers "
-                                             "in one channel");
+                throw TConfigParserException(string("can't mix read-only and writable registers "
+                                             "in one channel") + " " + device_config->DeviceType);
         }
         if (!registers.size())
-            throw TConfigParserException("empty \"consists_of\" section");
+            throw TConfigParserException(string("empty \"consists_of\" section") + " " + device_config->DeviceType);
     } else
         registers.push_back(LoadRegister(device_config, channel_data, default_type_str));
 
@@ -151,7 +148,7 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
     int on_value = -1;
     if (channel_data.isMember("on_value")) {
         if (registers.size() != 1)
-            throw TConfigParserException("can only use on_value for single-valued controls");
+            throw TConfigParserException(string("can only use on_value for single-valued controls") + " " + device_config->DeviceType);
         on_value = GetInt(channel_data, "on_value");
     }
 
@@ -169,7 +166,7 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
 void TConfigActionParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data)
 {
     if (!item_data.isObject())
-        throw TConfigParserException("malformed config");
+        throw TConfigParserException(string("malformed config") + " " + device_config->DeviceType);
 
     std::string name = item_data.isMember("title") ?
         item_data["title"].asString() : "<unnamed>";
@@ -210,7 +207,8 @@ int TConfigActionParser::GetInt(const Json::Value& obj, const std::string& key)
         } catch (const std::logic_error& e) {}
     }
 
-    throw TConfigParserException(key + ": plain integer or '0x..' hex string expected");
+    throw TConfigParserException(key + ": plain integer or '0x..' hex string expected instead of " + v.asString());
+    // v.asString() should give a bit more information what config this exception came from
 }
 
 PHandlerConfig TConfigParser::Parse()
@@ -266,7 +264,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
             LoadDeviceVectors(device_config, it->second);
         }
         else{
-            cerr << "Not found such device_type in templates\n";
+            cerr << "Not found such device_type in templates " << device_config->DeviceType << endl;
         }
     }
     LoadDeviceVectors(device_config, device_data);

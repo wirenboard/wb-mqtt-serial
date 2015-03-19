@@ -14,13 +14,13 @@
             "devices" : [
                 {
                     "device_type" : "UCH-M121RX",
-                    "name": "UCH-M121RX 0808",
-                    "id": "uchm121rx",
                     "slave_id": 1,
                     "enabled": true
                 },
                 {
                     "device_type" : "UCH-M111RX",
+                    "name" : "UCH-M111RX 0808",
+                    "id" : "uchm111rx",
                     "slave_id": 3,
                     "enabled": true,
                     "setup": [
