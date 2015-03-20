@@ -26,6 +26,12 @@
                     "setup": [
                     ],
                     "channels": [
+                    // here we can add new channel(that is absent in the template) 
+                    //    {
+                    //       "name" : "Input 8",
+                    //        "reg_type" : "input",
+                    //        "addres" : "0x20"
+                    //    }
                     ]
                 },
 
