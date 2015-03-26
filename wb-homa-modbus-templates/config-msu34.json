@@ -1,0 +1,38 @@
+// Configuration options
+{
+	"device_type" : "MSU34",
+	"device" : {
+	    "name": "MSU34+TLP",
+	    "id": "msu34tlp",
+	    "enabled": true,
+	    "channels": [
+		{
+		    "name" : "Temp 1",
+		    "reg_type" : "input",
+		    "address" : 0,
+		    "type": "temperature",
+		    "format": "s8"
+		},
+		{
+		    "name" : "Illuminance",
+		    "reg_type" : "input",
+		    "address" : 1,
+		    "type": "lux"
+		},
+		{
+		    "name" : "Pressure",
+		    "reg_type" : "input",
+		    "address" : 2,
+		    "type": "pressure",
+		    "scale": 0.075
+		},
+		{
+		    "name" : "Temp 2",
+		    "reg_type" : "input",
+		    "address" : 3,
+		    "type": "temperature",
+		    "format": "s8"
+		}
+	    ]
+	}
+}

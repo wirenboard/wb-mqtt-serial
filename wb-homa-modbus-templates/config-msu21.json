@@ -1,0 +1,31 @@
+// Configuration options
+{
+	"device_type" : "MSU21",
+	"device" : {
+	    "name": "MSU21",
+	    "id": "msu21",
+	    "enabled": true,
+	    "setup": [
+		{
+		    "title": "Input 0 type",
+		    "address": 1,
+		    "value": 2
+		},
+		{
+		    "title": "Input 0 module",
+		    "address": "0x03",
+		    "value": "6"
+		}
+	    ],
+	    "channels": [
+		{
+		    "name" : "Temperature",
+		    "reg_type" : "input",
+		    "address" : 0,
+		    "type": "temperature",
+		    "format": "s8"
+		}
+	    ]
+	}
+}
+			    

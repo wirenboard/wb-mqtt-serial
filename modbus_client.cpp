@@ -162,7 +162,7 @@ bool TRegisterHandler::Poll(PModbusContext ctx)
     try {
         new_value = Read(ctx);
     } catch (const TModbusException& e) {
-        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << std::endl;
+        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " slave_id is " << reg.Slave <<  std::endl;
         return false;
     }
     did_read = true;

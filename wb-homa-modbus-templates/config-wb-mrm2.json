@@ -1,0 +1,35 @@
+// Configuration options
+{
+	"device_type" : "WB-MRM2",
+	"device" : {
+	    "name" : "WB-MRM2",
+	    "id" : "wb-mrm2",
+	    "channels" : [
+            {
+                "name" : "Relay 1",
+                "reg_type" : "coil",
+                "address" : 0,
+                "type": "switch"
+            },
+            {
+                "name" : "Relay 2",
+                "reg_type" : "coil",
+                "address" : 1,
+                "type": "switch"
+            },
+            {
+                "name" : "Safety Timer",
+                "reg_type" : "holding",
+                "address" : 2,
+                "type" : "range"
+            },
+            {
+                "name" : "Buttons Behavior",
+                "reg_type" : "holding",
+                "address" : 5,
+                "type" : "switch"
+            }
+	    ]
+	}
+}
+                    

@@ -1,0 +1,24 @@
+// Configuration options
+{
+	"device_type" : "MSU24",
+	"device" : {
+	    "name": "MSU24",
+	    "id": "msu24",
+	    "enabled": true,
+	    "channels": [
+		{
+		    "name" : "Illuminance",
+		    "reg_type" : "input",
+		    "address" : 0,
+		    "type": "text"
+		},
+		{
+		    "name" : "Temp 1",
+		    "reg_type" : "input",
+		    "address" : 1,
+		    "type": "temperature",
+		    "format": "s8"
+		}
+	    ]
+	}
+}

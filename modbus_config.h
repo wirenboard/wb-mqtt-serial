@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <exception>
+#include <map>
 
 #include "modbus_client.h"
 #include "jsoncpp/json/json.h"
@@ -18,7 +19,6 @@ struct TModbusChannel
         : Name(name), Type(type), DeviceId(device_id),
           Order(order), OnValue(on_value), Max(max),
           ReadOnly(read_only), Registers(regs) {}
-
     std::string Name;
     std::string Type;
     std::string DeviceId; // FIXME
@@ -52,6 +52,7 @@ struct TDeviceConfig
     std::string Id;
     std::string Name;
     int SlaveId;
+    std::string DeviceType;
     std::vector<PModbusChannel> ModbusChannels;
     std::vector<PDeviceSetupItem> SetupItems;
 };
@@ -93,26 +94,51 @@ private:
     std::string message;
 };
 
-class TConfigParser
+class TConfigActionParser
+{
+    public :
+        TModbusRegister LoadRegister(PDeviceConfig device_config, const Json::Value& register_data, std::string& default_type_str);
+        void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data);
+        void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data);
+        void LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data);
+    protected:
+        int GetInt(const Json::Value& obj, const std::string& key);
+    
+};
+
+typedef Json::Value TDeviceJson;
+
+class TConfigTemplateParser 
+{
+    public :
+        TConfigTemplateParser(const std::string& template_config_dir, bool debug);
+        inline ~TConfigTemplateParser() { Templates.clear(); };
+        std::map<std::string, TDeviceJson> Parse();
+
+    private:
+        std::string DirectoryName;
+        void LoadDeviceTemplate(const Json::Value& root, const std::string& filepath);
+        bool Debug;
+        std::map<std::string, TDeviceJson> Templates;
+};
+
+
+class TConfigParser : TConfigActionParser
 {
 public:
-    TConfigParser(const std::string& config_fname, bool force_debug)
-        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig) {
+    TConfigParser(const std::string& config_fname, bool force_debug, const std::map<std::string, TDeviceJson>& templates)
+        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig), TemplatesMap(templates) {
         HandlerConfig->Debug = force_debug;
     }
     PHandlerConfig Parse();
-    TModbusRegister LoadRegister(PDeviceConfig device_config, const Json::Value& register_data,
-                                 std::string& default_type_str);
-    void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data);
-    void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data);
     void LoadDevice(PPortConfig port_config, const Json::Value& device_data,
                     const std::string& default_id);
     void LoadPort(const Json::Value& port_data, const std::string& id_prefix);
     void LoadConfig();
 private:
-    int GetInt(const Json::Value& obj, const std::string& key);
-
+    
     std::string ConfigFileName;
     PHandlerConfig HandlerConfig;
+    std::map<std::string, TDeviceJson> TemplatesMap;
     Json::Value root;
 };
