@@ -4,6 +4,7 @@ wb-homa-modbus/wb-homa-modbus
 wb-homa-ninja-bridge/wb-homa-ninja-bridge
 wb-homa-w1/wb-homa-w1
 wb-homa-adc/wb-homa-adc
+mqtt-logger/mqtt-logger
 debian/files
 debian/wb-homa-drivers*
 test/wb-homa-test
