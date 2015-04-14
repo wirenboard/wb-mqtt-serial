@@ -20,16 +20,41 @@
             {
                 "name" : "Safety Timer",
                 "reg_type" : "holding",
-                "address" : 2,
+                "address" : 8,
                 "type" : "range"
             },
             {
-                "name" : "Buttons Behavior",
+                "name" : "Button 1",
                 "reg_type" : "holding",
-                "address" : 5,
+                "readonly" : true,
+                "address" : 6,
                 "type" : "switch"
+            },
+            {
+                "name" : "Button 2",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 7,
+                "type" : "switch"
+            },
+            {
+                "name" : "Button 1 counter",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 32,
+                "type" : "value"
+            },
+            {
+                "name" : "Button 2 counter",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 33,
+                "type" : "range"
             }
+
+
+
 	    ]
 	}
 }
-                    
+

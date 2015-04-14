@@ -63,7 +63,7 @@ void TConfigTemplateParser::LoadDeviceTemplate(const Json::Value& root, const st
         cerr << "malformed config in file " + filepath;
         exit(EXIT_FAILURE);
     }
-    if (root.isMember("device_type")) { 
+    if (root.isMember("device_type")) {
             Templates[root["device_type"].asString()] = root["device"];
     } else {
         if (Debug)
@@ -109,7 +109,11 @@ TModbusRegister TConfigActionParser::LoadRegister(PDeviceConfig device_config,
     if (register_data.isMember("scale"))
         scale = register_data["scale"].asDouble(); // TBD: check for zero, too
 
-    return TModbusRegister(device_config->SlaveId, type, address, format, scale, true);
+    bool force_readonly = false;
+    if (register_data.isMember("readonly"))
+        force_readonly = register_data["readonly"].asBool();
+
+    return TModbusRegister(device_config->SlaveId, type, address, format, scale, true, force_readonly);
 }
 
 void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
@@ -257,7 +261,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
                     throw TConfigParserException(" Not set the device_name for " + device_config->DeviceType);
             }
             if (it->second.isMember("id")) {
-                if (device_config->Id == default_id) 
+                if (device_config->Id == default_id)
                     device_config->Id = it->second["id"].asString() + "_" + to_string(device_config->SlaveId);
             }
 
@@ -292,7 +296,7 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
 
     if (port_data.isMember("parity"))
         port_config->ConnSettings.DataBits = port_data["parity"].asCString()[0]; // FIXME (can be '\0')
-        
+
     if (port_data.isMember("data_bits"))
         port_config->ConnSettings.DataBits = GetInt(port_data, "data_bits");
 

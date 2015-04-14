@@ -77,19 +77,20 @@ struct TModbusRegister
     enum RegisterType { COIL, DISCRETE_INPUT, HOLDING_REGISTER, INPUT_REGISTER };
     TModbusRegister(int slave = 0, RegisterType type = COIL, int address = 0,
                      RegisterFormat format = U16, double scale = 1,
-                     bool poll = true)
+                     bool poll = true, bool readonly = false)
         : Slave(slave), Type(type), Address(address), Format(format),
-          Scale(scale), Poll(poll) {}
+          Scale(scale), Poll(poll), ForceReadOnly(readonly) {}
     int Slave;
     RegisterType Type;
     int Address;
     RegisterFormat Format;
     double Scale;
     bool Poll;
+    bool ForceReadOnly;
 
     bool IsReadOnly() const {
         return Type == RegisterType::DISCRETE_INPUT ||
-            Type == RegisterType::INPUT_REGISTER;
+            Type == RegisterType::INPUT_REGISTER || ForceReadOnly;
     }
 
     std::string ToString() const {
@@ -118,6 +119,8 @@ struct TModbusRegister
     bool operator== (const TModbusRegister& reg) const {
         return Slave == reg.Slave && Type == reg.Type && Address == reg.Address;
     }
+
+
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, const TModbusRegister& reg) {

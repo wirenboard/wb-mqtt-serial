@@ -11,24 +11,49 @@
                     "consists_of" : [
                         {
                             "reg_type" : "holding",
-                            "address" : 0
+                            "address" : 1
                         },
                         {
                             "reg_type" : "holding",
-                            "address" : 1
+                            "address" : 0
                         },
                         {
                             "reg_type" : "holding",
                             "address" : 2
                         }
-                        ]
+                    ]
+                },
+
+                {
+                    "name" : "Button 1",
+                    "reg_type" : "holding",
+                    "readonly" : true,
+                    "address" : 6,
+                    "type" : "switch"
                 },
                 {
-                    "name" : "Buttons Behavior",
+                    "name" : "Button 2",
                     "reg_type" : "holding",
-                    "address" : 5,
+                    "readonly" : true,
+                    "address" : 7,
                     "type" : "switch"
+                },
+                {
+                    "name" : "Button 1 counter",
+                    "reg_type" : "holding",
+                    "readonly" : true,
+                    "address" : 32,
+                    "type" : "range"
+                },
+                {
+                    "name" : "Button 2 counter",
+                    "reg_type" : "holding",
+                    "readonly" : true,
+                    "address" : 33,
+                    "type" : "range"
                 }
+
+
         ]
     }
 }
