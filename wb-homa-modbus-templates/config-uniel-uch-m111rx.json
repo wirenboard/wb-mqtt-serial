@@ -4,7 +4,6 @@
     "device" : {
         "name": "UCH-M111RX 0808",
         "id": "uchm111rx",
-        "slave_id": 3,
         "enabled": true,
         "setup": [
         ],
