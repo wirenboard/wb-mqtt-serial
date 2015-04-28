@@ -370,7 +370,8 @@ void TModbusClient::Cycle()
     // corresponding to single register should be retrieved
     // by single query.
     for (const auto& p: handlers) {
-        p.second->Flush(Context);
+        for(const auto& q: handlers)
+            q.second->Flush(Context);
         if (p.second->Poll(Context) && Callback)
             Callback(p.first);
         Context->USleep(PollInterval * 1000);
