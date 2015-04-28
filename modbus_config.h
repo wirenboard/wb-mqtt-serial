@@ -127,11 +127,13 @@ class TConfigParser : TConfigActionParser
 {
 public:
     TConfigParser(const std::string& config_fname, bool force_debug)
-        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig) {
+        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig) 
+    {
         HandlerConfig->Debug = force_debug;
     }
     TConfigParser(const std::string& config_fname, bool force_debug, const std::map<std::string, TDeviceJson>& templates)
-        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig), TemplatesMap(templates) {
+        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig), TemplatesMap(templates) 
+    {
         HandlerConfig->Debug = force_debug;
     }
     PHandlerConfig Parse();
