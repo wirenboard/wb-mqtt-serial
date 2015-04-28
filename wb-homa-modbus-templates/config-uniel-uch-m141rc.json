@@ -4,9 +4,7 @@
     "device" : {
         "name": "UCH-M141RC 0808",
         "id": "uchm141rc",
-        "slave_id": 2,
         "enabled": true,
-
         "channels": [
             {
                 "name": "Input 0",
