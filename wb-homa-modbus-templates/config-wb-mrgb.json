@@ -43,14 +43,14 @@
                     "reg_type" : "holding",
                     "readonly" : true,
                     "address" : 32,
-                    "type" : "range"
+                    "type" : "value"
                 },
                 {
                     "name" : "Button 2 counter",
                     "reg_type" : "holding",
                     "readonly" : true,
                     "address" : 33,
-                    "type" : "range"
+                    "type" : "value"
                 }
 
 

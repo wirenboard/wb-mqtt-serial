@@ -49,7 +49,7 @@
                 "reg_type" : "holding",
                 "readonly" : true,
                 "address" : 33,
-                "type" : "range"
+                "type" : "value"
             }
 
 
