@@ -9,9 +9,12 @@ TModbusPort::TModbusPort(PMQTTClientBase mqtt_client, PPortConfig port_config, P
       Config(port_config),
       ModbusClient(new TModbusClient(Config->ConnSettings, connector))
 {
-    ModbusClient->SetCallback([this](const TModbusRegister& reg) {
+    ModbusClient->SetCallback([this](std::shared_ptr<TModbusRegister> reg) {
             OnModbusValueChange(reg);
         });
+    ModbusClient->SetErrorCallback([this](std::shared_ptr<TModbusRegister> reg) {
+            OnModbusError(reg);
+            });
     for (auto device_config: Config->DeviceConfigs) {
         for (auto channel: device_config->ModbusChannels) {
             for (auto reg: channel->Registers) {
@@ -88,12 +91,13 @@ bool TModbusPort::HandleMessage(const std::string& topic, const std::string& pay
     }
 
     for (size_t i = 0; i < it->second->Registers.size(); ++i) {
-        const TModbusRegister& reg = it->second->Registers[i];
+        std::shared_ptr<TModbusRegister> reg = it->second->Registers[i];
         if (Config->Debug)
-            std::cerr << "setting modbus register: " << reg.ToString() << " <- " <<
+            std::cerr << "setting modbus register: " << reg->ToString() << " <- " <<
                 payload_items[i] << std::endl;
         ModbusClient->SetTextValue(reg, payload_items[i]);
     }
+
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
     return true;
 }
@@ -104,10 +108,10 @@ std::string TModbusPort::GetChannelTopic(const TModbusChannel& channel)
     return (controls_prefix + channel.Name);
 }
 
-void TModbusPort::OnModbusValueChange(const TModbusRegister& reg)
+void TModbusPort::OnModbusValueChange(std::shared_ptr<TModbusRegister> reg)
 {
     if (Config->Debug)
-        std::cerr << "modbus value change: " << reg.ToString() << " <- " <<
+        std::cerr << "modbus value change: " << reg->ToString() << " <- " <<
             ModbusClient->GetTextValue(reg) << std::endl;
 
     auto it = RegisterToChannelMap.find(reg);
@@ -125,7 +129,7 @@ void TModbusPort::OnModbusValueChange(const TModbusRegister& reg)
     } else {
         std::stringstream s;
         for (size_t i = 0; i < it->second->Registers.size(); ++i) {
-            const TModbusRegister& reg = it->second->Registers[i];
+            std::shared_ptr<TModbusRegister> reg = it->second->Registers[i];
             // avoid publishing incomplete value
             if (!ModbusClient->DidRead(reg))
                 return;
@@ -147,7 +151,30 @@ void TModbusPort::OnModbusValueChange(const TModbusRegister& reg)
         std::cerr << "channel " << it->second->Name << " device id: " <<
             it->second->DeviceId << " -- topic: " << GetChannelTopic(*it->second) <<
             " <-- " << payload << std::endl;
+
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
+}
+
+void TModbusPort::OnModbusError(std::shared_ptr<TModbusRegister> reg)
+{
+    int error = -1;
+    error = (reg->ErrorMessage == "Poll") ? 1: 2;
+    auto it = RegisterToChannelMap.find(reg);
+    if (it == RegisterToChannelMap.end()) {
+        std::cerr << "warning: unexpected register from modbus" << std::endl;
+        return;
+    }
+    if (error == -1) { 
+        if (it->second->PrintedErrorMessage == true) {
+            MQTTClient->Publish(NULL, GetChannelTopic(*it->second) + "/meta/error", "", 0, true);
+            it->second->PrintedErrorMessage = false;
+        }
+    } else {
+        if (!it->second->PrintedErrorMessage) {
+            MQTTClient->Publish(NULL, GetChannelTopic(*it->second) + "/meta/error", to_string(error), 0, true);
+            it->second->PrintedErrorMessage = true;
+        }
+    }
 }
 
 void TModbusPort::Cycle()

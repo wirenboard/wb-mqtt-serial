@@ -7,6 +7,8 @@
 #include <sstream>
 #include <exception>
 #include <functional>
+#include <condition_variable>
+#include <mutex>
 
 // #include <modbus/modbus.h>
 
@@ -79,7 +81,7 @@ struct TModbusRegister
                      RegisterFormat format = U16, double scale = 1,
                      bool poll = true, bool readonly = false)
         : Slave(slave), Type(type), Address(address), Format(format),
-          Scale(scale), Poll(poll), ForceReadOnly(readonly) {}
+          Scale(scale), Poll(poll), ForceReadOnly(readonly), ErrorMessage("") {}
     int Slave;
     RegisterType Type;
     int Address;
@@ -87,6 +89,7 @@ struct TModbusRegister
     double Scale;
     bool Poll;
     bool ForceReadOnly;
+    std::string ErrorMessage;
 
     bool IsReadOnly() const {
         return Type == RegisterType::DISCRETE_INPUT ||
@@ -123,14 +126,14 @@ struct TModbusRegister
 
 };
 
-inline ::std::ostream& operator<<(::std::ostream& os, const TModbusRegister& reg) {
-    return os << reg.ToString();
+inline ::std::ostream& operator<<(::std::ostream& os, std::shared_ptr<TModbusRegister> reg) {
+    return os << reg->ToString();
 }
 
 namespace std {
-    template <> struct hash<TModbusRegister> {
-        size_t operator()(const TModbusRegister& p) const {
-            return hash<int>()(p.Slave) ^ hash<int>()(p.Type) ^ hash<int>()(p.Address);
+    template <> struct hash<std::shared_ptr<TModbusRegister>> {
+        size_t operator()(std::shared_ptr<TModbusRegister> p) const {
+            return hash<int>()(p->Slave) ^ hash<int>()(p->Type) ^ hash<int>()(p->Address);
         }
     };
 }
@@ -147,7 +150,7 @@ private:
     std::string message;
 };
 
-typedef std::function<void(const TModbusRegister& reg)> TModbusCallback;
+typedef std::function<void(std::shared_ptr<TModbusRegister> reg)> TModbusCallback;
 
 class TModbusClient
 {
@@ -157,33 +160,36 @@ public:
     TModbusClient(const TModbusClient& client) = delete;
     TModbusClient& operator=(const TModbusClient&) = delete;
     ~TModbusClient();
-    void AddRegister(const TModbusRegister& reg);
+    void AddRegister(std::shared_ptr<TModbusRegister> reg);
     void Connect();
     void Disconnect();
     void Cycle();
-    void SetRawValue(const TModbusRegister& reg, int value);
-    void SetScaledValue(const TModbusRegister& reg, double value);
-    void SetTextValue(const TModbusRegister& reg, const std::string& value);
-    int GetRawValue(const TModbusRegister& reg) const;
-    double GetScaledValue(const TModbusRegister& reg) const;
-    std::string GetTextValue(const TModbusRegister& reg) const;
-    bool DidRead(const TModbusRegister& reg) const;
+    void SetRawValue(std::shared_ptr<TModbusRegister> reg, int value);
+    void SetScaledValue(std::shared_ptr<TModbusRegister> reg, double value);
+    void SetTextValue(std::shared_ptr<TModbusRegister> reg, const std::string& value);
+    int GetRawValue(std::shared_ptr<TModbusRegister> reg) const;
+    double GetScaledValue(std::shared_ptr<TModbusRegister> reg) const;
+    std::string GetTextValue(std::shared_ptr<TModbusRegister> reg) const;
+    bool DidRead(std::shared_ptr<TModbusRegister> reg) const;
     void SetCallback(const TModbusCallback& callback);
+    void SetErrorCallback(const TModbusCallback& callback);
     void SetPollInterval(int ms);
     void SetModbusDebug(bool debug);
     bool DebugEnabled() const;
     void WriteHoldingRegister(int slave, int address, uint16_t value);
 
 private:
-    const std::unique_ptr<TRegisterHandler>& GetHandler(const TModbusRegister&) const;
-    TRegisterHandler* CreateRegisterHandler(const TModbusRegister& reg);
-    std::map< TModbusRegister, std::unique_ptr<TRegisterHandler> > handlers;
+    const std::unique_ptr<TRegisterHandler>& GetHandler(std::shared_ptr<TModbusRegister>) const;
+    TRegisterHandler* CreateRegisterHandler(std::shared_ptr<TModbusRegister> reg);
+    std::map<std::shared_ptr<TModbusRegister>, std::unique_ptr<TRegisterHandler> > handlers;
     PModbusContext Context;
     bool Active;
     int PollInterval;
     const int MAX_REGS = 65536;
     TModbusCallback Callback;
+    TModbusCallback ErrorCallback;
     bool Debug = false;
 };
 
 typedef std::shared_ptr<TModbusClient> PModbusClient;
+
