@@ -156,12 +156,18 @@ void TRegisterHandler::Write(PModbusContext, int)
 
 TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
 {
+    // set poll error message empty
+    if (reg->ErrorMessage == "Poll") {
+        reg->ErrorMessage = "";
+    }
     if (!reg->Poll || dirty)
         return std::make_pair(false, 0); // write-only register
 
     bool first_poll = !did_read;
     int new_value;
     ctx->SetSlave(reg->Slave);
+    if (reg->Slave == 16) {
+    }
     try {
         new_value = Read(ctx);
     } catch (const TModbusException& e) {
@@ -188,6 +194,10 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
 
 bool TRegisterHandler::Flush(PModbusContext ctx)
 {
+    // set flush error message empty
+    if (reg->ErrorMessage == "Flush") {
+        reg->ErrorMessage = "";
+    }
     set_value_mutex.lock();
     if (dirty) {
         dirty = false;
@@ -197,6 +207,7 @@ bool TRegisterHandler::Flush(PModbusContext ctx)
             Write(ctx, ConvertMasterValue(value));
         } catch (const TModbusException& e) {
             std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " << reg->Slave <<  std::endl;
+            reg->ErrorMessage = "Flush";
             return true;
         }
     }
@@ -382,6 +393,8 @@ void TModbusClient::Cycle()
             }
         }
         const auto& message = p.second->Poll(Context);
+        if (p.first->Slave == 16) {
+        }
         if (message.first && Callback) {
             if ((message.second != 0) && (ErrorCallback)) {
                 ErrorCallback(p.first);
