@@ -132,7 +132,7 @@ void TModbusPort::OnModbusValueChange(std::shared_ptr<TModbusRegister> reg)
         for (size_t i = 0; i < it->second->Registers.size(); ++i) {
             std::shared_ptr<TModbusRegister> reg = it->second->Registers[i];
             // avoid publishing incomplete value
-            if (!ModbusClient->DidRead(reg)) 
+            if (!ModbusClient->DidRead(reg))
                 return;
             if (i)
                 s << ";";
@@ -170,7 +170,6 @@ void TModbusPort::OnModbusError(std::shared_ptr<TModbusRegister> reg)
 {
     int error = -1;
     error = (reg->ErrorMessage == "Poll") ? 1: 2;
-    reg->ErrorMessage = "";
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
         std::cerr << "warning: unexpected register from modbus" << std::endl;

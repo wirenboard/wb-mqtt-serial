@@ -166,8 +166,6 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
     bool first_poll = !did_read;
     int new_value;
     ctx->SetSlave(reg->Slave);
-    if (reg->Slave == 16) {
-    }
     try {
         new_value = Read(ctx);
     } catch (const TModbusException& e) {
@@ -393,8 +391,6 @@ void TModbusClient::Cycle()
             }
         }
         const auto& message = p.second->Poll(Context);
-        if (p.first->Slave == 16) {
-        }
         if (message.first && Callback) {
             if ((message.second != 0) && (ErrorCallback)) {
                 ErrorCallback(p.first);
