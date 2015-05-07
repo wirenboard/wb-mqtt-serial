@@ -5,6 +5,7 @@
 #include <modbus/modbus.h>
 #include "modbus_client.h"
 #include <utility>
+#include <sstream>
 
 TModbusConnector::~TModbusConnector() {}
 
@@ -171,7 +172,8 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
     try {
         new_value = Read(ctx);
     } catch (const TModbusException& e) {
-        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " slave_id is " << reg->Slave <<  std::endl;
+        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " slave_id is " << reg->Slave << " in hex " << std::hex << reg->Slave << std::endl;
+        std::cerr << std::dec;
         reg->ErrorMessage = "Poll";
         return std::make_pair(true, 1);
     }
@@ -208,7 +210,8 @@ int TRegisterHandler::Flush(PModbusContext ctx)
         try {
             Write(ctx, ConvertMasterValue(value));
         } catch (const TModbusException& e) {
-            std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " << reg->Slave <<  std::endl;
+            std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " << reg->Slave << " in hex " << std::hex << reg->Slave <<  std::endl;
+            std::cerr << std::dec;
             reg->ErrorMessage = "Flush";
             return 1;
         }
