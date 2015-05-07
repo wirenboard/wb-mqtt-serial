@@ -19,7 +19,8 @@ public:
 
 private:
     void OnModbusValueChange(std::shared_ptr<TModbusRegister> reg);
-    void OnModbusError(std::shared_ptr<TModbusRegister> reg);
+    void PublishError(std::shared_ptr<TModbusRegister> reg);
+    void DeleteErrorMessages(std::shared_ptr<TModbusRegister> reg);
     PMQTTClientBase MQTTClient;
     PPortConfig Config;
     std::unique_ptr<TModbusClient> ModbusClient;

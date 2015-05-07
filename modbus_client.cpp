@@ -129,7 +129,7 @@ public:
     virtual void Write(PModbusContext ctx, int v);
     std::shared_ptr<TModbusRegister> Register() const { return reg; }
     TErrorMessage Poll(PModbusContext ctx);
-    bool Flush(PModbusContext ctx);
+    int Flush(PModbusContext ctx);
     int RawValue() const { return value; }
     double ScaledValue() const { return value * reg->Scale; }
     std::string TextValue() const;
@@ -156,9 +156,11 @@ void TRegisterHandler::Write(PModbusContext, int)
 
 TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
 {
+    int message = 0;
     // set poll error message empty
     if (reg->ErrorMessage == "Poll") {
         reg->ErrorMessage = "";
+        message = 2; // we need to delete error message
     }
     if (!reg->Poll || dirty)
         return std::make_pair(false, 0); // write-only register
@@ -178,23 +180,25 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
     if (value != new_value) {
         if (dirty) {
             set_value_mutex.unlock();
-            return std::make_pair(true, 0);
+            return std::make_pair(true, message);
         }
         value = new_value;
         set_value_mutex.unlock();
         if (Client->DebugEnabled())
             std::cerr << "new val for " << reg->ToString() << ": " << new_value << std::endl;
-        return std::make_pair(true, 0);
+        return std::make_pair(true, message);
     } else
         set_value_mutex.unlock();
-    return std::make_pair(first_poll, 0);
+    return std::make_pair(first_poll, message);
 }
 
-bool TRegisterHandler::Flush(PModbusContext ctx)
+int TRegisterHandler::Flush(PModbusContext ctx)
 {
+    int message = 0;
     // set flush error message empty
     if (reg->ErrorMessage == "Flush") {
         reg->ErrorMessage = "";
+        message = 2;
     }
     set_value_mutex.lock();
     if (dirty) {
@@ -206,13 +210,13 @@ bool TRegisterHandler::Flush(PModbusContext ctx)
         } catch (const TModbusException& e) {
             std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " << reg->Slave <<  std::endl;
             reg->ErrorMessage = "Flush";
-            return true;
+            return 1;
         }
     }
     else {
         set_value_mutex.unlock();
     }
-    return false;
+    return message;
 }
 
 std::string TRegisterHandler::TextValue() const
@@ -386,15 +390,22 @@ void TModbusClient::Cycle()
     // by single query.
     for (const auto& p: handlers) {
         for(const auto& q: handlers) {
-            if ((q.second->Flush(Context)) && (ErrorCallback)) {
+            int flush_message = q.second->Flush(Context);
+            if ((flush_message == 1) && (ErrorCallback)) {
                 ErrorCallback(q.first);
             }
+            if ((flush_message == 2) && (DeleteErrorsCallback)) {
+                DeleteErrorsCallback(q.first);
+            }
         }
-        const auto& message = p.second->Poll(Context);
-        if (message.first && Callback) {
-            if ((message.second != 0) && (ErrorCallback)) {
-                ErrorCallback(p.first);
-            } else {
+
+        const auto& poll_message = p.second->Poll(Context);
+        if ((poll_message.second == 1) && (ErrorCallback)) {
+            ErrorCallback(p.first);
+        }
+        if ((poll_message.second == 2) && (DeleteErrorsCallback)) {
+                DeleteErrorsCallback(p.first);
+        if ((poll_message.first) && (Callback)) {
                 Callback(p.first);
             }
         }
@@ -452,6 +463,11 @@ void TModbusClient::SetCallback(const TModbusCallback& callback)
 void TModbusClient::SetErrorCallback(const TModbusCallback& callback)
 {
     ErrorCallback = callback;
+}
+
+void TModbusClient::SetDeleteErrorsCallback(const TModbusCallback& callback)
+{
+    DeleteErrorsCallback = callback;
 }
 
 void TModbusClient::SetPollInterval(int interval)

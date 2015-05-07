@@ -7,8 +7,6 @@
 #include <sstream>
 #include <exception>
 #include <functional>
-#include <condition_variable>
-#include <mutex>
 
 // #include <modbus/modbus.h>
 
@@ -173,6 +171,7 @@ public:
     bool DidRead(std::shared_ptr<TModbusRegister> reg) const;
     void SetCallback(const TModbusCallback& callback);
     void SetErrorCallback(const TModbusCallback& callback);
+    void SetDeleteErrorsCallback(const TModbusCallback& callback);
     void SetPollInterval(int ms);
     void SetModbusDebug(bool debug);
     bool DebugEnabled() const;
@@ -188,6 +187,7 @@ private:
     const int MAX_REGS = 65536;
     TModbusCallback Callback;
     TModbusCallback ErrorCallback;
+    TModbusCallback DeleteErrorsCallback;
     bool Debug = false;
 };
 
