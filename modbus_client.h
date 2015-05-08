@@ -7,7 +7,6 @@
 #include <sstream>
 #include <exception>
 #include <functional>
-#include <iostream>
 
 // #include <modbus/modbus.h>
 
