@@ -408,10 +408,10 @@ void TModbusClient::Cycle()
         }
         if ((poll_message.second == 2) && (DeleteErrorsCallback)) {
                 DeleteErrorsCallback(p.first);
-        if ((poll_message.first) && (Callback)) {
+        }
+        if ((poll_message.first) && (Callback) && (poll_message.second != 1)) {
                 Callback(p.first);
             }
-        }
         Context->USleep(PollInterval * 1000);
     }
 }

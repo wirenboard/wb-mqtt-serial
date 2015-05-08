@@ -7,6 +7,7 @@
 #include <sstream>
 #include <exception>
 #include <functional>
+#include <iostream>
 
 // #include <modbus/modbus.h>
 
@@ -126,6 +127,10 @@ struct TModbusRegister
 
 inline ::std::ostream& operator<<(::std::ostream& os, std::shared_ptr<TModbusRegister> reg) {
     return os << reg->ToString();
+}
+
+inline ::std::ostream& operator<<(::std::ostream& os, const TModbusRegister& reg) {
+    return os << reg.ToString();
 }
 
 namespace std {
