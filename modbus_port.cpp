@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <sstream>
 
-#include "common/utils.h"
+#include <utils.h>
 #include "modbus_port.h"
 
 TModbusPort::TModbusPort(PMQTTClientBase mqtt_client, PPortConfig port_config, PModbusConnector connector)

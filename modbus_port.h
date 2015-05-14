@@ -2,7 +2,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "common/mqtt_wrapper.h"
+#include <mqtt_wrapper.h>
 #include "modbus_config.h"
 
 class TMQTTWrapper;
