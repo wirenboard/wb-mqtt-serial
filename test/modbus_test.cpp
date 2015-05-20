@@ -7,8 +7,8 @@
 #include "testlog.h"
 #include "fake_modbus.h"
 #include "fake_mqtt.h"
-#include "../wb-homa-modbus/modbus_config.h"
-#include "../wb-homa-modbus/modbus_observer.h"
+#include "../modbus_config.h"
+#include "../modbus_observer.h"
 
 class TModbusClientTest: public TLoggedFixture
 {
@@ -156,9 +156,9 @@ class TConfigParserTest: public TLoggedFixture {};
 
 TEST_F(TConfigParserTest, Parse)
 {
-    TConfigTemplateParser device_parser(GetDataFilePath("../wb-homa-modbus/wb-homa-modbus-templates/"),false); 
-    TConfigParser parser(GetDataFilePath("../wb-homa-modbus/config.json"), false, device_parser.Parse());
-    //TConfigParser parser(GetDataFilePath("../wb-homa-modbus/config-test.json"), false);
+    TConfigTemplateParser device_parser(GetDataFilePath("../wb-homa-modbus-templates/"),false); 
+    TConfigParser parser(GetDataFilePath("../config.json"), false, device_parser.Parse());
+    //TConfigParser parser(GetDataFilePath("../config-test.json"), false);
     PHandlerConfig config = parser.Parse();
     Emit() << "Debug: " << config->Debug;
     Emit() << "Ports:";
@@ -222,7 +222,7 @@ TEST_F(TConfigParserTest, Parse)
 
 TEST_F(TConfigParserTest, ForceDebug)
 {
-    TConfigParser parser(GetDataFilePath("../wb-homa-modbus/config-test.json"), true);
+    TConfigParser parser(GetDataFilePath("../config-test.json"), true);
     PHandlerConfig config = parser.Parse();
     ASSERT_TRUE(config->Debug);
 }
@@ -240,7 +240,7 @@ protected:
 void TModbusDeviceTest::SetUp()
 {
     Connector = PFakeModbusConnector(new TFakeModbusConnector(*this));
-    TConfigParser parser(GetDataFilePath("../wb-homa-modbus/config-test.json"), false);
+    TConfigParser parser(GetDataFilePath("../config-test.json"), false);
     Config = parser.Parse();
     MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("modbus-test", *this));
 }

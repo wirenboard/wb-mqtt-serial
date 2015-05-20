@@ -1,5 +1,5 @@
-wb-homa-modbus (1.8.7) stable; urgency=low
+wb-homa-modbus (1.8.7) stable; urgency=medium
 
-  * Initial release. (Closes: #XXXXXX)
+  * Initial release. (Package was separated from wb-homa-drivers)
 
  -- Evgeny Boger <boger@contactless.ru>  Fri, 15 May 2015 10:52:29 +0000
