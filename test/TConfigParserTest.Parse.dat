@@ -1,0 +1,405 @@
+Debug: 0
+Ports:
+    ------
+    ConnSettings: </dev/ttyNSC0 9600 8 N2 timeout 0>
+    PollInterval: 10
+    DeviceConfigs:
+        ------
+        Id: msu34tlp_2
+        Name: MSU34+TLP 2
+        SlaveId: 2
+        ModbusChannels:
+            ------
+            Name: Temp 1
+            Type: temperature
+            DeviceId: msu34tlp_2
+            Order: 1
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <2:input: 0>
+            ------
+            Name: Illuminance
+            Type: lux
+            DeviceId: msu34tlp_2
+            Order: 2
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <2:input: 1>
+            ------
+            Name: Pressure
+            Type: pressure
+            DeviceId: msu34tlp_2
+            Order: 3
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <2:input: 2>
+            ------
+            Name: Temp 2
+            Type: temperature
+            DeviceId: msu34tlp_2
+            Order: 4
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <2:input: 3>
+        ------
+        Id: msu21
+        Name: MSU21
+        SlaveId: 24
+        ModbusChannels:
+            ------
+            Name: Temperature
+            Type: temperature
+            DeviceId: msu21
+            Order: 1
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <24:input: 0>
+        SetupItems:
+            ------
+            Name: Input 0 type
+            Address: 1
+            Value: 2
+            ------
+            Name: Input 0 module
+            Address: 3
+            Value: 6
+        ------
+        Id: msu24
+        Name: MSU24
+        SlaveId: 34
+        ModbusChannels:
+            ------
+            Name: Illuminance
+            Type: text
+            DeviceId: msu24
+            Order: 1
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <34:input: 0>
+            ------
+            Name: Temp 1
+            Type: temperature
+            DeviceId: msu24
+            Order: 2
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <34:input: 1>
+        ------
+        Id: ddl24_23
+        Name: DDL24
+        SlaveId: 23
+        ModbusChannels:
+            ------
+            Name: RGB
+            Type: rgb
+            DeviceId: ddl24_23
+            Order: 1
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <23:holding: 4>, <23:holding: 5>, <23:holding: 6>
+            ------
+            Name: White
+            Type: dimmer
+            DeviceId: ddl24_23
+            Order: 2
+            OnValue: -1
+            Max: 255
+            ReadOnly: 0
+            Registers: <23:holding: 7>
+            ------
+            Name: RGB_All
+            Type: range
+            DeviceId: ddl24_23
+            Order: 3
+            OnValue: -1
+            Max: 100
+            ReadOnly: 0
+            Registers: <23:holding: 8>
+            ------
+            Name: White1
+            Type: range
+            DeviceId: ddl24_23
+            Order: 4
+            OnValue: -1
+            Max: 100
+            ReadOnly: 0
+            Registers: <23:holding: 9>
+            ------
+            Name: Voltage
+            Type: text
+            DeviceId: ddl24_23
+            Order: 5
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <23:holding: 18>
+        ------
+        Id: drb88
+        Name: DRB88 22
+        SlaveId: 22
+        ModbusChannels:
+            ------
+            Name: Relay 1
+            Type: switch
+            DeviceId: drb88
+            Order: 1
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <22:coil: 0>
+            ------
+            Name: Relay 2
+            Type: switch
+            DeviceId: drb88
+            Order: 2
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <22:coil: 1>
+            ------
+            Name: Relay 3
+            Type: switch
+            DeviceId: drb88
+            Order: 3
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <22:coil: 2>
+            ------
+            Name: Relay 4
+            Type: switch
+            DeviceId: drb88
+            Order: 4
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <22:coil: 3>
+            ------
+            Name: Relay 5
+            Type: switch
+            DeviceId: drb88
+            Order: 5
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <22:coil: 4>
+            ------
+            Name: Relay 6
+            Type: switch
+            DeviceId: drb88
+            Order: 6
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <22:coil: 5>
+            ------
+            Name: Relay 7
+            Type: switch
+            DeviceId: drb88
+            Order: 7
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <22:coil: 6>
+            ------
+            Name: Relay 8
+            Type: switch
+            DeviceId: drb88
+            Order: 8
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <22:coil: 7>
+            ------
+            Name: Input 1
+            Type: switch
+            DeviceId: drb88
+            Order: 9
+            OnValue: 101
+            Max: -1
+            ReadOnly: 1
+            Registers: <22:input: 0>
+            ------
+            Name: Input 2
+            Type: switch
+            DeviceId: drb88
+            Order: 10
+            OnValue: 101
+            Max: -1
+            ReadOnly: 1
+            Registers: <22:input: 1>
+            ------
+            Name: Input 3
+            Type: switch
+            DeviceId: drb88
+            Order: 11
+            OnValue: 101
+            Max: -1
+            ReadOnly: 1
+            Registers: <22:input: 2>
+            ------
+            Name: Input 4
+            Type: switch
+            DeviceId: drb88
+            Order: 12
+            OnValue: 101
+            Max: -1
+            ReadOnly: 1
+            Registers: <22:input: 3>
+            ------
+            Name: Input 5
+            Type: switch
+            DeviceId: drb88
+            Order: 13
+            OnValue: 101
+            Max: -1
+            ReadOnly: 1
+            Registers: <22:input: 4>
+            ------
+            Name: Input 6
+            Type: switch
+            DeviceId: drb88
+            Order: 14
+            OnValue: 101
+            Max: -1
+            ReadOnly: 1
+            Registers: <22:input: 5>
+            ------
+            Name: Input 7
+            Type: switch
+            DeviceId: drb88
+            Order: 15
+            OnValue: 101
+            Max: -1
+            ReadOnly: 1
+            Registers: <22:input: 6>
+            ------
+            Name: Input 8
+            Type: switch
+            DeviceId: drb88
+            Order: 16
+            OnValue: 101
+            Max: -1
+            ReadOnly: 1
+            Registers: <22:input: 7>
+        SetupItems:
+            ------
+            Name: Input 0 type
+            Address: 1
+            Value: 1
+            ------
+            Name: Input 0 module
+            Address: 3
+            Value: 3
+    ------
+    ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 0>
+    PollInterval: 100
+    DeviceConfigs:
+        ------
+        Id: tmp3r3_1
+        Name: tM-P3R3
+        SlaveId: 1
+        ModbusChannels:
+            ------
+            Name: Relay 0
+            Type: switch
+            DeviceId: tmp3r3_1
+            Order: 1
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <1:coil: 0>
+            ------
+            Name: Relay 1
+            Type: switch
+            DeviceId: tmp3r3_1
+            Order: 2
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <1:coil: 1>
+            ------
+            Name: Relay 2
+            Type: switch
+            DeviceId: tmp3r3_1
+            Order: 3
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <1:coil: 2>
+            ------
+            Name: Input 0
+            Type: switch
+            DeviceId: tmp3r3_1
+            Order: 4
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <1:discrete: 32>
+            ------
+            Name: Input 1
+            Type: switch
+            DeviceId: tmp3r3_1
+            Order: 5
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <1:discrete: 33>
+            ------
+            Name: Input 2
+            Type: switch
+            DeviceId: tmp3r3_1
+            Order: 6
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <1:discrete: 34>
+        ------
+        Id: lc103
+        Name: LC-103
+        SlaveId: 4
+        ModbusChannels:
+            ------
+            Name: Relay 1
+            Type: switch
+            DeviceId: lc103
+            Order: 1
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <4:coil: 0>
+            ------
+            Name: Relay 2
+            Type: switch
+            DeviceId: lc103
+            Order: 2
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <4:coil: 1>
+            ------
+            Name: Relay 3
+            Type: switch
+            DeviceId: lc103
+            Order: 3
+            OnValue: -1
+            Max: -1
+            ReadOnly: 0
+            Registers: <4:coil: 2>
+            ------
+            Name: Switch AC In
+            Type: switch
+            DeviceId: lc103
+            Order: 4
+            OnValue: -1
+            Max: -1
+            ReadOnly: 1
+            Registers: <4:discrete: 0>

@@ -2,7 +2,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "common/mqtt_wrapper.h"
+#include <mqtt_wrapper.h>
 #include "modbus_config.h"
 
 class TMQTTWrapper;
@@ -18,10 +18,12 @@ public:
     bool WriteInitValues();
 
 private:
-    void OnModbusValueChange(const TModbusRegister& reg);
+    void OnModbusValueChange(std::shared_ptr<TModbusRegister> reg);
+    void PublishError(std::shared_ptr<TModbusRegister> reg);
+    void DeleteErrorMessages(std::shared_ptr<TModbusRegister> reg);
     PMQTTClientBase MQTTClient;
     PPortConfig Config;
     std::unique_ptr<TModbusClient> ModbusClient;
-    std::unordered_map<TModbusRegister, PModbusChannel> RegisterToChannelMap;
+    std::unordered_map<std::shared_ptr<TModbusRegister>, PModbusChannel> RegisterToChannelMap;
     std::unordered_map<std::string, PModbusChannel> NameToChannelMap;
 };

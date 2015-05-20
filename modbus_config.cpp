@@ -8,7 +8,7 @@
 #include <string>
 
 #include "modbus_config.h"
-#include "../common/utils.h"
+#include <utils.h>
 
 using namespace std;
 
@@ -71,7 +71,7 @@ void TConfigTemplateParser::LoadDeviceTemplate(const Json::Value& root, const st
     }
 }
 
-TModbusRegister TConfigActionParser::LoadRegister(PDeviceConfig device_config,
+std::shared_ptr<TModbusRegister> TConfigActionParser::LoadRegister(PDeviceConfig device_config,
                                             const Json::Value& register_data,
                                             std::string& default_type_str)
 {
@@ -113,7 +113,8 @@ TModbusRegister TConfigActionParser::LoadRegister(PDeviceConfig device_config,
     if (register_data.isMember("readonly"))
         force_readonly = register_data["readonly"].asBool();
 
-    return TModbusRegister(device_config->SlaveId, type, address, format, scale, true, force_readonly);
+    std::shared_ptr<TModbusRegister> ptr(new TModbusRegister(device_config->SlaveId, type, address, format, scale, true, force_readonly));
+    return ptr;
 }
 
 void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
@@ -123,7 +124,7 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
 
     std::string name = channel_data["name"].asString();
     std::string default_type_str;
-    std::vector<TModbusRegister> registers;
+    std::vector<std::shared_ptr<TModbusRegister>> registers;
     if (channel_data.isMember("consists_of")) {
         const Json::Value array = channel_data["consists_of"];
         for(unsigned int index = 0; index < array.size(); ++index) {
@@ -131,7 +132,7 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
             registers.push_back(LoadRegister(device_config, array[index], def_type));
             if (!index)
                 default_type_str = def_type;
-            else if (registers[index].IsReadOnly() != registers[0].IsReadOnly())
+            else if (registers[index]->IsReadOnly() != registers[0]->IsReadOnly())
                 throw TConfigParserException(string("can't mix read-only and writable registers "
                                              "in one channel") + " " + device_config->DeviceType);
         }
@@ -146,7 +147,7 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
     if (type_str == "wo-switch") {
         type_str = "switch";
         for (auto& reg: registers)
-            reg.Poll = false;
+            reg->Poll = false;
     }
 
     int on_value = -1;
@@ -162,7 +163,7 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
 
     int order = device_config->NextOrderValue();
     PModbusChannel channel(new TModbusChannel(name, type_str, device_config->Id, order,
-                                              on_value, max, registers[0].IsReadOnly(),
+                                              on_value, max, registers[0]->IsReadOnly(),
                                               registers));
     device_config->AddChannel(channel);
 }

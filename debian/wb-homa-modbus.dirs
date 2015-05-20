@@ -1,0 +1,5 @@
+usr/bin
+etc
+etc/init.d
+var/lib/wirenboard
+usr/share/wb-homa-modbus
