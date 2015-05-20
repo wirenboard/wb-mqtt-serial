@@ -13,10 +13,10 @@ USleep(1000000)
 >>> Cycle()
 SetSlave(1)
 SetSlave(1)
+write 1 holding register(s) @ 20:  0x1092
+SetSlave(1)
 read 1 coil(s) @ 1: 0x01
 USleep(1000000)
-SetSlave(1)
-write 1 holding register(s) @ 20:  0x1092
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x1092
 USleep(1000000)

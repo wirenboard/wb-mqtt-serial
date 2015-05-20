@@ -54,15 +54,15 @@ Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
 SetSlave(23)
 write 1 holding register(s) @ 4:  0x000a
 SetSlave(23)
+write 1 holding register(s) @ 5:  0x0014
+SetSlave(23)
+write 1 holding register(s) @ 6:  0x001e
+SetSlave(23)
 read 1 holding register(s) @ 4: 0x000a
 USleep(10000)
 SetSlave(23)
-write 1 holding register(s) @ 5:  0x0014
-SetSlave(23)
 read 1 holding register(s) @ 5: 0x0014
 USleep(10000)
-SetSlave(23)
-write 1 holding register(s) @ 6:  0x001e
 SetSlave(23)
 read 1 holding register(s) @ 6: 0x001e
 USleep(10000)

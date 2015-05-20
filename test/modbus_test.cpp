@@ -25,9 +25,14 @@ void TModbusClientTest::SetUp()
     TModbusConnectionSettings settings(TFakeModbusConnector::PORT0, 115200, 'N', 8, 1);
     Connector = PFakeModbusConnector(new TFakeModbusConnector(*this));
     ModbusClient = PModbusClient(new TModbusClient(settings, Connector));
-    ModbusClient->SetCallback([this](const TModbusRegister& reg) {
-            Emit() << "Modbus Callback: " << reg.ToString() << " becomes " <<
+    ModbusClient->SetCallback([this](std::shared_ptr<TModbusRegister> reg) {
+            Emit() << "Modbus Callback: " << reg->ToString() << " becomes " <<
                 ModbusClient->GetTextValue(reg);
+        });
+    ModbusClient->SetErrorCallback([this](std::shared_ptr<TModbusRegister> reg) {
+            string error = (reg->ErrorMessage == "Poll") ? "read" : "write";
+            Emit() << "Modbus ErrorCallback: " << reg->ToString() << " gets " <<
+                error << " error";
         });
     Slave = Connector->AddSlave(TFakeModbusConnector::PORT0, 1,
                                 TRegisterRange(0, 10),
@@ -45,11 +50,11 @@ void TModbusClientTest::TearDown()
 
 TEST_F(TModbusClientTest, Poll)
 {
-    TModbusRegister coil0(1, TModbusRegister::COIL, 0);
-    TModbusRegister coil1(1, TModbusRegister::COIL, 1);
-    TModbusRegister discrete10(1, TModbusRegister::DISCRETE_INPUT, 10);
-    TModbusRegister holding22(1, TModbusRegister::HOLDING_REGISTER, 22);
-    TModbusRegister input33(1, TModbusRegister::INPUT_REGISTER, 33);
+    std::shared_ptr<TModbusRegister> coil0(new TModbusRegister(1, TModbusRegister::COIL, 0));
+    std::shared_ptr<TModbusRegister> coil1(new TModbusRegister(1, TModbusRegister::COIL, 1));
+    std::shared_ptr<TModbusRegister> discrete10(new TModbusRegister(1, TModbusRegister::DISCRETE_INPUT, 10));
+    std::shared_ptr<TModbusRegister> holding22(new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 22));
+    std::shared_ptr<TModbusRegister> input33(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 33));
 
     ModbusClient->AddRegister(coil0);
     ModbusClient->AddRegister(coil1);
@@ -79,8 +84,8 @@ TEST_F(TModbusClientTest, Poll)
 
 TEST_F(TModbusClientTest, Write)
 {
-    TModbusRegister coil1(1, TModbusRegister::COIL, 1);
-    TModbusRegister holding20(1, TModbusRegister::HOLDING_REGISTER, 20);
+    std::shared_ptr<TModbusRegister> coil1(new TModbusRegister(1, TModbusRegister::COIL, 1));
+    std::shared_ptr<TModbusRegister> holding20(new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20));
     ModbusClient->AddRegister(coil1);
     ModbusClient->AddRegister(holding20);
 
@@ -103,8 +108,8 @@ TEST_F(TModbusClientTest, Write)
 
 TEST_F(TModbusClientTest, S8)
 {
-    TModbusRegister holding20(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::S8);
-    TModbusRegister input30(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::S8);
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::S8));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::S8));
     ModbusClient->AddRegister(holding20);
     ModbusClient->AddRegister(input30);
 
@@ -141,7 +146,7 @@ TEST_F(TModbusClientTest, S8)
 
 TEST_F(TModbusClientTest, ReadErrors)
 {
-    TModbusRegister holding200(1, TModbusRegister::HOLDING_REGISTER, 200);
+    std::shared_ptr<TModbusRegister> holding200(new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 200));
     ModbusClient->AddRegister(holding200);
     Note() << "Cycle()";
     ModbusClient->Cycle();
