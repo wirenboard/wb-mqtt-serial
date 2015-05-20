@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <modbus/modbus.h>
 #include "modbus_client.h"
+#include <utility>
+#include <sstream>
 
 TModbusConnector::~TModbusConnector() {}
 
@@ -116,19 +118,21 @@ PModbusContext TDefaultModbusConnector::CreateContext(const TModbusConnectionSet
     return PModbusContext(new TDefaultModbusContext(settings));
 }
 
+typedef std::pair<bool, int> TErrorMessage;
+
 class TRegisterHandler
 {
 public:
-    TRegisterHandler(const TModbusClient* client, const TModbusRegister& _reg)
+    TRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
         : Client(client), reg(_reg) {}
     virtual ~TRegisterHandler() {}
     virtual int Read(PModbusContext ctx) = 0;
     virtual void Write(PModbusContext ctx, int v);
-    const TModbusRegister& Register() const { return reg; }
-    bool Poll(PModbusContext ctx);
-    void Flush(PModbusContext ctx);
+    std::shared_ptr<TModbusRegister> Register() const { return reg; }
+    TErrorMessage Poll(PModbusContext ctx);
+    int Flush(PModbusContext ctx);
     int RawValue() const { return value; }
-    double ScaledValue() const { return value * reg.Scale; }
+    double ScaledValue() const { return value * reg->Scale; }
     std::string TextValue() const;
     void SetRawValue(int v);
     void SetScaledValue(double v);
@@ -140,7 +144,7 @@ protected:
     const TModbusClient* Client;
 private:
     int value = 0;
-    TModbusRegister reg;
+    std::shared_ptr<TModbusRegister> reg;
     volatile bool dirty = false;
     bool did_read = false;
     std::mutex set_value_mutex;
@@ -151,58 +155,76 @@ void TRegisterHandler::Write(PModbusContext, int)
     throw TModbusException("trying to write read-only register");
 };
 
-bool TRegisterHandler::Poll(PModbusContext ctx)
+TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
 {
-    if (!reg.Poll || dirty)
-        return false; // write-only register
+    int message = 0;
+    // set poll error message empty
+    if (reg->ErrorMessage == "Poll") {
+        reg->ErrorMessage = "";
+        message = 2; // we need to delete error message
+    }
+    if (!reg->Poll || dirty)
+        return std::make_pair(false, 0); // write-only register
 
     bool first_poll = !did_read;
     int new_value;
-    ctx->SetSlave(reg.Slave);
+    ctx->SetSlave(reg->Slave);
     try {
         new_value = Read(ctx);
     } catch (const TModbusException& e) {
-        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " slave_id is " << reg.Slave <<  std::endl;
-        return false;
+        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " slave_id is " << reg->Slave << "(0x" << std::hex << reg->Slave << ")" << std::endl;
+        std::cerr << std::dec;
+        reg->ErrorMessage = "Poll";
+        return std::make_pair(true, 1);
     }
     did_read = true;
     set_value_mutex.lock();
     if (value != new_value) {
         if (dirty) {
             set_value_mutex.unlock();
-            return true;
+            return std::make_pair(true, message);
         }
         value = new_value;
         set_value_mutex.unlock();
         if (Client->DebugEnabled())
-            std::cerr << "new val for " << reg.ToString() << ": " << new_value << std::endl;
-        return true;
+            std::cerr << "new val for " << reg->ToString() << ": " << new_value << std::endl;
+        return std::make_pair(true, message);
     } else
         set_value_mutex.unlock();
-    return first_poll;
+    return std::make_pair(first_poll, message);
 }
 
-void TRegisterHandler::Flush(PModbusContext ctx)
+int TRegisterHandler::Flush(PModbusContext ctx)
 {
+    int message = 0;
+    // set flush error message empty
+    if (reg->ErrorMessage == "Flush") {
+        reg->ErrorMessage = "";
+        message = 2;
+    }
     set_value_mutex.lock();
     if (dirty) {
         dirty = false;
         set_value_mutex.unlock();
-        ctx->SetSlave(reg.Slave);
+        ctx->SetSlave(reg->Slave);
         try {
             Write(ctx, ConvertMasterValue(value));
         } catch (const TModbusException& e) {
-            std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << std::endl;
-            return;
+            std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " << reg->Slave << "(0x" << std::hex << reg->Slave << ")" <<  std::endl;
+            std::cerr << std::dec;
+            reg->ErrorMessage = "Flush";
+            return 1;
         }
     }
-    else
+    else {
         set_value_mutex.unlock();
+    }
+    return message;
 }
 
 std::string TRegisterHandler::TextValue() const
 {
-    return reg.Scale == 1 ? std::to_string(RawValue()) : std::to_string(ScaledValue());
+    return reg->Scale == 1 ? std::to_string(RawValue()) : std::to_string(ScaledValue());
 }
 
 void TRegisterHandler::SetRawValue(int v)
@@ -214,12 +236,12 @@ void TRegisterHandler::SetRawValue(int v)
 
 void TRegisterHandler::SetScaledValue(double v)
 {
-    SetRawValue(round(v / reg.Scale));
+    SetRawValue(round(v / reg->Scale));
 }
 
 void TRegisterHandler::SetTextValue(const std::string& v)
 {
-    if (reg.Scale == 1)
+    if (reg->Scale == 1)
         SetRawValue(stoi(v));
     else
         SetScaledValue(stod(v));
@@ -227,7 +249,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
 
 int TRegisterHandler::ConvertSlaveValue(uint16_t v) const
 {
-    switch (reg.Format) {
+    switch (reg->Format) {
     case TModbusRegister::U16:
         return v;
     case TModbusRegister::S16:
@@ -243,7 +265,7 @@ int TRegisterHandler::ConvertSlaveValue(uint16_t v) const
 
 uint16_t TRegisterHandler::ConvertMasterValue(int v) const
 {
-    switch (reg.Format) {
+    switch (reg->Format) {
     case TModbusRegister::S16:
         return v & 65535;
     case TModbusRegister::U8:
@@ -258,29 +280,29 @@ uint16_t TRegisterHandler::ConvertMasterValue(int v) const
 class TCoilHandler: public TRegisterHandler
 {
 public:
-    TCoilHandler(const TModbusClient* client, const TModbusRegister& _reg)
+    TCoilHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
         : TRegisterHandler(client, _reg) {}
 
     int Read(PModbusContext ctx) {
         unsigned char b;
-        ctx->ReadCoils(Register().Address, 1, &b);
+        ctx->ReadCoils(Register()->Address, 1, &b);
         return b & 1;
     }
 
     void Write(PModbusContext ctx, int v) {
-        ctx->WriteCoil(Register().Address, v);
+        ctx->WriteCoil(Register()->Address, v);
     }
 };
 
 class TDiscreteInputHandler: public TRegisterHandler
 {
 public:
-    TDiscreteInputHandler(const TModbusClient* client, const TModbusRegister& _reg)
+    TDiscreteInputHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
         : TRegisterHandler(client, _reg) {}
 
     int Read(PModbusContext ctx) {
         uint8_t b;
-        ctx->ReadDisceteInputs(Register().Address, 1, &b);
+        ctx->ReadDisceteInputs(Register()->Address, 1, &b);
         return b & 1;
     }
 };
@@ -288,12 +310,12 @@ public:
 class THoldingRegisterHandler: public TRegisterHandler
 {
 public:
-    THoldingRegisterHandler(const TModbusClient* client, const TModbusRegister& _reg)
+    THoldingRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
         : TRegisterHandler(client, _reg) {}
 
     int Read(PModbusContext ctx) {
         uint16_t v;
-        ctx->ReadHoldingRegisters(Register().Address, 1, &v);
+        ctx->ReadHoldingRegisters(Register()->Address, 1, &v);
         return ConvertSlaveValue(v);
     }
 
@@ -301,20 +323,20 @@ public:
         // FIXME: use 
         uint16_t d = (uint16_t)v;
         if (Client->DebugEnabled())
-            std::cerr << "write: " << Register().ToString() << std::endl;
-        ctx->WriteHoldingRegisters(Register().Address, 1, &d);
+            std::cerr << "write: " << Register()->ToString() << std::endl;
+        ctx->WriteHoldingRegisters(Register()->Address, 1, &d);
     }
 };
 
 class TInputRegisterHandler: public TRegisterHandler
 {
 public:
-    TInputRegisterHandler(const TModbusClient* client, const TModbusRegister& _reg)
+    TInputRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
         : TRegisterHandler(client, _reg) {}
 
     int Read(PModbusContext ctx) {
         uint16_t v;
-        ctx->ReadInputRegisters(Register().Address, 1, &v);
+        ctx->ReadInputRegisters(Register()->Address, 1, &v);
         return ConvertSlaveValue(v);
     }
 };
@@ -335,7 +357,7 @@ TModbusClient::~TModbusClient()
         Disconnect();
 }
 
-void TModbusClient::AddRegister(const TModbusRegister& reg)
+void TModbusClient::AddRegister(std::shared_ptr<TModbusRegister> reg)
 {
     if (Active)
         throw TModbusException("can't add registers to the active client");
@@ -370,10 +392,26 @@ void TModbusClient::Cycle()
     // corresponding to single register should be retrieved
     // by single query.
     for (const auto& p: handlers) {
-        for(const auto& q: handlers)
-            q.second->Flush(Context);
-        if (p.second->Poll(Context) && Callback)
-            Callback(p.first);
+        for(const auto& q: handlers) {
+            int flush_message = q.second->Flush(Context);
+            if ((flush_message == 1) && (ErrorCallback)) {
+                ErrorCallback(q.first);
+            }
+            if ((flush_message == 2) && (DeleteErrorsCallback)) {
+                DeleteErrorsCallback(q.first);
+            }
+        }
+
+        const auto& poll_message = p.second->Poll(Context);
+        if ((poll_message.second == 1) && (ErrorCallback)) {
+            ErrorCallback(p.first);
+        }
+        if ((poll_message.second == 2) && (DeleteErrorsCallback)) {
+                DeleteErrorsCallback(p.first);
+        }
+        if ((poll_message.first) && (Callback) && (poll_message.second != 1)) {
+                Callback(p.first);
+            }
         Context->USleep(PollInterval * 1000);
     }
 }
@@ -385,37 +423,37 @@ void TModbusClient::WriteHoldingRegister(int slave, int address, uint16_t value)
     Context->WriteHoldingRegisters(address, 1, &value);
 }
 
-void TModbusClient::SetRawValue(const TModbusRegister& reg, int value)
+void TModbusClient::SetRawValue(std::shared_ptr<TModbusRegister> reg, int value)
 {
     GetHandler(reg)->SetRawValue(value);
 }
 
-void TModbusClient::SetScaledValue(const TModbusRegister& reg, double value)
+void TModbusClient::SetScaledValue(std::shared_ptr<TModbusRegister> reg, double value)
 {
     GetHandler(reg)->SetScaledValue(value);
 }
 
-void TModbusClient::SetTextValue(const TModbusRegister& reg, const std::string& value)
+void TModbusClient::SetTextValue(std::shared_ptr<TModbusRegister> reg, const std::string& value)
 {
     GetHandler(reg)->SetTextValue(value);
 }
 
-int TModbusClient::GetRawValue(const TModbusRegister& reg) const
+int TModbusClient::GetRawValue(std::shared_ptr<TModbusRegister> reg) const
 {
     return GetHandler(reg)->RawValue();
 }
 
-double TModbusClient::GetScaledValue(const TModbusRegister& reg) const
+double TModbusClient::GetScaledValue(std::shared_ptr<TModbusRegister> reg) const
 {
     return GetHandler(reg)->ScaledValue();
 }
 
-std::string TModbusClient::GetTextValue(const TModbusRegister& reg) const
+std::string TModbusClient::GetTextValue(std::shared_ptr<TModbusRegister> reg) const
 {
     return GetHandler(reg)->TextValue();
 }
 
-bool TModbusClient::DidRead(const TModbusRegister& reg) const
+bool TModbusClient::DidRead(std::shared_ptr<TModbusRegister> reg) const
 {
     return GetHandler(reg)->DidRead();
 }
@@ -423,6 +461,16 @@ bool TModbusClient::DidRead(const TModbusRegister& reg) const
 void TModbusClient::SetCallback(const TModbusCallback& callback)
 {
     Callback = callback;
+}
+
+void TModbusClient::SetErrorCallback(const TModbusCallback& callback)
+{
+    ErrorCallback = callback;
+}
+
+void TModbusClient::SetDeleteErrorsCallback(const TModbusCallback& callback)
+{
+    DeleteErrorsCallback = callback;
 }
 
 void TModbusClient::SetPollInterval(int interval)
@@ -440,7 +488,7 @@ bool TModbusClient::DebugEnabled() const {
     return Debug;
 }
 
-const std::unique_ptr<TRegisterHandler>& TModbusClient::GetHandler(const TModbusRegister& reg) const
+const std::unique_ptr<TRegisterHandler>& TModbusClient::GetHandler(std::shared_ptr<TModbusRegister> reg) const
 {
     auto it = handlers.find(reg);
     if (it == handlers.end())
@@ -448,9 +496,9 @@ const std::unique_ptr<TRegisterHandler>& TModbusClient::GetHandler(const TModbus
     return it->second;
 }
 
-TRegisterHandler* TModbusClient::CreateRegisterHandler(const TModbusRegister& reg)
+TRegisterHandler* TModbusClient::CreateRegisterHandler(std::shared_ptr<TModbusRegister> reg)
 {
-    switch (reg.Type) {
+    switch (reg->Type) {
     case TModbusRegister::RegisterType::COIL:
         return new TCoilHandler(this, reg);
     case TModbusRegister::RegisterType::DISCRETE_INPUT:
