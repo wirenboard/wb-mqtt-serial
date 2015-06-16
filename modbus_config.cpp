@@ -296,7 +296,7 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
         port_config->ConnSettings.BaudRate = GetInt(port_data, "baud_rate");
 
     if (port_data.isMember("parity"))
-        port_config->ConnSettings.DataBits = port_data["parity"].asCString()[0]; // FIXME (can be '\0')
+        port_config->ConnSettings.Parity = port_data["parity"].asCString()[0]; // FIXME (can be '\0')
 
     if (port_data.isMember("data_bits"))
         port_config->ConnSettings.DataBits = GetInt(port_data, "data_bits");
