@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include <mqtt_wrapper.h>
+#include <wbmqtt/mqtt_wrapper.h>
 #include "modbus_config.h"
 #include "modbus_port.h"
 

@@ -1,3 +1,9 @@
+wb-homa-modbus (1.9.1) stable; urgency=medium
+
+  * fix for parity setting
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 16 Jun 2015 22:22:45 +0300
+
 wb-homa-modbus (1.9) stable; urgency=medium
 
   * report errors via controls/<control>/meta/error

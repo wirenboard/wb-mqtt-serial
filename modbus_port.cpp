@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <sstream>
 
-#include <utils.h>
+#include <wbmqtt/utils.h>
 #include "modbus_port.h"
 
 TModbusPort::TModbusPort(PMQTTClientBase mqtt_client, PPortConfig port_config, PModbusConnector connector)
@@ -155,7 +155,7 @@ void TModbusPort::OnModbusValueChange(std::shared_ptr<TModbusRegister> reg)
         std::cerr << "channel " << it->second->Name << " device id: " <<
             it->second->DeviceId << " -- topic: " << GetChannelTopic(*it->second) <<
             " <-- " << payload << std::endl;
-    
+
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
 }
 
