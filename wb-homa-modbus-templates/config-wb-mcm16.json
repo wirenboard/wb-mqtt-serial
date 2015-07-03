@@ -1,0 +1,239 @@
+// Configuration options
+{
+	"device_type" : "WB-MCM16",
+	"device" : {
+	    "name" : "WB-MCM16",
+	    "id" : "wb-mcm16",
+	    "channels" : [
+            {
+                "name" : "Input 1",
+                "reg_type" : "discrete",
+                "address" : 0,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 2",
+                "reg_type" : "discrete",
+                "address" : 1,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 3",
+                "reg_type" : "discrete",
+                "address" : 2,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 4",
+                "reg_type" : "discrete",
+                "address" : 3,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 5",
+                "reg_type" : "discrete",
+                "address" : 4,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 6",
+                "reg_type" : "discrete",
+                "address" : 5,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 7",
+                "reg_type" : "discrete",
+                "address" : 6,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 8",
+                "reg_type" : "discrete",
+                "address" : 7,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 9",
+                "reg_type" : "discrete",
+                "address" : 8,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 10",
+                "reg_type" : "discrete",
+                "address" : 9,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 11",
+                "reg_type" : "discrete",
+                "address" : 10,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 12",
+                "reg_type" : "discrete",
+                "address" : 11,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 13",
+                "reg_type" : "discrete",
+                "address" : 12,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 14",
+                "reg_type" : "discrete",
+                "address" : 13,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 15",
+                "reg_type" : "discrete",
+                "address" : 14,
+                "type" : "switch"
+            },
+            {
+                "name" : "Input 16",
+                "reg_type" : "discrete",
+                "address" : 15,
+                "type" : "switch"
+            },
+
+
+            {
+                "name" : "Counter 1",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 20,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 2",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 24,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 3",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 28,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 4",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 32,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 5",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 36,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 6",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 40,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 7",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 44,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 8",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 48,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 9",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 52,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 10",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 56,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 11",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 60,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 12",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 64,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 13",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 68,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 14",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 72,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 15",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 76,
+                "type" : "value"
+            },
+            {
+                "name" : "Counter 16",
+                "reg_type" : "input",
+                "readonly" : true,
+                "format" : "s64",
+                "address" : 80,
+                "type" : "value"
+            }
+
+
+	    ]
+	}
+}
+
