@@ -144,6 +144,50 @@ TEST_F(TModbusClientTest, S8)
     EXPECT_EQ(254, Slave->Holding[20]);
 }
 
+TEST_F(TModbusClientTest, S64)
+{
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::S64));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::S64));
+    ModbusClient->AddRegister(holding20);
+    ModbusClient->AddRegister(input30);
+
+    Note() << "server -> client: 10, 20";
+    Slave->Holding[20] = 0x00AA;
+    Slave->Holding[21] = 0x00BB;
+    Slave->Holding[22] = 0x00CC;
+    Slave->Holding[23] = 0x00DD;
+    Slave->Input[30] = 0xFFFF;
+    Slave->Input[31] = 0xFFFF;
+    Slave->Input[32] = 0xFFFF;
+    Slave->Input[33] = 0xFFFF;
+    Note() << "Cycle()";
+    ModbusClient->Cycle();
+    EXPECT_EQ(0x00AA00BB00CC00DD, ModbusClient->GetRawValue(holding20));
+    EXPECT_EQ(0xFFFFFFFFFFFFFFFF, ModbusClient->GetRawValue(input30));
+
+    Note() << "client -> server: 10";
+    ModbusClient->SetTextValue(holding20, "10");
+    Note() << "Cycle()";
+    ModbusClient->Cycle();
+    EXPECT_EQ(10, ModbusClient->GetRawValue(holding20));
+    EXPECT_EQ(0, Slave->Holding[20]);
+    EXPECT_EQ(0, Slave->Holding[21]);
+    EXPECT_EQ(0, Slave->Holding[22]);
+    EXPECT_EQ(10, Slave->Holding[23]);
+
+
+    Note() << "client -> server: -2";
+    ModbusClient->SetTextValue(holding20, "-2");
+    Note() << "Cycle()";
+    ModbusClient->Cycle();
+    EXPECT_EQ(-2, ModbusClient->GetRawValue(holding20));
+    EXPECT_EQ(0xFFFF, Slave->Holding[20]);
+    EXPECT_EQ(0xFFFF, Slave->Holding[21]);
+    EXPECT_EQ(0xFFFF, Slave->Holding[22]);
+    EXPECT_EQ(0xFFFE, Slave->Holding[23]);
+
+}
+
 TEST_F(TModbusClientTest, ReadErrors)
 {
     std::shared_ptr<TModbusRegister> holding200(new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 200));
@@ -156,7 +200,7 @@ class TConfigParserTest: public TLoggedFixture {};
 
 TEST_F(TConfigParserTest, Parse)
 {
-    TConfigTemplateParser device_parser(GetDataFilePath("../wb-homa-modbus-templates/"),false); 
+    TConfigTemplateParser device_parser(GetDataFilePath("../wb-homa-modbus-templates/"),false);
     TConfigParser parser(GetDataFilePath("../config.json"), false, device_parser.Parse());
     //TConfigParser parser(GetDataFilePath("../config-test.json"), false);
     PHandlerConfig config = parser.Parse();

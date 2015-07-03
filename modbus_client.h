@@ -73,7 +73,7 @@ public:
 
 struct TModbusRegister
 {
-    enum RegisterFormat { U16, S16, U8, S8 };
+    enum RegisterFormat { U16, S16, U8, S8, S64 };
     enum RegisterType { COIL, DISCRETE_INPUT, HOLDING_REGISTER, INPUT_REGISTER };
     TModbusRegister(int slave = 0, RegisterType type = COIL, int address = 0,
                      RegisterFormat format = U16, double scale = 1,
@@ -92,6 +92,10 @@ struct TModbusRegister
     bool IsReadOnly() const {
         return Type == RegisterType::DISCRETE_INPUT ||
             Type == RegisterType::INPUT_REGISTER || ForceReadOnly;
+    }
+
+    uint8_t Width() const {
+        return (Format == S64) ? 4 : 1;
     }
 
     std::string ToString() const {
@@ -169,7 +173,7 @@ public:
     void SetRawValue(std::shared_ptr<TModbusRegister> reg, int value);
     void SetScaledValue(std::shared_ptr<TModbusRegister> reg, double value);
     void SetTextValue(std::shared_ptr<TModbusRegister> reg, const std::string& value);
-    int GetRawValue(std::shared_ptr<TModbusRegister> reg) const;
+    long long GetRawValue(std::shared_ptr<TModbusRegister> reg) const;
     double GetScaledValue(std::shared_ptr<TModbusRegister> reg) const;
     std::string GetTextValue(std::shared_ptr<TModbusRegister> reg) const;
     bool DidRead(std::shared_ptr<TModbusRegister> reg) const;
