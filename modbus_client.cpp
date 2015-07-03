@@ -259,6 +259,10 @@ long long TRegisterHandler::ConvertSlaveValue(uint16_t* v) const
         return v[0] & 255;
     case TModbusRegister::S8:
         return (int8_t) v[0];
+    case TModbusRegister::S32:
+        return static_cast<int32_t>((static_cast<uint32_t>(v[0]) << 16) | static_cast<uint32_t>(v[1]));
+    case TModbusRegister::U32:
+        return (static_cast<uint32_t>(v[0]) << 16) | static_cast<uint32_t>(v[1]);
     case TModbusRegister::S64:
         return (  static_cast<uint64_t>(v[0]) << 48) | \
                ( static_cast<uint64_t>(v[1]) << 32) | \
@@ -278,6 +282,10 @@ std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(long long v) const
     case TModbusRegister::U8:
     case TModbusRegister::S8:
         return {v & 255};
+    case TModbusRegister::S32:
+        return { (v >> 16) & 0x00000000FFFF, v & 0x000000000000FFFF};
+    case TModbusRegister::U32:
+        return { (v >> 16) & 0x00000000FFFF, v & 0x000000000000FFFF};
     case TModbusRegister::S64:
         return { v >> 48, (v >> 32) & 0x0000FFFF, (v >> 16) & 0x00000000FFFF, v & 0x000000000000FFFF};
     case TModbusRegister::U16:

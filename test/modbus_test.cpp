@@ -188,6 +188,98 @@ TEST_F(TModbusClientTest, S64)
 
 }
 
+
+TEST_F(TModbusClientTest, S32)
+{
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::S32));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::S32));
+    ModbusClient->AddRegister(holding20);
+    ModbusClient->AddRegister(input30);
+
+    Note() << "server -> client: 10, 20";
+    Slave->Holding[20] = 0x00AA;
+    Slave->Holding[21] = 0x00BB;
+    Slave->Input[30] = 0xFFFF;
+    Slave->Input[31] = 0xFFFF;
+    Note() << "Cycle()";
+    ModbusClient->Cycle();
+    EXPECT_EQ(0x00AA00BB, ModbusClient->GetRawValue(holding20));
+    EXPECT_EQ(-1, ModbusClient->GetRawValue(input30));
+
+    Note() << "client -> server: 10";
+    ModbusClient->SetTextValue(holding20, "10");
+    Note() << "Cycle()";
+    ModbusClient->Cycle();
+    EXPECT_EQ(10, ModbusClient->GetRawValue(holding20));
+    EXPECT_EQ(0, Slave->Holding[20]);
+    EXPECT_EQ(10, Slave->Holding[21]);
+
+
+    Note() << "client -> server: -2";
+    ModbusClient->SetTextValue(holding20, "-2");
+    EXPECT_EQ(-2, ModbusClient->GetRawValue(holding20));
+    Note() << "Cycle()";
+    ModbusClient->Cycle();
+    EXPECT_EQ(-2, ModbusClient->GetRawValue(holding20));
+    EXPECT_EQ(0xFFFF, Slave->Holding[20]);
+    EXPECT_EQ(0xFFFE, Slave->Holding[21]);
+
+}
+
+TEST_F(TModbusClientTest, U32)
+{
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::U32));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::U32));
+    ModbusClient->AddRegister(holding20);
+    ModbusClient->AddRegister(input30);
+
+    Note() << "server -> client: 10, 20";
+    Slave->Holding[20] = 0x00AA;
+    Slave->Holding[21] = 0x00BB;
+    Slave->Input[30] = 0xFFFF;
+    Slave->Input[31] = 0xFFFF;
+    Note() << "Cycle()";
+    ModbusClient->Cycle();
+    EXPECT_EQ(0x00AA00BB, ModbusClient->GetRawValue(holding20));
+    EXPECT_EQ(0xFFFFFFFF, ModbusClient->GetRawValue(input30));
+
+    Note() << "client -> server: 10";
+    ModbusClient->SetTextValue(holding20, "10");
+    Note() << "Cycle()";
+    ModbusClient->Cycle();
+    EXPECT_EQ(10, ModbusClient->GetRawValue(holding20));
+    EXPECT_EQ(0, Slave->Holding[20]);
+    EXPECT_EQ(10, Slave->Holding[21]);
+
+
+    Note() << "client -> server: -1 (overflow)";
+    ModbusClient->SetTextValue(holding20, "-1");
+    Note() << "Cycle()";
+    ModbusClient->Cycle();
+    EXPECT_EQ(0xFFFFFFFF, ModbusClient->GetRawValue(holding20));
+    EXPECT_EQ(0xFFFF, Slave->Holding[20]);
+    EXPECT_EQ(0xFFFF, Slave->Holding[21]);
+
+
+    Slave->Holding[22] = 123;
+    Slave->Holding[23] = 123;
+
+    Note() << "client -> server: 4294967296 (overflow)";
+    ModbusClient->SetTextValue(holding20, "4294967296");
+    Note() << "Cycle()";
+    ModbusClient->Cycle();
+    EXPECT_EQ(0, ModbusClient->GetRawValue(holding20));
+    EXPECT_EQ(0, Slave->Holding[20]);
+    EXPECT_EQ(0, Slave->Holding[21]);
+
+    //boundaries check
+    EXPECT_EQ(123, Slave->Holding[22]);
+    EXPECT_EQ(123, Slave->Holding[23]);
+
+
+
+}
+
 TEST_F(TModbusClientTest, ReadErrors)
 {
     std::shared_ptr<TModbusRegister> holding200(new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 200));
