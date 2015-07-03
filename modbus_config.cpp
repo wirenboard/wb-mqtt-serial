@@ -103,8 +103,8 @@ std::shared_ptr<TModbusRegister> TConfigActionParser::LoadRegister(PDeviceConfig
             format = TModbusRegister::U8;
         else if (format_str == "s8")
             format = TModbusRegister::S8;
-        else if (format_str == "u64")
-            format = TModbusRegister::U64;
+        else if (format_str == "s64")
+            format = TModbusRegister::S64;
     }
 
     double scale = 1;
