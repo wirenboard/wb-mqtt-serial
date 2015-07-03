@@ -163,7 +163,7 @@ TEST_F(TModbusClientTest, S64)
     Note() << "Cycle()";
     ModbusClient->Cycle();
     EXPECT_EQ(0x00AA00BB00CC00DD, ModbusClient->GetRawValue(holding20));
-    EXPECT_EQ(0xFFFFFFFFFFFFFFFF, ModbusClient->GetRawValue(input30));
+    EXPECT_EQ(-1, ModbusClient->GetRawValue(input30));
 
     Note() << "client -> server: 10";
     ModbusClient->SetTextValue(holding20, "10");
