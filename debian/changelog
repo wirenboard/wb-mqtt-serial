@@ -2,6 +2,8 @@ wb-homa-modbus (1.11) stable; urgency=medium
 
   * Add support for 2- and 4- words wide "registers"
   * Supported formats are: S64, U32, S32
+  * Add template for WB-MCM16
+
 
  -- Evgeny Boger <boger@contactless.ru>  Fri, 03 Jul 2015 23:05:23 +0300
 
