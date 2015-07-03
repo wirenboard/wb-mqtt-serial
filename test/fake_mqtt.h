@@ -1,7 +1,7 @@
 #pragma once
 #include <set>
 #include <list>
-#include <mqtt_wrapper.h>
+#include <wbmqtt/mqtt_wrapper.h>
 #include "testlog.h"
 
 class TFakeMQTTClient: public TMQTTClientBase

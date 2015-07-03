@@ -1,0 +1,150 @@
+// Configuration options
+{
+	"device_type" : "kvadro-1wire",
+	"device" : {
+	    "name": "Kvadro 1-Wire",
+	    "id": "kvadro-1wire",
+        "channels" : [
+            {
+                "name" : "Temp 1",
+                "reg_type" : "holding",
+                "address" : "0x50",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 2",
+                "reg_type" : "holding",
+                "address" : "0x51",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 3",
+                "reg_type" : "holding",
+                "address" : "0x52",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 4",
+                "reg_type" : "holding",
+                "address" : "0x53",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 5",
+                "reg_type" : "holding",
+                "address" : "0x54",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 6",
+                "reg_type" : "holding",
+                "address" : "0x55",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 7",
+                "reg_type" : "holding",
+                "address" : "0x56",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 8",
+                "reg_type" : "holding",
+                "address" : "0x57",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 9",
+                "reg_type" : "holding",
+                "address" : "0x58",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 10",
+                "reg_type" : "holding",
+                "address" : "0x59",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 11",
+                "reg_type" : "holding",
+                "address" : "0x5A",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 12",
+                "reg_type" : "holding",
+                "address" : "0x5B",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 13",
+                "reg_type" : "holding",
+                "address" : "0x5C",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 14",
+                "reg_type" : "holding",
+                "address" : "0x5D",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 15",
+                "reg_type" : "holding",
+                "address" : "0x5E",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+            {
+                "name" : "Temp 16",
+                "reg_type" : "holding",
+                "address" : "0x5F",
+                "format": "s16",
+                "type" : "temperature",
+                "scale" : 0.0625
+            },
+
+            {
+                "name" : "Period",
+                "reg_type" : "holding",
+                "address" : "0x8007",
+                "format": "u8"
+            }
+
+
+
+        ]
+
+    }
+
+}
