@@ -298,7 +298,7 @@ public:
         return b & 1;
     }
 
-    void Write(PModbusContext ctx, std::vector<uint16_t> & v) {
+    void Write(PModbusContext ctx, const std::vector<uint16_t> & v) {
         ctx->WriteCoil(Register()->Address, v[0]);
     }
 };
