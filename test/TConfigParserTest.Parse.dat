@@ -14,7 +14,7 @@ Ports:
             Type: temperature
             DeviceId: msu34tlp_2
             Order: 1
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <2:input: 0>
@@ -23,7 +23,7 @@ Ports:
             Type: lux
             DeviceId: msu34tlp_2
             Order: 2
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <2:input: 1>
@@ -32,7 +32,7 @@ Ports:
             Type: pressure
             DeviceId: msu34tlp_2
             Order: 3
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <2:input: 2>
@@ -41,7 +41,7 @@ Ports:
             Type: temperature
             DeviceId: msu34tlp_2
             Order: 4
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <2:input: 3>
@@ -55,7 +55,7 @@ Ports:
             Type: temperature
             DeviceId: msu21
             Order: 1
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <24:input: 0>
@@ -78,7 +78,7 @@ Ports:
             Type: text
             DeviceId: msu24
             Order: 1
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <34:input: 0>
@@ -87,7 +87,7 @@ Ports:
             Type: temperature
             DeviceId: msu24
             Order: 2
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <34:input: 1>
@@ -101,7 +101,7 @@ Ports:
             Type: rgb
             DeviceId: ddl24_23
             Order: 1
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <23:holding: 4>, <23:holding: 5>, <23:holding: 6>
@@ -110,7 +110,7 @@ Ports:
             Type: dimmer
             DeviceId: ddl24_23
             Order: 2
-            OnValue: -1
+            OnValue: 
             Max: 255
             ReadOnly: 0
             Registers: <23:holding: 7>
@@ -119,7 +119,7 @@ Ports:
             Type: range
             DeviceId: ddl24_23
             Order: 3
-            OnValue: -1
+            OnValue: 
             Max: 100
             ReadOnly: 0
             Registers: <23:holding: 8>
@@ -128,7 +128,7 @@ Ports:
             Type: range
             DeviceId: ddl24_23
             Order: 4
-            OnValue: -1
+            OnValue: 
             Max: 100
             ReadOnly: 0
             Registers: <23:holding: 9>
@@ -137,7 +137,7 @@ Ports:
             Type: text
             DeviceId: ddl24_23
             Order: 5
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <23:holding: 18>
@@ -151,7 +151,7 @@ Ports:
             Type: switch
             DeviceId: drb88
             Order: 1
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <22:coil: 0>
@@ -160,7 +160,7 @@ Ports:
             Type: switch
             DeviceId: drb88
             Order: 2
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <22:coil: 1>
@@ -169,7 +169,7 @@ Ports:
             Type: switch
             DeviceId: drb88
             Order: 3
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <22:coil: 2>
@@ -178,7 +178,7 @@ Ports:
             Type: switch
             DeviceId: drb88
             Order: 4
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <22:coil: 3>
@@ -187,7 +187,7 @@ Ports:
             Type: switch
             DeviceId: drb88
             Order: 5
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <22:coil: 4>
@@ -196,7 +196,7 @@ Ports:
             Type: switch
             DeviceId: drb88
             Order: 6
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <22:coil: 5>
@@ -205,7 +205,7 @@ Ports:
             Type: switch
             DeviceId: drb88
             Order: 7
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <22:coil: 6>
@@ -214,7 +214,7 @@ Ports:
             Type: switch
             DeviceId: drb88
             Order: 8
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <22:coil: 7>
@@ -313,7 +313,7 @@ Ports:
             Type: switch
             DeviceId: tmp3r3_1
             Order: 1
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <1:coil: 0>
@@ -322,7 +322,7 @@ Ports:
             Type: switch
             DeviceId: tmp3r3_1
             Order: 2
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <1:coil: 1>
@@ -331,7 +331,7 @@ Ports:
             Type: switch
             DeviceId: tmp3r3_1
             Order: 3
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <1:coil: 2>
@@ -340,7 +340,7 @@ Ports:
             Type: switch
             DeviceId: tmp3r3_1
             Order: 4
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <1:discrete: 32>
@@ -349,7 +349,7 @@ Ports:
             Type: switch
             DeviceId: tmp3r3_1
             Order: 5
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <1:discrete: 33>
@@ -358,7 +358,7 @@ Ports:
             Type: switch
             DeviceId: tmp3r3_1
             Order: 6
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <1:discrete: 34>
@@ -372,7 +372,7 @@ Ports:
             Type: switch
             DeviceId: lc103
             Order: 1
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <4:coil: 0>
@@ -381,7 +381,7 @@ Ports:
             Type: switch
             DeviceId: lc103
             Order: 2
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <4:coil: 1>
@@ -390,7 +390,7 @@ Ports:
             Type: switch
             DeviceId: lc103
             Order: 3
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers: <4:coil: 2>
@@ -399,7 +399,7 @@ Ports:
             Type: switch
             DeviceId: lc103
             Order: 4
-            OnValue: -1
+            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers: <4:discrete: 0>

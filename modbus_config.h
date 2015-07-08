@@ -13,7 +13,7 @@ struct TModbusChannel
 {
     TModbusChannel(std::string name = "", std::string type = "text",
                    std::string device_id = "", int order = 0,
-                   int on_value = -1, int max = - 1, bool read_only = false,
+                   std::string on_value = "", int max = - 1, bool read_only = false,
                    const std::vector<std::shared_ptr<TModbusRegister>> regs =
                        std::vector<std::shared_ptr<TModbusRegister>>())
         : Name(name), Type(type), DeviceId(device_id),
@@ -23,7 +23,7 @@ struct TModbusChannel
     std::string Type;
     std::string DeviceId; // FIXME
     int Order;
-    int OnValue;
+    std::string OnValue;
     int Max;
     bool ReadOnly;
     std::vector<std::shared_ptr<TModbusRegister>> Registers;

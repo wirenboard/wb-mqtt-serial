@@ -1,0 +1,69 @@
+CreateContext(): </dev/ttyNSC0 115200 8 N1 timeout 0>
+>>> AddSlave(1)
+>>> server -> client: 40ba401f7ced9168 , 4093b148b4395810
+>>> Cycle()
+Connect()
+SetSlave(1)
+read 4 holding register(s) @ 24: 0x0000 0x0000 0x0000 0x0000
+Modbus Callback: <1:holding: 24> becomes 0.000000
+USleep(1000000)
+SetSlave(1)
+read 4 holding register(s) @ 20: 0x40ba 0x401f 0x7ced 0x9168
+Modbus Callback: <1:holding: 20> becomes 6720.123000
+USleep(1000000)
+SetSlave(1)
+read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
+Modbus Callback: <1:input: 30> becomes 1260.321000
+USleep(1000000)
+>>> client -> server: 10
+>>> Cycle()
+SetSlave(1)
+write 4 holding register(s) @ 20:  0x4025 0xfff2 0xe48e 0x8a72
+SetSlave(1)
+read 4 holding register(s) @ 24: 0x0000 0x0000 0x0000 0x0000
+USleep(1000000)
+SetSlave(1)
+read 4 holding register(s) @ 20: 0x4025 0xfff2 0xe48e 0x8a72
+USleep(1000000)
+SetSlave(1)
+read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
+USleep(1000000)
+>>> client -> server: -0.00123
+>>> Cycle()
+SetSlave(1)
+write 4 holding register(s) @ 20:  0xbf54 0x26fe 0x718a 0x86d7
+SetSlave(1)
+read 4 holding register(s) @ 24: 0x0000 0x0000 0x0000 0x0000
+USleep(1000000)
+SetSlave(1)
+read 4 holding register(s) @ 20: 0xbf54 0x26fe 0x718a 0x86d7
+USleep(1000000)
+SetSlave(1)
+read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
+USleep(1000000)
+>>> client -> server: -0.123 (scaled)
+>>> Cycle()
+SetSlave(1)
+write 4 holding register(s) @ 24:  0xbf54 0x26fe 0x718a 0x86d7
+SetSlave(1)
+read 4 holding register(s) @ 24: 0xbf54 0x26fe 0x718a 0x86d7
+USleep(1000000)
+SetSlave(1)
+read 4 holding register(s) @ 20: 0xbf54 0x26fe 0x718a 0x86d7
+USleep(1000000)
+SetSlave(1)
+read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
+USleep(1000000)
+>>> server -> client: 4093b00000000000 (scaled)
+>>> Cycle()
+SetSlave(1)
+read 4 holding register(s) @ 24: 0x4093 0xb000 0x0000 0x0000
+Modbus Callback: <1:holding: 24> becomes 126000.000000
+USleep(1000000)
+SetSlave(1)
+read 4 holding register(s) @ 20: 0xbf54 0x26fe 0x718a 0x86d7
+USleep(1000000)
+SetSlave(1)
+read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
+USleep(1000000)
+Disconnect()

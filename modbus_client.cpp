@@ -127,24 +127,28 @@ public:
     TRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
         : Client(client), reg(_reg) {}
     virtual ~TRegisterHandler() {}
-    virtual long long Read(PModbusContext ctx) = 0;
+    virtual std::vector<uint16_t> Read(PModbusContext ctx) = 0;
     virtual void Write(PModbusContext ctx, const std::vector<uint16_t> & v);
     std::shared_ptr<TModbusRegister> Register() const { return reg; }
     TErrorMessage Poll(PModbusContext ctx);
     int Flush(PModbusContext ctx);
-    long long RawValue() const { return value; }
-    double ScaledValue() const { return value * reg->Scale; }
     std::string TextValue() const;
-    void SetRawValue(long long v);
-    void SetScaledValue(double v);
+
     void SetTextValue(const std::string& v);
     bool DidRead() const { return did_read; }
 protected:
-    long long ConvertSlaveValue(uint16_t* v) const;
-    std::vector<uint16_t> ConvertMasterValue(long long v) const;
     const TModbusClient* Client;
+
+	template<typename T>
+	std::string ToScaledTextValue(T val) const;
+
+	template<typename T>
+	T FromScaledTextValue(const std::string& str) const;
+
+	std::vector<uint16_t> ConvertMasterValue(const std::string& v) const;
+
 private:
-    long long value = 0;
+    std::vector<uint16_t> value;
     std::shared_ptr<TModbusRegister> reg;
     volatile bool dirty = false;
     bool did_read = false;
@@ -168,12 +172,13 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
         return std::make_pair(false, 0); // write-only register
 
     bool first_poll = !did_read;
-    long long new_value;
+    std::vector<uint16_t> new_value;
     ctx->SetSlave(reg->Slave);
     try {
         new_value = Read(ctx);
     } catch (const TModbusException& e) {
-        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " slave_id is " << reg->Slave << "(0x" << std::hex << reg->Slave << ")" << std::endl;
+        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " slave_id is "
+				  << 	reg->Slave << "(0x" << std::hex << reg->Slave << ")" << std::endl;
         std::cerr << std::dec;
         reg->ErrorMessage = "Poll";
         return std::make_pair(true, 1);
@@ -187,8 +192,14 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
         }
         value = new_value;
         set_value_mutex.unlock();
-        if (Client->DebugEnabled())
-            std::cerr << "new val for " << reg->ToString() << ": " << new_value << std::endl;
+
+        if (Client->DebugEnabled()) {
+            std::cerr << "new val for " << reg->ToString() << ": " ;
+            for (const auto & el : new_value) {
+				std::cerr << el << " ";
+			}
+			std::cerr << std::endl;
+		}
         return std::make_pair(true, message);
     } else
         set_value_mutex.unlock();
@@ -209,7 +220,7 @@ int TRegisterHandler::Flush(PModbusContext ctx)
         set_value_mutex.unlock();
         ctx->SetSlave(reg->Slave);
         try {
-            Write(ctx, ConvertMasterValue(value));
+            Write(ctx, value);
         } catch (const TModbusException& e) {
             std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " << reg->Slave << "(0x" << std::hex << reg->Slave << ")" <<  std::endl;
             std::cerr << std::dec;
@@ -225,85 +236,147 @@ int TRegisterHandler::Flush(PModbusContext ctx)
 
 std::string TRegisterHandler::TextValue() const
 {
-    return reg->Scale == 1 ? std::to_string(RawValue()) : std::to_string(ScaledValue());
+    switch (reg->Format) {
+    case TModbusRegister::U16:
+        return ToScaledTextValue(value[0]);
+    case TModbusRegister::S16:
+        return ToScaledTextValue((int16_t)value[0]);
+    case TModbusRegister::U8:
+        return ToScaledTextValue(value[0] & 255);
+    case TModbusRegister::S8:
+        return ToScaledTextValue((int8_t) value[0]);
+    case TModbusRegister::S32:
+        return ToScaledTextValue(
+			static_cast<int32_t>((static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]))
+		);
+    case TModbusRegister::U32:
+        return ToScaledTextValue((static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]));
+    case TModbusRegister::S64:
+        return ToScaledTextValue(static_cast<int64_t> (
+							         (  static_cast<uint64_t>(value[0]) << 48) | \
+					                 ( static_cast<uint64_t>(value[1]) << 32) | \
+					                 ( static_cast<uint64_t>(value[2]) << 16) | \
+					                   static_cast<uint64_t>(value[3])
+				                 ));
+	case TModbusRegister::Float:
+		{
+		uint32_t tmp = (static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]);
+		return ToScaledTextValue(*( (float*) (&tmp)));
+		}
+
+    case TModbusRegister::Double:
+		{
+		uint64_t tmp2 = (  static_cast<uint64_t>(value[0]) << 48) | \
+	                   ( static_cast<uint64_t>(value[1]) << 32) | \
+	                   ( static_cast<uint64_t>(value[2]) << 16) | \
+	                     static_cast<uint64_t>(value[3]);
+		return ToScaledTextValue(*((double*)(&tmp2)));
+		}
+    default:
+        return ToScaledTextValue(value[0]);
+    }
+
 }
 
-void TRegisterHandler::SetRawValue(long long v)
+template<typename A>
+std::string TRegisterHandler::ToScaledTextValue(A val) const
 {
-    std::lock_guard<std::mutex> lock(set_value_mutex);
-    value = v;
-    dirty = true;
+	if (reg->Scale == 1) {
+		return std::to_string(val);
+	} else {
+		return std::to_string(reg->Scale * val);
+	}
 }
 
-void TRegisterHandler::SetScaledValue(double v)
+
+
+template<>
+uint64_t TRegisterHandler::FromScaledTextValue(const std::string& str) const
 {
-    SetRawValue(round(v / reg->Scale));
+    if (reg->Scale == 1) {
+		return std::stoull(str);
+	 } else {
+		 return round(stod(str) / reg->Scale);
+	}
 }
+
+
+template<>
+int64_t TRegisterHandler::FromScaledTextValue(const std::string& str) const
+{
+    if (reg->Scale == 1) {
+		return std::stoll(str);
+	 } else {
+		 return round(stod(str) / reg->Scale);
+	}
+}
+
+
+template<>
+double TRegisterHandler::FromScaledTextValue(const std::string& str) const
+{
+	 return stod(str) / reg->Scale;
+}
+
+
 
 void TRegisterHandler::SetTextValue(const std::string& v)
 {
-    if (reg->Scale == 1)
-        SetRawValue(stoll(v));
-    else
-        SetScaledValue(stod(v));
+    std::lock_guard<std::mutex> lock(set_value_mutex);
+    dirty = true;
+    value = ConvertMasterValue(v);
 }
 
-long long TRegisterHandler::ConvertSlaveValue(uint16_t* v) const
-{
-    switch (reg->Format) {
-    case TModbusRegister::U16:
-        return v[0];
-    case TModbusRegister::S16:
-        return (int16_t)v[0];
-    case TModbusRegister::U8:
-        return v[0] & 255;
-    case TModbusRegister::S8:
-        return (int8_t) v[0];
-    case TModbusRegister::S32:
-        return static_cast<int32_t>((static_cast<uint32_t>(v[0]) << 16) | static_cast<uint32_t>(v[1]));
-    case TModbusRegister::U32:
-        return (static_cast<uint32_t>(v[0]) << 16) | static_cast<uint32_t>(v[1]);
-    case TModbusRegister::S64:
-        return (  static_cast<uint64_t>(v[0]) << 48) | \
-               ( static_cast<uint64_t>(v[1]) << 32) | \
-               ( static_cast<uint64_t>(v[2]) << 16) | \
-               static_cast<uint64_t>(v[3]);
 
-    default:
-        return v[0];
-    }
-}
-
-std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(long long v) const
+std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(const std::string& str) const
 {
     switch (reg->Format) {
     case TModbusRegister::S16:
-        return {v & 65535};
+        return {FromScaledTextValue<int64_t>(str) & 65535};
     case TModbusRegister::U8:
     case TModbusRegister::S8:
-        return {v & 255};
+        return {FromScaledTextValue<int64_t>(str) & 255};
     case TModbusRegister::S32:
-        return { (v >> 16) & 0x00000000FFFF, v & 0x000000000000FFFF};
     case TModbusRegister::U32:
-        return { (v >> 16) & 0x00000000FFFF, v & 0x000000000000FFFF};
+	    {
+			auto v = FromScaledTextValue<int64_t>(str);
+	        return { (v >> 16) & 0xFFFF, v & 0xFFFF};
+		}
     case TModbusRegister::S64:
-        return { v >> 48, (v >> 32) & 0x0000FFFF, (v >> 16) & 0x00000000FFFF, v & 0x000000000000FFFF};
+		{
+			auto v = FromScaledTextValue<int64_t>(str);
+	        return { v >> 48, (v >> 32) & 0xFFFF, (v >> 16) & 0xFFFF, v & 0xFFFF};
+		}
+
+	case TModbusRegister::Float:
+		{
+			float tmp = FromScaledTextValue<double>(str);
+			uint32_t v = *((uint32_t *) (&tmp));
+	        return { (v >> 16) & 0xFFFF, v & 0xFFFF};
+		}
+
+	case TModbusRegister::Double:
+		{
+			double tmp = FromScaledTextValue<double>(str);
+			uint64_t v = *((uint64_t *) (&tmp));
+	        return { v >> 48, (v >> 32) & 0xFFFF, (v >> 16) & 0xFFFF, v & 0xFFFF};
+		}
+
     case TModbusRegister::U16:
     default:
-        return {v};
+        return {FromScaledTextValue<int64_t>(str)};
     }
 }
-
 class TCoilHandler: public TRegisterHandler
 {
 public:
     TCoilHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
         : TRegisterHandler(client, _reg) {}
 
-    long long Read(PModbusContext ctx) {
+    std::vector<uint16_t> Read(PModbusContext ctx) {
         unsigned char b;
         ctx->ReadCoils(Register()->Address, 1, &b);
-        return b & 1;
+        return {static_cast<uint16_t>(b & 1)};
     }
 
     void Write(PModbusContext ctx, const std::vector<uint16_t> & v) {
@@ -317,10 +390,10 @@ public:
     TDiscreteInputHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
         : TRegisterHandler(client, _reg) {}
 
-    long long Read(PModbusContext ctx) {
+    std::vector<uint16_t> Read(PModbusContext ctx) {
         uint8_t b;
         ctx->ReadDisceteInputs(Register()->Address, 1, &b);
-        return b & 1;
+        return {static_cast<uint16_t>(b & 1)};
     }
 };
 
@@ -330,10 +403,11 @@ public:
     THoldingRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
         : TRegisterHandler(client, _reg) {}
 
-    long long Read(PModbusContext ctx) {
-        uint16_t v[4];
-        ctx->ReadHoldingRegisters(Register()->Address, Register()->Width(), v);
-        return ConvertSlaveValue(v);
+    std::vector<uint16_t> Read(PModbusContext ctx) {
+        std::vector<uint16_t> v;
+        v.resize(Register()->Width());
+        ctx->ReadHoldingRegisters(Register()->Address, Register()->Width(), &v[0]);
+        return v;
     }
 
     void Write(PModbusContext ctx, const std::vector<uint16_t> & v) {
@@ -350,10 +424,11 @@ public:
     TInputRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
         : TRegisterHandler(client, _reg) {}
 
-    long long Read(PModbusContext ctx) {
-        uint16_t v[4];
-        ctx->ReadInputRegisters(Register()->Address, Register()->Width(), v);
-        return ConvertSlaveValue(v);
+    std::vector<uint16_t> Read(PModbusContext ctx) {
+        std::vector<uint16_t> v;
+        v.resize(Register()->Width());
+        ctx->ReadInputRegisters(Register()->Address, Register()->Width(), &v[0]);
+        return v;
     }
 };
 
@@ -439,29 +514,11 @@ void TModbusClient::WriteHoldingRegister(int slave, int address, uint16_t value)
     Context->WriteHoldingRegisters(address, 1, &value);
 }
 
-void TModbusClient::SetRawValue(std::shared_ptr<TModbusRegister> reg, int value)
-{
-    GetHandler(reg)->SetRawValue(value);
-}
 
-void TModbusClient::SetScaledValue(std::shared_ptr<TModbusRegister> reg, double value)
-{
-    GetHandler(reg)->SetScaledValue(value);
-}
 
 void TModbusClient::SetTextValue(std::shared_ptr<TModbusRegister> reg, const std::string& value)
 {
     GetHandler(reg)->SetTextValue(value);
-}
-
-long long TModbusClient::GetRawValue(std::shared_ptr<TModbusRegister> reg) const
-{
-    return GetHandler(reg)->RawValue();
-}
-
-double TModbusClient::GetScaledValue(std::shared_ptr<TModbusRegister> reg) const
-{
-    return GetHandler(reg)->ScaledValue();
 }
 
 std::string TModbusClient::GetTextValue(std::shared_ptr<TModbusRegister> reg) const

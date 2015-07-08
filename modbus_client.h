@@ -73,13 +73,15 @@ public:
 
 struct TModbusRegister
 {
-    enum RegisterFormat { U16, S16, U8, S8, U32, S32, S64 };
+    enum RegisterFormat { U16, S16, U8, S8, U32, S32, S64, Float, Double };
     enum RegisterType { COIL, DISCRETE_INPUT, HOLDING_REGISTER, INPUT_REGISTER };
+
     TModbusRegister(int slave = 0, RegisterType type = COIL, int address = 0,
                      RegisterFormat format = U16, double scale = 1,
                      bool poll = true, bool readonly = false)
         : Slave(slave), Type(type), Address(address), Format(format),
           Scale(scale), Poll(poll), ForceReadOnly(readonly), ErrorMessage("") {}
+
     int Slave;
     RegisterType Type;
     int Address;
@@ -97,9 +99,11 @@ struct TModbusRegister
     uint8_t Width() const {
         switch (Format) {
             case S64:
+            case Double:
                 return 4;
             case U32:
             case S32:
+            case Float:
                 return 2;
             default:
                 return 1;
@@ -178,11 +182,7 @@ public:
     void Connect();
     void Disconnect();
     void Cycle();
-    void SetRawValue(std::shared_ptr<TModbusRegister> reg, int value);
-    void SetScaledValue(std::shared_ptr<TModbusRegister> reg, double value);
     void SetTextValue(std::shared_ptr<TModbusRegister> reg, const std::string& value);
-    long long GetRawValue(std::shared_ptr<TModbusRegister> reg) const;
-    double GetScaledValue(std::shared_ptr<TModbusRegister> reg) const;
     std::string GetTextValue(std::shared_ptr<TModbusRegister> reg) const;
     bool DidRead(std::shared_ptr<TModbusRegister> reg) const;
     void SetCallback(const TModbusCallback& callback);
@@ -194,6 +194,8 @@ public:
     void WriteHoldingRegister(int slave, int address, uint16_t value);
 
 private:
+
+
     const std::unique_ptr<TRegisterHandler>& GetHandler(std::shared_ptr<TModbusRegister>) const;
     TRegisterHandler* CreateRegisterHandler(std::shared_ptr<TModbusRegister> reg);
     std::map<std::shared_ptr<TModbusRegister>, std::unique_ptr<TRegisterHandler> > handlers;

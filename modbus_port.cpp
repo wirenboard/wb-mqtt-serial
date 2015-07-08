@@ -124,8 +124,8 @@ void TModbusPort::OnModbusValueChange(std::shared_ptr<TModbusRegister> reg)
     }
 
     std::string payload;
-    if (it->second->OnValue >= 0) {
-        payload = ModbusClient->GetRawValue(reg) == it->second->OnValue ? "1" : "0";
+    if (!it->second->OnValue.empty()) {
+        payload = ModbusClient->GetTextValue(reg) == it->second->OnValue ? "1" : "0";
         if (Config->Debug)
             std::cerr << "OnValue: " << it->second->OnValue << "; payload: " <<
                 payload << std::endl;

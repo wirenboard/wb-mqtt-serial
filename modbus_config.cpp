@@ -109,6 +109,10 @@ std::shared_ptr<TModbusRegister> TConfigActionParser::LoadRegister(PDeviceConfig
             format = TModbusRegister::S32;
         else if (format_str == "s64")
             format = TModbusRegister::S64;
+        else if (format_str == "float")
+            format = TModbusRegister::Float;
+        else if (format_str == "double")
+            format = TModbusRegister::Double;
     }
 
     double scale = 1;
@@ -156,11 +160,11 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
             reg->Poll = false;
     }
 
-    int on_value = -1;
+    std::string on_value = "";
     if (channel_data.isMember("on_value")) {
         if (registers.size() != 1)
             throw TConfigParserException(string("can only use on_value for single-valued controls") + " " + device_config->DeviceType);
-        on_value = GetInt(channel_data, "on_value");
+        on_value = to_string(GetInt(channel_data, "on_value"));
     }
 
     int max = -1;
