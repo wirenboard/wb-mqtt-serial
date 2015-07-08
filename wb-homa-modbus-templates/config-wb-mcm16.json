@@ -107,7 +107,7 @@
                 "name" : "Counter 1",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 20,
                 "type" : "value"
             },
@@ -115,7 +115,7 @@
                 "name" : "Counter 2",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 24,
                 "type" : "value"
             },
@@ -123,7 +123,7 @@
                 "name" : "Counter 3",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 28,
                 "type" : "value"
             },
@@ -131,7 +131,7 @@
                 "name" : "Counter 4",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 32,
                 "type" : "value"
             },
@@ -139,7 +139,7 @@
                 "name" : "Counter 5",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 36,
                 "type" : "value"
             },
@@ -147,7 +147,7 @@
                 "name" : "Counter 6",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 40,
                 "type" : "value"
             },
@@ -155,7 +155,7 @@
                 "name" : "Counter 7",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 44,
                 "type" : "value"
             },
@@ -163,7 +163,7 @@
                 "name" : "Counter 8",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 48,
                 "type" : "value"
             },
@@ -171,7 +171,7 @@
                 "name" : "Counter 9",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 52,
                 "type" : "value"
             },
@@ -179,7 +179,7 @@
                 "name" : "Counter 10",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 56,
                 "type" : "value"
             },
@@ -187,7 +187,7 @@
                 "name" : "Counter 11",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 60,
                 "type" : "value"
             },
@@ -195,7 +195,7 @@
                 "name" : "Counter 12",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 64,
                 "type" : "value"
             },
@@ -203,7 +203,7 @@
                 "name" : "Counter 13",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 68,
                 "type" : "value"
             },
@@ -211,7 +211,7 @@
                 "name" : "Counter 14",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 72,
                 "type" : "value"
             },
@@ -219,7 +219,7 @@
                 "name" : "Counter 15",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 76,
                 "type" : "value"
             },
@@ -227,7 +227,7 @@
                 "name" : "Counter 16",
                 "reg_type" : "input",
                 "readonly" : true,
-                "format" : "s64",
+                "format" : "u64",
                 "address" : 80,
                 "type" : "value"
             }
