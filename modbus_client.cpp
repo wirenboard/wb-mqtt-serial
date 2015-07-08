@@ -2,6 +2,7 @@
 #include <cmath>
 #include <mutex>
 #include <unistd.h>
+#include <string.h>
 #include <vector>
 #include <modbus/modbus.h>
 #include "modbus_client.h"
@@ -261,16 +262,22 @@ std::string TRegisterHandler::TextValue() const
 	case TModbusRegister::Float:
 		{
 		uint32_t tmp = (static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]);
-		return ToScaledTextValue(*( (float*) (&tmp)));
+		float ret;
+		memcpy(&ret, &tmp, sizeof(tmp));
+
+		return ToScaledTextValue(ret);
 		}
 
     case TModbusRegister::Double:
 		{
-		uint64_t tmp2 = (  static_cast<uint64_t>(value[0]) << 48) | \
+		uint64_t tmp = (  static_cast<uint64_t>(value[0]) << 48) | \
 	                   ( static_cast<uint64_t>(value[1]) << 32) | \
 	                   ( static_cast<uint64_t>(value[2]) << 16) | \
 	                     static_cast<uint64_t>(value[3]);
-		return ToScaledTextValue(*((double*)(&tmp2)));
+	    double ret;
+		memcpy(&ret, &tmp, sizeof(tmp));
+
+		return ToScaledTextValue(ret);
 		}
     default:
         return ToScaledTextValue(value[0]);
@@ -332,39 +339,48 @@ std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(const std::string& st
 {
     switch (reg->Format) {
     case TModbusRegister::S16:
-        return {FromScaledTextValue<int64_t>(str) & 65535};
+        return {static_cast<uint16_t>(FromScaledTextValue<int64_t>(str) & 65535)};
     case TModbusRegister::U8:
     case TModbusRegister::S8:
-        return {FromScaledTextValue<int64_t>(str) & 255};
+        return {static_cast<uint16_t>(FromScaledTextValue<int64_t>(str) & 255)};
     case TModbusRegister::S32:
     case TModbusRegister::U32:
 	    {
 			auto v = FromScaledTextValue<int64_t>(str);
-	        return { (v >> 16) & 0xFFFF, v & 0xFFFF};
+	        return { static_cast<uint16_t>((v >> 16) & 0xFFFF), static_cast<uint16_t>(v & 0xFFFF)};
 		}
     case TModbusRegister::S64:
 		{
 			auto v = FromScaledTextValue<int64_t>(str);
-	        return { v >> 48, (v >> 32) & 0xFFFF, (v >> 16) & 0xFFFF, v & 0xFFFF};
+	        return { static_cast<uint16_t>(v >> 48),
+				     static_cast<uint16_t>((v >> 32) & 0xFFFF),
+				     static_cast<uint16_t>((v >> 16) & 0xFFFF),
+				     static_cast<uint16_t>(v & 0xFFFF)};
 		}
 
 	case TModbusRegister::Float:
 		{
 			float tmp = FromScaledTextValue<double>(str);
-			uint32_t v = *((uint32_t *) (&tmp));
-	        return { (v >> 16) & 0xFFFF, v & 0xFFFF};
+			uint32_t v;
+			memcpy(&v, &tmp, sizeof(tmp));
+	        return { static_cast<uint16_t>((v >> 16) & 0xFFFF),
+					 static_cast<uint16_t>(v & 0xFFFF)};
 		}
 
 	case TModbusRegister::Double:
 		{
 			double tmp = FromScaledTextValue<double>(str);
-			uint64_t v = *((uint64_t *) (&tmp));
-	        return { v >> 48, (v >> 32) & 0xFFFF, (v >> 16) & 0xFFFF, v & 0xFFFF};
+			uint64_t v;
+			memcpy(&v, &tmp, sizeof(tmp));
+	        return {static_cast<uint16_t>(v >> 48),
+				    static_cast<uint16_t>((v >> 32) & 0xFFFF),
+				    static_cast<uint16_t>((v >> 16) & 0xFFFF),
+				    static_cast<uint16_t>(v & 0xFFFF)};
 		}
 
     case TModbusRegister::U16:
     default:
-        return {FromScaledTextValue<int64_t>(str)};
+        return {static_cast<uint16_t>(FromScaledTextValue<int64_t>(str))};
     }
 }
 class TCoilHandler: public TRegisterHandler
