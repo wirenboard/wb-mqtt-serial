@@ -109,6 +109,8 @@ std::shared_ptr<TModbusRegister> TConfigActionParser::LoadRegister(PDeviceConfig
             format = TModbusRegister::S32;
         else if (format_str == "s64")
             format = TModbusRegister::S64;
+        else if (format_str == "u64")
+            format = TModbusRegister::U64;
         else if (format_str == "float")
             format = TModbusRegister::Float;
         else if (format_str == "double")

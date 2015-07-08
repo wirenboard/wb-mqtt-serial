@@ -73,7 +73,7 @@ public:
 
 struct TModbusRegister
 {
-    enum RegisterFormat { U16, S16, U8, S8, U32, S32, S64, Float, Double };
+    enum RegisterFormat { U16, S16, U8, S8, U32, S32, S64, U64, Float, Double };
     enum RegisterType { COIL, DISCRETE_INPUT, HOLDING_REGISTER, INPUT_REGISTER };
 
     TModbusRegister(int slave = 0, RegisterType type = COIL, int address = 0,
@@ -99,6 +99,7 @@ struct TModbusRegister
     uint8_t Width() const {
         switch (Format) {
             case S64:
+            case U64:
             case Double:
                 return 4;
             case U32:

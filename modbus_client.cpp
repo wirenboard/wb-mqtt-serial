@@ -259,6 +259,15 @@ std::string TRegisterHandler::TextValue() const
 					                 ( static_cast<uint64_t>(value[2]) << 16) | \
 					                   static_cast<uint64_t>(value[3])
 				                 ));
+
+    case TModbusRegister::U64:
+        return ToScaledTextValue(
+						         (  static_cast<uint64_t>(value[0]) << 48) | \
+				                 ( static_cast<uint64_t>(value[1]) << 32) | \
+				                 ( static_cast<uint64_t>(value[2]) << 16) | \
+				                   static_cast<uint64_t>(value[3])
+				                 );
+
 	case TModbusRegister::Float:
 		{
 		uint32_t tmp = (static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]);
@@ -352,6 +361,15 @@ std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(const std::string& st
     case TModbusRegister::S64:
 		{
 			auto v = FromScaledTextValue<int64_t>(str);
+	        return { static_cast<uint16_t>(v >> 48),
+				     static_cast<uint16_t>((v >> 32) & 0xFFFF),
+				     static_cast<uint16_t>((v >> 16) & 0xFFFF),
+				     static_cast<uint16_t>(v & 0xFFFF)};
+		}
+
+    case TModbusRegister::U64:
+		{
+			auto v = FromScaledTextValue<uint64_t>(str);
 	        return { static_cast<uint16_t>(v >> 48),
 				     static_cast<uint16_t>((v >> 32) & 0xFFFF),
 				     static_cast<uint16_t>((v >> 16) & 0xFFFF),
