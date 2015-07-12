@@ -1,3 +1,16 @@
+wb-homa-modbus (1.12.1) stable; urgency=medium
+
+  *  support for http://siqi.cc/en/product/57.html meter
+
+ -- Evgeny Boger <boger@contactless.ru>  Sun, 12 Jul 2015 21:39:33 +0300
+
+wb-homa-modbus (1.12) stable; urgency=medium
+
+  * add support for float and double IEEE types
+  * add support for signed 64-bit integer
+
+ -- Evgeny Boger <boger@contactless.ru>  Wed, 08 Jul 2015 19:40:53 +0300
+
 wb-homa-modbus (1.11) stable; urgency=medium
 
   * Add support for 2- and 4- words wide "registers"
