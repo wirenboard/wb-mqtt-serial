@@ -1,0 +1,177 @@
+// Configuration options
+{
+	"device_type" : "PD561Z",
+	"device" : {
+	    "name" : "PD561Z",
+	    "id" : "pd561z",
+	    "channels" : [
+            {
+                "name" : "Uan",
+                "reg_type" : "holding",
+                "address" : 18,
+                "format" : "float",
+                "type" : "voltage"
+            },
+            {
+                "name" : "Ubn",
+                "reg_type" : "holding",
+                "address" : 20,
+                "format" : "float",
+                "type" : "voltage"
+            },
+            {
+                "name" : "Ucn",
+                "reg_type" : "holding",
+                "address" : 22,
+                "format" : "float",
+                "type" : "voltage"
+            },
+            {
+                "name" : "Ia",
+                "reg_type" : "holding",
+                "address" : 30,
+                "format" : "float",
+                "type" : "current"
+            },
+            {
+                "name" : "Ib",
+                "reg_type" : "holding",
+                "address" : 32,
+                "format" : "float",
+                "type" : "current"
+            },
+            {
+                "name" : "Ic",
+                "reg_type" : "holding",
+                "address" : 34,
+                "format" : "float",
+                "type" : "current"
+            },
+            {
+                "name" : "Pa",
+                "reg_type" : "holding",
+                "address" : 36,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Pb",
+                "reg_type" : "holding",
+                "address" : 38,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Pc",
+                "reg_type" : "holding",
+                "address" : 40,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Ps",
+                "reg_type" : "holding",
+                "address" : 42,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Qa",
+                "reg_type" : "holding",
+                "address" : 44,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Qb",
+                "reg_type" : "holding",
+                "address" : 46,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Qc",
+                "reg_type" : "holding",
+                "address" : 48,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Qs",
+                "reg_type" : "holding",
+                "address" : 50,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Sa",
+                "reg_type" : "holding",
+                "address" : 52,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Sb",
+                "reg_type" : "holding",
+                "address" : 54,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Sc",
+                "reg_type" : "holding",
+                "address" : 56,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "Ss",
+                "reg_type" : "holding",
+                "address" : 58,
+                "format" : "float",
+                "type" : "power"
+            },
+            {
+                "name" : "PFa",
+                "reg_type" : "holding",
+                "address" : 60,
+                "format" : "float",
+                "type" : "value"
+            },
+            {
+                "name" : "PFb",
+                "reg_type" : "holding",
+                "address" : 62,
+                "format" : "float",
+                "type" : "value"
+            },
+            {
+                "name" : "PFc",
+                "reg_type" : "holding",
+                "address" : 64,
+                "format" : "float",
+                "type" : "value"
+            },
+            {
+                "name" : "PFs",
+                "reg_type" : "holding",
+                "address" : 66,
+                "format" : "float",
+                "type" : "value"
+            },
+            {
+                "name" : "FR",
+                "reg_type" : "holding",
+                "address" : 68,
+                "format" : "float",
+                "type" : "value"
+            }
+
+
+
+
+
+
+       ]
+   }
+}
