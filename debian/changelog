@@ -1,6 +1,7 @@
-wb-homa-modbus (1.12.2) UNRELEASED; urgency=medium
+wb-homa-modbus (1.12.2) stable; urgency=medium
 
   * support for SDM220 electricity meter (http://www.aliexpress.com/item/SDM220Modbus-Single-Phase-DIN-Rail-Kwh-meter-with-Pulse-Output-and-RS485-Modbus-Communication-MID-approved/32346363823.html)
+  * fix crash on receiving mailformed /on payload
 
  -- Evgeny Boger <boger@contactless.ru>  Tue, 18 Aug 2015 14:27:06 +0300
 
