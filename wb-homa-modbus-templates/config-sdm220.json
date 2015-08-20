@@ -1,0 +1,67 @@
+// Configuration options
+{
+	"device_type" : "SDM220",
+	"device" : {
+	    "name" : "SDM220",
+	    "id" : "sdm220",
+	    "channels" : [
+			{
+				"name" : "Voltage",
+				"type" : "voltage",
+				"reg_type" : "input",
+				"address" : "0x00",
+				"format" : "float"
+			},
+			{
+				"name" : "Current",
+				"type" : "current",
+				"reg_type" : "input",
+				"address" : "0x06",
+				"format" : "float"
+			},
+			{
+				"name" : "Active Power",
+				"type" : "power",
+				"reg_type" : "input",
+				"address" : "0x0c",
+				"format": "float"
+			},
+			{
+				"name" : "Apparent Power",
+				"type" : "power",
+				"reg_type" : "input",
+				"address" : "0x12",
+				"format": "float"
+			},
+			{
+				"name" : "Reactive Power",
+				"type" : "power",
+				"reg_type" : "input",
+				"address" : "0x18",
+				"format": "float"
+			},
+			{
+				"name" : "Power Factor",
+				"type" : "value",
+				"reg_type" : "input",
+				"address" : "0x1e",
+				"format": "float"
+			},
+			{
+				"name" : "cos(Phi)",
+				"type" : "value",
+				"reg_type" : "input",
+				"address" : "0x24",
+				"format": "float"
+			},
+			{
+				"name" : "Line Frequency",
+				"type" : "value",
+				"reg_type" : "input",
+				"address" : "0x46",
+				"format": "float"
+			}
+		]
+	}
+}
+
