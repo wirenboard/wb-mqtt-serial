@@ -98,7 +98,15 @@ bool TModbusPort::HandleMessage(const std::string& topic, const std::string& pay
         if (Config->Debug)
             std::cerr << "setting modbus register: " << reg->ToString() << " <- " <<
                 payload_items[i] << std::endl;
-        ModbusClient->SetTextValue(reg, payload_items[i]);
+        try {
+			ModbusClient->SetTextValue(reg, payload_items[i]);
+		} catch (std::exception& err) {
+			std::cerr << "warning: invalid payload for topic '" << topic <<
+				"': '" << payload << "' : " << err.what()  << std::endl;
+
+			return true;
+		}
+
     }
 
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
