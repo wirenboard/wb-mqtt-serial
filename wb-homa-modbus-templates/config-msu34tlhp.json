@@ -30,7 +30,7 @@
 		    "name" : "Humidity",
 		    "reg_type" : "input",
 		    "address" : 3,
-		    "type": "humidity",
+		    "type": "rel_humidity",
 		    "format": "s8"
 		}
 	    ]
