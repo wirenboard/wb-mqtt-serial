@@ -16,7 +16,7 @@
         },
         "enabled": {
           "type": "boolean",
-          "title": "Enable poll",
+          "title": "Enable port",
           "default": true,
           "_format": "checkbox",
           "propertyOrder": 2
@@ -86,7 +86,7 @@
     "device": {
       "type": "object",
       "title": "Modbus device",
-      "headerTemplate": "Modbus device{{: |self.name}}{{ (slave id |self.slave_id|)}}",
+      "headerTemplate": "{{|self.device_type|}}{{ (slave id |self.slave_id|)}}{{ (name: |self.name|)}}",
       // "options": { "collapsed": true },
       "properties": {
         "name": {
@@ -113,7 +113,7 @@
         },
         "enabled": {
           "type": "boolean",
-          "title": "Enable poll",
+          "title": "Enable device",
           "default": true,
           "_format": "checkbox",
           "propertyOrder": 4
