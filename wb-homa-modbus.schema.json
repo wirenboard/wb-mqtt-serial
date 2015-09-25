@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "Modbus Driver Configuration",
   "description": "Lists Modbus and Uniel devices attached to RS-485 ports",
@@ -348,5 +349,7 @@
     }
   },
   "required": ["ports"],
-  "configPath": "/etc/wb-homa-modbus.conf"
+  "configFile": {
+    "path": "/etc/wb-homa-modbus.conf"
+  }
 }
