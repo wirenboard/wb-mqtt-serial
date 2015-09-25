@@ -350,6 +350,7 @@
   },
   "required": ["ports"],
   "configFile": {
-    "path": "/etc/wb-homa-modbus.conf"
+    "path": "/etc/wb-homa-modbus.conf",
+    "service": "wb-homa-modbus"
   }
 }
