@@ -89,6 +89,12 @@ void TFakeModbusContext::WriteHoldingRegisters(int addr, int nb, const uint16_t 
     CurrentSlave->Holding.WriteRegs(Fixture, addr, nb, data);
 }
 
+void TFakeModbusContext::WriteHoldingRegister(int addr, uint16_t value)
+{
+    ASSERT_TRUE(!!CurrentSlave);
+    CurrentSlave->Holding.WriteRegs(Fixture, addr, 1, &value);
+}
+
 void TFakeModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
 {
     ASSERT_LE(nb, MODBUS_MAX_READ_REGISTERS);

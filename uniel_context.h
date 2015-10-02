@@ -22,6 +22,7 @@ public:
     void ReadDisceteInputs(int addr, int nb, uint8_t *dest);
     void ReadHoldingRegisters(int addr, int nb, uint16_t *dest);
     void WriteHoldingRegisters(int addr, int nb, const uint16_t *data);
+    void WriteHoldingRegister(int addr, uint16_t value);
     void ReadInputRegisters(int addr, int nb, uint16_t *dest);
     void USleep(int usec);
 

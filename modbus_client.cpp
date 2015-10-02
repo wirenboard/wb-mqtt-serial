@@ -25,6 +25,7 @@ public:
     void ReadDisceteInputs(int addr, int nb, uint8_t *dest);
     void ReadHoldingRegisters(int addr, int nb, uint16_t *dest);
     void WriteHoldingRegisters(int addr, int nb, const uint16_t *data);
+    void WriteHoldingRegister(int addr, uint16_t value);
     void ReadInputRegisters(int addr, int nb, uint16_t *dest);
     void USleep(int usec);
 private:
@@ -101,6 +102,12 @@ void TDefaultModbusContext::WriteHoldingRegisters(int addr, int nb, const uint16
     if (modbus_write_registers(InnerContext, addr, nb, data) < nb)
         throw TModbusException("failed to write " + std::to_string(nb) +
                                " holding register(s) @ " + std::to_string(addr));
+}
+
+void TDefaultModbusContext::WriteHoldingRegister(int addr, uint16_t value)
+{
+    if (modbus_write_register (InnerContext, addr, value) != 1)
+        throw TModbusException("failed to write holding register @ " + std::to_string(addr));
 }
 
 void TDefaultModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
@@ -448,7 +455,11 @@ public:
         // FIXME: use
         if (Client->DebugEnabled())
             std::cerr << "write: " << Register()->ToString() << std::endl;
-        ctx->WriteHoldingRegisters(Register()->Address, Register()->Width(), &v[0]);
+        if (Register()->Width() == 1) {
+            ctx->WriteHoldingRegister(Register()->Address, v[0]);
+        } else {
+            ctx->WriteHoldingRegisters(Register()->Address, Register()->Width(), &v[0]);
+        }
     }
 };
 

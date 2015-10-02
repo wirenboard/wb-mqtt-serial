@@ -51,6 +51,7 @@ public:
     virtual void ReadDisceteInputs(int addr, int nb, uint8_t *dest) = 0;
     virtual void ReadHoldingRegisters(int addr, int nb, uint16_t *dest) = 0;
     virtual void WriteHoldingRegisters(int addr, int nb, const uint16_t *data) = 0;
+    virtual void WriteHoldingRegister(int addr, uint16_t value) = 0;
     virtual void ReadInputRegisters(int addr, int nb, uint16_t *dest) = 0;
     virtual void USleep(int usec) = 0;
 };

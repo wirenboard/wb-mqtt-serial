@@ -80,34 +80,38 @@ void TUnielModbusContext::ReadHoldingRegisters(int addr, int nb, uint16_t *dest)
     }
 }
 
-void TUnielModbusContext::WriteHoldingRegisters(int addr, int nb, const uint16_t *data)
+void TUnielModbusContext::WriteHoldingRegister(int addr, uint16_t value)
 {
     try {
         Connect();
-        for (int i = 0; i < nb; ++i) {
-            int cur_addr = addr + i;
-            if ( (cur_addr >= 0x00) && (cur_addr <= 0xFF) ) {
-                // address is between 0x00 and 0xFF, so treat it as
-                // normal Uniel register (read via 0x05, write via 0x06)
-                Bus.WriteRegister(SlaveAddr, cur_addr, *data++);
-            } else {
-                int addr_type = cur_addr >> 24;
-                if (addr_type == ADDR_TYPE_BRIGHTNESS ) {
-                    // address is 0x01XXWWRR, where RR is register to read
-                    // via 0x05 cmd, WW - register to write via 0x0A cmd
-                    uint8_t addr_write = (cur_addr & 0xFF00) >> 8;
-                    Bus.SetBrightness(SlaveAddr, addr_write, *data++);
-                } else {
-                    throw TModbusException("unsupported Uniel register address: " + std::to_string(cur_addr));
-                }
-            }
-        }
+		if ( (addr >= 0x00) && (addr <= 0xFF) ) {
+			// address is between 0x00 and 0xFF, so treat it as
+			// normal Uniel register (read via 0x05, write via 0x06)
+			Bus.WriteRegister(SlaveAddr, addr, value);
+		} else {
+			int addr_type = addr >> 24;
+			if (addr_type == ADDR_TYPE_BRIGHTNESS ) {
+				// address is 0x01XXWWRR, where RR is register to read
+				// via 0x05 cmd, WW - register to write via 0x0A cmd
+				uint8_t addr_write = (addr & 0xFF00) >> 8;
+				Bus.SetBrightness(SlaveAddr, addr_write, value);
+			} else {
+				throw TModbusException("unsupported Uniel register address: " + std::to_string(addr));
+			}
+		}
     } catch (const TUnielBusTransientErrorException& e) {
         throw TModbusException(e.what());
     } catch (const TUnielBusException& e) {
         Disconnect();
         throw TModbusException(e.what());
     }
+}
+
+void TUnielModbusContext::WriteHoldingRegisters(int addr, int nb, const uint16_t *data)
+{
+	for (int i = 0; i < nb; ++i) {
+		WriteHoldingRegister(addr + i, data[i]);
+	}
 }
 
 void TUnielModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
