@@ -562,6 +562,7 @@ void TModbusDeviceTest::SetUp()
 void TModbusDeviceTest::FilterConfig(const std::string& device_name)
 {
     for (auto port_config: Config->PortConfigs) {
+		cout << "port devices: " << port_config->DeviceConfigs.size() << endl;
         port_config->DeviceConfigs.erase(
             remove_if(port_config->DeviceConfigs.begin(),
                       port_config->DeviceConfigs.end(),
@@ -611,4 +612,36 @@ TEST_F(TModbusDeviceTest, DDL24)
     modbus_observer->ModbusLoopOnce();
 }
 
+TEST_F(TModbusDeviceTest, OnValue)
+{
+    FilterConfig("OnValueTest");
+    PFakeSlave slave = Connector->AddSlave(TFakeModbusConnector::PORT0,
+                                           Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
+                                           TRegisterRange(),
+                                           TRegisterRange(),
+                                           TRegisterRange(0, 1),
+                                           TRegisterRange());
+
+    PMQTTModbusObserver modbus_observer(new TMQTTModbusObserver(MQTTClient, Config, Connector));
+    modbus_observer->SetUp();
+
+    slave->Holding[0] = 0;
+    Note() << "ModbusLoopOnce()";
+    modbus_observer->ModbusLoopOnce();
+
+    MQTTClient->DoPublish(true, 0, "/devices/OnValueTest/controls/Relay 1/on", "1");
+
+    Note() << "ModbusLoopOnce()";
+    modbus_observer->ModbusLoopOnce();
+    ASSERT_EQ(500, slave->Holding[0]);
+
+    slave->Holding[0] = 0;
+    Note() << "ModbusLoopOnce() after slave update";
+    modbus_observer->ModbusLoopOnce();
+
+    slave->Holding[0] = 500;
+    Note() << "ModbusLoopOnce() after second slave update";
+    modbus_observer->ModbusLoopOnce();
+
+}
 // TBD: the code must check mosquitto return values

@@ -98,8 +98,13 @@ bool TModbusPort::HandleMessage(const std::string& topic, const std::string& pay
         if (Config->Debug)
             std::cerr << "setting modbus register: " << reg->ToString() << " <- " <<
                 payload_items[i] << std::endl;
+
         try {
-			ModbusClient->SetTextValue(reg, payload_items[i]);
+			ModbusClient->SetTextValue(reg,
+				it->second->OnValue.empty() ? payload_items[i]
+										   : (payload_items[i] == "1" ?  it->second->OnValue : "0")
+			);
+
 		} catch (std::exception& err) {
 			std::cerr << "warning: invalid payload for topic '" << topic <<
 				"': '" << payload << "' : " << err.what()  << std::endl;

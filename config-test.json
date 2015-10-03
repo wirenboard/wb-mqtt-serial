@@ -128,6 +128,22 @@
                         "type": "text"
                     }
                     ]
+                },
+                {
+                    "name": "OnValueTest",
+                    "id": "OnValueTest",
+                    "enabled": true,
+                    "slave_id": "0x90",
+                    "channels": [
+                        {
+                            "name" : "Relay 1",
+                            "reg_type" : "holding",
+                            "address" : "0x00",
+                            "type": "switch",
+                            "on_value" : 500
+                        }
+
+                    ]
                 }
             ]
         },

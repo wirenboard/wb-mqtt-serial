@@ -299,6 +299,20 @@ Ports:
             Name: Input 0 module
             Address: 3
             Value: 3
+        ------
+        Id: OnValueTest
+        Name: OnValueTest
+        SlaveId: 144
+        ModbusChannels:
+            ------
+            Name: Relay 1
+            Type: switch
+            DeviceId: OnValueTest
+            Order: 1
+            OnValue: 500
+            Max: -1
+            ReadOnly: 0
+            Registers: <144:holding: 0>
     ------
     ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 0>
     PollInterval: 100

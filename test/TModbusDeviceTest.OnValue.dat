@@ -1,0 +1,31 @@
+>>> AddSlave(144)
+CreateContext(): </dev/ttyNSC0 9600 8 N2 timeout 0>
+SetDebug(1)
+Publish: /devices/OnValueTest/meta/name: 'OnValueTest' (QoS 0, retained)
+Publish: /devices/OnValueTest/controls/Relay 1/meta/type: 'switch' (QoS 0, retained)
+Publish: /devices/OnValueTest/controls/Relay 1/meta/order: '1' (QoS 0, retained)
+Subscribe: /devices/OnValueTest/controls/Relay 1/on (QoS 0)
+>>> ModbusLoopOnce()
+Connect()
+SetSlave(144)
+read 1 holding register(s) @ 0: 0x0000
+Publish: /devices/OnValueTest/controls/Relay 1: '0' (QoS 0, retained)
+USleep(10000)
+>>> Publish: /devices/OnValueTest/controls/Relay 1/on: '1' (QoS 0)
+Publish: /devices/OnValueTest/controls/Relay 1: '1' (QoS 0, retained)
+>>> ModbusLoopOnce()
+SetSlave(144)
+write 1 holding register(s) @ 0:  0x01f4
+SetSlave(144)
+read 1 holding register(s) @ 0: 0x01f4
+USleep(10000)
+>>> ModbusLoopOnce() after slave update
+SetSlave(144)
+read 1 holding register(s) @ 0: 0x0000
+Publish: /devices/OnValueTest/controls/Relay 1: '0' (QoS 0, retained)
+USleep(10000)
+>>> ModbusLoopOnce() after second slave update
+SetSlave(144)
+read 1 holding register(s) @ 0: 0x01f4
+Publish: /devices/OnValueTest/controls/Relay 1: '1' (QoS 0, retained)
+USleep(10000)
