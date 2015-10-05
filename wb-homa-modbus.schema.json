@@ -62,7 +62,7 @@
           "type": "integer",
           "title": "Delay between polls (ms)",
           "minimum": 0,
-          "default": 2000,
+          "default": 20,
           "propertyOrder": 7
         },
         "type": {

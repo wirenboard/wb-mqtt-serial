@@ -59,12 +59,12 @@ struct TDeviceConfig
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
-    
+
 struct TPortConfig
 {
     void AddDeviceConfig(PDeviceConfig device_config) { DeviceConfigs.push_back(device_config); }
     TModbusConnectionSettings ConnSettings;
-    int PollInterval = 2000;
+    int PollInterval = 20;
     bool Debug = false;
     std::string Type;
     std::vector<PDeviceConfig> DeviceConfigs;
@@ -104,12 +104,12 @@ class TConfigActionParser
         void LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data);
     protected:
         int GetInt(const Json::Value& obj, const std::string& key);
-    
+
 };
 
 typedef Json::Value TDeviceJson;
 
-class TConfigTemplateParser 
+class TConfigTemplateParser
 {
     public :
         TConfigTemplateParser(const std::string& template_config_dir, bool debug);
@@ -128,12 +128,12 @@ class TConfigParser : TConfigActionParser
 {
 public:
     TConfigParser(const std::string& config_fname, bool force_debug)
-        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig) 
+        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig)
     {
         HandlerConfig->Debug = force_debug;
     }
     TConfigParser(const std::string& config_fname, bool force_debug, const std::map<std::string, TDeviceJson>& templates)
-        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig), TemplatesMap(templates) 
+        : ConfigFileName(config_fname), HandlerConfig(new THandlerConfig), TemplatesMap(templates)
     {
         HandlerConfig->Debug = force_debug;
     }
@@ -143,7 +143,7 @@ public:
     void LoadPort(const Json::Value& port_data, const std::string& id_prefix);
     void LoadConfig();
 private:
-    
+
     std::string ConfigFileName;
     PHandlerConfig HandlerConfig;
     std::map<std::string, TDeviceJson> TemplatesMap;
