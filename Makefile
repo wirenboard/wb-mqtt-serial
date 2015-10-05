@@ -1,15 +1,19 @@
-CXX=g++
-CXX_PATH := $(shell which g++-4.7)
+ifeq ($(DEB_TARGET_ARCH),armel)
+CROSS_COMPILE=arm-linux-gnueabi-
+endif
 
-CC=gcc
-CC_PATH := $(shell which gcc-4.7)
+CXX=$(CROSS_COMPILE)g++
+CXX_PATH := $(shell which $(CROSS_COMPILE)g++-4.7)
+
+CC=$(CROSS_COMPILE)gcc
+CC_PATH := $(shell which $(CROSS_COMPILE)gcc-4.7)
 
 ifneq ($(CXX_PATH),)
-	CXX=g++-4.7
+	CXX=$(CROSS_COMPILE)g++-4.7
 endif
 
 ifneq ($(CC_PATH),)
-	CC=gcc-4.7
+	CC=$(CROSS_COMPILE)gcc-4.7
 endif
 
 #CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
