@@ -1,0 +1,22 @@
+// Configuration options
+{
+    "debug": false,
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "enabled": false,
+            "devices" : [
+                {
+                    "device_type" : "WB-MRM2",
+                    "slave_id": "0x01",
+                    "enabled": false
+                }
+            ]
+        },
+        {
+            "path" : "/dev/ttyNSC1",
+            "enabled": false,
+            "devices" : [  ]
+        }
+    ]
+}

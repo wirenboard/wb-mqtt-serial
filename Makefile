@@ -98,6 +98,7 @@ install: all
 	install -d $(DESTDIR)/usr/share/wb-homa-modbus
 
 	install -m 0644  config.json $(DESTDIR)/etc/wb-homa-modbus.conf.sample
+	install -m 0644  config.default.json $(DESTDIR)/etc/wb-homa-modbus.conf
 	install -m 0644  wb-homa-modbus.schema.json $(DESTDIR)/etc/wb-mqtt-confed/schemas/wb-homa-modbus.schema.json
 	install -m 0755  $(MODBUS_BIN) $(DESTDIR)/usr/bin/$(MODBUS_BIN)
 	cp -r  wb-homa-modbus-templates $(DESTDIR)/usr/share/wb-homa-modbus/templates

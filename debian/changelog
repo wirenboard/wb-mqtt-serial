@@ -1,3 +1,28 @@
+wb-homa-modbus (1.12.6) stable; urgency=medium
+
+  * change default poll interval to 20ms
+  * ship with default config
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 05 Oct 2015 20:21:37 +0300
+
+wb-homa-modbus (1.12.5) stable; urgency=medium
+
+  * support on_value for writing
+
+ -- Evgeny Boger <boger@contactless.ru>  Sun, 04 Oct 2015 21:40:50 +0300
+
+wb-homa-modbus (1.12.4) UNRELEASED; urgency=medium
+
+  * Use WriteSingleRegister when possible
+
+ -- Evgeny Boger <boger@contactless.ru>  Sat, 03 Oct 2015 01:47:17 +0300
+
+wb-homa-modbus (1.12.3) stable; urgency=medium
+
+  * add confed schema
+
+ -- Evgeny Boger <boger@contactless.ru>  Sun, 20 Sep 2015 22:28:46 +0300
+
 wb-homa-modbus (1.12.2) stable; urgency=medium
 
   * support for SDM220 electricity meter (http://www.aliexpress.com/item/SDM220Modbus-Single-Phase-DIN-Rail-Kwh-meter-with-Pulse-Output-and-RS485-Modbus-Communication-MID-approved/32346363823.html)
