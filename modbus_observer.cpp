@@ -8,6 +8,13 @@ TMQTTModbusObserver::TMQTTModbusObserver(PMQTTClientBase mqtt_client,
       Config(handler_config)
 {
     for (const auto& port_config : Config->PortConfigs) {
+        if (port_config->DeviceConfigs.empty()) {
+            std::cerr << "Warning: no devices defined for port "
+                      << port_config->ConnSettings.Device
+                      << " . Skipping. " << std::endl;
+            continue;
+        }
+
         Ports.push_back(
             std::unique_ptr<TModbusPort>(
                 new TModbusPort(mqtt_client, port_config,
@@ -19,7 +26,7 @@ TMQTTModbusObserver::TMQTTModbusObserver(PMQTTClientBase mqtt_client,
 void TMQTTModbusObserver::SetUp()
 {
     MQTTClient->Observe(shared_from_this());
-	MQTTClient->Connect();
+    MQTTClient->Connect();
 }
 
 void TMQTTModbusObserver::OnConnect(int rc)
@@ -27,7 +34,7 @@ void TMQTTModbusObserver::OnConnect(int rc)
     if (Config->Debug)
         std::cerr << "Connected with code " << rc << std::endl;
 
-	if(rc != 0)
+    if(rc != 0)
         return;
 
     for (const auto& port: Ports)
@@ -46,7 +53,7 @@ void TMQTTModbusObserver::OnMessage(const struct mosquitto_message *message)
 
 void TMQTTModbusObserver::OnSubscribe(int, int, const int *)
 {
-	if (Config->Debug)
+    if (Config->Debug)
         std::cerr << "Subscription succeeded." << std::endl;
 }
 

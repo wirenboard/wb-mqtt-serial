@@ -346,4 +346,13 @@ void TConfigParser::LoadConfig()
     const Json::Value array = root["ports"];
     for(unsigned int index = 0; index < array.size(); ++index)
         LoadPort(array[index], "wb-modbus-" + std::to_string(index) + "-");
+
+	// check are there any devices defined
+	for (const auto& port_config : HandlerConfig->PortConfigs) {
+		if (!port_config->DeviceConfigs.empty()) { // found one
+			return;
+		}
+	}
+
+	throw TConfigParserException("no devices defined in config. Nothing to do");
 }
