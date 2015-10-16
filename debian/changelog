@@ -1,3 +1,9 @@
+wb-homa-modbus (1.12.7) stable; urgency=medium
+
+  * fix erroneous behaviour when no devices are specified
+
+ -- Evgeny Boger <boger@contactless.ru>  Fri, 16 Oct 2015 19:29:48 +0300
+
 wb-homa-modbus (1.12.6) stable; urgency=medium
 
   * change default poll interval to 20ms
