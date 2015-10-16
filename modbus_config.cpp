@@ -271,7 +271,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
                     device_config->Name = it->second["name"].asString() + " " + to_string(device_config->SlaveId);
             }else {
                 if (device_config->Name == "")
-                    throw TConfigParserException(" Not set the device_name for " + device_config->DeviceType);
+                    throw TConfigParserException("Property device_name is missing in " + device_config->DeviceType + " template");
             }
             if (it->second.isMember("id")) {
                 if (device_config->Id == default_id)
@@ -281,7 +281,9 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
             LoadDeviceVectors(device_config, it->second);
         }
         else{
-            cerr << "Not found such device_type in templates " << device_config->DeviceType << endl;
+            std::cerr << "Can't find the template for '"
+                      << device_config->DeviceType
+                      << "' device type." << std::endl;
         }
     }
     LoadDeviceVectors(device_config, device_data);
@@ -347,12 +349,12 @@ void TConfigParser::LoadConfig()
     for(unsigned int index = 0; index < array.size(); ++index)
         LoadPort(array[index], "wb-modbus-" + std::to_string(index) + "-");
 
-	// check are there any devices defined
-	for (const auto& port_config : HandlerConfig->PortConfigs) {
-		if (!port_config->DeviceConfigs.empty()) { // found one
-			return;
-		}
-	}
+    // check are there any devices defined
+    for (const auto& port_config : HandlerConfig->PortConfigs) {
+        if (!port_config->DeviceConfigs.empty()) { // found one
+            return;
+        }
+    }
 
-	throw TConfigParserException("no devices defined in config. Nothing to do");
+    throw TConfigParserException("no devices defined in config. Nothing to do");
 }
