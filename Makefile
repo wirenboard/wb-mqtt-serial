@@ -25,6 +25,7 @@ MODBUS_LIBS=-lmodbus
 MODBUS_OBJS=modbus_client.o \
   modbus_config.o modbus_port.o \
   modbus_observer.o \
+  serialprotocol.o \
   uniel.o uniel_context.o
 TEST_LIBS=-lgtest -lpthread -lmosquittopp
 TEST_DIR=test
@@ -48,6 +49,9 @@ modbus_port.o : modbus_port.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
 modbus_observer.o : modbus_observer.cpp
+	${CXX} -c $< -o $@ ${CFLAGS}
+
+serialprotocol.o : serialprotocol.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
 uniel.o : uniel.cpp

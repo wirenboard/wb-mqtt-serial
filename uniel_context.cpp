@@ -10,7 +10,7 @@ void TUnielModbusContext::Connect()
     try {
         if (!Bus.IsOpen())
             Bus.Open();
-    } catch (const TUnielBusException& e) {
+    } catch (const TSerialProtocolException& e) {
         throw TModbusException(e.what());
     }
 }
@@ -37,9 +37,9 @@ void TUnielModbusContext::ReadCoils(int addr, int nb, uint8_t *dest)
         Connect();
         for (int i = 0; i < nb; ++i)
             *dest++ = Bus.ReadRegister(SlaveAddr, addr + i) == 0 ? 0 : 1;
-    } catch (const TUnielBusTransientErrorException& e) {
+    } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());
-    } catch (const TUnielBusException& e) {
+    } catch (const TSerialProtocolException& e) {
         Disconnect();
         throw TModbusException(e.what());
     }
@@ -50,9 +50,9 @@ void TUnielModbusContext::WriteCoil(int addr, int value)
     try {
         Connect();
         Bus.WriteRegister(SlaveAddr, addr, value ? 0xff : 0);
-    } catch (const TUnielBusTransientErrorException& e) {
+    } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());
-    } catch (const TUnielBusException& e) {
+    } catch (const TSerialProtocolException& e) {
         Disconnect();
         throw TModbusException(e.what());
     }
@@ -72,9 +72,9 @@ void TUnielModbusContext::ReadHoldingRegisters(int addr, int nb, uint16_t *dest)
             // in the low byte
             *dest++ = Bus.ReadRegister(SlaveAddr, (addr + i) & 0xFF );
         }
-    } catch (const TUnielBusTransientErrorException& e) {
+    } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());
-    } catch (const TUnielBusException& e) {
+    } catch (const TSerialProtocolException& e) {
         Disconnect();
         throw TModbusException(e.what());
     }
@@ -99,9 +99,9 @@ void TUnielModbusContext::WriteHoldingRegister(int addr, uint16_t value)
 				throw TModbusException("unsupported Uniel register address: " + std::to_string(addr));
 			}
 		}
-    } catch (const TUnielBusTransientErrorException& e) {
+    } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());
-    } catch (const TUnielBusException& e) {
+    } catch (const TSerialProtocolException& e) {
         Disconnect();
         throw TModbusException(e.what());
     }
