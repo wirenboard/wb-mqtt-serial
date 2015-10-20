@@ -22,7 +22,7 @@ protected:
 
 void TModbusClientTest::SetUp()
 {
-    TModbusConnectionSettings settings(TFakeModbusConnector::PORT0, 115200, 'N', 8, 1);
+    TSerialPortSettings settings(TFakeModbusConnector::PORT0, 115200, 'N', 8, 1);
     Connector = PFakeModbusConnector(new TFakeModbusConnector(*this));
     ModbusClient = PModbusClient(new TModbusClient(settings, Connector));
     ModbusClient->SetCallback([this](std::shared_ptr<TModbusRegister> reg) {

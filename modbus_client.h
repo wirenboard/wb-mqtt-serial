@@ -10,33 +10,9 @@
 
 // #include <modbus/modbus.h>
 
+#include "portsettings.h"
+
 class TRegisterHandler;
-
-struct TModbusConnectionSettings
-{
-    TModbusConnectionSettings(std::string device = "/dev/ttyS0",
-                              int baud_rate = 9600,
-                              char parity = 'N',
-                              int data_bits = 8,
-                              int stop_bits = 1,
-                              int response_timeout_ms = 0)
-        : Device(device), BaudRate(baud_rate), Parity(parity),
-          DataBits(data_bits), StopBits(stop_bits),
-          ResponseTimeoutMs(response_timeout_ms) {}
-
-    std::string Device;
-    int BaudRate;
-    char Parity;
-    int DataBits;
-    int StopBits;
-    int ResponseTimeoutMs;
-};
-
-inline ::std::ostream& operator<<(::std::ostream& os, const TModbusConnectionSettings& settings) {
-    return os << "<" << settings.Device << " " << settings.BaudRate <<
-        " " << settings.DataBits << " " << settings.Parity << settings.StopBits <<
-        " timeout " << settings.ResponseTimeoutMs << ">";
-}
 
 class TModbusContext
 {
@@ -62,14 +38,14 @@ class TModbusConnector
 {
 public:
     virtual ~TModbusConnector();
-    virtual PModbusContext CreateContext(const TModbusConnectionSettings& settings) = 0;
+    virtual PModbusContext CreateContext(const TSerialPortSettings& settings) = 0;
 };
 
 typedef std::shared_ptr<TModbusConnector> PModbusConnector;
 
 class TDefaultModbusConnector: public TModbusConnector {
 public:
-    PModbusContext CreateContext(const TModbusConnectionSettings& settings);
+    PModbusContext CreateContext(const TSerialPortSettings& settings);
 };
 
 struct TModbusRegister
@@ -175,7 +151,7 @@ typedef std::function<void(std::shared_ptr<TModbusRegister> reg)> TModbusCallbac
 class TModbusClient
 {
 public:
-    TModbusClient(const TModbusConnectionSettings& settings,
+    TModbusClient(const TSerialPortSettings& settings,
                   PModbusConnector connector = 0);
     TModbusClient(const TModbusClient& client) = delete;
     TModbusClient& operator=(const TModbusClient&) = delete;

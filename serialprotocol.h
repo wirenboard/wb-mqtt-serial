@@ -4,6 +4,8 @@
 #include <exception>
 #include <stdint.h>
 
+#include "portsettings.h"
+
 class TSerialProtocolException: public std::exception {
 public:
     TSerialProtocolException(std::string message): Message("Uniel bus error: " + message) {}
@@ -23,22 +25,24 @@ public:
 
 class TSerialProtocol {
 public:
-    static const int DefaultTimeoutMs = 1000;
-
     ~TSerialProtocol();
     void Open();
     void Close();
     bool IsOpen() const;
 
 protected:
-    TSerialProtocol(const std::string& device, int timeout_ms = DefaultTimeoutMs);
+    TSerialProtocol(const TSerialPortSettings& settings, bool debug = false);
     void EnsurePortOpen();
+    void WriteBytes(uint8_t* buf, int count);
     uint8_t ReadByte();
+    void SkipNoise();
 
 private:
     void SerialPortSetup();
+    bool Select(int ms);
 
-    std::string Device;
-    int TimeoutMs;
+    TSerialPortSettings Settings;
+    bool Debug;
     int Fd;
+    const int NoiseTimeoutMs = 10;
 };

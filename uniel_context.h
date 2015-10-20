@@ -12,7 +12,7 @@ namespace {
 class TUnielModbusContext: public TModbusContext
 {
 public:
-    TUnielModbusContext(const std::string& device, int timeoutMs);
+    TUnielModbusContext(const TSerialPortSettings& settings);
     void Connect();
     void Disconnect();
     void SetDebug(bool debug);
@@ -34,5 +34,5 @@ private:
 class TUnielModbusConnector: public TModbusConnector
 {
 public:
-    PModbusContext CreateContext(const TModbusConnectionSettings& settings);
+    PModbusContext CreateContext(const TSerialPortSettings& settings);
 };

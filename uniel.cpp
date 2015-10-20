@@ -20,8 +20,8 @@ namespace {
     };
 }
 
-TUnielBus::TUnielBus(const std::string& device, int timeout_ms)
-    : TSerialProtocol(device, timeout_ms) {}
+TUnielBus::TUnielBus(const TSerialPortSettings& settings)
+    : TSerialProtocol(settings) {}
 
 void TUnielBus::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
 {
@@ -34,8 +34,7 @@ void TUnielBus::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, u
     buf[5] = b2;
     buf[6] = b3;
     buf[7] = (cmd + mod + b1 + b2 + b3) & 0xff;
-    if (write(Fd, buf, 8) < 8)
-        throw TSerialProtocolException("failed to write command");
+    WriteBytes(buf, 8);
 }
 
 void TUnielBus::ReadResponse(uint8_t cmd, uint8_t* response)

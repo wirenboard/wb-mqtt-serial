@@ -105,7 +105,7 @@ void TFakeModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
 const char* TFakeModbusConnector::PORT0 = "/dev/ttyNSC0";
 const char* TFakeModbusConnector::PORT1 = "/dev/ttyNSC1";
 
-PModbusContext TFakeModbusConnector::CreateContext(const TModbusConnectionSettings& settings)
+PModbusContext TFakeModbusConnector::CreateContext(const TSerialPortSettings& settings)
 {
     Fixture.Emit() << "CreateContext(): " << settings;
     return GetContext(settings.Device);

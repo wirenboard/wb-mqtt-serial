@@ -155,7 +155,7 @@ class TFakeModbusConnector: public TModbusConnector
 public:
     TFakeModbusConnector(TLoggedFixture& fixture)
         : Fixture(fixture) {}
-    PModbusContext CreateContext(const TModbusConnectionSettings& settings);
+    PModbusContext CreateContext(const TSerialPortSettings& settings);
     PFakeModbusContext GetContext(const std::string& device);
     PFakeSlave GetSlave(const std::string& device, int slave_addr);
     PFakeSlave AddSlave(const std::string& device, int slave_addr, PFakeSlave slave);

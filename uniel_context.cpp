@@ -2,8 +2,8 @@
 
 #include "uniel_context.h"
 
-TUnielModbusContext::TUnielModbusContext(const std::string& device, int timeout_ms):
-    Bus(device, timeout_ms), SlaveAddr(1) {}
+TUnielModbusContext::TUnielModbusContext(const TSerialPortSettings& settings):
+    Bus(settings), SlaveAddr(1) {}
 
 void TUnielModbusContext::Connect()
 {
@@ -124,10 +124,9 @@ void TUnielModbusContext::USleep(int usec)
     usleep(usec);
 }
 
-PModbusContext TUnielModbusConnector::CreateContext(const TModbusConnectionSettings& settings)
+PModbusContext TUnielModbusConnector::CreateContext(const TSerialPortSettings& settings)
 {
-    int timeout = settings.ResponseTimeoutMs ? settings.ResponseTimeoutMs : TUnielBus::DefaultTimeoutMs;
-    return PModbusContext(new TUnielModbusContext(settings.Device, timeout));
+    return PModbusContext(new TUnielModbusContext(settings));
 }
 
 // TBD: debug

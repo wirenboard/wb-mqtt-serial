@@ -15,7 +15,7 @@ TModbusContext::~TModbusContext() {}
 
 class TDefaultModbusContext: public TModbusContext {
 public:
-    TDefaultModbusContext(const TModbusConnectionSettings& settings);
+    TDefaultModbusContext(const TSerialPortSettings& settings);
     void Connect();
     void Disconnect();
     void SetDebug(bool debug);
@@ -32,7 +32,7 @@ private:
     modbus_t* InnerContext;
 };
 
-TDefaultModbusContext::TDefaultModbusContext(const TModbusConnectionSettings& settings)
+TDefaultModbusContext::TDefaultModbusContext(const TSerialPortSettings& settings)
 {
     InnerContext = modbus_new_rtu(settings.Device.c_str(), settings.BaudRate,
                                   settings.Parity, settings.DataBits, settings.StopBits);
@@ -122,7 +122,7 @@ void TDefaultModbusContext::USleep(int usec)
     usleep(usec);
 }
 
-PModbusContext TDefaultModbusConnector::CreateContext(const TModbusConnectionSettings& settings)
+PModbusContext TDefaultModbusConnector::CreateContext(const TSerialPortSettings& settings)
 {
     return PModbusContext(new TDefaultModbusContext(settings));
 }
@@ -477,7 +477,7 @@ public:
     }
 };
 
-TModbusClient::TModbusClient(const TModbusConnectionSettings& settings,
+TModbusClient::TModbusClient(const TSerialPortSettings& settings,
                              PModbusConnector connector)
     : Active(false),
       PollInterval(1000)
