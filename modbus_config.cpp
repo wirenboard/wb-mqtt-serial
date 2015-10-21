@@ -91,30 +91,45 @@ std::shared_ptr<TModbusRegister> TConfigActionParser::LoadRegister(PDeviceConfig
     } else if (reg_type_str == "input") {
         type = TModbusRegister::RegisterType::INPUT_REGISTER;
         default_type_str = "text";
+    } else if (reg_type_str == "direct") {
+        type = TModbusRegister::RegisterType::DIRECT_REGISTER;
+        default_type_str = "text";
     } else
         throw TConfigParserException("invalid register type: " + reg_type_str + " " + device_config->DeviceType);
 
-    TModbusRegister::RegisterFormat format = TModbusRegister::U16;
+    RegisterFormat format = U16;
     if (register_data.isMember("format")) {
         std::string format_str = register_data["format"].asString();
         if (format_str == "s16")
-            format = TModbusRegister::S16;
+            format = S16;
         else if (format_str == "u8")
-            format = TModbusRegister::U8;
+            format = U8;
         else if (format_str == "s8")
-            format = TModbusRegister::S8;
+            format = S8;
+        else if (format_str == "u24")
+            format = U24;
+        else if (format_str == "s24")
+            format = S24;
         else if (format_str == "u32")
-            format = TModbusRegister::U32;
+            format = U32;
         else if (format_str == "s32")
-            format = TModbusRegister::S32;
+            format = S32;
         else if (format_str == "s64")
-            format = TModbusRegister::S64;
+            format = S64;
         else if (format_str == "u64")
-            format = TModbusRegister::U64;
+            format = U64;
+        else if (format_str == "bcd8")
+            format = BCD8;
+        else if (format_str == "bcd16")
+            format = BCD16;
+        else if (format_str == "bcd24")
+            format = BCD24;
+        else if (format_str == "bcd32")
+            format = BCD32;
         else if (format_str == "float")
-            format = TModbusRegister::Float;
+            format = Float;
         else if (format_str == "double")
-            format = TModbusRegister::Double;
+            format = Double;
     }
 
     double scale = 1;

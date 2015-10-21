@@ -1,6 +1,6 @@
 #pragma once
 
-#include "uniel.h"
+#include "serial_protocol.h"
 #include "modbus_client.h"
 
 namespace {
@@ -9,10 +9,10 @@ namespace {
     };
 }
 
-class TUnielModbusContext: public TModbusContext
+class TSerialModbusContext: public TModbusContext
 {
 public:
-    TUnielModbusContext(const TSerialPortSettings& settings);
+    TSerialModbusContext(TSerialProtocol* proto);
     void Connect();
     void Disconnect();
     void SetDebug(bool debug);
@@ -24,14 +24,22 @@ public:
     void WriteHoldingRegisters(int addr, int nb, const uint16_t *data);
     void WriteHoldingRegister(int addr, uint16_t value);
     void ReadInputRegisters(int addr, int nb, uint16_t *dest);
+    void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format);
+    void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format);
     void USleep(int usec);
 
 private:
-    TUnielBus Bus;
+    TSerialProtocol* Proto;
     int SlaveAddr;
 };
 
 class TUnielModbusConnector: public TModbusConnector
+{
+public:
+    PModbusContext CreateContext(const TSerialPortSettings& settings);
+};
+
+class TMilurModbusConnector: public TModbusConnector
 {
 public:
     PModbusContext CreateContext(const TSerialPortSettings& settings);

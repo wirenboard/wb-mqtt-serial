@@ -1,5 +1,5 @@
 #include "modbus_observer.h"
-#include "uniel_context.h"
+#include "serial_context.h"
 
 TMQTTModbusObserver::TMQTTModbusObserver(PMQTTClientBase mqtt_client,
                                          PHandlerConfig handler_config,
@@ -85,6 +85,9 @@ PModbusConnector TMQTTModbusObserver::GetConnector(PPortConfig port_config)
 {
     if (port_config->Type == "uniel")
         return PModbusConnector(new TUnielModbusConnector());
+
+    if (port_config->Type == "milur")
+        return PModbusConnector(new TMilurModbusConnector());
 
     if (!port_config->Type.empty() && port_config->Type != "modbus")
         std::cerr << "warning: bad port type '" << port_config->Type <<

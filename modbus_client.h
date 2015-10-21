@@ -11,6 +11,7 @@
 // #include <modbus/modbus.h>
 
 #include "portsettings.h"
+#include "regformat.h"
 
 class TRegisterHandler;
 
@@ -29,6 +30,8 @@ public:
     virtual void WriteHoldingRegisters(int addr, int nb, const uint16_t *data) = 0;
     virtual void WriteHoldingRegister(int addr, uint16_t value) = 0;
     virtual void ReadInputRegisters(int addr, int nb, uint16_t *dest) = 0;
+    virtual void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format) = 0;
+    virtual void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format) = 0;
     virtual void USleep(int usec) = 0;
 };
 
@@ -50,8 +53,7 @@ public:
 
 struct TModbusRegister
 {
-    enum RegisterFormat { U16, S16, U8, S8, U32, S32, S64, U64, Float, Double };
-    enum RegisterType { COIL, DISCRETE_INPUT, HOLDING_REGISTER, INPUT_REGISTER };
+    enum RegisterType { COIL, DISCRETE_INPUT, HOLDING_REGISTER, INPUT_REGISTER, DIRECT_REGISTER };
 
     TModbusRegister(int slave = 0, RegisterType type = COIL, int address = 0,
                      RegisterFormat format = U16, double scale = 1,
@@ -79,8 +81,12 @@ struct TModbusRegister
             case U64:
             case Double:
                 return 4;
+            case U24:
+            case S24:
             case U32:
             case S32:
+            case BCD24:
+            case BCD32:
             case Float:
                 return 2;
             default:
@@ -95,6 +101,7 @@ struct TModbusRegister
              Type == DISCRETE_INPUT ? "discrete" :
              Type == HOLDING_REGISTER ? "holding" :
              Type == INPUT_REGISTER ? "input" :
+             Type == DIRECT_REGISTER ? "direct" :
              "bad") << ": " << Address << ">";
         return s.str();
     }

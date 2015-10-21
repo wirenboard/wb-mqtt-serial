@@ -25,8 +25,11 @@ MODBUS_LIBS=-lmodbus
 MODBUS_OBJS=modbus_client.o \
   modbus_config.o modbus_port.o \
   modbus_observer.o \
-  serialprotocol.o \
-  uniel.o uniel_context.o
+  serial_protocol.o \
+  serial_context.o \
+  uniel_protocol.o \
+  crc16.o \
+  milur_protocol.o
 TEST_LIBS=-lgtest -lpthread -lmosquittopp
 TEST_DIR=test
 TEST_BIN=wb-homa-test
@@ -51,13 +54,19 @@ modbus_port.o : modbus_port.cpp
 modbus_observer.o : modbus_observer.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
-serialprotocol.o : serialprotocol.cpp
+serial_protocol.o : serial_protocol.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
-uniel.o : uniel.cpp
+serial_context.o : serial_context.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
-uniel_context.o : uniel_context.cpp
+uniel_protocol.o : uniel_protocol.cpp
+	${CXX} -c $< -o $@ ${CFLAGS}
+
+crc16.o : crc16.cpp
+	${CXX} -c $< -o $@ ${CFLAGS}
+
+milur_protocol.o : milur_protocol.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
 $(MODBUS_BIN) : main.o $(MODBUS_OBJS)

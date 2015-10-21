@@ -5,14 +5,19 @@
 #include <unordered_map>
 #include <stdint.h>
 
-#include "serialprotocol.h"
+#include "serial_protocol.h"
+#include "regformat.h"
 
 class TMilurProtocol: public TSerialProtocol {
 public:
     static const int DefaultTimeoutMs = 1000;
 
     TMilurProtocol(const TSerialPortSettings& settings, bool debug = false);
-    int ReadRegister(uint8_t slave, uint8_t address);
+    uint64_t ReadRegister(uint8_t slave, uint8_t address, RegisterFormat fmt);
+    void WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat fmt);
+    // XXX FIXME: leaky abstraction (need to refactor)
+    // Perhaps add 'brightness' register format
+    void SetBrightness(uint8_t mod, uint8_t address, uint8_t value);
 
 private:
     void EnsureSlaveConnected(uint8_t slave);

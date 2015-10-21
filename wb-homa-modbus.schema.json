@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "Modbus Driver Configuration",
-  "description": "Lists Modbus and Uniel devices attached to RS-485 ports",
+  "description": "Lists Modbus, Uniel and Milur devices attached to RS-485 ports",
   "definitions": {
     "port": {
       "type": "object",
@@ -69,7 +69,7 @@
           "type": "string",
           "title": "Device type",
           "description": "Type of devices to be used on this port",
-          "enum": ["modbus", "uniel"],
+          "enum": ["modbus", "uniel", "milur"],
           "default": "modbus",
           "propertyOrder": 8
         },
@@ -311,7 +311,7 @@
       "type": "string",
       "title": "Format",
       "description": "s=signed, u=unsigned, the number indicates the number of bits",
-      "enum": ["s16", "u16", "s8", "u8", "s32", "u32", "s64", "u64", "float", "double"]
+      "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double"]
     },
     "address": {
       "title": "Address",

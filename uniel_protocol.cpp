@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "uniel.h"
+#include "uniel_protocol.h"
 
 namespace {
     enum {
@@ -67,7 +67,7 @@ void TUnielBus::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-uint8_t TUnielBus::ReadRegister(uint8_t mod, uint8_t address)
+uint64_t TUnielBus::ReadRegister(uint8_t mod, uint8_t address, RegisterFormat)
 {
     WriteCommand(READ_CMD, mod, 0, address, 0);
     uint8_t response[3];
@@ -89,9 +89,9 @@ void TUnielBus::DoWriteRegister(uint8_t cmd, uint8_t mod, uint8_t address, uint8
         throw TSerialProtocolTransientErrorException("written register value mismatch");
 }
 
-void TUnielBus::WriteRegister(uint8_t mod, uint8_t address, uint8_t value)
+void TUnielBus::WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat)
 {
-    DoWriteRegister(WRITE_CMD, mod, address, value);
+    DoWriteRegister(WRITE_CMD, mod, address, (uint8_t)value);
 }
 
 void TUnielBus::SetBrightness(uint8_t mod, uint8_t address, uint8_t value)

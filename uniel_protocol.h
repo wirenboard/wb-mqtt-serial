@@ -4,15 +4,17 @@
 #include <exception>
 #include <stdint.h>
 
-#include "serialprotocol.h"
+#include "serial_protocol.h"
+#include "regformat.h"
 
 class TUnielBus: public TSerialProtocol {
 public:
     static const int DefaultTimeoutMs = 1000;
 
     TUnielBus(const TSerialPortSettings& settings);
-    uint8_t ReadRegister(uint8_t mod, uint8_t address);
-    void WriteRegister(uint8_t mod, uint8_t address, uint8_t value);
+    uint64_t ReadRegister(uint8_t mod, uint8_t address, RegisterFormat fmt);
+    void WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat fmt);
+
     void SetBrightness(uint8_t mod, uint8_t address, uint8_t value);
 
 private:

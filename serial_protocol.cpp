@@ -11,7 +11,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "serialprotocol.h"
+#include "serial_protocol.h"
 
 namespace {
     enum {
@@ -178,15 +178,21 @@ void TSerialProtocol::WriteBytes(uint8_t* buf, int count) {
 bool TSerialProtocol::Select(int ms)
 {
     fd_set rfds;
-    struct timeval tv;
+    struct timeval tv, *tvp = 0;
 
-    FD_ZERO(&rfds);
-    FD_SET(Fd, &rfds);
+    if (Debug)
+        std::cerr << "Select: " << ms << " ms" << std::endl;
 
-    tv.tv_sec = ms / 1000;
-    tv.tv_usec = (ms % 1000) * 1000;
+    if (ms > 0) {
+        FD_ZERO(&rfds);
+        FD_SET(Fd, &rfds);
 
-    int r = select(Fd + 1, &rfds, NULL, NULL, &tv);
+        tv.tv_sec = ms / 1000;
+        tv.tv_usec = (ms % 1000) * 1000;
+        tvp = &tv;
+    }
+
+    int r = select(Fd + 1, &rfds, NULL, NULL, tvp);
     if (r < 0)
         throw TSerialProtocolException("select() failed");
 

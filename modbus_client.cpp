@@ -27,6 +27,8 @@ public:
     void WriteHoldingRegisters(int addr, int nb, const uint16_t *data);
     void WriteHoldingRegister(int addr, uint16_t value);
     void ReadInputRegisters(int addr, int nb, uint16_t *dest);
+    void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format);
+    void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format);
     void USleep(int usec);
 private:
     modbus_t* InnerContext;
@@ -117,6 +119,16 @@ void TDefaultModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
                                " input register(s) @ " + std::to_string(addr));
 }
 
+void TDefaultModbusContext::ReadDirectRegister(int, uint64_t*, RegisterFormat)
+{
+    throw TModbusException("direct registers not supported for modbus");
+}
+
+void TDefaultModbusContext::WriteDirectRegister(int, uint64_t, RegisterFormat)
+{
+    throw TModbusException("direct registers not supported for modbus");
+}
+
 void TDefaultModbusContext::USleep(int usec)
 {
     usleep(usec);
@@ -185,8 +197,8 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
     try {
         new_value = Read(ctx);
     } catch (const TModbusException& e) {
-        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " slave_id is "
-				  << 	reg->Slave << "(0x" << std::hex << reg->Slave << ")" << std::endl;
+        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " [slave_id is "
+				  << 	reg->Slave << "(0x" << std::hex << reg->Slave << ")]" << std::endl;
         std::cerr << std::dec;
         reg->ErrorMessage = "Poll";
         return std::make_pair(true, 1);
@@ -245,21 +257,27 @@ int TRegisterHandler::Flush(PModbusContext ctx)
 std::string TRegisterHandler::TextValue() const
 {
     switch (reg->Format) {
-    case TModbusRegister::U16:
+    case U16:
+    case BCD16:
         return ToScaledTextValue(value[0]);
-    case TModbusRegister::S16:
+    case S16:
         return ToScaledTextValue((int16_t)value[0]);
-    case TModbusRegister::U8:
+    case U8:
+    case BCD8:
         return ToScaledTextValue(value[0] & 255);
-    case TModbusRegister::S8:
+    case S8:
         return ToScaledTextValue((int8_t) value[0]);
-    case TModbusRegister::S32:
+    case S24:
+    case S32:
         return ToScaledTextValue(
 			static_cast<int32_t>((static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]))
 		);
-    case TModbusRegister::U32:
+    case U24:
+    case U32:
+    case BCD24:
+    case BCD32:
         return ToScaledTextValue((static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]));
-    case TModbusRegister::S64:
+    case S64:
         return ToScaledTextValue(static_cast<int64_t> (
 							         (  static_cast<uint64_t>(value[0]) << 48) | \
 					                 ( static_cast<uint64_t>(value[1]) << 32) | \
@@ -267,7 +285,7 @@ std::string TRegisterHandler::TextValue() const
 					                   static_cast<uint64_t>(value[3])
 				                 ));
 
-    case TModbusRegister::U64:
+    case U64:
         return ToScaledTextValue(
 						         (  static_cast<uint64_t>(value[0]) << 48) | \
 				                 ( static_cast<uint64_t>(value[1]) << 32) | \
@@ -275,7 +293,7 @@ std::string TRegisterHandler::TextValue() const
 				                   static_cast<uint64_t>(value[3])
 				                 );
 
-	case TModbusRegister::Float:
+	case Float:
 		{
 		uint32_t tmp = (static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]);
 		float ret;
@@ -284,7 +302,7 @@ std::string TRegisterHandler::TextValue() const
 		return ToScaledTextValue(ret);
 		}
 
-    case TModbusRegister::Double:
+    case Double:
 		{
 		uint64_t tmp = (  static_cast<uint64_t>(value[0]) << 48) | \
 	                   ( static_cast<uint64_t>(value[1]) << 32) | \
@@ -354,18 +372,23 @@ void TRegisterHandler::SetTextValue(const std::string& v)
 std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(const std::string& str) const
 {
     switch (reg->Format) {
-    case TModbusRegister::S16:
+    case S16:
         return {static_cast<uint16_t>(FromScaledTextValue<int64_t>(str) & 65535)};
-    case TModbusRegister::U8:
-    case TModbusRegister::S8:
+    case U8:
+    case S8:
+    case BCD8:
         return {static_cast<uint16_t>(FromScaledTextValue<int64_t>(str) & 255)};
-    case TModbusRegister::S32:
-    case TModbusRegister::U32:
+    case S24:
+    case U24:
+    case S32:
+    case U32:
+    case BCD24:
+    case BCD32:
 	    {
 			auto v = FromScaledTextValue<int64_t>(str);
 	        return { static_cast<uint16_t>((v >> 16) & 0xFFFF), static_cast<uint16_t>(v & 0xFFFF)};
 		}
-    case TModbusRegister::S64:
+    case S64:
 		{
 			auto v = FromScaledTextValue<int64_t>(str);
 	        return { static_cast<uint16_t>(v >> 48),
@@ -374,7 +397,7 @@ std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(const std::string& st
 				     static_cast<uint16_t>(v & 0xFFFF)};
 		}
 
-    case TModbusRegister::U64:
+    case U64:
 		{
 			auto v = FromScaledTextValue<uint64_t>(str);
 	        return { static_cast<uint16_t>(v >> 48),
@@ -383,7 +406,7 @@ std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(const std::string& st
 				     static_cast<uint16_t>(v & 0xFFFF)};
 		}
 
-	case TModbusRegister::Float:
+	case Float:
 		{
 			float tmp = FromScaledTextValue<double>(str);
 			uint32_t v;
@@ -392,7 +415,7 @@ std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(const std::string& st
 					 static_cast<uint16_t>(v & 0xFFFF)};
 		}
 
-	case TModbusRegister::Double:
+	case Double:
 		{
 			double tmp = FromScaledTextValue<double>(str);
 			uint64_t v;
@@ -403,7 +426,8 @@ std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(const std::string& st
 				    static_cast<uint16_t>(v & 0xFFFF)};
 		}
 
-    case TModbusRegister::U16:
+    case U16:
+    case BCD16:
     default:
         return {static_cast<uint16_t>(FromScaledTextValue<int64_t>(str))};
     }
@@ -474,6 +498,43 @@ public:
         v.resize(Register()->Width());
         ctx->ReadInputRegisters(Register()->Address, Register()->Width(), &v[0]);
         return v;
+    }
+};
+
+
+class TDirectRegisterHandler: public TRegisterHandler
+{
+public:
+    TDirectRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
+        : TRegisterHandler(client, _reg) {}
+
+    std::vector<uint16_t> Read(PModbusContext ctx) {
+        std::vector<uint16_t> v;
+        v.resize(Register()->Width());
+        uint64_t dv;
+        ctx->ReadDirectRegister(Register()->Address, &dv, Register()->Format);
+#if 0 // too much debug print
+        if (Client->DebugEnabled())
+            std::cerr << "raw direct value for: " << Register()->ToString() << ": " << dv <<
+                " (format " << Register()->Format <<
+                " width " << (int)Register()->Width() << ")" << std::endl;
+#endif
+        for (int i = v.size() - 1, s = 0; i >= 0; --i, s += 16) {
+            v[i] = (dv >> s) & 0xffff;
+#if 0 // too much debug print
+            std::cerr << "v[" << i << "] = " << std::hex << v[i] << std::dec << std::endl;
+#endif
+        }
+        return v;
+    }
+
+    void Write(PModbusContext ctx, const std::vector<uint16_t> & v) {
+        if (Client->DebugEnabled())
+            std::cerr << "write: " << Register()->ToString() << std::endl;
+        uint64_t dv = 0;
+        for (const auto& part: v)
+            dv = (dv << 16) + part;
+        ctx->WriteDirectRegister(Register()->Address, dv, Register()->Format);
     }
 };
 
@@ -625,6 +686,8 @@ TRegisterHandler* TModbusClient::CreateRegisterHandler(std::shared_ptr<TModbusRe
         return new THoldingRegisterHandler(this, reg);
     case TModbusRegister::RegisterType::INPUT_REGISTER:
         return new TInputRegisterHandler(this, reg);
+    case TModbusRegister::RegisterType::DIRECT_REGISTER:
+        return new TDirectRegisterHandler(this, reg);
     default:
         throw TModbusException("bad register type");
     }
