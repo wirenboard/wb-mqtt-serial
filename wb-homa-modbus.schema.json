@@ -67,7 +67,7 @@
         },
         "type": {
           "type": "string",
-          "title": "Device type",
+          "title": "Port protocol",
           "description": "Type of devices to be used on this port",
           "enum": ["modbus", "uniel", "milur"],
           "default": "modbus",
@@ -225,7 +225,8 @@
               "propertyOrder": 9
             }
           },
-          "required": ["name", "reg_type", "address"]
+          "required": ["name", "reg_type", "address"],
+          "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale"]
         },
         {
           "title": "Compound Modbus register",
@@ -305,7 +306,7 @@
     "reg_type": {
       "type": "string",
       "title": "Register type",
-      "enum": ["coil", "discrete", "holding", "input"]
+      "enum": ["coil", "discrete", "holding", "input", "direct"]
     },
     "format": {
       "type": "string",
