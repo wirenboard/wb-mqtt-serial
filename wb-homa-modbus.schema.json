@@ -82,7 +82,8 @@
         }
       },
       "required": ["path"],
-      "defaultProperties": ["path", "type"]
+      "defaultProperties": ["path", "type"],
+      "_format": "grid"
     },
     "device": {
       "type": "object",
@@ -210,6 +211,7 @@
             "scale": {
               "type": "number",
               "title": "Scale (value multiplier)",
+              "default" : 1,
               "propertyOrder": 7
             },
             "channel_readonly": {
@@ -226,7 +228,8 @@
             }
           },
           "required": ["name", "reg_type", "address"],
-          "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale"]
+          "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale"],
+          "_format": "grid"
         },
         {
           "title": "Compound Modbus register",
@@ -276,6 +279,7 @@
         "scale": {
           "type": "number",
           "title": "Scale (value multiplier)",
+          "default" : 1,
           "propertyOrder": 4
         }
       },
@@ -312,7 +316,13 @@
       "type": "string",
       "title": "Format",
       "description": "s=signed, u=unsigned, the number indicates the number of bits",
-      "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double"]
+      "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double"],
+      "options": {
+        "enum_titles" : [ "Signed 16-bit integer", "Unsigned 16-bit integer", "Signed 8-bit integer", "Unsigned 8-bit integer",
+                          "Signed 24-bit integer", "Unsigned 24-bit integer", "Signed 32-bit integer", "Unsigned 32-bit integer",
+                          "Signed 64-bit integer", "Unsigned 64-bit integer",
+                          "8-bit BCD", "16-bit BCD","24-bit BCD", "32-bit BCD", "IEEE754 32-bit float", "IEEE754 64-bit float (double)"]
+      }
     },
     "address": {
       "title": "Address",
