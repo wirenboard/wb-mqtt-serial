@@ -34,7 +34,7 @@ TEST_LIBS=-lgtest -lpthread -lmosquittopp
 TEST_DIR=test
 TEST_BIN=wb-homa-test
 
-.PHONY: all clean test_fix
+.PHONY: all clean test
 
 all : $(MODBUS_BIN)
 
@@ -93,7 +93,7 @@ $(TEST_DIR)/$(TEST_BIN): $(MODBUS_OBJS) $(COMMON_O) \
   $(TEST_DIR)/fake_mqtt.o $(TEST_DIR)/main.o
 	${CXX} $^ ${LDFLAGS} -o $@ $(TEST_LIBS) $(MODBUS_LIBS)
 
-test_fix: $(TEST_DIR)/$(TEST_BIN)
+test: $(TEST_DIR)/$(TEST_BIN)
 	valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) || \
           if [ $$? = 180 ]; then \
             echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
