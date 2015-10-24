@@ -58,7 +58,7 @@ void TFakeModbusContext::ReadCoils(int addr, int nb, uint8_t *dest)
 {
     ASSERT_LE(nb, MODBUS_MAX_READ_BITS);
     ASSERT_TRUE(!!CurrentSlave);
-    CurrentSlave->Coils.ReadRegs(Fixture, addr, nb, dest);
+    CurrentSlave->Coils.ReadRegs(Fixture, addr, nb, dest, AUTO);
 }
 
 void TFakeModbusContext::WriteCoil(int addr, int value)
@@ -72,34 +72,44 @@ void TFakeModbusContext::ReadDisceteInputs(int addr, int nb, uint8_t *dest)
 {
     ASSERT_LE(nb, MODBUS_MAX_READ_BITS);
     ASSERT_TRUE(!!CurrentSlave);
-    CurrentSlave->Discrete.ReadRegs(Fixture, addr, nb, dest);
+    CurrentSlave->Discrete.ReadRegs(Fixture, addr, nb, dest, AUTO);
 }
 
 void TFakeModbusContext::ReadHoldingRegisters(int addr, int nb, uint16_t *dest)
 {
     ASSERT_LE(nb, MODBUS_MAX_READ_REGISTERS);
     ASSERT_TRUE(!!CurrentSlave);
-    CurrentSlave->Holding.ReadRegs(Fixture, addr, nb, dest);
+    CurrentSlave->Holding.ReadRegs(Fixture, addr, nb, dest, AUTO);
 }
 
 void TFakeModbusContext::WriteHoldingRegisters(int addr, int nb, const uint16_t *data)
 {
     ASSERT_LE(nb, MODBUS_MAX_READ_REGISTERS);
     ASSERT_TRUE(!!CurrentSlave);
-    CurrentSlave->Holding.WriteRegs(Fixture, addr, nb, data);
+    CurrentSlave->Holding.WriteRegs(Fixture, addr, nb, data, AUTO);
 }
 
 void TFakeModbusContext::WriteHoldingRegister(int addr, uint16_t value)
 {
     ASSERT_TRUE(!!CurrentSlave);
-    CurrentSlave->Holding.WriteRegs(Fixture, addr, 1, &value);
+    CurrentSlave->Holding.WriteRegs(Fixture, addr, 1, &value, AUTO);
 }
 
 void TFakeModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
 {
     ASSERT_LE(nb, MODBUS_MAX_READ_REGISTERS);
     ASSERT_TRUE(!!CurrentSlave);
-    CurrentSlave->Input.ReadRegs(Fixture, addr, nb, dest);
+    CurrentSlave->Input.ReadRegs(Fixture, addr, nb, dest, AUTO);
+}
+
+void TFakeModbusContext::ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat fmt) {
+    ASSERT_TRUE(!!CurrentSlave);
+    CurrentSlave->Direct.ReadRegs(Fixture, addr, 1, dest, fmt);
+}
+
+void TFakeModbusContext::WriteDirectRegister(int addr, uint64_t value, RegisterFormat fmt) {
+    ASSERT_TRUE(!!CurrentSlave);
+    CurrentSlave->Direct.WriteRegs(Fixture, addr, 1, &value, fmt);
 }
 
 const char* TFakeModbusConnector::PORT0 = "/dev/ttyNSC0";

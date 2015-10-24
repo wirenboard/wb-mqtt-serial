@@ -108,8 +108,8 @@ TEST_F(TModbusClientTest, Write)
 
 TEST_F(TModbusClientTest, S8)
 {
-    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::S8));
-    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::S8));
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, S8));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, S8));
     ModbusClient->AddRegister(holding20);
     ModbusClient->AddRegister(input30);
 
@@ -146,8 +146,8 @@ TEST_F(TModbusClientTest, S8)
 
 TEST_F(TModbusClientTest, S64)
 {
-    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::S64));
-    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::S64));
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, S64));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, S64));
     ModbusClient->AddRegister(holding20);
     ModbusClient->AddRegister(input30);
 
@@ -190,8 +190,8 @@ TEST_F(TModbusClientTest, S64)
 
 TEST_F(TModbusClientTest, U64)
 {
-    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::U64));
-    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::U64));
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, U64));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, U64));
     ModbusClient->AddRegister(holding20);
     ModbusClient->AddRegister(input30);
 //~ //~
@@ -235,8 +235,8 @@ TEST_F(TModbusClientTest, U64)
 
 TEST_F(TModbusClientTest, S32)
 {
-    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::S32));
-    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::S32));
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, S32));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, S32));
     ModbusClient->AddRegister(holding20);
     ModbusClient->AddRegister(input30);
 
@@ -272,8 +272,8 @@ TEST_F(TModbusClientTest, S32)
 
 TEST_F(TModbusClientTest, U32)
 {
-    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::U32));
-    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::U32));
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, U32));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, U32));
     ModbusClient->AddRegister(holding20);
     ModbusClient->AddRegister(input30);
 
@@ -328,11 +328,11 @@ TEST_F(TModbusClientTest, U32)
 TEST_F(TModbusClientTest, Float32)
 {
 	// create scaled register
-    std::shared_ptr<TModbusRegister> holding24 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 24, TModbusRegister::Float, 100));
+    std::shared_ptr<TModbusRegister> holding24 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 24, Float, 100));
     ModbusClient->AddRegister(holding24);
 
-    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::Float));
-    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::Float));
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, Float));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, Float));
     ModbusClient->AddRegister(holding20);
     ModbusClient->AddRegister(input30);
 
@@ -386,11 +386,11 @@ TEST_F(TModbusClientTest, Float32)
 TEST_F(TModbusClientTest, Double64)
 {
 	// create scaled register
-    std::shared_ptr<TModbusRegister> holding24 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 24, TModbusRegister::Double, 100));
+    std::shared_ptr<TModbusRegister> holding24 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 24, Double, 100));
     ModbusClient->AddRegister(holding24);
 
-    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, TModbusRegister::Double));
-    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, TModbusRegister::Double));
+    std::shared_ptr<TModbusRegister> holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, Double));
+    std::shared_ptr<TModbusRegister> input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, Double));
     ModbusClient->AddRegister(holding20);
     ModbusClient->AddRegister(input30);
 

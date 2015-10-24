@@ -59,10 +59,11 @@ public:
         return values[Range.ValidateIndex(Name, index) - Range.Start];
     }
 
-    void ReadRegs(TLoggedFixture& fixture, int addr, int nb, T* dest) {
+    void ReadRegs(TLoggedFixture& fixture, int addr, int nb, T* dest, RegisterFormat fmt) {
         ASSERT_GT(nb, 0);
         std::stringstream s;
-        s << "read " << nb << " " << Name << "(s) @ " << addr;
+        std::string fmtStr = fmt == AUTO ? "" : std::string(", ") + RegisterFormatName(fmt);
+        s << "read " << nb << " " << Name << "(s)" << fmtStr << " @ " << addr;
         if (nb) {
             s << ":";
             while (nb--) {
@@ -74,10 +75,11 @@ public:
         fixture.Emit() << s.str();
     }
 
-    void WriteRegs(TLoggedFixture& fixture, int addr, int nb, const T* src) {
+    void WriteRegs(TLoggedFixture& fixture, int addr, int nb, const T* src, RegisterFormat fmt) {
         ASSERT_GT(nb, 0);
         std::stringstream s;
-        s << "write " << nb << " " << Name << "(s) @ " << addr;
+        std::string fmtStr = fmt == AUTO ? "" : std::string(", ") + RegisterFormatName(fmt);
+        s << "write " << nb << " " << Name << "(s)" << fmtStr << " @ " << addr;
         if (nb) {
             s << ": ";
             while (nb--) {
@@ -100,15 +102,18 @@ struct TFakeSlave
     TFakeSlave(const TRegisterRange& coil_range = TRegisterRange(),
                const TRegisterRange& discrete_range = TRegisterRange(),
                const TRegisterRange& holding_range = TRegisterRange(),
-               const TRegisterRange& input_range = TRegisterRange())
+               const TRegisterRange& input_range = TRegisterRange(),
+               const TRegisterRange& direct_range = TRegisterRange())
         : Coils("coil", coil_range),
           Discrete("discrete input", discrete_range),
           Holding("holding register", holding_range),
-          Input("input register", input_range) {}
+          Input("input register", input_range),
+          Direct("direct register", direct_range) {}
     TRegisterSet<uint8_t> Coils;
     TRegisterSet<uint8_t> Discrete;
     TRegisterSet<uint16_t> Holding;
     TRegisterSet<uint16_t> Input;
+    TRegisterSet<uint64_t> Direct;
 };
 
 typedef std::shared_ptr<TFakeSlave> PFakeSlave;
@@ -127,6 +132,8 @@ public:
     void WriteHoldingRegisters(int addr, int nb, const uint16_t *data);
     void WriteHoldingRegister(int addr, uint16_t value);
     void ReadInputRegisters(int addr, int nb, uint16_t *dest);
+    void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format);
+    void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format);
     void USleep(int usec);
 
     void ExpectDebug(bool debug)
