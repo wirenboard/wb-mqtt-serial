@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <exception>
 #include <unordered_map>
 #include <stdint.h>
@@ -30,3 +31,5 @@ private:
     const uint8_t ACCESS_LEVEL = 1;
     const int N_CONN_ATTEMPTS = 10;
 };
+
+typedef std::shared_ptr<TMilurProtocol> PMilurProtocol;

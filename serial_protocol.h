@@ -25,14 +25,14 @@ public:
     TSerialProtocolTransientErrorException(std::string message): TSerialProtocolException(message) {}
 };
 
-class TAbstractSerialPort {
+class TAbstractSerialPort: public std::enable_shared_from_this<TAbstractSerialPort> {
 public:
     virtual ~TAbstractSerialPort();
     virtual void Open() = 0;
     virtual void Close() = 0;
     virtual bool IsOpen() const = 0;
     virtual void CheckPortOpen() = 0;
-    virtual void WriteBytes(uint8_t* buf, int count) = 0;
+    virtual void WriteBytes(const uint8_t* buf, int count) = 0;
     virtual uint8_t ReadByte() = 0;
     virtual void SkipNoise() =0;
 };
@@ -44,7 +44,7 @@ public:
     TSerialPort(const TSerialPortSettings& settings, bool debug = false);
     ~TSerialPort();
     void CheckPortOpen();
-    void WriteBytes(uint8_t* buf, int count);
+    void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte();
     void SkipNoise();
     void Open();
@@ -61,7 +61,7 @@ private:
     const int NoiseTimeoutMs = 10;
 };
 
-class TSerialProtocol {
+class TSerialProtocol: public std::enable_shared_from_this<TSerialProtocol> {
 public:
     TSerialProtocol(PAbstractSerialPort port);
     virtual ~TSerialProtocol();

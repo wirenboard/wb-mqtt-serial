@@ -156,7 +156,7 @@ void TSerialPort::CheckPortOpen()
         throw TSerialProtocolException("port not open");
 }
 
-void TSerialPort::WriteBytes(uint8_t* buf, int count) {
+void TSerialPort::WriteBytes(const uint8_t* buf, int count) {
     if (write(Fd, buf, count) < count)
         throw TSerialProtocolException("serial write failed");
     if (Debug) {

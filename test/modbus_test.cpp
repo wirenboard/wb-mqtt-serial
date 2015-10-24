@@ -642,6 +642,7 @@ TEST_F(TModbusDeviceTest, OnValue)
     slave->Holding[0] = 500;
     Note() << "ModbusLoopOnce() after second slave update";
     modbus_observer->ModbusLoopOnce();
-
 }
+
 // TBD: the code must check mosquitto return values
+// TBD: test direct regs
