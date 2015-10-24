@@ -1,6 +1,8 @@
 *.o
 wb-homa-gpio/wb-homa-gpio
 wb-homa-modbus/wb-homa-modbus
+wb-homa-modbus/test/wb-homa-test
+wb-homa-modbus/test/*.out
 wb-homa-ninja-bridge/wb-homa-ninja-bridge
 wb-homa-w1/wb-homa-w1
 wb-homa-adc/wb-homa-adc
