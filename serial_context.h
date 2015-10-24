@@ -9,10 +9,10 @@ namespace {
     };
 }
 
-class TSerialModbusContext: public TModbusContext
+class TSerialContext: public TModbusContext
 {
 public:
-    TSerialModbusContext(PSerialProtocol proto);
+    TSerialContext(PSerialProtocol proto);
     void Connect();
     void Disconnect();
     void SetDebug(bool debug);
@@ -26,7 +26,7 @@ public:
     void ReadInputRegisters(int addr, int nb, uint16_t *dest);
     void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format);
     void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format);
-    void USleep(int usec);
+    void EndPollCycle(int usec);
 
 private:
     PSerialProtocol Proto;

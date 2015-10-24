@@ -75,6 +75,7 @@ public:
     // XXX FIXME: leaky abstraction (need to refactor)
     // Perhaps add 'brightness' register format
     virtual void SetBrightness(uint8_t mod, uint8_t address, uint8_t value) = 0;
+    virtual void EndPollCycle();
 
 protected:
     PAbstractSerialPort Port() { return SerialPort; }

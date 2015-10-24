@@ -5,33 +5,33 @@ Connect()
 SetSlave(1)
 read 1 coil(s) @ 1: 0x00
 Modbus Callback: <1:coil: 1> becomes 0
-USleep(1000000)
+EndPollCycle(1000000)
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x0000
 Modbus Callback: <1:holding: 20> becomes 0
-USleep(1000000)
+EndPollCycle(1000000)
 >>> Cycle()
 SetSlave(1)
 SetSlave(1)
 write 1 holding register(s) @ 20:  0x1092
 SetSlave(1)
 read 1 coil(s) @ 1: 0x01
-USleep(1000000)
+EndPollCycle(1000000)
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x1092
-USleep(1000000)
+EndPollCycle(1000000)
 >>> Cycle()
 SetSlave(1)
 read 1 coil(s) @ 1: 0x01
-USleep(1000000)
+EndPollCycle(1000000)
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x1092
-USleep(1000000)
+EndPollCycle(1000000)
 >>> Cycle()
 SetSlave(1)
 read 1 coil(s) @ 1: 0x01
-USleep(1000000)
+EndPollCycle(1000000)
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x1092
-USleep(1000000)
+EndPollCycle(1000000)
 Disconnect()

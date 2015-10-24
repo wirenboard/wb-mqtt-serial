@@ -32,7 +32,7 @@ public:
     virtual void ReadInputRegisters(int addr, int nb, uint16_t *dest) = 0;
     virtual void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format) = 0;
     virtual void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format) = 0;
-    virtual void USleep(int usec) = 0;
+    virtual void EndPollCycle(int usecDelay) = 0;
 };
 
 typedef std::shared_ptr<TModbusContext> PModbusContext;
@@ -179,8 +179,6 @@ public:
     void WriteHoldingRegister(int slave, int address, uint16_t value);
 
 private:
-
-
     const std::unique_ptr<TRegisterHandler>& GetHandler(std::shared_ptr<TModbusRegister>) const;
     TRegisterHandler* CreateRegisterHandler(std::shared_ptr<TModbusRegister> reg);
     std::map<std::shared_ptr<TModbusRegister>, std::unique_ptr<TRegisterHandler> > handlers;

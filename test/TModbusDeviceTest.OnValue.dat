@@ -10,7 +10,7 @@ Connect()
 SetSlave(144)
 read 1 holding register(s) @ 0: 0x0000
 Publish: /devices/OnValueTest/controls/Relay 1: '0' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)
 >>> Publish: /devices/OnValueTest/controls/Relay 1/on: '1' (QoS 0)
 Publish: /devices/OnValueTest/controls/Relay 1: '1' (QoS 0, retained)
 >>> ModbusLoopOnce()
@@ -18,14 +18,14 @@ SetSlave(144)
 write 1 holding register(s) @ 0:  0x01f4
 SetSlave(144)
 read 1 holding register(s) @ 0: 0x01f4
-USleep(10000)
+EndPollCycle(10000)
 >>> ModbusLoopOnce() after slave update
 SetSlave(144)
 read 1 holding register(s) @ 0: 0x0000
 Publish: /devices/OnValueTest/controls/Relay 1: '0' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)
 >>> ModbusLoopOnce() after second slave update
 SetSlave(144)
 read 1 holding register(s) @ 0: 0x01f4
 Publish: /devices/OnValueTest/controls/Relay 1: '1' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)

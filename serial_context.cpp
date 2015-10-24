@@ -4,10 +4,10 @@
 #include "uniel_protocol.h"
 #include "milur_protocol.h"
 
-TSerialModbusContext::TSerialModbusContext(PSerialProtocol proto):
+TSerialContext::TSerialContext(PSerialProtocol proto):
     Proto(proto), SlaveAddr(1) {}
 
-void TSerialModbusContext::Connect()
+void TSerialContext::Connect()
 {
     try {
         if (!Proto->IsOpen())
@@ -17,23 +17,23 @@ void TSerialModbusContext::Connect()
     }
 }
 
-void TSerialModbusContext::Disconnect()
+void TSerialContext::Disconnect()
 {
     if (Proto->IsOpen())
         Proto->Close();
 }
 
-void TSerialModbusContext::SetDebug(bool)
+void TSerialContext::SetDebug(bool)
 {
     // TBD: set debug
 }
 
-void TSerialModbusContext::SetSlave(int slave_addr)
+void TSerialContext::SetSlave(int slave_addr)
 {
     SlaveAddr = slave_addr;
 }
 
-void TSerialModbusContext::ReadCoils(int addr, int nb, uint8_t *dest)
+void TSerialContext::ReadCoils(int addr, int nb, uint8_t *dest)
 {
     try {
         Connect();
@@ -47,7 +47,7 @@ void TSerialModbusContext::ReadCoils(int addr, int nb, uint8_t *dest)
     }
 }
 
-void TSerialModbusContext::WriteCoil(int addr, int value)
+void TSerialContext::WriteCoil(int addr, int value)
 {
     try {
         Connect();
@@ -60,12 +60,12 @@ void TSerialModbusContext::WriteCoil(int addr, int value)
     }
 }
 
-void TSerialModbusContext::ReadDisceteInputs(int addr, int nb, uint8_t *dest)
+void TSerialContext::ReadDisceteInputs(int addr, int nb, uint8_t *dest)
 {
     ReadCoils(addr, nb, dest);
 }
 
-void TSerialModbusContext::ReadHoldingRegisters(int addr, int nb, uint16_t *dest)
+void TSerialContext::ReadHoldingRegisters(int addr, int nb, uint16_t *dest)
 {
     try {
         Connect();
@@ -82,7 +82,7 @@ void TSerialModbusContext::ReadHoldingRegisters(int addr, int nb, uint16_t *dest
     }
 }
 
-void TSerialModbusContext::WriteHoldingRegister(int addr, uint16_t value)
+void TSerialContext::WriteHoldingRegister(int addr, uint16_t value)
 {
     try {
         Connect();
@@ -109,19 +109,19 @@ void TSerialModbusContext::WriteHoldingRegister(int addr, uint16_t value)
     }
 }
 
-void TSerialModbusContext::WriteHoldingRegisters(int addr, int nb, const uint16_t *data)
+void TSerialContext::WriteHoldingRegisters(int addr, int nb, const uint16_t *data)
 {
 	for (int i = 0; i < nb; ++i) {
 		WriteHoldingRegister(addr + i, data[i]);
 	}
 }
 
-void TSerialModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
+void TSerialContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
 {
     ReadHoldingRegisters(addr, nb, dest);
 }
 
-void TSerialModbusContext::ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format) {
+void TSerialContext::ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format) {
     try {
         Connect();
         *dest++ = Proto->ReadRegister(SlaveAddr, addr, format);
@@ -133,7 +133,7 @@ void TSerialModbusContext::ReadDirectRegister(int addr, uint64_t* dest, Register
     }    
 }
 
-void TSerialModbusContext::WriteDirectRegister(int addr, uint64_t value, RegisterFormat format) {
+void TSerialContext::WriteDirectRegister(int addr, uint64_t value, RegisterFormat format) {
     try {
         Connect();
         Proto->WriteRegister(SlaveAddr, addr, value, format);
@@ -145,15 +145,16 @@ void TSerialModbusContext::WriteDirectRegister(int addr, uint64_t value, Registe
     }
 }
 
-void TSerialModbusContext::USleep(int usec)
+void TSerialContext::EndPollCycle(int usecDelay)
 {
-    usleep(usec);
+    Proto->EndPollCycle();
+    usleep(usecDelay);
 }
 
 PModbusContext TSerialConnector::CreateContext(const TSerialPortSettings& settings)
 {
     auto proto = CreateProtocol(PAbstractSerialPort(new TSerialPort(settings)));
-    return PModbusContext(new TSerialModbusContext(proto));
+    return PModbusContext(new TSerialContext(proto));
 }
 
 PSerialProtocol TUnielConnector::CreateProtocol(PAbstractSerialPort port) {

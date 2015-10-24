@@ -29,7 +29,8 @@ public:
     void ReadInputRegisters(int addr, int nb, uint16_t *dest);
     void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format);
     void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format);
-    void USleep(int usec);
+    void EndPollCycle(int usecDelay);
+
 private:
     modbus_t* InnerContext;
 };
@@ -129,9 +130,9 @@ void TDefaultModbusContext::WriteDirectRegister(int, uint64_t, RegisterFormat)
     throw TModbusException("direct registers not supported for modbus");
 }
 
-void TDefaultModbusContext::USleep(int usec)
+void TDefaultModbusContext::EndPollCycle(int usecDelay)
 {
-    usleep(usec);
+    usleep(usecDelay);
 }
 
 PModbusContext TDefaultModbusConnector::CreateContext(const TSerialPortSettings& settings)
@@ -604,12 +605,12 @@ void TModbusClient::Cycle()
             ErrorCallback(p.first);
         }
         if ((poll_message.second == 2) && (DeleteErrorsCallback)) {
-                DeleteErrorsCallback(p.first);
+            DeleteErrorsCallback(p.first);
         }
         if ((poll_message.first) && (Callback) && (poll_message.second != 1)) {
-                Callback(p.first);
-            }
-        Context->USleep(PollInterval * 1000);
+            Callback(p.first);
+        }
+        Context->EndPollCycle(PollInterval * 1000);
     }
 }
 

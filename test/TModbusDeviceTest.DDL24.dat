@@ -24,30 +24,30 @@ Subscribe: /devices/ddl24/controls/Voltage/on (QoS 0)
 Connect()
 SetSlave(23)
 read 1 holding register(s) @ 4: 0x0000
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 5: 0x0000
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 6: 0x0000
 Publish: /devices/ddl24/controls/RGB: '0;0;0' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 7: 0x0000
 Publish: /devices/ddl24/controls/White: '0' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 8: 0x0000
 Publish: /devices/ddl24/controls/RGB_All: '0' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 9: 0x0000
 Publish: /devices/ddl24/controls/White1: '0' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 18: 0x0000
 Publish: /devices/ddl24/controls/Voltage: '0' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)
 >>> Publish: /devices/ddl24/controls/RGB/on: '10;20;30' (QoS 0)
 Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
 >>> ModbusLoopOnce()
@@ -59,47 +59,47 @@ SetSlave(23)
 write 1 holding register(s) @ 6:  0x001e
 SetSlave(23)
 read 1 holding register(s) @ 4: 0x000a
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 5: 0x0014
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 6: 0x001e
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 7: 0x0000
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 8: 0x0000
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 9: 0x0000
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 18: 0x0000
-USleep(10000)
+EndPollCycle(10000)
 >>> ModbusLoopOnce() after slave update
 SetSlave(23)
 read 1 holding register(s) @ 4: 0x0020
 Publish: /devices/ddl24/controls/RGB: '32;20;30' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 5: 0x0040
 Publish: /devices/ddl24/controls/RGB: '32;64;30' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 6: 0x0080
 Publish: /devices/ddl24/controls/RGB: '32;64;128' (QoS 0, retained)
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 7: 0x0000
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 8: 0x0000
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 9: 0x0000
-USleep(10000)
+EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 18: 0x0000
-USleep(10000)
+EndPollCycle(10000)

@@ -6,39 +6,39 @@ Connect()
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x000a
 Modbus Callback: <1:holding: 20> becomes 10
-USleep(1000000)
+EndPollCycle(1000000)
 SetSlave(1)
 read 1 input register(s) @ 30: 0x0014
 Modbus Callback: <1:input: 30> becomes 20
-USleep(1000000)
+EndPollCycle(1000000)
 >>> server -> client: -2, -3
 >>> Cycle()
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x00fe
 Modbus Callback: <1:holding: 20> becomes -2
-USleep(1000000)
+EndPollCycle(1000000)
 SetSlave(1)
 read 1 input register(s) @ 30: 0x00fd
 Modbus Callback: <1:input: 30> becomes -3
-USleep(1000000)
+EndPollCycle(1000000)
 >>> client -> server: 10
 >>> Cycle()
 SetSlave(1)
 write 1 holding register(s) @ 20:  0x000a
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x000a
-USleep(1000000)
+EndPollCycle(1000000)
 SetSlave(1)
 read 1 input register(s) @ 30: 0x00fd
-USleep(1000000)
+EndPollCycle(1000000)
 >>> client -> server: -2
 >>> Cycle()
 SetSlave(1)
 write 1 holding register(s) @ 20:  0x00fe
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x00fe
-USleep(1000000)
+EndPollCycle(1000000)
 SetSlave(1)
 read 1 input register(s) @ 30: 0x00fd
-USleep(1000000)
+EndPollCycle(1000000)
 Disconnect()

@@ -1,8 +1,8 @@
 #include "fake_modbus.h"
 
-void TFakeModbusContext::USleep(int usec)
+void TFakeModbusContext::EndPollCycle(int usecDelay)
 {
-    Fixture.Emit() << "USleep(" << usec << ")";
+    Fixture.Emit() << "EndPollCycle(" << usecDelay << ")";
 }
 
 PFakeSlave TFakeModbusContext::GetSlave(int slave_addr)

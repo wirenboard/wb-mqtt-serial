@@ -226,3 +226,5 @@ TSerialProtocol::TSerialProtocol(PAbstractSerialPort port)
     : SerialPort(port) {}
 
 TSerialProtocol::~TSerialProtocol() {}
+
+void TSerialProtocol::EndPollCycle() {}

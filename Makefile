@@ -29,6 +29,7 @@ MODBUS_OBJS=modbus_client.o \
   serial_context.o \
   uniel_protocol.o \
   crc16.o \
+  em_protocol.o \
   milur_protocol.o
 TEST_LIBS=-lgtest -lpthread -lmosquittopp
 TEST_DIR=test
@@ -64,6 +65,9 @@ uniel_protocol.o : uniel_protocol.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
 crc16.o : crc16.cpp
+	${CXX} -c $< -o $@ ${CFLAGS}
+
+em_protocol.o : em_protocol.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
 milur_protocol.o : milur_protocol.cpp
