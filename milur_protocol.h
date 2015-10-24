@@ -12,7 +12,7 @@ class TMilurProtocol: public TSerialProtocol {
 public:
     static const int DefaultTimeoutMs = 1000;
 
-    TMilurProtocol(const TSerialPortSettings& settings, bool debug = false);
+    TMilurProtocol(PAbstractSerialPort port);
     uint64_t ReadRegister(uint8_t slave, uint8_t address, RegisterFormat fmt);
     void WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat fmt);
     // XXX FIXME: leaky abstraction (need to refactor)

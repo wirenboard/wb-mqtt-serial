@@ -84,10 +84,10 @@ bool TMQTTModbusObserver::WriteInitValues()
 PModbusConnector TMQTTModbusObserver::GetConnector(PPortConfig port_config)
 {
     if (port_config->Type == "uniel")
-        return PModbusConnector(new TUnielModbusConnector());
+        return PModbusConnector(new TUnielConnector());
 
     if (port_config->Type == "milur")
-        return PModbusConnector(new TMilurModbusConnector());
+        return PModbusConnector(new TMilurConnector());
 
     if (!port_config->Type.empty() && port_config->Type != "modbus")
         std::cerr << "warning: bad port type '" << port_config->Type <<

@@ -20,12 +20,12 @@ namespace {
     };
 }
 
-TUnielBus::TUnielBus(const TSerialPortSettings& settings)
-    : TSerialProtocol(settings) {}
+TUnielProtocol::TUnielProtocol(PAbstractSerialPort port)
+    : TSerialProtocol(port) {}
 
-void TUnielBus::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
+void TUnielProtocol::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
 {
-    EnsurePortOpen();
+    Port()->CheckPortOpen();
     uint8_t buf[8];
     buf[0] = buf[1] = 0xff;
     buf[2] = cmd;
@@ -34,24 +34,24 @@ void TUnielBus::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, u
     buf[5] = b2;
     buf[6] = b3;
     buf[7] = (cmd + mod + b1 + b2 + b3) & 0xff;
-    WriteBytes(buf, 8);
+    Port()->WriteBytes(buf, 8);
 }
 
-void TUnielBus::ReadResponse(uint8_t cmd, uint8_t* response)
+void TUnielProtocol::ReadResponse(uint8_t cmd, uint8_t* response)
 {
     uint8_t buf[5];
     for (;;) {
-        if (ReadByte() != 0xff || ReadByte() != 0xff) {
+        if (Port()->ReadByte() != 0xff || Port()->ReadByte() != 0xff) {
             std::cerr << "uniel: warning: resync" << std::endl;
             continue;
         }
         uint8_t s = 0;
         for (int i = 0; i < 5; ++i) {
-            buf[i] = ReadByte();
+            buf[i] = Port()->ReadByte();
             s += buf[i];
         }
 
-        if (ReadByte() != s)
+        if (Port()->ReadByte() != s)
             throw TSerialProtocolTransientErrorException("uniel: warning: checksum failure");
 
         break;
@@ -67,7 +67,7 @@ void TUnielBus::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-uint64_t TUnielBus::ReadRegister(uint8_t mod, uint8_t address, RegisterFormat)
+uint64_t TUnielProtocol::ReadRegister(uint8_t mod, uint8_t address, RegisterFormat)
 {
     WriteCommand(READ_CMD, mod, 0, address, 0);
     uint8_t response[3];
@@ -78,7 +78,7 @@ uint64_t TUnielBus::ReadRegister(uint8_t mod, uint8_t address, RegisterFormat)
     return response[0];
 }
 
-void TUnielBus::DoWriteRegister(uint8_t cmd, uint8_t mod, uint8_t address, uint8_t value)
+void TUnielProtocol::DoWriteRegister(uint8_t cmd, uint8_t mod, uint8_t address, uint8_t value)
 {
     WriteCommand(cmd, mod, value, address, 0);
     uint8_t response[3];
@@ -89,12 +89,12 @@ void TUnielBus::DoWriteRegister(uint8_t cmd, uint8_t mod, uint8_t address, uint8
         throw TSerialProtocolTransientErrorException("written register value mismatch");
 }
 
-void TUnielBus::WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat)
+void TUnielProtocol::WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat)
 {
     DoWriteRegister(WRITE_CMD, mod, address, (uint8_t)value);
 }
 
-void TUnielBus::SetBrightness(uint8_t mod, uint8_t address, uint8_t value)
+void TUnielProtocol::SetBrightness(uint8_t mod, uint8_t address, uint8_t value)
 {
     DoWriteRegister(SET_BRIGHTNESS_CMD, mod, address, value);
 }
@@ -103,7 +103,7 @@ void TUnielBus::SetBrightness(uint8_t mod, uint8_t address, uint8_t value)
 int main(int, char**)
 {
     try {
-        TUnielBus bus("/dev/ttyNSC1");
+        TUnielProtocol bus("/dev/ttyNSC1");
         bus.Open();
         int v = bus.ReadRegister(0x01, 0x0a);
         std::cout << "value of mod 0x01 reg 0x0a: " << v << std::endl;
@@ -117,7 +117,7 @@ int main(int, char**)
             bus.WriteRegister(0x01, address, 0x00);
             std::cout << "value of relay " << i << " (off): " << (int)bus.ReadRegister(0x01, address) << std::endl;
         }
-    } catch (const TUnielBusException& e) {
+    } catch (const TUnielProtocolException& e) {
         std::cerr << "uniel bus error: " << e.what() << std::endl;
     }
     return 0;

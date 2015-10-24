@@ -1,17 +1,18 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <exception>
 #include <stdint.h>
 
 #include "serial_protocol.h"
 #include "regformat.h"
 
-class TUnielBus: public TSerialProtocol {
+class TUnielProtocol: public TSerialProtocol {
 public:
     static const int DefaultTimeoutMs = 1000;
 
-    TUnielBus(const TSerialPortSettings& settings);
+    TUnielProtocol(PAbstractSerialPort port);
     uint64_t ReadRegister(uint8_t mod, uint8_t address, RegisterFormat fmt);
     void WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat fmt);
 

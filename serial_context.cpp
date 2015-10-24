@@ -4,7 +4,7 @@
 #include "uniel_protocol.h"
 #include "milur_protocol.h"
 
-TSerialModbusContext::TSerialModbusContext(TSerialProtocol *proto):
+TSerialModbusContext::TSerialModbusContext(PSerialProtocol proto):
     Proto(proto), SlaveAddr(1) {}
 
 void TSerialModbusContext::Connect()
@@ -150,16 +150,18 @@ void TSerialModbusContext::USleep(int usec)
     usleep(usec);
 }
 
-PModbusContext TUnielModbusConnector::CreateContext(const TSerialPortSettings& settings)
+PModbusContext TSerialConnector::CreateContext(const TSerialPortSettings& settings)
 {
-    auto proto = new TUnielBus(settings);
+    auto proto = CreateProtocol(PAbstractSerialPort(new TSerialPort(settings)));
     return PModbusContext(new TSerialModbusContext(proto));
 }
 
-PModbusContext TMilurModbusConnector::CreateContext(const TSerialPortSettings& settings)
-{
-    auto proto = new TMilurProtocol(settings);
-    return PModbusContext(new TSerialModbusContext(proto));
+PSerialProtocol TUnielConnector::CreateProtocol(PAbstractSerialPort port) {
+    return PSerialProtocol(new TUnielProtocol(port));
+}
+
+PSerialProtocol TMilurConnector::CreateProtocol(PAbstractSerialPort port) {
+    return PSerialProtocol(new TMilurProtocol(port));
 }
 
 // TBD: support debug mode

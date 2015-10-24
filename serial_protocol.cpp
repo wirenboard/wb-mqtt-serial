@@ -13,24 +13,18 @@
 
 #include "serial_protocol.h"
 
-namespace {
-    enum {
-        READ_CMD           = 0x05,
-        WRITE_CMD          = 0x06,
-        SET_BRIGHTNESS_CMD = 0x0a
-    };
-}
+TAbstractSerialPort::~TAbstractSerialPort() {}
 
-TSerialProtocol::TSerialProtocol(const TSerialPortSettings& settings, bool debug)
+TSerialPort::TSerialPort(const TSerialPortSettings& settings, bool debug)
     : Settings(settings), Debug(debug), Fd(-1) {}
 
-TSerialProtocol::~TSerialProtocol()
+TSerialPort::~TSerialPort()
 {
     if (Fd >= 0)
         close(Fd);
 }
 
-void TSerialProtocol::Open()
+void TSerialPort::Open()
 {
     if (Fd >= 0)
         throw TSerialProtocolException("port already open");
@@ -48,19 +42,19 @@ void TSerialProtocol::Open()
     }
 }
 
-void TSerialProtocol::Close()
+void TSerialPort::Close()
 {
-    EnsurePortOpen();
+    CheckPortOpen();
     close(Fd);
     Fd = -1;
 }
 
-bool TSerialProtocol::IsOpen() const
+bool TSerialPort::IsOpen() const
 {
     return Fd >= 0;
 }
 
-void TSerialProtocol::SerialPortSetup()
+void TSerialPort::SerialPortSetup()
 {
     int speed;
     struct termios oldOptions, newOptions;
@@ -156,13 +150,13 @@ void TSerialProtocol::SerialPortSetup()
         throw TSerialProtocolException("failed to set serial port parameters");
 }
 
-void TSerialProtocol::EnsurePortOpen()
+void TSerialPort::CheckPortOpen()
 {
     if (Fd < 0)
         throw TSerialProtocolException("port not open");
 }
 
-void TSerialProtocol::WriteBytes(uint8_t* buf, int count) {
+void TSerialPort::WriteBytes(uint8_t* buf, int count) {
     if (write(Fd, buf, count) < count)
         throw TSerialProtocolException("serial write failed");
     if (Debug) {
@@ -175,7 +169,7 @@ void TSerialProtocol::WriteBytes(uint8_t* buf, int count) {
     }
 }
 
-bool TSerialProtocol::Select(int ms)
+bool TSerialPort::Select(int ms)
 {
     fd_set rfds;
     struct timeval tv, *tvp = 0;
@@ -199,9 +193,9 @@ bool TSerialProtocol::Select(int ms)
     return r > 0;
 }
 
-uint8_t TSerialProtocol::ReadByte()
+uint8_t TSerialPort::ReadByte()
 {
-    EnsurePortOpen();
+    CheckPortOpen();
 
     if (!Select(Settings.ResponseTimeoutMs))
         throw TSerialProtocolTransientErrorException("timeout");
@@ -219,7 +213,7 @@ uint8_t TSerialProtocol::ReadByte()
     return b;
 }
 
-void TSerialProtocol::SkipNoise()
+void TSerialPort::SkipNoise()
 {
     uint8_t b;
     while (Select(NoiseTimeoutMs)) {
@@ -227,3 +221,8 @@ void TSerialProtocol::SkipNoise()
             throw TSerialProtocolException("read() failed");
     }
 }
+
+TSerialProtocol::TSerialProtocol(PAbstractSerialPort port)
+    : SerialPort(port) {}
+
+TSerialProtocol::~TSerialProtocol() {}

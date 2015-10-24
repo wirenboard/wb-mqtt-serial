@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <exception>
 #include <stdint.h>
 
@@ -24,25 +25,31 @@ public:
     TSerialProtocolTransientErrorException(std::string message): TSerialProtocolException(message) {}
 };
 
-class TSerialProtocol {
+class TAbstractSerialPort {
 public:
-    virtual ~TSerialProtocol();
-    void Open();
-    void Close();
-    bool IsOpen() const;
+    virtual ~TAbstractSerialPort();
+    virtual void Open() = 0;
+    virtual void Close() = 0;
+    virtual bool IsOpen() const = 0;
+    virtual void CheckPortOpen() = 0;
+    virtual void WriteBytes(uint8_t* buf, int count) = 0;
+    virtual uint8_t ReadByte() = 0;
+    virtual void SkipNoise() =0;
+};
 
-    virtual uint64_t ReadRegister(uint8_t mod, uint8_t address, RegisterFormat fmt) = 0;
-    virtual void WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat fmt) = 0;
-    // XXX FIXME: leaky abstraction (need to refactor)
-    // Perhaps add 'brightness' register format
-    virtual void SetBrightness(uint8_t mod, uint8_t address, uint8_t value) = 0;
+typedef std::shared_ptr<TAbstractSerialPort> PAbstractSerialPort;
 
-protected:
-    TSerialProtocol(const TSerialPortSettings& settings, bool debug = false);
-    void EnsurePortOpen();
+class TSerialPort: public TAbstractSerialPort {
+public:
+    TSerialPort(const TSerialPortSettings& settings, bool debug = false);
+    ~TSerialPort();
+    void CheckPortOpen();
     void WriteBytes(uint8_t* buf, int count);
     uint8_t ReadByte();
     void SkipNoise();
+    void Open();
+    void Close();
+    bool IsOpen() const;
 
 private:
     void SerialPortSetup();
@@ -53,3 +60,27 @@ private:
     int Fd;
     const int NoiseTimeoutMs = 10;
 };
+
+class TSerialProtocol {
+public:
+    TSerialProtocol(PAbstractSerialPort port);
+    virtual ~TSerialProtocol();
+
+    void Open() { SerialPort->Open(); }
+    void Close() { SerialPort->Close(); }
+    bool IsOpen() const { return SerialPort->IsOpen(); }
+
+    virtual uint64_t ReadRegister(uint8_t mod, uint8_t address, RegisterFormat fmt) = 0;
+    virtual void WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat fmt) = 0;
+    // XXX FIXME: leaky abstraction (need to refactor)
+    // Perhaps add 'brightness' register format
+    virtual void SetBrightness(uint8_t mod, uint8_t address, uint8_t value) = 0;
+
+protected:
+    PAbstractSerialPort Port() { return SerialPort; }
+
+private:
+    PAbstractSerialPort SerialPort;
+};
+
+typedef std::shared_ptr<TSerialProtocol> PSerialProtocol;

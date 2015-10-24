@@ -12,7 +12,7 @@ namespace {
 class TSerialModbusContext: public TModbusContext
 {
 public:
-    TSerialModbusContext(TSerialProtocol* proto);
+    TSerialModbusContext(PSerialProtocol proto);
     void Connect();
     void Disconnect();
     void SetDebug(bool debug);
@@ -29,18 +29,25 @@ public:
     void USleep(int usec);
 
 private:
-    TSerialProtocol* Proto;
+    PSerialProtocol Proto;
     int SlaveAddr;
 };
 
-class TUnielModbusConnector: public TModbusConnector
-{
+class TSerialConnector: public TModbusConnector {
 public:
     PModbusContext CreateContext(const TSerialPortSettings& settings);
+protected:
+    virtual PSerialProtocol CreateProtocol(PAbstractSerialPort port) = 0;
 };
 
-class TMilurModbusConnector: public TModbusConnector
+class TUnielConnector: public TSerialConnector
 {
 public:
-    PModbusContext CreateContext(const TSerialPortSettings& settings);
+    PSerialProtocol CreateProtocol(PAbstractSerialPort port);
+};
+
+class TMilurConnector: public TSerialConnector
+{
+public:
+    PSerialProtocol CreateProtocol(PAbstractSerialPort port);
 };

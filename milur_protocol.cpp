@@ -35,14 +35,14 @@ namespace {
     }
 }
 
-TMilurProtocol::TMilurProtocol(const TSerialPortSettings& settings, bool debug)
-    : TSerialProtocol(settings, debug) {}
+TMilurProtocol::TMilurProtocol(PAbstractSerialPort port)
+    : TSerialProtocol(port) {}
 
 void TMilurProtocol::EnsureSlaveConnected(uint8_t slave)
 {
     if (slaveMap[slave])
         return;
-    SkipNoise();
+    Port()->SkipNoise();
     static uint8_t setupCmd[] = {
         // full: 0xff, 0x08, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x5f, 0xed
         ACCESS_LEVEL, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
@@ -78,7 +78,7 @@ void TMilurProtocol::WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, 
     uint16_t crc = CRC16::CalculateCRC16(buf, p - buf);
     *p++ = crc >> 8;
     *p++ = crc & 0xff;
-    WriteBytes(buf, p - buf);
+    Port()->WriteBytes(buf, p - buf);
 }
 
 void TMilurProtocol::ReadResponse(uint8_t slave, uint8_t cmd, uint8_t* payload, int len)
@@ -87,18 +87,18 @@ void TMilurProtocol::ReadResponse(uint8_t slave, uint8_t cmd, uint8_t* payload, 
         throw TSerialProtocolException("expected response too long");
 
     uint8_t buf[MAX_LEN], *p = buf;
-    if ((*p++ = ReadByte()) != slave) {
-        SkipNoise();
+    if ((*p++ = Port()->ReadByte()) != slave) {
+        Port()->SkipNoise();
         throw TSerialProtocolTransientErrorException("invalid slave id");
     }
-    if ((*p++ = ReadByte()) != cmd) {
-        SkipNoise();
+    if ((*p++ = Port()->ReadByte()) != cmd) {
+        Port()->SkipNoise();
         throw TSerialProtocolTransientErrorException("invalid command code in the response");
     }
     while (len--)
-        *p++ = *payload++ = ReadByte();
+        *p++ = *payload++ = Port()->ReadByte();
     uint16_t crc = CRC16::CalculateCRC16(buf, p - buf);
-    uint8_t crc1 = ReadByte(), crc2 = ReadByte();
+    uint8_t crc1 = Port()->ReadByte(), crc2 = Port()->ReadByte();
     uint16_t actualCrc = (crc1 << 8) + crc2;
     if (crc != actualCrc)
         throw TSerialProtocolTransientErrorException("invalid crc");
@@ -152,8 +152,9 @@ int main(int, char**)
 {
     try {
         TSerialPortSettings settings("/dev/ttyNSC0", 9600, 'N', 8, 2, 1000);
-        TMilurProtocol milur(settings, true);
-        milur.Open();
+        PAbstractSerialPort port(new TSerialPort(settings, true));
+        port->Open();
+        TMilurProtocol milur(port);
         std::ios::fmtflags f(std::cerr.flags());
         int v = milur.ReadRegister(0xff, 102, U24);
         std::cerr << "value of mod 0xff reg 0x66: 0x" << std::setw(8) << std::hex << v << std::endl;
