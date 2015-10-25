@@ -30,7 +30,8 @@ MODBUS_OBJS=modbus_client.o \
   uniel_protocol.o \
   crc16.o \
   em_protocol.o \
-  milur_protocol.o
+  milur_protocol.o \
+  mercury230_protocol.o
 TEST_LIBS=-lgtest -lpthread -lmosquittopp
 TEST_DIR=test
 TEST_BIN=wb-homa-test
@@ -73,6 +74,9 @@ em_protocol.o : em_protocol.cpp
 milur_protocol.o : milur_protocol.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
+mercury230_protocol.o : mercury230_protocol.cpp
+	${CXX} -c $< -o $@ ${CFLAGS}
+
 $(MODBUS_BIN) : main.o $(MODBUS_OBJS)
 	${CXX} $^ ${LDFLAGS} -o $@ $(MODBUS_LIBS)
 
@@ -84,6 +88,9 @@ $(TEST_DIR)/modbus_test.o: $(TEST_DIR)/modbus_test.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
 $(TEST_DIR)/milur_test.o: $(TEST_DIR)/milur_test.cpp
+	${CXX} -c $< -o $@ ${CFLAGS}
+
+$(TEST_DIR)/mercury230_test.o: $(TEST_DIR)/mercury230_test.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
 $(TEST_DIR)/fake_modbus.o: $(TEST_DIR)/fake_modbus.cpp
@@ -98,10 +105,11 @@ $(TEST_DIR)/fake_serial_port.o: $(TEST_DIR)/fake_serial_port.cpp
 $(TEST_DIR)/main.o: $(TEST_DIR)/main.cpp
 	${CXX} -c $< -o $@ ${CFLAGS}
 
-$(TEST_DIR)/$(TEST_BIN): $(MODBUS_OBJS) $(COMMON_O) \
-  $(TEST_DIR)/testlog.o $(TEST_DIR)/modbus_test.o $(TEST_DIR)/milur_test.o \
-  $(TEST_DIR)/fake_modbus.o $(TEST_DIR)/fake_mqtt.o $(TEST_DIR)/fake_serial_port.o \
-  $(TEST_DIR)/main.o
+$(TEST_DIR)/$(TEST_BIN): $(MODBUS_OBJS) $(COMMON_O)            \
+  $(TEST_DIR)/testlog.o          $(TEST_DIR)/modbus_test.o     \
+  $(TEST_DIR)/milur_test.o       $(TEST_DIR)/mercury230_test.o \
+  $(TEST_DIR)/fake_modbus.o      $(TEST_DIR)/fake_mqtt.o       \
+  $(TEST_DIR)/fake_serial_port.o $(TEST_DIR)/main.o
 	${CXX} $^ ${LDFLAGS} -o $@ $(TEST_LIBS) $(MODBUS_LIBS)
 
 test: $(TEST_DIR)/$(TEST_BIN)

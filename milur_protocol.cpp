@@ -58,14 +58,15 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
     }
 }
 
-uint64_t TMilurProtocol::ReadRegister(uint8_t slave, uint8_t address, RegisterFormat fmt)
+uint64_t TMilurProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt)
 {
     int size;
     bool bcd;
     GetRegType(fmt, &size, &bcd);
 
     EnsureSlaveConnected(slave);
-    WriteCommand(slave, 0x01, &address, 1);
+    uint8_t addr = address;
+    WriteCommand(slave, 0x01, &addr, 1);
     uint8_t buf[MAX_LEN], *p = buf;
     ReadResponse(slave, 0x01, buf, size + 2);
     if (*p++ != address)

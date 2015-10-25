@@ -17,7 +17,7 @@ void TEMProtocol::EnsureSlaveConnected(uint8_t slave)
         }
     }
 
-    throw TSerialProtocolException("failed to establish Milur connection");
+    throw TSerialProtocolException("failed to establish meter connection");
 }
 
 void TEMProtocol::WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int len)
@@ -35,7 +35,7 @@ void TEMProtocol::WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int
     Port()->WriteBytes(buf, p - buf);
 }
 
-void TEMProtocol::ReadResponse(uint8_t slave, uint8_t cmd, uint8_t* payload, int len)
+void TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len)
 {
     if (len + 4 > MAX_LEN)
         throw TSerialProtocolException("expected response too long");
@@ -45,7 +45,7 @@ void TEMProtocol::ReadResponse(uint8_t slave, uint8_t cmd, uint8_t* payload, int
         Port()->SkipNoise();
         throw TSerialProtocolTransientErrorException("invalid slave id");
     }
-    if ((*p++ = Port()->ReadByte()) != cmd) {
+    if (expectedByte1 >= 0 && (*p++ = Port()->ReadByte()) != expectedByte1) {
         Port()->SkipNoise();
         throw TSerialProtocolTransientErrorException("invalid command code in the response");
     }
@@ -58,12 +58,12 @@ void TEMProtocol::ReadResponse(uint8_t slave, uint8_t cmd, uint8_t* payload, int
         throw TSerialProtocolTransientErrorException("invalid crc");
 }
 
-void TEMProtocol::WriteRegister(uint8_t, uint8_t, uint64_t, RegisterFormat) {
-    throw TSerialProtocolException("milur: writing to registers not supported");
+void TEMProtocol::WriteRegister(uint32_t, uint32_t, uint64_t, RegisterFormat) {
+    throw TSerialProtocolException("EM protocol: writing to registers not supported");
 }
 
 // XXX FIXME: leaky abstraction (need to refactor)
 // Perhaps add 'brightness' register format
-void TEMProtocol::SetBrightness(uint8_t, uint8_t, uint8_t) {
-    throw TSerialProtocolException("milur: setting brightness not supported");
+void TEMProtocol::SetBrightness(uint32_t, uint32_t, uint8_t) {
+    throw TSerialProtocolException("EM protocol: setting brightness not supported");
 }

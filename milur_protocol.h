@@ -3,8 +3,7 @@
 #include <string>
 #include <memory>
 #include <exception>
-#include <unordered_map>
-#include <stdint.h>
+#include <cstdint>
 
 #include "em_protocol.h"
 #include "regformat.h"
@@ -14,7 +13,7 @@ public:
     static const int DefaultTimeoutMs = 1000;
 
     TMilurProtocol(PAbstractSerialPort port);
-    uint64_t ReadRegister(uint8_t slave, uint8_t address, RegisterFormat fmt);
+    uint64_t ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt);
 
 protected:
     bool ConnectionSetup(uint8_t slave);

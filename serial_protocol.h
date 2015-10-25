@@ -70,11 +70,11 @@ public:
     void Close() { SerialPort->Close(); }
     bool IsOpen() const { return SerialPort->IsOpen(); }
 
-    virtual uint64_t ReadRegister(uint8_t mod, uint8_t address, RegisterFormat fmt) = 0;
-    virtual void WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat fmt) = 0;
+    virtual uint64_t ReadRegister(uint32_t mod, uint32_t address, RegisterFormat fmt) = 0;
+    virtual void WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat fmt) = 0;
     // XXX FIXME: leaky abstraction (need to refactor)
     // Perhaps add 'brightness' register format
-    virtual void SetBrightness(uint8_t mod, uint8_t address, uint8_t value) = 0;
+    virtual void SetBrightness(uint32_t mod, uint32_t address, uint8_t value) = 0;
     virtual void EndPollCycle();
 
 protected:

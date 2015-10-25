@@ -4,7 +4,7 @@
 #include <memory>
 #include <exception>
 #include <unordered_map>
-#include <stdint.h>
+#include <cstdint>
 
 #include "serial_protocol.h"
 #include "regformat.h"
@@ -16,16 +16,16 @@ public:
 
     TEMProtocol(PAbstractSerialPort port);
 
-    void WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat fmt);
+    void WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat fmt);
     // XXX FIXME: leaky abstraction (need to refactor)
     // Perhaps add 'brightness' register format
-    void SetBrightness(uint8_t mod, uint8_t address, uint8_t value);
+    void SetBrightness(uint32_t mod, uint32_t address, uint8_t value);
 
 protected:
     virtual void EnsureSlaveConnected(uint8_t slave);
     virtual bool ConnectionSetup(uint8_t slave) = 0;
     void WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int len);
-    void ReadResponse(uint8_t slave, uint8_t cmd, uint8_t* payload, int len);
+    void ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len);
     const int MAX_LEN = 64;
 
 private:

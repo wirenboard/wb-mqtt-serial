@@ -41,8 +41,6 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
 uint8_t TFakeSerialPort::ReadByte()
 {
     CheckPortOpen();
-    std::cerr << "ReadByte(): ResponsePosition: " << ResponsePosition << "; size=" <<
-        ResponseBytes.size() << std::endl;
     if (ResponsePosition >= ResponseBytes.size())
         throw TSerialProtocolException("response buffer underflow");
     return ResponseBytes[ResponsePosition++];

@@ -67,7 +67,7 @@ void TUnielProtocol::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-uint64_t TUnielProtocol::ReadRegister(uint8_t mod, uint8_t address, RegisterFormat)
+uint64_t TUnielProtocol::ReadRegister(uint32_t mod, uint32_t address, RegisterFormat)
 {
     WriteCommand(READ_CMD, mod, 0, address, 0);
     uint8_t response[3];
@@ -89,12 +89,12 @@ void TUnielProtocol::DoWriteRegister(uint8_t cmd, uint8_t mod, uint8_t address, 
         throw TSerialProtocolTransientErrorException("written register value mismatch");
 }
 
-void TUnielProtocol::WriteRegister(uint8_t mod, uint8_t address, uint64_t value, RegisterFormat)
+void TUnielProtocol::WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat)
 {
     DoWriteRegister(WRITE_CMD, mod, address, (uint8_t)value);
 }
 
-void TUnielProtocol::SetBrightness(uint8_t mod, uint8_t address, uint8_t value)
+void TUnielProtocol::SetBrightness(uint32_t mod, uint32_t address, uint8_t value)
 {
     DoWriteRegister(SET_BRIGHTNESS_CMD, mod, address, value);
 }
