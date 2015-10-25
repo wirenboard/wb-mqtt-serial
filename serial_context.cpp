@@ -24,9 +24,9 @@ void TSerialContext::Disconnect()
         Proto->Close();
 }
 
-void TSerialContext::SetDebug(bool)
+void TSerialContext::SetDebug(bool debug)
 {
-    // TBD: set debug
+    Proto->SetDebug(debug);
 }
 
 void TSerialContext::SetSlave(int slave_addr)

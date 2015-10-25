@@ -15,13 +15,18 @@
 
 TAbstractSerialPort::~TAbstractSerialPort() {}
 
-TSerialPort::TSerialPort(const TSerialPortSettings& settings, bool debug)
-    : Settings(settings), Debug(debug), Fd(-1) {}
+TSerialPort::TSerialPort(const TSerialPortSettings& settings)
+    : Settings(settings), Debug(false), Fd(-1) {}
 
 TSerialPort::~TSerialPort()
 {
     if (Fd >= 0)
         close(Fd);
+}
+
+void TSerialPort::SetDebug(bool debug)
+{
+    Debug = debug;
 }
 
 void TSerialPort::Open()
@@ -160,10 +165,11 @@ void TSerialPort::WriteBytes(const uint8_t* buf, int count) {
     if (write(Fd, buf, count) < count)
         throw TSerialProtocolException("serial write failed");
     if (Debug) {
+        // TBD: move this to libwbmqtt (HexDump?)
         std::ios::fmtflags f(std::cerr.flags());
-        std::cerr << "Write:";
+        std::cerr << "Write:" << std::hex << std::setfill('0');
         for (int i = 0; i < count; ++i)
-            std::cerr << " " << std::hex << std::setw(2) << std::setfill('0') << int(buf[i]);
+            std::cerr << " " << std::setw(2) << int(buf[i]);
         std::cerr << std::endl;
         std::cerr.flags(f);
     }
@@ -174,8 +180,11 @@ bool TSerialPort::Select(int ms)
     fd_set rfds;
     struct timeval tv, *tvp = 0;
 
+#if 0
+    // too verbose
     if (Debug)
         std::cerr << "Select: " << ms << " ms" << std::endl;
+#endif
 
     if (ms > 0) {
         FD_ZERO(&rfds);
@@ -211,6 +220,50 @@ uint8_t TSerialPort::ReadByte()
     }
 
     return b;
+}
+
+int TSerialPort::ReadFrame(uint8_t* buf, int size)
+{
+    CheckPortOpen();
+    int nread = 0;
+    while (nread < size) {
+        if (!Select(!nread ? Settings.ResponseTimeoutMs : FrameTimeoutMs))
+            break; // end of the frame
+
+        // We don't want to use non-blocking IO in general
+        // (e.g. we want blocking writes), but we don't want
+        // read() call below to block because actual frame
+        // size is not known at this point. So we must
+        // know how many bytes are available
+        int nb;
+        if (ioctl(Fd, FIONREAD, &nb) < 0)
+            throw TSerialProtocolException("FIONREAD ioctl() failed");
+        if (!nb)
+            continue; // shouldn't happen, actually
+        if (nb > size - nread)
+            nb = size - nread;
+
+        int n = read(Fd, buf + nread, nb);
+        if (n < 0)
+            throw TSerialProtocolException("read() failed");
+        if (n < nb) // may happen only due to a kernel/driver bug
+            throw TSerialProtocolException("short read()");
+
+        nread += nb;
+    }
+
+    if (Debug) {
+        // TBD: move this to libwbmqtt (HexDump?)
+        std::ios::fmtflags f(std::cerr.flags());
+        std::cerr << "ReadFrame:" << std::hex << std::uppercase << std::setfill('0');
+        for (int i = 0; i < nread; ++i) {
+            std::cerr << " " << std::setw(2) << int(buf[i]);
+        }
+        std::cerr << std::endl;
+        std::cerr.flags(f);
+    }
+
+    return nread;
 }
 
 void TSerialPort::SkipNoise()

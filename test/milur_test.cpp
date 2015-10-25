@@ -35,7 +35,10 @@ TEST_F(TMilurProtocolTest, Query)
             0x08, // op
             0x01, // result
             0x87, // crc
-            0xf0, // crc
+            0xf0  // crc
+        });
+    SerialPort->EnqueueResponse(
+        {
             // Read response
             0xff, // unit id
             0x01, // op

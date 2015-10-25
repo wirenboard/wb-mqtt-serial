@@ -28,12 +28,14 @@ public:
 class TAbstractSerialPort: public std::enable_shared_from_this<TAbstractSerialPort> {
 public:
     virtual ~TAbstractSerialPort();
+    virtual void SetDebug(bool debug) = 0;
     virtual void Open() = 0;
     virtual void Close() = 0;
     virtual bool IsOpen() const = 0;
     virtual void CheckPortOpen() = 0;
     virtual void WriteBytes(const uint8_t* buf, int count) = 0;
     virtual uint8_t ReadByte() = 0;
+    virtual int ReadFrame(uint8_t* buf, int count) = 0;
     virtual void SkipNoise() =0;
 };
 
@@ -41,11 +43,13 @@ typedef std::shared_ptr<TAbstractSerialPort> PAbstractSerialPort;
 
 class TSerialPort: public TAbstractSerialPort {
 public:
-    TSerialPort(const TSerialPortSettings& settings, bool debug = false);
+    TSerialPort(const TSerialPortSettings& settings);
     ~TSerialPort();
+    void SetDebug(bool debug);
     void CheckPortOpen();
     void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte();
+    int ReadFrame(uint8_t* buf, int count);
     void SkipNoise();
     void Open();
     void Close();
@@ -59,6 +63,7 @@ private:
     bool Debug;
     int Fd;
     const int NoiseTimeoutMs = 10;
+    const int FrameTimeoutMs = 15;
 };
 
 class TSerialProtocol: public std::enable_shared_from_this<TSerialProtocol> {
@@ -66,6 +71,7 @@ public:
     TSerialProtocol(PAbstractSerialPort port);
     virtual ~TSerialProtocol();
 
+    void SetDebug(bool debug) { SerialPort->SetDebug(debug); }
     void Open() { SerialPort->Open(); }
     void Close() { SerialPort->Close(); }
     bool IsOpen() const { return SerialPort->IsOpen(); }
