@@ -28,3 +28,4 @@ wb-homa-modbus/debian/wb-homa-modbus/
 wb-homa-w1/debian/wb-homa-w1/
 wb-homa-ninja-bridge/debian/wb-homa-ninja-bridge/
 wb-mqtt-db/debian/wb-mqtt-db/
+.d

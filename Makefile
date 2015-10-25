@@ -1,3 +1,10 @@
+# http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
+DEPDIR := .d
+$(shell mkdir -p $(DEPDIR) >/dev/null)
+DEPFLAGS = -std=c++0x -MT $@ -MMD -MP -MF $(DEPDIR)/$(notdir $*.Td)
+
+POSTCOMPILE = mv -f $(DEPDIR)/$(notdir $*.Td) $(DEPDIR)/$(notdir $*.d)
+
 ifeq ($(DEB_TARGET_ARCH),armel)
 CROSS_COMPILE=arm-linux-gnueabi-
 endif
@@ -22,94 +29,49 @@ LDFLAGS= -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
 MODBUS_BIN=wb-homa-modbus
 MODBUS_LIBS=-lmodbus
-MODBUS_OBJS=modbus_client.o \
-  modbus_config.o modbus_port.o \
-  modbus_observer.o \
-  serial_protocol.o \
-  serial_context.o \
-  uniel_protocol.o \
-  crc16.o \
-  em_protocol.o \
-  milur_protocol.o \
-  mercury230_protocol.o
+MODBUS_SRCS=modbus_client.c \
+  modbus_config.c modbus_port.c \
+  modbus_observer.c \
+  serial_protocol.c \
+  serial_context.c \
+  uniel_protocol.c \
+  crc16.c \
+  em_protocol.c \
+  milur_protocol.c \
+  mercury230_protocol.c
+MODBUS_OBJS=$(MODBUS_SRCS:.c=.o)
+TEST_SRCS= \
+  $(TEST_DIR)/testlog.o \
+  $(TEST_DIR)/modbus_test.o \
+  $(TEST_DIR)/milur_test.o \
+  $(TEST_DIR)/mercury230_test.o \
+  $(TEST_DIR)/fake_modbus.o \
+  $(TEST_DIR)/fake_mqtt.o \
+  $(TEST_DIR)/fake_serial_port.o \
+  $(TEST_DIR)/main.o
+TEST_OBJS=$(TEST_SRCS:.c=.o)
 TEST_LIBS=-lgtest -lpthread -lmosquittopp
 TEST_DIR=test
 TEST_BIN=wb-homa-test
+SRCS=$(MODBUS_SRCS) $(TEST_SRCS)
 
 .PHONY: all clean test
 
 all : $(MODBUS_BIN)
 
 # Modbus
-main.o : main.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
+%.o : %.cpp $(DEPDIR)/$(notdir %.d)
+	${CXX} ${DEPFLAGS} -c $< -o $@ ${CFLAGS}
+	$(POSTCOMPILE)
 
-modbus_client.o : modbus_client.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-modbus_config.o : modbus_config.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-modbus_port.o : modbus_port.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-modbus_observer.o : modbus_observer.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-serial_protocol.o : serial_protocol.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-serial_context.o : serial_context.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-uniel_protocol.o : uniel_protocol.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-crc16.o : crc16.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-em_protocol.o : em_protocol.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-milur_protocol.o : milur_protocol.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-mercury230_protocol.o : mercury230_protocol.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
+test/%.o : test/%.cpp $(DEPDIR)/$(notdir %.d)
+	${CXX} ${DEPFLAGS} -c $< -o $@ ${CFLAGS}
+	$(POSTCOMPILE)
 
 $(MODBUS_BIN) : main.o $(MODBUS_OBJS)
 	${CXX} $^ ${LDFLAGS} -o $@ $(MODBUS_LIBS)
 
-
-$(TEST_DIR)/testlog.o: $(TEST_DIR)/testlog.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/modbus_test.o: $(TEST_DIR)/modbus_test.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/milur_test.o: $(TEST_DIR)/milur_test.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/mercury230_test.o: $(TEST_DIR)/mercury230_test.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/fake_modbus.o: $(TEST_DIR)/fake_modbus.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/fake_mqtt.o: $(TEST_DIR)/fake_mqtt.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/fake_serial_port.o: $(TEST_DIR)/fake_serial_port.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/main.o: $(TEST_DIR)/main.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/$(TEST_BIN): $(MODBUS_OBJS) $(COMMON_O)            \
-  $(TEST_DIR)/testlog.o          $(TEST_DIR)/modbus_test.o     \
-  $(TEST_DIR)/milur_test.o       $(TEST_DIR)/mercury230_test.o \
-  $(TEST_DIR)/fake_modbus.o      $(TEST_DIR)/fake_mqtt.o       \
-  $(TEST_DIR)/fake_serial_port.o $(TEST_DIR)/main.o
+$(TEST_DIR)/$(TEST_BIN): $(MODBUS_OBJS) $(TEST_OBJS)
 	${CXX} $^ ${LDFLAGS} -o $@ $(TEST_LIBS) $(MODBUS_LIBS)
 
 test: $(TEST_DIR)/$(TEST_BIN)
@@ -120,9 +82,8 @@ test: $(TEST_DIR)/$(TEST_BIN)
           else $(TEST_DIR)/abt.sh show; exit 1; fi
 
 clean :
-	-rm -f *.o $(MODBUS_BIN)
+	-rm -rf *.o $(MODBUS_BIN) $(DEPDIR)
 	-rm -f $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
-
 
 
 install: all
@@ -138,3 +99,7 @@ install: all
 	install -m 0644  wb-homa-modbus.schema.json $(DESTDIR)/etc/wb-mqtt-confed/schemas/wb-homa-modbus.schema.json
 	install -m 0755  $(MODBUS_BIN) $(DESTDIR)/usr/bin/$(MODBUS_BIN)
 	cp -r  wb-homa-modbus-templates $(DESTDIR)/usr/share/wb-homa-modbus/templates
+
+$(DEPDIR)/$(notdir %.d): ;
+
+-include $(patsubst %,$(DEPDIR)/%.d,$(notdir $(basename $(SRCS))))
