@@ -3,6 +3,7 @@
 #include "serial_context.h"
 #include "uniel_protocol.h"
 #include "milur_protocol.h"
+#include "mercury230_protocol.h"
 
 TSerialContext::TSerialContext(PSerialProtocol proto):
     Proto(proto), SlaveAddr(1) {}
@@ -163,6 +164,10 @@ PSerialProtocol TUnielConnector::CreateProtocol(PAbstractSerialPort port) {
 
 PSerialProtocol TMilurConnector::CreateProtocol(PAbstractSerialPort port) {
     return PSerialProtocol(new TMilurProtocol(port));
+}
+
+PSerialProtocol TMercury230Connector::CreateProtocol(PAbstractSerialPort port) {
+    return PSerialProtocol(new TMercury230Protocol(port));
 }
 
 // TBD: support debug mode

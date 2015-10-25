@@ -89,6 +89,9 @@ PModbusConnector TMQTTModbusObserver::GetConnector(PPortConfig port_config)
     if (port_config->Type == "milur")
         return PModbusConnector(new TMilurConnector());
 
+    if (port_config->Type == "mercury230")
+        return PModbusConnector(new TMercury230Connector());
+
     if (!port_config->Type.empty() && port_config->Type != "modbus")
         std::cerr << "warning: bad port type '" << port_config->Type <<
             "', using 'modbus'" << std::endl;

@@ -1,0 +1,33 @@
+{
+  "debug": false,
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "type": "mercury230",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 2,
+      "enabled": true,
+      "response_timeout_ms": 500,
+      "devices": [
+        {
+          "name": "Mercury 230AR-02 (test)",
+          "id": "mercury230ar02-test",
+          "slave_id": 0,
+          "enabled": true,
+          "channels": [
+            {
+              "name": "Total consumption",
+              "reg_type": "direct",
+              "address": "0xa000",
+              "format": "u32",
+              "type": "power_consumption",
+              "scale": 0.001
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

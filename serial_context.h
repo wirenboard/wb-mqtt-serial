@@ -51,3 +51,9 @@ class TMilurConnector: public TSerialConnector
 public:
     PSerialProtocol CreateProtocol(PAbstractSerialPort port);
 };
+
+class TMercury230Connector: public TSerialConnector
+{
+public:
+    PSerialProtocol CreateProtocol(PAbstractSerialPort port);
+};

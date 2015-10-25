@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "Modbus Driver Configuration",
-  "description": "Lists Modbus, Uniel and Milur devices attached to RS-485 ports",
+  "description": "Lists devices attached to RS-485 ports",
   "definitions": {
     "port": {
       "type": "object",
@@ -69,7 +69,7 @@
           "type": "string",
           "title": "Port protocol",
           "description": "Type of devices to be used on this port",
-          "enum": ["modbus", "uniel", "milur"],
+          "enum": ["modbus", "uniel", "milur", "mercury230"],
           "default": "modbus",
           "propertyOrder": 8
         },
