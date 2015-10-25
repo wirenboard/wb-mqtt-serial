@@ -25,7 +25,9 @@ protected:
     virtual void EnsureSlaveConnected(uint8_t slave);
     virtual bool ConnectionSetup(uint8_t slave) = 0;
     void WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int len);
-    void ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len);
+    void ReadResponse(uint8_t slave, int expectedByte1, uint8_t* buf, int len);
+    void Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payloadLen,
+              int expectedByte1, uint8_t* respPayload, int respPayloadLen);
     const int MAX_LEN = 64;
 
 private:

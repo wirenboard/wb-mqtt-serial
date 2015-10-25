@@ -66,9 +66,8 @@ uint64_t TMilurProtocol::ReadRegister(uint32_t slave, uint32_t address, Register
 
     EnsureSlaveConnected(slave);
     uint8_t addr = address;
-    WriteCommand(slave, 0x01, &addr, 1);
     uint8_t buf[MAX_LEN], *p = buf;
-    ReadResponse(slave, 0x01, buf, size + 2);
+    Talk(slave, 0x01, &addr, 1, 0x01, buf, size + 2);
     if (*p++ != address)
         throw TSerialProtocolTransientErrorException("bad register address in the response");
     if (*p++ != size)

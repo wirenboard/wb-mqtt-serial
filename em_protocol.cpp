@@ -58,6 +58,13 @@ void TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payloa
         throw TSerialProtocolTransientErrorException("invalid crc");
 }
 
+void TEMProtocol::Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payloadLen,
+                       int expectedByte1, uint8_t* respPayload, int respPayloadLen)
+{
+    WriteCommand(slave, cmd, payload, payloadLen);
+    ReadResponse(slave, expectedByte1, respPayload, respPayloadLen);
+}
+
 void TEMProtocol::WriteRegister(uint32_t, uint32_t, uint64_t, RegisterFormat) {
     throw TSerialProtocolException("EM protocol: writing to registers not supported");
 }
