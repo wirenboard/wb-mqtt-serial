@@ -121,8 +121,6 @@ struct TModbusRegister
     bool operator== (const TModbusRegister& reg) const {
         return Slave == reg.Slave && Type == reg.Type && Address == reg.Address;
     }
-
-
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, std::shared_ptr<TModbusRegister> reg) {

@@ -7,6 +7,7 @@ class TMercury230ProtocolTest: public TLoggedFixture
 protected:
     void SetUp();
     void TearDown();
+    void EnqueueSessionSetupResponse();
 
     PFakeSerialPort SerialPort;
     PMercury230Protocol Mercury230Protocol;
@@ -25,16 +26,24 @@ void TMercury230ProtocolTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
-TEST_F(TMercury230ProtocolTest, Query)
+void TMercury230ProtocolTest::EnqueueSessionSetupResponse()
 {
-    Mercury230Protocol->Open();
     SerialPort->EnqueueResponse(
         {
             // Session setup response
             0x00, // unit id (group)
             0x00, // state
             0x01, // crc
-            0xb0, // crc
+            0xb0  // crc
+        });
+}
+
+TEST_F(TMercury230ProtocolTest, ReadEnergy)
+{
+    Mercury230Protocol->Open();
+    EnqueueSessionSetupResponse();
+    SerialPort->EnqueueResponse(
+        {
             // Read response
             0x00, // unit id (group)
             0x30, // A+
@@ -58,7 +67,7 @@ TEST_F(TMercury230ProtocolTest, Query)
         });
 
     // Register address:
-    // CCCT TTAA AAMM MMII
+    // 0000 0000 CCCC CCCC TTTT AAAA MMMM IIII
     // C = command
     // A = array number
     // M = month
@@ -69,9 +78,9 @@ TEST_F(TMercury230ProtocolTest, Query)
 
     // Here we make sure that consecutive requests querying the same array
     // don't cause redundant requests during the single poll cycle.
-    ASSERT_EQ(3196200, Mercury230Protocol->ReadRegister(0x00, 0xa000, U32));
-    ASSERT_EQ(300444,  Mercury230Protocol->ReadRegister(0x00, 0xa002, U32));
-    ASSERT_EQ(3196200, Mercury230Protocol->ReadRegister(0x00, 0xa000, U32));
+    ASSERT_EQ(3196200, Mercury230Protocol->ReadRegister(0x00, 0x50000, U32));
+    ASSERT_EQ(300444,  Mercury230Protocol->ReadRegister(0x00, 0x50002, U32));
+    ASSERT_EQ(3196200, Mercury230Protocol->ReadRegister(0x00, 0x50000, U32));
     Mercury230Protocol->EndPollCycle();
 
     SerialPort->EnqueueResponse(
@@ -98,15 +107,31 @@ TEST_F(TMercury230ProtocolTest, Query)
             0xbb  // crc
         });
 
-    ASSERT_EQ(3196201, Mercury230Protocol->ReadRegister(0x00, 0xa000, U32));
-    ASSERT_EQ(300445, Mercury230Protocol->ReadRegister(0x00, 0xa002, U32));
-    ASSERT_EQ(3196201, Mercury230Protocol->ReadRegister(0x00, 0xa000, U32));
+    ASSERT_EQ(3196201, Mercury230Protocol->ReadRegister(0x00, 0x50000, U32));
+    ASSERT_EQ(300445, Mercury230Protocol->ReadRegister(0x00, 0x50002, U32));
+    ASSERT_EQ(3196201, Mercury230Protocol->ReadRegister(0x00, 0x50000, U32));
     Mercury230Protocol->EndPollCycle();
 
     Mercury230Protocol->Close();
 
     // TBD: voltage, current (see interaction examples below)
 }
+
+// TEST_F(TMercury230ProtocolTest, ReadMomentaryValues)
+// {
+//     Mercury230Protocol->Open();
+//     EnqueueSessionSetupResponse();
+//     SerialPort->EnqueueResponse(
+//         {
+//             0x00, // unit id (group)
+//             0x00, // V1
+//             0x40, // V1
+//             0x5e, // V1
+//             0xb0, // crc
+//             0x1c  // crc
+//         });
+//     ASSERT_EQ(24128,
+// }
 
 /*
 

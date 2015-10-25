@@ -20,7 +20,7 @@
             {
               "name": "Total consumption",
               "reg_type": "direct",
-              "address": "0xa000",
+              "address": "0x50000",
               "format": "u32",
               "type": "power_consumption",
               "scale": 0.001

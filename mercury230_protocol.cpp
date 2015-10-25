@@ -23,15 +23,15 @@ bool TMercury230Protocol::ConnectionSetup(uint8_t slave)
 
 const TMercury230Protocol::TValueArray& TMercury230Protocol::ReadValueArray(uint32_t slave, uint32_t address)
 {
-    int key = (address >> 2) & 0x3fffffff;
+    int key = address >> 4;
     auto it = CachedValues.find(key);
     if (it != CachedValues.end())
         return it->second;
 
     EnsureSlaveConnected(slave);
     uint8_t cmdBuf[2];
-    cmdBuf[0] = (address >> 2) & 0xff;
-    cmdBuf[1] = (address >> 10) & 0x03;
+    cmdBuf[0] = (address >> 4) & 0xff; // high nibble = array number, lower nibble = month
+    cmdBuf[1] = (address >> 12) & 0x0f; // tariff
     WriteCommand(slave, 0x05, cmdBuf, 2);
     uint8_t buf[MAX_LEN], *p = buf;
     TValueArray a;
@@ -48,11 +48,11 @@ const TMercury230Protocol::TValueArray& TMercury230Protocol::ReadValueArray(uint
 
 uint64_t TMercury230Protocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat)
 {
-    uint8_t opcode = address >> 13;
+    uint8_t opcode = address >> 16;
 
     if (opcode != 0x05)
         throw TSerialProtocolException("mercury230: read opcodes other than 0x05 not supported");
-    if (((opcode >> 6) & 0x07) > 5)
+    if (((opcode >> 8) & 0x0f) > 5)
         throw TSerialProtocolException("mercury230: unsupported array index");
 
     return ReadValueArray(slave, address).values[address & 0x03];
