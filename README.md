@@ -1,6 +1,10 @@
 wb-homa-modbus
 ==============
 
+Modbus RTU <==> MQTT bridge which follows [Wiren Board MQTT Conventions](https://github.com/contactless/homeui/blob/contactless/conventions.md).
+It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of programmable automation controllers (PACs), although there is nothing that prevents it from running on a arbitrary Linux machine.
+
+
 Драйвер Modbus запускается командой `/etc/init.d/wb-homa-modbus start`
 По умолчанию запуск драйвера происходит при загрузке системы при
 наличии конфигурационного файла `/etc/wb-homa-modbus.conf`. При
