@@ -21,6 +21,7 @@ public:
 
 protected:
     bool ConnectionSetup(uint8_t slave);
+    ErrorType CheckForException(uint8_t* frame, int len, const char** message);
 
 private:
     struct TValueArray {

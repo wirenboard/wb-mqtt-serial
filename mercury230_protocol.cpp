@@ -13,12 +13,38 @@ bool TMercury230Protocol::ConnectionSetup(uint8_t slave)
     uint8_t buf[1];
     WriteCommand(slave, 0x01, setupCmd, 7);
     try {
-        ReadResponse(slave, 0x00, buf, 0);
-        return true;
+        return ReadResponse(slave, 0x00, buf, 0);
     } catch (TSerialProtocolTransientErrorException&) {
             // retry upon response from a wrong slave
         return false;
     }
+}
+
+TEMProtocol::ErrorType TMercury230Protocol::CheckForException(uint8_t* frame, int len, const char** message)
+{
+    *message = 0;
+    if (len != 4 || (frame[1] & 0x0f) == 0)
+        return TEMProtocol::NO_ERROR;
+    switch (frame[1] & 0x0f) {
+    case 1:
+        *message = "Invalid command or parameter";
+        break;
+    case 2:
+        *message = "Internal meter error";
+        break;
+    case 3:
+        *message = "Insufficient access level";
+        break;
+    case 4:
+        *message = "Can't correct the clock more than once per day";
+        break;
+    case 5:
+        *message = "Connection closed";
+        return TEMProtocol::NO_OPEN_SESSION;
+    default:
+        *message = "Unknown error";
+    }
+    return TEMProtocol::OTHER_ERROR;
 }
 
 const TMercury230Protocol::TValueArray& TMercury230Protocol::ReadValueArray(uint32_t slave, uint32_t address)
@@ -60,8 +86,6 @@ uint32_t TMercury230Protocol::ReadParam(uint32_t slave, uint32_t address)
 
 uint64_t TMercury230Protocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat)
 {
-    EnsureSlaveConnected(slave);
-
     uint8_t opcode = address >> 16;
     switch (opcode) {
     case 0x05:

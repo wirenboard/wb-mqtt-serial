@@ -48,7 +48,8 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
     uint8_t buf[MAX_LEN];
     WriteCommand(slave, 0x08, setupCmd, 7);
     try {
-        ReadResponse(slave, 0x08, buf, 1);
+        if (!ReadResponse(slave, 0x08, buf, 1))
+            return false;
         if (buf[0] != ACCESS_LEVEL)
             throw TSerialProtocolException("invalid milur access level in response");
         return true;
@@ -58,13 +59,18 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
     }
 }
 
+TEMProtocol::ErrorType TMilurProtocol::CheckForException(uint8_t*, int, const char** message)
+{
+    *message = 0;
+    return TEMProtocol::NO_ERROR; // TBD: implement this
+}
+
 uint64_t TMilurProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt)
 {
     int size;
     bool bcd;
     GetRegType(fmt, &size, &bcd);
 
-    EnsureSlaveConnected(slave);
     uint8_t addr = address;
     uint8_t buf[MAX_LEN], *p = buf;
     Talk(slave, 0x01, &addr, 1, 0x01, buf, size + 2);

@@ -163,6 +163,34 @@ TEST_F(TMercury230ProtocolTest, ReadParams)
     Mercury230Protocol->Close();
 }
 
+TEST_F(TMercury230ProtocolTest, Reconnect)
+{
+    Mercury230Protocol->Open();
+    EnqueueSessionSetupResponse();
+    SerialPort->EnqueueResponse(
+        {
+            0x00, // unit id (group)
+            0x05, // error 5 = no session
+            0xc1, // crc
+            0xb3  // crc
+        });
+    // re-setup happens here
+    EnqueueSessionSetupResponse();
+    SerialPort->EnqueueResponse(
+        {
+            0x00, // unit id (group)
+            0x00, // U2
+            0xeb, // U2
+            0x5d, // U2
+            0x8f, // crc
+            0x2d  // crc
+        });
+    // subparam 0x12 = voltage (phase 2)
+    ASSERT_EQ(24043, Mercury230Protocol->ReadRegister(0x00, 0x81112, U24));
+
+    Mercury230Protocol->EndPollCycle();
+    Mercury230Protocol->Close();
+}
 /*
 
 voltage (phase 1):

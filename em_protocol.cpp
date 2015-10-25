@@ -4,17 +4,18 @@
 #include "crc16.h"
 
 TEMProtocol::TEMProtocol(PAbstractSerialPort port)
-    : TSerialProtocol(port) {}
+  : TSerialProtocol(port) {}
 
-void TEMProtocol::EnsureSlaveConnected(uint8_t slave)
+void TEMProtocol::EnsureSlaveConnected(uint8_t slave, bool force)
 {
-    if (slaveMap[slave])
+    if (!force && connectedSlaves.find(slave) != connectedSlaves.end())
         return;
 
+    connectedSlaves.erase(slave);
     for (int n = N_CONN_ATTEMPTS; n > 0; n--) {
         Port()->SkipNoise();
         if (ConnectionSetup(slave)) {
-            slaveMap[slave] = true;
+            connectedSlaves.insert(slave);
             return;
         }
     }
@@ -37,11 +38,11 @@ void TEMProtocol::WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int
     Port()->WriteBytes(buf, p - buf);
 }
 
-void TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len)
+bool TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len)
 {
     uint8_t buf[MAX_LEN], *p = buf;
     int nread = Port()->ReadFrame(buf, MAX_LEN);
-    if (nread < (expectedByte1 >= 0 ? 4 : 3))
+    if (nread < 4)
         throw TSerialProtocolTransientErrorException("frame too short");
 
     uint16_t crc = CRC16::CalculateCRC16(buf, nread - 2),
@@ -54,6 +55,13 @@ void TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payloa
     if (*p++ != slave)
         throw TSerialProtocolTransientErrorException("invalid slave id");
 
+    const char* msg;
+    ErrorType err = CheckForException(buf, nread, &msg);
+    if (err == NO_OPEN_SESSION)
+        return false;
+    else if (err != NO_ERROR)
+        throw TSerialProtocolTransientErrorException(msg);
+
     if (expectedByte1 >= 0 && *p++ != expectedByte1)
         throw TSerialProtocolTransientErrorException("invalid command code in the response");
 
@@ -64,14 +72,19 @@ void TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payloa
         len = actualPayloadSize;
 
     std::memcpy(payload, p, len);
+    return true;
 }
 
 void TEMProtocol::Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payloadLen,
                        int expectedByte1, uint8_t* respPayload, int respPayloadLen)
 {
+    EnsureSlaveConnected(slave);
     WriteCommand(slave, cmd, payload, payloadLen);
     try {
-        ReadResponse(slave, expectedByte1, respPayload, respPayloadLen);
+        while (!ReadResponse(slave, expectedByte1, respPayload, respPayloadLen)) {
+            EnsureSlaveConnected(slave, true);
+            WriteCommand(slave, cmd, payload, payloadLen);
+        }
     } catch (const TSerialProtocolTransientErrorException& e) {
         Port()->SkipNoise();
         throw;
