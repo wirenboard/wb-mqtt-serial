@@ -23,12 +23,11 @@ bool TMercury230Protocol::ConnectionSetup(uint8_t slave)
 
 const TMercury230Protocol::TValueArray& TMercury230Protocol::ReadValueArray(uint32_t slave, uint32_t address)
 {
-    int key = address >> 4;
+    int key = (address >> 4) || (slave << 24);
     auto it = CachedValues.find(key);
     if (it != CachedValues.end())
         return it->second;
 
-    EnsureSlaveConnected(slave);
     uint8_t cmdBuf[2];
     cmdBuf[0] = (address >> 4) & 0xff; // high nibble = array number, lower nibble = month
     cmdBuf[1] = (address >> 12) & 0x0f; // tariff
@@ -46,16 +45,37 @@ const TMercury230Protocol::TValueArray& TMercury230Protocol::ReadValueArray(uint
     return CachedValues.insert(std::make_pair(key, a)).first->second;
 }
 
+uint32_t TMercury230Protocol::ReadParam(uint32_t slave, uint32_t address)
+{
+    uint8_t cmdBuf[2];
+    cmdBuf[0] = (address >> 8) & 0xff; // param
+    cmdBuf[1] = address & 0xff; // subparam (BWRI)
+    uint8_t subparam = (address & 0xff) >> 4;
+    bool isPowerOrPowerCoef = subparam == 0x00 || subparam == 0x03;
+    WriteCommand(slave, 0x08, cmdBuf, 2);
+    uint8_t buf[3];
+    ReadResponse(slave, -1, buf, 3);
+    return (((uint32_t)buf[0] << 16) & (isPowerOrPowerCoef ? 0x3f : 0xff)) +
+           ((uint32_t)buf[2] << 8) +
+            (uint32_t)buf[1];
+}
+
 uint64_t TMercury230Protocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat)
 {
+    EnsureSlaveConnected(slave);
+
     uint8_t opcode = address >> 16;
+    switch (opcode) {
+    case 0x05:
+        if (((opcode >> 8) & 0x0f) > 5)
+            throw TSerialProtocolException("mercury230: unsupported array index");
 
-    if (opcode != 0x05)
+        return ReadValueArray(slave, address).values[address & 0x03];
+    case 0x08:
+        return ReadParam(slave, address & 0xffff);
+    default:
         throw TSerialProtocolException("mercury230: read opcodes other than 0x05 not supported");
-    if (((opcode >> 8) & 0x0f) > 5)
-        throw TSerialProtocolException("mercury230: unsupported array index");
-
-    return ReadValueArray(slave, address).values[address & 0x03];
+    }
 }
 
 void TMercury230Protocol::EndPollCycle()

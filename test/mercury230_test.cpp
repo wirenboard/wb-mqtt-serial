@@ -66,9 +66,9 @@ TEST_F(TMercury230ProtocolTest, ReadEnergy)
             0xab  // crc
         });
 
-    // Register address:
+    // Register address for energy arrays:
     // 0000 0000 CCCC CCCC TTTT AAAA MMMM IIII
-    // C = command
+    // C = command (0x05)
     // A = array number
     // M = month
     // T = tariff (FIXME!!! 5 values)
@@ -113,25 +113,55 @@ TEST_F(TMercury230ProtocolTest, ReadEnergy)
     Mercury230Protocol->EndPollCycle();
 
     Mercury230Protocol->Close();
-
-    // TBD: voltage, current (see interaction examples below)
 }
 
-// TEST_F(TMercury230ProtocolTest, ReadMomentaryValues)
-// {
-//     Mercury230Protocol->Open();
-//     EnqueueSessionSetupResponse();
-//     SerialPort->EnqueueResponse(
-//         {
-//             0x00, // unit id (group)
-//             0x00, // V1
-//             0x40, // V1
-//             0x5e, // V1
-//             0xb0, // crc
-//             0x1c  // crc
-//         });
-//     ASSERT_EQ(24128,
-// }
+TEST_F(TMercury230ProtocolTest, ReadParams)
+{
+    Mercury230Protocol->Open();
+    EnqueueSessionSetupResponse();
+    SerialPort->EnqueueResponse(
+        {
+            0x00, // unit id (group)
+            0x00, // U1
+            0x40, // U1
+            0x5e, // U1
+            0xb0, // crc
+            0x1c  // crc
+        });
+    // Register address for params:
+    // 0000 0000 CCCC CCCC NNNN NNNN BBBB BBBB
+    // C = command (0x08)
+    // N = param number (0x11)
+    // B = subparam spec (BWRI), 0x11 = voltage, phase 1
+    ASSERT_EQ(24128, Mercury230Protocol->ReadRegister(0x00, 0x81111, U24));
+
+    SerialPort->EnqueueResponse(
+        {
+            0x00, // unit id (group)
+            0x00, // I1
+            0x45, // I1
+            0x00, // I1
+            0x32, // crc
+            0xb4  // crc
+        });
+    // subparam 0x21 = current (phase 1)
+    ASSERT_EQ(69, Mercury230Protocol->ReadRegister(0x00, 0x81121, U24));
+
+    SerialPort->EnqueueResponse(
+        {
+            0x00, // unit id (group)
+            0x00, // U2
+            0xeb, // U2
+            0x5d, // U2
+            0x8f, // crc
+            0x2d  // crc
+        });
+    // subparam 0x12 = voltage (phase 2)
+    ASSERT_EQ(24043, Mercury230Protocol->ReadRegister(0x00, 0x81112, U24));
+
+    Mercury230Protocol->EndPollCycle();
+    Mercury230Protocol->Close();
+}
 
 /*
 

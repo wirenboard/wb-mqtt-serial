@@ -24,6 +24,102 @@
               "format": "u32",
               "type": "power_consumption",
               "scale": 0.001
+            },
+            {
+              "name": "Total reactive energy",
+              "reg_type": "direct",
+              "address": "0x50002",
+              "format": "u32",
+              "type": "power_consumption",
+              "scale": 0.001
+            },
+            {
+              "name": "P",
+              "reg_type": "direct",
+              "address": "0x81100",
+              "format": "u24",
+              "type": "power",
+              "scale": 0.01
+            },
+            {
+              "name": "P1",
+              "reg_type": "direct",
+              "address": "0x81101",
+              "format": "u24",
+              "type": "power",
+              "scale": 0.01
+            },
+            {
+              "name": "P2",
+              "reg_type": "direct",
+              "address": "0x81102",
+              "format": "u24",
+              "type": "power",
+              "scale": 0.01
+            },
+            {
+              "name": "P3",
+              "reg_type": "direct",
+              "address": "0x81103",
+              "format": "u24",
+              "type": "power",
+              "scale": 0.01
+            },
+            {
+              "name": "U1",
+              "reg_type": "direct",
+              "address": "0x81111",
+              "format": "u24",
+              "type": "voltage",
+              "scale": 0.01
+            },
+            {
+              "name": "U2",
+              "reg_type": "direct",
+              "address": "0x81112",
+              "format": "u24",
+              "type": "voltage",
+              "scale": 0.01
+            },
+            {
+              "name": "U3",
+              "reg_type": "direct",
+              "address": "0x81113",
+              "format": "u24",
+              "type": "voltage",
+              "scale": 0.01
+            },
+            {
+              "name": "I1",
+              "reg_type": "direct",
+              "address": "0x81121",
+              "format": "u24",
+              "type": "value",
+              "scale": 0.001
+            },
+            {
+              "name": "I2",
+              "reg_type": "direct",
+              "address": "0x81122",
+              "format": "u24",
+              "type": "value",
+              "scale": 0.001
+            },
+            {
+              "name": "I3",
+              "reg_type": "direct",
+              "address": "0x81123",
+              "format": "u24",
+              "type": "value",
+              "scale": 0.001
+            },
+            {
+              "name": "Frequency",
+              "reg_type": "direct",
+              "address": "0x81140",
+              "format": "u24",
+              "type": "value",
+              "scale": 0.01
             }
           ]
         }
