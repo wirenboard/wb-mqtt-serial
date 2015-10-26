@@ -28,6 +28,9 @@ namespace {
         case U32:
             *size = 4;
             break;
+        case S32:
+            *size = 4;
+            break;
 
         default:
             throw TSerialProtocolException("milur: unsupported register format");
