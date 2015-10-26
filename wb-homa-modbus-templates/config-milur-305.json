@@ -1,8 +1,8 @@
 {
-  "device_type": "milur",
+  "device_type": "milur305",
   "device": {
-    "name": "Milur 305.32R",
-    "id": "milur305.32r",
+    "name": "Milur 305",
+    "id": "milur305",
     "channels": [
       {
         "name": "Phase A voltage",
