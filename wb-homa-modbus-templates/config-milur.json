@@ -1,0 +1,41 @@
+{
+  "device_type": "milur",
+  "device": {
+    "name": "Milur 305.32R",
+    "id": "milur305.32r",
+    "channels": [
+      {
+        "name": "Phase A voltage",
+        "reg_type": "direct",
+        "address": 100,
+        "format": "u24",
+        "type": "voltage",
+        "scale": 0.001
+      },
+      {
+        "name": "Phase B voltage",
+        "reg_type": "direct",
+        "address": 101,
+        "format": "u24",
+        "type": "voltage",
+        "scale": 0.001
+      },
+      {
+        "name": "Phase C voltage",
+        "reg_type": "direct",
+        "address": 102,
+        "format": "u24",
+        "type": "voltage",
+        "scale": 0.001
+      },
+      {
+        "name": "Total consumption",
+        "reg_type": "direct",
+        "address": 118,
+        "format": "bcd32",
+        "type": "power_consumption",
+        "scale": 0.01
+      }
+    ]
+  }
+}
