@@ -59,7 +59,7 @@
         "type": "power",
         "reg_type": "direct",
         "address": 106,
-        "format": "u32",
+        "format": "s32",
         "scale": 0.01
       },
       {
@@ -67,7 +67,7 @@
         "type": "power",
         "reg_type": "direct",
         "address": 107,
-        "format": "u32",
+        "format": "s32",
         "scale": 0.01
       },
       {
@@ -75,7 +75,7 @@
         "type": "power",
         "reg_type": "direct",
         "address": 108,
-        "format": "u32",
+        "format": "s32",
         "scale": 0.01
       },
 
@@ -84,7 +84,7 @@
         "type": "power",
         "reg_type": "direct",
         "address": 109,
-        "format": "u32",
+        "format": "s32",
         "scale": 0.01
       },
 
@@ -95,7 +95,7 @@
         "type": "power",
         "reg_type": "direct",
         "address": 110,
-        "format": "u32",
+        "format": "s32",
         "scale": 0.01
       },
       {
@@ -103,7 +103,7 @@
         "type": "power",
         "reg_type": "direct",
         "address": 111,
-        "format": "u32",
+        "format": "s32",
         "scale": 0.01
       },
       {
@@ -111,7 +111,7 @@
         "type": "power",
         "reg_type": "direct",
         "address": 112,
-        "format": "u32",
+        "format": "s32",
         "scale": 0.01
       },
 
@@ -119,8 +119,8 @@
         "name": "Total reactive power",
         "type": "power",
         "reg_type": "direct",
-        "address": 109,
-        "format": "u32",
+        "address": 113,
+        "format": "s32",
         "scale": 0.01
       },
 
