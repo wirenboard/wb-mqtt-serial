@@ -59,10 +59,57 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
     }
 }
 
-TEMProtocol::ErrorType TMilurProtocol::CheckForException(uint8_t*, int, const char** message)
+TEMProtocol::ErrorType TMilurProtocol::CheckForException(uint8_t* frame, int len, const char** message)
 {
-    *message = 0;
-    return TEMProtocol::NO_ERROR; // TBD: implement this
+    if (len != 6 || !(frame[1] & 0x80)) {
+        *message = 0;
+        return TEMProtocol::NO_ERROR;
+    }
+
+    switch (frame[2]) {
+    case 0x01:
+        *message = "Illegal function";
+        break;
+    case 0x02:
+        *message = "Illegal data address";
+        break;
+    case 0x03:
+        *message = "Illegal data value";
+        break;
+    case 0x04:
+        *message = "Slave device failure";
+        break;
+    case 0x05:
+        *message = "Acknowledge";
+        break;
+    case 0x06:
+        *message = "Slave device busy";
+        break;
+    case 0x07:
+        *message = "EEPROM access error";
+        break;
+    case 0x08:
+        *message = "Session closed";
+        return TEMProtocol::NO_OPEN_SESSION;
+    case 0x09:
+        *message = "Access denied";
+        break;
+    case 0x0a:
+        *message = "CRC error";
+        break;
+    case 0x0b:
+        *message = "Frame incorrect";
+        break;
+    case 0x0c:
+        *message = "Jumper absent";
+        break;
+    case 0x0d:
+        *message = "Passw incorrect";
+        break;
+    default:
+        *message = "Unknown error";
+    }
+    return TEMProtocol::OTHER_ERROR;
 }
 
 uint64_t TMilurProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt)
