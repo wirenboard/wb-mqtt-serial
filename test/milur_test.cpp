@@ -93,3 +93,27 @@ TEST_F(TMilurProtocolTest, Reconnect)
         });
     ASSERT_EQ(0x03946f, MilurProtocol->ReadRegister(0xff, 102, U24));
 }
+
+TEST_F(TMilurProtocolTest, Exception)
+{
+    MilurProtocol->Open();
+    EnqueueSessionSetupResponse();
+    SerialPort->EnqueueResponse(
+        {
+            // Session setup response
+            0xff, // unit id
+            0x81, // op + exception flag
+            0x07, // error code
+            0x00, // service data
+            0x62, // crc
+            0x28  // crc
+        });
+    try {
+        MilurProtocol->ReadRegister(0xff, 102, U24);
+        FAIL() << "No exception thrown";
+    } catch (const TSerialProtocolTransientErrorException& e) {
+        ASSERT_STREQ("Serial protocol error: EEPROM access error", e.what());
+        MilurProtocol->EndPollCycle();
+        MilurProtocol->Close();
+    }
+}

@@ -191,8 +191,29 @@ TEST_F(TMercury230ProtocolTest, Reconnect)
     Mercury230Protocol->EndPollCycle();
     Mercury230Protocol->Close();
 }
-/*
 
+TEST_F(TMercury230ProtocolTest, Exception)
+{
+    Mercury230Protocol->Open();
+    EnqueueSessionSetupResponse();
+    SerialPort->EnqueueResponse(
+        {
+            0x00, // unit id (group)
+            0x02, // error 2 = internal meter error
+            0x80, // crc
+            0x71  // crc
+        });
+    try {
+        Mercury230Protocol->ReadRegister(0x00, 0x81112, U24);
+        FAIL() << "No exception thrown";
+    } catch (const TSerialProtocolTransientErrorException& e) {
+        ASSERT_STREQ("Serial protocol error: Internal meter error", e.what());
+        Mercury230Protocol->EndPollCycle();
+        Mercury230Protocol->Close();
+    }
+}
+
+/*
 voltage (phase 1):
 >> 00 08 11 11 4d ba
 << 00 00 40 5E B0 1C
@@ -215,5 +236,4 @@ current (phase 1):
 << 00 00 EB 5D 8F 2D
 0x005deb -> 24043
 -- proper response to voltage query
-
 */
