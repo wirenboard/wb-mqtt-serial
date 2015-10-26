@@ -7,7 +7,7 @@
       "baud_rate": 9600,
       "parity": "N",
       "data_bits": 8,
-      "stop_bits": 2,
+      "stop_bits": 1,
       "enabled": true,
       "response_timeout_ms": 500,
       "devices": [
