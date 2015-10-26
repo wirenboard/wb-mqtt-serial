@@ -29,13 +29,127 @@
         "scale": 0.001
       },
       {
+        "name": "Phase A current",
+        "type": "value",
+        "reg_type": "direct",
+        "address": 103,
+        "format": "u24",
+        "scale": 0.001
+      },
+      {
+        "name": "Phase B current",
+        "type": "value",
+        "reg_type": "direct",
+        "address": 104,
+        "format": "u24",
+        "scale": 0.001
+      },
+      {
+        "name": "Phase C current",
+        "type": "value",
+        "reg_type": "direct",
+        "address": 105,
+        "format": "u24",
+        "scale": 0.001
+      },
+
+
+      {
+        "name": "Phase A active power",
+        "type": "power",
+        "reg_type": "direct",
+        "address": 106,
+        "format": "u32",
+        "scale": 0.01
+      },
+      {
+        "name": "Phase B active power",
+        "type": "power",
+        "reg_type": "direct",
+        "address": 107,
+        "format": "u32",
+        "scale": 0.01
+      },
+      {
+        "name": "Phase C active power",
+        "type": "power",
+        "reg_type": "direct",
+        "address": 108,
+        "format": "u32",
+        "scale": 0.01
+      },
+
+      {
+        "name": "Total active power",
+        "type": "power",
+        "reg_type": "direct",
+        "address": 109,
+        "format": "u32",
+        "scale": 0.01
+      },
+
+
+
+      {
+        "name": "Phase A reactive power",
+        "type": "power",
+        "reg_type": "direct",
+        "address": 110,
+        "format": "u32",
+        "scale": 0.01
+      },
+      {
+        "name": "Phase B reactive power",
+        "type": "power",
+        "reg_type": "direct",
+        "address": 111,
+        "format": "u32",
+        "scale": 0.01
+      },
+      {
+        "name": "Phase C reactive power",
+        "type": "power",
+        "reg_type": "direct",
+        "address": 112,
+        "format": "u32",
+        "scale": 0.01
+      },
+
+      {
+        "name": "Total reactive power",
+        "type": "power",
+        "reg_type": "direct",
+        "address": 109,
+        "format": "u32",
+        "scale": 0.01
+      },
+
+      {
         "name": "Total consumption",
         "reg_type": "direct",
         "address": 118,
         "format": "bcd32",
         "type": "power_consumption",
         "scale": 0.01
+      },
+      {
+        "name": "Total reactive energy",
+        "reg_type": "direct",
+        "address": 127,
+        "format": "bcd32",
+        "type": "power_consumption",
+        "scale": 0.01
+      },
+      {
+        "name": "Frequency",
+        "type": "value",
+        "reg_type": "direct",
+        "address": 9,
+        "format": "u16",
+        "scale": 0.001
       }
+
+
     ]
   }
 }
