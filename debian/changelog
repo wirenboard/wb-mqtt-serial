@@ -1,7 +1,10 @@
 wb-homa-modbus (1.12.8) stable; urgency=medium
 
   * Add config to wb-configs.d
-
+  * proper string-to-int conversion for string literals in 
+  slave_id and address properties
+  * Add WB-MR11 template
+  
  -- Evgeny Boger <boger@contactless.ru>  Sat, 17 Oct 2015 18:07:35 +0300
 
 wb-homa-modbus (1.12.7) stable; urgency=medium
