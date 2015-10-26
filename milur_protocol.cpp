@@ -167,5 +167,4 @@ int main(int, char**)
 #endif
 
 // TBD: custom password?
-// TBD: reconnection (session setup)
 // TBD: settings in uniel template: 9600 8N1, timeout ms = 1000
