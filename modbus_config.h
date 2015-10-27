@@ -18,7 +18,7 @@ struct TModbusChannel
                        std::vector<std::shared_ptr<TModbusRegister>>())
         : Name(name), Type(type), DeviceId(device_id),
           Order(order), OnValue(on_value), Max(max),
-          ReadOnly(read_only), Registers(regs), PrintedErrorMessage(false) {}
+          ReadOnly(read_only), Registers(regs), MayHaveError(true) {}
     std::string Name;
     std::string Type;
     std::string DeviceId; // FIXME
@@ -27,7 +27,7 @@ struct TModbusChannel
     int Max;
     bool ReadOnly;
     std::vector<std::shared_ptr<TModbusRegister>> Registers;
-    bool PrintedErrorMessage;
+    bool MayHaveError;
 };
 
 typedef std::shared_ptr<TModbusChannel> PModbusChannel;

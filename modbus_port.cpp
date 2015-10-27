@@ -181,9 +181,9 @@ void TModbusPort::PublishError(std::shared_ptr<TModbusRegister> reg)
         std::cerr << "warning: unexpected register from modbus" << std::endl;
         return;
     }
-    if (!it->second->PrintedErrorMessage) {
+    if (!it->second->MayHaveError) {
         MQTTClient->Publish(NULL, GetChannelTopic(*it->second) + "/meta/error", to_string(error), 0, true);
-        it->second->PrintedErrorMessage = true;
+        it->second->MayHaveError = true;
     }
 }
 
@@ -194,9 +194,9 @@ void TModbusPort::DeleteErrorMessages(std::shared_ptr<TModbusRegister> reg)
         std::cerr << "warning: unexpected register from modbus" << std::endl;
         return;
     }
-    if (it->second->PrintedErrorMessage == true) {
+    if (it->second->MayHaveError) {
         MQTTClient->Publish(NULL, GetChannelTopic(*it->second) + "/meta/error", "", 0, true);
-        it->second->PrintedErrorMessage = false;
+        it->second->MayHaveError = false;
     }
 }
 

@@ -607,23 +607,20 @@ void TModbusClient::Cycle()
     // corresponding to single register should be retrieved
     // by single query.
     for (const auto& p: Handlers) {
-        for(const auto& q: Handlers) {
+        // TBD: deuglify!
+        for (const auto& q: Handlers) {
             int flush_message = q.second->Flush(Context);
-            if ((flush_message == 1) && (ErrorCallback)) {
+            if (flush_message == 1 && ErrorCallback)
                 ErrorCallback(q.first);
-            }
-            if ((flush_message == 2) && (DeleteErrorsCallback)) {
+            else if (DeleteErrorsCallback)
                 DeleteErrorsCallback(q.first);
-            }
         }
 
         const auto& poll_message = p.second->Poll(Context);
-        if ((poll_message.second == 1) && (ErrorCallback)) {
+        if (poll_message.second == 1 && ErrorCallback)
             ErrorCallback(p.first);
-        }
-        if ((poll_message.second == 2) && (DeleteErrorsCallback)) {
+        else if (DeleteErrorsCallback)
             DeleteErrorsCallback(p.first);
-        }
         if ((poll_message.first) && (Callback) && (poll_message.second != 1)) {
             Callback(p.first);
         }
