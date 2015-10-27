@@ -292,17 +292,19 @@ TSerialProtocol::~TSerialProtocol() {}
 void TSerialProtocol::EndPollCycle() {}
 
 std::unordered_map<std::string, TSerialProtocolFactory::TSerialProtocolMaker>
-    TSerialProtocolFactory::ProtoMakers;
+    *TSerialProtocolFactory::ProtoMakers = 0;
 
 void TSerialProtocolFactory::RegisterProtocol(const std::string& name, TSerialProtocolMaker maker)
 {
-    ProtoMakers[name] = maker;
+    if (!ProtoMakers)
+        ProtoMakers = new std::unordered_map<std::string, TSerialProtocolFactory::TSerialProtocolMaker>();
+    (*ProtoMakers)[name] = maker;
 }
 
 PSerialProtocol TSerialProtocolFactory::CreateProtocol(const std::string& name, PAbstractSerialPort port)
 {
-    auto it = ProtoMakers.find(name);
-    if (it == ProtoMakers.end())
+    auto it = ProtoMakers->find(name);
+    if (it == ProtoMakers->end())
         throw TSerialProtocolException("unknown serial protocol");
     return it->second(port);
 }

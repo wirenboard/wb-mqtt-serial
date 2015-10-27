@@ -97,7 +97,7 @@ public:
     static PSerialProtocol CreateProtocol(const std::string& name, PAbstractSerialPort port);
 
 private:
-    static std::unordered_map<std::string, TSerialProtocolMaker> ProtoMakers;
+    static std::unordered_map<std::string, TSerialProtocolMaker> *ProtoMakers;
 };
 
 template<class Proto>
