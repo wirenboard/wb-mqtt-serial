@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include <string>
 #include <memory>
 #include <exception>
@@ -37,6 +38,7 @@ public:
     virtual uint8_t ReadByte() = 0;
     virtual int ReadFrame(uint8_t* buf, int count) = 0;
     virtual void SkipNoise() =0;
+    virtual void USleep(int usec) = 0;
 };
 
 typedef std::shared_ptr<TAbstractSerialPort> PAbstractSerialPort;
@@ -51,6 +53,7 @@ public:
     uint8_t ReadByte();
     int ReadFrame(uint8_t* buf, int count);
     void SkipNoise();
+    void USleep(int usec);
     void Open();
     void Close();
     bool IsOpen() const;
@@ -71,11 +74,6 @@ public:
     TSerialProtocol(PAbstractSerialPort port);
     virtual ~TSerialProtocol();
 
-    void SetDebug(bool debug) { SerialPort->SetDebug(debug); }
-    void Open() { SerialPort->Open(); }
-    void Close() { SerialPort->Close(); }
-    bool IsOpen() const { return SerialPort->IsOpen(); }
-
     virtual uint64_t ReadRegister(uint32_t mod, uint32_t address, RegisterFormat fmt) = 0;
     virtual void WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat fmt) = 0;
     // XXX FIXME: leaky abstraction (need to refactor)
@@ -91,3 +89,27 @@ private:
 };
 
 typedef std::shared_ptr<TSerialProtocol> PSerialProtocol;
+
+class TSerialProtocolFactory {
+public:
+    typedef PSerialProtocol (*TSerialProtocolMaker)(PAbstractSerialPort port);
+    static void RegisterProtocol(const std::string& name, TSerialProtocolMaker maker);
+    static PSerialProtocol CreateProtocol(const std::string& name, PAbstractSerialPort port);
+
+private:
+    static std::unordered_map<std::string, TSerialProtocolMaker> ProtoMakers;
+};
+
+template<class Proto>
+class TSerialProtocolRegistrator {
+public:
+    TSerialProtocolRegistrator(const std::string name)
+    {
+        TSerialProtocolFactory::RegisterProtocol(
+            name, [](PAbstractSerialPort port) {
+                return PSerialProtocol(new Proto(port));
+            });
+    }
+};
+
+#define REGISTER_PROTOCOL(name, cls) TSerialProtocolRegistrator<cls> reg__##cls(name)

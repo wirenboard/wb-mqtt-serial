@@ -38,6 +38,8 @@ namespace {
     }
 }
 
+REGISTER_PROTOCOL("milur", TMilurProtocol);
+
 TMilurProtocol::TMilurProtocol(PAbstractSerialPort port)
     : TEMProtocol(port) {}
 

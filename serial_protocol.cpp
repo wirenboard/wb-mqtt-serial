@@ -1,3 +1,4 @@
+#include <map>
 #include <errno.h>
 #include <string.h>
 #include <sys/types.h>
@@ -252,6 +253,9 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size)
         nread += nb;
     }
 
+    if (!nread)
+        throw TSerialProtocolException("request timed out");
+
     if (Debug) {
         // TBD: move this to libwbmqtt (HexDump?)
         std::ios::fmtflags f(std::cerr.flags());
@@ -275,9 +279,30 @@ void TSerialPort::SkipNoise()
     }
 }
 
+void TSerialPort::USleep(int usec)
+{
+    usleep(usec);
+}
+
 TSerialProtocol::TSerialProtocol(PAbstractSerialPort port)
     : SerialPort(port) {}
 
 TSerialProtocol::~TSerialProtocol() {}
 
 void TSerialProtocol::EndPollCycle() {}
+
+std::unordered_map<std::string, TSerialProtocolFactory::TSerialProtocolMaker>
+    TSerialProtocolFactory::ProtoMakers;
+
+void TSerialProtocolFactory::RegisterProtocol(const std::string& name, TSerialProtocolMaker maker)
+{
+    ProtoMakers[name] = maker;
+}
+
+PSerialProtocol TSerialProtocolFactory::CreateProtocol(const std::string& name, PAbstractSerialPort port)
+{
+    auto it = ProtoMakers.find(name);
+    if (it == ProtoMakers.end())
+        throw TSerialProtocolException("unknown serial protocol");
+    return it->second(port);
+}

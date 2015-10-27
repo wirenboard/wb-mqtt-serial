@@ -54,6 +54,7 @@ struct TDeviceConfig
     std::string Name;
     int SlaveId;
     std::string DeviceType;
+    std::string Protocol;
     std::vector<PModbusChannel> ModbusChannels;
     std::vector<PDeviceSetupItem> SetupItems;
 };
@@ -66,7 +67,7 @@ struct TPortConfig
     TSerialPortSettings ConnSettings;
     int PollInterval = 20;
     bool Debug = false;
-    std::string Type;
+    std::string Protocol;
     std::vector<PDeviceConfig> DeviceConfigs;
 };
 

@@ -3,6 +3,7 @@
   "device": {
     "name": "Milur 305",
     "id": "milur305",
+    "protocol": "milur",
     "channels": [
       {
         "name": "Phase A voltage",

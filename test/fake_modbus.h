@@ -123,6 +123,7 @@ class TFakeModbusContext: public TModbusContext
 public:
     void Connect();
     void Disconnect();
+    void AddDevice(int slave, const std::string& protocol);
     void SetDebug(bool debug);
     void SetSlave(int slave_addr);
     void ReadCoils(int addr, int nb, uint8_t *dest);

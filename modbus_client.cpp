@@ -18,6 +18,7 @@ public:
     TDefaultModbusContext(const TSerialPortSettings& settings);
     void Connect();
     void Disconnect();
+    void AddDevice(int slave, const std::string& protocol);
     void SetDebug(bool debug);
     void SetSlave(int slave);
     void ReadCoils(int addr, int nb, uint8_t *dest);
@@ -61,6 +62,12 @@ void TDefaultModbusContext::Connect()
 void TDefaultModbusContext::Disconnect()
 {
     modbus_close(InnerContext);
+}
+
+void TDefaultModbusContext::AddDevice(int, const std::string& protocol)
+{
+    if (protocol != "modbus")
+        throw TModbusException("protocols other than modbus not supported for modbus ports");
 }
 
 void TDefaultModbusContext::SetDebug(bool debug)
@@ -229,6 +236,7 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
 
 int TRegisterHandler::Flush(PModbusContext ctx)
 {
+    // TBD: deuglify!
     int message = 0;
     // set flush error message empty
     if (reg->ErrorMessage == "Flush") {
@@ -555,22 +563,31 @@ TModbusClient::~TModbusClient()
         Disconnect();
 }
 
+void TModbusClient::AddDevice(int slave, const std::string& protocol)
+{
+    if (Active)
+        throw TModbusException("can't add registers to the active client");
+    DevicesToAdd[slave] = protocol;
+}
+
 void TModbusClient::AddRegister(std::shared_ptr<TModbusRegister> reg)
 {
     if (Active)
         throw TModbusException("can't add registers to the active client");
-    if (handlers.find(reg) != handlers.end())
+    if (Handlers.find(reg) != Handlers.end())
         throw TModbusException("duplicate register");
-    handlers[reg] = std::unique_ptr<TRegisterHandler>(CreateRegisterHandler(reg));
+    Handlers[reg] = std::unique_ptr<TRegisterHandler>(CreateRegisterHandler(reg));
 }
 
 void TModbusClient::Connect()
 {
     if (Active)
         return;
-    if (!handlers.size())
+    if (!Handlers.size())
         throw TModbusException("no registers defined");
     Context->Connect();
+    for (const auto& p: DevicesToAdd)
+        Context->AddDevice(p.first, p.second.empty() ? "modbus" : p.second);
     Active = true;
 }
 
@@ -589,8 +606,8 @@ void TModbusClient::Cycle()
     // Note that for multi-register values, all values
     // corresponding to single register should be retrieved
     // by single query.
-    for (const auto& p: handlers) {
-        for(const auto& q: handlers) {
+    for (const auto& p: Handlers) {
+        for(const auto& q: Handlers) {
             int flush_message = q.second->Flush(Context);
             if ((flush_message == 1) && (ErrorCallback)) {
                 ErrorCallback(q.first);
@@ -670,8 +687,8 @@ bool TModbusClient::DebugEnabled() const {
 
 const std::unique_ptr<TRegisterHandler>& TModbusClient::GetHandler(std::shared_ptr<TModbusRegister> reg) const
 {
-    auto it = handlers.find(reg);
-    if (it == handlers.end())
+    auto it = Handlers.find(reg);
+    if (it == Handlers.end())
         throw TModbusException("register not found");
     return it->second;
 }

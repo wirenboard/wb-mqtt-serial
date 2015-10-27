@@ -22,6 +22,7 @@ Publish: /devices/ddl24/controls/Voltage/meta/order: '5' (QoS 0, retained)
 Subscribe: /devices/ddl24/controls/Voltage/on (QoS 0)
 >>> ModbusLoopOnce()
 Connect()
+AddDevice(23, modbus)
 SetSlave(23)
 read 1 holding register(s) @ 4: 0x0000
 EndPollCycle(10000)

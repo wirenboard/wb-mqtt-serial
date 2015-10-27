@@ -4,7 +4,7 @@
     "ports": [
         {
             "path" : "/dev/ttyNSC1",
-            "type": "uniel",
+            "protocol": "uniel",
             "baud_rate": 9600,
             "parity": "N",
             "data_bits": 8,

@@ -5,6 +5,7 @@
         "name": "UCH-M141RC 0808",
         "id": "uchm141rc",
         "enabled": true,
+        "protocol": "uniel",
         "channels": [
             {
                 "name": "Input 0",

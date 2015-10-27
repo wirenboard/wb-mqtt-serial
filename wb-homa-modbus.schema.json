@@ -4,6 +4,20 @@
   "title": "Modbus Driver Configuration",
   "description": "Lists devices attached to RS-485 ports",
   "definitions": {
+    "portProtocol": {
+      "type": "string",
+      "title": "Port protocol",
+      "description": "Type of devices to be used on this port",
+      "enum": ["modbus", "uniel", "milur", "mercury230", "other"],
+      "default": "modbus",
+      "propertyOrder": 8
+    },
+    "deviceProtocol": {
+      "type": "string",
+      "title": "Device protocol",
+      "enum": ["modbus", "uniel", "milur", "mercury230"],
+      "default": "modbus"
+    },
     "port": {
       "type": "object",
       "title": "Serial port",
@@ -65,13 +79,13 @@
           "default": 20,
           "propertyOrder": 7
         },
-        "type": {
-          "type": "string",
-          "title": "Port protocol",
-          "description": "Type of devices to be used on this port",
-          "enum": ["modbus", "uniel", "milur", "mercury230"],
-          "default": "modbus",
+        "protocol": {
+          "$ref": "#/definitions/portProtocol",
           "propertyOrder": 8
+        },
+        "type": {
+          "$ref": "#/definitions/portProtocol",
+          "propertyOrder": 9
         },
         "devices": {
           "type": "array",
@@ -120,6 +134,10 @@
           "_format": "checkbox",
           "propertyOrder": 4
         },
+        "protocol": {
+          "$ref": "#/definitions/deviceProtocol",
+          "propertyOrder": 5
+        },
         "device_type": {
           "type": "string",
           "title": "Device type",
@@ -129,7 +147,7 @@
             "pointer": "/device_type",
             "pattern": "^.*\\.json$"
           },
-          "propertyOrder": 5
+          "propertyOrder": 6
         },
         "setup": {
           "type": "array",
@@ -137,14 +155,14 @@
           "description": "Lists holding register values that must be written during initialization",
           "items": { "$ref": "#/definitions/setup_cmd" },
           "_format": "table",
-          "propertyOrder": 6
+          "propertyOrder": 7
         },
         "channels": {
           "type": "array",
           "title": "List of channels",
           "description": "Lists Modbus registers of the device and their corresponding controls",
           "items": { "$ref": "#/definitions/channel" },
-          "propertyOrder": 7
+          "propertyOrder": 8
         }
       },
       "required": ["slave_id"],

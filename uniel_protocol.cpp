@@ -20,6 +20,8 @@ namespace {
     };
 }
 
+REGISTER_PROTOCOL("uniel", TUnielProtocol);
+
 TUnielProtocol::TUnielProtocol(PAbstractSerialPort port)
     : TSerialProtocol(port) {}
 

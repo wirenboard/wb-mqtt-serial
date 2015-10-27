@@ -18,6 +18,7 @@ public:
     uint8_t ReadByte();
     int ReadFrame(uint8_t* buf, int count);
     void SkipNoise();
+    void USleep(int usec);
 
     void EnqueueResponse(const std::vector<int>& frame);
 

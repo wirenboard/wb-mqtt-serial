@@ -3,6 +3,7 @@
   "device": {
     "name": "Mercury 230AR-02",
     "id": "mercury230ar02", 
+    "protocol": "mercury230",
     "channels": [
       {
         "name": "Total consumption",

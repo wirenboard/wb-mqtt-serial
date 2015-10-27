@@ -42,6 +42,11 @@ void TFakeModbusContext::Disconnect()
     Connected = false;
 }
 
+void TFakeModbusContext::AddDevice(int slave, const std::string& protocol)
+{
+    Fixture.Emit() << "AddDevice(" << slave << ", " << protocol << ")";
+}
+
 void TFakeModbusContext::SetDebug(bool debug)
 {
     Fixture.Emit() << "SetDebug(" << debug << ")";

@@ -80,6 +80,13 @@ void TFakeSerialPort::SkipNoise()
     Fixture.Emit() << "SkipNoise()";
 }
 
+void TFakeSerialPort::USleep(int usec)
+{
+    SkipFrameBoundary();
+    DumpWhatWasRead();
+    Fixture.Emit() << "Sleep(" << usec << ")";
+}
+
 void TFakeSerialPort::DumpWhatWasRead()
 {
     assert(DumpPos <= Pos);

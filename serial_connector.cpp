@@ -1,18 +1,52 @@
 #include <unistd.h>
 
-#include "serial_context.h"
-#include "uniel_protocol.h"
-#include "milur_protocol.h"
-#include "mercury230_protocol.h"
+#include "serial_connector.h"
+#include "serial_protocol.h"
 
-TSerialContext::TSerialContext(PSerialProtocol proto):
-    Proto(proto), SlaveAddr(1) {}
+namespace {
+    enum {
+        ADDR_TYPE_BRIGHTNESS = 0x01
+    };
+    const int INTER_DEVICE_DELAY_USEC = 60000; // TBD: make it configurable
+}
+
+class TSerialContext: public TModbusContext
+{
+public:
+    TSerialContext(PAbstractSerialPort port);
+    void Connect();
+    void Disconnect();
+    void AddDevice(int slave, const std::string& protocol);
+    void SetDebug(bool debug);
+    void SetSlave(int slave);
+    void ReadCoils(int addr, int nb, uint8_t *dest);
+    void WriteCoil(int addr, int value);
+    void ReadDisceteInputs(int addr, int nb, uint8_t *dest);
+    void ReadHoldingRegisters(int addr, int nb, uint16_t *dest);
+    void WriteHoldingRegisters(int addr, int nb, const uint16_t *data);
+    void WriteHoldingRegister(int addr, uint16_t value);
+    void ReadInputRegisters(int addr, int nb, uint16_t *dest);
+    void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format);
+    void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format);
+    void EndPollCycle(int usec);
+
+private:
+    PSerialProtocol GetProtocol();
+
+    PAbstractSerialPort Port;
+    int SlaveId;
+    std::unordered_map<int, std::string> ProtoNameMap;
+    std::unordered_map<int, PSerialProtocol> ProtoMap;
+};
+
+TSerialContext::TSerialContext(PAbstractSerialPort port):
+    Port(port), SlaveId(-1) {}
 
 void TSerialContext::Connect()
 {
     try {
-        if (!Proto->IsOpen())
-            Proto->Open();
+        if (!Port->IsOpen())
+            Port->Open();
     } catch (const TSerialProtocolException& e) {
         throw TModbusException(e.what());
     }
@@ -20,26 +54,37 @@ void TSerialContext::Connect()
 
 void TSerialContext::Disconnect()
 {
-    if (Proto->IsOpen())
-        Proto->Close();
+    if (Port->IsOpen())
+        Port->Close();
+}
+
+void TSerialContext::AddDevice(int slave, const std::string& protocol)
+{
+    ProtoNameMap[slave] = protocol;
 }
 
 void TSerialContext::SetDebug(bool debug)
 {
-    Proto->SetDebug(debug);
+    Port->SetDebug(debug);
 }
 
-void TSerialContext::SetSlave(int slave_addr)
+void TSerialContext::SetSlave(int slave)
 {
-    SlaveAddr = slave_addr;
+    if (SlaveId == slave)
+        return;
+
+    SlaveId = slave;
+    if (Port->IsOpen())
+        Port->USleep(INTER_DEVICE_DELAY_USEC);
 }
 
 void TSerialContext::ReadCoils(int addr, int nb, uint8_t *dest)
 {
+    auto proto = GetProtocol();
     try {
         Connect();
         for (int i = 0; i < nb; ++i)
-            *dest++ = Proto->ReadRegister(SlaveAddr, addr + i, U8) == 0 ? 0 : 1;
+            *dest++ = proto->ReadRegister(SlaveId, addr + i, U8) == 0 ? 0 : 1;
     } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());
     } catch (const TSerialProtocolException& e) {
@@ -52,7 +97,7 @@ void TSerialContext::WriteCoil(int addr, int value)
 {
     try {
         Connect();
-        Proto->WriteRegister(SlaveAddr, addr, value ? 0xff : 0, U8);
+        GetProtocol()->WriteRegister(SlaveId, addr, value ? 0xff : 0, U8);
     } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());
     } catch (const TSerialProtocolException& e) {
@@ -68,12 +113,13 @@ void TSerialContext::ReadDisceteInputs(int addr, int nb, uint8_t *dest)
 
 void TSerialContext::ReadHoldingRegisters(int addr, int nb, uint16_t *dest)
 {
+    auto proto = GetProtocol();
     try {
         Connect();
         for (int i = 0; i < nb; ++i) {
             // so far, all Uniel address types store register to read
             // in the low byte
-            *dest++ = Proto->ReadRegister(SlaveAddr, (addr + i) & 0xFF, U16);
+            *dest++ = proto->ReadRegister(SlaveId, (addr + i) & 0xFF, U16);
         }
     } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());
@@ -85,19 +131,20 @@ void TSerialContext::ReadHoldingRegisters(int addr, int nb, uint16_t *dest)
 
 void TSerialContext::WriteHoldingRegister(int addr, uint16_t value)
 {
+    auto proto = GetProtocol();
     try {
         Connect();
 		if ( (addr >= 0x00) && (addr <= 0xFF) ) {
 			// address is between 0x00 and 0xFF, so treat it as
 			// normal Uniel register (read via 0x05, write via 0x06)
-			Proto->WriteRegister(SlaveAddr, addr, value, U16);
+			proto->WriteRegister(SlaveId, addr, value, U16);
 		} else {
 			int addr_type = addr >> 24;
 			if (addr_type == ADDR_TYPE_BRIGHTNESS ) {
 				// address is 0x01XXWWRR, where RR is register to read
 				// via 0x05 cmd, WW - register to write via 0x0A cmd
 				uint8_t addr_write = (addr & 0xFF00) >> 8;
-				Proto->SetBrightness(SlaveAddr, addr_write, value);
+				proto->SetBrightness(SlaveId, addr_write, value);
 			} else {
 				throw TModbusException("unsupported register address: " + std::to_string(addr));
 			}
@@ -125,7 +172,7 @@ void TSerialContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
 void TSerialContext::ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format) {
     try {
         Connect();
-        *dest++ = Proto->ReadRegister(SlaveAddr, addr, format);
+        *dest++ = GetProtocol()->ReadRegister(SlaveId, addr, format);
     } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());
     } catch (const TSerialProtocolException& e) {
@@ -137,7 +184,7 @@ void TSerialContext::ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat
 void TSerialContext::WriteDirectRegister(int addr, uint64_t value, RegisterFormat format) {
     try {
         Connect();
-        Proto->WriteRegister(SlaveAddr, addr, value, format);
+        GetProtocol()->WriteRegister(SlaveId, addr, value, format);
     } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());
     } catch (const TSerialProtocolException& e) {
@@ -148,27 +195,43 @@ void TSerialContext::WriteDirectRegister(int addr, uint64_t value, RegisterForma
 
 void TSerialContext::EndPollCycle(int usecDelay)
 {
-    Proto->EndPollCycle();
+    for (const auto& p: ProtoMap)
+        p.second->EndPollCycle();
     usleep(usecDelay);
+}
+
+PSerialProtocol TSerialContext::GetProtocol()
+{
+    if (SlaveId < 0)
+        throw TModbusException("slave id not set");
+
+    auto it = ProtoMap.find(SlaveId);
+    if (it != ProtoMap.end())
+        return it->second;
+    auto nameIt = ProtoNameMap.find(SlaveId);
+    if (nameIt == ProtoNameMap.end())
+        throw TModbusException("slave not found");
+
+    try {
+        auto protocol = TSerialProtocolFactory::CreateProtocol(nameIt->second, Port);
+        return ProtoMap[SlaveId] = protocol;
+    } catch (const TSerialProtocolException& e) {
+        Disconnect();
+        throw TModbusException(e.what());
+    }
+}
+
+PModbusContext TSerialConnector::CreateContext(PAbstractSerialPort port)
+{
+    return std::make_shared<TSerialContext>(port);
 }
 
 PModbusContext TSerialConnector::CreateContext(const TSerialPortSettings& settings)
 {
-    auto proto = CreateProtocol(PAbstractSerialPort(new TSerialPort(settings)));
-    return PModbusContext(new TSerialContext(proto));
-}
-
-PSerialProtocol TUnielConnector::CreateProtocol(PAbstractSerialPort port) {
-    return PSerialProtocol(new TUnielProtocol(port));
-}
-
-PSerialProtocol TMilurConnector::CreateProtocol(PAbstractSerialPort port) {
-    return PSerialProtocol(new TMilurProtocol(port));
-}
-
-PSerialProtocol TMercury230Connector::CreateProtocol(PAbstractSerialPort port) {
-    return PSerialProtocol(new TMercury230Protocol(port));
+    return CreateContext(std::make_shared<TSerialPort>(settings));
 }
 
 // TBD: support debug mode
 // TBD: brightness values via direct regs
+// TBD: serial context for 'uniel' -- backward compat -- pass it down as
+// default device type

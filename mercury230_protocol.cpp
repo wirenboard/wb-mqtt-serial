@@ -1,6 +1,8 @@
 #include "mercury230_protocol.h"
 #include "crc16.h"
 
+REGISTER_PROTOCOL("mercury230", TMercury230Protocol);
+
 TMercury230Protocol::TMercury230Protocol(PAbstractSerialPort port)
     : TEMProtocol(port) {}
 

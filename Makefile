@@ -33,7 +33,7 @@ MODBUS_SRCS=modbus_client.c \
   modbus_config.c modbus_port.c \
   modbus_observer.c \
   serial_protocol.c \
-  serial_context.c \
+  serial_connector.c \
   uniel_protocol.c \
   crc16.c \
   em_protocol.c \
@@ -43,8 +43,7 @@ MODBUS_OBJS=$(MODBUS_SRCS:.c=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
   $(TEST_DIR)/modbus_test.o \
-  $(TEST_DIR)/milur_test.o \
-  $(TEST_DIR)/mercury230_test.o \
+  $(TEST_DIR)/em_test.o \
   $(TEST_DIR)/fake_modbus.o \
   $(TEST_DIR)/fake_mqtt.o \
   $(TEST_DIR)/fake_serial_port.o \

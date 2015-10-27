@@ -213,6 +213,9 @@ void TConfigActionParser::LoadSetupItem(PDeviceConfig device_config, const Json:
 
 void TConfigActionParser::LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data)
 {
+    if (device_data.isMember("protocol"))
+        device_config->Protocol = device_data["protocol"].asString();
+
     if (device_data.isMember("setup")) {
         const Json::Value array = device_data["setup"];
         for(unsigned int index = 0; index < array.size(); ++index)
@@ -222,8 +225,6 @@ void TConfigActionParser::LoadDeviceVectors(PDeviceConfig device_config, const J
     const Json::Value array = device_data["channels"];
     for(unsigned int index = 0; index < array.size(); ++index)
         LoadChannel(device_config, array[index]);
-
-
 }
 
 int TConfigActionParser::GetInt(const Json::Value& obj, const std::string& key)
@@ -302,6 +303,8 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
         }
     }
     LoadDeviceVectors(device_config, device_data);
+    if (device_config->Protocol.empty())
+        device_config->Protocol = port_config->Protocol;
 
     port_config->AddDeviceConfig(device_config);
 }
@@ -339,8 +342,10 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
     if (port_data.isMember("poll_interval"))
         port_config->PollInterval = GetInt(port_data, "poll_interval");
 
-    if (port_data.isMember("type"))
-        port_config->Type = port_data["type"].asString();
+    if (port_data.isMember("protocol"))
+        port_config->Protocol = port_data["protocol"].asString();
+    else if (port_data.isMember("type")) // compatibility
+        port_config->Protocol = port_data["type"].asString();
 
     const Json::Value array = port_data["devices"];
     for(unsigned int index = 0; index < array.size(); ++index)

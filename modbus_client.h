@@ -21,6 +21,7 @@ public:
     virtual ~TModbusContext();
     virtual void Connect() = 0;
     virtual void Disconnect() = 0;
+    virtual void AddDevice(int slave, const std::string& protocol) = 0;
     virtual void SetDebug(bool debug) = 0;
     virtual void SetSlave(int slave) = 0;
     virtual void ReadCoils(int addr, int nb, uint8_t *dest) = 0;
@@ -37,7 +38,7 @@ public:
 
 typedef std::shared_ptr<TModbusContext> PModbusContext;
 
-class TModbusConnector
+class TModbusConnector: public std::enable_shared_from_this<TModbusConnector>
 {
 public:
     virtual ~TModbusConnector();
@@ -161,6 +162,7 @@ public:
     TModbusClient(const TModbusClient& client) = delete;
     TModbusClient& operator=(const TModbusClient&) = delete;
     ~TModbusClient();
+    void AddDevice(int slave, const std::string& protocol);
     void AddRegister(std::shared_ptr<TModbusRegister> reg);
     void Connect();
     void Disconnect();
@@ -179,7 +181,9 @@ public:
 private:
     const std::unique_ptr<TRegisterHandler>& GetHandler(std::shared_ptr<TModbusRegister>) const;
     TRegisterHandler* CreateRegisterHandler(std::shared_ptr<TModbusRegister> reg);
-    std::map<std::shared_ptr<TModbusRegister>, std::unique_ptr<TRegisterHandler> > handlers;
+
+    std::map<std::shared_ptr<TModbusRegister>, std::unique_ptr<TRegisterHandler> > Handlers;
+    std::map<int, std::string> DevicesToAdd;
     PModbusContext Context;
     bool Active;
     int PollInterval;

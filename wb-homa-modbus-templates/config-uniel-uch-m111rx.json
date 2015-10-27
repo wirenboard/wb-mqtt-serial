@@ -5,6 +5,7 @@
         "name": "UCH-M111RX 0808",
         "id": "uchm111rx",
         "enabled": true,
+        "protocol": "uniel",
         "setup": [
         ],
         "channels": [

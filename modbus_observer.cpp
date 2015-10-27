@@ -1,5 +1,5 @@
 #include "modbus_observer.h"
-#include "serial_context.h"
+#include "serial_connector.h"
 
 TMQTTModbusObserver::TMQTTModbusObserver(PMQTTClientBase mqtt_client,
                                          PHandlerConfig handler_config,
@@ -83,18 +83,8 @@ bool TMQTTModbusObserver::WriteInitValues()
 
 PModbusConnector TMQTTModbusObserver::GetConnector(PPortConfig port_config)
 {
-    if (port_config->Type == "uniel")
-        return PModbusConnector(new TUnielConnector());
-
-    if (port_config->Type == "milur")
-        return PModbusConnector(new TMilurConnector());
-
-    if (port_config->Type == "mercury230")
-        return PModbusConnector(new TMercury230Connector());
-
-    if (!port_config->Type.empty() && port_config->Type != "modbus")
-        std::cerr << "warning: bad port type '" << port_config->Type <<
-            "', using 'modbus'" << std::endl;
-
-    return PModbusConnector(new TDefaultModbusConnector());
+    if (port_config->Protocol.empty() || port_config->Protocol == "modbus")
+        return std::make_shared<TDefaultModbusConnector>();
+    else
+        return std::make_shared<TSerialConnector>();
 }

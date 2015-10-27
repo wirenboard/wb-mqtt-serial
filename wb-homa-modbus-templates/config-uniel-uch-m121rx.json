@@ -4,6 +4,7 @@
     "device" : {
         "name" : "UCH-M121RX 0808",
         "id" : "uchm121rx",
+        "protocol": "uniel",
         "setup": [
             {
                 "title": "Relay 0 manual mode",

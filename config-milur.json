@@ -3,7 +3,7 @@
   "ports": [
     {
       "path" : "/dev/ttyNSC0",
-      "type": "milur",
+      "protocol": "milur",
       "baud_rate": 9600,
       "parity": "N",
       "data_bits": 8,
