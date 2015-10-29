@@ -49,7 +49,7 @@
                     "device_type" : "DRB88",
                     "id": "drb88",
                     "enabled": true,
-                    "slave_id": 22
+                    "slave_id": "22"
                 },
                 {
                     "name": "OnValueTest",

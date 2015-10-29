@@ -236,7 +236,7 @@ int TConfigActionParser::GetInt(const Json::Value& obj, const std::string& key)
 
     if (v.isString()) {
         try {
-            return std::stoi(v.asString(), 0, 16);
+            return std::stoi(v.asString(), /*pos= */ 0, /*base= */ 0);
         } catch (const std::logic_error& e) {}
     }
 
