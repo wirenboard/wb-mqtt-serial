@@ -62,6 +62,25 @@ void TEMProtocolTest::VerifyMilurQuery()
     uint64_t v;
     Context->ReadDirectRegister(102, &v, U24);
     ASSERT_EQ(0x03946f, v);
+
+    // >> FF 01 76 C1 86
+    // << FF 01 76 04 44 11 10 00 AC 6C
+    SerialPort->EnqueueResponse(
+        {
+            // Read response
+            0xff, // unit id
+            0x01, // op
+            0x76, // register
+            0x04, // len
+            0x44, // data 1
+            0x11, // data 2
+            0x10, // data 3
+            0x00, // data 4
+            0xac, // crc
+            0x6c  // crc
+        });
+    Context->ReadDirectRegister(118, &v, BCD32);
+    ASSERT_EQ(11144, v);
 }
 
 TEST_F(TEMProtocolTest, MilurQuery)

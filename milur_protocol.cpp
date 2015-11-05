@@ -135,7 +135,7 @@ uint64_t TMilurProtocol::ReadRegister(uint32_t slave, uint32_t address, Register
     if (bcd) {
         for (int i = 0, mul = 1; i < size; ++i, mul *= 100) {
             int v = buf[i + 2];
-            r += ((v >> 4) * 10 + (v & 0x0f)) * mul;
+            r += ((v & 0x0f) * 10 + (v >> 4)) * mul;
         }
     } else {
         for (int i = 0; i < size; ++i) {
