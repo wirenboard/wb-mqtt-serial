@@ -1,3 +1,4 @@
+#include <thread>
 #include "modbus_observer.h"
 #include "serial_connector.h"
 
@@ -65,8 +66,19 @@ void TMQTTModbusObserver::ModbusLoopOnce()
 
 void TMQTTModbusObserver::ModbusLoop()
 {
-    for (;;)
-        ModbusLoopOnce();
+    std::vector<std::thread> port_loops;
+
+    for (const auto& port: Ports) {
+        port_loops.emplace_back(
+            [&port](){
+                for (;;)  port->Cycle();
+            }
+        );
+    }
+
+    for (auto& thr : port_loops) {
+        thr.join();
+    }
 }
 
 bool TMQTTModbusObserver::WriteInitValues()
