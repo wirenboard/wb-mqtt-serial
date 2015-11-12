@@ -74,7 +74,8 @@
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Delay between polls (ms)",
+          "title": "Delay after receiving a response (ms)",
+          "description" :  "This option specifies the delay after each command. All activity on a given port will be halted during the delay, including writes.",
           "minimum": 0,
           "default": 20,
           "propertyOrder": 7
