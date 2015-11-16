@@ -35,6 +35,7 @@ MODBUS_SRCS=modbus_client.c \
   serial_protocol.c \
   serial_connector.c \
   uniel_protocol.c \
+  ivtm_protocol.c \
   crc16.c \
   em_protocol.c \
   milur_protocol.c \
