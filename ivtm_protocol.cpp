@@ -82,7 +82,6 @@ void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     if (nread < 10)
         throw TSerialProtocolTransientErrorException("frame too short");
 
-
     if ( (buf[0] != '!') || (buf[5] != 'R') || (buf[6] != 'R')) {
         throw TSerialProtocolTransientErrorException("invalid response header");
     }
@@ -92,12 +91,11 @@ void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     }
 
     if (DecodeASCIIWord(&buf[1]) != addr) {
-        std::cout << "sl addr: " << DecodeASCIIWord(&buf[1]) << std::endl;
         throw TSerialProtocolTransientErrorException("invalid slave addr in response");
     }
 
     uint8_t crc8 = 0;
-    for (size_t i=0; i < nread-3; ++i) { 
+    for (size_t i=0; i < (size_t) nread - 3; ++i) { 
         crc8 += buf[i];
     }
 
@@ -119,12 +117,6 @@ void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 
 uint64_t TIVTMProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt, size_t width)
 {
-    uint32_t cache_key = ((slave & 0xFFFF) << 16) | (address & 0xFFFF);
-
-    // auto it = CachedValues.find(cache_key);
-    // if (it != CachedValues.end())
-    //     return it->second;
-
     Port()->SkipNoise();
 
     WriteCommand(slave, address, width);
@@ -135,17 +127,12 @@ uint64_t TIVTMProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterF
 
     // the response is little-endian. We inverse the byte order here to make it big-endian.
 
-    uint32_t result =  (p[3] << 24) | 
-                       (p[2] << 16) | 
-                       (p[1] << 8) |
-                       p[0];
-    
-    return CachedValues.insert(std::make_pair(cache_key, result)).first->second;
+    return (p[3] << 24) | 
+           (p[2] << 16) | 
+           (p[1] << 8) |
+           p[0];
 }
 
-void TIVTMProtocol::DoWriteRegister(uint8_t cmd, uint8_t mod, uint8_t address, uint8_t value)
-{
-}
 
 void TIVTMProtocol::WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat)
 {
@@ -155,13 +142,6 @@ void TIVTMProtocol::WriteRegister(uint32_t mod, uint32_t address, uint64_t value
 void TIVTMProtocol::SetBrightness(uint32_t mod, uint32_t address, uint8_t value)
 {
     throw TSerialProtocolException("IVTM protocol: setting brightness not supported");
-}
-
-
-void TIVTMProtocol::EndPollCycle()
-{
-    std::cout << "TIVTMProtocol::EndPollCycle()" << std::endl;
-    CachedValues.clear();
 }
 
 
