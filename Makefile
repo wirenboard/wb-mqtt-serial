@@ -45,6 +45,7 @@ TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
   $(TEST_DIR)/modbus_test.o \
   $(TEST_DIR)/em_test.o \
+  $(TEST_DIR)/ivtm_test.o \
   $(TEST_DIR)/fake_modbus.o \
   $(TEST_DIR)/fake_mqtt.o \
   $(TEST_DIR)/fake_serial_port.o \
