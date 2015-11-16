@@ -26,7 +26,7 @@ public:
     void WriteHoldingRegisters(int addr, int nb, const uint16_t *data);
     void WriteHoldingRegister(int addr, uint16_t value);
     void ReadInputRegisters(int addr, int nb, uint16_t *dest);
-    void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format);
+    void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format, size_t width);
     void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format);
     void EndPollCycle(int usec);
 
@@ -169,10 +169,10 @@ void TSerialContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
     ReadHoldingRegisters(addr, nb, dest);
 }
 
-void TSerialContext::ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format) {
+void TSerialContext::ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format, size_t width) {
     try {
         Connect();
-        *dest++ = GetProtocol()->ReadRegister(SlaveId, addr, format);
+        *dest++ = GetProtocol()->ReadRegister(SlaveId, addr, format, width);
     } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());
     } catch (const TSerialProtocolException& e) {

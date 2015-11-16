@@ -28,7 +28,7 @@ public:
     void WriteHoldingRegisters(int addr, int nb, const uint16_t *data);
     void WriteHoldingRegister(int addr, uint16_t value);
     void ReadInputRegisters(int addr, int nb, uint16_t *dest);
-    void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format);
+    void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format, size_t width);
     void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format);
     void EndPollCycle(int usecDelay);
 
@@ -127,7 +127,7 @@ void TDefaultModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
                                " input register(s) @ " + std::to_string(addr));
 }
 
-void TDefaultModbusContext::ReadDirectRegister(int, uint64_t*, RegisterFormat)
+void TDefaultModbusContext::ReadDirectRegister(int, uint64_t*, RegisterFormat, size_t)
 {
     throw TModbusException("direct registers not supported for modbus");
 }
@@ -521,7 +521,7 @@ public:
         std::vector<uint16_t> v;
         v.resize(Register()->Width());
         uint64_t dv;
-        ctx->ReadDirectRegister(Register()->Address, &dv, Register()->Format);
+        ctx->ReadDirectRegister(Register()->Address, &dv, Register()->Format, Register()->ByteWidth());
 #if 0 // too much debug print
         if (Client->DebugEnabled())
             std::cerr << "raw direct value for: " << Register()->ToString() << ": " << dv <<

@@ -223,12 +223,12 @@ uint8_t TSerialPort::ReadByte()
     return b;
 }
 
-int TSerialPort::ReadFrame(uint8_t* buf, int size)
+int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout)
 {
     CheckPortOpen();
     int nread = 0;
     while (nread < size) {
-        if (!Select(!nread ? Settings.ResponseTimeoutMs : FrameTimeoutMs))
+        if (!Select(!nread ? Settings.ResponseTimeoutMs : timeout))
             break; // end of the frame
 
         // We don't want to use non-blocking IO in general
@@ -276,6 +276,12 @@ void TSerialPort::SkipNoise()
     while (Select(NoiseTimeoutMs)) {
         if (read(Fd, &b, 1) < 1)
             throw TSerialProtocolException("read() failed");
+        if (Debug) {
+            std::ios::fmtflags f(std::cerr.flags());
+            std::cerr << "read noise: " << std::hex << std::setfill('0') << std::setw(2) << int(b) << std::endl;
+            std::cerr.flags(f);
+        }
+
     }
 }
 

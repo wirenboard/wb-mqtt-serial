@@ -58,7 +58,7 @@ uint8_t TFakeSerialPort::ReadByte()
     return Resp[Pos++];
 }
 
-int TFakeSerialPort::ReadFrame(uint8_t* buf, int count)
+int TFakeSerialPort::ReadFrame(uint8_t* buf, int count, int timeout)
 {
     int nread = 0;
     for (; nread < count; ++nread) {

@@ -69,7 +69,7 @@ void TUnielProtocol::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-uint64_t TUnielProtocol::ReadRegister(uint32_t mod, uint32_t address, RegisterFormat)
+uint64_t TUnielProtocol::ReadRegister(uint32_t mod, uint32_t address, RegisterFormat, size_t /* width */)
 {
     WriteCommand(READ_CMD, mod, 0, address, 0);
     uint8_t response[3];

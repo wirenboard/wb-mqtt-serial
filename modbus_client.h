@@ -31,7 +31,7 @@ public:
     virtual void WriteHoldingRegisters(int addr, int nb, const uint16_t *data) = 0;
     virtual void WriteHoldingRegister(int addr, uint16_t value) = 0;
     virtual void ReadInputRegisters(int addr, int nb, uint16_t *dest) = 0;
-    virtual void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format) = 0;
+    virtual void ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat format, size_t width) = 0;
     virtual void WriteDirectRegister(int addr, uint64_t value, RegisterFormat format) = 0;
     virtual void EndPollCycle(int usecDelay) = 0;
 };
@@ -58,7 +58,7 @@ struct TModbusRegister
 
     TModbusRegister(int slave = 0, RegisterType type = COIL, int address = 0,
                      RegisterFormat format = U16, double scale = 1,
-                     bool poll = true, bool readonly = false)
+                     bool poll = true, bool readonly = false, bool big_endian = true)
         : Slave(slave), Type(type), Address(address), Format(format),
           Scale(scale), Poll(poll), ForceReadOnly(readonly), ErrorMessage("") {}
 
@@ -76,23 +76,29 @@ struct TModbusRegister
             Type == RegisterType::INPUT_REGISTER || ForceReadOnly;
     }
 
-    uint8_t Width() const {
+
+    uint8_t ByteWidth() const {
         switch (Format) {
             case S64:
             case U64:
             case Double:
+                return 8;
+            case U32:
+            case S32:
+            case BCD32:
+            case Float:
                 return 4;
             case U24:
             case S24:
-            case U32:
-            case S32:
             case BCD24:
-            case BCD32:
-            case Float:
-                return 2;
+                return 3;
             default:
-                return 1;
+                return 2;
         }
+    }
+
+    uint8_t Width() const {
+        return ByteWidth() / 2;
     }
 
     std::string ToString() const {

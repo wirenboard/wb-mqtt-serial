@@ -13,7 +13,7 @@ public:
     static const int DefaultTimeoutMs = 1000;
 
     TUnielProtocol(PAbstractSerialPort port);
-    uint64_t ReadRegister(uint32_t mod, uint32_t address, RegisterFormat fmt);
+    uint64_t ReadRegister(uint32_t mod, uint32_t address, RegisterFormat fmt, size_t width);
     void WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat fmt);
     void SetBrightness(uint32_t mod, uint32_t address, uint8_t value);
 

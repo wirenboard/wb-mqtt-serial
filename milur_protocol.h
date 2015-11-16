@@ -13,7 +13,7 @@ public:
     static const int DefaultTimeoutMs = 1000;
 
     TMilurProtocol(PAbstractSerialPort port);
-    uint64_t ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt);
+    uint64_t ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt, size_t width);
 
 protected:
     bool ConnectionSetup(uint8_t slave);

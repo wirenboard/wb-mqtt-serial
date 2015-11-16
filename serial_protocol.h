@@ -26,6 +26,8 @@ public:
     TSerialProtocolTransientErrorException(std::string message): TSerialProtocolException(message) {}
 };
 
+const int FrameTimeoutMs = 15;
+
 class TAbstractSerialPort: public std::enable_shared_from_this<TAbstractSerialPort> {
 public:
     virtual ~TAbstractSerialPort();
@@ -36,7 +38,7 @@ public:
     virtual void CheckPortOpen() = 0;
     virtual void WriteBytes(const uint8_t* buf, int count) = 0;
     virtual uint8_t ReadByte() = 0;
-    virtual int ReadFrame(uint8_t* buf, int count) = 0;
+    virtual int ReadFrame(uint8_t* buf, int count, int timeout = FrameTimeoutMs) = 0;
     virtual void SkipNoise() =0;
     virtual void USleep(int usec) = 0;
 };
@@ -51,7 +53,7 @@ public:
     void CheckPortOpen();
     void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte();
-    int ReadFrame(uint8_t* buf, int count);
+    int ReadFrame(uint8_t* buf, int count, int timeout);
     void SkipNoise();
     void USleep(int usec);
     void Open();
@@ -66,7 +68,6 @@ private:
     bool Debug;
     int Fd;
     const int NoiseTimeoutMs = 10;
-    const int FrameTimeoutMs = 15;
 };
 
 class TSerialProtocol: public std::enable_shared_from_this<TSerialProtocol> {
@@ -74,7 +75,7 @@ public:
     TSerialProtocol(PAbstractSerialPort port);
     virtual ~TSerialProtocol();
 
-    virtual uint64_t ReadRegister(uint32_t mod, uint32_t address, RegisterFormat fmt) = 0;
+    virtual uint64_t ReadRegister(uint32_t mod, uint32_t address, RegisterFormat fmt, size_t width = 0) = 0;
     virtual void WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat fmt) = 0;
     // XXX FIXME: leaky abstraction (need to refactor)
     // Perhaps add 'brightness' register format

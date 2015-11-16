@@ -86,7 +86,7 @@ uint32_t TMercury230Protocol::ReadParam(uint32_t slave, uint32_t address)
              (uint32_t)buf[1];
 }
 
-uint64_t TMercury230Protocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat)
+uint64_t TMercury230Protocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat, size_t /* width */)
 {
     uint8_t opcode = address >> 16;
     switch (opcode) {

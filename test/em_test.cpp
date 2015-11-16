@@ -60,7 +60,7 @@ void TEMProtocolTest::VerifyMilurQuery()
             0x4e  // crc
         });
     uint64_t v;
-    Context->ReadDirectRegister(102, &v, U24);
+    Context->ReadDirectRegister(102, &v, U24, 3);
     ASSERT_EQ(0x03946f, v);
 
     // >> FF 01 76 C1 86
@@ -79,7 +79,7 @@ void TEMProtocolTest::VerifyMilurQuery()
             0xac, // crc
             0x6c  // crc
         });
-    Context->ReadDirectRegister(118, &v, BCD32);
+    Context->ReadDirectRegister(118, &v, BCD32, 4);
     ASSERT_EQ(11144, v);
 }
 
@@ -125,7 +125,7 @@ TEST_F(TEMProtocolTest, MilurReconnect)
             0x4e  // crc
         });
     uint64_t v;
-    Context->ReadDirectRegister(102, &v, U24);
+    Context->ReadDirectRegister(102, &v, U24, 3);
     ASSERT_EQ(0x03946f, v);
 }
 
@@ -145,7 +145,7 @@ TEST_F(TEMProtocolTest, MilurException)
         });
     try {
         uint64_t v;
-        Context->ReadDirectRegister(102, &v, U24);
+        Context->ReadDirectRegister(102, &v, U24, 3);
         FAIL() << "No exception thrown";
     } catch (const TModbusException& e) {
         ASSERT_STREQ("Modbus error: Serial protocol error: EEPROM access error", e.what());
@@ -208,11 +208,11 @@ TEST_F(TEMProtocolTest, Mercury230ReadEnergy)
     // Here we make sure that consecutive requests querying the same array
     // don't cause redundant requests during the single poll cycle.
     uint64_t v;
-    Context->ReadDirectRegister(0x50000, &v, U32);
+    Context->ReadDirectRegister(0x50000, &v, U32, 4);
     ASSERT_EQ(3196200, v);
-    Context->ReadDirectRegister(0x50002, &v, U32);
+    Context->ReadDirectRegister(0x50002, &v, U32, 4);
     ASSERT_EQ(300444, v);
-    Context->ReadDirectRegister(0x50000, &v, U32);
+    Context->ReadDirectRegister(0x50000, &v, U32, 4);
     ASSERT_EQ(3196200, v);
     Context->EndPollCycle(0);
 
@@ -240,11 +240,11 @@ TEST_F(TEMProtocolTest, Mercury230ReadEnergy)
             0xbb  // crc
         });
 
-    Context->ReadDirectRegister(0x50000, &v, U32);
+    Context->ReadDirectRegister(0x50000, &v, U32, 4);
     ASSERT_EQ(3196201, v);
-    Context->ReadDirectRegister(0x50002, &v, U32);
+    Context->ReadDirectRegister(0x50002, &v, U32, 4);
     ASSERT_EQ(300445, v);
-    Context->ReadDirectRegister(0x50000, &v, U32);
+    Context->ReadDirectRegister(0x50000, &v, U32, 4);
     ASSERT_EQ(3196201, v);
     Context->EndPollCycle(0);
     Context->Disconnect();
@@ -267,7 +267,7 @@ void TEMProtocolTest::VerifyMercuryParamQuery()
     // N = param number (0x11)
     // B = subparam spec (BWRI), 0x11 = voltage, phase 1
     uint64_t v;
-    Context->ReadDirectRegister(0x81111, &v, U24);
+    Context->ReadDirectRegister(0x81111, &v, U24, 3);
     ASSERT_EQ(24128, v);
 
     SerialPort->EnqueueResponse(
@@ -280,7 +280,7 @@ void TEMProtocolTest::VerifyMercuryParamQuery()
             0xb4  // crc
         });
     // subparam 0x21 = current (phase 1)
-    Context->ReadDirectRegister(0x81121, &v, U24);
+    Context->ReadDirectRegister(0x81121, &v, U24, 3);
     ASSERT_EQ(69, v);
 
     SerialPort->EnqueueResponse(
@@ -293,7 +293,7 @@ void TEMProtocolTest::VerifyMercuryParamQuery()
             0x2d  // crc
         });
     // subparam 0x12 = voltage (phase 2)
-    Context->ReadDirectRegister(0x81112, &v, U24);
+    Context->ReadDirectRegister(0x81112, &v, U24, 3);
     ASSERT_EQ(24043, v);
 }
 
@@ -332,7 +332,7 @@ TEST_F(TEMProtocolTest, Mercury230Reconnect)
         });
     // subparam 0x12 = voltage (phase 2)
     uint64_t v;
-    Context->ReadDirectRegister(0x81112, &v, U24);
+    Context->ReadDirectRegister(0x81112, &v, U24, 3);
     ASSERT_EQ(24043, v);
 
     Context->EndPollCycle(0);
@@ -352,7 +352,7 @@ TEST_F(TEMProtocolTest, Mercury230Exception)
         });
     try {
         uint64_t v;
-        Context->ReadDirectRegister(0x81112, &v, U24);
+        Context->ReadDirectRegister(0x81112, &v, U24, 3);
         FAIL() << "No exception thrown";
     } catch (const TModbusException& e) {
         ASSERT_STREQ("Modbus error: Serial protocol error: Internal meter error", e.what());

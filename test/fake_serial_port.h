@@ -16,7 +16,7 @@ public:
     bool IsOpen() const;
     void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte();
-    int ReadFrame(uint8_t* buf, int count);
+    int ReadFrame(uint8_t* buf, int count, int timeout);
     void SkipNoise();
     void USleep(int usec);
 

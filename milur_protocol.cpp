@@ -117,7 +117,7 @@ TEMProtocol::ErrorType TMilurProtocol::CheckForException(uint8_t* frame, int len
     return TEMProtocol::OTHER_ERROR;
 }
 
-uint64_t TMilurProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt)
+uint64_t TMilurProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt, size_t /*width*/)
 {
     int size;
     bool bcd;

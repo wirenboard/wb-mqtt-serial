@@ -107,7 +107,7 @@ void TFakeModbusContext::ReadInputRegisters(int addr, int nb, uint16_t *dest)
     CurrentSlave->Input.ReadRegs(Fixture, addr, nb, dest, AUTO);
 }
 
-void TFakeModbusContext::ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat fmt) {
+void TFakeModbusContext::ReadDirectRegister(int addr, uint64_t* dest, RegisterFormat fmt, size_t width) {
     ASSERT_TRUE(!!CurrentSlave);
     CurrentSlave->Direct.ReadRegs(Fixture, addr, 1, dest, fmt);
 }
