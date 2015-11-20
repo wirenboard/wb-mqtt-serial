@@ -2,7 +2,7 @@
   "device_type": "IVTM-7M-3",
   "device": {
     "name": "IVTM-7M-3",
-    "id": "ivtm7m", 
+    "id": "ivtm7m3",
     "protocol": "ivtm",
     "channels": [
       {
