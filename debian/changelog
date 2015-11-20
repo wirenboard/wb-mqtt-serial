@@ -1,7 +1,8 @@
-wb-homa-modbus (1.13+ivtm1) stable; urgency=medium
+wb-homa-modbus (1.13.0) stable; urgency=medium
 
   * Concurrent port access
-  * IVTM-7M
+  * adds support for IVTM protocol and IVTM-7M-3 device
+  * adds support for Milur and Mercury electricity meter protocols 
 
  -- Evgeny Boger <boger@contactless.ru>  Fri, 13 Nov 2015 02:07:11 +0300
 
