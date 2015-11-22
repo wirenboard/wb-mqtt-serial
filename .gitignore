@@ -4,6 +4,7 @@ wb-homa-modbus/wb-homa-modbus
 wb-homa-ninja-bridge/wb-homa-ninja-bridge
 wb-homa-w1/wb-homa-w1
 wb-homa-adc/wb-homa-adc
+wb-homa-lirc/wb-homa-lirc
 mqtt-logger/mqtt-logger
 test/wb-homa-test
 *.deb
@@ -25,4 +26,5 @@ wb-homa-gpio/debian/wb-homa-gpio/
 wb-homa-modbus/debian/wb-homa-modbus/
 wb-homa-w1/debian/wb-homa-w1/
 wb-homa-ninja-bridge/debian/wb-homa-ninja-bridge/
+wb-homa-lirc/debian/wb-homa-lirc/
 wb-mqtt-db/debian/wb-mqtt-db/
