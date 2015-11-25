@@ -1,3 +1,9 @@
+wb-homa-modbus (1.13.1) stable; urgency=medium
+
+  * fixes handling IVTM devices with device_id > 9    
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 26 Nov 2015 00:12:11 +0300
+
 wb-homa-modbus (1.13.0) stable; urgency=medium
 
   * Concurrent port access
