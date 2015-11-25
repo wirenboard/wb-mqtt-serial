@@ -22,6 +22,7 @@ void TIVTMProtocolTest::SetUp()
     SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
     Context = TSerialConnector().CreateContext(SerialPort);
     Context->AddDevice(0x0001, "ivtm");
+    Context->AddDevice(0x000A, "ivtm");
 }
 
 void TIVTMProtocolTest::TearDown()
@@ -73,7 +74,29 @@ TEST_F(TIVTMProtocolTest, IVTM7MQuery)
     Context->ReadDirectRegister(4, &v, Float, 4);
     ASSERT_EQ(0x41EB9A30, v); //big-endian
 
-
     Context->EndPollCycle(0);
     Context->Disconnect();
+
+    // Test upper-case hex letters
+
+    Context->SetSlave(0x0A);
+
+    // >> 24 30 30 30 41 52 52 30 30 30 30 30 34 42 44 0d
+    // << 21 30 30 30 41 52 52 35 45 38 35 43 37 34 31 35 43 0D
+    // temperature == 24.940121
+
+    SerialPort->EnqueueResponse(
+        {
+            // Session setup response
+            '!',                  // header
+            '0', '0', '0', 'A',   // slave addr
+            'R', 'R',             // read response
+            '5', 'E', '8', '5', 'C', '7', '4', '1', //temp data 5E 85 C7 41 (little endian)
+            '5', 'C',             //CRC
+            0x0D                  // footer
+        });
+
+    Context->ReadDirectRegister(0, &v, Float, 4);
+    ASSERT_EQ(0x41C7855E, v); //big-endian
+
 }

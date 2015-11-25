@@ -26,23 +26,23 @@ void TIVTMProtocol::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data
     uint8_t buf[16];
     buf[0] = '$';
     
-    snprintf((char*) &buf[1], 3, "%02x", addr >> 8);
-    snprintf((char*) &buf[3], 3, "%02x", addr & 0xFF );
+    snprintf((char*) &buf[1], 3, "%02X", addr >> 8);
+    snprintf((char*) &buf[3], 3, "%02X", addr & 0xFF );
 
     buf[5] = 'R';
     buf[6] = 'R';
 
-    snprintf((char*) &buf[7], 3, "%02x", data_addr >> 8);
-    snprintf((char*) &buf[9], 3, "%02x", data_addr & 0xFF );
+    snprintf((char*) &buf[7], 3, "%02X", data_addr >> 8);
+    snprintf((char*) &buf[9], 3, "%02X", data_addr & 0xFF );
 
-    snprintf((char*) &buf[11], 3, "%02x", data_len);
+    snprintf((char*) &buf[11], 3, "%02X", data_len);
 
     uint8_t crc8 = 0;
     for (size_t i=0; i < 13; ++i) { 
         crc8 += buf[i];
     }
 
-    snprintf((char*) &buf[13], 3, "%02x", crc8);
+    snprintf((char*) &buf[13], 3, "%02X", crc8);
     buf[15] = 0x0d;
 
 
