@@ -206,7 +206,7 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
         new_value = Read(ctx);
     } catch (const TModbusException& e) {
         std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " [slave_id is "
-				  << 	reg->Slave << "(0x" << std::hex << reg->Slave << ")]" << std::endl;
+				  << reg->Slave << "(0x" << std::hex << reg->Slave << ")]" << std::endl;
         std::cerr << std::dec;
         reg->ErrorMessage = "Poll";
         return std::make_pair(true, 1);
@@ -218,6 +218,9 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
             set_value_mutex.unlock();
             return std::make_pair(true, message);
         }
+        // FIXME: without resize 'value = new_value' assignment
+        // was causing valgrind errors on debian jessie (g++ 4.9.2):
+        value.resize(new_value.size());
         value = new_value;
         set_value_mutex.unlock();
 
