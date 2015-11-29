@@ -58,7 +58,7 @@ struct TModbusRegister
 
     TModbusRegister(int slave = 0, RegisterType type = COIL, int address = 0,
                      RegisterFormat format = U16, double scale = 1,
-                     bool poll = true, bool readonly = false, bool big_endian = true)
+                     bool poll = true, bool readonly = false)
         : Slave(slave), Type(type), Address(address), Format(format),
           Scale(scale), Poll(poll), ForceReadOnly(readonly), ErrorMessage("") {}
 
