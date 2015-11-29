@@ -80,7 +80,6 @@ test: $(TEST_DIR)/$(TEST_BIN)
 	if [ "$(shell arch)" = "armv7l" ]; then \
           $(TEST_DIR)/$(TEST_BIN) || $(TEST_DIR)/abt.sh show; \
         else \
-          echo "zzz $$PATH"; \
           valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) || \
             if [ $$? = 180 ]; then \
               echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
