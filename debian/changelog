@@ -1,3 +1,9 @@
+wb-homa-modbus (1.12.9) stable; urgency=medium
+
+  * adds support for WB-MS-THLS
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 08 Dec 2015 18:17:54 +0300
+
 wb-homa-modbus (1.12.8) stable; urgency=medium
 
   * Add config to wb-configs.d
