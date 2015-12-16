@@ -172,6 +172,14 @@
           "items": { "$ref": "#/definitions/modbus_int" },
           "propertyOrder": 9
         },
+        "delay_usec": {
+          "type": "integer",
+          "title": "Delay before accessing the device (us)",
+          "description": "Currently only works for non-modbus devices.",
+          "minimum": 0,
+          "default": 100000,
+          "propertyOrder": 10
+        }
       },
       "required": ["slave_id"],
       "defaultProperties": ["slave_id", "device_type"]

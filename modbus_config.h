@@ -45,8 +45,11 @@ typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
 
 struct TDeviceConfig
 {
-    TDeviceConfig(std::string name = "", int slaveId = 0, std::string protocol = "")
-        : Name(name), SlaveId(slaveId), Protocol(protocol) {}
+    static const int DEFAULT_INTER_DEVICE_DELAY_USEC = 100000;
+
+    TDeviceConfig(std::string name = "", int slaveId = 0, std::string protocol = "",
+                  int delayUSec = DEFAULT_INTER_DEVICE_DELAY_USEC)
+        : Name(name), SlaveId(slaveId), Protocol(protocol), DelayUSec(delayUSec) {}
     int NextOrderValue() const { return ModbusChannels.size() + 1; }
     void AddChannel(PModbusChannel channel) { ModbusChannels.push_back(channel); };
     void AddSetupItem(PDeviceSetupItem item) { SetupItems.push_back(item); }
@@ -58,6 +61,7 @@ struct TDeviceConfig
     std::vector<PModbusChannel> ModbusChannels;
     std::vector<PDeviceSetupItem> SetupItems;
     std::vector<uint8_t> Password;
+    int DelayUSec = 0;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;

@@ -7,7 +7,6 @@ namespace {
     enum {
         ADDR_TYPE_BRIGHTNESS = 0x01
     };
-    const int INTER_DEVICE_DELAY_USEC = 60000; // TBD: make it configurable
 }
 
 class TSerialContext: public TModbusContext
@@ -74,8 +73,13 @@ void TSerialContext::SetSlave(int slave)
         return;
 
     SlaveId = slave;
-    if (Port->IsOpen())
-        Port->USleep(INTER_DEVICE_DELAY_USEC);
+    if (Port->IsOpen()) {
+        auto it = ConfigMap.find(SlaveId);
+        if (it == ConfigMap.end())
+            throw new TSerialProtocolException("bad slave id");
+        if (it->second->DelayUSec > 0)
+            Port->USleep(it->second->DelayUSec);
+    }
 }
 
 void TSerialContext::ReadCoils(int addr, int nb, uint8_t *dest)

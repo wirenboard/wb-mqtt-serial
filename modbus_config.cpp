@@ -233,6 +233,9 @@ void TConfigActionParser::LoadDeviceVectors(PDeviceConfig device_config, const J
             device_config->Password.push_back(ToInt(array[index], "password item"));
     }
 
+    if (device_data.isMember("delay_usec"))
+        device_config->DelayUSec = GetInt(device_data, "delay_usec");
+
     const Json::Value array = device_data["channels"];
     for(unsigned int index = 0; index < array.size(); ++index)
         LoadChannel(device_config, array[index]);
