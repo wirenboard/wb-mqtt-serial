@@ -47,7 +47,7 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
 {
     uint8_t setupCmd[] = {
         // full: 0xff, 0x08, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x5f, 0xed
-        ACCESS_LEVEL, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+        uint8_t(AccessLevel()), 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
     };
 
     std::vector<uint8_t> password = Password();
@@ -62,7 +62,7 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
     try {
         if (!ReadResponse(slave, 0x08, buf, 1))
             return false;
-        if (buf[0] != ACCESS_LEVEL)
+        if (buf[0] != uint8_t(AccessLevel()))
             throw TSerialProtocolException("invalid milur access level in response");
         return true;
     } catch (TSerialProtocolTransientErrorException&) {

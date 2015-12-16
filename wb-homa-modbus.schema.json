@@ -172,13 +172,22 @@
           "items": { "$ref": "#/definitions/modbus_int" },
           "propertyOrder": 9
         },
+        "access_level": {
+          "type": "integer",
+          "title": "Access level",
+          "description": "Device specific access level value",
+          "minimum": 0,
+          "maximum": 2,
+          "default": 1,
+          "propertyOrder": 10
+        },
         "delay_usec": {
           "type": "integer",
           "title": "Delay before accessing the device (us)",
           "description": "Currently only works for non-modbus devices.",
           "minimum": 0,
           "default": 100000,
-          "propertyOrder": 10
+          "propertyOrder": 11
         }
       },
       "required": ["slave_id"],

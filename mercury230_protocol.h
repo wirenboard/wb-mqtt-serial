@@ -30,7 +30,6 @@ private:
     const TValueArray& ReadValueArray(uint32_t slave, uint32_t address);
     uint32_t ReadParam(uint32_t slave, uint32_t address);
 
-    const uint8_t ACCESS_LEVEL = 1;
     std::unordered_map<int, TValueArray> CachedValues;
 };
 

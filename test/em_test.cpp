@@ -406,6 +406,7 @@ PDeviceConfig TEMCustomPasswordTest::MilurConfig()
 {
     PDeviceConfig device_config = TEMProtocolTest::MilurConfig();
     device_config->Password = { 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+    device_config->AccessLevel = 2;
     return device_config;
 }
 
@@ -413,13 +414,23 @@ PDeviceConfig TEMCustomPasswordTest::Mercury230Config()
 {
     PDeviceConfig device_config = TEMProtocolTest::Mercury230Config();
     device_config->Password = { 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
+    device_config->AccessLevel = 2;
     return device_config;
 }
 
 TEST_F(TEMCustomPasswordTest, Combined)
 {
     Context->SetSlave(0xff);
-    EnqueueMilurSessionSetupResponse();
+    SerialPort->EnqueueResponse(
+        {
+            // Session setup response
+            // Different access level, thus not using EnqueueMilurSessionSetupResponse() here
+            0xff, // unit id
+            0x08, // op
+            0x02, // result
+            0xc7, // crc
+            0xf1  // crc
+        });
     VerifyMilurQuery();
     Context->EndPollCycle(0);
 

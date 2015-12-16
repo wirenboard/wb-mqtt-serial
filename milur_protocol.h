@@ -18,9 +18,6 @@ public:
 protected:
     bool ConnectionSetup(uint8_t slave);
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
-
-private:
-    const uint8_t ACCESS_LEVEL = 1;
 };
 
 typedef std::shared_ptr<TMilurProtocol> PMilurProtocol;
