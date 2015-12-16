@@ -29,10 +29,23 @@ void TModbusClientTest::SetUp()
             Emit() << "Modbus Callback: " << reg->ToString() << " becomes " <<
                 ModbusClient->GetTextValue(reg);
         });
-    ModbusClient->SetErrorCallback([this](std::shared_ptr<TModbusRegister> reg) {
-            string error = (reg->ErrorMessage == "Poll") ? "read" : "write";
-            Emit() << "Modbus ErrorCallback: " << reg->ToString() << " gets " <<
-                error << " error";
+    ModbusClient->SetErrorCallback(
+        [this](std::shared_ptr<TModbusRegister> reg, TModbusClient::TErrorState errorState) {
+            const char* what;
+            switch (errorState) {
+            case TModbusClient::WriteError:
+                what = "write error";
+                break;
+            case TModbusClient::ReadError:
+                what = "read error";
+                break;
+            case TModbusClient::ReadWriteError:
+                what = "read+write error";
+                break;
+            default:
+                what = "no error";
+            }
+            Emit() << "Modbus ErrorCallback: " << reg->ToString() << ": " << what;
         });
     Slave = Connector->AddSlave(TFakeModbusConnector::PORT0, 1,
                                 TRegisterRange(0, 10),
@@ -457,12 +470,39 @@ TEST_F(TModbusClientTest, Double64)
     EXPECT_EQ(to_string(126000.0), ModbusClient->GetTextValue(holding24));
 }
 
-
-TEST_F(TModbusClientTest, ReadErrors)
+TEST_F(TModbusClientTest, Errors)
 {
-    std::shared_ptr<TModbusRegister> holding200(new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 200));
-    ModbusClient->AddRegister(holding200);
-    Note() << "Cycle()";
+    std::shared_ptr<TModbusRegister> holding20(new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20));
+    Slave->Holding.BlacklistRead(20, true);
+    Slave->Holding.BlacklistWrite(20, true);
+    ModbusClient->AddRegister(holding20);
+    for (int i = 0; i < 3; i++) {
+        Note() << "Cycle() [read, rw blacklisted]";
+        ModbusClient->Cycle();
+    }
+
+    ModbusClient->SetTextValue(holding20, "42");
+    Note() << "Cycle() [write, rw blacklisted]";
+    ModbusClient->Cycle();
+
+    Slave->Holding.BlacklistWrite(20, false);
+    ModbusClient->SetTextValue(holding20, "42");
+    Note() << "Cycle() [write, r blacklisted]";
+    ModbusClient->Cycle();
+
+    Slave->Holding.BlacklistWrite(20, true);
+    ModbusClient->SetTextValue(holding20, "43");
+    Note() << "Cycle() [write, rw blacklisted]";
+    ModbusClient->Cycle();
+
+    Slave->Holding.BlacklistRead(20, false);
+    Note() << "Cycle() [write, w blacklisted]";
+    ModbusClient->Cycle();
+
+    Slave->Holding.BlacklistWrite(20, false);
+    ModbusClient->SetTextValue(holding20, "42");
+    Note() << "Cycle() [write, nothing blacklisted]";
+    ModbusClient->Cycle();
     ModbusClient->Cycle();
 }
 
@@ -641,6 +681,51 @@ TEST_F(TModbusDeviceTest, OnValue)
 
     slave->Holding[0] = 500;
     Note() << "ModbusLoopOnce() after second slave update";
+    modbus_observer->ModbusLoopOnce();
+}
+
+TEST_F(TModbusDeviceTest, Errors)
+{
+    FilterConfig("DDL24");
+    PFakeSlave slave = Connector->AddSlave(TFakeModbusConnector::PORT0,
+                                           Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
+                                           TRegisterRange(),
+                                           TRegisterRange(),
+                                           TRegisterRange(4, 19),
+                                           TRegisterRange());
+
+    PMQTTModbusObserver modbus_observer(new TMQTTModbusObserver(MQTTClient, Config, Connector));
+    modbus_observer->SetUp();
+
+    slave->Holding.BlacklistRead(4, true);
+    slave->Holding.BlacklistWrite(4, true);
+    slave->Holding.BlacklistRead(7, true);
+    slave->Holding.BlacklistWrite(7, true);
+
+    Note() << "ModbusLoopOnce() [read, rw blacklisted]";
+    modbus_observer->ModbusLoopOnce();
+
+    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/RGB/on", "10;20;30");
+    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/White/on", "42");
+
+    Note() << "ModbusLoopOnce() [write, rw blacklisted]";
+    modbus_observer->ModbusLoopOnce();
+
+    slave->Holding.BlacklistRead(4, false);
+    slave->Holding.BlacklistWrite(4, false);
+    slave->Holding.BlacklistRead(7, false);
+    slave->Holding.BlacklistWrite(7, false);
+
+    Note() << "ModbusLoopOnce() [read, nothing blacklisted]";
+    modbus_observer->ModbusLoopOnce();
+
+    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/RGB/on", "10;20;30");
+    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/White/on", "42");
+
+    Note() << "ModbusLoopOnce() [write, nothing blacklisted]";
+    modbus_observer->ModbusLoopOnce();
+
+    Note() << "ModbusLoopOnce() [read, nothing blacklisted] (2)";
     modbus_observer->ModbusLoopOnce();
 }
 

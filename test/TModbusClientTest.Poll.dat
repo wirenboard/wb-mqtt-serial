@@ -4,22 +4,27 @@ Connect()
 >>> Cycle()
 SetSlave(1)
 read 1 coil(s) @ 0: 0x00
+Modbus ErrorCallback: <1:coil: 0>: no error
 Modbus Callback: <1:coil: 0> becomes 0
 EndPollCycle(1000000)
 SetSlave(1)
 read 1 coil(s) @ 1: 0x00
+Modbus ErrorCallback: <1:coil: 1>: no error
 Modbus Callback: <1:coil: 1> becomes 0
 EndPollCycle(1000000)
 SetSlave(1)
 read 1 discrete input(s) @ 10: 0x00
+Modbus ErrorCallback: <1:discrete: 10>: no error
 Modbus Callback: <1:discrete: 10> becomes 0
 EndPollCycle(1000000)
 SetSlave(1)
 read 1 holding register(s) @ 22: 0x0000
+Modbus ErrorCallback: <1:holding: 22>: no error
 Modbus Callback: <1:holding: 22> becomes 0
 EndPollCycle(1000000)
 SetSlave(1)
 read 1 input register(s) @ 33: 0x0000
+Modbus ErrorCallback: <1:input: 33>: no error
 Modbus Callback: <1:input: 33> becomes 0
 EndPollCycle(1000000)
 >>> Cycle()

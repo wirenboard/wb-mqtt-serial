@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <unordered_set>
 #include <gtest/gtest.h>
 
 #include "testlog.h"
@@ -67,6 +68,8 @@ public:
         if (nb) {
             s << ":";
             while (nb--) {
+                if (ReadBlacklist.find(addr) != ReadBlacklist.end())
+                    throw TModbusException("address in read blacklist");
                 int v = (*this)[addr++];
                 s << " 0x" << std::hex << std::setw(StrWidth()) << std::setfill('0') << (int)v;
                 *dest++ = v;
@@ -83,6 +86,8 @@ public:
         if (nb) {
             s << ": ";
             while (nb--) {
+                if (WriteBlacklist.find(addr) != WriteBlacklist.end())
+                    throw TModbusException("address in write blacklist");
                 int v = *src++;
                 s << " 0x" << std::hex << std::setw(StrWidth()) << std::setfill('0') << (int)v;
                 (*this)[addr++] = v;
@@ -90,7 +95,25 @@ public:
         }
         fixture.Emit() << s.str();
     }
+
+    void BlacklistRead(int addr, bool blacklist)
+    {
+        if (blacklist)
+            ReadBlacklist.insert(addr);
+        else
+            ReadBlacklist.erase(addr);
+    }
+
+    void BlacklistWrite(int addr, bool blacklist)
+    {
+        if (blacklist)
+            WriteBlacklist.insert(addr);
+        else
+            WriteBlacklist.erase(addr);
+    }
+
 private:
+    std::unordered_set<int> ReadBlacklist, WriteBlacklist;
     int StrWidth() const { return sizeof(T) * 2; }
     std::string Name;
     TRegisterRange Range;

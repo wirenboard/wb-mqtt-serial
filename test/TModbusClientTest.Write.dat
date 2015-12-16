@@ -4,10 +4,12 @@ CreateContext(): </dev/ttyNSC0 115200 8 N1 timeout 0>
 Connect()
 SetSlave(1)
 read 1 coil(s) @ 1: 0x00
+Modbus ErrorCallback: <1:coil: 1>: no error
 Modbus Callback: <1:coil: 1> becomes 0
 EndPollCycle(1000000)
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x0000
+Modbus ErrorCallback: <1:holding: 20>: no error
 Modbus Callback: <1:holding: 20> becomes 0
 EndPollCycle(1000000)
 >>> Cycle()

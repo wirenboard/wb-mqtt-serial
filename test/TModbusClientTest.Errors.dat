@@ -1,0 +1,46 @@
+CreateContext(): </dev/ttyNSC0 115200 8 N1 timeout 0>
+>>> AddSlave(1)
+>>> Cycle() [read, rw blacklisted]
+Connect()
+SetSlave(1)
+Modbus ErrorCallback: <1:holding: 20>: read error
+EndPollCycle(1000000)
+>>> Cycle() [read, rw blacklisted]
+SetSlave(1)
+EndPollCycle(1000000)
+>>> Cycle() [read, rw blacklisted]
+SetSlave(1)
+EndPollCycle(1000000)
+>>> Cycle() [write, rw blacklisted]
+SetSlave(1)
+Modbus ErrorCallback: <1:holding: 20>: read+write error
+SetSlave(1)
+EndPollCycle(1000000)
+>>> Cycle() [write, r blacklisted]
+SetSlave(1)
+write 1 holding register(s) @ 20:  0x002a
+Modbus ErrorCallback: <1:holding: 20>: read error
+SetSlave(1)
+EndPollCycle(1000000)
+>>> Cycle() [write, rw blacklisted]
+SetSlave(1)
+Modbus ErrorCallback: <1:holding: 20>: read+write error
+SetSlave(1)
+EndPollCycle(1000000)
+>>> Cycle() [write, w blacklisted]
+SetSlave(1)
+read 1 holding register(s) @ 20: 0x002a
+Modbus ErrorCallback: <1:holding: 20>: write error
+Modbus Callback: <1:holding: 20> becomes 42
+EndPollCycle(1000000)
+>>> Cycle() [write, nothing blacklisted]
+SetSlave(1)
+write 1 holding register(s) @ 20:  0x002a
+Modbus ErrorCallback: <1:holding: 20>: no error
+SetSlave(1)
+read 1 holding register(s) @ 20: 0x002a
+EndPollCycle(1000000)
+SetSlave(1)
+read 1 holding register(s) @ 20: 0x002a
+EndPollCycle(1000000)
+Disconnect()

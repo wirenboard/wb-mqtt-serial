@@ -60,7 +60,7 @@ struct TModbusRegister
                      RegisterFormat format = U16, double scale = 1,
                      bool poll = true, bool readonly = false)
         : Slave(slave), Type(type), Address(address), Format(format),
-          Scale(scale), Poll(poll), ForceReadOnly(readonly), ErrorMessage("") {}
+          Scale(scale), Poll(poll), ForceReadOnly(readonly) {}
 
     int Slave;
     RegisterType Type;
@@ -69,7 +69,6 @@ struct TModbusRegister
     double Scale;
     bool Poll;
     bool ForceReadOnly;
-    std::string ErrorMessage;
 
     bool IsReadOnly() const {
         return Type == RegisterType::DISCRETE_INPUT ||
@@ -158,11 +157,20 @@ private:
     std::string message;
 };
 
-typedef std::function<void(std::shared_ptr<TModbusRegister> reg)> TModbusCallback;
-
 class TModbusClient
 {
 public:
+    enum TErrorState {
+        NoError,
+        WriteError,
+        ReadError,
+        ReadWriteError,
+        UnknownErrorState,
+        ErrorStateUnchanged
+    };
+    typedef std::function<void(std::shared_ptr<TModbusRegister> reg)> TCallback;
+    typedef std::function<void(std::shared_ptr<TModbusRegister> reg, TErrorState errorState)> TErrorCallback;
+
     TModbusClient(const TSerialPortSettings& settings,
                   PModbusConnector connector = 0);
     TModbusClient(const TModbusClient& client) = delete;
@@ -176,9 +184,8 @@ public:
     void SetTextValue(std::shared_ptr<TModbusRegister> reg, const std::string& value);
     std::string GetTextValue(std::shared_ptr<TModbusRegister> reg) const;
     bool DidRead(std::shared_ptr<TModbusRegister> reg) const;
-    void SetCallback(const TModbusCallback& callback);
-    void SetErrorCallback(const TModbusCallback& callback);
-    void SetDeleteErrorsCallback(const TModbusCallback& callback);
+    void SetCallback(const TCallback& callback);
+    void SetErrorCallback(const TErrorCallback& callback);
     void SetPollInterval(int ms);
     void SetModbusDebug(bool debug);
     bool DebugEnabled() const;
@@ -187,6 +194,7 @@ public:
 private:
     const std::unique_ptr<TRegisterHandler>& GetHandler(std::shared_ptr<TModbusRegister>) const;
     TRegisterHandler* CreateRegisterHandler(std::shared_ptr<TModbusRegister> reg);
+    void MaybeUpdateErrorState(std::shared_ptr<TModbusRegister> reg, TErrorState state);
 
     std::map<std::shared_ptr<TModbusRegister>, std::unique_ptr<TRegisterHandler> > Handlers;
     std::map<int, std::string> DevicesToAdd;
@@ -194,9 +202,8 @@ private:
     bool Active;
     int PollInterval;
     const int MAX_REGS = 65536;
-    TModbusCallback Callback;
-    TModbusCallback ErrorCallback;
-    TModbusCallback DeleteErrorsCallback;
+    TCallback Callback;
+    TErrorCallback ErrorCallback;
     bool Debug = false;
 };
 

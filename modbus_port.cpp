@@ -12,12 +12,10 @@ TModbusPort::TModbusPort(PMQTTClientBase mqtt_client, PPortConfig port_config, P
     ModbusClient->SetCallback([this](std::shared_ptr<TModbusRegister> reg) {
             OnModbusValueChange(reg);
         });
-    ModbusClient->SetErrorCallback([this](std::shared_ptr<TModbusRegister> reg) {
-            PublishError(reg);
-            });
-    ModbusClient->SetDeleteErrorsCallback([this](std::shared_ptr<TModbusRegister> reg) {
-            DeleteErrorMessages(reg);
-            });
+    ModbusClient->SetErrorCallback(
+        [this](std::shared_ptr<TModbusRegister> reg, TModbusClient::TErrorState state) {
+            UpdateError(reg, state);
+        });
     for (auto device_config: Config->DeviceConfigs) {
         ModbusClient->AddDevice(device_config->SlaveId, device_config->Protocol);
         for (auto channel: device_config->ModbusChannels) {
@@ -30,7 +28,7 @@ TModbusPort::TModbusPort(PMQTTClientBase mqtt_client, PPortConfig port_config, P
     }
     ModbusClient->SetPollInterval(Config->PollInterval);
     ModbusClient->SetModbusDebug(Config->Debug);
-};
+}
 
 void TModbusPort::PubSubSetup()
 {
@@ -173,30 +171,44 @@ void TModbusPort::OnModbusValueChange(std::shared_ptr<TModbusRegister> reg)
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
 }
 
-void TModbusPort::PublishError(std::shared_ptr<TModbusRegister> reg)
+TModbusClient::TErrorState TModbusPort::RegErrorState(std::shared_ptr<TModbusRegister> reg)
 {
-    int error = (reg->ErrorMessage == "Poll") ? 1: 2;
-    auto it = RegisterToChannelMap.find(reg);
-    if (it == RegisterToChannelMap.end()) {
-        std::cerr << "warning: unexpected register from modbus" << std::endl;
-        return;
-    }
-    if (!it->second->MayHaveError) {
-        MQTTClient->Publish(NULL, GetChannelTopic(*it->second) + "/meta/error", to_string(error), 0, true);
-        it->second->MayHaveError = true;
-    }
+    auto it = RegErrorStateMap.find(reg);
+    if (it == RegErrorStateMap.end())
+        return TModbusClient::UnknownErrorState;
+    return it->second;
 }
 
-void TModbusPort::DeleteErrorMessages(std::shared_ptr<TModbusRegister> reg)
+void TModbusPort::UpdateError(std::shared_ptr<TModbusRegister> reg, TModbusClient::TErrorState errorState)
 {
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
         std::cerr << "warning: unexpected register from modbus" << std::endl;
         return;
     }
-    if (it->second->MayHaveError) {
-        MQTTClient->Publish(NULL, GetChannelTopic(*it->second) + "/meta/error", "", 0, true);
-        it->second->MayHaveError = false;
+    RegErrorStateMap[reg] = errorState;
+    bool readError = false, writeError = false;
+    for (auto r: it->second->Registers) {
+        switch (RegErrorState(r)) {
+        case TModbusClient::WriteError:
+            writeError = true;
+            break;
+        case TModbusClient::ReadError:
+            readError = true;
+            break;
+        case TModbusClient::ReadWriteError:
+            readError = writeError = true;
+            break;
+        default:
+            ; // make compiler happy
+        }
+    }
+    std::string errorStr = readError ? (writeError ? "rw" : "r") : (writeError ? "w" : ""),
+        errorTopic = GetChannelTopic(*it->second) + "/meta/error";
+    auto errMapIt = PublishedErrorMap.find(errorTopic);
+    if (errMapIt == PublishedErrorMap.end() || errMapIt->second != errorStr) {
+        PublishedErrorMap[errorTopic] = errorStr;
+        MQTTClient->Publish(NULL, errorTopic, errorStr.c_str(), 0, true);
     }
 }
 

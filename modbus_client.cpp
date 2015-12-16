@@ -147,8 +147,6 @@ PModbusContext TDefaultModbusConnector::CreateContext(const TSerialPortSettings&
     return PModbusContext(new TDefaultModbusContext(settings));
 }
 
-typedef std::pair<bool, int> TErrorMessage;
-
 class TRegisterHandler
 {
 public:
@@ -158,12 +156,14 @@ public:
     virtual std::vector<uint16_t> Read(PModbusContext ctx) = 0;
     virtual void Write(PModbusContext ctx, const std::vector<uint16_t> & v);
     std::shared_ptr<TModbusRegister> Register() const { return reg; }
-    TErrorMessage Poll(PModbusContext ctx);
-    int Flush(PModbusContext ctx);
+    TModbusClient::TErrorState Poll(PModbusContext ctx, bool* changed);
+    TModbusClient::TErrorState Flush(PModbusContext ctx);
     std::string TextValue() const;
 
     void SetTextValue(const std::string& v);
     bool DidRead() const { return did_read; }
+    TModbusClient::TErrorState CurrentErrorState() const { return ErrorState; }
+
 protected:
     const TModbusClient* Client;
 
@@ -176,11 +176,14 @@ protected:
 	std::vector<uint16_t> ConvertMasterValue(const std::string& v) const;
 
 private:
+    TModbusClient::TErrorState UpdateReadError(bool error);
+    TModbusClient::TErrorState UpdateWriteError(bool error);
     std::vector<uint16_t> value;
     std::shared_ptr<TModbusRegister> reg;
     volatile bool dirty = false;
     bool did_read = false;
     std::mutex set_value_mutex;
+    TModbusClient::TErrorState ErrorState = TModbusClient::UnknownErrorState;
 };
 
 void TRegisterHandler::Write(PModbusContext, const std::vector<uint16_t> &)
@@ -188,16 +191,49 @@ void TRegisterHandler::Write(PModbusContext, const std::vector<uint16_t> &)
     throw TModbusException("trying to write read-only register");
 };
 
-TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
-{
-    int message = 0;
-    // set poll error message empty
-    if (reg->ErrorMessage == "Poll") {
-        reg->ErrorMessage = "";
-        message = 2; // we need to delete error message
+TModbusClient::TErrorState TRegisterHandler::UpdateReadError(bool error) {
+    TModbusClient::TErrorState newState;
+    if (error) {
+        newState = ErrorState == TModbusClient::WriteError ||
+            ErrorState == TModbusClient::ReadWriteError ?
+            TModbusClient::ReadWriteError : TModbusClient::ReadError;
+    } else {
+        newState = ErrorState == TModbusClient::ReadWriteError ||
+            ErrorState == TModbusClient::WriteError ?
+            TModbusClient::WriteError : TModbusClient::NoError;
     }
+
+    if (ErrorState == newState)
+        return TModbusClient::ErrorStateUnchanged;
+    ErrorState = newState;
+    return ErrorState;
+}
+
+TModbusClient::TErrorState TRegisterHandler::UpdateWriteError(bool error) {
+    TModbusClient::TErrorState newState;
+    if (error) {
+        newState = ErrorState == TModbusClient::ReadError ||
+            ErrorState == TModbusClient::ReadWriteError ?
+            TModbusClient::ReadWriteError : TModbusClient::WriteError;
+    } else {
+        newState = ErrorState == TModbusClient::ReadWriteError ||
+            ErrorState == TModbusClient::ReadError ?
+            TModbusClient::ReadError : TModbusClient::NoError;
+    }
+
+    if (ErrorState == newState)
+        return TModbusClient::ErrorStateUnchanged;
+    ErrorState = newState;
+    return ErrorState;
+}
+
+TModbusClient::TErrorState TRegisterHandler::Poll(PModbusContext ctx, bool* changed)
+{
+    *changed = false;
+
+    // don't poll write-only and dirty registers
     if (!reg->Poll || dirty)
-        return std::make_pair(false, 0); // write-only register
+        return TModbusClient::ErrorStateUnchanged;
 
     bool first_poll = !did_read;
     std::vector<uint16_t> new_value;
@@ -208,15 +244,14 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
         std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " [slave_id is "
 				  << reg->Slave << "(0x" << std::hex << reg->Slave << ")]" << std::endl;
         std::cerr << std::dec;
-        reg->ErrorMessage = "Poll";
-        return std::make_pair(true, 1);
+        return UpdateReadError(true);
     }
     did_read = true;
     set_value_mutex.lock();
     if (value != new_value) {
         if (dirty) {
             set_value_mutex.unlock();
-            return std::make_pair(true, message);
+            return UpdateReadError(false);
         }
         // FIXME: without resize 'value = new_value' assignment
         // was causing valgrind errors on debian jessie (g++ 4.9.2):
@@ -231,21 +266,17 @@ TErrorMessage TRegisterHandler::Poll(PModbusContext ctx)
 			}
 			std::cerr << std::endl;
 		}
-        return std::make_pair(true, message);
+        *changed = true;
+        return UpdateReadError(false);
     } else
         set_value_mutex.unlock();
-    return std::make_pair(first_poll, message);
+
+    *changed = first_poll;
+    return UpdateReadError(false);
 }
 
-int TRegisterHandler::Flush(PModbusContext ctx)
+TModbusClient::TErrorState TRegisterHandler::Flush(PModbusContext ctx)
 {
-    // TBD: deuglify!
-    int message = 0;
-    // set flush error message empty
-    if (reg->ErrorMessage == "Flush") {
-        reg->ErrorMessage = "";
-        message = 2;
-    }
     set_value_mutex.lock();
     if (dirty) {
         dirty = false;
@@ -256,14 +287,15 @@ int TRegisterHandler::Flush(PModbusContext ctx)
         } catch (const TModbusException& e) {
             std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " << reg->Slave << "(0x" << std::hex << reg->Slave << ")" <<  std::endl;
             std::cerr << std::dec;
-            reg->ErrorMessage = "Flush";
-            return 1;
+            return UpdateWriteError(true);
         }
+        return UpdateWriteError(false);
     }
     else {
         set_value_mutex.unlock();
     }
-    return message;
+
+    return TModbusClient::ErrorStateUnchanged;
 }
 
 std::string TRegisterHandler::TextValue() const
@@ -553,7 +585,9 @@ public:
 TModbusClient::TModbusClient(const TSerialPortSettings& settings,
                              PModbusConnector connector)
     : Active(false),
-      PollInterval(1000)
+      PollInterval(1000),
+      Callback([](std::shared_ptr<TModbusRegister>){}),
+      ErrorCallback([](std::shared_ptr<TModbusRegister>, bool){})
 {
     if (!connector)
         connector = PModbusConnector(new TDefaultModbusConnector);
@@ -600,6 +634,13 @@ void TModbusClient::Disconnect()
     Active = false;
 }
 
+void TModbusClient::MaybeUpdateErrorState(
+    std::shared_ptr<TModbusRegister> reg, TModbusClient::TErrorState state)
+{
+    if (state != UnknownErrorState && state != ErrorStateUnchanged)
+        ErrorCallback(reg, state);
+}
+
 void TModbusClient::Cycle()
 {
     Connect();
@@ -610,23 +651,17 @@ void TModbusClient::Cycle()
     // corresponding to single register should be retrieved
     // by single query.
     for (const auto& p: Handlers) {
-        // TBD: deuglify!
-        for (const auto& q: Handlers) {
-            int flush_message = q.second->Flush(Context);
-            if (flush_message == 1 && ErrorCallback)
-                ErrorCallback(q.first);
-            else if (DeleteErrorsCallback)
-                DeleteErrorsCallback(q.first);
-        }
-
-        const auto& poll_message = p.second->Poll(Context);
-        if (poll_message.second == 1 && ErrorCallback)
-            ErrorCallback(p.first);
-        else if (DeleteErrorsCallback)
-            DeleteErrorsCallback(p.first);
-        if ((poll_message.first) && (Callback) && (poll_message.second != 1)) {
+        for (const auto& q: Handlers)
+            MaybeUpdateErrorState(q.first, q.second->Flush(Context));
+        bool changed = false;
+        MaybeUpdateErrorState(p.first, p.second->Poll(Context, &changed));
+        // Note that p.second->CurrentErrorState() is not the
+        // same as the value returned by p->second->Poll(...),
+        // because the latter may be ErrorStateUnchanged.
+        if (changed &&
+            p.second->CurrentErrorState() != ReadError &&
+            p.second->CurrentErrorState() != ReadWriteError)
             Callback(p.first);
-        }
         Context->EndPollCycle(PollInterval * 1000);
     }
 }
@@ -655,19 +690,14 @@ bool TModbusClient::DidRead(std::shared_ptr<TModbusRegister> reg) const
     return GetHandler(reg)->DidRead();
 }
 
-void TModbusClient::SetCallback(const TModbusCallback& callback)
+void TModbusClient::SetCallback(const TModbusClient::TCallback& callback)
 {
     Callback = callback;
 }
 
-void TModbusClient::SetErrorCallback(const TModbusCallback& callback)
+void TModbusClient::SetErrorCallback(const TModbusClient::TErrorCallback& callback)
 {
     ErrorCallback = callback;
-}
-
-void TModbusClient::SetDeleteErrorsCallback(const TModbusCallback& callback)
-{
-    DeleteErrorsCallback = callback;
 }
 
 void TModbusClient::SetPollInterval(int interval)

@@ -4,6 +4,7 @@
 
 #include <wbmqtt/mqtt_wrapper.h>
 #include "modbus_config.h"
+#include "modbus_client.h"
 
 class TMQTTWrapper;
 
@@ -19,11 +20,13 @@ public:
 
 private:
     void OnModbusValueChange(std::shared_ptr<TModbusRegister> reg);
-    void PublishError(std::shared_ptr<TModbusRegister> reg);
-    void DeleteErrorMessages(std::shared_ptr<TModbusRegister> reg);
+    TModbusClient::TErrorState RegErrorState(std::shared_ptr<TModbusRegister> reg);
+    void UpdateError(std::shared_ptr<TModbusRegister> reg, TModbusClient::TErrorState errorState);
     PMQTTClientBase MQTTClient;
     PPortConfig Config;
     std::unique_ptr<TModbusClient> ModbusClient;
     std::unordered_map<std::shared_ptr<TModbusRegister>, PModbusChannel> RegisterToChannelMap;
+    std::unordered_map<std::shared_ptr<TModbusRegister>, TModbusClient::TErrorState> RegErrorStateMap;
+    std::unordered_map<std::string, std::string> PublishedErrorMap;
     std::unordered_map<std::string, PModbusChannel> NameToChannelMap;
 };
