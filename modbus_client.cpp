@@ -18,7 +18,7 @@ public:
     TDefaultModbusContext(const TSerialPortSettings& settings);
     void Connect();
     void Disconnect();
-    void AddDevice(int slave, const std::string& protocol);
+    void AddDevice(PDeviceConfig device_config);
     void SetDebug(bool debug);
     void SetSlave(int slave);
     void ReadCoils(int addr, int nb, uint8_t *dest);
@@ -64,9 +64,9 @@ void TDefaultModbusContext::Disconnect()
     modbus_close(InnerContext);
 }
 
-void TDefaultModbusContext::AddDevice(int, const std::string& protocol)
+void TDefaultModbusContext::AddDevice(PDeviceConfig device_config)
 {
-    if (protocol != "modbus")
+    if (device_config->Protocol != "modbus")
         throw TModbusException("protocols other than modbus not supported for modbus ports");
 }
 
@@ -600,11 +600,11 @@ TModbusClient::~TModbusClient()
         Disconnect();
 }
 
-void TModbusClient::AddDevice(int slave, const std::string& protocol)
+void TModbusClient::AddDevice(PDeviceConfig device_config)
 {
     if (Active)
         throw TModbusException("can't add registers to the active client");
-    DevicesToAdd[slave] = protocol;
+    DevicesToAdd.push_back(device_config);
 }
 
 void TModbusClient::AddRegister(std::shared_ptr<TModbusRegister> reg)
@@ -623,8 +623,8 @@ void TModbusClient::Connect()
     if (!Handlers.size())
         throw TModbusException("no registers defined");
     Context->Connect();
-    for (const auto& p: DevicesToAdd)
-        Context->AddDevice(p.first, p.second.empty() ? "modbus" : p.second);
+    for (const auto& dev: DevicesToAdd)
+        Context->AddDevice(dev);
     Active = true;
 }
 

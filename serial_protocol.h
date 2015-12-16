@@ -8,6 +8,7 @@
 
 #include "portsettings.h"
 #include "regformat.h"
+#include "modbus_config.h"
 
 class TSerialProtocolException: public std::exception {
 public:
@@ -93,9 +94,10 @@ typedef std::shared_ptr<TSerialProtocol> PSerialProtocol;
 
 class TSerialProtocolFactory {
 public:
-    typedef PSerialProtocol (*TSerialProtocolMaker)(PAbstractSerialPort port);
+    typedef PSerialProtocol (*TSerialProtocolMaker)(PDeviceConfig device_config,
+                                                    PAbstractSerialPort port);
     static void RegisterProtocol(const std::string& name, TSerialProtocolMaker maker);
-    static PSerialProtocol CreateProtocol(const std::string& name, PAbstractSerialPort port);
+    static PSerialProtocol CreateProtocol(PDeviceConfig device_config, PAbstractSerialPort port);
 
 private:
     static std::unordered_map<std::string, TSerialProtocolMaker> *ProtoMakers;
@@ -107,8 +109,8 @@ public:
     TSerialProtocolRegistrator(const std::string name)
     {
         TSerialProtocolFactory::RegisterProtocol(
-            name, [](PAbstractSerialPort port) {
-                return PSerialProtocol(new Proto(port));
+            name, [](PDeviceConfig device_config, PAbstractSerialPort port) {
+                return PSerialProtocol(new Proto(device_config, port));
             });
     }
 };

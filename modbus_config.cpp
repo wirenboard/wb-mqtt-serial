@@ -12,6 +12,10 @@
 
 using namespace std;
 
+namespace {
+    const char* DefaultProtocol = "modbus";
+}
+
 TConfigTemplateParser::TConfigTemplateParser(const string& template_config_dir, bool debug)
     : DirectoryName(template_config_dir),
       Debug(debug)
@@ -222,15 +226,20 @@ void TConfigActionParser::LoadDeviceVectors(PDeviceConfig device_config, const J
             LoadSetupItem(device_config, array[index]);
     }
 
+    if (device_data.isMember("password")) {
+        const Json::Value array = device_data["password"];
+        device_config->Password.clear();
+        for(unsigned int index = 0; index < array.size(); ++index)
+            device_config->Password.push_back(ToInt(array[index], "password item"));
+    }
+
     const Json::Value array = device_data["channels"];
     for(unsigned int index = 0; index < array.size(); ++index)
         LoadChannel(device_config, array[index]);
 }
 
-int TConfigActionParser::GetInt(const Json::Value& obj, const std::string& key)
+int TConfigActionParser::ToInt(const Json::Value& v, const std::string& title)
 {
-    Json::Value v = obj[key];
-
     if (v.isInt())
         return v.asInt();
 
@@ -240,8 +249,13 @@ int TConfigActionParser::GetInt(const Json::Value& obj, const std::string& key)
         } catch (const std::logic_error& e) {}
     }
 
-    throw TConfigParserException(key + ": plain integer or '0x..' hex string expected instead of " + v.asString());
+    throw TConfigParserException(title + ": plain integer or '0x..' hex string expected instead of " + v.asString());
     // v.asString() should give a bit more information what config this exception came from
+}
+
+int TConfigActionParser::GetInt(const Json::Value& obj, const std::string& key)
+{
+    return ToInt(obj[key], key);
 }
 
 PHandlerConfig TConfigParser::Parse()
@@ -304,7 +318,8 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     }
     LoadDeviceVectors(device_config, device_data);
     if (device_config->Protocol.empty())
-        device_config->Protocol = port_config->Protocol;
+        device_config->Protocol = port_config->Protocol.empty() ? DefaultProtocol :
+            port_config->Protocol;
 
     port_config->AddDeviceConfig(device_config);
 }

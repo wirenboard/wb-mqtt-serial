@@ -164,7 +164,14 @@
           "description": "Lists Modbus registers of the device and their corresponding controls",
           "items": { "$ref": "#/definitions/channel" },
           "propertyOrder": 8
-        }
+        },
+        "password": {
+          "type": "array",
+          "title": "Password as a list of bytes",
+          "description": "Contains password for devices that support it",
+          "items": { "$ref": "#/definitions/modbus_int" },
+          "propertyOrder": 9
+        },
       },
       "required": ["slave_id"],
       "defaultProperties": ["slave_id", "device_type"]

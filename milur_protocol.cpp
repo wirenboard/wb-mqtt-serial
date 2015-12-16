@@ -40,15 +40,22 @@ namespace {
 
 REGISTER_PROTOCOL("milur", TMilurProtocol);
 
-TMilurProtocol::TMilurProtocol(PAbstractSerialPort port)
-    : TEMProtocol(port) {}
+TMilurProtocol::TMilurProtocol(PDeviceConfig device_config, PAbstractSerialPort port)
+    : TEMProtocol(device_config, port) {}
 
 bool TMilurProtocol::ConnectionSetup(uint8_t slave)
 {
-    static uint8_t setupCmd[] = {
+    uint8_t setupCmd[] = {
         // full: 0xff, 0x08, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x5f, 0xed
         ACCESS_LEVEL, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
     };
+
+    std::vector<uint8_t> password = Password();
+    if (password.size()) {
+        if (password.size() != 6)
+            throw TSerialProtocolException("invalid password size (6 bytes expected)");
+        std::copy(password.begin(), password.end(), setupCmd + 1);
+    }
 
     uint8_t buf[MAX_LEN];
     WriteCommand(slave, 0x08, setupCmd, 7);

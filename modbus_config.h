@@ -6,7 +6,8 @@
 #include <exception>
 #include <map>
 
-#include "modbus_client.h"
+#include "modbus_reg.h"
+#include "portsettings.h"
 #include "jsoncpp/json/json.h"
 
 struct TModbusChannel
@@ -44,8 +45,8 @@ typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
 
 struct TDeviceConfig
 {
-    TDeviceConfig(std::string name = "")
-        : Name(name) {}
+    TDeviceConfig(std::string name = "", int slaveId = 0, std::string protocol = "")
+        : Name(name), SlaveId(slaveId), Protocol(protocol) {}
     int NextOrderValue() const { return ModbusChannels.size() + 1; }
     void AddChannel(PModbusChannel channel) { ModbusChannels.push_back(channel); };
     void AddSetupItem(PDeviceSetupItem item) { SetupItems.push_back(item); }
@@ -56,6 +57,7 @@ struct TDeviceConfig
     std::string Protocol;
     std::vector<PModbusChannel> ModbusChannels;
     std::vector<PDeviceSetupItem> SetupItems;
+    std::vector<uint8_t> Password;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
@@ -104,7 +106,7 @@ class TConfigActionParser
         void LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data);
     protected:
         int GetInt(const Json::Value& obj, const std::string& key);
-
+        int ToInt(const Json::Value& v, const std::string& title);
 };
 
 typedef Json::Value TDeviceJson;

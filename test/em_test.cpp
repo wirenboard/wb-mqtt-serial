@@ -11,17 +11,29 @@ protected:
     void EnqueueMercury230SessionSetupResponse();
     void VerifyMilurQuery();
     void VerifyMercuryParamQuery();
+    virtual PDeviceConfig MilurConfig();
+    virtual PDeviceConfig Mercury230Config();
 
     PFakeSerialPort SerialPort;
     PModbusContext Context;
 };
 
+PDeviceConfig TEMProtocolTest::MilurConfig()
+{
+    return std::make_shared<TDeviceConfig>("milur", 0xff, "milur");
+}
+
+PDeviceConfig TEMProtocolTest::Mercury230Config()
+{
+    return std::make_shared<TDeviceConfig>("mercury230", 0x00, "mercury230");
+}
+
 void TEMProtocolTest::SetUp()
 {
     SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
     Context = TSerialConnector().CreateContext(SerialPort);
-    Context->AddDevice(0xff, "milur");
-    Context->AddDevice(0x00, "mercury230");
+    Context->AddDevice(MilurConfig());
+    Context->AddDevice(Mercury230Config());
 }
 
 void TEMProtocolTest::TearDown()
@@ -382,4 +394,37 @@ TEST_F(TEMProtocolTest, Combined)
         VerifyMercuryParamQuery();
         Context->EndPollCycle(0);
     }
+}
+
+class TEMCustomPasswordTest: public TEMProtocolTest {
+public:
+    PDeviceConfig MilurConfig();
+    PDeviceConfig Mercury230Config();
+};
+
+PDeviceConfig TEMCustomPasswordTest::MilurConfig()
+{
+    PDeviceConfig device_config = TEMProtocolTest::MilurConfig();
+    device_config->Password = { 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+    return device_config;
+}
+
+PDeviceConfig TEMCustomPasswordTest::Mercury230Config()
+{
+    PDeviceConfig device_config = TEMProtocolTest::Mercury230Config();
+    device_config->Password = { 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
+    return device_config;
+}
+
+TEST_F(TEMCustomPasswordTest, Combined)
+{
+    Context->SetSlave(0xff);
+    EnqueueMilurSessionSetupResponse();
+    VerifyMilurQuery();
+    Context->EndPollCycle(0);
+
+    Context->SetSlave(0x00);
+    EnqueueMercury230SessionSetupResponse();
+    VerifyMercuryParamQuery();
+    Context->EndPollCycle(0);
 }

@@ -21,8 +21,8 @@ void TIVTMProtocolTest::SetUp()
 {
     SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
     Context = TSerialConnector().CreateContext(SerialPort);
-    Context->AddDevice(0x0001, "ivtm");
-    Context->AddDevice(0x000A, "ivtm");
+    Context->AddDevice(std::make_shared<TDeviceConfig>("ivtm", 0x0001, "ivtm"));
+    Context->AddDevice(std::make_shared<TDeviceConfig>("ivtm", 0x000A, "ivtm"));
 }
 
 void TIVTMProtocolTest::TearDown()

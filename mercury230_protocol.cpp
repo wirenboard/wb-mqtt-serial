@@ -3,14 +3,21 @@
 
 REGISTER_PROTOCOL("mercury230", TMercury230Protocol);
 
-TMercury230Protocol::TMercury230Protocol(PAbstractSerialPort port)
-    : TEMProtocol(port) {}
+TMercury230Protocol::TMercury230Protocol(PDeviceConfig device_config, PAbstractSerialPort port)
+    : TEMProtocol(device_config, port) {}
 
 bool TMercury230Protocol::ConnectionSetup(uint8_t slave)
 {
     static uint8_t setupCmd[] = {
         ACCESS_LEVEL, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01
     };
+
+    std::vector<uint8_t> password = Password();
+    if (password.size()) {
+        if (password.size() != 6)
+            throw TSerialProtocolException("invalid password size (6 bytes expected)");
+        std::copy(password.begin(), password.end(), setupCmd + 1);
+    }
 
     uint8_t buf[1];
     WriteCommand(slave, 0x01, setupCmd, 7);

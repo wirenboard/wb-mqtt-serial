@@ -17,7 +17,7 @@ TModbusPort::TModbusPort(PMQTTClientBase mqtt_client, PPortConfig port_config, P
             UpdateError(reg, state);
         });
     for (auto device_config: Config->DeviceConfigs) {
-        ModbusClient->AddDevice(device_config->SlaveId, device_config->Protocol);
+        ModbusClient->AddDevice(device_config);
         for (auto channel: device_config->ModbusChannels) {
             for (auto reg: channel->Registers) {
                 RegisterToChannelMap[reg] = channel;

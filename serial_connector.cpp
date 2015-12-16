@@ -16,7 +16,7 @@ public:
     TSerialContext(PAbstractSerialPort port);
     void Connect();
     void Disconnect();
-    void AddDevice(int slave, const std::string& protocol);
+    void AddDevice(PDeviceConfig device_config);
     void SetDebug(bool debug);
     void SetSlave(int slave);
     void ReadCoils(int addr, int nb, uint8_t *dest);
@@ -35,7 +35,7 @@ private:
 
     PAbstractSerialPort Port;
     int SlaveId;
-    std::unordered_map<int, std::string> ProtoNameMap;
+    std::unordered_map<int, PDeviceConfig> ConfigMap;
     std::unordered_map<int, PSerialProtocol> ProtoMap;
 };
 
@@ -58,9 +58,9 @@ void TSerialContext::Disconnect()
         Port->Close();
 }
 
-void TSerialContext::AddDevice(int slave, const std::string& protocol)
+void TSerialContext::AddDevice(PDeviceConfig device_config)
 {
-    ProtoNameMap[slave] = protocol;
+    ConfigMap[device_config->SlaveId] = device_config;
 }
 
 void TSerialContext::SetDebug(bool debug)
@@ -208,12 +208,12 @@ PSerialProtocol TSerialContext::GetProtocol()
     auto it = ProtoMap.find(SlaveId);
     if (it != ProtoMap.end())
         return it->second;
-    auto nameIt = ProtoNameMap.find(SlaveId);
-    if (nameIt == ProtoNameMap.end())
+    auto configIt = ConfigMap.find(SlaveId);
+    if (configIt == ConfigMap.end())
         throw TModbusException("slave not found");
 
     try {
-        auto protocol = TSerialProtocolFactory::CreateProtocol(nameIt->second, Port);
+        auto protocol = TSerialProtocolFactory::CreateProtocol(configIt->second, Port);
         return ProtoMap[SlaveId] = protocol;
     } catch (const TSerialProtocolException& e) {
         Disconnect();

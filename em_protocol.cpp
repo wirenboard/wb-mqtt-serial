@@ -3,8 +3,8 @@
 #include "em_protocol.h"
 #include "crc16.h"
 
-TEMProtocol::TEMProtocol(PAbstractSerialPort port)
-  : TSerialProtocol(port) {}
+TEMProtocol::TEMProtocol(PDeviceConfig device_config, PAbstractSerialPort port)
+    : TSerialProtocol(port), password(device_config->Password) {}
 
 void TEMProtocol::EnsureSlaveConnected(uint8_t slave, bool force)
 {

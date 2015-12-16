@@ -17,7 +17,7 @@
 
 REGISTER_PROTOCOL("ivtm", TIVTMProtocol);
 
-TIVTMProtocol::TIVTMProtocol(PAbstractSerialPort port)
+TIVTMProtocol::TIVTMProtocol(PDeviceConfig, PAbstractSerialPort port)
     : TSerialProtocol(port) {}
 
 void TIVTMProtocol::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len)

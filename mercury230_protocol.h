@@ -15,7 +15,7 @@ class TMercury230Protocol: public TEMProtocol {
 public:
     static const int DefaultTimeoutMs = 1000;
 
-    TMercury230Protocol(PAbstractSerialPort port);
+    TMercury230Protocol(PDeviceConfig, PAbstractSerialPort port);
     uint64_t ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt, size_t width);
     void EndPollCycle();
 

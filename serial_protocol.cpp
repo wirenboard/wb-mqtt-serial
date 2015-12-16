@@ -307,10 +307,10 @@ void TSerialProtocolFactory::RegisterProtocol(const std::string& name, TSerialPr
     (*ProtoMakers)[name] = maker;
 }
 
-PSerialProtocol TSerialProtocolFactory::CreateProtocol(const std::string& name, PAbstractSerialPort port)
+PSerialProtocol TSerialProtocolFactory::CreateProtocol(PDeviceConfig device_config, PAbstractSerialPort port)
 {
-    auto it = ProtoMakers->find(name);
+    auto it = ProtoMakers->find(device_config->Protocol);
     if (it == ProtoMakers->end())
         throw TSerialProtocolException("unknown serial protocol");
-    return it->second(port);
+    return it->second(device_config, port);
 }

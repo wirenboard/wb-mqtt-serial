@@ -22,7 +22,7 @@ namespace {
 
 REGISTER_PROTOCOL("uniel", TUnielProtocol);
 
-TUnielProtocol::TUnielProtocol(PAbstractSerialPort port)
+TUnielProtocol::TUnielProtocol(PDeviceConfig, PAbstractSerialPort port)
     : TSerialProtocol(port) {}
 
 void TUnielProtocol::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)

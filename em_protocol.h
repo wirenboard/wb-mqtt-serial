@@ -14,7 +14,7 @@ class TEMProtocol: public TSerialProtocol {
 public:
     static const int DefaultTimeoutMs = 1000;
 
-    TEMProtocol(PAbstractSerialPort port);
+    TEMProtocol(PDeviceConfig device_config, PAbstractSerialPort port);
 
     void WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat fmt);
     // XXX FIXME: leaky abstraction (need to refactor)
@@ -34,11 +34,13 @@ protected:
     void Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payloadLen,
               int expectedByte1, uint8_t* respPayload, int respPayloadLen);
     const int MAX_LEN = 64;
+    std::vector<uint8_t> Password() const { return password; }
 
 private:
     void EnsureSlaveConnected(uint8_t slave, bool force = false);
 
     std::unordered_set<uint8_t> connectedSlaves;
+    std::vector<uint8_t> password;
     const int N_CONN_ATTEMPTS = 10;
 };
 
