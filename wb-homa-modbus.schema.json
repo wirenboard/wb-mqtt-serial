@@ -170,6 +170,7 @@
           "title": "Password as a list of bytes",
           "description": "Contains password for devices that support it",
           "items": { "$ref": "#/definitions/modbus_int" },
+          "_format": "table",
           "propertyOrder": 9
         },
         "access_level": {
