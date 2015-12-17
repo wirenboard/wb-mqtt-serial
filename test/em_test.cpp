@@ -1,51 +1,32 @@
-#include "testlog.h"
-#include "fake_serial_port.h"
-#include "serial_connector.h"
+#include "em_test.h"
 
-class TEMProtocolTest: public TLoggedFixture
-{
-protected:
-    void SetUp();
-    void TearDown();
-    void EnqueueMilurSessionSetupResponse();
-    void EnqueueMercury230SessionSetupResponse();
-    void VerifyMilurQuery();
-    void VerifyMercuryParamQuery();
-    virtual PDeviceConfig MilurConfig();
-    virtual PDeviceConfig Mercury230Config();
-
-    PFakeSerialPort SerialPort;
-    PModbusContext Context;
-};
-
-PDeviceConfig TEMProtocolTest::MilurConfig()
-{
-    return std::make_shared<TDeviceConfig>("milur", 0xff, "milur");
-}
-
-PDeviceConfig TEMProtocolTest::Mercury230Config()
-{
-    return std::make_shared<TDeviceConfig>("mercury230", 0x00, "mercury230");
-}
-
-void TEMProtocolTest::SetUp()
+void TEMProtocolTestBase::SetUp()
 {
     SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
-    Context = TSerialConnector().CreateContext(SerialPort);
-    Context->AddDevice(MilurConfig());
-    Context->AddDevice(Mercury230Config());
 }
 
-void TEMProtocolTest::TearDown()
+void TEMProtocolTestBase::TearDown()
 {
     SerialPort.reset();
-    Context.reset();
     TLoggedFixture::TearDown();
 }
 
-void TEMProtocolTest::EnqueueMilurSessionSetupResponse()
+void TEMProtocolTestBase::EnqueueMilurSessionSetupResponse()
 {
-    SerialPort->EnqueueResponse(
+    SerialPort->Expect(
+        {
+            0xff, // unit id
+            0x08, // op
+            0x01, // access level
+            0xff, // pw
+            0xff, // pw
+            0xff, // pw
+            0xff, // pw
+            0xff, // pw
+            0xff, // pw
+            0x5f, // crc
+            0xed  // crc
+        },
         {
             // Session setup response
             0xff, // unit id
@@ -56,9 +37,43 @@ void TEMProtocolTest::EnqueueMilurSessionSetupResponse()
         });
 }
 
-void TEMProtocolTest::VerifyMilurQuery()
+void TEMProtocolTestBase::EnqueueMilurAccessLevel2SessionSetupResponse()
 {
-    SerialPort->EnqueueResponse(
+    SerialPort->Expect(
+        {
+            0xff, // unit id
+            0x08, // op
+            0x02, // access level
+            0x02, // pw
+            0x03, // pw
+            0x04, // pw
+            0x05, // pw
+            0x06, // pw
+            0x07, // pw
+            0x7b, // crc
+            0xd3  // crc
+        },
+        {
+            // Session setup response
+            // Different access level, thus not using EnqueueMilurSessionSetupResponse() here
+            0xff, // unit id
+            0x08, // op
+            0x02, // result
+            0xc7, // crc
+            0xf1  // crc
+        });
+}
+
+void TEMProtocolTestBase::EnqueueMilurPhaseCVoltageResponse()
+{
+    SerialPort->Expect(
+        {
+            0xff, // unit id
+            0x01, // op
+            0x66, // register
+            0xc0, // crc
+            0x4a  // crc
+        },
         {
             // Read response
             0xff, // unit id
@@ -71,13 +86,18 @@ void TEMProtocolTest::VerifyMilurQuery()
             0x03, // crc
             0x4e  // crc
         });
-    uint64_t v;
-    Context->ReadDirectRegister(102, &v, U24, 3);
-    ASSERT_EQ(0x03946f, v);
+}
 
-    // >> FF 01 76 C1 86
-    // << FF 01 76 04 44 11 10 00 AC 6C
-    SerialPort->EnqueueResponse(
+void TEMProtocolTestBase::EnqueueMilurTotalConsumptionResponse()
+{
+    SerialPort->Expect(
+        {
+            0xff, // unit id
+            0x01, // op
+            0x76, // register
+            0xc1, // crc
+            0x86  // crc
+        },
         {
             // Read response
             0xff, // unit id
@@ -91,27 +111,18 @@ void TEMProtocolTest::VerifyMilurQuery()
             0xac, // crc
             0x6c  // crc
         });
-    Context->ReadDirectRegister(118, &v, BCD32, 4);
-    ASSERT_EQ(11144, v);
 }
 
-TEST_F(TEMProtocolTest, MilurQuery)
+void TEMProtocolTestBase::EnqueueMilurNoSessionResponse()
 {
-    Context->SetSlave(0xff);
-    EnqueueMilurSessionSetupResponse();
-    VerifyMilurQuery();
-    Context->EndPollCycle(0);
-    VerifyMilurQuery();
-    Context->Disconnect();
-}
-
-TEST_F(TEMProtocolTest, MilurReconnect)
-{
-    Context->SetSlave(0xff);
-    EnqueueMilurSessionSetupResponse();
-    // >> FF 01 66 C0 4A
-    // << FF 81 08 00 67 D8
-    SerialPort->EnqueueResponse(
+    SerialPort->Expect(
+        {
+            0xff, // unit id
+            0x01, // op
+            0x66, // register
+            0xc0, // crc
+            0x4a  // crc
+        },
         {
             // Session setup response
             0xff, // unit id
@@ -121,31 +132,18 @@ TEST_F(TEMProtocolTest, MilurReconnect)
             0x67, // crc
             0xd8  // crc
         });
-    // reconnection
-    EnqueueMilurSessionSetupResponse();
-    SerialPort->EnqueueResponse(
+}
+
+void TEMProtocolTestBase::EnqueueMilurExceptionResponse()
+{
+    SerialPort->Expect(
         {
-            // Read response
             0xff, // unit id
             0x01, // op
             0x66, // register
-            0x03, // len
-            0x6f, // data 1
-            0x94, // data 2
-            0x03, // data 3
-            0x03, // crc
-            0x4e  // crc
-        });
-    uint64_t v;
-    Context->ReadDirectRegister(102, &v, U24, 3);
-    ASSERT_EQ(0x03946f, v);
-}
-
-TEST_F(TEMProtocolTest, MilurException)
-{
-    Context->SetSlave(0xff);
-    EnqueueMilurSessionSetupResponse();
-    SerialPort->EnqueueResponse(
+            0xc0, // crc
+            0x4a  // crc
+        },
         {
             // Session setup response
             0xff, // unit id
@@ -155,21 +153,24 @@ TEST_F(TEMProtocolTest, MilurException)
             0x62, // crc
             0x28  // crc
         });
-    try {
-        uint64_t v;
-        Context->ReadDirectRegister(102, &v, U24, 3);
-        FAIL() << "No exception thrown";
-    } catch (const TModbusException& e) {
-        ASSERT_STREQ("Modbus error: Serial protocol error: EEPROM access error", e.what());
-        Context->EndPollCycle(0);
-        Context->Disconnect();
-    }
 }
 
-
-void TEMProtocolTest::EnqueueMercury230SessionSetupResponse()
+void TEMProtocolTestBase::EnqueueMercury230SessionSetupResponse()
 {
-    SerialPort->EnqueueResponse(
+    SerialPort->Expect(
+        {
+            0x00, // unit id (group)
+            0x01, // op
+            0x01, // access level
+            0x01, // pw
+            0x01, // pw
+            0x01, // pw
+            0x01, // pw
+            0x01, // pw
+            0x01, // pw
+            0x77, // crc
+            0x81  // crc
+        },
         {
             // Session setup response
             0x00, // unit id (group)
@@ -179,11 +180,42 @@ void TEMProtocolTest::EnqueueMercury230SessionSetupResponse()
         });
 }
 
-TEST_F(TEMProtocolTest, Mercury230ReadEnergy)
+void TEMProtocolTestBase::EnqueueMercury230AccessLevel2SessionSetupResponse()
 {
-    Context->SetSlave(0x00);
-    EnqueueMercury230SessionSetupResponse();
-    SerialPort->EnqueueResponse(
+    SerialPort->Expect(
+        {
+            0x00, // unit id (group)
+            0x01, // op
+            0x01, // access level
+            0x12, // pw
+            0x13, // pw
+            0x14, // pw
+            0x15, // pw
+            0x16, // pw
+            0x17, // pw
+            0x07, // crc
+            0x17  // crc
+        },
+        {
+            // Session setup response
+            0x00, // unit id (group)
+            0x00, // state
+            0x01, // crc
+            0xb0  // crc
+        });
+}
+
+void TEMProtocolTestBase::EnqueueMercury230EnergyResponse1()
+{
+    SerialPort->Expect(
+        {
+            0x00, // unit id (group)
+            0x05, // op
+            0x00, // addr
+            0x00, // addr
+            0x10, // crc
+            0x25  // crc
+        },
         {
             // Read response
             0x00, // unit id (group)
@@ -206,29 +238,19 @@ TEST_F(TEMProtocolTest, Mercury230ReadEnergy)
             0x44, // crc
             0xab  // crc
         });
+}
 
-    // Register address for energy arrays:
-    // 0000 0000 CCCC CCCC TTTT AAAA MMMM IIII
-    // C = command (0x05)
-    // A = array number
-    // M = month
-    // T = tariff (FIXME!!! 5 values)
-    // I = index
-    // Note: for A=6, 12-byte and not 16-byte value is returned.
-    // This is not supported at the moment.
-
-    // Here we make sure that consecutive requests querying the same array
-    // don't cause redundant requests during the single poll cycle.
-    uint64_t v;
-    Context->ReadDirectRegister(0x50000, &v, U32, 4);
-    ASSERT_EQ(3196200, v);
-    Context->ReadDirectRegister(0x50002, &v, U32, 4);
-    ASSERT_EQ(300444, v);
-    Context->ReadDirectRegister(0x50000, &v, U32, 4);
-    ASSERT_EQ(3196200, v);
-    Context->EndPollCycle(0);
-
-    SerialPort->EnqueueResponse(
+void TEMProtocolTestBase::EnqueueMercury230EnergyResponse2()
+{
+    SerialPort->Expect(
+        {
+            0x00, // unit id (group)
+            0x05, // op
+            0x00, // addr
+            0x00, // addr
+            0x10, // crc
+            0x25  // crc
+        },
         {
             // Read response
             0x00, // unit id (group)
@@ -251,7 +273,225 @@ TEST_F(TEMProtocolTest, Mercury230ReadEnergy)
             0x45, // crc
             0xbb  // crc
         });
+}
 
+void TEMProtocolTestBase::EnqueueMercury230U1Response()
+{
+    SerialPort->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x11, // addr
+            0x4d, // crc 
+            0xba  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x00, // U1
+            0x40, // U1
+            0x5e, // U1
+            0xb0, // crc
+            0x1c  // crc
+        });
+}
+
+void TEMProtocolTestBase::EnqueueMercury230I1Response()
+{
+    SerialPort->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x21, // addr
+            0x4d, // crc
+            0xae  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x00, // I1
+            0x45, // I1
+            0x00, // I1
+            0x32, // crc
+            0xb4  // crc
+        });
+}
+
+void TEMProtocolTestBase::EnqueueMercury230U2Response()
+{
+    SerialPort->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x12, // addr
+            0x0d, // crc
+            0xbb  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x00, // U2
+            0xeb, // U2
+            0x5d, // U2
+            0x8f, // crc
+            0x2d  // crc
+        });
+}
+
+void TEMProtocolTestBase::EnqueueMercury230NoSessionResponse()
+{
+    SerialPort->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x12, // addr
+            0x0d, // crc
+            0xbb  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x05, // error 5 = no session
+            0xc1, // crc
+            0xb3  // crc
+        });
+}
+
+void TEMProtocolTestBase::EnqueueMercury230InternalMeterErrorResponse()
+{
+    SerialPort->Expect(
+        {
+            0x00, // unit id
+            0x08, // op
+            0x11, // addr
+            0x12, // addr
+            0x0d, // crc
+            0xbb  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x02, // error 2 = internal meter error
+            0x80, // crc
+            0x71  // crc
+        });
+}
+
+class TEMProtocolTest: public TEMProtocolTestBase
+{
+protected:
+    void SetUp();
+    void TearDown();
+    void VerifyMilurQuery();
+    void VerifyMercuryParamQuery();
+    virtual PDeviceConfig MilurConfig();
+    virtual PDeviceConfig Mercury230Config();
+
+    PModbusContext Context;
+};
+
+PDeviceConfig TEMProtocolTest::MilurConfig()
+{
+    return std::make_shared<TDeviceConfig>("milur", 0xff, "milur");
+}
+
+PDeviceConfig TEMProtocolTest::Mercury230Config()
+{
+    return std::make_shared<TDeviceConfig>("mercury230", 0x00, "mercury230");
+}
+
+void TEMProtocolTest::SetUp()
+{
+    TEMProtocolTestBase::SetUp();
+    Context = TSerialConnector().CreateContext(SerialPort);
+    Context->AddDevice(MilurConfig());
+    Context->AddDevice(Mercury230Config());
+}
+
+void TEMProtocolTest::TearDown()
+{
+    Context.reset();
+    TEMProtocolTestBase::TearDown();
+}
+
+void TEMProtocolTest::VerifyMilurQuery()
+{
+    EnqueueMilurPhaseCVoltageResponse();
+    uint64_t v;
+    Context->ReadDirectRegister(102, &v, U24, 3);
+    ASSERT_EQ(0x03946f, v);
+
+    EnqueueMilurTotalConsumptionResponse();
+    Context->ReadDirectRegister(118, &v, BCD32, 4);
+    ASSERT_EQ(11144, v);
+}
+
+TEST_F(TEMProtocolTest, MilurQuery)
+{
+    Context->SetSlave(0xff);
+    EnqueueMilurSessionSetupResponse();
+    VerifyMilurQuery();
+    Context->EndPollCycle(0);
+    VerifyMilurQuery();
+    Context->Disconnect();
+}
+
+TEST_F(TEMProtocolTest, MilurReconnect)
+{
+    Context->SetSlave(0xff);
+    EnqueueMilurSessionSetupResponse();
+    EnqueueMilurNoSessionResponse();
+    // reconnection
+    EnqueueMilurSessionSetupResponse();
+    EnqueueMilurPhaseCVoltageResponse();
+    uint64_t v;
+    Context->ReadDirectRegister(102, &v, U24, 3);
+    ASSERT_EQ(0x03946f, v);
+}
+
+TEST_F(TEMProtocolTest, MilurException)
+{
+    Context->SetSlave(0xff);
+    EnqueueMilurSessionSetupResponse();
+    EnqueueMilurExceptionResponse();
+    try {
+        uint64_t v;
+        Context->ReadDirectRegister(102, &v, U24, 3);
+        FAIL() << "No exception thrown";
+    } catch (const TModbusException& e) {
+        ASSERT_STREQ("Modbus error: Serial protocol error: EEPROM access error", e.what());
+        Context->EndPollCycle(0);
+        Context->Disconnect();
+    }
+}
+
+TEST_F(TEMProtocolTest, Mercury230ReadEnergy)
+{
+    Context->SetSlave(0x00);
+    EnqueueMercury230SessionSetupResponse();
+    EnqueueMercury230EnergyResponse1();
+
+    // Register address for energy arrays:
+    // 0000 0000 CCCC CCCC TTTT AAAA MMMM IIII
+    // C = command (0x05)
+    // A = array number
+    // M = month
+    // T = tariff (FIXME!!! 5 values)
+    // I = index
+    // Note: for A=6, 12-byte and not 16-byte value is returned.
+    // This is not supported at the moment.
+
+    // Here we make sure that consecutive requests querying the same array
+    // don't cause redundant requests during the single poll cycle.
+    uint64_t v;
+    Context->ReadDirectRegister(0x50000, &v, U32, 4);
+    ASSERT_EQ(3196200, v);
+    Context->ReadDirectRegister(0x50002, &v, U32, 4);
+    ASSERT_EQ(300444, v);
+    Context->ReadDirectRegister(0x50000, &v, U32, 4);
+    ASSERT_EQ(3196200, v);
+    Context->EndPollCycle(0);
+
+    EnqueueMercury230EnergyResponse2();
     Context->ReadDirectRegister(0x50000, &v, U32, 4);
     ASSERT_EQ(3196201, v);
     Context->ReadDirectRegister(0x50002, &v, U32, 4);
@@ -264,15 +504,7 @@ TEST_F(TEMProtocolTest, Mercury230ReadEnergy)
 
 void TEMProtocolTest::VerifyMercuryParamQuery()
 {
-    SerialPort->EnqueueResponse(
-        {
-            0x00, // unit id (group)
-            0x00, // U1
-            0x40, // U1
-            0x5e, // U1
-            0xb0, // crc
-            0x1c  // crc
-        });
+    EnqueueMercury230U1Response();
     // Register address for params:
     // 0000 0000 CCCC CCCC NNNN NNNN BBBB BBBB
     // C = command (0x08)
@@ -282,28 +514,12 @@ void TEMProtocolTest::VerifyMercuryParamQuery()
     Context->ReadDirectRegister(0x81111, &v, U24, 3);
     ASSERT_EQ(24128, v);
 
-    SerialPort->EnqueueResponse(
-        {
-            0x00, // unit id (group)
-            0x00, // I1
-            0x45, // I1
-            0x00, // I1
-            0x32, // crc
-            0xb4  // crc
-        });
+    EnqueueMercury230I1Response();
     // subparam 0x21 = current (phase 1)
     Context->ReadDirectRegister(0x81121, &v, U24, 3);
     ASSERT_EQ(69, v);
 
-    SerialPort->EnqueueResponse(
-        {
-            0x00, // unit id (group)
-            0x00, // U2
-            0xeb, // U2
-            0x5d, // U2
-            0x8f, // crc
-            0x2d  // crc
-        });
+    EnqueueMercury230U2Response();
     // subparam 0x12 = voltage (phase 2)
     Context->ReadDirectRegister(0x81112, &v, U24, 3);
     ASSERT_EQ(24043, v);
@@ -324,24 +540,11 @@ TEST_F(TEMProtocolTest, Mercury230Reconnect)
 {
     Context->SetSlave(0x00);
     EnqueueMercury230SessionSetupResponse();
-    SerialPort->EnqueueResponse(
-        {
-            0x00, // unit id (group)
-            0x05, // error 5 = no session
-            0xc1, // crc
-            0xb3  // crc
-        });
+    EnqueueMercury230NoSessionResponse();
     // re-setup happens here
     EnqueueMercury230SessionSetupResponse();
-    SerialPort->EnqueueResponse(
-        {
-            0x00, // unit id (group)
-            0x00, // U2
-            0xeb, // U2
-            0x5d, // U2
-            0x8f, // crc
-            0x2d  // crc
-        });
+    EnqueueMercury230U2Response();
+
     // subparam 0x12 = voltage (phase 2)
     uint64_t v;
     Context->ReadDirectRegister(0x81112, &v, U24, 3);
@@ -355,13 +558,7 @@ TEST_F(TEMProtocolTest, Mercury230Exception)
 {
     Context->SetSlave(0x00);
     EnqueueMercury230SessionSetupResponse();
-    SerialPort->EnqueueResponse(
-        {
-            0x00, // unit id (group)
-            0x02, // error 2 = internal meter error
-            0x80, // crc
-            0x71  // crc
-        });
+    EnqueueMercury230InternalMeterErrorResponse();
     try {
         uint64_t v;
         Context->ReadDirectRegister(0x81112, &v, U24, 3);
@@ -421,21 +618,12 @@ PDeviceConfig TEMCustomPasswordTest::Mercury230Config()
 TEST_F(TEMCustomPasswordTest, Combined)
 {
     Context->SetSlave(0xff);
-    SerialPort->EnqueueResponse(
-        {
-            // Session setup response
-            // Different access level, thus not using EnqueueMilurSessionSetupResponse() here
-            0xff, // unit id
-            0x08, // op
-            0x02, // result
-            0xc7, // crc
-            0xf1  // crc
-        });
+    EnqueueMilurAccessLevel2SessionSetupResponse();
     VerifyMilurQuery();
     Context->EndPollCycle(0);
 
     Context->SetSlave(0x00);
-    EnqueueMercury230SessionSetupResponse();
+    EnqueueMercury230AccessLevel2SessionSetupResponse();
     VerifyMercuryParamQuery();
     Context->EndPollCycle(0);
 }

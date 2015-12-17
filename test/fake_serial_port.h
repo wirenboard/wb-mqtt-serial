@@ -20,7 +20,7 @@ public:
     void SkipNoise();
     void USleep(int usec);
 
-    void EnqueueResponse(const std::vector<int>& frame);
+    void Expect(const std::vector<int>& request, const std::vector<int>& response);
 
 private:
     void DumpWhatWasRead();
@@ -29,8 +29,9 @@ private:
 
     TLoggedFixture& Fixture;
     bool IsPortOpen;
+    std::vector<int> Req;
     std::vector<int> Resp;
-    size_t Pos, DumpPos;
+    size_t ReqPos, RespPos, DumpPos;
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;

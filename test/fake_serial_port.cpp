@@ -1,8 +1,9 @@
 #include <cassert>
+#include <algorithm>
 #include "fake_serial_port.h"
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
-    : Fixture(fixture), IsPortOpen(false), Pos(0), DumpPos(0) {}
+    : Fixture(fixture), IsPortOpen(false), ReqPos(0), RespPos(0), DumpPos(0) {}
 
 void TFakeSerialPort::SetDebug(bool debug)
 {
@@ -30,7 +31,9 @@ void TFakeSerialPort::Close()
     DumpWhatWasRead();
     Fixture.Emit() << "Close()";
     IsPortOpen = false;
-    if (Pos < Resp.size())
+    if (ReqPos < Req.size())
+        throw TSerialProtocolException("not all of expected requests received");
+    if (RespPos < Resp.size())
         throw TSerialProtocolException("not all bytes in the response consumed");
 }
 
@@ -43,28 +46,42 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
     SkipFrameBoundary();
     DumpWhatWasRead();
     Fixture.Emit() << ">> " << std::vector<uint8_t>(buf, buf + count);
+
+    if (Req.size() - ReqPos < size_t(count) + 1 || Req[ReqPos + count] != FRAME_BOUNDARY)
+        throw TSerialProtocolException("Request mismatch");
+
+    const uint8_t* p = buf;
+    for (auto it = Req.begin() + ReqPos; p < buf + count; ++p, ++it) {
+        if (*it != int(*p))
+            throw TSerialProtocolException("Request mismatch");
+    }
+
+    if (Req[ReqPos + count] != FRAME_BOUNDARY)
+        throw TSerialProtocolException("Unexpectedly short request");
+
+    ReqPos += count + 1;
 }
 
 uint8_t TFakeSerialPort::ReadByte()
 {
     CheckPortOpen();
 
-    while (Pos < Resp.size() && Resp[Pos] == FRAME_BOUNDARY)
-        Pos++;
+    while (RespPos < Resp.size() && Resp[RespPos] == FRAME_BOUNDARY)
+        RespPos++;
 
-    if (Pos == Resp.size())
+    if (RespPos == Resp.size())
         throw TSerialProtocolException("response buffer underflow");
 
-    return Resp[Pos++];
+    return Resp[RespPos++];
 }
 
-int TFakeSerialPort::ReadFrame(uint8_t* buf, int count, int timeout)
+int TFakeSerialPort::ReadFrame(uint8_t* buf, int count, int)
 {
     int nread = 0;
     for (; nread < count; ++nread) {
-        if (Pos == Resp.size())
+        if (RespPos == Resp.size())
             break;
-        int b = Resp[Pos++];
+        int b = Resp[RespPos++];
         if (b == FRAME_BOUNDARY)
             break;
         *buf++ = (uint8_t)b;
@@ -89,12 +106,12 @@ void TFakeSerialPort::USleep(int usec)
 
 void TFakeSerialPort::DumpWhatWasRead()
 {
-    assert(DumpPos <= Pos);
-    if (DumpPos == Pos)
+    assert(DumpPos <= RespPos);
+    if (DumpPos == RespPos)
         return;
 
     std::vector<uint8_t> slice;
-    for (; DumpPos < Pos; ++DumpPos) {
+    for (; DumpPos < RespPos; ++DumpPos) {
         if (Resp[DumpPos] == FRAME_BOUNDARY) {
             if (slice.size() > 0)
                 Fixture.Emit() << "<< " << slice;
@@ -106,17 +123,19 @@ void TFakeSerialPort::DumpWhatWasRead()
     if (slice.size() > 0)
         Fixture.Emit() << "<< " << slice;
 
-    DumpPos = Pos;
+    DumpPos = RespPos;
 }
 
-void TFakeSerialPort::EnqueueResponse(const std::vector<int>& frame)
+void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<int>& response)
 {
-    Resp.insert(Resp.end(), frame.begin(), frame.end());
+    Req.insert(Req.end(), request.begin(), request.end());
+    Req.push_back(FRAME_BOUNDARY);
+    Resp.insert(Resp.end(), response.begin(), response.end());
     Resp.push_back(FRAME_BOUNDARY);
 }
 
 void TFakeSerialPort::SkipFrameBoundary()
 {
-    if (Pos < Resp.size() && Resp[Pos] == FRAME_BOUNDARY)
-        Pos++;
+    if (RespPos < Resp.size() && Resp[RespPos] == FRAME_BOUNDARY)
+        RespPos++;
 }
