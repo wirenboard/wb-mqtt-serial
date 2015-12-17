@@ -77,10 +77,11 @@ $(TEST_DIR)/$(TEST_BIN): $(MODBUS_OBJS) $(TEST_OBJS)
 
 test: $(TEST_DIR)/$(TEST_BIN)
 	# cannot run valgrind under qemu chroot
+	rm -f $(TEST_DIR)/*.dat.out
 	if [ "$(shell arch)" = "armv7l" ]; then \
-          $(TEST_DIR)/$(TEST_BIN) || $(TEST_DIR)/abt.sh show; \
+          $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || $(TEST_DIR)/abt.sh show; \
         else \
-          valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) || \
+          valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
             if [ $$? = 180 ]; then \
               echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
               exit 1; \
