@@ -49,7 +49,7 @@ struct TModbusRegister
     }
 
     uint8_t Width() const {
-        return ByteWidth() / 2;
+        return (ByteWidth() + 1) / 2;
     }
 
     std::string ToString() const {

@@ -30,7 +30,8 @@ LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 MODBUS_BIN=wb-homa-modbus
 MODBUS_LIBS=-lmodbus
 MODBUS_SRCS=modbus_client.c \
-  modbus_config.c modbus_port.c \
+  modbus_config.c \
+  modbus_port.c \
   modbus_observer.c \
   serial_protocol.c \
   serial_connector.c \
@@ -45,6 +46,7 @@ TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
   $(TEST_DIR)/modbus_test.o \
   $(TEST_DIR)/em_test.o \
+  $(TEST_DIR)/em_integration.o \
   $(TEST_DIR)/ivtm_test.o \
   $(TEST_DIR)/fake_modbus.o \
   $(TEST_DIR)/fake_mqtt.o \

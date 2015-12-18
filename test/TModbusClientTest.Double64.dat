@@ -7,12 +7,10 @@ SetSlave(1)
 read 4 holding register(s) @ 24: 0x0000 0x0000 0x0000 0x0000
 Modbus ErrorCallback: <1:holding: 24>: no error
 Modbus Callback: <1:holding: 24> becomes 0.000000
-EndPollCycle(1000000)
 SetSlave(1)
 read 4 holding register(s) @ 20: 0x40ba 0x401f 0x7ced 0x9168
 Modbus ErrorCallback: <1:holding: 20>: no error
 Modbus Callback: <1:holding: 20> becomes 6720.123000
-EndPollCycle(1000000)
 SetSlave(1)
 read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
 Modbus ErrorCallback: <1:input: 30>: no error
@@ -24,10 +22,8 @@ SetSlave(1)
 write 4 holding register(s) @ 20:  0x4025 0xfff2 0xe48e 0x8a72
 SetSlave(1)
 read 4 holding register(s) @ 24: 0x0000 0x0000 0x0000 0x0000
-EndPollCycle(1000000)
 SetSlave(1)
 read 4 holding register(s) @ 20: 0x4025 0xfff2 0xe48e 0x8a72
-EndPollCycle(1000000)
 SetSlave(1)
 read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
 EndPollCycle(1000000)
@@ -37,10 +33,8 @@ SetSlave(1)
 write 4 holding register(s) @ 20:  0xbf54 0x26fe 0x718a 0x86d7
 SetSlave(1)
 read 4 holding register(s) @ 24: 0x0000 0x0000 0x0000 0x0000
-EndPollCycle(1000000)
 SetSlave(1)
 read 4 holding register(s) @ 20: 0xbf54 0x26fe 0x718a 0x86d7
-EndPollCycle(1000000)
 SetSlave(1)
 read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
 EndPollCycle(1000000)
@@ -50,10 +44,8 @@ SetSlave(1)
 write 4 holding register(s) @ 24:  0xbf54 0x26fe 0x718a 0x86d7
 SetSlave(1)
 read 4 holding register(s) @ 24: 0xbf54 0x26fe 0x718a 0x86d7
-EndPollCycle(1000000)
 SetSlave(1)
 read 4 holding register(s) @ 20: 0xbf54 0x26fe 0x718a 0x86d7
-EndPollCycle(1000000)
 SetSlave(1)
 read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
 EndPollCycle(1000000)
@@ -62,10 +54,8 @@ EndPollCycle(1000000)
 SetSlave(1)
 read 4 holding register(s) @ 24: 0x4093 0xb000 0x0000 0x0000
 Modbus Callback: <1:holding: 24> becomes 126000.000000
-EndPollCycle(1000000)
 SetSlave(1)
 read 4 holding register(s) @ 20: 0xbf54 0x26fe 0x718a 0x86d7
-EndPollCycle(1000000)
 SetSlave(1)
 read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
 EndPollCycle(1000000)

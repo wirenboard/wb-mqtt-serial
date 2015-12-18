@@ -225,6 +225,8 @@ PSerialProtocol TSerialContext::GetProtocol()
     }
 }
 
+TSerialConnector::TPortMaker TSerialConnector::GlobalPortMaker = 0;
+
 PModbusContext TSerialConnector::CreateContext(PAbstractSerialPort port)
 {
     return std::make_shared<TSerialContext>(port);
@@ -232,7 +234,13 @@ PModbusContext TSerialConnector::CreateContext(PAbstractSerialPort port)
 
 PModbusContext TSerialConnector::CreateContext(const TSerialPortSettings& settings)
 {
-    return CreateContext(std::make_shared<TSerialPort>(settings));
+    return CreateContext(GlobalPortMaker ? GlobalPortMaker(settings) : std::make_shared<TSerialPort>(settings));
+}
+
+// Very poor man's "DI". But will do for now (testing purposes only)
+void TSerialConnector::SetGlobalPortMaker(TSerialConnector::TPortMaker maker)
+{
+    GlobalPortMaker = maker;
 }
 
 // TBD: support debug mode

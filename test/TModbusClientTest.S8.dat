@@ -7,7 +7,6 @@ SetSlave(1)
 read 1 holding register(s) @ 20: 0x000a
 Modbus ErrorCallback: <1:holding: 20>: no error
 Modbus Callback: <1:holding: 20> becomes 10
-EndPollCycle(1000000)
 SetSlave(1)
 read 1 input register(s) @ 30: 0x0014
 Modbus ErrorCallback: <1:input: 30>: no error
@@ -18,7 +17,6 @@ EndPollCycle(1000000)
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x00fe
 Modbus Callback: <1:holding: 20> becomes -2
-EndPollCycle(1000000)
 SetSlave(1)
 read 1 input register(s) @ 30: 0x00fd
 Modbus Callback: <1:input: 30> becomes -3
@@ -29,7 +27,6 @@ SetSlave(1)
 write 1 holding register(s) @ 20:  0x000a
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x000a
-EndPollCycle(1000000)
 SetSlave(1)
 read 1 input register(s) @ 30: 0x00fd
 EndPollCycle(1000000)
@@ -39,7 +36,6 @@ SetSlave(1)
 write 1 holding register(s) @ 20:  0x00fe
 SetSlave(1)
 read 1 holding register(s) @ 20: 0x00fe
-EndPollCycle(1000000)
 SetSlave(1)
 read 1 input register(s) @ 30: 0x00fd
 EndPollCycle(1000000)

@@ -2,6 +2,9 @@
 #include "crc16.h"
 
 namespace {
+    uint8_t DefaultPassword[6] = {
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+    };
     void GetRegType(RegisterFormat fmt, int* size, bool* bcd) {
         *bcd = false;
         switch (fmt) {
@@ -45,7 +48,7 @@ TMilurProtocol::TMilurProtocol(PDeviceConfig device_config, PAbstractSerialPort 
 
 bool TMilurProtocol::ConnectionSetup(uint8_t slave)
 {
-    uint8_t setupCmd[] = {
+    uint8_t setupCmd[7] = {
         // full: 0xff, 0x08, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x5f, 0xed
         uint8_t(AccessLevel()), 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
     };

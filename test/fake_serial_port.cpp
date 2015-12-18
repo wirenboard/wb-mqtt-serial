@@ -1,5 +1,6 @@
 #include <cassert>
 #include <algorithm>
+#include <stdexcept>
 #include "fake_serial_port.h"
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
@@ -32,9 +33,9 @@ void TFakeSerialPort::Close()
     Fixture.Emit() << "Close()";
     IsPortOpen = false;
     if (ReqPos < Req.size())
-        throw TSerialProtocolException("not all of expected requests received");
+        throw std::runtime_error("not all of expected requests received");
     if (RespPos < Resp.size())
-        throw TSerialProtocolException("not all bytes in the response consumed");
+        throw std::runtime_error("not all bytes in the response consumed");
 }
 
 bool TFakeSerialPort::IsOpen() const
@@ -46,20 +47,29 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
     SkipFrameBoundary();
     DumpWhatWasRead();
     Fixture.Emit() << ">> " << std::vector<uint8_t>(buf, buf + count);
+    auto start = Req.begin() + ReqPos;
+    try {
+        if (Req.size() - ReqPos < size_t(count) + 1 || Req[ReqPos + count] != FRAME_BOUNDARY)
+            throw std::runtime_error("Request mismatch");
 
-    if (Req.size() - ReqPos < size_t(count) + 1 || Req[ReqPos + count] != FRAME_BOUNDARY)
-        throw TSerialProtocolException("Request mismatch");
+        const uint8_t* p = buf;
+        for (auto it = start; p < buf + count; ++p, ++it) {
+            if (*it != int(*p))
+                throw std::runtime_error("Request mismatch");
+        }
 
-    const uint8_t* p = buf;
-    for (auto it = Req.begin() + ReqPos; p < buf + count; ++p, ++it) {
-        if (*it != int(*p))
-            throw TSerialProtocolException("Request mismatch");
+        if (Req[ReqPos + count] != FRAME_BOUNDARY)
+            throw std::runtime_error("Unexpectedly short request");
+
+        ReqPos += count + 1;
+    } catch (const std::runtime_error& e) {
+        auto stop = std::find(start, Req.end(), FRAME_BOUNDARY);
+        if (start != stop)
+            Fixture.Emit() << "*> " << std::vector<uint8_t>(start, stop);
+        else
+            Fixture.Emit() << "*> req empty";
+        throw;
     }
-
-    if (Req[ReqPos + count] != FRAME_BOUNDARY)
-        throw TSerialProtocolException("Unexpectedly short request");
-
-    ReqPos += count + 1;
 }
 
 uint8_t TFakeSerialPort::ReadByte()
@@ -70,7 +80,7 @@ uint8_t TFakeSerialPort::ReadByte()
         RespPos++;
 
     if (RespPos == Resp.size())
-        throw TSerialProtocolException("response buffer underflow");
+        throw std::runtime_error("response buffer underflow");
 
     return Resp[RespPos++];
 }

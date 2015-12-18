@@ -1,0 +1,91 @@
+{
+  "debug": true,
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 100,
+      "enabled": true,
+      "protocol": "other",
+      "devices" : [
+        {
+          "name": "Milur 305.32R (test)",
+          "id": "milur305.32r-test",
+          "slave_id": 255,
+          "enabled": true,
+          "protocol": "milur",
+          "channels": [
+            {
+              "name": "Phase C voltage",
+              "reg_type": "direct",
+              "address": 102,
+              "format": "u24",
+              "type": "voltage",
+              "scale": 0.001
+            },
+            {
+              "name": "Total consumption",
+              "reg_type": "direct",
+              "address": 118,
+              "format": "bcd32",
+              "type": "power_consumption",
+              "scale": 0.01
+            }
+          ]
+        },
+        {
+          "name": "Mercury 230AR-02 (test)",
+          "id": "mercury230ar02-test",
+          "slave_id": 0,
+          "enabled": true,
+          "protocol": "mercury230",
+          "channels": [
+            {
+              "name": "Total consumption",
+              "reg_type": "direct",
+              "address": "0x50000",
+              "format": "u32",
+              "type": "power_consumption",
+              "scale": 0.001
+            },
+            {
+              "name": "Total reactive energy",
+              "reg_type": "direct",
+              "address": "0x50002",
+              "format": "u32",
+              "type": "power_consumption",
+              "scale": 0.001
+            },
+            {
+              "name": "U1",
+              "reg_type": "direct",
+              "address": "0x81111",
+              "format": "u24",
+              "type": "voltage",
+              "scale": 0.01
+            },
+            {
+              "name": "U2",
+              "reg_type": "direct",
+              "address": "0x81112",
+              "format": "u24",
+              "type": "voltage",
+              "scale": 0.01
+            },
+            {
+              "name": "I1",
+              "reg_type": "direct",
+              "address": "0x81121",
+              "format": "u24",
+              "type": "value",
+              "scale": 0.001
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

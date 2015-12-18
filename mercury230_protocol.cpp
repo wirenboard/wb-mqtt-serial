@@ -8,7 +8,7 @@ TMercury230Protocol::TMercury230Protocol(PDeviceConfig device_config, PAbstractS
 
 bool TMercury230Protocol::ConnectionSetup(uint8_t slave)
 {
-    static uint8_t setupCmd[] = {
+    uint8_t setupCmd[7] = {
         uint8_t(AccessLevel()), 0x01, 0x01, 0x01, 0x01, 0x01, 0x01
     };
 

@@ -25,26 +25,20 @@ Connect()
 AddDevice(23, modbus)
 SetSlave(23)
 Publish: /devices/ddl24/controls/RGB/meta/error: 'r' (QoS 0, retained)
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 5: 0x0000
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 6: 0x0000
-EndPollCycle(10000)
 SetSlave(23)
 Publish: /devices/ddl24/controls/White/meta/error: 'r' (QoS 0, retained)
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 8: 0x0000
 Publish: /devices/ddl24/controls/RGB_All/meta/error: '' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB_All: '0' (QoS 0, retained)
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 9: 0x0000
 Publish: /devices/ddl24/controls/White1/meta/error: '' (QoS 0, retained)
 Publish: /devices/ddl24/controls/White1: '0' (QoS 0, retained)
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 18: 0x0000
 Publish: /devices/ddl24/controls/Voltage/meta/error: '' (QoS 0, retained)
@@ -64,21 +58,15 @@ write 1 holding register(s) @ 6:  0x001e
 SetSlave(23)
 Publish: /devices/ddl24/controls/White/meta/error: 'rw' (QoS 0, retained)
 SetSlave(23)
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 5: 0x0014
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 6: 0x001e
-EndPollCycle(10000)
 SetSlave(23)
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 8: 0x0000
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 9: 0x0000
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 18: 0x0000
 EndPollCycle(10000)
@@ -87,24 +75,18 @@ SetSlave(23)
 read 1 holding register(s) @ 4: 0x0000
 Publish: /devices/ddl24/controls/RGB/meta/error: 'w' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB: '0;20;30' (QoS 0, retained)
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 5: 0x0014
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 6: 0x001e
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 7: 0x0000
 Publish: /devices/ddl24/controls/White/meta/error: 'w' (QoS 0, retained)
 Publish: /devices/ddl24/controls/White: '0' (QoS 0, retained)
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 8: 0x0000
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 9: 0x0000
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 18: 0x0000
 EndPollCycle(10000)
@@ -125,44 +107,32 @@ write 1 holding register(s) @ 7:  0x002a
 Publish: /devices/ddl24/controls/White/meta/error: '' (QoS 0, retained)
 SetSlave(23)
 read 1 holding register(s) @ 4: 0x000a
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 5: 0x0014
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 6: 0x001e
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 7: 0x002a
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 8: 0x0000
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 9: 0x0000
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 18: 0x0000
 EndPollCycle(10000)
 >>> ModbusLoopOnce() [read, nothing blacklisted] (2)
 SetSlave(23)
 read 1 holding register(s) @ 4: 0x000a
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 5: 0x0014
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 6: 0x001e
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 7: 0x002a
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 8: 0x0000
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 9: 0x0000
-EndPollCycle(10000)
 SetSlave(23)
 read 1 holding register(s) @ 18: 0x0000
 EndPollCycle(10000)

@@ -186,14 +186,14 @@ void TEMProtocolTestBase::EnqueueMercury230AccessLevel2SessionSetupResponse()
         {
             0x00, // unit id (group)
             0x01, // op
-            0x01, // access level
+            0x02, // access level
             0x12, // pw
             0x13, // pw
             0x14, // pw
             0x15, // pw
             0x16, // pw
             0x17, // pw
-            0x07, // crc
+            0x34, // crc
             0x17  // crc
         },
         {

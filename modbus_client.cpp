@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <vector>
+#include <algorithm>
 #include <modbus/modbus.h>
 #include "modbus_client.h"
 #include <utility>
@@ -248,7 +249,8 @@ TModbusClient::TErrorState TRegisterHandler::Poll(PModbusContext ctx, bool* chan
     }
     did_read = true;
     set_value_mutex.lock();
-    if (value != new_value) {
+    if (value.size() != new_value.size() ||
+        std::mismatch(value.begin(), value.end(), new_value.begin()).first != value.end()) {
         if (dirty) {
             set_value_mutex.unlock();
             return UpdateReadError(false);
@@ -300,6 +302,9 @@ TModbusClient::TErrorState TRegisterHandler::Flush(PModbusContext ctx)
 
 std::string TRegisterHandler::TextValue() const
 {
+    if (!value.size())
+        throw TModbusException("invalid value size");
+
     switch (reg->Format) {
     case U16:
     case BCD16:
@@ -313,6 +318,8 @@ std::string TRegisterHandler::TextValue() const
         return ToScaledTextValue((int8_t) value[0]);
     case S24:
     case S32:
+        if (value.size() < 2)
+            throw TModbusException("invalid value size");
         return ToScaledTextValue(
 			static_cast<int32_t>((static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]))
 		);
@@ -320,8 +327,12 @@ std::string TRegisterHandler::TextValue() const
     case U32:
     case BCD24:
     case BCD32:
+        if (value.size() < 2)
+            throw TModbusException("invalid value size");
         return ToScaledTextValue((static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]));
     case S64:
+        if (value.size() < 4)
+            throw TModbusException("invalid value size");
         return ToScaledTextValue(static_cast<int64_t> (
 							         (  static_cast<uint64_t>(value[0]) << 48) | \
 					                 ( static_cast<uint64_t>(value[1]) << 32) | \
@@ -330,6 +341,8 @@ std::string TRegisterHandler::TextValue() const
 				                 ));
 
     case U64:
+        if (value.size() < 4)
+            throw TModbusException("invalid value size");
         return ToScaledTextValue(
 						         (  static_cast<uint64_t>(value[0]) << 48) | \
 				                 ( static_cast<uint64_t>(value[1]) << 32) | \
@@ -339,6 +352,8 @@ std::string TRegisterHandler::TextValue() const
 
 	case Float:
 		{
+        if (value.size() < 2)
+            throw TModbusException("invalid value size");
 		uint32_t tmp = (static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]);
 		float ret;
 		memcpy(&ret, &tmp, sizeof(tmp));
@@ -348,6 +363,8 @@ std::string TRegisterHandler::TextValue() const
 
     case Double:
 		{
+        if (value.size() < 4)
+            throw TModbusException("invalid value size");
 		uint64_t tmp = (  static_cast<uint64_t>(value[0]) << 48) | \
 	                   ( static_cast<uint64_t>(value[1]) << 32) | \
 	                   ( static_cast<uint64_t>(value[2]) << 16) | \
@@ -662,8 +679,8 @@ void TModbusClient::Cycle()
             p.second->CurrentErrorState() != ReadError &&
             p.second->CurrentErrorState() != ReadWriteError)
             Callback(p.first);
-        Context->EndPollCycle(PollInterval * 1000);
     }
+    Context->EndPollCycle(PollInterval * 1000);
 }
 
 void TModbusClient::WriteHoldingRegister(int slave, int address, uint16_t value)
@@ -672,8 +689,6 @@ void TModbusClient::WriteHoldingRegister(int slave, int address, uint16_t value)
     Context->SetSlave(slave);
     Context->WriteHoldingRegisters(address, 1, &value);
 }
-
-
 
 void TModbusClient::SetTextValue(std::shared_ptr<TModbusRegister> reg, const std::string& value)
 {
