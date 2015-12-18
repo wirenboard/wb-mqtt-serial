@@ -97,12 +97,12 @@ typedef std::shared_ptr<THandlerConfig> PHandlerConfig;
 class TConfigParserException: public std::exception
 {
 public:
-    TConfigParserException(std::string _message): message(_message) {}
+    TConfigParserException(std::string _message): Message("Error parsing config file: " + _message) {}
     const char* what () const throw () {
-        return ("Error parsing config file: " + message).c_str();
+        return Message.c_str();
     }
 private:
-    std::string message;
+    std::string Message;
 };
 
 class TConfigActionParser
