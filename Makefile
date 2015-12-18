@@ -23,8 +23,10 @@ ifneq ($(CC_PATH),)
 	CC=$(CROSS_COMPILE)gcc-4.7
 endif
 
-#CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
-CFLAGS= -Wall -std=c++0x -Os -I.
+#CFLAGS=
+DEBUG_CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
+NORMAL_CFLAGS=-Wall -std=c++0x -Os -I.
+CFLAGS=$(if $(or $(DEBUG),$(filter test, $(MAKECMDGOALS))), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
 LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
 MODBUS_BIN=wb-homa-modbus
