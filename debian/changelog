@@ -1,3 +1,9 @@
+wb-homa-modbus (1.13.2) stable; urgency=medium
+
+  * various EM meters impovements and bug fixes
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 28 Dec 2015 12:01:28 +0300
+
 wb-homa-modbus (1.13.1) stable; urgency=medium
 
   * fixes handling IVTM devices with device_id > 9    
