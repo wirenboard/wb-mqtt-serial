@@ -3,6 +3,7 @@
 
 #include <wbmqtt/utils.h>
 #include "modbus_port.h"
+#include <iostream>
 
 TModbusPort::TModbusPort(PMQTTClientBase mqtt_client, PPortConfig port_config, PModbusConnector connector)
     : MQTTClient(mqtt_client),
