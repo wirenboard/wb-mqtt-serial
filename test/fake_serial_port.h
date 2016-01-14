@@ -20,7 +20,7 @@ public:
     void SkipNoise();
     void USleep(int usec);
 
-    void Expect(const std::vector<int>& request, const std::vector<int>& response);
+    void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
 
 private:
     void DumpWhatWasRead();
@@ -29,6 +29,7 @@ private:
 
     TLoggedFixture& Fixture;
     bool IsPortOpen;
+    const char* PendingFunc = 0;
     std::vector<int> Req;
     std::vector<int> Resp;
     size_t ReqPos, RespPos, DumpPos;

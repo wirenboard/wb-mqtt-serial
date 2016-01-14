@@ -26,6 +26,7 @@ Subscribe: /devices/mercury230ar02-test/controls/I1/on (QoS 0)
 Open()
 Sleep(100000)
 SkipNoise()
+EnqueueMercury230I1Response()
 >> FF 08 01 FF FF FF FF FF FF 5F ED
 << FF 08 01 87 F0
 >> FF 01 66 C0 4A

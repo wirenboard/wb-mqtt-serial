@@ -1,16 +1,22 @@
 Open()
 SkipNoise()
+EnqueueMercury230U1Response()
 >> 00 01 01 01 01 01 01 01 01 77 81
 << 00 00 01 B0
 >> 00 08 11 11 4D BA
+EnqueueMercury230I1Response()
 << 00 00 40 5E B0 1C
 >> 00 08 11 21 4D AE
+EnqueueMercury230U2Response()
 << 00 00 45 00 32 B4
 >> 00 08 11 12 0D BB
+EnqueueMercury230U1Response()
 << 00 00 EB 5D 8F 2D
 >> 00 08 11 11 4D BA
+EnqueueMercury230I1Response()
 << 00 00 40 5E B0 1C
 >> 00 08 11 21 4D AE
+EnqueueMercury230U2Response()
 << 00 00 45 00 32 B4
 >> 00 08 11 12 0D BB
 << 00 00 EB 5D 8F 2D

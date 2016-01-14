@@ -44,6 +44,10 @@ bool TFakeSerialPort::IsOpen() const
 }
 
 void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
+    if (PendingFunc) {
+        Fixture.Emit() << PendingFunc << "()";
+        PendingFunc = 0;
+    }
     SkipFrameBoundary();
     DumpWhatWasRead();
     Fixture.Emit() << ">> " << std::vector<uint8_t>(buf, buf + count);
@@ -136,8 +140,9 @@ void TFakeSerialPort::DumpWhatWasRead()
     DumpPos = RespPos;
 }
 
-void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<int>& response)
+void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func)
 {
+    PendingFunc = func;
     Req.insert(Req.end(), request.begin(), request.end());
     Req.push_back(FRAME_BOUNDARY);
     Resp.insert(Resp.end(), response.begin(), response.end());

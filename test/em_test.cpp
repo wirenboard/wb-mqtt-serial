@@ -34,7 +34,7 @@ void TEMProtocolTestBase::EnqueueMilurSessionSetupResponse()
             0x01, // result
             0x87, // crc
             0xf0  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMilurAccessLevel2SessionSetupResponse()
@@ -61,7 +61,7 @@ void TEMProtocolTestBase::EnqueueMilurAccessLevel2SessionSetupResponse()
             0x02, // result
             0xc7, // crc
             0xf1  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMilurPhaseCVoltageResponse()
@@ -85,7 +85,7 @@ void TEMProtocolTestBase::EnqueueMilurPhaseCVoltageResponse()
             0x03, // data 3
             0x03, // crc
             0x4e  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMilurTotalConsumptionResponse()
@@ -110,7 +110,7 @@ void TEMProtocolTestBase::EnqueueMilurTotalConsumptionResponse()
             0x00, // data 4
             0xac, // crc
             0x6c  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMilurNoSessionResponse()
@@ -131,7 +131,7 @@ void TEMProtocolTestBase::EnqueueMilurNoSessionResponse()
             0x00, // service data
             0x67, // crc
             0xd8  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMilurExceptionResponse()
@@ -152,7 +152,7 @@ void TEMProtocolTestBase::EnqueueMilurExceptionResponse()
             0x00, // service data
             0x62, // crc
             0x28  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMercury230SessionSetupResponse()
@@ -177,7 +177,7 @@ void TEMProtocolTestBase::EnqueueMercury230SessionSetupResponse()
             0x00, // state
             0x01, // crc
             0xb0  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMercury230AccessLevel2SessionSetupResponse()
@@ -202,7 +202,7 @@ void TEMProtocolTestBase::EnqueueMercury230AccessLevel2SessionSetupResponse()
             0x00, // state
             0x01, // crc
             0xb0  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMercury230EnergyResponse1()
@@ -237,7 +237,7 @@ void TEMProtocolTestBase::EnqueueMercury230EnergyResponse1()
             0xff, // R-
             0x44, // crc
             0xab  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMercury230EnergyResponse2()
@@ -272,7 +272,7 @@ void TEMProtocolTestBase::EnqueueMercury230EnergyResponse2()
             0xff, // R-
             0x45, // crc
             0xbb  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMercury230U1Response()
@@ -293,7 +293,7 @@ void TEMProtocolTestBase::EnqueueMercury230U1Response()
             0x5e, // U1
             0xb0, // crc
             0x1c  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMercury230I1Response()
@@ -314,7 +314,7 @@ void TEMProtocolTestBase::EnqueueMercury230I1Response()
             0x00, // I1
             0x32, // crc
             0xb4  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMercury230U2Response()
@@ -335,7 +335,7 @@ void TEMProtocolTestBase::EnqueueMercury230U2Response()
             0x5d, // U2
             0x8f, // crc
             0x2d  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMercury230NoSessionResponse()
@@ -354,7 +354,7 @@ void TEMProtocolTestBase::EnqueueMercury230NoSessionResponse()
             0x05, // error 5 = no session
             0xc1, // crc
             0xb3  // crc
-        });
+        }, __func__);
 }
 
 void TEMProtocolTestBase::EnqueueMercury230InternalMeterErrorResponse()
@@ -373,7 +373,7 @@ void TEMProtocolTestBase::EnqueueMercury230InternalMeterErrorResponse()
             0x02, // error 2 = internal meter error
             0x80, // crc
             0x71  // crc
-        });
+        }, __func__);
 }
 
 class TEMProtocolTest: public TEMProtocolTestBase
