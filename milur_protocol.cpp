@@ -2,9 +2,6 @@
 #include "crc16.h"
 
 namespace {
-    uint8_t DefaultPassword[6] = {
-        0xff, 0xff, 0xff, 0xff, 0xff, 0xff
-    };
     void GetRegType(RegisterFormat fmt, int* size, bool* bcd) {
         *bcd = false;
         switch (fmt) {
