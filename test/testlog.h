@@ -51,7 +51,6 @@ template<> inline TTestLogItem& TTestLogItem::operator <<(const std::vector<uint
 class TLoggedFixture: public ::testing::Test
 {
 public:
-    virtual ~TLoggedFixture();
     TTestLogItem Emit()
     {
         return TTestLogItem([this](const std::string& s) {

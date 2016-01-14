@@ -8,8 +8,6 @@
 
 std::string TLoggedFixture::BaseDir = ".";
 
-TLoggedFixture::~TLoggedFixture() {}
-
 void TLoggedFixture::TearDown()
 {
     std::string file_name = GetLogFileName(".out");
