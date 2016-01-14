@@ -8,10 +8,6 @@ class TIVTMProtocolTest: public TLoggedFixture
 protected:
     void SetUp();
     void TearDown();
-    // void EnqueueMilurSessionSetupResponse();
-    // void EnqueueMercury230SessionSetupResponse();
-    // void VerifyMilurQuery();
-    // void VerifyMercuryParamQuery();
 
     PFakeSerialPort SerialPort;
     PModbusContext Context;
