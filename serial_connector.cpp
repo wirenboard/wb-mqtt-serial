@@ -101,6 +101,7 @@ void TSerialContext::WriteCoil(int addr, int value)
 {
     try {
         Connect();
+        // FIXME: 0xff for 1 is Uniel-specific!
         GetProtocol()->WriteRegister(SlaveId, addr, value ? 0xff : 0, U8);
     } catch (const TSerialProtocolTransientErrorException& e) {
         throw TModbusException(e.what());

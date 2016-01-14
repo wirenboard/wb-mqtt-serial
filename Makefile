@@ -47,6 +47,7 @@ MODBUS_OBJS=$(MODBUS_SRCS:.c=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
   $(TEST_DIR)/modbus_test.o \
+  $(TEST_DIR)/uniel_test.o \
   $(TEST_DIR)/em_test.o \
   $(TEST_DIR)/em_integration.o \
   $(TEST_DIR)/ivtm_test.o \

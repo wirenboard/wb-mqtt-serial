@@ -1,0 +1,4 @@
+Open()
+EnqueueSetLowThreshold0Response()
+>> FF FF 06 01 70 02 00 79
+<< FF FF 06 00 70 02 00 78

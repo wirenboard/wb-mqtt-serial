@@ -1,0 +1,4 @@
+Open()
+EnqueueSetBrightnessResponse()
+>> FF FF 0A 01 42 01 00 4E
+<< FF FF 0A 00 42 01 00 4D

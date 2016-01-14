@@ -21,9 +21,9 @@ public:
     void USleep(int usec);
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
+    void DumpWhatWasRead();
 
 private:
-    void DumpWhatWasRead();
     void SkipFrameBoundary();
     const int FRAME_BOUNDARY = -1;
 
