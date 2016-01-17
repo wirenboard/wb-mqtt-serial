@@ -3,9 +3,9 @@ Maintainer: Evgeny Boger <boger@contactless.ru>
 Section: misc
 Priority: optional
 Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 9), pkg-config, g++, libjsoncpp-dev, libmosquittopp-dev, libmosquitto-dev, libwbmqtt-dev (>= 1.3)
+Build-Depends: debhelper (>= 9), pkg-config, g++, libjsoncpp-dev, libmosquittopp-dev, libmosquitto-dev, libwbmqtt-dev (>= 1.3.2)
 
 Package: wb-homa-modbus
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libjsoncpp0, libmosquittopp1, libmosquitto1, bsdutils, libwbmqtt (>= 1.3)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libjsoncpp0, libmosquittopp1, libmosquitto1 bsdutils, libwbmqtt (>= 1.3.2)
 Description: Wiren Board Smart Home MQTT Modbus-RTU driver compatible with HomA conventions

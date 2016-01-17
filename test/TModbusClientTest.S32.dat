@@ -11,6 +11,10 @@ SetSlave(1)
 read 2 input register(s) @ 30: 0xffff 0xffff
 Modbus Callback: <1:input: 30> becomes -1
 USleep(1000000)
+SetSlave(1)
+read 2 holding register(s) @ 24: 0x0000 0x0000
+Modbus Callback: <1:holding: 24> becomes 0
+USleep(1000000)
 >>> client -> server: 10
 >>> Cycle()
 SetSlave(1)
@@ -21,6 +25,9 @@ USleep(1000000)
 SetSlave(1)
 read 2 input register(s) @ 30: 0xffff 0xffff
 USleep(1000000)
+SetSlave(1)
+read 2 holding register(s) @ 24: 0x0000 0x0000
+USleep(1000000)
 >>> client -> server: -2
 >>> Cycle()
 SetSlave(1)
@@ -30,5 +37,32 @@ read 2 holding register(s) @ 20: 0xffff 0xfffe
 USleep(1000000)
 SetSlave(1)
 read 2 input register(s) @ 30: 0xffff 0xffff
+USleep(1000000)
+SetSlave(1)
+read 2 holding register(s) @ 24: 0x0000 0x0000
+USleep(1000000)
+>>> client -> server: -0.123 (scaled)
+>>> Cycle()
+SetSlave(1)
+write 2 holding register(s) @ 24:  0xffff 0xff85
+SetSlave(1)
+read 2 holding register(s) @ 20: 0xffff 0xfffe
+USleep(1000000)
+SetSlave(1)
+read 2 input register(s) @ 30: 0xffff 0xffff
+USleep(1000000)
+SetSlave(1)
+read 2 holding register(s) @ 24: 0xffff 0xff85
+USleep(1000000)
+>>> server -> client: 0xffff 0xff85 (scaled)
+>>> Cycle()
+SetSlave(1)
+read 2 holding register(s) @ 20: 0xffff 0xfffe
+USleep(1000000)
+SetSlave(1)
+read 2 input register(s) @ 30: 0xffff 0xffff
+USleep(1000000)
+SetSlave(1)
+read 2 holding register(s) @ 24: 0xffff 0xff85
 USleep(1000000)
 Disconnect()

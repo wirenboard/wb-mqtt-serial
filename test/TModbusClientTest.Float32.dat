@@ -5,15 +5,15 @@ CreateContext(): </dev/ttyNSC0 115200 8 N1 timeout 0>
 Connect()
 SetSlave(1)
 read 2 holding register(s) @ 24: 0x0000 0x0000
-Modbus Callback: <1:holding: 24> becomes 0.000000
+Modbus Callback: <1:holding: 24> becomes 0
 USleep(1000000)
 SetSlave(1)
 read 2 holding register(s) @ 20: 0x45d2 0x0000
-Modbus Callback: <1:holding: 20> becomes 6720.000000
+Modbus Callback: <1:holding: 20> becomes 6720
 USleep(1000000)
 SetSlave(1)
 read 2 input register(s) @ 30: 0x449d 0x8000
-Modbus Callback: <1:input: 30> becomes 1260.000000
+Modbus Callback: <1:input: 30> becomes 1260
 USleep(1000000)
 >>> client -> server: 10
 >>> Cycle()
@@ -58,7 +58,7 @@ USleep(1000000)
 >>> Cycle()
 SetSlave(1)
 read 2 holding register(s) @ 24: 0x449d 0x8000
-Modbus Callback: <1:holding: 24> becomes 126000.000000
+Modbus Callback: <1:holding: 24> becomes 126000
 USleep(1000000)
 SetSlave(1)
 read 2 holding register(s) @ 20: 0xbaa1 0x37f4
