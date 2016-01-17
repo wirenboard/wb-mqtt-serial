@@ -1,3 +1,4 @@
+#include <iostream>
 #include "modbus_observer.h"
 #include "uniel_context.h"
 
