@@ -31,23 +31,25 @@ LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
 MODBUS_BIN=wb-homa-modbus
 MODBUS_LIBS=-lmodbus
-MODBUS_SRCS=modbus_client.c \
-  modbus_config.c \
-  modbus_port.c \
-  modbus_observer.c \
-  serial_protocol.c \
-  serial_connector.c \
-  uniel_protocol.c \
-  ivtm_protocol.c \
-  crc16.c \
-  em_protocol.c \
-  milur_protocol.c \
-  mercury230_protocol.c
-MODBUS_OBJS=$(MODBUS_SRCS:.c=.o)
+MODBUS_SRCS=modbus_client.cpp \
+  modbus_config.cpp \
+  modbus_port.cpp \
+  modbus_observer.cpp \
+  serial_protocol.cpp \
+  serial_connector.cpp \
+  uniel_protocol.cpp \
+  ivtm_protocol.cpp \
+  crc16.cpp \
+  em_protocol.cpp \
+  milur_protocol.cpp \
+  mercury230_protocol.cpp
+MODBUS_OBJS=$(MODBUS_SRCS:.cpp=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
   $(TEST_DIR)/modbus_test.o \
+  $(TEST_DIR)/uniel_expectations.o \
   $(TEST_DIR)/uniel_test.o \
+  $(TEST_DIR)/em_expectations.o \
   $(TEST_DIR)/em_test.o \
   $(TEST_DIR)/em_integration.o \
   $(TEST_DIR)/ivtm_test.o \
@@ -55,7 +57,7 @@ TEST_SRCS= \
   $(TEST_DIR)/fake_mqtt.o \
   $(TEST_DIR)/fake_serial_port.o \
   $(TEST_DIR)/main.o
-TEST_OBJS=$(TEST_SRCS:.c=.o)
+TEST_OBJS=$(TEST_SRCS:.cpp=.o)
 TEST_LIBS=-lgtest -lpthread -lmosquittopp
 TEST_DIR=test
 TEST_BIN=wb-homa-test

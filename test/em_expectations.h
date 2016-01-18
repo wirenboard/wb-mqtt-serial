@@ -1,10 +1,9 @@
 #pragma once
-#include "testlog.h"
-#include "fake_serial_port.h"
+#include "expector.h"
 
-class TEMProtocolTestBase: public virtual TSerialProtocolTest
+class TEMProtocolExpectations: public virtual TExpectorProvider
 {
-protected:
+public:
     void EnqueueMilurSessionSetupResponse();
     void EnqueueMilurAccessLevel2SessionSetupResponse();
     void EnqueueMilurPhaseCVoltageResponse();

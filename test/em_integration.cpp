@@ -1,27 +1,14 @@
 #include <stdexcept>
-#include "em_test.h"
+#include "fake_serial_port.h"
+#include "em_expectations.h"
 #include "../modbus_config.h"
 #include "../modbus_observer.h"
 
-class TEMIntegrationTest: public TSerialProtocolIntegrationTest, public TEMProtocolTestBase
+class TEMIntegrationTest: public TSerialProtocolIntegrationTest, public TEMProtocolExpectations
 {
 protected:
-    void SetUp();
-    void TearDown();
     const char* ConfigPath() const { return "../config-em-test.json"; }
 };
-
-void TEMIntegrationTest::SetUp()
-{
-    TEMProtocolTestBase::SetUp();
-    TSerialProtocolIntegrationTest::SetUp();
-}
-
-void TEMIntegrationTest::TearDown()
-{
-    TSerialProtocolIntegrationTest::TearDown();
-    TEMProtocolTestBase::TearDown();
-}
 
 TEST_F(TEMIntegrationTest, Poll)
 {

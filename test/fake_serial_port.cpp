@@ -162,6 +162,11 @@ void TSerialProtocolTest::SetUp()
     SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
 }
 
+PExpector TSerialProtocolTest::Expector() const
+{
+    return SerialPort;
+}
+
 void TSerialProtocolTest::TearDown()
 {
     SerialPort.reset();
@@ -170,16 +175,19 @@ void TSerialProtocolTest::TearDown()
 
 void TSerialProtocolDirectTest::SetUp()
 {
+    TSerialProtocolTest::SetUp();
     Context = TSerialConnector().CreateContext(SerialPort);
 }
 
 void TSerialProtocolDirectTest::TearDown()
 {
     Context.reset();
+    TSerialProtocolTest::TearDown();
 }
 
 void TSerialProtocolIntegrationTest::SetUp()
 {
+    TSerialProtocolTest::SetUp();
     PortMakerCalled = false;
     TSerialConnector::SetGlobalPortMaker([this](const TSerialPortSettings&) {
             if (PortMakerCalled)
@@ -197,4 +205,5 @@ void TSerialProtocolIntegrationTest::TearDown()
 {
     TSerialConnector::SetGlobalPortMaker(0);
     Observer.reset();
+    TSerialProtocolTest::TearDown();
 }

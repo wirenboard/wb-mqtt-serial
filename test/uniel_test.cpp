@@ -2,253 +2,9 @@
 #include "fake_serial_port.h"
 #include "serial_connector.h"
 
-class TUnielProtocolTestBase: public virtual TSerialProtocolTest
-{
-protected:
-    void TearDown();
-    void EnqueueVoltageQueryResponse();
-    void EnqueueRelayOffQueryResponse();
-    void EnqueueRelayOnQueryResponse();
-    void EnqueueThreshold0QueryResponse();
-    void EnqueueBrightnessQueryResponse();
-    void EnqueueSetRelayOnResponse();
-    void EnqueueSetRelayOffResponse();
-    void EnqueueSetLowThreshold0Response();
-    void EnqueueSetBrightnessResponse();
-};
+#include "uniel_expectations.h"
 
-void TUnielProtocolTestBase::TearDown()
-{
-    SerialPort->DumpWhatWasRead();
-    TSerialProtocolTest::TearDown();
-}
-
-void TUnielProtocolTestBase::EnqueueVoltageQueryResponse()
-{
-    SerialPort->Expect(
-        {
-            0xff, // sync
-            0xff, // sync
-            0x05, // op (5 = read)
-            0x01, // unit id
-            0x00, // not used
-            0x0a, // addr
-            0x00, // not used
-            0x10  // sum
-        },
-        {
-            0xff, // sync
-            0xff, // sync
-            0x05, // op (5 = read)
-            0x00, // unit id 0 = module response
-            0x9a, // value = 9a (154)
-            0x0a, // addr
-            0x00, // not used
-            0xa9  // sum
-        }, __func__);
-}
-
-void TUnielProtocolTestBase::EnqueueRelayOffQueryResponse()
-{
-    SerialPort->Expect(
-        {
-            0xff, // sync
-            0xff, // sync
-            0x05, // op (5 = read)
-            0x01, // unit id
-            0x00, // not used
-            0x1b, // addr
-            0x00, // not used
-            0x21  // sum
-        },
-        {
-            0xff, // sync
-            0xff, // sync
-            0x05, // op (5 = read)
-            0x00, // unit id 0 = module response
-            0x00, // value = 00 (off)
-            0x1b, // addr
-            0x00, // not used
-            0x20  // sum
-        }, __func__);
-}
-
-void TUnielProtocolTestBase::EnqueueRelayOnQueryResponse()
-{
-    SerialPort->Expect(
-        {
-            0xff, // sync
-            0xff, // sync
-            0x05, // op (5 = read)
-            0x01, // unit id
-            0x00, // not used
-            0x1b, // addr
-            0x00, // not used
-            0x21  // sum
-        },
-        {
-            0xff, // sync
-            0xff, // sync
-            0x05, // op (5 = read)
-            0x00, // unit id 0 = module response
-            0xff, // value = 0xff (on)
-            0x1b, // addr
-            0x00, // not used
-            0x1f  // sum
-        }, __func__);
-}
-
-void TUnielProtocolTestBase::EnqueueThreshold0QueryResponse()
-{
-    SerialPort->Expect(
-        {
-            0xff, // sync
-            0xff, // sync
-            0x05, // op (5 = read)
-            0x01, // unit id
-            0x00, // not used
-            0x02, // addr
-            0x00, // not used
-            0x08  // sum
-        },
-        {
-            0xff, // sync
-            0xff, // sync
-            0x05, // op (5 = read)
-            0x00, // unit id 0 = module response
-            0x70, // value = 0xff (on)
-            0x02, // addr
-            0x00, // not used
-            0x77  // sum
-        }, __func__);
-}
-
-void TUnielProtocolTestBase::EnqueueBrightnessQueryResponse()
-{
-    SerialPort->Expect(
-        {
-            0xff, // sync
-            0xff, // sync
-            0x05, // op (5 = read)
-            0x01, // unit id
-            0x00, // not used
-            0x41, // addr
-            0x00, // not used
-            0x47  // sum
-        },
-        {
-            0xff, // sync
-            0xff, // sync
-            0x05, // op (5 = read)
-            0x00, // unit id 0 = module response
-            0x42, // value = 66
-            0x41, // addr
-            0x00, // not used
-            0x88  // sum
-        }, __func__);
-}
-
-void TUnielProtocolTestBase::EnqueueSetRelayOnResponse()
-{
-    SerialPort->Expect(
-        {
-            0xff, // sync
-            0xff, // sync
-            0x06, // op (6 = write)
-            0x01, // unit id
-            0xff, // relay on
-            0x1b, // addr
-            0x00, // not used
-            0x21  // sum
-        },
-        {
-            0xff, // sync
-            0xff, // sync
-            0x06, // op (6 = write)
-            0x00, // unit id 0 = module response
-            0xff, // relay on
-            0x1b, // addr
-            0x00, // not used
-            0x20  // sum
-        }, __func__);
-}
-
-void TUnielProtocolTestBase::EnqueueSetRelayOffResponse()
-{
-    SerialPort->Expect(
-        {
-            0xff, // sync
-            0xff, // sync
-            0x06, // op (6 = write)
-            0x01, // unit id
-            0x00, // relay off
-            0x1b, // addr
-            0x00, // not used
-            0x22  // sum
-        },
-        {
-            0xff, // sync
-            0xff, // sync
-            0x06, // op (6 = write)
-            0x00, // unit id 0 = module response
-            0x00, // relay on
-            0x1b, // addr
-            0x00, // not used
-            0x21  // sum
-        }, __func__);
-}
-
-void TUnielProtocolTestBase::EnqueueSetLowThreshold0Response()
-{
-    SerialPort->Expect(
-        {
-            0xff, // sync
-            0xff, // sync
-            0x06, // op (6 = write)
-            0x01, // unit id
-            0x70, // value = 112
-            0x02, // addr
-            0x00, // not used
-            0x79  // sum
-        },
-        {
-            0xff, // sync
-            0xff, // sync
-            0x06, // op (6 = write)
-            0x00, // unit id 0 = module response
-            0x70, // value = 112
-            0x02, // addr
-            0x00, // not used
-            0x78  // sum
-        }, __func__);
-}
-
-void TUnielProtocolTestBase::EnqueueSetBrightnessResponse()
-{
-    SerialPort->Expect(
-        {
-            0xff, // sync
-            0xff, // sync
-            0x0a, // op (0x0a = set brightness)
-            0x01, // unit id
-            0x42, // value = 66
-            0x01, // addr
-            0x00, // not used
-            0x4e  // sum
-        },
-        {
-            0xff, // sync
-            0xff, // sync
-            0x0a, // op (0x0a = set brightness)
-            0x00, // unit id 0 = module response
-            0x42, // value = 66
-            0x01, // addr
-            0x00, // not used
-            0x4d  // sum
-        }, __func__);
-}
-
-class TUnielProtocolTest: public TSerialProtocolDirectTest, public TUnielProtocolTestBase {
+class TUnielProtocolTest: public TSerialProtocolDirectTest, public TUnielProtocolExpectations {
 protected:
     void SetUp();
     void TearDown();
@@ -256,15 +12,14 @@ protected:
 
 void TUnielProtocolTest::SetUp()
 {
-    TUnielProtocolTestBase::SetUp();
     TSerialProtocolDirectTest::SetUp();
     Context->AddDevice(std::make_shared<TDeviceConfig>("uniel", 0x01, "uniel"));
 }
 
 void TUnielProtocolTest::TearDown()
 {
+    SerialPort->DumpWhatWasRead();
     TSerialProtocolDirectTest::TearDown();
-    TUnielProtocolTestBase::TearDown();
 }
 
 TEST_F(TUnielProtocolTest, TestQuery)
@@ -329,7 +84,7 @@ TEST_F(TUnielProtocolTest, TestSetBrightness)
     Context->WriteHoldingRegister(0x01000141, 0x42);
 }
 
-class TUnielIntegrationTest: public TSerialProtocolIntegrationTest, public TUnielProtocolTestBase {
+class TUnielIntegrationTest: public TSerialProtocolIntegrationTest, public TUnielProtocolExpectations {
 protected:
     void SetUp();
     void TearDown();
@@ -338,14 +93,13 @@ protected:
 
 void TUnielIntegrationTest::SetUp()
 {
-    TUnielProtocolTestBase::SetUp();
     TSerialProtocolIntegrationTest::SetUp();
 }
 
 void TUnielIntegrationTest::TearDown()
 {
+    SerialPort->DumpWhatWasRead();
     TSerialProtocolIntegrationTest::TearDown();
-    TUnielProtocolTestBase::TearDown();
 }
 
 TEST_F(TUnielIntegrationTest, Poll)
