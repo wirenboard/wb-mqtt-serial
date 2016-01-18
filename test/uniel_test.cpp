@@ -328,3 +328,54 @@ TEST_F(TUnielProtocolTest, TestSetBrightness)
     EnqueueSetBrightnessResponse();
     Context->WriteHoldingRegister(0x01000141, 0x42);
 }
+
+class TUnielIntegrationTest: public TSerialProtocolIntegrationTest, public TUnielProtocolTestBase {
+protected:
+    void SetUp();
+    void TearDown();
+    const char* ConfigPath() const { return "../config-uniel-test.json"; }
+};
+
+void TUnielIntegrationTest::SetUp()
+{
+    TUnielProtocolTestBase::SetUp();
+    TSerialProtocolIntegrationTest::SetUp();
+}
+
+void TUnielIntegrationTest::TearDown()
+{
+    TSerialProtocolIntegrationTest::TearDown();
+    TUnielProtocolTestBase::TearDown();
+}
+
+TEST_F(TUnielIntegrationTest, Poll)
+{
+    Observer->SetUp();
+    ASSERT_TRUE(!!SerialPort);
+
+    EnqueueVoltageQueryResponse();
+    EnqueueRelayOffQueryResponse();
+    EnqueueThreshold0QueryResponse();
+    EnqueueBrightnessQueryResponse();
+
+    Note() << "ModbusLoopOnce()";
+    Observer->ModbusLoopOnce();
+    SerialPort->DumpWhatWasRead();
+
+    MQTTClient->DoPublish(true, 0, "/devices/pseudo_uniel/controls/Relay 1/on", "1");
+    MQTTClient->DoPublish(true, 0, "/devices/pseudo_uniel/controls/LowThr/on", "112");
+    MQTTClient->DoPublish(true, 0, "/devices/pseudo_uniel/controls/LED 1/on", "66");
+
+    EnqueueSetRelayOnResponse();
+    EnqueueSetLowThreshold0Response();
+    EnqueueSetBrightnessResponse();
+
+    EnqueueVoltageQueryResponse();
+    EnqueueRelayOnQueryResponse();
+    EnqueueThreshold0QueryResponse();
+    EnqueueBrightnessQueryResponse();
+
+    Note() << "ModbusLoopOnce()";
+    Observer->ModbusLoopOnce();
+    SerialPort->DumpWhatWasRead();
+}
