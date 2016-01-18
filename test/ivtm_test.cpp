@@ -3,29 +3,25 @@
 #include "serial_connector.h"
 
 
-class TIVTMProtocolTest: public TLoggedFixture
+class TIVTMProtocolTest: public TSerialProtocolDirectTest
 {
 protected:
     void SetUp();
     void TearDown();
-
-    PFakeSerialPort SerialPort;
-    PModbusContext Context;
 };
 
 void TIVTMProtocolTest::SetUp()
 {
-    SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
-    Context = TSerialConnector().CreateContext(SerialPort);
+    TSerialProtocolTest::SetUp();
+    TSerialProtocolDirectTest::SetUp();
     Context->AddDevice(std::make_shared<TDeviceConfig>("ivtm", 0x0001, "ivtm"));
     Context->AddDevice(std::make_shared<TDeviceConfig>("ivtm", 0x000A, "ivtm"));
 }
 
 void TIVTMProtocolTest::TearDown()
 {
-    SerialPort.reset();
-    Context.reset();
-    TLoggedFixture::TearDown();
+    TSerialProtocolDirectTest::TearDown();
+    TSerialProtocolTest::TearDown();
 }
 
 TEST_F(TIVTMProtocolTest, IVTM7MQuery)

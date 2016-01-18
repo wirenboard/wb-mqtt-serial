@@ -1,16 +1,5 @@
 #include "em_test.h"
 
-void TEMProtocolTestBase::SetUp()
-{
-    SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
-}
-
-void TEMProtocolTestBase::TearDown()
-{
-    SerialPort.reset();
-    TLoggedFixture::TearDown();
-}
-
 void TEMProtocolTestBase::EnqueueMilurSessionSetupResponse()
 {
     SerialPort->Expect(
@@ -376,7 +365,7 @@ void TEMProtocolTestBase::EnqueueMercury230InternalMeterErrorResponse()
         }, __func__);
 }
 
-class TEMProtocolTest: public TEMProtocolTestBase
+class TEMProtocolTest: public TSerialProtocolDirectTest, public TEMProtocolTestBase
 {
 protected:
     void SetUp();
@@ -385,8 +374,6 @@ protected:
     void VerifyMercuryParamQuery();
     virtual PDeviceConfig MilurConfig();
     virtual PDeviceConfig Mercury230Config();
-
-    PModbusContext Context;
 };
 
 PDeviceConfig TEMProtocolTest::MilurConfig()
@@ -402,14 +389,14 @@ PDeviceConfig TEMProtocolTest::Mercury230Config()
 void TEMProtocolTest::SetUp()
 {
     TEMProtocolTestBase::SetUp();
-    Context = TSerialConnector().CreateContext(SerialPort);
+    TSerialProtocolDirectTest::SetUp();
     Context->AddDevice(MilurConfig());
     Context->AddDevice(Mercury230Config());
 }
 
 void TEMProtocolTest::TearDown()
 {
-    Context.reset();
+    TSerialProtocolDirectTest::TearDown();
     TEMProtocolTestBase::TearDown();
 }
 

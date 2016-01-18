@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <stdexcept>
 #include "fake_serial_port.h"
+#include "fake_mqtt.h"
+#include "serial_connector.h"
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture), IsPortOpen(false), ReqPos(0), RespPos(0), DumpPos(0) {}
@@ -154,3 +156,46 @@ void TFakeSerialPort::SkipFrameBoundary()
     if (RespPos < Resp.size() && Resp[RespPos] == FRAME_BOUNDARY)
         RespPos++;
 }
+
+void TSerialProtocolTest::SetUp()
+{
+    SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
+}
+
+void TSerialProtocolTest::TearDown()
+{
+    SerialPort.reset();
+    TLoggedFixture::TearDown();
+}
+
+void TSerialProtocolDirectTest::SetUp()
+{
+    Context = TSerialConnector().CreateContext(SerialPort);
+}
+
+void TSerialProtocolDirectTest::TearDown()
+{
+    Context.reset();
+}
+
+void TSerialProtocolIntegrationTest::SetUp()
+{
+    PortMakerCalled = false;
+    TSerialConnector::SetGlobalPortMaker([this](const TSerialPortSettings&) {
+            if (PortMakerCalled)
+                throw std::runtime_error("serial port reinit?");
+            PortMakerCalled = true;
+            return SerialPort;
+        });
+    TConfigParser parser(GetDataFilePath(ConfigPath()), false);
+    PHandlerConfig Config = parser.Parse();
+    PFakeMQTTClient mqttClient(new TFakeMQTTClient("em-test", *this));
+    Observer = PMQTTModbusObserver(new TMQTTModbusObserver(mqttClient, Config));
+}
+
+void TSerialProtocolIntegrationTest::TearDown()
+{
+    TSerialConnector::SetGlobalPortMaker(0);
+    Observer.reset();
+}
+

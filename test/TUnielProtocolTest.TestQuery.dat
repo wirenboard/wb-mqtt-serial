@@ -2,6 +2,9 @@ Open()
 EnqueueVoltageQueryResponse()
 >> FF FF 05 01 00 0A 00 10
 << FF FF 05 00 9A 0A 00 A9
+EnqueueVoltageQueryResponse()
+>> FF FF 05 01 00 0A 00 10
+<< FF FF 05 00 9A 0A 00 A9
 EnqueueRelayOffQueryResponse()
 >> FF FF 05 01 00 1B 00 21
 << FF FF 05 00 00 1B 00 20

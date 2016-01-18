@@ -1,39 +1,25 @@
 #include <stdexcept>
 #include "em_test.h"
-#include "fake_mqtt.h"
 #include "../modbus_config.h"
 #include "../modbus_observer.h"
 
-class TEMIntegrationTest: public TEMProtocolTestBase
+class TEMIntegrationTest: public TSerialProtocolIntegrationTest, public TEMProtocolTestBase
 {
 protected:
     void SetUp();
     void TearDown();
-
-    PMQTTModbusObserver Observer;
-    bool PortMakerCalled;
+    const char* ConfigPath() const { return "../config-em-test.json"; }
 };
 
 void TEMIntegrationTest::SetUp()
 {
     TEMProtocolTestBase::SetUp();
-    PortMakerCalled = false;
-    TSerialConnector::SetGlobalPortMaker([this](const TSerialPortSettings&) {
-            if (PortMakerCalled)
-                throw std::runtime_error("serial port reinit?");
-            PortMakerCalled = true;
-            return SerialPort;
-        });
-    TConfigParser parser(GetDataFilePath("../config-em-test.json"), false);
-    PHandlerConfig Config = parser.Parse();
-    PFakeMQTTClient mqttClient(new TFakeMQTTClient("em-test", *this));
-    Observer = PMQTTModbusObserver(new TMQTTModbusObserver(mqttClient, Config));
+    TSerialProtocolIntegrationTest::SetUp();
 }
 
 void TEMIntegrationTest::TearDown()
 {
-    TSerialConnector::SetGlobalPortMaker(0);
-    Observer.reset();
+    TSerialProtocolIntegrationTest::TearDown();
     TEMProtocolTestBase::TearDown();
 }
 

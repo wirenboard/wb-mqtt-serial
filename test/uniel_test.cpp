@@ -2,10 +2,9 @@
 #include "fake_serial_port.h"
 #include "serial_connector.h"
 
-class TUnielProtocolTest: public TLoggedFixture
+class TUnielProtocolTestBase: public virtual TSerialProtocolTest
 {
 protected:
-    void SetUp();
     void TearDown();
     void EnqueueVoltageQueryResponse();
     void EnqueueRelayOffQueryResponse();
@@ -16,27 +15,15 @@ protected:
     void EnqueueSetRelayOffResponse();
     void EnqueueSetLowThreshold0Response();
     void EnqueueSetBrightnessResponse();
-
-    PFakeSerialPort SerialPort;
-    PModbusContext Context;
 };
 
-void TUnielProtocolTest::SetUp()
-{
-    SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
-    Context = TSerialConnector().CreateContext(SerialPort);
-    Context->AddDevice(std::make_shared<TDeviceConfig>("uniel", 0x01, "uniel"));
-}
-
-void TUnielProtocolTest::TearDown()
+void TUnielProtocolTestBase::TearDown()
 {
     SerialPort->DumpWhatWasRead();
-    SerialPort.reset();
-    Context.reset();
-    TLoggedFixture::TearDown();
+    TSerialProtocolTest::TearDown();
 }
 
-void TUnielProtocolTest::EnqueueVoltageQueryResponse()
+void TUnielProtocolTestBase::EnqueueVoltageQueryResponse()
 {
     SerialPort->Expect(
         {
@@ -61,7 +48,7 @@ void TUnielProtocolTest::EnqueueVoltageQueryResponse()
         }, __func__);
 }
 
-void TUnielProtocolTest::EnqueueRelayOffQueryResponse()
+void TUnielProtocolTestBase::EnqueueRelayOffQueryResponse()
 {
     SerialPort->Expect(
         {
@@ -86,7 +73,7 @@ void TUnielProtocolTest::EnqueueRelayOffQueryResponse()
         }, __func__);
 }
 
-void TUnielProtocolTest::EnqueueRelayOnQueryResponse()
+void TUnielProtocolTestBase::EnqueueRelayOnQueryResponse()
 {
     SerialPort->Expect(
         {
@@ -111,7 +98,7 @@ void TUnielProtocolTest::EnqueueRelayOnQueryResponse()
         }, __func__);
 }
 
-void TUnielProtocolTest::EnqueueThreshold0QueryResponse()
+void TUnielProtocolTestBase::EnqueueThreshold0QueryResponse()
 {
     SerialPort->Expect(
         {
@@ -136,7 +123,7 @@ void TUnielProtocolTest::EnqueueThreshold0QueryResponse()
         }, __func__);
 }
 
-void TUnielProtocolTest::EnqueueBrightnessQueryResponse()
+void TUnielProtocolTestBase::EnqueueBrightnessQueryResponse()
 {
     SerialPort->Expect(
         {
@@ -161,7 +148,7 @@ void TUnielProtocolTest::EnqueueBrightnessQueryResponse()
         }, __func__);
 }
 
-void TUnielProtocolTest::EnqueueSetRelayOnResponse()
+void TUnielProtocolTestBase::EnqueueSetRelayOnResponse()
 {
     SerialPort->Expect(
         {
@@ -186,7 +173,7 @@ void TUnielProtocolTest::EnqueueSetRelayOnResponse()
         }, __func__);
 }
 
-void TUnielProtocolTest::EnqueueSetRelayOffResponse()
+void TUnielProtocolTestBase::EnqueueSetRelayOffResponse()
 {
     SerialPort->Expect(
         {
@@ -211,7 +198,7 @@ void TUnielProtocolTest::EnqueueSetRelayOffResponse()
         }, __func__);
 }
 
-void TUnielProtocolTest::EnqueueSetLowThreshold0Response()
+void TUnielProtocolTestBase::EnqueueSetLowThreshold0Response()
 {
     SerialPort->Expect(
         {
@@ -236,7 +223,7 @@ void TUnielProtocolTest::EnqueueSetLowThreshold0Response()
         }, __func__);
 }
 
-void TUnielProtocolTest::EnqueueSetBrightnessResponse()
+void TUnielProtocolTestBase::EnqueueSetBrightnessResponse()
 {
     SerialPort->Expect(
         {
@@ -261,13 +248,38 @@ void TUnielProtocolTest::EnqueueSetBrightnessResponse()
         }, __func__);
 }
 
+class TUnielProtocolTest: public TSerialProtocolDirectTest, public TUnielProtocolTestBase {
+protected:
+    void SetUp();
+    void TearDown();
+};
+
+void TUnielProtocolTest::SetUp()
+{
+    TUnielProtocolTestBase::SetUp();
+    TSerialProtocolDirectTest::SetUp();
+    Context->AddDevice(std::make_shared<TDeviceConfig>("uniel", 0x01, "uniel"));
+}
+
+void TUnielProtocolTest::TearDown()
+{
+    TSerialProtocolDirectTest::TearDown();
+    TUnielProtocolTestBase::TearDown();
+}
+
 TEST_F(TUnielProtocolTest, TestQuery)
 {
     Context->SetSlave(0x01);
-    EnqueueVoltageQueryResponse();
 
+    EnqueueVoltageQueryResponse();
     uint16_t v;
     Context->ReadHoldingRegisters(0x0a, 1, &v);
+    ASSERT_EQ(154, v);
+
+    // input: same as holding
+    SerialPort->DumpWhatWasRead();
+    EnqueueVoltageQueryResponse();
+    Context->ReadInputRegisters(0x0a, 1, &v);
     ASSERT_EQ(154, v);
 
     SerialPort->DumpWhatWasRead();

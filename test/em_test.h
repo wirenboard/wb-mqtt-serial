@@ -1,13 +1,10 @@
 #pragma once
 #include "testlog.h"
 #include "fake_serial_port.h"
-#include "serial_connector.h"
 
-class TEMProtocolTestBase: public TLoggedFixture
+class TEMProtocolTestBase: public virtual TSerialProtocolTest
 {
 protected:
-    void SetUp();
-    void TearDown();
     void EnqueueMilurSessionSetupResponse();
     void EnqueueMilurAccessLevel2SessionSetupResponse();
     void EnqueueMilurPhaseCVoltageResponse();
@@ -23,7 +20,4 @@ protected:
     void EnqueueMercury230U2Response();
     void EnqueueMercury230NoSessionResponse();
     void EnqueueMercury230InternalMeterErrorResponse();
-
-    PFakeSerialPort SerialPort;
-    PModbusContext Context;
 };

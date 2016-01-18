@@ -5,6 +5,7 @@
 
 #include "testlog.h"
 #include "../wb-homa-modbus/serial_protocol.h"
+#include "../modbus_observer.h"
 
 class TFakeSerialPort: public TAbstractSerialPort {
 public:
@@ -36,3 +37,29 @@ private:
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
+
+class TSerialProtocolTest: public TLoggedFixture {
+protected:
+    void SetUp();
+    void TearDown();
+
+    PFakeSerialPort SerialPort;
+};
+
+class TSerialProtocolDirectTest: public virtual TSerialProtocolTest {
+protected:
+    void SetUp();
+    void TearDown();
+
+    PModbusContext Context;
+};
+
+class TSerialProtocolIntegrationTest: public virtual TSerialProtocolTest {
+protected:
+    void SetUp();
+    void TearDown();
+    virtual const char* ConfigPath() const = 0;
+
+    PMQTTModbusObserver Observer;
+    bool PortMakerCalled;
+};
