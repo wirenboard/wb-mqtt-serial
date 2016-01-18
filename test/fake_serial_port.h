@@ -2,8 +2,10 @@
 
 #include <vector>
 #include <memory>
+#include <deque>
 
 #include "testlog.h"
+#include "fake_mqtt.h"
 #include "../wb-homa-modbus/serial_protocol.h"
 #include "../modbus_observer.h"
 
@@ -30,7 +32,7 @@ private:
 
     TLoggedFixture& Fixture;
     bool IsPortOpen;
-    const char* PendingFunc = 0;
+    std::deque<const char*> PendingFuncs;
     std::vector<int> Req;
     std::vector<int> Resp;
     size_t ReqPos, RespPos, DumpPos;
@@ -60,6 +62,7 @@ protected:
     void TearDown();
     virtual const char* ConfigPath() const = 0;
 
+    PFakeMQTTClient MQTTClient;
     PMQTTModbusObserver Observer;
     bool PortMakerCalled;
 };

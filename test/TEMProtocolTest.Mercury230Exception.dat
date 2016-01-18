@@ -1,8 +1,9 @@
 Open()
 SkipNoise()
-EnqueueMercury230InternalMeterErrorResponse()
+EnqueueMercury230SessionSetupResponse()
 >> 00 01 01 01 01 01 01 01 01 77 81
 << 00 00 01 B0
+EnqueueMercury230InternalMeterErrorResponse()
 >> 00 08 11 12 0D BB
 << 00 02 80 71
 SkipNoise()

@@ -1,11 +1,14 @@
 Open()
 SkipNoise()
-EnqueueMilurPhaseCVoltageResponse()
+EnqueueMilurSessionSetupResponse()
 >> FF 08 01 FF FF FF FF FF FF 5F ED
 << FF 08 01 87 F0
+EnqueueMilurNoSessionResponse()
 >> FF 01 66 C0 4A
 << FF 81 08 00 67 D8
 SkipNoise()
+EnqueueMilurSessionSetupResponse()
 >> FF 08 01 FF FF FF FF FF FF 5F ED
 << FF 08 01 87 F0
+EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A

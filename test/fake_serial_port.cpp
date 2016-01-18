@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <stdexcept>
 #include "fake_serial_port.h"
-#include "fake_mqtt.h"
 #include "serial_connector.h"
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
@@ -46,12 +45,12 @@ bool TFakeSerialPort::IsOpen() const
 }
 
 void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
-    if (PendingFunc) {
-        Fixture.Emit() << PendingFunc << "()";
-        PendingFunc = 0;
-    }
     SkipFrameBoundary();
     DumpWhatWasRead();
+    if (!PendingFuncs.empty()) {
+        Fixture.Emit() << PendingFuncs.front() << "()";
+        PendingFuncs.pop_front();
+    }
     Fixture.Emit() << ">> " << std::vector<uint8_t>(buf, buf + count);
     auto start = Req.begin() + ReqPos;
     try {
@@ -144,7 +143,8 @@ void TFakeSerialPort::DumpWhatWasRead()
 
 void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func)
 {
-    PendingFunc = func;
+    if (func)
+        PendingFuncs.push_back(func);
     Req.insert(Req.end(), request.begin(), request.end());
     Req.push_back(FRAME_BOUNDARY);
     Resp.insert(Resp.end(), response.begin(), response.end());
@@ -189,8 +189,8 @@ void TSerialProtocolIntegrationTest::SetUp()
         });
     TConfigParser parser(GetDataFilePath(ConfigPath()), false);
     PHandlerConfig Config = parser.Parse();
-    PFakeMQTTClient mqttClient(new TFakeMQTTClient("em-test", *this));
-    Observer = PMQTTModbusObserver(new TMQTTModbusObserver(mqttClient, Config));
+    MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("em-test", *this));
+    Observer = PMQTTModbusObserver(new TMQTTModbusObserver(MQTTClient, Config));
 }
 
 void TSerialProtocolIntegrationTest::TearDown()
@@ -198,4 +198,3 @@ void TSerialProtocolIntegrationTest::TearDown()
     TSerialConnector::SetGlobalPortMaker(0);
     Observer.reset();
 }
-

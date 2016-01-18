@@ -1,17 +1,18 @@
 Open()
 SkipNoise()
-EnqueueMilurPhaseCVoltageResponse()
+EnqueueMilurSessionSetupResponse()
 >> FF 08 01 FF FF FF FF FF FF 5F ED
 << FF 08 01 87 F0
->> FF 01 66 C0 4A
-EnqueueMilurTotalConsumptionResponse()
-<< FF 01 66 03 6F 94 03 03 4E
->> FF 01 76 C1 86
 EnqueueMilurPhaseCVoltageResponse()
-<< FF 01 76 04 44 11 10 00 AC 6C
 >> FF 01 66 C0 4A
-EnqueueMilurTotalConsumptionResponse()
 << FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurTotalConsumptionResponse()
+>> FF 01 76 C1 86
+<< FF 01 76 04 44 11 10 00 AC 6C
+EnqueueMilurPhaseCVoltageResponse()
+>> FF 01 66 C0 4A
+<< FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
 << FF 01 76 04 44 11 10 00 AC 6C
 Close()
