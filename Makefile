@@ -56,6 +56,8 @@ TEST_SRCS= \
   $(TEST_DIR)/fake_modbus.o \
   $(TEST_DIR)/fake_mqtt.o \
   $(TEST_DIR)/fake_serial_port.o \
+  $(TEST_DIR)/pty_based_fake_serial.o \
+  $(TEST_DIR)/pty_based_fake_serial_test.o \
   $(TEST_DIR)/main.o
 TEST_OBJS=$(TEST_SRCS:.cpp=.o)
 TEST_LIBS=-lgtest -lpthread -lmosquittopp
