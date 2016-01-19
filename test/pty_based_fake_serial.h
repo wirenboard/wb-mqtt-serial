@@ -14,10 +14,16 @@ public:
     TPtyBasedFakeSerial(TLoggedFixture& fixture);
     ~TPtyBasedFakeSerial();
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
-    std::string GetPtsName() const;
+    std::string GetPrimaryPtsName() const;
+    std::string GetSecondaryPtsName() const;
+    void StartExpecting();
+    void StartForwarding();
 private:
-    void InitPty();
-    void Run();
+    struct PtyPair {
+        void Init();
+        int MasterFd;
+        std::string PtsName;
+    };
     struct Expectation {
         Expectation(const std::vector<uint8_t> expectedRequest,
                     const std::vector<uint8_t> responseToSend,
@@ -29,13 +35,16 @@ private:
         const char* Func;
     };
 
+    void Run();
+    void Forward();
+    void FlushForwardingLogs();
+
     TLoggedFixture& Fixture;
-    bool Stop;
-    int MasterFd;
+    PtyPair Primary, Secondary;
+    bool Stop, ForwardingFromPrimary;
+    std::vector<uint8_t> ForwardedBytes;
     std::thread PtyMasterThread;
-    std::vector<uint8_t> input;
     std::deque<Expectation> Expectations;
-    std::string PtsName;
     std::mutex Mutex;
     std::condition_variable Cond;
 };
