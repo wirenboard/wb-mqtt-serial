@@ -1,6 +1,3 @@
->>> AddSlave(23)
-CreateContext(): </dev/ttyNSC0 9600 8 N2 timeout 0>
-SetDebug(1)
 Publish: /devices/ddl24/meta/name: 'DDL24' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB/meta/type: 'rgb' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB/meta/order: '1' (QoS 0, retained)
@@ -21,118 +18,118 @@ Publish: /devices/ddl24/controls/Voltage/meta/type: 'text' (QoS 0, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/order: '5' (QoS 0, retained)
 Subscribe: /devices/ddl24/controls/Voltage/on (QoS 0)
 >>> ModbusLoopOnce() [read, rw blacklisted]
-Connect()
-AddDevice(23, modbus)
-SetSlave(23)
+>> 17 03 00 04 00 01 C7 3D
 Publish: /devices/ddl24/controls/RGB/meta/error: 'r' (QoS 0, retained)
-SetSlave(23)
-read 1 holding register(s) @ 5: 0x0000
-SetSlave(23)
-read 1 holding register(s) @ 6: 0x0000
-SetSlave(23)
+<< 17 83 06 20 F6
+>> 17 03 00 05 00 01 96 FD
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 06 00 01 66 FD
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 07 00 01 37 3D
 Publish: /devices/ddl24/controls/White/meta/error: 'r' (QoS 0, retained)
-SetSlave(23)
-read 1 holding register(s) @ 8: 0x0000
+<< 17 83 06 20 F6
+>> 17 03 00 08 00 01 07 3E
 Publish: /devices/ddl24/controls/RGB_All/meta/error: '' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB_All: '0' (QoS 0, retained)
-SetSlave(23)
-read 1 holding register(s) @ 9: 0x0000
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 09 00 01 56 FE
 Publish: /devices/ddl24/controls/White1/meta/error: '' (QoS 0, retained)
 Publish: /devices/ddl24/controls/White1: '0' (QoS 0, retained)
-SetSlave(23)
-read 1 holding register(s) @ 18: 0x0000
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 12 00 01 26 F9
 Publish: /devices/ddl24/controls/Voltage/meta/error: '' (QoS 0, retained)
 Publish: /devices/ddl24/controls/Voltage: '0' (QoS 0, retained)
-EndPollCycle(10000)
 >>> Publish: /devices/ddl24/controls/RGB/on: '10;20;30' (QoS 0)
 Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
 >>> Publish: /devices/ddl24/controls/White/on: '42' (QoS 0)
 Publish: /devices/ddl24/controls/White: '42' (QoS 0, retained)
 >>> ModbusLoopOnce() [write, rw blacklisted]
-SetSlave(23)
+<< 17 03 02 00 00 F1 87
+>> 17 06 00 04 00 0A 4A FA
 Publish: /devices/ddl24/controls/RGB/meta/error: 'rw' (QoS 0, retained)
-SetSlave(23)
-write 1 holding register(s) @ 5:  0x0014
-SetSlave(23)
-write 1 holding register(s) @ 6:  0x001e
-SetSlave(23)
+<< 17 86 06 23 A6
+>> 17 06 00 05 00 14 9B 32
+<< 17 06 00 05 00 14 9B 32
+>> 17 06 00 06 00 1E EB 35
+<< 17 06 00 06 00 1E EB 35
+>> 17 06 00 07 00 2A BB 22
 Publish: /devices/ddl24/controls/White/meta/error: 'rw' (QoS 0, retained)
-SetSlave(23)
-SetSlave(23)
-read 1 holding register(s) @ 5: 0x0014
-SetSlave(23)
-read 1 holding register(s) @ 6: 0x001e
-SetSlave(23)
-SetSlave(23)
-read 1 holding register(s) @ 8: 0x0000
-SetSlave(23)
-read 1 holding register(s) @ 9: 0x0000
-SetSlave(23)
-read 1 holding register(s) @ 18: 0x0000
-EndPollCycle(10000)
+<< 17 86 06 23 A6
+>> 17 03 00 04 00 01 C7 3D
+<< 17 83 06 20 F6
+>> 17 03 00 05 00 01 96 FD
+<< 17 03 02 00 14 F1 88
+>> 17 03 00 06 00 01 66 FD
+<< 17 03 02 00 1E 71 8F
+>> 17 03 00 07 00 01 37 3D
+<< 17 83 06 20 F6
+>> 17 03 00 08 00 01 07 3E
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 09 00 01 56 FE
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 12 00 01 26 F9
 >>> ModbusLoopOnce() [read, nothing blacklisted]
-SetSlave(23)
-read 1 holding register(s) @ 4: 0x0000
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 04 00 01 C7 3D
 Publish: /devices/ddl24/controls/RGB/meta/error: 'w' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB: '0;20;30' (QoS 0, retained)
-SetSlave(23)
-read 1 holding register(s) @ 5: 0x0014
-SetSlave(23)
-read 1 holding register(s) @ 6: 0x001e
-SetSlave(23)
-read 1 holding register(s) @ 7: 0x0000
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 05 00 01 96 FD
+<< 17 03 02 00 14 F1 88
+>> 17 03 00 06 00 01 66 FD
+<< 17 03 02 00 1E 71 8F
+>> 17 03 00 07 00 01 37 3D
 Publish: /devices/ddl24/controls/White/meta/error: 'w' (QoS 0, retained)
 Publish: /devices/ddl24/controls/White: '0' (QoS 0, retained)
-SetSlave(23)
-read 1 holding register(s) @ 8: 0x0000
-SetSlave(23)
-read 1 holding register(s) @ 9: 0x0000
-SetSlave(23)
-read 1 holding register(s) @ 18: 0x0000
-EndPollCycle(10000)
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 08 00 01 07 3E
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 09 00 01 56 FE
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 12 00 01 26 F9
 >>> Publish: /devices/ddl24/controls/RGB/on: '10;20;30' (QoS 0)
 Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
 >>> Publish: /devices/ddl24/controls/White/on: '42' (QoS 0)
 Publish: /devices/ddl24/controls/White: '42' (QoS 0, retained)
 >>> ModbusLoopOnce() [write, nothing blacklisted]
-SetSlave(23)
-write 1 holding register(s) @ 4:  0x000a
+<< 17 03 02 00 00 F1 87
+>> 17 06 00 04 00 0A 4A FA
 Publish: /devices/ddl24/controls/RGB/meta/error: '' (QoS 0, retained)
-SetSlave(23)
-write 1 holding register(s) @ 5:  0x0014
-SetSlave(23)
-write 1 holding register(s) @ 6:  0x001e
-SetSlave(23)
-write 1 holding register(s) @ 7:  0x002a
+<< 17 06 00 04 00 0A 4A FA
+>> 17 06 00 05 00 14 9B 32
+<< 17 06 00 05 00 14 9B 32
+>> 17 06 00 06 00 1E EB 35
+<< 17 06 00 06 00 1E EB 35
+>> 17 06 00 07 00 2A BB 22
 Publish: /devices/ddl24/controls/White/meta/error: '' (QoS 0, retained)
-SetSlave(23)
-read 1 holding register(s) @ 4: 0x000a
-SetSlave(23)
-read 1 holding register(s) @ 5: 0x0014
-SetSlave(23)
-read 1 holding register(s) @ 6: 0x001e
-SetSlave(23)
-read 1 holding register(s) @ 7: 0x002a
-SetSlave(23)
-read 1 holding register(s) @ 8: 0x0000
-SetSlave(23)
-read 1 holding register(s) @ 9: 0x0000
-SetSlave(23)
-read 1 holding register(s) @ 18: 0x0000
-EndPollCycle(10000)
+<< 17 06 00 07 00 2A BB 22
+>> 17 03 00 04 00 01 C7 3D
+<< 17 03 02 00 0A 71 80
+>> 17 03 00 05 00 01 96 FD
+<< 17 03 02 00 14 F1 88
+>> 17 03 00 06 00 01 66 FD
+<< 17 03 02 00 1E 71 8F
+>> 17 03 00 07 00 01 37 3D
+<< 17 03 02 00 2A 70 58
+>> 17 03 00 08 00 01 07 3E
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 09 00 01 56 FE
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 12 00 01 26 F9
 >>> ModbusLoopOnce() [read, nothing blacklisted] (2)
-SetSlave(23)
-read 1 holding register(s) @ 4: 0x000a
-SetSlave(23)
-read 1 holding register(s) @ 5: 0x0014
-SetSlave(23)
-read 1 holding register(s) @ 6: 0x001e
-SetSlave(23)
-read 1 holding register(s) @ 7: 0x002a
-SetSlave(23)
-read 1 holding register(s) @ 8: 0x0000
-SetSlave(23)
-read 1 holding register(s) @ 9: 0x0000
-SetSlave(23)
-read 1 holding register(s) @ 18: 0x0000
-EndPollCycle(10000)
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 04 00 01 C7 3D
+<< 17 03 02 00 0A 71 80
+>> 17 03 00 05 00 01 96 FD
+<< 17 03 02 00 14 F1 88
+>> 17 03 00 06 00 01 66 FD
+<< 17 03 02 00 1E 71 8F
+>> 17 03 00 07 00 01 37 3D
+<< 17 03 02 00 2A 70 58
+>> 17 03 00 08 00 01 07 3E
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 09 00 01 56 FE
+<< 17 03 02 00 00 F1 87
+>> 17 03 00 12 00 01 26 F9
+<< 17 03 02 00 00 F1 87
+(pty-based fake serial -- stopping forwarding)

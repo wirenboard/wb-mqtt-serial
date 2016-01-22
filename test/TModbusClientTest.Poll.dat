@@ -1,42 +1,37 @@
-CreateContext(): </dev/ttyNSC0 115200 8 N1 timeout 0>
->>> AddSlave(1)
-Connect()
 >>> Cycle()
-SetSlave(1)
-read 1 coil(s) @ 0: 0x00
+>> 01 01 00 00 00 01 FD CA
 Modbus ErrorCallback: <1:coil: 0>: no error
 Modbus Callback: <1:coil: 0> becomes 0
-SetSlave(1)
-read 1 coil(s) @ 1: 0x00
+<< 01 01 01 00 51 88
+>> 01 01 00 01 00 01 AC 0A
 Modbus ErrorCallback: <1:coil: 1>: no error
 Modbus Callback: <1:coil: 1> becomes 0
-SetSlave(1)
-read 1 discrete input(s) @ 10: 0x00
+<< 01 01 01 00 51 88
+>> 01 02 00 0A 00 01 99 C8
 Modbus ErrorCallback: <1:discrete: 10>: no error
 Modbus Callback: <1:discrete: 10> becomes 0
-SetSlave(1)
-read 1 holding register(s) @ 22: 0x0000
+<< 01 02 01 00 A1 88
+>> 01 03 00 16 00 01 65 CE
 Modbus ErrorCallback: <1:holding: 22>: no error
 Modbus Callback: <1:holding: 22> becomes 0
-SetSlave(1)
-read 1 input register(s) @ 33: 0x0000
+<< 01 03 02 00 00 B8 44
+>> 01 04 00 21 00 01 61 C0
 Modbus ErrorCallback: <1:input: 33>: no error
 Modbus Callback: <1:input: 33> becomes 0
-EndPollCycle(1000000)
+<< 01 04 02 00 00 B9 30
 >>> Cycle()
-SetSlave(1)
-read 1 coil(s) @ 0: 0x00
-SetSlave(1)
-read 1 coil(s) @ 1: 0x01
+>> 01 01 00 00 00 01 FD CA
+<< 01 01 01 00 51 88
+>> 01 01 00 01 00 01 AC 0A
 Modbus Callback: <1:coil: 1> becomes 1
-SetSlave(1)
-read 1 discrete input(s) @ 10: 0x01
+<< 01 01 01 01 90 48
+>> 01 02 00 0A 00 01 99 C8
 Modbus Callback: <1:discrete: 10> becomes 1
-SetSlave(1)
-read 1 holding register(s) @ 22: 0x1092
+<< 01 02 01 01 60 48
+>> 01 03 00 16 00 01 65 CE
 Modbus Callback: <1:holding: 22> becomes 4242
-SetSlave(1)
-read 1 input register(s) @ 33: 0xa410
+<< 01 03 02 10 92 34 29
+>> 01 04 00 21 00 01 61 C0
 Modbus Callback: <1:input: 33> becomes 42000
-EndPollCycle(1000000)
-Disconnect()
+<< 01 04 02 A4 10 C2 3C
+(pty-based fake serial -- stopping forwarding)

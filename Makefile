@@ -46,6 +46,7 @@ MODBUS_SRCS=modbus_client.cpp \
 MODBUS_OBJS=$(MODBUS_SRCS:.cpp=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
+  $(TEST_DIR)/modbus_server.o \
   $(TEST_DIR)/modbus_test.o \
   $(TEST_DIR)/uniel_expectations.o \
   $(TEST_DIR)/uniel_test.o \
@@ -53,7 +54,6 @@ TEST_SRCS= \
   $(TEST_DIR)/em_test.o \
   $(TEST_DIR)/em_integration.o \
   $(TEST_DIR)/ivtm_test.o \
-  $(TEST_DIR)/fake_modbus.o \
   $(TEST_DIR)/fake_mqtt.o \
   $(TEST_DIR)/fake_serial_port.o \
   $(TEST_DIR)/pty_based_fake_serial.o \

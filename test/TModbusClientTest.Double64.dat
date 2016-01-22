@@ -1,62 +1,54 @@
-CreateContext(): </dev/ttyNSC0 115200 8 N1 timeout 0>
->>> AddSlave(1)
 >>> server -> client: 40ba401f7ced9168 , 4093b148b4395810
 >>> Cycle()
-Connect()
-SetSlave(1)
-read 4 holding register(s) @ 24: 0x0000 0x0000 0x0000 0x0000
+>> 01 03 00 18 00 04 C4 0E
 Modbus ErrorCallback: <1:holding: 24>: no error
 Modbus Callback: <1:holding: 24> becomes 0.000000
-SetSlave(1)
-read 4 holding register(s) @ 20: 0x40ba 0x401f 0x7ced 0x9168
+<< 01 03 08 00 00 00 00 00 00 00 00 95 D7
+>> 01 03 00 14 00 04 04 0D
 Modbus ErrorCallback: <1:holding: 20>: no error
 Modbus Callback: <1:holding: 20> becomes 6720.123000
-SetSlave(1)
-read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
+<< 01 03 08 40 BA 40 1F 7C ED 91 68 F4 F5
+>> 01 04 00 1E 00 04 91 CF
 Modbus ErrorCallback: <1:input: 30>: no error
 Modbus Callback: <1:input: 30> becomes 1260.321000
-EndPollCycle(1000000)
+<< 01 04 08 40 93 B1 48 B4 39 58 10 B5 2A
 >>> client -> server: 10
 >>> Cycle()
-SetSlave(1)
-write 4 holding register(s) @ 20:  0x4025 0xfff2 0xe48e 0x8a72
-SetSlave(1)
-read 4 holding register(s) @ 24: 0x0000 0x0000 0x0000 0x0000
-SetSlave(1)
-read 4 holding register(s) @ 20: 0x4025 0xfff2 0xe48e 0x8a72
-SetSlave(1)
-read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
-EndPollCycle(1000000)
+>> 01 10 00 14 00 04 08 40 25 FF F2 E4 8E 8A 72 6A FC
+<< 01 10 00 14 00 04 81 CE
+>> 01 03 00 18 00 04 C4 0E
+<< 01 03 08 00 00 00 00 00 00 00 00 95 D7
+>> 01 03 00 14 00 04 04 0D
+<< 01 03 08 40 25 FF F2 E4 8E 8A 72 79 61
+>> 01 04 00 1E 00 04 91 CF
+<< 01 04 08 40 93 B1 48 B4 39 58 10 B5 2A
 >>> client -> server: -0.00123
 >>> Cycle()
-SetSlave(1)
-write 4 holding register(s) @ 20:  0xbf54 0x26fe 0x718a 0x86d7
-SetSlave(1)
-read 4 holding register(s) @ 24: 0x0000 0x0000 0x0000 0x0000
-SetSlave(1)
-read 4 holding register(s) @ 20: 0xbf54 0x26fe 0x718a 0x86d7
-SetSlave(1)
-read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
-EndPollCycle(1000000)
+>> 01 10 00 14 00 04 08 BF 54 26 FE 71 8A 86 D7 EE 81
+<< 01 10 00 14 00 04 81 CE
+>> 01 03 00 18 00 04 C4 0E
+<< 01 03 08 00 00 00 00 00 00 00 00 95 D7
+>> 01 03 00 14 00 04 04 0D
+<< 01 03 08 BF 54 26 FE 71 8A 86 D7 FD 1C
+>> 01 04 00 1E 00 04 91 CF
+<< 01 04 08 40 93 B1 48 B4 39 58 10 B5 2A
 >>> client -> server: -0.123 (scaled)
 >>> Cycle()
-SetSlave(1)
-write 4 holding register(s) @ 24:  0xbf54 0x26fe 0x718a 0x86d7
-SetSlave(1)
-read 4 holding register(s) @ 24: 0xbf54 0x26fe 0x718a 0x86d7
-SetSlave(1)
-read 4 holding register(s) @ 20: 0xbf54 0x26fe 0x718a 0x86d7
-SetSlave(1)
-read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
-EndPollCycle(1000000)
+>> 01 10 00 18 00 04 08 BF 54 26 FE 71 8A 86 D7 FE 91
+<< 01 10 00 18 00 04 41 CD
+>> 01 03 00 18 00 04 C4 0E
+<< 01 03 08 BF 54 26 FE 71 8A 86 D7 FD 1C
+>> 01 03 00 14 00 04 04 0D
+<< 01 03 08 BF 54 26 FE 71 8A 86 D7 FD 1C
+>> 01 04 00 1E 00 04 91 CF
+<< 01 04 08 40 93 B1 48 B4 39 58 10 B5 2A
 >>> server -> client: 4093b00000000000 (scaled)
 >>> Cycle()
-SetSlave(1)
-read 4 holding register(s) @ 24: 0x4093 0xb000 0x0000 0x0000
+>> 01 03 00 18 00 04 C4 0E
 Modbus Callback: <1:holding: 24> becomes 126000.000000
-SetSlave(1)
-read 4 holding register(s) @ 20: 0xbf54 0x26fe 0x718a 0x86d7
-SetSlave(1)
-read 4 input register(s) @ 30: 0x4093 0xb148 0xb439 0x5810
-EndPollCycle(1000000)
-Disconnect()
+<< 01 03 08 40 93 B0 00 00 00 00 00 28 DE
+>> 01 03 00 14 00 04 04 0D
+<< 01 03 08 BF 54 26 FE 71 8A 86 D7 FD 1C
+>> 01 04 00 1E 00 04 91 CF
+<< 01 04 08 40 93 B1 48 B4 39 58 10 B5 2A
+(pty-based fake serial -- stopping forwarding)
