@@ -5,10 +5,19 @@
 #include <memory>
 #include <exception>
 #include <stdint.h>
+#include <modbus/modbus.h>
 
 #include "portsettings.h"
 #include "regformat.h"
 #include "modbus_config.h"
+
+struct TLibModbusContext {
+    TLibModbusContext(const TSerialPortSettings& settings);
+    ~TLibModbusContext() { modbus_free(Inner); }
+    modbus_t* Inner;
+};
+
+typedef std::shared_ptr<TLibModbusContext> PLibModbusContext;
 
 class TSerialProtocolException: public std::exception {
 public:
@@ -42,6 +51,7 @@ public:
     virtual int ReadFrame(uint8_t* buf, int count, int timeout = FrameTimeoutMs) = 0;
     virtual void SkipNoise() =0;
     virtual void USleep(int usec) = 0;
+    virtual PLibModbusContext LibModbusContext() const = 0;
 };
 
 typedef std::shared_ptr<TAbstractSerialPort> PAbstractSerialPort;
@@ -60,16 +70,18 @@ public:
     void Open();
     void Close();
     bool IsOpen() const;
-
-private:
-    void SerialPortSetup();
+    PLibModbusContext LibModbusContext() const;
     bool Select(int ms);
 
+private:
     TSerialPortSettings Settings;
+    PLibModbusContext Context;
     bool Debug;
     int Fd;
     const int NoiseTimeoutMs = 10;
 };
+
+typedef std::shared_ptr<TSerialPort> PSerialPort;
 
 class TSerialProtocol: public std::enable_shared_from_this<TSerialProtocol> {
 public:

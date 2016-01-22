@@ -119,6 +119,11 @@ void TFakeSerialPort::USleep(int usec)
     Fixture.Emit() << "Sleep(" << usec << ")";
 }
 
+PLibModbusContext TFakeSerialPort::LibModbusContext() const
+{
+    throw std::runtime_error("TFakeSerialPort doesn't support LibModbusContext()");
+}
+
 void TFakeSerialPort::DumpWhatWasRead()
 {
     assert(DumpPos <= RespPos);

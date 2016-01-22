@@ -23,6 +23,7 @@ public:
     int ReadFrame(uint8_t* buf, int count, int timeout);
     void SkipNoise();
     void USleep(int usec);
+    PLibModbusContext LibModbusContext() const;
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     void DumpWhatWasRead();
