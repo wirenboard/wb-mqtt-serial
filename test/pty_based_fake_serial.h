@@ -18,6 +18,7 @@ public:
     std::string GetSecondaryPtsName() const;
     void StartExpecting();
     void StartForwarding();
+    void Flush();
 private:
     struct PtyPair {
         void Init();
@@ -41,12 +42,12 @@ private:
 
     TLoggedFixture& Fixture;
     PtyPair Primary, Secondary;
-    bool Stop, ForwardingFromPrimary;
+    bool Stop, ForceFlush, ForwardingFromPrimary;
     std::vector<uint8_t> ForwardedBytes;
     std::thread PtyMasterThread;
     std::deque<Expectation> Expectations;
     std::mutex Mutex;
-    std::condition_variable Cond;
+    std::condition_variable Cond, FlushCond;
 };
 
 typedef std::shared_ptr<TPtyBasedFakeSerial> PPtyBasedFakeSerial;

@@ -32,12 +32,11 @@ void TPtyBasedFakeSerial::PtyPair::Init()
         close(MasterFd);
         throw std::runtime_error("ptsname() failed");
     }
-
     PtsName = ptsName;
 }
 
 TPtyBasedFakeSerial::TPtyBasedFakeSerial(TLoggedFixture& fixture):
-    Fixture(fixture), Stop(false), ForwardingFromPrimary(false)
+    Fixture(fixture), Stop(false), ForceFlush(false), ForwardingFromPrimary(false)
 {
     Primary.Init();
 }
@@ -48,9 +47,9 @@ TPtyBasedFakeSerial::~TPtyBasedFakeSerial()
         std::unique_lock<std::mutex> lk(Mutex);
         Stop = true;
     }
-    close(Primary.MasterFd);
     Cond.notify_one();
     PtyMasterThread.join();
+    close(Primary.MasterFd);
 }
 
 void TPtyBasedFakeSerial::StartExpecting()
@@ -62,6 +61,13 @@ void TPtyBasedFakeSerial::StartForwarding()
 {
     Secondary.Init();
     PtyMasterThread = std::thread(&TPtyBasedFakeSerial::Forward, std::ref(*this));
+}
+
+void TPtyBasedFakeSerial::Flush()
+{
+    std::unique_lock<std::mutex> lk(Mutex);
+    ForceFlush = true;
+    FlushCond.wait(lk, [this] { return Stop || !ForceFlush; });
 }
 
 void TPtyBasedFakeSerial::Run()
@@ -84,8 +90,10 @@ void TPtyBasedFakeSerial::Run()
             if (!n || (n < 0 && errno == EIO)) {
                 Fixture.Emit() << "[ERROR] premature eof, pty-based fake serial terminating";
                 return;
-            } else if (n < 0)
+            } else if (n < 0) {
+                perror("read()");
                 throw std::runtime_error("read() failed");
+            }
         }
 
         auto p = std::mismatch(buf.begin(), buf.end(), exp.ExpectedRequest.begin());
@@ -94,8 +102,10 @@ void TPtyBasedFakeSerial::Run()
 
         Fixture.Emit() << "<< " << exp.ResponseToSend;
         for (auto it = exp.ResponseToSend.begin(); it != exp.ResponseToSend.end(); ++it) {
-            if (write(Primary.MasterFd, &*it, 1) < 1)
+            if (write(Primary.MasterFd, &*it, 1) < 1) {
+                perror("write()");
                 throw std::runtime_error("write() failed");
+            }
         }
         Expectations.pop_front();
     }
@@ -111,6 +121,11 @@ void TPtyBasedFakeSerial::Forward()
             std::unique_lock<std::mutex> lk(Mutex);
             if (Stop)
                 break;
+            if (ForceFlush) {
+                FlushForwardingLogs();
+                ForceFlush = false;
+                FlushCond.notify_one();
+            }
         }
         fd_set rfds;
         struct timeval tv, *tvp = 0;
@@ -150,13 +165,16 @@ void TPtyBasedFakeSerial::Forward()
         if (n < 0) {
             if (errno == EIO) // terminal closed
                 break;
+            perror("read()");
             throw std::runtime_error("forwarding: read() failed");
         }
         if (n == 0)
             break;
         n = write(write_to, &b, 1);
-        if (n < 1)
+        if (n < 1) {
+            perror("write()");
             throw std::runtime_error("forwarding: write() failed");
+        }
         ForwardedBytes.push_back(b);
     }
     FlushForwardingLogs();
