@@ -151,12 +151,12 @@ PModbusContext TDefaultModbusConnector::CreateContext(const TSerialPortSettings&
 class TRegisterHandler
 {
 public:
-    TRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
+    TRegisterHandler(const TModbusClient* client, PModbusRegister _reg)
         : Client(client), reg(_reg) {}
     virtual ~TRegisterHandler() {}
     virtual std::vector<uint16_t> Read(PModbusContext ctx) = 0;
     virtual void Write(PModbusContext ctx, const std::vector<uint16_t> & v);
-    std::shared_ptr<TModbusRegister> Register() const { return reg; }
+    PModbusRegister Register() const { return reg; }
     TModbusClient::TErrorState Poll(PModbusContext ctx, bool* changed);
     TModbusClient::TErrorState Flush(PModbusContext ctx);
     std::string TextValue() const;
@@ -180,7 +180,7 @@ private:
     TModbusClient::TErrorState UpdateReadError(bool error);
     TModbusClient::TErrorState UpdateWriteError(bool error);
     std::vector<uint16_t> value;
-    std::shared_ptr<TModbusRegister> reg;
+    PModbusRegister reg;
     volatile bool dirty = false;
     bool did_read = false;
     std::mutex set_value_mutex;
@@ -303,7 +303,7 @@ TModbusClient::TErrorState TRegisterHandler::Flush(PModbusContext ctx)
 std::string TRegisterHandler::TextValue() const
 {
     if (!value.size())
-        throw TModbusException("invalid value size");
+        return ""; // possibly not initialized yet
 
     switch (reg->Format) {
     case U16:
@@ -319,7 +319,7 @@ std::string TRegisterHandler::TextValue() const
     case S24:
     case S32:
         if (value.size() < 2)
-            throw TModbusException("invalid value size");
+            throw TModbusException("invalid value size (2 regs expected for 24 and 32-bit values)");
         return ToScaledTextValue(
 			static_cast<int32_t>((static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]))
 		);
@@ -328,11 +328,11 @@ std::string TRegisterHandler::TextValue() const
     case BCD24:
     case BCD32:
         if (value.size() < 2)
-            throw TModbusException("invalid value size");
+            throw TModbusException("invalid value size (2 regs expected for 24 and 32-bit values)");
         return ToScaledTextValue((static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]));
     case S64:
         if (value.size() < 4)
-            throw TModbusException("invalid value size");
+            throw TModbusException("invalid value size (4 regs expected for 64-bit values)");
         return ToScaledTextValue(static_cast<int64_t> (
 							         (  static_cast<uint64_t>(value[0]) << 48) | \
 					                 ( static_cast<uint64_t>(value[1]) << 32) | \
@@ -342,7 +342,7 @@ std::string TRegisterHandler::TextValue() const
 
     case U64:
         if (value.size() < 4)
-            throw TModbusException("invalid value size");
+            throw TModbusException("invalid value size (4 regs expected for 64-bit values)");
         return ToScaledTextValue(
 						         (  static_cast<uint64_t>(value[0]) << 48) | \
 				                 ( static_cast<uint64_t>(value[1]) << 32) | \
@@ -353,7 +353,7 @@ std::string TRegisterHandler::TextValue() const
 	case Float:
 		{
         if (value.size() < 2)
-            throw TModbusException("invalid value size");
+            throw TModbusException("invalid value size (2 regs expected for float values)");
 		uint32_t tmp = (static_cast<uint32_t>(value[0]) << 16) | static_cast<uint32_t>(value[1]);
 		float ret;
 		memcpy(&ret, &tmp, sizeof(tmp));
@@ -364,7 +364,7 @@ std::string TRegisterHandler::TextValue() const
     case Double:
 		{
         if (value.size() < 4)
-            throw TModbusException("invalid value size");
+            throw TModbusException("invalid value size (4 regs expected for double values)");
 		uint64_t tmp = (  static_cast<uint64_t>(value[0]) << 48) | \
 	                   ( static_cast<uint64_t>(value[1]) << 32) | \
 	                   ( static_cast<uint64_t>(value[2]) << 16) | \
@@ -496,7 +496,7 @@ std::vector<uint16_t> TRegisterHandler::ConvertMasterValue(const std::string& st
 class TCoilHandler: public TRegisterHandler
 {
 public:
-    TCoilHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
+    TCoilHandler(const TModbusClient* client, PModbusRegister _reg)
         : TRegisterHandler(client, _reg) {}
 
     std::vector<uint16_t> Read(PModbusContext ctx) {
@@ -513,7 +513,7 @@ public:
 class TDiscreteInputHandler: public TRegisterHandler
 {
 public:
-    TDiscreteInputHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
+    TDiscreteInputHandler(const TModbusClient* client, PModbusRegister _reg)
         : TRegisterHandler(client, _reg) {}
 
     std::vector<uint16_t> Read(PModbusContext ctx) {
@@ -526,7 +526,7 @@ public:
 class THoldingRegisterHandler: public TRegisterHandler
 {
 public:
-    THoldingRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
+    THoldingRegisterHandler(const TModbusClient* client, PModbusRegister _reg)
         : TRegisterHandler(client, _reg) {}
 
     std::vector<uint16_t> Read(PModbusContext ctx) {
@@ -551,7 +551,7 @@ public:
 class TInputRegisterHandler: public TRegisterHandler
 {
 public:
-    TInputRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
+    TInputRegisterHandler(const TModbusClient* client, PModbusRegister _reg)
         : TRegisterHandler(client, _reg) {}
 
     std::vector<uint16_t> Read(PModbusContext ctx) {
@@ -566,7 +566,7 @@ public:
 class TDirectRegisterHandler: public TRegisterHandler
 {
 public:
-    TDirectRegisterHandler(const TModbusClient* client, std::shared_ptr<TModbusRegister> _reg)
+    TDirectRegisterHandler(const TModbusClient* client, PModbusRegister _reg)
         : TRegisterHandler(client, _reg) {}
 
     std::vector<uint16_t> Read(PModbusContext ctx) {
@@ -603,8 +603,8 @@ TModbusClient::TModbusClient(const TSerialPortSettings& settings,
                              PModbusConnector connector)
     : Active(false),
       PollInterval(1000),
-      Callback([](std::shared_ptr<TModbusRegister>){}),
-      ErrorCallback([](std::shared_ptr<TModbusRegister>, bool){})
+      Callback([](PModbusRegister){}),
+      ErrorCallback([](PModbusRegister, bool){})
 {
     if (!connector)
         connector = PModbusConnector(new TDefaultModbusConnector);
@@ -624,7 +624,7 @@ void TModbusClient::AddDevice(PDeviceConfig device_config)
     DevicesToAdd.push_back(device_config);
 }
 
-void TModbusClient::AddRegister(std::shared_ptr<TModbusRegister> reg)
+void TModbusClient::AddRegister(PModbusRegister reg)
 {
     if (Active)
         throw TModbusException("can't add registers to the active client");
@@ -652,7 +652,7 @@ void TModbusClient::Disconnect()
 }
 
 void TModbusClient::MaybeUpdateErrorState(
-    std::shared_ptr<TModbusRegister> reg, TModbusClient::TErrorState state)
+    PModbusRegister reg, TModbusClient::TErrorState state)
 {
     if (state != UnknownErrorState && state != ErrorStateUnchanged)
         ErrorCallback(reg, state);
@@ -690,17 +690,17 @@ void TModbusClient::WriteHoldingRegister(int slave, int address, uint16_t value)
     Context->WriteHoldingRegisters(address, 1, &value);
 }
 
-void TModbusClient::SetTextValue(std::shared_ptr<TModbusRegister> reg, const std::string& value)
+void TModbusClient::SetTextValue(PModbusRegister reg, const std::string& value)
 {
     GetHandler(reg)->SetTextValue(value);
 }
 
-std::string TModbusClient::GetTextValue(std::shared_ptr<TModbusRegister> reg) const
+std::string TModbusClient::GetTextValue(PModbusRegister reg) const
 {
     return GetHandler(reg)->TextValue();
 }
 
-bool TModbusClient::DidRead(std::shared_ptr<TModbusRegister> reg) const
+bool TModbusClient::DidRead(PModbusRegister reg) const
 {
     return GetHandler(reg)->DidRead();
 }
@@ -730,7 +730,7 @@ bool TModbusClient::DebugEnabled() const {
     return Debug;
 }
 
-const std::unique_ptr<TRegisterHandler>& TModbusClient::GetHandler(std::shared_ptr<TModbusRegister> reg) const
+const std::unique_ptr<TRegisterHandler>& TModbusClient::GetHandler(PModbusRegister reg) const
 {
     auto it = Handlers.find(reg);
     if (it == Handlers.end())
@@ -738,7 +738,7 @@ const std::unique_ptr<TRegisterHandler>& TModbusClient::GetHandler(std::shared_p
     return it->second;
 }
 
-TRegisterHandler* TModbusClient::CreateRegisterHandler(std::shared_ptr<TModbusRegister> reg)
+TRegisterHandler* TModbusClient::CreateRegisterHandler(PModbusRegister reg)
 {
     switch (reg->Type) {
     case TModbusRegister::RegisterType::COIL:

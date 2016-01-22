@@ -19,14 +19,14 @@ public:
     bool WriteInitValues();
 
 private:
-    void OnModbusValueChange(std::shared_ptr<TModbusRegister> reg);
-    TModbusClient::TErrorState RegErrorState(std::shared_ptr<TModbusRegister> reg);
-    void UpdateError(std::shared_ptr<TModbusRegister> reg, TModbusClient::TErrorState errorState);
+    void OnModbusValueChange(PModbusRegister reg);
+    TModbusClient::TErrorState RegErrorState(PModbusRegister reg);
+    void UpdateError(PModbusRegister reg, TModbusClient::TErrorState errorState);
     PMQTTClientBase MQTTClient;
     PPortConfig Config;
     std::unique_ptr<TModbusClient> ModbusClient;
-    std::unordered_map<std::shared_ptr<TModbusRegister>, PModbusChannel> RegisterToChannelMap;
-    std::unordered_map<std::shared_ptr<TModbusRegister>, TModbusClient::TErrorState> RegErrorStateMap;
+    std::unordered_map<PModbusRegister, PModbusChannel> RegisterToChannelMap;
+    std::unordered_map<PModbusRegister, TModbusClient::TErrorState> RegErrorStateMap;
     std::unordered_map<std::string, std::string> PublishedErrorMap;
     std::unordered_map<std::string, PModbusChannel> NameToChannelMap;
 };

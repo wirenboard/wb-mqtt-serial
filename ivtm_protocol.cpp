@@ -105,7 +105,7 @@ void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
         throw TSerialProtocolTransientErrorException("invalid crc");
 
     int actualPayloadSize = nread - 10; // in ASCII symbols
-    if (len >= 0 && (len * 2) != actualPayloadSize) {
+    if (len * 2 != actualPayloadSize) {
         throw TSerialProtocolTransientErrorException("unexpected frame size");
     } else {
         len = actualPayloadSize / 2;
@@ -115,7 +115,7 @@ void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 }
 
 
-uint64_t TIVTMProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt, size_t width)
+uint64_t TIVTMProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat, size_t width)
 {
     Port()->SkipNoise();
 
@@ -134,17 +134,15 @@ uint64_t TIVTMProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterF
 }
 
 
-void TIVTMProtocol::WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat)
+void TIVTMProtocol::WriteRegister(uint32_t, uint32_t, uint64_t, RegisterFormat)
 {
     throw TSerialProtocolException("IVTM protocol: writing register is not supported");
 }
 
-void TIVTMProtocol::SetBrightness(uint32_t mod, uint32_t address, uint8_t value)
+void TIVTMProtocol::SetBrightness(uint32_t, uint32_t, uint8_t)
 {
     throw TSerialProtocolException("IVTM protocol: setting brightness not supported");
 }
-
-
 
 #if 0
 int main(int, char**)

@@ -9,11 +9,11 @@ TModbusPort::TModbusPort(PMQTTClientBase mqtt_client, PPortConfig port_config, P
       Config(port_config),
       ModbusClient(new TModbusClient(Config->ConnSettings, connector))
 {
-    ModbusClient->SetCallback([this](std::shared_ptr<TModbusRegister> reg) {
+    ModbusClient->SetCallback([this](PModbusRegister reg) {
             OnModbusValueChange(reg);
         });
     ModbusClient->SetErrorCallback(
-        [this](std::shared_ptr<TModbusRegister> reg, TModbusClient::TErrorState state) {
+        [this](PModbusRegister reg, TModbusClient::TErrorState state) {
             UpdateError(reg, state);
         });
     for (auto device_config: Config->DeviceConfigs) {
@@ -93,7 +93,7 @@ bool TModbusPort::HandleMessage(const std::string& topic, const std::string& pay
     }
 
     for (size_t i = 0; i < it->second->Registers.size(); ++i) {
-        std::shared_ptr<TModbusRegister> reg = it->second->Registers[i];
+        PModbusRegister reg = it->second->Registers[i];
         if (Config->Debug)
             std::cerr << "setting modbus register: " << reg->ToString() << " <- " <<
                 payload_items[i] << std::endl;
@@ -123,7 +123,7 @@ std::string TModbusPort::GetChannelTopic(const TModbusChannel& channel)
     return (controls_prefix + channel.Name);
 }
 
-void TModbusPort::OnModbusValueChange(std::shared_ptr<TModbusRegister> reg)
+void TModbusPort::OnModbusValueChange(PModbusRegister reg)
 {
     if (Config->Debug)
         std::cerr << "modbus value change: " << reg->ToString() << " <- " <<
@@ -144,7 +144,7 @@ void TModbusPort::OnModbusValueChange(std::shared_ptr<TModbusRegister> reg)
     } else {
         std::stringstream s;
         for (size_t i = 0; i < it->second->Registers.size(); ++i) {
-            std::shared_ptr<TModbusRegister> reg = it->second->Registers[i];
+            PModbusRegister reg = it->second->Registers[i];
             // avoid publishing incomplete value
             if (!ModbusClient->DidRead(reg))
                 return;
@@ -171,7 +171,7 @@ void TModbusPort::OnModbusValueChange(std::shared_ptr<TModbusRegister> reg)
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
 }
 
-TModbusClient::TErrorState TModbusPort::RegErrorState(std::shared_ptr<TModbusRegister> reg)
+TModbusClient::TErrorState TModbusPort::RegErrorState(PModbusRegister reg)
 {
     auto it = RegErrorStateMap.find(reg);
     if (it == RegErrorStateMap.end())
@@ -179,7 +179,7 @@ TModbusClient::TErrorState TModbusPort::RegErrorState(std::shared_ptr<TModbusReg
     return it->second;
 }
 
-void TModbusPort::UpdateError(std::shared_ptr<TModbusRegister> reg, TModbusClient::TErrorState errorState)
+void TModbusPort::UpdateError(PModbusRegister reg, TModbusClient::TErrorState errorState)
 {
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {

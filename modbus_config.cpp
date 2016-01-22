@@ -75,7 +75,7 @@ void TConfigTemplateParser::LoadDeviceTemplate(const Json::Value& root, const st
     }
 }
 
-std::shared_ptr<TModbusRegister> TConfigActionParser::LoadRegister(PDeviceConfig device_config,
+PModbusRegister TConfigActionParser::LoadRegister(PDeviceConfig device_config,
                                             const Json::Value& register_data,
                                             std::string& default_type_str)
 {
@@ -144,7 +144,7 @@ std::shared_ptr<TModbusRegister> TConfigActionParser::LoadRegister(PDeviceConfig
     if (register_data.isMember("readonly"))
         force_readonly = register_data["readonly"].asBool();
 
-    std::shared_ptr<TModbusRegister> ptr(new TModbusRegister(device_config->SlaveId, type, address, format, scale, true, force_readonly));
+    PModbusRegister ptr(new TModbusRegister(device_config->SlaveId, type, address, format, scale, true, force_readonly));
     return ptr;
 }
 
@@ -155,7 +155,7 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
 
     std::string name = channel_data["name"].asString();
     std::string default_type_str;
-    std::vector<std::shared_ptr<TModbusRegister>> registers;
+    std::vector<PModbusRegister> registers;
     if (channel_data.isMember("consists_of")) {
         const Json::Value array = channel_data["consists_of"];
         for(unsigned int index = 0; index < array.size(); ++index) {

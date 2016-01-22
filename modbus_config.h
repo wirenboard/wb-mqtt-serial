@@ -15,8 +15,8 @@ struct TModbusChannel
     TModbusChannel(std::string name = "", std::string type = "text",
                    std::string device_id = "", int order = 0,
                    std::string on_value = "", int max = - 1, bool read_only = false,
-                   const std::vector<std::shared_ptr<TModbusRegister>> regs =
-                       std::vector<std::shared_ptr<TModbusRegister>>())
+                   const std::vector<PModbusRegister> regs =
+                       std::vector<PModbusRegister>())
         : Name(name), Type(type), DeviceId(device_id),
           Order(order), OnValue(on_value), Max(max),
           ReadOnly(read_only), Registers(regs) {}
@@ -27,7 +27,7 @@ struct TModbusChannel
     std::string OnValue;
     int Max;
     bool ReadOnly;
-    std::vector<std::shared_ptr<TModbusRegister>> Registers;
+    std::vector<PModbusRegister> Registers;
 };
 
 typedef std::shared_ptr<TModbusChannel> PModbusChannel;
@@ -108,7 +108,7 @@ private:
 class TConfigActionParser
 {
     public :
-        std::shared_ptr<TModbusRegister> LoadRegister(PDeviceConfig device_config, const Json::Value& register_data, std::string& default_type_str);
+        PModbusRegister LoadRegister(PDeviceConfig device_config, const Json::Value& register_data, std::string& default_type_str);
         void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data);
         void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data);
         void LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data);

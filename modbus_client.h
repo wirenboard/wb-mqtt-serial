@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <exception>
 #include <functional>
 
 // #include <modbus/modbus.h>
@@ -13,6 +12,7 @@
 #include "regformat.h"
 #include "portsettings.h"
 #include "modbus_config.h"
+#include "modbus_exc.h"
 
 class TRegisterHandler;
 
@@ -53,19 +53,6 @@ public:
     PModbusContext CreateContext(const TSerialPortSettings& settings);
 };
 
-
-class TModbusException: public std::exception {
-public:
-    TModbusException(std::string _message): message("Modbus error: " + _message) {}
-    const char* what () const throw ()
-    {
-        return message.c_str();
-    }
-
-private:
-    std::string message;
-};
-
 class TModbusClient
 {
 public:
@@ -77,8 +64,8 @@ public:
         UnknownErrorState,
         ErrorStateUnchanged
     };
-    typedef std::function<void(std::shared_ptr<TModbusRegister> reg)> TCallback;
-    typedef std::function<void(std::shared_ptr<TModbusRegister> reg, TErrorState errorState)> TErrorCallback;
+    typedef std::function<void(PModbusRegister reg)> TCallback;
+    typedef std::function<void(PModbusRegister reg, TErrorState errorState)> TErrorCallback;
 
     TModbusClient(const TSerialPortSettings& settings,
                   PModbusConnector connector = 0);
@@ -86,13 +73,13 @@ public:
     TModbusClient& operator=(const TModbusClient&) = delete;
     ~TModbusClient();
     void AddDevice(PDeviceConfig device_config);
-    void AddRegister(std::shared_ptr<TModbusRegister> reg);
+    void AddRegister(PModbusRegister reg);
     void Connect();
     void Disconnect();
     void Cycle();
-    void SetTextValue(std::shared_ptr<TModbusRegister> reg, const std::string& value);
-    std::string GetTextValue(std::shared_ptr<TModbusRegister> reg) const;
-    bool DidRead(std::shared_ptr<TModbusRegister> reg) const;
+    void SetTextValue(PModbusRegister reg, const std::string& value);
+    std::string GetTextValue(PModbusRegister reg) const;
+    bool DidRead(PModbusRegister reg) const;
     void SetCallback(const TCallback& callback);
     void SetErrorCallback(const TErrorCallback& callback);
     void SetPollInterval(int ms);
@@ -101,11 +88,11 @@ public:
     void WriteHoldingRegister(int slave, int address, uint16_t value);
 
 private:
-    const std::unique_ptr<TRegisterHandler>& GetHandler(std::shared_ptr<TModbusRegister>) const;
-    TRegisterHandler* CreateRegisterHandler(std::shared_ptr<TModbusRegister> reg);
-    void MaybeUpdateErrorState(std::shared_ptr<TModbusRegister> reg, TErrorState state);
+    const std::unique_ptr<TRegisterHandler>& GetHandler(PModbusRegister) const;
+    TRegisterHandler* CreateRegisterHandler(PModbusRegister reg);
+    void MaybeUpdateErrorState(PModbusRegister reg, TErrorState state);
 
-    std::map<std::shared_ptr<TModbusRegister>, std::unique_ptr<TRegisterHandler> > Handlers;
+    std::map<PModbusRegister, std::unique_ptr<TRegisterHandler> > Handlers;
     std::list<PDeviceConfig> DevicesToAdd;
     PModbusContext Context;
     bool Active;

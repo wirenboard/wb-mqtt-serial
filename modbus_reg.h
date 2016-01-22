@@ -81,7 +81,9 @@ struct TModbusRegister
     }
 };
 
-inline ::std::ostream& operator<<(::std::ostream& os, std::shared_ptr<TModbusRegister> reg) {
+typedef std::shared_ptr<TModbusRegister> PModbusRegister;
+
+inline ::std::ostream& operator<<(::std::ostream& os, PModbusRegister reg) {
     return os << reg->ToString();
 }
 
@@ -90,8 +92,8 @@ inline ::std::ostream& operator<<(::std::ostream& os, const TModbusRegister& reg
 }
 
 namespace std {
-    template <> struct hash<std::shared_ptr<TModbusRegister>> {
-        size_t operator()(std::shared_ptr<TModbusRegister> p) const {
+    template <> struct hash<PModbusRegister> {
+        size_t operator()(PModbusRegister p) const {
             return hash<int>()(p->Slave) ^ hash<int>()(p->Type) ^ hash<int>()(p->Address);
         }
     };
