@@ -38,12 +38,12 @@ EnqueueMilurSessionSetupResponse()
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
 Publish: /devices/milur305.32r-test/controls/Phase C voltage/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305.32r-test/controls/Phase C voltage: '234.607000' (QoS 0, retained)
+Publish: /devices/milur305.32r-test/controls/Phase C voltage: '234.607' (QoS 0, retained)
 << FF 01 66 03 6F 94 03 03 4E
 EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
 Publish: /devices/milur305.32r-test/controls/Total consumption/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305.32r-test/controls/Total consumption: '111.440000' (QoS 0, retained)
+Publish: /devices/milur305.32r-test/controls/Total consumption: '111.44' (QoS 0, retained)
 << FF 01 76 04 44 11 10 00 AC 6C
 SkipNoise()
 EnqueueMercury230SessionSetupResponse()
@@ -52,24 +52,24 @@ EnqueueMercury230SessionSetupResponse()
 EnqueueMercury230EnergyResponse1()
 >> 00 05 00 00 10 25
 Publish: /devices/mercury230ar02-test/controls/Total consumption/meta/error: '' (QoS 0, retained)
-Publish: /devices/mercury230ar02-test/controls/Total consumption: '3196.200000' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total consumption: '3196.2' (QoS 0, retained)
 Publish: /devices/mercury230ar02-test/controls/Total reactive energy/meta/error: '' (QoS 0, retained)
-Publish: /devices/mercury230ar02-test/controls/Total reactive energy: '300.444000' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total reactive energy: '300.444' (QoS 0, retained)
 << 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
 EnqueueMercury230U1Response()
 >> 00 08 11 11 4D BA
 Publish: /devices/mercury230ar02-test/controls/U1/meta/error: '' (QoS 0, retained)
-Publish: /devices/mercury230ar02-test/controls/U1: '241.280000' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/U1: '241.28' (QoS 0, retained)
 << 00 00 40 5E B0 1C
 EnqueueMercury230U2Response()
 >> 00 08 11 12 0D BB
 Publish: /devices/mercury230ar02-test/controls/U2/meta/error: '' (QoS 0, retained)
-Publish: /devices/mercury230ar02-test/controls/U2: '240.430000' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/U2: '240.43' (QoS 0, retained)
 << 00 00 EB 5D 8F 2D
 EnqueueMercury230I1Response()
 >> 00 08 11 21 4D AE
 Publish: /devices/mercury230ar02-test/controls/I1/meta/error: '' (QoS 0, retained)
-Publish: /devices/mercury230ar02-test/controls/I1: '0.069000' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
 << 00 00 45 00 32 B4
 Sleep(100000)
 Close()

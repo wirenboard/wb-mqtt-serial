@@ -2,6 +2,7 @@
 #include <cmath>
 #include <mutex>
 #include <memory>
+#include <wbmqtt/utils.h>
 #include "register.h"
 #include "serial_protocol.h"
 
@@ -51,14 +52,26 @@ private:
     TErrorState ErrorState = UnknownErrorState;
 };
 
+template<>
+inline std::string TRegisterHandler::ToScaledTextValue(float val) const
+{
+    return StringFormat("%.7g", Reg->Scale * val);
+}
+
+template<>
+inline std::string TRegisterHandler::ToScaledTextValue(double val) const
+{
+    return StringFormat("%.15g", Reg->Scale * val);
+}
+
 template<typename A>
 inline std::string TRegisterHandler::ToScaledTextValue(A val) const
 {
-	if (Reg->Scale == 1) {
-		return std::to_string(val);
-	} else {
-		return std::to_string(Reg->Scale * val);
-	}
+    if (Reg->Scale == 1) {
+        return std::to_string(val);
+    } else {
+        return StringFormat("%.15g", Reg->Scale * val);
+    }
 }
 
 template<>

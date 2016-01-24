@@ -312,6 +312,10 @@ TEST_F(TModbusClientTest, S32)
     SerialClient->AddRegister(holding20);
     SerialClient->AddRegister(input30);
 
+    // create scaled register
+    PRegister holding24 = RegHolding(24, S32, 0.001);
+    SerialClient->AddRegister(holding24);
+
     Note() << "server -> client: 10, 20";
     Slave->Holding[20] = 0x00AA;
     Slave->Holding[21] = 0x00BB;
@@ -340,6 +344,21 @@ TEST_F(TModbusClientTest, S32)
     EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0xFFFF, Slave->Holding[20]);
     EXPECT_EQ(0xFFFE, Slave->Holding[21]);
+
+    Note() << "client -> server: -0.123 (scaled)";
+    SerialClient->SetTextValue(holding24, "-0.123");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ("-0.123", SerialClient->GetTextValue(holding24));
+    EXPECT_EQ(0xffff, Slave->Holding[24]);
+    EXPECT_EQ(0xff85, Slave->Holding[25]);
+
+    Note() << "server -> client: 0xffff 0xff85 (scaled)";
+    Slave->Holding[24] = 0xffff;
+    Slave->Holding[25] = 0xff85;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ("-0.123", SerialClient->GetTextValue(holding24));
 }
 
 TEST_F(TModbusClientTest, U32)
@@ -411,15 +430,15 @@ TEST_F(TModbusClientTest, Float32)
     Slave->Input[31] = 0x8000;
     Note() << "Cycle()";
     SerialClient->Cycle();
-    EXPECT_EQ(to_string(6720.0), SerialClient->GetTextValue(holding20));
-    EXPECT_EQ(to_string(1260.0), SerialClient->GetTextValue(input30));
+    EXPECT_EQ("6720", SerialClient->GetTextValue(holding20));
+    EXPECT_EQ("1260", SerialClient->GetTextValue(input30));
 
     FakeSerial->Flush();
     Note() << "client -> server: 10";
     SerialClient->SetTextValue(holding20, "10");
     Note() << "Cycle()";
     SerialClient->Cycle();
-    EXPECT_EQ(to_string(10.), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ("10", SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0x4120, Slave->Holding[20]);
     EXPECT_EQ(0x0000, Slave->Holding[21]);
 
@@ -428,7 +447,7 @@ TEST_F(TModbusClientTest, Float32)
     SerialClient->SetTextValue(holding20, "-0.00123");
     Note() << "Cycle()";
     SerialClient->Cycle();
-    EXPECT_EQ(to_string(-0.00123), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ("-0.00123", SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0xbaa1, Slave->Holding[20]);
     EXPECT_EQ(0x37f4, Slave->Holding[21]);
 
@@ -437,7 +456,7 @@ TEST_F(TModbusClientTest, Float32)
     SerialClient->SetTextValue(holding24, "-0.123");
     Note() << "Cycle()";
     SerialClient->Cycle();
-    EXPECT_EQ(to_string(-0.123), SerialClient->GetTextValue(holding24));
+    EXPECT_EQ("-0.123", SerialClient->GetTextValue(holding24));
     EXPECT_EQ(0xbaa1, Slave->Holding[24]);
     EXPECT_EQ(0x37f4, Slave->Holding[25]);
 
@@ -447,7 +466,7 @@ TEST_F(TModbusClientTest, Float32)
     Slave->Holding[25] = 0x8000;
     Note() << "Cycle()";
     SerialClient->Cycle();
-    EXPECT_EQ(to_string(126000.0), SerialClient->GetTextValue(holding24));
+    EXPECT_EQ("126000", SerialClient->GetTextValue(holding24));
 }
 
 TEST_F(TModbusClientTest, Double64)
@@ -474,15 +493,15 @@ TEST_F(TModbusClientTest, Double64)
 
     Note() << "Cycle()";
     SerialClient->Cycle();
-    EXPECT_EQ(to_string(6720.123), SerialClient->GetTextValue(holding20));
-    EXPECT_EQ(to_string(1260.321), SerialClient->GetTextValue(input30));
+    EXPECT_EQ("6720.123", SerialClient->GetTextValue(holding20));
+    EXPECT_EQ("1260.321", SerialClient->GetTextValue(input30));
 
     FakeSerial->Flush();
     Note() << "client -> server: 10";
     SerialClient->SetTextValue(holding20, "10.9999");
     Note() << "Cycle()";
     SerialClient->Cycle();
-    EXPECT_EQ(to_string(10.9999), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ("10.9999", SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0x4025, Slave->Holding[20]);
     EXPECT_EQ(0xfff2, Slave->Holding[21]);
     EXPECT_EQ(0xe48e, Slave->Holding[22]);
@@ -493,7 +512,7 @@ TEST_F(TModbusClientTest, Double64)
     SerialClient->SetTextValue(holding20, "-0.00123");
     Note() << "Cycle()";
     SerialClient->Cycle();
-    EXPECT_EQ(to_string(-0.00123), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ("-0.00123", SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0xbf54, Slave->Holding[20]);
     EXPECT_EQ(0x26fe, Slave->Holding[21]);
     EXPECT_EQ(0x718a, Slave->Holding[22]);
@@ -504,7 +523,7 @@ TEST_F(TModbusClientTest, Double64)
     SerialClient->SetTextValue(holding24, "-0.123");
     Note() << "Cycle()";
     SerialClient->Cycle();
-    EXPECT_EQ(to_string(-0.123), SerialClient->GetTextValue(holding24));
+    EXPECT_EQ("-0.123", SerialClient->GetTextValue(holding24));
     EXPECT_EQ(0xbf54, Slave->Holding[24]);
     EXPECT_EQ(0x26fe, Slave->Holding[25]);
     EXPECT_EQ(0x718a, Slave->Holding[26]);
@@ -519,7 +538,7 @@ TEST_F(TModbusClientTest, Double64)
 
     Note() << "Cycle()";
     SerialClient->Cycle();
-    EXPECT_EQ(to_string(126000.0), SerialClient->GetTextValue(holding24));
+    EXPECT_EQ("126000", SerialClient->GetTextValue(holding24));
 }
 
 TEST_F(TModbusClientTest, Errors)

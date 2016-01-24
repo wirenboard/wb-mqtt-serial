@@ -6,7 +6,7 @@ wb-homa-modbus (1.13.2) stable; urgency=medium
 
 wb-homa-modbus (1.13.1) stable; urgency=medium
 
-  * fixes handling IVTM devices with device_id > 9    
+  * fixes handling IVTM devices with device_id > 9
 
  -- Evgeny Boger <boger@contactless.ru>  Thu, 26 Nov 2015 00:12:11 +0300
 
@@ -14,17 +14,30 @@ wb-homa-modbus (1.13.0) stable; urgency=medium
 
   * Concurrent port access
   * adds support for IVTM protocol and IVTM-7M-3 device
-  * adds support for Milur and Mercury electricity meter protocols 
+  * adds support for Milur and Mercury electricity meter protocols
 
  -- Evgeny Boger <boger@contactless.ru>  Fri, 13 Nov 2015 02:07:11 +0300
+
+wb-homa-modbus (1.12.10) stable; urgency=medium
+
+  * adds support for WB-MR14
+  * removes trailing zeroes in reported values
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 19 Jan 2016 18:51:30 +0300
+
+wb-homa-modbus (1.12.9) stable; urgency=medium
+
+  * adds support for WB-MS-THLS
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 08 Dec 2015 18:17:54 +0300
 
 wb-homa-modbus (1.12.8) stable; urgency=medium
 
   * Add config to wb-configs.d
-  * proper string-to-int conversion for string literals in 
+  * proper string-to-int conversion for string literals in
   slave_id and address properties
   * Add WB-MR11 template
-  
+
  -- Evgeny Boger <boger@contactless.ru>  Sat, 17 Oct 2015 18:07:35 +0300
 
 wb-homa-modbus (1.12.7) stable; urgency=medium
