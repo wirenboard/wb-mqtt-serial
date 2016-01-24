@@ -8,7 +8,7 @@
 #include "testlog.h"
 #include "fake_mqtt.h"
 #include "../wb-homa-modbus/serial_protocol.h"
-#include "../modbus_observer.h"
+#include "../serial_observer.h"
 
 class TFakeSerialPort: public TAbstractSerialPort, public TExpector {
 public:
@@ -51,14 +51,6 @@ protected:
     PFakeSerialPort SerialPort;
 };
 
-class TSerialProtocolDirectTest: public virtual TSerialProtocolTest {
-protected:
-    void SetUp();
-    void TearDown();
-
-    PModbusContext Context;
-};
-
 class TSerialProtocolIntegrationTest: public virtual TSerialProtocolTest {
 protected:
     void SetUp();
@@ -66,6 +58,6 @@ protected:
     virtual const char* ConfigPath() const = 0;
 
     PFakeMQTTClient MQTTClient;
-    PMQTTModbusObserver Observer;
+    PMQTTSerialObserver Observer;
     bool PortMakerCalled;
 };

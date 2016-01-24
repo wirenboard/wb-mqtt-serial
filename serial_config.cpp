@@ -7,134 +7,94 @@
 #include <sys/types.h>
 #include <string>
 
-#include "modbus_config.h"
-#include "wbmqtt/utils.h"
-
-using namespace std;
+#include "serial_config.h"
 
 namespace {
     const char* DefaultProtocol = "modbus";
 }
 
-TConfigTemplateParser::TConfigTemplateParser(const string& template_config_dir, bool debug)
+TConfigTemplateParser::TConfigTemplateParser(const std::string& template_config_dir, bool debug)
     : DirectoryName(template_config_dir),
-      Debug(debug)
-{
-}
+      Debug(debug) {}
 
-map<string, TDeviceJson> TConfigTemplateParser::Parse()
+TTemplateMap TConfigTemplateParser::Parse()
 {
     DIR *dir;
     struct dirent *dirp;
     struct stat filestat;
-    if ((dir = opendir(DirectoryName.c_str())) == NULL) {
-        cerr << "Cannot open templates directory";
-        exit(EXIT_FAILURE);
-    }
+
+    if ((dir = opendir(DirectoryName.c_str())) == NULL)
+        throw TConfigParserException("Cannot open templates directory");
+
     while ((dirp = readdir(dir))) {
-        string dname = dirp->d_name;
+        std::string dname = dirp->d_name;
         if(dname == "." || dname == "..")
             continue;
-        string filepath = DirectoryName + "/" + dname;
-        if (stat( filepath.c_str(), &filestat )) continue;
-        if (S_ISDIR( filestat.st_mode ))         continue;
 
-        ifstream input_stream;
+        std::string filepath = DirectoryName + "/" + dname;
+        if (stat(filepath.c_str(), &filestat)) continue;
+        if (S_ISDIR(filestat.st_mode)) continue;
+
+        std::ifstream input_stream;
         input_stream.open(filepath);
         if (!input_stream.is_open()) {
-            cerr << "Error while trying to open template config file " << filepath << endl;
+            std::cerr << "Error while trying to open template config file " << filepath << std::endl;
             continue;
         }
+
         Json::Reader reader;
         Json::Value root;
-        bool parsedSuccess = reader.parse(input_stream, root, false);
-
-        // Report failures and their locations in the document.
-        if(not parsedSuccess) {
-            cerr << "Failed to parse JSON: " << filepath << " " << reader.getFormatedErrorMessages() << endl;
+        if (!reader.parse(input_stream, root, false)) {
+            std::cerr << "Failed to parse JSON: " << filepath << " " << reader.getFormatedErrorMessages()
+                      << std::endl;
             continue;
         }
 
         LoadDeviceTemplate(root, filepath);
     }
+
     closedir(dir);
     return Templates;
 }
 
-void TConfigTemplateParser::LoadDeviceTemplate(const Json::Value& root, const string& filepath)
+void TConfigTemplateParser::LoadDeviceTemplate(const Json::Value& root, const std::string& filepath)
 {
-    if (!root.isObject()) {
-        cerr << "malformed config in file " + filepath;
-        exit(EXIT_FAILURE);
-    }
-    if (root.isMember("device_type")) {
-            Templates[root["device_type"].asString()] = root["device"];
-    } else {
-        if (Debug)
-            cerr << "there is no device_type in json template in file " << filepath << endl;
-    }
+    if (!root.isObject())
+        throw TConfigParserException("malformed config in file " + filepath);
+
+    if (root.isMember("device_type"))
+        Templates[root["device_type"].asString()] = root["device"];
+    else if (Debug)
+        std::cerr << "there is no device_type in json template in file " << filepath << std::endl;
 }
 
-PModbusRegister TConfigActionParser::LoadRegister(PDeviceConfig device_config,
-                                            const Json::Value& register_data,
-                                            std::string& default_type_str)
+TConfigParser::TConfigParser(const std::string& config_fname, bool force_debug,
+                             TGetRegisterTypeMap get_register_type_map,
+                             TTemplateMap templates)
+    : ConfigFileName(config_fname),
+      HandlerConfig(new THandlerConfig),
+      GetRegisterTypeMap(get_register_type_map),
+      Templates(templates)
+{
+    HandlerConfig->Debug = force_debug;
+}
+
+PRegister TConfigParser::LoadRegister(PDeviceConfig device_config,
+                                      const Json::Value& register_data,
+                                      std::string& default_type_str)
 {
     int address = GetInt(register_data, "address");
     std::string reg_type_str = register_data["reg_type"].asString();
     default_type_str = "text";
-    TModbusRegister::RegisterType type;
-    if (reg_type_str == "coil") {
-        type = TModbusRegister::RegisterType::COIL;
-        default_type_str = "switch";
-    } else if (reg_type_str == "discrete") {
-        type = TModbusRegister::RegisterType::DISCRETE_INPUT;
-        default_type_str = "switch";
-    } else if (reg_type_str == "holding") {
-        type = TModbusRegister::RegisterType::HOLDING_REGISTER;
-        default_type_str = "text";
-    } else if (reg_type_str == "input") {
-        type = TModbusRegister::RegisterType::INPUT_REGISTER;
-        default_type_str = "text";
-    } else if (reg_type_str == "direct") {
-        type = TModbusRegister::RegisterType::DIRECT_REGISTER;
-        default_type_str = "text";
-    } else
-        throw TConfigParserException("invalid register type: " + reg_type_str + " " + device_config->DeviceType);
+    auto it = device_config->TypeMap->find(reg_type_str);
+    if (it == device_config->TypeMap->end())
+        throw TConfigParserException("invalid register type: " + reg_type_str + " -- " + device_config->DeviceType);
+    if (!it->second.DefaultControlType.empty())
+        default_type_str = it->second.DefaultControlType;
 
-    RegisterFormat format = U16;
-    if (register_data.isMember("format")) {
-        std::string format_str = register_data["format"].asString();
-        if (format_str == "s16")
-            format = S16;
-        else if (format_str == "u8")
-            format = U8;
-        else if (format_str == "s8")
-            format = S8;
-        else if (format_str == "u24")
-            format = U24;
-        else if (format_str == "s24")
-            format = S24;
-        else if (format_str == "u32")
-            format = U32;
-        else if (format_str == "s32")
-            format = S32;
-        else if (format_str == "s64")
-            format = S64;
-        else if (format_str == "u64")
-            format = U64;
-        else if (format_str == "bcd8")
-            format = BCD8;
-        else if (format_str == "bcd16")
-            format = BCD16;
-        else if (format_str == "bcd24")
-            format = BCD24;
-        else if (format_str == "bcd32")
-            format = BCD32;
-        else if (format_str == "float")
-            format = Float;
-        else if (format_str == "double")
-            format = Double;
-    }
+    RegisterFormat format = register_data.isMember("format") ?
+        RegisterFormatFromName(register_data["format"].asString()) :
+        it->second.DefaultFormat;
 
     double scale = 1;
     if (register_data.isMember("scale"))
@@ -144,18 +104,20 @@ PModbusRegister TConfigActionParser::LoadRegister(PDeviceConfig device_config,
     if (register_data.isMember("readonly"))
         force_readonly = register_data["readonly"].asBool();
 
-    PModbusRegister ptr(new TModbusRegister(device_config->SlaveId, type, address, format, scale, true, force_readonly));
-    return ptr;
+    return std::make_shared<TRegister>(
+        device_config->SlaveId, it->second.Index,
+        address, format, scale, true, force_readonly || it->second.ReadOnly,
+        it->second.Name);
 }
 
-void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
+void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
 {
     if (!channel_data.isObject())
-        throw TConfigParserException(string("malformed config") + " " + device_config->DeviceType);
+        throw TConfigParserException("malformed config -- " + device_config->DeviceType);
 
     std::string name = channel_data["name"].asString();
     std::string default_type_str;
-    std::vector<PModbusRegister> registers;
+    std::vector<PRegister> registers;
     if (channel_data.isMember("consists_of")) {
         const Json::Value array = channel_data["consists_of"];
         for(unsigned int index = 0; index < array.size(); ++index) {
@@ -163,12 +125,12 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
             registers.push_back(LoadRegister(device_config, array[index], def_type));
             if (!index)
                 default_type_str = def_type;
-            else if (registers[index]->IsReadOnly() != registers[0]->IsReadOnly())
-                throw TConfigParserException(string("can't mix read-only and writable registers "
-                                             "in one channel") + " " + device_config->DeviceType);
+            else if (registers[index]->ReadOnly != registers[0]->ReadOnly)
+                throw TConfigParserException(("can't mix read-only and writable registers "
+                                              "in one channel -- ") + device_config->DeviceType);
         }
         if (!registers.size())
-            throw TConfigParserException(string("empty \"consists_of\" section") + " " + device_config->DeviceType);
+            throw TConfigParserException("empty \"consists_of\" section -- " + device_config->DeviceType);
     } else
         registers.push_back(LoadRegister(device_config, channel_data, default_type_str));
 
@@ -184,8 +146,9 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
     std::string on_value = "";
     if (channel_data.isMember("on_value")) {
         if (registers.size() != 1)
-            throw TConfigParserException(string("can only use on_value for single-valued controls") + " " + device_config->DeviceType);
-        on_value = to_string(GetInt(channel_data, "on_value"));
+            throw TConfigParserException("can only use on_value for single-valued controls -- " +
+                                         device_config->DeviceType);
+        on_value = std::to_string(GetInt(channel_data, "on_value"));
     }
 
     int max = -1;
@@ -193,32 +156,53 @@ void TConfigActionParser::LoadChannel(PDeviceConfig device_config, const Json::V
         max = GetInt(channel_data, "max");
 
     int order = device_config->NextOrderValue();
-    PModbusChannel channel(new TModbusChannel(name, type_str, device_config->Id, order,
-                                              on_value, max, registers[0]->IsReadOnly(),
+    PDeviceChannel channel(new TDeviceChannel(name, type_str, device_config->Id, order,
+                                              on_value, max, registers[0]->ReadOnly,
                                               registers));
     device_config->AddChannel(channel);
 }
 
-void TConfigActionParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data)
+void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data)
 {
     if (!item_data.isObject())
-        throw TConfigParserException(string("malformed config") + " " + device_config->DeviceType);
+        throw TConfigParserException("malformed config -- " + device_config->DeviceType);
 
     std::string name = item_data.isMember("title") ?
         item_data["title"].asString() : "<unnamed>";
     if (!item_data.isMember("address"))
         throw TConfigParserException("no address specified for init item");
+
     int address = GetInt(item_data, "address");
+    std::string reg_type_str = item_data["reg_type"].asString();
+    int type = 0;
+    std::string type_name = "<unspec>";
+    if (!reg_type_str.empty()) {
+        auto it = device_config->TypeMap->find(reg_type_str);
+        if (it == device_config->TypeMap->end())
+            throw TConfigParserException("invalid setup register type: " +
+                                         reg_type_str + " -- " + device_config->DeviceType);
+        type = it->second.Index;
+    }
+    RegisterFormat format = U16;
+    if (item_data.isMember("format"))
+        format = RegisterFormatFromName(item_data["format"].asString());
+    PRegister reg = std::make_shared<TRegister>(
+        device_config->SlaveId, type,
+        address, format, 1, true, true, type_name);
+
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");
     int value = GetInt(item_data, "value");
-    device_config->AddSetupItem(PDeviceSetupItem(new TDeviceSetupItem(name, address, value)));
+    device_config->AddSetupItem(PDeviceSetupItem(new TDeviceSetupItem(name, reg, value)));
 }
 
-void TConfigActionParser::LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data)
+void TConfigParser::LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data)
 {
     if (device_data.isMember("protocol"))
         device_config->Protocol = device_data["protocol"].asString();
+    else if (device_config->Protocol.empty())
+        device_config->Protocol = DefaultProtocol;
+    device_config->TypeMap = GetRegisterTypeMap(device_config);
 
     if (device_data.isMember("setup")) {
         const Json::Value array = device_data["setup"];
@@ -241,7 +225,7 @@ void TConfigActionParser::LoadDeviceVectors(PDeviceConfig device_config, const J
         LoadChannel(device_config, array[index]);
 }
 
-int TConfigActionParser::ToInt(const Json::Value& v, const std::string& title)
+int TConfigParser::ToInt(const Json::Value& v, const std::string& title)
 {
     if (v.isInt())
         return v.asInt();
@@ -256,26 +240,22 @@ int TConfigActionParser::ToInt(const Json::Value& v, const std::string& title)
     // v.asString() should give a bit more information what config this exception came from
 }
 
-int TConfigActionParser::GetInt(const Json::Value& obj, const std::string& key)
+int TConfigParser::GetInt(const Json::Value& obj, const std::string& key)
 {
     return ToInt(obj[key], key);
 }
 
 PHandlerConfig TConfigParser::Parse()
 {
-    // Let's parse it
     Json::Reader reader;
     if (ConfigFileName.empty())
         throw TConfigParserException("Please specify config file with -c option");
 
     std::ifstream myfile (ConfigFileName);
     if (myfile.fail())
-        throw TConfigParserException("Modbus driver configuration file not found: " + ConfigFileName);
+        throw TConfigParserException("Serial driver configuration file not found: " + ConfigFileName);
 
-    bool parsedSuccess = reader.parse(myfile, root, false);
-
-    // Report failures and their locations in the document.
-    if(not parsedSuccess)
+    if(!reader.parse(myfile, Root, false))
         throw TConfigParserException("Failed to parse JSON: " + reader.getFormatedErrorMessages());
 
     LoadConfig();
@@ -297,33 +277,29 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     device_config->SlaveId = GetInt(device_data, "slave_id");
     if (device_data.isMember("device_type")){
         device_config->DeviceType = device_data["device_type"].asString();
-        std::map<string, TDeviceJson>::iterator it = TemplatesMap.find(device_config->DeviceType);
-        if (it != TemplatesMap.end()){
+        auto it = Templates.find(device_config->DeviceType);
+        if (it != Templates.end()) {
             if (it->second.isMember("name")) {
                 if (device_config->Name == "")
-                    device_config->Name = it->second["name"].asString() + " " + to_string(device_config->SlaveId);
-            }else {
-                if (device_config->Name == "")
-                    throw TConfigParserException("Property device_name is missing in " + device_config->DeviceType + " template");
-            }
+                    device_config->Name = it->second["name"].asString() + " " +
+                        std::to_string(device_config->SlaveId);
+            } else if (device_config->Name == "")
+                    throw TConfigParserException(
+                        "Property device_name is missing in " + device_config->DeviceType + " template");
+
             if (it->second.isMember("id")) {
                 if (device_config->Id == default_id)
-                    device_config->Id = it->second["id"].asString() + "_" + to_string(device_config->SlaveId);
+                    device_config->Id = it->second["id"].asString() + "_" +
+                        std::to_string(device_config->SlaveId);
             }
 
             LoadDeviceVectors(device_config, it->second);
-        }
-        else{
+        } else // XXX should probably throw TConfigParserException here?
             std::cerr << "Can't find the template for '"
                       << device_config->DeviceType
                       << "' device type." << std::endl;
-        }
     }
     LoadDeviceVectors(device_config, device_data);
-    if (device_config->Protocol.empty())
-        device_config->Protocol = port_config->Protocol.empty() ? DefaultProtocol :
-            port_config->Protocol;
-
     port_config->AddDeviceConfig(device_config);
 }
 
@@ -360,11 +336,6 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
     if (port_data.isMember("poll_interval"))
         port_config->PollInterval = GetInt(port_data, "poll_interval");
 
-    if (port_data.isMember("protocol"))
-        port_config->Protocol = port_data["protocol"].asString();
-    else if (port_data.isMember("type")) // compatibility
-        port_config->Protocol = port_data["type"].asString();
-
     const Json::Value array = port_data["devices"];
     for(unsigned int index = 0; index < array.size(); ++index)
             LoadDevice(port_config, array[index], id_prefix + std::to_string(index));
@@ -374,18 +345,18 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
 
 void TConfigParser::LoadConfig()
 {
-    if (!root.isObject())
+    if (!Root.isObject())
         throw TConfigParserException("malformed config");
 
-    if (!root.isMember("ports"))
+    if (!Root.isMember("ports"))
         throw TConfigParserException("no ports specified");
 
-    if (root.isMember("debug"))
-        HandlerConfig->Debug = HandlerConfig->Debug || root["debug"].asBool();
+    if (Root.isMember("debug"))
+        HandlerConfig->Debug = HandlerConfig->Debug || Root["debug"].asBool();
 
-    const Json::Value array = root["ports"];
+    const Json::Value array = Root["ports"];
     for(unsigned int index = 0; index < array.size(); ++index)
-        LoadPort(array[index], "wb-modbus-" + std::to_string(index) + "-");
+        LoadPort(array[index], "wb-modbus-" + std::to_string(index) + "-"); // XXX old default prefix for compat
 
     // check are there any devices defined
     for (const auto& port_config : HandlerConfig->PortConfigs) {

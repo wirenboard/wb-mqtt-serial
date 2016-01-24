@@ -1,8 +1,8 @@
 #include <stdexcept>
 #include "fake_serial_port.h"
 #include "em_expectations.h"
-#include "../modbus_config.h"
-#include "../modbus_observer.h"
+#include "serial_config.h"
+#include "serial_observer.h"
 
 class TEMIntegrationTest: public TSerialProtocolIntegrationTest, public TEMProtocolExpectations
 {
@@ -24,8 +24,10 @@ TEST_F(TEMIntegrationTest, Poll)
     EnqueueMercury230U2Response();
     EnqueueMercury230I1Response();
 
-    Note() << "ModbusLoopOnce()";
-    Observer->ModbusLoopOnce();
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+
+    SerialPort->Close();
 }
 
 // TBD: test errors

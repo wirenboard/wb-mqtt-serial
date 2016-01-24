@@ -31,15 +31,16 @@ LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
 MODBUS_BIN=wb-homa-modbus
 MODBUS_LIBS=-lmodbus
-MODBUS_SRCS=modbus_client.cpp \
-  modbus_config.cpp \
-  modbus_port.cpp \
-  modbus_observer.cpp \
+MODBUS_SRCS=serial_client.cpp \
+  register_handler.cpp \
+  serial_config.cpp \
+  serial_port_driver.cpp \
+  serial_observer.cpp \
   serial_protocol.cpp \
-  serial_connector.cpp \
   uniel_protocol.cpp \
   ivtm_protocol.cpp \
   crc16.cpp \
+  modbus_protocol.cpp \
   em_protocol.cpp \
   milur_protocol.cpp \
   mercury230_protocol.cpp

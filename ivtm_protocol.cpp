@@ -15,7 +15,7 @@
 
 #include "ivtm_protocol.h"
 
-REGISTER_PROTOCOL("ivtm", TIVTMProtocol);
+REGISTER_PROTOCOL("ivtm", TIVTMProtocol, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
 TIVTMProtocol::TIVTMProtocol(PDeviceConfig, PAbstractSerialPort port)
     : TSerialProtocol(port) {}
@@ -115,13 +115,13 @@ void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 }
 
 
-uint64_t TIVTMProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat, size_t width)
+uint64_t TIVTMProtocol::ReadRegister(PRegister reg)
 {
     Port()->SkipNoise();
 
-    WriteCommand(slave, address, width);
+    WriteCommand(reg->Slave, reg->Address, reg->ByteWidth());
     uint8_t response[4];
-    ReadResponse(slave, response, width);
+    ReadResponse(reg->Slave, response, reg->ByteWidth());
 
     uint8_t * p = response;//&response[(address % 2) * 4];
 
@@ -133,15 +133,9 @@ uint64_t TIVTMProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterF
            p[0];
 }
 
-
-void TIVTMProtocol::WriteRegister(uint32_t, uint32_t, uint64_t, RegisterFormat)
+void TIVTMProtocol::WriteRegister(PRegister, uint64_t)
 {
     throw TSerialProtocolException("IVTM protocol: writing register is not supported");
-}
-
-void TIVTMProtocol::SetBrightness(uint32_t, uint32_t, uint8_t)
-{
-    throw TSerialProtocolException("IVTM protocol: setting brightness not supported");
 }
 
 #if 0

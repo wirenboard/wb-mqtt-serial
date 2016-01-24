@@ -20,7 +20,13 @@ namespace {
     };
 }
 
-REGISTER_PROTOCOL("uniel", TUnielProtocol);
+REGISTER_PROTOCOL("uniel", TUnielProtocol, TRegisterTypes({
+            { TUnielProtocol::REG_RELAY, "relay", "switch", U8 },
+            { TUnielProtocol::REG_INPUT, "input", "text", U8, true },
+            { TUnielProtocol::REG_PARAM, "param", "value", U8 },
+            // "value", not "range" because 'max' cannot be specified here.
+            { TUnielProtocol::REG_BRIGHTNESS, "brightness", "value", U8 }
+        }));
 
 TUnielProtocol::TUnielProtocol(PDeviceConfig, PAbstractSerialPort port)
     : TSerialProtocol(port) {}
@@ -69,59 +75,36 @@ void TUnielProtocol::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-uint64_t TUnielProtocol::ReadRegister(uint32_t mod, uint32_t address, RegisterFormat, size_t /* width */)
+uint64_t TUnielProtocol::ReadRegister(PRegister reg)
 {
-    WriteCommand(READ_CMD, mod, 0, address, 0);
+    WriteCommand(READ_CMD, reg->Slave, 0, uint8_t(reg->Address), 0);
     uint8_t response[3];
     ReadResponse(READ_CMD, response);
-    if (response[1] != address)
+    if (response[1] != uint8_t(reg->Address))
         throw TSerialProtocolTransientErrorException("register index mismatch");
 
+    if (reg->Type == REG_RELAY)
+        return response[0] ? 1 : 0;
     return response[0];
 }
 
-void TUnielProtocol::DoWriteRegister(uint8_t cmd, uint8_t mod, uint8_t address, uint8_t value)
+void TUnielProtocol::WriteRegister(PRegister reg, uint64_t value)
 {
-    WriteCommand(cmd, mod, value, address, 0);
+    uint8_t cmd, addr;
+    if (reg->Type == REG_BRIGHTNESS) {
+        cmd = SET_BRIGHTNESS_CMD;
+        addr = uint8_t(reg->Address >> 8);
+    } else {
+        cmd = WRITE_CMD;
+        addr = uint8_t(reg->Address);
+    }
+    if (reg->Type == REG_RELAY && value != 0)
+        value = 255;
+    WriteCommand(cmd, reg->Slave, value, addr, 0);
     uint8_t response[3];
     ReadResponse(cmd, response);
-    if (response[1] != address)
+    if (response[1] != addr)
         throw TSerialProtocolTransientErrorException("register index mismatch");
     if (response[0] != value)
         throw TSerialProtocolTransientErrorException("written register value mismatch");
 }
-
-void TUnielProtocol::WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat)
-{
-    DoWriteRegister(WRITE_CMD, mod, address, (uint8_t)value);
-}
-
-void TUnielProtocol::SetBrightness(uint32_t mod, uint32_t address, uint8_t value)
-{
-    DoWriteRegister(SET_BRIGHTNESS_CMD, mod, address, value);
-}
-
-#if 0
-int main(int, char**)
-{
-    try {
-        TUnielProtocol bus("/dev/ttyNSC1");
-        bus.Open();
-        int v = bus.ReadRegister(0x01, 0x0a);
-        std::cout << "value of mod 0x01 reg 0x0a: " << v << std::endl;
-        for (int i = 0; i < 8; ++i) {
-            bus.WriteRegister(0x01, 0x02 + i, 0x00); // manual control of the channel (low threshold = 0)
-            int address = 0x1a + i;
-            std::cout << "value of relay " << i << ": " << (int)bus.ReadRegister(0x01, address) << std::endl;
-            bus.WriteRegister(0x01, address, 0xff);
-            std::cout << "value of relay " << i << " (on): " << (int)bus.ReadRegister(0x01, address) << std::endl;
-            sleep(1);
-            bus.WriteRegister(0x01, address, 0x00);
-            std::cout << "value of relay " << i << " (off): " << (int)bus.ReadRegister(0x01, address) << std::endl;
-        }
-    } catch (const TUnielProtocolException& e) {
-        std::cerr << "uniel bus error: " << e.what() << std::endl;
-    }
-    return 0;
-}
-#endif

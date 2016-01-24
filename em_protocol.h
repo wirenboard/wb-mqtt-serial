@@ -7,7 +7,6 @@
 #include <cstdint>
 
 #include "serial_protocol.h"
-#include "regformat.h"
 
 // Common protocol base for electricity meters
 class TEMProtocol: public TSerialProtocol {
@@ -15,11 +14,7 @@ public:
     static const int DefaultTimeoutMs = 1000;
 
     TEMProtocol(PDeviceConfig device_config, PAbstractSerialPort port);
-
-    void WriteRegister(uint32_t mod, uint32_t address, uint64_t value, RegisterFormat fmt);
-    // XXX FIXME: leaky abstraction (need to refactor)
-    // Perhaps add 'brightness' register format
-    void SetBrightness(uint32_t mod, uint32_t address, uint8_t value);
+    void WriteRegister(PRegister reg, uint64_t value);
 
 protected:
     enum ErrorType {

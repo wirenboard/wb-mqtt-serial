@@ -9,14 +9,17 @@
 #include <cstdint>
 
 #include "em_protocol.h"
-#include "regformat.h"
 
 class TMercury230Protocol: public TEMProtocol {
 public:
     static const int DefaultTimeoutMs = 1000;
+    enum RegisterType {
+        REG_VALUE_ARRAY = 0,
+        REG_PARAM = 1
+    };
 
     TMercury230Protocol(PDeviceConfig, PAbstractSerialPort port);
-    uint64_t ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt, size_t width);
+    uint64_t ReadRegister(PRegister reg);
     void EndPollCycle();
 
 protected:

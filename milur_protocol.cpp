@@ -38,7 +38,12 @@ namespace {
     }
 }
 
-REGISTER_PROTOCOL("milur", TMilurProtocol);
+REGISTER_PROTOCOL("milur", TMilurProtocol, TRegisterTypes({
+            { TMilurProtocol::REG_PARAM, "param", "value", U24, true },
+            { TMilurProtocol::REG_POWER, "power", "power", S32, true },
+            { TMilurProtocol::REG_ENERGY, "energy", "power_consumption", BCD32, true },
+            { TMilurProtocol::REG_FREQ, "freq", "value", BCD32, true }
+        }));
 
 TMilurProtocol::TMilurProtocol(PDeviceConfig device_config, PAbstractSerialPort port)
     : TEMProtocol(device_config, port) {}
@@ -124,16 +129,16 @@ TEMProtocol::ErrorType TMilurProtocol::CheckForException(uint8_t* frame, int len
     return TEMProtocol::OTHER_ERROR;
 }
 
-uint64_t TMilurProtocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt, size_t /*width*/)
+uint64_t TMilurProtocol::ReadRegister(PRegister reg)
 {
     int size;
     bool bcd;
-    GetRegType(fmt, &size, &bcd);
+    GetRegType(reg->Format, &size, &bcd);
 
-    uint8_t addr = address;
+    uint8_t addr = reg->Address;
     uint8_t buf[MAX_LEN], *p = buf;
-    Talk(slave, 0x01, &addr, 1, 0x01, buf, size + 2);
-    if (*p++ != address)
+    Talk(reg->Slave, 0x01, &addr, 1, 0x01, buf, size + 2);
+    if (*p++ != reg->Address)
         throw TSerialProtocolTransientErrorException("bad register address in the response");
     if (*p++ != size)
         throw TSerialProtocolTransientErrorException("bad register size in the response");
@@ -164,12 +169,12 @@ int main(int, char**)
         port->Open();
         TMilurProtocol milur(port);
         std::ios::fmtflags f(std::cerr.flags());
-        int v = milur.ReadRegister(0xff, 102, U24);
+        int v = milur.ReadRegister(0xff, 102, 0, U24);
         std::cerr << "value of mod 0xff reg 0x66: 0x" << std::setw(8) << std::hex << v << std::endl;
         std::cerr.flags(f);
         std::cerr << "dec value: " << v << std::endl;
 
-        int v1 = milur.ReadRegister(0xff, 118, BCD32);
+        int v1 = milur.ReadRegister(0xff, 118, 0, BCD32);
         std::cerr << "value of mod 0xff reg 0x76: " << v1 << std::endl;
     } catch (const TSerialProtocolException& e) {
         std::cerr << "milur: " << e.what() << std::endl;

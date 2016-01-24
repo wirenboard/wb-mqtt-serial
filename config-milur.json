@@ -19,7 +19,7 @@
           "channels": [
             {
               "name": "Phase A voltage",
-              "reg_type": "direct",
+              "reg_type": "param",
               "address": 100,
               "format": "u24",
               "type": "voltage",
@@ -27,7 +27,7 @@
             },
             {
               "name": "Phase B voltage",
-              "reg_type": "direct",
+              "reg_type": "param",
               "address": 101,
               "format": "u24",
               "type": "voltage",
@@ -35,7 +35,7 @@
             },
             {
               "name": "Phase C voltage",
-              "reg_type": "direct",
+              "reg_type": "param",
               "address": 102,
               "format": "u24",
               "type": "voltage",
@@ -43,7 +43,7 @@
             },
             {
               "name": "Total consumption",
-              "reg_type": "direct",
+              "reg_type": "energy",
               "address": 118,
               "format": "bcd32",
               "type": "power_consumption",

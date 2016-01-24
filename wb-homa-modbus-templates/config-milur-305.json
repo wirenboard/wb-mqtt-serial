@@ -7,7 +7,7 @@
     "channels": [
       {
         "name": "Phase A voltage",
-        "reg_type": "direct",
+        "reg_type": "param",
         "address": 100,
         "format": "u24",
         "type": "voltage",
@@ -15,7 +15,7 @@
       },
       {
         "name": "Phase B voltage",
-        "reg_type": "direct",
+        "reg_type": "param",
         "address": 101,
         "format": "u24",
         "type": "voltage",
@@ -23,7 +23,7 @@
       },
       {
         "name": "Phase C voltage",
-        "reg_type": "direct",
+        "reg_type": "param",
         "address": 102,
         "format": "u24",
         "type": "voltage",
@@ -32,7 +32,7 @@
       {
         "name": "Phase A current",
         "type": "value",
-        "reg_type": "direct",
+        "reg_type": "param",
         "address": 103,
         "format": "u24",
         "scale": 0.001
@@ -40,7 +40,7 @@
       {
         "name": "Phase B current",
         "type": "value",
-        "reg_type": "direct",
+        "reg_type": "param",
         "address": 104,
         "format": "u24",
         "scale": 0.001
@@ -48,17 +48,15 @@
       {
         "name": "Phase C current",
         "type": "value",
-        "reg_type": "direct",
+        "reg_type": "param",
         "address": 105,
         "format": "u24",
         "scale": 0.001
       },
-
-
       {
         "name": "Phase A active power",
         "type": "power",
-        "reg_type": "direct",
+        "reg_type": "power",
         "address": 106,
         "format": "s32",
         "scale": 0.01
@@ -66,7 +64,7 @@
       {
         "name": "Phase B active power",
         "type": "power",
-        "reg_type": "direct",
+        "reg_type": "power",
         "address": 107,
         "format": "s32",
         "scale": 0.01
@@ -74,27 +72,23 @@
       {
         "name": "Phase C active power",
         "type": "power",
-        "reg_type": "direct",
+        "reg_type": "power",
         "address": 108,
         "format": "s32",
         "scale": 0.01
       },
-
       {
         "name": "Total active power",
         "type": "power",
-        "reg_type": "direct",
+        "reg_type": "power",
         "address": 109,
         "format": "s32",
         "scale": 0.01
       },
-
-
-
       {
         "name": "Phase A reactive power",
         "type": "power",
-        "reg_type": "direct",
+        "reg_type": "power",
         "address": 110,
         "format": "s32",
         "scale": 0.01
@@ -102,7 +96,7 @@
       {
         "name": "Phase B reactive power",
         "type": "power",
-        "reg_type": "direct",
+        "reg_type": "power",
         "address": 111,
         "format": "s32",
         "scale": 0.01
@@ -110,7 +104,7 @@
       {
         "name": "Phase C reactive power",
         "type": "power",
-        "reg_type": "direct",
+        "reg_type": "power",
         "address": 112,
         "format": "s32",
         "scale": 0.01
@@ -119,15 +113,14 @@
       {
         "name": "Total reactive power",
         "type": "power",
-        "reg_type": "direct",
+        "reg_type": "power",
         "address": 113,
         "format": "s32",
         "scale": 0.01
       },
-
       {
         "name": "Total consumption",
-        "reg_type": "direct",
+        "reg_type": "energy",
         "address": 118,
         "format": "bcd32",
         "type": "power_consumption",
@@ -135,7 +128,7 @@
       },
       {
         "name": "Total reactive energy",
-        "reg_type": "direct",
+        "reg_type": "energy",
         "address": 127,
         "format": "bcd32",
         "type": "power_consumption",
@@ -144,13 +137,11 @@
       {
         "name": "Frequency",
         "type": "value",
-        "reg_type": "direct",
+        "reg_type": "freq",
         "address": 9,
         "format": "u16",
         "scale": 0.001
       }
-
-
     ]
   }
 }

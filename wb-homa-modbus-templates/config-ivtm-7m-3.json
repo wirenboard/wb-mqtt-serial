@@ -7,14 +7,14 @@
     "channels": [
       {
         "name": "Temperature",
-        "reg_type": "direct",
+        "reg_type": "default",
         "address": "0x00",
         "format": "float",
         "type": "temperature"
       },
       {
         "name": "Humidity",
-        "reg_type": "direct",
+        "reg_type": "default",
         "address": "0x04",
         "format": "float",
         "type": "rel_humidity"

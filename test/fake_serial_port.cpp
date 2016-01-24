@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <stdexcept>
 #include "fake_serial_port.h"
-#include "serial_connector.h"
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture), IsPortOpen(false), ReqPos(0), RespPos(0), DumpPos(0) {}
@@ -178,37 +177,18 @@ void TSerialProtocolTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
-void TSerialProtocolDirectTest::SetUp()
-{
-    TSerialProtocolTest::SetUp();
-    Context = TSerialConnector().CreateContext(SerialPort);
-}
-
-void TSerialProtocolDirectTest::TearDown()
-{
-    Context.reset();
-    TSerialProtocolTest::TearDown();
-}
-
 void TSerialProtocolIntegrationTest::SetUp()
 {
     TSerialProtocolTest::SetUp();
     PortMakerCalled = false;
-    TSerialConnector::SetGlobalPortMaker([this](const TSerialPortSettings&) {
-            if (PortMakerCalled)
-                throw std::runtime_error("serial port reinit?");
-            PortMakerCalled = true;
-            return SerialPort;
-        });
-    TConfigParser parser(GetDataFilePath(ConfigPath()), false);
+    TConfigParser parser(GetDataFilePath(ConfigPath()), false, TSerialProtocolFactory::GetRegisterTypes);
     PHandlerConfig Config = parser.Parse();
     MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("em-test", *this));
-    Observer = PMQTTModbusObserver(new TMQTTModbusObserver(MQTTClient, Config));
+    Observer = PMQTTSerialObserver(new TMQTTSerialObserver(MQTTClient, Config, SerialPort));
 }
 
 void TSerialProtocolIntegrationTest::TearDown()
 {
-    TSerialConnector::SetGlobalPortMaker(0);
     Observer.reset();
     TSerialProtocolTest::TearDown();
 }

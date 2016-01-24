@@ -20,7 +20,7 @@
           "channels": [
             {
               "name": "Phase C voltage",
-              "reg_type": "direct",
+              "reg_type": "param",
               "address": 102,
               "format": "u24",
               "type": "voltage",
@@ -28,7 +28,7 @@
             },
             {
               "name": "Total consumption",
-              "reg_type": "direct",
+              "reg_type": "energy",
               "address": 118,
               "format": "bcd32",
               "type": "power_consumption",
@@ -45,40 +45,40 @@
           "channels": [
             {
               "name": "Total consumption",
-              "reg_type": "direct",
-              "address": "0x50000",
+              "reg_type": "array",
+              "address": "0x0000",
               "format": "u32",
               "type": "power_consumption",
               "scale": 0.001
             },
             {
               "name": "Total reactive energy",
-              "reg_type": "direct",
-              "address": "0x50002",
+              "reg_type": "array",
+              "address": "0x0002",
               "format": "u32",
               "type": "power_consumption",
               "scale": 0.001
             },
             {
               "name": "U1",
-              "reg_type": "direct",
-              "address": "0x81111",
+              "reg_type": "param",
+              "address": "0x1111",
               "format": "u24",
               "type": "voltage",
               "scale": 0.01
             },
             {
               "name": "U2",
-              "reg_type": "direct",
-              "address": "0x81112",
+              "reg_type": "param",
+              "address": "0x1112",
               "format": "u24",
               "type": "voltage",
               "scale": 0.01
             },
             {
               "name": "I1",
-              "reg_type": "direct",
-              "address": "0x81121",
+              "reg_type": "param",
+              "address": "0x1121",
               "format": "u24",
               "type": "value",
               "scale": 0.001

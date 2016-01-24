@@ -1,87 +1,85 @@
 #include "testlog.h"
 #include "fake_serial_port.h"
-#include "serial_connector.h"
-
+#include "uniel_protocol.h"
 #include "uniel_expectations.h"
 
-class TUnielProtocolTest: public TSerialProtocolDirectTest, public TUnielProtocolExpectations {
+namespace {
+    PRegister InputReg(new TRegister(1, TUnielProtocol::REG_INPUT, 0x0a, U8));
+    PRegister RelayReg(new TRegister(1, TUnielProtocol::REG_RELAY, 0x1b, U8));
+    PRegister ThresholdReg(new TRegister(1, TUnielProtocol::REG_PARAM, 0x02, U8));
+    PRegister BrightnessReg(new TRegister(1, TUnielProtocol::REG_BRIGHTNESS, 0x141, U8));
+};
+
+class TUnielProtocolTest: public TSerialProtocolTest, public TUnielProtocolExpectations {
 protected:
     void SetUp();
     void TearDown();
+    PUnielProtocol Proto;
 };
 
 void TUnielProtocolTest::SetUp()
 {
-    TSerialProtocolDirectTest::SetUp();
-    Context->AddDevice(std::make_shared<TDeviceConfig>("uniel", 0x01, "uniel"));
+    TSerialProtocolTest::SetUp();
+    Proto = std::make_shared<TUnielProtocol>(
+        std::make_shared<TDeviceConfig>("uniel", 0x01, "uniel"),
+        SerialPort);
+    SerialPort->Open();
 }
 
 void TUnielProtocolTest::TearDown()
 {
+    Proto.reset();
     SerialPort->DumpWhatWasRead();
-    TSerialProtocolDirectTest::TearDown();
+    TSerialProtocolTest::TearDown();
 }
 
 TEST_F(TUnielProtocolTest, TestQuery)
 {
-    Context->SetSlave(0x01);
-
     EnqueueVoltageQueryResponse();
-    uint16_t v;
-    Context->ReadHoldingRegisters(0x0a, 1, &v);
-    ASSERT_EQ(154, v);
+    ASSERT_EQ(154, Proto->ReadRegister(InputReg));
 
-    // input: same as holding
+    // TBD: rm (dupe)
     SerialPort->DumpWhatWasRead();
     EnqueueVoltageQueryResponse();
-    Context->ReadInputRegisters(0x0a, 1, &v);
-    ASSERT_EQ(154, v);
+    ASSERT_EQ(154, Proto->ReadRegister(InputReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOffQueryResponse();
-    uint8_t b;
-    Context->ReadCoils(0x1b, 1, &b);
-    ASSERT_EQ(0, b);
+    ASSERT_EQ(0, Proto->ReadRegister(RelayReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOnQueryResponse();
-    Context->ReadCoils(0x1b, 1, &b);
-    ASSERT_EQ(1, b);
+    ASSERT_EQ(1, Proto->ReadRegister(RelayReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueThreshold0QueryResponse();
-    Context->ReadHoldingRegisters(0x02, 1, &v);
-    ASSERT_EQ(0x70, v);
+    ASSERT_EQ(0x70, Proto->ReadRegister(ThresholdReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueBrightnessQueryResponse();
-    Context->ReadHoldingRegisters(0x01000141, 1, &v);
-    ASSERT_EQ(66, v);
+    ASSERT_EQ(66, Proto->ReadRegister(BrightnessReg));
 }
 
 TEST_F(TUnielProtocolTest, TestSetRelayState)
 {
-    Context->SetSlave(0x01);
     EnqueueSetRelayOnResponse();
-    Context->WriteCoil(0x1b, 1);
+    Proto->WriteRegister(RelayReg, 1);
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
-    Context->WriteCoil(0x1b, 0);
+    Proto->WriteRegister(RelayReg, 0);
 }
 
 TEST_F(TUnielProtocolTest, TestSetParam)
 {
-    Context->SetSlave(0x01);
     EnqueueSetLowThreshold0Response();
-    Context->WriteHoldingRegister(0x02, 0x70);
+    Proto->WriteRegister(ThresholdReg, 0x70);
 }
 
 TEST_F(TUnielProtocolTest, TestSetBrightness)
 {
-    Context->SetSlave(0x01);
     EnqueueSetBrightnessResponse();
-    Context->WriteHoldingRegister(0x01000141, 0x42);
+    Proto->WriteRegister(BrightnessReg, 0x42);
 }
 
 class TUnielIntegrationTest: public TSerialProtocolIntegrationTest, public TUnielProtocolExpectations {
@@ -112,8 +110,8 @@ TEST_F(TUnielIntegrationTest, Poll)
     EnqueueThreshold0QueryResponse();
     EnqueueBrightnessQueryResponse();
 
-    Note() << "ModbusLoopOnce()";
-    Observer->ModbusLoopOnce();
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
     SerialPort->DumpWhatWasRead();
 
     MQTTClient->DoPublish(true, 0, "/devices/pseudo_uniel/controls/Relay 1/on", "1");
@@ -129,7 +127,9 @@ TEST_F(TUnielIntegrationTest, Poll)
     EnqueueThreshold0QueryResponse();
     EnqueueBrightnessQueryResponse();
 
-    Note() << "ModbusLoopOnce()";
-    Observer->ModbusLoopOnce();
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
     SerialPort->DumpWhatWasRead();
+
+    SerialPort->Close();
 }

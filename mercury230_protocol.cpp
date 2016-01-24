@@ -1,7 +1,10 @@
 #include "mercury230_protocol.h"
 #include "crc16.h"
 
-REGISTER_PROTOCOL("mercury230", TMercury230Protocol);
+REGISTER_PROTOCOL("mercury230", TMercury230Protocol, TRegisterTypes({
+            { TMercury230Protocol::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },
+            { TMercury230Protocol::REG_PARAM, "param", "value", U24, true }
+        }));
 
 TMercury230Protocol::TMercury230Protocol(PDeviceConfig device_config, PAbstractSerialPort port)
     : TEMProtocol(device_config, port) {}
@@ -93,19 +96,15 @@ uint32_t TMercury230Protocol::ReadParam(uint32_t slave, uint32_t address)
              (uint32_t)buf[1];
 }
 
-uint64_t TMercury230Protocol::ReadRegister(uint32_t slave, uint32_t address, RegisterFormat, size_t /* width */)
+uint64_t TMercury230Protocol::ReadRegister(PRegister reg)
 {
-    uint8_t opcode = address >> 16;
-    switch (opcode) {
-    case 0x05:
-        if (((opcode >> 8) & 0x0f) > 5)
-            throw TSerialProtocolException("mercury230: unsupported array index");
-
-        return ReadValueArray(slave, address).values[address & 0x03];
-    case 0x08:
-        return ReadParam(slave, address & 0xffff);
+    switch (reg->Type) {
+    case REG_VALUE_ARRAY:
+        return ReadValueArray(reg->Slave, reg->Address).values[reg->Address & 0x03];
+    case REG_PARAM:
+        return ReadParam(reg->Slave, reg->Address & 0xffff);
     default:
-        throw TSerialProtocolException("mercury230: read opcodes other than 0x05 not supported");
+        throw TSerialProtocolException("mercury230: invalid register type");
     }
 }
 

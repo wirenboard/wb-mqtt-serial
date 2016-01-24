@@ -17,7 +17,7 @@ Subscribe: /devices/ddl24/controls/White1/on (QoS 0)
 Publish: /devices/ddl24/controls/Voltage/meta/type: 'text' (QoS 0, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/order: '5' (QoS 0, retained)
 Subscribe: /devices/ddl24/controls/Voltage/on (QoS 0)
->>> ModbusLoopOnce() [read, rw blacklisted]
+>>> LoopOnce() [read, rw blacklisted]
 >> 17 03 00 04 00 01 C7 3D
 Publish: /devices/ddl24/controls/RGB/meta/error: 'r' (QoS 0, retained)
 << 17 83 06 20 F6
@@ -43,7 +43,7 @@ Publish: /devices/ddl24/controls/Voltage: '0' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
 >>> Publish: /devices/ddl24/controls/White/on: '42' (QoS 0)
 Publish: /devices/ddl24/controls/White: '42' (QoS 0, retained)
->>> ModbusLoopOnce() [write, rw blacklisted]
+>>> LoopOnce() [write, rw blacklisted]
 << 17 03 02 00 00 F1 87
 >> 17 06 00 04 00 0A 4A FA
 Publish: /devices/ddl24/controls/RGB/meta/error: 'rw' (QoS 0, retained)
@@ -68,7 +68,7 @@ Publish: /devices/ddl24/controls/White/meta/error: 'rw' (QoS 0, retained)
 >> 17 03 00 09 00 01 56 FE
 << 17 03 02 00 00 F1 87
 >> 17 03 00 12 00 01 26 F9
->>> ModbusLoopOnce() [read, nothing blacklisted]
+>>> LoopOnce() [read, nothing blacklisted]
 << 17 03 02 00 00 F1 87
 >> 17 03 00 04 00 01 C7 3D
 Publish: /devices/ddl24/controls/RGB/meta/error: 'w' (QoS 0, retained)
@@ -91,7 +91,7 @@ Publish: /devices/ddl24/controls/White: '0' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
 >>> Publish: /devices/ddl24/controls/White/on: '42' (QoS 0)
 Publish: /devices/ddl24/controls/White: '42' (QoS 0, retained)
->>> ModbusLoopOnce() [write, nothing blacklisted]
+>>> LoopOnce() [write, nothing blacklisted]
 << 17 03 02 00 00 F1 87
 >> 17 06 00 04 00 0A 4A FA
 Publish: /devices/ddl24/controls/RGB/meta/error: '' (QoS 0, retained)
@@ -116,7 +116,7 @@ Publish: /devices/ddl24/controls/White/meta/error: '' (QoS 0, retained)
 >> 17 03 00 09 00 01 56 FE
 << 17 03 02 00 00 F1 87
 >> 17 03 00 12 00 01 26 F9
->>> ModbusLoopOnce() [read, nothing blacklisted] (2)
+>>> LoopOnce() [read, nothing blacklisted] (2)
 << 17 03 02 00 00 F1 87
 >> 17 03 00 04 00 01 C7 3D
 << 17 03 02 00 0A 71 80

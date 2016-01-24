@@ -6,14 +6,19 @@
 #include <cstdint>
 
 #include "em_protocol.h"
-#include "regformat.h"
 
 class TMilurProtocol: public TEMProtocol {
 public:
     static const int DefaultTimeoutMs = 1000;
+    enum RegisterType {
+        REG_PARAM = 0,
+        REG_POWER,
+        REG_ENERGY,
+        REG_FREQ
+    };
 
     TMilurProtocol(PDeviceConfig device_config, PAbstractSerialPort port);
-    uint64_t ReadRegister(uint32_t slave, uint32_t address, RegisterFormat fmt, size_t width);
+    uint64_t ReadRegister(PRegister reg);
 
 protected:
     bool ConnectionSetup(uint8_t slave);

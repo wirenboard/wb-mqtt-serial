@@ -6,10 +6,11 @@
 
 #include "testlog.h"
 #include "fake_mqtt.h"
-#include "modbus_config.h"
-#include "modbus_observer.h"
+#include "serial_config.h"
+#include "serial_observer.h"
 #include "modbus_server.h"
 #include "serial_protocol.h"
+#include "modbus_protocol.h"
 #include "pty_based_fake_serial.h"
 
 class TModbusTestBase: public TLoggedFixture
@@ -46,7 +47,24 @@ class TModbusClientTest: public TModbusTestBase
 protected:
     void SetUp();
     void TearDown();
-    PModbusClient ModbusClient;
+    PRegister RegCoil(int addr, RegisterFormat fmt = U8) {
+        return std::make_shared<TRegister>(
+            1, TModbusProtocol::REG_COIL, addr, fmt, 1, true, false, "coil");
+    }
+    PRegister RegDiscrete(int addr, RegisterFormat fmt = U8) {
+        return std::make_shared<TRegister>(
+            1, TModbusProtocol::REG_DISCRETE, addr, fmt, 1, true, true, "discrete");
+    }
+    PRegister RegHolding(int addr, RegisterFormat fmt = U16, double scale = 1) {
+        return std::make_shared<TRegister>(
+            1, TModbusProtocol::REG_HOLDING, addr, fmt, scale, true, false, "holding");
+    }
+    PRegister RegInput(int addr, RegisterFormat fmt = U16, double scale = 1) {
+        return std::make_shared<TRegister>(
+            1, TModbusProtocol::REG_INPUT, addr, fmt, scale, true, true, "input");
+    }
+    PSerialPort ClientSerial;
+    PSerialClient SerialClient;
     PModbusSlave Slave;
 };
 
@@ -62,26 +80,28 @@ void TModbusClientTest::SetUp()
             TRegisterRange(30, 40)));
     ModbusServer->Start();
 
-    ModbusClient = std::make_shared<TModbusClient>(
+    ClientSerial = std::make_shared<TSerialPort>(
         TSerialPortSettings(FakeSerial->GetPrimaryPtsName(), 9600, 'N', 8, 1));
+    SerialClient = std::make_shared<TSerialClient>(ClientSerial);
 #if 0
-    ModbusClient->SetModbusDebug(true);
+    SerialClient->SetModbusDebug(true);
 #endif
-    ModbusClient->SetCallback([this](PModbusRegister reg) {
+    SerialClient->AddDevice(std::make_shared<TDeviceConfig>("modbus_sample", 1, "modbus"));
+    SerialClient->SetCallback([this](PRegister reg) {
             Emit() << "Modbus Callback: " << reg->ToString() << " becomes " <<
-                ModbusClient->GetTextValue(reg);
+                SerialClient->GetTextValue(reg);
         });
-    ModbusClient->SetErrorCallback(
-        [this](PModbusRegister reg, TModbusClient::TErrorState errorState) {
+    SerialClient->SetErrorCallback(
+        [this](PRegister reg, TRegisterHandler::TErrorState errorState) {
             const char* what;
             switch (errorState) {
-            case TModbusClient::WriteError:
+            case TRegisterHandler::WriteError:
                 what = "write error";
                 break;
-            case TModbusClient::ReadError:
+            case TRegisterHandler::ReadError:
                 what = "read error";
                 break;
-            case TModbusClient::ReadWriteError:
+            case TRegisterHandler::ReadWriteError:
                 what = "read+write error";
                 break;
             default:
@@ -93,26 +113,26 @@ void TModbusClientTest::SetUp()
 
 void TModbusClientTest::TearDown()
 {
-    ModbusClient.reset();
+    SerialClient.reset();
     TModbusTestBase::TearDown();
 }
 
 TEST_F(TModbusClientTest, Poll)
 {
-    PModbusRegister coil0(new TModbusRegister(1, TModbusRegister::COIL, 0));
-    PModbusRegister coil1(new TModbusRegister(1, TModbusRegister::COIL, 1));
-    PModbusRegister discrete10(new TModbusRegister(1, TModbusRegister::DISCRETE_INPUT, 10));
-    PModbusRegister holding22(new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 22));
-    PModbusRegister input33(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 33));
+    PRegister coil0 = RegCoil(0);
+    PRegister coil1 = RegCoil(1);
+    PRegister discrete10 = RegDiscrete(10);
+    PRegister holding22 = RegHolding(22);
+    PRegister input33 = RegInput(33);
 
-    ModbusClient->AddRegister(coil0);
-    ModbusClient->AddRegister(coil1);
-    ModbusClient->AddRegister(discrete10);
-    ModbusClient->AddRegister(holding22);
-    ModbusClient->AddRegister(input33);
+    SerialClient->AddRegister(coil0);
+    SerialClient->AddRegister(coil1);
+    SerialClient->AddRegister(discrete10);
+    SerialClient->AddRegister(holding22);
+    SerialClient->AddRegister(input33);
 
     Note() << "Cycle()";
-    ModbusClient->Cycle();
+    SerialClient->Cycle();
 
     Slave->Coils[1] = 1;
     Slave->Discrete[10] = 1;
@@ -121,88 +141,88 @@ TEST_F(TModbusClientTest, Poll)
 
     FakeSerial->Flush();
     Note() << "Cycle()";
-    ModbusClient->Cycle();
+    SerialClient->Cycle();
 
-    EXPECT_EQ(to_string(0), ModbusClient->GetTextValue(coil0));
-    EXPECT_EQ(to_string(1), ModbusClient->GetTextValue(coil1));
-    EXPECT_EQ(to_string(1), ModbusClient->GetTextValue(discrete10));
-    EXPECT_EQ(to_string(4242), ModbusClient->GetTextValue(holding22));
-    EXPECT_EQ(to_string(42000), ModbusClient->GetTextValue(input33));
+    EXPECT_EQ(to_string(0), SerialClient->GetTextValue(coil0));
+    EXPECT_EQ(to_string(1), SerialClient->GetTextValue(coil1));
+    EXPECT_EQ(to_string(1), SerialClient->GetTextValue(discrete10));
+    EXPECT_EQ(to_string(4242), SerialClient->GetTextValue(holding22));
+    EXPECT_EQ(to_string(42000), SerialClient->GetTextValue(input33));
 }
 
 TEST_F(TModbusClientTest, Write)
 {
-    PModbusRegister coil1(new TModbusRegister(1, TModbusRegister::COIL, 1));
-    PModbusRegister holding20(new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20));
-    ModbusClient->AddRegister(coil1);
-    ModbusClient->AddRegister(holding20);
+    PRegister coil1 = RegCoil(1);
+    PRegister holding20 = RegHolding(20);
+    SerialClient->AddRegister(coil1);
+    SerialClient->AddRegister(holding20);
 
     Note() << "Cycle()";
-    ModbusClient->Cycle();
+    SerialClient->Cycle();
 
-    ModbusClient->SetTextValue(coil1, "1");
-    ModbusClient->SetTextValue(holding20, "4242");
+    SerialClient->SetTextValue(coil1, "1");
+    SerialClient->SetTextValue(holding20, "4242");
 
     for (int i = 0; i < 3; ++i) {
         FakeSerial->Flush();
         Note() << "Cycle()";
-        ModbusClient->Cycle();
+        SerialClient->Cycle();
 
-        EXPECT_EQ(to_string(1), ModbusClient->GetTextValue(coil1));
+        EXPECT_EQ(to_string(1), SerialClient->GetTextValue(coil1));
         EXPECT_EQ(1, Slave->Coils[1]);
-        EXPECT_EQ(to_string(4242), ModbusClient->GetTextValue(holding20));
+        EXPECT_EQ(to_string(4242), SerialClient->GetTextValue(holding20));
         EXPECT_EQ(4242, Slave->Holding[20]);
     }
 }
 
 TEST_F(TModbusClientTest, S8)
 {
-    PModbusRegister holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, S8));
-    PModbusRegister input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, S8));
-    ModbusClient->AddRegister(holding20);
-    ModbusClient->AddRegister(input30);
+    PRegister holding20 = RegHolding(20, S8);
+    PRegister input30 = RegInput(30, S8);
+    SerialClient->AddRegister(holding20);
+    SerialClient->AddRegister(input30);
 
     Note() << "server -> client: 10, 20";
     Slave->Holding[20] = 10;
     Slave->Input[30] = 20;
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(10), ModbusClient->GetTextValue(holding20));
-    EXPECT_EQ(to_string(20), ModbusClient->GetTextValue(input30));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(to_string(20), SerialClient->GetTextValue(input30));
 
     FakeSerial->Flush();
     Note() << "server -> client: -2, -3";
     Slave->Holding[20] = 254;
     Slave->Input[30] = 253;
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(-2), ModbusClient->GetTextValue(holding20));
-    EXPECT_EQ(to_string(-3), ModbusClient->GetTextValue(input30));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(to_string(-3), SerialClient->GetTextValue(input30));
 
     FakeSerial->Flush();
     Note() << "client -> server: 10";
-    ModbusClient->SetTextValue(holding20, "10");
+    SerialClient->SetTextValue(holding20, "10");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(10), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(10, Slave->Holding[20]);
 
     FakeSerial->Flush();
     Note() << "client -> server: -2";
-    ModbusClient->SetTextValue(holding20, "-2");
+    SerialClient->SetTextValue(holding20, "-2");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(-2), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(254, Slave->Holding[20]);
 }
 
 
 TEST_F(TModbusClientTest, S64)
 {
-    PModbusRegister holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, S64));
-    PModbusRegister input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, S64));
-    ModbusClient->AddRegister(holding20);
-    ModbusClient->AddRegister(input30);
+    PRegister holding20 = RegHolding(20, S64);
+    PRegister input30 = RegInput(30, S64);
+    SerialClient->AddRegister(holding20);
+    SerialClient->AddRegister(input30);
 
     Note() << "server -> client: 10, 20";
     Slave->Holding[20] = 0x00AA;
@@ -214,16 +234,16 @@ TEST_F(TModbusClientTest, S64)
     Slave->Input[32] = 0xFFFF;
     Slave->Input[33] = 0xFFFF;
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(0x00AA00BB00CC00DD), ModbusClient->GetTextValue(holding20));
-    EXPECT_EQ(to_string(-1), ModbusClient->GetTextValue(input30));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0x00AA00BB00CC00DD), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(to_string(-1), SerialClient->GetTextValue(input30));
 
     FakeSerial->Flush();
     Note() << "client -> server: 10";
-    ModbusClient->SetTextValue(holding20, "10");
+    SerialClient->SetTextValue(holding20, "10");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(10), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0, Slave->Holding[20]);
     EXPECT_EQ(0, Slave->Holding[21]);
     EXPECT_EQ(0, Slave->Holding[22]);
@@ -231,10 +251,10 @@ TEST_F(TModbusClientTest, S64)
 
     FakeSerial->Flush();
     Note() << "client -> server: -2";
-    ModbusClient->SetTextValue(holding20, "-2");
+    SerialClient->SetTextValue(holding20, "-2");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(-2), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0xFFFF, Slave->Holding[20]);
     EXPECT_EQ(0xFFFF, Slave->Holding[21]);
     EXPECT_EQ(0xFFFF, Slave->Holding[22]);
@@ -243,10 +263,10 @@ TEST_F(TModbusClientTest, S64)
 
 TEST_F(TModbusClientTest, U64)
 {
-    PModbusRegister holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, U64));
-    PModbusRegister input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, U64));
-    ModbusClient->AddRegister(holding20);
-    ModbusClient->AddRegister(input30);
+    PRegister holding20 = RegHolding(20, U64);
+    PRegister input30 = RegInput(30, U64);
+    SerialClient->AddRegister(holding20);
+    SerialClient->AddRegister(input30);
 
     Note() << "server -> client: 10, 20";
     Slave->Holding[20] = 0x00AA;
@@ -258,16 +278,16 @@ TEST_F(TModbusClientTest, U64)
     Slave->Input[32] = 0xFFFF;
     Slave->Input[33] = 0xFFFF;
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(0x00AA00BB00CC00DD), ModbusClient->GetTextValue(holding20));
-    EXPECT_EQ("18446744073709551615", ModbusClient->GetTextValue(input30));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0x00AA00BB00CC00DD), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ("18446744073709551615", SerialClient->GetTextValue(input30));
 
     FakeSerial->Flush();
     Note() << "client -> server: 10";
-    ModbusClient->SetTextValue(holding20, "10");
+    SerialClient->SetTextValue(holding20, "10");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(10), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0, Slave->Holding[20]);
     EXPECT_EQ(0, Slave->Holding[21]);
     EXPECT_EQ(0, Slave->Holding[22]);
@@ -275,23 +295,22 @@ TEST_F(TModbusClientTest, U64)
 
     FakeSerial->Flush();
     Note() << "client -> server: -2";
-    ModbusClient->SetTextValue(holding20, "-2");
+    SerialClient->SetTextValue(holding20, "-2");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ("18446744073709551614", ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ("18446744073709551614", SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0xFFFF, Slave->Holding[20]);
     EXPECT_EQ(0xFFFF, Slave->Holding[21]);
     EXPECT_EQ(0xFFFF, Slave->Holding[22]);
     EXPECT_EQ(0xFFFE, Slave->Holding[23]);
 }
 
-
 TEST_F(TModbusClientTest, S32)
 {
-    PModbusRegister holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, S32));
-    PModbusRegister input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, S32));
-    ModbusClient->AddRegister(holding20);
-    ModbusClient->AddRegister(input30);
+    PRegister holding20 = RegHolding(20, S32);
+    PRegister input30 = RegInput(30, S32);
+    SerialClient->AddRegister(holding20);
+    SerialClient->AddRegister(input30);
 
     Note() << "server -> client: 10, 20";
     Slave->Holding[20] = 0x00AA;
@@ -299,37 +318,36 @@ TEST_F(TModbusClientTest, S32)
     Slave->Input[30] = 0xFFFF;
     Slave->Input[31] = 0xFFFF;
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(0x00AA00BB), ModbusClient->GetTextValue(holding20));
-    EXPECT_EQ(to_string(-1), ModbusClient->GetTextValue(input30));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0x00AA00BB), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(to_string(-1), SerialClient->GetTextValue(input30));
 
     FakeSerial->Flush();
     Note() << "client -> server: 10";
-    ModbusClient->SetTextValue(holding20, "10");
+    SerialClient->SetTextValue(holding20, "10");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(10), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0, Slave->Holding[20]);
     EXPECT_EQ(10, Slave->Holding[21]);
 
     FakeSerial->Flush();
     Note() << "client -> server: -2";
-    ModbusClient->SetTextValue(holding20, "-2");
-    EXPECT_EQ(to_string(-2), ModbusClient->GetTextValue(holding20));
+    SerialClient->SetTextValue(holding20, "-2");
+    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(holding20));
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(-2), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0xFFFF, Slave->Holding[20]);
     EXPECT_EQ(0xFFFE, Slave->Holding[21]);
-
 }
 
 TEST_F(TModbusClientTest, U32)
 {
-    PModbusRegister holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, U32));
-    PModbusRegister input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, U32));
-    ModbusClient->AddRegister(holding20);
-    ModbusClient->AddRegister(input30);
+    PRegister holding20 = RegHolding(20, U32);
+    PRegister input30 = RegInput(30, U32);
+    SerialClient->AddRegister(holding20);
+    SerialClient->AddRegister(input30);
 
     Note() << "server -> client: 10, 20";
     Slave->Holding[20] = 0x00AA;
@@ -337,25 +355,25 @@ TEST_F(TModbusClientTest, U32)
     Slave->Input[30] = 0xFFFF;
     Slave->Input[31] = 0xFFFF;
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(0x00AA00BB), ModbusClient->GetTextValue(holding20));
-    EXPECT_EQ(to_string(0xFFFFFFFF), ModbusClient->GetTextValue(input30));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0x00AA00BB), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(to_string(0xFFFFFFFF), SerialClient->GetTextValue(input30));
 
     FakeSerial->Flush();
     Note() << "client -> server: 10";
-    ModbusClient->SetTextValue(holding20, "10");
+    SerialClient->SetTextValue(holding20, "10");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(10), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0, Slave->Holding[20]);
     EXPECT_EQ(10, Slave->Holding[21]);
 
     FakeSerial->Flush();
     Note() << "client -> server: -1 (overflow)";
-    ModbusClient->SetTextValue(holding20, "-1");
+    SerialClient->SetTextValue(holding20, "-1");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(0xFFFFFFFF), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0xFFFFFFFF), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0xFFFF, Slave->Holding[20]);
     EXPECT_EQ(0xFFFF, Slave->Holding[21]);
 
@@ -363,10 +381,10 @@ TEST_F(TModbusClientTest, U32)
     Slave->Holding[22] = 123;
     Slave->Holding[23] = 123;
     Note() << "client -> server: 4294967296 (overflow)";
-    ModbusClient->SetTextValue(holding20, "4294967296");
+    SerialClient->SetTextValue(holding20, "4294967296");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(0), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0, Slave->Holding[20]);
     EXPECT_EQ(0, Slave->Holding[21]);
 
@@ -375,17 +393,16 @@ TEST_F(TModbusClientTest, U32)
     EXPECT_EQ(123, Slave->Holding[23]);
 }
 
-
 TEST_F(TModbusClientTest, Float32)
 {
 	// create scaled register
-    PModbusRegister holding24 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 24, Float, 100));
-    ModbusClient->AddRegister(holding24);
+    PRegister holding24 = RegHolding(24, Float, 100);
+    SerialClient->AddRegister(holding24);
 
-    PModbusRegister holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, Float));
-    PModbusRegister input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, Float));
-    ModbusClient->AddRegister(holding20);
-    ModbusClient->AddRegister(input30);
+    PRegister holding20 = RegHolding(20, Float);
+    PRegister input30 = RegInput(30, Float);
+    SerialClient->AddRegister(holding20);
+    SerialClient->AddRegister(input30);
 
     Note() << "server -> client: 0x45d2 0x0000, 0x449d 0x8000";
     Slave->Holding[20] = 0x45d2;
@@ -393,34 +410,34 @@ TEST_F(TModbusClientTest, Float32)
     Slave->Input[30] = 0x449d;
     Slave->Input[31] = 0x8000;
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(6720.0), ModbusClient->GetTextValue(holding20));
-    EXPECT_EQ(to_string(1260.0), ModbusClient->GetTextValue(input30));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(6720.0), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(to_string(1260.0), SerialClient->GetTextValue(input30));
 
     FakeSerial->Flush();
     Note() << "client -> server: 10";
-    ModbusClient->SetTextValue(holding20, "10");
+    SerialClient->SetTextValue(holding20, "10");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(10.), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10.), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0x4120, Slave->Holding[20]);
     EXPECT_EQ(0x0000, Slave->Holding[21]);
 
     FakeSerial->Flush();
     Note() << "client -> server: -0.00123";
-    ModbusClient->SetTextValue(holding20, "-0.00123");
+    SerialClient->SetTextValue(holding20, "-0.00123");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(-0.00123), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-0.00123), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0xbaa1, Slave->Holding[20]);
     EXPECT_EQ(0x37f4, Slave->Holding[21]);
 
     FakeSerial->Flush();
     Note() << "client -> server: -0.123 (scaled)";
-    ModbusClient->SetTextValue(holding24, "-0.123");
+    SerialClient->SetTextValue(holding24, "-0.123");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(-0.123), ModbusClient->GetTextValue(holding24));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-0.123), SerialClient->GetTextValue(holding24));
     EXPECT_EQ(0xbaa1, Slave->Holding[24]);
     EXPECT_EQ(0x37f4, Slave->Holding[25]);
 
@@ -429,20 +446,20 @@ TEST_F(TModbusClientTest, Float32)
     Slave->Holding[24] = 0x449d;
     Slave->Holding[25] = 0x8000;
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(126000.0), ModbusClient->GetTextValue(holding24));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(126000.0), SerialClient->GetTextValue(holding24));
 }
 
 TEST_F(TModbusClientTest, Double64)
 {
 	// create scaled register
-    PModbusRegister holding24 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 24, Double, 100));
-    ModbusClient->AddRegister(holding24);
+    PRegister holding24 = RegHolding(24, Double, 100);
+    SerialClient->AddRegister(holding24);
 
-    PModbusRegister holding20 (new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20, Double));
-    PModbusRegister input30(new TModbusRegister(1, TModbusRegister::INPUT_REGISTER, 30, Double));
-    ModbusClient->AddRegister(holding20);
-    ModbusClient->AddRegister(input30);
+    PRegister holding20 = RegHolding(20, Double);
+    PRegister input30 = RegInput(30, Double);
+    SerialClient->AddRegister(holding20);
+    SerialClient->AddRegister(input30);
 
     Note() << "server -> client: 40ba401f7ced9168 , 4093b148b4395810";
     Slave->Holding[20] = 0x40ba;
@@ -456,16 +473,16 @@ TEST_F(TModbusClientTest, Double64)
     Slave->Input[33] = 0x5810;
 
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(6720.123), ModbusClient->GetTextValue(holding20));
-    EXPECT_EQ(to_string(1260.321), ModbusClient->GetTextValue(input30));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(6720.123), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(to_string(1260.321), SerialClient->GetTextValue(input30));
 
     FakeSerial->Flush();
     Note() << "client -> server: 10";
-    ModbusClient->SetTextValue(holding20, "10.9999");
+    SerialClient->SetTextValue(holding20, "10.9999");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(10.9999), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10.9999), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0x4025, Slave->Holding[20]);
     EXPECT_EQ(0xfff2, Slave->Holding[21]);
     EXPECT_EQ(0xe48e, Slave->Holding[22]);
@@ -473,22 +490,21 @@ TEST_F(TModbusClientTest, Double64)
 
     FakeSerial->Flush();
     Note() << "client -> server: -0.00123";
-    ModbusClient->SetTextValue(holding20, "-0.00123");
+    SerialClient->SetTextValue(holding20, "-0.00123");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(-0.00123), ModbusClient->GetTextValue(holding20));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-0.00123), SerialClient->GetTextValue(holding20));
     EXPECT_EQ(0xbf54, Slave->Holding[20]);
     EXPECT_EQ(0x26fe, Slave->Holding[21]);
     EXPECT_EQ(0x718a, Slave->Holding[22]);
     EXPECT_EQ(0x86d7, Slave->Holding[23]);
 
-
     FakeSerial->Flush();
     Note() << "client -> server: -0.123 (scaled)";
-    ModbusClient->SetTextValue(holding24, "-0.123");
+    SerialClient->SetTextValue(holding24, "-0.123");
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(-0.123), ModbusClient->GetTextValue(holding24));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-0.123), SerialClient->GetTextValue(holding24));
     EXPECT_EQ(0xbf54, Slave->Holding[24]);
     EXPECT_EQ(0x26fe, Slave->Holding[25]);
     EXPECT_EQ(0x718a, Slave->Holding[26]);
@@ -502,60 +518,60 @@ TEST_F(TModbusClientTest, Double64)
     Slave->Holding[27] = 0x0000;
 
     Note() << "Cycle()";
-    ModbusClient->Cycle();
-    EXPECT_EQ(to_string(126000.0), ModbusClient->GetTextValue(holding24));
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(126000.0), SerialClient->GetTextValue(holding24));
 }
 
 TEST_F(TModbusClientTest, Errors)
 {
-    PModbusRegister holding20(new TModbusRegister(1, TModbusRegister::HOLDING_REGISTER, 20));
+    PRegister holding20 = RegHolding(20);
     Slave->Holding.BlacklistRead(20, true);
     Slave->Holding.BlacklistWrite(20, true);
-    ModbusClient->AddRegister(holding20);
+    SerialClient->AddRegister(holding20);
 
     for (int i = 0; i < 3; i++) {
         FakeSerial->Flush();
         Note() << "Cycle() [read, rw blacklisted]";
-        ModbusClient->Cycle();
+        SerialClient->Cycle();
     }
 
     FakeSerial->Flush();
-    ModbusClient->SetTextValue(holding20, "42");
+    SerialClient->SetTextValue(holding20, "42");
     Note() << "Cycle() [write, rw blacklisted]";
-    ModbusClient->Cycle();
+    SerialClient->Cycle();
 
     FakeSerial->Flush();
     Slave->Holding.BlacklistWrite(20, false);
-    ModbusClient->SetTextValue(holding20, "42");
+    SerialClient->SetTextValue(holding20, "42");
     Note() << "Cycle() [write, r blacklisted]";
-    ModbusClient->Cycle();
+    SerialClient->Cycle();
 
     FakeSerial->Flush();
     Slave->Holding.BlacklistWrite(20, true);
-    ModbusClient->SetTextValue(holding20, "43");
+    SerialClient->SetTextValue(holding20, "43");
     Note() << "Cycle() [write, rw blacklisted]";
-    ModbusClient->Cycle();
+    SerialClient->Cycle();
 
     FakeSerial->Flush();
     Slave->Holding.BlacklistRead(20, false);
     Note() << "Cycle() [write, w blacklisted]";
-    ModbusClient->Cycle();
+    SerialClient->Cycle();
 
     FakeSerial->Flush();
     Slave->Holding.BlacklistWrite(20, false);
-    ModbusClient->SetTextValue(holding20, "42");
+    SerialClient->SetTextValue(holding20, "42");
     Note() << "Cycle() [write, nothing blacklisted]";
-    ModbusClient->Cycle();
-    ModbusClient->Cycle();
+    SerialClient->Cycle();
+    SerialClient->Cycle();
 }
 
 class TConfigParserTest: public TLoggedFixture {};
 
 TEST_F(TConfigParserTest, Parse)
 {
-    TConfigTemplateParser device_parser(GetDataFilePath("../wb-homa-modbus-templates/"),false);
-    TConfigParser parser(GetDataFilePath("../config.json"), false, device_parser.Parse());
-    //TConfigParser parser(GetDataFilePath("../config-test.json"), false);
+    TConfigTemplateParser device_parser(GetDataFilePath("../wb-homa-modbus-templates/"), false);
+    TConfigParser parser(GetDataFilePath("../config.json"), false,
+                         TSerialProtocolFactory::GetRegisterTypes, device_parser.Parse());
     PHandlerConfig config = parser.Parse();
     Emit() << "Debug: " << config->Debug;
     Emit() << "Ports:";
@@ -576,9 +592,9 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "Id: " << device_config->Id;
             Emit() << "Name: " << device_config->Name;
             Emit() << "SlaveId: " << device_config->SlaveId;
-            if (!device_config->ModbusChannels.empty()) {
-                Emit() << "ModbusChannels:";
-                for (auto modbus_channel: device_config->ModbusChannels) {
+            if (!device_config->DeviceChannels.empty()) {
+                Emit() << "DeviceChannels:";
+                for (auto modbus_channel: device_config->DeviceChannels) {
                     TTestLogIndent indent(*this);
                     Emit() << "------";
                     Emit() << "Name: " << modbus_channel->Name;
@@ -608,7 +624,7 @@ TEST_F(TConfigParserTest, Parse)
                     TTestLogIndent indent(*this);
                     Emit() << "------";
                     Emit() << "Name: " << setup_item->Name;
-                    Emit() << "Address: " << setup_item->Address;
+                    Emit() << "Address: " << setup_item->Reg->Address;
                     Emit() << "Value: " << setup_item->Value;
                 }
             }
@@ -619,7 +635,8 @@ TEST_F(TConfigParserTest, Parse)
 
 TEST_F(TConfigParserTest, ForceDebug)
 {
-    TConfigParser parser(GetDataFilePath("../config-test.json"), true);
+    TConfigParser parser(GetDataFilePath("../config-test.json"), true,
+                         TSerialProtocolFactory::GetRegisterTypes);
     PHandlerConfig config = parser.Parse();
     ASSERT_TRUE(config->Debug);
 }
@@ -636,7 +653,8 @@ protected:
 void TModbusDeviceTest::SetUp()
 {
     TModbusTestBase::SetUp();
-    TConfigParser parser(GetDataFilePath("../config-test.json"), false);
+    TConfigParser parser(GetDataFilePath("../config-test.json"), false,
+                         TSerialProtocolFactory::GetRegisterTypes);
     Config = parser.Parse();
     // NOTE: only one port is currently supported
     Config->PortConfigs[0]->ConnSettings.Device = FakeSerial->GetPrimaryPtsName();
@@ -677,17 +695,17 @@ TEST_F(TModbusDeviceTest, DDL24)
             TRegisterRange()));
     ModbusServer->Start();
 
-    PMQTTModbusObserver modbus_observer(new TMQTTModbusObserver(MQTTClient, Config));
-    modbus_observer->SetUp();
+    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config));
+    observer->SetUp();
 
-    Note() << "ModbusLoopOnce()";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce()";
+    observer->LoopOnce();
 
     MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/RGB/on", "10;20;30");
 
     FakeSerial->Flush();
-    Note() << "ModbusLoopOnce()";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce()";
+    observer->LoopOnce();
     ASSERT_EQ(10, slave->Holding[4]);
     ASSERT_EQ(20, slave->Holding[5]);
     ASSERT_EQ(30, slave->Holding[6]);
@@ -696,8 +714,9 @@ TEST_F(TModbusDeviceTest, DDL24)
     slave->Holding[4] = 32;
     slave->Holding[5] = 64;
     slave->Holding[6] = 128;
-    Note() << "ModbusLoopOnce() after slave update";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce() after slave update";
+
+    observer->LoopOnce();
 }
 
 TEST_F(TModbusDeviceTest, OnValue)
@@ -712,26 +731,26 @@ TEST_F(TModbusDeviceTest, OnValue)
             TRegisterRange()));
     ModbusServer->Start();
 
-    PMQTTModbusObserver modbus_observer(new TMQTTModbusObserver(MQTTClient, Config));
-    modbus_observer->SetUp();
+    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config));
+    observer->SetUp();
 
     slave->Holding[0] = 0;
-    Note() << "ModbusLoopOnce()";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce()";
+    observer->LoopOnce();
 
     MQTTClient->DoPublish(true, 0, "/devices/OnValueTest/controls/Relay 1/on", "1");
 
-    Note() << "ModbusLoopOnce()";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce()";
+    observer->LoopOnce();
     ASSERT_EQ(500, slave->Holding[0]);
 
     slave->Holding[0] = 0;
-    Note() << "ModbusLoopOnce() after slave update";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce() after slave update";
+    observer->LoopOnce();
 
     slave->Holding[0] = 500;
-    Note() << "ModbusLoopOnce() after second slave update";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce() after second slave update";
+    observer->LoopOnce();
 }
 
 TEST_F(TModbusDeviceTest, Errors)
@@ -746,39 +765,39 @@ TEST_F(TModbusDeviceTest, Errors)
             TRegisterRange()));
     ModbusServer->Start();
 
-    PMQTTModbusObserver modbus_observer(new TMQTTModbusObserver(MQTTClient, Config));
-    modbus_observer->SetUp();
+    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config));
+    observer->SetUp();
 
     slave->Holding.BlacklistRead(4, true);
     slave->Holding.BlacklistWrite(4, true);
     slave->Holding.BlacklistRead(7, true);
     slave->Holding.BlacklistWrite(7, true);
 
-    Note() << "ModbusLoopOnce() [read, rw blacklisted]";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce() [read, rw blacklisted]";
+    observer->LoopOnce();
 
     MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/RGB/on", "10;20;30");
     MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/White/on", "42");
 
-    Note() << "ModbusLoopOnce() [write, rw blacklisted]";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce() [write, rw blacklisted]";
+    observer->LoopOnce();
 
     slave->Holding.BlacklistRead(4, false);
     slave->Holding.BlacklistWrite(4, false);
     slave->Holding.BlacklistRead(7, false);
     slave->Holding.BlacklistWrite(7, false);
 
-    Note() << "ModbusLoopOnce() [read, nothing blacklisted]";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce() [read, nothing blacklisted]";
+    observer->LoopOnce();
 
     MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/RGB/on", "10;20;30");
     MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/White/on", "42");
 
-    Note() << "ModbusLoopOnce() [write, nothing blacklisted]";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce() [write, nothing blacklisted]";
+    observer->LoopOnce();
 
-    Note() << "ModbusLoopOnce() [read, nothing blacklisted] (2)";
-    modbus_observer->ModbusLoopOnce();
+    Note() << "LoopOnce() [read, nothing blacklisted] (2)";
+    observer->LoopOnce();
 }
 
 // TBD: the code must check mosquitto return values

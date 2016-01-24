@@ -92,12 +92,7 @@ void TEMProtocol::Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payload
     }
 }
 
-void TEMProtocol::WriteRegister(uint32_t, uint32_t, uint64_t, RegisterFormat) {
+void TEMProtocol::WriteRegister(PRegister, uint64_t)
+{
     throw TSerialProtocolException("EM protocol: writing to registers not supported");
-}
-
-// XXX FIXME: leaky abstraction (need to refactor)
-// Perhaps add 'brightness' register format
-void TEMProtocol::SetBrightness(uint32_t, uint32_t, uint8_t) {
-    throw TSerialProtocolException("EM protocol: setting brightness not supported");
 }

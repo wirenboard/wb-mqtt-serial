@@ -17,7 +17,7 @@ Subscribe: /devices/ddl24/controls/White1/on (QoS 0)
 Publish: /devices/ddl24/controls/Voltage/meta/type: 'text' (QoS 0, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/order: '5' (QoS 0, retained)
 Subscribe: /devices/ddl24/controls/Voltage/on (QoS 0)
->>> ModbusLoopOnce()
+>>> LoopOnce()
 >> 17 03 00 04 00 01 C7 3D
 Publish: /devices/ddl24/controls/RGB/meta/error: '' (QoS 0, retained)
 << 17 03 02 00 00 F1 87
@@ -44,7 +44,7 @@ Publish: /devices/ddl24/controls/Voltage: '0' (QoS 0, retained)
 >>> Publish: /devices/ddl24/controls/RGB/on: '10;20;30' (QoS 0)
 Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
 << 17 03 02 00 00 F1 87
->>> ModbusLoopOnce()
+>>> LoopOnce()
 >> 17 06 00 04 00 0A 4A FA
 << 17 06 00 04 00 0A 4A FA
 >> 17 06 00 05 00 14 9B 32
@@ -65,7 +65,7 @@ Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
 << 17 03 02 00 00 F1 87
 >> 17 03 00 12 00 01 26 F9
 << 17 03 02 00 00 F1 87
->>> ModbusLoopOnce() after slave update
+>>> LoopOnce() after slave update
 >> 17 03 00 04 00 01 C7 3D
 Publish: /devices/ddl24/controls/RGB: '32;20;30' (QoS 0, retained)
 << 17 03 02 00 20 F0 5F

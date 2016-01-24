@@ -4,7 +4,6 @@
   "ports": [
     {
       "path" : "/dev/ttyNSC1",
-      "protocol": "uniel",
       "baud_rate": 9600,
       "parity": "N",
       "data_bits": 8,
@@ -17,6 +16,7 @@
           "id": "pseudo_uniel",
           "slave_id": 1,
           "enabled": true,
+          "protocol": "uniel",
 
           "channels": [
             {
@@ -26,20 +26,20 @@
             },
             {
               "name" : "Relay 1",
-              "reg_type": "coil",
+              "reg_type": "relay",
               "address": "0x1b"
             },
             {
               "name": "LowThr",
-              "reg_type": "holding",
+              "reg_type": "param",
               "address": "0x02",
               "type": "range",
               "max": "0xff"
             },
             {
               "name" : "LED 1",
-              "reg_type": "holding",
-              "address": "0x01000141",
+              "reg_type": "brightness",
+              "address": "0x141",
               "type": "range",
               "max": "0xff"
             }

@@ -9,8 +9,6 @@
 #include <unordered_set>
 #include <modbus/modbus.h>
 #include "testlog.h"
-#include "regformat.h"
-#include "modbus_exc.h"
 #include "portsettings.h"
 #include "serial_protocol.h"
 
@@ -25,7 +23,7 @@ struct TRegisterRange {
     int ValidateIndex(const std::string& name, int index) const
     {
         if (index < Start || index > End) {
-            throw TModbusException(
+            throw TSerialProtocolException(
                 name + " index is out of range: " +
                 std::to_string(index) +
                 " (must be " + std::to_string(Start) +

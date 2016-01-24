@@ -2,35 +2,39 @@
 #include <sstream>
 
 #include <wbmqtt/utils.h>
-#include "modbus_port.h"
+#include "serial_port_driver.h"
+#include "serial_protocol.h"
+#include "serial_client.h"
 
-TModbusPort::TModbusPort(PMQTTClientBase mqtt_client, PPortConfig port_config, PModbusConnector connector)
+TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig port_config,
+                                     PAbstractSerialPort port_override)
     : MQTTClient(mqtt_client),
       Config(port_config),
-      ModbusClient(new TModbusClient(Config->ConnSettings, connector))
+      Port(port_override ? port_override : std::make_shared<TSerialPort>(Config->ConnSettings)),
+      SerialClient(new TSerialClient(Port))
 {
-    ModbusClient->SetCallback([this](PModbusRegister reg) {
-            OnModbusValueChange(reg);
+    SerialClient->SetCallback([this](PRegister reg) {
+            OnValueChange(reg);
         });
-    ModbusClient->SetErrorCallback(
-        [this](PModbusRegister reg, TModbusClient::TErrorState state) {
+    SerialClient->SetErrorCallback(
+        [this](PRegister reg, TRegisterHandler::TErrorState state) {
             UpdateError(reg, state);
         });
     for (auto device_config: Config->DeviceConfigs) {
-        ModbusClient->AddDevice(device_config);
-        for (auto channel: device_config->ModbusChannels) {
+        SerialClient->AddDevice(device_config);
+        for (auto channel: device_config->DeviceChannels) {
             for (auto reg: channel->Registers) {
                 RegisterToChannelMap[reg] = channel;
                 NameToChannelMap[device_config->Id + "/" + channel->Name] = channel;
-                ModbusClient->AddRegister(reg);
+                SerialClient->AddRegister(reg);
             }
         }
     }
-    ModbusClient->SetPollInterval(Config->PollInterval);
-    ModbusClient->SetModbusDebug(Config->Debug);
+    SerialClient->SetPollInterval(Config->PollInterval);
+    SerialClient->SetDebug(Config->Debug);
 }
 
-void TModbusPort::PubSubSetup()
+void TSerialPortDriver::PubSubSetup()
 {
     for (auto device_config : Config->DeviceConfigs) {
         /* Only attempt to Subscribe on a successful connect. */
@@ -38,7 +42,7 @@ void TModbusPort::PubSubSetup()
         std::string prefix = std::string("/devices/") + id + "/";
         // Meta
         MQTTClient->Publish(NULL, prefix + "meta/name", device_config->Name, 0, true);
-        for (const auto& channel : device_config->ModbusChannels) {
+        for (const auto& channel : device_config->DeviceChannels) {
             std::string control_prefix = prefix + "controls/" + channel->Name;
             MQTTClient->Publish(NULL, control_prefix + "/meta/type", channel->Type, 0, true);
             if (channel->ReadOnly)
@@ -58,7 +62,7 @@ void TModbusPort::PubSubSetup()
 //~ /devices/293723-demo/controls/Demo-Switch/meta/type switch
 }
 
-bool TModbusPort::HandleMessage(const std::string& topic, const std::string& payload)
+bool TSerialPortDriver::HandleMessage(const std::string& topic, const std::string& payload)
 {
     const std::vector<std::string>& tokens = StringSplit(topic, '/');
     if ((tokens.size() != 6) ||
@@ -93,15 +97,15 @@ bool TModbusPort::HandleMessage(const std::string& topic, const std::string& pay
     }
 
     for (size_t i = 0; i < it->second->Registers.size(); ++i) {
-        PModbusRegister reg = it->second->Registers[i];
+        PRegister reg = it->second->Registers[i];
         if (Config->Debug)
-            std::cerr << "setting modbus register: " << reg->ToString() << " <- " <<
+            std::cerr << "setting device register: " << reg->ToString() << " <- " <<
                 payload_items[i] << std::endl;
 
         try {
-			ModbusClient->SetTextValue(reg,
+			SerialClient->SetTextValue(reg,
 				it->second->OnValue.empty() ? payload_items[i]
-										   : (payload_items[i] == "1" ?  it->second->OnValue : "0")
+                                       : (payload_items[i] == "1" ?  it->second->OnValue : "0")
 			);
 
 		} catch (std::exception& err) {
@@ -117,40 +121,40 @@ bool TModbusPort::HandleMessage(const std::string& topic, const std::string& pay
     return true;
 }
 
-std::string TModbusPort::GetChannelTopic(const TModbusChannel& channel)
+std::string TSerialPortDriver::GetChannelTopic(const TDeviceChannel& channel)
 {
     std::string controls_prefix = std::string("/devices/") + channel.DeviceId + "/controls/";
     return (controls_prefix + channel.Name);
 }
 
-void TModbusPort::OnModbusValueChange(PModbusRegister reg)
+void TSerialPortDriver::OnValueChange(PRegister reg)
 {
     if (Config->Debug)
-        std::cerr << "modbus value change: " << reg->ToString() << " <- " <<
-            ModbusClient->GetTextValue(reg) << std::endl;
+        std::cerr << "register value change: " << reg->ToString() << " <- " <<
+            SerialClient->GetTextValue(reg) << std::endl;
 
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
-        std::cerr << "warning: unexpected register from modbus" << std::endl;
+        std::cerr << "warning: got unexpected register from serial client" << std::endl;
         return;
     }
 
     std::string payload;
     if (!it->second->OnValue.empty()) {
-        payload = ModbusClient->GetTextValue(reg) == it->second->OnValue ? "1" : "0";
+        payload = SerialClient->GetTextValue(reg) == it->second->OnValue ? "1" : "0";
         if (Config->Debug)
             std::cerr << "OnValue: " << it->second->OnValue << "; payload: " <<
                 payload << std::endl;
     } else {
         std::stringstream s;
         for (size_t i = 0; i < it->second->Registers.size(); ++i) {
-            PModbusRegister reg = it->second->Registers[i];
+            PRegister reg = it->second->Registers[i];
             // avoid publishing incomplete value
-            if (!ModbusClient->DidRead(reg))
+            if (!SerialClient->DidRead(reg))
                 return;
             if (i)
                 s << ";";
-            s << ModbusClient->GetTextValue(reg);
+            s << SerialClient->GetTextValue(reg);
         }
         payload = s.str();
         // check if there any errors in this Channel
@@ -171,32 +175,32 @@ void TModbusPort::OnModbusValueChange(PModbusRegister reg)
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
 }
 
-TModbusClient::TErrorState TModbusPort::RegErrorState(PModbusRegister reg)
+TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)
 {
     auto it = RegErrorStateMap.find(reg);
     if (it == RegErrorStateMap.end())
-        return TModbusClient::UnknownErrorState;
+        return TRegisterHandler::UnknownErrorState;
     return it->second;
 }
 
-void TModbusPort::UpdateError(PModbusRegister reg, TModbusClient::TErrorState errorState)
+void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState)
 {
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
-        std::cerr << "warning: unexpected register from modbus" << std::endl;
+        std::cerr << "warning: got unexpected register from serial client" << std::endl;
         return;
     }
     RegErrorStateMap[reg] = errorState;
     bool readError = false, writeError = false;
     for (auto r: it->second->Registers) {
         switch (RegErrorState(r)) {
-        case TModbusClient::WriteError:
+        case TRegisterHandler::WriteError:
             writeError = true;
             break;
-        case TModbusClient::ReadError:
+        case TRegisterHandler::ReadError:
             readError = true;
             break;
-        case TModbusClient::ReadWriteError:
+        case TRegisterHandler::ReadWriteError:
             readError = writeError = true;
             break;
         default:
@@ -212,31 +216,30 @@ void TModbusPort::UpdateError(PModbusRegister reg, TModbusClient::TErrorState er
     }
 }
 
-void TModbusPort::Cycle()
+void TSerialPortDriver::Cycle()
 {
     try {
-        ModbusClient->Cycle();
-    } catch (TModbusException& e) {
+        SerialClient->Cycle();
+    } catch (TSerialProtocolException& e) {
         std::cerr << "FATAL: " << e.what() << ". Stopping event loops." << std::endl;
         exit(1);
     }
 }
 
-bool TModbusPort::WriteInitValues()
+bool TSerialPortDriver::WriteInitValues()
 {
     bool did_write = false;
     for (const auto& device_config : Config->DeviceConfigs) {
         try {
             for (const auto& setup_item : device_config->SetupItems) {
                 if (Config->Debug)
-                    std::cerr << "Init: " << setup_item->Name << ": holding register " <<
-                        setup_item->Address << " <-- " << setup_item->Value << std::endl;
-                ModbusClient->WriteHoldingRegister(device_config->SlaveId,
-                                                   setup_item->Address,
-                                                   setup_item->Value);
+                    std::cerr << "Init: " << setup_item->Name << ": setup register " <<
+                        setup_item->Reg->ToString() << " <-- " << setup_item->Value << std::endl;
+                SerialClient->WriteSetupRegister(setup_item->Reg,
+                                                 setup_item->Value);
                 did_write = true;
             }
-        } catch (const TModbusException& e) {
+        } catch (const TSerialProtocolException& e) {
             std::cerr << "WARNING: device '" << device_config->Name <<
                 "' setup failed: " << e.what() << std::endl;
         }

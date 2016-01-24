@@ -8,7 +8,7 @@ Ports:
         Id: msu34tlp_2
         Name: MSU34+TLP 2
         SlaveId: 2
-        ModbusChannels:
+        DeviceChannels:
             ------
             Name: Temp 1
             Type: temperature
@@ -49,7 +49,7 @@ Ports:
         Id: msu21
         Name: MSU21
         SlaveId: 24
-        ModbusChannels:
+        DeviceChannels:
             ------
             Name: Temperature
             Type: temperature
@@ -72,7 +72,7 @@ Ports:
         Id: msu24
         Name: MSU24
         SlaveId: 34
-        ModbusChannels:
+        DeviceChannels:
             ------
             Name: Illuminance
             Type: text
@@ -95,7 +95,7 @@ Ports:
         Id: ddl24_23
         Name: DDL24
         SlaveId: 23
-        ModbusChannels:
+        DeviceChannels:
             ------
             Name: RGB
             Type: rgb
@@ -145,7 +145,7 @@ Ports:
         Id: drb88
         Name: DRB88 22
         SlaveId: 22
-        ModbusChannels:
+        DeviceChannels:
             ------
             Name: Relay 1
             Type: switch
@@ -303,7 +303,7 @@ Ports:
         Id: OnValueTest
         Name: OnValueTest
         SlaveId: 144
-        ModbusChannels:
+        DeviceChannels:
             ------
             Name: Relay 1
             Type: switch
@@ -321,7 +321,7 @@ Ports:
         Id: tmp3r3_1
         Name: tM-P3R3
         SlaveId: 1
-        ModbusChannels:
+        DeviceChannels:
             ------
             Name: Relay 0
             Type: switch
@@ -380,7 +380,7 @@ Ports:
         Id: lc103
         Name: LC-103
         SlaveId: 4
-        ModbusChannels:
+        DeviceChannels:
             ------
             Name: Relay 1
             Type: switch

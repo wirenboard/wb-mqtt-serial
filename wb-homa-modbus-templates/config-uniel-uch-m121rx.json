@@ -90,152 +90,152 @@
             },
             {
                 "name" : "Relay 0",
-                "reg_type": "coil",
+                "reg_type": "relay",
                 "address": "0x1a"
             },
             {
                 "name" : "Relay 1",
-                "reg_type": "coil",
+                "reg_type": "relay",
                 "address": "0x1b"
             },
             {
                 "name" : "Relay 2",
-                "reg_type": "coil",
+                "reg_type": "relay",
                 "address": "0x1c"
             },
             {
                 "name" : "Relay 3",
-                "reg_type": "coil",
+                "reg_type": "relay",
                 "address": "0x1d"
             },
             {
                 "name" : "Relay 4",
-                "reg_type": "coil",
+                "reg_type": "relay",
                 "address": "0x1e"
             },
             {
                 "name" : "Relay 5",
-                "reg_type": "coil",
+                "reg_type": "relay",
                 "address": "0x1f"
             },
             {
                 "name" : "Relay 6",
-                "reg_type": "coil",
+                "reg_type": "relay",
                 "address": "0x20"
             },
             {
                 "name" : "Relay 7",
-                "reg_type": "coil",
+                "reg_type": "relay",
                 "address": "0x21"
             },
             {
                 "name": "LowThr 0",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x02",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "LowThr 1",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x03",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "LowThr 2",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x04",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "LowThr 3",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x05",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "LowThr 4",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x06",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "LowThr 5",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x07",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "LowThr 6",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x08",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "LowThr 7",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x09",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "HiThr 0",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x12",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "HiThr 1",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x13",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "HiThr 2",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x14",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "HiThr 3",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x15",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "HiThr 4",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x16",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "HiThr 5",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x17",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "HiThr 6",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x18",
                 "type": "range",
                 "max": "0xff"
             },
             {
                 "name": "HiThr 7",
-                "reg_type": "holding",
+                "reg_type": "param",
                 "address": "0x19",
                 "type": "range",
                 "max": "0xff"

@@ -1,12 +1,11 @@
 #include <iostream>
 #include <cstdio>
-
 #include <getopt.h>
 #include <unistd.h>
-
 #include <mosquittopp.h>
 
-#include "modbus_observer.h"
+#include "serial_observer.h"
+#include "serial_protocol.h"
 
 using namespace std;
 
@@ -48,7 +47,8 @@ int main(int argc, char *argv[])
     PHandlerConfig handler_config;
     try {
         TConfigTemplateParser device_parser(templates_folder, debug);
-        TConfigParser parser(config_fname, debug, device_parser.Parse());
+        TConfigParser parser(config_fname, debug, TSerialProtocolFactory::GetRegisterTypes,
+                             device_parser.Parse());
         handler_config = parser.Parse();
     } catch (const TConfigParserException& e) {
         cerr << "FATAL: " << e.what() << endl;
@@ -63,13 +63,13 @@ int main(int argc, char *argv[])
     PMQTTClient mqtt_client(new TMQTTClient(mqtt_config));
 
     try {
-        PMQTTModbusObserver modbus_observer(new TMQTTModbusObserver(mqtt_client, handler_config));
+        PMQTTSerialObserver modbus_observer(new TMQTTSerialObserver(mqtt_client, handler_config));
         modbus_observer->SetUp();
         if (modbus_observer->WriteInitValues() && handler_config->Debug)
             cerr << "Register-based setup performed." << endl;
         mqtt_client->StartLoop();
-        modbus_observer->ModbusLoop();
-    } catch (const TModbusException& e) {
+        modbus_observer->Loop();
+    } catch (const TSerialProtocolException& e) {
         cerr << "FATAL: " << e.what() << endl;
         return 1;
     }
