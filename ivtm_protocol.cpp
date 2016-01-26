@@ -78,7 +78,11 @@ void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 {
     uint8_t buf[MAX_LEN];
 
-    int nread = Port()->ReadFrame(buf, MAX_LEN, FrameTimeoutMs);
+    int nread = Port()->ReadFrame(
+        buf, MAX_LEN, FrameTimeoutMs,
+        [](uint8_t* buf, int size) {
+            return size > 0 && buf[size - 1] == '\r';
+        });
     if (nread < 10)
         throw TSerialProtocolTransientErrorException("frame too short");
 

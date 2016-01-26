@@ -15,6 +15,8 @@ const int DefaultFrameTimeoutMs = 15;
 
 class TAbstractSerialPort: public std::enable_shared_from_this<TAbstractSerialPort> {
 public:
+    typedef std::function<bool(uint8_t* buf, int size)> TFrameCompletePred;
+
     TAbstractSerialPort() {}
     TAbstractSerialPort(const TAbstractSerialPort&) = delete;
     TAbstractSerialPort& operator=(const TAbstractSerialPort&) = delete;
@@ -26,7 +28,7 @@ public:
     virtual void CheckPortOpen() = 0;
     virtual void WriteBytes(const uint8_t* buf, int count) = 0;
     virtual uint8_t ReadByte() = 0;
-    virtual int ReadFrame(uint8_t* buf, int count, int timeout = -1) = 0;
+    virtual int ReadFrame(uint8_t* buf, int count, int timeout = -1, TFrameCompletePred frame_complete = 0) = 0;
     virtual void SkipNoise() =0;
     virtual void USleep(int usec) = 0;
     virtual PLibModbusContext LibModbusContext() const = 0;
@@ -42,7 +44,7 @@ public:
     void CheckPortOpen();
     void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte();
-    int ReadFrame(uint8_t* buf, int count, int timeout);
+    int ReadFrame(uint8_t* buf, int count, int timeout, TFrameCompletePred frame_complete = 0);
     void SkipNoise();
     void USleep(int usec);
     void Open();

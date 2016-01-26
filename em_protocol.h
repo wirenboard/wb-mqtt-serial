@@ -4,6 +4,7 @@
 #include <memory>
 #include <exception>
 #include <unordered_set>
+#include <functional>
 #include <cstdint>
 
 #include "serial_protocol.h"
@@ -25,9 +26,11 @@ protected:
     virtual bool ConnectionSetup(uint8_t slave) = 0;
     virtual ErrorType CheckForException(uint8_t* frame, int len, const char** message) = 0;
     void WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int len);
-    bool ReadResponse(uint8_t slave, int expectedByte1, uint8_t* buf, int len);
-    void Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payloadLen,
-              int expectedByte1, uint8_t* respPayload, int respPayloadLen);
+    bool ReadResponse(uint8_t slave, int expectedByte1, uint8_t* buf, int len,
+                      TAbstractSerialPort::TFrameCompletePred frame_complete = 0);
+    void Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payload_len,
+              int expected_byte1, uint8_t* resp_payload, int resp_payload_len,
+              TAbstractSerialPort::TFrameCompletePred frame_complete = 0);
     const int MAX_LEN = 64;
     PDeviceConfig DeviceConfig() const;
 

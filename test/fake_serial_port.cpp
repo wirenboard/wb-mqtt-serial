@@ -94,13 +94,14 @@ uint8_t TFakeSerialPort::ReadByte()
     return Resp[RespPos++];
 }
 
-int TFakeSerialPort::ReadFrame(uint8_t* buf, int count, int timeout)
+int TFakeSerialPort::ReadFrame(uint8_t* buf, int count, int timeout, TFrameCompletePred frame_complete)
 {
     if (ExpectedFrameTimeout >= 0 && timeout != ExpectedFrameTimeout)
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
                                  std::to_string(timeout) + " instead of " +
                                  std::to_string(ExpectedFrameTimeout));
     int nread = 0;
+    uint8_t* p = buf;
     for (; nread < count; ++nread) {
         if (RespPos == Resp.size())
             break;
@@ -110,8 +111,10 @@ int TFakeSerialPort::ReadFrame(uint8_t* buf, int count, int timeout)
         // Note though that frame_ready will be optional.
         if (b == FRAME_BOUNDARY)
             break;
-        *buf++ = (uint8_t)b;
+        *p++ = (uint8_t)b;
     }
+    if (frame_complete && !frame_complete(buf, nread))
+        throw std::runtime_error("incomplete frame read");
     return nread;
 }
 

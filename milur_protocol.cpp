@@ -36,6 +36,17 @@ namespace {
             throw TSerialProtocolException("milur: unsupported register format");
         }
     }
+
+    TAbstractSerialPort::TFrameCompletePred ExpectNBytes(int n)
+    {
+        return [n](uint8_t* buf, int size) {
+            if (size < 2)
+                return false;
+            if (buf[1] & 0x80)
+                return size >= 6; // exception response
+            return size >= n;
+        };
+    }
 }
 
 REGISTER_PROTOCOL("milur", TMilurProtocol, TRegisterTypes({
@@ -65,7 +76,7 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
     uint8_t buf[MAX_LEN];
     WriteCommand(slave, 0x08, setupCmd, 7);
     try {
-        if (!ReadResponse(slave, 0x08, buf, 1))
+        if (!ReadResponse(slave, 0x08, buf, 1, ExpectNBytes(5)))
             return false;
         if (buf[0] != uint8_t(DeviceConfig()->AccessLevel))
             throw TSerialProtocolException("invalid milur access level in response");
@@ -137,7 +148,7 @@ uint64_t TMilurProtocol::ReadRegister(PRegister reg)
 
     uint8_t addr = reg->Address;
     uint8_t buf[MAX_LEN], *p = buf;
-    Talk(reg->Slave, 0x01, &addr, 1, 0x01, buf, size + 2);
+    Talk(reg->Slave, 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(size + 6));
     if (*p++ != reg->Address)
         throw TSerialProtocolTransientErrorException("bad register address in the response");
     if (*p++ != size)
@@ -183,5 +194,4 @@ int main(int, char**)
 }
 #endif
 
-// TBD: custom password?
 // TBD: settings in uniel template: 9600 8N1, timeout ms = 1000

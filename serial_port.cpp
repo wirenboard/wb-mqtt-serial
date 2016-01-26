@@ -126,11 +126,14 @@ uint8_t TSerialPort::ReadByte()
     return b;
 }
 
-int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout)
+int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout, TFrameCompletePred frame_complete)
 {
     CheckPortOpen();
     int nread = 0;
     while (nread < size) {
+        if (frame_complete && frame_complete(buf, nread))
+            break;
+
         if (!Select(!nread ? Settings.ResponseTimeoutMs :
                     timeout < 0 ? DefaultFrameTimeoutMs :
                     timeout))

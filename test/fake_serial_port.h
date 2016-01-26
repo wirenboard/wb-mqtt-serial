@@ -21,7 +21,7 @@ public:
     bool IsOpen() const;
     void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte();
-    int ReadFrame(uint8_t* buf, int count, int timeout);
+    int ReadFrame(uint8_t* buf, int count, int timeout = -1, TFrameCompletePred frame_complete = 0);
     void SkipNoise();
     void USleep(int usec);
     PLibModbusContext LibModbusContext() const;

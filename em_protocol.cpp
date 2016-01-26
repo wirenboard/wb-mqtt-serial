@@ -38,7 +38,8 @@ void TEMProtocol::WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int
     Port()->WriteBytes(buf, p - buf);
 }
 
-bool TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len)
+bool TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len,
+                               TAbstractSerialPort::TFrameCompletePred frame_complete)
 {
     uint8_t buf[MAX_LEN], *p = buf;
     int nread = Port()->ReadFrame(buf, MAX_LEN, Config->FrameTimeout);
@@ -75,15 +76,16 @@ bool TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payloa
     return true;
 }
 
-void TEMProtocol::Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payloadLen,
-                       int expectedByte1, uint8_t* respPayload, int respPayloadLen)
+void TEMProtocol::Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payload_len,
+                       int expected_byte1, uint8_t* resp_payload, int resp_payload_len,
+                       TAbstractSerialPort::TFrameCompletePred frame_complete)
 {
     EnsureSlaveConnected(slave);
-    WriteCommand(slave, cmd, payload, payloadLen);
+    WriteCommand(slave, cmd, payload, payload_len);
     try {
-        while (!ReadResponse(slave, expectedByte1, respPayload, respPayloadLen)) {
+        while (!ReadResponse(slave, expected_byte1, resp_payload, resp_payload_len, frame_complete)) {
             EnsureSlaveConnected(slave, true);
-            WriteCommand(slave, cmd, payload, payloadLen);
+            WriteCommand(slave, cmd, payload, payload_len);
         }
     } catch (const TSerialProtocolTransientErrorException& e) {
         Port()->SkipNoise();
