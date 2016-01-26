@@ -42,7 +42,7 @@ bool TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payloa
                                TAbstractSerialPort::TFrameCompletePred frame_complete)
 {
     uint8_t buf[MAX_LEN], *p = buf;
-    int nread = Port()->ReadFrame(buf, MAX_LEN, Config->FrameTimeout);
+    int nread = Port()->ReadFrame(buf, MAX_LEN, Config->FrameTimeout, frame_complete);
     if (nread < 4)
         throw TSerialProtocolTransientErrorException("frame too short");
 
