@@ -1,21 +1,13 @@
 #pragma once
 #include <string>
-#include <exception>
+#include <stdexcept>
 
-class TSerialProtocolException: public std::exception {
+class TSerialProtocolException: public std::runtime_error {
 public:
-    TSerialProtocolException(std::string message): Message("Serial protocol error: " + message) {}
-    const char* what () const throw ()
-    {
-        return Message.c_str();
-    }
-
-private:
-    std::string Message;
+    TSerialProtocolException(std::string message): std::runtime_error("Serial protocol error: " + message) {}
 };
 
 class TSerialProtocolTransientErrorException: public TSerialProtocolException {
 public:
-    TSerialProtocolTransientErrorException(std::string message): TSerialProtocolException(message) {}
+    using TSerialProtocolException::TSerialProtocolException;
 };
-
