@@ -162,7 +162,7 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout, TFrameCompletePr
     }
 
     if (!nread)
-        throw TSerialProtocolException("request timed out");
+        throw TSerialProtocolTransientErrorException("request timed out");
 
     if (Debug) {
         // TBD: move this to libwbmqtt (HexDump?)
