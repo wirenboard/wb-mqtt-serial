@@ -18,9 +18,9 @@ void TSerialProtocolFactory::RegisterProtocol(const std::string& name, TSerialPr
 
     auto reg_map = std::make_shared<TRegisterTypeMap>();
     for (const auto& rt : register_types)
-        reg_map->emplace(rt.Name, rt);
+        reg_map->insert(std::make_pair(rt.Name, rt));
 
-    Protocols->emplace(name, TSerialProtocolEntry(maker, reg_map));
+    Protocols->insert(std::make_pair(name, TSerialProtocolEntry(maker, reg_map)));
 }
 
 const TSerialProtocolEntry& TSerialProtocolFactory::GetProtocolEntry(PDeviceConfig device_config)

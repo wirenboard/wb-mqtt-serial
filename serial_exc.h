@@ -9,5 +9,7 @@ public:
 
 class TSerialProtocolTransientErrorException: public TSerialProtocolException {
 public:
-    using TSerialProtocolException::TSerialProtocolException;
+    TSerialProtocolTransientErrorException(std::string message): TSerialProtocolException(message) {}
+    // XXX gcc-4.7 is too old for this:
+    // using TSerialProtocolException::TSerialProtocolException;
 };
