@@ -36,6 +36,7 @@ MODBUS_SRCS=serial_client.cpp \
   serial_config.cpp \
   serial_port_driver.cpp \
   serial_observer.cpp \
+  serial_port.cpp \
   serial_protocol.cpp \
   uniel_protocol.cpp \
   ivtm_protocol.cpp \
