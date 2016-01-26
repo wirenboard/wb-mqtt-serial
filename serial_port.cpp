@@ -18,7 +18,17 @@
 
 TLibModbusContext::TLibModbusContext(const TSerialPortSettings& settings)
     : Inner(modbus_new_rtu(settings.Device.c_str(), settings.BaudRate,
-                           settings.Parity, settings.DataBits, settings.StopBits)) {}
+                           settings.Parity, settings.DataBits, settings.StopBits))
+{
+    modbus_set_error_recovery(Inner, MODBUS_ERROR_RECOVERY_PROTOCOL); // FIXME
+
+    if (settings.ResponseTimeoutMs > 0) {
+        struct timeval tv;
+        tv.tv_sec = settings.ResponseTimeoutMs / 1000;
+        tv.tv_usec = (settings.ResponseTimeoutMs % 1000) * 1000;
+        modbus_set_response_timeout(Inner, &tv);
+    }
+}
 
 TAbstractSerialPort::~TAbstractSerialPort() {}
 
