@@ -4,19 +4,18 @@
 #include "crc16.h"
 
 TEMProtocol::TEMProtocol(PDeviceConfig device_config, PAbstractSerialPort port)
-    : TSerialProtocol(port), password(device_config->Password),
-      accessLevel(device_config->AccessLevel) {}
+    : TSerialProtocol(port), Config(device_config) {}
 
 void TEMProtocol::EnsureSlaveConnected(uint8_t slave, bool force)
 {
-    if (!force && connectedSlaves.find(slave) != connectedSlaves.end())
+    if (!force && ConnectedSlaves.find(slave) != ConnectedSlaves.end())
         return;
 
-    connectedSlaves.erase(slave);
+    ConnectedSlaves.erase(slave);
     for (int n = N_CONN_ATTEMPTS; n > 0; n--) {
         Port()->SkipNoise();
         if (ConnectionSetup(slave)) {
-            connectedSlaves.insert(slave);
+            ConnectedSlaves.insert(slave);
             return;
         }
     }
@@ -42,7 +41,7 @@ void TEMProtocol::WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int
 bool TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len)
 {
     uint8_t buf[MAX_LEN], *p = buf;
-    int nread = Port()->ReadFrame(buf, MAX_LEN);
+    int nread = Port()->ReadFrame(buf, MAX_LEN, Config->FrameTimeout);
     if (nread < 4)
         throw TSerialProtocolTransientErrorException("frame too short");
 
@@ -95,4 +94,9 @@ void TEMProtocol::Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payload
 void TEMProtocol::WriteRegister(PRegister, uint64_t)
 {
     throw TSerialProtocolException("EM protocol: writing to registers not supported");
+}
+
+PDeviceConfig TEMProtocol::DeviceConfig() const
+{
+    return Config;
 }

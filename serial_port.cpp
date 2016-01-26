@@ -131,7 +131,9 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout)
     CheckPortOpen();
     int nread = 0;
     while (nread < size) {
-        if (!Select(!nread ? Settings.ResponseTimeoutMs : timeout))
+        if (!Select(!nread ? Settings.ResponseTimeoutMs :
+                    timeout < 0 ? DefaultFrameTimeoutMs :
+                    timeout))
             break; // end of the frame
 
         // We don't want to use non-blocking IO in general

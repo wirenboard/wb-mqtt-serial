@@ -52,10 +52,10 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
 {
     uint8_t setupCmd[7] = {
         // full: 0xff, 0x08, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x5f, 0xed
-        uint8_t(AccessLevel()), 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+        uint8_t(DeviceConfig()->AccessLevel), 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
     };
 
-    std::vector<uint8_t> password = Password();
+    std::vector<uint8_t> password = DeviceConfig()->Password;
     if (password.size()) {
         if (password.size() != 6)
             throw TSerialProtocolException("invalid password size (6 bytes expected)");
@@ -67,7 +67,7 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
     try {
         if (!ReadResponse(slave, 0x08, buf, 1))
             return false;
-        if (buf[0] != uint8_t(AccessLevel()))
+        if (buf[0] != uint8_t(DeviceConfig()->AccessLevel))
             throw TSerialProtocolException("invalid milur access level in response");
         return true;
     } catch (TSerialProtocolTransientErrorException&) {

@@ -11,6 +11,11 @@ void TFakeSerialPort::SetDebug(bool debug)
     Fixture.Emit() << "SetDebug(" << debug << ")";
 }
 
+void TFakeSerialPort::SetExpectedFrameTimeout(int timeout)
+{
+    ExpectedFrameTimeout = timeout;
+}
+
 void TFakeSerialPort::CheckPortOpen()
 {
     if (!IsPortOpen)
@@ -89,13 +94,20 @@ uint8_t TFakeSerialPort::ReadByte()
     return Resp[RespPos++];
 }
 
-int TFakeSerialPort::ReadFrame(uint8_t* buf, int count, int)
+int TFakeSerialPort::ReadFrame(uint8_t* buf, int count, int timeout)
 {
+    if (ExpectedFrameTimeout >= 0 && timeout != ExpectedFrameTimeout)
+        throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
+                                 std::to_string(timeout) + " instead of " +
+                                 std::to_string(ExpectedFrameTimeout));
     int nread = 0;
     for (; nread < count; ++nread) {
         if (RespPos == Resp.size())
             break;
         int b = Resp[RespPos++];
+        // TBD: after frame_ready arg is added,
+        // make sure the frame becomes 'ready' exactly on the boundary.
+        // Note though that frame_ready will be optional.
         if (b == FRAME_BOUNDARY)
             break;
         *buf++ = (uint8_t)b;

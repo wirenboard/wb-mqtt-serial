@@ -12,10 +12,10 @@ TMercury230Protocol::TMercury230Protocol(PDeviceConfig device_config, PAbstractS
 bool TMercury230Protocol::ConnectionSetup(uint8_t slave)
 {
     uint8_t setupCmd[7] = {
-        uint8_t(AccessLevel()), 0x01, 0x01, 0x01, 0x01, 0x01, 0x01
+        uint8_t(DeviceConfig()->AccessLevel), 0x01, 0x01, 0x01, 0x01, 0x01, 0x01
     };
 
-    std::vector<uint8_t> password = Password();
+    std::vector<uint8_t> password = DeviceConfig()->Password;
     if (password.size()) {
         if (password.size() != 6)
             throw TSerialProtocolException("invalid password size (6 bytes expected)");

@@ -29,15 +29,13 @@ protected:
     void Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payloadLen,
               int expectedByte1, uint8_t* respPayload, int respPayloadLen);
     const int MAX_LEN = 64;
-    std::vector<uint8_t> Password() const { return password; }
-    int AccessLevel() const { return accessLevel; }
+    PDeviceConfig DeviceConfig() const;
 
 private:
     void EnsureSlaveConnected(uint8_t slave, bool force = false);
 
-    std::unordered_set<uint8_t> connectedSlaves;
-    std::vector<uint8_t> password;
-    int accessLevel;
+    std::unordered_set<uint8_t> ConnectedSlaves;
+    PDeviceConfig Config;
     const int N_CONN_ATTEMPTS = 10;
 };
 

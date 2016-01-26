@@ -11,7 +11,7 @@ struct TLibModbusContext {
 
 typedef std::shared_ptr<TLibModbusContext> PLibModbusContext;
 
-const int FrameTimeoutMs = 15;
+const int DefaultFrameTimeoutMs = 15;
 
 class TAbstractSerialPort: public std::enable_shared_from_this<TAbstractSerialPort> {
 public:
@@ -26,7 +26,7 @@ public:
     virtual void CheckPortOpen() = 0;
     virtual void WriteBytes(const uint8_t* buf, int count) = 0;
     virtual uint8_t ReadByte() = 0;
-    virtual int ReadFrame(uint8_t* buf, int count, int timeout = FrameTimeoutMs) = 0;
+    virtual int ReadFrame(uint8_t* buf, int count, int timeout = -1) = 0;
     virtual void SkipNoise() =0;
     virtual void USleep(int usec) = 0;
     virtual PLibModbusContext LibModbusContext() const = 0;

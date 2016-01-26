@@ -16,6 +16,7 @@
           "id": "milur305.32r-test",
           "slave_id": 255,
           "enabled": true,
+          "frame_timeout_ms": 150,
           "channels": [
             {
               "name": "Phase A voltage",

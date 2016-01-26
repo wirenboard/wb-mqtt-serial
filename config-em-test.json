@@ -17,6 +17,7 @@
           "slave_id": 255,
           "enabled": true,
           "protocol": "milur",
+          "frame_timeout_ms": 150,
           "channels": [
             {
               "name": "Phase C voltage",
@@ -42,6 +43,9 @@
           "slave_id": 0,
           "enabled": true,
           "protocol": "mercury230",
+          // not really necessary for the device,
+          // but needed for tests here
+          "frame_timeout_ms": 150,
           "channels": [
             {
               "name": "Total consumption",

@@ -14,6 +14,7 @@ class TFakeSerialPort: public TAbstractSerialPort, public TExpector {
 public:
     TFakeSerialPort(TLoggedFixture& fixture);
     void SetDebug(bool debug);
+    void SetExpectedFrameTimeout(int timeout);
     void CheckPortOpen();
     void Open();
     void Close();
@@ -38,6 +39,7 @@ private:
     std::vector<int> Req;
     std::vector<int> Resp;
     size_t ReqPos, RespPos, DumpPos;
+    int ExpectedFrameTimeout = -1;
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;

@@ -48,9 +48,10 @@ struct TDeviceConfig {
     TDeviceConfig(std::string name = "", int slave_id = 0, std::string protocol = "",
                   int delay_usec = DEFAULT_INTER_DEVICE_DELAY_USEC,
                   int access_level = DEFAULT_ACCESS_LEVEL,
+                  int frame_timeout = -1,
                   PRegisterTypeMap type_map = 0)
         : Name(name), SlaveId(slave_id), Protocol(protocol), DelayUSec(delay_usec),
-          AccessLevel(access_level), TypeMap(type_map) {}
+          AccessLevel(access_level), FrameTimeout(frame_timeout), TypeMap(type_map) {}
     int NextOrderValue() const { return DeviceChannels.size() + 1; }
     void AddChannel(PDeviceChannel channel) { DeviceChannels.push_back(channel); };
     void AddSetupItem(PDeviceSetupItem item) { SetupItems.push_back(item); }
@@ -64,6 +65,7 @@ struct TDeviceConfig {
     std::vector<uint8_t> Password;
     int DelayUSec;
     int AccessLevel;
+    int FrameTimeout;
     PRegisterTypeMap TypeMap;
 };
 

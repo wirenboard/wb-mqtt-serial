@@ -220,6 +220,9 @@ void TConfigParser::LoadDeviceVectors(PDeviceConfig device_config, const Json::V
     if (device_data.isMember("delay_usec"))
         device_config->DelayUSec = GetInt(device_data, "delay_usec");
 
+    if (device_data.isMember("frame_timeout_ms"))
+        device_config->FrameTimeout = GetInt(device_data, "frame_timeout_ms");
+
     const Json::Value array = device_data["channels"];
     for(unsigned int index = 0; index < array.size(); ++index)
         LoadChannel(device_config, array[index]);

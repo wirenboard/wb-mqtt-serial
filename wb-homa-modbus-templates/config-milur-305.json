@@ -4,6 +4,7 @@
     "name": "Milur 305",
     "id": "milur305",
     "protocol": "milur",
+    "frame_timeout_ms": 150,
     "channels": [
       {
         "name": "Phase A voltage",
