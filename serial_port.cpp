@@ -146,8 +146,22 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout, TFrameCompletePr
     CheckPortOpen();
     int nread = 0;
     while (nread < size) {
-        if (frame_complete && frame_complete(buf, nread))
+        if (frame_complete && frame_complete(buf, nread)) {
+            // XXX A hack.
+            // The problem is that if we don't pause here and the
+            // serial client switches to another device after
+            // processing this frame, that device may miss the frame
+            // boundary and consider the last response (from this
+            // device) and the query (from the master) to be single
+            // frame. On the other hand, we don't want to use
+            // device-specific frame timeout here as it can be quite
+            // long. The proper solution would be perhaps ensuring
+            // that there's a pause of at least
+            // DeviceConfig->FrameTimeoutMs before polling each
+            // device.
+            usleep(DefaultFrameTimeoutMs);
             break;
+        }
 
         if (!Select(!nread ? Settings.ResponseTimeoutMs :
                     timeout < 0 ? DefaultFrameTimeoutMs :
