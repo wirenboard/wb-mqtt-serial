@@ -1,3 +1,10 @@
+wb-homa-modbus (1.14.0) stable; urgency=medium
+
+  * support modbus and non-modbus devices on the same port
+  * configurable frame timeout
+
+ -- Ivan Shvedunov <ivan4th@gmail.com>  Wed, 27 Jan 2016 01:22:12 +0300
+
 wb-homa-modbus (1.13.2) stable; urgency=medium
 
   * various EM meters impovements and bug fixes
