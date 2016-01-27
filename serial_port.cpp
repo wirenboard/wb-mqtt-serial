@@ -35,7 +35,7 @@ TAbstractSerialPort::~TAbstractSerialPort() {}
 TSerialPort::TSerialPort(const TSerialPortSettings& settings)
     : Settings(settings),
       Context(new TLibModbusContext(settings)),
-      Debug(false),
+      Dbg(false),
       Fd(-1) {}
 
 TSerialPort::~TSerialPort()
@@ -46,7 +46,12 @@ TSerialPort::~TSerialPort()
 
 void TSerialPort::SetDebug(bool debug)
 {
-    Debug = debug;
+    Dbg = debug;
+}
+
+bool TSerialPort::Debug() const
+{
+    return Dbg;
 }
 
 void TSerialPort::Open()
@@ -79,7 +84,7 @@ void TSerialPort::CheckPortOpen()
 void TSerialPort::WriteBytes(const uint8_t* buf, int count) {
     if (write(Fd, buf, count) < count)
         throw TSerialProtocolException("serial write failed");
-    if (Debug) {
+    if (Dbg) {
         // TBD: move this to libwbmqtt (HexDump?)
         std::ios::fmtflags f(std::cerr.flags());
         std::cerr << "Write:" << std::hex << std::setfill('0');
@@ -97,7 +102,7 @@ bool TSerialPort::Select(int ms)
 
 #if 0
     // too verbose
-    if (Debug)
+    if (Dbg)
         std::cerr << "Select on " << Settings.Device << ": " << ms << " ms" << std::endl;
 #endif
 
@@ -127,7 +132,7 @@ uint8_t TSerialPort::ReadByte()
     if (read(Fd, &b, 1) < 1)
         throw TSerialProtocolException("read() failed");
 
-    if (Debug) {
+    if (Dbg) {
         std::ios::fmtflags f(std::cerr.flags());
         std::cerr << "Read: " << std::hex << std::setw(2) << std::setfill('0') << int(b) << std::endl;
         std::cerr.flags(f);
@@ -174,7 +179,7 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout, TFrameCompletePr
     if (!nread)
         throw TSerialProtocolTransientErrorException("request timed out");
 
-    if (Debug) {
+    if (Dbg) {
         // TBD: move this to libwbmqtt (HexDump?)
         std::ios::fmtflags f(std::cerr.flags());
         std::cerr << "ReadFrame:" << std::hex << std::uppercase << std::setfill('0');
@@ -194,7 +199,7 @@ void TSerialPort::SkipNoise()
     while (Select(NoiseTimeoutMs)) {
         if (read(Fd, &b, 1) < 1)
             throw TSerialProtocolException("read() failed");
-        if (Debug) {
+        if (Dbg) {
             std::ios::fmtflags f(std::cerr.flags());
             std::cerr << "read noise: " << std::hex << std::setfill('0') << std::setw(2) << int(b) << std::endl;
             std::cerr.flags(f);

@@ -14,6 +14,7 @@ class TFakeSerialPort: public TAbstractSerialPort, public TExpector {
 public:
     TFakeSerialPort(TLoggedFixture& fixture);
     void SetDebug(bool debug);
+    bool Debug() const;
     void SetExpectedFrameTimeout(int timeout);
     void CheckPortOpen();
     void Open();

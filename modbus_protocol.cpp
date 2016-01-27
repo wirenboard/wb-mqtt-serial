@@ -13,6 +13,11 @@ TModbusProtocol::TModbusProtocol(PDeviceConfig, PAbstractSerialPort port)
 uint64_t TModbusProtocol::ReadRegister(PRegister reg)
 {
     int w = reg->Width();
+
+    if (Port()->Debug())
+        std::cerr << "modbus: read " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
+            " of slave " << reg->Slave << std::endl;
+
     modbus_set_slave(Context->Inner, reg->Slave);
     if (IsSingleBit(reg->Type)) {
         uint8_t b;
@@ -57,6 +62,11 @@ uint64_t TModbusProtocol::ReadRegister(PRegister reg)
 void TModbusProtocol::WriteRegister(PRegister reg, uint64_t value)
 {
     int w = reg->Width();
+
+    if (Port()->Debug())
+        std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
+            " of slave " << reg->Slave << std::endl;
+
     modbus_set_slave(Context->Inner, reg->Slave);
     switch (reg->Type) {
     case REG_COIL:

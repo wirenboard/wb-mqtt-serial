@@ -22,6 +22,7 @@ public:
     TAbstractSerialPort& operator=(const TAbstractSerialPort&) = delete;
     virtual ~TAbstractSerialPort();
     virtual void SetDebug(bool debug) = 0;
+    virtual bool Debug() const = 0;
     virtual void Open() = 0;
     virtual void Close() = 0;
     virtual bool IsOpen() const = 0;
@@ -41,6 +42,7 @@ public:
     TSerialPort(const TSerialPortSettings& settings);
     ~TSerialPort();
     void SetDebug(bool debug);
+    bool Debug() const;
     void CheckPortOpen();
     void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte();
@@ -56,7 +58,7 @@ public:
 private:
     TSerialPortSettings Settings;
     PLibModbusContext Context;
-    bool Debug;
+    bool Dbg;
     int Fd;
     const int NoiseTimeoutMs = 10;
 };

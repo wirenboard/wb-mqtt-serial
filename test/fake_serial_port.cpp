@@ -11,6 +11,11 @@ void TFakeSerialPort::SetDebug(bool debug)
     Fixture.Emit() << "SetDebug(" << debug << ")";
 }
 
+bool TFakeSerialPort::Debug() const
+{
+    return false;
+}
+
 void TFakeSerialPort::SetExpectedFrameTimeout(int timeout)
 {
     ExpectedFrameTimeout = timeout;
