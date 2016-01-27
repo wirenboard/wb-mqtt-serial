@@ -41,12 +41,18 @@ TRegisterHandler::TErrorState TRegisterHandler::UpdateWriteError(bool error) {
     return ErrorState;
 }
 
+bool TRegisterHandler::NeedToPoll()
+{
+    std::lock_guard<std::mutex> lock(SetValueMutex);
+    return Reg->Poll && !Dirty;
+}
+
 TRegisterHandler::TErrorState TRegisterHandler::Poll(bool* changed)
 {
     *changed = false;
 
     // don't poll write-only and dirty registers
-    if (!Reg->Poll || Dirty)
+    if (!NeedToPoll())
         return ErrorStateUnchanged;
 
     bool first_poll = !DidReadReg;
@@ -86,27 +92,32 @@ TRegisterHandler::TErrorState TRegisterHandler::Poll(bool* changed)
     return UpdateReadError(false);
 }
 
+bool TRegisterHandler::NeedToFlush()
+{
+    std::lock_guard<std::mutex> lock(SetValueMutex);
+    return Dirty;
+}
+
 TRegisterHandler::TErrorState TRegisterHandler::Flush()
 {
-    SetValueMutex.lock();
-    if (Dirty) {
-        Dirty = false;
-        SetValueMutex.unlock();
-        try {
-            Proto->WriteRegister(Reg, Value);
-        } catch (const TSerialProtocolTransientErrorException& e) {
-            std::ios::fmtflags f(std::cerr.flags());
-            std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " <<
-                Reg->Slave << "(0x" << std::hex << Reg->Slave << ")" <<  std::endl;
-            std::cerr.flags(f);
-            return UpdateWriteError(true);
-        }
-        return UpdateWriteError(false);
-    }
-    else
-        SetValueMutex.unlock();
+    if (!NeedToFlush())
+        return ErrorStateUnchanged;
 
-    return ErrorStateUnchanged;
+    {
+        std::lock_guard<std::mutex> lock(SetValueMutex);
+        Dirty = false;
+    }
+
+    try {
+        Proto->WriteRegister(Reg, Value);
+    } catch (const TSerialProtocolTransientErrorException& e) {
+        std::ios::fmtflags f(std::cerr.flags());
+        std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " <<
+            Reg->Slave << "(0x" << std::hex << Reg->Slave << ")" <<  std::endl;
+        std::cerr.flags(f);
+        return UpdateWriteError(true);
+    }
+    return UpdateWriteError(false);
 }
 
 std::string TRegisterHandler::TextValue() const

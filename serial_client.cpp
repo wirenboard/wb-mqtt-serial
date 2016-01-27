@@ -29,6 +29,7 @@ void TSerialClient::AddRegister(PRegister reg)
     if (Handlers.find(reg) != Handlers.end())
         throw TSerialProtocolException("duplicate register");
     Handlers[reg] = CreateRegisterHandler(reg);
+    RegList.push_back(reg);
 }
 
 void TSerialClient::Connect()
@@ -55,6 +56,17 @@ void TSerialClient::MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErro
         ErrorCallback(reg, state);
 }
 
+void TSerialClient::Flush()
+{
+    for (const auto& reg: RegList) {
+        auto handler = Handlers[reg];
+        if (!handler->NeedToFlush())
+            continue;
+        PrepareToAccessDevice(reg->Slave);
+        MaybeUpdateErrorState(reg, handler->Flush());
+    }
+}
+
 void TSerialClient::Cycle()
 {
     Connect();
@@ -64,18 +76,21 @@ void TSerialClient::Cycle()
     // Note that for multi-register values, all values
     // corresponding to single register should be retrieved
     // by single query.
-    for (const auto& p: Handlers) {
-        for (const auto& q: Handlers)
-            MaybeUpdateErrorState(q.first, q.second->Flush());
+    for (const auto& reg: RegList) {
+        Flush();
+        auto handler = Handlers[reg];
         bool changed = false;
-        MaybeUpdateErrorState(p.first, p.second->Poll(&changed));
+        if (!handler->NeedToPoll())
+            continue;
+        PrepareToAccessDevice(reg->Slave);
+        MaybeUpdateErrorState(reg, handler->Poll(&changed));
         // Note that p.second->CurrentErrorState() is not the
         // same as the value returned by p->second->Poll(...),
         // because the latter may be ErrorStateUnchanged.
         if (changed &&
-            p.second->CurrentErrorState() != TRegisterHandler::ReadError &&
-            p.second->CurrentErrorState() != TRegisterHandler::ReadWriteError)
-            Callback(p.first);
+            handler->CurrentErrorState() != TRegisterHandler::ReadError &&
+            handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
+            Callback(reg);
     }
     for (const auto& p: ProtoMap)
         p.second->EndPollCycle();
@@ -85,6 +100,7 @@ void TSerialClient::Cycle()
 void TSerialClient::WriteSetupRegister(PRegister reg, uint64_t value)
 {
     Connect();
+    PrepareToAccessDevice(reg->Slave);
     GetProtocol(reg->Slave)->WriteRegister(reg, value);
 }
 
@@ -157,4 +173,16 @@ PSerialProtocol TSerialClient::GetProtocol(int slave_id)
         Disconnect();
         throw TSerialProtocolException(e.what());
     }
+}
+
+void TSerialClient::PrepareToAccessDevice(int slave)
+{
+    if (slave == LastAccessedSlave)
+        return;
+    LastAccessedSlave = slave;
+    auto it = ConfigMap.find(slave);
+    if (it == ConfigMap.end())
+        return;
+    if (it->second->DelayUSec > 0)
+        Port->USleep(it->second->DelayUSec);
 }

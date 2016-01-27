@@ -34,12 +34,15 @@ public:
     void WriteSetupRegister(PRegister reg, uint64_t value);
 
 private:
+    void Flush();
     PRegisterHandler GetHandler(PRegister) const;
     PRegisterHandler CreateRegisterHandler(PRegister reg);
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
     PSerialProtocol GetProtocol(int slave_id);
+    void PrepareToAccessDevice(int slave);
 
     PAbstractSerialPort Port;
+    std::list<PRegister> RegList;
     std::map<PRegister, PRegisterHandler> Handlers;
     std::unordered_map<int, PDeviceConfig> ConfigMap;
     std::unordered_map<int, PSerialProtocol> ProtoMap;
@@ -49,6 +52,7 @@ private:
     TCallback Callback;
     TErrorCallback ErrorCallback;
     bool Debug = false;
+    int LastAccessedSlave = -1;
 
     const int MAX_REGS = 65536;
 };

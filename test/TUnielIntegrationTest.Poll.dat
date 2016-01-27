@@ -17,6 +17,7 @@ Publish: /devices/pseudo_uniel/controls/LED 1/meta/order: '4' (QoS 0, retained)
 Subscribe: /devices/pseudo_uniel/controls/LED 1/on (QoS 0)
 >>> LoopOnce()
 Open()
+Sleep(100000)
 EnqueueVoltageQueryResponse()
 >> FF FF 05 01 00 0A 00 10
 Publish: /devices/pseudo_uniel/controls/Input 0/meta/error: '' (QoS 0, retained)

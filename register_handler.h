@@ -27,7 +27,9 @@ public:
     };
     TRegisterHandler(PDebugEnabled debugState, PSerialProtocol proto, PRegister reg);
     PRegister Register() const { return Reg; }
+    bool NeedToPoll();
     TErrorState Poll(bool* changed);
+    bool NeedToFlush();
     TErrorState Flush();
     std::string TextValue() const;
 

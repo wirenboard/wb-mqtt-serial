@@ -217,8 +217,10 @@ void TConfigParser::LoadDeviceVectors(PDeviceConfig device_config, const Json::V
             device_config->Password.push_back(ToInt(array[index], "password item"));
     }
 
-    if (device_data.isMember("delay_usec"))
+    if (device_data.isMember("delay_usec")) // compat
         device_config->DelayUSec = GetInt(device_data, "delay_usec");
+    else if (device_data.isMember("delay_ms"))
+        device_config->DelayUSec = GetInt(device_data, "delay_ms") * 1000;
 
     if (device_data.isMember("frame_timeout_ms"))
         device_config->FrameTimeout = GetInt(device_data, "frame_timeout_ms");

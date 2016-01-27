@@ -4,6 +4,7 @@
     "name": "Milur 305",
     "id": "milur305",
     "protocol": "milur",
+    "delay_ms": 100,
     "frame_timeout_ms": 150,
     "channels": [
       {
