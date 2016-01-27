@@ -4,14 +4,6 @@
   "title": "Modbus Driver Configuration",
   "description": "Lists devices attached to RS-485 ports",
   "definitions": {
-    "portProtocol": {
-      "type": "string",
-      "title": "Port protocol",
-      "description": "Type of devices to be used on this port",
-      "enum": ["modbus", "uniel", "milur", "mercury230", "other"],
-      "default": "modbus",
-      "propertyOrder": 8
-    },
     "deviceProtocol": {
       "type": "string",
       "title": "Device protocol",
@@ -79,14 +71,6 @@
           "minimum": 0,
           "default": 20,
           "propertyOrder": 7
-        },
-        "protocol": {
-          "$ref": "#/definitions/portProtocol",
-          "propertyOrder": 8
-        },
-        "type": {
-          "$ref": "#/definitions/portProtocol",
-          "propertyOrder": 9
         },
         "devices": {
           "type": "array",
@@ -182,12 +166,11 @@
           "default": 1,
           "propertyOrder": 10
         },
-        "delay_usec": {
+        "delay_ms": {
           "type": "integer",
-          "title": "Delay before accessing the device (us)",
-          "description": "Currently only works for non-modbus devices.",
+          "title": "Delay before accessing the device (ms)",
           "minimum": 0,
-          "default": 100000,
+          "default": 100,
           "propertyOrder": 11
         }
       },
