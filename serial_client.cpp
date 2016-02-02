@@ -91,10 +91,11 @@ void TSerialClient::Cycle()
             handler->CurrentErrorState() != TRegisterHandler::ReadError &&
             handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
             Callback(reg);
+
+        Port->USleep(PollInterval * 1000);
     }
     for (const auto& p: ProtoMap)
         p.second->EndPollCycle();
-    Port->USleep(PollInterval * 1000);
 }
 
 void TSerialClient::WriteSetupRegister(PRegister reg, uint64_t value)
