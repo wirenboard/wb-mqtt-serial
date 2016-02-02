@@ -1,4 +1,6 @@
 #include <thread>
+#include <iostream>
+
 #include "serial_observer.h"
 
 TMQTTSerialObserver::TMQTTSerialObserver(PMQTTClientBase mqtt_client,

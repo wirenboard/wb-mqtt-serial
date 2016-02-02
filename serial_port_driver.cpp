@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 
 #include <wbmqtt/utils.h>
 #include "serial_port_driver.h"

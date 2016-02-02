@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "modbus_protocol.h"
 
 REGISTER_PROTOCOL("modbus", TModbusProtocol, TRegisterTypes({
