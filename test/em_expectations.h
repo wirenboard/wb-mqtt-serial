@@ -1,7 +1,7 @@
 #pragma once
 #include "expector.h"
 
-class TEMProtocolExpectations: public virtual TExpectorProvider
+class TEMDeviceExpectations: public virtual TExpectorProvider
 {
 public:
     void EnqueueMilurSessionSetupResponse();

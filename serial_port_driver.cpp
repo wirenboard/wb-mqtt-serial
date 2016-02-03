@@ -4,7 +4,7 @@
 
 #include <wbmqtt/utils.h>
 #include "serial_port_driver.h"
-#include "serial_protocol.h"
+#include "serial_device.h"
 #include "serial_client.h"
 
 TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig port_config,
@@ -221,7 +221,7 @@ void TSerialPortDriver::Cycle()
 {
     try {
         SerialClient->Cycle();
-    } catch (TSerialProtocolException& e) {
+    } catch (TSerialDeviceException& e) {
         std::cerr << "FATAL: " << e.what() << ". Stopping event loops." << std::endl;
         exit(1);
     }
@@ -240,7 +240,7 @@ bool TSerialPortDriver::WriteInitValues()
                                                  setup_item->Value);
                 did_write = true;
             }
-        } catch (const TSerialProtocolException& e) {
+        } catch (const TSerialDeviceException& e) {
             std::cerr << "WARNING: device '" << device_config->Name <<
                 "' setup failed: " << e.what() << std::endl;
         }

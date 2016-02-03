@@ -1,7 +1,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include "serial_protocol.h"
+#include "serial_device.h"
 #include "pty_based_fake_serial.h"
 
 class TPtyBasedFakeSerialTest: public TLoggedFixture {

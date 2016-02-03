@@ -19,16 +19,16 @@ TSerialClient::~TSerialClient()
 void TSerialClient::AddDevice(PDeviceConfig device_config)
 {
     if (Active)
-        throw TSerialProtocolException("can't add registers to the active client");
+        throw TSerialDeviceException("can't add registers to the active client");
     ConfigMap[device_config->SlaveId] = device_config;
 }
 
 void TSerialClient::AddRegister(PRegister reg)
 {
     if (Active)
-        throw TSerialProtocolException("can't add registers to the active client");
+        throw TSerialDeviceException("can't add registers to the active client");
     if (Handlers.find(reg) != Handlers.end())
-        throw TSerialProtocolException("duplicate register");
+        throw TSerialDeviceException("duplicate register");
     Handlers[reg] = CreateRegisterHandler(reg);
     RegList.push_back(reg);
 }
@@ -38,7 +38,7 @@ void TSerialClient::Connect()
     if (Active)
         return;
     if (!Handlers.size())
-        throw TSerialProtocolException("no registers defined");
+        throw TSerialDeviceException("no registers defined");
     if (!Port->IsOpen())
         Port->Open();
     Active = true;
@@ -108,7 +108,7 @@ void TSerialClient::Cycle()
             Callback(reg);
 
     }
-    for (const auto& p: ProtoMap)
+    for (const auto& p: DeviceMap)
         p.second->EndPollCycle();
 }
 
@@ -116,7 +116,7 @@ void TSerialClient::WriteSetupRegister(PRegister reg, uint64_t value)
 {
     Connect();
     PrepareToAccessDevice(reg->Slave);
-    GetProtocol(reg->Slave)->WriteRegister(reg, value);
+    GetDevice(reg->Slave)->WriteRegister(reg, value);
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
@@ -170,30 +170,29 @@ PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
 {
     auto it = Handlers.find(reg);
     if (it == Handlers.end())
-        throw TSerialProtocolException("register not found");
+        throw TSerialDeviceException("register not found");
     return it->second;
 }
 
 PRegisterHandler TSerialClient::CreateRegisterHandler(PRegister reg)
 {
-    return std::make_shared<TRegisterHandler>(shared_from_this(), GetProtocol(reg->Slave), reg);
+    return std::make_shared<TRegisterHandler>(shared_from_this(), GetDevice(reg->Slave), reg);
 }
 
-PSerialProtocol TSerialClient::GetProtocol(int slave_id)
+PSerialDevice TSerialClient::GetDevice(int slave_id)
 {
-    auto it = ProtoMap.find(slave_id);
-    if (it != ProtoMap.end())
+    auto it = DeviceMap.find(slave_id);
+    if (it != DeviceMap.end())
         return it->second;
     auto configIt = ConfigMap.find(slave_id);
     if (configIt == ConfigMap.end())
-        throw TSerialProtocolException("slave not found");
+        throw TSerialDeviceException("slave not found");
 
     try {
-        auto protocol = TSerialProtocolFactory::CreateProtocol(configIt->second, Port);
-        return ProtoMap[slave_id] = protocol;
-    } catch (const TSerialProtocolException& e) {
+        return DeviceMap[slave_id] = TSerialDeviceFactory::CreateDevice(configIt->second, Port);
+    } catch (const TSerialDeviceException& e) {
         Disconnect();
-        throw TSerialProtocolException(e.what());
+        throw TSerialDeviceException(e.what());
     }
 }
 

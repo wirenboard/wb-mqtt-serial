@@ -5,7 +5,7 @@
 #include <mosquittopp.h>
 
 #include "serial_observer.h"
-#include "serial_protocol.h"
+#include "serial_device.h"
 
 using namespace std;
 
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     PHandlerConfig handler_config;
     try {
         TConfigTemplateParser device_parser(templates_folder, debug);
-        TConfigParser parser(config_fname, debug, TSerialProtocolFactory::GetRegisterTypes,
+        TConfigParser parser(config_fname, debug, TSerialDeviceFactory::GetRegisterTypes,
                              device_parser.Parse());
         handler_config = parser.Parse();
     } catch (const TConfigParserException& e) {
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
             cerr << "Register-based setup performed." << endl;
         mqtt_client->StartLoop();
         modbus_observer->Loop();
-    } catch (const TSerialProtocolException& e) {
+    } catch (const TSerialDeviceException& e) {
         cerr << "FATAL: " << e.what() << endl;
         return 1;
     }

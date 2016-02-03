@@ -1,4 +1,4 @@
-#include "milur_protocol.h"
+#include "milur_device.h"
 #include "crc16.h"
 
 namespace {
@@ -33,7 +33,7 @@ namespace {
             break;
 
         default:
-            throw TSerialProtocolException("milur: unsupported register format");
+            throw TSerialDeviceException("milur: unsupported register format");
         }
     }
 
@@ -49,17 +49,17 @@ namespace {
     }
 }
 
-REGISTER_PROTOCOL("milur", TMilurProtocol, TRegisterTypes({
-            { TMilurProtocol::REG_PARAM, "param", "value", U24, true },
-            { TMilurProtocol::REG_POWER, "power", "power", S32, true },
-            { TMilurProtocol::REG_ENERGY, "energy", "power_consumption", BCD32, true },
-            { TMilurProtocol::REG_FREQ, "freq", "value", BCD32, true }
+REGISTER_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
+            { TMilurDevice::REG_PARAM, "param", "value", U24, true },
+            { TMilurDevice::REG_POWER, "power", "power", S32, true },
+            { TMilurDevice::REG_ENERGY, "energy", "power_consumption", BCD32, true },
+            { TMilurDevice::REG_FREQ, "freq", "value", BCD32, true }
         }));
 
-TMilurProtocol::TMilurProtocol(PDeviceConfig device_config, PAbstractSerialPort port)
-    : TEMProtocol(device_config, port) {}
+TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port)
+    : TEMDevice(device_config, port) {}
 
-bool TMilurProtocol::ConnectionSetup(uint8_t slave)
+bool TMilurDevice::ConnectionSetup(uint8_t slave)
 {
     uint8_t setupCmd[7] = {
         // full: 0xff, 0x08, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x5f, 0xed
@@ -69,7 +69,7 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
     std::vector<uint8_t> password = DeviceConfig()->Password;
     if (password.size()) {
         if (password.size() != 6)
-            throw TSerialProtocolException("invalid password size (6 bytes expected)");
+            throw TSerialDeviceException("invalid password size (6 bytes expected)");
         std::copy(password.begin(), password.end(), setupCmd + 1);
     }
 
@@ -79,19 +79,19 @@ bool TMilurProtocol::ConnectionSetup(uint8_t slave)
         if (!ReadResponse(slave, 0x08, buf, 1, ExpectNBytes(5)))
             return false;
         if (buf[0] != uint8_t(DeviceConfig()->AccessLevel))
-            throw TSerialProtocolException("invalid milur access level in response");
+            throw TSerialDeviceException("invalid milur access level in response");
         return true;
-    } catch (TSerialProtocolTransientErrorException&) {
+    } catch (TSerialDeviceTransientErrorException&) {
             // retry upon response from a wrong slave
         return false;
     }
 }
 
-TEMProtocol::ErrorType TMilurProtocol::CheckForException(uint8_t* frame, int len, const char** message)
+TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, const char** message)
 {
     if (len != 6 || !(frame[1] & 0x80)) {
         *message = 0;
-        return TEMProtocol::NO_ERROR;
+        return TEMDevice::NO_ERROR;
     }
 
     switch (frame[2]) {
@@ -118,7 +118,7 @@ TEMProtocol::ErrorType TMilurProtocol::CheckForException(uint8_t* frame, int len
         break;
     case 0x08:
         *message = "Session closed";
-        return TEMProtocol::NO_OPEN_SESSION;
+        return TEMDevice::NO_OPEN_SESSION;
     case 0x09:
         *message = "Access denied";
         break;
@@ -137,10 +137,10 @@ TEMProtocol::ErrorType TMilurProtocol::CheckForException(uint8_t* frame, int len
     default:
         *message = "Unknown error";
     }
-    return TEMProtocol::OTHER_ERROR;
+    return TEMDevice::OTHER_ERROR;
 }
 
-uint64_t TMilurProtocol::ReadRegister(PRegister reg)
+uint64_t TMilurDevice::ReadRegister(PRegister reg)
 {
     int size;
     bool bcd;
@@ -150,9 +150,9 @@ uint64_t TMilurProtocol::ReadRegister(PRegister reg)
     uint8_t buf[MAX_LEN], *p = buf;
     Talk(reg->Slave, 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(size + 6));
     if (*p++ != reg->Address)
-        throw TSerialProtocolTransientErrorException("bad register address in the response");
+        throw TSerialDeviceTransientErrorException("bad register address in the response");
     if (*p++ != size)
-        throw TSerialProtocolTransientErrorException("bad register size in the response");
+        throw TSerialDeviceTransientErrorException("bad register size in the response");
 
     uint64_t r = 0;
     if (bcd) {
@@ -178,7 +178,7 @@ int main(int, char**)
         TSerialPortSettings settings("/dev/ttyNSC0", 9600, 'N', 8, 2, 1000);
         PAbstractSerialPort port(new TSerialPort(settings, true));
         port->Open();
-        TMilurProtocol milur(port);
+        TMilurDevice milur(port);
         std::ios::fmtflags f(std::cerr.flags());
         int v = milur.ReadRegister(0xff, 102, 0, U24);
         std::cerr << "value of mod 0xff reg 0x66: 0x" << std::setw(8) << std::hex << v << std::endl;
@@ -187,7 +187,7 @@ int main(int, char**)
 
         int v1 = milur.ReadRegister(0xff, 118, 0, BCD32);
         std::cerr << "value of mod 0xff reg 0x76: " << v1 << std::endl;
-    } catch (const TSerialProtocolException& e) {
+    } catch (const TSerialDeviceException& e) {
         std::cerr << "milur: " << e.what() << std::endl;
     }
     return 0;

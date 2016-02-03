@@ -1,21 +1,21 @@
 #include "fake_serial_port.h"
 #include "em_expectations.h"
-#include "milur_protocol.h"
-#include "mercury230_protocol.h"
+#include "milur_device.h"
+#include "mercury230_device.h"
 
 namespace {
-    PRegister MilurPhaseCVoltageReg(new TRegister(0xff, TMilurProtocol::REG_PARAM, 102, U24));
-    PRegister MilurTotalConsumptionReg(new TRegister(0xff, TMilurProtocol::REG_ENERGY, 118, BCD32));
+    PRegister MilurPhaseCVoltageReg(new TRegister(0xff, TMilurDevice::REG_PARAM, 102, U24));
+    PRegister MilurTotalConsumptionReg(new TRegister(0xff, TMilurDevice::REG_ENERGY, 118, BCD32));
     PRegister Mercury230TotalConsumptionReg(
-        new TRegister(0x00, TMercury230Protocol::REG_VALUE_ARRAY, 0x0000, U32));
+        new TRegister(0x00, TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32));
     PRegister Mercury230TotalReactiveEnergyReg(
-        new TRegister(0x00, TMercury230Protocol::REG_VALUE_ARRAY, 0x0002, U32));
-    PRegister Mercury230U1Reg(new TRegister(0x00, TMercury230Protocol::REG_PARAM, 0x1111, U24));
-    PRegister Mercury230I1Reg(new TRegister(0x00, TMercury230Protocol::REG_PARAM, 0x1121, U24));
-    PRegister Mercury230U2Reg(new TRegister(0x00, TMercury230Protocol::REG_PARAM, 0x1112, U24));
+        new TRegister(0x00, TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32));
+    PRegister Mercury230U1Reg(new TRegister(0x00, TMercury230Device::REG_PARAM, 0x1111, U24));
+    PRegister Mercury230I1Reg(new TRegister(0x00, TMercury230Device::REG_PARAM, 0x1121, U24));
+    PRegister Mercury230U2Reg(new TRegister(0x00, TMercury230Device::REG_PARAM, 0x1112, U24));
 };
 
-class TEMProtocolTest: public TSerialProtocolTest, public TEMProtocolExpectations
+class TEMDeviceTest: public TSerialDeviceTest, public TEMDeviceExpectations
 {
 protected:
     void SetUp();
@@ -23,38 +23,38 @@ protected:
     void VerifyMercuryParamQuery();
     virtual PDeviceConfig MilurConfig();
     virtual PDeviceConfig Mercury230Config();
-    PMilurProtocol MilurProto;
-    PMercury230Protocol Mercury230Proto;
+    PMilurDevice MilurDev;
+    PMercury230Device Mercury230Dev;
 };
 
-PDeviceConfig TEMProtocolTest::MilurConfig()
+PDeviceConfig TEMDeviceTest::MilurConfig()
 {
     return std::make_shared<TDeviceConfig>("milur", 0xff, "milur");
 }
 
-PDeviceConfig TEMProtocolTest::Mercury230Config()
+PDeviceConfig TEMDeviceTest::Mercury230Config()
 {
     return std::make_shared<TDeviceConfig>("mercury230", 0x00, "mercury230");
 }
 
-void TEMProtocolTest::SetUp()
+void TEMDeviceTest::SetUp()
 {
-    TSerialProtocolTest::SetUp();
-    MilurProto = std::make_shared<TMilurProtocol>(MilurConfig(), SerialPort);
-    Mercury230Proto = std::make_shared<TMercury230Protocol>(Mercury230Config(), SerialPort);
+    TSerialDeviceTest::SetUp();
+    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort);
+    Mercury230Dev = std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort);
     SerialPort->Open();
 }
 
-void TEMProtocolTest::VerifyMilurQuery()
+void TEMDeviceTest::VerifyMilurQuery()
 {
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurProto->ReadRegister(MilurPhaseCVoltageReg));
+    ASSERT_EQ(0x03946f, MilurDev->ReadRegister(MilurPhaseCVoltageReg));
 
     EnqueueMilurTotalConsumptionResponse();
-    ASSERT_EQ(11144, MilurProto->ReadRegister(MilurTotalConsumptionReg));
+    ASSERT_EQ(11144, MilurDev->ReadRegister(MilurTotalConsumptionReg));
 }
 
-TEST_F(TEMProtocolTest, MilurQuery)
+TEST_F(TEMDeviceTest, MilurQuery)
 {
     EnqueueMilurSessionSetupResponse();
     VerifyMilurQuery();
@@ -62,30 +62,30 @@ TEST_F(TEMProtocolTest, MilurQuery)
     SerialPort->Close();
 }
 
-TEST_F(TEMProtocolTest, MilurReconnect)
+TEST_F(TEMDeviceTest, MilurReconnect)
 {
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurNoSessionResponse();
     // reconnection
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurProto->ReadRegister(MilurPhaseCVoltageReg));
+    ASSERT_EQ(0x03946f, MilurDev->ReadRegister(MilurPhaseCVoltageReg));
 }
 
-TEST_F(TEMProtocolTest, MilurException)
+TEST_F(TEMDeviceTest, MilurException)
 {
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurExceptionResponse();
     try {
-        MilurProto->ReadRegister(MilurPhaseCVoltageReg);
+        MilurDev->ReadRegister(MilurPhaseCVoltageReg);
         FAIL() << "No exception thrown";
-    } catch (const TSerialProtocolException& e) {
+    } catch (const TSerialDeviceException& e) {
         ASSERT_STREQ("Serial protocol error: EEPROM access error", e.what());
         SerialPort->Close();
     }
 }
 
-TEST_F(TEMProtocolTest, Mercury230ReadEnergy)
+TEST_F(TEMDeviceTest, Mercury230ReadEnergy)
 {
     EnqueueMercury230SessionSetupResponse();
     EnqueueMercury230EnergyResponse1();
@@ -102,20 +102,20 @@ TEST_F(TEMProtocolTest, Mercury230ReadEnergy)
 
     // Here we make sure that consecutive requests querying the same array
     // don't cause redundant requests during the single poll cycle.
-    ASSERT_EQ(3196200, Mercury230Proto->ReadRegister(Mercury230TotalConsumptionReg));
-    ASSERT_EQ(300444, Mercury230Proto->ReadRegister(Mercury230TotalReactiveEnergyReg));
-    ASSERT_EQ(3196200, Mercury230Proto->ReadRegister(Mercury230TotalConsumptionReg));
-    Mercury230Proto->EndPollCycle();
+    ASSERT_EQ(3196200, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
+    ASSERT_EQ(300444, Mercury230Dev->ReadRegister(Mercury230TotalReactiveEnergyReg));
+    ASSERT_EQ(3196200, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
+    Mercury230Dev->EndPollCycle();
 
     EnqueueMercury230EnergyResponse2();
-    ASSERT_EQ(3196201, Mercury230Proto->ReadRegister(Mercury230TotalConsumptionReg));
-    ASSERT_EQ(300445, Mercury230Proto->ReadRegister(Mercury230TotalReactiveEnergyReg));
-    ASSERT_EQ(3196201, Mercury230Proto->ReadRegister(Mercury230TotalConsumptionReg));
-    Mercury230Proto->EndPollCycle();
+    ASSERT_EQ(3196201, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
+    ASSERT_EQ(300445, Mercury230Dev->ReadRegister(Mercury230TotalReactiveEnergyReg));
+    ASSERT_EQ(3196201, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
+    Mercury230Dev->EndPollCycle();
     SerialPort->Close();
 }
 
-void TEMProtocolTest::VerifyMercuryParamQuery()
+void TEMDeviceTest::VerifyMercuryParamQuery()
 {
     EnqueueMercury230U1Response();
     // Register address for params:
@@ -123,28 +123,28 @@ void TEMProtocolTest::VerifyMercuryParamQuery()
     // C = command (0x08)
     // N = param number (0x11)
     // B = subparam spec (BWRI), 0x11 = voltage, phase 1
-    ASSERT_EQ(24128, Mercury230Proto->ReadRegister(Mercury230U1Reg));
+    ASSERT_EQ(24128, Mercury230Dev->ReadRegister(Mercury230U1Reg));
 
     EnqueueMercury230I1Response();
     // subparam 0x21 = current (phase 1)
-    ASSERT_EQ(69, Mercury230Proto->ReadRegister(Mercury230I1Reg));
+    ASSERT_EQ(69, Mercury230Dev->ReadRegister(Mercury230I1Reg));
 
     EnqueueMercury230U2Response();
     // subparam 0x12 = voltage (phase 2)
-    ASSERT_EQ(24043, Mercury230Proto->ReadRegister(Mercury230U2Reg));
+    ASSERT_EQ(24043, Mercury230Dev->ReadRegister(Mercury230U2Reg));
 }
 
-TEST_F(TEMProtocolTest, Mercury230ReadParams)
+TEST_F(TEMDeviceTest, Mercury230ReadParams)
 {
     EnqueueMercury230SessionSetupResponse();
     VerifyMercuryParamQuery();
-    Mercury230Proto->EndPollCycle();
+    Mercury230Dev->EndPollCycle();
     VerifyMercuryParamQuery();
-    Mercury230Proto->EndPollCycle();
+    Mercury230Dev->EndPollCycle();
     SerialPort->Close();
 }
 
-TEST_F(TEMProtocolTest, Mercury230Reconnect)
+TEST_F(TEMDeviceTest, Mercury230Reconnect)
 {
     EnqueueMercury230SessionSetupResponse();
     EnqueueMercury230NoSessionResponse();
@@ -153,47 +153,47 @@ TEST_F(TEMProtocolTest, Mercury230Reconnect)
     EnqueueMercury230U2Response();
 
     // subparam 0x12 = voltage (phase 2)
-    ASSERT_EQ(24043, Mercury230Proto->ReadRegister(Mercury230U2Reg));
+    ASSERT_EQ(24043, Mercury230Dev->ReadRegister(Mercury230U2Reg));
 
-    Mercury230Proto->EndPollCycle();
+    Mercury230Dev->EndPollCycle();
     SerialPort->Close();
 }
 
-TEST_F(TEMProtocolTest, Mercury230Exception)
+TEST_F(TEMDeviceTest, Mercury230Exception)
 {
     EnqueueMercury230SessionSetupResponse();
     EnqueueMercury230InternalMeterErrorResponse();
     try {
-        Mercury230Proto->ReadRegister(Mercury230U2Reg);
+        Mercury230Dev->ReadRegister(Mercury230U2Reg);
         FAIL() << "No exception thrown";
-    } catch (const TSerialProtocolException& e) {
+    } catch (const TSerialDeviceException& e) {
         ASSERT_STREQ("Serial protocol error: Internal meter error", e.what());
         SerialPort->Close();
     }
 }
 
-TEST_F(TEMProtocolTest, Combined)
+TEST_F(TEMDeviceTest, Combined)
 {
     EnqueueMilurSessionSetupResponse();
     VerifyMilurQuery();
-    MilurProto->EndPollCycle();
+    MilurDev->EndPollCycle();
 
     EnqueueMercury230SessionSetupResponse();
     VerifyMercuryParamQuery();
-    Mercury230Proto->EndPollCycle();
+    Mercury230Dev->EndPollCycle();
 
     for (int i = 0; i < 3; i ++) {
         VerifyMilurQuery();
-        MilurProto->EndPollCycle();
+        MilurDev->EndPollCycle();
 
         VerifyMercuryParamQuery();
-        Mercury230Proto->EndPollCycle();
+        Mercury230Dev->EndPollCycle();
     }
 
     SerialPort->Close();
 }
 
-class TEMCustomPasswordTest: public TEMProtocolTest {
+class TEMCustomPasswordTest: public TEMDeviceTest {
 public:
     PDeviceConfig MilurConfig();
     PDeviceConfig Mercury230Config();
@@ -201,7 +201,7 @@ public:
 
 PDeviceConfig TEMCustomPasswordTest::MilurConfig()
 {
-    PDeviceConfig device_config = TEMProtocolTest::MilurConfig();
+    PDeviceConfig device_config = TEMDeviceTest::MilurConfig();
     device_config->Password = { 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
     device_config->AccessLevel = 2;
     return device_config;
@@ -209,7 +209,7 @@ PDeviceConfig TEMCustomPasswordTest::MilurConfig()
 
 PDeviceConfig TEMCustomPasswordTest::Mercury230Config()
 {
-    PDeviceConfig device_config = TEMProtocolTest::Mercury230Config();
+    PDeviceConfig device_config = TEMDeviceTest::Mercury230Config();
     device_config->Password = { 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
     device_config->AccessLevel = 2;
     return device_config;
@@ -219,11 +219,11 @@ TEST_F(TEMCustomPasswordTest, Combined)
 {
     EnqueueMilurAccessLevel2SessionSetupResponse();
     VerifyMilurQuery();
-    MilurProto->EndPollCycle();
+    MilurDev->EndPollCycle();
 
     EnqueueMercury230AccessLevel2SessionSetupResponse();
     VerifyMercuryParamQuery();
-    Mercury230Proto->EndPollCycle();
+    Mercury230Dev->EndPollCycle();
 
     SerialPort->Close();
 }

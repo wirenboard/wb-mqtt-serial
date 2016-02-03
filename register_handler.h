@@ -4,7 +4,7 @@
 #include <memory>
 #include <wbmqtt/utils.h>
 #include "register.h"
-#include "serial_protocol.h"
+#include "serial_device.h"
 
 class IClientInteraction {
 public:
@@ -26,7 +26,7 @@ public:
         UnknownErrorState,
         ErrorStateUnchanged
     };
-    TRegisterHandler(PClientInteraction clientInteraction, PSerialProtocol proto, PRegister reg);
+    TRegisterHandler(PClientInteraction clientInteraction, PSerialDevice dev, PRegister reg);
     PRegister Register() const { return Reg; }
     bool NeedToPoll();
     TErrorState Poll(bool* changed);
@@ -46,7 +46,7 @@ private:
     TErrorState UpdateWriteError(bool error);
 
     PClientInteraction ClientInteraction;
-    PSerialProtocol Proto;
+    PSerialDevice Dev;
     uint64_t Value = 0;
     PRegister Reg;
     volatile bool Dirty = false;

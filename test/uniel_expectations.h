@@ -1,7 +1,7 @@
 #pragma once
 #include "expector.h"
 
-class TUnielProtocolExpectations: public virtual TExpectorProvider
+class TUnielDeviceExpectations: public virtual TExpectorProvider
 {
 protected:
     void EnqueueVoltageQueryResponse();

@@ -10,7 +10,7 @@
 #include <modbus/modbus.h>
 #include "testlog.h"
 #include "portsettings.h"
-#include "serial_protocol.h"
+#include "serial_device.h"
 
 struct TRegisterRange {
     TRegisterRange(int start = 0, int end = 0)
@@ -23,7 +23,7 @@ struct TRegisterRange {
     int ValidateIndex(const std::string& name, int index) const
     {
         if (index < Start || index > End) {
-            throw TSerialProtocolException(
+            throw TSerialDeviceException(
                 name + " index is out of range: " +
                 std::to_string(index) +
                 " (must be " + std::to_string(Start) +

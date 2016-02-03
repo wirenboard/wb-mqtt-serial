@@ -1,15 +1,15 @@
-#include "mercury230_protocol.h"
+#include "mercury230_device.h"
 #include "crc16.h"
 
-REGISTER_PROTOCOL("mercury230", TMercury230Protocol, TRegisterTypes({
-            { TMercury230Protocol::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },
-            { TMercury230Protocol::REG_PARAM, "param", "value", U24, true }
+REGISTER_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
+            { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },
+            { TMercury230Device::REG_PARAM, "param", "value", U24, true }
         }));
 
-TMercury230Protocol::TMercury230Protocol(PDeviceConfig device_config, PAbstractSerialPort port)
-    : TEMProtocol(device_config, port) {}
+TMercury230Device::TMercury230Device(PDeviceConfig device_config, PAbstractSerialPort port)
+    : TEMDevice(device_config, port) {}
 
-bool TMercury230Protocol::ConnectionSetup(uint8_t slave)
+bool TMercury230Device::ConnectionSetup(uint8_t slave)
 {
     uint8_t setupCmd[7] = {
         uint8_t(DeviceConfig()->AccessLevel), 0x01, 0x01, 0x01, 0x01, 0x01, 0x01
@@ -18,7 +18,7 @@ bool TMercury230Protocol::ConnectionSetup(uint8_t slave)
     std::vector<uint8_t> password = DeviceConfig()->Password;
     if (password.size()) {
         if (password.size() != 6)
-            throw TSerialProtocolException("invalid password size (6 bytes expected)");
+            throw TSerialDeviceException("invalid password size (6 bytes expected)");
         std::copy(password.begin(), password.end(), setupCmd + 1);
     }
 
@@ -26,17 +26,17 @@ bool TMercury230Protocol::ConnectionSetup(uint8_t slave)
     WriteCommand(slave, 0x01, setupCmd, 7);
     try {
         return ReadResponse(slave, 0x00, buf, 0);
-    } catch (TSerialProtocolTransientErrorException&) {
+    } catch (TSerialDeviceTransientErrorException&) {
             // retry upon response from a wrong slave
         return false;
     }
 }
 
-TEMProtocol::ErrorType TMercury230Protocol::CheckForException(uint8_t* frame, int len, const char** message)
+TEMDevice::ErrorType TMercury230Device::CheckForException(uint8_t* frame, int len, const char** message)
 {
     *message = 0;
     if (len != 4 || (frame[1] & 0x0f) == 0)
-        return TEMProtocol::NO_ERROR;
+        return TEMDevice::NO_ERROR;
     switch (frame[1] & 0x0f) {
     case 1:
         *message = "Invalid command or parameter";
@@ -52,14 +52,14 @@ TEMProtocol::ErrorType TMercury230Protocol::CheckForException(uint8_t* frame, in
         break;
     case 5:
         *message = "Connection closed";
-        return TEMProtocol::NO_OPEN_SESSION;
+        return TEMDevice::NO_OPEN_SESSION;
     default:
         *message = "Unknown error";
     }
-    return TEMProtocol::OTHER_ERROR;
+    return TEMDevice::OTHER_ERROR;
 }
 
-const TMercury230Protocol::TValueArray& TMercury230Protocol::ReadValueArray(uint32_t slave, uint32_t address)
+const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(uint32_t slave, uint32_t address)
 {
     int key = (address >> 4) || (slave << 24);
     auto it = CachedValues.find(key);
@@ -82,7 +82,7 @@ const TMercury230Protocol::TValueArray& TMercury230Protocol::ReadValueArray(uint
     return CachedValues.insert(std::make_pair(key, a)).first->second;
 }
 
-uint32_t TMercury230Protocol::ReadParam(uint32_t slave, uint32_t address)
+uint32_t TMercury230Device::ReadParam(uint32_t slave, uint32_t address)
 {
     uint8_t cmdBuf[2];
     cmdBuf[0] = (address >> 8) & 0xff; // param
@@ -96,7 +96,7 @@ uint32_t TMercury230Protocol::ReadParam(uint32_t slave, uint32_t address)
              (uint32_t)buf[1];
 }
 
-uint64_t TMercury230Protocol::ReadRegister(PRegister reg)
+uint64_t TMercury230Device::ReadRegister(PRegister reg)
 {
     switch (reg->Type) {
     case REG_VALUE_ARRAY:
@@ -104,11 +104,11 @@ uint64_t TMercury230Protocol::ReadRegister(PRegister reg)
     case REG_PARAM:
         return ReadParam(reg->Slave, reg->Address & 0xffff);
     default:
-        throw TSerialProtocolException("mercury230: invalid register type");
+        throw TSerialDeviceException("mercury230: invalid register type");
     }
 }
 
-void TMercury230Protocol::EndPollCycle()
+void TMercury230Device::EndPollCycle()
 {
     CachedValues.clear();
 }

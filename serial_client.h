@@ -6,7 +6,7 @@
 #include <condition_variable>
 #include <mutex>
 
-#include "serial_protocol.h"
+#include "serial_device.h"
 #include "register_handler.h"
 
 class TSerialClient: public IClientInteraction, public std::enable_shared_from_this<TSerialClient>
@@ -41,14 +41,14 @@ private:
     PRegisterHandler GetHandler(PRegister) const;
     PRegisterHandler CreateRegisterHandler(PRegister reg);
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
-    PSerialProtocol GetProtocol(int slave_id);
+    PSerialDevice GetDevice(int slave_id);
     void PrepareToAccessDevice(int slave);
 
     PAbstractSerialPort Port;
     std::list<PRegister> RegList;
     std::map<PRegister, PRegisterHandler> Handlers;
     std::unordered_map<int, PDeviceConfig> ConfigMap;
-    std::unordered_map<int, PSerialProtocol> ProtoMap;
+    std::unordered_map<int, PSerialDevice> DeviceMap;
 
     bool Active;
     int PollInterval;

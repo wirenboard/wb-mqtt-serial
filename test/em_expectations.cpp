@@ -1,6 +1,6 @@
 #include "em_expectations.h"
 
-void TEMProtocolExpectations::EnqueueMilurSessionSetupResponse()
+void TEMDeviceExpectations::EnqueueMilurSessionSetupResponse()
 {
     Expector()->Expect(
         {
@@ -26,7 +26,7 @@ void TEMProtocolExpectations::EnqueueMilurSessionSetupResponse()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMilurAccessLevel2SessionSetupResponse()
+void TEMDeviceExpectations::EnqueueMilurAccessLevel2SessionSetupResponse()
 {
     Expector()->Expect(
         {
@@ -53,7 +53,7 @@ void TEMProtocolExpectations::EnqueueMilurAccessLevel2SessionSetupResponse()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMilurPhaseCVoltageResponse()
+void TEMDeviceExpectations::EnqueueMilurPhaseCVoltageResponse()
 {
     Expector()->Expect(
         {
@@ -77,7 +77,7 @@ void TEMProtocolExpectations::EnqueueMilurPhaseCVoltageResponse()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMilurTotalConsumptionResponse()
+void TEMDeviceExpectations::EnqueueMilurTotalConsumptionResponse()
 {
     Expector()->Expect(
         {
@@ -102,7 +102,7 @@ void TEMProtocolExpectations::EnqueueMilurTotalConsumptionResponse()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMilurNoSessionResponse()
+void TEMDeviceExpectations::EnqueueMilurNoSessionResponse()
 {
     Expector()->Expect(
         {
@@ -123,7 +123,7 @@ void TEMProtocolExpectations::EnqueueMilurNoSessionResponse()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMilurExceptionResponse()
+void TEMDeviceExpectations::EnqueueMilurExceptionResponse()
 {
     Expector()->Expect(
         {
@@ -144,7 +144,7 @@ void TEMProtocolExpectations::EnqueueMilurExceptionResponse()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMercury230SessionSetupResponse()
+void TEMDeviceExpectations::EnqueueMercury230SessionSetupResponse()
 {
     Expector()->Expect(
         {
@@ -169,7 +169,7 @@ void TEMProtocolExpectations::EnqueueMercury230SessionSetupResponse()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMercury230AccessLevel2SessionSetupResponse()
+void TEMDeviceExpectations::EnqueueMercury230AccessLevel2SessionSetupResponse()
 {
     Expector()->Expect(
         {
@@ -194,7 +194,7 @@ void TEMProtocolExpectations::EnqueueMercury230AccessLevel2SessionSetupResponse(
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMercury230EnergyResponse1()
+void TEMDeviceExpectations::EnqueueMercury230EnergyResponse1()
 {
     Expector()->Expect(
         {
@@ -229,7 +229,7 @@ void TEMProtocolExpectations::EnqueueMercury230EnergyResponse1()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMercury230EnergyResponse2()
+void TEMDeviceExpectations::EnqueueMercury230EnergyResponse2()
 {
     Expector()->Expect(
         {
@@ -264,7 +264,7 @@ void TEMProtocolExpectations::EnqueueMercury230EnergyResponse2()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMercury230U1Response()
+void TEMDeviceExpectations::EnqueueMercury230U1Response()
 {
     Expector()->Expect(
         {
@@ -285,7 +285,7 @@ void TEMProtocolExpectations::EnqueueMercury230U1Response()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMercury230I1Response()
+void TEMDeviceExpectations::EnqueueMercury230I1Response()
 {
     Expector()->Expect(
         {
@@ -306,7 +306,7 @@ void TEMProtocolExpectations::EnqueueMercury230I1Response()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMercury230U2Response()
+void TEMDeviceExpectations::EnqueueMercury230U2Response()
 {
     Expector()->Expect(
         {
@@ -327,7 +327,7 @@ void TEMProtocolExpectations::EnqueueMercury230U2Response()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMercury230NoSessionResponse()
+void TEMDeviceExpectations::EnqueueMercury230NoSessionResponse()
 {
     Expector()->Expect(
         {
@@ -346,7 +346,7 @@ void TEMProtocolExpectations::EnqueueMercury230NoSessionResponse()
         }, __func__);
 }
 
-void TEMProtocolExpectations::EnqueueMercury230InternalMeterErrorResponse()
+void TEMDeviceExpectations::EnqueueMercury230InternalMeterErrorResponse()
 {
     Expector()->Expect(
         {

@@ -1,6 +1,6 @@
 #include "testlog.h"
 #include "fake_serial_port.h"
-#include "ivtm_protocol.h"
+#include "ivtm_device.h"
 
 namespace {
     PRegister Dev1Temp(new TRegister(0x01, 0, 0, Float));
@@ -8,24 +8,24 @@ namespace {
     PRegister Dev2Temp(new TRegister(0x0a, 0, 0, Float));
 };
 
-class TIVTMProtocolTest: public TSerialProtocolTest
+class TIVTMDeviceTest: public TSerialDeviceTest
 {
 protected:
     void SetUp();
-    PIVTMProtocol Proto;
+    PIVTMDevice Dev;
 };
 
-void TIVTMProtocolTest::SetUp()
+void TIVTMDeviceTest::SetUp()
 {
-    TSerialProtocolTest::SetUp();
-    // Protocol should not depend on slave id from DeviceConfig
-    Proto = std::make_shared<TIVTMProtocol>(
+    TSerialDeviceTest::SetUp();
+    // Device should not depend on slave id from DeviceConfig
+    Dev = std::make_shared<TIVTMDevice>(
         std::make_shared<TDeviceConfig>("ivtm", 0x0001, "ivtm"),
         SerialPort);
     SerialPort->Open();
 }
 
-TEST_F(TIVTMProtocolTest, IVTM7MQuery)
+TEST_F(TIVTMDeviceTest, IVTM7MQuery)
 {
     // >> 24 30 30 30 31 52 52 30 30 30 30 30 34 41 44 0d
     // << 21 30 30 30 31 52 52 43 45 44 33 44 31 34 31 35 46 0D 
@@ -45,7 +45,7 @@ TEST_F(TIVTMProtocolTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    ASSERT_EQ(0x41D1D3CE, Proto->ReadRegister(Dev1Temp)); //big-endian
+    ASSERT_EQ(0x41D1D3CE, Dev->ReadRegister(Dev1Temp)); //big-endian
 
 	// >> 24 30 30 30 31 52 52 30 30 30 34 30 34 42 31 0d
 	// << 21 30 30 30 31 52 52 33 30 39 41 45 42 34 31 34 46 0D
@@ -65,9 +65,9 @@ TEST_F(TIVTMProtocolTest, IVTM7MQuery)
             0x0D                  // footer
         });
 
-    ASSERT_EQ(0x41EB9A30, Proto->ReadRegister(Dev1Humidity)); //big-endian
+    ASSERT_EQ(0x41EB9A30, Dev->ReadRegister(Dev1Humidity)); //big-endian
 
-    Proto->EndPollCycle();
+    Dev->EndPollCycle();
 
     // Test upper-case hex letters
 
@@ -89,6 +89,6 @@ TEST_F(TIVTMProtocolTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    ASSERT_EQ(0x41C7855E, Proto->ReadRegister(Dev2Temp)); //big-endian
+    ASSERT_EQ(0x41C7855E, Dev->ReadRegister(Dev2Temp)); //big-endian
     SerialPort->Close();
 }

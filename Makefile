@@ -37,14 +37,14 @@ MODBUS_SRCS=serial_client.cpp \
   serial_port_driver.cpp \
   serial_observer.cpp \
   serial_port.cpp \
-  serial_protocol.cpp \
-  uniel_protocol.cpp \
-  ivtm_protocol.cpp \
+  serial_device.cpp \
+  uniel_device.cpp \
+  ivtm_device.cpp \
   crc16.cpp \
-  modbus_protocol.cpp \
-  em_protocol.cpp \
-  milur_protocol.cpp \
-  mercury230_protocol.cpp
+  modbus_device.cpp \
+  em_device.cpp \
+  milur_device.cpp \
+  mercury230_device.cpp
 MODBUS_OBJS=$(MODBUS_SRCS:.cpp=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \

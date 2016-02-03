@@ -5,9 +5,9 @@
 #include <exception>
 #include <cstdint>
 
-#include "em_protocol.h"
+#include "em_device.h"
 
-class TMilurProtocol: public TEMProtocol {
+class TMilurDevice: public TEMDevice {
 public:
     static const int DefaultTimeoutMs = 1000;
     static const int FrameTimeoutMs = 50;
@@ -18,7 +18,7 @@ public:
         REG_FREQ
     };
 
-    TMilurProtocol(PDeviceConfig device_config, PAbstractSerialPort port);
+    TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port);
     uint64_t ReadRegister(PRegister reg);
 
 protected:
@@ -26,4 +26,4 @@ protected:
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
 };
 
-typedef std::shared_ptr<TMilurProtocol> PMilurProtocol;
+typedef std::shared_ptr<TMilurDevice> PMilurDevice;

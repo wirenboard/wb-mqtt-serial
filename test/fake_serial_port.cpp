@@ -24,13 +24,13 @@ void TFakeSerialPort::SetExpectedFrameTimeout(int timeout)
 void TFakeSerialPort::CheckPortOpen()
 {
     if (!IsPortOpen)
-        throw TSerialProtocolException("port not open");
+        throw TSerialDeviceException("port not open");
 }
 
 void TFakeSerialPort::Open()
 {
     if (IsPortOpen)
-        throw TSerialProtocolException("port already open");
+        throw TSerialDeviceException("port already open");
     Fixture.Emit() << "Open()";
     IsPortOpen = true;
 }
@@ -181,34 +181,34 @@ void TFakeSerialPort::SkipFrameBoundary()
         RespPos++;
 }
 
-void TSerialProtocolTest::SetUp()
+void TSerialDeviceTest::SetUp()
 {
     SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
 }
 
-PExpector TSerialProtocolTest::Expector() const
+PExpector TSerialDeviceTest::Expector() const
 {
     return SerialPort;
 }
 
-void TSerialProtocolTest::TearDown()
+void TSerialDeviceTest::TearDown()
 {
     SerialPort.reset();
     TLoggedFixture::TearDown();
 }
 
-void TSerialProtocolIntegrationTest::SetUp()
+void TSerialDeviceIntegrationTest::SetUp()
 {
-    TSerialProtocolTest::SetUp();
+    TSerialDeviceTest::SetUp();
     PortMakerCalled = false;
-    TConfigParser parser(GetDataFilePath(ConfigPath()), false, TSerialProtocolFactory::GetRegisterTypes);
+    TConfigParser parser(GetDataFilePath(ConfigPath()), false, TSerialDeviceFactory::GetRegisterTypes);
     PHandlerConfig Config = parser.Parse();
     MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("em-test", *this));
     Observer = PMQTTSerialObserver(new TMQTTSerialObserver(MQTTClient, Config, SerialPort));
 }
 
-void TSerialProtocolIntegrationTest::TearDown()
+void TSerialDeviceIntegrationTest::TearDown()
 {
     Observer.reset();
-    TSerialProtocolTest::TearDown();
+    TSerialDeviceTest::TearDown();
 }

@@ -57,9 +57,9 @@ bool TSerialPort::Debug() const
 void TSerialPort::Open()
 {
     if (Fd >= 0)
-        throw TSerialProtocolException("port already open");
+        throw TSerialDeviceException("port already open");
     if (modbus_connect(Context->Inner) < 0)
-        throw TSerialProtocolException("cannot open serial port");
+        throw TSerialDeviceException("cannot open serial port");
     Fd = modbus_get_socket(Context->Inner);
 }
 
@@ -78,12 +78,12 @@ bool TSerialPort::IsOpen() const
 void TSerialPort::CheckPortOpen()
 {
     if (Fd < 0)
-        throw TSerialProtocolException("port not open");
+        throw TSerialDeviceException("port not open");
 }
 
 void TSerialPort::WriteBytes(const uint8_t* buf, int count) {
     if (write(Fd, buf, count) < count)
-        throw TSerialProtocolException("serial write failed");
+        throw TSerialDeviceException("serial write failed");
     if (Dbg) {
         // TBD: move this to libwbmqtt (HexDump?)
         std::ios::fmtflags f(std::cerr.flags());
@@ -116,7 +116,7 @@ bool TSerialPort::Select(int ms)
 
     int r = select(Fd + 1, &rfds, NULL, NULL, tvp);
     if (r < 0)
-        throw TSerialProtocolException("select() failed");
+        throw TSerialDeviceException("select() failed");
 
     return r > 0;
 }
@@ -126,11 +126,11 @@ uint8_t TSerialPort::ReadByte()
     CheckPortOpen();
 
     if (!Select(Settings.ResponseTimeoutMs))
-        throw TSerialProtocolTransientErrorException("timeout");
+        throw TSerialDeviceTransientErrorException("timeout");
 
     uint8_t b;
     if (read(Fd, &b, 1) < 1)
-        throw TSerialProtocolException("read() failed");
+        throw TSerialDeviceException("read() failed");
 
     if (Dbg) {
         std::ios::fmtflags f(std::cerr.flags());
@@ -175,7 +175,7 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout, TFrameCompletePr
         // know how many bytes are available
         int nb;
         if (ioctl(Fd, FIONREAD, &nb) < 0)
-            throw TSerialProtocolException("FIONREAD ioctl() failed");
+            throw TSerialDeviceException("FIONREAD ioctl() failed");
         if (!nb)
             continue; // shouldn't happen, actually
         if (nb > size - nread)
@@ -183,15 +183,15 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout, TFrameCompletePr
 
         int n = read(Fd, buf + nread, nb);
         if (n < 0)
-            throw TSerialProtocolException("read() failed");
+            throw TSerialDeviceException("read() failed");
         if (n < nb) // may happen only due to a kernel/driver bug
-            throw TSerialProtocolException("short read()");
+            throw TSerialDeviceException("short read()");
 
         nread += nb;
     }
 
     if (!nread)
-        throw TSerialProtocolTransientErrorException("request timed out");
+        throw TSerialDeviceTransientErrorException("request timed out");
 
     if (Dbg) {
         // TBD: move this to libwbmqtt (HexDump?)
@@ -212,7 +212,7 @@ void TSerialPort::SkipNoise()
     uint8_t b;
     while (Select(NoiseTimeoutMs)) {
         if (read(Fd, &b, 1) < 1)
-            throw TSerialProtocolException("read() failed");
+            throw TSerialDeviceException("read() failed");
         if (Dbg) {
             std::ios::fmtflags f(std::cerr.flags());
             std::cerr << "read noise: " << std::hex << std::setfill('0') << std::setw(2) << int(b) << std::endl;

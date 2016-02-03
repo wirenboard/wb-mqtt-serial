@@ -4,14 +4,14 @@
 #include <memory>
 #include <exception>
 #include <stdint.h>
-#include "serial_protocol.h"
+#include "serial_device.h"
 
-class TIVTMProtocol: public TSerialProtocol {
+class TIVTMDevice: public TSerialDevice {
 public:
     static const int DefaultTimeoutMs = 1000;
     static const int FrameTimeoutMs = 50;
 
-    TIVTMProtocol(PDeviceConfig, PAbstractSerialPort port);
+    TIVTMDevice(PDeviceConfig, PAbstractSerialPort port);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 
@@ -24,4 +24,4 @@ private:
     bool DecodeASCIIBytes(uint8_t * buf, uint8_t* result, uint8_t len_bytes);
 };
 
-typedef std::shared_ptr<TIVTMProtocol> PIVTMProtocol;
+typedef std::shared_ptr<TIVTMDevice> PIVTMDevice;

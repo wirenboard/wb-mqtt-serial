@@ -1,6 +1,6 @@
 #include "uniel_expectations.h"
 
-void TUnielProtocolExpectations::EnqueueVoltageQueryResponse()
+void TUnielDeviceExpectations::EnqueueVoltageQueryResponse()
 {
     Expector()->Expect(
         {
@@ -25,7 +25,7 @@ void TUnielProtocolExpectations::EnqueueVoltageQueryResponse()
         }, __func__);
 }
 
-void TUnielProtocolExpectations::EnqueueRelayOffQueryResponse()
+void TUnielDeviceExpectations::EnqueueRelayOffQueryResponse()
 {
     Expector()->Expect(
         {
@@ -50,7 +50,7 @@ void TUnielProtocolExpectations::EnqueueRelayOffQueryResponse()
         }, __func__);
 }
 
-void TUnielProtocolExpectations::EnqueueRelayOnQueryResponse()
+void TUnielDeviceExpectations::EnqueueRelayOnQueryResponse()
 {
     Expector()->Expect(
         {
@@ -75,7 +75,7 @@ void TUnielProtocolExpectations::EnqueueRelayOnQueryResponse()
         }, __func__);
 }
 
-void TUnielProtocolExpectations::EnqueueThreshold0QueryResponse()
+void TUnielDeviceExpectations::EnqueueThreshold0QueryResponse()
 {
     Expector()->Expect(
         {
@@ -100,7 +100,7 @@ void TUnielProtocolExpectations::EnqueueThreshold0QueryResponse()
         }, __func__);
 }
 
-void TUnielProtocolExpectations::EnqueueBrightnessQueryResponse()
+void TUnielDeviceExpectations::EnqueueBrightnessQueryResponse()
 {
     Expector()->Expect(
         {
@@ -125,7 +125,7 @@ void TUnielProtocolExpectations::EnqueueBrightnessQueryResponse()
         }, __func__);
 }
 
-void TUnielProtocolExpectations::EnqueueSetRelayOnResponse()
+void TUnielDeviceExpectations::EnqueueSetRelayOnResponse()
 {
     Expector()->Expect(
         {
@@ -150,7 +150,7 @@ void TUnielProtocolExpectations::EnqueueSetRelayOnResponse()
         }, __func__);
 }
 
-void TUnielProtocolExpectations::EnqueueSetRelayOffResponse()
+void TUnielDeviceExpectations::EnqueueSetRelayOffResponse()
 {
     Expector()->Expect(
         {
@@ -175,7 +175,7 @@ void TUnielProtocolExpectations::EnqueueSetRelayOffResponse()
         }, __func__);
 }
 
-void TUnielProtocolExpectations::EnqueueSetLowThreshold0Response()
+void TUnielDeviceExpectations::EnqueueSetLowThreshold0Response()
 {
     Expector()->Expect(
         {
@@ -200,7 +200,7 @@ void TUnielProtocolExpectations::EnqueueSetLowThreshold0Response()
         }, __func__);
 }
 
-void TUnielProtocolExpectations::EnqueueSetBrightnessResponse()
+void TUnielDeviceExpectations::EnqueueSetBrightnessResponse()
 {
     Expector()->Expect(
         {

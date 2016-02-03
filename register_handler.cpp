@@ -3,8 +3,8 @@
 
 #include "register_handler.h"
 
-TRegisterHandler::TRegisterHandler(PClientInteraction clientInteraction, PSerialProtocol proto, PRegister reg)
-    : ClientInteraction(clientInteraction), Proto(proto), Reg(reg) {}
+TRegisterHandler::TRegisterHandler(PClientInteraction clientInteraction, PSerialDevice dev, PRegister reg)
+    : ClientInteraction(clientInteraction), Dev(dev), Reg(reg) {}
 
 TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
     TErrorState newState;
@@ -59,8 +59,8 @@ TRegisterHandler::TErrorState TRegisterHandler::Poll(bool* changed)
     bool first_poll = !DidReadReg;
     uint64_t new_value;
     try {
-        new_value = Proto->ReadRegister(Reg);
-    } catch (const TSerialProtocolTransientErrorException& e) {
+        new_value = Dev->ReadRegister(Reg);
+    } catch (const TSerialDeviceTransientErrorException& e) {
         std::ios::fmtflags f(std::cerr.flags());
         std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " [slave_id is "
 				  << Reg->Slave << "(0x" << std::hex << Reg->Slave << ")]" << std::endl;
@@ -110,8 +110,8 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
     }
 
     try {
-        Proto->WriteRegister(Reg, Value);
-    } catch (const TSerialProtocolTransientErrorException& e) {
+        Dev->WriteRegister(Reg, Value);
+    } catch (const TSerialDeviceTransientErrorException& e) {
         std::ios::fmtflags f(std::cerr.flags());
         std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " <<
             Reg->Slave << "(0x" << std::hex << Reg->Slave << ")" <<  std::endl;

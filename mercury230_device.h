@@ -8,9 +8,9 @@
 #include <unordered_map>
 #include <cstdint>
 
-#include "em_protocol.h"
+#include "em_device.h"
 
-class TMercury230Protocol: public TEMProtocol {
+class TMercury230Device: public TEMDevice {
 public:
     static const int DefaultTimeoutMs = 1000;
     enum RegisterType {
@@ -18,7 +18,7 @@ public:
         REG_PARAM = 1
     };
 
-    TMercury230Protocol(PDeviceConfig, PAbstractSerialPort port);
+    TMercury230Device(PDeviceConfig, PAbstractSerialPort port);
     uint64_t ReadRegister(PRegister reg);
     void EndPollCycle();
 
@@ -36,4 +36,4 @@ private:
     std::unordered_map<int, TValueArray> CachedValues;
 };
 
-typedef std::shared_ptr<TMercury230Protocol> PMercury230Protocol;
+typedef std::shared_ptr<TMercury230Device> PMercury230Device;

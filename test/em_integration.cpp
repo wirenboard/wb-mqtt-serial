@@ -4,7 +4,7 @@
 #include "serial_config.h"
 #include "serial_observer.h"
 
-class TEMIntegrationTest: public TSerialProtocolIntegrationTest, public TEMProtocolExpectations
+class TEMIntegrationTest: public TSerialDeviceIntegrationTest, public TEMDeviceExpectations
 {
 protected:
     const char* ConfigPath() const { return "../config-em-test.json"; }

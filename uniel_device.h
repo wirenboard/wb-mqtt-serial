@@ -5,9 +5,9 @@
 #include <exception>
 #include <stdint.h>
 
-#include "serial_protocol.h"
+#include "serial_device.h"
 
-class TUnielProtocol: public TSerialProtocol {
+class TUnielDevice: public TSerialDevice {
 public:
     static const int DefaultTimeoutMs = 1000;
     enum RegisterType {
@@ -17,7 +17,7 @@ public:
         REG_BRIGHTNESS = 1
     };
 
-    TUnielProtocol(PDeviceConfig, PAbstractSerialPort port);
+    TUnielDevice(PDeviceConfig, PAbstractSerialPort port);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 
@@ -26,4 +26,4 @@ private:
     void ReadResponse(uint8_t cmd, uint8_t* response);
 };
 
-typedef std::shared_ptr<TUnielProtocol> PUnielProtocol;
+typedef std::shared_ptr<TUnielDevice> PUnielDevice;

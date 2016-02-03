@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "uniel_protocol.h"
+#include "uniel_device.h"
 
 namespace {
     enum {
@@ -20,18 +20,18 @@ namespace {
     };
 }
 
-REGISTER_PROTOCOL("uniel", TUnielProtocol, TRegisterTypes({
-            { TUnielProtocol::REG_RELAY, "relay", "switch", U8 },
-            { TUnielProtocol::REG_INPUT, "input", "text", U8, true },
-            { TUnielProtocol::REG_PARAM, "param", "value", U8 },
+REGISTER_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
+            { TUnielDevice::REG_RELAY, "relay", "switch", U8 },
+            { TUnielDevice::REG_INPUT, "input", "text", U8, true },
+            { TUnielDevice::REG_PARAM, "param", "value", U8 },
             // "value", not "range" because 'max' cannot be specified here.
-            { TUnielProtocol::REG_BRIGHTNESS, "brightness", "value", U8 }
+            { TUnielDevice::REG_BRIGHTNESS, "brightness", "value", U8 }
         }));
 
-TUnielProtocol::TUnielProtocol(PDeviceConfig, PAbstractSerialPort port)
-    : TSerialProtocol(port) {}
+TUnielDevice::TUnielDevice(PDeviceConfig, PAbstractSerialPort port)
+    : TSerialDevice(port) {}
 
-void TUnielProtocol::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
+void TUnielDevice::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
 {
     Port()->CheckPortOpen();
     uint8_t buf[8];
@@ -45,7 +45,7 @@ void TUnielProtocol::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t 
     Port()->WriteBytes(buf, 8);
 }
 
-void TUnielProtocol::ReadResponse(uint8_t cmd, uint8_t* response)
+void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
 {
     uint8_t buf[5];
     for (;;) {
@@ -60,35 +60,35 @@ void TUnielProtocol::ReadResponse(uint8_t cmd, uint8_t* response)
         }
 
         if (Port()->ReadByte() != s)
-            throw TSerialProtocolTransientErrorException("uniel: warning: checksum failure");
+            throw TSerialDeviceTransientErrorException("uniel: warning: checksum failure");
 
         break;
     }
 
     if (buf[0] != cmd)
-        throw TSerialProtocolTransientErrorException("bad command code in response");
+        throw TSerialDeviceTransientErrorException("bad command code in response");
 
     if (buf[1] != 0)
-        throw TSerialProtocolTransientErrorException("bad module address in response");
+        throw TSerialDeviceTransientErrorException("bad module address in response");
 
     for (int i = 2; i < 5; ++i)
         *response++ = buf[i];
 }
 
-uint64_t TUnielProtocol::ReadRegister(PRegister reg)
+uint64_t TUnielDevice::ReadRegister(PRegister reg)
 {
     WriteCommand(READ_CMD, reg->Slave, 0, uint8_t(reg->Address), 0);
     uint8_t response[3];
     ReadResponse(READ_CMD, response);
     if (response[1] != uint8_t(reg->Address))
-        throw TSerialProtocolTransientErrorException("register index mismatch");
+        throw TSerialDeviceTransientErrorException("register index mismatch");
 
     if (reg->Type == REG_RELAY)
         return response[0] ? 1 : 0;
     return response[0];
 }
 
-void TUnielProtocol::WriteRegister(PRegister reg, uint64_t value)
+void TUnielDevice::WriteRegister(PRegister reg, uint64_t value)
 {
     uint8_t cmd, addr;
     if (reg->Type == REG_BRIGHTNESS) {
@@ -104,7 +104,7 @@ void TUnielProtocol::WriteRegister(PRegister reg, uint64_t value)
     uint8_t response[3];
     ReadResponse(cmd, response);
     if (response[1] != addr)
-        throw TSerialProtocolTransientErrorException("register index mismatch");
+        throw TSerialDeviceTransientErrorException("register index mismatch");
     if (response[0] != value)
-        throw TSerialProtocolTransientErrorException("written register value mismatch");
+        throw TSerialDeviceTransientErrorException("written register value mismatch");
 }

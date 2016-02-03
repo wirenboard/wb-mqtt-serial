@@ -9,8 +9,8 @@
 #include "serial_config.h"
 #include "serial_observer.h"
 #include "modbus_server.h"
-#include "serial_protocol.h"
-#include "modbus_protocol.h"
+#include "serial_device.h"
+#include "modbus_device.h"
 #include "pty_based_fake_serial.h"
 
 class TModbusTestBase: public TLoggedFixture
@@ -49,19 +49,19 @@ protected:
     void TearDown();
     PRegister RegCoil(int addr, RegisterFormat fmt = U8) {
         return std::make_shared<TRegister>(
-            1, TModbusProtocol::REG_COIL, addr, fmt, 1, true, false, "coil");
+            1, TModbusDevice::REG_COIL, addr, fmt, 1, true, false, "coil");
     }
     PRegister RegDiscrete(int addr, RegisterFormat fmt = U8) {
         return std::make_shared<TRegister>(
-            1, TModbusProtocol::REG_DISCRETE, addr, fmt, 1, true, true, "discrete");
+            1, TModbusDevice::REG_DISCRETE, addr, fmt, 1, true, true, "discrete");
     }
     PRegister RegHolding(int addr, RegisterFormat fmt = U16, double scale = 1) {
         return std::make_shared<TRegister>(
-            1, TModbusProtocol::REG_HOLDING, addr, fmt, scale, true, false, "holding");
+            1, TModbusDevice::REG_HOLDING, addr, fmt, scale, true, false, "holding");
     }
     PRegister RegInput(int addr, RegisterFormat fmt = U16, double scale = 1) {
         return std::make_shared<TRegister>(
-            1, TModbusProtocol::REG_INPUT, addr, fmt, scale, true, true, "input");
+            1, TModbusDevice::REG_INPUT, addr, fmt, scale, true, true, "input");
     }
     PSerialPort ClientSerial;
     PSerialClient SerialClient;
@@ -590,7 +590,7 @@ TEST_F(TConfigParserTest, Parse)
 {
     TConfigTemplateParser device_parser(GetDataFilePath("../wb-homa-modbus-templates/"), false);
     TConfigParser parser(GetDataFilePath("../config.json"), false,
-                         TSerialProtocolFactory::GetRegisterTypes, device_parser.Parse());
+                         TSerialDeviceFactory::GetRegisterTypes, device_parser.Parse());
     PHandlerConfig config = parser.Parse();
     Emit() << "Debug: " << config->Debug;
     Emit() << "Ports:";
@@ -655,7 +655,7 @@ TEST_F(TConfigParserTest, Parse)
 TEST_F(TConfigParserTest, ForceDebug)
 {
     TConfigParser parser(GetDataFilePath("../config-test.json"), true,
-                         TSerialProtocolFactory::GetRegisterTypes);
+                         TSerialDeviceFactory::GetRegisterTypes);
     PHandlerConfig config = parser.Parse();
     ASSERT_TRUE(config->Debug);
 }
@@ -673,7 +673,7 @@ void TModbusDeviceTest::SetUp()
 {
     TModbusTestBase::SetUp();
     TConfigParser parser(GetDataFilePath("../config-test.json"), false,
-                         TSerialProtocolFactory::GetRegisterTypes);
+                         TSerialDeviceFactory::GetRegisterTypes);
     Config = parser.Parse();
     // NOTE: only one port is currently supported
     Config->PortConfigs[0]->ConnSettings.Device = FakeSerial->GetPrimaryPtsName();

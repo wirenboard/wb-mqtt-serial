@@ -1,12 +1,12 @@
 #include <cstring>
 
-#include "em_protocol.h"
+#include "em_device.h"
 #include "crc16.h"
 
-TEMProtocol::TEMProtocol(PDeviceConfig device_config, PAbstractSerialPort port)
-    : TSerialProtocol(port), Config(device_config) {}
+TEMDevice::TEMDevice(PDeviceConfig device_config, PAbstractSerialPort port)
+    : TSerialDevice(port), Config(device_config) {}
 
-void TEMProtocol::EnsureSlaveConnected(uint8_t slave, bool force)
+void TEMDevice::EnsureSlaveConnected(uint8_t slave, bool force)
 {
     if (!force && ConnectedSlaves.find(slave) != ConnectedSlaves.end())
         return;
@@ -20,14 +20,14 @@ void TEMProtocol::EnsureSlaveConnected(uint8_t slave, bool force)
         }
     }
 
-    throw TSerialProtocolException("failed to establish meter connection");
+    throw TSerialDeviceException("failed to establish meter connection");
 }
 
-void TEMProtocol::WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int len)
+void TEMDevice::WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int len)
 {
     uint8_t buf[MAX_LEN], *p = buf;
     if (len + 4 > MAX_LEN)
-        throw TSerialProtocolException("outgoing command too long");
+        throw TSerialDeviceException("outgoing command too long");
     *p++ = slave;
     *p++ = cmd;
     while (len--)
@@ -38,37 +38,37 @@ void TEMProtocol::WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int
     Port()->WriteBytes(buf, p - buf);
 }
 
-bool TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len,
+bool TEMDevice::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len,
                                TAbstractSerialPort::TFrameCompletePred frame_complete)
 {
     uint8_t buf[MAX_LEN], *p = buf;
     int nread = Port()->ReadFrame(buf, MAX_LEN, Config->FrameTimeout, frame_complete);
     if (nread < 4)
-        throw TSerialProtocolTransientErrorException("frame too short");
+        throw TSerialDeviceTransientErrorException("frame too short");
 
     uint16_t crc = CRC16::CalculateCRC16(buf, nread - 2),
         crc1 = buf[nread - 2],
         crc2 = buf[nread - 1],
         actualCrc = (crc1 << 8) + crc2;
     if (crc != actualCrc)
-        throw TSerialProtocolTransientErrorException("invalid crc");
+        throw TSerialDeviceTransientErrorException("invalid crc");
 
     if (*p++ != slave)
-        throw TSerialProtocolTransientErrorException("invalid slave id");
+        throw TSerialDeviceTransientErrorException("invalid slave id");
 
     const char* msg;
     ErrorType err = CheckForException(buf, nread, &msg);
     if (err == NO_OPEN_SESSION)
         return false;
     else if (err != NO_ERROR)
-        throw TSerialProtocolTransientErrorException(msg);
+        throw TSerialDeviceTransientErrorException(msg);
 
     if (expectedByte1 >= 0 && *p++ != expectedByte1)
-        throw TSerialProtocolTransientErrorException("invalid command code in the response");
+        throw TSerialDeviceTransientErrorException("invalid command code in the response");
 
     int actualPayloadSize = nread - (p - buf) - 2;
     if (len >= 0 && len != actualPayloadSize)
-        throw TSerialProtocolTransientErrorException("unexpected frame size");
+        throw TSerialDeviceTransientErrorException("unexpected frame size");
     else
         len = actualPayloadSize;
 
@@ -76,7 +76,7 @@ bool TEMProtocol::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payloa
     return true;
 }
 
-void TEMProtocol::Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payload_len,
+void TEMDevice::Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payload_len,
                        int expected_byte1, uint8_t* resp_payload, int resp_payload_len,
                        TAbstractSerialPort::TFrameCompletePred frame_complete)
 {
@@ -87,18 +87,18 @@ void TEMProtocol::Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payload
             EnsureSlaveConnected(slave, true);
             WriteCommand(slave, cmd, payload, payload_len);
         }
-    } catch (const TSerialProtocolTransientErrorException& e) {
+    } catch (const TSerialDeviceTransientErrorException& e) {
         Port()->SkipNoise();
         throw;
     }
 }
 
-void TEMProtocol::WriteRegister(PRegister, uint64_t)
+void TEMDevice::WriteRegister(PRegister, uint64_t)
 {
-    throw TSerialProtocolException("EM protocol: writing to registers not supported");
+    throw TSerialDeviceException("EM protocol: writing to registers not supported");
 }
 
-PDeviceConfig TEMProtocol::DeviceConfig() const
+PDeviceConfig TEMDevice::DeviceConfig() const
 {
     return Config;
 }

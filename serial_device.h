@@ -13,12 +13,12 @@
 #include "serial_config.h"
 #include "serial_port.h"
 
-class TSerialProtocol: public std::enable_shared_from_this<TSerialProtocol> {
+class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {
 public:
-    TSerialProtocol(PAbstractSerialPort port);
-    TSerialProtocol(const TSerialProtocol&) = delete;
-    TSerialProtocol& operator=(const TSerialProtocol&) = delete;
-    virtual ~TSerialProtocol();
+    TSerialDevice(PAbstractSerialPort port);
+    TSerialDevice(const TSerialDevice&) = delete;
+    TSerialDevice& operator=(const TSerialDevice&) = delete;
+    virtual ~TSerialDevice();
 
     virtual uint64_t ReadRegister(PRegister reg) = 0;
     virtual void WriteRegister(PRegister reg, uint64_t value) = 0;
@@ -31,42 +31,42 @@ private:
     PAbstractSerialPort SerialPort;
 };
 
-typedef std::shared_ptr<TSerialProtocol> PSerialProtocol;
+typedef std::shared_ptr<TSerialDevice> PSerialDevice;
 
-typedef PSerialProtocol (*TSerialProtocolMaker)(PDeviceConfig device_config,
+typedef PSerialDevice (*TSerialDeviceMaker)(PDeviceConfig device_config,
                                                 PAbstractSerialPort port);
 
 struct TSerialProtocolEntry {
-    TSerialProtocolEntry(TSerialProtocolMaker maker, PRegisterTypeMap register_types):
+    TSerialProtocolEntry(TSerialDeviceMaker maker, PRegisterTypeMap register_types):
         Maker(maker), RegisterTypes(register_types) {}
-    TSerialProtocolMaker Maker;
+    TSerialDeviceMaker Maker;
     PRegisterTypeMap RegisterTypes;
 };
 
-class TSerialProtocolFactory {
+class TSerialDeviceFactory {
 public:
-    TSerialProtocolFactory() = delete;
-    static void RegisterProtocol(const std::string& name, TSerialProtocolMaker maker,
+    TSerialDeviceFactory() = delete;
+    static void RegisterProtocol(const std::string& name, TSerialDeviceMaker maker,
                                  const TRegisterTypes& register_types);
     static PRegisterTypeMap GetRegisterTypes(PDeviceConfig device_config);
-    static PSerialProtocol CreateProtocol(PDeviceConfig device_config, PAbstractSerialPort port);
+    static PSerialDevice CreateDevice(PDeviceConfig device_config, PAbstractSerialPort port);
 
 private:
     static const TSerialProtocolEntry& GetProtocolEntry(PDeviceConfig device_config);
     static std::unordered_map<std::string, TSerialProtocolEntry> *Protocols;
 };
 
-template<class Proto>
-class TSerialProtocolRegistrator {
+template<class Dev>
+class TSerialDeviceRegistrator {
 public:
-    TSerialProtocolRegistrator(const std::string& name, const TRegisterTypes& register_types)
+    TSerialDeviceRegistrator(const std::string& name, const TRegisterTypes& register_types)
     {
-        TSerialProtocolFactory::RegisterProtocol(
+        TSerialDeviceFactory::RegisterProtocol(
             name, [](PDeviceConfig device_config, PAbstractSerialPort port) {
-                return PSerialProtocol(new Proto(device_config, port));
+                return PSerialDevice(new Dev(device_config, port));
             }, register_types);
     }
 };
 
 #define REGISTER_PROTOCOL(name, cls, regTypes) \
-    TSerialProtocolRegistrator<cls> reg__##cls(name, regTypes)
+    TSerialDeviceRegistrator<cls> reg__##cls(name, regTypes)

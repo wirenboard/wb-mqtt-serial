@@ -5,9 +5,9 @@
 #include <exception>
 #include <stdint.h>
 
-#include "serial_protocol.h"
+#include "serial_device.h"
 
-class TModbusProtocol: public TSerialProtocol {
+class TModbusDevice: public TSerialDevice {
 public:
     static const int DefaultTimeoutMs = 1000;
     enum RegisterType {
@@ -17,7 +17,7 @@ public:
         REG_DISCRETE,
     };
 
-    TModbusProtocol(PDeviceConfig, PAbstractSerialPort port);
+    TModbusDevice(PDeviceConfig, PAbstractSerialPort port);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 

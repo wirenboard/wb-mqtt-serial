@@ -1,18 +1,18 @@
 #include <iostream>
 
-#include "modbus_protocol.h"
+#include "modbus_device.h"
 
-REGISTER_PROTOCOL("modbus", TModbusProtocol, TRegisterTypes({
-            { TModbusProtocol::REG_COIL, "coil", "switch", U8 },
-            { TModbusProtocol::REG_DISCRETE, "discrete", "switch", U8, true },
-            { TModbusProtocol::REG_HOLDING, "holding", "text", U16 },
-            { TModbusProtocol::REG_INPUT, "input", "text", U16, true }
+REGISTER_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
+            { TModbusDevice::REG_COIL, "coil", "switch", U8 },
+            { TModbusDevice::REG_DISCRETE, "discrete", "switch", U8, true },
+            { TModbusDevice::REG_HOLDING, "holding", "text", U16 },
+            { TModbusDevice::REG_INPUT, "input", "text", U16, true }
         }));
 
-TModbusProtocol::TModbusProtocol(PDeviceConfig, PAbstractSerialPort port)
-    : TSerialProtocol(port), Context(port->LibModbusContext()) {}
+TModbusDevice::TModbusDevice(PDeviceConfig, PAbstractSerialPort port)
+    : TSerialDevice(port), Context(port->LibModbusContext()) {}
 
-uint64_t TModbusProtocol::ReadRegister(PRegister reg)
+uint64_t TModbusDevice::ReadRegister(PRegister reg)
 {
     int w = reg->Width();
 
@@ -24,7 +24,7 @@ uint64_t TModbusProtocol::ReadRegister(PRegister reg)
     if (IsSingleBit(reg->Type)) {
         uint8_t b;
         if (w != 1)
-            throw TSerialProtocolException(
+            throw TSerialDeviceException(
                 "width other than 1 is not currently supported for reg type" +
                 reg->TypeName);
 
@@ -36,13 +36,13 @@ uint64_t TModbusProtocol::ReadRegister(PRegister reg)
             return b;
     } else {
         if (w > 4)
-            throw TSerialProtocolException(
+            throw TSerialDeviceException(
                 "can't pack more than 4 " + reg->TypeName +
                 "s into a single value");
 
         uint16_t v[4];
         if (reg->Type != REG_HOLDING && reg->Type != REG_INPUT)
-            throw TSerialProtocolException("invalid register type");
+            throw TSerialDeviceException("invalid register type");
 
         int rc = reg->Type == REG_HOLDING ?
             modbus_read_registers(Context->Inner, reg->Address, w, v) :
@@ -56,12 +56,12 @@ uint64_t TModbusProtocol::ReadRegister(PRegister reg)
         }
     }
 
-    throw TSerialProtocolTransientErrorException(
+    throw TSerialDeviceTransientErrorException(
         "failed to read " + reg->TypeName +
         " @ " + std::to_string(reg->Address));
 }
 
-void TModbusProtocol::WriteRegister(PRegister reg, uint64_t value)
+void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
 {
     int w = reg->Width();
 
@@ -73,7 +73,7 @@ void TModbusProtocol::WriteRegister(PRegister reg, uint64_t value)
     switch (reg->Type) {
     case REG_COIL:
         if (w != 1)
-            throw TSerialProtocolException(
+            throw TSerialDeviceException(
                 "width other than 1 is not currently supported for reg type" +
                 reg->TypeName);
         if (modbus_write_bit(Context->Inner, reg->Address, value ? 1 : 0) >= 0)
@@ -84,7 +84,7 @@ void TModbusProtocol::WriteRegister(PRegister reg, uint64_t value)
             if (modbus_write_register(Context->Inner, reg->Address, value) >= 0)
                 return;
         } else if (w > 4)
-            throw TSerialProtocolException(
+            throw TSerialDeviceException(
                 "can't pack more than 4 " + reg->TypeName +
                 "s into a single value");
         else {
@@ -100,10 +100,10 @@ void TModbusProtocol::WriteRegister(PRegister reg, uint64_t value)
         }
         break;
     default:
-        throw TSerialProtocolException("can't write to " + reg->TypeName);
+        throw TSerialDeviceException("can't write to " + reg->TypeName);
     }
 
-    throw TSerialProtocolTransientErrorException(
+    throw TSerialDeviceTransientErrorException(
         "failed to write " + reg->TypeName +
         " @ " + std::to_string(reg->Address));
 }

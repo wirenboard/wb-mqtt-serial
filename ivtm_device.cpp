@@ -13,14 +13,14 @@
 #include <cstring>
 #include <string>
 
-#include "ivtm_protocol.h"
+#include "ivtm_device.h"
 
-REGISTER_PROTOCOL("ivtm", TIVTMProtocol, TRegisterTypes({{ 0, "default", "value", Float, true }}));
+REGISTER_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
-TIVTMProtocol::TIVTMProtocol(PDeviceConfig, PAbstractSerialPort port)
-    : TSerialProtocol(port) {}
+TIVTMDevice::TIVTMDevice(PDeviceConfig, PAbstractSerialPort port)
+    : TSerialDevice(port) {}
 
-void TIVTMProtocol::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len)
+void TIVTMDevice::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len)
 {
     Port()->CheckPortOpen();
     uint8_t buf[16];
@@ -51,7 +51,7 @@ void TIVTMProtocol::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data
 
 static const int MAX_LEN = 100;
 
-bool TIVTMProtocol::DecodeASCIIBytes(uint8_t * buf, uint8_t* result, uint8_t len_bytes)
+bool TIVTMDevice::DecodeASCIIBytes(uint8_t * buf, uint8_t* result, uint8_t len_bytes)
 {
     for (size_t i = 0; i < len_bytes; ++i) {
         result[i] = DecodeASCIIByte(buf + i*2);
@@ -60,13 +60,13 @@ bool TIVTMProtocol::DecodeASCIIBytes(uint8_t * buf, uint8_t* result, uint8_t len
 }
 
 
-uint8_t TIVTMProtocol::DecodeASCIIByte(uint8_t * buf)
+uint8_t TIVTMDevice::DecodeASCIIByte(uint8_t * buf)
 {
     std::string s(buf, buf+2);
     return stoul(s, nullptr, 16);
 }
 
-uint16_t TIVTMProtocol::DecodeASCIIWord(uint8_t * buf)
+uint16_t TIVTMDevice::DecodeASCIIWord(uint8_t * buf)
 {
     uint8_t decoded_buf[2];
     DecodeASCIIBytes(buf, decoded_buf, 2);
@@ -74,7 +74,7 @@ uint16_t TIVTMProtocol::DecodeASCIIWord(uint8_t * buf)
     return (decoded_buf[0] << 8) | decoded_buf[1];
 }
 
-void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
+void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 {
     uint8_t buf[MAX_LEN];
 
@@ -84,18 +84,18 @@ void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
             return size > 0 && buf[size - 1] == '\r';
         });
     if (nread < 10)
-        throw TSerialProtocolTransientErrorException("frame too short");
+        throw TSerialDeviceTransientErrorException("frame too short");
 
     if ( (buf[0] != '!') || (buf[5] != 'R') || (buf[6] != 'R')) {
-        throw TSerialProtocolTransientErrorException("invalid response header");
+        throw TSerialDeviceTransientErrorException("invalid response header");
     }
 
     if (buf[nread-1] != 0x0D) {
-        throw TSerialProtocolTransientErrorException("invalid response footer");   
+        throw TSerialDeviceTransientErrorException("invalid response footer");   
     }
 
     if (DecodeASCIIWord(&buf[1]) != addr) {
-        throw TSerialProtocolTransientErrorException("invalid slave addr in response");
+        throw TSerialDeviceTransientErrorException("invalid slave addr in response");
     }
 
     uint8_t crc8 = 0;
@@ -106,11 +106,11 @@ void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     uint8_t actualCrc = DecodeASCIIByte(&buf[nread-3]);
 
     if (crc8 != actualCrc)
-        throw TSerialProtocolTransientErrorException("invalid crc");
+        throw TSerialDeviceTransientErrorException("invalid crc");
 
     int actualPayloadSize = nread - 10; // in ASCII symbols
     if (len * 2 != actualPayloadSize) {
-        throw TSerialProtocolTransientErrorException("unexpected frame size");
+        throw TSerialDeviceTransientErrorException("unexpected frame size");
     } else {
         len = actualPayloadSize / 2;
     }
@@ -119,7 +119,7 @@ void TIVTMProtocol::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 }
 
 
-uint64_t TIVTMProtocol::ReadRegister(PRegister reg)
+uint64_t TIVTMDevice::ReadRegister(PRegister reg)
 {
     Port()->SkipNoise();
 
@@ -137,16 +137,16 @@ uint64_t TIVTMProtocol::ReadRegister(PRegister reg)
            p[0];
 }
 
-void TIVTMProtocol::WriteRegister(PRegister, uint64_t)
+void TIVTMDevice::WriteRegister(PRegister, uint64_t)
 {
-    throw TSerialProtocolException("IVTM protocol: writing register is not supported");
+    throw TSerialDeviceException("IVTM protocol: writing register is not supported");
 }
 
 #if 0
 int main(int, char**)
 {
     try {
-        TIVTMProtocol bus("/dev/ttyNSC1");
+        TIVTMDevice bus("/dev/ttyNSC1");
         bus.Open();
         int v = bus.ReadRegister(0x01, 0x0a);
         std::cout << "value of mod 0x01 reg 0x0a: " << v << std::endl;
@@ -160,7 +160,7 @@ int main(int, char**)
             bus.WriteRegister(0x01, address, 0x00);
             std::cout << "value of relay " << i << " (off): " << (int)bus.ReadRegister(0x01, address) << std::endl;
         }
-    } catch (const TIVTMProtocolException& e) {
+    } catch (const TIVTMDeviceException& e) {
         std::cerr << "uniel bus error: " << e.what() << std::endl;
     }
     return 0;

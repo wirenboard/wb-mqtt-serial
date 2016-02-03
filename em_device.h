@@ -7,14 +7,14 @@
 #include <functional>
 #include <cstdint>
 
-#include "serial_protocol.h"
+#include "serial_device.h"
 
-// Common protocol base for electricity meters
-class TEMProtocol: public TSerialProtocol {
+// Common device base for electricity meters
+class TEMDevice: public TSerialDevice {
 public:
     static const int DefaultTimeoutMs = 1000;
 
-    TEMProtocol(PDeviceConfig device_config, PAbstractSerialPort port);
+    TEMDevice(PDeviceConfig device_config, PAbstractSerialPort port);
     void WriteRegister(PRegister reg, uint64_t value);
 
 protected:
@@ -42,4 +42,4 @@ private:
     const int N_CONN_ATTEMPTS = 10;
 };
 
-typedef std::shared_ptr<TEMProtocol> PEMProtocol;
+typedef std::shared_ptr<TEMDevice> PEMDevice;

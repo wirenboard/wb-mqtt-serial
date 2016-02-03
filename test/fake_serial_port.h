@@ -7,7 +7,7 @@
 #include "expector.h"
 #include "testlog.h"
 #include "fake_mqtt.h"
-#include "../wb-homa-modbus/serial_protocol.h"
+#include "../wb-homa-modbus/serial_device.h"
 #include "../serial_observer.h"
 
 class TFakeSerialPort: public TAbstractSerialPort, public TExpector {
@@ -45,7 +45,7 @@ private:
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
 
-class TSerialProtocolTest: public TLoggedFixture, public virtual TExpectorProvider {
+class TSerialDeviceTest: public TLoggedFixture, public virtual TExpectorProvider {
 protected:
     void SetUp();
     void TearDown();
@@ -54,7 +54,7 @@ protected:
     PFakeSerialPort SerialPort;
 };
 
-class TSerialProtocolIntegrationTest: public virtual TSerialProtocolTest {
+class TSerialDeviceIntegrationTest: public virtual TSerialDeviceTest {
 protected:
     void SetUp();
     void TearDown();
