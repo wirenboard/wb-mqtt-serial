@@ -58,9 +58,8 @@ private:
     int LastAccessedSlave = -1;
 
     std::condition_variable FlushNeededCond;
-    std::mutex FlushNeededLock;
+    std::mutex FlushNeededMutex;
     bool FlushNeeded = false;
-
 
     const int MAX_REGS = 65536;
 };

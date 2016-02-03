@@ -84,20 +84,18 @@ void TSerialClient::Cycle()
     // corresponding to single register should be retrieved
     // by single query.
     for (const auto& reg: RegList) {
-        std::unique_lock<std::mutex> lock(FlushNeededLock);
-
-        auto wait_until = std::chrono::steady_clock::now() +
-            std::chrono::microseconds(PollInterval * 1000 / RegList.size());
-
-        while (FlushNeededCond.wait_until(lock, 
-            wait_until,
-            [this](){return FlushNeeded;}
-            ))
         {
-            Flush();
-            FlushNeeded = false;
-        } 
-
+            // Don't hold the lock while flushing
+            std::unique_lock<std::mutex> lock(FlushNeededMutex);
+            auto wait_until = std::chrono::steady_clock::now() +
+                std::chrono::microseconds(PollInterval * 1000 / RegList.size());
+            if (FlushNeededCond.wait_until(lock, wait_until, [this](){ return FlushNeeded; })) {
+                lock.unlock();
+                Flush();
+                lock.lock();
+                FlushNeeded = false;
+            }
+        }
 
         auto handler = Handlers[reg];
         bool changed = false;
@@ -167,7 +165,7 @@ bool TSerialClient::DebugEnabled() const {
 
 void TSerialClient::NotifyFlushNeeded() 
 {
-    std::unique_lock<std::mutex> lock(FlushNeededLock);
+    std::unique_lock<std::mutex> lock(FlushNeededMutex);
     FlushNeeded = true;
     FlushNeededCond.notify_all();
 }

@@ -164,9 +164,12 @@ std::string TRegisterHandler::TextValue() const
 
 void TRegisterHandler::SetTextValue(const std::string& v)
 {
-    std::lock_guard<std::mutex> lock(SetValueMutex);
-    Dirty = true;
-    Value = ConvertMasterValue(v);
+    {
+        // don't hold the lock while notifying the client below
+        std::lock_guard<std::mutex> lock(SetValueMutex);
+        Dirty = true;
+        Value = ConvertMasterValue(v);
+    }
     ClientInteraction->NotifyFlushNeeded();
 }
 
