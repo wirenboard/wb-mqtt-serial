@@ -20,6 +20,10 @@ void TSerialClient::AddDevice(PDeviceConfig device_config)
 {
     if (Active)
         throw TSerialDeviceException("can't add registers to the active client");
+    if (Debug)
+        std::cerr << "AddDevice: " << device_config->Id <<
+            (device_config->DeviceType.empty() ? "" : " (" + device_config->DeviceType + ")") <<
+            " @ " << device_config->SlaveId << " -- protocol: " << device_config->Protocol << std::endl;
     ConfigMap[device_config->SlaveId] = device_config;
 }
 
@@ -31,6 +35,8 @@ void TSerialClient::AddRegister(PRegister reg)
         throw TSerialDeviceException("duplicate register");
     Handlers[reg] = CreateRegisterHandler(reg);
     RegList.push_back(reg);
+    if (Debug)
+        std::cerr << "AddRegister: " << reg << std::endl;
 }
 
 void TSerialClient::Connect()

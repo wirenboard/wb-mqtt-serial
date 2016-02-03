@@ -14,6 +14,7 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
       Port(port_override ? port_override : std::make_shared<TSerialPort>(Config->ConnSettings)),
       SerialClient(new TSerialClient(Port))
 {
+    SerialClient->SetDebug(Config->Debug);
     SerialClient->SetCallback([this](PRegister reg) {
             OnValueChange(reg);
         });
@@ -21,6 +22,10 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
         [this](PRegister reg, TRegisterHandler::TErrorState state) {
             UpdateError(reg, state);
         });
+
+    if (Config->Debug)
+        std::cerr << "Setting up devices at " << port_config->ConnSettings.Device << std::endl;
+
     for (auto device_config: Config->DeviceConfigs) {
         SerialClient->AddDevice(device_config);
         for (auto channel: device_config->DeviceChannels) {
@@ -32,7 +37,6 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
         }
     }
     SerialClient->SetPollInterval(Config->PollInterval);
-    SerialClient->SetDebug(Config->Debug);
 }
 
 void TSerialPortDriver::PubSubSetup()
