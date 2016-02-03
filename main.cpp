@@ -63,12 +63,12 @@ int main(int argc, char *argv[])
     PMQTTClient mqtt_client(new TMQTTClient(mqtt_config));
 
     try {
-        PMQTTSerialObserver modbus_observer(new TMQTTSerialObserver(mqtt_client, handler_config));
-        modbus_observer->SetUp();
-        if (modbus_observer->WriteInitValues() && handler_config->Debug)
+        PMQTTSerialObserver observer(new TMQTTSerialObserver(mqtt_client, handler_config));
+        observer->SetUp();
+        if (observer->WriteInitValues() && handler_config->Debug)
             cerr << "Register-based setup performed." << endl;
         mqtt_client->StartLoop();
-        modbus_observer->Loop();
+        observer->Loop();
     } catch (const TSerialDeviceException& e) {
         cerr << "FATAL: " << e.what() << endl;
         return 1;
