@@ -1,11 +1,12 @@
 #include <unistd.h>
+#include <iostream>
 
 #include "serial_client.h"
 
 TSerialClient::TSerialClient(PAbstractSerialPort port)
     : Port(port),
       Active(false),
-      PollInterval(1000),
+      PollInterval(20),
       Callback([](PRegister){}),
       ErrorCallback([](PRegister, bool){}) {}
 
@@ -77,7 +78,21 @@ void TSerialClient::Cycle()
     // corresponding to single register should be retrieved
     // by single query.
     for (const auto& reg: RegList) {
-        Flush();
+        std::unique_lock<std::mutex> lock(FlushNeededLock);
+
+        auto wait_until = std::chrono::steady_clock::now() +
+            std::chrono::microseconds(PollInterval * 1000 / RegList.size());
+
+        while (FlushNeededCond.wait_until(lock, 
+            wait_until,
+            [this](){return FlushNeeded;}
+            ))
+        {
+            Flush();
+            FlushNeeded = false;
+        } 
+
+
         auto handler = Handlers[reg];
         bool changed = false;
         if (!handler->NeedToPoll())
@@ -92,7 +107,6 @@ void TSerialClient::Cycle()
             handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
             Callback(reg);
 
-        Port->USleep(PollInterval * 1000);
     }
     for (const auto& p: ProtoMap)
         p.second->EndPollCycle();
@@ -143,6 +157,13 @@ void TSerialClient::SetDebug(bool debug)
 
 bool TSerialClient::DebugEnabled() const {
     return Debug;
+}
+
+void TSerialClient::NotifyFlushNeeded() 
+{
+    std::unique_lock<std::mutex> lock(FlushNeededLock);
+    FlushNeeded = true;
+    FlushNeededCond.notify_all();
 }
 
 PRegisterHandler TSerialClient::GetHandler(PRegister reg) const

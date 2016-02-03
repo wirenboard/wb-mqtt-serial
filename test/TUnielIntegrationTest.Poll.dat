@@ -38,7 +38,6 @@ EnqueueBrightnessQueryResponse()
 Publish: /devices/pseudo_uniel/controls/LED 1/meta/error: '' (QoS 0, retained)
 Publish: /devices/pseudo_uniel/controls/LED 1: '66' (QoS 0, retained)
 << FF FF 05 00 42 41 00 88
-Sleep(10000)
 >>> Publish: /devices/pseudo_uniel/controls/Relay 1/on: '1' (QoS 0)
 Publish: /devices/pseudo_uniel/controls/Relay 1: '1' (QoS 0, retained)
 >>> Publish: /devices/pseudo_uniel/controls/LowThr/on: '112' (QoS 0)
@@ -67,5 +66,4 @@ EnqueueThreshold0QueryResponse()
 EnqueueBrightnessQueryResponse()
 >> FF FF 05 01 00 41 00 47
 << FF FF 05 00 42 41 00 88
-Sleep(10000)
 Close()

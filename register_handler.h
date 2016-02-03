@@ -6,13 +6,14 @@
 #include "register.h"
 #include "serial_protocol.h"
 
-class IDebugEnabled {
+class IClientInteraction {
 public:
-    virtual ~IDebugEnabled() {}
+    virtual ~IClientInteraction() {}
     virtual bool DebugEnabled() const = 0;
+    virtual void NotifyFlushNeeded() = 0;
 };
 
-typedef std::shared_ptr<IDebugEnabled> PDebugEnabled;
+typedef std::shared_ptr<IClientInteraction> PClientInteraction;
     
 class TRegisterHandler
 {
@@ -25,7 +26,7 @@ public:
         UnknownErrorState,
         ErrorStateUnchanged
     };
-    TRegisterHandler(PDebugEnabled debugState, PSerialProtocol proto, PRegister reg);
+    TRegisterHandler(PClientInteraction clientInteraction, PSerialProtocol proto, PRegister reg);
     PRegister Register() const { return Reg; }
     bool NeedToPoll();
     TErrorState Poll(bool* changed);
@@ -44,7 +45,7 @@ private:
     TErrorState UpdateReadError(bool error);
     TErrorState UpdateWriteError(bool error);
 
-    PDebugEnabled DebugState;
+    PClientInteraction ClientInteraction;
     PSerialProtocol Proto;
     uint64_t Value = 0;
     PRegister Reg;

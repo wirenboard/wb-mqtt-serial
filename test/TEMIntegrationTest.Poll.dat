@@ -73,5 +73,4 @@ EnqueueMercury230I1Response()
 Publish: /devices/mercury230ar02-test/controls/I1/meta/error: '' (QoS 0, retained)
 Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
 << 00 00 45 00 32 B4
-Sleep(100000)
 Close()

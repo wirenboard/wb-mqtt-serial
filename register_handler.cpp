@@ -3,8 +3,8 @@
 
 #include "register_handler.h"
 
-TRegisterHandler::TRegisterHandler(PDebugEnabled debugState, PSerialProtocol proto, PRegister reg)
-    : DebugState(debugState), Proto(proto), Reg(reg) {}
+TRegisterHandler::TRegisterHandler(PClientInteraction clientInteraction, PSerialProtocol proto, PRegister reg)
+    : ClientInteraction(clientInteraction), Proto(proto), Reg(reg) {}
 
 TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
     TErrorState newState;
@@ -79,7 +79,7 @@ TRegisterHandler::TErrorState TRegisterHandler::Poll(bool* changed)
         Value = new_value;
         SetValueMutex.unlock();
 
-        if (DebugState->DebugEnabled()) {
+        if (ClientInteraction->DebugEnabled()) {
             std::ios::fmtflags f(std::cerr.flags());
             std::cerr << "new val for " << Reg->ToString() << ": " << std::hex << new_value << std::endl;
             std::cerr.flags(f);
@@ -167,6 +167,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
     std::lock_guard<std::mutex> lock(SetValueMutex);
     Dirty = true;
     Value = ConvertMasterValue(v);
+    ClientInteraction->NotifyFlushNeeded();
 }
 
 uint64_t TRegisterHandler::ConvertMasterValue(const std::string& str) const

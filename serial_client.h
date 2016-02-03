@@ -3,11 +3,13 @@
 #include <list>
 #include <memory>
 #include <functional>
+#include <condition_variable>
+#include <mutex>
 
 #include "serial_protocol.h"
 #include "register_handler.h"
 
-class TSerialClient: public IDebugEnabled, public std::enable_shared_from_this<TSerialClient>
+class TSerialClient: public IClientInteraction, public std::enable_shared_from_this<TSerialClient>
 {
 public:
     typedef std::function<void(PRegister reg)> TCallback;
@@ -31,6 +33,7 @@ public:
     void SetPollInterval(int ms);
     void SetDebug(bool debug);
     bool DebugEnabled() const;
+    void NotifyFlushNeeded();
     void WriteSetupRegister(PRegister reg, uint64_t value);
 
 private:
@@ -53,6 +56,11 @@ private:
     TErrorCallback ErrorCallback;
     bool Debug = false;
     int LastAccessedSlave = -1;
+
+    std::condition_variable FlushNeededCond;
+    std::mutex FlushNeededLock;
+    bool FlushNeeded = false;
+
 
     const int MAX_REGS = 65536;
 };

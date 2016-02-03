@@ -66,8 +66,8 @@
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Delay after receiving a response (ms)",
-          "description" :  "This option specifies the delay after each command. All activity on a given port will be halted during the delay, including writes.",
+          "title": "Desired poll interval (ms)",
+          "description" :  "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). This works by sleeping for <poll_interval> / <number_of_registers> after each read operation. Writes are performed are not affected by this setting and are performed as soon as possible.",
           "minimum": 0,
           "default": 20,
           "propertyOrder": 7
