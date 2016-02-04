@@ -63,7 +63,7 @@ TRegisterHandler::TErrorState TRegisterHandler::Poll(bool* changed)
     } catch (const TSerialDeviceTransientErrorException& e) {
         std::ios::fmtflags f(std::cerr.flags());
         std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " [slave_id is "
-				  << Reg->Slave << "(0x" << std::hex << Reg->Slave << ")]" << std::endl;
+				  << Reg->Slave << "(0x" << std::hex << Reg->Slave->Id << ")]" << std::endl;
         std::cerr.flags(f);
         return UpdateReadError(true);
     }

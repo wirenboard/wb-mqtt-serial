@@ -53,11 +53,23 @@ struct TSlaveEntry
 
     TSlaveEntry(const std::string& protocol, int id): Protocol(protocol), Id(id) {}
 
+    std::string ToString() const {
+        return Protocol + ":" + std::to_string(Id);
+    }
+
     static PSlaveEntry Intern(const std::string& protocol = "", int id = 0)
     {
         return TRegistry::Intern<TSlaveEntry>(protocol, id);
     }
 };
+
+inline ::std::ostream& operator<<(::std::ostream& os, PSlaveEntry entry) {
+    return os << entry->ToString();
+}
+
+inline ::std::ostream& operator<<(::std::ostream& os, const TSlaveEntry& entry) {
+    return os << entry.ToString();
+}
 
 struct TRegister;
 typedef std::shared_ptr<TRegister> PRegister;
@@ -109,7 +121,7 @@ struct TRegister
 
     std::string ToString() const {
         std::stringstream s;
-        s << "<" << Slave->Protocol << ":" << Slave->Id << ":" << TypeName << ": " << Address << ">";
+        s << "<" << Slave << ":" << TypeName << ": " << Address << ">";
         return s.str();
     }
 
