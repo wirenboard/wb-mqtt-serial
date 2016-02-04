@@ -12,15 +12,11 @@ void TEMDevice::EnsureSlaveConnected(uint8_t slave, bool force)
         return;
 
     ConnectedSlaves.erase(slave);
-    for (int n = N_CONN_ATTEMPTS; n > 0; n--) {
-        Port()->SkipNoise();
-        if (ConnectionSetup(slave)) {
-            ConnectedSlaves.insert(slave);
-            return;
-        }
-    }
+    Port()->SkipNoise();
+    if (!ConnectionSetup(slave))
+        throw TSerialDeviceTransientErrorException("failed to establish meter connection");
 
-    throw TSerialDeviceException("failed to establish meter connection");
+    ConnectedSlaves.insert(slave);
 }
 
 void TEMDevice::WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int len)

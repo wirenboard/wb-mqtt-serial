@@ -39,7 +39,6 @@ private:
 
     std::unordered_set<uint8_t> ConnectedSlaves;
     PDeviceConfig Config;
-    const int N_CONN_ATTEMPTS = 10;
 };
 
 typedef std::shared_ptr<TEMDevice> PEMDevice;
