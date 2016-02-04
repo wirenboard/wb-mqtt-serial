@@ -35,7 +35,6 @@ private:
         // See http://stackoverflow.com/questions/11709859/how-to-have-static-data-members-in-a-header-only-library
         static std::mutex Mutex;
         static std::unordered_map<std::type_index, void*> Map;
-        // TBD: lock
         std::unique_lock<std::mutex> lock(Mutex);
         auto it = Map.find(typeid(T));
         if (it == Map.end()) {
