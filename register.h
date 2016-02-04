@@ -56,7 +56,7 @@ struct TSlaveEntry
 
     static PSlaveEntry Intern(const std::string& protocol = "", int id = 0)
     {
-        return Registry::Intern<TSlaveEntry>(protocol, id);
+        return TRegistry::Intern<TSlaveEntry>(protocol, id);
     }
 };
 
@@ -81,7 +81,7 @@ struct TRegister
                             bool poll = true, bool readonly = false,
                             const std::string& type_name = "")
     {
-        return Registry::Intern<TRegister>(slave, type, address, format, scale, poll, readonly, type_name);
+        return TRegistry::Intern<TRegister>(slave, type, address, format, scale, poll, readonly, type_name);
     }
 
     uint8_t ByteWidth() const {

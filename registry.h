@@ -6,7 +6,7 @@
 #include <typeindex>
 #include <unordered_map>
 
-class Registry {
+class TRegistry {
 public:
     // Get an instance of T constructed from the specified args.
     // If called again with the same args, returns the previously
