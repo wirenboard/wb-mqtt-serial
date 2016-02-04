@@ -1,0 +1,4 @@
+usr/bin/*
+etc/*
+etc/wb-configs.d/*
+usr/share/wb-mqtt-serial/*

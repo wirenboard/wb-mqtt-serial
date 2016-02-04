@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ -x "/etc/init.d/wb-mqtt-serial" ] || [ -e "/etc/init/wb-mqtt-serial.conf" ]; then
+	if [ ! -e "/etc/init/wb-mqtt-serial.conf" ]; then
+		update-rc.d wb-mqtt-serial defaults >/dev/null
+	fi
+	invoke-rc.d wb-mqtt-serial start || true
+fi
+
+exit 0
+# ignore debhelper
+
+#DEBHELPER#

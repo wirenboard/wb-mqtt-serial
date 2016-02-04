@@ -1,8 +1,8 @@
 *.o
 wb-homa-gpio/wb-homa-gpio
-wb-homa-modbus/wb-homa-modbus
-wb-homa-modbus/test/wb-homa-test
-wb-homa-modbus/test/*.out
+wb-mqtt-serial/wb-mqtt-serial
+wb-mqtt-serial/test/wb-homa-test
+wb-mqtt-serial/test/*.out
 wb-homa-ninja-bridge/wb-homa-ninja-bridge
 wb-homa-w1/wb-homa-w1
 wb-homa-adc/wb-homa-adc
@@ -25,7 +25,9 @@ wb-mqtt-db/wb-mqtt-db
 mqtt-logger/debian/mqtt-logger/
 wb-homa-adc/debian/wb-homa-adc/
 wb-homa-gpio/debian/wb-homa-gpio/
-wb-homa-modbus/debian/wb-homa-modbus/
+wb-mqtt-serial/debian/wb-mqtt-serial/
+wb-mqtt-serial/debian/wb-homa-modbus/
+wb-mqtt-serial/debian/tmp/
 wb-homa-w1/debian/wb-homa-w1/
 wb-homa-ninja-bridge/debian/wb-homa-ninja-bridge/
 wb-mqtt-lirc/debian/wb-mqtt-lirc/

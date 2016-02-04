@@ -1,3 +1,17 @@
+wb-mqtt-serial (1.14.1) stable; urgency=medium
+
+  * renamed to wb-mqtt-serial
+  * write scheduling improvements
+  * misc fixes
+
+ -- Ivan Shvedunov <ivan4th@gmail.com>  Thu, 04 Feb 2016 06:36:43 +0300
+
+wb-homa-modbus (1.14.1) stable; urgency=medium
+
+  * renamed to wb-mqtt-serial
+
+ -- Ivan Shvedunov <ivan4th@gmail.com>  Thu, 04 Feb 2016 06:36:43 +0300
+
 wb-homa-modbus (1.14.0) stable; urgency=medium
 
   * support modbus and non-modbus devices on the same port

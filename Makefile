@@ -29,9 +29,9 @@ NORMAL_CFLAGS=-Wall -std=c++0x -Os -I.
 CFLAGS=$(if $(or $(DEBUG),$(filter test, $(MAKECMDGOALS))), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
 LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
-MODBUS_BIN=wb-homa-modbus
-MODBUS_LIBS=-lmodbus
-MODBUS_SRCS=serial_client.cpp \
+SERIAL_BIN=wb-mqtt-serial
+SERIAL_LIBS=-lmodbus
+SERIAL_SRCS=serial_client.cpp \
   register_handler.cpp \
   serial_config.cpp \
   serial_port_driver.cpp \
@@ -45,7 +45,7 @@ MODBUS_SRCS=serial_client.cpp \
   em_device.cpp \
   milur_device.cpp \
   mercury230_device.cpp
-MODBUS_OBJS=$(MODBUS_SRCS:.cpp=.o)
+SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
   $(TEST_DIR)/modbus_server.o \
@@ -65,11 +65,11 @@ TEST_OBJS=$(TEST_SRCS:.cpp=.o)
 TEST_LIBS=-lgtest -lpthread -lmosquittopp
 TEST_DIR=test
 TEST_BIN=wb-homa-test
-SRCS=$(MODBUS_SRCS) $(TEST_SRCS)
+SRCS=$(SERIAL_SRCS) $(TEST_SRCS)
 
 .PHONY: all clean test
 
-all : $(MODBUS_BIN)
+all : $(SERIAL_BIN)
 
 # Modbus
 %.o : %.cpp $(DEPDIR)/$(notdir %.d)
@@ -80,11 +80,11 @@ test/%.o : test/%.cpp $(DEPDIR)/$(notdir %.d)
 	${CXX} ${DEPFLAGS} -c $< -o $@ ${CFLAGS}
 	$(POSTCOMPILE)
 
-$(MODBUS_BIN) : main.o $(MODBUS_OBJS)
-	${CXX} $^ ${LDFLAGS} -o $@ $(MODBUS_LIBS)
+$(SERIAL_BIN) : main.o $(SERIAL_OBJS)
+	${CXX} $^ ${LDFLAGS} -o $@ $(SERIAL_LIBS)
 
-$(TEST_DIR)/$(TEST_BIN): $(MODBUS_OBJS) $(TEST_OBJS)
-	${CXX} $^ ${LDFLAGS} -o $@ $(TEST_LIBS) $(MODBUS_LIBS)
+$(TEST_DIR)/$(TEST_BIN): $(SERIAL_OBJS) $(TEST_OBJS)
+	${CXX} $^ ${LDFLAGS} -o $@ $(TEST_LIBS) $(SERIAL_LIBS)
 
 test: $(TEST_DIR)/$(TEST_BIN)
 	# cannot run valgrind under qemu chroot
@@ -100,7 +100,7 @@ test: $(TEST_DIR)/$(TEST_BIN)
         fi
 
 clean :
-	-rm -rf *.o $(MODBUS_BIN) $(DEPDIR)
+	-rm -rf *.o $(SERIAL_BIN) $(DEPDIR)
 	-rm -f $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
 
 
@@ -111,15 +111,15 @@ install: all
 	install -d $(DESTDIR)/etc
 	install -d $(DESTDIR)/usr/bin
 	install -d $(DESTDIR)/usr/lib
-	install -d $(DESTDIR)/usr/share/wb-homa-modbus
+	install -d $(DESTDIR)/usr/share/wb-mqtt-serial
 
-	install -m 0644  config.json $(DESTDIR)/etc/wb-homa-modbus.conf.sample
-	install -m 0644  config.default.json $(DESTDIR)/etc/wb-homa-modbus.conf
-	install -m 0644  wb-homa-modbus.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-homa-modbus
+	install -m 0644  config.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
+	install -m 0644  config.default.json $(DESTDIR)/etc/wb-mqtt-serial.conf
+	install -m 0644  wb-mqtt-serial.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-mqtt-serial
 
-	install -m 0644  wb-homa-modbus.schema.json $(DESTDIR)/etc/wb-mqtt-confed/schemas/wb-homa-modbus.schema.json
-	install -m 0755  $(MODBUS_BIN) $(DESTDIR)/usr/bin/$(MODBUS_BIN)
-	cp -r  wb-homa-modbus-templates $(DESTDIR)/usr/share/wb-homa-modbus/templates
+	install -m 0644  wb-mqtt-serial.schema.json $(DESTDIR)/etc/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json
+	install -m 0755  $(SERIAL_BIN) $(DESTDIR)/usr/bin/$(SERIAL_BIN)
+	cp -r  wb-mqtt-serial-templates $(DESTDIR)/usr/share/wb-mqtt-serial/templates
 
 $(DEPDIR)/$(notdir %.d): ;
 

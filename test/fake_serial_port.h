@@ -7,7 +7,7 @@
 #include "expector.h"
 #include "testlog.h"
 #include "fake_mqtt.h"
-#include "../wb-homa-modbus/serial_device.h"
+#include "../serial_device.h"
 #include "../serial_observer.h"
 
 class TFakeSerialPort: public TAbstractSerialPort, public TExpector {

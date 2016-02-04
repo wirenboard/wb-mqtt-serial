@@ -1,10 +1,8 @@
 #!/bin/sh
 
-if [ -x "/etc/init.d/wb-homa-modbus" ] || [ -e "/etc/init/wb-homa-modbus.conf" ]; then
-	if [ ! -e "/etc/init/wb-homa-modbus.conf" ]; then
-		update-rc.d wb-homa-modbus defaults >/dev/null
-	fi
-	invoke-rc.d wb-homa-modbus start || true
+if [ -f /etc/wb-homa-modbus.conf ]; then
+    cp /etc/wb-homa-modbus.conf /etc/wb-mqtt-serial.conf
+    mv /etc/wb-homa-modbus.conf /etc/wb-homa-modbus.conf.save
 fi
 
 exit 0

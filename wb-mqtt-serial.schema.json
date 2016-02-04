@@ -128,7 +128,7 @@
           "title": "Device type",
           "description": "Selects device template",
           "enum": {
-            "directories": ["/usr/share/wb-homa-modbus/templates"],
+            "directories": ["/usr/share/wb-mqtt-serial/templates"],
             "pointer": "/device_type",
             "pattern": "^.*\\.json$"
           },
@@ -330,7 +330,7 @@
         "water_consumption", "resistance", "concentration",
         // FIXME: "dimmer", "lux" and "pressure" aren't present in
         // conventions but is present in config-test.json in
-        // wb-homa-modbus
+        // wb-mqtt-serial
         "dimmer", "lux", "pressure"
       ]
     },
@@ -388,7 +388,7 @@
   },
   "required": ["ports"],
   "configFile": {
-    "path": "/etc/wb-homa-modbus.conf",
-    "service": "wb-homa-modbus"
+    "path": "/etc/wb-mqtt-serial.conf",
+    "service": "wb-mqtt-serial"
   }
 }

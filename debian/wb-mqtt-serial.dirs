@@ -3,4 +3,4 @@ etc
 etc/init.d
 etc/wb-configs.d
 var/lib/wirenboard
-usr/share/wb-homa-modbus
+usr/share/wb-mqtt-serial

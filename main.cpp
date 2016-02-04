@@ -12,7 +12,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     TMQTTClient::TConfig mqtt_config;
-    string templates_folder = "/usr/share/wb-homa-modbus/templates";
+    string templates_folder = "/usr/share/wb-mqtt-serial/templates";
     mqtt_config.Host = "localhost";
     mqtt_config.Port = 1883;
     string config_fname;

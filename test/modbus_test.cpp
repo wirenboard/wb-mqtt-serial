@@ -592,7 +592,7 @@ class TConfigParserTest: public TLoggedFixture {};
 
 TEST_F(TConfigParserTest, Parse)
 {
-    TConfigTemplateParser device_parser(GetDataFilePath("../wb-homa-modbus-templates/"), false);
+    TConfigTemplateParser device_parser(GetDataFilePath("../wb-mqtt-serial-templates/"), false);
     TConfigParser parser(GetDataFilePath("../config.json"), false,
                          TSerialDeviceFactory::GetRegisterTypes, device_parser.Parse());
     PHandlerConfig config = parser.Parse();
