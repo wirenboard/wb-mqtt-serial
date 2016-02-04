@@ -17,8 +17,8 @@
 
 REGISTER_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
-TIVTMDevice::TIVTMDevice(PDeviceConfig, PAbstractSerialPort port)
-    : TSerialDevice(port) {}
+TIVTMDevice::TIVTMDevice(PDeviceConfig device_config, PAbstractSerialPort port)
+    : TSerialDevice(device_config, port) {}
 
 void TIVTMDevice::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len)
 {
@@ -123,9 +123,9 @@ uint64_t TIVTMDevice::ReadRegister(PRegister reg)
 {
     Port()->SkipNoise();
 
-    WriteCommand(reg->Slave, reg->Address, reg->ByteWidth());
+    WriteCommand(reg->Slave->Id, reg->Address, reg->ByteWidth());
     uint8_t response[4];
-    ReadResponse(reg->Slave, response, reg->ByteWidth());
+    ReadResponse(reg->Slave->Id, response, reg->ByteWidth());
 
     uint8_t * p = response;//&response[(address % 2) * 4];
 

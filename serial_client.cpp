@@ -24,7 +24,8 @@ void TSerialClient::AddDevice(PDeviceConfig device_config)
         std::cerr << "AddDevice: " << device_config->Id <<
             (device_config->DeviceType.empty() ? "" : " (" + device_config->DeviceType + ")") <<
             " @ " << device_config->SlaveId << " -- protocol: " << device_config->Protocol << std::endl;
-    ConfigMap[device_config->SlaveId] = device_config;
+    PSlaveEntry entry = TSlaveEntry::Intern(device_config->Protocol, device_config->SlaveId);
+    ConfigMap[entry] = device_config;
 }
 
 void TSerialClient::AddRegister(PRegister reg)
@@ -69,7 +70,7 @@ void TSerialClient::Flush()
         auto handler = Handlers[reg];
         if (!handler->NeedToFlush())
             continue;
-        PrepareToAccessDevice(reg->Slave);
+        PrepareToAccessDevice(handler->Device());
         MaybeUpdateErrorState(reg, handler->Flush());
     }
 }
@@ -101,7 +102,7 @@ void TSerialClient::Cycle()
         bool changed = false;
         if (!handler->NeedToPoll())
             continue;
-        PrepareToAccessDevice(reg->Slave);
+        PrepareToAccessDevice(handler->Device());
         MaybeUpdateErrorState(reg, handler->Poll(&changed));
         // Note that p.second->CurrentErrorState() is not the
         // same as the value returned by p->second->Poll(...),
@@ -119,8 +120,9 @@ void TSerialClient::Cycle()
 void TSerialClient::WriteSetupRegister(PRegister reg, uint64_t value)
 {
     Connect();
-    PrepareToAccessDevice(reg->Slave);
-    GetDevice(reg->Slave)->WriteRegister(reg, value);
+    PSerialDevice dev = GetDevice(reg->Slave);
+    PrepareToAccessDevice(dev);
+    dev->WriteRegister(reg, value);
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
@@ -183,31 +185,27 @@ PRegisterHandler TSerialClient::CreateRegisterHandler(PRegister reg)
     return std::make_shared<TRegisterHandler>(shared_from_this(), GetDevice(reg->Slave), reg);
 }
 
-PSerialDevice TSerialClient::GetDevice(int slave_id)
+PSerialDevice TSerialClient::GetDevice(PSlaveEntry entry)
 {
-    auto it = DeviceMap.find(slave_id);
+    auto it = DeviceMap.find(entry);
     if (it != DeviceMap.end())
         return it->second;
-    auto configIt = ConfigMap.find(slave_id);
+    auto configIt = ConfigMap.find(entry);
     if (configIt == ConfigMap.end())
         throw TSerialDeviceException("slave not found");
 
     try {
-        return DeviceMap[slave_id] = TSerialDeviceFactory::CreateDevice(configIt->second, Port);
+        return DeviceMap[entry] = TSerialDeviceFactory::CreateDevice(configIt->second, Port);
     } catch (const TSerialDeviceException& e) {
         Disconnect();
         throw TSerialDeviceException(e.what());
     }
 }
 
-void TSerialClient::PrepareToAccessDevice(int slave)
+void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
 {
-    if (slave == LastAccessedSlave)
-        return;
-    LastAccessedSlave = slave;
-    auto it = ConfigMap.find(slave);
-    if (it == ConfigMap.end())
-        return;
-    if (it->second->DelayUSec > 0)
-        Port->USleep(it->second->DelayUSec);
+    if (dev != LastAccessedDevice) {
+        LastAccessedDevice = dev;
+        dev->Prepare();
+    }
 }

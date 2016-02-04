@@ -17,7 +17,7 @@ public:
         REG_DISCRETE,
     };
 
-    TModbusDevice(PDeviceConfig, PAbstractSerialPort port);
+    TModbusDevice(PDeviceConfig config, PAbstractSerialPort port);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 

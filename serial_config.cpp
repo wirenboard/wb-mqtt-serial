@@ -104,8 +104,9 @@ PRegister TConfigParser::LoadRegister(PDeviceConfig device_config,
     if (register_data.isMember("readonly"))
         force_readonly = register_data["readonly"].asBool();
 
-    return std::make_shared<TRegister>(
-        device_config->SlaveId, it->second.Index,
+    return TRegister::Intern(
+        TSlaveEntry::Intern(device_config->Protocol, device_config->SlaveId),
+        it->second.Index,
         address, format, scale, true, force_readonly || it->second.ReadOnly,
         it->second.Name);
 }
@@ -186,9 +187,9 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
     RegisterFormat format = U16;
     if (item_data.isMember("format"))
         format = RegisterFormatFromName(item_data["format"].asString());
-    PRegister reg = std::make_shared<TRegister>(
-        device_config->SlaveId, type,
-        address, format, 1, true, true, type_name);
+    PRegister reg = TRegister::Intern(
+        TSlaveEntry::Intern(device_config->Protocol, device_config->SlaveId),
+        type, address, format, 1, true, true, type_name);
 
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");

@@ -38,6 +38,8 @@ public:
     bool DidRead() const { return DidReadReg; }
     TErrorState CurrentErrorState() const { return ErrorState; }
 
+    PSerialDevice Device() const { return Dev; }
+
 private:
 	template<typename T> std::string ToScaledTextValue(T val) const;
 	template<typename T> T FromScaledTextValue(const std::string& str) const;

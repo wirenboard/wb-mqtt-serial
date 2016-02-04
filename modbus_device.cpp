@@ -9,8 +9,8 @@ REGISTER_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
             { TModbusDevice::REG_INPUT, "input", "text", U16, true }
         }));
 
-TModbusDevice::TModbusDevice(PDeviceConfig, PAbstractSerialPort port)
-    : TSerialDevice(port), Context(port->LibModbusContext()) {}
+TModbusDevice::TModbusDevice(PDeviceConfig config, PAbstractSerialPort port)
+    : TSerialDevice(config, port), Context(port->LibModbusContext()) {}
 
 uint64_t TModbusDevice::ReadRegister(PRegister reg)
 {
@@ -20,7 +20,7 @@ uint64_t TModbusDevice::ReadRegister(PRegister reg)
         std::cerr << "modbus: read " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
             " of slave " << reg->Slave << std::endl;
 
-    modbus_set_slave(Context->Inner, reg->Slave);
+    modbus_set_slave(Context->Inner, reg->Slave->Id);
     if (IsSingleBit(reg->Type)) {
         uint8_t b;
         if (w != 1)
@@ -69,7 +69,7 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
         std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
             " of slave " << reg->Slave << std::endl;
 
-    modbus_set_slave(Context->Inner, reg->Slave);
+    modbus_set_slave(Context->Inner, reg->Slave->Id);
     switch (reg->Type) {
     case REG_COIL:
         if (w != 1)

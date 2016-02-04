@@ -1,6 +1,6 @@
 >>> Cycle() [read, rw blacklisted]
 >> 01 03 00 14 00 01 C4 0E
-Modbus ErrorCallback: <1:holding: 20>: read error
+Modbus ErrorCallback: <modbus:1:holding: 20>: read error
 << 01 83 06 C1 32
 >>> Cycle() [read, rw blacklisted]
 >> 01 03 00 14 00 01 C4 0E
@@ -10,30 +10,30 @@ Modbus ErrorCallback: <1:holding: 20>: read error
 << 01 83 06 C1 32
 >>> Cycle() [write, rw blacklisted]
 >> 01 06 00 14 00 2A 48 11
-Modbus ErrorCallback: <1:holding: 20>: read+write error
+Modbus ErrorCallback: <modbus:1:holding: 20>: read+write error
 << 01 86 06 C2 62
 >> 01 03 00 14 00 01 C4 0E
 << 01 83 06 C1 32
 >>> Cycle() [write, r blacklisted]
 >> 01 06 00 14 00 2A 48 11
-Modbus ErrorCallback: <1:holding: 20>: read error
+Modbus ErrorCallback: <modbus:1:holding: 20>: read error
 << 01 06 00 14 00 2A 48 11
 >> 01 03 00 14 00 01 C4 0E
 << 01 83 06 C1 32
 >>> Cycle() [write, rw blacklisted]
 >> 01 06 00 14 00 2B 89 D1
-Modbus ErrorCallback: <1:holding: 20>: read+write error
+Modbus ErrorCallback: <modbus:1:holding: 20>: read+write error
 << 01 86 06 C2 62
 >> 01 03 00 14 00 01 C4 0E
 << 01 83 06 C1 32
 >>> Cycle() [write, w blacklisted]
 >> 01 03 00 14 00 01 C4 0E
-Modbus ErrorCallback: <1:holding: 20>: write error
-Modbus Callback: <1:holding: 20> becomes 42
+Modbus ErrorCallback: <modbus:1:holding: 20>: write error
+Modbus Callback: <modbus:1:holding: 20> becomes 42
 << 01 03 02 00 2A 39 9B
 >>> Cycle() [write, nothing blacklisted]
 >> 01 06 00 14 00 2A 48 11
-Modbus ErrorCallback: <1:holding: 20>: no error
+Modbus ErrorCallback: <modbus:1:holding: 20>: no error
 << 01 06 00 14 00 2A 48 11
 >> 01 03 00 14 00 01 C4 0E
 << 01 03 02 00 2A 39 9B

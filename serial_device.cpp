@@ -1,9 +1,14 @@
 #include "serial_device.h"
 
-TSerialDevice::TSerialDevice(PAbstractSerialPort port)
-    : SerialPort(port) {}
+TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port)
+    : DelayUsec(config->DelayUSec), SerialPort(port) {}
 
 TSerialDevice::~TSerialDevice() {}
+
+void TSerialDevice::Prepare()
+{
+    SerialPort->USleep(DelayUsec);
+}
 
 void TSerialDevice::EndPollCycle() {}
 

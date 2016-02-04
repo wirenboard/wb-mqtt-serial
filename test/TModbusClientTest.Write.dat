@@ -1,11 +1,11 @@
 >>> Cycle()
 >> 01 01 00 01 00 01 AC 0A
-Modbus ErrorCallback: <1:coil: 1>: no error
-Modbus Callback: <1:coil: 1> becomes 0
+Modbus ErrorCallback: <modbus:1:coil: 1>: no error
+Modbus Callback: <modbus:1:coil: 1> becomes 0
 << 01 01 01 00 51 88
 >> 01 03 00 14 00 01 C4 0E
-Modbus ErrorCallback: <1:holding: 20>: no error
-Modbus Callback: <1:holding: 20> becomes 0
+Modbus ErrorCallback: <modbus:1:holding: 20>: no error
+Modbus Callback: <modbus:1:holding: 20> becomes 0
 << 01 03 02 00 00 B8 44
 >>> Cycle()
 >> 01 05 00 01 FF 00 DD FA

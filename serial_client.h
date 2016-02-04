@@ -4,6 +4,7 @@
 #include <memory>
 #include <functional>
 #include <condition_variable>
+#include <unordered_map>
 #include <mutex>
 
 #include "serial_device.h"
@@ -41,21 +42,21 @@ private:
     PRegisterHandler GetHandler(PRegister) const;
     PRegisterHandler CreateRegisterHandler(PRegister reg);
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
-    PSerialDevice GetDevice(int slave_id);
-    void PrepareToAccessDevice(int slave);
+    PSerialDevice GetDevice(PSlaveEntry entry);
+    void PrepareToAccessDevice(PSerialDevice dev);
 
     PAbstractSerialPort Port;
     std::list<PRegister> RegList;
-    std::map<PRegister, PRegisterHandler> Handlers;
-    std::unordered_map<int, PDeviceConfig> ConfigMap;
-    std::unordered_map<int, PSerialDevice> DeviceMap;
+    std::unordered_map<PRegister, PRegisterHandler> Handlers;
+    std::unordered_map<PSlaveEntry, PDeviceConfig> ConfigMap;
+    std::unordered_map<PSlaveEntry, PSerialDevice> DeviceMap;
 
     bool Active;
     int PollInterval;
     TCallback Callback;
     TErrorCallback ErrorCallback;
     bool Debug = false;
-    int LastAccessedSlave = -1;
+    PSerialDevice LastAccessedDevice = 0;
 
     std::condition_variable FlushNeededCond;
     std::mutex FlushNeededMutex;

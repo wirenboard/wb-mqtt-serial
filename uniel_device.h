@@ -17,7 +17,7 @@ public:
         REG_BRIGHTNESS = 1
     };
 
-    TUnielDevice(PDeviceConfig, PAbstractSerialPort port);
+    TUnielDevice(PDeviceConfig config, PAbstractSerialPort port);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 

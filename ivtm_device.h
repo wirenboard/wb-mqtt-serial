@@ -11,7 +11,7 @@ public:
     static const int DefaultTimeoutMs = 1000;
     static const int FrameTimeoutMs = 50;
 
-    TIVTMDevice(PDeviceConfig, PAbstractSerialPort port);
+    TIVTMDevice(PDeviceConfig device_config, PAbstractSerialPort port);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 

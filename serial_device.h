@@ -15,19 +15,25 @@
 
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {
 public:
-    TSerialDevice(PAbstractSerialPort port);
+    TSerialDevice(PDeviceConfig config, PAbstractSerialPort port);
     TSerialDevice(const TSerialDevice&) = delete;
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
 
+    // Prepare to access device (pauses for configured delay by default)
+    virtual void Prepare();
+    // Read register value
     virtual uint64_t ReadRegister(PRegister reg) = 0;
+    // Write register value
     virtual void WriteRegister(PRegister reg, uint64_t value) = 0;
+    // Handle end of poll cycle e.g. by resetting values caches
     virtual void EndPollCycle();
 
 protected:
     PAbstractSerialPort Port() { return SerialPort; }
 
 private:
+    int DelayUsec;
     PAbstractSerialPort SerialPort;
 };
 

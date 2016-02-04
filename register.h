@@ -1,9 +1,13 @@
 #pragma once
 #include <map>
+#include <mutex>
 #include <vector>
 #include <memory>
 #include <sstream>
 #include <functional>
+#include <unordered_map>
+
+#include "registry.h"
 
 enum RegisterFormat {
     AUTO,
@@ -40,17 +44,44 @@ typedef std::vector<TRegisterType> TRegisterTypes;
 typedef std::map<std::string, TRegisterType> TRegisterTypeMap;
 typedef std::shared_ptr<TRegisterTypeMap> PRegisterTypeMap;
 
+struct TSlaveEntry;
+typedef std::shared_ptr<TSlaveEntry> PSlaveEntry;
+
+struct TSlaveEntry
+{
+    std::string Protocol;
+    int Id;
+
+    TSlaveEntry(const std::string& protocol, int id): Protocol(protocol), Id(id) {}
+
+    static PSlaveEntry Intern(const std::string& protocol = "", int id = 0)
+    {
+        return Registry::Intern<TSlaveEntry>(protocol, id);
+    }
+};
+
+struct TRegister;
+typedef std::shared_ptr<TRegister> PRegister;
+
 struct TRegister
 {
-    TRegister(int slave = 0, int type = 0, int address = 0,
-              RegisterFormat format = U16, double scale = 1,
-              bool poll = true, bool readonly = false,
-              const std::string& type_name = "")
+    TRegister(PSlaveEntry slave, int type, int address,
+              RegisterFormat format, double scale,
+              bool poll, bool readonly,
+              const std::string& type_name)
         : Slave(slave), Type(type), Address(address), Format(format),
           Scale(scale), Poll(poll), ReadOnly(readonly), TypeName(type_name)
     {
         if (TypeName.empty())
             TypeName = "(type " + std::to_string(Type) + ")";
+    }
+
+    static PRegister Intern(PSlaveEntry slave = 0, int type = 0, int address = 0,
+                            RegisterFormat format = U16, double scale = 1,
+                            bool poll = true, bool readonly = false,
+                            const std::string& type_name = "")
+    {
+        return Registry::Intern<TRegister>(slave, type, address, format, scale, poll, readonly, type_name);
     }
 
     uint8_t ByteWidth() const {
@@ -79,27 +110,11 @@ struct TRegister
 
     std::string ToString() const {
         std::stringstream s;
-        s << "<" << Slave << ":" << TypeName << ": " << Address << ">";
+        s << "<" << Slave->Protocol << ":" << Slave->Id << ":" << TypeName << ": " << Address << ">";
         return s.str();
     }
 
-    bool operator< (const TRegister& reg) const {
-        if (Slave < reg.Slave)
-            return true;
-        if (Slave > reg.Slave)
-            return false;
-        if (Type < reg.Type)
-            return true;
-        if (Type > reg.Type)
-            return false;
-        return Address < reg.Address;
-    }
-
-    bool operator== (const TRegister& reg) const {
-        return Slave == reg.Slave && Type == reg.Type && Address == reg.Address;
-    }
-
-    int Slave;
+    PSlaveEntry Slave;
     int Type;
     int Address;
     RegisterFormat Format;
@@ -109,22 +124,12 @@ struct TRegister
     std::string TypeName;
 };
 
-typedef std::shared_ptr<TRegister> PRegister;
-
 inline ::std::ostream& operator<<(::std::ostream& os, PRegister reg) {
     return os << reg->ToString();
 }
 
 inline ::std::ostream& operator<<(::std::ostream& os, const TRegister& reg) {
     return os << reg.ToString();
-}
-
-namespace std {
-    template <> struct hash<PRegister> {
-        size_t operator()(PRegister p) const {
-            return hash<int>()(p->Slave) ^ hash<int>()(p->Type) ^ hash<int>()(p->Address);
-        }
-    };
 }
 
 inline const char* RegisterFormatName(RegisterFormat fmt) {

@@ -3,9 +3,11 @@
 #include "ivtm_device.h"
 
 namespace {
-    PRegister Dev1Temp(new TRegister(0x01, 0, 0, Float));
-    PRegister Dev1Humidity(new TRegister(0x01, 0, 4, Float));
-    PRegister Dev2Temp(new TRegister(0x0a, 0, 0, Float));
+    PSlaveEntry Slave1 = TSlaveEntry::Intern("ivtm", 1);
+    PSlaveEntry SlaveA = TSlaveEntry::Intern("ivtm", 0x0a);
+    PRegister Dev1Temp = TRegister::Intern(Slave1, 0, 0, Float);
+    PRegister Dev1Humidity = TRegister::Intern(Slave1, 0, 4, Float);
+    PRegister Dev2Temp = TRegister::Intern(SlaveA, 0, 0, Float);
 };
 
 class TIVTMDeviceTest: public TSerialDeviceTest

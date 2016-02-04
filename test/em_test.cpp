@@ -4,15 +4,17 @@
 #include "mercury230_device.h"
 
 namespace {
-    PRegister MilurPhaseCVoltageReg(new TRegister(0xff, TMilurDevice::REG_PARAM, 102, U24));
-    PRegister MilurTotalConsumptionReg(new TRegister(0xff, TMilurDevice::REG_ENERGY, 118, BCD32));
-    PRegister Mercury230TotalConsumptionReg(
-        new TRegister(0x00, TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32));
-    PRegister Mercury230TotalReactiveEnergyReg(
-        new TRegister(0x00, TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32));
-    PRegister Mercury230U1Reg(new TRegister(0x00, TMercury230Device::REG_PARAM, 0x1111, U24));
-    PRegister Mercury230I1Reg(new TRegister(0x00, TMercury230Device::REG_PARAM, 0x1121, U24));
-    PRegister Mercury230U2Reg(new TRegister(0x00, TMercury230Device::REG_PARAM, 0x1112, U24));
+    PSlaveEntry MilurSlave = TSlaveEntry::Intern("milur", 0xff);
+    PSlaveEntry Mercury230Slave = TSlaveEntry::Intern("mercury230", 0x00);
+    PRegister MilurPhaseCVoltageReg = TRegister::Intern(MilurSlave, TMilurDevice::REG_PARAM, 102, U24);
+    PRegister MilurTotalConsumptionReg = TRegister::Intern(MilurSlave, TMilurDevice::REG_ENERGY, 118, BCD32);
+    PRegister Mercury230TotalConsumptionReg =
+        TRegister::Intern(Mercury230Slave, TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32);
+    PRegister Mercury230TotalReactiveEnergyReg =
+        TRegister::Intern(Mercury230Slave, TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32);
+    PRegister Mercury230U1Reg = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1111, U24);
+    PRegister Mercury230I1Reg = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1121, U24);
+    PRegister Mercury230U2Reg = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1112, U24);
 };
 
 class TEMDeviceTest: public TSerialDeviceTest, public TEMDeviceExpectations

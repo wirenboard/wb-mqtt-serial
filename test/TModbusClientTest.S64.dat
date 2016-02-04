@@ -1,12 +1,12 @@
 >>> server -> client: 10, 20
 >>> Cycle()
 >> 01 03 00 14 00 04 04 0D
-Modbus ErrorCallback: <1:holding: 20>: no error
-Modbus Callback: <1:holding: 20> becomes 47851549213065437
+Modbus ErrorCallback: <modbus:1:holding: 20>: no error
+Modbus Callback: <modbus:1:holding: 20> becomes 47851549213065437
 << 01 03 08 00 AA 00 BB 00 CC 00 DD 7B A0
 >> 01 04 00 1E 00 04 91 CF
-Modbus ErrorCallback: <1:input: 30>: no error
-Modbus Callback: <1:input: 30> becomes -1
+Modbus ErrorCallback: <modbus:1:input: 30>: no error
+Modbus Callback: <modbus:1:input: 30> becomes -1
 << 01 04 08 FF FF FF FF FF FF FF FF 65 89
 >>> client -> server: 10
 >>> Cycle()

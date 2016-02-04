@@ -4,7 +4,7 @@
 #include "crc16.h"
 
 TEMDevice::TEMDevice(PDeviceConfig device_config, PAbstractSerialPort port)
-    : TSerialDevice(port), Config(device_config) {}
+    : TSerialDevice(device_config, port), Config(device_config) {}
 
 void TEMDevice::EnsureSlaveConnected(uint8_t slave, bool force)
 {

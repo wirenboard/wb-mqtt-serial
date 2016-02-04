@@ -4,10 +4,11 @@
 #include "uniel_expectations.h"
 
 namespace {
-    PRegister InputReg(new TRegister(1, TUnielDevice::REG_INPUT, 0x0a, U8));
-    PRegister RelayReg(new TRegister(1, TUnielDevice::REG_RELAY, 0x1b, U8));
-    PRegister ThresholdReg(new TRegister(1, TUnielDevice::REG_PARAM, 0x02, U8));
-    PRegister BrightnessReg(new TRegister(1, TUnielDevice::REG_BRIGHTNESS, 0x141, U8));
+    PSlaveEntry Slave1 = TSlaveEntry::Intern("uniel", 1);
+    PRegister InputReg = TRegister::Intern(Slave1, TUnielDevice::REG_INPUT, 0x0a, U8);
+    PRegister RelayReg = TRegister::Intern(Slave1, TUnielDevice::REG_RELAY, 0x1b, U8);
+    PRegister ThresholdReg = TRegister::Intern(Slave1, TUnielDevice::REG_PARAM, 0x02, U8);
+    PRegister BrightnessReg = TRegister::Intern(Slave1, TUnielDevice::REG_BRIGHTNESS, 0x141, U8);
 };
 
 class TUnielDeviceTest: public TSerialDeviceTest, public TUnielDeviceExpectations {
