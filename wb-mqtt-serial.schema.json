@@ -7,7 +7,7 @@
     "deviceProtocol": {
       "type": "string",
       "title": "Device protocol",
-      "enum": ["modbus", "uniel", "milur", "mercury230"],
+      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm"],
       "default": "modbus"
     },
     "port": {
@@ -106,9 +106,8 @@
         },
         "slave_id": {
           "title": "Modbus slave id of the device",
-          "description": "Supported range: 1-247 (0x01-0xF7 hex). Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
-          "minimum": 1,
-          "maximum": 247,
+          "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
+          "minimum": 0,
           "propertyOrder": 3,
           "$ref": "#/definitions/modbus_int"
         },
