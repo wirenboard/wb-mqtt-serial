@@ -3,6 +3,11 @@
 if [ -f /etc/wb-homa-modbus.conf ]; then
     cp /etc/wb-homa-modbus.conf /etc/wb-mqtt-serial.conf
     mv /etc/wb-homa-modbus.conf /etc/wb-homa-modbus.conf.save
+    if [ -f /etc/init.d/wb-configs ]; then
+        # fix symlinks
+        /etc/init.d/wb-configs stop
+        /etc/init.d/wb-configs start
+    fi
 fi
 
 exit 0
