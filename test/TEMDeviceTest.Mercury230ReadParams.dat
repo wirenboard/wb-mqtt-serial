@@ -1,0 +1,24 @@
+Open()
+SkipNoise()
+EnqueueMercury230SessionSetupResponse()
+>> 00 01 01 01 01 01 01 01 01 77 81
+<< 00 00 01 B0
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+<< 00 00 40 5E B0 1C
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+<< 00 00 45 00 32 B4
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+<< 00 00 EB 5D 8F 2D
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+<< 00 00 40 5E B0 1C
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+<< 00 00 45 00 32 B4
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+<< 00 00 EB 5D 8F 2D
+Close()

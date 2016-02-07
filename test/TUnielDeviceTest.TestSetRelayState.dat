@@ -1,0 +1,7 @@
+Open()
+EnqueueSetRelayOnResponse()
+>> FF FF 06 01 FF 1B 00 21
+<< FF FF 06 00 FF 1B 00 20
+EnqueueSetRelayOffResponse()
+>> FF FF 06 01 00 1B 00 22
+<< FF FF 06 00 00 1B 00 21

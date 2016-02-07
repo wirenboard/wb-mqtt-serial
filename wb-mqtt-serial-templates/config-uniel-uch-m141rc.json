@@ -1,0 +1,132 @@
+//Template config for uniel
+{
+    "device_type" : "UCH-M141RC",
+    "device" : {
+        "name": "UCH-M141RC 0808",
+        "id": "uchm141rc",
+        "enabled": true,
+        "protocol": "uniel",
+        "channels": [
+            {
+                "name": "Input 0",
+                "reg_type": "input",
+                "address": "0x0A"
+            },
+            {
+                "name": "Input 1",
+                "reg_type": "input",
+                "address": "0x0B"
+            },
+            {
+                "name": "Input 2",
+                "reg_type": "input",
+                "address": "0x0C"
+            },
+            {
+                "name": "Input 3",
+                "reg_type": "input",
+                "address": "0x0D"
+            },
+            {
+                "name": "Input 4",
+                "reg_type": "input",
+                "address": "0x0E"
+            },
+            {
+                "name": "Input 5",
+                "reg_type": "input",
+                "address": "0x0F"
+            },
+            {
+                "name": "Input 6",
+                "reg_type": "input",
+                "address": "0x10"
+            },
+            {
+                "name": "Input 7",
+                "reg_type": "input",
+                "address": "0x11"
+            },
+
+            {
+                "name" : "LED 0",
+                "reg_type": "brightness",
+                "address": "0x40",
+                "type": "range",
+                "max": "0xff"
+            },
+            {
+                "name" : "LED 1",
+                "reg_type": "brightness",
+                "address": "0x141",
+                "type": "range",
+                "max": "0xff"
+            },
+            {
+                "name" : "LED 2",
+                "reg_type": "brightness",
+                "address": "0x242",
+                "type": "range",
+                "max": "0xff"
+            },
+            {
+                "name" : "LED 3",
+                "reg_type": "brightness",
+                "address": "0x343",
+                "type": "range",
+                "max": "0xff"
+            },
+            {
+                "name" : "LED 4",
+                "reg_type": "brightness",
+                "address": "0x444",
+                "type": "range",
+                "max": "0xff"
+            },
+            {
+                "name" : "LED 5",
+                "reg_type": "brightness",
+                "address": "0x545",
+                "type": "range",
+                "max": "0xff"
+            },
+            {
+                "name" : "LED 6",
+                "reg_type": "brightness",
+                "address": "0x646",
+                "type": "range",
+                "max": "0xff"
+            },
+            {
+                "name" : "LED 7",
+                "reg_type": "brightness",
+                "address": "0x747",
+                "type": "range",
+                "max": "0xff"
+            },
+
+            {
+                "name": "LowThr",
+                "reg_type": "param",
+                "address": "0x02",
+                "type": "range",
+                "max": "0xff"
+            },
+            {
+                "name": "HighThr",
+                "reg_type": "param",
+                "address": "0x03",
+                "type": "range",
+                "max": "0xff"
+            },
+            {
+                "name": "Fade",
+                "reg_type": "param",
+                "address": "0x04",
+                "type": "range",
+                "max": "0xff"
+            }
+        ]
+    }
+}
+

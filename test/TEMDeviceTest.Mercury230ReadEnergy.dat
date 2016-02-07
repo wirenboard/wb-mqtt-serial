@@ -1,0 +1,12 @@
+Open()
+SkipNoise()
+EnqueueMercury230SessionSetupResponse()
+>> 00 01 01 01 01 01 01 01 01 77 81
+<< 00 00 01 B0
+EnqueueMercury230EnergyResponse1()
+>> 00 05 00 00 10 25
+<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
+EnqueueMercury230EnergyResponse2()
+>> 00 05 00 00 10 25
+<< 00 30 00 29 C5 FF FF FF FF 04 00 9D 95 FF FF FF FF 45 BB
+Close()

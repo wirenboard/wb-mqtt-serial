@@ -1,0 +1,51 @@
+// Configuration options
+{
+  "debug": false,
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC1",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 10,
+      "enabled": true,
+      "devices" : [
+        {
+          "name": "PseudoUniel",
+          "id": "pseudo_uniel",
+          "slave_id": 1,
+          "enabled": true,
+          "protocol": "uniel",
+
+          "channels": [
+            {
+              "name": "Input 0",
+              "reg_type": "input",
+              "address": "0x0a"
+            },
+            {
+              "name" : "Relay 1",
+              "reg_type": "relay",
+              "address": "0x1b"
+            },
+            {
+              "name": "LowThr",
+              "reg_type": "param",
+              "address": "0x02",
+              "type": "range",
+              "max": "0xff"
+            },
+            {
+              "name" : "LED 1",
+              "reg_type": "brightness",
+              "address": "0x141",
+              "type": "range",
+              "max": "0xff"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

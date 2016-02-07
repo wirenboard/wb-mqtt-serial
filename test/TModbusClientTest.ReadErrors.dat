@@ -1,8 +1,0 @@
-CreateContext(): </dev/ttyNSC0 115200 8 N1 timeout 0>
->>> AddSlave(1)
->>> Cycle()
-Connect()
-SetSlave(1)
-Modbus ErrorCallback: <1:holding: 200> gets read error
-USleep(1000000)
-Disconnect()

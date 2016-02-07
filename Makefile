@@ -1,3 +1,10 @@
+# http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
+DEPDIR := .d
+$(shell mkdir -p $(DEPDIR) >/dev/null)
+DEPFLAGS = -std=c++0x -MT $@ -MMD -MP -MF $(DEPDIR)/$(notdir $*.Td)
+
+POSTCOMPILE = mv -f $(DEPDIR)/$(notdir $*.Td) $(DEPDIR)/$(notdir $*.d)
+
 ifeq ($(DEB_TARGET_ARCH),armel)
 CROSS_COMPILE=arm-linux-gnueabi-
 endif
@@ -16,81 +23,85 @@ ifneq ($(CC_PATH),)
 	CC=$(CROSS_COMPILE)gcc-4.7
 endif
 
-#CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
-CFLAGS=-Wall -std=c++0x -Os -I.
-LDFLAGS= -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
+#CFLAGS=
+DEBUG_CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
+NORMAL_CFLAGS=-Wall -std=c++0x -Os -I.
+CFLAGS=$(if $(or $(DEBUG),$(filter test, $(MAKECMDGOALS))), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
+LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
-MODBUS_BIN=wb-homa-modbus
-MODBUS_LIBS=-lmodbus
-MODBUS_OBJS=modbus_client.o \
-  modbus_config.o modbus_port.o \
-  modbus_observer.o \
-  uniel.o uniel_context.o
+SERIAL_BIN=wb-mqtt-serial
+SERIAL_LIBS=-lmodbus
+SERIAL_SRCS=serial_client.cpp \
+  register_handler.cpp \
+  serial_config.cpp \
+  serial_port_driver.cpp \
+  serial_observer.cpp \
+  serial_port.cpp \
+  serial_device.cpp \
+  uniel_device.cpp \
+  ivtm_device.cpp \
+  crc16.cpp \
+  modbus_device.cpp \
+  em_device.cpp \
+  milur_device.cpp \
+  mercury230_device.cpp
+SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
+TEST_SRCS= \
+  $(TEST_DIR)/testlog.o \
+  $(TEST_DIR)/modbus_server.o \
+  $(TEST_DIR)/modbus_test.o \
+  $(TEST_DIR)/uniel_expectations.o \
+  $(TEST_DIR)/uniel_test.o \
+  $(TEST_DIR)/em_expectations.o \
+  $(TEST_DIR)/em_test.o \
+  $(TEST_DIR)/em_integration.o \
+  $(TEST_DIR)/ivtm_test.o \
+  $(TEST_DIR)/fake_mqtt.o \
+  $(TEST_DIR)/fake_serial_port.o \
+  $(TEST_DIR)/pty_based_fake_serial.o \
+  $(TEST_DIR)/pty_based_fake_serial_test.o \
+  $(TEST_DIR)/main.o
+TEST_OBJS=$(TEST_SRCS:.cpp=.o)
 TEST_LIBS=-lgtest -lpthread -lmosquittopp
 TEST_DIR=test
 TEST_BIN=wb-homa-test
+SRCS=$(SERIAL_SRCS) $(TEST_SRCS)
 
-.PHONY: all clean test_fix
+.PHONY: all clean test
 
-all : $(MODBUS_BIN)
+all : $(SERIAL_BIN)
 
 # Modbus
-main.o : main.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
+%.o : %.cpp $(DEPDIR)/$(notdir %.d)
+	${CXX} ${DEPFLAGS} -c $< -o $@ ${CFLAGS}
+	$(POSTCOMPILE)
 
-modbus_client.o : modbus_client.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
+test/%.o : test/%.cpp $(DEPDIR)/$(notdir %.d)
+	${CXX} ${DEPFLAGS} -c $< -o $@ ${CFLAGS}
+	$(POSTCOMPILE)
 
-modbus_config.o : modbus_config.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
+$(SERIAL_BIN) : main.o $(SERIAL_OBJS)
+	${CXX} $^ ${LDFLAGS} -o $@ $(SERIAL_LIBS)
 
-modbus_port.o : modbus_port.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
+$(TEST_DIR)/$(TEST_BIN): $(SERIAL_OBJS) $(TEST_OBJS)
+	${CXX} $^ ${LDFLAGS} -o $@ $(TEST_LIBS) $(SERIAL_LIBS)
 
-modbus_observer.o : modbus_observer.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-uniel.o : uniel.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-uniel_context.o : uniel_context.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(MODBUS_BIN) : main.o $(MODBUS_OBJS)
-	${CXX} $^ ${LDFLAGS} -o $@ $(MODBUS_LIBS)
-
-
-$(TEST_DIR)/testlog.o: $(TEST_DIR)/testlog.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/modbus_test.o: $(TEST_DIR)/modbus_test.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/fake_modbus.o: $(TEST_DIR)/fake_modbus.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/fake_mqtt.o: $(TEST_DIR)/fake_mqtt.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/main.o: $(TEST_DIR)/main.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
-
-$(TEST_DIR)/$(TEST_BIN): $(MODBUS_OBJS) $(COMMON_O) \
-  $(TEST_DIR)/testlog.o $(TEST_DIR)/modbus_test.o $(TEST_DIR)/fake_modbus.o \
-  $(TEST_DIR)/fake_mqtt.o $(TEST_DIR)/main.o
-	${CXX} $^ ${LDFLAGS} -o $@ $(TEST_LIBS) $(MODBUS_LIBS)
-
-test_fix: $(TEST_DIR)/$(TEST_BIN)
-	valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) || \
-          if [ $$? = 180 ]; then \
-            echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
-            exit 1; \
-          else $(TEST_DIR)/abt.sh show; exit 1; fi
+test: $(TEST_DIR)/$(TEST_BIN)
+	# cannot run valgrind under qemu chroot
+	rm -f $(TEST_DIR)/*.dat.out
+	if [ "$(shell arch)" = "armv7l" ]; then \
+          $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || $(TEST_DIR)/abt.sh show; \
+        else \
+          valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
+            if [ $$? = 180 ]; then \
+              echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
+              exit 1; \
+            else $(TEST_DIR)/abt.sh show; exit 1; fi; \
+        fi
 
 clean :
-	-rm -f *.o $(MODBUS_BIN)
+	-rm -rf *.o $(SERIAL_BIN) $(DEPDIR)
 	-rm -f $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
-
 
 
 install: all
@@ -100,12 +111,16 @@ install: all
 	install -d $(DESTDIR)/etc
 	install -d $(DESTDIR)/usr/bin
 	install -d $(DESTDIR)/usr/lib
-	install -d $(DESTDIR)/usr/share/wb-homa-modbus
+	install -d $(DESTDIR)/usr/share/wb-mqtt-serial
 
-	install -m 0644  config.json $(DESTDIR)/etc/wb-homa-modbus.conf.sample
-	install -m 0644  config.default.json $(DESTDIR)/etc/wb-homa-modbus.conf
-	install -m 0644  wb-homa-modbus.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-homa-modbus
-	
-	install -m 0644  wb-homa-modbus.schema.json $(DESTDIR)/etc/wb-mqtt-confed/schemas/wb-homa-modbus.schema.json
-	install -m 0755  $(MODBUS_BIN) $(DESTDIR)/usr/bin/$(MODBUS_BIN)
-	cp -r  wb-homa-modbus-templates $(DESTDIR)/usr/share/wb-homa-modbus/templates
+	install -m 0644  config.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
+	install -m 0644  config.default.json $(DESTDIR)/etc/wb-mqtt-serial.conf
+	install -m 0644  wb-mqtt-serial.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-mqtt-serial
+
+	install -m 0644  wb-mqtt-serial.schema.json $(DESTDIR)/etc/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json
+	install -m 0755  $(SERIAL_BIN) $(DESTDIR)/usr/bin/$(SERIAL_BIN)
+	cp -r  wb-mqtt-serial-templates $(DESTDIR)/usr/share/wb-mqtt-serial/templates
+
+$(DEPDIR)/$(notdir %.d): ;
+
+-include $(patsubst %,$(DEPDIR)/%.d,$(notdir $(basename $(SRCS))))

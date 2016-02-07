@@ -1,0 +1,24 @@
+{
+  "device_type": "IVTM-7M-3",
+  "device": {
+    "name": "IVTM-7M-3",
+    "id": "ivtm7m3",
+    "protocol": "ivtm",
+    "channels": [
+      {
+        "name": "Temperature",
+        "reg_type": "default",
+        "address": "0x00",
+        "format": "float",
+        "type": "temperature"
+      },
+      {
+        "name": "Humidity",
+        "reg_type": "default",
+        "address": "0x04",
+        "format": "float",
+        "type": "rel_humidity"
+      }
+    ]
+  }
+}

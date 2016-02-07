@@ -8,10 +8,9 @@
 
 std::string TLoggedFixture::BaseDir = ".";
 
-TLoggedFixture::~TLoggedFixture() {}
-
 void TLoggedFixture::TearDown()
 {
+    std::unique_lock<std::mutex> lk(Mutex);
     std::string file_name = GetLogFileName(".out");
     if (IsOk()) {
         if (remove(file_name.c_str()) < 0) {

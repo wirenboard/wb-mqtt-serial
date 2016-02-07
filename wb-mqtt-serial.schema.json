@@ -1,0 +1,393 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Modbus Driver Configuration",
+  "description": "Lists devices attached to RS-485 ports",
+  "definitions": {
+    "deviceProtocol": {
+      "type": "string",
+      "title": "Device protocol",
+      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm"],
+      "default": "modbus"
+    },
+    "port": {
+      "type": "object",
+      "title": "Serial port",
+      "headerTemplate": "Port {{self.path}}{{ (|self.type|)}}",
+      "properties": {
+        "path": {
+          "type": "string",
+          "title": "Path to device",
+          "minLength": 1,
+          "propertyOrder": 1
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable port",
+          "default": true,
+          "_format": "checkbox",
+          "propertyOrder": 2
+        },
+        "baud_rate": {
+          "type": "integer",
+          "title": "Baud rate",
+          "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200],
+          "default": 9600,
+          "propertyOrder": 3
+        },
+        "parity": {
+          "type": "string",
+          "title": "Parity",
+          "enum": ["N", "E", "O"],
+          "default": "N",
+          "propertyOrder": 4
+        },
+        "data_bits": {
+          "type": "integer",
+          "title": "Data bits",
+          "enum": [5, 6, 7, 8],
+          "default": 8,
+          "propertyOrder": 5
+        },
+        "stop_bits": {
+          "type": "integer",
+          "title": "Stop bits",
+          "enum": [1, 2],
+          "default": 1,
+          "propertyOrder": 5
+        },
+        "response_timeout_ms": {
+          "type": "integer",
+          "title": "Response timeout (ms)",
+          "description": "Zero means no timeout",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 6
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Desired poll interval (ms)",
+          "description" :  "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). This works by sleeping for <poll_interval> / <number_of_registers> after each read operation. Writes are performed are not affected by this setting and are performed as soon as possible.",
+          "minimum": 0,
+          "default": 20,
+          "propertyOrder": 7
+        },
+        "devices": {
+          "type": "array",
+          "title": "List of devices",
+          "description": "Lists devices attached to the port",
+          "items": { "$ref": "#/definitions/device" },
+          "propertyOrder": 9
+        }
+      },
+      "required": ["path"],
+      "defaultProperties": ["path", "type"],
+      "_format": "grid"
+    },
+    "device": {
+      "type": "object",
+      "title": "Modbus device",
+      "headerTemplate": "{{|self.device_type|}}{{ (slave id |self.slave_id|)}}{{ (name: |self.name|)}}",
+      // "options": { "collapsed": true },
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Device name",
+          "description": "Device name to be displayed in UI",
+          "minLength": 1,
+          "propertyOrder": 1
+        },
+        "id": {
+          "type": "string",
+          "title": "MQTT id of the device",
+          "description": "Used as part of the topic",
+          "minLength": 1,
+          "propertyOrder": 2
+        },
+        "slave_id": {
+          "title": "Modbus slave id of the device",
+          "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
+          "minimum": 0,
+          "propertyOrder": 3,
+          "$ref": "#/definitions/modbus_int"
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable device",
+          "default": true,
+          "_format": "checkbox",
+          "propertyOrder": 4
+        },
+        "protocol": {
+          "$ref": "#/definitions/deviceProtocol",
+          "propertyOrder": 5
+        },
+        "device_type": {
+          "type": "string",
+          "title": "Device type",
+          "description": "Selects device template",
+          "enum": {
+            "directories": ["/usr/share/wb-mqtt-serial/templates"],
+            "pointer": "/device_type",
+            "pattern": "^.*\\.json$"
+          },
+          "propertyOrder": 6
+        },
+        "setup": {
+          "type": "array",
+          "title": "List of setup commands",
+          "description": "Lists holding register values that must be written during initialization",
+          "items": { "$ref": "#/definitions/setup_cmd" },
+          "_format": "table",
+          "propertyOrder": 7
+        },
+        "channels": {
+          "type": "array",
+          "title": "List of channels",
+          "description": "Lists Modbus registers of the device and their corresponding controls",
+          "items": { "$ref": "#/definitions/channel" },
+          "propertyOrder": 8
+        },
+        "password": {
+          "type": "array",
+          "title": "Password as a list of bytes",
+          "description": "Contains password for devices that support it",
+          "items": { "$ref": "#/definitions/modbus_int" },
+          "_format": "table",
+          "propertyOrder": 9
+        },
+        "access_level": {
+          "type": "integer",
+          "title": "Access level",
+          "description": "Device specific access level value",
+          "minimum": 0,
+          "maximum": 2,
+          "default": 1,
+          "propertyOrder": 10
+        },
+        "delay_ms": {
+          "type": "integer",
+          "title": "Delay before accessing the device (ms)",
+          "minimum": 0,
+          "default": 100,
+          "propertyOrder": 11
+        }
+      },
+      "required": ["slave_id"],
+      "defaultProperties": ["slave_id", "device_type"]
+    },
+    "setup_cmd": {
+      "type": "object",
+      "title": "Setup command",
+      // "options": { "collapsed": true },
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Command name",
+          "description": "Used for logging/debugging purposes only",
+          "propertyOrder": 1
+        },
+        "address": {
+          "title": "Address",
+          "description": "Holding register index (0-65535 in case of Modbus)",
+          "propertyOrder": 2,
+          "$ref": "#/definitions/modbus_int"
+        },
+        "value": {
+          "title": "Value",
+          "description": "Value to be written",
+          "propertyOrder": 3,
+          "$ref": "#/definitions/modbus_int"
+        }
+      },
+      "required": ["address", "value"]
+    },
+    "channel": {
+      "type": "object",
+      // "options": { "collapsed": true },
+      "oneOf": [
+        {
+          "title": "Modbus register",
+          "properties": {
+            "name": {
+              "$ref": "#/definitions/channel_name",
+              "propertyOrder": 1
+            },
+            "type": {
+              "$ref": "#/definitions/control_type",
+              "propertyOrder": 2
+            },
+            "reg_type": {
+              "$ref": "#/definitions/reg_type",
+              "propertyOrder": 3
+            },
+            "address": {
+              "$ref": "#/definitions/address",
+              "propertyOrder": 4
+            },
+            "format": {
+              "$ref": "#/definitions/format",
+              "propertyOrder": 5
+            },
+            "max": {
+              "title": "Maximum value",
+              "$ref": "#/definitions/modbus_int",
+              "propertyOrder": 6
+            },
+            "scale": {
+              "type": "number",
+              "title": "Scale (value multiplier)",
+              "default" : 1,
+              "propertyOrder": 7
+            },
+            "channel_readonly": {
+              "title": "Read-only",
+              "type": "boolean",
+              "propertyOrder": 8
+            },
+            "on_value": {
+              // TBD: only use on_value for 'switch' and 'wo-switch' types
+              "title": "'On' value",
+              "description": "Value corresponding to the 'On' state of the switch",
+              "$ref": "#/definitions/modbus_int",
+              "propertyOrder": 9
+            }
+          },
+          "required": ["name", "reg_type", "address"],
+          "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale"],
+          "_format": "grid"
+        },
+        {
+          "title": "Compound Modbus register",
+          "properties": {
+            "name": {
+              "$ref": "#/definitions/channel_name",
+              "propertyOrder": 1
+            },
+            "type": {
+              "$ref": "#/definitions/control_type",
+              "propertyOrder": 2
+            },
+            "channel_readonly": {
+              "title": "Read-only",
+              "type": "boolean",
+              "propertyOrder": 8
+            },
+            "consists_of": {
+              "type": "array",
+              "title": "A list of subregisters",
+              "items": { "$ref": "#/definitions/subreg" },
+              "minItems": 1,
+              "_format": "table",
+              "propertyOrder": 3
+            }
+          },
+          "required": ["name", "consists_of"]
+        }
+      ]
+    },
+    "subreg": {
+      "type": "object",
+      "title": "Subregister",
+      "properties": {
+        "reg_type": {
+          "$ref": "#/definitions/reg_type",
+          "propertyOrder": 1
+        },
+        "address": {
+          "$ref": "#/definitions/address",
+          "propertyOrder": 2
+        },
+        "format": {
+          "$ref": "#/definitions/format",
+          "propertyOrder": 3
+        },
+        "scale": {
+          "type": "number",
+          "title": "Scale (value multiplier)",
+          "default" : 1,
+          "propertyOrder": 4
+        }
+      },
+      "required": ["reg_type", "address"]
+    },
+    "channel_name": {
+      "type": "string",
+      "title": "Control name",
+      "description": "This name is displayed both in UI and used as part of MQTT topic",
+      "minLength": 1
+    },
+    "control_type": {
+      "type": "string",
+      "title": "Control type",
+      "description": "Defaults to 'switch' for coils and discrete inputs, 'text' for others",
+      "enum": [
+        "switch", "wo-switch", "pushbutton", "range", "rgb", "text",
+        "value", "temperature", "rel_humidity",
+        "atmospheric_pressure", "rainfall", "wind_speed", "power",
+        "power_consumption", "voltage", "water_flow",
+        "water_consumption", "resistance", "concentration",
+        // FIXME: "dimmer", "lux" and "pressure" aren't present in
+        // conventions but is present in config-test.json in
+        // wb-mqtt-serial
+        "dimmer", "lux", "pressure"
+      ]
+    },
+    "reg_type": {
+      "type": "string",
+      "title": "Register type",
+      "enum": ["coil", "discrete", "holding", "input", "direct"]
+    },
+    "format": {
+      "type": "string",
+      "title": "Format",
+      "description": "s=signed, u=unsigned, the number indicates the number of bits",
+      "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double"],
+      "options": {
+        "enum_titles" : [ "Signed 16-bit integer", "Unsigned 16-bit integer", "Signed 8-bit integer", "Unsigned 8-bit integer",
+                          "Signed 24-bit integer", "Unsigned 24-bit integer", "Signed 32-bit integer", "Unsigned 32-bit integer",
+                          "Signed 64-bit integer", "Unsigned 64-bit integer",
+                          "8-bit BCD", "16-bit BCD","24-bit BCD", "32-bit BCD", "IEEE754 32-bit float", "IEEE754 64-bit float (double)"]
+      }
+    },
+    "address": {
+      "title": "Address",
+      "description": "Register index (0-65535 in case of Modbus)",
+      "$ref": "#/definitions/modbus_int"
+    },
+    "modbus_int": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "debug": {
+      "type": "boolean",
+      "title": "Enable debug logging",
+      "default": false,
+      "_format": "checkbox",
+      "propertyOrder": 1
+    },
+    "ports": {
+      "type": "array",
+      "title": "List of serial ports",
+      "description": "Lists serial ports that can be used by the driver",
+      "items": { "$ref": "#/definitions/port" },
+      "minItems": 1,
+      "_format": "tabs",
+      "propertyOrder": 2
+    }
+  },
+  "required": ["ports"],
+  "configFile": {
+    "path": "/etc/wb-mqtt-serial.conf",
+    "service": "wb-mqtt-serial"
+  }
+}

@@ -1,0 +1,19 @@
+Open()
+EnqueueVoltageQueryResponse()
+>> FF FF 05 01 00 0A 00 10
+<< FF FF 05 00 9A 0A 00 A9
+EnqueueVoltageQueryResponse()
+>> FF FF 05 01 00 0A 00 10
+<< FF FF 05 00 9A 0A 00 A9
+EnqueueRelayOffQueryResponse()
+>> FF FF 05 01 00 1B 00 21
+<< FF FF 05 00 00 1B 00 20
+EnqueueRelayOnQueryResponse()
+>> FF FF 05 01 00 1B 00 21
+<< FF FF 05 00 FF 1B 00 1F
+EnqueueThreshold0QueryResponse()
+>> FF FF 05 01 00 02 00 08
+<< FF FF 05 00 70 02 00 77
+EnqueueBrightnessQueryResponse()
+>> FF FF 05 01 00 41 00 47
+<< FF FF 05 00 42 41 00 88

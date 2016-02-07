@@ -1,19 +1,18 @@
 #include <iostream>
 #include <cstdio>
-
 #include <getopt.h>
 #include <unistd.h>
-
 #include <mosquittopp.h>
 
-#include "modbus_observer.h"
+#include "serial_observer.h"
+#include "serial_device.h"
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
     TMQTTClient::TConfig mqtt_config;
-    string templates_folder = "/usr/share/wb-homa-modbus/templates";
+    string templates_folder = "/usr/share/wb-mqtt-serial/templates";
     mqtt_config.Host = "localhost";
     mqtt_config.Port = 1883;
     string config_fname;
@@ -48,7 +47,8 @@ int main(int argc, char *argv[])
     PHandlerConfig handler_config;
     try {
         TConfigTemplateParser device_parser(templates_folder, debug);
-        TConfigParser parser(config_fname, debug, device_parser.Parse());
+        TConfigParser parser(config_fname, debug, TSerialDeviceFactory::GetRegisterTypes,
+                             device_parser.Parse());
         handler_config = parser.Parse();
     } catch (const TConfigParserException& e) {
         cerr << "FATAL: " << e.what() << endl;
@@ -63,13 +63,13 @@ int main(int argc, char *argv[])
     PMQTTClient mqtt_client(new TMQTTClient(mqtt_config));
 
     try {
-        PMQTTModbusObserver modbus_observer(new TMQTTModbusObserver(mqtt_client, handler_config));
-        modbus_observer->SetUp();
-        if (modbus_observer->WriteInitValues() && handler_config->Debug)
+        PMQTTSerialObserver observer(new TMQTTSerialObserver(mqtt_client, handler_config));
+        observer->SetUp();
+        if (observer->WriteInitValues() && handler_config->Debug)
             cerr << "Register-based setup performed." << endl;
         mqtt_client->StartLoop();
-        modbus_observer->ModbusLoop();
-    } catch (const TModbusException& e) {
+        observer->Loop();
+    } catch (const TSerialDeviceException& e) {
         cerr << "FATAL: " << e.what() << endl;
         return 1;
     }

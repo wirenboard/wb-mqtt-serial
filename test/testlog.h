@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <functional>
+#include <mutex>
 #include <gtest/gtest.h>
 
 class TTestLogItem
@@ -31,19 +32,37 @@ private:
     std::stringstream Contents;
 };
 
+template<> inline TTestLogItem& TTestLogItem::operator <<(const std::vector<uint8_t>& value)
+{
+    // TBD: move this to libwbmqtt (HexDump?)
+    std::ios::fmtflags f(Contents.flags());
+    Contents << std::hex << std::uppercase << std::setfill('0');
+    bool first = true;
+    for (uint8_t b: value) {
+        if (first)
+            first = false;
+        else
+            Contents << " ";
+        Contents << std::setw(2) << int(b);
+    }
+    Contents.flags(f);
+    return *this;
+}
+
 class TLoggedFixture: public ::testing::Test
 {
 public:
-    virtual ~TLoggedFixture();
     TTestLogItem Emit()
     {
         return TTestLogItem([this](const std::string& s) {
+                std::unique_lock<std::mutex> lk(Mutex);
                 Indented() << s << std::endl;
             });
     }
     TTestLogItem Note()
     {
         return TTestLogItem([this](const std::string& s) {
+                std::unique_lock<std::mutex> lk(Mutex);
                 Indented() << ">>> "  << s << std::endl;
             });
     }
@@ -54,6 +73,7 @@ public:
 
 private:
     bool IsOk();
+    std::mutex Mutex;
     std::stringstream& Indented();
     std::string GetLogFileName(const std::string& suffix = "") const;
     std::stringstream Contents;
@@ -68,10 +88,12 @@ class TTestLogIndent
 public:
     TTestLogIndent(TLoggedFixture& fixture): Fixture(fixture)
     {
+        std::unique_lock<std::mutex> lk(Fixture.Mutex);
         ++Fixture.IndentLevel;
     }
     ~TTestLogIndent()
     {
+        std::unique_lock<std::mutex> lk(Fixture.Mutex);
         --Fixture.IndentLevel;
     }
 private:
