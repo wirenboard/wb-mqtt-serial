@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "title": "Modbus Driver Configuration",
+  "title": "Serial Device Driver Configuration",
   "description": "Lists devices attached to RS-485 ports",
   "definitions": {
     "deviceProtocol": {
@@ -86,7 +86,7 @@
     },
     "device": {
       "type": "object",
-      "title": "Modbus device",
+      "title": "Serial device",
       "headerTemplate": "{{|self.device_type|}}{{ (slave id |self.slave_id|)}}{{ (name: |self.name|)}}",
       // "options": { "collapsed": true },
       "properties": {
@@ -105,11 +105,11 @@
           "propertyOrder": 2
         },
         "slave_id": {
-          "title": "Modbus slave id of the device",
+          "title": "Slave id of the device",
           "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
           "minimum": 0,
           "propertyOrder": 3,
-          "$ref": "#/definitions/modbus_int"
+          "$ref": "#/definitions/serial_int"
         },
         "enabled": {
           "type": "boolean",
@@ -144,7 +144,7 @@
         "channels": {
           "type": "array",
           "title": "List of channels",
-          "description": "Lists Modbus registers of the device and their corresponding controls",
+          "description": "Lists device registers and their corresponding controls",
           "items": { "$ref": "#/definitions/channel" },
           "propertyOrder": 8
         },
@@ -152,7 +152,7 @@
           "type": "array",
           "title": "Password as a list of bytes",
           "description": "Contains password for devices that support it",
-          "items": { "$ref": "#/definitions/modbus_int" },
+          "items": { "$ref": "#/definitions/serial_int" },
           "_format": "table",
           "propertyOrder": 9
         },
@@ -189,15 +189,15 @@
         },
         "address": {
           "title": "Address",
-          "description": "Holding register index (0-65535 in case of Modbus)",
+          "description": "Register index (0-65535 in case of Modbus)",
           "propertyOrder": 2,
-          "$ref": "#/definitions/modbus_int"
+          "$ref": "#/definitions/serial_int"
         },
         "value": {
           "title": "Value",
           "description": "Value to be written",
           "propertyOrder": 3,
-          "$ref": "#/definitions/modbus_int"
+          "$ref": "#/definitions/serial_int"
         }
       },
       "required": ["address", "value"]
@@ -207,7 +207,7 @@
       // "options": { "collapsed": true },
       "oneOf": [
         {
-          "title": "Modbus register",
+          "title": "Register",
           "properties": {
             "name": {
               "$ref": "#/definitions/channel_name",
@@ -231,7 +231,7 @@
             },
             "max": {
               "title": "Maximum value",
-              "$ref": "#/definitions/modbus_int",
+              "$ref": "#/definitions/serial_int",
               "propertyOrder": 6
             },
             "scale": {
@@ -249,7 +249,7 @@
               // TBD: only use on_value for 'switch' and 'wo-switch' types
               "title": "'On' value",
               "description": "Value corresponding to the 'On' state of the switch",
-              "$ref": "#/definitions/modbus_int",
+              "$ref": "#/definitions/serial_int",
               "propertyOrder": 9
             }
           },
@@ -258,7 +258,7 @@
           "_format": "grid"
         },
         {
-          "title": "Compound Modbus register",
+          "title": "Compound register",
           "properties": {
             "name": {
               "$ref": "#/definitions/channel_name",
@@ -353,9 +353,9 @@
     "address": {
       "title": "Address",
       "description": "Register index (0-65535 in case of Modbus)",
-      "$ref": "#/definitions/modbus_int"
+      "$ref": "#/definitions/serial_int"
     },
-    "modbus_int": {
+    "serial_int": {
       "oneOf": [
         {
           "type": "string",
