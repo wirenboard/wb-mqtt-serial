@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.14.2) stable; urgency=medium
+
+  * per-platform configs
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 08 Feb 2016 18:01:28 +0300
+
 wb-mqtt-serial (1.14.1) stable; urgency=medium
 
   * renamed to wb-mqtt-serial

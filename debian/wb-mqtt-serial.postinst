@@ -1,4 +1,25 @@
 #!/bin/sh
+. /etc/wb_env.sh
+
+CONFFILE=/etc/wb-mqtt-serial.conf
+
+case "$WB_VERSION" in
+    "52"|"50" )
+        BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5"
+    ;;
+
+    "41|32|28|KMON1" )
+        BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234"
+    ;;
+
+    * )
+        BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.default"
+    ;;
+esac
+
+
+ucf --debconf-ok $BOARD_CONF $CONFFILE
+
 
 if [ -x "/etc/init.d/wb-mqtt-serial" ] || [ -e "/etc/init/wb-mqtt-serial.conf" ]; then
 	if [ ! -e "/etc/init/wb-mqtt-serial.conf" ]; then
