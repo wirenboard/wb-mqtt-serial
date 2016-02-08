@@ -90,7 +90,7 @@ void TSerialClient::Cycle()
             std::unique_lock<std::mutex> lock(FlushNeededMutex);
             auto wait_until = std::chrono::steady_clock::now() +
                 std::chrono::microseconds(PollInterval * 1000 / RegList.size());
-            if (FlushNeededCond.wait_until(lock, wait_until, [this](){ return FlushNeeded; })) {
+            while (FlushNeededCond.wait_until(lock, wait_until, [this](){ return FlushNeeded; })) {
                 lock.unlock();
                 Flush();
                 lock.lock();
