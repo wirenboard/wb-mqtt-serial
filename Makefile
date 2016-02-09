@@ -105,7 +105,7 @@ clean :
 
 
 install: all
-	mkdir -p $(DESTDIR)/etc/wb-mqtt-confed/schemas
+	mkdir -p $(DESTDIR)/usr/share/wb-mqtt-confed/schemas
 	mkdir -p $(DESTDIR)/etc/wb-configs.d
 	install -d $(DESTDIR)
 	install -d $(DESTDIR)/etc
@@ -122,7 +122,7 @@ install: all
 
 	install -m 0644  wb-mqtt-serial.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-mqtt-serial
 
-	install -m 0644  wb-mqtt-serial.schema.json $(DESTDIR)/etc/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json
+	install -m 0644  wb-mqtt-serial.schema.json $(DESTDIR)/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json
 	install -m 0755  $(SERIAL_BIN) $(DESTDIR)/usr/bin/$(SERIAL_BIN)
 	cp -r  wb-mqtt-serial-templates $(DESTDIR)/usr/share/wb-mqtt-serial/templates
 
