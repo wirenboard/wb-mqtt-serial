@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.14.3) stable; urgency=medium
+
+  * relocate schemas
+
+ -- Ivan Shvedunov <ivan4th@gmail.com>  Thu, 25 Feb 2016 05:37:36 +0300
+
 wb-mqtt-serial (1.14.2) stable; urgency=medium
 
   * per-platform configs
