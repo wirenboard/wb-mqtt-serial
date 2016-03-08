@@ -14,7 +14,7 @@ public:
         REG_RELAY = 0,
         REG_INPUT,
         REG_PARAM,
-        REG_BRIGHTNESS = 1
+        REG_BRIGHTNESS
     };
 
     TUnielDevice(PDeviceConfig config, PAbstractSerialPort port);

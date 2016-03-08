@@ -31,7 +31,8 @@ LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
 SERIAL_BIN=wb-mqtt-serial
 SERIAL_LIBS=-lmodbus
-SERIAL_SRCS=serial_client.cpp \
+SERIAL_SRCS=register.cpp \
+  serial_client.cpp \
   register_handler.cpp \
   serial_config.cpp \
   serial_port_driver.cpp \

@@ -106,8 +106,8 @@ TEST_F(TUnielIntegrationTest, Poll)
     Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 
-    EnqueueVoltageQueryResponse();
     EnqueueRelayOffQueryResponse();
+    EnqueueVoltageQueryResponse();
     EnqueueThreshold0QueryResponse();
     EnqueueBrightnessQueryResponse();
 
@@ -123,8 +123,8 @@ TEST_F(TUnielIntegrationTest, Poll)
     EnqueueSetLowThreshold0Response();
     EnqueueSetBrightnessResponse();
 
-    EnqueueVoltageQueryResponse();
     EnqueueRelayOnQueryResponse();
+    EnqueueVoltageQueryResponse();
     EnqueueThreshold0QueryResponse();
     EnqueueBrightnessQueryResponse();
 

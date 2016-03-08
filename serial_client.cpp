@@ -48,6 +48,7 @@ void TSerialClient::Connect()
         throw TSerialDeviceException("no registers defined");
     if (!Port->IsOpen())
         Port->Open();
+    PrepareRegisterRanges();
     Active = true;
 }
 
@@ -56,6 +57,31 @@ void TSerialClient::Disconnect()
     if (Port->IsOpen())
         Port->Close();
     Active = false;
+}
+
+void TSerialClient::PrepareRegisterRanges()
+{
+    // all of this is seemingly slow but it's actually only done once
+    RegRanges.clear();
+    PSlaveEntry last_slave(0);
+    std::list<PRegister> cur_regs;
+    auto it = RegList.begin();
+    for (;;) {
+        bool at_end = it == RegList.end();
+        if ((at_end || (*it)->Slave != last_slave) && !cur_regs.empty()) {
+            cur_regs.sort([](const PRegister& a, const PRegister& b) {
+                    return a->Type < b->Type || (a->Type == b->Type && a->Address < b->Address);
+                });
+            PSerialDevice dev = GetDevice(last_slave);
+            auto ranges = dev->SplitRegisterList(cur_regs);
+            RegRanges.insert(RegRanges.end(), ranges.begin(), ranges.end());
+            cur_regs.clear();
+        }
+        if (at_end)
+            break;
+        last_slave = (*it)->Slave;
+        cur_regs.push_back(*it++);
+    }
 }
 
 void TSerialClient::MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state)
@@ -84,7 +110,7 @@ void TSerialClient::Cycle()
     // Note that for multi-register values, all values
     // corresponding to single register should be retrieved
     // by single query.
-    for (const auto& reg: RegList) {
+    for (auto range: RegRanges) {
         {
             // Don't hold the lock while flushing
             std::unique_lock<std::mutex> lock(FlushNeededMutex);
@@ -98,20 +124,30 @@ void TSerialClient::Cycle()
             }
         }
 
-        auto handler = Handlers[reg];
-        bool changed = false;
-        if (!handler->NeedToPoll())
-            continue;
-        PrepareToAccessDevice(handler->Device());
-        MaybeUpdateErrorState(reg, handler->Poll(&changed));
-        // Note that p.second->CurrentErrorState() is not the
-        // same as the value returned by p->second->Poll(...),
-        // because the latter may be ErrorStateUnchanged.
-        if (changed &&
-            handler->CurrentErrorState() != TRegisterHandler::ReadError &&
-            handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
-            Callback(reg);
-
+        PSerialDevice dev = GetDevice(range->Slave());
+        PrepareToAccessDevice(dev);
+        dev->ReadRegisterRange(range);
+        range->MapRange([this](PRegister reg, uint64_t new_value) {
+                bool changed;
+                auto handler = Handlers[reg];
+                if (!handler->NeedToPoll())
+                    return;
+                MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(new_value, true, &changed));
+                // Note that handler->CurrentErrorState() is not the
+                // same as the value returned by handler->AcceptDeviceValue(...),
+                // because the latter may be ErrorStateUnchanged.
+                if (changed &&
+                    handler->CurrentErrorState() != TRegisterHandler::ReadError &&
+                    handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
+                    Callback(reg);
+            }, [this](PRegister reg) {
+                bool changed;
+                auto handler = Handlers[reg];
+                if (!handler->NeedToPoll())
+                    return;
+                // TBD: separate AcceptDeviceReadError method (changed is unused here)
+                MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
+            });
     }
     for (const auto& p: DeviceMap)
         p.second->EndPollCycle();

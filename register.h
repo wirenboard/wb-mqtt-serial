@@ -1,10 +1,13 @@
 #pragma once
 #include <map>
+#include <list>
 #include <mutex>
 #include <vector>
 #include <memory>
 #include <sstream>
 #include <functional>
+#include <unordered_set>
+#include <unordered_map>
 
 #include "registry.h"
 
@@ -64,7 +67,7 @@ struct TSlaveEntry
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, PSlaveEntry entry) {
-    return os << entry->ToString();
+    return os << (entry ? entry->ToString() : "(null)");
 }
 
 inline ::std::ostream& operator<<(::std::ostream& os, const TSlaveEntry& entry) {
@@ -218,3 +221,44 @@ inline RegisterFormat RegisterFormatFromName(const std::string& name) {
     else
         return U16; // FIXME!
 }
+
+class TRegisterRange {
+public:
+    typedef std::function<void(PRegister reg, uint64_t new_value)> TValueCallback;
+    typedef std::function<void(PRegister reg)> TErrorCallback;
+
+    virtual ~TRegisterRange();
+    const std::list<PRegister>& RegisterList() const { return RegList; }
+    PSlaveEntry Slave() const { return RegSlave; }
+    int Type() const { return RegType; }
+    std::string TypeName() const  { return RegTypeName; }
+    virtual void MapRange(TValueCallback value_callback, TErrorCallback error_callback) = 0;
+
+protected:
+    TRegisterRange(const std::list<PRegister>& regs);
+    TRegisterRange(PRegister reg);
+
+private:
+    PSlaveEntry RegSlave;
+    int RegType;
+    std::string RegTypeName;
+    std::list<PRegister> RegList;
+};
+
+typedef std::shared_ptr<TRegisterRange> PRegisterRange;
+
+class TSimpleRegisterRange: public TRegisterRange {
+public:
+    TSimpleRegisterRange(const std::list<PRegister>& regs);
+    TSimpleRegisterRange(PRegister reg);
+    void Reset();
+    void SetValue(PRegister reg, uint64_t value);
+    void SetError(PRegister reg);
+    void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
+
+private:
+    std::unordered_map<PRegister, uint64_t> Values;
+    std::unordered_set<PRegister> Errors;
+};
+
+typedef std::shared_ptr<TSimpleRegisterRange> PSimpleRegisterRange;

@@ -48,7 +48,7 @@ bool TRegisterHandler::NeedToPoll()
     return Reg->Poll && !Dirty;
 }
 
-TRegisterHandler::TErrorState TRegisterHandler::Poll(bool* changed)
+TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_value, bool ok, bool *changed)
 {
     *changed = false;
 
@@ -56,18 +56,10 @@ TRegisterHandler::TErrorState TRegisterHandler::Poll(bool* changed)
     if (!NeedToPoll())
         return ErrorStateUnchanged;
 
-    bool first_poll = !DidReadReg;
-    uint64_t new_value;
-    try {
-        new_value = Dev->ReadRegister(Reg);
-    } catch (const TSerialDeviceTransientErrorException& e) {
-        std::ios::fmtflags f(std::cerr.flags());
-        std::cerr << "TRegisterHandler::Poll(): warning: " << e.what() << " [slave_id is "
-				  << Reg->Slave->Id << "(0x" << std::hex << Reg->Slave->Id << ")]" << std::endl;
-        std::cerr.flags(f);
+    if (!ok)
         return UpdateReadError(true);
-    }
 
+    bool first_poll = !DidReadReg;
     DidReadReg = true;
     SetValueMutex.lock();
     if (Value != new_value) {

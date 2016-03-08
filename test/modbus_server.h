@@ -12,8 +12,8 @@
 #include "portsettings.h"
 #include "serial_device.h"
 
-struct TRegisterRange {
-    TRegisterRange(int start = 0, int end = 0)
+struct TServerRegisterRange {
+    TServerRegisterRange(int start = 0, int end = 0)
         : Start(start), End(end)
     {
         assert(End >= Start);
@@ -42,21 +42,21 @@ struct TRegisterRange {
 };
 
 struct TModbusRange {
-    TModbusRange(const TRegisterRange& coil_range = TRegisterRange(),
-                 const TRegisterRange& discrete_range = TRegisterRange(),
-                 const TRegisterRange& holding_range = TRegisterRange(),
-                 const TRegisterRange& input_range = TRegisterRange())
+    TModbusRange(const TServerRegisterRange& coil_range = TServerRegisterRange(),
+                 const TServerRegisterRange& discrete_range = TServerRegisterRange(),
+                 const TServerRegisterRange& holding_range = TServerRegisterRange(),
+                 const TServerRegisterRange& input_range = TServerRegisterRange())
         : Coils(coil_range),
           Discrete(discrete_range),
           Holding(holding_range),
           Input(input_range) {}
-    TRegisterRange Coils, Discrete, Holding, Input;
+    TServerRegisterRange Coils, Discrete, Holding, Input;
 };
 
 template<typename T>
 class TRegisterSet {
 public:
-    TRegisterSet(const std::string& name, const TRegisterRange& range, T* values)
+    TRegisterSet(const std::string& name, const TServerRegisterRange& range, T* values)
         : Name(name), Range(range)
     {
         Values = values;
@@ -104,7 +104,7 @@ private:
     std::unordered_set<int> ReadBlacklist, WriteBlacklist;
     int StrWidth() const { return sizeof(T) * 2; }
     std::string Name;
-    TRegisterRange Range;
+    TServerRegisterRange Range;
     T* Values;
 };
 

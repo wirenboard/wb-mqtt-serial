@@ -78,10 +78,10 @@ void TModbusClientTest::SetUp()
 
     Slave = ModbusServer->SetSlave(
         1, TModbusRange(
-            TRegisterRange(0, 10),
-            TRegisterRange(10, 20),
-            TRegisterRange(20, 30),
-            TRegisterRange(30, 40)));
+            TServerRegisterRange(0, 10),
+            TServerRegisterRange(10, 20),
+            TServerRegisterRange(20, 30),
+            TServerRegisterRange(30, 40)));
     ModbusServer->Start();
 
     ClientSerial = std::make_shared<TSerialPort>(
@@ -712,10 +712,10 @@ TEST_F(TModbusDeviceTest, DDL24)
     PModbusSlave slave = ModbusServer->SetSlave(
         Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
         TModbusRange(
-            TRegisterRange(),
-            TRegisterRange(),
-            TRegisterRange(4, 19),
-            TRegisterRange()));
+            TServerRegisterRange(),
+            TServerRegisterRange(),
+            TServerRegisterRange(4, 19),
+            TServerRegisterRange()));
     ModbusServer->Start();
 
     PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config));
@@ -748,10 +748,10 @@ TEST_F(TModbusDeviceTest, OnValue)
     PModbusSlave slave = ModbusServer->SetSlave(
         Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
         TModbusRange(
-            TRegisterRange(),
-            TRegisterRange(),
-            TRegisterRange(0, 1),
-            TRegisterRange()));
+            TServerRegisterRange(),
+            TServerRegisterRange(),
+            TServerRegisterRange(0, 1),
+            TServerRegisterRange()));
     ModbusServer->Start();
 
     PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config));
@@ -782,10 +782,10 @@ TEST_F(TModbusDeviceTest, Errors)
     PModbusSlave slave = ModbusServer->SetSlave(
         Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
         TModbusRange(
-            TRegisterRange(),
-            TRegisterRange(),
-            TRegisterRange(4, 19),
-            TRegisterRange()));
+            TServerRegisterRange(),
+            TServerRegisterRange(),
+            TServerRegisterRange(4, 19),
+            TServerRegisterRange()));
     ModbusServer->Start();
 
     PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config));

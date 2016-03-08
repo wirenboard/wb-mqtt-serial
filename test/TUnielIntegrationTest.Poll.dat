@@ -18,16 +18,16 @@ Subscribe: /devices/pseudo_uniel/controls/LED 1/on (QoS 0)
 >>> LoopOnce()
 Open()
 Sleep(100000)
-EnqueueVoltageQueryResponse()
->> FF FF 05 01 00 0A 00 10
-Publish: /devices/pseudo_uniel/controls/Input 0/meta/error: '' (QoS 0, retained)
-Publish: /devices/pseudo_uniel/controls/Input 0: '154' (QoS 0, retained)
-<< FF FF 05 00 9A 0A 00 A9
 EnqueueRelayOffQueryResponse()
 >> FF FF 05 01 00 1B 00 21
 Publish: /devices/pseudo_uniel/controls/Relay 1/meta/error: '' (QoS 0, retained)
 Publish: /devices/pseudo_uniel/controls/Relay 1: '0' (QoS 0, retained)
 << FF FF 05 00 00 1B 00 20
+EnqueueVoltageQueryResponse()
+>> FF FF 05 01 00 0A 00 10
+Publish: /devices/pseudo_uniel/controls/Input 0/meta/error: '' (QoS 0, retained)
+Publish: /devices/pseudo_uniel/controls/Input 0: '154' (QoS 0, retained)
+<< FF FF 05 00 9A 0A 00 A9
 EnqueueThreshold0QueryResponse()
 >> FF FF 05 01 00 02 00 08
 Publish: /devices/pseudo_uniel/controls/LowThr/meta/error: '' (QoS 0, retained)
@@ -54,12 +54,12 @@ EnqueueSetLowThreshold0Response()
 EnqueueSetBrightnessResponse()
 >> FF FF 0A 01 42 01 00 4E
 << FF FF 0A 00 42 01 00 4D
-EnqueueVoltageQueryResponse()
->> FF FF 05 01 00 0A 00 10
-<< FF FF 05 00 9A 0A 00 A9
 EnqueueRelayOnQueryResponse()
 >> FF FF 05 01 00 1B 00 21
 << FF FF 05 00 FF 1B 00 1F
+EnqueueVoltageQueryResponse()
+>> FF FF 05 01 00 0A 00 10
+<< FF FF 05 00 9A 0A 00 A9
 EnqueueThreshold0QueryResponse()
 >> FF FF 05 01 00 02 00 08
 << FF FF 05 00 70 02 00 77

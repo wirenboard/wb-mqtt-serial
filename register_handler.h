@@ -29,7 +29,7 @@ public:
     TRegisterHandler(PClientInteraction clientInteraction, PSerialDevice dev, PRegister reg);
     PRegister Register() const { return Reg; }
     bool NeedToPoll();
-    TErrorState Poll(bool* changed);
+    TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
     bool NeedToFlush();
     TErrorState Flush();
     std::string TextValue() const;

@@ -38,6 +38,7 @@ public:
     void WriteSetupRegister(PRegister reg, uint64_t value);
 
 private:
+    void PrepareRegisterRanges();
     void Flush();
     PRegisterHandler GetHandler(PRegister) const;
     PRegisterHandler CreateRegisterHandler(PRegister reg);
@@ -62,6 +63,7 @@ private:
     std::mutex FlushNeededMutex;
     bool FlushNeeded = false;
 
+    std::list<PRegisterRange> RegRanges;
     const int MAX_REGS = 65536;
 };
 
