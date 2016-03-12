@@ -8,6 +8,7 @@ wb-homa-w1/wb-homa-w1
 wb-homa-adc/wb-homa-adc
 wb-mqtt-lirc/wb-mqtt-lirc
 mqtt-logger/mqtt-logger
+wb-homa-zway/wb-homa-zway
 test/wb-homa-test
 *.deb
 */debian/files
