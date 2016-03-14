@@ -41,16 +41,17 @@ struct TDeviceSetupItem {
 
 typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
 
-struct TDeviceConfig {
-    static const int DEFAULT_INTER_DEVICE_DELAY_USEC = 100000;
-    static const int DEFAULT_ACCESS_LEVEL = 1;
+static const int DEFAULT_INTER_DEVICE_DELAY_MS = 100;
+static const int DEFAULT_ACCESS_LEVEL = 1;
 
+struct TDeviceConfig {
     TDeviceConfig(std::string name = "", int slave_id = 0, std::string protocol = "",
-                  int delay_usec = DEFAULT_INTER_DEVICE_DELAY_USEC,
+                  const std::chrono::milliseconds& delay =
+                  std::chrono::milliseconds(DEFAULT_INTER_DEVICE_DELAY_MS),
                   int access_level = DEFAULT_ACCESS_LEVEL,
                   int frame_timeout = -1,
                   PRegisterTypeMap type_map = 0)
-        : Name(name), SlaveId(slave_id), Protocol(protocol), DelayUSec(delay_usec),
+        : Name(name), SlaveId(slave_id), Protocol(protocol), Delay(delay),
           AccessLevel(access_level), FrameTimeout(frame_timeout), TypeMap(type_map) {}
     int NextOrderValue() const { return DeviceChannels.size() + 1; }
     void AddChannel(PDeviceChannel channel) { DeviceChannels.push_back(channel); };
@@ -63,9 +64,9 @@ struct TDeviceConfig {
     std::vector<PDeviceChannel> DeviceChannels;
     std::vector<PDeviceSetupItem> SetupItems;
     std::vector<uint8_t> Password;
-    int DelayUSec;
+    std::chrono::milliseconds Delay;
     int AccessLevel;
-    int FrameTimeout;
+    std::chrono::milliseconds FrameTimeout;
     PRegisterTypeMap TypeMap;
 };
 
@@ -74,7 +75,7 @@ typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
 struct TPortConfig {
     void AddDeviceConfig(PDeviceConfig device_config) { DeviceConfigs.push_back(device_config); }
     TSerialPortSettings ConnSettings;
-    int PollInterval = 20;
+    std::chrono::milliseconds PollInterval = std::chrono::milliseconds(20);
     bool Debug = false;
     std::vector<PDeviceConfig> DeviceConfigs;
 };

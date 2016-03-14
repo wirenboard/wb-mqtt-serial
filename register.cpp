@@ -4,9 +4,11 @@ TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
 {
     if (RegList.empty())
         throw std::runtime_error("cannot construct empty register range");
-    RegSlave = regs.front()->Slave;
-    RegType = regs.front()->Type;
-    RegTypeName = regs.front()->TypeName;
+    PRegister first = regs.front();
+    RegSlave = first->Slave;
+    RegType = first->Type;
+    RegTypeName = first->TypeName;
+    RegPollInterval = first->PollInterval;
 }
 
 TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
@@ -14,6 +16,7 @@ TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
     RegSlave = reg->Slave;
     RegType = reg->Type;
     RegTypeName = reg->TypeName;
+    RegPollInterval = reg->PollInterval;
 }
 
 TRegisterRange::~TRegisterRange() {}

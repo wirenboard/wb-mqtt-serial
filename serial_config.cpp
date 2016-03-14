@@ -104,11 +104,14 @@ PRegister TConfigParser::LoadRegister(PDeviceConfig device_config,
     if (register_data.isMember("readonly"))
         force_readonly = register_data["readonly"].asBool();
 
-    return TRegister::Intern(
+    PRegister reg = TRegister::Intern(
         TSlaveEntry::Intern(device_config->Protocol, device_config->SlaveId),
         it->second.Index,
         address, format, scale, true, force_readonly || it->second.ReadOnly,
         it->second.Name);
+    if (register_data.isMember("poll_interval"))
+        reg->PollInterval = std::chrono::milliseconds(GetInt(register_data, "poll_interval"));
+    return reg;
 }
 
 void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
@@ -219,12 +222,12 @@ void TConfigParser::LoadDeviceVectors(PDeviceConfig device_config, const Json::V
     }
 
     if (device_data.isMember("delay_usec")) // compat
-        device_config->DelayUSec = GetInt(device_data, "delay_usec");
+        device_config->Delay = std::chrono::milliseconds(GetInt(device_data, "delay_usec") / 1000);
     else if (device_data.isMember("delay_ms"))
-        device_config->DelayUSec = GetInt(device_data, "delay_ms") * 1000;
+        device_config->Delay = std::chrono::milliseconds(GetInt(device_data, "delay_ms"));
 
     if (device_data.isMember("frame_timeout_ms"))
-        device_config->FrameTimeout = GetInt(device_data, "frame_timeout_ms");
+        device_config->FrameTimeout = std::chrono::milliseconds(GetInt(device_data, "frame_timeout_ms"));
 
     const Json::Value array = device_data["channels"];
     for(unsigned int index = 0; index < array.size(); ++index)
@@ -307,6 +310,11 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     }
     LoadDeviceVectors(device_config, device_data);
     port_config->AddDeviceConfig(device_config);
+    for (auto channel: device_config->DeviceChannels) {
+        for (auto reg: channel->Registers)
+            if (reg->PollInterval.count() < 0)
+                reg->PollInterval = port_config->PollInterval;
+    }
 }
 
 void TConfigParser::LoadPort(const Json::Value& port_data,
@@ -337,14 +345,16 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
         port_config->ConnSettings.StopBits = GetInt(port_data, "stop_bits");
 
     if (port_data.isMember("response_timeout_ms"))
-        port_config->ConnSettings.ResponseTimeoutMs = GetInt(port_data, "response_timeout_ms");
+        port_config->ConnSettings.ResponseTimeout = std::chrono::milliseconds(
+            GetInt(port_data, "response_timeout_ms"));
 
     if (port_data.isMember("poll_interval"))
-        port_config->PollInterval = GetInt(port_data, "poll_interval");
+        port_config->PollInterval = std::chrono::milliseconds(
+            GetInt(port_data, "poll_interval"));
 
     const Json::Value array = port_data["devices"];
     for(unsigned int index = 0; index < array.size(); ++index)
-            LoadDevice(port_config, array[index], id_prefix + std::to_string(index));
+        LoadDevice(port_config, array[index], id_prefix + std::to_string(index));
 
     HandlerConfig->AddPortConfig(port_config);
 }

@@ -3,8 +3,8 @@
 
 #include "register_handler.h"
 
-TRegisterHandler::TRegisterHandler(PClientInteraction clientInteraction, PSerialDevice dev, PRegister reg)
-    : ClientInteraction(clientInteraction), Dev(dev), Reg(reg) {}
+TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed, bool debug)
+    : Dev(dev), Reg(reg), FlushNeeded(flush_needed), Debug(debug) {}
 
 TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
     TErrorState newState;
@@ -71,7 +71,7 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
         Value = new_value;
         SetValueMutex.unlock();
 
-        if (ClientInteraction->DebugEnabled()) {
+        if (Debug) {
             std::ios::fmtflags f(std::cerr.flags());
             std::cerr << "new val for " << Reg->ToString() << ": " << std::hex << new_value << std::endl;
             std::cerr.flags(f);
@@ -162,7 +162,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
         Dirty = true;
         Value = ConvertMasterValue(v);
     }
-    ClientInteraction->NotifyFlushNeeded();
+    FlushNeeded->Signal();
 }
 
 uint64_t TRegisterHandler::ConvertMasterValue(const std::string& str) const

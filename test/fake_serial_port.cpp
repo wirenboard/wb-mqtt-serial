@@ -16,7 +16,7 @@ bool TFakeSerialPort::Debug() const
     return false;
 }
 
-void TFakeSerialPort::SetExpectedFrameTimeout(int timeout)
+void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
 {
     ExpectedFrameTimeout = timeout;
 }
@@ -99,12 +99,14 @@ uint8_t TFakeSerialPort::ReadByte()
     return Resp[RespPos++];
 }
 
-int TFakeSerialPort::ReadFrame(uint8_t* buf, int count, int timeout, TFrameCompletePred frame_complete)
+int TFakeSerialPort::ReadFrame(uint8_t* buf, int count,
+                               const std::chrono::microseconds& timeout,
+                               TFrameCompletePred frame_complete)
 {
-    if (ExpectedFrameTimeout >= 0 && timeout != ExpectedFrameTimeout)
+    if (ExpectedFrameTimeout.count() >= 0 && timeout != ExpectedFrameTimeout)
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
-                                 std::to_string(timeout) + " instead of " +
-                                 std::to_string(ExpectedFrameTimeout));
+                                 std::to_string(timeout.count()) + " instead of " +
+                                 std::to_string(ExpectedFrameTimeout.count()));
     int nread = 0;
     uint8_t* p = buf;
     for (; nread < count; ++nread) {
@@ -131,16 +133,31 @@ void TFakeSerialPort::SkipNoise()
     Fixture.Emit() << "SkipNoise()";
 }
 
-void TFakeSerialPort::USleep(int usec)
+void TFakeSerialPort::Sleep(const std::chrono::microseconds& us)
 {
     SkipFrameBoundary();
     DumpWhatWasRead();
-    Fixture.Emit() << "Sleep(" << usec << ")";
+    Fixture.Emit() << "Sleep(" << us.count() << ")";
 }
 
 PLibModbusContext TFakeSerialPort::LibModbusContext() const
 {
     throw std::runtime_error("TFakeSerialPort doesn't support LibModbusContext()");
+}
+
+TAbstractSerialPort::TTimePoint TFakeSerialPort::CurrentTime() const
+{
+    return Time;
+}
+
+bool TFakeSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
+{
+    if (semaphore->TryWait())
+        return true;
+    if (until < Time)
+        throw std::runtime_error("TFakeSerialPort::Wait(): going back in time");
+    Time = until;
+    return false;
 }
 
 void TFakeSerialPort::DumpWhatWasRead()

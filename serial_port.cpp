@@ -16,16 +16,22 @@
 #include "serial_exc.h"
 #include "serial_port.h"
 
+namespace {
+    const std::chrono::milliseconds DefaultFrameTimeout(15);
+    const std::chrono::milliseconds NoiseTimeout(10);
+};
+
 TLibModbusContext::TLibModbusContext(const TSerialPortSettings& settings)
     : Inner(modbus_new_rtu(settings.Device.c_str(), settings.BaudRate,
                            settings.Parity, settings.DataBits, settings.StopBits))
 {
     modbus_set_error_recovery(Inner, MODBUS_ERROR_RECOVERY_PROTOCOL); // FIXME
 
-    if (settings.ResponseTimeoutMs > 0) {
+    if (settings.ResponseTimeout.count() > 0) {
+        std::chrono::milliseconds response_timeout = settings.ResponseTimeout;
         struct timeval tv;
-        tv.tv_sec = settings.ResponseTimeoutMs / 1000;
-        tv.tv_usec = (settings.ResponseTimeoutMs % 1000) * 1000;
+        tv.tv_sec = response_timeout.count() / 1000;
+        tv.tv_usec = (response_timeout.count() % 1000) * 1000;
         modbus_set_response_timeout(Inner, &tv);
     }
 }
@@ -95,7 +101,7 @@ void TSerialPort::WriteBytes(const uint8_t* buf, int count) {
     }
 }
 
-bool TSerialPort::Select(int ms)
+bool TSerialPort::Select(const std::chrono::microseconds& us)
 {
     fd_set rfds;
     struct timeval tv, *tvp = 0;
@@ -103,14 +109,14 @@ bool TSerialPort::Select(int ms)
 #if 0
     // too verbose
     if (Dbg)
-        std::cerr << "Select on " << Settings.Device << ": " << ms << " ms" << std::endl;
+        std::cerr << "Select on " << Settings.Device << ": " << ms.count() << " us" << std::endl;
 #endif
 
     FD_ZERO(&rfds);
     FD_SET(Fd, &rfds);
-    if (ms > 0) {
-        tv.tv_sec = ms / 1000;
-        tv.tv_usec = (ms % 1000) * 1000;
+    if (us.count() > 0) {
+        tv.tv_sec = us.count() / 1000000;
+        tv.tv_usec = us.count();
         tvp = &tv;
     }
 
@@ -125,7 +131,7 @@ uint8_t TSerialPort::ReadByte()
 {
     CheckPortOpen();
 
-    if (!Select(Settings.ResponseTimeoutMs))
+    if (!Select(Settings.ResponseTimeout))
         throw TSerialDeviceTransientErrorException("timeout");
 
     uint8_t b;
@@ -141,7 +147,9 @@ uint8_t TSerialPort::ReadByte()
     return b;
 }
 
-int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout, TFrameCompletePred frame_complete)
+int TSerialPort::ReadFrame(uint8_t* buf, int size,
+                           const std::chrono::microseconds& timeout,
+                           TFrameCompletePred frame_complete)
 {
     CheckPortOpen();
     int nread = 0;
@@ -159,12 +167,12 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout, TFrameCompletePr
             // that there's a pause of at least
             // DeviceConfig->FrameTimeoutMs before polling each
             // device.
-            usleep(DefaultFrameTimeoutMs);
+            usleep(DefaultFrameTimeout.count());
             break;
         }
 
-        if (!Select(!nread ? Settings.ResponseTimeoutMs :
-                    timeout < 0 ? DefaultFrameTimeoutMs :
+        if (!Select(!nread ? Settings.ResponseTimeout :
+                    timeout.count() < 0 ? DefaultFrameTimeout :
                     timeout))
             break; // end of the frame
 
@@ -210,7 +218,7 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size, int timeout, TFrameCompletePr
 void TSerialPort::SkipNoise()
 {
     uint8_t b;
-    while (Select(NoiseTimeoutMs)) {
+    while (Select(NoiseTimeout)) {
         if (read(Fd, &b, 1) < 1)
             throw TSerialDeviceException("read() failed");
         if (Dbg) {
@@ -222,12 +230,28 @@ void TSerialPort::SkipNoise()
     }
 }
 
-void TSerialPort::USleep(int usec)
+void TSerialPort::Sleep(const std::chrono::microseconds& us)
 {
-    usleep(usec);
+    usleep(us.count());
 }
 
 PLibModbusContext TSerialPort::LibModbusContext() const
 {
     return Context;
+}
+
+TAbstractSerialPort::TTimePoint TSerialPort::CurrentTime() const
+{
+    return std::chrono::steady_clock::now();
+}
+
+bool TSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
+{
+    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now().time_since_epoch()).count() <<
+        ": Wait until " <<
+        std::chrono::duration_cast<std::chrono::milliseconds>(until.time_since_epoch()).count() <<
+        std::endl;
+        
+    return semaphore->Wait(until);
 }

@@ -32,6 +32,7 @@ LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 SERIAL_BIN=wb-mqtt-serial
 SERIAL_LIBS=-lmodbus
 SERIAL_SRCS=register.cpp \
+  poll_plan.cpp \
   serial_client.cpp \
   register_handler.cpp \
   serial_config.cpp \
@@ -49,6 +50,7 @@ SERIAL_SRCS=register.cpp \
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
+  $(TEST_DIR)/poll_plan_test.o \
   $(TEST_DIR)/modbus_server.o \
   $(TEST_DIR)/modbus_test.o \
   $(TEST_DIR)/uniel_expectations.o \

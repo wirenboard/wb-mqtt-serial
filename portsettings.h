@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <string>
 #include <ostream>
 
@@ -10,22 +11,22 @@ struct TSerialPortSettings
                         char parity = 'N',
                         int data_bits = 8,
                         int stop_bits = 1,
-                        int response_timeout_ms = 0)
+                        const std::chrono::milliseconds& response_timeout = std::chrono::milliseconds::zero())
         : Device(device), BaudRate(baud_rate), Parity(parity),
           DataBits(data_bits), StopBits(stop_bits),
-          ResponseTimeoutMs(response_timeout_ms) {}
+          ResponseTimeout(response_timeout) {}
 
     std::string Device;
     int BaudRate;
     char Parity;
     int DataBits;
     int StopBits;
-    int ResponseTimeoutMs;
+    std::chrono::milliseconds ResponseTimeout;
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, const TSerialPortSettings& settings) {
     return os << "<" << settings.Device << " " << settings.BaudRate <<
         " " << settings.DataBits << " " << settings.Parity << settings.StopBits <<
-        " timeout " << settings.ResponseTimeoutMs << ">";
+        " timeout " << settings.ResponseTimeout.count() << ">";
 }
 

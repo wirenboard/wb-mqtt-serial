@@ -29,7 +29,9 @@ void TModbusTestBase::SetUp()
     FakeSerial = std::make_shared<TPtyBasedFakeSerial>(*this);
     FakeSerial->StartForwarding();
     ServerSerial = std::make_shared<TSerialPort>(
-        TSerialPortSettings(FakeSerial->GetSecondaryPtsName(), 9600, 'N', 8, 1, 10000));
+        TSerialPortSettings(FakeSerial->GetSecondaryPtsName(),
+                            9600, 'N', 8, 1,
+                            std::chrono::milliseconds(10000)));
 #if 0
     ServerSerial->SetDebug(true);
 #endif
@@ -603,7 +605,7 @@ TEST_F(TConfigParserTest, Parse)
         ASSERT_EQ(config->Debug, port_config->Debug);
         Emit() << "------";
         Emit() << "ConnSettings: " << port_config->ConnSettings;
-        Emit() << "PollInterval: " << port_config->PollInterval;
+        Emit() << "PollInterval: " << port_config->PollInterval.count();
         if (port_config->DeviceConfigs.empty()) {
             Emit() << "No device configs.";
             continue;

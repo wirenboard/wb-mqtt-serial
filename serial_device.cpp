@@ -1,7 +1,7 @@
 #include "serial_device.h"
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port)
-    : DelayUsec(config->DelayUSec), SerialPort(port) {}
+    : Delay(config->Delay), SerialPort(port) {}
 
 TSerialDevice::~TSerialDevice() {}
 
@@ -15,7 +15,7 @@ std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegi
 
 void TSerialDevice::Prepare()
 {
-    SerialPort->USleep(DelayUsec);
+    SerialPort->Sleep(Delay);
 }
 
 void TSerialDevice::EndPollCycle() {}

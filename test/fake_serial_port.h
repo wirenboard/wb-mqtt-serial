@@ -15,17 +15,21 @@ public:
     TFakeSerialPort(TLoggedFixture& fixture);
     void SetDebug(bool debug);
     bool Debug() const;
-    void SetExpectedFrameTimeout(int timeout);
+    void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
     void CheckPortOpen();
     void Open();
     void Close();
     bool IsOpen() const;
     void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte();
-    int ReadFrame(uint8_t* buf, int count, int timeout = -1, TFrameCompletePred frame_complete = 0);
+    int ReadFrame(uint8_t* buf, int count,
+                  const std::chrono::microseconds& timeout = std::chrono::microseconds(-1),
+                  TFrameCompletePred frame_complete = 0);
     void SkipNoise();
-    void USleep(int usec);
+    void Sleep(const std::chrono::microseconds& us);
     PLibModbusContext LibModbusContext() const;
+    TTimePoint CurrentTime() const;
+    bool Wait(PBinarySemaphore semaphore, const TTimePoint& until);
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     void DumpWhatWasRead();
@@ -40,7 +44,8 @@ private:
     std::vector<int> Req;
     std::vector<int> Resp;
     size_t ReqPos, RespPos, DumpPos;
-    int ExpectedFrameTimeout = -1;
+    std::chrono::microseconds ExpectedFrameTimeout = std::chrono::microseconds(-1);
+    TPollPlan::TTimePoint Time = TPollPlan::TTimePoint(std::chrono::milliseconds(0));
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;

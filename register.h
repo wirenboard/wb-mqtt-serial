@@ -2,6 +2,7 @@
 #include <map>
 #include <list>
 #include <mutex>
+#include <chrono>
 #include <vector>
 #include <memory>
 #include <sstream>
@@ -136,6 +137,7 @@ struct TRegister
     bool Poll;
     bool ReadOnly;
     std::string TypeName;
+    std::chrono::milliseconds PollInterval = std::chrono::milliseconds::zero();
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, PRegister reg) {
@@ -232,6 +234,7 @@ public:
     PSlaveEntry Slave() const { return RegSlave; }
     int Type() const { return RegType; }
     std::string TypeName() const  { return RegTypeName; }
+    std::chrono::milliseconds PollInterval() const { return RegPollInterval; }
     virtual void MapRange(TValueCallback value_callback, TErrorCallback error_callback) = 0;
 
 protected:
@@ -242,6 +245,7 @@ private:
     PSlaveEntry RegSlave;
     int RegType;
     std::string RegTypeName;
+    std::chrono::milliseconds RegPollInterval = std::chrono::milliseconds(-1);
     std::list<PRegister> RegList;
 };
 

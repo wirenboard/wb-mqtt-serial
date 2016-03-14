@@ -37,7 +37,7 @@ protected:
     PAbstractSerialPort Port() const { return SerialPort; }
 
 private:
-    int DelayUsec;
+    std::chrono::milliseconds Delay;
     PAbstractSerialPort SerialPort;
 };
 

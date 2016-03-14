@@ -95,7 +95,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
             "stop_bits": 2,
 
             // Минимальный интервал опроса каждого регистра
-            // данного устройства
+            // данного устройства, в миллисекундах
 
             "poll_interval": 10,
 
@@ -173,13 +173,16 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             // "double" - число с плаваяющей точкой двойной точности IEEE 754. 64 bit. (big-endian).
                             //     (занимает 4 регистра, начиная с указанного)
 
-                            "format": "s8"
+                            "format": "s8",
 
                             // для регистров типа coil и discrete
                             // с типом отображения switch/wo-swich
                             // также допускается задание on_value -
                             // числового значения, соответствующего
                             // состоянию "on" (см. ниже)
+
+                            // минимальный интервал опроса данного регистра в миллисекундах
+                            "poll_interval": 10
                         },
                         {
                             // Ещё один канал

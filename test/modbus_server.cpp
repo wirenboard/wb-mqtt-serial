@@ -79,7 +79,7 @@ bool TModbusServer::IsRequestBlacklisted() const
 void TModbusServer::Run()
 {
     for (;;) {
-        bool got_data = Port->Select(SELECT_PERIOD_MS);
+        bool got_data = Port->Select(std::chrono::milliseconds(SELECT_PERIOD_MS));
         {
             std::unique_lock<std::mutex> lk(Mutex);
             if (Stop)

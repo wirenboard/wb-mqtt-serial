@@ -36,7 +36,6 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
             }
         }
     }
-    SerialClient->SetPollInterval(Config->PollInterval);
 }
 
 void TSerialPortDriver::PubSubSetup()

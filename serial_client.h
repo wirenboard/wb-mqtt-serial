@@ -3,14 +3,14 @@
 #include <list>
 #include <memory>
 #include <functional>
-#include <condition_variable>
 #include <unordered_map>
-#include <mutex>
 
+#include "poll_plan.h"
 #include "serial_device.h"
 #include "register_handler.h"
+#include "binary_semaphore.h"
 
-class TSerialClient: public IClientInteraction, public std::enable_shared_from_this<TSerialClient>
+class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
     typedef std::function<void(PRegister reg)> TCallback;
@@ -31,7 +31,6 @@ public:
     bool DidRead(PRegister reg) const;
     void SetCallback(const TCallback& callback);
     void SetErrorCallback(const TErrorCallback& callback);
-    void SetPollInterval(int ms);
     void SetDebug(bool debug);
     bool DebugEnabled() const;
     void NotifyFlushNeeded();
@@ -39,9 +38,11 @@ public:
 
 private:
     void PrepareRegisterRanges();
-    void Flush();
+    void DoFlush();
+    void WaitForPollAndFlush();
+    void MaybeFlushAvoidingPollStarvationButDontWait();
+    void PollRange(PRegisterRange range);
     PRegisterHandler GetHandler(PRegister) const;
-    PRegisterHandler CreateRegisterHandler(PRegister reg);
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
     PSerialDevice GetDevice(PSlaveEntry entry);
     void PrepareToAccessDevice(PSerialDevice dev);
@@ -53,18 +54,15 @@ private:
     std::unordered_map<PSlaveEntry, PSerialDevice> DeviceMap;
 
     bool Active;
-    int PollInterval;
     TCallback Callback;
     TErrorCallback ErrorCallback;
     bool Debug = false;
     PSerialDevice LastAccessedDevice = 0;
+    PBinarySemaphore FlushNeeded;
+    PPollPlan Plan;
 
-    std::condition_variable FlushNeededCond;
-    std::mutex FlushNeededMutex;
-    bool FlushNeeded = false;
-
-    std::list<PRegisterRange> RegRanges;
     const int MAX_REGS = 65536;
+    const int MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;
