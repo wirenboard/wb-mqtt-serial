@@ -673,6 +673,7 @@ class TModbusDeviceTest: public TModbusTestBase
 protected:
     void SetUp();
     void FilterConfig(const std::string& device_name);
+    void VerifyDDL24(); // used with two different configs
     PHandlerConfig Config;
     PFakeMQTTClient MQTTClient;
 };
@@ -710,9 +711,8 @@ void TModbusDeviceTest::FilterConfig(const std::string& device_name)
     ASSERT_FALSE(Config->PortConfigs.empty()) << "device not found: " << device_name;
 }
 
-TEST_F(TModbusDeviceTest, DDL24)
+void TModbusDeviceTest::VerifyDDL24()
 {
-    FilterConfig("DDL24");
     PModbusSlave slave = ModbusServer->SetSlave(
         Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
         TModbusRange(
@@ -744,6 +744,20 @@ TEST_F(TModbusDeviceTest, DDL24)
     Note() << "LoopOnce() after slave update";
 
     observer->LoopOnce();
+}
+
+TEST_F(TModbusDeviceTest, DDL24)
+{
+    FilterConfig("DDL24");
+    VerifyDDL24();
+}
+
+TEST_F(TModbusDeviceTest, DDL24_Holes)
+{
+    FilterConfig("DDL24");
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+    VerifyDDL24();
 }
 
 TEST_F(TModbusDeviceTest, OnValue)

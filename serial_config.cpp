@@ -361,6 +361,10 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     device_config->Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
     device_config->Name = device_data.isMember("name") ? device_data["name"].asString() : "";
     device_config->SlaveId = GetInt(device_data, "slave_id");
+    if (device_data.isMember("max_reg_hole"))
+        device_config->MaxRegHole = GetInt(device_data, "max_reg_hole");
+    if (device_data.isMember("max_bit_hole"))
+        device_config->MaxRegHole = GetInt(device_data, "max_bit_hole");
     if (device_data.isMember("device_type")){
         device_config->DeviceType = device_data["device_type"].asString();
         auto it = Templates->find(device_config->DeviceType);

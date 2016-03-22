@@ -60,9 +60,13 @@ struct TDeviceConfig {
                   std::chrono::milliseconds(DEFAULT_INTER_DEVICE_DELAY_MS),
                   int access_level = DEFAULT_ACCESS_LEVEL,
                   int frame_timeout = -1,
+                  int max_reg_hole = 0,
+                  int max_bit_hole = 0,
                   PRegisterTypeMap type_map = 0)
         : Name(name), SlaveId(slave_id), Protocol(protocol), Delay(delay),
-          AccessLevel(access_level), FrameTimeout(frame_timeout), TypeMap(type_map) {}
+          AccessLevel(access_level), FrameTimeout(frame_timeout),
+          MaxRegHole(max_reg_hole), MaxBitHole(max_bit_hole),
+          TypeMap(type_map) {}
     int NextOrderValue() const { return DeviceChannels.size() + 1; }
     void AddChannel(PDeviceChannel channel) { DeviceChannels.push_back(channel); };
     void AddSetupItem(PDeviceSetupItem item) { SetupItems.push_back(item); }
@@ -77,6 +81,7 @@ struct TDeviceConfig {
     std::chrono::milliseconds Delay;
     int AccessLevel;
     std::chrono::milliseconds FrameTimeout;
+    int MaxRegHole, MaxBitHole;
     PRegisterTypeMap TypeMap;
 };
 

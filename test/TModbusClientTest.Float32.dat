@@ -1,11 +1,13 @@
 >>> server -> client: 0x45d2 0x0000, 0x449d 0x8000
 >>> Cycle()
->> 01 03 00 14 00 06 85 CC
+>> 01 03 00 14 00 02 84 0F
 Modbus ErrorCallback: <modbus:1:holding: 20>: no error
 Modbus Callback: <modbus:1:holding: 20> becomes 6720
+<< 01 03 04 45 D2 00 00 4F 06
+>> 01 03 00 18 00 02 44 0C
 Modbus ErrorCallback: <modbus:1:holding: 24>: no error
 Modbus Callback: <modbus:1:holding: 24> becomes 0
-<< 01 03 0C 45 D2 00 00 00 00 00 00 00 00 00 00 3D 38
+<< 01 03 04 00 00 00 00 FA 33
 >> 01 04 00 1E 00 02 11 CD
 Modbus ErrorCallback: <modbus:1:input: 30>: no error
 Modbus Callback: <modbus:1:input: 30> becomes 1260
@@ -14,31 +16,39 @@ Modbus Callback: <modbus:1:input: 30> becomes 1260
 >>> Cycle()
 >> 01 10 00 14 00 02 04 41 20 00 00 E6 A6
 << 01 10 00 14 00 02 01 CC
->> 01 03 00 14 00 06 85 CC
-<< 01 03 0C 41 20 00 00 00 00 00 00 00 00 00 00 C4 4C
+>> 01 03 00 14 00 02 84 0F
+<< 01 03 04 41 20 00 00 EF C5
+>> 01 03 00 18 00 02 44 0C
+<< 01 03 04 00 00 00 00 FA 33
 >> 01 04 00 1E 00 02 11 CD
 << 01 04 04 44 9D 80 00 1F 5A
 >>> client -> server: -0.00123
 >>> Cycle()
 >> 01 10 00 14 00 02 04 BA A1 37 F4 90 1D
 << 01 10 00 14 00 02 01 CC
->> 01 03 00 14 00 06 85 CC
-<< 01 03 0C BA A1 37 F4 00 00 00 00 00 00 00 00 48 49
+>> 01 03 00 14 00 02 84 0F
+<< 01 03 04 BA A1 37 F4 99 7E
+>> 01 03 00 18 00 02 44 0C
+<< 01 03 04 00 00 00 00 FA 33
 >> 01 04 00 1E 00 02 11 CD
 << 01 04 04 44 9D 80 00 1F 5A
 >>> client -> server: -0.123 (scaled)
 >>> Cycle()
 >> 01 10 00 18 00 02 04 BA A1 37 F4 90 48
 << 01 10 00 18 00 02 C1 CF
->> 01 03 00 14 00 06 85 CC
-<< 01 03 0C BA A1 37 F4 00 00 00 00 BA A1 37 F4 2B 04
+>> 01 03 00 14 00 02 84 0F
+<< 01 03 04 BA A1 37 F4 99 7E
+>> 01 03 00 18 00 02 44 0C
+<< 01 03 04 BA A1 37 F4 99 7E
 >> 01 04 00 1E 00 02 11 CD
 << 01 04 04 44 9D 80 00 1F 5A
 >>> server -> client: 0x449d 0x8000 (scaled)
 >>> Cycle()
->> 01 03 00 14 00 06 85 CC
+>> 01 03 00 14 00 02 84 0F
+<< 01 03 04 BA A1 37 F4 99 7E
+>> 01 03 00 18 00 02 44 0C
 Modbus Callback: <modbus:1:holding: 24> becomes 126000
-<< 01 03 0C BA A1 37 F4 00 00 00 00 44 9D 80 00 AC 97
+<< 01 03 04 44 9D 80 00 1E ED
 >> 01 04 00 1E 00 02 11 CD
 << 01 04 04 44 9D 80 00 1F 5A
 (pty-based fake serial -- stopping forwarding)

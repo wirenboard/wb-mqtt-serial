@@ -171,6 +171,20 @@
           "minimum": 0,
           "default": 100,
           "propertyOrder": 11
+        },
+        "max_reg_hole": {
+          "type": "integer",
+          "title": "Max dummy read register count",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 12
+        },
+        "max_bit_hole": {
+          "type": "integer",
+          "title": "Max dummy read bit count",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 13
         }
       },
       "required": ["slave_id"],

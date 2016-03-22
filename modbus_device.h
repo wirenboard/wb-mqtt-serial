@@ -24,5 +24,6 @@ public:
     void ReadRegisterRange(PRegisterRange range);
 
 private:
+    PDeviceConfig Config;
     PLibModbusContext Context;
 };

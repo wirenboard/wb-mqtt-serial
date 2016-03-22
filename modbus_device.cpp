@@ -4,9 +4,6 @@
 #include "modbus_device.h"
 
 namespace {
-    const int MAX_REGS_HOLE = 10;
-    const int MAX_BITS_HOLE = 80;
-
     static bool IsSingleBitType(int type) {
         return type == TModbusDevice::REG_COIL || type == TModbusDevice::REG_DISCRETE;
     }
@@ -120,7 +117,7 @@ REGISTER_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
         }));
 
 TModbusDevice::TModbusDevice(PDeviceConfig config, PAbstractSerialPort port)
-    : TSerialDevice(config, port), Context(port->LibModbusContext()) {}
+    : TSerialDevice(config, port), Config(config), Context(port->LibModbusContext()) {}
 
 std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> reg_list) const
 {
@@ -131,7 +128,7 @@ std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegi
     std::list<PRegister> l;
     int prev_start = -1, prev_type = -1, prev_end = -1;
     std::chrono::milliseconds prev_interval;
-    int max_hole = IsSingleBitType(reg_list.front()->Type) ? MAX_BITS_HOLE : MAX_REGS_HOLE,
+    int max_hole = IsSingleBitType(reg_list.front()->Type) ? Config->MaxBitHole : Config->MaxRegHole,
         max_regs = IsSingleBitType(reg_list.front()->Type) ? MODBUS_MAX_READ_BITS : MODBUS_MAX_READ_REGISTERS;
     for (auto reg: reg_list) {
         int new_end = reg->Address + reg->Width();
