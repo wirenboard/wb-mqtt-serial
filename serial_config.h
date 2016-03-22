@@ -10,6 +10,16 @@
 #include "portsettings.h"
 #include "jsoncpp/json/json.h"
 
+struct TTemplate {
+    TTemplate(const Json::Value& device_data);
+    Json::Value DeviceData, ChannelMap = Json::Value(Json::objectValue);
+};
+
+typedef std::shared_ptr<TTemplate> PTemplate;
+
+typedef std::map<std::string, PTemplate> TTemplateMap;
+typedef std::shared_ptr<TTemplateMap> PTemplateMap;
+
 struct TDeviceChannel {
     TDeviceChannel(std::string name = "", std::string type = "text",
                    std::string device_id = "", int order = 0,
@@ -103,19 +113,17 @@ private:
     std::string Message;
 };
 
-typedef std::map<std::string, Json::Value> TTemplateMap;
-
 class TConfigTemplateParser {
 public:
     TConfigTemplateParser(const std::string& template_config_dir, bool debug);
-    TTemplateMap Parse();
-    
+    PTemplateMap Parse();
+
 private:
     void LoadDeviceTemplate(const Json::Value& root, const std::string& filepath);
 
     std::string DirectoryName;
     bool Debug;
-    TTemplateMap Templates;
+    PTemplateMap Templates;
 };
 
 typedef std::function<PRegisterTypeMap(PDeviceConfig device_config)> TGetRegisterTypeMap;
@@ -124,13 +132,14 @@ class TConfigParser {
 public:
     TConfigParser(const std::string& config_fname, bool force_debug,
                   TGetRegisterTypeMap get_register_type_map,
-                  TTemplateMap templates = TTemplateMap());
+                  PTemplateMap templates = std::make_shared<TTemplateMap>());
     PHandlerConfig Parse();
     PRegister LoadRegister(PDeviceConfig device_config, const Json::Value& register_data,
                            std::string& default_type_str);
+    void MergeAndLoadChannels(PDeviceConfig device_config, const Json::Value& device_data, PTemplate tmpl);
     void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data);
     void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data);
-    void LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data);
+    void LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data);
     void LoadDevice(PPortConfig port_config, const Json::Value& device_data,
                     const std::string& default_id);
     void LoadPort(const Json::Value& port_data, const std::string& id_prefix);
@@ -143,6 +152,6 @@ private:
     std::string ConfigFileName;
     PHandlerConfig HandlerConfig;
     TGetRegisterTypeMap GetRegisterTypeMap;
-    TTemplateMap Templates;
+    PTemplateMap Templates;
     Json::Value Root;
 };

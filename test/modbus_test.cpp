@@ -637,6 +637,8 @@ TEST_F(TConfigParserTest, Parse)
                         else
                             s << ", ";
                         s << reg;
+                        if (reg->PollInterval.count())
+                            s << " (poll_interval=" << reg->PollInterval.count() << ")";
                     }
                     Emit() << "Registers: " << s.str();
                 }
