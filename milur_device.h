@@ -15,7 +15,8 @@ public:
         REG_PARAM = 0,
         REG_POWER,
         REG_ENERGY,
-        REG_FREQ
+        REG_FREQ,
+        REG_POWERFACTOR
     };
 
     TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port);

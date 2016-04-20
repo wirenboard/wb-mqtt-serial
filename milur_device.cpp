@@ -14,6 +14,7 @@ namespace {
         case BCD16:
             *bcd = true;
         case U16:
+        case S16:
             *size = 2;
             break;
 
@@ -53,7 +54,8 @@ REGISTER_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
             { TMilurDevice::REG_PARAM, "param", "value", U24, true },
             { TMilurDevice::REG_POWER, "power", "power", S32, true },
             { TMilurDevice::REG_ENERGY, "energy", "power_consumption", BCD32, true },
-            { TMilurDevice::REG_FREQ, "freq", "value", BCD32, true }
+            { TMilurDevice::REG_FREQ, "freq", "value", BCD32, true },
+            { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", S16, true }
         }));
 
 TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port)

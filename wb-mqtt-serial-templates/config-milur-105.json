@@ -1,0 +1,116 @@
+{
+  "device_type": "milur105",
+  "device": {
+    "name": "Milur 104/105",
+    "id": "milur105",
+    "protocol": "milur",
+    "delay_ms": 100,
+    "frame_timeout_ms": 150,
+    "channels": [
+      {
+        "name": "Voltage",
+        "reg_type": "param",
+        "address": 1,
+        "format": "u24",
+        "type": "voltage",
+        "scale": 0.001
+      },
+      {
+        "name": "Current",
+        "type": "value",
+        "reg_type": "param",
+        "address": 2,
+        "format": "u24",
+        "scale": 0.001
+      },
+      {
+        "name": "Active power",
+        "type": "power",
+        "reg_type": "power",
+        "address": 3,
+        "format": "s32",
+        "scale": 0.001
+      },
+      {
+        "name": "Reactive power",
+        "type": "power",
+        "reg_type": "power",
+        "address": 77,
+        "format": "s32",
+        "scale": 0.001
+      },
+      {
+        "name": "Total power",
+        "type": "power",
+        "reg_type": "power",
+        "address": 78,
+        "format": "s32",
+        "scale": 0.001
+      },
+      {
+        "name": "Total active energy",
+        "reg_type": "energy",
+        "address": 4,
+        "format": "bcd32",
+        "type": "power_consumption",
+        "scale": 0.01
+      },
+      {
+        "name": "Active energy 1",
+        "reg_type": "energy",
+        "address": 5,
+        "format": "bcd32",
+        "type": "power_consumption",
+        "scale": 0.01
+      },
+      {
+        "name": "Active energy 2",
+        "reg_type": "energy",
+        "address": 6,
+        "format": "bcd32",
+        "type": "power_consumption",
+        "scale": 0.01
+      },
+      {
+        "name": "Active energy 3",
+        "reg_type": "energy",
+        "address": 7,
+        "format": "bcd32",
+        "type": "power_consumption",
+        "scale": 0.01
+      },
+      {
+        "name": "Active energy 4",
+        "reg_type": "energy",
+        "address": 8,
+        "format": "bcd32",
+        "type": "power_consumption",
+        "scale": 0.01
+      },
+      {
+        "name": "Total reactive energy",
+        "reg_type": "energy",
+        "address": 72,
+        "format": "bcd32",
+        "type": "power_consumption",
+        "scale": 0.01
+      },
+      {
+        "name": "Power factor",
+        "reg_type": "power_factor",
+        "address": 80,
+        "format": "s16",
+        "type": "value",
+        "scale": 0.001
+      },
+      {
+        "name": "Frequency",
+        "type": "value",
+        "reg_type": "freq",
+        "address": 9,
+        "format": "u16",
+        "scale": 0.001
+      }
+    ]
+  }
+}
