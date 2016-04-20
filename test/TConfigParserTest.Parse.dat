@@ -1,7 +1,7 @@
 Debug: 0
 Ports:
     ------
-    ConnSettings: </dev/ttyNSC0 9600 8 N2 timeout 0>
+    ConnSettings: </dev/ttyNSC0 9600 8 N2 timeout 500>
     PollInterval: 10
     DeviceConfigs:
         ------
@@ -314,7 +314,7 @@ Ports:
             ReadOnly: 0
             Registers: <modbus:144:holding: 0>
     ------
-    ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 0>
+    ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 500>
     PollInterval: 100
     DeviceConfigs:
         ------

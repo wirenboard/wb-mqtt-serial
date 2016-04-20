@@ -59,7 +59,7 @@
         "response_timeout_ms": {
           "type": "integer",
           "title": "Response timeout (ms)",
-          "description": "Zero means no timeout",
+          "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
           "minimum": 0,
           "default": 0,
           "propertyOrder": 6

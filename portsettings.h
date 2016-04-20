@@ -10,7 +10,7 @@ struct TSerialPortSettings
                         char parity = 'N',
                         int data_bits = 8,
                         int stop_bits = 1,
-                        int response_timeout_ms = 0)
+                        int response_timeout_ms = 500)
         : Device(device), BaudRate(baud_rate), Parity(parity),
           DataBits(data_bits), StopBits(stop_bits),
           ResponseTimeoutMs(response_timeout_ms) {}
