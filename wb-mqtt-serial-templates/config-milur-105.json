@@ -1,7 +1,7 @@
 {
-  "device_type": "milur105",
+  "device_type": "Milur 104/105",
   "device": {
-    "name": "Milur 104/105",
+    "name": "Milur 105",
     "id": "milur105",
     "protocol": "milur",
     "delay_ms": 100,
