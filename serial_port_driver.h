@@ -6,6 +6,7 @@
 #include "serial_config.h"
 #include "serial_client.h"
 #include "register_handler.h"
+#include <chrono>
 
 class TMQTTWrapper;
 
@@ -20,7 +21,7 @@ public:
     bool WriteInitValues();
 
 private:
-    void OnValueChange(PRegister reg);
+    void OnValueRead(PRegister reg, bool changed);
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
     void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);
 
@@ -30,6 +31,7 @@ private:
     PSerialClient SerialClient;
     std::unordered_map<PRegister, PDeviceChannel> RegisterToChannelMap;
     std::unordered_map<PRegister, TRegisterHandler::TErrorState> RegErrorStateMap;
+    std::unordered_map<PRegister, std::chrono::time_point<std::chrono::steady_clock>> RegLastPublishTimeMap;
     std::unordered_map<std::string, std::string> PublishedErrorMap;
     std::unordered_map<std::string, PDeviceChannel> NameToChannelMap;
 };

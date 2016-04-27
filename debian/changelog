@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.14.6) stable; urgency=medium
+
+  * adds config option to force publishing of unchanged values on set interval
+
+ -- Evgeny Boger <boger@contactless.ru>  Wed, 27 Apr 2016 10:49:34 +0300
+
 wb-mqtt-serial (1.14.5) stable; urgency=medium
 
   * adds support for Milur 104/105

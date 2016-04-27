@@ -76,6 +76,7 @@ struct TPortConfig {
     TSerialPortSettings ConnSettings;
     int PollInterval = 20;
     bool Debug = false;
+    int MaxUnchangedInterval;
     std::vector<PDeviceConfig> DeviceConfigs;
 };
 
@@ -85,8 +86,10 @@ struct THandlerConfig {
     void AddPortConfig(PPortConfig port_config) {
         PortConfigs.push_back(port_config);
         PortConfigs[PortConfigs.size() - 1]->Debug = Debug;
+        PortConfigs[PortConfigs.size() - 1]->MaxUnchangedInterval = MaxUnchangedInterval;
     }
     bool Debug = false;
+    int MaxUnchangedInterval = -1;
     std::vector<PPortConfig> PortConfigs;
 };
 

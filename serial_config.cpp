@@ -360,6 +360,9 @@ void TConfigParser::LoadConfig()
     if (Root.isMember("debug"))
         HandlerConfig->Debug = HandlerConfig->Debug || Root["debug"].asBool();
 
+    if (Root.isMember("max_unchanged_interval"))
+        HandlerConfig->MaxUnchangedInterval = Root["max_unchanged_interval"].asInt();
+
     const Json::Value array = Root["ports"];
     for(unsigned int index = 0; index < array.size(); ++index)
         LoadPort(array[index], "wb-modbus-" + std::to_string(index) + "-"); // XXX old default prefix for compat

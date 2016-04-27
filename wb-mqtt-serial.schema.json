@@ -67,7 +67,7 @@
         "poll_interval": {
           "type": "integer",
           "title": "Desired poll interval (ms)",
-          "description" :  "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). This works by sleeping for <poll_interval> / <number_of_registers> after each read operation. Writes are performed are not affected by this setting and are performed as soon as possible.",
+          "description" :  "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). This works by sleeping for t = [poll_interval] / [number_of_registers] after each read operation. Writes are not affected by this setting and are performed as soon as possible.",
           "minimum": 0,
           "default": 20,
           "propertyOrder": 7
@@ -383,6 +383,13 @@
       "minItems": 1,
       "_format": "tabs",
       "propertyOrder": 2
+    },
+    "max_unchanged_interval" : {
+      "type" : "integer",
+      "title" : "Unchanged value posting interval",
+      "description" : "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
+      "default" : -1,
+      "propertyOrder" : 3
     }
   },
   "required": ["ports"],

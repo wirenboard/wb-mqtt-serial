@@ -15,8 +15,8 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
       SerialClient(new TSerialClient(Port))
 {
     SerialClient->SetDebug(Config->Debug);
-    SerialClient->SetCallback([this](PRegister reg) {
-            OnValueChange(reg);
+    SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
+            OnValueRead(reg, changed);
         });
     SerialClient->SetErrorCallback(
         [this](PRegister reg, TRegisterHandler::TErrorState state) {
@@ -132,52 +132,70 @@ std::string TSerialPortDriver::GetChannelTopic(const TDeviceChannel& channel)
     return (controls_prefix + channel.Name);
 }
 
-void TSerialPortDriver::OnValueChange(PRegister reg)
+void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
 {
-    if (Config->Debug)
-        std::cerr << "register value change: " << reg->ToString() << " <- " <<
-            SerialClient->GetTextValue(reg) << std::endl;
-
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
         std::cerr << "warning: got unexpected register from serial client" << std::endl;
         return;
     }
 
-    std::string payload;
-    if (!it->second->OnValue.empty()) {
-        payload = SerialClient->GetTextValue(reg) == it->second->OnValue ? "1" : "0";
-        if (Config->Debug)
-            std::cerr << "OnValue: " << it->second->OnValue << "; payload: " <<
-                payload << std::endl;
-    } else {
-        std::stringstream s;
-        for (size_t i = 0; i < it->second->Registers.size(); ++i) {
-            PRegister reg = it->second->Registers[i];
-            // avoid publishing incomplete value
-            if (!SerialClient->DidRead(reg))
-                return;
-            if (i)
-                s << ";";
-            s << SerialClient->GetTextValue(reg);
-        }
-        payload = s.str();
-        // check if there any errors in this Channel
-    }
-    //     payload = std::to_string(int_value);
-    // else {
-    //     double value = int_value * it->second.Scale;
-    //     if (Config.Debug)
-    //         std::cerr << "after scaling: " << value << std::endl;
-    //     payload = std::to_string(value);
-    // }
-    // Publish current value (make retained)
-    if (Config->Debug)
-        std::cerr << "channel " << it->second->Name << " device id: " <<
-            it->second->DeviceId << " -- topic: " << GetChannelTopic(*it->second) <<
-            " <-- " << payload << std::endl;
+    if (Config->Debug && changed)
+        std::cerr << "register value change: " << reg->ToString() << " <- " <<
+            SerialClient->GetTextValue(reg) << std::endl;
 
-    MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
+    bool publishNeeded = false;
+    if (changed || (Config->MaxUnchangedInterval == 0)) {
+        publishNeeded = true;
+    } else {
+        if (Config->MaxUnchangedInterval > 0) {
+            auto now = std::chrono::steady_clock::now();
+            auto lastPublish = RegLastPublishTimeMap.find(reg);
+
+            if (lastPublish == RegLastPublishTimeMap.end()) {
+                publishNeeded = true;
+            } else {
+                std::chrono::duration<double> elapsed = now - lastPublish->second;
+                if (elapsed.count() >= Config->MaxUnchangedInterval) {
+                    publishNeeded = true;
+                }
+            }
+            if (publishNeeded) {
+                RegLastPublishTimeMap[reg] = now;
+            }
+        }
+    }
+
+    if (publishNeeded) {
+        std::string payload;
+        if (!it->second->OnValue.empty()) {
+            payload = SerialClient->GetTextValue(reg) == it->second->OnValue ? "1" : "0";
+            if (Config->Debug)
+                std::cerr << "OnValue: " << it->second->OnValue << "; payload: " <<
+                    payload << std::endl;
+        } else {
+            std::stringstream s;
+            for (size_t i = 0; i < it->second->Registers.size(); ++i) {
+                PRegister reg = it->second->Registers[i];
+                // avoid publishing incomplete value
+                if (!SerialClient->DidRead(reg))
+                    return;
+                if (i)
+                    s << ";";
+                s << SerialClient->GetTextValue(reg);
+            }
+            payload = s.str();
+            // check if there any errors in this Channel
+        }
+
+        // Publish current value (make retained)
+        if (Config->Debug)
+            std::cerr << "channel " << it->second->Name << " device id: " <<
+                it->second->DeviceId << " -- topic: " << GetChannelTopic(*it->second) <<
+                " <-- " << payload << std::endl;
+
+        MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
+    }
 }
 
 TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)

@@ -7,7 +7,7 @@ TSerialClient::TSerialClient(PAbstractSerialPort port)
     : Port(port),
       Active(false),
       PollInterval(20),
-      Callback([](PRegister){}),
+      ReadCallback([](PRegister, bool){}),
       ErrorCallback([](PRegister, bool){}) {}
 
 TSerialClient::~TSerialClient()
@@ -104,13 +104,12 @@ void TSerialClient::Cycle()
             continue;
         PrepareToAccessDevice(handler->Device());
         MaybeUpdateErrorState(reg, handler->Poll(&changed));
-        // Note that p.second->CurrentErrorState() is not the
-        // same as the value returned by p->second->Poll(...),
+        // Note that handler->CurrentErrorState() is not the
+        // same as the value returned by handler->Poll(...),
         // because the latter may be ErrorStateUnchanged.
-        if (changed &&
-            handler->CurrentErrorState() != TRegisterHandler::ReadError &&
+        if (handler->CurrentErrorState() != TRegisterHandler::ReadError &&
             handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
-            Callback(reg);
+            ReadCallback(reg, changed);
 
     }
     for (const auto& p: DeviceMap)
@@ -140,9 +139,9 @@ bool TSerialClient::DidRead(PRegister reg) const
     return GetHandler(reg)->DidRead();
 }
 
-void TSerialClient::SetCallback(const TSerialClient::TCallback& callback)
+void TSerialClient::SetReadCallback(const TSerialClient::TReadCallback& callback)
 {
-    Callback = callback;
+    ReadCallback = callback;
 }
 
 void TSerialClient::SetErrorCallback(const TSerialClient::TErrorCallback& callback)

@@ -13,7 +13,7 @@
 class TSerialClient: public IClientInteraction, public std::enable_shared_from_this<TSerialClient>
 {
 public:
-    typedef std::function<void(PRegister reg)> TCallback;
+    typedef std::function<void(PRegister reg, bool changed)> TReadCallback;
     typedef std::function<void(PRegister reg, TRegisterHandler::TErrorState errorState)> TErrorCallback;
 
     TSerialClient(PAbstractSerialPort port);
@@ -29,7 +29,7 @@ public:
     void SetTextValue(PRegister reg, const std::string& value);
     std::string GetTextValue(PRegister reg) const;
     bool DidRead(PRegister reg) const;
-    void SetCallback(const TCallback& callback);
+    void SetReadCallback(const TReadCallback& callback);
     void SetErrorCallback(const TErrorCallback& callback);
     void SetPollInterval(int ms);
     void SetDebug(bool debug);
@@ -53,7 +53,7 @@ private:
 
     bool Active;
     int PollInterval;
-    TCallback Callback;
+    TReadCallback ReadCallback;
     TErrorCallback ErrorCallback;
     bool Debug = false;
     PSerialDevice LastAccessedDevice = 0;
