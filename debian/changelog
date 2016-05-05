@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.15+beta1) stable; urgency=medium
+
+  * scheduler
+
+ -- Evgeny Boger <boger@contactless.ru>  Wed, 27 Apr 2016 20:03:43 +0300
+
 wb-mqtt-serial (1.14.3) stable; urgency=medium
 
   * relocate schemas
