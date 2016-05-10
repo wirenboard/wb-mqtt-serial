@@ -95,7 +95,7 @@ void TModbusClientTest::SetUp()
     SerialClient->AddDevice(std::make_shared<TDeviceConfig>("modbus_sample", 1, "modbus"));
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             Emit() << "Modbus Callback: " << reg->ToString() << " becomes " <<
-                SerialClient->GetTextValue(reg);
+                SerialClient->GetTextValue(reg) << (changed ? "" : " [unchanged]");
         });
     SerialClient->SetErrorCallback(
         [this](PRegister reg, TRegisterHandler::TErrorState errorState) {

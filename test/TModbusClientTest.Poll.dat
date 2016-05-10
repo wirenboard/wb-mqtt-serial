@@ -25,6 +25,7 @@ Modbus Callback: <modbus:1:holding: 22> becomes 4242
 Modbus Callback: <modbus:1:input: 33> becomes 42000
 << 01 04 02 A4 10 C2 3C
 >> 01 01 00 00 00 02 BD CB
+Modbus Callback: <modbus:1:coil: 0> becomes 0 [unchanged]
 Modbus Callback: <modbus:1:coil: 1> becomes 1
 << 01 01 01 02 D0 49
 >> 01 02 00 0A 00 01 99 C8

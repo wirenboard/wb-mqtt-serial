@@ -17,37 +17,49 @@ Modbus Callback: <modbus:1:input: 30> becomes -1
 >> 01 10 00 14 00 02 04 00 00 00 0A 73 57
 << 01 10 00 14 00 02 01 CC
 >> 01 03 00 14 00 02 84 0F
+Modbus Callback: <modbus:1:holding: 20> becomes 10 [unchanged]
 << 01 03 04 00 00 00 0A 7A 34
 >> 01 03 00 18 00 02 44 0C
+Modbus Callback: <modbus:1:holding: 24> becomes 0 [unchanged]
 << 01 03 04 00 00 00 00 FA 33
 >> 01 04 00 1E 00 02 11 CD
+Modbus Callback: <modbus:1:input: 30> becomes -1 [unchanged]
 << 01 04 04 FF FF FF FF FA 10
 >>> client -> server: -2
 >>> Cycle()
 >> 01 10 00 14 00 02 04 FF FF FF FE 33 04
 << 01 10 00 14 00 02 01 CC
 >> 01 03 00 14 00 02 84 0F
+Modbus Callback: <modbus:1:holding: 20> becomes -2 [unchanged]
 << 01 03 04 FF FF FF FE 3A 67
 >> 01 03 00 18 00 02 44 0C
+Modbus Callback: <modbus:1:holding: 24> becomes 0 [unchanged]
 << 01 03 04 00 00 00 00 FA 33
 >> 01 04 00 1E 00 02 11 CD
+Modbus Callback: <modbus:1:input: 30> becomes -1 [unchanged]
 >>> client -> server: -0.123 (scaled)
 >>> Cycle()
 << 01 04 04 FF FF FF FF FA 10
 >> 01 10 00 18 00 02 04 FF FF FF 85 73 72
 << 01 10 00 18 00 02 C1 CF
 >> 01 03 00 14 00 02 84 0F
+Modbus Callback: <modbus:1:holding: 20> becomes -2 [unchanged]
 << 01 03 04 FF FF FF FE 3A 67
 >> 01 03 00 18 00 02 44 0C
+Modbus Callback: <modbus:1:holding: 24> becomes -0.123 [unchanged]
 << 01 03 04 FF FF FF 85 7A 44
 >> 01 04 00 1E 00 02 11 CD
+Modbus Callback: <modbus:1:input: 30> becomes -1 [unchanged]
 >>> server -> client: 0xffff 0xff85 (scaled)
 >>> Cycle()
 << 01 04 04 FF FF FF FF FA 10
 >> 01 03 00 14 00 02 84 0F
+Modbus Callback: <modbus:1:holding: 20> becomes -2 [unchanged]
 << 01 03 04 FF FF FF FE 3A 67
 >> 01 03 00 18 00 02 44 0C
+Modbus Callback: <modbus:1:holding: 24> becomes -0.123 [unchanged]
 << 01 03 04 FF FF FF 85 7A 44
 >> 01 04 00 1E 00 02 11 CD
+Modbus Callback: <modbus:1:input: 30> becomes -1 [unchanged]
 << 01 04 04 FF FF FF FF FA 10
 (pty-based fake serial -- stopping forwarding)

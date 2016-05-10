@@ -36,7 +36,9 @@ Modbus Callback: <modbus:1:holding: 20> becomes 42
 Modbus ErrorCallback: <modbus:1:holding: 20>: no error
 << 01 06 00 14 00 2A 48 11
 >> 01 03 00 14 00 01 C4 0E
+Modbus Callback: <modbus:1:holding: 20> becomes 42 [unchanged]
 << 01 03 02 00 2A 39 9B
 >> 01 03 00 14 00 01 C4 0E
+Modbus Callback: <modbus:1:holding: 20> becomes 42 [unchanged]
 << 01 03 02 00 2A 39 9B
 (pty-based fake serial -- stopping forwarding)

@@ -13,15 +13,19 @@ Modbus Callback: <modbus:1:input: 30> becomes -1
 >> 01 10 00 14 00 04 08 00 00 00 00 00 00 00 0A 06 4D
 << 01 10 00 14 00 04 81 CE
 >> 01 03 00 14 00 04 04 0D
+Modbus Callback: <modbus:1:holding: 20> becomes 10 [unchanged]
 << 01 03 08 00 00 00 00 00 00 00 0A 15 D0
 >> 01 04 00 1E 00 04 91 CF
+Modbus Callback: <modbus:1:input: 30> becomes -1 [unchanged]
 << 01 04 08 FF FF FF FF FF FF FF FF 65 89
 >>> client -> server: -2
 >>> Cycle()
 >> 01 10 00 14 00 04 08 FF FF FF FF FF FF FF FE 06 0E
 << 01 10 00 14 00 04 81 CE
 >> 01 03 00 14 00 04 04 0D
+Modbus Callback: <modbus:1:holding: 20> becomes -2 [unchanged]
 << 01 03 08 FF FF FF FF FF FF FF FE 15 93
 >> 01 04 00 1E 00 04 91 CF
+Modbus Callback: <modbus:1:input: 30> becomes -1 [unchanged]
 << 01 04 08 FF FF FF FF FF FF FF FF 65 89
 (pty-based fake serial -- stopping forwarding)
