@@ -137,7 +137,7 @@ bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
     if (!Config->MaxUnchangedInterval)
         return true;
 
-    // max_unchanged_interval = 0: update if changed, don't track last change time
+    // max_unchanged_interval < 0: update if changed, don't track last change time
     if (Config->MaxUnchangedInterval < 0)
         return changed;
 
