@@ -1,16 +1,4 @@
 >>> Cycle()
->> 01 01 00 00 00 01 FD CA
-Modbus ErrorCallback: <modbus:1:coil: 0>: no error
-Modbus Callback: <modbus:1:coil: 0> becomes 0
-<< 01 01 01 00 51 88
->> 01 01 00 01 00 01 AC 0A
-Modbus ErrorCallback: <modbus:1:coil: 1>: no error
-Modbus Callback: <modbus:1:coil: 1> becomes 0
-<< 01 01 01 00 51 88
->> 01 02 00 0A 00 01 99 C8
-Modbus ErrorCallback: <modbus:1:discrete: 10>: no error
-Modbus Callback: <modbus:1:discrete: 10> becomes 0
-<< 01 02 01 00 A1 88
 >> 01 03 00 16 00 01 65 CE
 Modbus ErrorCallback: <modbus:1:holding: 22>: no error
 Modbus Callback: <modbus:1:holding: 22> becomes 0
@@ -19,19 +7,27 @@ Modbus Callback: <modbus:1:holding: 22> becomes 0
 Modbus ErrorCallback: <modbus:1:input: 33>: no error
 Modbus Callback: <modbus:1:input: 33> becomes 0
 << 01 04 02 00 00 B9 30
->>> Cycle()
->> 01 01 00 00 00 01 FD CA
+>> 01 01 00 00 00 02 BD CB
+Modbus ErrorCallback: <modbus:1:coil: 0>: no error
+Modbus Callback: <modbus:1:coil: 0> becomes 0
+Modbus ErrorCallback: <modbus:1:coil: 1>: no error
+Modbus Callback: <modbus:1:coil: 1> becomes 0
 << 01 01 01 00 51 88
->> 01 01 00 01 00 01 AC 0A
-Modbus Callback: <modbus:1:coil: 1> becomes 1
-<< 01 01 01 01 90 48
 >> 01 02 00 0A 00 01 99 C8
-Modbus Callback: <modbus:1:discrete: 10> becomes 1
-<< 01 02 01 01 60 48
+Modbus ErrorCallback: <modbus:1:discrete: 10>: no error
+Modbus Callback: <modbus:1:discrete: 10> becomes 0
+<< 01 02 01 00 A1 88
+>>> Cycle()
 >> 01 03 00 16 00 01 65 CE
 Modbus Callback: <modbus:1:holding: 22> becomes 4242
 << 01 03 02 10 92 34 29
 >> 01 04 00 21 00 01 61 C0
 Modbus Callback: <modbus:1:input: 33> becomes 42000
 << 01 04 02 A4 10 C2 3C
+>> 01 01 00 00 00 02 BD CB
+Modbus Callback: <modbus:1:coil: 1> becomes 1
+<< 01 01 01 02 D0 49
+>> 01 02 00 0A 00 01 99 C8
+Modbus Callback: <modbus:1:discrete: 10> becomes 1
+<< 01 02 01 01 60 48
 (pty-based fake serial -- stopping forwarding)

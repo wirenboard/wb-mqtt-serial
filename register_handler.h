@@ -5,16 +5,8 @@
 #include <wbmqtt/utils.h>
 #include "register.h"
 #include "serial_device.h"
+#include "binary_semaphore.h"
 
-class IClientInteraction {
-public:
-    virtual ~IClientInteraction() {}
-    virtual bool DebugEnabled() const = 0;
-    virtual void NotifyFlushNeeded() = 0;
-};
-
-typedef std::shared_ptr<IClientInteraction> PClientInteraction;
-    
 class TRegisterHandler
 {
 public:
@@ -26,10 +18,10 @@ public:
         UnknownErrorState,
         ErrorStateUnchanged
     };
-    TRegisterHandler(PClientInteraction clientInteraction, PSerialDevice dev, PRegister reg);
+    TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed, bool debug = false);
     PRegister Register() const { return Reg; }
     bool NeedToPoll();
-    TErrorState Poll(bool* changed);
+    TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
     bool NeedToFlush();
     TErrorState Flush();
     std::string TextValue() const;
@@ -39,6 +31,7 @@ public:
     TErrorState CurrentErrorState() const { return ErrorState; }
 
     PSerialDevice Device() const { return Dev; }
+    void SetDebug(bool debug) { Debug = debug; }
 
 private:
 	template<typename T> std::string ToScaledTextValue(T val) const;
@@ -47,7 +40,6 @@ private:
     TErrorState UpdateReadError(bool error);
     TErrorState UpdateWriteError(bool error);
 
-    PClientInteraction ClientInteraction;
     PSerialDevice Dev;
     uint64_t Value = 0;
     PRegister Reg;
@@ -55,6 +47,8 @@ private:
     bool DidReadReg = false;
     std::mutex SetValueMutex;
     TErrorState ErrorState = UnknownErrorState;
+    PBinarySemaphore FlushNeeded;
+    bool Debug;
 };
 
 template<>

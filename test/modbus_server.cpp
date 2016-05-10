@@ -8,10 +8,10 @@ namespace {
 TModbusServer::TModbusServer(PSerialPort port):
     Stop(false),
     Port(port),
-    Slave(new TModbusSlave(1, TModbusRange(TRegisterRange(0, 1),
-                                           TRegisterRange(0, 1),
-                                           TRegisterRange(0, 1),
-                                           TRegisterRange(0, 1)))),
+    Slave(new TModbusSlave(1, TModbusRange(TServerRegisterRange(0, 1),
+                                           TServerRegisterRange(0, 1),
+                                           TServerRegisterRange(0, 1),
+                                           TServerRegisterRange(0, 1)))),
     Query(new uint8_t[MODBUS_RTU_MAX_ADU_LENGTH]) {}
 
 TModbusServer::~TModbusServer()
@@ -79,7 +79,7 @@ bool TModbusServer::IsRequestBlacklisted() const
 void TModbusServer::Run()
 {
     for (;;) {
-        bool got_data = Port->Select(SELECT_PERIOD_MS);
+        bool got_data = Port->Select(std::chrono::milliseconds(SELECT_PERIOD_MS));
         {
             std::unique_lock<std::mutex> lk(Mutex);
             if (Stop)

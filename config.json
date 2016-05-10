@@ -14,7 +14,17 @@
                 {
                     "device_type" : "MSU34",
                     "slave_id": 2,
-                    "enabled": true
+                    "enabled": true,
+                    "channels": [
+		        {
+		            "name" : "Illuminance",
+                            "poll_interval": 300
+		        },
+                        {
+                            "name": "Pressure",
+                            "poll_interval": 10000
+                        }
+                    ]
                 },
                 {
                     "device_type" : "MSU21",

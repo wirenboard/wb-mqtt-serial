@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -19,6 +20,7 @@ public:
     TSerialDevice(const TSerialDevice&) = delete;
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
+    virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list) const;
 
     // Prepare to access device (pauses for configured delay by default)
     virtual void Prepare();
@@ -28,12 +30,14 @@ public:
     virtual void WriteRegister(PRegister reg, uint64_t value) = 0;
     // Handle end of poll cycle e.g. by resetting values caches
     virtual void EndPollCycle();
+    // Read multiple registers
+    virtual void ReadRegisterRange(PRegisterRange range);
 
 protected:
-    PAbstractSerialPort Port() { return SerialPort; }
+    PAbstractSerialPort Port() const { return SerialPort; }
 
 private:
-    int DelayUsec;
+    std::chrono::milliseconds Delay;
     PAbstractSerialPort SerialPort;
 };
 

@@ -1,3 +1,4 @@
+#include <set>
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
@@ -13,11 +14,31 @@ namespace {
     const char* DefaultProtocol = "modbus";
 }
 
+TTemplate::TTemplate(const Json::Value& device_data):
+    DeviceData(device_data)
+{
+    const Json::Value channels = DeviceData["channels"];
+    if (!channels.isArray())
+        throw TConfigParserException("template channels member must be an object");
+    for(Json::ArrayIndex i = 0; i < channels.size(); ++i) {
+        const auto& channel_data = channels[i];
+        if (!channel_data.isObject())
+            throw TConfigParserException("template channel definition is not an object");
+        if (!channel_data.isMember("name"))
+            throw TConfigParserException("template channel without name");
+        std::string name = channel_data["name"].asString();
+        if (name.empty())
+            throw TConfigParserException("template channel with empty name");
+        ChannelMap[name] = channel_data;
+    }
+}
+
 TConfigTemplateParser::TConfigTemplateParser(const std::string& template_config_dir, bool debug)
     : DirectoryName(template_config_dir),
-      Debug(debug) {}
+      Debug(debug),
+      Templates(new TTemplateMap) {}
 
-TTemplateMap TConfigTemplateParser::Parse()
+PTemplateMap TConfigTemplateParser::Parse()
 {
     DIR *dir;
     struct dirent *dirp;
@@ -63,14 +84,14 @@ void TConfigTemplateParser::LoadDeviceTemplate(const Json::Value& root, const st
         throw TConfigParserException("malformed config in file " + filepath);
 
     if (root.isMember("device_type"))
-        Templates[root["device_type"].asString()] = root["device"];
+        (*Templates)[root["device_type"].asString()] = std::make_shared<TTemplate>(root["device"]);
     else if (Debug)
-        std::cerr << "there is no device_type in json template in file " << filepath << std::endl;
+        std::cerr << "no device_type in json template in file " << filepath << std::endl;
 }
 
 TConfigParser::TConfigParser(const std::string& config_fname, bool force_debug,
                              TGetRegisterTypeMap get_register_type_map,
-                             TTemplateMap templates)
+                             PTemplateMap templates)
     : ConfigFileName(config_fname),
       HandlerConfig(new THandlerConfig),
       GetRegisterTypeMap(get_register_type_map),
@@ -104,11 +125,60 @@ PRegister TConfigParser::LoadRegister(PDeviceConfig device_config,
     if (register_data.isMember("readonly"))
         force_readonly = register_data["readonly"].asBool();
 
-    return TRegister::Intern(
+    PRegister reg = TRegister::Intern(
         TSlaveEntry::Intern(device_config->Protocol, device_config->SlaveId),
         it->second.Index,
         address, format, scale, true, force_readonly || it->second.ReadOnly,
         it->second.Name);
+    if (register_data.isMember("poll_interval"))
+        reg->PollInterval = std::chrono::milliseconds(GetInt(register_data, "poll_interval"));
+    return reg;
+}
+
+void TConfigParser::MergeAndLoadChannels(PDeviceConfig device_config, const Json::Value& device_data, PTemplate tmpl)
+{
+    std::set<std::string> loaded;
+    if (device_data.isMember("channels")) {
+        const Json::Value& channels = device_data["channels"];
+        if (!channels.isArray())
+            throw TConfigParserException("device channels member must be an array");
+
+        // Merge channels mentioned both in template and device definition
+        for(Json::ArrayIndex i = 0; i < channels.size(); ++i) {
+            Json::Value channel_data = channels[i];
+            if (!channel_data.isObject())
+                throw TConfigParserException("channel definition is not an object");
+
+            std::string name = channel_data["name"].asString();
+            if (name.empty())
+                throw TConfigParserException("channel name is empty");
+            loaded.insert(name);
+
+            // If the template has a channel with the same name as current one,
+            // pull template channel properties
+            if (tmpl && tmpl->ChannelMap.isMember(name)) {
+                const Json::Value& tmpl_channel_data = tmpl->ChannelMap[name];
+                for (auto it = tmpl_channel_data.begin(); it != tmpl_channel_data.end(); ++it) {
+                    // Channel fields from current device config
+                    // take precedence over template field values
+                    if (!channel_data.isMember(it.memberName()))
+                        channel_data[it.memberName()] = *it;
+                }
+            }
+
+            LoadChannel(device_config, channel_data);
+        }
+    }
+
+    if (tmpl) {
+        // Load template channels that weren't mentioned in device definition
+        const Json::Value& template_channels = tmpl->DeviceData["channels"];
+        for(Json::ArrayIndex i = 0; i < template_channels.size(); ++i) {
+            Json::Value channel_data = template_channels[i];
+            if (loaded.find(channel_data["name"].asString()) == loaded.end())
+                LoadChannel(device_config, channel_data);
+        }
+    }
 }
 
 void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
@@ -117,16 +187,27 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
         throw TConfigParserException("malformed config -- " + device_config->DeviceType);
 
     std::string name = channel_data["name"].asString();
+    if (name.empty())
+        throw TConfigParserException("channel name is empty");
+
     std::string default_type_str;
     std::vector<PRegister> registers;
     if (channel_data.isMember("consists_of")) {
-        const Json::Value array = channel_data["consists_of"];
-        for(unsigned int index = 0; index < array.size(); ++index) {
+        const Json::Value reg_data = channel_data["consists_of"];
+        if (!reg_data.isArray())
+            throw TConfigParserException("consists_of must be an array");
+        std::chrono::milliseconds poll_interval(-1);
+        if (channel_data.isMember("poll_interval"))
+            poll_interval = std::chrono::milliseconds(GetInt(channel_data, "poll_interval"));
+        for(Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
             std::string def_type;
-            registers.push_back(LoadRegister(device_config, array[index], def_type));
-            if (!index)
+            auto reg = LoadRegister(device_config, reg_data[i], def_type);
+            if (poll_interval.count() >= 0)
+                reg->PollInterval = poll_interval;
+            registers.push_back(reg);
+            if (!i)
                 default_type_str = def_type;
-            else if (registers[index]->ReadOnly != registers[0]->ReadOnly)
+            else if (registers[i]->ReadOnly != registers[0]->ReadOnly)
                 throw TConfigParserException(("can't mix read-only and writable registers "
                                               "in one channel -- ") + device_config->DeviceType);
         }
@@ -197,7 +278,7 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
     device_config->AddSetupItem(PDeviceSetupItem(new TDeviceSetupItem(name, reg, value)));
 }
 
-void TConfigParser::LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data)
+void TConfigParser::LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data)
 {
     if (device_data.isMember("protocol"))
         device_config->Protocol = device_data["protocol"].asString();
@@ -219,16 +300,12 @@ void TConfigParser::LoadDeviceVectors(PDeviceConfig device_config, const Json::V
     }
 
     if (device_data.isMember("delay_usec")) // compat
-        device_config->DelayUSec = GetInt(device_data, "delay_usec");
+        device_config->Delay = std::chrono::milliseconds(GetInt(device_data, "delay_usec") / 1000);
     else if (device_data.isMember("delay_ms"))
-        device_config->DelayUSec = GetInt(device_data, "delay_ms") * 1000;
+        device_config->Delay = std::chrono::milliseconds(GetInt(device_data, "delay_ms"));
 
     if (device_data.isMember("frame_timeout_ms"))
-        device_config->FrameTimeout = GetInt(device_data, "frame_timeout_ms");
-
-    const Json::Value array = device_data["channels"];
-    for(unsigned int index = 0; index < array.size(); ++index)
-        LoadChannel(device_config, array[index]);
+        device_config->FrameTimeout = std::chrono::milliseconds(GetInt(device_data, "frame_timeout_ms"));
 }
 
 int TConfigParser::ToInt(const Json::Value& v, const std::string& title)
@@ -242,7 +319,9 @@ int TConfigParser::ToInt(const Json::Value& v, const std::string& title)
         } catch (const std::logic_error& e) {}
     }
 
-    throw TConfigParserException(title + ": plain integer or '0x..' hex string expected instead of " + v.asString());
+    throw TConfigParserException(
+        title + ": plain integer or '0x..' hex string expected instead of '" + v.asString() +
+        "'");
     // v.asString() should give a bit more information what config this exception came from
 }
 
@@ -277,36 +356,52 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     if (device_data.isMember("enabled") && !device_data["enabled"].asBool())
         return;
 
+    PTemplate tmpl;
     PDeviceConfig device_config(new TDeviceConfig);
     device_config->Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
     device_config->Name = device_data.isMember("name") ? device_data["name"].asString() : "";
     device_config->SlaveId = GetInt(device_data, "slave_id");
+    if (device_data.isMember("max_reg_hole"))
+        device_config->MaxRegHole = GetInt(device_data, "max_reg_hole");
+    if (device_data.isMember("max_bit_hole"))
+        device_config->MaxRegHole = GetInt(device_data, "max_bit_hole");
     if (device_data.isMember("device_type")){
         device_config->DeviceType = device_data["device_type"].asString();
-        auto it = Templates.find(device_config->DeviceType);
-        if (it != Templates.end()) {
-            if (it->second.isMember("name")) {
+        auto it = Templates->find(device_config->DeviceType);
+        if (it != Templates->end()) {
+            tmpl = it->second;
+            if (tmpl->DeviceData.isMember("name")) {
                 if (device_config->Name == "")
-                    device_config->Name = it->second["name"].asString() + " " +
+                    device_config->Name = tmpl->DeviceData["name"].asString() + " " +
                         std::to_string(device_config->SlaveId);
             } else if (device_config->Name == "")
                     throw TConfigParserException(
                         "Property device_name is missing in " + device_config->DeviceType + " template");
 
-            if (it->second.isMember("id")) {
+            if (tmpl->DeviceData.isMember("id")) {
                 if (device_config->Id == default_id)
-                    device_config->Id = it->second["id"].asString() + "_" +
+                    device_config->Id = tmpl->DeviceData["id"].asString() + "_" +
                         std::to_string(device_config->SlaveId);
             }
 
-            LoadDeviceVectors(device_config, it->second);
-        } else // XXX should probably throw TConfigParserException here?
-            std::cerr << "Can't find the template for '"
-                      << device_config->DeviceType
-                      << "' device type." << std::endl;
+            LoadDeviceTemplatableConfigPart(device_config, tmpl->DeviceData);
+        } else
+            throw TConfigParserException(
+                "Can't find the template for '" + device_config->DeviceType + "' device type.");
     }
-    LoadDeviceVectors(device_config, device_data);
+
+    LoadDeviceTemplatableConfigPart(device_config, device_data);
+    MergeAndLoadChannels(device_config, device_data, tmpl);
+
+    if (device_config->DeviceChannels.empty())
+        throw TConfigParserException("the device has no channels: " + device_config->Name);
+
     port_config->AddDeviceConfig(device_config);
+    for (auto channel: device_config->DeviceChannels) {
+        for (auto reg: channel->Registers)
+            if (reg->PollInterval.count() < 0)
+                reg->PollInterval = port_config->PollInterval;
+    }
 }
 
 void TConfigParser::LoadPort(const Json::Value& port_data,
@@ -337,14 +432,16 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
         port_config->ConnSettings.StopBits = GetInt(port_data, "stop_bits");
 
     if (port_data.isMember("response_timeout_ms"))
-        port_config->ConnSettings.ResponseTimeoutMs = GetInt(port_data, "response_timeout_ms");
+        port_config->ConnSettings.ResponseTimeout = std::chrono::milliseconds(
+            GetInt(port_data, "response_timeout_ms"));
 
     if (port_data.isMember("poll_interval"))
-        port_config->PollInterval = GetInt(port_data, "poll_interval");
+        port_config->PollInterval = std::chrono::milliseconds(
+            GetInt(port_data, "poll_interval"));
 
     const Json::Value array = port_data["devices"];
     for(unsigned int index = 0; index < array.size(); ++index)
-            LoadDevice(port_config, array[index], id_prefix + std::to_string(index));
+        LoadDevice(port_config, array[index], id_prefix + std::to_string(index));
 
     HandlerConfig->AddPortConfig(port_config);
 }

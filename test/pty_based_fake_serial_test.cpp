@@ -46,7 +46,7 @@ void TPtyBasedFakeSerialTest::SetUp()
         new TSerialPort(
             TSerialPortSettings(
                 FakeSerial->GetPrimaryPtsName(),
-                9600, 'N', 8, 1, 10000)));
+                9600, 'N', 8, 1, std::chrono::milliseconds(10000))));
     Serial->Open();
 }
 
@@ -78,7 +78,7 @@ TEST_F(TPtyBasedFakeSerialTest, Forward)
         new TSerialPort(
             TSerialPortSettings(
                 FakeSerial->GetSecondaryPtsName(),
-                9600, 'N', 8, 1, 10000)));
+                9600, 'N', 8, 1, std::chrono::milliseconds(10000))));
     secondary_serial->Open();
 
     for (int i = 0; i < 3; ++i) {

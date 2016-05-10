@@ -10,6 +10,16 @@
 #include "portsettings.h"
 #include "jsoncpp/json/json.h"
 
+struct TTemplate {
+    TTemplate(const Json::Value& device_data);
+    Json::Value DeviceData, ChannelMap = Json::Value(Json::objectValue);
+};
+
+typedef std::shared_ptr<TTemplate> PTemplate;
+
+typedef std::map<std::string, PTemplate> TTemplateMap;
+typedef std::shared_ptr<TTemplateMap> PTemplateMap;
+
 struct TDeviceChannel {
     TDeviceChannel(std::string name = "", std::string type = "text",
                    std::string device_id = "", int order = 0,
@@ -41,17 +51,22 @@ struct TDeviceSetupItem {
 
 typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
 
-struct TDeviceConfig {
-    static const int DEFAULT_INTER_DEVICE_DELAY_USEC = 100000;
-    static const int DEFAULT_ACCESS_LEVEL = 1;
+static const int DEFAULT_INTER_DEVICE_DELAY_MS = 100;
+static const int DEFAULT_ACCESS_LEVEL = 1;
 
+struct TDeviceConfig {
     TDeviceConfig(std::string name = "", int slave_id = 0, std::string protocol = "",
-                  int delay_usec = DEFAULT_INTER_DEVICE_DELAY_USEC,
+                  const std::chrono::milliseconds& delay =
+                  std::chrono::milliseconds(DEFAULT_INTER_DEVICE_DELAY_MS),
                   int access_level = DEFAULT_ACCESS_LEVEL,
                   int frame_timeout = -1,
+                  int max_reg_hole = 0,
+                  int max_bit_hole = 0,
                   PRegisterTypeMap type_map = 0)
-        : Name(name), SlaveId(slave_id), Protocol(protocol), DelayUSec(delay_usec),
-          AccessLevel(access_level), FrameTimeout(frame_timeout), TypeMap(type_map) {}
+        : Name(name), SlaveId(slave_id), Protocol(protocol), Delay(delay),
+          AccessLevel(access_level), FrameTimeout(frame_timeout),
+          MaxRegHole(max_reg_hole), MaxBitHole(max_bit_hole),
+          TypeMap(type_map) {}
     int NextOrderValue() const { return DeviceChannels.size() + 1; }
     void AddChannel(PDeviceChannel channel) { DeviceChannels.push_back(channel); };
     void AddSetupItem(PDeviceSetupItem item) { SetupItems.push_back(item); }
@@ -63,9 +78,10 @@ struct TDeviceConfig {
     std::vector<PDeviceChannel> DeviceChannels;
     std::vector<PDeviceSetupItem> SetupItems;
     std::vector<uint8_t> Password;
-    int DelayUSec;
+    std::chrono::milliseconds Delay;
     int AccessLevel;
-    int FrameTimeout;
+    std::chrono::milliseconds FrameTimeout;
+    int MaxRegHole, MaxBitHole;
     PRegisterTypeMap TypeMap;
 };
 
@@ -74,7 +90,7 @@ typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
 struct TPortConfig {
     void AddDeviceConfig(PDeviceConfig device_config) { DeviceConfigs.push_back(device_config); }
     TSerialPortSettings ConnSettings;
-    int PollInterval = 20;
+    std::chrono::milliseconds PollInterval = std::chrono::milliseconds(20);
     bool Debug = false;
     int MaxUnchangedInterval;
     std::vector<PDeviceConfig> DeviceConfigs;
@@ -105,19 +121,17 @@ private:
     std::string Message;
 };
 
-typedef std::map<std::string, Json::Value> TTemplateMap;
-
 class TConfigTemplateParser {
 public:
     TConfigTemplateParser(const std::string& template_config_dir, bool debug);
-    TTemplateMap Parse();
-    
+    PTemplateMap Parse();
+
 private:
     void LoadDeviceTemplate(const Json::Value& root, const std::string& filepath);
 
     std::string DirectoryName;
     bool Debug;
-    TTemplateMap Templates;
+    PTemplateMap Templates;
 };
 
 typedef std::function<PRegisterTypeMap(PDeviceConfig device_config)> TGetRegisterTypeMap;
@@ -126,13 +140,14 @@ class TConfigParser {
 public:
     TConfigParser(const std::string& config_fname, bool force_debug,
                   TGetRegisterTypeMap get_register_type_map,
-                  TTemplateMap templates = TTemplateMap());
+                  PTemplateMap templates = std::make_shared<TTemplateMap>());
     PHandlerConfig Parse();
     PRegister LoadRegister(PDeviceConfig device_config, const Json::Value& register_data,
                            std::string& default_type_str);
+    void MergeAndLoadChannels(PDeviceConfig device_config, const Json::Value& device_data, PTemplate tmpl);
     void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data);
     void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data);
-    void LoadDeviceVectors(PDeviceConfig device_config, const Json::Value& device_data);
+    void LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data);
     void LoadDevice(PPortConfig port_config, const Json::Value& device_data,
                     const std::string& default_id);
     void LoadPort(const Json::Value& port_data, const std::string& id_prefix);
@@ -145,6 +160,6 @@ private:
     std::string ConfigFileName;
     PHandlerConfig HandlerConfig;
     TGetRegisterTypeMap GetRegisterTypeMap;
-    TTemplateMap Templates;
+    PTemplateMap Templates;
     Json::Value Root;
 };

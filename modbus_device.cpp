@@ -1,6 +1,113 @@
 #include <iostream>
+#include <stdexcept>
 
 #include "modbus_device.h"
+
+namespace {
+    static bool IsSingleBitType(int type) {
+        return type == TModbusDevice::REG_COIL || type == TModbusDevice::REG_DISCRETE;
+    }
+
+    class TModbusRegisterRange: public TRegisterRange {
+    public:
+        TModbusRegisterRange(const std::list<PRegister>& regs);
+        ~TModbusRegisterRange();
+        void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
+        int GetStart() const { return Start; }
+        int GetCount() const { return Count; }
+        uint8_t* GetBits();
+        uint16_t* GetWords();
+        void SetError(bool error) { Error = error; }
+        bool GetError() const { return Error; }
+
+    private:
+        bool Error = false;
+        int Start, Count;
+        uint8_t* Bits = 0;
+        uint16_t* Words = 0;
+    };
+};
+
+TModbusRegisterRange::TModbusRegisterRange(const std::list<PRegister>& regs):
+    TRegisterRange(regs)
+{
+    if (regs.empty()) // shouldn't happen
+        throw std::runtime_error("cannot construct empty register range");
+
+    auto it = regs.begin();
+    Start = (*it)->Address;
+    int end = Start + (*it)->Width();
+    while (++it != regs.end()) {
+        if ((*it)->Type != Type())
+            throw std::runtime_error("registers of different type in the same range");
+        int new_end = (*it)->Address + (*it)->Width();
+        if (new_end > end)
+            end = new_end;
+    }
+    Count = end - Start;
+    if (Count > (IsSingleBitType(Type()) ? MODBUS_MAX_READ_BITS : MODBUS_MAX_READ_REGISTERS))
+        throw std::runtime_error("Modbus register range too large");
+}
+
+void TModbusRegisterRange::MapRange(TValueCallback value_callback, TErrorCallback error_callback)
+{
+    if (Error) {
+        for (auto reg: RegisterList())
+            error_callback(reg);
+        return;
+    }
+    if (IsSingleBitType(Type())) {
+        if (!Bits)
+            throw std::runtime_error("bits not loaded");
+        for (auto reg: RegisterList()) {
+            int w = reg->Width();
+            if (w != 1)
+                throw TSerialDeviceException(
+                    "width other than 1 is not currently supported for reg type" +
+                    reg->TypeName);
+            if (reg->Address - Start >= Count)
+                throw std::runtime_error("address out of range");
+            value_callback(reg, Bits[reg->Address - Start]);
+        }
+        return;
+    }
+
+    if (!Words)
+        throw std::runtime_error("words not loaded");
+    for (auto reg: RegisterList()) {
+        int w = reg->Width();
+        if (reg->Address - Start + w > Count)
+            throw std::runtime_error("address out of range");
+        uint64_t r = 0;
+        uint16_t* data = Words + (reg->Address - Start);
+        while (w--)
+            r = (r << 16) + *data++;
+        value_callback(reg, r);
+    }
+}
+
+TModbusRegisterRange::~TModbusRegisterRange() {
+    if (Bits)
+        delete[] Bits;
+    if (Words)
+        delete[] Words;
+}
+
+uint8_t* TModbusRegisterRange::GetBits() {
+    if (!IsSingleBitType(Type()))
+        throw std::runtime_error("GetBits() for non-bit register");
+    if (!Bits)
+        Bits = new uint8_t[Count];
+    return Bits;
+}
+
+uint16_t* TModbusRegisterRange::GetWords() {
+    if (IsSingleBitType(Type()))
+        throw std::runtime_error("GetWords() for non-word register");
+    if (!Words)
+        Words = new uint16_t[Count];
+    return Words;
+}
 
 REGISTER_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
             { TModbusDevice::REG_COIL, "coil", "switch", U8 },
@@ -10,7 +117,53 @@ REGISTER_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
         }));
 
 TModbusDevice::TModbusDevice(PDeviceConfig config, PAbstractSerialPort port)
-    : TSerialDevice(config, port), Context(port->LibModbusContext()) {}
+    : TSerialDevice(config, port), Config(config), Context(port->LibModbusContext()) {}
+
+std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> reg_list) const
+{
+    std::list<PRegisterRange> r;
+    if (reg_list.empty())
+        return r;
+
+    std::list<PRegister> l;
+    int prev_start = -1, prev_type = -1, prev_end = -1;
+    std::chrono::milliseconds prev_interval;
+    int max_hole = IsSingleBitType(reg_list.front()->Type) ? Config->MaxBitHole : Config->MaxRegHole,
+        max_regs = IsSingleBitType(reg_list.front()->Type) ? MODBUS_MAX_READ_BITS : MODBUS_MAX_READ_REGISTERS;
+    for (auto reg: reg_list) {
+        int new_end = reg->Address + reg->Width();
+        if (!(prev_end >= 0 &&
+              reg->Type == prev_type &&
+              reg->Address >= prev_end &&
+              reg->Address <= prev_end + max_hole &&
+              reg->PollInterval == prev_interval &&
+              new_end - prev_start <= max_regs)) {
+            if (!l.empty()) {
+                auto range = std::make_shared<TModbusRegisterRange>(l);
+                if (Port()->Debug())
+                    std::cerr << "Adding range: " << range->GetCount() << " " <<
+                        range->TypeName() << "(s) @ " << range->GetStart() <<
+                        " of slave " << range->Slave() << std::endl;
+                r.push_back(range);
+                l.clear();
+            }
+            prev_start = reg->Address;
+            prev_type = reg->Type;
+            prev_interval = reg->PollInterval;
+        }
+        l.push_back(reg);
+        prev_end = new_end;
+    }
+    if (!l.empty()) {
+        auto range = std::make_shared<TModbusRegisterRange>(l);
+        if (Port()->Debug())
+            std::cerr << "Adding range: " << range->GetCount() << " " <<
+                range->TypeName() << "(s) @ " << range->GetStart() <<
+                " of slave " << range->Slave() << std::endl;
+        r.push_back(range);
+    }
+    return r;
+}
 
 uint64_t TModbusDevice::ReadRegister(PRegister reg)
 {
@@ -21,7 +174,7 @@ uint64_t TModbusDevice::ReadRegister(PRegister reg)
             " of slave " << reg->Slave << std::endl;
 
     modbus_set_slave(Context->Inner, reg->Slave->Id);
-    if (IsSingleBit(reg->Type)) {
+    if (IsSingleBitType(reg->Type)) {
         uint8_t b;
         if (w != 1)
             throw TSerialDeviceException(
@@ -106,4 +259,44 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
     throw TSerialDeviceTransientErrorException(
         "failed to write " + reg->TypeName +
         " @ " + std::to_string(reg->Address));
+}
+
+void TModbusDevice::ReadRegisterRange(PRegisterRange range)
+{
+    auto modbus_range = std::dynamic_pointer_cast<TModbusRegisterRange>(range);
+    if (!modbus_range)
+        throw std::runtime_error("modbus range expected");
+    int type = modbus_range->Type(),
+        start = modbus_range->GetStart(),
+        count = modbus_range->GetCount();
+    if (Port()->Debug())
+        std::cerr << "modbus: read " << modbus_range->GetCount() << " " <<
+            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
+            " of slave " << modbus_range->Slave() << std::endl;
+
+    modbus_set_slave(Context->Inner, modbus_range->Slave()->Id);
+    int rc;
+    if (IsSingleBitType(type))
+        rc = type == REG_COIL ?
+            modbus_read_bits(Context->Inner, start, count, modbus_range->GetBits()) :
+            modbus_read_input_bits(Context->Inner, start, count, modbus_range->GetBits());
+    else {
+        if (type != REG_HOLDING && type != REG_INPUT)
+            throw TSerialDeviceException("invalid register type");
+        rc = modbus_range->Type() == REG_HOLDING ?
+            modbus_read_registers(Context->Inner, start, count, modbus_range->GetWords()) :
+            modbus_read_input_registers(Context->Inner, start, count, modbus_range->GetWords());
+    }
+
+    if (rc > 0) {
+        modbus_range->SetError(false);
+        return;
+    }
+
+    modbus_range->SetError(true);
+    std::ios::fmtflags f(std::cerr.flags());
+    std::cerr << "TModbusDevice::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
+        modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
+        " of slave " << modbus_range->Slave() << std::endl;
+    std::cerr.flags(f);
 }

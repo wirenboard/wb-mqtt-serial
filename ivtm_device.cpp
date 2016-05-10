@@ -15,6 +15,11 @@
 
 #include "ivtm_device.h"
 
+namespace {
+    const int DefaultTimeoutMs = 1000;
+    const int FrameTimeoutMs = 50;
+};
+
 REGISTER_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
 TIVTMDevice::TIVTMDevice(PDeviceConfig device_config, PAbstractSerialPort port)
@@ -79,7 +84,7 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     uint8_t buf[MAX_LEN];
 
     int nread = Port()->ReadFrame(
-        buf, MAX_LEN, FrameTimeoutMs,
+        buf, MAX_LEN, std::chrono::milliseconds(FrameTimeoutMs),
         [](uint8_t* buf, int size) {
             return size > 0 && buf[size - 1] == '\r';
         });

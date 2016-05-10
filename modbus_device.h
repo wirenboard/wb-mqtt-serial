@@ -18,12 +18,12 @@ public:
     };
 
     TModbusDevice(PDeviceConfig config, PAbstractSerialPort port);
+    virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list) const;
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
+    void ReadRegisterRange(PRegisterRange range);
 
 private:
-    static bool IsSingleBit(int type) {
-        return type == REG_COIL || type == REG_DISCRETE;
-    }
+    PDeviceConfig Config;
     PLibModbusContext Context;
 };

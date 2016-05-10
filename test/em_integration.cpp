@@ -13,7 +13,7 @@ protected:
 TEST_F(TEMIntegrationTest, Poll)
 {
     Observer->SetUp();
-    SerialPort->SetExpectedFrameTimeout(150);
+    SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(150));
     ASSERT_TRUE(!!SerialPort);
 
     EnqueueMilurSessionSetupResponse();

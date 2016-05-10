@@ -29,7 +29,9 @@ void TModbusTestBase::SetUp()
     FakeSerial = std::make_shared<TPtyBasedFakeSerial>(*this);
     FakeSerial->StartForwarding();
     ServerSerial = std::make_shared<TSerialPort>(
-        TSerialPortSettings(FakeSerial->GetSecondaryPtsName(), 9600, 'N', 8, 1, 10000));
+        TSerialPortSettings(FakeSerial->GetSecondaryPtsName(),
+                            9600, 'N', 8, 1,
+                            std::chrono::milliseconds(10000)));
 #if 0
     ServerSerial->SetDebug(true);
 #endif
@@ -78,10 +80,10 @@ void TModbusClientTest::SetUp()
 
     Slave = ModbusServer->SetSlave(
         1, TModbusRange(
-            TRegisterRange(0, 10),
-            TRegisterRange(10, 20),
-            TRegisterRange(20, 30),
-            TRegisterRange(30, 40)));
+            TServerRegisterRange(0, 10),
+            TServerRegisterRange(10, 20),
+            TServerRegisterRange(20, 30),
+            TServerRegisterRange(30, 40)));
     ModbusServer->Start();
 
     ClientSerial = std::make_shared<TSerialPort>(
@@ -91,7 +93,7 @@ void TModbusClientTest::SetUp()
     SerialClient->SetModbusDebug(true);
 #endif
     SerialClient->AddDevice(std::make_shared<TDeviceConfig>("modbus_sample", 1, "modbus"));
-    SerialClient->SetCallback([this](PRegister reg) {
+    SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             Emit() << "Modbus Callback: " << reg->ToString() << " becomes " <<
                 SerialClient->GetTextValue(reg);
         });
@@ -603,7 +605,7 @@ TEST_F(TConfigParserTest, Parse)
         ASSERT_EQ(config->Debug, port_config->Debug);
         Emit() << "------";
         Emit() << "ConnSettings: " << port_config->ConnSettings;
-        Emit() << "PollInterval: " << port_config->PollInterval;
+        Emit() << "PollInterval: " << port_config->PollInterval.count();
         if (port_config->DeviceConfigs.empty()) {
             Emit() << "No device configs.";
             continue;
@@ -635,6 +637,8 @@ TEST_F(TConfigParserTest, Parse)
                         else
                             s << ", ";
                         s << reg;
+                        if (reg->PollInterval.count())
+                            s << " (poll_interval=" << reg->PollInterval.count() << ")";
                     }
                     Emit() << "Registers: " << s.str();
                 }
@@ -669,6 +673,7 @@ class TModbusDeviceTest: public TModbusTestBase
 protected:
     void SetUp();
     void FilterConfig(const std::string& device_name);
+    void VerifyDDL24(); // used with two different configs
     PHandlerConfig Config;
     PFakeMQTTClient MQTTClient;
 };
@@ -706,16 +711,15 @@ void TModbusDeviceTest::FilterConfig(const std::string& device_name)
     ASSERT_FALSE(Config->PortConfigs.empty()) << "device not found: " << device_name;
 }
 
-TEST_F(TModbusDeviceTest, DDL24)
+void TModbusDeviceTest::VerifyDDL24()
 {
-    FilterConfig("DDL24");
     PModbusSlave slave = ModbusServer->SetSlave(
         Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
         TModbusRange(
-            TRegisterRange(),
-            TRegisterRange(),
-            TRegisterRange(4, 19),
-            TRegisterRange()));
+            TServerRegisterRange(),
+            TServerRegisterRange(),
+            TServerRegisterRange(4, 19),
+            TServerRegisterRange()));
     ModbusServer->Start();
 
     PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config));
@@ -742,16 +746,30 @@ TEST_F(TModbusDeviceTest, DDL24)
     observer->LoopOnce();
 }
 
+TEST_F(TModbusDeviceTest, DDL24)
+{
+    FilterConfig("DDL24");
+    VerifyDDL24();
+}
+
+TEST_F(TModbusDeviceTest, DDL24_Holes)
+{
+    FilterConfig("DDL24");
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+    VerifyDDL24();
+}
+
 TEST_F(TModbusDeviceTest, OnValue)
 {
     FilterConfig("OnValueTest");
     PModbusSlave slave = ModbusServer->SetSlave(
         Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
         TModbusRange(
-            TRegisterRange(),
-            TRegisterRange(),
-            TRegisterRange(0, 1),
-            TRegisterRange()));
+            TServerRegisterRange(),
+            TServerRegisterRange(),
+            TServerRegisterRange(0, 1),
+            TServerRegisterRange()));
     ModbusServer->Start();
 
     PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config));
@@ -782,10 +800,10 @@ TEST_F(TModbusDeviceTest, Errors)
     PModbusSlave slave = ModbusServer->SetSlave(
         Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
         TModbusRange(
-            TRegisterRange(),
-            TRegisterRange(),
-            TRegisterRange(4, 19),
-            TRegisterRange()));
+            TServerRegisterRange(),
+            TServerRegisterRange(),
+            TServerRegisterRange(4, 19),
+            TServerRegisterRange()));
     ModbusServer->Start();
 
     PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config));

@@ -10,32 +10,32 @@ Ports:
         SlaveId: 2
         DeviceChannels:
             ------
-            Name: Temp 1
-            Type: temperature
+            Name: Illuminance
+            Type: lux
             DeviceId: msu34tlp_2
             Order: 1
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:2:input: 0>
+            Registers: <modbus:2:input: 1> (poll_interval=300)
             ------
-            Name: Illuminance
-            Type: lux
+            Name: Pressure
+            Type: pressure
             DeviceId: msu34tlp_2
             Order: 2
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:2:input: 1>
+            Registers: <modbus:2:input: 2> (poll_interval=10000)
             ------
-            Name: Pressure
-            Type: pressure
+            Name: Temp 1
+            Type: temperature
             DeviceId: msu34tlp_2
             Order: 3
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:2:input: 2>
+            Registers: <modbus:2:input: 0>
             ------
             Name: Temp 2
             Type: temperature

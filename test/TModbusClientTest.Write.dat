@@ -1,29 +1,29 @@
 >>> Cycle()
->> 01 01 00 01 00 01 AC 0A
-Modbus ErrorCallback: <modbus:1:coil: 1>: no error
-Modbus Callback: <modbus:1:coil: 1> becomes 0
-<< 01 01 01 00 51 88
 >> 01 03 00 14 00 01 C4 0E
 Modbus ErrorCallback: <modbus:1:holding: 20>: no error
 Modbus Callback: <modbus:1:holding: 20> becomes 0
 << 01 03 02 00 00 B8 44
+>> 01 01 00 01 00 01 AC 0A
+Modbus ErrorCallback: <modbus:1:coil: 1>: no error
+Modbus Callback: <modbus:1:coil: 1> becomes 0
+<< 01 01 01 00 51 88
 >>> Cycle()
 >> 01 05 00 01 FF 00 DD FA
 << 01 05 00 01 FF 00 DD FA
 >> 01 06 00 14 10 92 45 A3
 << 01 06 00 14 10 92 45 A3
->> 01 01 00 01 00 01 AC 0A
-<< 01 01 01 01 90 48
 >> 01 03 00 14 00 01 C4 0E
 << 01 03 02 10 92 34 29
+>> 01 01 00 01 00 01 AC 0A
+<< 01 01 01 01 90 48
 >>> Cycle()
->> 01 01 00 01 00 01 AC 0A
-<< 01 01 01 01 90 48
 >> 01 03 00 14 00 01 C4 0E
 << 01 03 02 10 92 34 29
+>> 01 01 00 01 00 01 AC 0A
+<< 01 01 01 01 90 48
 >>> Cycle()
->> 01 01 00 01 00 01 AC 0A
-<< 01 01 01 01 90 48
 >> 01 03 00 14 00 01 C4 0E
 << 01 03 02 10 92 34 29
+>> 01 01 00 01 00 01 AC 0A
+<< 01 01 01 01 90 48
 (pty-based fake serial -- stopping forwarding)
