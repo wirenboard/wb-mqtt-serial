@@ -182,6 +182,11 @@ void TFakeSerialPort::DumpWhatWasRead()
     DumpPos = RespPos;
 }
 
+void TFakeSerialPort::Elapse(const std::chrono::milliseconds& ms)
+{
+    Time += ms;
+}
+
 void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func)
 {
     if (func)
@@ -219,7 +224,7 @@ void TSerialDeviceIntegrationTest::SetUp()
     TSerialDeviceTest::SetUp();
     PortMakerCalled = false;
     TConfigParser parser(GetDataFilePath(ConfigPath()), false, TSerialDeviceFactory::GetRegisterTypes);
-    PHandlerConfig Config = parser.Parse();
+    Config = parser.Parse();
     MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("em-test", *this));
     Observer = PMQTTSerialObserver(new TMQTTSerialObserver(MQTTClient, Config, SerialPort));
 }

@@ -21,6 +21,7 @@ public:
     bool WriteInitValues();
 
 private:
+    bool NeedToPublish(PRegister reg, bool changed);
     void OnValueRead(PRegister reg, bool changed);
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
     void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);

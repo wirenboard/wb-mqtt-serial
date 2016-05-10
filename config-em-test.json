@@ -1,5 +1,6 @@
 {
   "debug": true,
+  "max_unchanged_interval": 100,  
   "ports": [
     {
       "path" : "/dev/ttyNSC0",

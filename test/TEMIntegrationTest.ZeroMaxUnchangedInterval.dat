@@ -1,0 +1,132 @@
+SetDebug(1)
+Publish: /devices/milur305.32r-test/meta/name: 'Milur 305.32R (test)' (QoS 0, retained)
+Publish: /devices/milur305.32r-test/controls/Phase C voltage/meta/type: 'voltage' (QoS 0, retained)
+Publish: /devices/milur305.32r-test/controls/Phase C voltage/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/milur305.32r-test/controls/Phase C voltage/meta/order: '1' (QoS 0, retained)
+Subscribe: /devices/milur305.32r-test/controls/Phase C voltage/on (QoS 0)
+Publish: /devices/milur305.32r-test/controls/Total consumption/meta/type: 'power_consumption' (QoS 0, retained)
+Publish: /devices/milur305.32r-test/controls/Total consumption/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/milur305.32r-test/controls/Total consumption/meta/order: '2' (QoS 0, retained)
+Subscribe: /devices/milur305.32r-test/controls/Total consumption/on (QoS 0)
+Publish: /devices/mercury230ar02-test/meta/name: 'Mercury 230AR-02 (test)' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total consumption/meta/type: 'power_consumption' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total consumption/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total consumption/meta/order: '1' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02-test/controls/Total consumption/on (QoS 0)
+Publish: /devices/mercury230ar02-test/controls/Total reactive energy/meta/type: 'power_consumption' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total reactive energy/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total reactive energy/meta/order: '2' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02-test/controls/Total reactive energy/on (QoS 0)
+Publish: /devices/mercury230ar02-test/controls/U1/meta/type: 'voltage' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/U1/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/U1/meta/order: '3' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02-test/controls/U1/on (QoS 0)
+Publish: /devices/mercury230ar02-test/controls/U2/meta/type: 'voltage' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/U2/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/U2/meta/order: '4' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02-test/controls/U2/on (QoS 0)
+Publish: /devices/mercury230ar02-test/controls/I1/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/I1/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/I1/meta/order: '5' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02-test/controls/I1/on (QoS 0)
+>>> LoopOnce()
+Open()
+Sleep(100000)
+SkipNoise()
+EnqueueMilurSessionSetupResponse()
+>> FF 08 01 FF FF FF FF FF FF 5F ED
+<< FF 08 01 87 F0
+EnqueueMilurPhaseCVoltageResponse()
+>> FF 01 66 C0 4A
+Publish: /devices/milur305.32r-test/controls/Phase C voltage/meta/error: '' (QoS 0, retained)
+Publish: /devices/milur305.32r-test/controls/Phase C voltage: '234.607' (QoS 0, retained)
+<< FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurTotalConsumptionResponse()
+>> FF 01 76 C1 86
+Publish: /devices/milur305.32r-test/controls/Total consumption/meta/error: '' (QoS 0, retained)
+Publish: /devices/milur305.32r-test/controls/Total consumption: '111.44' (QoS 0, retained)
+<< FF 01 76 04 44 11 10 00 AC 6C
+Sleep(100000)
+SkipNoise()
+EnqueueMercury230SessionSetupResponse()
+>> 00 01 01 01 01 01 01 01 01 77 81
+<< 00 00 01 B0
+EnqueueMercury230EnergyResponse1()
+>> 00 05 00 00 10 25
+Publish: /devices/mercury230ar02-test/controls/Total consumption/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total consumption: '3196.2' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total reactive energy/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total reactive energy: '300.444' (QoS 0, retained)
+<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+Publish: /devices/mercury230ar02-test/controls/U1/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/U1: '241.28' (QoS 0, retained)
+<< 00 00 40 5E B0 1C
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+Publish: /devices/mercury230ar02-test/controls/U2/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/U2: '240.43' (QoS 0, retained)
+<< 00 00 EB 5D 8F 2D
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+Publish: /devices/mercury230ar02-test/controls/I1/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
+>>> LoopOnce()
+<< 00 00 45 00 32 B4
+Sleep(100000)
+EnqueueMilurPhaseCVoltageResponse()
+>> FF 01 66 C0 4A
+Publish: /devices/milur305.32r-test/controls/Phase C voltage: '234.607' (QoS 0, retained)
+<< FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurTotalConsumptionResponse()
+>> FF 01 76 C1 86
+Publish: /devices/milur305.32r-test/controls/Total consumption: '111.44' (QoS 0, retained)
+<< FF 01 76 04 44 11 10 00 AC 6C
+Sleep(100000)
+EnqueueMercury230EnergyResponse1()
+>> 00 05 00 00 10 25
+Publish: /devices/mercury230ar02-test/controls/Total consumption: '3196.2' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total reactive energy: '300.444' (QoS 0, retained)
+<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+Publish: /devices/mercury230ar02-test/controls/U1: '241.28' (QoS 0, retained)
+<< 00 00 40 5E B0 1C
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+Publish: /devices/mercury230ar02-test/controls/U2: '240.43' (QoS 0, retained)
+<< 00 00 EB 5D 8F 2D
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
+>>> LoopOnce()
+<< 00 00 45 00 32 B4
+Sleep(100000)
+EnqueueMilurPhaseCVoltageResponse()
+>> FF 01 66 C0 4A
+Publish: /devices/milur305.32r-test/controls/Phase C voltage: '234.607' (QoS 0, retained)
+<< FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurTotalConsumptionResponse()
+>> FF 01 76 C1 86
+Publish: /devices/milur305.32r-test/controls/Total consumption: '111.44' (QoS 0, retained)
+<< FF 01 76 04 44 11 10 00 AC 6C
+Sleep(100000)
+EnqueueMercury230EnergyResponse1()
+>> 00 05 00 00 10 25
+Publish: /devices/mercury230ar02-test/controls/Total consumption: '3196.2' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total reactive energy: '300.444' (QoS 0, retained)
+<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+Publish: /devices/mercury230ar02-test/controls/U1: '241.28' (QoS 0, retained)
+<< 00 00 40 5E B0 1C
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+Publish: /devices/mercury230ar02-test/controls/U2: '240.43' (QoS 0, retained)
+<< 00 00 EB 5D 8F 2D
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
+<< 00 00 45 00 32 B4
+Close()

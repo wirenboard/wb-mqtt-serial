@@ -33,6 +33,7 @@ public:
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     void DumpWhatWasRead();
+    void Elapse(const std::chrono::milliseconds& ms);
 
 private:
     void SkipFrameBoundary();
@@ -67,5 +68,6 @@ protected:
 
     PFakeMQTTClient MQTTClient;
     PMQTTSerialObserver Observer;
+    PHandlerConfig Config;
     bool PortMakerCalled;
 };

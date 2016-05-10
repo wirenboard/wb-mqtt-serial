@@ -100,9 +100,9 @@ typedef std::shared_ptr<TPortConfig> PPortConfig;
 
 struct THandlerConfig {
     void AddPortConfig(PPortConfig port_config) {
+        port_config->Debug = Debug;
+        port_config->MaxUnchangedInterval = MaxUnchangedInterval;
         PortConfigs.push_back(port_config);
-        PortConfigs[PortConfigs.size() - 1]->Debug = Debug;
-        PortConfigs[PortConfigs.size() - 1]->MaxUnchangedInterval = MaxUnchangedInterval;
     }
     bool Debug = false;
     int MaxUnchangedInterval = -1;
