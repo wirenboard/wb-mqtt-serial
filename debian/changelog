@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.15.1) stable; urgency=medium
+
+  * schema fix
+
+ -- Ivan Shvedunov <ivan4th@gmail.com>  Tue, 12 May 2016 03:36:44 +0300
+
 wb-mqtt-serial (1.15.0) stable; urgency=medium
 
   * scheduler merge

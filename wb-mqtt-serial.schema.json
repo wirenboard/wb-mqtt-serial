@@ -67,7 +67,7 @@
         "poll_interval": {
           "type": "integer",
           "title": "Desired poll interval (ms)",
-          "description" :  "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). This works by sleeping for t = [poll_interval] / [number_of_registers] after each read operation. Writes are not affected by this setting and are performed as soon as possible.",
+          "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
           "minimum": 0,
           "default": 20,
           "propertyOrder": 7
@@ -265,9 +265,18 @@
               "description": "Value corresponding to the 'On' state of the switch",
               "$ref": "#/definitions/serial_int",
               "propertyOrder": 9
+            },
+            "poll_interval": {
+              "type": "integer",
+              "title": "Desired poll interval (ms)",
+              "description" : "This option specifies the desired interval between two consecutive polls of the channel",
+              "minimum": 0,
+              "default": 20,
+              "propertyOrder": 10
             }
           },
-          "required": ["name", "reg_type", "address"],
+          // FIXME: require "reg_type" and "address" for non-templated devices
+          "required": ["name"],
           "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale"],
           "_format": "grid"
         },
@@ -294,6 +303,14 @@
               "minItems": 1,
               "_format": "table",
               "propertyOrder": 3
+            },
+            "poll_interval": {
+              "type": "integer",
+              "title": "Desired poll interval (ms)",
+              "description" :  "This option specifies the desired interval between two consecutive polls of the channel",
+              "minimum": 0,
+              "default": 20,
+              "propertyOrder": 4
             }
           },
           "required": ["name", "consists_of"]
