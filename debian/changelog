@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.15.2) stable; urgency=medium
+
+  * adds schema for WB-MSGR
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 09 Jun 2016 18:42:28 +0300
+
 wb-mqtt-serial (1.15.1) stable; urgency=medium
 
   * schema fix
