@@ -46,7 +46,8 @@ SERIAL_SRCS=register.cpp \
   modbus_device.cpp \
   em_device.cpp \
   milur_device.cpp \
-  mercury230_device.cpp
+  mercury230_device.cpp \
+  pulsar_device.cpp
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
