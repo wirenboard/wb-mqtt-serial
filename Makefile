@@ -60,6 +60,7 @@ TEST_SRCS= \
   $(TEST_DIR)/em_test.o \
   $(TEST_DIR)/em_integration.o \
   $(TEST_DIR)/ivtm_test.o \
+  $(TEST_DIR)/pulsar_test.o \
   $(TEST_DIR)/fake_mqtt.o \
   $(TEST_DIR)/fake_serial_port.o \
   $(TEST_DIR)/pty_based_fake_serial.o \
