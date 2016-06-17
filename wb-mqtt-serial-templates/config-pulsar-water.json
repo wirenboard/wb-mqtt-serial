@@ -1,0 +1,17 @@
+{
+  "device_type": "pulsar-water",
+  "device": {
+    "name": "Pulsar Water Meter",
+    "id": "pulsar-water",
+    "protocol": "pulsar",
+    "channels": [
+      {
+        "name": "Volume",
+        "reg_type": "default",
+        "address": "0",
+        "format": "float",
+        "type": "value"
+      }
+    ]
+  }
+}
