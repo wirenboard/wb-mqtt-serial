@@ -3,7 +3,7 @@
 #include "pulsar_device.h"
 
 namespace {
-    PSlaveEntry HeatMeter = TSlaveEntry::Intern("pulsar", 102030);
+    PSlaveEntry HeatMeter = TSlaveEntry::Intern("pulsar", 107080);
 
     PRegister Heat_TempIn = TRegister::Intern(HeatMeter, 0, 2, Float);
     PRegister Heat_TempOut = TRegister::Intern(HeatMeter, 0, 3, Float);
@@ -30,19 +30,19 @@ void TPulsarDeviceTest::SetUp()
 
 TEST_F(TPulsarDeviceTest, PulsarHeatMeterFloatQuery)
 {
-    // >> 00 10 70 80 01 0e 04 00 00 00 fc 90 3d cb
-    // << 00 10 70 80 01 0E 5A B3 C5 41 FC 90 59 B7
+    // >> 00 10 70 80 01 0e 04 00 00 00 00 00 7C A7
+    // << 00 10 70 80 01 0E 5A B3 C5 41 00 00 18 DB
     // temperature == 24.71257
 
     SerialPort->Expect(
             {
-                0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x04, 0x00, 0x00, 0x00, 0xfc, 0x90, 0x3d, 0xcb
+                0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7c, 0xa7
             },
             {
-                0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x5a, 0xb3, 0xc5, 0x41, 0xfc, 0x90, 0x59, 0xb7
+                0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x5a, 0xb3, 0xc5, 0x41, 0x00, 0x00, 0x18, 0xdb
             });
 
-    ASSERT_EQ(0xC5B35A0E, Dev->ReadRegister(Heat_TempIn));
+    ASSERT_EQ(0x41C5B35A, Dev->ReadRegister(Heat_TempIn));
 
     SerialPort->Close();
 }
