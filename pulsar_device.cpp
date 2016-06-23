@@ -16,7 +16,8 @@ REGISTER_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
 }));
 
 TPulsarDevice::TPulsarDevice(PDeviceConfig device_config, PAbstractSerialPort port)
-    : TSerialDevice(device_config, port) {}
+    : TSerialDevice(device_config, port)
+    , RequestID(0) {}
 
 uint16_t TPulsarDevice::CalculateCRC16(const uint8_t *buffer, size_t size)
 {
@@ -186,12 +187,11 @@ uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
     // form register mask from address
     uint32_t mask = 1 << reg->Address; // TODO: register range or something like this
 
-    // form request ID as random value (strength doesn't matter so don't care about srand()
-    uint16_t id = rand() & 0xFFFF;
-
     // send data request and receive response
-    WriteDataRequest(reg->Slave->Id, mask, id);
-    ReadResponse(reg->Slave->Id, payload, reg->ByteWidth(), id);
+    WriteDataRequest(reg->Slave->Id, mask, RequestID);
+    ReadResponse(reg->Slave->Id, payload, reg->ByteWidth(), RequestID);
+
+    ++RequestID;
 
     // decode little-endian double64_t value
     return ReadHex(payload, reg->ByteWidth(), false);
@@ -202,12 +202,11 @@ uint64_t TPulsarDevice::ReadSysTimeRegister(PRegister reg)
     // raw payload data
     uint8_t payload[6];
 
-    // form request ID as random value (strength doesn't matter so don't care about srand()
-    uint16_t id = rand() & 0xFFFF;
-
     // send system time request and receive response
-    WriteSysTimeRequest(reg->Slave->Id, id);
-    ReadResponse(reg->Slave->Id, payload, sizeof (payload), id);
+    WriteSysTimeRequest(reg->Slave->Id, RequestID);
+    ReadResponse(reg->Slave->Id, payload, sizeof (payload), RequestID);
+
+    ++RequestID;
 
     // decode little-endian double64_t value
     return ReadHex(payload, sizeof (payload), false);

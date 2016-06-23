@@ -35,6 +35,8 @@ private:
     
     uint64_t ReadDataRegister(PRegister reg);
     uint64_t ReadSysTimeRegister(PRegister reg);
+
+    uint16_t RequestID;
 };
 
 typedef std::shared_ptr<TPulsarDevice> PPulsarDevice;
