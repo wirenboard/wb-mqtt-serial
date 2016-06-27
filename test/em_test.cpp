@@ -15,6 +15,7 @@ namespace {
     PRegister Mercury230U1Reg = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1111, U24);
     PRegister Mercury230I1Reg = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1121, U24);
     PRegister Mercury230U2Reg = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1112, U24);
+    PRegister Mercury230PReg  = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1100, U24);
 };
 
 class TEMDeviceTest: public TSerialDeviceTest, public TEMDeviceExpectations
@@ -134,6 +135,10 @@ void TEMDeviceTest::VerifyMercuryParamQuery()
     EnqueueMercury230U2Response();
     // subparam 0x12 = voltage (phase 2)
     ASSERT_EQ(24043, Mercury230Dev->ReadRegister(Mercury230U2Reg));
+
+    EnqueueMercury230PResponse();
+    // Total power (P)
+    ASSERT_EQ(553095, Mercury230Dev->ReadRegister(Mercury230PReg));
 }
 
 TEST_F(TEMDeviceTest, Mercury230ReadParams)

@@ -12,6 +12,9 @@ EnqueueMercury230I1Response()
 EnqueueMercury230U2Response()
 >> 00 08 11 12 0D BB
 << 00 00 EB 5D 8F 2D
+EnqueueMercury230PResponse()
+>> 00 08 11 00 8D B6
+<< 00 48 87 70 E2 26
 EnqueueMercury230U1Response()
 >> 00 08 11 11 4D BA
 << 00 00 40 5E B0 1C
@@ -21,4 +24,7 @@ EnqueueMercury230I1Response()
 EnqueueMercury230U2Response()
 >> 00 08 11 12 0D BB
 << 00 00 EB 5D 8F 2D
+EnqueueMercury230PResponse()
+>> 00 08 11 00 8D B6
+<< 00 48 87 70 E2 26
 Close()

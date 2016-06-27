@@ -327,6 +327,27 @@ void TEMDeviceExpectations::EnqueueMercury230U2Response()
         }, __func__);
 }
 
+void TEMDeviceExpectations::EnqueueMercury230PResponse()
+{
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x00, // addr
+            0x8d, // crc
+            0xb6  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x48, // 2 bits direction + 6 bits P value 
+            0x87, // P value, 3rd byte
+            0x70, // P value, 2nd byte
+            0xe2, // crc
+            0x26  // crc
+        }, __func__);
+}
+
 void TEMDeviceExpectations::EnqueueMercury230NoSessionResponse()
 {
     Expector()->Expect(

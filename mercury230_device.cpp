@@ -1,3 +1,4 @@
+#include <iostream>
 #include "mercury230_device.h"
 #include "crc16.h"
 
@@ -91,7 +92,7 @@ uint32_t TMercury230Device::ReadParam(uint32_t slave, uint32_t address)
     bool isPowerOrPowerCoef = subparam == 0x00 || subparam == 0x03;
     uint8_t buf[3];
     Talk(slave, 0x08, cmdBuf, 2, -1, buf, 3);
-    return (((uint32_t)buf[0] << 16) & (isPowerOrPowerCoef ? 0x3f : 0xff)) +
+    return (((uint32_t)buf[0] & (isPowerOrPowerCoef ? 0x3f : 0xff)) << 16) +
             ((uint32_t)buf[2] << 8) +
              (uint32_t)buf[1];
 }

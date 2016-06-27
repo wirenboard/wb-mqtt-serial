@@ -17,6 +17,7 @@ public:
     void EnqueueMercury230U1Response();
     void EnqueueMercury230I1Response();
     void EnqueueMercury230U2Response();
+    void EnqueueMercury230PResponse();
     void EnqueueMercury230NoSessionResponse();
     void EnqueueMercury230InternalMeterErrorResponse();
 };
