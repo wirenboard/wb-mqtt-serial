@@ -1,3 +1,4 @@
+#include <iostream>
 #include "serial_device.h"
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port)
