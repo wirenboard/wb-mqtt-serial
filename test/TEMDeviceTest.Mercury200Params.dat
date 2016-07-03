@@ -1,0 +1,6 @@
+Open()
+EnqueueMercury200ParamResponse()
+>> 00 01 E2 40 63 F4 23
+Sleep(100000)
+<< 00 01 E2 40 63 12 34 56 78 76 54 32 8A 8A
+Close()

@@ -1,0 +1,24 @@
+{
+  "debug": true,
+  "ports": [
+    {
+      "path": "/dev/ttyAPP4",
+      "protocol": "mercury200",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "enabled": true,
+      "response_timeout_ms": 500,
+      "devices": [
+        {
+          "device_type": "Mercury 200.02",
+          "name": "Mercury 200.02",
+          "id": "mercury200.02",
+          "slave_id": "0x569e6",
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}

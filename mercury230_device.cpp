@@ -62,14 +62,14 @@ TEMDevice::ErrorType TMercury230Device::CheckForException(uint8_t* frame, int le
 
 const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(uint32_t slave, uint32_t address)
 {
-    int key = (address >> 4) || (slave << 24);
+    int key = (address >> 4) | (slave << 24);
     auto it = CachedValues.find(key);
     if (it != CachedValues.end())
         return it->second;
 
     uint8_t cmdBuf[2];
-    cmdBuf[0] = (address >> 4) & 0xff; // high nibble = array number, lower nibble = month
-    cmdBuf[1] = (address >> 12) & 0x0f; // tariff
+    cmdBuf[0] = (uint8_t)((address >> 4) & 0xff); // high nibble = array number, lower nibble = month
+    cmdBuf[1] = (uint8_t)((address >> 12) & 0x0f); // tariff
     uint8_t buf[MAX_LEN], *p = buf;
     TValueArray a;
     Talk(slave, 0x05, cmdBuf, 2, -1, buf, 16);

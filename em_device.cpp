@@ -42,7 +42,7 @@ bool TEMDevice::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload,
     if (nread < 4)
         throw TSerialDeviceTransientErrorException("frame too short");
 
-    uint16_t crc = CRC16::CalculateCRC16(buf, nread - 2),
+    uint16_t crc = CRC16::CalculateCRC16(buf, static_cast<uint16_t>(nread - 2)),
         crc1 = buf[nread - 2],
         crc2 = buf[nread - 1],
         actualCrc = (crc1 << 8) + crc2;
@@ -62,13 +62,13 @@ bool TEMDevice::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload,
     if (expectedByte1 >= 0 && *p++ != expectedByte1)
         throw TSerialDeviceTransientErrorException("invalid command code in the response");
 
-    int actualPayloadSize = nread - (p - buf) - 2;
+    int actualPayloadSize = static_cast<int>(nread - (p - buf) - 2);
     if (len >= 0 && len != actualPayloadSize)
         throw TSerialDeviceTransientErrorException("unexpected frame size");
     else
         len = actualPayloadSize;
 
-    std::memcpy(payload, p, len);
+    std::memcpy(payload, p, static_cast<size_t>(len));
     return true;
 }
 

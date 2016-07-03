@@ -4,8 +4,6 @@
 
 #include <wbmqtt/utils.h>
 #include "serial_port_driver.h"
-#include "serial_device.h"
-#include "serial_client.h"
 
 TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig port_config,
                                      PAbstractSerialPort port_override)

@@ -21,4 +21,6 @@ public:
     void EnqueueMercury230PResponse();
     void EnqueueMercury230NoSessionResponse();
     void EnqueueMercury230InternalMeterErrorResponse();
+    void EnqueueMercury200EnergyResponse();
+    void EnqueueMercury200ParamResponse();
 };
