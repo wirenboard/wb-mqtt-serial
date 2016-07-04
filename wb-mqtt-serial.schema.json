@@ -358,6 +358,7 @@
         "atmospheric_pressure", "rainfall", "wind_speed", "power",
         "power_consumption", "voltage", "water_flow",
         "water_consumption", "resistance", "concentration",
+        "heat_energy", "heat_power",
         // FIXME: "dimmer", "lux" and "pressure" aren't present in
         // conventions but is present in config-test.json in
         // wb-mqtt-serial
