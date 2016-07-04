@@ -1,0 +1,87 @@
+{
+  "device_type": "pulsar-heat",
+  "device": {
+    "name": "Pulsar Heat Meter",
+    "id": "pulsar-heat",
+    "protocol": "pulsar",
+    "channels": [
+      {
+        "name": "Input temperature",
+        "reg_type": "default",
+        "address": 2,
+        "format": "float",
+        "type": "temperature"
+      },
+      {
+        "name": "Output temperature",
+        "reg_type": "default",
+        "address": 3,
+        "format": "float",
+        "type": "temperature"
+      },
+      {
+        "name": "Delta temperature",
+        "reg_type": "default",
+        "address": 4,
+        "format": "float",
+        "type": "temperature"
+      },
+      {
+        "name": "Heat power",
+        "reg_type": "default",
+        "address": 5,
+        "format": "float",
+        "type": "heat_power"
+      },
+      {
+        "name": "Heat energy",
+        "reg_type": "default",
+        "address": 6,
+        "format": "float",
+        "type": "heat_energy"
+      },
+      {
+        "name": "Water consumption",
+        "reg_type": "default",
+        "address": 7,
+        "format": "float",
+        "type": "water_consumption"
+      },
+      {
+        "name": "Water flow",
+        "reg_type": "default",
+        "address": 8,
+        "format": "float",
+        "type": "water_flow"
+      },
+      {
+        "name": "Pulse 1",
+        "reg_type": "default",
+        "address": 9,
+        "format": "float",
+        "type": "water_consumption"
+      },
+      {
+        "name": "Pulse 2",
+        "reg_type": "default",
+        "address": 10,
+        "format": "float",
+        "type": "water_consumption"
+      },
+      {
+        "name": "Device temperature",
+        "reg_type": "default",
+        "address": 11,
+        "format": "float",
+        "type": "temperature"
+      },
+      {
+        "name": "Status",
+        "reg_type": "default",
+        "address": 12,
+        "format": "u32",
+        "type": "value"
+      }
+    ]
+  }
+}

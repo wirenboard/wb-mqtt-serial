@@ -46,7 +46,8 @@ SERIAL_SRCS=register.cpp \
   modbus_device.cpp \
   em_device.cpp \
   milur_device.cpp \
-  mercury230_device.cpp
+  mercury230_device.cpp \
+  pulsar_device.cpp
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
@@ -59,6 +60,7 @@ TEST_SRCS= \
   $(TEST_DIR)/em_test.o \
   $(TEST_DIR)/em_integration.o \
   $(TEST_DIR)/ivtm_test.o \
+  $(TEST_DIR)/pulsar_test.o \
   $(TEST_DIR)/fake_mqtt.o \
   $(TEST_DIR)/fake_serial_port.o \
   $(TEST_DIR)/pty_based_fake_serial.o \
