@@ -41,18 +41,18 @@
         "type": "value"
       },
       {
-        "name": "Volume",
+        "name": "Consumption",
         "reg_type": "default",
         "address": 7,
         "format": "float",
-        "type": "value"
+        "type": "water_consumption"
       },
       {
-        "name": "Consumption",
+        "name": "Water flow",
         "reg_type": "default",
         "address": 8,
         "format": "float",
-        "type": "value"
+        "type": "water_flow"
       },
       {
         "name": "Pulse 1",

@@ -6,11 +6,11 @@
     "protocol": "pulsar",
     "channels": [
       {
-        "name": "Volume",
+        "name": "Consumption",
         "reg_type": "default",
         "address": "0",
         "format": "float",
-        "type": "value"
+        "type": "water_consumption"
       }
     ]
   }
