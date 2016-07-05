@@ -9,7 +9,7 @@ Package: wb-mqtt-serial
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libjsoncpp0, libmosquittopp1, libmosquitto1, bsdutils, libwbmqtt (>= 1.3.2)
 Replaces: wb-homa-modbus (<< 1.14.1)
-Breaks: wb-homa-modbus (<< 1.14.1), wb-mqtt-confed (<< 1.0.2)
+Breaks: wb-homa-modbus (<< 1.14.1), wb-mqtt-confed (<< 1.0.2), wb-mqtt-homeui (<< 1.6.3)
 Description: Wiren Board Smart Home MQTT serial protocol driver.
 
 Package: wb-homa-modbus
