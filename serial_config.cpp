@@ -344,6 +344,10 @@ PHandlerConfig TConfigParser::Parse()
         throw TConfigParserException("Failed to parse JSON: " + reader.getFormatedErrorMessages());
 
     LoadConfig();
+
+    // check duplicate devices
+
+
     return HandlerConfig;
 }
 
@@ -472,4 +476,16 @@ void TConfigParser::LoadConfig()
     }
 
     throw TConfigParserException("no devices defined in config. Nothing to do");
+}
+
+void TPortConfig::AddDeviceConfig(PDeviceConfig device_config)
+{
+    // try to found duplicate of this device
+    for (PDeviceConfig dev : DeviceConfigs) {
+        if (dev->SlaveId == device_config->SlaveId &&
+            dev->Protocol == device_config->Protocol)
+            throw TConfigParserException("device redefinition: " + dev->Protocol + ":" + std::to_string(dev->SlaveId));
+    }
+
+    DeviceConfigs.push_back(device_config); 
 }
