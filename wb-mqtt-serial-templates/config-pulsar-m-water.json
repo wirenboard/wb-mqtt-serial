@@ -1,0 +1,17 @@
+{
+  "device_type": "pulsar-m-water",
+  "device": {
+    "name": "Pulsar-M Water Meter",
+    "id": "pulsar-m-water",
+    "protocol": "pulsar",
+    "channels": [
+      {
+        "name": "Consumption",
+        "reg_type": "default",
+        "address": "0",
+        "format": "s32",
+        "type": "water_consumption"
+      }
+    ]
+  }
+}

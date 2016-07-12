@@ -1,8 +1,13 @@
+wb-mqtt-serial (1.16) stable; urgency=medium
+
+  * adds support for Pulsar and Pulsar-M water meters
+  * adds support for Pulsar compact heat meter
+
+ -- Nikita Maslov <n.maslov@contactless.ru>  Mon, 04 Jul 2016 15:08:58 +0300
+
 wb-mqtt-serial (1.15.3) stable; urgency=medium
 
   * fixes incorrect Mercury 230 readings
-
- -- Evgeny Boger <boger@contactless.ru>  Mon, 27 Jun 2016 15:36:47 +0300
 
 wb-mqtt-serial (1.15.2) stable; urgency=medium
 

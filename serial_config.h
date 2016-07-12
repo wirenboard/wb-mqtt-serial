@@ -88,7 +88,7 @@ struct TDeviceConfig {
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
 
 struct TPortConfig {
-    void AddDeviceConfig(PDeviceConfig device_config) { DeviceConfigs.push_back(device_config); }
+    void AddDeviceConfig(PDeviceConfig device_config);
     TSerialPortSettings ConnSettings;
     std::chrono::milliseconds PollInterval = std::chrono::milliseconds(20);
     bool Debug = false;
