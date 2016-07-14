@@ -422,7 +422,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
                 if (device_poll_interval.count() >= 0) {
                     reg->PollInterval = device_poll_interval;
                 } else {
-                    reg->PollInterval = port_config->PollInterval;
+                reg->PollInterval = port_config->PollInterval;
                 }
             }
         }

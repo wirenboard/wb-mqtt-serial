@@ -149,6 +149,7 @@ struct TRegister
 
     bool HasErrorValue;
     uint64_t ErrorValue;
+
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, PRegister reg) {
