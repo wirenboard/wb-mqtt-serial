@@ -273,6 +273,12 @@
               "minimum": 0,
               "default": 20,
               "propertyOrder": 10
+            },
+            "error_value": {
+              "type": "integer",
+              "title": "Error value",
+              "description": "Value which should be treated as read error",
+              "propertyOrder": 11
             }
           },
           // FIXME: require "reg_type" and "address" for non-templated devices

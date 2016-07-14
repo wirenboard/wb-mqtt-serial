@@ -83,9 +83,11 @@ struct TRegister
     TRegister(PSlaveEntry slave, int type, int address,
               RegisterFormat format, double scale,
               bool poll, bool readonly,
-              const std::string& type_name)
+              const std::string& type_name,
+              bool has_error_value, uint64_t error_value)
         : Slave(slave), Type(type), Address(address), Format(format),
-          Scale(scale), Poll(poll), ReadOnly(readonly), TypeName(type_name)
+          Scale(scale), Poll(poll), ReadOnly(readonly), TypeName(type_name),
+          HasErrorValue(has_error_value), ErrorValue(error_value)
     {
         if (TypeName.empty())
             TypeName = "(type " + std::to_string(Type) + ")";
@@ -94,9 +96,12 @@ struct TRegister
     static PRegister Intern(PSlaveEntry slave = 0, int type = 0, int address = 0,
                             RegisterFormat format = U16, double scale = 1,
                             bool poll = true, bool readonly = false,
-                            const std::string& type_name = "")
+                            const std::string& type_name = "",
+                            bool has_error_value = false,
+                            uint64_t error_value = 0)
     {
-        return TRegistry::Intern<TRegister>(slave, type, address, format, scale, poll, readonly, type_name);
+        return TRegistry::Intern<TRegister>(slave, type, address, format, scale, poll, readonly, 
+                                            type_name, has_error_value, error_value);
     }
 
     uint8_t ByteWidth() const {
@@ -138,6 +143,9 @@ struct TRegister
     bool ReadOnly;
     std::string TypeName;
     std::chrono::milliseconds PollInterval = std::chrono::milliseconds::zero();
+
+    bool HasErrorValue;
+    uint64_t ErrorValue;
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, PRegister reg) {

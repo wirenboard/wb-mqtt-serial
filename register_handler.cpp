@@ -59,8 +59,17 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
     if (!ok)
         return UpdateReadError(true);
 
+
     bool first_poll = !DidReadReg;
     DidReadReg = true;
+    
+    if (Reg->HasErrorValue && Reg->ErrorValue == new_value) {
+        if (Debug) {
+            std::cerr << "register " << Reg->ToString() << " contains error value";
+        }
+        return UpdateReadError(true);
+    }
+    
     SetValueMutex.lock();
     if (Value != new_value) {
         if (Dirty) {

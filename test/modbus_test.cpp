@@ -589,6 +589,14 @@ TEST_F(TModbusClientTest, Errors)
     SerialClient->SetTextValue(holding20, "42");
     Note() << "Cycle() [write, nothing blacklisted]";
     SerialClient->Cycle();
+
+
+    holding20->HasErrorValue = true;
+    holding20->ErrorValue = 42;
+    Note() << "Cycle() [read, set error value for register]";
+    SerialClient->Cycle();
+    SerialClient->GetTextValue(holding20);
+
     SerialClient->Cycle();
 }
 
