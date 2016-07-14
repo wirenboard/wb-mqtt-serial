@@ -1,47 +1,47 @@
 // Configuration options
 {
-  "device_type" : "WB-MS-THLS",
-  "device" : {
-    "name": "WB-MS-THLS",
-    "id": "wb-ms-thls",
-    "channels": [
-      {
-        "name" : "Temperature",
-        "reg_type" : "input",
-        "address" : 0,
-        "type": "temperature",
-        "format": "s16",
+	"device_type" : "WB-MS-THLS",
+	"device" : {
+	    "name": "WB-MS-THLS",
+	    "id": "wb-ms-thls",
+	    "channels": [
+		{
+		    "name" : "Temperature",
+		    "reg_type" : "input",
+		    "address" : 0,
+		    "type": "temperature",
+		    "format": "s16",
         "scale" : 0.1,
         "error_value": "0x7FFF"
-      },
-      {
-        "name" : "Humidity",
-        "reg_type" : "input",
-        "address" : 1,
-        "type": "rel_humidity",
+		},
+		{
+		    "name" : "Humidity",
+		    "reg_type" : "input",
+		    "address" : 1,
+		    "type": "rel_humidity",
         "scale" : 0.1,
         "error_value": "0xFFFF"
-      },
-      {
-        "name" : "Illuminance",
-        "reg_type" : "input",
-        "address" : 2,
-        "type": "lux"
-      },
-      {
-        "name" : "Sound Level",
-        "reg_type" : "input",
-        "address" : 3,
-        "scale" : 0.01,
-        "type" : "sound_level"
-      },
-      {
-        "name" : "Input Voltage",
-        "reg_type" : "input",
-        "address" : 121,
-        "scale" : 0.001,
-        "type" : "voltage"
-      }
-    ]
-  }
+		},
+		{
+		    "name" : "Illuminance",
+		    "reg_type" : "input",
+		    "address" : 2,
+		    "type": "lux"
+		},
+		{
+		    "name" : "Sound Level",
+		    "reg_type" : "input",
+		    "address" : 3,
+		    "scale" : 0.01,
+		    "type" : "sound_level"
+		},
+		{
+		    "name" : "Input Voltage",
+		    "reg_type" : "input",
+		    "address" : 121,
+		    "scale" : 0.001,
+		    "type" : "voltage"
+		}
+	    ]
+	}
 }
