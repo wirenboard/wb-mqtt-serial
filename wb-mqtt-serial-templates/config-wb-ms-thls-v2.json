@@ -1,0 +1,60 @@
+{
+	"device_type" : "WB-MS-THLS v.2",
+	"device" : {
+	    "name": "WB-MS / WB-MSW",
+	    "id": "wb-ms-thls-v2",
+	    "channels": [
+		{
+		    "name" : "Temperature",
+		    "reg_type" : "input",
+		    "address" : 0,
+		    "type": "temperature",
+		    "format": "s16",
+		    "scale" : 0.1
+		},
+		{
+		    "name" : "Humidity",
+		    "reg_type" : "input",
+		    "address" : 1,
+		    "type": "rel_humidity",
+		    "scale" : 0.1
+		},
+		{
+		    "name" : "Illuminance",
+		    "reg_type" : "input",
+		    "address" : 2,
+		    "type": "lux"
+		},
+		{
+		    "name" : "Sound Level",
+		    "reg_type" : "input",
+		    "address" : 3,
+		    "scale" : 0.01,
+		    "type" : "sound_level"
+		},
+		{
+		    "name" : "Input Voltage",
+		    "reg_type" : "input",
+		    "address" : 121,
+		    "scale" : 0.001,
+		    "type" : "voltage"
+		},
+		{
+		  "name": "External Sensor 1",
+		  "type": "temperature",
+		  "reg_type": "input",
+		  "address": "6",
+		  "format": "s16",
+		  "scale": 0.0625
+		},
+		{
+		  "name": "External Sensor 2",
+		  "type": "temperature",
+		  "reg_type": "input",
+		  "address": "7",
+		  "format": "s16",
+		  "scale": 0.0625
+		}
+	    ]
+	}
+}
