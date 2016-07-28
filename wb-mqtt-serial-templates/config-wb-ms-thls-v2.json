@@ -20,17 +20,25 @@
 		    "scale" : 0.1
 		},
 		{
-		    "name" : "Illuminance",
-		    "reg_type" : "input",
-		    "address" : 2,
-		    "type": "lux"
-		},
-		{
 		    "name" : "Sound Level",
 		    "reg_type" : "input",
 		    "address" : 3,
 		    "scale" : 0.01,
 		    "type" : "sound_level"
+		},
+		{
+		    "name" : "CO2",
+		    "reg_type" : "input",
+		    "address" : 8,
+		    "type": "concentration"
+		},
+		{
+		    "name" : "Illuminance",
+		    "reg_type" : "input",
+		    "address" : 9,
+		    "type": "lux",
+		    "format": "u32",
+		    "scale" : 0.01
 		},
 		{
 		    "name" : "Input Voltage",
