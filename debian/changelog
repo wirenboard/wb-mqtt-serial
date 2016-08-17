@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.16.1) stable; urgency=medium
+
+  * adds template for WB-MS/WB-MSW fw. 2.0+
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 26 Jul 2016 20:36:27 +0300
+
 wb-mqtt-serial (1.16) stable; urgency=medium
 
   * adds support for Pulsar and Pulsar-M water meters
