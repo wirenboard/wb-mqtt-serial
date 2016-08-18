@@ -171,6 +171,19 @@ uint64_t TMilurDevice::ReadRegister(PRegister reg)
     return r;
 }
 
+void TMilurDevice::Prepare()
+{
+    /* Milur 104 ignores the request after receiving any packet
+    with length of 8 bytes. The last answer of the previously polled device
+    could make Milur 104 unresponsive. To make sure the meter is operational,
+    we send dummy packet (0xFF in this case) which will restore normal meter operation. */
+
+    uint8_t buf[] = {0xFF};
+    Port()->WriteBytes(buf, sizeof(buf) / sizeof(buf[0]));
+    TSerialDevice::Prepare();
+    Port()->SkipNoise();
+}
+
 #if 0
 #include <iomanip>
 #include <iostream>

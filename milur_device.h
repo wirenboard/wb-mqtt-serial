@@ -21,6 +21,8 @@ public:
 
     TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port);
     uint64_t ReadRegister(PRegister reg);
+    void Prepare();
+
 
 protected:
     bool ConnectionSetup(uint8_t slave);
