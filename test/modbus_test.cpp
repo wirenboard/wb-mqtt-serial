@@ -13,6 +13,8 @@
 #include "modbus_device.h"
 #include "pty_based_fake_serial.h"
 
+using namespace std;
+
 class TModbusTestBase: public TLoggedFixture
 {
 protected:

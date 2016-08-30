@@ -2,6 +2,8 @@
 
 #include "fake_mqtt.h"
 
+using namespace std;
+
 TFakeMQTTClient::TFakeMQTTClient(const std::string& id, TLoggedFixture& fixture)
     : MQTTId(id), Connected(false), Fixture(fixture)
 {
