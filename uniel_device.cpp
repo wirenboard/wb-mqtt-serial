@@ -77,7 +77,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
 
 uint64_t TUnielDevice::ReadRegister(PRegister reg)
 {
-    WriteCommand(READ_CMD, reg->Slave->Id, 0, uint8_t(reg->Address), 0);
+    WriteCommand(READ_CMD, reg->Slave->IdAsInt(), 0, uint8_t(reg->Address), 0);
     uint8_t response[3];
     ReadResponse(READ_CMD, response);
     if (response[1] != uint8_t(reg->Address))
@@ -100,7 +100,7 @@ void TUnielDevice::WriteRegister(PRegister reg, uint64_t value)
     }
     if (reg->Type == REG_RELAY && value != 0)
         value = 255;
-    WriteCommand(cmd, reg->Slave->Id, value, addr, 0);
+    WriteCommand(cmd, reg->Slave->IdAsInt(), value, addr, 0);
     uint8_t response[3];
     ReadResponse(cmd, response);
     if (response[1] != addr)

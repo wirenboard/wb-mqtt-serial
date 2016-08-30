@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 #include <memory>
 #include <vector>
 #include <exception>
@@ -55,7 +56,7 @@ static const int DEFAULT_INTER_DEVICE_DELAY_MS = 100;
 static const int DEFAULT_ACCESS_LEVEL = 1;
 
 struct TDeviceConfig {
-    TDeviceConfig(std::string name = "", int slave_id = 0, std::string protocol = "",
+    TDeviceConfig(std::string name = "", std::string slave_id = "", std::string protocol = "",
                   const std::chrono::milliseconds& delay =
                   std::chrono::milliseconds(DEFAULT_INTER_DEVICE_DELAY_MS),
                   int access_level = DEFAULT_ACCESS_LEVEL,
@@ -67,12 +68,32 @@ struct TDeviceConfig {
           AccessLevel(access_level), FrameTimeout(frame_timeout),
           MaxRegHole(max_reg_hole), MaxBitHole(max_bit_hole),
           TypeMap(type_map) {}
+    
+    TDeviceConfig(const std::string &name, int slave_id, std::string protocol = "",
+                  const std::chrono::milliseconds& delay =
+                  std::chrono::milliseconds(DEFAULT_INTER_DEVICE_DELAY_MS),
+                  int access_level = DEFAULT_ACCESS_LEVEL,
+                  int frame_timeout = -1,
+                  int max_reg_hole = 0,
+                  int max_bit_hole = 0,
+                  PRegisterTypeMap type_map = 0)
+        : Name(name), Protocol(protocol), Delay(delay),
+          AccessLevel(access_level), FrameTimeout(frame_timeout),
+          MaxRegHole(max_reg_hole), MaxBitHole(max_bit_hole),
+          TypeMap(type_map) 
+    {
+        std::stringstream ss;
+        ss << slave_id;
+        SlaveId = ss.str();
+    }
+                  
+
     int NextOrderValue() const { return DeviceChannels.size() + 1; }
     void AddChannel(PDeviceChannel channel) { DeviceChannels.push_back(channel); };
     void AddSetupItem(PDeviceSetupItem item) { SetupItems.push_back(item); }
     std::string Id;
     std::string Name;
-    int SlaveId;
+    std::string SlaveId;
     std::string DeviceType;
     std::string Protocol;
     std::vector<PDeviceChannel> DeviceChannels;

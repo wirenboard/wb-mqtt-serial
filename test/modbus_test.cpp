@@ -748,7 +748,7 @@ void TModbusDeviceTest::FilterConfig(const std::string& device_name)
 void TModbusDeviceTest::VerifyDDL24()
 {
     PModbusSlave slave = ModbusServer->SetSlave(
-        Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
+        stoi(Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId, 0, 0),
         TModbusRange(
             TServerRegisterRange(),
             TServerRegisterRange(),
@@ -798,7 +798,7 @@ TEST_F(TModbusDeviceTest, OnValue)
 {
     FilterConfig("OnValueTest");
     PModbusSlave slave = ModbusServer->SetSlave(
-        Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
+        stoi(Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId, 0, 0),
         TModbusRange(
             TServerRegisterRange(),
             TServerRegisterRange(),
@@ -832,7 +832,7 @@ TEST_F(TModbusDeviceTest, Errors)
 {
     FilterConfig("DDL24");
     PModbusSlave slave = ModbusServer->SetSlave(
-        Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId,
+        stoi(Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId),
         TModbusRange(
             TServerRegisterRange(),
             TServerRegisterRange(),

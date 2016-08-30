@@ -188,8 +188,8 @@ uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
     uint32_t mask = 1 << reg->Address; // TODO: register range or something like this
 
     // send data request and receive response
-    WriteDataRequest(reg->Slave->Id, mask, RequestID);
-    ReadResponse(reg->Slave->Id, payload, reg->ByteWidth(), RequestID);
+    WriteDataRequest(reg->Slave->IdAsInt(), mask, RequestID);
+    ReadResponse(reg->Slave->IdAsInt(), payload, reg->ByteWidth(), RequestID);
 
     ++RequestID;
 
@@ -203,8 +203,8 @@ uint64_t TPulsarDevice::ReadSysTimeRegister(PRegister reg)
     uint8_t payload[6];
 
     // send system time request and receive response
-    WriteSysTimeRequest(reg->Slave->Id, RequestID);
-    ReadResponse(reg->Slave->Id, payload, sizeof (payload), RequestID);
+    WriteSysTimeRequest(reg->Slave->IdAsInt(), RequestID);
+    ReadResponse(reg->Slave->IdAsInt(), payload, sizeof (payload), RequestID);
 
     ++RequestID;
 

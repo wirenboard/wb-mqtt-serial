@@ -40,6 +40,10 @@ void TSerialClient::AddDevice(PDeviceConfig device_config)
             (device_config->DeviceType.empty() ? "" : " (" + device_config->DeviceType + ")") <<
             " @ " << device_config->SlaveId << " -- protocol: " << device_config->Protocol << std::endl;
     PSlaveEntry entry = TSlaveEntry::Intern(device_config->Protocol, device_config->SlaveId);
+
+    if (Debug)
+        std::cerr << __func__ << ": " << entry->ToString() << std::endl;
+
     ConfigMap[entry] = device_config;
 }
 

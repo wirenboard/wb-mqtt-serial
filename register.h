@@ -11,6 +11,7 @@
 #include <unordered_map>
 
 #include "registry.h"
+#include "serial_exc.h"
 
 enum RegisterFormat {
     AUTO,
@@ -54,17 +55,41 @@ typedef std::shared_ptr<TSlaveEntry> PSlaveEntry;
 struct TSlaveEntry
 {
     std::string Protocol;
-    int Id;
+    std::string Id;
 
-    TSlaveEntry(const std::string& protocol, int id): Protocol(protocol), Id(id) {}
-
-    std::string ToString() const {
-        return Protocol + ":" + std::to_string(Id);
+    TSlaveEntry(const std::string& protocol, const std::string &id): Protocol(protocol), Id(id) {}
+    TSlaveEntry(const std::string &protocol, int id)
+        : Protocol(protocol)
+    {
+        std::stringstream ss;
+        ss << id;
+        Id = ss.str();
     }
 
-    static PSlaveEntry Intern(const std::string& protocol = "", int id = 0)
+    int IdAsInt() const
+    {
+        try {
+            return std::stoi(Id, /* pos = */ 0, /* base = */ 0);
+        } catch (const std::logic_error &e) {}
+
+        throw TSerialDeviceException("Slave ID is not convertible to int for " + ToString());
+    }
+
+    std::string ToString() const {
+        return Protocol + ":" + Id;
+    }
+
+    static PSlaveEntry Intern(const std::string& protocol = "", const std::string& id = "")
     {
         return TRegistry::Intern<TSlaveEntry>(protocol, id);
+    }
+
+    static PSlaveEntry Intern(const std::string& protocol, int id)
+    {
+        std::stringstream ss;
+        ss << id;
+
+        return TRegistry::Intern<TSlaveEntry>(protocol, ss.str());
     }
 };
 

@@ -302,7 +302,7 @@ Ports:
         ------
         Id: OnValueTest
         Name: OnValueTest
-        SlaveId: 144
+        SlaveId: 0x90
         DeviceChannels:
             ------
             Name: Relay 1
@@ -312,7 +312,7 @@ Ports:
             OnValue: 500
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:144:holding: 0>
+            Registers: <modbus:0x90:holding: 0>
     ------
     ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 500>
     PollInterval: 100
@@ -379,7 +379,7 @@ Ports:
         ------
         Id: lc103
         Name: LC-103
-        SlaveId: 4
+        SlaveId: 0x04
         DeviceChannels:
             ------
             Name: Relay 1
@@ -389,7 +389,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:4:coil: 0>
+            Registers: <modbus:0x04:coil: 0>
             ------
             Name: Relay 2
             Type: switch
@@ -398,7 +398,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:4:coil: 1>
+            Registers: <modbus:0x04:coil: 1>
             ------
             Name: Relay 3
             Type: switch
@@ -407,7 +407,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:4:coil: 2>
+            Registers: <modbus:0x04:coil: 2>
             ------
             Name: Switch AC In
             Type: switch
@@ -416,4 +416,4 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:4:discrete: 0>
+            Registers: <modbus:0x04:discrete: 0>

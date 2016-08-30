@@ -150,7 +150,7 @@ uint64_t TMilurDevice::ReadRegister(PRegister reg)
 
     uint8_t addr = reg->Address;
     uint8_t buf[MAX_LEN], *p = buf;
-    Talk(reg->Slave->Id, 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(size + 6));
+    Talk(reg->Slave->IdAsInt(), 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(size + 6));
     if (*p++ != reg->Address)
         throw TSerialDeviceTransientErrorException("bad register address in the response");
     if (*p++ != size)

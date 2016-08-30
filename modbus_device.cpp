@@ -173,7 +173,7 @@ uint64_t TModbusDevice::ReadRegister(PRegister reg)
         std::cerr << "modbus: read " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
             " of slave " << reg->Slave << std::endl;
 
-    modbus_set_slave(Context->Inner, reg->Slave->Id);
+    modbus_set_slave(Context->Inner, reg->Slave->IdAsInt());
     if (IsSingleBitType(reg->Type)) {
         uint8_t b;
         if (w != 1)
@@ -222,7 +222,7 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
         std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
             " of slave " << reg->Slave << std::endl;
 
-    modbus_set_slave(Context->Inner, reg->Slave->Id);
+    modbus_set_slave(Context->Inner, reg->Slave->IdAsInt());
     switch (reg->Type) {
     case REG_COIL:
         if (w != 1)
@@ -274,7 +274,7 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
             modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
             " of slave " << modbus_range->Slave() << std::endl;
 
-    modbus_set_slave(Context->Inner, modbus_range->Slave()->Id);
+    modbus_set_slave(Context->Inner, modbus_range->Slave()->IdAsInt());
     int rc;
     if (IsSingleBitType(type))
         rc = type == REG_COIL ?

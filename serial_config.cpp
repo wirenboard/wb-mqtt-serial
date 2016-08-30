@@ -372,7 +372,16 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     PDeviceConfig device_config(new TDeviceConfig);
     device_config->Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
     device_config->Name = device_data.isMember("name") ? device_data["name"].asString() : "";
-    device_config->SlaveId = GetInt(device_data, "slave_id");
+
+    if (!device_data.isMember("slave_id"))
+        throw TConfigParserException("Propery slave_id is missing");
+    if (device_data["slave_id"].isString())
+        device_config->SlaveId = device_data["slave_id"].asString();
+    else if (device_data["slave_id"].isInt())
+        device_config->SlaveId = std::to_string(device_data["slave_id"].asInt());
+    else 
+        throw TConfigParserException("Wrong type for property slave_id: should be string or integer, but given " + std::to_string(device_data["slave_id"].type()));
+
     if (device_data.isMember("max_reg_hole"))
         device_config->MaxRegHole = GetInt(device_data, "max_reg_hole");
     if (device_data.isMember("max_bit_hole"))
@@ -385,7 +394,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
             if (tmpl->DeviceData.isMember("name")) {
                 if (device_config->Name == "")
                     device_config->Name = tmpl->DeviceData["name"].asString() + " " +
-                        std::to_string(device_config->SlaveId);
+                        device_config->SlaveId;
             } else if (device_config->Name == "")
                     throw TConfigParserException(
                         "Property device_name is missing in " + device_config->DeviceType + " template");
@@ -393,7 +402,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
             if (tmpl->DeviceData.isMember("id")) {
                 if (device_config->Id == default_id)
                     device_config->Id = tmpl->DeviceData["id"].asString() + "_" +
-                        std::to_string(device_config->SlaveId);
+                        device_config->SlaveId;
             }
 
             LoadDeviceTemplatableConfigPart(device_config, tmpl->DeviceData);
@@ -492,7 +501,7 @@ void TPortConfig::AddDeviceConfig(PDeviceConfig device_config)
     for (PDeviceConfig dev : DeviceConfigs) {
         if (dev->SlaveId == device_config->SlaveId &&
             dev->Protocol == device_config->Protocol)
-            throw TConfigParserException("device redefinition: " + dev->Protocol + ":" + std::to_string(dev->SlaveId));
+            throw TConfigParserException("device redefinition: " + dev->Protocol + ":" + dev->SlaveId);
     }
 
     DeviceConfigs.push_back(device_config); 
