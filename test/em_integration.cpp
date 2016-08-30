@@ -29,6 +29,8 @@ void TEMIntegrationTest::TearDown()
 
 void TEMIntegrationTest::ExpectQueries(bool firstPoll)
 {
+    EnqueueMilurIgnoredPacketWorkaround();
+
     if (firstPoll)
         EnqueueMilurSessionSetupResponse();
     EnqueueMilurPhaseCVoltageResponse();

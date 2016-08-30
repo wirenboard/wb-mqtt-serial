@@ -1,5 +1,20 @@
 #include "em_expectations.h"
 
+void TEMDeviceExpectations::EnqueueMilurIgnoredPacketWorkaround()
+{
+    /* Milur 104 ignores the request after receiving any packet
+    with length of 8 bytes. The last answer of the previously polled device
+    could make Milur 104 unresponsive. To make sure the meter is operational,
+    we send dummy packet (0xFF in this case) which will restore normal meter operation. */
+
+    Expector()->Expect(
+        {
+            0xff, // dummy packet
+        },
+        { //no response
+        }, __func__);
+}
+
 void TEMDeviceExpectations::EnqueueMilurSessionSetupResponse()
 {
     Expector()->Expect(

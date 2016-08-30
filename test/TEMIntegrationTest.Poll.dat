@@ -31,7 +31,10 @@ Publish: /devices/mercury230ar02-test/controls/I1/meta/order: '5' (QoS 0, retain
 Subscribe: /devices/mercury230ar02-test/controls/I1/on (QoS 0)
 >>> LoopOnce()
 Open()
+EnqueueMilurIgnoredPacketWorkaround()
+>> FF
 Sleep(100000)
+SkipNoise()
 SkipNoise()
 EnqueueMilurSessionSetupResponse()
 >> FF 08 01 FF FF FF FF FF FF 5F ED

@@ -31,7 +31,10 @@ Publish: /devices/mercury230ar02-test/controls/I1/meta/order: '5' (QoS 0, retain
 Subscribe: /devices/mercury230ar02-test/controls/I1/on (QoS 0)
 >>> LoopOnce()
 Open()
+EnqueueMilurIgnoredPacketWorkaround()
+>> FF
 Sleep(100000)
+SkipNoise()
 SkipNoise()
 EnqueueMilurSessionSetupResponse()
 >> FF 08 01 FF FF FF FF FF FF 5F ED
@@ -74,7 +77,10 @@ Publish: /devices/mercury230ar02-test/controls/I1/meta/error: '' (QoS 0, retaine
 Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
 >>> LoopOnce()
 << 00 00 45 00 32 B4
+EnqueueMilurIgnoredPacketWorkaround()
+>> FF
 Sleep(100000)
+SkipNoise()
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
 << FF 01 66 03 6F 94 03 03 4E
@@ -95,7 +101,10 @@ EnqueueMercury230I1Response()
 >> 00 08 11 21 4D AE
 >>> LoopOnce()
 << 00 00 45 00 32 B4
+EnqueueMilurIgnoredPacketWorkaround()
+>> FF
 Sleep(100000)
+SkipNoise()
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
 Publish: /devices/milur305.32r-test/controls/Phase C voltage: '234.607' (QoS 0, retained)
@@ -123,7 +132,10 @@ EnqueueMercury230I1Response()
 Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
 >>> LoopOnce()
 << 00 00 45 00 32 B4
+EnqueueMilurIgnoredPacketWorkaround()
+>> FF
 Sleep(100000)
+SkipNoise()
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
 << FF 01 66 03 6F 94 03 03 4E
@@ -144,7 +156,10 @@ EnqueueMercury230I1Response()
 >> 00 08 11 21 4D AE
 >>> LoopOnce()
 << 00 00 45 00 32 B4
+EnqueueMilurIgnoredPacketWorkaround()
+>> FF
 Sleep(100000)
+SkipNoise()
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
 << FF 01 66 03 6F 94 03 03 4E
@@ -165,7 +180,10 @@ EnqueueMercury230I1Response()
 >> 00 08 11 21 4D AE
 >>> LoopOnce()
 << 00 00 45 00 32 B4
+EnqueueMilurIgnoredPacketWorkaround()
+>> FF
 Sleep(100000)
+SkipNoise()
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
 Publish: /devices/milur305.32r-test/controls/Phase C voltage: '234.607' (QoS 0, retained)

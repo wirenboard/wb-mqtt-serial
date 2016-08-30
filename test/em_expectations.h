@@ -4,6 +4,7 @@
 class TEMDeviceExpectations: public virtual TExpectorProvider
 {
 public:
+    void EnqueueMilurIgnoredPacketWorkaround();
     void EnqueueMilurSessionSetupResponse();
     void EnqueueMilurAccessLevel2SessionSetupResponse();
     void EnqueueMilurPhaseCVoltageResponse();
