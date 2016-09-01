@@ -29,7 +29,8 @@ enum RegisterFormat {
     BCD24,
     BCD32,
     Float,
-    Double
+    Double,
+    Char8
 };
 
 struct TRegisterType {
@@ -119,6 +120,8 @@ struct TRegister
             case S24:
             case BCD24:
                 return 3;
+            case Char8:
+                return 1;
             default:
                 return 2;
         }
@@ -192,6 +195,8 @@ inline const char* RegisterFormatName(RegisterFormat fmt) {
         return "Float";
     case Double:
         return "Double";
+    case Char8:
+        return "Char8";
     default:
         return "<unknown register type>";
     }
@@ -228,6 +233,8 @@ inline RegisterFormat RegisterFormatFromName(const std::string& name) {
         return Float;
     else if (name == "double")
         return Double;
+    else if (name == "char8")
+        return Char8;
     else
         return U16; // FIXME!
 }

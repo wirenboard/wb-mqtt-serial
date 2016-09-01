@@ -205,6 +205,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             //     (занимает 2 регистра, начиная с указанного)
                             // "double" - число с плаваяющей точкой двойной точности IEEE 754. 64 bit. (big-endian).
                             //     (занимает 4 регистра, начиная с указанного)
+                            // "char8" - однобайтовый символ в кодировке ASCII
 
                             "format": "s8",
 

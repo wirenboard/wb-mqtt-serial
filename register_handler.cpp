@@ -158,6 +158,8 @@ std::string TRegisterHandler::TextValue() const
             tmp.raw = Value;
             return ToScaledTextValue(tmp.v);
 		}
+    case Char8:
+        return std::string(1, Value & 0xff);
     default:
         return ToScaledTextValue(Value);
     }
@@ -216,6 +218,8 @@ uint64_t TRegisterHandler::ConvertMasterValue(const std::string& str) const
 			tmp.v = FromScaledTextValue<double>(str);
             return tmp.raw;
 		}
+    case Char8:
+        return str.empty() ? 0 : uint8_t(str[0]);
     default:
         return FromScaledTextValue<uint64_t>(str);
     }
