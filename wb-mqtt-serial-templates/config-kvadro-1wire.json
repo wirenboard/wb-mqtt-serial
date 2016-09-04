@@ -11,7 +11,8 @@
                 "address" : "0x50",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 2",
@@ -19,7 +20,8 @@
                 "address" : "0x51",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 3",
@@ -27,7 +29,8 @@
                 "address" : "0x52",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 4",
@@ -35,7 +38,8 @@
                 "address" : "0x53",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 5",
@@ -43,7 +47,8 @@
                 "address" : "0x54",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 6",
@@ -51,7 +56,8 @@
                 "address" : "0x55",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 7",
@@ -59,7 +65,8 @@
                 "address" : "0x56",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 8",
@@ -67,7 +74,8 @@
                 "address" : "0x57",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 9",
@@ -75,7 +83,8 @@
                 "address" : "0x58",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 10",
@@ -83,7 +92,8 @@
                 "address" : "0x59",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 11",
@@ -91,7 +101,8 @@
                 "address" : "0x5A",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 12",
@@ -99,7 +110,8 @@
                 "address" : "0x5B",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 13",
@@ -107,7 +119,8 @@
                 "address" : "0x5C",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 14",
@@ -115,7 +128,8 @@
                 "address" : "0x5D",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 15",
@@ -123,7 +137,8 @@
                 "address" : "0x5E",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
             {
                 "name" : "Temp 16",
@@ -131,7 +146,8 @@
                 "address" : "0x5F",
                 "format": "s16",
                 "type" : "temperature",
-                "scale" : 0.0625
+                "scale" : 0.0625,
+                "error_value": "0xFFFF"
             },
 
             {
