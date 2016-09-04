@@ -1,0 +1,105 @@
+{
+    "device_type" : "WP8028ADAM",
+    "device" : {
+        "name" : "WP8028ADAM",
+        "id" : "wp8028adam",
+        "channels" : [
+            {
+                "name" : "DI_01",
+                "reg_type" : "discrete",
+                "address" : 0,
+                "type" : "switch"
+            },
+            {
+                "name" : "DI_02",
+                "reg_type" : "discrete",
+                "address" : 1,
+                "type" : "switch"
+            },
+            {
+                "name" : "DI_03",
+                "reg_type" : "discrete",
+                "address" : 2,
+                "type" : "switch"
+            },
+            {
+                "name" : "DI_04",
+                "reg_type" : "discrete",
+                "address" : 3,
+                "type" : "switch"
+            },
+            {
+                "name" : "DI_05",
+                "reg_type" : "discrete",
+                "address" : 4,
+                "type" : "switch"
+            },
+            {
+                "name" : "DI_06",
+                "reg_type" : "discrete",
+                "address" : 5,
+                "type" : "switch"
+            },
+            {
+                "name" : "DI_07",
+                "reg_type" : "discrete",
+                "address" : 6,
+                "type" : "switch"
+            },
+            {
+                "name" : "DI_08",
+                "reg_type" : "discrete",
+                "address" : 7,
+                "type" : "switch"
+            },
+            {
+                "name" : "DO_01",
+                "reg_type" : "coil",
+                "address" : 0,
+                "type": "switch"
+            },
+            {
+                "name" : "DO_02",
+                "reg_type" : "coil",
+                "address" : 1,
+                "type": "switch"
+            },
+            {
+                "name" : "DO_03",
+                "reg_type" : "coil",
+                "address" : 2,
+                "type": "switch"
+            },
+            {
+                "name" : "DO_04",
+                "reg_type" : "coil",
+                "address" : 3,
+                "type": "switch"
+            },
+            {
+                "name" : "DO_05",
+                "reg_type" : "coil",
+                "address" : 4,
+                "type": "switch"
+            },
+            {
+                "name" : "DO_06",
+                "reg_type" : "coil",
+                "address" : 5,
+                "type": "switch"
+            },
+            {
+                "name" : "DO_07",
+                "reg_type" : "coil",
+                "address" : 6,
+                "type": "switch"
+            },
+            {
+                "name" : "DO_08",
+                "reg_type" : "coil",
+                "address" : 7,
+                "type": "switch"
+            }
+        ]
+    }
+}

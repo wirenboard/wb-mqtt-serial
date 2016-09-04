@@ -1,0 +1,65 @@
+{
+  "device_type": "SDM120",
+  "device": {
+    "name": "SDM120",
+    "id": "sdm120",
+    "channels": [
+      {
+        "name": "Voltage",
+        "type": "voltage",
+        "reg_type": "input",
+        "address": "0x00",
+        "format": "float"
+      },
+      {
+        "name": "Current",
+        "type": "current",
+        "reg_type": "input",
+        "address": "0x06",
+        "format": "float"
+      },
+      {
+        "name": "Active Power",
+        "type": "power",
+        "reg_type": "input",
+        "address": "0x0c",
+        "format": "float"
+      },
+      {
+        "name": "Apparent Power",
+        "type": "power",
+        "reg_type": "input",
+        "address": "0x12",
+        "format": "float"
+      },
+      {
+        "name": "Reactive Power",
+        "type": "power",
+        "reg_type": "input",
+        "address": "0x18",
+        "format": "float"
+      },
+      {
+        "name": "Power Factor",
+        "type": "value",
+        "reg_type": "input",
+        "address": "0x1e",
+        "format": "float"
+      },
+      {
+        "name": "Line Frequency",
+        "type": "value",
+        "reg_type": "input",
+        "address": "0x46",
+        "format": "float"
+      },
+      {
+        "name": "Total active energy",
+        "type": "value",
+        "reg_type": "input",
+        "address": "0x0156",
+        "format": "float"
+      }
+    ]
+  }
+}

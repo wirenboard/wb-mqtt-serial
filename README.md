@@ -369,6 +369,8 @@ Uniel. Устройства Милур требуют дополнительны
 Таблица шаблонов device_type
 -------------
 
+Сгруппирована по протоколам.
+
 **Modbus-RTU**
 
 |                          Device                         | device_type | id_prefix  | name_prefix   |
@@ -384,17 +386,23 @@ Uniel. Устройства Милур требуют дополнительны
 |     "Kvadro" модуль подключения термометров 1-wire      |kvadro-1wire |kvadro-1wire| Kvadro 1-Wire |
 |     PD561Z-9SY счётчик электроэнергии                   |    PD561Z   |  pd561z    | pd561z        |
 |     SDM220 счётчик электроэнергии                       |    SDM220   |  sdm220    |  sdm220       |
+|     SDM120 счётчик электроэнергии                       |    SDM120   |  sdm120    |  sdm120       |
+|     WELLPRO WP8028ADAM (8DI/8DO)                        | WP8028ADAM  | wp8028adam |   WP8028ADAM  |
 |  Wiren Board RGB-диммер WB-MRGB                         |   WB-MRGB   |  WB-MRGB   |   wb-mrgb     |
 |  Wiren Board Релейный модуль WB-MRM2                    |   WB-MRM2   |  WB-MRM2   |   wb-mrm2     |
 |  Wiren Board Релейный модуль WB-MR11                    |   WB-MR11   |  WB-MR11   |   wb-mr11     |
+|  Wiren Board Релейный модуль WB-MR14                    |   WB-MR14   |  WB-MR14   |   wb-mr14     |
 |  Wiren Board модуль дискретных/счётных входов WB-MCM16  |   WB-MCM16  |  WB-MCM16  |   wb-mcm16    |
+|  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS            |  WB-MS-THLS | wb-ms-thls | WB-MS-THLS    |
+|  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS  (fw. v.2) |  WB-MS-THLS v.2 | wb-ms-thls | WB-MS-THLS    |
 
 
-**Uniel**
+**Милур**
 
-|                     Device                     | device_type | id_prefix | name_prefix      |
-|:----------------------------------------------:|:-----------:|:---------:|:----------------:|
-| Счётчик электроэнергии Милур-305               | milur305    | milur305  | Milur 305        |
+|                     Device                     | device_type   | id_prefix | name_prefix      |
+|:----------------------------------------------:|:-------------:|:---------:|:----------------:|
+| Счётчик электроэнергии Милур-305               | milur305      | milur305  | Milur 305        |
+| Счётчик электроэнергии Милур-105 (Милур-104)   | Milur 104/105 | milur105  | Milur 105        |
 
 **Mercury 230**
 
@@ -402,8 +410,27 @@ Uniel. Устройства Милур требуют дополнительны
 |:----------------------------------------------:|:-----------:|:--------------:|:----------------:|
 | Счётчик электроэнергии Меркурий-230            | mercury230  | mercury230ar02 | Mercury 230AR-02 |
 
+**Uniel**
+
+|                     Device                     | device_type | id_prefix      | name_prefix      |
+|:----------------------------------------------:|:-----------:|:--------------:|:----------------:|
+| Модуль управления освещением UCH-M111RX        | UCH-M111RX  | uchm111rx      | UCH-M111RX 0808  |
+| Модуль управления автоматикой UCH-M121RX       | UCH-M121RX  | uchm121rx      | UCH-M121RX 0808  |
+| Диммер светодиодных ламп UCH-M141RC            | UCH-M141RC  | uchm141rc      | UCH-M141RC 0808  |
+
+
+
 **ИВТМ**
 
 |                     Device                     | device_type | id_prefix      | name_prefix      |
 |:----------------------------------------------:|:-----------:|:--------------:|:----------------:|
 | Термогигрометр ИВТМ-7 М 3                      | IVTM-7M-3   | ivtm7m3        | IVTM-7M-3        |
+
+
+**Пульсар**
+
+|                     Device                     | device_type    | id_prefix      | name_prefix           |
+|:----------------------------------------------:|:--------------:|:--------------:|:---------------------:|
+| Счётчик воды "Пульсар"                         | pulsar-water   | pulsar-water   |  Pulsar Water Meter   |
+| Счётчик воды многоструйный "Пульсар-М"         | pulsar-m-water | pulsar-m-water |  Pulsar-M Water Meter |
+| Счётчик тепла "Пульсар"                        | pulsar-heat    | pulsar-heat    |  Pulsar Heat Meter    |
