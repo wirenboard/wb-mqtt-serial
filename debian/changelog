@@ -2,6 +2,7 @@ wb-mqtt-serial (1.17) stable; urgency=medium
 
   * char8 register format has been added
   * support for error_value (the register value which indicates error)
+  * templates for SDM120 and WP8028ADAM
 
  -- Evgeny Boger <boger@contactless.ru>  Thu, 01 Sep 2016 15:56:26 +0300
 
