@@ -7,7 +7,7 @@
 
 #include "serial_device.h"
 
-class TModbusDevice: public TSerialDevice, public TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>> {
+class TModbusDevice : public TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>> {
 public:
     static const int DefaultTimeoutMs = 1000;
     enum RegisterType {

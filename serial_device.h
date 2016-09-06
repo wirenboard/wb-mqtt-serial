@@ -152,10 +152,11 @@ private:
  * Need to convert Slave ID value according
  */
 template<class Proto>
-class TBasicProtocolSerialDevice
+class TBasicProtocolSerialDevice : public TSerialDevice
 {
 public:
-    TBasicProtocolSerialDevice(PDeviceConfig config, PProtocol protocol)
+    TBasicProtocolSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+        : TSerialDevice(config, port, protocol)
     {
         auto p = std::dynamic_pointer_cast<Proto>(protocol);
 

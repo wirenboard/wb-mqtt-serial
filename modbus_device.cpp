@@ -117,8 +117,7 @@ REGISTER_BASIC_INT_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
         }));
 
 TModbusDevice::TModbusDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol)
-    , TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>>(config, protocol)
+    : TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>>(config, port, protocol)
     , Context(port->LibModbusContext())
 {}
 

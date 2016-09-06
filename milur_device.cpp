@@ -59,8 +59,7 @@ REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
         }));
 
 TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
-    : TEMDevice(device_config, port, protocol)
-    , TBasicProtocolSerialDevice<TBasicProtocol<TMilurDevice>>(device_config, protocol)
+    : TEMDevice<TBasicProtocol<TMilurDevice>>(device_config, port, protocol)
 {}
 
 bool TMilurDevice::ConnectionSetup(uint8_t slave)
@@ -91,11 +90,11 @@ bool TMilurDevice::ConnectionSetup(uint8_t slave)
     }
 }
 
-TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, const char** message)
+TEMDevice<TMilurProtocol>::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, const char** message)
 {
     if (len != 6 || !(frame[1] & 0x80)) {
         *message = 0;
-        return TEMDevice::NO_ERROR;
+        return TEMDevice<TMilurProtocol>::NO_ERROR;
     }
 
     switch (frame[2]) {
@@ -122,7 +121,7 @@ TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, co
         break;
     case 0x08:
         *message = "Session closed";
-        return TEMDevice::NO_OPEN_SESSION;
+        return TEMDevice<TMilurProtocol>::NO_OPEN_SESSION;
     case 0x09:
         *message = "Access denied";
         break;
@@ -141,7 +140,7 @@ TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, co
     default:
         *message = "Unknown error";
     }
-    return TEMDevice::OTHER_ERROR;
+    return TEMDevice<TMilurProtocol>::OTHER_ERROR;
 }
 
 uint64_t TMilurDevice::ReadRegister(PRegister reg)

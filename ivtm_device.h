@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include "serial_device.h"
 
-class TIVTMDevice: public TSerialDevice, public TBasicProtocolSerialDevice<TBasicProtocol<TIVTMDevice>> {
+class TIVTMDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TIVTMDevice>> {
 public:
     TIVTMDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);

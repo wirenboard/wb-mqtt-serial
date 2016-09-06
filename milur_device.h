@@ -7,7 +7,10 @@
 
 #include "em_device.h"
 
-class TMilurDevice: public TEMDevice, TBasicProtocolSerialDevice<TBasicProtocol<TMilurDevice>> {
+class TMilurDevice;
+typedef TBasicProtocol<TMilurDevice> TMilurProtocol;
+
+class TMilurDevice: public TEMDevice<TMilurProtocol> {
 public:
     static const int DefaultTimeoutMs = 1000;
     static const int FrameTimeoutMs = 50;

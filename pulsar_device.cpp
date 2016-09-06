@@ -16,8 +16,7 @@ REGISTER_BASIC_INT_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
 }));
 
 TPulsarDevice::TPulsarDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
-    : TSerialDevice(device_config, port, protocol)
-    , TBasicProtocolSerialDevice<TBasicProtocol<TPulsarDevice>>(device_config, protocol)
+    : TBasicProtocolSerialDevice<TBasicProtocol<TPulsarDevice>>(device_config, port, protocol)
     , RequestID(0)
 {}
 

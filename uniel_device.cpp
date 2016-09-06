@@ -29,8 +29,7 @@ REGISTER_BASIC_INT_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
         }));
 
 TUnielDevice::TUnielDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol)
-    , TBasicProtocolSerialDevice<TBasicProtocol<TUnielDevice>>(config, protocol)
+    : TBasicProtocolSerialDevice<TBasicProtocol<TUnielDevice>>(config, port, protocol)
 {}
 
 void TUnielDevice::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)

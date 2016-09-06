@@ -7,7 +7,7 @@
 #include "serial_device.h"
 
 
-class TPulsarDevice: public TSerialDevice, public TBasicProtocolSerialDevice<TBasicProtocol<TPulsarDevice>> {
+class TPulsarDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TPulsarDevice>> {
 public:
 
     enum RegisterType {

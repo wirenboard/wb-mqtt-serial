@@ -10,7 +10,10 @@
 
 #include "em_device.h"
 
-class TMercury230Device: public TEMDevice, public TBasicProtocolSerialDevice<TBasicProtocol<TMercury230Device>> {
+class TMercury230Device;
+typedef TBasicProtocol<TMercury230Device> TMercury230Protocol;
+
+class TMercury230Device: public TEMDevice<TBasicProtocol<TMercury230Device>> {
 public:
     static const int DefaultTimeoutMs = 1000;
     enum RegisterType {

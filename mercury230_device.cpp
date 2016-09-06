@@ -8,8 +8,7 @@ REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
         }));
 
 TMercury230Device::TMercury230Device(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
-    : TEMDevice(device_config, port, protocol)
-    , TBasicProtocolSerialDevice<TBasicProtocol<TMercury230Device>>(device_config, protocol)
+    : TEMDevice<TBasicProtocol<TMercury230Device>>(device_config, port, protocol)
 {}
 
 bool TMercury230Device::ConnectionSetup(uint8_t slave)
@@ -35,11 +34,11 @@ bool TMercury230Device::ConnectionSetup(uint8_t slave)
     }
 }
 
-TEMDevice::ErrorType TMercury230Device::CheckForException(uint8_t* frame, int len, const char** message)
+TEMDevice<TMercury230Protocol>::ErrorType TMercury230Device::CheckForException(uint8_t* frame, int len, const char** message)
 {
     *message = 0;
     if (len != 4 || (frame[1] & 0x0f) == 0)
-        return TEMDevice::NO_ERROR;
+        return TEMDevice<TMercury230Protocol>::NO_ERROR;
     switch (frame[1] & 0x0f) {
     case 1:
         *message = "Invalid command or parameter";
@@ -55,11 +54,11 @@ TEMDevice::ErrorType TMercury230Device::CheckForException(uint8_t* frame, int le
         break;
     case 5:
         *message = "Connection closed";
-        return TEMDevice::NO_OPEN_SESSION;
+        return TEMDevice<TMercury230Protocol>::NO_OPEN_SESSION;
     default:
         *message = "Unknown error";
     }
-    return TEMDevice::OTHER_ERROR;
+    return TEMDevice<TMercury230Protocol>::OTHER_ERROR;
 }
 
 const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(uint32_t slave, uint32_t address)
