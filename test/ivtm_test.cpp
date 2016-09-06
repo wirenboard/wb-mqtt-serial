@@ -4,7 +4,7 @@
 
 namespace {
     PSlaveEntry Slave1 = TSlaveEntry::Intern("ivtm", 1);
-    PSlaveEntry SlaveA = TSlaveEntry::Intern("ivtm", 0x0a);
+    PSlaveEntry SlaveA = TSlaveEntry::Intern("ivtm", 1);
     PRegister Dev1Temp = TRegister::Intern(Slave1, 0, 0, Float);
     PRegister Dev1Humidity = TRegister::Intern(Slave1, 0, 4, Float);
     PRegister Dev2Temp = TRegister::Intern(SlaveA, 0, 0, Float);
@@ -73,21 +73,21 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
 
     // Test upper-case hex letters
 
-    // >> 24 30 30 30 41 52 52 30 30 30 30 30 34 42 44 0d
-    // << 21 30 30 30 41 52 52 35 45 38 35 43 37 34 31 35 43 0D
+    // >> 24 30 30 30 31 52 52 30 30 30 30 30 34 41 44 0d
+    // << 21 30 30 30 31 52 52 35 45 38 35 43 37 34 31 34 43 0D
     // temperature == 24.940121
 
     SerialPort->Expect(
         {
-            '$', '0', '0', '0', 'A', 'R', 'R', '0', '0', '0', '0', '0', '4', 'B', 'D', 0x0d
+            '$', '0', '0', '0', '1', 'R', 'R', '0', '0', '0', '0', '0', '4', 'A', 'D', 0x0d
         },
         {
             // Session setup response
             '!',                  // header
-            '0', '0', '0', 'A',   // slave addr
+            '0', '0', '0', '1',   // slave addr
             'R', 'R',             // read response
             '5', 'E', '8', '5', 'C', '7', '4', '1', //temp data 5E 85 C7 41 (little endian)
-            '5', 'C',             //CRC
+            '4', 'C',             //CRC
             0x0d                  // footer
         });
 
