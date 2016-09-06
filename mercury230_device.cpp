@@ -2,13 +2,15 @@
 #include "mercury230_device.h"
 #include "crc16.h"
 
-REGISTER_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
+REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
             { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },
             { TMercury230Device::REG_PARAM, "param", "value", U24, true }
         }));
 
-TMercury230Device::TMercury230Device(PDeviceConfig device_config, PAbstractSerialPort port)
-    : TEMDevice(device_config, port) {}
+TMercury230Device::TMercury230Device(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
+    : TEMDevice(device_config, port, protocol)
+    , TBasicProtocolSerialDevice<TBasicProtocol<TMercury230Device>>(device_config, protocol)
+{}
 
 bool TMercury230Device::ConnectionSetup(uint8_t slave)
 {

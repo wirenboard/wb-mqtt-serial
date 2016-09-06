@@ -10,14 +10,16 @@ namespace {
     const int FrameTimeout = 300;
 }
 
-REGISTER_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
+REGISTER_BASIC_INT_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
     { TPulsarDevice::REG_DEFAULT, "default", "value", Double, true },
     { TPulsarDevice::REG_SYSTIME, "systime", "value", U64, true }
 }));
 
-TPulsarDevice::TPulsarDevice(PDeviceConfig device_config, PAbstractSerialPort port)
-    : TSerialDevice(device_config, port)
-    , RequestID(0) {}
+TPulsarDevice::TPulsarDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
+    : TSerialDevice(device_config, port, protocol)
+    , TBasicProtocolSerialDevice<TBasicProtocol<TPulsarDevice>>(device_config, protocol)
+    , RequestID(0)
+{}
 
 uint16_t TPulsarDevice::CalculateCRC16(const uint8_t *buffer, size_t size)
 {
@@ -188,8 +190,8 @@ uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
     uint32_t mask = 1 << reg->Address; // TODO: register range or something like this
 
     // send data request and receive response
-    WriteDataRequest(reg->Slave->IdAsInt(), mask, RequestID);
-    ReadResponse(reg->Slave->IdAsInt(), payload, reg->ByteWidth(), RequestID);
+    WriteDataRequest(SlaveId, mask, RequestID);
+    ReadResponse(SlaveId, payload, reg->ByteWidth(), RequestID);
 
     ++RequestID;
 
@@ -203,8 +205,8 @@ uint64_t TPulsarDevice::ReadSysTimeRegister(PRegister reg)
     uint8_t payload[6];
 
     // send system time request and receive response
-    WriteSysTimeRequest(reg->Slave->IdAsInt(), RequestID);
-    ReadResponse(reg->Slave->IdAsInt(), payload, sizeof (payload), RequestID);
+    WriteSysTimeRequest(SlaveId, RequestID);
+    ReadResponse(SlaveId, payload, sizeof (payload), RequestID);
 
     ++RequestID;
 

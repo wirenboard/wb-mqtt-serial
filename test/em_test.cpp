@@ -43,8 +43,10 @@ PDeviceConfig TEMDeviceTest::Mercury230Config()
 void TEMDeviceTest::SetUp()
 {
     TSerialDeviceTest::SetUp();
-    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort);
-    Mercury230Dev = std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort);
+    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort, 
+                            TSerialDeviceFactory::GetProtocolInstance("milur"));
+    Mercury230Dev = std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort, 
+                            TSerialDeviceFactory::GetProtocolInstance("mercury230"));
     SerialPort->Open();
 }
 

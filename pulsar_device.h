@@ -3,11 +3,11 @@
 #pragma once
 
 #include <memory>
-#include "serial_device.h"
 #include <stdint.h>
+#include "serial_device.h"
 
 
-class TPulsarDevice: public TSerialDevice {
+class TPulsarDevice: public TSerialDevice, public TBasicProtocolSerialDevice<TBasicProtocol<TPulsarDevice>> {
 public:
 
     enum RegisterType {
@@ -15,7 +15,7 @@ public:
         REG_SYSTIME
     };
 
-    TPulsarDevice(PDeviceConfig device_config, PAbstractSerialPort port);
+    TPulsarDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 

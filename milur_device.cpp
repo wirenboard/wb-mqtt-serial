@@ -50,7 +50,7 @@ namespace {
     }
 }
 
-REGISTER_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
+REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
             { TMilurDevice::REG_PARAM, "param", "value", U24, true },
             { TMilurDevice::REG_POWER, "power", "power", S32, true },
             { TMilurDevice::REG_ENERGY, "energy", "power_consumption", BCD32, true },
@@ -58,8 +58,10 @@ REGISTER_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
             { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", S16, true }
         }));
 
-TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port)
-    : TEMDevice(device_config, port) {}
+TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
+    : TEMDevice(device_config, port, protocol)
+    , TBasicProtocolSerialDevice<TBasicProtocol<TMilurDevice>>(device_config, protocol)
+{}
 
 bool TMilurDevice::ConnectionSetup(uint8_t slave)
 {
@@ -150,7 +152,7 @@ uint64_t TMilurDevice::ReadRegister(PRegister reg)
 
     uint8_t addr = reg->Address;
     uint8_t buf[MAX_LEN], *p = buf;
-    Talk(reg->Slave->IdAsInt(), 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(size + 6));
+    Talk(SlaveId, 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(size + 6));
     if (*p++ != reg->Address)
         throw TSerialDeviceTransientErrorException("bad register address in the response");
     if (*p++ != size)

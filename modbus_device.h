@@ -7,7 +7,7 @@
 
 #include "serial_device.h"
 
-class TModbusDevice: public TSerialDevice {
+class TModbusDevice: public TSerialDevice, public TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>> {
 public:
     static const int DefaultTimeoutMs = 1000;
     enum RegisterType {
@@ -17,13 +17,12 @@ public:
         REG_DISCRETE,
     };
 
-    TModbusDevice(PDeviceConfig config, PAbstractSerialPort port);
+    TModbusDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
     virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list) const;
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
     void ReadRegisterRange(PRegisterRange range);
 
 private:
-    PDeviceConfig Config;
     PLibModbusContext Context;
 };

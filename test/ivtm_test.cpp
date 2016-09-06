@@ -23,7 +23,8 @@ void TIVTMDeviceTest::SetUp()
     // Device should not depend on slave id from DeviceConfig
     Dev = std::make_shared<TIVTMDevice>(
         std::make_shared<TDeviceConfig>("ivtm", 0x0001, "ivtm"),
-        SerialPort);
+        SerialPort,
+        TSerialDeviceFactory::GetProtocolInstance("ivtm"));
     SerialPort->Open();
 }
 

@@ -3,8 +3,9 @@
 #include "em_device.h"
 #include "crc16.h"
 
-TEMDevice::TEMDevice(PDeviceConfig device_config, PAbstractSerialPort port)
-    : TSerialDevice(device_config, port), Config(device_config) {}
+TEMDevice::TEMDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
+    : TSerialDevice(device_config, port, protocol)
+{}
 
 void TEMDevice::EnsureSlaveConnected(uint8_t slave, bool force)
 {
@@ -38,7 +39,7 @@ bool TEMDevice::ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload,
                                TAbstractSerialPort::TFrameCompletePred frame_complete)
 {
     uint8_t buf[MAX_LEN], *p = buf;
-    int nread = Port()->ReadFrame(buf, MAX_LEN, Config->FrameTimeout, frame_complete);
+    int nread = Port()->ReadFrame(buf, MAX_LEN, DeviceConfig()->FrameTimeout, frame_complete);
     if (nread < 4)
         throw TSerialDeviceTransientErrorException("frame too short");
 
@@ -94,7 +95,3 @@ void TEMDevice::WriteRegister(PRegister, uint64_t)
     throw TSerialDeviceException("EM protocol: writing to registers not supported");
 }
 
-PDeviceConfig TEMDevice::DeviceConfig() const
-{
-    return Config;
-}

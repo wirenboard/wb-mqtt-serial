@@ -10,7 +10,7 @@
 
 #include "em_device.h"
 
-class TMercury230Device: public TEMDevice {
+class TMercury230Device: public TEMDevice, public TBasicProtocolSerialDevice<TBasicProtocol<TMercury230Device>> {
 public:
     static const int DefaultTimeoutMs = 1000;
     enum RegisterType {
@@ -18,7 +18,7 @@ public:
         REG_PARAM = 1
     };
 
-    TMercury230Device(PDeviceConfig, PAbstractSerialPort port);
+    TMercury230Device(PDeviceConfig, PAbstractSerialPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void EndPollCycle();
 

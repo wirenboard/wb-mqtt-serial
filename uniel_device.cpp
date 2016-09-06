@@ -20,7 +20,7 @@ namespace {
     };
 }
 
-REGISTER_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
+REGISTER_BASIC_INT_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
             { TUnielDevice::REG_RELAY, "relay", "switch", U8 },
             { TUnielDevice::REG_INPUT, "input", "text", U8, true },
             { TUnielDevice::REG_PARAM, "param", "value", U8 },
@@ -28,8 +28,10 @@ REGISTER_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
             { TUnielDevice::REG_BRIGHTNESS, "brightness", "value", U8 }
         }));
 
-TUnielDevice::TUnielDevice(PDeviceConfig config, PAbstractSerialPort port)
-    : TSerialDevice(config, port) {}
+TUnielDevice::TUnielDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+    : TSerialDevice(config, port, protocol)
+    , TBasicProtocolSerialDevice<TBasicProtocol<TUnielDevice>>(config, protocol)
+{}
 
 void TUnielDevice::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
 {
@@ -77,7 +79,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
 
 uint64_t TUnielDevice::ReadRegister(PRegister reg)
 {
-    WriteCommand(READ_CMD, reg->Slave->IdAsInt(), 0, uint8_t(reg->Address), 0);
+    WriteCommand(READ_CMD, SlaveId, 0, uint8_t(reg->Address), 0);
     uint8_t response[3];
     ReadResponse(READ_CMD, response);
     if (response[1] != uint8_t(reg->Address))
@@ -100,7 +102,7 @@ void TUnielDevice::WriteRegister(PRegister reg, uint64_t value)
     }
     if (reg->Type == REG_RELAY && value != 0)
         value = 255;
-    WriteCommand(cmd, reg->Slave->IdAsInt(), value, addr, 0);
+    WriteCommand(cmd, SlaveId, value, addr, 0);
     uint8_t response[3];
     ReadResponse(cmd, response);
     if (response[1] != addr)

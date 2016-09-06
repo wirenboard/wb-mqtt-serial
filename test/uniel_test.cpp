@@ -9,6 +9,7 @@ namespace {
     PRegister RelayReg = TRegister::Intern(Slave1, TUnielDevice::REG_RELAY, 0x1b, U8);
     PRegister ThresholdReg = TRegister::Intern(Slave1, TUnielDevice::REG_PARAM, 0x02, U8);
     PRegister BrightnessReg = TRegister::Intern(Slave1, TUnielDevice::REG_BRIGHTNESS, 0x141, U8);
+
 };
 
 class TUnielDeviceTest: public TSerialDeviceTest, public TUnielDeviceExpectations {
@@ -21,9 +22,12 @@ protected:
 void TUnielDeviceTest::SetUp()
 {
     TSerialDeviceTest::SetUp();
+
     Dev = std::make_shared<TUnielDevice>(
         std::make_shared<TDeviceConfig>("uniel", 0x01, "uniel"),
-        SerialPort);
+        SerialPort,
+        TSerialDeviceFactory::GetProtocolInstance("uniel"));
+
     SerialPort->Open();
 }
 

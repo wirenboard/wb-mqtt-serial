@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <set>
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -14,9 +15,14 @@
 #include "serial_config.h"
 #include "serial_port.h"
 
+
+class IProtocol;
+typedef std::shared_ptr<IProtocol> PProtocol;
+
+
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {
 public:
-    TSerialDevice(PDeviceConfig config, PAbstractSerialPort port);
+    TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
     TSerialDevice(const TSerialDevice&) = delete;
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
@@ -35,10 +41,15 @@ public:
 
 protected:
     PAbstractSerialPort Port() const { return SerialPort; }
+    PDeviceConfig DeviceConfig() const { return _DeviceConfig; }
+    PProtocol Protocol() const { return _Protocol; }
 
 private:
     std::chrono::milliseconds Delay;
     PAbstractSerialPort SerialPort;
+    PDeviceConfig _DeviceConfig;
+    PProtocol _Protocol;
+
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
@@ -46,37 +57,174 @@ typedef std::shared_ptr<TSerialDevice> PSerialDevice;
 typedef PSerialDevice (*TSerialDeviceMaker)(PDeviceConfig device_config,
                                                 PAbstractSerialPort port);
 
-struct TSerialProtocolEntry {
-    TSerialProtocolEntry(TSerialDeviceMaker maker, PRegisterTypeMap register_types):
-        Maker(maker), RegisterTypes(register_types) {}
-    TSerialDeviceMaker Maker;
-    PRegisterTypeMap RegisterTypes;
+/*!
+ * Protocol interface
+ */
+class IProtocol : public std::enable_shared_from_this<IProtocol>
+{
+public:
+    /*! Get protocol name */
+    virtual std::string GetName() const = 0;
+
+    /*! Get map of register types */
+    virtual PRegisterTypeMap GetRegTypes() const = 0;
+
+    /*! Create new device of given type */
+    virtual PSerialDevice CreateDevice(PDeviceConfig config, PAbstractSerialPort port) = 0;
 };
+
+template<typename S>
+class TBasicProtocolConverter
+{
+public:
+    //! Slave ID type for concrete TBasicProtocol
+    typedef S TSlaveId;
+
+    S ConvertSlaveId(const std::string &s);
+};
+
+
+template<>
+int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s);
+
+/*!
+ * Basic protocol implementation with slave ID collision check
+ * using Slave ID extractor and registered slave ID map
+ */
+template<class Dev, typename SlaveId = int>
+class TBasicProtocol : public IProtocol, public TBasicProtocolConverter<SlaveId>
+{
+public:
+    //! TSerialDevice type for concrete TBasicProtocol
+    typedef Dev TDevice;
+    typedef SlaveId TSlaveId;
+
+    /*! Construct new protocol with given name and register types list */
+    TBasicProtocol(std::string name, const TRegisterTypes &reg_types)
+        : _Name(name)
+    {
+        _RegTypes = std::make_shared<TRegisterTypeMap>();
+        for (const auto& rt : reg_types)
+            _RegTypes->insert(std::make_pair(rt.Name, rt));
+    }
+
+protected:
+    // for inheritance
+    TBasicProtocol()
+        : _Name("")
+        , _RegTypes()
+    {}
+
+public:
+    std::string GetName() const { return _Name; }
+    PRegisterTypeMap GetRegTypes() const { return _RegTypes; }
+
+    /*!
+     * New concrete device builder
+     * Make slave ID collision check, throws exception in case of collision
+     * or creates new device and returns pointer to it
+     * \param config    PDeviceConfig for device
+     * \param port      Serial port
+     * \return          Smart pointer to created device
+     */
+    PSerialDevice CreateDevice(PDeviceConfig config, PAbstractSerialPort port)
+    {
+        TSlaveId sid = this->ConvertSlaveId(config->SlaveId); // to avoid -fpermissive
+
+        if (_Devices.find(sid) != _Devices.end()) {
+            std::stringstream ss;
+            ss << "device address collision for slave id " << sid << " (\"" << config->SlaveId << "\")";
+            throw TSerialDeviceException(ss.str());
+        }
+
+        return std::make_shared<Dev>(config, port, shared_from_this());
+    }
+
+private:
+    std::string _Name;
+    PRegisterTypeMap _RegTypes;
+    std::unordered_set<TSlaveId> _Devices;
+};
+
+
+/*!
+ * Base class for devices which use given protocol.
+ * Need to convert Slave ID value according
+ */
+template<class Proto>
+class TBasicProtocolSerialDevice
+{
+public:
+    TBasicProtocolSerialDevice(PDeviceConfig config, PProtocol protocol)
+    {
+        auto p = std::dynamic_pointer_cast<Proto>(protocol);
+
+        if (!p) {
+            throw std::runtime_error("Wrong protocol cast, check registration code and class header");
+        }
+
+        SlaveId = p->ConvertSlaveId(config->SlaveId);
+    }
+
+protected:
+    typename Proto::TSlaveId SlaveId;
+};
+
 
 class TSerialDeviceFactory {
 public:
     TSerialDeviceFactory() = delete;
-    static void RegisterProtocol(const std::string& name, TSerialDeviceMaker maker,
-                                 const TRegisterTypes& register_types);
+    /* static void RegisterProtocol(const std::string& name, TSerialDeviceMaker maker,
+                                    const TRegisterTypes& register_types); */
+    static void RegisterProtocol(PProtocol protocol);
     static PRegisterTypeMap GetRegisterTypes(PDeviceConfig device_config);
     static PSerialDevice CreateDevice(PDeviceConfig device_config, PAbstractSerialPort port);
+    static PProtocol GetProtocolInstance(const std::string &name);
 
 private:
-    static const TSerialProtocolEntry& GetProtocolEntry(PDeviceConfig device_config);
-    static std::unordered_map<std::string, TSerialProtocolEntry> *Protocols;
+    static const PProtocol GetProtocolEntry(PDeviceConfig device_config);
+    static std::unordered_map<std::string, PProtocol> *Protocols;
 };
 
-template<class Dev>
-class TSerialDeviceRegistrator {
+class TProtocolRegistrator
+{
 public:
-    TSerialDeviceRegistrator(const std::string& name, const TRegisterTypes& register_types)
+    TProtocolRegistrator(PProtocol p)
     {
-        TSerialDeviceFactory::RegisterProtocol(
-            name, [](PDeviceConfig device_config, PAbstractSerialPort port) {
-                return PSerialDevice(new Dev(device_config, port));
-            }, register_types);
+        TSerialDeviceFactory::RegisterProtocol(p);
     }
 };
 
-#define REGISTER_PROTOCOL(name, cls, regTypes) \
-    TSerialDeviceRegistrator<cls> reg__##cls(name, regTypes)
+#define REGISTER_BASIC_INT_PROTOCOL(name, cls, regTypes) \
+    TProtocolRegistrator reg__##cls(std::make_shared<TBasicProtocol<cls>>(name, regTypes))
+
+
+/* Usage:
+ *
+ * class MyProtocol : public IProtocol {
+ *      ...
+ * public:
+ *      MyProtocol(int arg1, char arg2);
+ *      ...
+ * };
+ *
+ * REGISTER_NEW_PROTOCOL(MyProtocol, arg1, arg2);
+ */
+#define REGISTER_NEW_PROTOCOL(prot, ...) \
+    TProtocolRegistrator reg__##prot(std::make_shared<prot>(__VA_ARGS__))
+
+/* Usage:
+ *
+ * class MyProtocol : public IProtocol {
+ *      ...
+ * public:
+ *      MyProtocol(int arg1, char arg2);
+ *      ...
+ * };
+ *
+ * PProtocol my_proto_instance(std::make_shared(arg1, arg2));
+ *
+ * REGISTER_PROTOCOL(my_proto_instance);
+ */
+#define REGISTER_PROTOCOL(prot) \
+    TProtocolRegistrator reg__##prot(prot)

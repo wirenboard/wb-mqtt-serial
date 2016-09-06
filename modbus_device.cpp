@@ -109,15 +109,18 @@ uint16_t* TModbusRegisterRange::GetWords() {
     return Words;
 }
 
-REGISTER_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
+REGISTER_BASIC_INT_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
             { TModbusDevice::REG_COIL, "coil", "switch", U8 },
             { TModbusDevice::REG_DISCRETE, "discrete", "switch", U8, true },
             { TModbusDevice::REG_HOLDING, "holding", "text", U16 },
             { TModbusDevice::REG_INPUT, "input", "text", U16, true }
         }));
 
-TModbusDevice::TModbusDevice(PDeviceConfig config, PAbstractSerialPort port)
-    : TSerialDevice(config, port), Config(config), Context(port->LibModbusContext()) {}
+TModbusDevice::TModbusDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+    : TSerialDevice(config, port, protocol)
+    , TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>>(config, protocol)
+    , Context(port->LibModbusContext())
+{}
 
 std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> reg_list) const
 {
@@ -128,7 +131,7 @@ std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegi
     std::list<PRegister> l;
     int prev_start = -1, prev_type = -1, prev_end = -1;
     std::chrono::milliseconds prev_interval;
-    int max_hole = IsSingleBitType(reg_list.front()->Type) ? Config->MaxBitHole : Config->MaxRegHole,
+    int max_hole = IsSingleBitType(reg_list.front()->Type) ? DeviceConfig()->MaxBitHole : DeviceConfig()->MaxRegHole,
         max_regs = IsSingleBitType(reg_list.front()->Type) ? MODBUS_MAX_READ_BITS : MODBUS_MAX_READ_REGISTERS;
     for (auto reg: reg_list) {
         int new_end = reg->Address + reg->Width();
@@ -173,7 +176,7 @@ uint64_t TModbusDevice::ReadRegister(PRegister reg)
         std::cerr << "modbus: read " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
             " of slave " << reg->Slave << std::endl;
 
-    modbus_set_slave(Context->Inner, reg->Slave->IdAsInt());
+    modbus_set_slave(Context->Inner, SlaveId);
     if (IsSingleBitType(reg->Type)) {
         uint8_t b;
         if (w != 1)
@@ -222,7 +225,7 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
         std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
             " of slave " << reg->Slave << std::endl;
 
-    modbus_set_slave(Context->Inner, reg->Slave->IdAsInt());
+    modbus_set_slave(Context->Inner, SlaveId);
     switch (reg->Type) {
     case REG_COIL:
         if (w != 1)
@@ -274,7 +277,7 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
             modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
             " of slave " << modbus_range->Slave() << std::endl;
 
-    modbus_set_slave(Context->Inner, modbus_range->Slave()->IdAsInt());
+    modbus_set_slave(Context->Inner, SlaveId);
     int rc;
     if (IsSingleBitType(type))
         rc = type == REG_COIL ?

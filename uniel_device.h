@@ -7,7 +7,7 @@
 
 #include "serial_device.h"
 
-class TUnielDevice: public TSerialDevice {
+class TUnielDevice: public TSerialDevice, public TBasicProtocolSerialDevice<TBasicProtocol<TUnielDevice>> {
 public:
     static const int DefaultTimeoutMs = 1000;
     enum RegisterType {
@@ -17,7 +17,7 @@ public:
         REG_BRIGHTNESS
     };
 
-    TUnielDevice(PDeviceConfig config, PAbstractSerialPort port);
+    TUnielDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 

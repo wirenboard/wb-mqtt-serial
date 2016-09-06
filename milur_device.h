@@ -7,7 +7,7 @@
 
 #include "em_device.h"
 
-class TMilurDevice: public TEMDevice {
+class TMilurDevice: public TEMDevice, TBasicProtocolSerialDevice<TBasicProtocol<TMilurDevice>> {
 public:
     static const int DefaultTimeoutMs = 1000;
     static const int FrameTimeoutMs = 50;
@@ -19,7 +19,7 @@ public:
         REG_POWERFACTOR
     };
 
-    TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port);
+    TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void Prepare();
 

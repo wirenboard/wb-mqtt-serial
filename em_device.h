@@ -14,7 +14,7 @@ class TEMDevice: public TSerialDevice {
 public:
     static const int DefaultTimeoutMs = 1000;
 
-    TEMDevice(PDeviceConfig device_config, PAbstractSerialPort port);
+    TEMDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol);
     void WriteRegister(PRegister reg, uint64_t value);
 
 protected:
@@ -32,13 +32,11 @@ protected:
               int expected_byte1, uint8_t* resp_payload, int resp_payload_len,
               TAbstractSerialPort::TFrameCompletePred frame_complete = 0);
     const int MAX_LEN = 64;
-    PDeviceConfig DeviceConfig() const;
 
 private:
     void EnsureSlaveConnected(uint8_t slave, bool force = false);
 
     std::unordered_set<uint8_t> ConnectedSlaves;
-    PDeviceConfig Config;
 };
 
 typedef std::shared_ptr<TEMDevice> PEMDevice;
