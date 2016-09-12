@@ -54,7 +54,11 @@ void TSimpleRegisterRange::MapRange(TValueCallback value_callback, TErrorCallbac
 
 std::string TRegisterConfig::ToString() const {
     std::stringstream s;
-    s << "<" << TypeName << ": " << Address << ">";
+    s << TypeName << ": " << Address;
     return s.str();
 }
 
+std::string TRegister::ToString() const
+{
+    return "<" + Device->ToString() + ":" + TRegisterConfig::ToString() + ">";
+}

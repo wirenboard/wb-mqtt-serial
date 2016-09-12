@@ -138,6 +138,8 @@ struct TRegister : public TRegisterConfig
         return TRegistry::Intern<TRegister>(device, config);
     }
 
+    std::string ToString() const;
+
     PSerialDevice Device;
 };
 

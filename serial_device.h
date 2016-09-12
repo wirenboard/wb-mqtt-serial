@@ -207,7 +207,7 @@ public:
 
     std::string ToString() const
     {
-        return std::to_string(SlaveId);
+        return Protocol()->GetName() + ":" + std::to_string(SlaveId);
     }
 
 protected:

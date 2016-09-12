@@ -17,7 +17,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:2:input: 1> (poll_interval=300)
+            Registers: input: 1 (poll_interval=300)
             ------
             Name: Pressure
             Type: pressure
@@ -26,7 +26,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:2:input: 2> (poll_interval=10000)
+            Registers: input: 2 (poll_interval=10000)
             ------
             Name: Temp 1
             Type: temperature
@@ -35,7 +35,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:2:input: 0>
+            Registers: input: 0
             ------
             Name: Temp 2
             Type: temperature
@@ -44,7 +44,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:2:input: 3>
+            Registers: input: 3
         ------
         Id: msu21
         Name: MSU21
@@ -58,7 +58,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:24:input: 0>
+            Registers: input: 0
         SetupItems:
             ------
             Name: Input 0 type
@@ -81,7 +81,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:34:input: 0>
+            Registers: input: 0
             ------
             Name: Temp 1
             Type: temperature
@@ -90,7 +90,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:34:input: 1>
+            Registers: input: 1
         ------
         Id: ddl24_23
         Name: DDL24
@@ -104,7 +104,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:23:holding: 4>, <modbus:23:holding: 5>, <modbus:23:holding: 6>
+            Registers: holding: 4, holding: 5, holding: 6
             ------
             Name: White
             Type: dimmer
@@ -113,7 +113,7 @@ Ports:
             OnValue: 
             Max: 255
             ReadOnly: 0
-            Registers: <modbus:23:holding: 7>
+            Registers: holding: 7
             ------
             Name: RGB_All
             Type: range
@@ -122,7 +122,7 @@ Ports:
             OnValue: 
             Max: 100
             ReadOnly: 0
-            Registers: <modbus:23:holding: 8>
+            Registers: holding: 8
             ------
             Name: White1
             Type: range
@@ -131,7 +131,7 @@ Ports:
             OnValue: 
             Max: 100
             ReadOnly: 0
-            Registers: <modbus:23:holding: 9>
+            Registers: holding: 9
             ------
             Name: Voltage
             Type: text
@@ -140,7 +140,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:23:holding: 18>
+            Registers: holding: 18
         ------
         Id: drb88
         Name: DRB88 22
@@ -154,7 +154,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:22:coil: 0>
+            Registers: coil: 0
             ------
             Name: Relay 2
             Type: switch
@@ -163,7 +163,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:22:coil: 1>
+            Registers: coil: 1
             ------
             Name: Relay 3
             Type: switch
@@ -172,7 +172,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:22:coil: 2>
+            Registers: coil: 2
             ------
             Name: Relay 4
             Type: switch
@@ -181,7 +181,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:22:coil: 3>
+            Registers: coil: 3
             ------
             Name: Relay 5
             Type: switch
@@ -190,7 +190,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:22:coil: 4>
+            Registers: coil: 4
             ------
             Name: Relay 6
             Type: switch
@@ -199,7 +199,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:22:coil: 5>
+            Registers: coil: 5
             ------
             Name: Relay 7
             Type: switch
@@ -208,7 +208,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:22:coil: 6>
+            Registers: coil: 6
             ------
             Name: Relay 8
             Type: switch
@@ -217,7 +217,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:22:coil: 7>
+            Registers: coil: 7
             ------
             Name: Input 1
             Type: switch
@@ -226,7 +226,7 @@ Ports:
             OnValue: 101
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:22:input: 0>
+            Registers: input: 0
             ------
             Name: Input 2
             Type: switch
@@ -235,7 +235,7 @@ Ports:
             OnValue: 101
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:22:input: 1>
+            Registers: input: 1 (poll_interval=300)
             ------
             Name: Input 3
             Type: switch
@@ -244,7 +244,7 @@ Ports:
             OnValue: 101
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:22:input: 2>
+            Registers: input: 2
             ------
             Name: Input 4
             Type: switch
@@ -253,7 +253,7 @@ Ports:
             OnValue: 101
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:22:input: 3>
+            Registers: input: 3
             ------
             Name: Input 5
             Type: switch
@@ -262,7 +262,7 @@ Ports:
             OnValue: 101
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:22:input: 4>
+            Registers: input: 4
             ------
             Name: Input 6
             Type: switch
@@ -271,7 +271,7 @@ Ports:
             OnValue: 101
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:22:input: 5>
+            Registers: input: 5
             ------
             Name: Input 7
             Type: switch
@@ -280,7 +280,7 @@ Ports:
             OnValue: 101
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:22:input: 6>
+            Registers: input: 6
             ------
             Name: Input 8
             Type: switch
@@ -289,7 +289,7 @@ Ports:
             OnValue: 101
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:22:input: 7>
+            Registers: input: 7
         SetupItems:
             ------
             Name: Input 0 type
@@ -312,7 +312,7 @@ Ports:
             OnValue: 500
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:0x90:holding: 0>
+            Registers: holding: 0
     ------
     ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 500>
     PollInterval: 100
@@ -330,7 +330,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:1:coil: 0>
+            Registers: coil: 0
             ------
             Name: Relay 1
             Type: switch
@@ -339,7 +339,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:1:coil: 1>
+            Registers: coil: 1
             ------
             Name: Relay 2
             Type: switch
@@ -348,7 +348,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:1:coil: 2>
+            Registers: coil: 2
             ------
             Name: Input 0
             Type: switch
@@ -357,7 +357,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:1:discrete: 32>
+            Registers: discrete: 32
             ------
             Name: Input 1
             Type: switch
@@ -366,7 +366,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:1:discrete: 33>
+            Registers: discrete: 33
             ------
             Name: Input 2
             Type: switch
@@ -375,7 +375,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:1:discrete: 34>
+            Registers: discrete: 34
         ------
         Id: lc103
         Name: LC-103
@@ -389,7 +389,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:0x04:coil: 0>
+            Registers: coil: 0
             ------
             Name: Relay 2
             Type: switch
@@ -398,7 +398,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:0x04:coil: 1>
+            Registers: coil: 1
             ------
             Name: Relay 3
             Type: switch
@@ -407,7 +407,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: <modbus:0x04:coil: 2>
+            Registers: coil: 2
             ------
             Name: Switch AC In
             Type: switch
@@ -416,4 +416,4 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:0x04:discrete: 0>
+            Registers: discrete: 0
