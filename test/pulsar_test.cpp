@@ -2,19 +2,15 @@
 #include "fake_serial_port.h"
 #include "pulsar_device.h"
 
-namespace {
-    PSlaveEntry HeatMeter = TSlaveEntry::Intern("pulsar", 107080);
-
-    PRegister Heat_TempIn = TRegister::Intern(HeatMeter, 0, 2, Float);
-    PRegister Heat_TempOut = TRegister::Intern(HeatMeter, 0, 3, Float);
-    // TODO: time register
-};
 
 class TPulsarDeviceTest: public TSerialDeviceTest
 {
 protected:
     void SetUp();
     PPulsarDevice Dev;
+    PRegister Heat_TempIn;
+    PRegister Heat_TempOut;
+    // TODO: time register
 };
 
 void TPulsarDeviceTest::SetUp()
@@ -25,7 +21,11 @@ void TPulsarDeviceTest::SetUp()
     Dev = std::make_shared<TPulsarDevice>(
         std::make_shared<TDeviceConfig>("pulsar-heat", 107080, "pulsar"),
         SerialPort,
-        TSerialDeviceFactory::GetProtocolInstance("pulsar"));
+        TSerialDeviceFactory::GetProtocol("pulsar"));
+    
+    PRegister Heat_TempIn = TRegister::Intern(Dev, TRegisterConfig::Intern(0, 2, Float));
+    PRegister Heat_TempOut = TRegister::Intern(Dev, TRegisterConfig::Intern(0, 3, Float));
+    
     SerialPort->Open();
 }
 

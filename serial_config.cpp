@@ -101,7 +101,7 @@ TConfigParser::TConfigParser(const std::string& config_fname, bool force_debug,
     HandlerConfig->Debug = force_debug;
 }
 
-PRegister TConfigParser::LoadRegister(PDeviceConfig device_config,
+PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
                                       const Json::Value& register_data,
                                       std::string& default_type_str)
 {
@@ -133,8 +133,7 @@ PRegister TConfigParser::LoadRegister(PDeviceConfig device_config,
         error_value = strtoull(register_data["error_value"].asString().c_str(), NULL, 0);
     }
 
-    PRegister reg = TRegister::Intern(
-        TSlaveEntry::Intern(device_config->Protocol, device_config->SlaveId),
+    PRegisterConfig reg = TRegisterConfig::Intern(
         it->second.Index,
         address, format, scale, true, force_readonly || it->second.ReadOnly,
         it->second.Name, has_error_value, error_value);
@@ -199,7 +198,7 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
         throw TConfigParserException("channel name is empty");
 
     std::string default_type_str;
-    std::vector<PRegister> registers;
+    std::vector<PRegisterConfig> registers;
     if (channel_data.isMember("consists_of")) {
         const Json::Value reg_data = channel_data["consists_of"];
         if (!reg_data.isArray())
@@ -209,7 +208,7 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
             poll_interval = std::chrono::milliseconds(GetInt(channel_data, "poll_interval"));
         for(Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
             std::string def_type;
-            auto reg = LoadRegister(device_config, reg_data[i], def_type);
+            auto reg = LoadRegisterConfig(device_config, reg_data[i], def_type);
             if (poll_interval.count() >= 0)
                 reg->PollInterval = poll_interval;
             registers.push_back(reg);
@@ -222,7 +221,7 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
         if (!registers.size())
             throw TConfigParserException("empty \"consists_of\" section -- " + device_config->DeviceType);
     } else
-        registers.push_back(LoadRegister(device_config, channel_data, default_type_str));
+        registers.push_back(LoadRegisterConfig(device_config, channel_data, default_type_str));
 
     std::string type_str = channel_data["type"].asString();
     if (type_str.empty())
@@ -246,7 +245,7 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
         max = GetInt(channel_data, "max");
 
     int order = device_config->NextOrderValue();
-    PDeviceChannel channel(new TDeviceChannel(name, type_str, device_config->Id, order,
+    PDeviceChannelConfig channel(new TDeviceChannelConfig(name, type_str, device_config->Id, order,
                                               on_value, max, registers[0]->ReadOnly,
                                               registers));
     device_config->AddChannel(channel);
@@ -276,14 +275,13 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
     RegisterFormat format = U16;
     if (item_data.isMember("format"))
         format = RegisterFormatFromName(item_data["format"].asString());
-    PRegister reg = TRegister::Intern(
-        TSlaveEntry::Intern(device_config->Protocol, device_config->SlaveId),
+    PRegisterConfig reg = TRegisterConfig::Intern(
         type, address, format, 1, true, true, type_name);
 
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");
     int value = GetInt(item_data, "value");
-    device_config->AddSetupItem(PDeviceSetupItem(new TDeviceSetupItem(name, reg, value)));
+    device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg, value)));
 }
 
 void TConfigParser::LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data)
@@ -377,10 +375,11 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
         throw TConfigParserException("Propery slave_id is missing");
     if (device_data["slave_id"].isString())
         device_config->SlaveId = device_data["slave_id"].asString();
-    else if (device_data["slave_id"].isInt())
+    else if (device_data["slave_id"].isInt()) // legacy
         device_config->SlaveId = std::to_string(device_data["slave_id"].asInt());
     else 
-        throw TConfigParserException("Wrong type for property slave_id: should be string or integer, but given " + std::to_string(device_data["slave_id"].type()));
+        throw TConfigParserException("Wrong type for property slave_id: should be string or integer, but " 
+                                        + std::to_string(device_data["slave_id"].type()) + " given");
 
     if (device_data.isMember("max_reg_hole"))
         device_config->MaxRegHole = GetInt(device_data, "max_reg_hole");
@@ -414,12 +413,12 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     LoadDeviceTemplatableConfigPart(device_config, device_data);
     MergeAndLoadChannels(device_config, device_data, tmpl);
 
-    if (device_config->DeviceChannels.empty())
+    if (device_config->DeviceChannelConfigs.empty())
         throw TConfigParserException("the device has no channels: " + device_config->Name);
 
     port_config->AddDeviceConfig(device_config);
-    for (auto channel: device_config->DeviceChannels) {
-        for (auto reg: channel->Registers)
+    for (auto channel: device_config->DeviceChannelConfigs) {
+        for (auto reg: channel->RegisterConfigs)
             if (reg->PollInterval.count() < 0)
                 reg->PollInterval = port_config->PollInterval;
     }

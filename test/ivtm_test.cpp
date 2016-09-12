@@ -2,19 +2,15 @@
 #include "fake_serial_port.h"
 #include "ivtm_device.h"
 
-namespace {
-    PSlaveEntry Slave1 = TSlaveEntry::Intern("ivtm", 1);
-    PSlaveEntry SlaveA = TSlaveEntry::Intern("ivtm", 1);
-    PRegister Dev1Temp = TRegister::Intern(Slave1, 0, 0, Float);
-    PRegister Dev1Humidity = TRegister::Intern(Slave1, 0, 4, Float);
-    PRegister Dev2Temp = TRegister::Intern(SlaveA, 0, 0, Float);
-};
-
 class TIVTMDeviceTest: public TSerialDeviceTest
 {
 protected:
     void SetUp();
     PIVTMDevice Dev;
+ 
+    PRegister Dev1Temp;
+    PRegister Dev1Humidity;
+    PRegister Dev2Temp;
 };
 
 void TIVTMDeviceTest::SetUp()
@@ -24,7 +20,12 @@ void TIVTMDeviceTest::SetUp()
     Dev = std::make_shared<TIVTMDevice>(
         std::make_shared<TDeviceConfig>("ivtm", 0x0001, "ivtm"),
         SerialPort,
-        TSerialDeviceFactory::GetProtocolInstance("ivtm"));
+        TSerialDeviceFactory::GetProtocol("ivtm"));
+    
+    PRegister Dev1Temp = TRegister::Intern(Dev, TRegisterConfig::Intern(0, 0, Float));
+    PRegister Dev1Humidity = TRegister::Intern(Dev, TRegisterConfig::Intern(0, 4, Float));
+    PRegister Dev2Temp = TRegister::Intern(Dev, TRegisterConfig::Intern(0, 0, Float));
+    
     SerialPort->Open();
 }
 

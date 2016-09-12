@@ -1,11 +1,12 @@
 #include "register.h"
+#include "serial_device.h"
 
 TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
 {
     if (RegList.empty())
         throw std::runtime_error("cannot construct empty register range");
     PRegister first = regs.front();
-    RegSlave = first->Slave;
+    RegDevice = first->Device;
     RegType = first->Type;
     RegTypeName = first->TypeName;
     RegPollInterval = first->PollInterval;
@@ -13,7 +14,7 @@ TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
 
 TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
 {
-    RegSlave = reg->Slave;
+    RegDevice = reg->Device;
     RegType = reg->Type;
     RegTypeName = reg->TypeName;
     RegPollInterval = reg->PollInterval;
@@ -50,3 +51,10 @@ void TSimpleRegisterRange::MapRange(TValueCallback value_callback, TErrorCallbac
             error_callback(reg);
     }
 }
+
+std::string TRegisterConfig::ToString() const {
+    std::stringstream s;
+    s << "<" << TypeName << ": " << Address << ">";
+    return s.str();
+}
+

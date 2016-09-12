@@ -7,6 +7,7 @@
 #include <string>
 #include <memory>
 #include <exception>
+#include <algorithm>
 #include <stdint.h>
 
 #include "portsettings.h"
@@ -39,7 +40,8 @@ public:
     // Read multiple registers
     virtual void ReadRegisterRange(PRegisterRange range);
 
-protected:
+    virtual std::string ToString() const;
+    
     PAbstractSerialPort Port() const { return SerialPort; }
     PDeviceConfig DeviceConfig() const { return _DeviceConfig; }
     PProtocol Protocol() const { return _Protocol; }
@@ -49,7 +51,6 @@ private:
     PAbstractSerialPort SerialPort;
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
-
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
@@ -71,28 +72,35 @@ public:
 
     /*! Create new device of given type */
     virtual PSerialDevice CreateDevice(PDeviceConfig config, PAbstractSerialPort port) = 0;
+
+    /*! Get device with specified Slave ID */
+    virtual PSerialDevice GetDevice(const std::string &slave_id) const = 0;
+
+    /*! Remove device */
+    virtual void RemoveDevice(PSerialDevice device) = 0;
+
 };
 
 template<typename S>
-class TBasicProtocolConverter
+class TBasicProtocolConverter : public IProtocol
 {
 public:
     //! Slave ID type for concrete TBasicProtocol
     typedef S TSlaveId;
 
-    S ConvertSlaveId(const std::string &s);
+    S ConvertSlaveId(const std::string &s) const;
 };
 
 
 template<>
-int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s);
+int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s) const;
 
 /*!
  * Basic protocol implementation with slave ID collision check
  * using Slave ID extractor and registered slave ID map
  */
 template<class Dev, typename SlaveId = int>
-class TBasicProtocol : public IProtocol, public TBasicProtocolConverter<SlaveId>
+class TBasicProtocol : public TBasicProtocolConverter<SlaveId>
 {
 public:
     //! TSerialDevice type for concrete TBasicProtocol
@@ -121,6 +129,7 @@ public:
 
     /*!
      * New concrete device builder
+     *
      * Make slave ID collision check, throws exception in case of collision
      * or creates new device and returns pointer to it
      * \param config    PDeviceConfig for device
@@ -129,7 +138,7 @@ public:
      */
     PSerialDevice CreateDevice(PDeviceConfig config, PAbstractSerialPort port)
     {
-        TSlaveId sid = this->ConvertSlaveId(config->SlaveId); // to avoid -fpermissive
+        TSlaveId sid = this->ConvertSlaveId(config->SlaveId); // "this->" to avoid -fpermissive
 
         if (_Devices.find(sid) != _Devices.end()) {
             std::stringstream ss;
@@ -137,13 +146,42 @@ public:
             throw TSerialDeviceException(ss.str());
         }
 
-        return std::make_shared<Dev>(config, port, shared_from_this());
+        return _Devices[sid] = std::make_shared<Dev>(config, port, IProtocol::shared_from_this());
+    }
+
+    /*!
+     * Return existing device instance by string Slave ID representation
+     */
+    PSerialDevice GetDevice(const std::string &slave_id) const
+    {
+        TSlaveId sid = this->ConvertSlaveId(slave_id);
+
+        if (_Devices.find(sid) == _Devices.cend()) {
+            std::stringstream ss;
+            ss << "no device with slave id " << sid << " (\"" << slave_id << "\") found in " << this->GetName();
+            throw TSerialDeviceException(ss.str());
+        }
+
+        return _Devices.find(sid)->second;
+    }
+
+    void RemoveDevice(PSerialDevice dev)
+    {
+        if (!dev) {
+            throw TSerialDeviceException("can't remove null device");
+        }
+        const auto &it = std::find_if(_Devices.begin(), _Devices.end(), [dev](const std::pair<TSlaveId, PSerialDevice>& p) -> bool { return dev == p.second; });
+        if (it == _Devices.end()) {
+            throw TSerialDeviceException("no such device found: " + dev->ToString());
+        }
+
+        _Devices.erase(it);
     }
 
 private:
     std::string _Name;
     PRegisterTypeMap _RegTypes;
-    std::unordered_set<TSlaveId> _Devices;
+    std::unordered_map<TSlaveId, PSerialDevice> _Devices;
 };
 
 
@@ -167,6 +205,11 @@ public:
         SlaveId = p->ConvertSlaveId(config->SlaveId);
     }
 
+    std::string ToString() const
+    {
+        return std::to_string(SlaveId);
+    }
+
 protected:
     typename Proto::TSlaveId SlaveId;
 };
@@ -180,7 +223,8 @@ public:
     static void RegisterProtocol(PProtocol protocol);
     static PRegisterTypeMap GetRegisterTypes(PDeviceConfig device_config);
     static PSerialDevice CreateDevice(PDeviceConfig device_config, PAbstractSerialPort port);
-    static PProtocol GetProtocolInstance(const std::string &name);
+    static void RemoveDevice(PSerialDevice device);
+    static PProtocol GetProtocol(const std::string &name);
 
 private:
     static const PProtocol GetProtocolEntry(PDeviceConfig device_config);

@@ -21,15 +21,15 @@ typedef std::shared_ptr<TTemplate> PTemplate;
 typedef std::map<std::string, PTemplate> TTemplateMap;
 typedef std::shared_ptr<TTemplateMap> PTemplateMap;
 
-struct TDeviceChannel {
-    TDeviceChannel(std::string name = "", std::string type = "text",
+struct TDeviceChannelConfig {
+    TDeviceChannelConfig(std::string name = "", std::string type = "text",
                    std::string device_id = "", int order = 0,
                    std::string on_value = "", int max = - 1, bool read_only = false,
-                   const std::vector<PRegister> regs =
-                       std::vector<PRegister>())
+                   const std::vector<PRegisterConfig> regs =
+                       std::vector<PRegisterConfig>())
         : Name(name), Type(type), DeviceId(device_id),
           Order(order), OnValue(on_value), Max(max),
-          ReadOnly(read_only), Registers(regs) {}
+          ReadOnly(read_only), RegisterConfigs(regs) {}
     std::string Name;
     std::string Type;
     std::string DeviceId; // FIXME
@@ -37,20 +37,20 @@ struct TDeviceChannel {
     std::string OnValue;
     int Max;
     bool ReadOnly;
-    std::vector<PRegister> Registers;
+    std::vector<PRegisterConfig> RegisterConfigs;
 };
 
-typedef std::shared_ptr<TDeviceChannel> PDeviceChannel;
+typedef std::shared_ptr<TDeviceChannelConfig> PDeviceChannelConfig;
 
-struct TDeviceSetupItem {
-    TDeviceSetupItem(std::string name, PRegister reg, int value)
-        : Name(name), Reg(reg), Value(value) {}
+struct TDeviceSetupItemConfig {
+    TDeviceSetupItemConfig(std::string name, PRegisterConfig reg, int value)
+        : Name(name), RegisterConfig(reg), Value(value) {}
     std::string Name;
-    PRegister Reg;
+    PRegisterConfig RegisterConfig;
     int Value;
 };
 
-typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
+typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
 
 static const int DEFAULT_INTER_DEVICE_DELAY_MS = 100;
 static const int DEFAULT_ACCESS_LEVEL = 1;
@@ -88,16 +88,16 @@ struct TDeviceConfig {
     }
                   
 
-    int NextOrderValue() const { return DeviceChannels.size() + 1; }
-    void AddChannel(PDeviceChannel channel) { DeviceChannels.push_back(channel); };
-    void AddSetupItem(PDeviceSetupItem item) { SetupItems.push_back(item); }
+    int NextOrderValue() const { return DeviceChannelConfigs.size() + 1; }
+    void AddChannel(PDeviceChannelConfig channel) { DeviceChannelConfigs.push_back(channel); };
+    void AddSetupItem(PDeviceSetupItemConfig item) { SetupItemConfigs.push_back(item); }
     std::string Id;
     std::string Name;
     std::string SlaveId;
     std::string DeviceType;
     std::string Protocol;
-    std::vector<PDeviceChannel> DeviceChannels;
-    std::vector<PDeviceSetupItem> SetupItems;
+    std::vector<PDeviceChannelConfig> DeviceChannelConfigs;
+    std::vector<PDeviceSetupItemConfig> SetupItemConfigs;
     std::vector<uint8_t> Password;
     std::chrono::milliseconds Delay;
     int AccessLevel;
@@ -163,7 +163,7 @@ public:
                   TGetRegisterTypeMap get_register_type_map,
                   PTemplateMap templates = std::make_shared<TTemplateMap>());
     PHandlerConfig Parse();
-    PRegister LoadRegister(PDeviceConfig device_config, const Json::Value& register_data,
+    PRegisterConfig LoadRegisterConfig(PDeviceConfig device_config, const Json::Value& register_data,
                            std::string& default_type_str);
     void MergeAndLoadChannels(PDeviceConfig device_config, const Json::Value& device_data, PTemplate tmpl);
     void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data);

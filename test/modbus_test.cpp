@@ -53,26 +53,27 @@ protected:
     void TearDown();
     PRegister RegCoil(int addr, RegisterFormat fmt = U8) {
         return TRegister::Intern(
-            TSlaveEntry::Intern("modbus", 1),
-            TModbusDevice::REG_COIL, addr, fmt, 1, true, false, "coil");
+            Device, TRegisterConfig::Intern(
+            TModbusDevice::REG_COIL, addr, fmt, 1, true, false, "coil"));
     }
     PRegister RegDiscrete(int addr, RegisterFormat fmt = U8) {
         return TRegister::Intern(
-            TSlaveEntry::Intern("modbus", 1),
-            TModbusDevice::REG_DISCRETE, addr, fmt, 1, true, true, "discrete");
+            Device, TRegisterConfig::Intern(
+            TModbusDevice::REG_DISCRETE, addr, fmt, 1, true, true, "discrete"));
     }
     PRegister RegHolding(int addr, RegisterFormat fmt = U16, double scale = 1) {
         return TRegister::Intern(
-            TSlaveEntry::Intern("modbus", 1),
-            TModbusDevice::REG_HOLDING, addr, fmt, scale, true, false, "holding");
+            Device, TRegisterConfig::Intern(
+            TModbusDevice::REG_HOLDING, addr, fmt, scale, true, false, "holding"));
     }
     PRegister RegInput(int addr, RegisterFormat fmt = U16, double scale = 1) {
         return TRegister::Intern(
-            TSlaveEntry::Intern("modbus", 1),
-            TModbusDevice::REG_INPUT, addr, fmt, scale, true, true, "input");
+            Device, TRegisterConfig::Intern(
+            TModbusDevice::REG_INPUT, addr, fmt, scale, true, true, "input"));
     }
     PSerialPort ClientSerial;
     PSerialClient SerialClient;
+    PSerialDevice Device;
     PModbusSlave Slave;
 };
 
@@ -94,7 +95,9 @@ void TModbusClientTest::SetUp()
 #if 0
     SerialClient->SetModbusDebug(true);
 #endif
-    SerialClient->AddDevice(std::make_shared<TDeviceConfig>("modbus_sample", 1, "modbus"));
+    try { 
+        Device = SerialClient->CreateDevice(std::make_shared<TDeviceConfig>("modbus_sample", 1, "modbus"));
+    } catch (const TSerialDeviceException &e) {}
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             Emit() << "Modbus Callback: " << reg->ToString() << " becomes " <<
                 SerialClient->GetTextValue(reg) << (changed ? "" : " [unchanged]");
@@ -651,9 +654,9 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "Id: " << device_config->Id;
             Emit() << "Name: " << device_config->Name;
             Emit() << "SlaveId: " << device_config->SlaveId;
-            if (!device_config->DeviceChannels.empty()) {
+            if (!device_config->DeviceChannelConfigs.empty()) {
                 Emit() << "DeviceChannels:";
-                for (auto modbus_channel: device_config->DeviceChannels) {
+                for (auto modbus_channel: device_config->DeviceChannelConfigs) {
                     TTestLogIndent indent(*this);
                     Emit() << "------";
                     Emit() << "Name: " << modbus_channel->Name;
@@ -665,7 +668,7 @@ TEST_F(TConfigParserTest, Parse)
                     Emit() << "ReadOnly: " << modbus_channel->ReadOnly;
                     std::stringstream s;
                     bool first = true;
-                    for (auto reg: modbus_channel->Registers) {
+                    for (auto reg: modbus_channel->RegisterConfigs) {
                         if (first)
                             first = false;
                         else
@@ -677,15 +680,15 @@ TEST_F(TConfigParserTest, Parse)
                     Emit() << "Registers: " << s.str();
                 }
 
-                if (device_config->SetupItems.empty())
+                if (device_config->SetupItemConfigs.empty())
                     continue;
 
                 Emit() << "SetupItems:";
-                for (auto setup_item: device_config->SetupItems) {
+                for (auto setup_item: device_config->SetupItemConfigs) {
                     TTestLogIndent indent(*this);
                     Emit() << "------";
                     Emit() << "Name: " << setup_item->Name;
-                    Emit() << "Address: " << setup_item->Reg->Address;
+                    Emit() << "Address: " << setup_item->RegisterConfig->Address;
                     Emit() << "Value: " << setup_item->Value;
                 }
             }

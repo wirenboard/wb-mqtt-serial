@@ -21,7 +21,7 @@ public:
     TSerialClient& operator=(const TSerialClient&) = delete;
     ~TSerialClient();
 
-    void AddDevice(PDeviceConfig device_config);
+    PSerialDevice CreateDevice(PDeviceConfig device_config);
     void AddRegister(PRegister reg);
     void Connect();
     void Disconnect();
@@ -44,14 +44,12 @@ private:
     void PollRange(PRegisterRange range);
     PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
-    PSerialDevice GetDevice(PSlaveEntry entry);
     void PrepareToAccessDevice(PSerialDevice dev);
 
     PAbstractSerialPort Port;
     std::list<PRegister> RegList;
+    std::list<PSerialDevice> DevicesList; /* for EndPollCycle */
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
-    std::unordered_map<PSlaveEntry, PDeviceConfig> ConfigMap;
-    std::unordered_map<PSlaveEntry, PSerialDevice> DeviceMap;
 
     bool Active;
     int PollInterval;

@@ -3,20 +3,16 @@
 #include "uniel_device.h"
 #include "uniel_expectations.h"
 
-namespace {
-    PSlaveEntry Slave1 = TSlaveEntry::Intern("uniel", 1);
-    PRegister InputReg = TRegister::Intern(Slave1, TUnielDevice::REG_INPUT, 0x0a, U8);
-    PRegister RelayReg = TRegister::Intern(Slave1, TUnielDevice::REG_RELAY, 0x1b, U8);
-    PRegister ThresholdReg = TRegister::Intern(Slave1, TUnielDevice::REG_PARAM, 0x02, U8);
-    PRegister BrightnessReg = TRegister::Intern(Slave1, TUnielDevice::REG_BRIGHTNESS, 0x141, U8);
-
-};
-
 class TUnielDeviceTest: public TSerialDeviceTest, public TUnielDeviceExpectations {
 protected:
     void SetUp();
     void TearDown();
     PUnielDevice Dev;
+    
+    PRegister InputReg;
+    PRegister RelayReg;
+    PRegister ThresholdReg;
+    PRegister BrightnessReg;
 };
 
 void TUnielDeviceTest::SetUp()
@@ -26,7 +22,12 @@ void TUnielDeviceTest::SetUp()
     Dev = std::make_shared<TUnielDevice>(
         std::make_shared<TDeviceConfig>("uniel", 0x01, "uniel"),
         SerialPort,
-        TSerialDeviceFactory::GetProtocolInstance("uniel"));
+        TSerialDeviceFactory::GetProtocol("uniel"));
+    
+    InputReg = TRegister::Intern(Dev, TRegisterConfig::Intern(TUnielDevice::REG_INPUT, 0x0a, U8));
+    RelayReg = TRegister::Intern(Dev, TRegisterConfig::Intern(TUnielDevice::REG_RELAY, 0x1b, U8));
+    ThresholdReg = TRegister::Intern(Dev, TRegisterConfig::Intern(TUnielDevice::REG_PARAM, 0x02, U8));
+    BrightnessReg = TRegister::Intern(Dev, TRegisterConfig::Intern(TUnielDevice::REG_BRIGHTNESS, 0x141, U8));
 
     SerialPort->Open();
 }

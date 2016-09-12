@@ -49,69 +49,20 @@ typedef std::vector<TRegisterType> TRegisterTypes;
 typedef std::map<std::string, TRegisterType> TRegisterTypeMap;
 typedef std::shared_ptr<TRegisterTypeMap> PRegisterTypeMap;
 
-struct TSlaveEntry;
-typedef std::shared_ptr<TSlaveEntry> PSlaveEntry;
+struct TRegisterConfig;
+typedef std::shared_ptr<TRegisterConfig> PRegisterConfig;
 
-struct TSlaveEntry
+class TSerialDevice;
+typedef std::shared_ptr<TSerialDevice> PSerialDevice;
+
+struct TRegisterConfig
 {
-    std::string Protocol;
-    std::string Id;
-
-    TSlaveEntry(const std::string& protocol, const std::string &id): Protocol(protocol), Id(id) {}
-    TSlaveEntry(const std::string &protocol, int id)
-        : Protocol(protocol)
-    {
-        std::stringstream ss;
-        ss << id;
-        Id = ss.str();
-    }
-
-    int IdAsInt() const
-    {
-        try {
-            return std::stoi(Id, /* pos = */ 0, /* base = */ 0);
-        } catch (const std::logic_error &e) {}
-
-        throw TSerialDeviceException("Slave ID is not convertible to int for " + ToString());
-    }
-
-    std::string ToString() const {
-        return Protocol + ":" + Id;
-    }
-
-    static PSlaveEntry Intern(const std::string& protocol = "", const std::string& id = "")
-    {
-        return TRegistry::Intern<TSlaveEntry>(protocol, id);
-    }
-
-    static PSlaveEntry Intern(const std::string& protocol, int id)
-    {
-        std::stringstream ss;
-        ss << id;
-
-        return TRegistry::Intern<TSlaveEntry>(protocol, ss.str());
-    }
-};
-
-inline ::std::ostream& operator<<(::std::ostream& os, PSlaveEntry entry) {
-    return os << (entry ? entry->ToString() : "(null)");
-}
-
-inline ::std::ostream& operator<<(::std::ostream& os, const TSlaveEntry& entry) {
-    return os << entry.ToString();
-}
-
-struct TRegister;
-typedef std::shared_ptr<TRegister> PRegister;
-
-struct TRegister
-{
-    TRegister(PSlaveEntry slave, int type, int address,
+    TRegisterConfig(int type, int address,
               RegisterFormat format, double scale,
               bool poll, bool readonly,
               const std::string& type_name,
               bool has_error_value, uint64_t error_value)
-        : Slave(slave), Type(type), Address(address), Format(format),
+        : Type(type), Address(address), Format(format),
           Scale(scale), Poll(poll), ReadOnly(readonly), TypeName(type_name),
           HasErrorValue(has_error_value), ErrorValue(error_value)
     {
@@ -119,16 +70,17 @@ struct TRegister
             TypeName = "(type " + std::to_string(Type) + ")";
     }
 
-    static PRegister Intern(PSlaveEntry slave = 0, int type = 0, int address = 0,
+    static PRegisterConfig Intern(int type = 0, int address = 0,
                             RegisterFormat format = U16, double scale = 1,
                             bool poll = true, bool readonly = false,
                             const std::string& type_name = "",
                             bool has_error_value = false,
                             uint64_t error_value = 0)
     {
-        return TRegistry::Intern<TRegister>(slave, type, address, format, scale, poll, readonly, 
+        return TRegistry::Intern<TRegisterConfig>(type, address, format, scale, poll, readonly, 
                                             type_name, has_error_value, error_value);
     }
+
 
     uint8_t ByteWidth() const {
         switch (Format) {
@@ -156,13 +108,8 @@ struct TRegister
         return (ByteWidth() + 1) / 2;
     }
 
-    std::string ToString() const {
-        std::stringstream s;
-        s << "<" << Slave << ":" << TypeName << ": " << Address << ">";
-        return s.str();
-    }
+    std::string ToString() const;
 
-    PSlaveEntry Slave;
     int Type;
     int Address;
     RegisterFormat Format;
@@ -176,11 +123,31 @@ struct TRegister
     uint64_t ErrorValue;
 };
 
-inline ::std::ostream& operator<<(::std::ostream& os, PRegister reg) {
+struct TRegister;
+typedef std::shared_ptr<TRegister> PRegister;
+
+struct TRegister : public TRegisterConfig
+{
+    TRegister(PSerialDevice device, PRegisterConfig config)
+        : TRegisterConfig(*config)
+        , Device(device)
+    {}
+
+    static PRegister Intern(PSerialDevice device, PRegisterConfig config)
+    {
+        return TRegistry::Intern<TRegister>(device, config);
+    }
+
+    PSerialDevice Device;
+};
+
+typedef std::vector<PRegister> TRegistersList;
+
+inline ::std::ostream& operator<<(::std::ostream& os, PRegisterConfig reg) {
     return os << reg->ToString();
 }
 
-inline ::std::ostream& operator<<(::std::ostream& os, const TRegister& reg) {
+inline ::std::ostream& operator<<(::std::ostream& os, const TRegisterConfig& reg) {
     return os << reg.ToString();
 }
 
@@ -271,7 +238,7 @@ public:
 
     virtual ~TRegisterRange();
     const std::list<PRegister>& RegisterList() const { return RegList; }
-    PSlaveEntry Slave() const { return RegSlave; }
+    PSerialDevice Device() const { return RegDevice; }
     int Type() const { return RegType; }
     std::string TypeName() const  { return RegTypeName; }
     std::chrono::milliseconds PollInterval() const { return RegPollInterval; }
@@ -282,7 +249,7 @@ protected:
     TRegisterRange(PRegister reg);
 
 private:
-    PSlaveEntry RegSlave;
+    PSerialDevice RegDevice;
     int RegType;
     std::string RegTypeName;
     std::chrono::milliseconds RegPollInterval = std::chrono::milliseconds(-1);

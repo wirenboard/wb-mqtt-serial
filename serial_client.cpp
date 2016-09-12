@@ -29,22 +29,29 @@ TSerialClient::~TSerialClient()
 {
     if (Active)
         Disconnect();
+
+    // remove all registered devices
+    for (auto &dev : DevicesList)
+        TSerialDeviceFactory::RemoveDevice(dev);
 }
 
-void TSerialClient::AddDevice(PDeviceConfig device_config)
+PSerialDevice TSerialClient::CreateDevice(PDeviceConfig device_config)
 {
     if (Active)
         throw TSerialDeviceException("can't add registers to the active client");
     if (Debug)
-        std::cerr << "AddDevice: " << device_config->Id <<
+        std::cerr << "CreateDevice: " << device_config->Id <<
             (device_config->DeviceType.empty() ? "" : " (" + device_config->DeviceType + ")") <<
             " @ " << device_config->SlaveId << " -- protocol: " << device_config->Protocol << std::endl;
-    PSlaveEntry entry = TSlaveEntry::Intern(device_config->Protocol, device_config->SlaveId);
-
-    if (Debug)
-        std::cerr << __func__ << ": " << entry->ToString() << std::endl;
-
-    ConfigMap[entry] = device_config;
+    
+    try {
+        PSerialDevice dev = TSerialDeviceFactory::CreateDevice(device_config, Port);
+        DevicesList.push_back(dev);
+        return dev;
+    } catch (const TSerialDeviceException& e) {
+        Disconnect();
+        throw;
+    }
 }
 
 void TSerialClient::AddRegister(PRegister reg)
@@ -53,7 +60,7 @@ void TSerialClient::AddRegister(PRegister reg)
         throw TSerialDeviceException("can't add registers to the active client");
     if (Handlers.find(reg) != Handlers.end())
         throw TSerialDeviceException("duplicate register");
-    Handlers[reg] = std::make_shared<TRegisterHandler>(GetDevice(reg->Slave), reg, FlushNeeded, Debug);
+    Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device, reg, FlushNeeded, Debug);
     RegList.push_back(reg);
     if (Debug)
         std::cerr << "AddRegister: " << reg << std::endl;
@@ -82,25 +89,25 @@ void TSerialClient::PrepareRegisterRanges()
 {
     // all of this is seemingly slow but it's actually only done once
     Plan->Reset();
-    PSlaveEntry last_slave(0);
+    PSerialDevice last_device(0);
     std::list<PRegister> cur_regs;
     auto it = RegList.begin();
     std::list<PSerialPollEntry> entries;
     std::unordered_map<long long, PSerialPollEntry> interval_map;
     for (;;) {
         bool at_end = it == RegList.end();
-        if ((at_end || (*it)->Slave != last_slave) && !cur_regs.empty()) {
+        if ((at_end || (*it)->Device != last_device) && !cur_regs.empty()) {
             cur_regs.sort([](const PRegister& a, const PRegister& b) {
                     return a->Type < b->Type || (a->Type == b->Type && a->Address < b->Address);
                 });
             interval_map.clear();
-            PSerialDevice dev = GetDevice(last_slave);
+
             // Join multiple ranges with same poll period into a
             // single scheduling entry. This is necessary because
             // switching between devices may require extra
             // delays. This is far from being an ideal solution
             // though.
-            for (auto range: dev->SplitRegisterList(cur_regs)) {
+            for (auto range: last_device->SplitRegisterList(cur_regs)) {
                 PSerialPollEntry entry;
                 long long interval = range->PollInterval().count();
                 auto it = interval_map.find(interval);
@@ -115,7 +122,7 @@ void TSerialClient::PrepareRegisterRanges()
         }
         if (at_end)
             break;
-        last_slave = (*it)->Slave;
+        last_device = (*it)->Device;
         cur_regs.push_back(*it++);
     }
 }
@@ -166,7 +173,7 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 
 void TSerialClient::PollRange(PRegisterRange range)
 {
-    PSerialDevice dev = GetDevice(range->Slave());
+    PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
     dev->ReadRegisterRange(range);
     range->MapRange([this](PRegister reg, uint64_t new_value) {
@@ -201,14 +208,14 @@ void TSerialClient::Cycle()
             MaybeFlushAvoidingPollStarvationButDontWait();
         });
 
-    for (const auto& p: DeviceMap)
-        p.second->EndPollCycle();
+    for (const auto& p: DevicesList)
+        p->EndPollCycle();
 }
 
 void TSerialClient::WriteSetupRegister(PRegister reg, uint64_t value)
 {
     Connect();
-    PSerialDevice dev = GetDevice(reg->Slave);
+    PSerialDevice dev = reg->Device;
     PrepareToAccessDevice(dev);
     dev->WriteRegister(reg, value);
 }
@@ -261,23 +268,6 @@ PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
     if (it == Handlers.end())
         throw TSerialDeviceException("register not found");
     return it->second;
-}
-
-PSerialDevice TSerialClient::GetDevice(PSlaveEntry entry)
-{
-    auto it = DeviceMap.find(entry);
-    if (it != DeviceMap.end())
-        return it->second;
-    auto configIt = ConfigMap.find(entry);
-    if (configIt == ConfigMap.end())
-        throw TSerialDeviceException("slave not found");
-
-    try {
-        return DeviceMap[entry] = TSerialDeviceFactory::CreateDevice(configIt->second, Port);
-    } catch (const TSerialDeviceException& e) {
-        Disconnect();
-        throw TSerialDeviceException(e.what());
-    }
 }
 
 void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)

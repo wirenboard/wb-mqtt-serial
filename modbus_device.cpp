@@ -145,7 +145,7 @@ std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegi
                 if (Port()->Debug())
                     std::cerr << "Adding range: " << range->GetCount() << " " <<
                         range->TypeName() << "(s) @ " << range->GetStart() <<
-                        " of slave " << range->Slave() << std::endl;
+                        " of device " << range->Device()->ToString() << std::endl;
                 r.push_back(range);
                 l.clear();
             }
@@ -161,7 +161,7 @@ std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegi
         if (Port()->Debug())
             std::cerr << "Adding range: " << range->GetCount() << " " <<
                 range->TypeName() << "(s) @ " << range->GetStart() <<
-                " of slave " << range->Slave() << std::endl;
+                " of device " << range->Device()->ToString() << std::endl;
         r.push_back(range);
     }
     return r;
@@ -173,7 +173,7 @@ uint64_t TModbusDevice::ReadRegister(PRegister reg)
 
     if (Port()->Debug())
         std::cerr << "modbus: read " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
-            " of slave " << reg->Slave << std::endl;
+            " of device " << reg->Device->ToString() << std::endl;
 
     modbus_set_slave(Context->Inner, SlaveId);
     if (IsSingleBitType(reg->Type)) {
@@ -222,7 +222,7 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
 
     if (Port()->Debug())
         std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
-            " of slave " << reg->Slave << std::endl;
+            " of device " << reg->Device->ToString() << std::endl;
 
     modbus_set_slave(Context->Inner, SlaveId);
     switch (reg->Type) {
@@ -274,7 +274,7 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
     if (Port()->Debug())
         std::cerr << "modbus: read " << modbus_range->GetCount() << " " <<
             modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
-            " of slave " << modbus_range->Slave() << std::endl;
+            " of device " << modbus_range->Device()->ToString() << std::endl;
 
     modbus_set_slave(Context->Inner, SlaveId);
     int rc;
@@ -299,6 +299,6 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
     std::ios::fmtflags f(std::cerr.flags());
     std::cerr << "TModbusDevice::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
         modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
-        " of slave " << modbus_range->Slave() << std::endl;
+        " of device " << modbus_range->Device()->ToString() << std::endl;
     std::cerr.flags(f);
 }

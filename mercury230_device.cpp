@@ -102,9 +102,9 @@ uint64_t TMercury230Device::ReadRegister(PRegister reg)
 {
     switch (reg->Type) {
     case REG_VALUE_ARRAY:
-        return ReadValueArray(reg->Slave->IdAsInt(), reg->Address).values[reg->Address & 0x03];
+        return ReadValueArray(SlaveId, reg->Address).values[reg->Address & 0x03];
     case REG_PARAM:
-        return ReadParam(reg->Slave->IdAsInt(), reg->Address & 0xffff);
+        return ReadParam(SlaveId, reg->Address & 0xffff);
     default:
         throw TSerialDeviceException("mercury230: invalid register type");
     }

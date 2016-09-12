@@ -10,6 +10,11 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PPr
 
 TSerialDevice::~TSerialDevice() {}
 
+std::string TSerialDevice::ToString() const
+{
+    return DeviceConfig()->Name + "(" + DeviceConfig()->SlaveId + ")";
+}
+
 std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegister> reg_list) const
 {
     std::list<PRegisterRange> r;
@@ -38,7 +43,7 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
             simple_range->SetError(reg);
             std::ios::fmtflags f(std::cerr.flags());
             std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-                      << reg->Slave->Id << "(0x" << std::hex << reg->Slave->Id << ")]" << std::endl;
+                      << reg->Device->ToString() + "]" << std::endl;
             std::cerr.flags(f);
         }
     }
@@ -57,10 +62,10 @@ void TSerialDeviceFactory::RegisterProtocol(PProtocol protocol)
 
 const PProtocol TSerialDeviceFactory::GetProtocolEntry(PDeviceConfig device_config)
 {
-    return TSerialDeviceFactory::GetProtocolInstance(device_config->Protocol);
+    return TSerialDeviceFactory::GetProtocol(device_config->Protocol);
 }
 
-PProtocol TSerialDeviceFactory::GetProtocolInstance(const std::string &name)
+PProtocol TSerialDeviceFactory::GetProtocol(const std::string &name)
 {
     auto it = Protocols->find(name);
     if (it == Protocols->end())
@@ -73,13 +78,22 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(PDeviceConfig device_config, PA
     return GetProtocolEntry(device_config)->CreateDevice(device_config, port);
 }
 
+void TSerialDeviceFactory::RemoveDevice(PSerialDevice device)
+{
+    if (device) {
+        device->Protocol()->RemoveDevice(device);
+    } else {
+        throw TSerialDeviceException("can't remove empty device");
+    }
+}
+
 PRegisterTypeMap TSerialDeviceFactory::GetRegisterTypes(PDeviceConfig device_config)
 {
     return GetProtocolEntry(device_config)->GetRegTypes();
 }
 
 template<>
-int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s)
+int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s) const
 {
     try {
         return std::stoi(s, /* pos = */ 0, /* base = */ 0);

@@ -114,8 +114,8 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
         Dev->WriteRegister(Reg, Value);
     } catch (const TSerialDeviceTransientErrorException& e) {
         std::ios::fmtflags f(std::cerr.flags());
-        std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " slave_id is " <<
-            Reg->Slave->Id << "(0x" << std::hex << Reg->Slave->IdAsInt() << ")" <<  std::endl;
+        std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " for device " <<
+            Reg->Device->ToString() <<  std::endl;
         std::cerr.flags(f);
         return UpdateWriteError(true);
     }

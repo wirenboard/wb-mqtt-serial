@@ -26,14 +26,25 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
     if (Config->Debug)
         std::cerr << "Setting up devices at " << port_config->ConnSettings.Device << std::endl;
 
-    for (auto device_config: Config->DeviceConfigs) {
-        SerialClient->AddDevice(device_config);
-        for (auto channel: device_config->DeviceChannels) {
-            for (auto reg: channel->Registers) {
+    for (auto& device_config: Config->DeviceConfigs) {
+        auto device = SerialClient->CreateDevice(device_config);
+        Devices.push_back(device);
+
+        // init channels' registers
+        for (auto& channel_config: device_config->DeviceChannelConfigs) {
+            
+            auto channel = std::make_shared<TDeviceChannel>(device, channel_config);
+            NameToChannelMap[device_config->Id + "/" + channel->Name] = channel;
+            
+            for (auto& reg: channel->Registers) {
                 RegisterToChannelMap[reg] = channel;
-                NameToChannelMap[device_config->Id + "/" + channel->Name] = channel;
                 SerialClient->AddRegister(reg);
             }
+        }
+
+        // init setup items' registers
+        for (auto& setup_item_config: device_config->SetupItemConfigs) {
+            SetupItems.push_back(std::make_shared<TDeviceSetupItem>(device, setup_item_config));
         }
     }
 }
@@ -46,7 +57,7 @@ void TSerialPortDriver::PubSubSetup()
         std::string prefix = std::string("/devices/") + id + "/";
         // Meta
         MQTTClient->Publish(NULL, prefix + "meta/name", device_config->Name, 0, true);
-        for (const auto& channel : device_config->DeviceChannels) {
+        for (const auto& channel : device_config->DeviceChannelConfigs) {
             std::string control_prefix = prefix + "controls/" + channel->Name;
             MQTTClient->Publish(NULL, control_prefix + "/meta/type", channel->Type, 0, true);
             if (channel->ReadOnly)
@@ -90,9 +101,11 @@ bool TSerialPortDriver::HandleMessage(const std::string& topic, const std::strin
     if (it == NameToChannelMap.end())
         return false;
 
+    const auto& reglist = ChannelRegistersMap[it->second];
+
     std::vector<std::string> payload_items = StringSplit(payload, ';');
 
-    if (payload_items.size() != it->second->Registers.size()) {
+    if (payload_items.size() != reglist.size()) {
         std::cerr << "warning: invalid payload for topic '" << topic <<
             "': '" << payload << "'" << std::endl;
         // here 'true' means that the message doesn't need to be passed
@@ -100,8 +113,8 @@ bool TSerialPortDriver::HandleMessage(const std::string& topic, const std::strin
         return true;
     }
 
-    for (size_t i = 0; i < it->second->Registers.size(); ++i) {
-        PRegister reg = it->second->Registers[i];
+    for (size_t i = 0; i < reglist.size(); ++i) {
+        PRegister reg = reglist[i];
         if (Config->Debug)
             std::cerr << "setting device register: " << reg->ToString() << " <- " <<
                 payload_items[i] << std::endl;
@@ -125,7 +138,7 @@ bool TSerialPortDriver::HandleMessage(const std::string& topic, const std::strin
     return true;
 }
 
-std::string TSerialPortDriver::GetChannelTopic(const TDeviceChannel& channel)
+std::string TSerialPortDriver::GetChannelTopic(const TDeviceChannelConfig& channel)
 {
     std::string controls_prefix = std::string("/devices/") + channel.DeviceId + "/controls/";
     return (controls_prefix + channel.Name);
@@ -172,6 +185,8 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
         return;
     }
 
+    const auto &reglist = it->second->Registers;
+
     if (Config->Debug && changed)
         std::cerr << "register value change: " << reg->ToString() << " <- " <<
             SerialClient->GetTextValue(reg) << std::endl;
@@ -187,8 +202,8 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
                 payload << std::endl;
     } else {
         std::stringstream s;
-        for (size_t i = 0; i < it->second->Registers.size(); ++i) {
-            PRegister reg = it->second->Registers[i];
+        for (size_t i = 0; i < reglist.size(); ++i) {
+            PRegister reg = reglist[i];
             // avoid publishing incomplete value
             if (!SerialClient->DidRead(reg))
                 return;
@@ -224,9 +239,11 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
         std::cerr << "warning: got unexpected register from serial client" << std::endl;
         return;
     }
+    const auto &reglist = it->second->Registers;
+
     RegErrorStateMap[reg] = errorState;
     bool readError = false, writeError = false;
-    for (auto r: it->second->Registers) {
+    for (auto r: reglist) {
         switch (RegErrorState(r)) {
         case TRegisterHandler::WriteError:
             writeError = true;
@@ -263,18 +280,17 @@ void TSerialPortDriver::Cycle()
 bool TSerialPortDriver::WriteInitValues()
 {
     bool did_write = false;
-    for (const auto& device_config : Config->DeviceConfigs) {
+    for (const auto& setup_item : SetupItems) {
         try {
-            for (const auto& setup_item : device_config->SetupItems) {
-                if (Config->Debug)
-                    std::cerr << "Init: " << setup_item->Name << ": setup register " <<
-                        setup_item->Reg->ToString() << " <-- " << setup_item->Value << std::endl;
-                SerialClient->WriteSetupRegister(setup_item->Reg,
-                                                 setup_item->Value);
-                did_write = true;
-            }
+            if (Config->Debug)
+                std::cerr << "Init: " << setup_item->Name << ": setup register " <<
+                    setup_item->Register->ToString() << " <-- " << setup_item->Value << std::endl;
+            SerialClient->WriteSetupRegister(setup_item->Register,
+                                             setup_item->Value);
+            did_write = true;
         } catch (const TSerialDeviceException& e) {
-            std::cerr << "WARNING: device '" << device_config->Name <<
+            std::cerr << "WARNING: device '" << setup_item->Device->ToString() <<
+                "' register '" << setup_item->Register->ToString() << 
                 "' setup failed: " << e.what() << std::endl;
         }
     }

@@ -3,21 +3,6 @@
 #include "milur_device.h"
 #include "mercury230_device.h"
 
-namespace {
-    PSlaveEntry MilurSlave = TSlaveEntry::Intern("milur", 0xff);
-    PSlaveEntry Mercury230Slave = TSlaveEntry::Intern("mercury230", 0x00);
-    PRegister MilurPhaseCVoltageReg = TRegister::Intern(MilurSlave, TMilurDevice::REG_PARAM, 102, U24);
-    PRegister MilurTotalConsumptionReg = TRegister::Intern(MilurSlave, TMilurDevice::REG_ENERGY, 118, BCD32);
-    PRegister Mercury230TotalConsumptionReg =
-        TRegister::Intern(Mercury230Slave, TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32);
-    PRegister Mercury230TotalReactiveEnergyReg =
-        TRegister::Intern(Mercury230Slave, TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32);
-    PRegister Mercury230U1Reg = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1111, U24);
-    PRegister Mercury230I1Reg = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1121, U24);
-    PRegister Mercury230U2Reg = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1112, U24);
-    PRegister Mercury230PReg  = TRegister::Intern(Mercury230Slave, TMercury230Device::REG_PARAM, 0x1100, U24);
-};
-
 class TEMDeviceTest: public TSerialDeviceTest, public TEMDeviceExpectations
 {
 protected:
@@ -28,6 +13,15 @@ protected:
     virtual PDeviceConfig Mercury230Config();
     PMilurDevice MilurDev;
     PMercury230Device Mercury230Dev;
+    
+    PRegister MilurPhaseCVoltageReg;
+    PRegister MilurTotalConsumptionReg;
+    PRegister Mercury230TotalConsumptionReg;
+    PRegister Mercury230TotalReactiveEnergyReg;
+    PRegister Mercury230U1Reg;
+    PRegister Mercury230I1Reg;
+    PRegister Mercury230U2Reg;
+    PRegister Mercury230PReg;
 };
 
 PDeviceConfig TEMDeviceTest::MilurConfig()
@@ -44,9 +38,21 @@ void TEMDeviceTest::SetUp()
 {
     TSerialDeviceTest::SetUp();
     MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort, 
-                            TSerialDeviceFactory::GetProtocolInstance("milur"));
+                            TSerialDeviceFactory::GetProtocol("milur"));
     Mercury230Dev = std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort, 
-                            TSerialDeviceFactory::GetProtocolInstance("mercury230"));
+                            TSerialDeviceFactory::GetProtocol("mercury230"));
+    
+    MilurPhaseCVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Intern(TMilurDevice::REG_PARAM, 102, U24));
+    MilurTotalConsumptionReg = TRegister::Intern(MilurDev, TRegisterConfig::Intern(TMilurDevice::REG_ENERGY, 118, BCD32));
+    Mercury230TotalConsumptionReg =
+        TRegister::Intern(Mercury230Dev, TRegisterConfig::Intern(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32));
+    Mercury230TotalReactiveEnergyReg =
+        TRegister::Intern(Mercury230Dev, TRegisterConfig::Intern(TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32));
+    Mercury230U1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Intern(TMercury230Device::REG_PARAM, 0x1111, U24));
+    Mercury230I1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Intern(TMercury230Device::REG_PARAM, 0x1121, U24));
+    Mercury230U2Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Intern(TMercury230Device::REG_PARAM, 0x1112, U24));
+    Mercury230PReg  = TRegister::Intern(Mercury230Dev, TRegisterConfig::Intern(TMercury230Device::REG_PARAM, 0x1100, U24));
+    
     SerialPort->Open();
 }
 
