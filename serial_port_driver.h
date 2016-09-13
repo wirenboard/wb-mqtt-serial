@@ -49,6 +49,7 @@ class TSerialPortDriver
 {
 public:
     TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig port_config, PAbstractSerialPort port_override = 0);
+    ~TSerialPortDriver();
     void Cycle();
     void PubSubSetup();
     bool HandleMessage(const std::string& topic, const std::string& payload);

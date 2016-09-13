@@ -9,6 +9,9 @@
 #include <functional>
 #include <unordered_set>
 #include <unordered_map>
+#include <utility>
+#include <mutex>
+#include <tuple>
 
 #include "registry.h"
 #include "serial_exc.h"
@@ -55,7 +58,7 @@ typedef std::shared_ptr<TRegisterConfig> PRegisterConfig;
 class TSerialDevice;
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
 
-struct TRegisterConfig
+struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 {
     TRegisterConfig(int type, int address,
               RegisterFormat format, double scale,
@@ -130,17 +133,64 @@ struct TRegister : public TRegisterConfig
 {
     TRegister(PSerialDevice device, PRegisterConfig config)
         : TRegisterConfig(*config)
-        , Device(device)
+        , _Device(device)
     {}
 
-    static PRegister Intern(PSerialDevice device, PRegisterConfig config)
+    ~TRegister()
     {
-        return TRegistry::Intern<TRegister>(device, config);
+        /* if (FromIntern) { */
+            /* TRegistry::RemoveIntern<TRegister(shared_from_this()); */
+        /* } */
     }
+
+    /* static PRegister Intern(PSerialDevice device, PRegisterConfig config) */
+    /* { */
+        /* PRegister r = TRegistry::Intern<TRegister>(device, config); */
+        /* r->FromIntern = true; */
+        /* return r; */
+    /* } */
 
     std::string ToString() const;
 
-    PSerialDevice Device;
+    PSerialDevice Device() const
+    {
+        return _Device.lock();
+    }
+
+    /* PSerialDevice Device; */
+private:
+    std::weak_ptr<TSerialDevice> _Device;
+    bool FromIntern = false;
+
+
+    // Intern() implementation for TRegister
+private:
+    static std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> RegStorage;
+    static std::mutex Mutex;
+
+public:
+    static PRegister Intern(PSerialDevice device, PRegisterConfig config)
+    {
+        std::unique_lock<std::mutex> lock(Mutex); // thread-safe
+        std::tuple<PSerialDevice, PRegisterConfig> args(device, config);
+
+        auto it = RegStorage.find(args);
+
+        if (it == RegStorage.end()) {
+            auto ret = std::make_shared<TRegister>(device, config);
+            ret->FromIntern = true;
+
+            return RegStorage[args] = ret;
+        }
+
+        return it->second;
+    }
+
+    static void DeleteIntern()
+    {
+        RegStorage.clear();
+    }
+
 };
 
 typedef std::vector<PRegister> TRegistersList;
@@ -240,7 +290,7 @@ public:
 
     virtual ~TRegisterRange();
     const std::list<PRegister>& RegisterList() const { return RegList; }
-    PSerialDevice Device() const { return RegDevice; }
+    PSerialDevice Device() const { return RegDevice.lock(); }
     int Type() const { return RegType; }
     std::string TypeName() const  { return RegTypeName; }
     std::chrono::milliseconds PollInterval() const { return RegPollInterval; }
@@ -251,7 +301,7 @@ protected:
     TRegisterRange(PRegister reg);
 
 private:
-    PSerialDevice RegDevice;
+    std::weak_ptr<TSerialDevice> RegDevice;
     int RegType;
     std::string RegTypeName;
     std::chrono::milliseconds RegPollInterval = std::chrono::milliseconds(-1);

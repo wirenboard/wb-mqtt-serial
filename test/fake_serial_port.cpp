@@ -231,6 +231,7 @@ void TSerialDeviceIntegrationTest::SetUp()
 
 void TSerialDeviceIntegrationTest::TearDown()
 {
+    MQTTClient->Unobserve(Observer);
     Observer.reset();
     TSerialDeviceTest::TearDown();
 }

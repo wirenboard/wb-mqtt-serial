@@ -8,7 +8,10 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PPr
     , _Protocol(protocol)
 {}
 
-TSerialDevice::~TSerialDevice() {}
+TSerialDevice::~TSerialDevice() 
+{
+    /* TSerialDeviceFactory::RemoveDevice(shared_from_this()); */    
+}
 
 std::string TSerialDevice::ToString() const
 {
@@ -43,7 +46,7 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
             simple_range->SetError(reg);
             std::ios::fmtflags f(std::cerr.flags());
             std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-                      << reg->Device->ToString() + "]" << std::endl;
+                      << reg->Device()->ToString() + "]" << std::endl;
             std::cerr.flags(f);
         }
     }

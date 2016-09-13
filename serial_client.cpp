@@ -60,7 +60,7 @@ void TSerialClient::AddRegister(PRegister reg)
         throw TSerialDeviceException("can't add registers to the active client");
     if (Handlers.find(reg) != Handlers.end())
         throw TSerialDeviceException("duplicate register");
-    Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device, reg, FlushNeeded, Debug);
+    Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg, FlushNeeded, Debug);
     RegList.push_back(reg);
     if (Debug)
         std::cerr << "AddRegister: " << reg << std::endl;
@@ -96,7 +96,7 @@ void TSerialClient::PrepareRegisterRanges()
     std::unordered_map<long long, PSerialPollEntry> interval_map;
     for (;;) {
         bool at_end = it == RegList.end();
-        if ((at_end || (*it)->Device != last_device) && !cur_regs.empty()) {
+        if ((at_end || (*it)->Device() != last_device) && !cur_regs.empty()) {
             cur_regs.sort([](const PRegister& a, const PRegister& b) {
                     return a->Type < b->Type || (a->Type == b->Type && a->Address < b->Address);
                 });
@@ -122,7 +122,7 @@ void TSerialClient::PrepareRegisterRanges()
         }
         if (at_end)
             break;
-        last_device = (*it)->Device;
+        last_device = (*it)->Device();
         cur_regs.push_back(*it++);
     }
 }
@@ -215,7 +215,7 @@ void TSerialClient::Cycle()
 void TSerialClient::WriteSetupRegister(PRegister reg, uint64_t value)
 {
     Connect();
-    PSerialDevice dev = reg->Device;
+    PSerialDevice dev = reg->Device();
     PrepareToAccessDevice(dev);
     dev->WriteRegister(reg, value);
 }

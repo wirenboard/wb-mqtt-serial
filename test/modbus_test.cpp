@@ -44,6 +44,7 @@ void TModbusTestBase::TearDown()
 {
     FakeSerial.reset();
     TLoggedFixture::TearDown();
+    TRegister::DeleteIntern();
 }
 
 class TModbusClientTest: public TModbusTestBase
@@ -781,6 +782,8 @@ void TModbusDeviceTest::VerifyDDL24()
     Note() << "LoopOnce() after slave update";
 
     observer->LoopOnce();
+
+    MQTTClient->Unobserve(observer);
 }
 
 TEST_F(TModbusDeviceTest, DDL24)

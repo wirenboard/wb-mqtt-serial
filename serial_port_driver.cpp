@@ -36,9 +36,12 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
             auto channel = std::make_shared<TDeviceChannel>(device, channel_config);
             NameToChannelMap[device_config->Id + "/" + channel->Name] = channel;
             
+            ChannelRegistersMap[channel] = std::vector<PRegister>();
+            
             for (auto& reg: channel->Registers) {
                 RegisterToChannelMap[reg] = channel;
                 SerialClient->AddRegister(reg);
+                ChannelRegistersMap[channel].push_back(reg);
             }
         }
 
@@ -47,6 +50,10 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
             SetupItems.push_back(std::make_shared<TDeviceSetupItem>(device, setup_item_config));
         }
     }
+}
+
+TSerialPortDriver::~TSerialPortDriver()
+{
 }
 
 void TSerialPortDriver::PubSubSetup()

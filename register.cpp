@@ -6,7 +6,7 @@ TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
     if (RegList.empty())
         throw std::runtime_error("cannot construct empty register range");
     PRegister first = regs.front();
-    RegDevice = first->Device;
+    RegDevice = first->Device();
     RegType = first->Type;
     RegTypeName = first->TypeName;
     RegPollInterval = first->PollInterval;
@@ -14,7 +14,7 @@ TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
 
 TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
 {
-    RegDevice = reg->Device;
+    RegDevice = reg->Device();
     RegType = reg->Type;
     RegTypeName = reg->TypeName;
     RegPollInterval = reg->PollInterval;
@@ -60,5 +60,8 @@ std::string TRegisterConfig::ToString() const {
 
 std::string TRegister::ToString() const
 {
-    return "<" + Device->ToString() + ":" + TRegisterConfig::ToString() + ">";
+    return "<" + Device()->ToString() + ":" + TRegisterConfig::ToString() + ">";
 }
+    
+std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;
+std::mutex TRegister::Mutex;

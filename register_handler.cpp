@@ -111,11 +111,11 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
     }
 
     try {
-        Dev->WriteRegister(Reg, Value);
+        Device()->WriteRegister(Reg, Value);
     } catch (const TSerialDeviceTransientErrorException& e) {
         std::ios::fmtflags f(std::cerr.flags());
         std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " for device " <<
-            Reg->Device->ToString() <<  std::endl;
+            Reg->Device()->ToString() <<  std::endl;
         std::cerr.flags(f);
         return UpdateWriteError(true);
     }

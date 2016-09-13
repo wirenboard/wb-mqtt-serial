@@ -173,7 +173,7 @@ uint64_t TModbusDevice::ReadRegister(PRegister reg)
 
     if (Port()->Debug())
         std::cerr << "modbus: read " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
-            " of device " << reg->Device->ToString() << std::endl;
+            " of device " << reg->Device()->ToString() << std::endl;
 
     modbus_set_slave(Context->Inner, SlaveId);
     if (IsSingleBitType(reg->Type)) {
@@ -222,7 +222,7 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
 
     if (Port()->Debug())
         std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
-            " of device " << reg->Device->ToString() << std::endl;
+            " of device " << reg->Device()->ToString() << std::endl;
 
     modbus_set_slave(Context->Inner, SlaveId);
     switch (reg->Type) {

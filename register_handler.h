@@ -30,7 +30,7 @@ public:
     bool DidRead() const { return DidReadReg; }
     TErrorState CurrentErrorState() const { return ErrorState; }
 
-    PSerialDevice Device() const { return Dev; }
+    PSerialDevice Device() const { return Dev.lock(); }
     void SetDebug(bool debug) { Debug = debug; }
 
 private:
@@ -40,7 +40,7 @@ private:
     TErrorState UpdateReadError(bool error);
     TErrorState UpdateWriteError(bool error);
 
-    PSerialDevice Dev;
+    std::weak_ptr<TSerialDevice> Dev;
     uint64_t Value = 0;
     PRegister Reg;
     volatile bool Dirty = false;
