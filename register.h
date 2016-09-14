@@ -145,7 +145,7 @@ struct TRegister
     bool Poll;
     bool ReadOnly;
     std::string TypeName;
-    std::chrono::milliseconds PollInterval = std::chrono::milliseconds::zero();
+    std::chrono::milliseconds PollInterval = std::chrono::milliseconds(-1);
 
     bool HasErrorValue;
     uint64_t ErrorValue;
