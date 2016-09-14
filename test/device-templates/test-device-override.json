@@ -3,6 +3,8 @@
   "device": {
     "name": "TestDeviceOverride:template",
     "id": "TestDeviceOverride:template",
+    "max_reg_hole" : 1,
+    "max_bit_hole" : 1,
     "channels": [
       {
         "name": "Chan 1",
