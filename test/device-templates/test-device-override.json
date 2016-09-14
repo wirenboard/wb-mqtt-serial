@@ -1,0 +1,16 @@
+{
+  "device_type": "TestDeviceOverride",
+  "device": {
+    "name": "TestDeviceOverride:template",
+    "id": "TestDeviceOverride:template",
+    "channels": [
+      {
+        "name": "Chan 1",
+        "reg_type": "input",
+        "address": 0,
+        "type": "temperature",
+        "format": "s8"
+      }
+    ]
+  }
+}

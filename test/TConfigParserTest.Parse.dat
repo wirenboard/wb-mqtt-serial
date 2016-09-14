@@ -135,3 +135,35 @@ Ports:
             Max: -1
             ReadOnly: 1
             Registers: <modbus:2:holding: 32> (poll_interval=100)
+        ------
+        Id: TestDeviceOverride:config
+        Name: TestDeviceOverride:config
+        SlaveId: 5
+        MaxRegHole: 2
+        MaxBitHole: 2
+        DeviceChannels:
+            ------
+            Name: Chan 1
+            Type: temperature
+            DeviceId: TestDeviceOverride:config
+            Order: 1
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers: <modbus:5:input: 0> (poll_interval=100)
+        ------
+        Id: TestDeviceOverride:template_6
+        Name: TestDeviceOverride:template 6
+        SlaveId: 6
+        MaxRegHole: 0
+        MaxBitHole: 0
+        DeviceChannels:
+            ------
+            Name: Chan 1
+            Type: temperature
+            DeviceId: TestDeviceOverride:template_6
+            Order: 1
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers: <modbus:6:input: 0> (poll_interval=100)

@@ -116,6 +116,18 @@
                             "type" : "value"
                         }
                     ]
+                },
+                {
+                    "device_type" : "TestDeviceOverride",
+                    "slave_id": 5,
+                    "name": "TestDeviceOverride:config",
+                    "id": "TestDeviceOverride:config",
+                    "max_reg_hole" : 2,
+                    "max_bit_hole" : 2
+                },
+                {
+                    "device_type" : "TestDeviceOverride",
+                    "slave_id": 6
                 }
             ]
         }
