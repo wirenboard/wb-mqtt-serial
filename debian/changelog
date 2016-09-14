@@ -1,8 +1,15 @@
-wb-mqtt-serial (1.18~alpha1) stable; urgency=medium
+wb-mqtt-serial (1.19~alpha1) stable; urgency=medium
 
   * Change slave ID format
 
  -- Nikita Maslov <webconn@webconn-laptop>  Tue, 13 Sep 2016 20:28:38 +0300
+
+wb-mqtt-serial (1.18) stable; urgency=medium
+
+  * Fixes port-level poll_interval
+  * introduces per-device poll_interval
+
+ -- Evgeny Boger <boger@contactless.ru>  Wed, 14 Sep 2016 20:50:12 +0300
 
 wb-mqtt-serial (1.17) stable; urgency=medium
 

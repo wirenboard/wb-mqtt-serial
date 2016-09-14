@@ -632,8 +632,8 @@ class TConfigParserTest: public TLoggedFixture {};
 
 TEST_F(TConfigParserTest, Parse)
 {
-    TConfigTemplateParser device_parser(GetDataFilePath("../wb-mqtt-serial-templates/"), false);
-    TConfigParser parser(GetDataFilePath("../config.json"), false,
+    TConfigTemplateParser device_parser(GetDataFilePath("device-templates/"), false);
+    TConfigParser parser(GetDataFilePath("configs/parse_test.json"), false,
                          TSerialDeviceFactory::GetRegisterTypes, device_parser.Parse());
     PHandlerConfig config = parser.Parse();
     Emit() << "Debug: " << config->Debug;
@@ -655,6 +655,8 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "Id: " << device_config->Id;
             Emit() << "Name: " << device_config->Name;
             Emit() << "SlaveId: " << device_config->SlaveId;
+            Emit() << "MaxRegHole: " << device_config->MaxRegHole;
+            Emit() << "MaxBitHole: " << device_config->MaxBitHole;
             if (!device_config->DeviceChannelConfigs.empty()) {
                 Emit() << "DeviceChannels:";
                 for (auto modbus_channel: device_config->DeviceChannelConfigs) {
@@ -700,7 +702,7 @@ TEST_F(TConfigParserTest, Parse)
 
 TEST_F(TConfigParserTest, ForceDebug)
 {
-    TConfigParser parser(GetDataFilePath("../config-test.json"), true,
+    TConfigParser parser(GetDataFilePath("configs/config-test.json"), true,
                          TSerialDeviceFactory::GetRegisterTypes);
     PHandlerConfig config = parser.Parse();
     ASSERT_TRUE(config->Debug);
@@ -719,7 +721,7 @@ protected:
 void TModbusDeviceTest::SetUp()
 {
     TModbusTestBase::SetUp();
-    TConfigParser parser(GetDataFilePath("../config-test.json"), false,
+    TConfigParser parser(GetDataFilePath("configs/config-test.json"), false,
                          TSerialDeviceFactory::GetRegisterTypes);
     Config = parser.Parse();
     // NOTE: only one port is currently supported

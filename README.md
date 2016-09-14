@@ -113,7 +113,8 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
             "stop_bits": 2,
 
             // Минимальный интервал опроса каждого регистра
-            // данного устройства, в миллисекундах
+            // по-умолчанию для устройств, подключенных к порту,
+            // в миллисекундах
 
             "poll_interval": 10,
 
@@ -158,6 +159,10 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     // регистров (coils и discrete inputs в Modbus). В данный
                     // момент поддерживается только устройствами Modbus.
                     "max_bit_hole": 80,
+
+                    // Минимальный интервал опроса регистров данного устройства
+                    // по умолчанию, в миллисекундах
+                    "poll_interval": 10,
 
                     // список каналов устройства
                     "channels": [

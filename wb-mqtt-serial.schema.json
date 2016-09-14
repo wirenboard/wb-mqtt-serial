@@ -133,20 +133,28 @@
           },
           "propertyOrder": 6
         },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Desired poll interval (ms)",
+          "description" : "This option specifies the desired interval between two consecutive polls of the channel",
+          "minimum": 0,
+          "default": 20,
+          "propertyOrder": 7
+        },
         "setup": {
           "type": "array",
           "title": "List of setup commands",
           "description": "Lists holding register values that must be written during initialization",
           "items": { "$ref": "#/definitions/setup_cmd" },
           "_format": "table",
-          "propertyOrder": 7
+          "propertyOrder": 8
         },
         "channels": {
           "type": "array",
           "title": "List of channels",
           "description": "Lists device registers and their corresponding controls",
           "items": { "$ref": "#/definitions/channel" },
-          "propertyOrder": 8
+          "propertyOrder": 9
         },
         "password": {
           "type": "array",
@@ -154,7 +162,7 @@
           "description": "Contains password for devices that support it",
           "items": { "$ref": "#/definitions/serial_int" },
           "_format": "table",
-          "propertyOrder": 9
+          "propertyOrder": 10
         },
         "access_level": {
           "type": "integer",
@@ -163,28 +171,28 @@
           "minimum": 0,
           "maximum": 2,
           "default": 1,
-          "propertyOrder": 10
+          "propertyOrder": 11
         },
         "delay_ms": {
           "type": "integer",
           "title": "Delay before accessing the device (ms)",
           "minimum": 0,
           "default": 100,
-          "propertyOrder": 11
+          "propertyOrder": 12
         },
         "max_reg_hole": {
           "type": "integer",
           "title": "Max dummy read register count",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 12
+          "propertyOrder": 13
         },
         "max_bit_hole": {
           "type": "integer",
           "title": "Max dummy read bit count",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 13
+          "propertyOrder": 14
         }
       },
       "required": ["slave_id"],

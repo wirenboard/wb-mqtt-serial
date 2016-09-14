@@ -9,7 +9,7 @@ class TEMIntegrationTest: public TSerialDeviceIntegrationTest, public TEMDeviceE
 protected:
     void SetUp();
     void TearDown();
-    const char* ConfigPath() const { return "../config-em-test.json"; }
+    const char* ConfigPath() const { return "configs/config-em-test.json"; }
     void ExpectQueries(bool firstPoll);
 };
 
