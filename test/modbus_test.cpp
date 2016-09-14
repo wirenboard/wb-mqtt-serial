@@ -698,7 +698,7 @@ TEST_F(TConfigParserTest, Parse)
 
 TEST_F(TConfigParserTest, ForceDebug)
 {
-    TConfigParser parser(GetDataFilePath("../config-test.json"), true,
+    TConfigParser parser(GetDataFilePath("configs/config-test.json"), true,
                          TSerialDeviceFactory::GetRegisterTypes);
     PHandlerConfig config = parser.Parse();
     ASSERT_TRUE(config->Debug);
@@ -717,7 +717,7 @@ protected:
 void TModbusDeviceTest::SetUp()
 {
     TModbusTestBase::SetUp();
-    TConfigParser parser(GetDataFilePath("../config-test.json"), false,
+    TConfigParser parser(GetDataFilePath("configs/config-test.json"), false,
                          TSerialDeviceFactory::GetRegisterTypes);
     Config = parser.Parse();
     // NOTE: only one port is currently supported

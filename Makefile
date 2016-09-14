@@ -118,7 +118,7 @@ install: all
 	install -d $(DESTDIR)/usr/lib
 	install -d $(DESTDIR)/usr/share/wb-mqtt-serial
 
-	install -m 0644  config.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
+	install -m 0644  config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
 
 	install -m 0644  config.json.wb234 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234
 	install -m 0644  config.json.wb5 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5
