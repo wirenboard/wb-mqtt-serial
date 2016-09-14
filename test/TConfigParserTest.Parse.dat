@@ -125,7 +125,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: holding: 1 (poll_interval=103), holding: 0 (poll_interval=10), holding: 2 (poll_interval=102)
+            Registers: holding: 1 (poll_interval=103), holding: 0 (poll_interval=102), holding: 2 (poll_interval=102)
             ------
             Name: Button 1 counter
             Type: value
@@ -150,7 +150,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: input: 0 (poll_interval=10)
+            Registers: input: 0 (poll_interval=100)
         ------
         Id: TestDeviceOverride:template_6
         Name: TestDeviceOverride:template 6
@@ -166,4 +166,4 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: input: 0 (poll_interval=10)
+            Registers: input: 0 (poll_interval=100)
