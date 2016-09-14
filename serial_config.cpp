@@ -210,7 +210,8 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
         for(Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
             std::string def_type;
             auto reg = LoadRegister(device_config, reg_data[i], def_type);
-            if (poll_interval.count() >= 0)
+            /* the poll_interval specified for the specific register has a precedence over the one specified for the compound channel */
+            if ((reg->PollInterval.count() < 0) && (poll_interval.count() >= 0))
                 reg->PollInterval = poll_interval;
             registers.push_back(reg);
             if (!i)

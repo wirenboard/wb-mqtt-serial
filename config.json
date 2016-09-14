@@ -1,4 +1,3 @@
-// Configuration options
 {
     "debug": false,
     "ports": [
@@ -16,10 +15,10 @@
                     "slave_id": 2,
                     "enabled": true,
                     "channels": [
-		        {
-		            "name" : "Illuminance",
+                        {
+                            "name" : "Illuminance",
                             "poll_interval": 300
-		        },
+                        },
                         {
                             "name": "Pressure",
                             "poll_interval": 10000
@@ -122,6 +121,40 @@
                             "name" : "Switch AC In",
                             "reg_type" : "discrete",
                             "address" : "0x00"
+                        }
+                    ]
+                },
+                {
+                    "name" : "WB-MRGB",
+                    "id" : "wb-mrgb",
+                    "slave_id" : 2,
+                    "channels" : [
+                        {
+                            "name" : "RGB",
+                            "type" : "rgb",
+                            "poll_interval" : 102,
+                            "consists_of" : [
+                                {
+                                    "reg_type" : "holding",
+                                    "address" : 1,
+                                    "poll_interval" : 103
+                                },
+                                {
+                                    "reg_type" : "holding",
+                                    "address" : 0
+                                },
+                                {
+                                    "reg_type" : "holding",
+                                    "address" : 2
+                                }
+                            ]
+                        },
+                        {
+                            "name" : "Button 1 counter",
+                            "reg_type" : "holding",
+                            "readonly" : true,
+                            "address" : 32,
+                            "type" : "value"
                         }
                     ]
                 }

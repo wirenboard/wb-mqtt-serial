@@ -417,3 +417,26 @@ Ports:
             Max: -1
             ReadOnly: 1
             Registers: <modbus:4:discrete: 0> (poll_interval=100)
+        ------
+        Id: wb-mrgb
+        Name: WB-MRGB
+        SlaveId: 2
+        DeviceChannels:
+            ------
+            Name: RGB
+            Type: rgb
+            DeviceId: wb-mrgb
+            Order: 1
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers: <modbus:2:holding: 1> (poll_interval=103), <modbus:2:holding: 0> (poll_interval=102), <modbus:2:holding: 2> (poll_interval=102)
+            ------
+            Name: Button 1 counter
+            Type: value
+            DeviceId: wb-mrgb
+            Order: 2
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers: <modbus:2:holding: 32> (poll_interval=100)
