@@ -1,0 +1,123 @@
+{
+    "debug": false,
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 2,
+            "poll_interval": 10,
+            "enabled": true,
+            "devices" : [
+                {
+                    "device_type" : "MSU34",
+                    "slave_id": 2,
+                    "enabled": true,
+                    "channels": [
+                        {
+                            "name" : "Illuminance",
+                            "poll_interval": 300
+                        },
+                        {
+                            "name": "Pressure",
+                            "poll_interval": 10000
+                        }
+                    ]
+                },
+                {
+                    "name": "OnValueTest",
+                    "id": "OnValueTest",
+                    "enabled": true,
+                    "slave_id": "0x90",
+                    "channels": [
+                        {
+                            "name" : "Relay 1",
+                            "reg_type" : "holding",
+                            "address" : "0x00",
+                            "type": "switch",
+                            "on_value" : 500
+                        }
+
+                    ]
+                }
+            ]
+        },
+        {
+            "path" : "/dev/ttyNSC1",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 1,
+            "poll_interval": 100,
+            "enabled": true,
+            "devices" : [
+                {
+                    "name": "LC-103",
+                    "id": "lc103",
+                    "enabled": true,
+                    "slave_id": "0x04",
+                    "channels": [
+                        {
+                            "name" : "Relay 1",
+                            "reg_type" : "coil",
+                            "address" : "0x00",
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 2",
+                            "reg_type" : "coil",
+                            "address" : "0x01",
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Relay 3",
+                            "reg_type" : "coil",
+                            "address" : "0x02",
+                            "type": "switch"
+                        },
+                        {
+                            "name" : "Switch AC In",
+                            "reg_type" : "discrete",
+                            "address" : "0x00"
+                        }
+                    ]
+                },
+                {
+                    "name" : "WB-MRGB",
+                    "id" : "wb-mrgb",
+                    "slave_id" : 2,
+                    "channels" : [
+                        {
+                            "name" : "RGB",
+                            "type" : "rgb",
+                            "poll_interval" : 102,
+                            "consists_of" : [
+                                {
+                                    "reg_type" : "holding",
+                                    "address" : 1,
+                                    "poll_interval" : 103
+                                },
+                                {
+                                    "reg_type" : "holding",
+                                    "address" : 0
+                                },
+                                {
+                                    "reg_type" : "holding",
+                                    "address" : 2
+                                }
+                            ]
+                        },
+                        {
+                            "name" : "Button 1 counter",
+                            "reg_type" : "holding",
+                            "readonly" : true,
+                            "address" : 32,
+                            "type" : "value"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

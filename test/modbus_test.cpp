@@ -628,8 +628,8 @@ class TConfigParserTest: public TLoggedFixture {};
 
 TEST_F(TConfigParserTest, Parse)
 {
-    TConfigTemplateParser device_parser(GetDataFilePath("../wb-mqtt-serial-templates/"), false);
-    TConfigParser parser(GetDataFilePath("../config.json"), false,
+    TConfigTemplateParser device_parser(GetDataFilePath("device-templates/"), false);
+    TConfigParser parser(GetDataFilePath("configs/parse_test.json"), false,
                          TSerialDeviceFactory::GetRegisterTypes, device_parser.Parse());
     PHandlerConfig config = parser.Parse();
     Emit() << "Debug: " << config->Debug;
