@@ -8,6 +8,8 @@ Ports:
         Id: msu34tlp_2
         Name: MSU34+TLP 2
         SlaveId: 2
+        MaxRegHole: 0
+        MaxBitHole: 0
         DeviceChannels:
             ------
             Name: Illuminance
@@ -49,6 +51,8 @@ Ports:
         Id: msu21
         Name: MSU21
         SlaveId: 24
+        MaxRegHole: 0
+        MaxBitHole: 0
         DeviceChannels:
             ------
             Name: Temperature
@@ -72,6 +76,8 @@ Ports:
         Id: msu24
         Name: MSU24
         SlaveId: 34
+        MaxRegHole: 0
+        MaxBitHole: 0
         DeviceChannels:
             ------
             Name: Illuminance
@@ -95,6 +101,8 @@ Ports:
         Id: ddl24_23
         Name: DDL24
         SlaveId: 23
+        MaxRegHole: 0
+        MaxBitHole: 0
         DeviceChannels:
             ------
             Name: RGB
@@ -145,6 +153,8 @@ Ports:
         Id: drb88
         Name: DRB88 22
         SlaveId: 22
+        MaxRegHole: 0
+        MaxBitHole: 0
         DeviceChannels:
             ------
             Name: Relay 1
@@ -303,6 +313,8 @@ Ports:
         Id: OnValueTest
         Name: OnValueTest
         SlaveId: 144
+        MaxRegHole: 0
+        MaxBitHole: 0
         DeviceChannels:
             ------
             Name: Relay 1
@@ -321,6 +333,8 @@ Ports:
         Id: tmp3r3_1
         Name: tM-P3R3
         SlaveId: 1
+        MaxRegHole: 0
+        MaxBitHole: 0
         DeviceChannels:
             ------
             Name: Relay 0
@@ -380,6 +394,8 @@ Ports:
         Id: lc103
         Name: LC-103
         SlaveId: 4
+        MaxRegHole: 0
+        MaxBitHole: 0
         DeviceChannels:
             ------
             Name: Relay 1
@@ -421,6 +437,8 @@ Ports:
         Id: wb-mrgb
         Name: WB-MRGB
         SlaveId: 2
+        MaxRegHole: 0
+        MaxBitHole: 0
         DeviceChannels:
             ------
             Name: RGB

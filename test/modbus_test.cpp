@@ -651,6 +651,8 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "Id: " << device_config->Id;
             Emit() << "Name: " << device_config->Name;
             Emit() << "SlaveId: " << device_config->SlaveId;
+            Emit() << "MaxRegHole: " << device_config->MaxRegHole;
+            Emit() << "MaxBitHole: " << device_config->MaxBitHole;
             if (!device_config->DeviceChannels.empty()) {
                 Emit() << "DeviceChannels:";
                 for (auto modbus_channel: device_config->DeviceChannels) {
