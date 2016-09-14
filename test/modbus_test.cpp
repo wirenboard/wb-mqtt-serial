@@ -54,22 +54,22 @@ protected:
     void TearDown();
     PRegister RegCoil(int addr, RegisterFormat fmt = U8) {
         return TRegister::Intern(
-            Device, TRegisterConfig::Intern(
+            Device, TRegisterConfig::Create(
             TModbusDevice::REG_COIL, addr, fmt, 1, true, false, "coil"));
     }
     PRegister RegDiscrete(int addr, RegisterFormat fmt = U8) {
         return TRegister::Intern(
-            Device, TRegisterConfig::Intern(
+            Device, TRegisterConfig::Create(
             TModbusDevice::REG_DISCRETE, addr, fmt, 1, true, true, "discrete"));
     }
     PRegister RegHolding(int addr, RegisterFormat fmt = U16, double scale = 1) {
         return TRegister::Intern(
-            Device, TRegisterConfig::Intern(
+            Device, TRegisterConfig::Create(
             TModbusDevice::REG_HOLDING, addr, fmt, scale, true, false, "holding"));
     }
     PRegister RegInput(int addr, RegisterFormat fmt = U16, double scale = 1) {
         return TRegister::Intern(
-            Device, TRegisterConfig::Intern(
+            Device, TRegisterConfig::Create(
             TModbusDevice::REG_INPUT, addr, fmt, scale, true, true, "input"));
     }
     PSerialPort ClientSerial;

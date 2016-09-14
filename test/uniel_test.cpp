@@ -24,10 +24,10 @@ void TUnielDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("uniel"));
     
-    InputReg = TRegister::Intern(Dev, TRegisterConfig::Intern(TUnielDevice::REG_INPUT, 0x0a, U8));
-    RelayReg = TRegister::Intern(Dev, TRegisterConfig::Intern(TUnielDevice::REG_RELAY, 0x1b, U8));
-    ThresholdReg = TRegister::Intern(Dev, TRegisterConfig::Intern(TUnielDevice::REG_PARAM, 0x02, U8));
-    BrightnessReg = TRegister::Intern(Dev, TRegisterConfig::Intern(TUnielDevice::REG_BRIGHTNESS, 0x141, U8));
+    InputReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_INPUT, 0x0a, U8));
+    RelayReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_RELAY, 0x1b, U8));
+    ThresholdReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_PARAM, 0x02, U8));
+    BrightnessReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_BRIGHTNESS, 0x141, U8));
 
     SerialPort->Open();
 }

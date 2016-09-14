@@ -73,16 +73,17 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
             TypeName = "(type " + std::to_string(Type) + ")";
     }
 
-    static PRegisterConfig Intern(int type = 0, int address = 0,
+    static PRegisterConfig Create(int type = 0, int address = 0,
                             RegisterFormat format = U16, double scale = 1,
                             bool poll = true, bool readonly = false,
                             const std::string& type_name = "",
                             bool has_error_value = false,
                             uint64_t error_value = 0)
     {
-        return TRegistry::Intern<TRegisterConfig>(type, address, format, scale, poll, readonly, 
+        return std::make_shared<TRegisterConfig>(type, address, format, scale, poll, readonly, 
                                             type_name, has_error_value, error_value);
     }
+
 
 
     uint8_t ByteWidth() const {

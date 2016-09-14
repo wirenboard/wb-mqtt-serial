@@ -133,7 +133,7 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
         error_value = strtoull(register_data["error_value"].asString().c_str(), NULL, 0);
     }
 
-    PRegisterConfig reg = TRegisterConfig::Intern(
+    PRegisterConfig reg = TRegisterConfig::Create(
         it->second.Index,
         address, format, scale, true, force_readonly || it->second.ReadOnly,
         it->second.Name, has_error_value, error_value);
@@ -276,7 +276,7 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
     RegisterFormat format = U16;
     if (item_data.isMember("format"))
         format = RegisterFormatFromName(item_data["format"].asString());
-    PRegisterConfig reg = TRegisterConfig::Intern(
+    PRegisterConfig reg = TRegisterConfig::Create(
         type, address, format, 1, true, true, type_name);
 
     if (!item_data.isMember("value"))

@@ -22,9 +22,9 @@ void TIVTMDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("ivtm"));
     
-    Dev1Temp = TRegister::Intern(Dev, TRegisterConfig::Intern(0, 0, Float));
-    Dev1Humidity = TRegister::Intern(Dev, TRegisterConfig::Intern(0, 4, Float));
-    Dev2Temp = TRegister::Intern(Dev, TRegisterConfig::Intern(0, 0, Float));
+    Dev1Temp = TRegister::Intern(Dev, TRegisterConfig::Create(0, 0, Float));
+    Dev1Humidity = TRegister::Intern(Dev, TRegisterConfig::Create(0, 4, Float));
+    Dev2Temp = TRegister::Intern(Dev, TRegisterConfig::Create(0, 0, Float));
     
     SerialPort->Open();
 }
