@@ -87,6 +87,7 @@
                     "name" : "WB-MRGB",
                     "id" : "wb-mrgb",
                     "slave_id" : 2,
+                    "poll_interval" : 101,
                     "channels" : [
                         {
                             "name" : "RGB",

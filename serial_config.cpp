@@ -378,6 +378,12 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     device_config->Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
     device_config->Name = device_data.isMember("name") ? device_data["name"].asString() : "";
     device_config->SlaveId = GetInt(device_data, "slave_id");
+
+    auto device_poll_interval = std::chrono::milliseconds(-1);
+    if (device_data.isMember("poll_interval"))
+        device_poll_interval = std::chrono::milliseconds(
+            GetInt(device_data, "poll_interval"));
+
     if (device_data.isMember("device_type")){
         device_config->DeviceType = device_data["device_type"].asString();
         auto it = Templates->find(device_config->DeviceType);
@@ -411,9 +417,15 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
 
     port_config->AddDeviceConfig(device_config);
     for (auto channel: device_config->DeviceChannels) {
-        for (auto reg: channel->Registers)
-            if (reg->PollInterval.count() < 0)
-                reg->PollInterval = port_config->PollInterval;
+        for (auto reg: channel->Registers) {
+            if (reg->PollInterval.count() < 0) {
+                if (device_poll_interval.count() >= 0) {
+                    reg->PollInterval = device_poll_interval;
+                } else {
+                    reg->PollInterval = port_config->PollInterval;
+                }
+            }
+        }
     }
 }
 

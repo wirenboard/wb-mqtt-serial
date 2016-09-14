@@ -134,7 +134,7 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: <modbus:2:holding: 32> (poll_interval=100)
+            Registers: <modbus:2:holding: 32> (poll_interval=101)
         ------
         Id: TestDeviceOverride:config
         Name: TestDeviceOverride:config

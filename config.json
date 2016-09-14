@@ -30,6 +30,7 @@
                     "name": "MSU21",
                     "id": "msu21",
                     "slave_id": 24,
+                    "poll_interval" : 100,
                     "enabled": true
                 },
                 {
