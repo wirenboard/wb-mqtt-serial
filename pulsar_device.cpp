@@ -3,7 +3,13 @@
 #include <cstring>
 #include <cstdlib>
 
+#include "utils.h"
 #include "pulsar_device.h"
+
+using Utils::WriteHex;
+using Utils::WriteBCD;
+using Utils::ReadHex;
+using Utils::ReadBCD;
 
 /* FIXME: move this to configuration file! */
 namespace {
@@ -41,55 +47,6 @@ uint16_t TPulsarDevice::CalculateCRC16(const uint8_t *buffer, size_t size)
     }
 
     return w;
-}
-
-void TPulsarDevice::WriteBCD(uint64_t value, uint8_t *buffer, size_t size, bool big_endian)
-{
-    for (size_t i = 0; i < size; i++) {
-        // form byte from the end of value
-        uint8_t byte = value % 10;
-        value /= 10;
-        byte |= (value % 10) << 4;
-        value /= 10;
-
-        buffer[big_endian ? size - i - 1 : i] = byte;
-    }
-}
-
-void TPulsarDevice::WriteHex(uint64_t value, uint8_t *buffer, size_t size, bool big_endian)
-{
-    for (size_t i = 0; i < size; i++) {
-        buffer[big_endian ? size - i - 1 : i] = value & 0xFF;
-        value >>= 8;
-    }
-}
-
-uint64_t TPulsarDevice::ReadBCD(const uint8_t *buffer, size_t size, bool big_endian)
-{
-    uint64_t result = 0;
-
-    for (size_t i = 0; i < size; i++) {
-        result *= 100;
-
-        uint8_t bcd_byte = buffer[big_endian ? i : size - i - 1];
-        uint8_t dec_byte = (bcd_byte & 0x0F) + 10 * ((bcd_byte >> 4) & 0x0F);
-
-        result += dec_byte;
-    }
-
-    return result;
-}
-
-uint64_t TPulsarDevice::ReadHex(const uint8_t *buffer, size_t size, bool big_endian)
-{
-    uint64_t result = 0;
-
-    for (size_t i = 0; i < size; i++) {
-        result <<= 8;
-        result |= buffer[big_endian ? i : size - i - 1];
-    }
-
-    return result;
 }
 
 void TPulsarDevice::WriteDataRequest(uint32_t addr, uint32_t mask, uint16_t id)

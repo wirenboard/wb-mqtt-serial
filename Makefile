@@ -40,6 +40,7 @@ SERIAL_SRCS=register.cpp \
   serial_observer.cpp \
   serial_port.cpp \
   serial_device.cpp \
+  utils.cpp\
   uniel_device.cpp \
   ivtm_device.cpp \
   crc16.cpp \
@@ -50,6 +51,7 @@ SERIAL_SRCS=register.cpp \
   pulsar_device.cpp
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 TEST_SRCS= \
+  $(TEST_DIR)/utils_test.o \
   $(TEST_DIR)/testlog.o \
   $(TEST_DIR)/poll_plan_test.o \
   $(TEST_DIR)/modbus_server.o \
