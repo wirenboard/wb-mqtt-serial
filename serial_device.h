@@ -88,12 +88,16 @@ public:
     //! Slave ID type for concrete TBasicProtocol
     typedef S TSlaveId;
 
-    S ConvertSlaveId(const std::string &s) const;
+    virtual S ConvertSlaveId(const std::string &s) const;
+    virtual std::string SlaveIdToString(const S &s) const;
 };
 
 
 template<>
 int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s) const;
+
+template<>
+std::string TBasicProtocolConverter<int>::SlaveIdToString(const int &s) const;
 
 /*!
  * Basic protocol implementation with slave ID collision check
@@ -142,7 +146,7 @@ public:
 
         if (_Devices.find(sid) != _Devices.end()) {
             std::stringstream ss;
-            ss << "device address collision for slave id " << sid << " (\"" << config->SlaveId << "\")";
+            ss << "device address collision for slave id " << this->SlaveIdToString(sid) << " (\"" << config->SlaveId << "\")";
             throw TSerialDeviceException(ss.str());
         }
 
@@ -158,7 +162,7 @@ public:
 
         if (_Devices.find(sid) == _Devices.cend()) {
             std::stringstream ss;
-            ss << "no device with slave id " << sid << " (\"" << slave_id << "\") found in " << this->GetName();
+            ss << "no device with slave id " << this->SlaveIdToString(sid) << " (\"" << slave_id << "\") found in " << this->GetName();
             throw TSerialDeviceException(ss.str());
         }
 
@@ -207,7 +211,13 @@ public:
 
     std::string ToString() const
     {
-        return Protocol()->GetName() + ":" + std::to_string(SlaveId);
+        auto p = std::dynamic_pointer_cast<Proto>(Protocol());
+
+        if (!p) {
+            throw std::runtime_error("Wrong protocol cast, check registration code and class header");
+        }
+
+        return Protocol()->GetName() + ":" + p->SlaveIdToString(SlaveId);
     }
 
 protected:
@@ -240,11 +250,14 @@ public:
     }
 };
 
+/* A piece of legacy-friendly code for not to rewrite all existing stuff
+ */
 #define REGISTER_BASIC_INT_PROTOCOL(name, cls, regTypes) \
     TProtocolRegistrator reg__##cls(std::make_shared<TBasicProtocol<cls>>(name, regTypes))
 
 
-/* Usage:
+/* Make new instance of given protocol class and register it
+ * Usage:
  *
  * class MyProtocol : public IProtocol {
  *      ...
@@ -253,12 +266,13 @@ public:
  *      ...
  * };
  *
- * REGISTER_NEW_PROTOCOL(MyProtocol, arg1, arg2);
+ * REGISTER_AND_MAKE_PROTOCOL(MyProtocol, arg1, arg2);
  */
-#define REGISTER_NEW_PROTOCOL(prot, ...) \
+#define REGISTER_AND_MAKE_PROTOCOL(prot, ...) \
     TProtocolRegistrator reg__##prot(std::make_shared<prot>(__VA_ARGS__))
 
-/* Usage:
+/* Register existing instance of given protocol
+ * Usage:
  *
  * class MyProtocol : public IProtocol {
  *      ...

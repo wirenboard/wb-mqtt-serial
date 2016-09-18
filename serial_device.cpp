@@ -104,3 +104,9 @@ int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s) const
         throw TSerialDeviceException("slave ID \"" + s + "\" is not convertible to string");
     }
 }
+
+template<>
+std::string TBasicProtocolConverter<int>::SlaveIdToString(const int &s) const
+{
+    return std::to_string(s);
+}
