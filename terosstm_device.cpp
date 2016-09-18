@@ -3,6 +3,9 @@
 
 #include <wbmqtt/utils.h>
 
+#define VER_MAJOR(v) (((v) >> 8) & 0xff)
+#define VER_MINOR(v) ((v) & 0xff)
+
 using Utils::WriteBCD;
 using Utils::WriteHex;
 using Utils::ReadHex;
@@ -61,12 +64,17 @@ uint16_t TTerossTMDevice::CalculateChecksum(const uint8_t *val, int size)
 
 uint64_t TTerossTMDevice::ReadRegister(PRegister reg)
 {
-    WriteRequest(reg->Type, reg->Address);
+    return ReadRegister_r(reg->Type, reg->Address);
+}
+
+uint64_t TTerossTMDevice::ReadRegister_r(int type, int address)
+{
+    WriteRequest(type, address);
 
     uint8_t buffer[32];
     size_t reply_size = ReceiveReply(buffer, sizeof (buffer));
 
-    switch (reg->Type)
+    switch (type)
     {
     case TTerossTMDevice::REG_DEFAULT:
         return ReadDataRegister(buffer, reply_size);
@@ -78,6 +86,7 @@ uint64_t TTerossTMDevice::ReadRegister(PRegister reg)
         throw TSerialDeviceException("Teross-TM protocol: Wrong register type");
     }
 }
+
 
 size_t TTerossTMDevice::ReceiveReply(uint8_t *buffer, size_t max_size)
 {
@@ -162,6 +171,14 @@ void TTerossTMDevice::WriteRequest(int type, uint8_t reg)
         WriteDataRequest(buffer, reg);
         break;
     case TTerossTMDevice::REG_STATE:
+        // this request is supported by devices with version >= 6.06
+        // so check version first
+        if (!Version)
+            ReadRegister_r(REG_VERSION);
+        
+        if (*Version < 0x66)
+            throw TSerialDeviceTransientErrorException("state request is not supported by device");
+
         WriteStateRequest(buffer);
         break;
     case TTerossTMDevice::REG_VERSION:
@@ -263,7 +280,12 @@ uint64_t TTerossTMDevice::ReadVersionRegister(uint8_t *msg, size_t size)
     uint8_t major = msg[5] * 10 + msg[6];
     uint8_t minor = msg[8] * 10 + msg[9];
 
-    return (major << 8) | minor;
+    uint16_t result = (major << 8) | minor;
+
+    // update version if requested
+    *Version = result;
+    
+    return result;
 }
 
 void TTerossTMDevice::WriteRegister(PRegister reg, uint64_t value)

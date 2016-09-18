@@ -63,6 +63,8 @@ public:
     void WriteRegister(PRegister reg, uint64_t value);
 
 private:
+    
+    uint64_t ReadRegister_r(int type, int address = 0);
  
     uint16_t CalculateChecksum(const uint8_t *buffer, int size);
 
