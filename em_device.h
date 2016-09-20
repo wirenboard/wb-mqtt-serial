@@ -34,14 +34,14 @@ protected:
     };
     const int MAX_LEN = 64;
 
-    virtual bool ConnectionSetup(uint8_t slave) = 0;
+    virtual bool ConnectionSetup() = 0;
     virtual ErrorType CheckForException(uint8_t* frame, int len, const char** message) = 0;
-    void WriteCommand(uint8_t slave, uint8_t cmd, uint8_t* payload, int len)
+    void WriteCommand( uint8_t cmd, uint8_t* payload, int len)
     {
         uint8_t buf[MAX_LEN], *p = buf;
         if (len + 4 > MAX_LEN)
             throw TSerialDeviceException("outgoing command too long");
-        *p++ = slave;
+        *p++ = this->SlaveId;
         *p++ = cmd;
         while (len--)
             *p++ = *payload++;
@@ -51,7 +51,7 @@ protected:
         this->Port()->WriteBytes(buf, p - buf);
     }
 
-    bool ReadResponse(uint8_t slave, int expectedByte1, uint8_t* payload, int len,
+    bool ReadResponse( int expectedByte1, uint8_t* payload, int len,
                                TAbstractSerialPort::TFrameCompletePred frame_complete = 0)
     {
         uint8_t buf[MAX_LEN], *p = buf;
@@ -66,7 +66,7 @@ protected:
         if (crc != actualCrc)
             throw TSerialDeviceTransientErrorException("invalid crc");
 
-        if (*p++ != slave)
+        if (*p++ != this->SlaveId)
             throw TSerialDeviceTransientErrorException("invalid slave id");
 
         const char* msg;
@@ -88,18 +88,18 @@ protected:
         std::memcpy(payload, p, len);
         return true;
     }
-    void Talk(uint8_t slave, uint8_t cmd, uint8_t* payload, int payload_len,
+    void Talk( uint8_t cmd, uint8_t* payload, int payload_len,
               int expected_byte1, uint8_t* resp_payload, int resp_payload_len,
               TAbstractSerialPort::TFrameCompletePred frame_complete = 0)
     {
-        EnsureSlaveConnected(slave);
-        WriteCommand(slave, cmd, payload, payload_len);
+        EnsureSlaveConnected();
+        WriteCommand(cmd, payload, payload_len);
         try {
-            while (!ReadResponse(slave, expected_byte1, resp_payload, resp_payload_len, frame_complete)) {
-                EnsureSlaveConnected(slave, true);
-                WriteCommand(slave, cmd, payload, payload_len);
+            while (!ReadResponse(expected_byte1, resp_payload, resp_payload_len, frame_complete)) {
+                EnsureSlaveConnected( true);
+                WriteCommand(cmd, payload, payload_len);
             }
-        } catch (const TSerialDeviceTransientErrorException& e) {
+        } catch ( const TSerialDeviceTransientErrorException& e) {
             this->Port()->SkipNoise();
             throw;
         }
@@ -107,17 +107,17 @@ protected:
 
 
 private:
-    void EnsureSlaveConnected(uint8_t slave, bool force = false)
+    void EnsureSlaveConnected(bool force = false)
     {
-        if (!force && ConnectedSlaves.find(slave) != ConnectedSlaves.end())
+        if (!force && ConnectedSlaves.find(this->SlaveId) != ConnectedSlaves.end())
             return;
 
-        ConnectedSlaves.erase(slave);
+        ConnectedSlaves.erase(this->SlaveId);
         this->Port()->SkipNoise();
-        if (!ConnectionSetup(slave))
+        if (!ConnectionSetup())
             throw TSerialDeviceTransientErrorException("failed to establish meter connection");
 
-        ConnectedSlaves.insert(slave);
+        ConnectedSlaves.insert(this->SlaveId);
     }
 
     std::unordered_set<uint8_t> ConnectedSlaves;

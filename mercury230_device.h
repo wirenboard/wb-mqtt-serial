@@ -26,15 +26,15 @@ public:
     void EndPollCycle();
 
 protected:
-    bool ConnectionSetup(uint8_t slave);
+    bool ConnectionSetup();
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
 
 private:
     struct TValueArray {
         uint32_t values[4];
     };
-    const TValueArray& ReadValueArray(uint32_t slave, uint32_t address);
-    uint32_t ReadParam(uint32_t slave, uint32_t address);
+    const TValueArray& ReadValueArray(uint32_t address);
+    uint32_t ReadParam( uint32_t address);
 
     std::unordered_map<int, TValueArray> CachedValues;
 };

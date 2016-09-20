@@ -62,7 +62,7 @@ TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port
     : TEMDevice<TBasicProtocol<TMilurDevice>>(device_config, port, protocol)
 {}
 
-bool TMilurDevice::ConnectionSetup(uint8_t slave)
+bool TMilurDevice::ConnectionSetup()
 {
     uint8_t setupCmd[7] = {
         // full: 0xff, 0x08, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x5f, 0xed
@@ -77,9 +77,9 @@ bool TMilurDevice::ConnectionSetup(uint8_t slave)
     }
 
     uint8_t buf[MAX_LEN];
-    WriteCommand(slave, 0x08, setupCmd, 7);
+    WriteCommand(0x08, setupCmd, 7);
     try {
-        if (!ReadResponse(slave, 0x08, buf, 1, ExpectNBytes(5)))
+        if (!ReadResponse(0x08, buf, 1, ExpectNBytes(5)))
             return false;
         if (buf[0] != uint8_t(DeviceConfig()->AccessLevel))
             throw TSerialDeviceException("invalid milur access level in response");
@@ -151,7 +151,7 @@ uint64_t TMilurDevice::ReadRegister(PRegister reg)
 
     uint8_t addr = reg->Address;
     uint8_t buf[MAX_LEN], *p = buf;
-    Talk(SlaveId, 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(size + 6));
+    Talk( 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(size + 6));
     if (*p++ != reg->Address)
         throw TSerialDeviceTransientErrorException("bad register address in the response");
     if (*p++ != size)

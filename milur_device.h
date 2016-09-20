@@ -28,7 +28,7 @@ public:
 
 
 protected:
-    bool ConnectionSetup(uint8_t slave);
+    bool ConnectionSetup();
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
 };
 
