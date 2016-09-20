@@ -38,13 +38,13 @@ namespace {
         }
     }
 
-    TAbstractSerialPort::TFrameCompletePred ExpectNBytes(int n)
+    TAbstractSerialPort::TFrameCompletePred ExpectNBytes(int slave_id_width, int n)
     {
-        return [n](uint8_t* buf, int size) {
+        return [slave_id_width, n](uint8_t* buf, int size) {
             if (size < 2)
                 return false;
-            if (buf[1] & 0x80)
-                return size >= 6; // exception response
+            if (buf[slave_id_width] & 0x80)
+                return size >= 5 + slave_id_width; // exception response
             return size >= n;
         };
     }
@@ -60,7 +60,17 @@ REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
 
 TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
     : TEMDevice<TBasicProtocol<TMilurDevice>>(device_config, port, protocol)
-{}
+{
+    /* FIXME: Milur driver should set address width based on slave_id string:
+    0xFF: 1-byte address
+    255: 1-byte address
+    163050000049932: parse as serial number, use 4-byte addressing with slave id = 0x0CC30000
+    */
+
+    if (SlaveId > 0xFF) {
+        SlaveIdWidth = 4;
+    }
+}
 
 bool TMilurDevice::ConnectionSetup()
 {
@@ -79,7 +89,7 @@ bool TMilurDevice::ConnectionSetup()
     uint8_t buf[MAX_LEN];
     WriteCommand(0x08, setupCmd, 7);
     try {
-        if (!ReadResponse(0x08, buf, 1, ExpectNBytes(5)))
+        if (!ReadResponse(0x08, buf, 1, ExpectNBytes(SlaveIdWidth, 5)))
             return false;
         if (buf[0] != uint8_t(DeviceConfig()->AccessLevel))
             throw TSerialDeviceException("invalid milur access level in response");
@@ -151,7 +161,7 @@ uint64_t TMilurDevice::ReadRegister(PRegister reg)
 
     uint8_t addr = reg->Address;
     uint8_t buf[MAX_LEN], *p = buf;
-    Talk( 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(size + 6));
+    Talk( 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(SlaveIdWidth, size + 5 + SlaveIdWidth));
     if (*p++ != reg->Address)
         throw TSerialDeviceTransientErrorException("bad register address in the response");
     if (*p++ != size)

@@ -41,6 +41,38 @@ void TEMDeviceExpectations::EnqueueMilurSessionSetupResponse()
         }, __func__);
 }
 
+void TEMDeviceExpectations::EnqueueMilur32SessionSetupResponse()
+{
+    Expector()->Expect(
+        {
+            0x0C, // unit id
+            0xC3, // unit id
+            0x00, // unit id
+            0x00, // unit id
+            0x08, // op
+            0x01, // access level
+            0xff, // pw
+            0xff, // pw
+            0xff, // pw
+            0xff, // pw
+            0xff, // pw
+            0xff, // pw
+            0x97, // crc
+            0xBC  // crc
+        },
+        {
+            // Session setup response
+            0x0C, // unit id
+            0xC3, // unit id
+            0x00, // unit id
+            0x00, // unit id
+            0x08, // op
+            0x01, // result
+            0x82, // crc
+            0xC6  // crc
+        }, __func__);
+}
+
 void TEMDeviceExpectations::EnqueueMilurAccessLevel2SessionSetupResponse()
 {
     Expector()->Expect(
@@ -114,6 +146,37 @@ void TEMDeviceExpectations::EnqueueMilurTotalConsumptionResponse()
             0x00, // data 4
             0xac, // crc
             0x6c  // crc
+        }, __func__);
+}
+
+void TEMDeviceExpectations::EnqueueMilur32TotalConsumptionResponse()
+{
+    Expector()->Expect(
+        {
+            0x0C, // unit id
+            0xC3,
+            0x00,
+            0x00,
+            0x01, // op
+            0x76, // register
+            0xC4, // crc
+            0xB0  // crc
+        },
+        {
+            // Read response
+            0x0C, // unit id
+            0xC3,
+            0x00,
+            0x00,
+            0x01, // op
+            0x76, // register
+            0x04, // len
+            0x44, // data 1
+            0x11, // data 2
+            0x10, // data 3
+            0x00, // data 4
+            0x6F, // crc
+            0xE4  // crc
         }, __func__);
 }
 

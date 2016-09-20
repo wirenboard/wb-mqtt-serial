@@ -242,3 +242,45 @@ TEST_F(TEMCustomPasswordTest, Combined)
 
     SerialPort->Close();
 }
+
+class TMilur32Test: public TSerialDeviceTest, public TEMDeviceExpectations
+{
+protected:
+    void SetUp();
+    void VerifyMilurQuery();
+    virtual PDeviceConfig MilurConfig();
+    PMilurDevice MilurDev;
+
+    PRegister MilurTotalConsumptionReg;
+};
+
+PDeviceConfig TMilur32Test::MilurConfig()
+{
+    return std::make_shared<TDeviceConfig>("milur", 0x0CC30000, "milur");
+}
+
+void TMilur32Test::SetUp()
+{
+    TSerialDeviceTest::SetUp();
+    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort, 
+                            TSerialDeviceFactory::GetProtocol("milur"));
+    MilurTotalConsumptionReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
+    
+    SerialPort->Open();
+}
+
+void TMilur32Test::VerifyMilurQuery()
+{
+    EnqueueMilur32TotalConsumptionResponse();
+    ASSERT_EQ(11144, MilurDev->ReadRegister(MilurTotalConsumptionReg));
+}
+
+TEST_F(TMilur32Test, MilurQuery)
+{
+    EnqueueMilur32SessionSetupResponse();
+    VerifyMilurQuery();
+    VerifyMilurQuery();
+    SerialPort->Close();
+}
+
+//FIXME: ExpectNBytes() in Milur code isn't covered by tests here

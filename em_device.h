@@ -32,16 +32,20 @@ protected:
         NO_OPEN_SESSION,
         OTHER_ERROR
     };
-    const int MAX_LEN = 64;
+    const int   MAX_LEN = 64;
 
     virtual bool ConnectionSetup() = 0;
     virtual ErrorType CheckForException(uint8_t* frame, int len, const char** message) = 0;
     void WriteCommand( uint8_t cmd, uint8_t* payload, int len)
     {
         uint8_t buf[MAX_LEN], *p = buf;
-        if (len + 4 > MAX_LEN)
+        if (len + 3 + SlaveIdWidth > MAX_LEN)
             throw TSerialDeviceException("outgoing command too long");
-        *p++ = this->SlaveId;
+
+        for (int i = SlaveIdWidth - 1; i >= 0; --i) {
+            *p++ = (this->SlaveId & (0xFF << (8*i))) >> (8*i);
+        }
+
         *p++ = cmd;
         while (len--)
             *p++ = *payload++;
@@ -56,7 +60,7 @@ protected:
     {
         uint8_t buf[MAX_LEN], *p = buf;
         int nread = this->Port()->ReadFrame(buf, MAX_LEN, this->DeviceConfig()->FrameTimeout, frame_complete);
-        if (nread < 4)
+        if (nread < 3 + SlaveIdWidth)
             throw TSerialDeviceTransientErrorException("frame too short");
 
         uint16_t crc = CRC16::CalculateCRC16(buf, nread - 2),
@@ -66,8 +70,11 @@ protected:
         if (crc != actualCrc)
             throw TSerialDeviceTransientErrorException("invalid crc");
 
-        if (*p++ != this->SlaveId)
-            throw TSerialDeviceTransientErrorException("invalid slave id");
+        for (int i = SlaveIdWidth - 1; i >= 0; --i) {
+            if (*p++ != (this->SlaveId & (0xFF << (8*i))) >> (8*i)) {
+                throw TSerialDeviceTransientErrorException("invalid slave id");
+            }
+        }
 
         const char* msg;
         ErrorType err = CheckForException(buf, nread, &msg);
@@ -105,6 +112,7 @@ protected:
         }
     }
 
+    uint8_t SlaveIdWidth = 1;
 
 private:
     void EnsureSlaveConnected(bool force = false)

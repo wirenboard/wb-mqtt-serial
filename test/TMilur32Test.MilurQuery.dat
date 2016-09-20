@@ -1,0 +1,12 @@
+Open()
+SkipNoise()
+EnqueueMilur32SessionSetupResponse()
+>> 0C C3 00 00 08 01 FF FF FF FF FF FF 97 BC
+<< 0C C3 00 00 08 01 82 C6
+EnqueueMilur32TotalConsumptionResponse()
+>> 0C C3 00 00 01 76 C4 B0
+<< 0C C3 00 00 01 76 04 44 11 10 00 6F E4
+EnqueueMilur32TotalConsumptionResponse()
+>> 0C C3 00 00 01 76 C4 B0
+<< 0C C3 00 00 01 76 04 44 11 10 00 6F E4
+Close()
