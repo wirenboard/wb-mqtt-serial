@@ -10,6 +10,7 @@ namespace {
     PSlaveEntry Mercury200Slave = TSlaveEntry::Intern("mercury200", 123456);
     PRegister MilurPhaseCVoltageReg = TRegister::Intern(MilurSlave, TMilurDevice::REG_PARAM, 102, U24);
     PRegister MilurTotalConsumptionReg = TRegister::Intern(MilurSlave, TMilurDevice::REG_ENERGY, 118, BCD32);
+    PRegister MilurFrequencyReg = TRegister::Intern(MilurSlave, TMilurDevice::REG_FREQ, 9, U16);
     PRegister Mercury230TotalConsumptionReg =
         TRegister::Intern(Mercury230Slave, TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32);
     PRegister Mercury230TotalReactiveEnergyReg =
@@ -81,6 +82,9 @@ void TEMDeviceTest::VerifyMilurQuery()
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
     ASSERT_EQ(0x11144, MilurDev->ReadRegister(MilurTotalConsumptionReg));
+
+    EnqueueMilurFrequencyResponse();
+    ASSERT_EQ(50080, MilurDev->ReadRegister(MilurFrequencyReg));
 }
 
 TEST_F(TEMDeviceTest, MilurQuery)

@@ -11,6 +11,7 @@ public:
     void EnqueueMilurTotalConsumptionResponse();
     void EnqueueMilurNoSessionResponse();
     void EnqueueMilurExceptionResponse();
+    void EnqueueMilurFrequencyResponse();
     void EnqueueMercury230SessionSetupResponse();
     void EnqueueMercury230AccessLevel2SessionSetupResponse();
     void EnqueueMercury230EnergyResponse1();

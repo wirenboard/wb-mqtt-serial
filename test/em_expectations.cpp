@@ -92,6 +92,29 @@ void TEMDeviceExpectations::EnqueueMilurPhaseCVoltageResponse()
         }, __func__);
 }
 
+void TEMDeviceExpectations::EnqueueMilurFrequencyResponse()
+{
+    Expector()->Expect(
+        {
+            0xff, // unit id
+            0x01, // op
+            0x09, // register
+            0x80, // crc
+            0x66  // crc
+        },
+        {
+            // Read response
+            0xff, // unit id
+            0x01, // op
+            0x09, // register
+            0x02, // len
+            0xA0, // data 1
+            0xC3, // data 2
+            0xB3, // crc
+            0xD9  // crc
+        }, __func__);
+}
+
 void TEMDeviceExpectations::EnqueueMilurTotalConsumptionResponse()
 {
     Expector()->Expect(
