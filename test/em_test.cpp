@@ -256,7 +256,7 @@ protected:
 
 PDeviceConfig TMilur32Test::MilurConfig()
 {
-    return std::make_shared<TDeviceConfig>("milur", 0x0CC30000, "milur");
+    return std::make_shared<TDeviceConfig>("milur", 49932, "milur");
 }
 
 void TMilur32Test::SetUp()

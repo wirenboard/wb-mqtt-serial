@@ -42,7 +42,8 @@ protected:
         if (len + 3 + SlaveIdWidth > MAX_LEN)
             throw TSerialDeviceException("outgoing command too long");
 
-        for (int i = SlaveIdWidth - 1; i >= 0; --i) {
+        // SlaveId is sent in reverse (little-endian) order
+        for (int i = 0; i < SlaveIdWidth; ++i) {
             *p++ = (this->SlaveId & (0xFF << (8*i))) >> (8*i);
         }
 
@@ -70,7 +71,7 @@ protected:
         if (crc != actualCrc)
             throw TSerialDeviceTransientErrorException("invalid crc");
 
-        for (int i = SlaveIdWidth - 1; i >= 0; --i) {
+        for (int i = 0; i < SlaveIdWidth; ++i) {
             if (*p++ != (this->SlaveId & (0xFF << (8*i))) >> (8*i)) {
                 throw TSerialDeviceTransientErrorException("invalid slave id");
             }

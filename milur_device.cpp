@@ -64,7 +64,7 @@ TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port
     /* FIXME: Milur driver should set address width based on slave_id string:
     0xFF: 1-byte address
     255: 1-byte address
-    163050000049932: parse as serial number, use 4-byte addressing with slave id = 0x0CC30000
+    163050000049932: parse as serial number, use 4-byte addressing with slave id = 49932
     */
 
     if (SlaveId > 0xFF) {
