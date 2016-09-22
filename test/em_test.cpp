@@ -20,8 +20,9 @@ protected:
     PMercury200Device Mercury200Dev;
     PRegister MilurPhaseCVoltageReg;
     PRegister MilurTotalConsumptionReg;
-    PRegister Mercury230TotalConsumptionReg;
+    PRegister MilurFrequencyReg;
     PRegister Mercury230TotalReactiveEnergyReg;
+    PRegister Mercury230TotalConsumptionReg;
     PRegister Mercury230U1Reg;
     PRegister Mercury230I1Reg;
     PRegister Mercury230U2Reg;
@@ -64,6 +65,7 @@ void TEMDeviceTest::SetUp()
     
     MilurPhaseCVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 102, U24));
     MilurTotalConsumptionReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
+    MilurFrequencyReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_FREQ, 9, U16));
     Mercury230TotalConsumptionReg =
         TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32));
     Mercury230TotalReactiveEnergyReg =
@@ -92,6 +94,9 @@ void TEMDeviceTest::VerifyMilurQuery()
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
     ASSERT_EQ(0x11144, MilurDev->ReadRegister(MilurTotalConsumptionReg));
+
+    EnqueueMilurFrequencyResponse();
+    ASSERT_EQ(50080, MilurDev->ReadRegister(MilurFrequencyReg));
 }
 
 TEST_F(TEMDeviceTest, MilurQuery)

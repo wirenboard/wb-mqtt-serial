@@ -19,9 +19,9 @@ REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
             { TMilurDevice::REG_PARAM, "param", "value", U24, true },
             { TMilurDevice::REG_POWER, "power", "power", S32, true },
             { TMilurDevice::REG_ENERGY, "energy", "power_consumption", BCD32, true },
-            { TMilurDevice::REG_FREQ, "freq", "value", BCD32, true },
+            { TMilurDevice::REG_FREQ, "freq", "value", U16, true },
             { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", S16, true }
-        }));
+                                                        }));
 
 TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
     : TEMDevice<TBasicProtocol<TMilurDevice>>(device_config, port, protocol)
@@ -40,8 +40,8 @@ TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port
 bool TMilurDevice::ConnectionSetup()
 {
     uint8_t setupCmd[7] = {
-        // full: 0xff, 0x08, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x5f, 0xed
-        uint8_t(DeviceConfig()->AccessLevel), 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+            // full: 0xff, 0x08, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x5f, 0xed
+            uint8_t(DeviceConfig()->AccessLevel), 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
     };
 
     std::vector<uint8_t> password = DeviceConfig()->Password;
@@ -60,7 +60,7 @@ bool TMilurDevice::ConnectionSetup()
             throw TSerialDeviceException("invalid milur access level in response");
         return true;
     } catch (TSerialDeviceTransientErrorException &) {
-            // retry upon response from a wrong slave
+        // retry upon response from a wrong slave
         return false;
     }
 }
@@ -135,13 +135,13 @@ uint64_t TMilurDevice::ReadRegister(PRegister reg)
     case TMilurDevice::REG_POWER:
         return BuildIntVal(buf + 2, 4);
     case TMilurDevice::REG_ENERGY:
-    case TMilurDevice::REG_FREQ:
         return BuildBCB32(buf + 2);
     case TMilurDevice::REG_POWERFACTOR:
+    case TMilurDevice::REG_FREQ:
         return BuildIntVal(buf + 2, 2);
     default:
         throw TSerialDeviceTransientErrorException("bad register type");
-        }
+    }
 }
 
 void TMilurDevice::Prepare()
@@ -189,8 +189,8 @@ int TMilurDevice::GetExpectedSize(int type) const
         return 3;
     case TMilurDevice::REG_POWER:
     case TMilurDevice::REG_ENERGY:
-    case TMilurDevice::REG_FREQ:
         return 4;
+    case TMilurDevice::REG_FREQ:
     case TMilurDevice::REG_POWERFACTOR:
         return 2;
     default:

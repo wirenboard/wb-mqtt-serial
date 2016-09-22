@@ -9,6 +9,9 @@ EnqueueMilurPhaseCVoltageResponse()
 EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
 << FF 01 76 04 44 11 10 00 AC 6C
+EnqueueMilurFrequencyResponse()
+>> FF 01 09 80 66
+<< FF 01 09 02 A0 C3 B3 D9
 SkipNoise()
 EnqueueMercury230SessionSetupResponse()
 >> 00 01 01 01 01 01 01 01 01 77 81
@@ -31,6 +34,9 @@ EnqueueMilurPhaseCVoltageResponse()
 EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
 << FF 01 76 04 44 11 10 00 AC 6C
+EnqueueMilurFrequencyResponse()
+>> FF 01 09 80 66
+<< FF 01 09 02 A0 C3 B3 D9
 EnqueueMercury230U1Response()
 >> 00 08 11 11 4D BA
 << 00 00 40 5E B0 1C
@@ -49,6 +55,9 @@ EnqueueMilurPhaseCVoltageResponse()
 EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
 << FF 01 76 04 44 11 10 00 AC 6C
+EnqueueMilurFrequencyResponse()
+>> FF 01 09 80 66
+<< FF 01 09 02 A0 C3 B3 D9
 EnqueueMercury230U1Response()
 >> 00 08 11 11 4D BA
 << 00 00 40 5E B0 1C
@@ -67,6 +76,9 @@ EnqueueMilurPhaseCVoltageResponse()
 EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
 << FF 01 76 04 44 11 10 00 AC 6C
+EnqueueMilurFrequencyResponse()
+>> FF 01 09 80 66
+<< FF 01 09 02 A0 C3 B3 D9
 EnqueueMercury230U1Response()
 >> 00 08 11 11 4D BA
 << 00 00 40 5E B0 1C
