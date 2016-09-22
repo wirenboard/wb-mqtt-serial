@@ -67,7 +67,7 @@ PTemplateMap TConfigTemplateParser::Parse()
         Json::Reader reader;
         Json::Value root;
         if (!reader.parse(input_stream, root, false)) {
-            std::cerr << "Failed to parse JSON: " << filepath << " " << reader.getFormatedErrorMessages()
+            std::cerr << "Failed to parse JSON: " << filepath << " " << reader.getFormattedErrorMessages()
                       << std::endl;
             continue;
         }

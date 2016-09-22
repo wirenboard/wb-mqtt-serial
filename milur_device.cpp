@@ -1,42 +1,7 @@
 #include "milur_device.h"
-#include "crc16.h"
+#include "bcd_utils.h"
 
 namespace {
-    void GetRegType(RegisterFormat fmt, int* size, bool* bcd) {
-        *bcd = false;
-        switch (fmt) {
-        case BCD8:
-            *bcd = true;
-        case U8:
-            *size = 1;
-            break;
-
-        case BCD16:
-            *bcd = true;
-        case U16:
-        case S16:
-            *size = 2;
-            break;
-
-        case BCD24:
-            *bcd = true;
-        case U24:
-            *size = 3;
-            break;
-
-        case BCD32:
-            *bcd = true;
-        case U32:
-            *size = 4;
-            break;
-        case S32:
-            *size = 4;
-            break;
-
-        default:
-            throw TSerialDeviceException("milur: unsupported register format");
-        }
-    }
 
     TAbstractSerialPort::TFrameCompletePred ExpectNBytes(int slave_id_width, int n)
     {
@@ -94,7 +59,7 @@ bool TMilurDevice::ConnectionSetup()
         if (buf[0] != uint8_t(DeviceConfig()->AccessLevel))
             throw TSerialDeviceException("invalid milur access level in response");
         return true;
-    } catch (TSerialDeviceTransientErrorException&) {
+    } catch (TSerialDeviceTransientErrorException &) {
             // retry upon response from a wrong slave
         return false;
     }
@@ -145,7 +110,7 @@ TEMDevice<TMilurProtocol>::ErrorType TMilurDevice::CheckForException(uint8_t* fr
         *message = "Jumper absent";
         break;
     case 0x0d:
-        *message = "Passw incorrect";
+        *message = "Passwd incorrect";
         break;
     default:
         *message = "Unknown error";
@@ -155,31 +120,28 @@ TEMDevice<TMilurProtocol>::ErrorType TMilurDevice::CheckForException(uint8_t* fr
 
 uint64_t TMilurDevice::ReadRegister(PRegister reg)
 {
-    int size;
-    bool bcd;
-    GetRegType(reg->Format, &size, &bcd);
-
-    uint8_t addr = reg->Address;
+    int size = GetExpectedSize(reg->Type);
+    uint8_t addr = static_cast<uint8_t>(reg->Address);
     uint8_t buf[MAX_LEN], *p = buf;
-    Talk( 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(SlaveIdWidth, size + 5 + SlaveIdWidth));
+    Talk(0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(SlaveIdWidth, size + 5 + SlaveIdWidth));
     if (*p++ != reg->Address)
         throw TSerialDeviceTransientErrorException("bad register address in the response");
-    if (*p++ != size)
+    if (*p != size)
         throw TSerialDeviceTransientErrorException("bad register size in the response");
 
-    uint64_t r = 0;
-    if (bcd) {
-        for (int i = 0, mul = 1; i < size; ++i, mul *= 100) {
-            int v = buf[i + 2];
-            r += ((v & 0x0f) * 10 + (v >> 4)) * mul;
+    switch (reg->Type) {
+    case TMilurDevice::REG_PARAM:
+        return BuildIntVal(buf + 2, 3);
+    case TMilurDevice::REG_POWER:
+        return BuildIntVal(buf + 2, 4);
+    case TMilurDevice::REG_ENERGY:
+    case TMilurDevice::REG_FREQ:
+        return BuildBCB32(buf + 2);
+    case TMilurDevice::REG_POWERFACTOR:
+        return BuildIntVal(buf + 2, 2);
+    default:
+        throw TSerialDeviceTransientErrorException("bad register type");
         }
-    } else {
-        for (int i = 0; i < size; ++i) {
-            r += buf[i + 2] << (i * 8);
-        }
-    }
-
-    return r;
 }
 
 void TMilurDevice::Prepare()
@@ -193,6 +155,47 @@ void TMilurDevice::Prepare()
     Port()->WriteBytes(buf, sizeof(buf) / sizeof(buf[0]));
     TSerialDevice::Prepare();
     Port()->SkipNoise();
+}
+
+uint64_t TMilurDevice::BuildIntVal(uint8_t *p, int sz) const
+{
+    uint64_t r = 0;
+    for (int i = 0; i < sz; ++i) {
+        r += p[i] << (i * 8);
+    }
+    return r;
+}
+
+// We transfer BCD byte arrays as unsigned little endian integers with swapped nibbles.
+// To convert it to our standard transport BCD representation (ie. integer with hexadecimal
+// that reads exactly as original BCD if printed) we just have to swap nibbles of each byte
+// that is decimal value 87654321 comes as {0x12, 0x34, 0x56, 0x78} and becomes {0x21, 0x43, 0x65, 0x87}.
+uint64_t TMilurDevice::BuildBCB32(uint8_t *psrc) const
+{
+    uint32_t r = 0;
+    uint8_t *pdst = reinterpret_cast<uint8_t *>(&r);
+    for (int i = 0; i < 4; ++i) {
+        auto t = psrc[i];
+        pdst[i] = (t >> 4) | (t << 4);
+    }
+    return r;
+}
+
+int TMilurDevice::GetExpectedSize(int type) const
+{
+    auto t = static_cast<TMilurDevice::RegisterType>(type);
+    switch (t) {
+    case TMilurDevice::REG_PARAM:
+        return 3;
+    case TMilurDevice::REG_POWER:
+    case TMilurDevice::REG_ENERGY:
+    case TMilurDevice::REG_FREQ:
+        return 4;
+    case TMilurDevice::REG_POWERFACTOR:
+        return 2;
+    default:
+        throw TSerialDeviceTransientErrorException("bad register type");
+    }
 }
 
 #if 0

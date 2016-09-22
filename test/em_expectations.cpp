@@ -350,7 +350,7 @@ void TEMDeviceExpectations::EnqueueMercury230U1Response()
             0x08, // op
             0x11, // addr
             0x11, // addr
-            0x4d, // crc 
+            0x4d, // crc
             0xba  // crc
         },
         {
@@ -418,7 +418,7 @@ void TEMDeviceExpectations::EnqueueMercury230PResponse()
         },
         {
             0x00, // unit id (group)
-            0x48, // 2 bits direction + 6 bits P value 
+            0x48, // 2 bits direction + 6 bits P value
             0x87, // P value, 3rd byte
             0x70, // P value, 2nd byte
             0xe2, // crc
@@ -461,5 +461,48 @@ void TEMDeviceExpectations::EnqueueMercury230InternalMeterErrorResponse()
             0x02, // error 2 = internal meter error
             0x80, // crc
             0x71  // crc
+        }, __func__);
+}
+
+void TEMDeviceExpectations::EnqueueMercury200EnergyResponse()
+{
+    Expector()->Expect(
+        {
+            0x00,
+            0x01,
+            0xe2,
+            0x40,
+            0x27,
+            0xf4,
+            0x10
+        },
+        {
+            0x00, 0x01, 0xe2, 0x40, 0x27, // request
+            0x00, 0x06, 0x21, 0x42, // tariff1
+            0x00, 0x02, 0x08, 0x34, // tariff2
+            0x00, 0x01, 0x11, 0x11, // tariff3
+            0x00, 0x02, 0x22, 0x22, // tariff4
+            0x32, 0x042 //crc
+        }, __func__);
+}
+
+void TEMDeviceExpectations::EnqueueMercury200ParamResponse()
+{
+    Expector()->Expect(
+        {
+            0x00,
+            0x01,
+            0xe2,
+            0x40,
+            0x63,
+            0xf4,
+            0x23
+        },
+        {
+            0x00, 0x01, 0xe2, 0x40, 0x63, // request
+            0x12, 0x34, // Voltage
+            0x56, 0x78, // Current
+            0x76, 0x54, 0x32, // Power
+            0x8a, 0x8a //crc
         }, __func__);
 }

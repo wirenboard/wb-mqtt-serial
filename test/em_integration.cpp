@@ -59,7 +59,7 @@ TEST_F(TEMIntegrationTest, Poll)
 TEST_F(TEMIntegrationTest, MaxUnchangedInterval) {
     for (int i = 0; i < 6; ++i) {
         if (i == 2 || i == 5)
-            SerialPort->Elapse(std::chrono::seconds(100)); // force 'unchanged' update
+            SerialPort->Elapse(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::seconds(100))); // force 'unchanged' update
         ExpectQueries(i == 0);
 
         Note() << "LoopOnce()";

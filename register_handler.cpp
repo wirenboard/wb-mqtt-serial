@@ -140,6 +140,12 @@ std::string TRegisterHandler::TextValue() const
         return ToScaledTextValue(int32_t(Value & 0xffffffff));
     case S64:
         return ToScaledTextValue(int64_t(Value));
+    case BCD8:
+        return ToScaledTextValue(PackedBCD2Int(Value, BCD8_SZ));
+    case BCD16:
+        return ToScaledTextValue(PackedBCD2Int(Value, BCD16_SZ));
+    case BCD32:
+        return ToScaledTextValue(PackedBCD2Int(Value, BCD32_SZ));
 	case Float:
         {
             union {

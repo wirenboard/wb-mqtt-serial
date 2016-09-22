@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <utility>
 
+
 #include "serial_exc.h"
 #include "serial_port.h"
 
@@ -32,7 +33,11 @@ TLibModbusContext::TLibModbusContext(const TSerialPortSettings& settings)
         struct timeval tv;
         tv.tv_sec = response_timeout.count() / 1000;
         tv.tv_usec = (response_timeout.count() % 1000) * 1000;
+#if LIBMODBUS_VERSION_CHECK(3,1,2)
+        modbus_set_response_timeout(Inner, tv.tv_sec, tv.tv_usec);
+#else
         modbus_set_response_timeout(Inner, &tv);
+#endif
     }
 }
 

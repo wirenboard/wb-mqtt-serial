@@ -9,7 +9,12 @@
 
 #include "register.h"
 #include "portsettings.h"
-#include "jsoncpp/json/json.h"
+
+#if defined(__APPLE__) || defined(__APPLE_CC__)
+#   include <json/json.h>
+#else
+#   include <jsoncpp/json/json.h>
+#endif
 
 struct TTemplate {
     TTemplate(const Json::Value& device_data);
@@ -68,7 +73,6 @@ struct TDeviceConfig {
           AccessLevel(access_level), FrameTimeout(frame_timeout),
           MaxRegHole(max_reg_hole), MaxBitHole(max_bit_hole),
           TypeMap(type_map) {}
-    
     TDeviceConfig(const std::string &name, int slave_id, std::string protocol = "",
                   const std::chrono::milliseconds& delay =
                   std::chrono::milliseconds(DEFAULT_INTER_DEVICE_DELAY_MS),
