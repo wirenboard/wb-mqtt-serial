@@ -1,3 +1,10 @@
+wb-mqtt-serial (1.19~alpha2) stable; urgency=medium
+
+  * Support for Mercury200
+  * Support for 32-bit Milur addressing
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 22 Sep 2016 23:32:38 +0300
+
 wb-mqtt-serial (1.19~alpha1) stable; urgency=medium
 
   * Change slave ID format
