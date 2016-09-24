@@ -51,7 +51,7 @@ const TMercury200Device::TEnergyValues& TMercury200Device::ReadEnergyValues(uint
     uint8_t* payload = buf + HEADER_SZ;
     TEnergyValues a{{0, 0, 0, 0}};
     for (int i = 0; i < 4; ++i) {
-        a.values[i] = PackBCD(payload + i * BCD32_SZ, BCD32_SZ);
+        a.values[i] = PackBytes(payload + i * static_cast<unsigned>(WordSizes::W32_SZ), WordSizes::W32_SZ);
     }
     return EnergyCache.insert({slave, a}).first->second;
 }
@@ -76,9 +76,9 @@ const TMercury200Device::TParamValues& TMercury200Device::ReadParamValues(uint32
     }
     uint8_t* payload = buf + HEADER_SZ;
     TParamValues a{{0, 0, 0}};
-    a.values[0] = PackBCD(payload, BCD16_SZ);
-    a.values[1] = PackBCD(payload + BCD16_SZ, BCD16_SZ);
-    a.values[2] = PackBCD(payload + BCD32_SZ, BCD24_SZ);
+    a.values[0] = PackBytes(payload, WordSizes::W16_SZ);
+    a.values[1] = PackBytes(payload + static_cast<unsigned>(WordSizes::W16_SZ), WordSizes::W16_SZ);
+    a.values[2] = PackBytes(payload + static_cast<unsigned>(WordSizes::W16_SZ) * 2, WordSizes::W24_SZ);
     return ParamCache.insert({slave, a}).first->second;
 }
 
