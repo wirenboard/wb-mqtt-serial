@@ -7,32 +7,32 @@
     "channels": [
       {
         "name": "Power consumption tariff 1",
-        "reg_type": "energy",
-        "address": "0x00",
+        "reg_type": "param32",
+        "address": "0x2700",
         "format": "bcd32",
         "type": "power_consumption",
         "scale": 0.001
       },
       {
         "name": "Power consumption tariff 2",
-        "reg_type": "energy",
-        "address": "0x01",
+        "reg_type": "param32",
+        "address": "0x2704",
         "format": "bcd32",
         "type": "power_consumption",
         "scale": 0.001
       },
       {
         "name": "Power consumption tariff 3",
-        "reg_type": "energy",
-        "address": "0x02",
+        "reg_type": "param32",
+        "address": "0x2708",
         "format": "bcd32",
         "type": "power_consumption",
         "scale": 0.001
       },
       {
         "name": "Power consumption tariff 4",
-        "reg_type": "energy",
-        "address": "0x03",
+        "reg_type": "param32",
+        "address": "0x270C",
         "format": "bcd32",
         "type": "power_consumption",
         "scale": 0.001
@@ -40,7 +40,7 @@
       {
         "name": "Voltage",
         "reg_type": "param16",
-        "address": "0x00",
+        "address": "0x6300",
         "format": "bcd16",
         "type": "value",
         "scale": 0.1
@@ -48,7 +48,7 @@
       {
         "name": "Current",
         "reg_type": "param16",
-        "address": "0x01",
+        "address": "0x6302",
         "format": "bcd16",
         "type": "value",
         "scale": 0.01
@@ -56,7 +56,7 @@
       {
         "name": "Power",
         "reg_type": "param24",
-        "address": "0x02",
+        "address": "0x6304",
         "format": "bcd24",
         "type": "power",
         "scale": 1.0

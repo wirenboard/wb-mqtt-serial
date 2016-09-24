@@ -75,13 +75,13 @@ void TEMDeviceTest::SetUp()
     Mercury230U2Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1112, U24));
     Mercury230PReg  = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1100, U24));
     
-    Mercury200RET1Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_ENERGY_VALUE, 0x00, BCD32));
-    Mercury200RET2Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_ENERGY_VALUE, 0x01, BCD32));
-    Mercury200RET3Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_ENERGY_VALUE, 0x02, BCD32));
-    Mercury200RET4Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_ENERGY_VALUE, 0x03, BCD32));
-    Mercury200UReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x00, BCD16));
-    Mercury200IReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x01, BCD16));
-    Mercury200PReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE24, 0x02, BCD24));
+    Mercury200RET1Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2700, BCD32));
+    Mercury200RET2Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2704, BCD32));
+    Mercury200RET3Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2708, BCD32));
+    Mercury200RET4Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x270C, BCD32));
+    Mercury200UReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x6300, BCD16));
+    Mercury200IReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x6302, BCD16));
+    Mercury200PReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE24, 0x6304, BCD24));
 
     SerialPort->Open();
 }
