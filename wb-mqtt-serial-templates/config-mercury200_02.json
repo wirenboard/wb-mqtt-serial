@@ -60,6 +60,15 @@
         "format": "bcd24",
         "type": "power",
         "scale": 1.0
+      },
+      {
+        "name": "Battery",
+        "reg_type": "param16",
+        "address": "0x2900",
+        "format": "bcd16",
+        "type": "voltage",
+        "scale": 0.01,
+        "poll_interval" : 600000
       }
     ]
   }
