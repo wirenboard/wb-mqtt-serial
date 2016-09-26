@@ -20,6 +20,7 @@ protected:
     PRegister Mercury200UReg;
     PRegister Mercury200IReg;
     PRegister Mercury200PReg;
+    PRegister Mercury200BatReg;
 };
 
 PDeviceConfig TMercury200Test::GetDeviceConfig()
@@ -40,6 +41,7 @@ void TMercury200Test::SetUp()
     Mercury200UReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x6300, BCD16));
     Mercury200IReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x6302, BCD16));
     Mercury200PReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE24, 0x6304, BCD24));
+    Mercury200BatReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x2900, BCD16));
 
     SerialPort->Open();
 }
@@ -83,5 +85,13 @@ TEST_F(TMercury200Test, ParamsQuery)
         SerialPort->Close();
         throw e;
     }
+    SerialPort->Close();
+}
+
+TEST_F(TMercury200Test, BatteryVoltageQuery)
+{
+    EnqueueMercury200BatteryVoltageResponse();
+    ASSERT_EQ(0x0391, Mercury200Dev->ReadRegister(Mercury200BatReg));
+    Mercury200Dev->EndPollCycle();
     SerialPort->Close();
 }

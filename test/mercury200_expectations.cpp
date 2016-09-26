@@ -58,6 +58,6 @@ void TMercury200Expectations::EnqueueMercury200BatteryVoltageResponse()
         {
             0x00, 0x01, 0xe2, 0x40, 0x29, // addr + cmd
             0x03, 0x91, // Voltage
-            0xe7, 0x91 //crc
+            0xe7, 0x93 //crc
         }, __func__);
 }
