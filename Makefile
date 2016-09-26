@@ -61,6 +61,8 @@ TEST_SRCS= \
   $(TEST_DIR)/em_expectations.o \
   $(TEST_DIR)/em_test.o \
   $(TEST_DIR)/em_integration.o \
+  $(TEST_DIR)/mercury200_expectations.o \
+  $(TEST_DIR)/mercury200_test.o \
   $(TEST_DIR)/ivtm_test.o \
   $(TEST_DIR)/pulsar_test.o \
   $(TEST_DIR)/fake_mqtt.o \

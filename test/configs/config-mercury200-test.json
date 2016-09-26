@@ -1,0 +1,23 @@
+{
+  "debug": true,
+  "max_unchanged_interval": 100,
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 100,
+      "enabled": true,
+      "protocol": "other",
+      "devices" : [
+        {
+          "slave_id": "0x01e240",
+          "frame_timeout_ms": 150,
+          "device_type": "Mercury 200.02"
+        }
+      ]
+    }
+  ]
+}

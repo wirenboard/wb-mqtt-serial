@@ -10,17 +10,15 @@ namespace
 {
     const size_t RESPONSE_BUF_LEN = 100;
     const size_t REQUEST_LEN = 7;
-    const int PAUSE_US = 100000; // delay of 100 ms in microseconds
-    const int EXPECTED_ENERGY_SZ = 21;
-    const int EXPECTED_PARAMS_SZ = 12;
     const ptrdiff_t HEADER_SZ = 5;
 }
 
 REGISTER_BASIC_INT_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes(
         {
-            { TMercury200Device::REG_ENERGY_VALUE, "energy", "power_consumption", BCD32, true },
+            { TMercury200Device::REG_PARAM_VALUE16, "param8", "value", U8, true },
             { TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true },
-            { TMercury200Device::REG_PARAM_VALUE24, "param24", "value", BCD24, true }
+            { TMercury200Device::REG_PARAM_VALUE24, "param24", "value", BCD24, true },
+            { TMercury200Device::REG_PARAM_VALUE32, "param32", "value", BCD32, true }
         }));
 
 TMercury200Device::TMercury200Device(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
@@ -30,82 +28,70 @@ TMercury200Device::TMercury200Device(PDeviceConfig config, PAbstractSerialPort p
 TMercury200Device::~TMercury200Device()
 {}
 
-const TMercury200Device::TEnergyValues& TMercury200Device::ReadEnergyValues(uint32_t slave)
+std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
 {
-    auto it = EnergyCache.find(slave);
-    if (it != EnergyCache.end()) {
+    auto it = CmdResultCache.find(cmd);
+    if (it != CmdResultCache.end()) {
         return it->second;
     }
 
-    uint8_t buf[RESPONSE_BUF_LEN];
-    auto readn = RequestResponse(slave, 0x27, buf);
-    if (readn < EXPECTED_ENERGY_SZ) {
-        throw TSerialDeviceTransientErrorException("read frame too short for 0x27 command response");
+    uint8_t buf[100] = {0x00};
+    auto readn = RequestResponse(SlaveId, cmd, buf);
+    if (readn < 4) { //fixme 4
+        throw TSerialDeviceTransientErrorException("mercury200: read frame too short for command response");
     }
-    if (IsBadHeader(slave, 0x27, buf)) {
-        throw TSerialDeviceTransientErrorException("bad response header for 0x27 command");
+    if (IsBadHeader(SlaveId, cmd, buf)) {
+        throw TSerialDeviceTransientErrorException("mercury200: bad response header for command");
     }
-    if (IsCrcValid(buf, EXPECTED_ENERGY_SZ)) {
-        throw TSerialDeviceTransientErrorException("bad CRC for 0x27 command");
-    }
-    uint8_t* payload = buf + HEADER_SZ;
-    TEnergyValues a{{0, 0, 0, 0}};
-    for (int i = 0; i < 4; ++i) {
-        a.values[i] = PackBCD(payload + i * BCD32_SZ, BCD32_SZ);
-    }
-    return EnergyCache.insert({slave, a}).first->second;
-}
-
-const TMercury200Device::TParamValues& TMercury200Device::ReadParamValues(uint32_t slave)
-{
-    auto it = ParamCache.find(slave);
-    if (it != ParamCache.end()) {
-        return it->second;
-    }
-
-    uint8_t buf[RESPONSE_BUF_LEN] = {0x00};
-    auto readn = RequestResponse(slave, 0x63, buf);
-    if (readn < EXPECTED_PARAMS_SZ) {
-        throw TSerialDeviceTransientErrorException("read frame too short for 0x63 command response");
-    }
-    if (IsBadHeader(slave, 0x63, buf)) {
-        throw TSerialDeviceTransientErrorException("bad response header for 0x63 command");
-    }
-    if (IsCrcValid(buf, EXPECTED_PARAMS_SZ)) {
-        throw TSerialDeviceTransientErrorException("bad CRC for 0x63 command");
+    if (IsCrcValid(buf, readn)) {
+        throw TSerialDeviceTransientErrorException("mercury200: bad CRC for command");
     }
     uint8_t* payload = buf + HEADER_SZ;
-    TParamValues a{{0, 0, 0}};
-    a.values[0] = PackBCD(payload, BCD16_SZ);
-    a.values[1] = PackBCD(payload + BCD16_SZ, BCD16_SZ);
-    a.values[2] = PackBCD(payload + BCD32_SZ, BCD24_SZ);
-    return ParamCache.insert({slave, a}).first->second;
+    std::vector<uint8_t> result = {0};
+    result.assign(payload, payload + readn - HEADER_SZ);
+    return CmdResultCache.insert({cmd, result}).first->second;
 }
+
 
 uint64_t TMercury200Device::ReadRegister(PRegister reg)
 {
-    uint32_t slv = static_cast<uint32_t>(SlaveId);
-    uint32_t adr = static_cast<uint32_t>(reg->Address) & 0x03;
+    uint8_t cmd = (reg->Address & 0xFF00) >> 8;
+    uint8_t offset = (reg->Address & 0xFF);
+
+    WordSizes size;
     switch (reg->Type) {
-    case REG_ENERGY_VALUE:
-        return ReadEnergyValues(slv).values[adr];
-    case REG_PARAM_VALUE16:
+    case REG_PARAM_VALUE32:
+        size = WordSizes::W32_SZ;
+        break;
     case REG_PARAM_VALUE24:
-        return ReadParamValues(slv).values[adr];
+        size = WordSizes::W24_SZ;
+        break;
+    case REG_PARAM_VALUE16:
+        size = WordSizes::W16_SZ;
+        break;
+    case REG_PARAM_VALUE8:
+        size = WordSizes::W8_SZ;
+        break;
     default:
-        throw TSerialDeviceException("mercury200.02: invalid register type");
+        throw TSerialDeviceException("mercury200: invalid register type");
     }
+
+    auto result = ExecCommand(cmd);
+    if (result.size() < offset + static_cast<unsigned>(size))
+        throw TSerialDeviceException("mercury200: register address is out of range");
+
+    return PackBytes(result.data() + offset, size);
 }
 
 void TMercury200Device::WriteRegister(PRegister, uint64_t)
 {
-    throw TSerialDeviceException("Mercury 200 protocol: writing register is not supported");
+    throw TSerialDeviceException("mercury200: register writing is not supported");
 }
 
 void TMercury200Device::EndPollCycle()
 {
-    EnergyCache.clear();
-    ParamCache.clear();
+    CmdResultCache.clear();
+
     TSerialDevice::EndPollCycle();
 }
 
@@ -124,8 +110,7 @@ int TMercury200Device::RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* res
     uint8_t request[REQUEST_LEN];
     FillCommand(request, slave, cmd);
     Port()->WriteBytes(request, REQUEST_LEN);
-    Port()->Sleep(microseconds(PAUSE_US));
-    return Port()->ReadFrame(response, RESPONSE_BUF_LEN, microseconds(PAUSE_US));
+    return Port()->ReadFrame(response, RESPONSE_BUF_LEN, this->DeviceConfig()->FrameTimeout);
 }
 
 void TMercury200Device::FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) const

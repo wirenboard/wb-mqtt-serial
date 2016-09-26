@@ -65,6 +65,7 @@ protected:
     void SetUp();
     void TearDown();
     virtual const char* ConfigPath() const = 0;
+    virtual const char* GetTemplatePath() const { return nullptr;};
 
     PFakeMQTTClient MQTTClient;
     PMQTTSerialObserver Observer;

@@ -17,9 +17,10 @@ class TMercury200Device : public TBasicProtocolSerialDevice<TBasicProtocol<TMerc
 public:
     enum RegisterType
     {
-        REG_ENERGY_VALUE = 0,
+        REG_PARAM_VALUE8 = 0,
         REG_PARAM_VALUE16 = 1,
         REG_PARAM_VALUE24 = 2,
+        REG_PARAM_VALUE32 = 3,
     };
 
     TMercury200Device(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
@@ -29,17 +30,7 @@ public:
     virtual void EndPollCycle();
 
 private:
-    struct TEnergyValues
-    {
-        uint32_t values[4];
-    };
-    const TMercury200Device::TEnergyValues& ReadEnergyValues(uint32_t slave);
-
-    struct TParamValues
-    {
-        uint32_t values[3];
-    };
-    const TMercury200Device::TParamValues& ReadParamValues(uint32_t slave);
+    std::vector<uint8_t> ExecCommand(uint8_t cmd);
     // buf expected to be 7 bytes long
     void FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) const;
     int RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* response) const;
@@ -47,8 +38,7 @@ private:
 
     bool IsCrcValid(uint8_t *buf, int sz) const;
 
-    std::unordered_map<uint32_t, TEnergyValues> EnergyCache;
-    std::unordered_map<uint32_t, TParamValues> ParamCache;
+    std::unordered_map<uint8_t, std::vector<uint8_t> > CmdResultCache;
 };
 
 typedef std::shared_ptr<TMercury200Device> PMercury200Device;

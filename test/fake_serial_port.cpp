@@ -223,7 +223,15 @@ void TSerialDeviceIntegrationTest::SetUp()
 {
     TSerialDeviceTest::SetUp();
     PortMakerCalled = false;
-    TConfigParser parser(GetDataFilePath(ConfigPath()), false, TSerialDeviceFactory::GetRegisterTypes);
+
+    PTemplateMap templateMap = std::make_shared<TTemplateMap>();
+    if (GetTemplatePath()) {
+        TConfigTemplateParser templateParser(GetDataFilePath(GetTemplatePath()), false);
+        templateMap = templateParser.Parse();
+    }
+    TConfigParser parser(GetDataFilePath(ConfigPath()), false, TSerialDeviceFactory::GetRegisterTypes, templateMap);
+
+
     Config = parser.Parse();
     MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("em-test", *this));
     Observer = PMQTTSerialObserver(new TMQTTSerialObserver(MQTTClient, Config, SerialPort));
