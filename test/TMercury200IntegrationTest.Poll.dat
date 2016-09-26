@@ -47,7 +47,7 @@ Publish: /devices/mercury200.02_0x01e240/controls/Voltage: '123.4' (QoS 0, retai
 Publish: /devices/mercury200.02_0x01e240/controls/Current/meta/error: '' (QoS 0, retained)
 Publish: /devices/mercury200.02_0x01e240/controls/Current: '56.78' (QoS 0, retained)
 Publish: /devices/mercury200.02_0x01e240/controls/Power/meta/error: '' (QoS 0, retained)
-Publish: /devices/mercury200.02_0x01e240/controls/Power: '7754802' (QoS 0, retained)
+Publish: /devices/mercury200.02_0x01e240/controls/Power: '765432' (QoS 0, retained)
 << 00 01 E2 40 63 12 34 56 78 76 54 32 8A 8A
 EnqueueMercury200EnergyResponse()
 >> 00 01 E2 40 27 F4 10
