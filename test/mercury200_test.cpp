@@ -95,3 +95,37 @@ TEST_F(TMercury200Test, BatteryVoltageQuery)
     Mercury200Dev->EndPollCycle();
     SerialPort->Close();
 }
+
+
+class TMercury200IntegrationTest: public TSerialDeviceIntegrationTest, public TMercury200Expectations
+{
+protected:
+    void SetUp();
+    void TearDown();
+    const char* ConfigPath() const { return "configs/config-mercury200-test.json"; }
+    const char* GetTemplatePath() const { return "../wb-mqtt-serial-templates/"; }
+};
+
+void TMercury200IntegrationTest::SetUp()
+{
+    TSerialDeviceIntegrationTest::SetUp();
+    Observer->SetUp();
+    SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(150));
+    ASSERT_TRUE(!!SerialPort);
+}
+
+void TMercury200IntegrationTest::TearDown()
+{
+    SerialPort->Close();
+    TSerialDeviceIntegrationTest::TearDown();
+}
+
+
+TEST_F(TMercury200IntegrationTest, Poll)
+{
+    EnqueueMercury200BatteryVoltageResponse();
+    EnqueueMercury200ParamResponse();
+    EnqueueMercury200EnergyResponse();
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+}
