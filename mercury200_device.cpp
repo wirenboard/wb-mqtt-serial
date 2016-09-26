@@ -10,7 +10,6 @@ namespace
 {
     const size_t RESPONSE_BUF_LEN = 100;
     const size_t REQUEST_LEN = 7;
-    const int PAUSE_US = 100000; // delay of 100 ms in microseconds
     const ptrdiff_t HEADER_SZ = 5;
 }
 
@@ -111,8 +110,7 @@ int TMercury200Device::RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* res
     uint8_t request[REQUEST_LEN];
     FillCommand(request, slave, cmd);
     Port()->WriteBytes(request, REQUEST_LEN);
-    Port()->Sleep(microseconds(PAUSE_US));
-    return Port()->ReadFrame(response, RESPONSE_BUF_LEN, microseconds(PAUSE_US));
+    return Port()->ReadFrame(response, RESPONSE_BUF_LEN, this->DeviceConfig()->FrameTimeout);
 }
 
 void TMercury200Device::FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) const

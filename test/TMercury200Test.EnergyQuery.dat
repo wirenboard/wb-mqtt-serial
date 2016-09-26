@@ -1,6 +1,5 @@
 Open()
 EnqueueMercury200EnergyResponse()
 >> 00 01 E2 40 27 F4 10
-Sleep(100000)
 << 00 01 E2 40 27 00 06 21 42 00 02 08 34 00 01 11 11 00 02 22 22 32 42
 Close()
