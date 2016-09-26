@@ -29,7 +29,7 @@ uint64_t PackedBCD2Int(uint64_t packed, WordSizes size)
 {
     uint32_t result = 0;
     int exp = 1;
-    for (int i = 0; i < static_cast<unsigned>(size); ++i) {
+    for (unsigned i = 0; i < static_cast<unsigned>(size); ++i) {
         auto tmp = static_cast<uint8_t>(packed >> (i * 8));
         result += ((tmp & 0x0f) * exp);
         exp *= 10;
@@ -37,4 +37,25 @@ uint64_t PackedBCD2Int(uint64_t packed, WordSizes size)
         exp *= 10;
     }
     return result;
+}
+std::vector<uint8_t> IntToBCDArray(uint64_t value, WordSizes size)
+{
+    std::vector<uint8_t> result;
+    result.resize(static_cast<unsigned>(size));
+
+    for (unsigned i = 0; i < static_cast<unsigned>(size); i++) {
+        // form byte from the end of value
+        uint8_t byte = value % 10;
+        value /= 10;
+        byte |= (value % 10) << 4;
+        value /= 10;
+        result[static_cast<unsigned>(size) - i - 1] = byte;
+    }
+    return result;
+}
+
+uint32_t IntToPackedBCD(uint32_t value, WordSizes size)
+{
+    auto bcdArray = IntToBCDArray(value, size);
+    return PackBytes(bcdArray.data(), size);
 }

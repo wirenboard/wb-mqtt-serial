@@ -448,6 +448,126 @@ TEST_F(TModbusClientTest, U32)
     EXPECT_EQ(123, Slave->Holding[23]);
 }
 
+TEST_F(TModbusClientTest, BCD32)
+{
+    PRegister holding20 = RegHolding(20, BCD32);
+    SerialClient->AddRegister(holding20);
+    Slave->Holding[22] = 123;
+    Slave->Holding[23] = 123;
+
+    Note() << "server -> client: 0x1234 0x5678";
+    Slave->Holding[20] = 0x1234;
+    Slave->Holding[21] = 0x5678;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(12345678), SerialClient->GetTextValue(holding20));
+
+
+    FakeSerial->Flush();
+    Note() << "client -> server: 12345678";
+    SerialClient->SetTextValue(holding20, "12345678");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(12345678), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(0x1234, Slave->Holding[20]);
+    EXPECT_EQ(0x5678, Slave->Holding[21]);
+
+
+    FakeSerial->Flush();
+    Note() << "client -> server: 567890";
+    SerialClient->SetTextValue(holding20, "567890");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(567890), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(0x0056, Slave->Holding[20]);
+    EXPECT_EQ(0x7890, Slave->Holding[21]);
+
+    //boundaries check
+    EXPECT_EQ(123, Slave->Holding[22]);
+    EXPECT_EQ(123, Slave->Holding[23]);
+}
+
+TEST_F(TModbusClientTest, BCD24)
+{
+    PRegister holding20 = RegHolding(20, BCD24);
+    SerialClient->AddRegister(holding20);
+    Slave->Holding[22] = 123;
+    Slave->Holding[23] = 123;
+
+    Note() << "server -> client: 0x0034 0x5678";
+    Slave->Holding[20] = 0x0034;
+    Slave->Holding[21] = 0x5678;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(345678), SerialClient->GetTextValue(holding20));
+
+
+    FakeSerial->Flush();
+    Note() << "client -> server: 567890";
+    SerialClient->SetTextValue(holding20, "567890");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(567890), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(0x0056, Slave->Holding[20]);
+    EXPECT_EQ(0x7890, Slave->Holding[21]);
+
+    //boundaries check
+    EXPECT_EQ(123, Slave->Holding[22]);
+    EXPECT_EQ(123, Slave->Holding[23]);
+}
+
+TEST_F(TModbusClientTest, BCD16)
+{
+    PRegister holding20 = RegHolding(20, BCD16);
+    SerialClient->AddRegister(holding20);
+    Slave->Holding[21] = 123;
+
+    Note() << "server -> client: 0x1234";
+    Slave->Holding[20] = 0x1234;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(1234), SerialClient->GetTextValue(holding20));
+
+
+    FakeSerial->Flush();
+    Note() << "client -> server: 1234";
+    SerialClient->SetTextValue(holding20, "1234");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(1234), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(0x1234, Slave->Holding[20]);
+
+    //boundaries check
+    EXPECT_EQ(123, Slave->Holding[21]);
+}
+
+TEST_F(TModbusClientTest, BCD8)
+{
+    PRegister holding20 = RegHolding(20, BCD8);
+    SerialClient->AddRegister(holding20);
+    Slave->Holding[21] = 123;
+
+    Note() << "server -> client: 0x12";
+    Slave->Holding[20] = 0x12;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(12), SerialClient->GetTextValue(holding20));
+
+
+    FakeSerial->Flush();
+    Note() << "client -> server: 12";
+    SerialClient->SetTextValue(holding20, "12");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(12), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(0x12, Slave->Holding[20]);
+
+    //boundaries check
+    EXPECT_EQ(123, Slave->Holding[21]);
+}
+
+
+
 TEST_F(TModbusClientTest, Float32)
 {
 	// create scaled register

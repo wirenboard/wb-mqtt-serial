@@ -144,6 +144,8 @@ std::string TRegisterHandler::TextValue() const
         return ToScaledTextValue(PackedBCD2Int(Value, WordSizes::W8_SZ));
     case BCD16:
         return ToScaledTextValue(PackedBCD2Int(Value, WordSizes::W16_SZ));
+    case BCD24:
+        return ToScaledTextValue(PackedBCD2Int(Value, WordSizes::W24_SZ));
     case BCD32:
         return ToScaledTextValue(PackedBCD2Int(Value, WordSizes::W32_SZ));
 	case Float:
@@ -226,6 +228,14 @@ uint64_t TRegisterHandler::ConvertMasterValue(const std::string& str) const
 		}
     case Char8:
         return str.empty() ? 0 : uint8_t(str[0]);
+    case BCD8:
+        return IntToPackedBCD(FromScaledTextValue<uint64_t>(str) & 0xFF, WordSizes::W8_SZ);
+    case BCD16:
+        return IntToPackedBCD(FromScaledTextValue<uint64_t>(str) & 0xFFFF, WordSizes::W16_SZ);
+    case BCD24:
+        return IntToPackedBCD(FromScaledTextValue<uint64_t>(str) & 0xFFFFFF, WordSizes::W24_SZ);
+    case BCD32:
+        return IntToPackedBCD(FromScaledTextValue<uint64_t>(str) & 0xFFFFFFFF, WordSizes::W32_SZ);
     default:
         return FromScaledTextValue<uint64_t>(str);
     }

@@ -2,6 +2,7 @@
 #define WB_MQTT_SERIAL_BCD_UTILS_H
 
 #include <cstdint>
+#include <vector>
 
 enum class WordSizes
 {
@@ -18,4 +19,7 @@ uint32_t PackBytes(uint8_t* bytes, WordSizes size);
 // converted to uint32_t by previous function.
 uint64_t PackedBCD2Int(uint64_t packed, WordSizes size);
 
+std::vector<uint8_t> IntToBCDArray(uint64_t value, WordSizes size);
+
+uint32_t IntToPackedBCD(uint32_t value, WordSizes size);
 #endif //WB_MQTT_SERIAL_BCD_UTILS_H

@@ -1,0 +1,14 @@
+>>> server -> client: 0x12
+>>> Cycle()
+>> 01 03 00 14 00 01 C4 0E
+Modbus ErrorCallback: <modbus:1:holding: 20>: no error
+Modbus Callback: <modbus:1:holding: 20> becomes 12
+<< 01 03 02 00 12 38 49
+>>> client -> server: 12
+>>> Cycle()
+>> 01 06 00 14 00 12 49 C3
+<< 01 06 00 14 00 12 49 C3
+>> 01 03 00 14 00 01 C4 0E
+Modbus Callback: <modbus:1:holding: 20> becomes 12 [unchanged]
+<< 01 03 02 00 12 38 49
+(pty-based fake serial -- stopping forwarding)
