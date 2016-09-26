@@ -252,11 +252,13 @@ TAbstractSerialPort::TTimePoint TSerialPort::CurrentTime() const
 
 bool TSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
 {
-    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now().time_since_epoch()).count() <<
-        ": Wait until " <<
-        std::chrono::duration_cast<std::chrono::milliseconds>(until.time_since_epoch()).count() <<
-        std::endl;
-        
+    if (Dbg) {
+        std::cerr << std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now().time_since_epoch()).count() <<
+            ": Wait until " <<
+            std::chrono::duration_cast<std::chrono::milliseconds>(until.time_since_epoch()).count() <<
+            std::endl;
+        }
+            
     return semaphore->Wait(until);
 }
