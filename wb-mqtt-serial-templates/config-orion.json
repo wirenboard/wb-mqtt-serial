@@ -1,0 +1,34 @@
+{
+  "device_type": "orion",
+  "device": {
+    "name": "Bolid s2000-sp1",
+    "id": "orion",
+    "protocol": "orion",
+    "channels": [
+      {
+        "name": "Relay 1",
+        "reg_type": "relay",
+        "address": "0x01",
+        "format": "u8"
+      },
+      {
+        "name": "Relay 2",
+        "reg_type": "relay",
+        "address": "0x02",
+        "format": "u8"
+      },
+      {
+        "name": "Relay 3",
+        "reg_type": "relay",
+        "address": "0x03",
+        "format": "u8"
+      },
+      {
+        "name": "Relay 4",
+        "reg_type": "relay",
+        "address": "0x04",
+        "format": "u8"
+      }
+    ]
+  }
+}

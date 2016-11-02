@@ -1,0 +1,47 @@
+// Configuration options
+{
+  "debug": false,
+  "ports": [
+    {
+      "path" : "/dev/ttyAPP1",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 10,
+      "enabled": true,
+      "devices" : [
+        {
+          "name": "PseudoOrion",
+          "id": "pseudo_orion",
+          "slave_id": 1,
+          "enabled": true,
+          "protocol": "orion",
+
+          "channels": [
+            {
+              "name" : "Relay 1",
+              "reg_type": "relay",
+              "address": "0x01"
+            },
+            {
+              "name" : "Relay 2",
+              "reg_type": "relay",
+              "address": "0x02"
+            },
+            {
+              "name" : "Relay 3",
+              "reg_type": "relay",
+              "address": "0x03"
+            },
+            {
+              "name" : "Relay 4",
+              "reg_type": "relay",
+              "address": "0x04"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

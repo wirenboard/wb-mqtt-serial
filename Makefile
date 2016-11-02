@@ -41,6 +41,7 @@ SERIAL_SRCS=register.cpp \
   serial_port.cpp \
   serial_device.cpp \
   uniel_device.cpp \
+  orion_device.cpp \
   ivtm_device.cpp \
   crc16.cpp \
   modbus_device.cpp \
@@ -58,6 +59,8 @@ TEST_SRCS= \
   $(TEST_DIR)/modbus_test.o \
   $(TEST_DIR)/uniel_expectations.o \
   $(TEST_DIR)/uniel_test.o \
+  $(TEST_DIR)/orion_expectations.o \
+  $(TEST_DIR)/orion_test.o \
   $(TEST_DIR)/em_expectations.o \
   $(TEST_DIR)/em_test.o \
   $(TEST_DIR)/em_integration.o \
