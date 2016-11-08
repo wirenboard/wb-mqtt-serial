@@ -111,30 +111,6 @@
         "reg_type": "relay_delay",
         "address": "0x04",
         "format": "u8"
-      },
-      {
-        "name": "Address",
-        "reg_type": "address",
-        "address": "0x00",
-        "format": "u8"
-      },
-      {
-        "name": "Voltage 1",
-        "reg_type": "voltage",
-        "address": "0x01",
-        "format": "u8"
-      },
-      {
-        "name": "Voltage 2",
-        "reg_type": "voltage",
-        "address": "0x02",
-        "format": "u8"
-      },
-      {
-        "name": "Case",
-        "reg_type": "case",
-        "address": "0x00",
-        "format": "u8"
       }
     ]
   }
