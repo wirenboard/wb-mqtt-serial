@@ -1,7 +1,7 @@
-#include "orion_expectations.h"
+#include "s2k_expectations.h"
 
 
-void TOrionDeviceExpectations::EnqueueSetRelayOnResponse()
+void TS2KDeviceExpectations::EnqueueSetRelayOnResponse()
 {
     Expector()->Expect(
         {
@@ -23,7 +23,7 @@ void TOrionDeviceExpectations::EnqueueSetRelayOnResponse()
         }, __func__);
 }
 
-void TOrionDeviceExpectations::EnqueueSetRelay2On()
+void TS2KDeviceExpectations::EnqueueSetRelay2On()
 {
     Expector()->Expect(
         {
@@ -45,7 +45,7 @@ void TOrionDeviceExpectations::EnqueueSetRelay2On()
         }, __func__);
 }
 
-void TOrionDeviceExpectations::EnqueueSetRelay3On2()
+void TS2KDeviceExpectations::EnqueueSetRelay3On2()
 {
     Expector()->Expect(
         {
@@ -67,7 +67,7 @@ void TOrionDeviceExpectations::EnqueueSetRelay3On2()
         }, __func__);
 }
 
-void TOrionDeviceExpectations::EnqueueSetRelayOffResponse()
+void TS2KDeviceExpectations::EnqueueSetRelayOffResponse()
 {
     Expector()->Expect(
         {

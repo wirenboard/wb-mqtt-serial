@@ -1,7 +1,7 @@
 #pragma once
 #include "expector.h"
 
-class TOrionDeviceExpectations: public virtual TExpectorProvider
+class TS2KDeviceExpectations: public virtual TExpectorProvider
 {
 protected:
     void EnqueueSetRelayOffResponse();

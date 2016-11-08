@@ -1,0 +1,141 @@
+{
+  "device_type": "s2k",
+  "device": {
+    "name": "S2K s2000-sp1",
+    "id": "s2k",
+    "protocol": "s2k",
+    "channels": [
+      {
+        "name": "Relay 1",
+        "reg_type": "relay",
+        "address": "0x01",
+        "format": "u8"
+      },
+      {
+        "name": "Relay 2",
+        "reg_type": "relay",
+        "address": "0x02",
+        "format": "u8"
+      },
+      {
+        "name": "Relay 3",
+        "reg_type": "relay",
+        "address": "0x03",
+        "format": "u8"
+      },
+      {
+        "name": "Relay 4",
+        "reg_type": "relay",
+        "address": "0x04",
+        "format": "u8"
+      },
+      {
+        "name": "Relay all",
+        "reg_type": "relay_multi",
+        "address": "0x00",
+        "format": "u8",
+	"max": "0x0A"
+      },
+      {
+        "name": "Relay multi 1",
+        "reg_type": "relay_multi",
+        "address": "0x01",
+        "format": "u8",
+	"max": "0x0A"
+      },
+      {
+        "name": "Relay multi 2",
+        "reg_type": "relay_multi",
+        "address": "0x02",
+        "format": "u8",
+	"max": "0x0A"
+      },
+      {
+        "name": "Relay multi 3",
+        "reg_type": "relay_multi",
+        "address": "0x03",
+        "format": "u8",
+	"max": "0x0A"
+      },
+      {
+        "name": "Relay multi 4",
+        "reg_type": "relay_multi",
+        "address": "0x04",
+        "format": "u8",
+	"max": "0x0A"
+      },
+      {
+        "name": "Relay default 1",
+        "reg_type": "relay_default",
+        "address": "0x01",
+        "format": "u8"
+      },
+      {
+        "name": "Relay default 2",
+        "reg_type": "relay_default",
+        "address": "0x02",
+        "format": "u8"
+      },
+      {
+        "name": "Relay default 3",
+        "reg_type": "relay_default",
+        "address": "0x03",
+        "format": "u8"
+      },
+      {
+        "name": "Relay default 4",
+        "reg_type": "relay_default",
+        "address": "0x04",
+        "format": "u8"
+      },
+      {
+        "name": "Relay delay 1",
+        "reg_type": "relay_delay",
+        "address": "0x01",
+        "format": "u8"
+      },
+      {
+        "name": "Relay delay 2",
+        "reg_type": "relay_delay",
+        "address": "0x02",
+        "format": "u8"
+      },
+      {
+        "name": "Relay delay 3",
+        "reg_type": "relay_delay",
+        "address": "0x03",
+        "format": "u8"
+      },
+      {
+        "name": "Relay delay 4",
+        "reg_type": "relay_delay",
+        "address": "0x04",
+        "format": "u8"
+      },
+      {
+        "name": "Address",
+        "reg_type": "address",
+        "address": "0x00",
+        "format": "u8"
+      },
+      {
+        "name": "Voltage 1",
+        "reg_type": "voltage",
+        "address": "0x01",
+        "format": "u8"
+      },
+      {
+        "name": "Voltage 2",
+        "reg_type": "voltage",
+        "address": "0x02",
+        "format": "u8"
+      },
+      {
+        "name": "Case",
+        "reg_type": "case",
+        "address": "0x00",
+        "format": "u8"
+      }
+    ]
+  }
+}

@@ -12,11 +12,11 @@
       "enabled": true,
       "devices" : [
         {
-          "name": "PseudoOrion",
-          "id": "pseudo_orion",
+          "name": "PseudoS2K",
+          "id": "pseudo_s2k",
           "slave_id": 1,
           "enabled": true,
-          "protocol": "orion",
+          "protocol": "s2k",
 
           "channels": [
             {
