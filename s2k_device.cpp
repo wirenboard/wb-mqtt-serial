@@ -119,7 +119,7 @@ uint64_t TS2KDevice::ReadRegister(PRegister reg)
                 /* Address = */(uint8_t)SlaveId,
                 /* Command length = */0x06,
                 /* Key = */0x00,
-                /* Command = */0x05,/* Read confugutation */
+                /* Command = */0x05,/* Read configutation */
                 /* Config No = */(uint8_t)(reg->Address +
                                      (reg->Type == REG_RELAY_DELAY ? 4 : 0)),
                 /* Unused */0x0,

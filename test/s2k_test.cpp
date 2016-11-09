@@ -71,17 +71,37 @@ TEST_F(TS2KIntegrationTest, Poll)
     Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 
-    EnqueueSetRelayOnResponse();
-    EnqueueSetRelay2On();
-    EnqueueSetRelay3On2();
+    EnqueueReadConfig1();
+    EnqueueReadConfig2();
+    EnqueueReadConfig3();
+    EnqueueReadConfig4();
+    EnqueueReadConfig5();
+    EnqueueReadConfig6();
+    EnqueueReadConfig7();
+    EnqueueReadConfig8();
 
     Note() << "LoopOnce()";
     Observer->LoopOnce();
     SerialPort->DumpWhatWasRead();
 
+    EnqueueSetRelayOnResponse();
+    EnqueueSetRelay2On();
+    EnqueueSetRelay3On2();
+
     MQTTClient->DoPublish(true, 0, "/devices/pseudo_s2k/controls/Relay 1/on", "1");
     MQTTClient->DoPublish(true, 0, "/devices/pseudo_s2k/controls/Relay 2/on", "1");
     MQTTClient->DoPublish(true, 0, "/devices/pseudo_s2k/controls/Relay 3/on", "2");
+    SerialPort->DumpWhatWasRead();
+
+
+    EnqueueReadConfig1();
+    EnqueueReadConfig2();
+    EnqueueReadConfig3();
+    EnqueueReadConfig4();
+    EnqueueReadConfig5();
+    EnqueueReadConfig6();
+    EnqueueReadConfig7();
+    EnqueueReadConfig8();
 
     Note() << "LoopOnce()";
     Observer->LoopOnce();

@@ -34,28 +34,28 @@
         "reg_type": "relay_multi",
         "address": "0x01",
         "format": "u8",
-	"max": "0x0A"
+        "max": "0x0A"
       },
       {
         "name": "Relay multi 2",
         "reg_type": "relay_multi",
         "address": "0x02",
         "format": "u8",
-	"max": "0x0A"
+        "max": "0x0A"
       },
       {
         "name": "Relay multi 3",
         "reg_type": "relay_multi",
         "address": "0x03",
         "format": "u8",
-	"max": "0x0A"
+        "max": "0x0A"
       },
       {
         "name": "Relay multi 4",
         "reg_type": "relay_multi",
         "address": "0x04",
         "format": "u8",
-	"max": "0x0A"
+        "max": "0x0A"
       },
       {
         "name": "Relay default 1",
