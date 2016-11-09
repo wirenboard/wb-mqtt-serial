@@ -30,13 +30,6 @@
         "format": "u8"
       },
       {
-        "name": "Relay all",
-        "reg_type": "relay_multi",
-        "address": "0x00",
-        "format": "u8",
-	"max": "0x0A"
-      },
-      {
         "name": "Relay multi 1",
         "reg_type": "relay_multi",
         "address": "0x01",
