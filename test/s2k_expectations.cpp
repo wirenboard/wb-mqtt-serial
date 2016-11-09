@@ -54,7 +54,7 @@ void TS2KDeviceExpectations::EnqueueSetRelay3On2()
             0x00, // key
             0x15, // command (0x15 - relay control)
             0x03, // relay No
-            0x01, // relay OFF
+            0x01, // relay ON
             0xdf  // sum
         },
         {
@@ -62,7 +62,7 @@ void TS2KDeviceExpectations::EnqueueSetRelay3On2()
             0x05, // size
             0x16, // command (0x16 - reply for relay control)
             0x03, // relay No
-            0x01, // relay OFF
+            0x01, // relay ON
             0xdc  // sum
         }, __func__);
 }
@@ -76,7 +76,7 @@ void TS2KDeviceExpectations::EnqueueSetRelayOffResponse()
             0x00, // key
             0x15, // command (0x15 - relay control)
             0x01, // relay No
-            0x02, // relay default
+            0x02, // relay OFF
             0xac  // sum
         },
         {
@@ -84,7 +84,7 @@ void TS2KDeviceExpectations::EnqueueSetRelayOffResponse()
             0x05, // size
             0x16, // command (0x16 - reply for relay control)
             0x01, // relay No
-            0x02, // relay default
+            0x02, // relay OFF
             0xaf  // sum
         }, __func__);
 }
@@ -96,17 +96,17 @@ void TS2KDeviceExpectations::EnqueueReadConfig1()
             0x01, // address
             0x06, // size
             0x00, // key
-            0x05, // command (0x15 - relay control)
-            0x01, // relay No
-            0x00, // relay default
+            0x05, // command (0x05 - read config)
+            0x01, // config No
+            0x00, // unused
             0x5a  // sum
         },
         {
             0x01, // address
             0x05, // size
-            0x06, // command (0x16 - reply for relay control)
-            0x01, // relay No
-            0x02, // relay default
+            0x06, // command (0x06 - reply for read config)
+            0x01, // config No
+            0x02, // config val
             0xe5  // sum
         }, __func__);
 }
@@ -118,17 +118,17 @@ void TS2KDeviceExpectations::EnqueueReadConfig2()
             0x01, // address
             0x06, // size
             0x00, // key
-            0x05, // command (0x15 - relay control)
-            0x02, // relay No
-            0x00, // relay default
+            0x05, // command (0x05 - read config)
+            0x02, // config No
+            0x00, // unused
             0x0f  // sum
         },
         {
             0x01, // address
             0x05, // size
-            0x06, // command (0x16 - reply for relay control)
-            0x02, // relay No
-            0x02, // relay default
+            0x06, // command (0x06 - reply for read config)
+            0x02, // config No
+            0x02, // config val
             0xb0  // sum
         }, __func__);
 }
@@ -139,17 +139,17 @@ void TS2KDeviceExpectations::EnqueueReadConfig3()
             0x01, // address
             0x06, // size
             0x00, // key
-            0x05, // command (0x15 - relay control)
-            0x03, // relay No
-            0x00, // relay default
+            0x05, // command (0x05 - read config)
+            0x03, // config No
+            0x00, // unused
             0xcb  // sum
         },
         {
             0x01, // address
             0x05, // size
-            0x06, // command (0x16 - reply for relay control)
-            0x03, // relay No
-            0x02, // relay default
+            0x06, // command (0x06 - reply for read config)
+            0x03, // config No
+            0x02, // config val
             0x74  // sum
         }, __func__);
 }
@@ -160,17 +160,17 @@ void TS2KDeviceExpectations::EnqueueReadConfig4()
             0x01, // address
             0x06, // size
             0x00, // key
-            0x05, // command (0x15 - relay control)
-            0x04, // relay No
-            0x00, // relay default
+            0x05, // command (0x05 - read config)
+            0x04, // config No
+            0x00, // unused
             0xa5  // sum
         },
         {
             0x01, // address
             0x05, // size
-            0x06, // command (0x16 - reply for relay control)
-            0x04, // relay No
-            0x02, // relay default
+            0x06, // command (0x06 - reply for read config)
+            0x04, // config No
+            0x02, // config val
             0x1a  // sum
         }, __func__);
 }
@@ -182,17 +182,17 @@ void TS2KDeviceExpectations::EnqueueReadConfig5()
             0x01, // address
             0x06, // size
             0x00, // key
-            0x05, // command (0x15 - relay control)
-            0x05, // relay No
-            0x00, // relay default
+            0x05, // command (0x05 - read config)
+            0x05, // config No
+            0x00, // unused
             0x61  // sum
         },
         {
             0x01, // address
             0x05, // size
-            0x06, // command (0x16 - reply for relay control)
-            0x05, // relay No
-            0x3c, // relay default
+            0x06, // command (0x06 - reply for read config)
+            0x05, // config No
+            0x3c, // config val
             0x7f  // sum
         }, __func__);
 }
@@ -204,17 +204,17 @@ void TS2KDeviceExpectations::EnqueueReadConfig6()
             0x01, // address
             0x06, // size
             0x00, // key
-            0x05, // command (0x15 - relay control)
-            0x06, // relay No
-            0x00, // relay default
+            0x05, // command (0x05 - read config)
+            0x06, // config No
+            0x00, // unused
             0x34  // sum
         },
         {
             0x01, // address
             0x05, // size
-            0x06, // command (0x16 - reply for relay control)
-            0x06, // relay No
-            0x05, // relay default
+            0x06, // command (0x06 - reply for read config)
+            0x06, // config No
+            0x05, // config val
             0x08  // sum
         }, __func__);
 }
@@ -226,17 +226,17 @@ void TS2KDeviceExpectations::EnqueueReadConfig7()
             0x01, // address
             0x06, // size
             0x00, // key
-            0x05, // command (0x15 - relay control)
-            0x07, // relay No
-            0x00, // relay default
+            0x05, // command (0x05 - read config)
+            0x07, // config No
+            0x00, // unused
             0xf0  // sum
         },
         {
             0x01, // address
             0x05, // size
-            0x06, // command (0x16 - reply for relay control)
-            0x07, // relay No
-            0x3c, // relay default
+            0x06, // command (0x06 - reply for read config)
+            0x07, // config No
+            0x3c, // config val
             0xee  // sum
         }, __func__);
 }
@@ -248,17 +248,17 @@ void TS2KDeviceExpectations::EnqueueReadConfig8()
             0x01, // address
             0x06, // size
             0x00, // key
-            0x05, // command (0x15 - relay control)
-            0x08, // relay No
-            0x00, // relay default
+            0x05, // command (0x05 - read config)
+            0x08, // config No
+            0x00, // unused
             0xfc  // sum
         },
         {
             0x01, // address
             0x05, // size
-            0x06, // command (0x16 - reply for relay control)
-            0x08, // relay No
-            0x3c, // relay default
+            0x06, // command (0x06 - reply for read config)
+            0x08, // config No
+            0x3c, // config val
             0xf6  // sum
         }, __func__);
 }
