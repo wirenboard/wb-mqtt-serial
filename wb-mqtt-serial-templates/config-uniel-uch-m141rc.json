@@ -6,6 +6,7 @@
         "id": "uchm141rc",
         "enabled": true,
         "protocol": "uniel",
+        "guard_interval_us": "3500",
         "channels": [
             {
                 "name": "Input 0",

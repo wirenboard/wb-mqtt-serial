@@ -657,6 +657,7 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "SlaveId: " << device_config->SlaveId;
             Emit() << "MaxRegHole: " << device_config->MaxRegHole;
             Emit() << "MaxBitHole: " << device_config->MaxBitHole;
+            Emit() << "GuardInterval: " << device_config->GuardInterval.count();
             if (!device_config->DeviceChannelConfigs.empty()) {
                 Emit() << "DeviceChannels:";
                 for (auto modbus_channel: device_config->DeviceChannelConfigs) {

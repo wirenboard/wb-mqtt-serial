@@ -10,6 +10,7 @@ Ports:
         SlaveId: 2
         MaxRegHole: 0
         MaxBitHole: 0
+        GuardInterval: 20000
         DeviceChannels:
             ------
             Name: Illuminance
@@ -53,6 +54,7 @@ Ports:
         SlaveId: 0x90
         MaxRegHole: 0
         MaxBitHole: 0
+        GuardInterval: 0
         DeviceChannels:
             ------
             Name: Relay 1
@@ -73,6 +75,7 @@ Ports:
         SlaveId: 0x04
         MaxRegHole: 0
         MaxBitHole: 0
+        GuardInterval: 0
         DeviceChannels:
             ------
             Name: Relay 1
@@ -116,6 +119,7 @@ Ports:
         SlaveId: 2
         MaxRegHole: 0
         MaxBitHole: 0
+        GuardInterval: 0
         DeviceChannels:
             ------
             Name: RGB
@@ -141,6 +145,7 @@ Ports:
         SlaveId: 5
         MaxRegHole: 2
         MaxBitHole: 2
+        GuardInterval: 0
         DeviceChannels:
             ------
             Name: Chan 1
@@ -157,6 +162,7 @@ Ports:
         SlaveId: 6
         MaxRegHole: 1
         MaxBitHole: 1
+        GuardInterval: 0
         DeviceChannels:
             ------
             Name: Chan 1

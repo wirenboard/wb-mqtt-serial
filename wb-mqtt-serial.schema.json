@@ -193,6 +193,14 @@
           "minimum": 0,
           "default": 0,
           "propertyOrder": 14
+        },
+        "guard_interval_us": {
+          "type": "integer",
+          "title": "Interval between register reads",
+          "description" : "Specifies the delay in microseconds between reads of consecutive registers in polling process",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 15
         }
       },
       "required": ["slave_id"],

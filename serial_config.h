@@ -68,11 +68,13 @@ struct TDeviceConfig {
                   int frame_timeout = -1,
                   int max_reg_hole = 0,
                   int max_bit_hole = 0,
-                  PRegisterTypeMap type_map = 0)
+                  PRegisterTypeMap type_map = 0,
+                  const std::chrono::microseconds& guard_interval =
+                  std::chrono::microseconds(0))
         : Name(name), SlaveId(slave_id), Protocol(protocol), Delay(delay),
           AccessLevel(access_level), FrameTimeout(frame_timeout),
           MaxRegHole(max_reg_hole), MaxBitHole(max_bit_hole),
-          TypeMap(type_map) {}
+          TypeMap(type_map), GuardInterval(guard_interval) {}
     TDeviceConfig(const std::string &name, int slave_id, std::string protocol = "",
                   const std::chrono::milliseconds& delay =
                   std::chrono::milliseconds(DEFAULT_INTER_DEVICE_DELAY_MS),
@@ -80,11 +82,13 @@ struct TDeviceConfig {
                   int frame_timeout = -1,
                   int max_reg_hole = 0,
                   int max_bit_hole = 0,
-                  PRegisterTypeMap type_map = 0)
+                  PRegisterTypeMap type_map = 0,
+                  const std::chrono::microseconds& guard_interval =
+                  std::chrono::microseconds(0))
         : Name(name), Protocol(protocol), Delay(delay),
           AccessLevel(access_level), FrameTimeout(frame_timeout),
           MaxRegHole(max_reg_hole), MaxBitHole(max_bit_hole),
-          TypeMap(type_map) 
+          TypeMap(type_map), GuardInterval(guard_interval)
     {
         std::stringstream ss;
         ss << slave_id;
@@ -108,6 +112,7 @@ struct TDeviceConfig {
     std::chrono::milliseconds FrameTimeout;
     int MaxRegHole, MaxBitHole;
     PRegisterTypeMap TypeMap;
+    std::chrono::microseconds GuardInterval;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
