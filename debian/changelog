@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.19.1) stable; urgency=medium
+
+  * valid default config files for WB5.6 and WB5.8
+
+ -- Evgeny Boger <boger@contactless.ru>  Wed, 16 Nov 2016 19:34:34 +0300
+
 wb-mqtt-serial (1.19) stable; urgency=medium
 
   * adds template for WB-MSW2
