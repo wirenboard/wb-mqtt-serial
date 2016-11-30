@@ -1,3 +1,10 @@
+wb-mqtt-serial (1.20~alpha3) stable; urgency=medium
+
+  * workaround for Uniel bug
+  * introduce guard interval
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 01 Dec 2016 00:52:14 +0300
+
 wb-mqtt-serial (1.20~alpha2) stable; urgency=medium
 
   * Support for Mercury200
