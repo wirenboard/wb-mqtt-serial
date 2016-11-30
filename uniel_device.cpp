@@ -50,12 +50,18 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
 {
     uint8_t buf[5];
     for (;;) {
-        if (Port()->ReadByte() != 0xff || Port()->ReadByte() != 0xff) {
+        uint8_t first = Port()->ReadByte();
+        if (first != 0xff) {
             std::cerr << "uniel: warning: resync" << std::endl;
             continue;
         }
-        uint8_t s = 0;
-        for (int i = 0; i < 5; ++i) {
+        uint8_t second = Port()->ReadByte();
+        if (second == 0xff) {
+            second = Port()->ReadByte();
+        }
+        buf[0] = second;
+        uint8_t s = second;
+        for (int i = 1; i < 5; ++i) {
             buf[i] = Port()->ReadByte();
             s += buf[i];
         }

@@ -317,6 +317,8 @@ void TConfigParser::LoadDeviceTemplatableConfigPart(PDeviceConfig device_config,
         device_config->MaxRegHole = GetInt(device_data, "max_reg_hole");
     if (device_data.isMember("max_bit_hole"))
         device_config->MaxBitHole = GetInt(device_data, "max_bit_hole");
+    if (device_data.isMember("guard_interval_us"))
+        device_config->GuardInterval = std::chrono::microseconds(GetInt(device_data, "guard_interval_us"));
 }
 
 int TConfigParser::ToInt(const Json::Value& v, const std::string& title)

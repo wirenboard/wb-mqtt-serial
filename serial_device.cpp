@@ -1,5 +1,6 @@
 #include <iostream>
 #include "serial_device.h"
+#include <unistd.h>
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
     : Delay(config->Delay)
@@ -41,6 +42,9 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
     simple_range->Reset();
     for (auto reg: simple_range->RegisterList()) {
         try {
+	    if (DeviceConfig()->GuardInterval.count()){
+	        usleep(DeviceConfig()->GuardInterval.count());
+	    }
             simple_range->SetValue(reg, ReadRegister(reg));
         } catch (const TSerialDeviceTransientErrorException& e) {
             simple_range->SetError(reg);

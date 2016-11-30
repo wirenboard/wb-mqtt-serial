@@ -5,6 +5,7 @@
 	    "name": "MSU34+TLP",
 	    "id": "msu34tlp",
 	    "enabled": true,
+	    "guard_interval_us": 20000,
 	    "channels": [
 		{
 		    "name" : "Temp 1",
