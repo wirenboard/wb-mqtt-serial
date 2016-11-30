@@ -1,15 +1,28 @@
-wb-mqtt-serial (1.19~alpha2) stable; urgency=medium
+wb-mqtt-serial (1.20~alpha2) stable; urgency=medium
 
   * Support for Mercury200
   * Support for 32-bit Milur addressing
 
  -- Evgeny Boger <boger@contactless.ru>  Thu, 22 Sep 2016 23:32:38 +0300
 
-wb-mqtt-serial (1.19~alpha1) stable; urgency=medium
+wb-mqtt-serial (1.20~alpha1) stable; urgency=medium
 
   * Change slave ID format
 
  -- Nikita Maslov <webconn@webconn-laptop>  Tue, 13 Sep 2016 20:28:38 +0300
+
+
+wb-mqtt-serial (1.19.1) stable; urgency=medium
+
+  * valid default config files for WB5.6 and WB5.8
+
+ -- Evgeny Boger <boger@contactless.ru>  Wed, 16 Nov 2016 19:34:34 +0300
+
+wb-mqtt-serial (1.19) stable; urgency=medium
+
+  * adds template for WB-MSW2
+
+ -- Evgeny Boger <boger@contactless.ru>  Wed, 05 Oct 2016 15:27:56 +0300
 
 wb-mqtt-serial (1.18) stable; urgency=medium
 

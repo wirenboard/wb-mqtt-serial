@@ -4,7 +4,7 @@
 CONFFILE=/etc/wb-mqtt-serial.conf
 
 case "$WB_VERSION" in
-    "52"|"50" )
+    "58" | "55" | "52"|"50" )
         BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5"
     ;;
 
