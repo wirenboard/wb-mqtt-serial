@@ -164,6 +164,10 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     // по умолчанию, в миллисекундах
                     "poll_interval": 10,
 
+                    // Минимальный интервал между опросом индивидуальных регистров
+                    // данного устройства в микросекундах
+                    "guard_interval_us": 0,
+
                     // список каналов устройства
                     "channels": [
                         {
