@@ -20,7 +20,7 @@ void TS2KDeviceTest::SetUp()
     TSerialDeviceTest::SetUp();
 
     Dev = std::make_shared<TS2KDevice>(
-        std::make_shared<TDeviceConfig>("s2k", 0x01, "s2k"),
+        std::make_shared<TDeviceConfig>("s2k", to_string(0x01), "s2k"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("s2k"));
 
