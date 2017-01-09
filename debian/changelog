@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.21) stable; urgency=medium
+
+  * Adds support s2k devices
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 09 Jan 2017 22:02:25 +0300
+
 wb-mqtt-serial (1.20) stable; urgency=medium
 
   * Change slave ID format: non-integer slave ids are supported
