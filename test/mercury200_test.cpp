@@ -1,3 +1,4 @@
+#include <string>
 #include "fake_serial_port.h"
 #include "mercury200_expectations.h"
 #include "mercury200_device.h"
@@ -25,7 +26,7 @@ protected:
 
 PDeviceConfig TMercury200Test::GetDeviceConfig()
 {
-    return std::make_shared<TDeviceConfig>("mercury200", to_string(123456), "mercury200");
+    return std::make_shared<TDeviceConfig>("mercury200", std::to_string(123456), "mercury200");
 }
 
 void TMercury200Test::SetUp()

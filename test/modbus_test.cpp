@@ -1,3 +1,4 @@
+#include <string>
 #include <map>
 #include <memory>
 #include <algorithm>
@@ -97,7 +98,7 @@ void TModbusClientTest::SetUp()
     SerialClient->SetModbusDebug(true);
 #endif
     try { 
-        Device = SerialClient->CreateDevice(std::make_shared<TDeviceConfig>("modbus_sample", to_string(1), "modbus"));
+        Device = SerialClient->CreateDevice(std::make_shared<TDeviceConfig>("modbus_sample", std::to_string(1), "modbus"));
     } catch (const TSerialDeviceException &e) {}
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             Emit() << "Modbus Callback: " << reg->ToString() << " becomes " <<

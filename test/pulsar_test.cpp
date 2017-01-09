@@ -1,3 +1,4 @@
+#include <string>
 #include "testlog.h"
 #include "fake_serial_port.h"
 #include "pulsar_device.h"
@@ -19,7 +20,7 @@ void TPulsarDeviceTest::SetUp()
 
     // Create device with fixed Slave ID
     Dev = std::make_shared<TPulsarDevice>(
-        std::make_shared<TDeviceConfig>("pulsar-heat", to_string(107080), "pulsar"),
+        std::make_shared<TDeviceConfig>("pulsar-heat", std::to_string(107080), "pulsar"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("pulsar"));
     

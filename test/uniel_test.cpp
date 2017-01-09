@@ -1,3 +1,4 @@
+#include <string>
 #include "testlog.h"
 #include "fake_serial_port.h"
 #include "uniel_device.h"
@@ -20,7 +21,7 @@ void TUnielDeviceTest::SetUp()
     TSerialDeviceTest::SetUp();
 
     Dev = std::make_shared<TUnielDevice>(
-        std::make_shared<TDeviceConfig>("uniel", to_string(0x01), "uniel"),
+        std::make_shared<TDeviceConfig>("uniel", std::to_string(0x01), "uniel"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("uniel"));
     

@@ -1,3 +1,4 @@
+#include <string>
 #include "testlog.h"
 #include "fake_serial_port.h"
 #include "ivtm_device.h"
@@ -18,7 +19,7 @@ void TIVTMDeviceTest::SetUp()
     TSerialDeviceTest::SetUp();
     // Device should not depend on slave id from DeviceConfig
     Dev = std::make_shared<TIVTMDevice>(
-        std::make_shared<TDeviceConfig>("ivtm", to_string(0x0001), "ivtm"),
+        std::make_shared<TDeviceConfig>("ivtm", std::to_string(0x0001), "ivtm"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("ivtm"));
     

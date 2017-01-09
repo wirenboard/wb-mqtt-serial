@@ -1,3 +1,4 @@
+#include <string>
 #include "fake_serial_port.h"
 #include "em_expectations.h"
 #include "milur_device.h"
@@ -26,12 +27,12 @@ protected:
 
 PDeviceConfig TEMDeviceTest::MilurConfig()
 {
-    return std::make_shared<TDeviceConfig>("milur", to_string(0xff), "milur");
+    return std::make_shared<TDeviceConfig>("milur", std::to_string(0xff), "milur");
 }
 
 PDeviceConfig TEMDeviceTest::Mercury230Config()
 {
-    return std::make_shared<TDeviceConfig>("mercury230", to_string(0x00), "mercury230");
+    return std::make_shared<TDeviceConfig>("mercury230", std::to_string(0x00), "mercury230");
 }
 
 void TEMDeviceTest::SetUp()
@@ -262,7 +263,7 @@ protected:
 
 PDeviceConfig TMilur32Test::MilurConfig()
 {
-    return std::make_shared<TDeviceConfig>("milur", to_string(49932), "milur");
+    return std::make_shared<TDeviceConfig>("milur", std::to_string(49932), "milur");
 }
 
 void TMilur32Test::SetUp()
