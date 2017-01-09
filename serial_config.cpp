@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <string>
 #include <cstdlib>
+#include <memory>
 
 #include "serial_config.h"
 
@@ -374,7 +375,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
         return;
 
     PTemplate tmpl;
-    PDeviceConfig device_config(new TDeviceConfig);
+    PDeviceConfig device_config = std::make_shared<TDeviceConfig>();
     device_config->Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
     device_config->Name = device_data.isMember("name") ? device_data["name"].asString() : "";
 
