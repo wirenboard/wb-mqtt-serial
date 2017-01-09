@@ -20,7 +20,7 @@ void TUnielDeviceTest::SetUp()
     TSerialDeviceTest::SetUp();
 
     Dev = std::make_shared<TUnielDevice>(
-        std::make_shared<TDeviceConfig>("uniel", 0x01, "uniel"),
+        std::make_shared<TDeviceConfig>("uniel", to_string(0x01), "uniel"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("uniel"));
     

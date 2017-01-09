@@ -25,7 +25,7 @@ protected:
 
 PDeviceConfig TMercury200Test::GetDeviceConfig()
 {
-    return std::make_shared<TDeviceConfig>("mercury200", 123456, "mercury200");
+    return std::make_shared<TDeviceConfig>("mercury200", to_string(123456), "mercury200");
 }
 
 void TMercury200Test::SetUp()

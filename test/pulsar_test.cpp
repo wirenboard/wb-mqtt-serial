@@ -19,7 +19,7 @@ void TPulsarDeviceTest::SetUp()
 
     // Create device with fixed Slave ID
     Dev = std::make_shared<TPulsarDevice>(
-        std::make_shared<TDeviceConfig>("pulsar-heat", 107080, "pulsar"),
+        std::make_shared<TDeviceConfig>("pulsar-heat", to_string(107080), "pulsar"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("pulsar"));
     
