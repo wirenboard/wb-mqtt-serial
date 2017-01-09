@@ -20,9 +20,9 @@ namespace
 REGISTER_BASIC_INT_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
         {
             { TS2KDevice::REG_RELAY, "relay", "switch", U8 },
-            { TS2KDevice::REG_RELAY_MULTI, "relay_multi", "holding", U8, true },
-            { TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "holding", U8, true },
-            { TS2KDevice::REG_RELAY_DELAY, "relay_delay", "holding", U8, true }
+            { TS2KDevice::REG_RELAY_MULTI, "relay_multi", "value", U8, true },
+            { TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value", U8, true },
+            { TS2KDevice::REG_RELAY_DELAY, "relay_delay", "value", U8, true }
         }));
 
 TS2KDevice::TS2KDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
