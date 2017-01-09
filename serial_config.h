@@ -61,20 +61,8 @@ static const int DEFAULT_INTER_DEVICE_DELAY_MS = 100;
 static const int DEFAULT_ACCESS_LEVEL = 1;
 
 struct TDeviceConfig {
-    TDeviceConfig(std::string name = "", std::string slave_id = "", std::string protocol = "",
-                  const std::chrono::milliseconds& delay =
-                  std::chrono::milliseconds(DEFAULT_INTER_DEVICE_DELAY_MS),
-                  int access_level = DEFAULT_ACCESS_LEVEL,
-                  int frame_timeout = -1,
-                  int max_reg_hole = 0,
-                  int max_bit_hole = 0,
-                  PRegisterTypeMap type_map = 0,
-                  const std::chrono::microseconds& guard_interval =
-                  std::chrono::microseconds(0))
-        : Name(name), SlaveId(slave_id), Protocol(protocol), Delay(delay),
-          AccessLevel(access_level), FrameTimeout(frame_timeout),
-          MaxRegHole(max_reg_hole), MaxBitHole(max_bit_hole),
-          TypeMap(type_map), GuardInterval(guard_interval) {}
+    TDeviceConfig(std::string name = "", std::string slave_id = "", std::string protocol = "")
+        : Name(name), SlaveId(slave_id), Protocol(protocol) {}
 
     int NextOrderValue() const { return DeviceChannelConfigs.size() + 1; }
     void AddChannel(PDeviceChannelConfig channel) { DeviceChannelConfigs.push_back(channel); };
@@ -87,12 +75,12 @@ struct TDeviceConfig {
     std::vector<PDeviceChannelConfig> DeviceChannelConfigs;
     std::vector<PDeviceSetupItemConfig> SetupItemConfigs;
     std::vector<uint8_t> Password;
-    std::chrono::milliseconds Delay;
-    int AccessLevel;
-    std::chrono::milliseconds FrameTimeout;
-    int MaxRegHole, MaxBitHole;
-    PRegisterTypeMap TypeMap;
-    std::chrono::microseconds GuardInterval;
+    std::chrono::milliseconds Delay = std::chrono::milliseconds(DEFAULT_INTER_DEVICE_DELAY_MS);
+    int AccessLevel = DEFAULT_ACCESS_LEVEL;
+    std::chrono::milliseconds FrameTimeout = std::chrono::milliseconds(-1);
+    int MaxRegHole = 0, MaxBitHole = 0;
+    PRegisterTypeMap TypeMap = 0;
+    std::chrono::microseconds GuardInterval = std::chrono::microseconds(0);
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
