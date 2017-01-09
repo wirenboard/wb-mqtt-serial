@@ -12,7 +12,7 @@ public:
     enum RegisterType
     {
         REG_RELAY = 0,
-        REG_RELAY_MULTI,
+        REG_RELAY_MODE,
         REG_RELAY_DEFAULT,
         REG_RELAY_DELAY,
     };

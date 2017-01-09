@@ -20,7 +20,7 @@ namespace
 REGISTER_BASIC_INT_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
         {
             { TS2KDevice::REG_RELAY, "relay", "switch", U8 },
-            { TS2KDevice::REG_RELAY_MULTI, "relay_multi", "value", U8, true },
+            { TS2KDevice::REG_RELAY_MODE, "relay_mode", "value", U8, true },
             { TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value", U8, true },
             { TS2KDevice::REG_RELAY_DELAY, "relay_delay", "value", U8, true }
         }));
@@ -113,7 +113,7 @@ uint64_t TS2KDevice::ReadRegister(PRegister reg)
     switch (reg->Type) {
     case REG_RELAY:
         return RelayState[reg->Address] != 0 && RelayState[reg->Address] != 2;
-    case REG_RELAY_MULTI:
+    case REG_RELAY_MODE:
         return RelayState[reg->Address];
     case REG_RELAY_DEFAULT:
     case REG_RELAY_DELAY:
