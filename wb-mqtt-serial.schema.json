@@ -196,7 +196,8 @@
         },
         "max_read_registers": {
           "type": "integer",
-          "title": "Max register count in a single bulk read",
+          "title": "Max read registers",
+          "description" : " Maximum number of registers in a single bulk read request",
           "minimum": 0,
           "default": 0,
           "propertyOrder": 15
