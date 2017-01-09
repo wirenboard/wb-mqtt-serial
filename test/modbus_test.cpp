@@ -777,6 +777,7 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "SlaveId: " << device_config->SlaveId;
             Emit() << "MaxRegHole: " << device_config->MaxRegHole;
             Emit() << "MaxBitHole: " << device_config->MaxBitHole;
+            Emit() << "MaxReadRegisters: " << device_config->MaxReadRegisters;
             Emit() << "GuardInterval: " << device_config->GuardInterval.count();
             if (!device_config->DeviceChannelConfigs.empty()) {
                 Emit() << "DeviceChannels:";
@@ -917,9 +918,24 @@ TEST_F(TModbusDeviceTest, DDL24)
 
 TEST_F(TModbusDeviceTest, DDL24_Holes)
 {
+    // we check that driver issue long read request, reading registers 4-18 at once
     FilterConfig("DDL24");
     Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
     Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+    VerifyDDL24();
+}
+
+TEST_F(TModbusDeviceTest, DDL24_MaxReadRegisters)
+{
+    // we check that driver read request length is limited by MaxReadRegisters setting
+    FilterConfig("DDL24");
+
+    // Normally registers 4-9 (6 in total) are read or written in a single request.
+    // By limiting the max_read_registers to 3 we force driver to issue two requests
+    //    for this register range instead of one
+
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxReadRegisters = 3;
+
     VerifyDDL24();
 }
 

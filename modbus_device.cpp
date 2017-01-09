@@ -130,8 +130,19 @@ std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegi
     std::list<PRegister> l;
     int prev_start = -1, prev_type = -1, prev_end = -1;
     std::chrono::milliseconds prev_interval;
-    int max_hole = IsSingleBitType(reg_list.front()->Type) ? DeviceConfig()->MaxBitHole : DeviceConfig()->MaxRegHole,
-        max_regs = IsSingleBitType(reg_list.front()->Type) ? MODBUS_MAX_READ_BITS : MODBUS_MAX_READ_REGISTERS;
+    int max_hole = IsSingleBitType(reg_list.front()->Type) ? DeviceConfig()->MaxBitHole : DeviceConfig()->MaxRegHole;
+    int max_regs;
+
+    if (IsSingleBitType(reg_list.front()->Type)) {
+        max_regs = MODBUS_MAX_READ_BITS;
+    } else {
+        if ((DeviceConfig()->MaxReadRegisters > 0) && (DeviceConfig()->MaxReadRegisters <= MODBUS_MAX_READ_REGISTERS)) {
+            max_regs = DeviceConfig()->MaxReadRegisters;
+        } else {
+            max_regs = MODBUS_MAX_READ_REGISTERS;
+        }
+    }
+
     for (auto reg: reg_list) {
         int new_end = reg->Address + reg->Width();
         if (!(prev_end >= 0 &&
