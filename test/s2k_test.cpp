@@ -1,3 +1,4 @@
+#include <string>
 #include "testlog.h"
 #include "fake_serial_port.h"
 #include "s2k_device.h"
@@ -20,7 +21,7 @@ void TS2KDeviceTest::SetUp()
     TSerialDeviceTest::SetUp();
 
     Dev = std::make_shared<TS2KDevice>(
-        std::make_shared<TDeviceConfig>("s2k", to_string(0x01), "s2k"),
+        std::make_shared<TDeviceConfig>("s2k", std::to_string(0x01), "s2k"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("s2k"));
 
