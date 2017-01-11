@@ -7,7 +7,7 @@
     "deviceProtocol": {
       "type": "string",
       "title": "Device protocol",
-      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm"],
+      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k"],
       "default": "modbus"
     },
     "port": {
