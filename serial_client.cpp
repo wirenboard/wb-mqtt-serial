@@ -276,4 +276,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
         LastAccessedDevice = dev;
         dev->Prepare();
     }
+    if (dev->DeviceConfig()->GuardInterval.count()){
+        usleep(dev->DeviceConfig()->GuardInterval.count());
+    }
 }
