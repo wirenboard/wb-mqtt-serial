@@ -85,10 +85,16 @@ void TConfigTemplateParser::LoadDeviceTemplate(const Json::Value& root, const st
     if (!root.isObject())
         throw TConfigParserException("malformed config in file " + filepath);
 
-    if (root.isMember("device_type"))
-        (*Templates)[root["device_type"].asString()] = std::make_shared<TTemplate>(root["device"]);
-    else if (Debug)
+    if (root.isMember("device_type")) {
+        try {
+            std::shared_ptr<TTemplate> t = std::make_shared<TTemplate>(root["device"]);
+            (*Templates)[root["device_type"].asString()] = t;
+        } catch (TConfigParserException &e){
+            if (Debug) std::cerr << "malformed template " << filepath << ": " << e.what() << std::endl;
+        }
+    } else if (Debug) {
         std::cerr << "no device_type in json template in file " << filepath << std::endl;
+    }
 }
 
 TConfigParser::TConfigParser(const std::string& config_fname, bool force_debug,
