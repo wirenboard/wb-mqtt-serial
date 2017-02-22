@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.22) stable; urgency=medium
+
+  * adds WB-MR6C template
+
+ -- Evgeny Boger <boger@contactless.ru>  Wed, 08 Mar 2017 20:15:07 +0300
+
 wb-mqtt-serial (1.21) stable; urgency=medium
 
   * Adds support s2k devices
