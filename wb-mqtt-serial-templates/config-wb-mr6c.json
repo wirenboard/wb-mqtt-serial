@@ -39,7 +39,7 @@
                 "reg_type" : "coil",
                 "address" : 5,
                 "type": "switch"
-            },
+            },              	
 //-----------------------------------------------------------------
             {
                 "name" : "Safety Timer",
@@ -48,7 +48,6 @@
                 "type" : "range"
             },
 //-----------------------------------------------------------------
-
             {
                 "name" : "Input 1",
                 "reg_type" : "discrete",
@@ -86,13 +85,12 @@
                 "type" : "switch"
             },
             {
-                "name" : "Input 7",
+                "name" : "Input 0",
                 "reg_type" : "discrete",
                 "address" : 7,
                 "type" : "switch"
             },
 //-----------------------------------------------------------------------------------------------
-
             {
                 "name" : "Input 1 counter",
                 "reg_type" : "input",
@@ -130,13 +128,12 @@
                 "type" : "value"
             },
             {
-                "name" : "Input 7 counter",
+                "name" : "Input 0 counter",
                 "reg_type" : "input",
                 "address" : 39,
                 "type" : "value"
             },
 //--------------------------------------------------------------------------------------
-
             {
                 "name" : "Supply voltage",
                 "reg_type" : "input",
@@ -144,10 +141,6 @@
                 "type" : "voltage",
                 "scale" : 0.001
             }
-
-
-
         ]
     }
 }
-
