@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.23) stable; urgency=medium
+
+  * Add WB6 config
+
+ -- Alexey Ignatov <lexszero@gmail.com>  Fri, 14 Apr 2017 02:43:49 +0300
+
 wb-mqtt-serial (1.22) stable; urgency=medium
 
   * adds WB-MR6C template
