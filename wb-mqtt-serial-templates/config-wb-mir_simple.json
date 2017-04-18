@@ -1,5 +1,4 @@
 {
-    //This teplate shoud be ued for trained WB-MIR device only
     "device_type": "WB-MIR-SIMPLE",
     "device": {
         "name": "WB-MIR-SIMPLE",
