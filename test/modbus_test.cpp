@@ -56,22 +56,22 @@ protected:
     PRegister RegCoil(int addr, RegisterFormat fmt = U8) {
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
-            TModbusDevice::REG_COIL, addr, fmt, 1, true, false, "coil"));
+            TModbusDevice::REG_COIL, addr, fmt, 1, 0, true, false, "coil"));
     }
     PRegister RegDiscrete(int addr, RegisterFormat fmt = U8) {
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
-            TModbusDevice::REG_DISCRETE, addr, fmt, 1, true, true, "discrete"));
+            TModbusDevice::REG_DISCRETE, addr, fmt, 1, 0, true, true, "discrete"));
     }
-    PRegister RegHolding(int addr, RegisterFormat fmt = U16, double scale = 1) {
+    PRegister RegHolding(int addr, RegisterFormat fmt = U16, double scale = 1, double offset = 0) {
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
-            TModbusDevice::REG_HOLDING, addr, fmt, scale, true, false, "holding"));
+            TModbusDevice::REG_HOLDING, addr, fmt, scale, offset, true, false, "holding"));
     }
-    PRegister RegInput(int addr, RegisterFormat fmt = U16, double scale = 1) {
+    PRegister RegInput(int addr, RegisterFormat fmt = U16, double scale = 1, double offset = 0) {
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
-            TModbusDevice::REG_INPUT, addr, fmt, scale, true, true, "input"));
+            TModbusDevice::REG_INPUT, addr, fmt, scale, offset, true, true, "input"));
     }
     PSerialPort ClientSerial;
     PSerialClient SerialClient;
@@ -1019,6 +1019,22 @@ TEST_F(TModbusDeviceTest, Errors)
 
     Note() << "LoopOnce() [read, nothing blacklisted] (2)";
     observer->LoopOnce();
+}
+
+TEST_F(TModbusClientTest, offset)
+{
+    // create scaled register with offset
+    PRegister holding24 = RegHolding(24, S16, 3, -15);
+    SerialClient->AddRegister(holding24);
+
+    FakeSerial->Flush();
+    Note() << "client -> server: -87 (scaled)";
+    SerialClient->SetTextValue(holding24, "-87");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ("-87", SerialClient->GetTextValue(holding24));
+    EXPECT_EQ(0xffe8, Slave->Holding[24]);
+
 }
 
 // TBD: the code must check mosquitto return values
