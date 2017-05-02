@@ -61,12 +61,12 @@ typedef std::shared_ptr<TSerialDevice> PSerialDevice;
 struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 {
     TRegisterConfig(int type, int address,
-              RegisterFormat format, double scale,
+              RegisterFormat format, double scale, double offset,
               bool poll, bool readonly,
               const std::string& type_name,
               bool has_error_value, uint64_t error_value)
         : Type(type), Address(address), Format(format),
-          Scale(scale), Poll(poll), ReadOnly(readonly), TypeName(type_name),
+          Scale(scale), Offset(offset), Poll(poll), ReadOnly(readonly), TypeName(type_name),
           HasErrorValue(has_error_value), ErrorValue(error_value)
     {
         if (TypeName.empty())
@@ -74,13 +74,13 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
     }
 
     static PRegisterConfig Create(int type = 0, int address = 0,
-                            RegisterFormat format = U16, double scale = 1,
+                            RegisterFormat format = U16, double scale = 1, double offset = 0,
                             bool poll = true, bool readonly = false,
                             const std::string& type_name = "",
                             bool has_error_value = false,
                             uint64_t error_value = 0)
     {
-        return std::make_shared<TRegisterConfig>(type, address, format, scale, poll, readonly, 
+        return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, poll, readonly,
                                             type_name, has_error_value, error_value);
     }
 
@@ -118,6 +118,7 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
     int Address;
     RegisterFormat Format;
     double Scale;
+    double Offset;
     bool Poll;
     bool ReadOnly;
     std::string TypeName;

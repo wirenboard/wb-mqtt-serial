@@ -129,6 +129,10 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     if (register_data.isMember("scale"))
         scale = register_data["scale"].asDouble(); // TBD: check for zero, too
 
+    double offset = 0;
+    if (register_data.isMember("offset"))
+        offset = register_data["offset"].asDouble();
+
     bool force_readonly = false;
     if (register_data.isMember("readonly"))
         force_readonly = register_data["readonly"].asBool();
@@ -142,7 +146,7 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
 
     PRegisterConfig reg = TRegisterConfig::Create(
         it->second.Index,
-        address, format, scale, true, force_readonly || it->second.ReadOnly,
+        address, format, scale, offset, true, force_readonly || it->second.ReadOnly,
         it->second.Name, has_error_value, error_value);
     if (register_data.isMember("poll_interval"))
         reg->PollInterval = std::chrono::milliseconds(GetInt(register_data, "poll_interval"));
@@ -284,7 +288,7 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
     if (item_data.isMember("format"))
         format = RegisterFormatFromName(item_data["format"].asString());
     PRegisterConfig reg = TRegisterConfig::Create(
-        type, address, format, 1, true, true, type_name);
+        type, address, format, 1, 0, true, true, type_name);
 
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");

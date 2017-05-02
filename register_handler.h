@@ -56,49 +56,49 @@ private:
 template<>
 inline std::string TRegisterHandler::ToScaledTextValue(float val) const
 {
-    return StringFormat("%.7g", Reg->Scale * val);
+    return StringFormat("%.7g", Reg->Scale * val + Reg->Offset);
 }
 
 template<>
 inline std::string TRegisterHandler::ToScaledTextValue(double val) const
 {
-    return StringFormat("%.15g", Reg->Scale * val);
+    return StringFormat("%.15g", Reg->Scale * val + Reg->Offset);
 }
 
 template<typename A>
 inline std::string TRegisterHandler::ToScaledTextValue(A val) const
 {
-    if (Reg->Scale == 1) {
+    if (Reg->Scale == 1 && Reg->Offset == 0) {
         return std::to_string(val);
     } else {
-        return StringFormat("%.15g", Reg->Scale * val);
+        return StringFormat("%.15g", Reg->Scale * val + Reg->Offset);
     }
 }
 
 template<>
 inline uint64_t TRegisterHandler::FromScaledTextValue(const std::string& str) const
 {
-    if (Reg->Scale == 1) {
+    if (Reg->Scale == 1 && Reg->Offset == 0) {
         return std::stoull(str);
     } else {
-        return round(stod(str) / Reg->Scale);
+        return round((stod(str) - Reg->Offset) / Reg->Scale);
     }
 }
 
 template<>
 inline int64_t TRegisterHandler::FromScaledTextValue(const std::string& str) const
 {
-    if (Reg->Scale == 1) {
+    if (Reg->Scale == 1 && Reg->Offset == 0) {
         return std::stoll(str);
     } else {
-        return round(stod(str) / Reg->Scale);
+        return round((stod(str) - Reg->Offset) / Reg->Scale);
     }
 }
 
 template<>
 inline double TRegisterHandler::FromScaledTextValue(const std::string& str) const
 {
-    return stod(str) / Reg->Scale;
+    return (stod(str) - Reg->Offset) / Reg->Scale;
 }
 
 typedef std::shared_ptr<TRegisterHandler> PRegisterHandler;

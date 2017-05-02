@@ -275,13 +275,21 @@
             "scale": {
               "type": "number",
               "title": "Scale (value multiplier)",
+              "description": "Value displayed = (value read * scale) + offset",
               "default" : 1,
               "propertyOrder": 7
+            },
+            "offset": {
+              "type": "number",
+              "title": "Value offset",
+              "description": "Value displayed = (value read * scale) + offset",
+              "default" : 0,
+              "propertyOrder": 8
             },
             "channel_readonly": {
               "title": "Read-only",
               "type": "boolean",
-              "propertyOrder": 8
+              "propertyOrder": 9
             },
             "on_value": {
               // TBD: only use on_value for 'switch' and 'wo-switch' types
@@ -307,7 +315,7 @@
           },
           // FIXME: require "reg_type" and "address" for non-templated devices
           "required": ["name"],
-          "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale"],
+          "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale", "offset"],
           "_format": "grid"
         },
         {
@@ -368,6 +376,12 @@
           "title": "Scale (value multiplier)",
           "default" : 1,
           "propertyOrder": 4
+        },
+        "offset": {
+          "type": "number",
+          "title": "Value offset",
+          "default" : 0,
+          "propertyOrder": 5
         }
       },
       "required": ["reg_type", "address"]

@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.24) stable; urgency=medium
+
+  * Add value offset to schema
+
+ -- Yury Usishchev <y.usishchev@contactless.ru>  Tue, 02 May 2017 14:44:58 +0300
+
 wb-mqtt-serial (1.23) stable; urgency=medium
 
   * Add WB6 config
