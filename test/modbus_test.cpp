@@ -63,15 +63,19 @@ protected:
             Device, TRegisterConfig::Create(
             TModbusDevice::REG_DISCRETE, addr, fmt, 1, 0, true, true, "discrete"));
     }
-    PRegister RegHolding(int addr, RegisterFormat fmt = U16, double scale = 1, double offset = 0) {
+    PRegister RegHolding(int addr, RegisterFormat fmt = U16, double scale = 1, 
+        double offset = 0, EWordOrder word_order = EWordOrder::BigEndian) {
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
-            TModbusDevice::REG_HOLDING, addr, fmt, scale, offset, true, false, "holding"));
+            TModbusDevice::REG_HOLDING, addr, fmt, scale, offset, true, false, 
+            "holding", false, 0, word_order));
     }
-    PRegister RegInput(int addr, RegisterFormat fmt = U16, double scale = 1, double offset = 0) {
+    PRegister RegInput(int addr, RegisterFormat fmt = U16, double scale = 1,
+        double offset = 0, EWordOrder word_order = EWordOrder::BigEndian) {
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
-            TModbusDevice::REG_INPUT, addr, fmt, scale, offset, true, true, "input"));
+            TModbusDevice::REG_INPUT, addr, fmt, scale, offset, true, true,
+            "input", false, 0, word_order));
     }
     PSerialPort ClientSerial;
     PSerialClient SerialClient;
@@ -396,6 +400,44 @@ TEST_F(TModbusClientTest, S32)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("-0.123", SerialClient->GetTextValue(holding24));
+}
+
+TEST_F(TModbusClientTest, WordSwap)
+{
+    PRegister holding20 = RegHolding(20, S32, 1, 0, EWordOrder::LittleEndian);
+    PRegister holding24 = RegHolding(24, U64, 1, 0, EWordOrder::LittleEndian);
+    SerialClient->AddRegister(holding24);
+    SerialClient->AddRegister(holding20);
+
+    Note() << "server -> client: 0x00BB, 0x00AA";
+    Slave->Holding[20] = 0x00BB;
+    Slave->Holding[21] = 0x00AA;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0x00AA00BB), SerialClient->GetTextValue(holding20));
+
+    FakeSerial->Flush();
+    Note() << "client -> server: -2";
+    SerialClient->SetTextValue(holding20, "-2");
+    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(holding20));
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(holding20));
+    EXPECT_EQ(0xFFFE, Slave->Holding[20]);
+    EXPECT_EQ(0xFFFF, Slave->Holding[21]);
+
+    // U64
+    FakeSerial->Flush();
+    Note() << "client -> server: 10";
+    SerialClient->SetTextValue(holding24, "47851549213065437"); // 0x00AA00BB00CC00DD
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0x00AA00BB00CC00DD), SerialClient->GetTextValue(holding24));
+    EXPECT_EQ(0x00DD, Slave->Holding[24]);
+    EXPECT_EQ(0x00CC, Slave->Holding[25]);
+    EXPECT_EQ(0x00BB, Slave->Holding[26]);
+    EXPECT_EQ(0x00AA, Slave->Holding[27]);
+
 }
 
 TEST_F(TModbusClientTest, U32)
@@ -974,6 +1016,43 @@ TEST_F(TModbusDeviceTest, OnValue)
     observer->LoopOnce();
 }
 
+
+TEST_F(TModbusDeviceTest, WordSwapIntegration)
+{
+    FilterConfig("WordsLETest");
+    PModbusSlave slave = ModbusServer->SetSlave(
+        stoi(Config->PortConfigs[0]->DeviceConfigs[0]->SlaveId, 0, 0),
+        TModbusRange(
+            TServerRegisterRange(),
+            TServerRegisterRange(),
+            TServerRegisterRange(0, 4),
+            TServerRegisterRange()));
+    ModbusServer->Start();
+
+    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config));
+    observer->SetUp();
+
+    slave->Holding[0] = 0;
+    Note() << "LoopOnce()";
+    observer->LoopOnce();
+
+    MQTTClient->DoPublish(true, 0, "/devices/WordsLETest/controls/Voltage/on", "123");
+
+    Note() << "LoopOnce()";
+    observer->LoopOnce();
+    ASSERT_EQ(123, slave->Holding[0]);
+    ASSERT_EQ(0, slave->Holding[1]);
+    ASSERT_EQ(0, slave->Holding[2]);
+    ASSERT_EQ(0, slave->Holding[3]);
+
+    slave->Holding[0] = 0;
+    Note() << "LoopOnce() after slave update";
+    observer->LoopOnce();
+
+    slave->Holding[0] = 200;
+    Note() << "LoopOnce() after second slave update";
+    observer->LoopOnce();
+}
 TEST_F(TModbusDeviceTest, Errors)
 {
     FilterConfig("DDL24");

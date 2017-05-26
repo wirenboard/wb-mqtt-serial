@@ -39,8 +39,10 @@ private:
     template<typename T> std::string ToScaledTextValue(T val) const;
     template<typename T> T FromScaledTextValue(const std::string& str) const;
     uint64_t ConvertMasterValue(const std::string& v) const;
+    std::string ConvertSlaveValue(uint64_t value) const;
     TErrorState UpdateReadError(bool error);
     TErrorState UpdateWriteError(bool error);
+    uint64_t InvertWordOrderIfNeeded(const uint64_t value) const;
 
     std::weak_ptr<TSerialDevice> Dev;
     uint64_t Value = 0;

@@ -311,7 +311,11 @@
               "title": "Error value",
               "description": "Value which should be treated as read error",
               "propertyOrder": 11
-            }
+            },
+            "word_order": {
+              "$ref": "#/definitions/word_order",
+              "propertyOrder": 12
+            },
           },
           // FIXME: require "reg_type" and "address" for non-templated devices
           "required": ["name"],
@@ -382,7 +386,11 @@
           "title": "Value offset",
           "default" : 0,
           "propertyOrder": 5
-        }
+        },
+        "word_order": {
+          "$ref": "#/definitions/word_order",
+          "propertyOrder": 6
+        },
       },
       "required": ["reg_type", "address"]
     },
@@ -426,6 +434,17 @@
                           "8-bit BCD", "16-bit BCD","24-bit BCD", "32-bit BCD", "IEEE754 32-bit float", "IEEE754 64-bit float (double)",
                           "8-bit ASCII char"]
       }
+    },
+    "word_order": {
+      "type": "string",
+      "title": "16-bit Word Order",
+      "description": "s=signed, u=unsigned, the number indicates the number of bits",
+      "enum": ["big_endian", "little_endian"],
+      "options": {
+        "enum_titles" : [ "Big-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD)",
+                          "Little-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB)"]
+      },
+      "default" : "big_endian"
     },
     "address": {
       "title": "Address",

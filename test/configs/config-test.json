@@ -144,6 +144,22 @@
                         }
 
                     ]
+                },
+                {
+                    "name": "WordsLETest",
+                    "id": "WordsLETest",
+                    "slave_id": "0x91",
+                    "channels": [
+                        {
+                            "name" : "Voltage",
+                            "reg_type" : "holding",
+                            "format" : "u64",
+                            "address" : 0,
+                            "word_order" : "little_endian",
+                            "type": "voltage"
+                        }
+
+                    ]
                 }
             ]
         },

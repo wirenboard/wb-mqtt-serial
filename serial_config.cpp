@@ -125,6 +125,10 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
         RegisterFormatFromName(register_data["format"].asString()) :
         it->second.DefaultFormat;
 
+    EWordOrder word_order = register_data.isMember("word_order") ?
+        WordOrderFromName(register_data["word_order"].asString()) :
+        it->second.DefaultWordOrder;
+
     double scale = 1;
     if (register_data.isMember("scale"))
         scale = register_data["scale"].asDouble(); // TBD: check for zero, too
@@ -147,7 +151,7 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     PRegisterConfig reg = TRegisterConfig::Create(
         it->second.Index,
         address, format, scale, offset, true, force_readonly || it->second.ReadOnly,
-        it->second.Name, has_error_value, error_value);
+        it->second.Name, has_error_value, error_value, word_order);
     if (register_data.isMember("poll_interval"))
         reg->PollInterval = std::chrono::milliseconds(GetInt(register_data, "poll_interval"));
     return reg;

@@ -37,14 +37,21 @@ enum RegisterFormat {
     Char8
 };
 
+enum class EWordOrder {
+    BigEndian,
+    LittleEndian
+};
+
 struct TRegisterType {
     TRegisterType(int index, const std::string& name, const std::string& defaultControlType,
-                  RegisterFormat defaultFormat = U16, bool read_only = false):
+                  RegisterFormat defaultFormat = U16,
+                  bool read_only = false, EWordOrder defaultWordOrder = EWordOrder::BigEndian):
         Index(index), Name(name), DefaultControlType(defaultControlType),
-        DefaultFormat(defaultFormat), ReadOnly(read_only) {}
+        DefaultFormat(defaultFormat), DefaultWordOrder(defaultWordOrder), ReadOnly(read_only) {}
     int Index;
     std::string Name, DefaultControlType;
     RegisterFormat DefaultFormat;
+    EWordOrder DefaultWordOrder;
     bool ReadOnly;
 };
 
@@ -64,10 +71,12 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
               RegisterFormat format, double scale, double offset,
               bool poll, bool readonly,
               const std::string& type_name,
-              bool has_error_value, uint64_t error_value)
+              bool has_error_value, uint64_t error_value,
+              const EWordOrder word_order)
         : Type(type), Address(address), Format(format),
           Scale(scale), Offset(offset), Poll(poll), ReadOnly(readonly), TypeName(type_name),
-          HasErrorValue(has_error_value), ErrorValue(error_value)
+          HasErrorValue(has_error_value), ErrorValue(error_value),
+          WordOrder(word_order)
     {
         if (TypeName.empty())
             TypeName = "(type " + std::to_string(Type) + ")";
@@ -78,10 +87,12 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
                             bool poll = true, bool readonly = false,
                             const std::string& type_name = "",
                             bool has_error_value = false,
-                            uint64_t error_value = 0)
+                            uint64_t error_value = 0,
+                            const EWordOrder word_order = EWordOrder::BigEndian
+                            )
     {
         return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, poll, readonly,
-                                            type_name, has_error_value, error_value);
+                                            type_name, has_error_value, error_value, word_order);
     }
 
 
@@ -126,6 +137,7 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 
     bool HasErrorValue;
     uint64_t ErrorValue;
+    EWordOrder WordOrder;
 
 };
 
@@ -285,6 +297,16 @@ inline RegisterFormat RegisterFormatFromName(const std::string& name) {
     else
         return U16; // FIXME!
 }
+
+inline EWordOrder WordOrderFromName(const std::string& name) {
+    if (name == "big_endian")
+        return EWordOrder::BigEndian;
+    else if (name == "little_endian")
+        return EWordOrder::LittleEndian;
+    else
+        return EWordOrder::BigEndian;
+}
+
 
 class TRegisterRange {
 public:
