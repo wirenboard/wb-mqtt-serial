@@ -115,7 +115,7 @@ int TMercury200Device::RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* res
 
 void TMercury200Device::FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) const
 {
-    buf[0] = 0x00;
+    buf[0] = static_cast<uint8_t>(id >> 24);
     buf[1] = static_cast<uint8_t>(id >> 16);
     buf[2] = static_cast<uint8_t>(id >> 8);
     buf[3] = static_cast<uint8_t>(id);
@@ -127,10 +127,8 @@ void TMercury200Device::FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) cons
 
 bool TMercury200Device::IsBadHeader(uint32_t slave_expected, uint8_t cmd_expected, uint8_t* response) const
 {
-    if (response[0] != 0x00) {
-        return true;
-    }
-    uint32_t actual_slave = ((uint32_t) response[1] << 16)
+    uint32_t actual_slave = ((uint32_t) response[0] << 24)
+                            | ((uint32_t) response[1] << 16)
                             | ((uint32_t) response[2] << 8)
                             | (uint32_t) response[3];
     if (actual_slave != slave_expected) {

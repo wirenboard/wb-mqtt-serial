@@ -1,5 +1,5 @@
 Open()
 EnqueueMercury200BatteryVoltageResponse()
->> 00 01 E2 40 29 75 D4
-<< 00 01 E2 40 29 03 91 E7 93
+>> 01 56 10 1E 29 C1 F3
+<< 01 56 10 1E 29 03 91 D0 89
 Close()
