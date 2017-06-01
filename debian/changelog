@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.26) stable; urgency=medium
+
+  * Use of_machine_match instead of WB_VERSION
+
+ -- Alexey Ignatov <lexszero@gmail.com>  Thu, 01 Jun 2017 18:43:11 +0300
+
 wb-mqtt-serial (1.25) stable; urgency=medium
 
   * adds support for little-endian word order (AABBCCDD => [CC DD] [AA BB])
