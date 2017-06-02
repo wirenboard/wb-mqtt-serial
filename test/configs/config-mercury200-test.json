@@ -13,7 +13,7 @@
       "protocol": "other",
       "devices" : [
         {
-          "slave_id": "0x01e240",
+          "slave_id": "22417438",
           "frame_timeout_ms": 150,
           "device_type": "Mercury 200.02"
         }
