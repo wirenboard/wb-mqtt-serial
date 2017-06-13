@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.26) stable; urgency=medium
+
+  * Mercury 23x: support more parameters
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 13 Jun 2017 21:49:26 +0300
+
 wb-mqtt-serial (1.25.1) stable; urgency=medium
 
   * adds support for Mercury 206 energy meters

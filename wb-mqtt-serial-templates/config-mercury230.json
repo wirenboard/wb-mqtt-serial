@@ -52,7 +52,7 @@
         "format": "u24",
         "type": "power",
         "scale": 0.01
-      },
+      },      
       {
         "name": "U1",
         "reg_type": "param",
@@ -108,7 +108,47 @@
         "format": "u24",
         "type": "value",
         "scale": 0.01
-      }
+      },
+      {
+        "name": "PF",
+        "reg_type": "param",
+        "address": "0x1130",
+        "format": "u24",
+        "type": "value",
+        "scale": 0.001
+      },      
+      {
+        "name": "KU1",
+        "reg_type": "param",
+        "address": "0x1161",
+        "format": "u16",
+        "type": "value",
+        "scale": 0.01
+      },      
+      {
+        "name": "KU2",
+        "reg_type": "param",
+        "address": "0x1162",
+        "format": "u16",
+        "type": "value",
+        "scale": 0.01
+      },      
+      {
+        "name": "KU3",
+        "reg_type": "param",
+        "address": "0x1163",
+        "format": "u16",
+        "type": "value",
+        "scale": 0.01
+      },      
+      {
+        "name": "Temperature",
+        "reg_type": "param",
+        "address": "0x1170",
+        "format": "s16",
+        "type": "value",
+        "scale": 1
+      }      
     ]
   }
 }
