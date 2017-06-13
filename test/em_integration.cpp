@@ -42,6 +42,7 @@ void TEMIntegrationTest::ExpectQueries(bool firstPoll)
     EnqueueMercury230U1Response();
     EnqueueMercury230U2Response();
     EnqueueMercury230I1Response();
+    EnqueueMercury230TempResponse();
 }
 
 TEST_F(TEMIntegrationTest, Poll)

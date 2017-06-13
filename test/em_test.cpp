@@ -22,6 +22,7 @@ protected:
     PRegister Mercury230U1Reg;
     PRegister Mercury230I1Reg;
     PRegister Mercury230U2Reg;
+    PRegister Mercury230TempReg;
     PRegister Mercury230PReg;
 };
 
@@ -53,6 +54,7 @@ void TEMDeviceTest::SetUp()
     Mercury230U1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1111, U24));
     Mercury230I1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1121, U24));
     Mercury230U2Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1112, U24));
+    Mercury230TempReg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1170, S16));
     Mercury230PReg  = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1100, U24));
     
     SerialPort->Open();
@@ -153,6 +155,9 @@ void TEMDeviceTest::VerifyMercuryParamQuery()
     EnqueueMercury230PResponse();
     // Total power (P)
     ASSERT_EQ(553095, Mercury230Dev->ReadRegister(Mercury230PReg));
+
+    EnqueueMercury230TempResponse();
+    ASSERT_EQ(24, Mercury230Dev->ReadRegister(Mercury230TempReg));
 }
 
 TEST_F(TEMDeviceTest, Mercury230ReadParams)

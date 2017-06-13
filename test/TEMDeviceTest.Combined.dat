@@ -28,6 +28,9 @@ EnqueueMercury230U2Response()
 EnqueueMercury230PResponse()
 >> 00 08 11 00 8D B6
 << 00 48 87 70 E2 26
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+<< 00 00 18 71 CA
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
 << FF 01 66 03 6F 94 03 03 4E
@@ -49,6 +52,9 @@ EnqueueMercury230U2Response()
 EnqueueMercury230PResponse()
 >> 00 08 11 00 8D B6
 << 00 48 87 70 E2 26
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+<< 00 00 18 71 CA
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
 << FF 01 66 03 6F 94 03 03 4E
@@ -70,6 +76,9 @@ EnqueueMercury230U2Response()
 EnqueueMercury230PResponse()
 >> 00 08 11 00 8D B6
 << 00 48 87 70 E2 26
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+<< 00 00 18 71 CA
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
 << FF 01 66 03 6F 94 03 03 4E
@@ -91,4 +100,7 @@ EnqueueMercury230U2Response()
 EnqueueMercury230PResponse()
 >> 00 08 11 00 8D B6
 << 00 48 87 70 E2 26
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+<< 00 00 18 71 CA
 Close()

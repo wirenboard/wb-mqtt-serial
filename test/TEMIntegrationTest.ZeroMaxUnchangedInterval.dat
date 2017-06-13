@@ -29,6 +29,10 @@ Publish: /devices/mercury230ar02-test/controls/I1/meta/type: 'value' (QoS 0, ret
 Publish: /devices/mercury230ar02-test/controls/I1/meta/readonly: '1' (QoS 0, retained)
 Publish: /devices/mercury230ar02-test/controls/I1/meta/order: '5' (QoS 0, retained)
 Subscribe: /devices/mercury230ar02-test/controls/I1/on (QoS 0)
+Publish: /devices/mercury230ar02-test/controls/Temperature/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Temperature/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Temperature/meta/order: '6' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02-test/controls/Temperature/on (QoS 0)
 >>> LoopOnce()
 Open()
 EnqueueMilurIgnoredPacketWorkaround()
@@ -75,8 +79,13 @@ EnqueueMercury230I1Response()
 >> 00 08 11 21 4D AE
 Publish: /devices/mercury230ar02-test/controls/I1/meta/error: '' (QoS 0, retained)
 Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
->>> LoopOnce()
 << 00 00 45 00 32 B4
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+Publish: /devices/mercury230ar02-test/controls/Temperature/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Temperature: '24' (QoS 0, retained)
+>>> LoopOnce()
+<< 00 00 18 71 CA
 EnqueueMilurIgnoredPacketWorkaround()
 >> FF
 Sleep(100000)
@@ -106,8 +115,12 @@ Publish: /devices/mercury230ar02-test/controls/U2: '240.43' (QoS 0, retained)
 EnqueueMercury230I1Response()
 >> 00 08 11 21 4D AE
 Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
->>> LoopOnce()
 << 00 00 45 00 32 B4
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+Publish: /devices/mercury230ar02-test/controls/Temperature: '24' (QoS 0, retained)
+>>> LoopOnce()
+<< 00 00 18 71 CA
 EnqueueMilurIgnoredPacketWorkaround()
 >> FF
 Sleep(100000)
@@ -138,4 +151,8 @@ EnqueueMercury230I1Response()
 >> 00 08 11 21 4D AE
 Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
 << 00 00 45 00 32 B4
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+Publish: /devices/mercury230ar02-test/controls/Temperature: '24' (QoS 0, retained)
+<< 00 00 18 71 CA
 Close()

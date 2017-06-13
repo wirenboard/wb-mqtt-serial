@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include "mercury230_device.h"
 #include "crc16.h"
@@ -84,18 +85,27 @@ const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray( uint32_
     return CachedValues.insert(std::make_pair(key, a)).first->second;
 }
 
-uint32_t TMercury230Device::ReadParam( uint32_t address)
+uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_len)
 {
     uint8_t cmdBuf[2];
+    uint32_t result;
     cmdBuf[0] = (address >> 8) & 0xff; // param
     cmdBuf[1] = address & 0xff; // subparam (BWRI)
     uint8_t subparam = (address & 0xff) >> 4;
     bool isPowerOrPowerCoef = subparam == 0x00 || subparam == 0x03;
-    uint8_t buf[3];
-    Talk( 0x08, cmdBuf, 2, -1, buf, 3);
-    return (((uint32_t)buf[0] & (isPowerOrPowerCoef ? 0x3f : 0xff)) << 16) +
-            ((uint32_t)buf[2] << 8) +
-             (uint32_t)buf[1];
+    assert(resp_payload_len <= 3);
+    uint8_t buf[3] = {};
+    Talk( 0x08, cmdBuf, 2, -1, buf, resp_payload_len);
+
+    if (resp_payload_len == 3) {
+        result = (((uint32_t)buf[0] & (isPowerOrPowerCoef ? 0x3f : 0xff)) << 16) +
+                 ((uint32_t)buf[2] << 8) +
+                (uint32_t)buf[1];
+    } else if (resp_payload_len == 2) {
+        result = ((uint32_t)buf[1] << 8) +
+                 ((uint32_t)buf[0] << 8);
+    }
+    return result;
 }
 
 uint64_t TMercury230Device::ReadRegister(PRegister reg)
@@ -104,7 +114,7 @@ uint64_t TMercury230Device::ReadRegister(PRegister reg)
     case REG_VALUE_ARRAY:
         return ReadValueArray(reg->Address).values[reg->Address & 0x03];
     case REG_PARAM:
-        return ReadParam( reg->Address & 0xffff);
+        return ReadParam( reg->Address & 0xffff, reg->ByteWidth());
     default:
         throw TSerialDeviceException("mercury230: invalid register type");
     }

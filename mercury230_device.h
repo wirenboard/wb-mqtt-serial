@@ -34,7 +34,7 @@ private:
         uint32_t values[4];
     };
     const TValueArray& ReadValueArray(uint32_t address);
-    uint32_t ReadParam( uint32_t address);
+    uint32_t ReadParam( uint32_t address, unsigned resp_payload_len);
 
     std::unordered_map<int, TValueArray> CachedValues;
 };

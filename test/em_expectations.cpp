@@ -428,6 +428,26 @@ void TEMDeviceExpectations::EnqueueMercury230U2Response()
         }, __func__);
 }
 
+void TEMDeviceExpectations::EnqueueMercury230TempResponse()
+{
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x70, // addr
+            0x8c, // crc
+            0x52  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x00, // temp
+            0x18, // temp
+            0x71, // crc
+            0xca  // crc
+        }, __func__);
+}
+
 void TEMDeviceExpectations::EnqueueMercury230PResponse()
 {
     Expector()->Expect(
