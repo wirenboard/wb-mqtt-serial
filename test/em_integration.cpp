@@ -34,6 +34,7 @@ void TEMIntegrationTest::ExpectQueries(bool firstPoll)
     if (firstPoll)
         EnqueueMilurSessionSetupResponse();
     EnqueueMilurPhaseCVoltageResponse();
+    EnqueueMilurPhaseCCurrentResponse();
     EnqueueMilurTotalConsumptionResponse();
 
     if (firstPoll)

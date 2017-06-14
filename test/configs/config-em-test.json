@@ -29,6 +29,14 @@
               "scale": 0.001
             },
             {
+              "name": "Phase C current",
+              "type": "value",
+              "reg_type": "param",
+              "address": 105,
+              "format": "s24",
+              "scale": 0.001
+            },
+            {
               "name": "Total consumption",
               "reg_type": "energy",
               "address": 118,

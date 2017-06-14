@@ -124,6 +124,30 @@ void TEMDeviceExpectations::EnqueueMilurPhaseCVoltageResponse()
         }, __func__);
 }
 
+void TEMDeviceExpectations::EnqueueMilurPhaseCCurrentResponse()
+{
+    Expector()->Expect(
+        {
+            0xff, // unit id
+            0x01, // op
+            0x69, // register
+            0x80, // crc
+            0x4e  // crc
+        },
+        {
+            // Read response
+            0xff, // unit id
+            0x01, // op
+            0x69, // register
+            0x03, // len
+            0xf0, // data 1
+            0xd8, // data 2
+            0xff, // data 3
+            0x53, // crc
+            0xe0  // crc
+        }, __func__);
+}
+
 void TEMDeviceExpectations::EnqueueMilurFrequencyResponse()
 {
     Expector()->Expect(
