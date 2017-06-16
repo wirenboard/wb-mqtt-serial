@@ -85,27 +85,56 @@ const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray( uint32_
     return CachedValues.insert(std::make_pair(key, a)).first->second;
 }
 
+static int BWRI_SUBPARAM_POWER = 0x00;
+static int BWRI_SUBPARAM_PF = 0x03;
+static int BWRI_POWER_NUM_P = 0;
+static int BWRI_POWER_NUM_Q = 1;
+// static int BWRI_POWER_NUM_S = 2;
+
 uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_len)
 {
     uint8_t cmdBuf[2];
-    uint32_t result;
     cmdBuf[0] = (address >> 8) & 0xff; // param
     cmdBuf[1] = address & 0xff; // subparam (BWRI)
     uint8_t subparam = (address & 0xff) >> 4;
-    bool isPowerOrPowerCoef = subparam == 0x00 || subparam == 0x03;
+    
     assert(resp_payload_len <= 3);
     uint8_t buf[3] = {};
     Talk( 0x08, cmdBuf, 2, -1, buf, resp_payload_len);
 
     if (resp_payload_len == 3) {
-        result = (((uint32_t)buf[0] & (isPowerOrPowerCoef ? 0x3f : 0xff)) << 16) +
-                 ((uint32_t)buf[2] << 8) +
-                (uint32_t)buf[1];
-    } else if (resp_payload_len == 2) {
-        result = ((uint32_t)buf[1] << 8) +
-                 ((uint32_t)buf[0] << 8);
+        if ((subparam == BWRI_SUBPARAM_POWER) || (subparam == BWRI_SUBPARAM_PF)) {
+            uint32_t magnitude = (((uint32_t)buf[0] & 0x3f) << 16) +
+                                ((uint32_t)buf[2] << 8) +
+                                (uint32_t)buf[1];
+
+            int active_power_sign =   (buf[0] & (1 << 7)) ? -1 : 1;
+            int reactive_power_sign = (buf[0] & (1 << 6)) ? -1 : 1;
+
+            int power_num = (((address & 0xff) >> 2) & 0b11);
+            int sign = 1;
+            
+            if (subparam == BWRI_SUBPARAM_POWER) {
+                
+                if (power_num == BWRI_POWER_NUM_P) {
+                    sign = active_power_sign;                    
+                } else if (power_num == BWRI_POWER_NUM_Q) {
+                    sign = reactive_power_sign;
+                } 
+            } else if (subparam == BWRI_SUBPARAM_PF) {
+                sign = active_power_sign;
+            }
+
+            return (uint32_t)(((int32_t) magnitude * sign));
+        } else {
+            return ((uint32_t)buf[0] << 16) +
+                   ((uint32_t)buf[2] << 8) +
+                   (uint32_t)buf[1];
+        }
+    } else  {
+        return ((uint32_t)buf[0] << 8) +
+               ((uint32_t)buf[1]);
     }
-    return result;
 }
 
 uint64_t TMercury230Device::ReadRegister(PRegister reg)
