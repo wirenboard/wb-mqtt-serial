@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include "fake_serial_port.h"
+#include "utils.h"
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture), IsPortOpen(false), ReqPos(0), RespPos(0), DumpPos(0) {}
@@ -69,8 +70,13 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
         const uint8_t* p = buf;
         for (auto it = start; p < buf + count; ++p, ++it) {
             if (*it != int(*p))
-                throw std::runtime_error("Request mismatch");
+                throw std::runtime_error(std::string("Request mismatch: ") + 
+                        HexDump(std::vector<uint8_t>(buf, buf + count)) +
+                        ", expected: " +
+                        HexDump(std::vector<uint8_t>(start, start + count))
+                    );
         }
+        
 
         if (Req[ReqPos + count] != FRAME_BOUNDARY)
             throw std::runtime_error("Unexpectedly short request");

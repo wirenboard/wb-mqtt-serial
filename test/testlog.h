@@ -5,6 +5,7 @@
 #include <functional>
 #include <mutex>
 #include <gtest/gtest.h>
+#include "utils.h"
 
 class TTestLogItem
 {
@@ -34,18 +35,7 @@ private:
 
 template<> inline TTestLogItem& TTestLogItem::operator <<(const std::vector<uint8_t>& value)
 {
-    // TBD: move this to libwbmqtt (HexDump?)
-    std::ios::fmtflags f(Contents.flags());
-    Contents << std::hex << std::uppercase << std::setfill('0');
-    bool first = true;
-    for (uint8_t b: value) {
-        if (first)
-            first = false;
-        else
-            Contents << " ";
-        Contents << std::setw(2) << int(b);
-    }
-    Contents.flags(f);
+    HexDump(Contents, value);
     return *this;
 }
 
