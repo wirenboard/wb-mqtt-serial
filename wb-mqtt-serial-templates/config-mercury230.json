@@ -179,6 +179,7 @@
         "address": "0x1161",
         "format": "u16",
         "type": "value",
+        "error_value" : "0xffff",
         "scale": 0.01
       },      
       {
@@ -187,6 +188,7 @@
         "address": "0x1162",
         "format": "u16",
         "type": "value",
+        "error_value" : "0xffff",
         "scale": 0.01
       },      
       {
@@ -195,6 +197,7 @@
         "address": "0x1163",
         "format": "u16",
         "type": "value",
+        "error_value" : "0xffff",
         "scale": 0.01
       },      
       {
