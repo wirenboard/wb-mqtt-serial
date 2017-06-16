@@ -90,7 +90,7 @@
             },
             {
               "name": "Temperature",
-              "reg_type": "param",
+              "reg_type": "param_be",
               "address": "0x1170",
               "format": "s16",
               "type": "value",

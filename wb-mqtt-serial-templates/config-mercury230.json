@@ -23,7 +23,7 @@
       },
       {
         "name": "P",
-        "reg_type": "param",
+        "reg_type": "param_sign_active",
         "address": "0x1100",
         "format": "s24",
         "type": "power",
@@ -31,7 +31,7 @@
       },
       {
         "name": "P1",
-        "reg_type": "param",
+        "reg_type": "param_sign_active",
         "address": "0x1101",
         "format": "s24",
         "type": "power",
@@ -39,7 +39,7 @@
       },
       {
         "name": "P2",
-        "reg_type": "param",
+        "reg_type": "param_sign_active",
         "address": "0x1102",
         "format": "s24",
         "type": "power",
@@ -47,7 +47,7 @@
       },
       {
         "name": "P3",
-        "reg_type": "param",
+        "reg_type": "param_sign_active",
         "address": "0x1103",
         "format": "s24",
         "type": "power",
@@ -55,7 +55,7 @@
       },      
       {
         "name": "Q",
-        "reg_type": "param",
+        "reg_type": "param_sign_reactive",
         "address": "0x1104",
         "format": "s24",
         "type": "power",
@@ -63,7 +63,7 @@
       },
       {
         "name": "Q1",
-        "reg_type": "param",
+        "reg_type": "param_sign_reactive",
         "address": "0x1105",
         "format": "s24",
         "type": "power",
@@ -71,7 +71,7 @@
       },
       {
         "name": "Q2",
-        "reg_type": "param",
+        "reg_type": "param_sign_reactive",
         "address": "0x1106",
         "format": "s24",
         "type": "power",
@@ -79,7 +79,7 @@
       },
       {
         "name": "Q3",
-        "reg_type": "param",
+        "reg_type": "param_sign_reactive",
         "address": "0x1107",
         "format": "s24",
         "type": "power",
@@ -143,7 +143,7 @@
       },
       {
         "name": "PF",
-        "reg_type": "param",
+        "reg_type": "param_sign_active",
         "address": "0x1130",
         "format": "s24",
         "type": "value",
@@ -151,7 +151,7 @@
       },      
       {
         "name": "PF1",
-        "reg_type": "param",
+        "reg_type": "param_sign_active",
         "address": "0x1131",
         "format": "s24",
         "type": "value",
@@ -159,7 +159,7 @@
       },      
       {
         "name": "PF2",
-        "reg_type": "param",
+        "reg_type": "param_sign_active",
         "address": "0x1132",
         "format": "s24",
         "type": "value",
@@ -167,7 +167,7 @@
       },      
       {
         "name": "PF3",
-        "reg_type": "param",
+        "reg_type": "param_sign_active",
         "address": "0x1133",
         "format": "s24",
         "type": "value",
@@ -199,9 +199,9 @@
       },      
       {
         "name": "Temperature",
-        "reg_type": "param",
+        "reg_type": "param_be",
         "address": "0x1170",
-        "format": "s16",
+        "format": "u16",
         "type": "value",
         "scale": 1
       }      
