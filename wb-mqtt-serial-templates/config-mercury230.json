@@ -54,6 +54,38 @@
         "scale": 0.01
       },      
       {
+        "name": "Q",
+        "reg_type": "param",
+        "address": "0x1104",
+        "format": "u24",
+        "type": "power",
+        "scale": 0.01
+      },
+      {
+        "name": "Q1",
+        "reg_type": "param",
+        "address": "0x1105",
+        "format": "u24",
+        "type": "power",
+        "scale": 0.01
+      },
+      {
+        "name": "Q2",
+        "reg_type": "param",
+        "address": "0x1106",
+        "format": "u24",
+        "type": "power",
+        "scale": 0.01
+      },
+      {
+        "name": "Q3",
+        "reg_type": "param",
+        "address": "0x1107",
+        "format": "u24",
+        "type": "power",
+        "scale": 0.01
+      },      
+      {
         "name": "U1",
         "reg_type": "param",
         "address": "0x1111",
@@ -113,6 +145,30 @@
         "name": "PF",
         "reg_type": "param",
         "address": "0x1130",
+        "format": "u24",
+        "type": "value",
+        "scale": 0.001
+      },      
+      {
+        "name": "PF1",
+        "reg_type": "param",
+        "address": "0x1131",
+        "format": "u24",
+        "type": "value",
+        "scale": 0.001
+      },      
+      {
+        "name": "PF2",
+        "reg_type": "param",
+        "address": "0x1132",
+        "format": "u24",
+        "type": "value",
+        "scale": 0.001
+      },      
+      {
+        "name": "PF3",
+        "reg_type": "param",
+        "address": "0x1133",
         "format": "u24",
         "type": "value",
         "scale": 0.001
