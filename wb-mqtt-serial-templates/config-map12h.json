@@ -1,8 +1,8 @@
 {
-  "device_type" : "WB-ACM",
+  "device_type" : "WB-MAP12H",
   "device" : {
-    "name": "WB-ACM (beta)",
-    "id": "wb-acm",
+    "name": "WB-MAP12H",
+    "id": "wb-map12h",
     "channels": [
       {
         "name": "Ch1 U1",
