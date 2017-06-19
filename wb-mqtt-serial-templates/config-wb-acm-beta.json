@@ -1,0 +1,925 @@
+{
+  "device_type" : "WB-ACM",
+  "device" : {
+    "name": "WB-ACM (beta)",
+    "id": "wb-acm",
+    "channels": [
+      {
+        "name": "Ch1 U1",
+        "reg_type": "input",
+        "address": "0x10D9",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch1 I1",
+        "reg_type": "input",
+        "address": "0x10DD",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch1 P1",
+        "reg_type": "input",
+        "address": "0x10B1",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch1 Q1",
+        "reg_type": "input",
+        "address": "0x10B5",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch1 S1",
+        "reg_type": "input",
+        "address": "0x10B9",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch1 Power factor 1",
+        "reg_type": "input",
+        "address": "0x10BD",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch1 Active forward energy 1",
+        "reg_type": "input",
+        "address": "0x1204",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch1 Reactive forward energy 1",
+        "reg_type": "input",
+        "address": "0x1220",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch1 U2",
+        "reg_type": "input",
+        "address": "0x10DA",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch1 I2",
+        "reg_type": "input",
+        "address": "0x10DE",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch1 P2",
+        "reg_type": "input",
+        "address": "0x10B2",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch1 Q2",
+        "reg_type": "input",
+        "address": "0x10B6",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch1 S2",
+        "reg_type": "input",
+        "address": "0x10BA",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch1 Power factor 2",
+        "reg_type": "input",
+        "address": "0x10BE",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch1 Active forward energy 2",
+        "reg_type": "input",
+        "address": "0x1208",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch1 Reactive forward energy 2",
+        "reg_type": "input",
+        "address": "0x1224",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch1 U3",
+        "reg_type": "input",
+        "address": "0x10DB",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch1 I3",
+        "reg_type": "input",
+        "address": "0x10DF",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch1 P3",
+        "reg_type": "input",
+        "address": "0x10B3",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch1 Q3",
+        "reg_type": "input",
+        "address": "0x10B7",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch1 S3",
+        "reg_type": "input",
+        "address": "0x10BB",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch1 Power factor 3",
+        "reg_type": "input",
+        "address": "0x10BF",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch1 Active forward energy 3",
+        "reg_type": "input",
+        "address": "0x120C",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch1 Reactive forward energy 3",
+        "reg_type": "input",
+        "address": "0x1228",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+          "name": "Ch1 Frequency",
+          "reg_type": "input",
+          "type": "value",
+          "format": "u16",
+          "address": "0x10F8",
+          "scale": 0.01
+      },
+      {
+          "name": "Ch1 Temperature",
+          "reg_type": "input",
+          "type": "temperature",
+          "format": "u16",
+          "address": "0x10FC",
+          "scale": 1
+      },
+      {
+        "name": "Ch2 U1",
+        "reg_type": "input",
+        "address": "0x20D9",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch2 I1",
+        "reg_type": "input",
+        "address": "0x20DD",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch2 P1",
+        "reg_type": "input",
+        "address": "0x20B1",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch2 Q1",
+        "reg_type": "input",
+        "address": "0x20B5",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch2 S1",
+        "reg_type": "input",
+        "address": "0x20B9",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch2 Power factor 1",
+        "reg_type": "input",
+        "address": "0x20BD",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch2 Active forward energy 1",
+        "reg_type": "input",
+        "address": "0x2204",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch2 Reactive forward energy 1",
+        "reg_type": "input",
+        "address": "0x2220",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch2 U2",
+        "reg_type": "input",
+        "address": "0x20DA",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch2 I2",
+        "reg_type": "input",
+        "address": "0x20DE",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch2 P2",
+        "reg_type": "input",
+        "address": "0x20B2",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch2 Q2",
+        "reg_type": "input",
+        "address": "0x20B6",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch2 S2",
+        "reg_type": "input",
+        "address": "0x20BA",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch2 Power factor 2",
+        "reg_type": "input",
+        "address": "0x20BE",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch2 Active forward energy 2",
+        "reg_type": "input",
+        "address": "0x2208",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch2 Reactive forward energy 2",
+        "reg_type": "input",
+        "address": "0x2224",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch2 U3",
+        "reg_type": "input",
+        "address": "0x20DB",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch2 I3",
+        "reg_type": "input",
+        "address": "0x20DF",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch2 P3",
+        "reg_type": "input",
+        "address": "0x20B3",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch2 Q3",
+        "reg_type": "input",
+        "address": "0x20B7",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch2 S3",
+        "reg_type": "input",
+        "address": "0x20BB",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch2 Power factor 3",
+        "reg_type": "input",
+        "address": "0x20BF",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch2 Active forward energy 3",
+        "reg_type": "input",
+        "address": "0x220C",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch2 Reactive forward energy 3",
+        "reg_type": "input",
+        "address": "0x2228",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+          "name": "Ch2 Frequency",
+          "reg_type": "input",
+          "type": "value",
+          "format": "u16",
+          "address": "0x20F8",
+          "scale": 0.01
+      },
+      {
+          "name": "Ch2 Temperature",
+          "reg_type": "input",
+          "type": "temperature",
+          "format": "u16",
+          "address": "0x20FC",
+          "scale": 1
+      },
+      {
+        "name": "Ch3 U1",
+        "reg_type": "input",
+        "address": "0x30D9",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch3 I1",
+        "reg_type": "input",
+        "address": "0x30DD",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch3 P1",
+        "reg_type": "input",
+        "address": "0x30B1",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch3 Q1",
+        "reg_type": "input",
+        "address": "0x30B5",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch3 S1",
+        "reg_type": "input",
+        "address": "0x30B9",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch3 Power factor 1",
+        "reg_type": "input",
+        "address": "0x30BD",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch3 Active forward energy 1",
+        "reg_type": "input",
+        "address": "0x3204",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch3 Reactive forward energy 1",
+        "reg_type": "input",
+        "address": "0x3220",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch3 U2",
+        "reg_type": "input",
+        "address": "0x30DA",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch3 I2",
+        "reg_type": "input",
+        "address": "0x30DE",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch3 P2",
+        "reg_type": "input",
+        "address": "0x30B2",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch3 Q2",
+        "reg_type": "input",
+        "address": "0x30B6",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch3 S2",
+        "reg_type": "input",
+        "address": "0x30BA",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch3 Power factor 2",
+        "reg_type": "input",
+        "address": "0x30BE",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch3 Active forward energy 2",
+        "reg_type": "input",
+        "address": "0x3208",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch3 Reactive forward energy 2",
+        "reg_type": "input",
+        "address": "0x3224",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch3 U3",
+        "reg_type": "input",
+        "address": "0x30DB",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch3 I3",
+        "reg_type": "input",
+        "address": "0x30DF",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch3 P3",
+        "reg_type": "input",
+        "address": "0x30B3",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch3 Q3",
+        "reg_type": "input",
+        "address": "0x30B7",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch3 S3",
+        "reg_type": "input",
+        "address": "0x30BB",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch3 Power factor 3",
+        "reg_type": "input",
+        "address": "0x30BF",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch3 Active forward energy 3",
+        "reg_type": "input",
+        "address": "0x320C",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch3 Reactive forward energy 3",
+        "reg_type": "input",
+        "address": "0x3228",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+          "name": "Ch3 Frequency",
+          "reg_type": "input",
+          "type": "value",
+          "format": "u16",
+          "address": "0x30F8",
+          "scale": 0.01
+      },
+      {
+          "name": "Ch3 Temperature",
+          "reg_type": "input",
+          "type": "temperature",
+          "format": "u16",
+          "address": "0x30FC",
+          "scale": 1
+      },
+      {
+        "name": "Ch4 U1",
+        "reg_type": "input",
+        "address": "0x40D9",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch4 I1",
+        "reg_type": "input",
+        "address": "0x40DD",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch4 P1",
+        "reg_type": "input",
+        "address": "0x40B1",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch4 Q1",
+        "reg_type": "input",
+        "address": "0x40B5",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch4 S1",
+        "reg_type": "input",
+        "address": "0x40B9",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch4 Power factor 1",
+        "reg_type": "input",
+        "address": "0x40BD",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch4 Active forward energy 1",
+        "reg_type": "input",
+        "address": "0x4204",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch4 Reactive forward energy 1",
+        "reg_type": "input",
+        "address": "0x4220",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch4 U2",
+        "reg_type": "input",
+        "address": "0x40DA",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch4 I2",
+        "reg_type": "input",
+        "address": "0x40DE",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch4 P2",
+        "reg_type": "input",
+        "address": "0x40B2",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch4 Q2",
+        "reg_type": "input",
+        "address": "0x40B6",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch4 S2",
+        "reg_type": "input",
+        "address": "0x40BA",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch4 Power factor 2",
+        "reg_type": "input",
+        "address": "0x40BE",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch4 Active forward energy 2",
+        "reg_type": "input",
+        "address": "0x4208",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch4 Reactive forward energy 2",
+        "reg_type": "input",
+        "address": "0x4224",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch4 U3",
+        "reg_type": "input",
+        "address": "0x40DB",
+        "type": "voltage",
+        "format": "s16",
+        "scale": 0.01
+      },
+      {
+        "name": "Ch4 I3",
+        "reg_type": "input",
+        "address": "0x40DF",
+        "type": "value",
+        "units": "A",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch4 P3",
+        "reg_type": "input",
+        "address": "0x40B3",
+        "type": "power",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch4 Q3",
+        "reg_type": "input",
+        "address": "0x40B7",
+        "type": "power",
+        "units": "kvar",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch4 S3",
+        "reg_type": "input",
+        "address": "0x40BB",
+        "type": "power",
+        "units": "kVA",
+        "format": "s16",
+        "scale": 1
+      },
+      {
+        "name": "Ch4 Power factor 3",
+        "reg_type": "input",
+        "address": "0x40BF",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.001
+      },
+      {
+        "name": "Ch4 Active forward energy 3",
+        "reg_type": "input",
+        "address": "0x420C",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch4 Reactive forward energy 3",
+        "reg_type": "input",
+        "address": "0x4228",
+        "type": "value",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+          "name": "Ch4 Frequency",
+          "reg_type": "input",
+          "type": "value",
+          "format": "u16",
+          "address": "0x40F8",
+          "scale": 0.01
+      },
+      {
+          "name": "Ch4 Temperature",
+          "reg_type": "input",
+          "type": "temperature",
+          "format": "u16",
+          "address": "0x40FC",
+          "scale": 1
+      }
+    ]
+  }
+}
