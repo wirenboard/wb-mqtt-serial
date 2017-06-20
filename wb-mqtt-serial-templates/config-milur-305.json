@@ -36,7 +36,7 @@
         "type": "value",
         "reg_type": "param",
         "address": 103,
-        "format": "u24",
+        "format": "s24",
         "scale": 0.001
       },
       {
@@ -44,7 +44,7 @@
         "type": "value",
         "reg_type": "param",
         "address": 104,
-        "format": "u24",
+        "format": "s24",
         "scale": 0.001
       },
       {
@@ -52,7 +52,7 @@
         "type": "value",
         "reg_type": "param",
         "address": 105,
-        "format": "u24",
+        "format": "s24",
         "scale": 0.001
       },
       {

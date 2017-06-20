@@ -124,6 +124,30 @@ void TEMDeviceExpectations::EnqueueMilurPhaseCVoltageResponse()
         }, __func__);
 }
 
+void TEMDeviceExpectations::EnqueueMilurPhaseCCurrentResponse()
+{
+    Expector()->Expect(
+        {
+            0xff, // unit id
+            0x01, // op
+            0x69, // register
+            0x80, // crc
+            0x4e  // crc
+        },
+        {
+            // Read response
+            0xff, // unit id
+            0x01, // op
+            0x69, // register
+            0x03, // len
+            0xf0, // data 1
+            0xd8, // data 2
+            0xff, // data 3
+            0x53, // crc
+            0xe0  // crc
+        }, __func__);
+}
+
 void TEMDeviceExpectations::EnqueueMilurFrequencyResponse()
 {
     Expector()->Expect(
@@ -428,6 +452,26 @@ void TEMDeviceExpectations::EnqueueMercury230U2Response()
         }, __func__);
 }
 
+void TEMDeviceExpectations::EnqueueMercury230TempResponse()
+{
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x70, // addr
+            0x8c, // crc
+            0x52  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x00, // temp
+            0x18, // temp
+            0x71, // crc
+            0xca  // crc
+        }, __func__);
+}
+
 void TEMDeviceExpectations::EnqueueMercury230PResponse()
 {
     Expector()->Expect(
@@ -448,6 +492,72 @@ void TEMDeviceExpectations::EnqueueMercury230PResponse()
             0x26  // crc
         }, __func__);
 }
+
+
+void TEMDeviceExpectations::EnqueueMercury230P1Response()
+{
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x01, // addr
+            0x4c, // crc
+            0x76  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0xC8, // 2 bits direction (both active  and reactive negative) + 6 bits P value
+            0x87, // P value, 3rd byte
+            0x70, // P value, 2nd byte
+            0xe3, // crc
+            0xce  // crc
+        }, __func__);
+}
+
+void TEMDeviceExpectations::EnqueueMercury230Q1Response()
+{
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x05, // addr
+            0x4d, // crc
+            0xb5  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0xC8, // 2 bits direction (both active and reactive negative) + 6 bits Q value
+            0x87, // Q value, 3rd byte
+            0x70, // Q value, 2nd byte
+            0xe3, // crc
+            0xce  // crc
+        }, __func__);
+}
+
+void TEMDeviceExpectations::EnqueueMercury230Q2Response()
+{
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x06, // addr
+            0x0d, // crc
+            0xb4  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x88, // 2 bits direction (active negative) + 6 bits Q value
+            0x87, // Q value, 3rd byte
+            0x70, // Q value, 2nd byte
+            0xe2, // crc
+            0x1a  // crc
+        }, __func__);
+}
+
+
 
 void TEMDeviceExpectations::EnqueueMercury230NoSessionResponse()
 {

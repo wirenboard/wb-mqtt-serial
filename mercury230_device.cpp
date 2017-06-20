@@ -1,10 +1,15 @@
+#include <cassert>
 #include <iostream>
 #include "mercury230_device.h"
 #include "crc16.h"
 
 REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
             { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },
-            { TMercury230Device::REG_PARAM, "param", "value", U24, true }
+            { TMercury230Device::REG_PARAM, "param", "value", U24, true },
+            { TMercury230Device::REG_PARAM_SIGN_ACT, "param_sign_active", "value", S24, true },
+            { TMercury230Device::REG_PARAM_SIGN_REACT, "param_sign_reactive", "value", S24, true },
+            { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore", "value", U24, true },
+            { TMercury230Device::REG_PARAM_BE, "param_be", "value", S24, true }
         }));
 
 TMercury230Device::TMercury230Device(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
@@ -84,18 +89,48 @@ const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray( uint32_
     return CachedValues.insert(std::make_pair(key, a)).first->second;
 }
 
-uint32_t TMercury230Device::ReadParam( uint32_t address)
+uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_len, RegisterType reg_type)
 {
     uint8_t cmdBuf[2];
     cmdBuf[0] = (address >> 8) & 0xff; // param
     cmdBuf[1] = address & 0xff; // subparam (BWRI)
-    uint8_t subparam = (address & 0xff) >> 4;
-    bool isPowerOrPowerCoef = subparam == 0x00 || subparam == 0x03;
-    uint8_t buf[3];
-    Talk( 0x08, cmdBuf, 2, -1, buf, 3);
-    return (((uint32_t)buf[0] & (isPowerOrPowerCoef ? 0x3f : 0xff)) << 16) +
-            ((uint32_t)buf[2] << 8) +
-             (uint32_t)buf[1];
+    
+    assert(resp_payload_len <= 3);
+    uint8_t buf[3] = {};
+    Talk( 0x08, cmdBuf, 2, -1, buf, resp_payload_len);
+
+    if (resp_payload_len == 3) {
+        if ((reg_type == REG_PARAM_SIGN_ACT) || (reg_type == REG_PARAM_SIGN_REACT) || (reg_type == REG_PARAM_SIGN_IGNORE)) {
+            uint32_t magnitude = (((uint32_t)buf[0] & 0x3f) << 16) +
+                                ((uint32_t)buf[2] << 8) +
+                                (uint32_t)buf[1];
+
+            int active_power_sign =   (buf[0] & (1 << 7)) ? -1 : 1;
+            int reactive_power_sign = (buf[0] & (1 << 6)) ? -1 : 1;
+
+            int sign = 1;
+            
+            if (reg_type == REG_PARAM_SIGN_ACT)  {       
+                    sign = active_power_sign;                    
+            } else if (reg_type == REG_PARAM_SIGN_REACT) {
+                    sign = reactive_power_sign;
+            }
+
+            return (uint32_t)(((int32_t) magnitude * sign));
+        } else {
+            return ((uint32_t)buf[0] << 16) +
+                   ((uint32_t)buf[2] << 8) +
+                   (uint32_t)buf[1];
+        }
+    } else  {
+        if (reg_type == REG_PARAM_BE) {
+            return ((uint32_t)buf[0] << 8) +
+                   ((uint32_t)buf[1]);
+        } else {
+            return ((uint32_t)buf[1] << 8) +
+                   ((uint32_t)buf[0]);
+       }
+    }
 }
 
 uint64_t TMercury230Device::ReadRegister(PRegister reg)
@@ -104,7 +139,11 @@ uint64_t TMercury230Device::ReadRegister(PRegister reg)
     case REG_VALUE_ARRAY:
         return ReadValueArray(reg->Address).values[reg->Address & 0x03];
     case REG_PARAM:
-        return ReadParam( reg->Address & 0xffff);
+    case REG_PARAM_SIGN_ACT:
+    case REG_PARAM_SIGN_REACT:
+    case REG_PARAM_SIGN_IGNORE:
+    case REG_PARAM_BE:
+        return ReadParam( reg->Address & 0xffff, reg->ByteWidth(), (RegisterType) reg->Type);
     default:
         throw TSerialDeviceException("mercury230: invalid register type");
     }

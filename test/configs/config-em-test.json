@@ -29,6 +29,14 @@
               "scale": 0.001
             },
             {
+              "name": "Phase C current",
+              "type": "value",
+              "reg_type": "param",
+              "address": 105,
+              "format": "s24",
+              "scale": 0.001
+            },
+            {
               "name": "Total consumption",
               "reg_type": "energy",
               "address": 118,
@@ -87,6 +95,46 @@
               "format": "u24",
               "type": "value",
               "scale": 0.001
+            },
+            {
+              "name": "Temperature",
+              "reg_type": "param_be",
+              "address": "0x1170",
+              "format": "s16",
+              "type": "value",
+              "scale": 1
+            },
+            {
+              "name": "P",
+              "reg_type": "param_sign_active",
+              "address": "0x1100",
+              "format": "s24",
+              "type": "power",
+              "scale": 0.01
+            },
+            {
+              "name": "P1",
+              "reg_type": "param_sign_active",
+              "address": "0x1101",
+              "format": "s24",
+              "type": "power",
+              "scale": 0.01
+            },
+            {
+              "name": "Q1",
+              "reg_type": "param_sign_reactive",
+              "address": "0x1105",
+              "format": "s24",
+              "type": "power",
+              "scale": 0.01
+            },
+            {
+              "name": "Q2",
+              "reg_type": "param_sign_reactive",
+              "address": "0x1106",
+              "format": "s24",
+              "type": "power",
+              "scale": 0.01
             }
           ]
         }

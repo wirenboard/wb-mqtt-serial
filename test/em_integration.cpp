@@ -34,6 +34,7 @@ void TEMIntegrationTest::ExpectQueries(bool firstPoll)
     if (firstPoll)
         EnqueueMilurSessionSetupResponse();
     EnqueueMilurPhaseCVoltageResponse();
+    EnqueueMilurPhaseCCurrentResponse();
     EnqueueMilurTotalConsumptionResponse();
 
     if (firstPoll)
@@ -42,6 +43,11 @@ void TEMIntegrationTest::ExpectQueries(bool firstPoll)
     EnqueueMercury230U1Response();
     EnqueueMercury230U2Response();
     EnqueueMercury230I1Response();
+    EnqueueMercury230PResponse();
+    EnqueueMercury230P1Response();
+    EnqueueMercury230Q1Response();
+    EnqueueMercury230Q2Response();
+    EnqueueMercury230TempResponse();
 }
 
 TEST_F(TEMIntegrationTest, Poll)
