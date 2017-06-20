@@ -8,6 +8,7 @@ public:
     void EnqueueMilurSessionSetupResponse();
     void EnqueueMilurAccessLevel2SessionSetupResponse();
     void EnqueueMilurPhaseCVoltageResponse();
+    void EnqueueMilurPhaseCCurrentResponse();
     void EnqueueMilurTotalConsumptionResponse();
     void EnqueueMilurNoSessionResponse();
     void EnqueueMilurExceptionResponse();
