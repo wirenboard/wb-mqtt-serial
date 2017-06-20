@@ -1,10 +1,10 @@
-// by killeo
 {
     "device_type": "WP8027ADAM",
     "device": {
         "name": "WP8027ADAM",
         "id": "wp8027adam",
-        "channels": [{
+        "channels": [
+            {
                 "name": "DO_01",
                 "reg_type": "coil",
                 "address": 0,
