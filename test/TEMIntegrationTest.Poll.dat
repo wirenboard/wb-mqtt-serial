@@ -53,6 +53,10 @@ Publish: /devices/mercury230ar02-test/controls/Q2/meta/type: 'power' (QoS 0, ret
 Publish: /devices/mercury230ar02-test/controls/Q2/meta/readonly: '1' (QoS 0, retained)
 Publish: /devices/mercury230ar02-test/controls/Q2/meta/order: '10' (QoS 0, retained)
 Subscribe: /devices/mercury230ar02-test/controls/Q2/on (QoS 0)
+Publish: /devices/mercury230ar02-test/controls/AP2/meta/type: 'power_consumption' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/AP2/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/AP2/meta/order: '11' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02-test/controls/AP2/on (QoS 0)
 >>> LoopOnce()
 Open()
 EnqueueMilurIgnoredPacketWorkaround()
@@ -130,4 +134,9 @@ EnqueueMercury230TempResponse()
 Publish: /devices/mercury230ar02-test/controls/Temperature/meta/error: '' (QoS 0, retained)
 Publish: /devices/mercury230ar02-test/controls/Temperature: '24' (QoS 0, retained)
 << 00 00 18 71 CA
+EnqueueMercury230PerPhaseEnergyResponse()
+>> 00 05 60 00 38 25
+Publish: /devices/mercury230ar02-test/controls/AP2/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/AP2: '3145.769' (QoS 0, retained)
+<< 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
 Close()

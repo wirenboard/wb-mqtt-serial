@@ -389,6 +389,37 @@ void TEMDeviceExpectations::EnqueueMercury230EnergyResponse2()
         }, __func__);
 }
 
+void TEMDeviceExpectations::EnqueueMercury230PerPhaseEnergyResponse()
+{
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x05, // op
+            0x60, // addr
+            0x00, // addr
+            0x38, // crc
+            0x25  // crc
+        },
+        {
+            // Read response
+            0x00, // unit id (group)
+            0x30, // Phase A
+            0x00, // Phase A
+            0x29, // Phase A
+            0xc5, // Phase A
+            0x30, // Phase B
+            0x00, // Phase B
+            0x29, // Phase B
+            0x00, // Phase B
+            0x04, // Phase C
+            0x00, // Phase C
+            0x9d, // Phase C
+            0x95, // Phase C
+            0x50, // crc
+            0x99  // crc
+        }, __func__);    
+}
+
 void TEMDeviceExpectations::EnqueueMercury230U1Response()
 {
     Expector()->Expect(

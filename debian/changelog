@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.26.2) stable; urgency=medium
+
+  * mercury23x: adds per-phase energy registers
+
+ -- Evgeny Boger <boger@contactless.ru>  Sat, 01 Jul 2017 22:25:25 +0300
+
 wb-mqtt-serial (1.26.1) stable; urgency=medium
 
   * templates for two more Wellpro devices

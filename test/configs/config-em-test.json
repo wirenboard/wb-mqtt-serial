@@ -135,6 +135,14 @@
               "format": "s24",
               "type": "power",
               "scale": 0.01
+            },
+            {
+              "name": "AP2",
+              "reg_type": "array12",
+              "address": "0x0601",
+              "format": "u32",
+              "type": "power_consumption",
+              "scale": 0.001
             }
           ]
         }

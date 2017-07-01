@@ -25,6 +25,7 @@ public:
     void EnqueueMercury230Q1Response();
     void EnqueueMercury230Q2Response();
     void EnqueueMercury230TempResponse();
+    void EnqueueMercury230PerPhaseEnergyResponse();
     void EnqueueMercury230NoSessionResponse();
     void EnqueueMercury230InternalMeterErrorResponse();
     void EnqueueMilur32TotalConsumptionResponse();
