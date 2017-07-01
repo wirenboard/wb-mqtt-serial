@@ -234,6 +234,26 @@
           "scale": 1
       },
       {
+        "name": "Ch1 AP Total",
+        "reg_type": "input",
+        "address": "0x1200",
+        "type": "power_consumption",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch1 RP Total",
+        "reg_type": "input",
+        "address": "0x1220",
+        "type": "power_consumption",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
         "name": "Ch2 U1",
         "reg_type": "input",
         "address": "0x20D9",
@@ -461,6 +481,26 @@
           "format": "u16",
           "address": "0x20FC",
           "scale": 1
+      },
+      {
+        "name": "Ch2 AP Total",
+        "reg_type": "input",
+        "address": "0x2200",
+        "type": "power_consumption",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch2 RP Total",
+        "reg_type": "input",
+        "address": "0x2220",
+        "type": "power_consumption",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
       },
       {
         "name": "Ch3 U1",
@@ -692,6 +732,26 @@
           "scale": 1
       },
       {
+        "name": "Ch3 AP Total",
+        "reg_type": "input",
+        "address": "0x3200",
+        "type": "power_consumption",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch3 RP Total",
+        "reg_type": "input",
+        "address": "0x3220",
+        "type": "power_consumption",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
         "name": "Ch4 U1",
         "reg_type": "input",
         "address": "0x40D9",
@@ -919,6 +979,26 @@
           "format": "u16",
           "address": "0x40FC",
           "scale": 1
+      },
+      {
+        "name": "Ch4 AP Total",
+        "reg_type": "input",
+        "address": "0x4200",
+        "type": "power_consumption",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
+      },
+      {
+        "name": "Ch4 RP Total",
+        "reg_type": "input",
+        "address": "0x4220",
+        "type": "power_consumption",
+        "units": "kWh",
+        "format": "u64",
+        "word_order": "little_endian",
+        "scale": 0.00003125
       }
     ]
   }
