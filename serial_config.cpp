@@ -9,12 +9,16 @@
 #include <string>
 #include <cstdlib>
 #include <memory>
-#include <regex>
 
 #include "serial_config.h"
 
 namespace {
     const char* DefaultProtocol = "modbus";
+}
+
+bool EndsWith(const std::string& str, const std::string& suffix)
+{
+	return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
 TTemplate::TTemplate(const Json::Value& device_data):
@@ -46,14 +50,13 @@ PTemplateMap TConfigTemplateParser::Parse()
     DIR *dir;
     struct dirent *dirp;
     struct stat filestat;
-    std::regex filename_regex("^.*\\.json$");
 
     if ((dir = opendir(DirectoryName.c_str())) == NULL)
         throw TConfigParserException("Cannot open templates directory");
 
     while ((dirp = readdir(dir))) {
         std::string dname = dirp->d_name;
-        if(!std::regex_match(dname, filename_regex))
+        if(!EndsWith(dname, ".json"))
             continue;
 
         std::string filepath = DirectoryName + "/" + dname;
