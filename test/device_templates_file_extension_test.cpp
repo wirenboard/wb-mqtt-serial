@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "testlog.h"
 #include "serial_config.h"
 
 class TDeviceTemplateFileExtensionTest: public ::testing::Test {
@@ -20,5 +21,5 @@ void TDeviceTemplateFileExtensionTest::VerifyTemplates(const std::string& direct
 
 TEST_F(TDeviceTemplateFileExtensionTest, WrongExtension)
 {
-	VerifyTemplates("./test/device-templates", "MSU34_BAD");
+	VerifyTemplates(TLoggedFixture::GetDataFilePath("device-templates/"), "MSU34_BAD");
 }
