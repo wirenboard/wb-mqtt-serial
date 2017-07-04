@@ -9,6 +9,7 @@
 #include <string>
 #include <cstdlib>
 #include <memory>
+#include <regex>
 
 #include "serial_config.h"
 
@@ -45,13 +46,14 @@ PTemplateMap TConfigTemplateParser::Parse()
     DIR *dir;
     struct dirent *dirp;
     struct stat filestat;
+    std::regex filename_regex("^.*\\.json$");
 
     if ((dir = opendir(DirectoryName.c_str())) == NULL)
         throw TConfigParserException("Cannot open templates directory");
 
     while ((dirp = readdir(dir))) {
         std::string dname = dirp->d_name;
-        if(dname == "." || dname == "..")
+        if(!std::regex_match(dname, filename_regex))
             continue;
 
         std::string filepath = DirectoryName + "/" + dname;
