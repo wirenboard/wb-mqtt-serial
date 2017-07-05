@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.26.2) stable; urgency=medium
+
+  * parse templates only with json extension
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 05 Jul 2017 17:03:36 +0300
+
 wb-mqtt-serial (1.26.1) stable; urgency=medium
 
   * templates for two more Wellpro devices

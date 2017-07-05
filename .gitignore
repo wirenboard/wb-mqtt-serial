@@ -58,3 +58,6 @@ wb-mqtt-serial/build
 
 **/.vscode/*
 workspace.xml
+**/.cproject
+**/.project
+**/.settings

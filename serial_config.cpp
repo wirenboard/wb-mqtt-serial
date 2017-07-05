@@ -16,6 +16,11 @@ namespace {
     const char* DefaultProtocol = "modbus";
 }
 
+bool EndsWith(const std::string& str, const std::string& suffix)
+{
+	return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
 TTemplate::TTemplate(const Json::Value& device_data):
     DeviceData(device_data)
 {
@@ -51,7 +56,7 @@ PTemplateMap TConfigTemplateParser::Parse()
 
     while ((dirp = readdir(dir))) {
         std::string dname = dirp->d_name;
-        if(dname == "." || dname == "..")
+        if(!EndsWith(dname, ".json"))
             continue;
 
         std::string filepath = DirectoryName + "/" + dname;
