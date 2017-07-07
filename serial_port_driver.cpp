@@ -20,6 +20,9 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
         [this](PRegister reg, TRegisterHandler::TErrorState state) {
             UpdateError(reg, state);
         });
+    SerialClient->SetReconnectCallback([this](PSerialDevice dev) {
+			OnDeviceReconnect(dev);
+		});
 
     if (Config->Debug)
         std::cerr << "Setting up devices at " << port_config->ConnSettings.Device << std::endl;
@@ -229,6 +232,14 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
 }
 
+void TSerialPortDriver::OnDeviceReconnect(PSerialDevice dev)
+{
+	if (Config->Debug) {
+		std::cerr << "device " << dev->ToString() << " reconnected" << std::endl;
+	}
+	WriteInitValues(dev);
+}
+
 TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)
 {
     auto it = RegErrorStateMap.find(reg);
@@ -282,10 +293,13 @@ void TSerialPortDriver::Cycle()
     }
 }
 
-bool TSerialPortDriver::WriteInitValues()
+bool TSerialPortDriver::WriteInitValues(PSerialDevice dev)
 {
     bool did_write = false;
     for (const auto& setup_item : SetupItems) {
+    	if (dev && dev != setup_item->Device) {
+    		continue;
+    	}
         try {
             if (Config->Debug)
                 std::cerr << "Init: " << setup_item->Name << ": setup register " <<

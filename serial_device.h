@@ -46,11 +46,17 @@ public:
     PDeviceConfig DeviceConfig() const { return _DeviceConfig; }
     PProtocol Protocol() const { return _Protocol; }
 
+    void OnSuccessfulRead();
+    void OnFailedRead();
+    bool GetIsDisconnected() const;
+
 private:
     std::chrono::milliseconds Delay;
     PAbstractSerialPort SerialPort;
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
+    std::chrono::steady_clock::time_point LastSuccessfulRead;
+    bool IsDisconnected;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

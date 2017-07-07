@@ -7,6 +7,8 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PPr
     , SerialPort(port)
     , _DeviceConfig(config)
     , _Protocol(protocol)
+	, LastSuccessfulRead()
+	, IsDisconnected(false)
 {}
 
 TSerialDevice::~TSerialDevice() 
@@ -54,6 +56,28 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
             std::cerr.flags(f);
         }
     }
+}
+
+void TSerialDevice::OnSuccessfulRead()
+{
+	LastSuccessfulRead = std::chrono::steady_clock::now();
+	IsDisconnected = false;
+}
+
+void TSerialDevice::OnFailedRead()
+{
+	if (LastSuccessfulRead == std::chrono::steady_clock::time_point()) {
+		LastSuccessfulRead = std::chrono::steady_clock::now();
+	}
+
+	if (std::chrono::steady_clock::now() - LastSuccessfulRead > _DeviceConfig->DeviceTimeout) {
+		IsDisconnected = true;
+	}
+}
+
+bool TSerialDevice::GetIsDisconnected() const
+{
+	return IsDisconnected;
 }
 
 std::unordered_map<std::string, PProtocol>

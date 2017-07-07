@@ -54,11 +54,12 @@ public:
     void PubSubSetup();
     bool HandleMessage(const std::string& topic, const std::string& payload);
     std::string GetChannelTopic(const TDeviceChannelConfig& channel);
-    bool WriteInitValues();
+    bool WriteInitValues(PSerialDevice dev = nullptr);
 
 private:
     bool NeedToPublish(PRegister reg, bool changed);
     void OnValueRead(PRegister reg, bool changed);
+    void OnDeviceReconnect(PSerialDevice dev);
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
     void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);
 

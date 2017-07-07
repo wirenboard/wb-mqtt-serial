@@ -22,6 +22,7 @@ TSerialClient::TSerialClient(PAbstractSerialPort port)
       Active(false),
       ReadCallback([](PRegister, bool){}),
       ErrorCallback([](PRegister, bool){}),
+	  ReconnectCallback([](PSerialDevice){}),
       FlushNeeded(new TBinarySemaphore),
       Plan(std::make_shared<TPollPlan>([this]() { return Port->CurrentTime(); })) {}
 
@@ -176,7 +177,9 @@ void TSerialClient::PollRange(PRegisterRange range)
     PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
     dev->ReadRegisterRange(range);
-    range->MapRange([this](PRegister reg, uint64_t new_value) {
+    bool all_failed = true;
+    range->MapRange([this, &all_failed](PRegister reg, uint64_t new_value) {
+    		all_failed = false;
             bool changed;
             auto handler = Handlers[reg];
             if (handler->NeedToPoll()) {
@@ -195,6 +198,15 @@ void TSerialClient::PollRange(PRegisterRange range)
                 // TBD: separate AcceptDeviceReadError method (changed is unused here)
                 MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
         });
+    if (all_failed) {
+    	dev->OnFailedRead();
+    }
+    else {
+    	if (dev->GetIsDisconnected()) {
+    		ReconnectCallback(dev);
+    	}
+    	dev->OnSuccessfulRead();
+    }
 }
 
 void TSerialClient::Cycle()
@@ -243,6 +255,11 @@ void TSerialClient::SetReadCallback(const TSerialClient::TReadCallback& callback
 void TSerialClient::SetErrorCallback(const TSerialClient::TErrorCallback& callback)
 {
     ErrorCallback = callback;
+}
+
+void TSerialClient::SetReconnectCallback(const TReconnectCallback& callback)
+{
+	ReconnectCallback = callback;
 }
 
 void TSerialClient::SetDebug(bool debug)
