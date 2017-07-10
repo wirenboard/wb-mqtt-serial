@@ -80,6 +80,32 @@ bool TSerialDevice::GetIsDisconnected() const
 	return IsDisconnected;
 }
 
+void TSerialDevice::InitSetupItems()
+{
+	for (auto& setup_item_config: _DeviceConfig->SetupItemConfigs) {
+		SetupItems.push_back(std::make_shared<TDeviceSetupItem>(shared_from_this(), setup_item_config));
+	}
+}
+
+bool TSerialDevice::WriteSetupRegisters()
+{
+    bool did_write = false;
+    for (const auto& setup_item : SetupItems) {
+        try {
+        	std::cerr << "Init: " << setup_item->Name << ": setup register " <<
+        			setup_item->Register->ToString() << " <-- " << setup_item->Value << std::endl;
+            WriteRegister(setup_item->Register, setup_item->Value);
+            did_write = true;
+        } catch (const TSerialDeviceException& e) {
+            std::cerr << "WARNING: device '" << setup_item->Register->Device()->ToString() <<
+                "' register '" << setup_item->Register->ToString() <<
+                "' setup failed: " << e.what() << std::endl;
+        }
+    }
+
+    return did_write;
+}
+
 std::unordered_map<std::string, PProtocol>
     *TSerialDeviceFactory::Protocols = 0;
 

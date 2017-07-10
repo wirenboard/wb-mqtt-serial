@@ -22,7 +22,6 @@ TSerialClient::TSerialClient(PAbstractSerialPort port)
       Active(false),
       ReadCallback([](PRegister, bool){}),
       ErrorCallback([](PRegister, bool){}),
-	  ReconnectCallback([](PSerialDevice){}),
       FlushNeeded(new TBinarySemaphore),
       Plan(std::make_shared<TPollPlan>([this]() { return Port->CurrentTime(); })) {}
 
@@ -203,7 +202,7 @@ void TSerialClient::PollRange(PRegisterRange range)
     }
     else {
     	if (dev->GetIsDisconnected()) {
-    		ReconnectCallback(dev);
+    		OnDeviceReconnect(dev);
     	}
     	dev->OnSuccessfulRead();
     }
@@ -224,12 +223,11 @@ void TSerialClient::Cycle()
         p->EndPollCycle();
 }
 
-void TSerialClient::WriteSetupRegister(PRegister reg, uint64_t value)
+bool TSerialClient::WriteSetupRegisters(PSerialDevice dev)
 {
     Connect();
-    PSerialDevice dev = reg->Device();
     PrepareToAccessDevice(dev);
-    dev->WriteRegister(reg, value);
+    return dev->WriteSetupRegisters();
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
@@ -255,11 +253,6 @@ void TSerialClient::SetReadCallback(const TSerialClient::TReadCallback& callback
 void TSerialClient::SetErrorCallback(const TSerialClient::TErrorCallback& callback)
 {
     ErrorCallback = callback;
-}
-
-void TSerialClient::SetReconnectCallback(const TReconnectCallback& callback)
-{
-	ReconnectCallback = callback;
 }
 
 void TSerialClient::SetDebug(bool debug)
@@ -293,4 +286,12 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
         LastAccessedDevice = dev;
         dev->Prepare();
     }
+}
+
+void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
+{
+	if (Debug) {
+		std::cerr << "device " << dev->ToString() << " reconnected" << std::endl;
+	}
+	WriteSetupRegisters(dev);
 }

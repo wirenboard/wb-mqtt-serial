@@ -15,7 +15,6 @@ class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 public:
     typedef std::function<void(PRegister reg, bool changed)> TReadCallback;
     typedef std::function<void(PRegister reg, TRegisterHandler::TErrorState errorState)> TErrorCallback;
-    typedef std::function<void(PSerialDevice dev)> TReconnectCallback;
 
     TSerialClient(PAbstractSerialPort port);
     TSerialClient(const TSerialClient& client) = delete;
@@ -32,11 +31,10 @@ public:
     bool DidRead(PRegister reg) const;
     void SetReadCallback(const TReadCallback& callback);
     void SetErrorCallback(const TErrorCallback& callback);
-    void SetReconnectCallback(const TReconnectCallback& callback);
     void SetDebug(bool debug);
     bool DebugEnabled() const;
     void NotifyFlushNeeded();
-    void WriteSetupRegister(PRegister reg, uint64_t value);
+    bool WriteSetupRegisters(PSerialDevice dev);
 
 private:
     void PrepareRegisterRanges();
@@ -47,6 +45,7 @@ private:
     PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
     void PrepareToAccessDevice(PSerialDevice dev);
+    void OnDeviceReconnect(PSerialDevice dev);
 
     PAbstractSerialPort Port;
     std::list<PRegister> RegList;
@@ -57,7 +56,6 @@ private:
     int PollInterval;
     TReadCallback ReadCallback;
     TErrorCallback ErrorCallback;
-    TReconnectCallback ReconnectCallback;
     bool Debug = false;
     PSerialDevice LastAccessedDevice = 0;
     PBinarySemaphore FlushNeeded;

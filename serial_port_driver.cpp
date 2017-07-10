@@ -20,9 +20,6 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
         [this](PRegister reg, TRegisterHandler::TErrorState state) {
             UpdateError(reg, state);
         });
-    SerialClient->SetReconnectCallback([this](PSerialDevice dev) {
-			OnDeviceReconnect(dev);
-		});
 
     if (Config->Debug)
         std::cerr << "Setting up devices at " << port_config->ConnSettings.Device << std::endl;
@@ -44,11 +41,6 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
                 SerialClient->AddRegister(reg);
                 ChannelRegistersMap[channel].push_back(reg);
             }
-        }
-
-        // init setup items' registers
-        for (auto& setup_item_config: device_config->SetupItemConfigs) {
-            SetupItems.push_back(std::make_shared<TDeviceSetupItem>(device, setup_item_config));
         }
     }
 }
@@ -232,14 +224,6 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
 }
 
-void TSerialPortDriver::OnDeviceReconnect(PSerialDevice dev)
-{
-	if (Config->Debug) {
-		std::cerr << "device " << dev->ToString() << " reconnected" << std::endl;
-	}
-	WriteInitValues(dev);
-}
-
 TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)
 {
     auto it = RegErrorStateMap.find(reg);
@@ -293,25 +277,11 @@ void TSerialPortDriver::Cycle()
     }
 }
 
-bool TSerialPortDriver::WriteInitValues(PSerialDevice dev)
+bool TSerialPortDriver::WriteInitValues()
 {
     bool did_write = false;
-    for (const auto& setup_item : SetupItems) {
-    	if (dev && dev != setup_item->Device) {
-    		continue;
-    	}
-        try {
-            if (Config->Debug)
-                std::cerr << "Init: " << setup_item->Name << ": setup register " <<
-                    setup_item->Register->ToString() << " <-- " << setup_item->Value << std::endl;
-            SerialClient->WriteSetupRegister(setup_item->Register,
-                                             setup_item->Value);
-            did_write = true;
-        } catch (const TSerialDeviceException& e) {
-            std::cerr << "WARNING: device '" << setup_item->Device->ToString() <<
-                "' register '" << setup_item->Register->ToString() << 
-                "' setup failed: " << e.what() << std::endl;
-        }
+    for (auto& device : Devices) {
+    	did_write |= SerialClient->WriteSetupRegisters(device);
     }
 
     return did_write;

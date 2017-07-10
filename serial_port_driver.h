@@ -27,22 +27,6 @@ struct TDeviceChannel : public TDeviceChannelConfig
 typedef std::shared_ptr<TDeviceChannel> PDeviceChannel;
 
 
-struct TDeviceSetupItem : public TDeviceSetupItemConfig
-{
-    TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
-        : TDeviceSetupItemConfig(*config)
-        , Device(device)
-    {
-        Register = TRegister::Intern(device, config->RegisterConfig);    
-    }
-
-    PSerialDevice Device;
-    PRegister Register;
-};
-
-typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
-
-
 class TMQTTWrapper;
 
 class TSerialPortDriver
@@ -54,12 +38,11 @@ public:
     void PubSubSetup();
     bool HandleMessage(const std::string& topic, const std::string& payload);
     std::string GetChannelTopic(const TDeviceChannelConfig& channel);
-    bool WriteInitValues(PSerialDevice dev = nullptr);
+    bool WriteInitValues();
 
 private:
     bool NeedToPublish(PRegister reg, bool changed);
     void OnValueRead(PRegister reg, bool changed);
-    void OnDeviceReconnect(PSerialDevice dev);
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
     void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);
 
@@ -68,7 +51,6 @@ private:
     PAbstractSerialPort Port;
     PSerialClient SerialClient;
     std::vector<PSerialDevice> Devices;
-    std::vector<PDeviceSetupItem> SetupItems;
 
     std::unordered_map<PRegister, PDeviceChannel> RegisterToChannelMap;
     std::unordered_map<PDeviceChannelConfig, std::vector<PRegister>> ChannelRegistersMap;
