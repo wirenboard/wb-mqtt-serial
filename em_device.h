@@ -30,6 +30,7 @@ protected:
     enum ErrorType {
         NO_ERROR,
         NO_OPEN_SESSION,
+		UNSUPPORTED_ERROR,
         OTHER_ERROR
     };
     const int   MAX_LEN = 64;
@@ -81,7 +82,9 @@ protected:
         ErrorType err = CheckForException(buf, nread, &msg);
         if (err == NO_OPEN_SESSION)
             return false;
-        else if (err != NO_ERROR)
+        if (err == UNSUPPORTED_ERROR)
+        	throw TSerialDeviceUnsupportedRegisterException(msg);
+        if (err != NO_ERROR)
             throw TSerialDeviceTransientErrorException(msg);
 
         if (expectedByte1 >= 0 && *p++ != expectedByte1)

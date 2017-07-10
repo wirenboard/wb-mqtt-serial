@@ -36,6 +36,8 @@ bool TMercury230Device::ConnectionSetup( )
     } catch (TSerialDeviceTransientErrorException&) {
             // retry upon response from a wrong slave
         return false;
+    } catch (TSerialDeviceUnsupportedRegisterException&) {
+    	return false;
     }
 }
 
@@ -47,7 +49,7 @@ TEMDevice<TMercury230Protocol>::ErrorType TMercury230Device::CheckForException(u
     switch (frame[1] & 0x0f) {
     case 1:
         *message = "Invalid command or parameter";
-        break;
+        return TEMDevice<TMercury230Protocol>::UNSUPPORTED_ERROR;
     case 2:
         *message = "Internal meter error";
         break;

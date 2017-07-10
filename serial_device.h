@@ -68,6 +68,8 @@ public:
     void OnFailedRead();
     bool GetIsDisconnected() const;
 
+    void ResetUnsupportedAddresses();
+
 private:
     std::chrono::milliseconds Delay;
     PAbstractSerialPort SerialPort;
@@ -76,6 +78,7 @@ private:
     std::vector<PDeviceSetupItem> SetupItems;
     std::chrono::steady_clock::time_point LastSuccessfulRead;
     bool IsDisconnected;
+    std::set<int> UnsupportedAddresses;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

@@ -43,7 +43,10 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
         throw std::runtime_error("simple range expected");
     simple_range->Reset();
     for (auto reg: simple_range->RegisterList()) {
-        try {
+        if (UnsupportedAddresses.count(reg->Address)) {
+        	continue;
+        }
+    	try {
 	    if (DeviceConfig()->GuardInterval.count()){
 	        usleep(DeviceConfig()->GuardInterval.count());
 	    }
@@ -54,6 +57,13 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
             std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "]" << std::endl;
             std::cerr.flags(f);
+        } catch (const TSerialDeviceUnsupportedRegisterException& e) {
+        	UnsupportedAddresses.insert(reg->Address);
+        	simple_range->SetError(reg);
+			std::ios::fmtflags f(std::cerr.flags());
+			std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
+					  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported" << std::endl;
+			std::cerr.flags(f);
         }
     }
 }
@@ -78,6 +88,10 @@ void TSerialDevice::OnFailedRead()
 bool TSerialDevice::GetIsDisconnected() const
 {
 	return IsDisconnected;
+}
+
+void TSerialDevice::ResetUnsupportedAddresses() {
+	UnsupportedAddresses.clear();
 }
 
 void TSerialDevice::InitSetupItems()
