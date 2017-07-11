@@ -80,7 +80,7 @@ struct TDeviceConfig {
     int AccessLevel = DEFAULT_ACCESS_LEVEL;
     std::chrono::milliseconds FrameTimeout = std::chrono::milliseconds(-1);
     int MaxRegHole = 0, MaxBitHole = 0;
-    int MaxReadRegisters = 0;
+    int MaxReadRegisters = 1;
     PRegisterTypeMap TypeMap = 0;
     std::chrono::microseconds GuardInterval = std::chrono::microseconds(0);
     std::chrono::milliseconds DeviceTimeout = std::chrono::milliseconds(DEFAULT_DEVICE_TIMEOUT_MS);

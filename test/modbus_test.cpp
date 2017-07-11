@@ -101,7 +101,7 @@ void TModbusClientTest::SetUp()
 #if 0
     SerialClient->SetModbusDebug(true);
 #endif
-    try { 
+    try {
         Device = SerialClient->CreateDevice(std::make_shared<TDeviceConfig>("modbus_sample", std::to_string(1), "modbus"));
     } catch (const TSerialDeviceException &e) {}
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {

@@ -3,6 +3,7 @@
     "device" : {
         "name": "WB-MSW2",
         "id": "wb-msw2",
+        "max_read_registers": 0,
         "channels": [
             {
                 "name" : "Temperature",
