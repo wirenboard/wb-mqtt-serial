@@ -1,10 +1,11 @@
 #include <stdexcept>
 #include "fake_serial_port.h"
-#include "em_expectations.h"
+#include "milur_expectations.h"
+#include "mercury230_expectations.h"
 #include "serial_config.h"
 #include "serial_observer.h"
 
-class TEMIntegrationTest: public TSerialDeviceIntegrationTest, public TEMDeviceExpectations
+class TEMIntegrationTest: public TSerialDeviceIntegrationTest, public TMilurExpectations, public TMercury230Expectations
 {
 protected:
     void SetUp();

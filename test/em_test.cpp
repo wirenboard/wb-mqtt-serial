@@ -1,10 +1,11 @@
 #include <string>
 #include "fake_serial_port.h"
-#include "em_expectations.h"
+#include "milur_expectations.h"
+#include "mercury230_expectations.h"
 #include "milur_device.h"
 #include "mercury230_device.h"
 
-class TEMDeviceTest: public TSerialDeviceTest, public TEMDeviceExpectations
+class TEMDeviceTest: public TSerialDeviceTest, public TMilurExpectations, public TMercury230Expectations
 {
 protected:
     void SetUp();
@@ -78,67 +79,6 @@ void TEMDeviceTest::VerifyMilurQuery()
     ASSERT_EQ(50080, MilurDev->ReadRegister(MilurFrequencyReg));
 }
 
-TEST_F(TEMDeviceTest, MilurQuery)
-{
-    EnqueueMilurSessionSetupResponse();
-    VerifyMilurQuery();
-    VerifyMilurQuery();
-    SerialPort->Close();
-}
-
-TEST_F(TEMDeviceTest, MilurReconnect)
-{
-    EnqueueMilurSessionSetupResponse();
-    EnqueueMilurNoSessionResponse();
-    // reconnection
-    EnqueueMilurSessionSetupResponse();
-    EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadRegister(MilurPhaseCVoltageReg));
-}
-
-TEST_F(TEMDeviceTest, MilurException)
-{
-    EnqueueMilurSessionSetupResponse();
-    EnqueueMilurExceptionResponse();
-    try {
-        MilurDev->ReadRegister(MilurPhaseCVoltageReg);
-        FAIL() << "No exception thrown";
-    } catch (const TSerialDeviceException& e) {
-        ASSERT_STREQ("Serial protocol error: EEPROM access error", e.what());
-        SerialPort->Close();
-    }
-}
-
-TEST_F(TEMDeviceTest, Mercury230ReadEnergy)
-{
-    EnqueueMercury230SessionSetupResponse();
-    EnqueueMercury230EnergyResponse1();
-
-    // Register address for energy arrays:
-    // 0000 0000 CCCC CCCC TTTT AAAA MMMM IIII
-    // C = command (0x05)
-    // A = array number
-    // M = month
-    // T = tariff (FIXME!!! 5 values)
-    // I = index
-    // Note: for A=6, 12-byte and not 16-byte value is returned.
-    // This is not supported at the moment.
-
-    // Here we make sure that consecutive requests querying the same array
-    // don't cause redundant requests during the single poll cycle.
-    ASSERT_EQ(3196200, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
-    ASSERT_EQ(300444, Mercury230Dev->ReadRegister(Mercury230TotalReactiveEnergyReg));
-    ASSERT_EQ(3196200, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
-    Mercury230Dev->EndPollCycle();
-
-    EnqueueMercury230EnergyResponse2();
-    ASSERT_EQ(3196201, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
-    ASSERT_EQ(300445, Mercury230Dev->ReadRegister(Mercury230TotalReactiveEnergyReg));
-    ASSERT_EQ(3196201, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
-    Mercury230Dev->EndPollCycle();
-    SerialPort->Close();
-}
-
 void TEMDeviceTest::VerifyMercuryParamQuery()
 {
     EnqueueMercury230U1Response();
@@ -163,44 +103,6 @@ void TEMDeviceTest::VerifyMercuryParamQuery()
 
     EnqueueMercury230TempResponse();
     ASSERT_EQ(24, Mercury230Dev->ReadRegister(Mercury230TempReg));
-}
-
-TEST_F(TEMDeviceTest, Mercury230ReadParams)
-{
-    EnqueueMercury230SessionSetupResponse();
-    VerifyMercuryParamQuery();
-    Mercury230Dev->EndPollCycle();
-    VerifyMercuryParamQuery();
-    Mercury230Dev->EndPollCycle();
-    SerialPort->Close();
-}
-
-TEST_F(TEMDeviceTest, Mercury230Reconnect)
-{
-    EnqueueMercury230SessionSetupResponse();
-    EnqueueMercury230NoSessionResponse();
-    // re-setup happens here
-    EnqueueMercury230SessionSetupResponse();
-    EnqueueMercury230U2Response();
-
-    // subparam 0x12 = voltage (phase 2)
-    ASSERT_EQ(24043, Mercury230Dev->ReadRegister(Mercury230U2Reg));
-
-    Mercury230Dev->EndPollCycle();
-    SerialPort->Close();
-}
-
-TEST_F(TEMDeviceTest, Mercury230Exception)
-{
-    EnqueueMercury230SessionSetupResponse();
-    EnqueueMercury230InternalMeterErrorResponse();
-    try {
-        Mercury230Dev->ReadRegister(Mercury230U2Reg);
-        FAIL() << "No exception thrown";
-    } catch (const TSerialDeviceException& e) {
-        ASSERT_STREQ("Serial protocol error: Internal meter error", e.what());
-        SerialPort->Close();
-    }
 }
 
 TEST_F(TEMDeviceTest, Combined)
@@ -260,44 +162,3 @@ TEST_F(TEMCustomPasswordTest, Combined)
     SerialPort->Close();
 }
 
-class TMilur32Test: public TSerialDeviceTest, public TEMDeviceExpectations
-{
-protected:
-    void SetUp();
-    void VerifyMilurQuery();
-    virtual PDeviceConfig MilurConfig();
-    PMilurDevice MilurDev;
-
-    PRegister MilurTotalConsumptionReg;
-};
-
-PDeviceConfig TMilur32Test::MilurConfig()
-{
-    return std::make_shared<TDeviceConfig>("milur", std::to_string(49932), "milur");
-}
-
-void TMilur32Test::SetUp()
-{
-    TSerialDeviceTest::SetUp();
-    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort, 
-                            TSerialDeviceFactory::GetProtocol("milur"));
-    MilurTotalConsumptionReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
-    
-    SerialPort->Open();
-}
-
-void TMilur32Test::VerifyMilurQuery()
-{
-    EnqueueMilur32TotalConsumptionResponse();
-    ASSERT_EQ(0x11144, MilurDev->ReadRegister(MilurTotalConsumptionReg));
-}
-
-TEST_F(TMilur32Test, MilurQuery)
-{
-    EnqueueMilur32SessionSetupResponse();
-    VerifyMilurQuery();
-    VerifyMilurQuery();
-    SerialPort->Close();
-}
-
-//FIXME: ExpectNBytes() in Milur code isn't covered by tests here
