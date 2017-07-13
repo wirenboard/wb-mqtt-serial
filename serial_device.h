@@ -68,7 +68,7 @@ public:
     void OnFailedRead();
     bool GetIsDisconnected() const;
 
-    void ResetUnsupportedAddresses();
+    void ResetUnavailableAddresses();
 
 private:
     std::chrono::milliseconds Delay;
@@ -78,7 +78,7 @@ private:
     std::vector<PDeviceSetupItem> SetupItems;
     std::chrono::steady_clock::time_point LastSuccessfulRead;
     bool IsDisconnected;
-    std::set<int> UnsupportedAddresses;
+    std::set<int> UnavailableAddresses;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

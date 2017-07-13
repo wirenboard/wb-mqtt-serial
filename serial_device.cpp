@@ -7,8 +7,8 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PPr
     , SerialPort(port)
     , _DeviceConfig(config)
     , _Protocol(protocol)
-	, LastSuccessfulRead()
-	, IsDisconnected(false)
+    , LastSuccessfulRead()
+    , IsDisconnected(false)
 {}
 
 TSerialDevice::~TSerialDevice() 
@@ -43,7 +43,7 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
         throw std::runtime_error("simple range expected");
     simple_range->Reset();
     for (auto reg: simple_range->RegisterList()) {
-        if (UnsupportedAddresses.count(reg->Address)) {
+        if (UnavailableAddresses.count(reg->Address)) {
         	continue;
         }
     	try {
@@ -57,8 +57,8 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
             std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "]" << std::endl;
             std::cerr.flags(f);
-        } catch (const TSerialDeviceUnsupportedRegisterException& e) {
-        	UnsupportedAddresses.insert(reg->Address);
+        } catch (const TSerialDevicePermanentRegisterException& e) {
+        	UnavailableAddresses.insert(reg->Address);
         	simple_range->SetError(reg);
 			std::ios::fmtflags f(std::cerr.flags());
 			std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
@@ -90,8 +90,8 @@ bool TSerialDevice::GetIsDisconnected() const
 	return IsDisconnected;
 }
 
-void TSerialDevice::ResetUnsupportedAddresses() {
-	UnsupportedAddresses.clear();
+void TSerialDevice::ResetUnavailableAddresses() {
+	UnavailableAddresses.clear();
 }
 
 void TSerialDevice::InitSetupItems()

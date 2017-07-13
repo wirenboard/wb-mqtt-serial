@@ -293,6 +293,6 @@ void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
 	if (Debug) {
 		std::cerr << "device " << dev->ToString() << " reconnected" << std::endl;
 	}
-	dev->ResetUnsupportedAddresses();
+	dev->ResetUnavailableAddresses();
 	WriteSetupRegisters(dev);
 }
