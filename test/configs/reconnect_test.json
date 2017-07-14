@@ -1,0 +1,59 @@
+{
+  "debug": true,
+  "max_unchanged_interval": 100,  
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 100,
+      "enabled": true,
+      "protocol": "other",
+      "devices" : [
+        {
+          "name": "Reconnect test",
+          "id": "reconnect-test",
+          "slave_id": 1,
+          "enabled": true,
+          "protocol": "uniel",
+          "frame_timeout_ms": 150,
+          "max_read_registers": 10,
+          "setup": [
+          	{
+                "title": "Input 1",
+                "reg_type": "param",
+                "address": 1,
+                "value": 42
+            },
+            {
+                "title": "Input 2",
+                "reg_type": "param",
+                "address": 2,
+                "value": 24
+            }
+          ],
+          "channels": [
+            {
+              "name": "I1",
+              "reg_type": "param",
+              "address": "0x01",
+              "format": "u8",
+              "type": "value",
+              "scale": 0.001
+            },
+			{
+              "name": "I2",
+              "reg_type": "param",
+              "address": "0x02",
+              "format": "u8",
+              "type": "value",
+              "scale": 0.001
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

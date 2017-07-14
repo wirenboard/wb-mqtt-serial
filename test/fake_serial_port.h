@@ -34,6 +34,7 @@ public:
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     void DumpWhatWasRead();
     void Elapse(const std::chrono::milliseconds& ms);
+    void SimulateDisconnect(bool simulate);
 
 private:
     void SkipFrameBoundary();
@@ -41,6 +42,7 @@ private:
 
     TLoggedFixture& Fixture;
     bool IsPortOpen;
+    bool DoSimulateDisconnect;
     std::deque<const char*> PendingFuncs;
     std::vector<int> Req;
     std::vector<int> Resp;

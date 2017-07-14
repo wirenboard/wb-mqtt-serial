@@ -5,7 +5,7 @@
 #include "utils.h"
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
-    : Fixture(fixture), IsPortOpen(false), ReqPos(0), RespPos(0), DumpPos(0) {}
+    : Fixture(fixture), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
 
 void TFakeSerialPort::SetDebug(bool debug)
 {
@@ -55,6 +55,10 @@ bool TFakeSerialPort::IsOpen() const
 }
 
 void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
+    if (DoSimulateDisconnect) {
+        return;
+    }
+
     SkipFrameBoundary();
     DumpWhatWasRead();
     if (!PendingFuncs.empty()) {
@@ -94,6 +98,9 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
 
 uint8_t TFakeSerialPort::ReadByte()
 {
+    if (DoSimulateDisconnect) {
+        return 0xff;
+    }
     CheckPortOpen();
 
     while (RespPos < Resp.size() && Resp[RespPos] == FRAME_BOUNDARY)
@@ -109,6 +116,9 @@ int TFakeSerialPort::ReadFrame(uint8_t* buf, int count,
                                const std::chrono::microseconds& timeout,
                                TFrameCompletePred frame_complete)
 {
+    if (DoSimulateDisconnect) {
+        return 0;
+    }
     if (ExpectedFrameTimeout.count() >= 0 && timeout != ExpectedFrameTimeout)
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
                                  std::to_string(timeout.count()) + " instead of " +
@@ -191,6 +201,11 @@ void TFakeSerialPort::DumpWhatWasRead()
 void TFakeSerialPort::Elapse(const std::chrono::milliseconds& ms)
 {
     Time += ms;
+}
+
+void TFakeSerialPort::SimulateDisconnect(bool simulate)
+{
+    DoSimulateDisconnect = simulate;
 }
 
 void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func)
