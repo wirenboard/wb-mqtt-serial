@@ -102,7 +102,9 @@ void TModbusClientTest::SetUp()
     SerialClient->SetModbusDebug(true);
 #endif
     try {
-        Device = SerialClient->CreateDevice(std::make_shared<TDeviceConfig>("modbus_sample", std::to_string(1), "modbus"));
+        auto config = std::make_shared<TDeviceConfig>("modbus_sample", std::to_string(1), "modbus");
+        config->MaxReadRegisters = 0;
+        Device = SerialClient->CreateDevice(config);
     } catch (const TSerialDeviceException &e) {}
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             Emit() << "Modbus Callback: " << reg->ToString() << " becomes " <<

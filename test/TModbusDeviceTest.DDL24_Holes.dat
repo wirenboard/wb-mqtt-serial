@@ -18,32 +18,20 @@ Publish: /devices/ddl24/controls/Voltage/meta/type: 'text' (QoS 0, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/order: '5' (QoS 0, retained)
 Subscribe: /devices/ddl24/controls/Voltage/on (QoS 0)
 >>> LoopOnce()
->> 17 03 00 04 00 01 C7 3D
+>> 17 03 00 04 00 0F 46 F9
 Publish: /devices/ddl24/controls/RGB/meta/error: '' (QoS 0, retained)
-<< 17 03 02 00 00 F1 87
->> 17 03 00 05 00 01 96 FD
-<< 17 03 02 00 00 F1 87
->> 17 03 00 06 00 01 66 FD
 Publish: /devices/ddl24/controls/RGB: '0;0;0' (QoS 0, retained)
-<< 17 03 02 00 00 F1 87
->> 17 03 00 07 00 01 37 3D
 Publish: /devices/ddl24/controls/White/meta/error: '' (QoS 0, retained)
 Publish: /devices/ddl24/controls/White: '0' (QoS 0, retained)
-<< 17 03 02 00 00 F1 87
->> 17 03 00 08 00 01 07 3E
 Publish: /devices/ddl24/controls/RGB_All/meta/error: '' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB_All: '0' (QoS 0, retained)
-<< 17 03 02 00 00 F1 87
->> 17 03 00 09 00 01 56 FE
 Publish: /devices/ddl24/controls/White1/meta/error: '' (QoS 0, retained)
 Publish: /devices/ddl24/controls/White1: '0' (QoS 0, retained)
-<< 17 03 02 00 00 F1 87
->> 17 03 00 12 00 01 26 F9
 Publish: /devices/ddl24/controls/Voltage/meta/error: '' (QoS 0, retained)
 Publish: /devices/ddl24/controls/Voltage: '0' (QoS 0, retained)
 >>> Publish: /devices/ddl24/controls/RGB/on: '10;20;30' (QoS 0)
 Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
-<< 17 03 02 00 00 F1 87
+<< 17 03 1E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 71 7D
 >>> LoopOnce()
 >> 17 06 00 04 00 0A 4A FA
 << 17 06 00 04 00 0A 4A FA
@@ -51,36 +39,12 @@ Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
 << 17 06 00 05 00 14 9B 32
 >> 17 06 00 06 00 1E EB 35
 << 17 06 00 06 00 1E EB 35
->> 17 03 00 04 00 01 C7 3D
-<< 17 03 02 00 0A 71 80
->> 17 03 00 05 00 01 96 FD
-<< 17 03 02 00 14 F1 88
->> 17 03 00 06 00 01 66 FD
-<< 17 03 02 00 1E 71 8F
->> 17 03 00 07 00 01 37 3D
-<< 17 03 02 00 00 F1 87
->> 17 03 00 08 00 01 07 3E
-<< 17 03 02 00 00 F1 87
->> 17 03 00 09 00 01 56 FE
-<< 17 03 02 00 00 F1 87
->> 17 03 00 12 00 01 26 F9
-<< 17 03 02 00 00 F1 87
+>> 17 03 00 04 00 0F 46 F9
+<< 17 03 1E 00 0A 00 14 00 1E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F1 1C
 >>> LoopOnce() after slave update
->> 17 03 00 04 00 01 C7 3D
+>> 17 03 00 04 00 0F 46 F9
 Publish: /devices/ddl24/controls/RGB: '32;20;30' (QoS 0, retained)
-<< 17 03 02 00 20 F0 5F
->> 17 03 00 05 00 01 96 FD
 Publish: /devices/ddl24/controls/RGB: '32;64;30' (QoS 0, retained)
-<< 17 03 02 00 40 F0 77
->> 17 03 00 06 00 01 66 FD
 Publish: /devices/ddl24/controls/RGB: '32;64;128' (QoS 0, retained)
-<< 17 03 02 00 80 F0 27
->> 17 03 00 07 00 01 37 3D
-<< 17 03 02 00 00 F1 87
->> 17 03 00 08 00 01 07 3E
-<< 17 03 02 00 00 F1 87
->> 17 03 00 09 00 01 56 FE
-<< 17 03 02 00 00 F1 87
->> 17 03 00 12 00 01 26 F9
-<< 17 03 02 00 00 F1 87
+<< 17 03 1E 00 20 00 40 00 80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 20 90
 (pty-based fake serial -- stopping forwarding)
