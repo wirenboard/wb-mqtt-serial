@@ -10,7 +10,7 @@ Ports:
         SlaveId: 2
         MaxRegHole: 0
         MaxBitHole: 0
-        MaxReadRegisters: 0
+        MaxReadRegisters: 1
         GuardInterval: 20000
         DeviceChannels:
             ------
@@ -55,7 +55,7 @@ Ports:
         SlaveId: 0x90
         MaxRegHole: 0
         MaxBitHole: 0
-        MaxReadRegisters: 0
+        MaxReadRegisters: 1
         GuardInterval: 0
         DeviceChannels:
             ------
@@ -77,7 +77,7 @@ Ports:
         SlaveId: 0x04
         MaxRegHole: 0
         MaxBitHole: 0
-        MaxReadRegisters: 0
+        MaxReadRegisters: 1
         GuardInterval: 0
         DeviceChannels:
             ------
@@ -167,7 +167,7 @@ Ports:
         SlaveId: 6
         MaxRegHole: 1
         MaxBitHole: 1
-        MaxReadRegisters: 0
+        MaxReadRegisters: 1
         GuardInterval: 0
         DeviceChannels:
             ------

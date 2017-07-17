@@ -4,6 +4,7 @@
 	"device" : {
 	    "name": "WB-MS-THLS",
 	    "id": "wb-ms-thls",
+	    "max_read_registers": 0,
 	    "channels": [
 		{
 		    "name" : "Temperature",
