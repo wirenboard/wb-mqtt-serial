@@ -13,3 +13,8 @@ public:
     // XXX gcc-4.7 is too old for this:
     // using TSerialDeviceException::TSerialDeviceException;
 };
+
+class TSerialDevicePermanentRegisterException: public TSerialDeviceException {
+public:
+	TSerialDevicePermanentRegisterException(std::string message): TSerialDeviceException(message) {}
+};

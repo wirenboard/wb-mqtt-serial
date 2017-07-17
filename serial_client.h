@@ -34,7 +34,7 @@ public:
     void SetDebug(bool debug);
     bool DebugEnabled() const;
     void NotifyFlushNeeded();
-    void WriteSetupRegister(PRegister reg, uint64_t value);
+    bool WriteSetupRegisters(PSerialDevice dev);
 
 private:
     void PrepareRegisterRanges();
@@ -45,6 +45,7 @@ private:
     PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
     void PrepareToAccessDevice(PSerialDevice dev);
+    void OnDeviceReconnect(PSerialDevice dev);
 
     PAbstractSerialPort Port;
     std::list<PRegister> RegList;

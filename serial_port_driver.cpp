@@ -42,11 +42,6 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
                 ChannelRegistersMap[channel].push_back(reg);
             }
         }
-
-        // init setup items' registers
-        for (auto& setup_item_config: device_config->SetupItemConfigs) {
-            SetupItems.push_back(std::make_shared<TDeviceSetupItem>(device, setup_item_config));
-        }
     }
 }
 
@@ -285,19 +280,8 @@ void TSerialPortDriver::Cycle()
 bool TSerialPortDriver::WriteInitValues()
 {
     bool did_write = false;
-    for (const auto& setup_item : SetupItems) {
-        try {
-            if (Config->Debug)
-                std::cerr << "Init: " << setup_item->Name << ": setup register " <<
-                    setup_item->Register->ToString() << " <-- " << setup_item->Value << std::endl;
-            SerialClient->WriteSetupRegister(setup_item->Register,
-                                             setup_item->Value);
-            did_write = true;
-        } catch (const TSerialDeviceException& e) {
-            std::cerr << "WARNING: device '" << setup_item->Device->ToString() <<
-                "' register '" << setup_item->Register->ToString() << 
-                "' setup failed: " << e.what() << std::endl;
-        }
+    for (auto& device : Devices) {
+    	did_write |= SerialClient->WriteSetupRegisters(device);
     }
 
     return did_write;

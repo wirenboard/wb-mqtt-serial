@@ -1,3 +1,12 @@
+wb-mqtt-serial (1.26.3) stable; urgency=medium
+
+  * detect serial device reconnect
+  * write setup section on reconnect (covered by tests)
+  * do not poll not available registers
+  * reset list of unavailable registers after reconnect
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Fri, 14 Jul 2017 18:34:02 +0300
+
 wb-mqtt-serial (1.26.2) stable; urgency=medium
 
   * parse templates only with json extension
