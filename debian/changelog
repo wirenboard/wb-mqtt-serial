@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.26.5) stable; urgency=medium
+
+  * milur and mercury integration tests
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Mon, 17 Jul 2017 14:08:20 +0300
+
 wb-mqtt-serial (1.26.4) stable; urgency=medium
 
   * max read registers default 1

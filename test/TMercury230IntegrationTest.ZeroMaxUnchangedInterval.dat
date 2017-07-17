@@ -1,0 +1,428 @@
+SetDebug(1)
+Publish: /devices/mercury230ar02_0/meta/name: 'Mercury 230AR-02 0' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Total consumption/meta/type: 'power_consumption' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Total consumption/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Total consumption/meta/order: '1' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/Total consumption/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/Total reactive energy/meta/type: 'power_consumption' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Total reactive energy/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Total reactive energy/meta/order: '2' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/Total reactive energy/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/P/meta/type: 'power' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P/meta/order: '3' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/P/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/P1/meta/type: 'power' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P1/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P1/meta/order: '4' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/P1/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/P2/meta/type: 'power' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P2/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P2/meta/order: '5' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/P2/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/P3/meta/type: 'power' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P3/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P3/meta/order: '6' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/P3/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/Q/meta/type: 'power' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q/meta/order: '7' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/Q/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/Q1/meta/type: 'power' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q1/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q1/meta/order: '8' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/Q1/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/Q2/meta/type: 'power' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q2/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q2/meta/order: '9' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/Q2/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/Q3/meta/type: 'power' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q3/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q3/meta/order: '10' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/Q3/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/U1/meta/type: 'voltage' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/U1/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/U1/meta/order: '11' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/U1/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/U2/meta/type: 'voltage' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/U2/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/U2/meta/order: '12' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/U2/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/U3/meta/type: 'voltage' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/U3/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/U3/meta/order: '13' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/U3/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/I1/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/I1/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/I1/meta/order: '14' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/I1/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/I2/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/I2/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/I2/meta/order: '15' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/I2/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/I3/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/I3/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/I3/meta/order: '16' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/I3/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/Frequency/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Frequency/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Frequency/meta/order: '17' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/Frequency/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/PF/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF/meta/order: '18' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/PF/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/PF1/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF1/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF1/meta/order: '19' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/PF1/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/PF2/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF2/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF2/meta/order: '20' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/PF2/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/PF3/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF3/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF3/meta/order: '21' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/PF3/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/KU1/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/KU1/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/KU1/meta/order: '22' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/KU1/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/KU2/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/KU2/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/KU2/meta/order: '23' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/KU2/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/KU3/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/KU3/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/KU3/meta/order: '24' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/KU3/on (QoS 0)
+Publish: /devices/mercury230ar02_0/controls/Temperature/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Temperature/meta/readonly: '1' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Temperature/meta/order: '25' (QoS 0, retained)
+Subscribe: /devices/mercury230ar02_0/controls/Temperature/on (QoS 0)
+>>> LoopOnce()
+Open()
+Sleep(100000)
+SkipNoise()
+EnqueueMercury230SessionSetupResponse()
+>> 00 01 01 01 01 01 01 01 01 77 81
+<< 00 00 01 B0
+EnqueueMercury230EnergyResponse1()
+>> 00 05 00 00 10 25
+Publish: /devices/mercury230ar02_0/controls/Total consumption/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Total consumption: '3196.2' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Total reactive energy/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Total reactive energy: '300.444' (QoS 0, retained)
+<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+Publish: /devices/mercury230ar02_0/controls/U1/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/U1: '241.28' (QoS 0, retained)
+<< 00 00 40 5E B0 1C
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+Publish: /devices/mercury230ar02_0/controls/U2/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/U2: '240.43' (QoS 0, retained)
+<< 00 00 EB 5D 8F 2D
+EnqueueMercury230U3Response()
+>> 00 08 11 13 CC 7B
+Publish: /devices/mercury230ar02_0/controls/U3/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/U3: '504.05' (QoS 0, retained)
+<< 00 00 E5 C4 4B 27
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+Publish: /devices/mercury230ar02_0/controls/I1/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/I1: '0.069' (QoS 0, retained)
+<< 00 00 45 00 32 B4
+EnqueueMercury230I2Response()
+>> 00 08 11 22 0D AF
+Publish: /devices/mercury230ar02_0/controls/I2/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/I2: '0.096' (QoS 0, retained)
+<< 00 00 60 00 28 24
+EnqueueMercury230I3Response()
+>> 00 08 11 23 CC 6F
+Publish: /devices/mercury230ar02_0/controls/I3/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/I3: '0.102' (QoS 0, retained)
+<< 00 00 66 00 2B 84
+EnqueueMercury230FrequencyResponse()
+>> 00 08 11 40 8C 46
+Publish: /devices/mercury230ar02_0/controls/Frequency/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Frequency: '1.44' (QoS 0, retained)
+<< 00 00 90 00 6C 24
+EnqueueMercury230KU1Response()
+>> 00 08 11 61 4C 5E
+Publish: /devices/mercury230ar02_0/controls/KU1/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/KU1: '368.65' (QoS 0, retained)
+<< 00 01 90 70 3C
+EnqueueMercury230KU2Response()
+>> 00 08 11 62 0C 5F
+Publish: /devices/mercury230ar02_0/controls/KU2/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/KU2: '650.25' (QoS 0, retained)
+<< 00 01 FE F1 D0
+EnqueueMercury230KU3Response()
+>> 00 08 11 63 CD 9F
+Publish: /devices/mercury230ar02_0/controls/KU3/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/KU3: '348.28' (QoS 0, retained)
+<< 00 0C 88 74 A6
+EnqueueMercury230PResponse()
+>> 00 08 11 00 8D B6
+Publish: /devices/mercury230ar02_0/controls/P/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P: '5530.95' (QoS 0, retained)
+<< 00 48 87 70 E2 26
+EnqueueMercury230P1Response()
+>> 00 08 11 01 4C 76
+Publish: /devices/mercury230ar02_0/controls/P1/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P1: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230P2Response()
+>> 00 08 11 02 0C 77
+Publish: /devices/mercury230ar02_0/controls/P2/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P2: '-5546.31' (QoS 0, retained)
+<< 00 C8 87 76 63 CC
+EnqueueMercury230P3Response()
+>> 00 08 11 03 CD B7
+Publish: /devices/mercury230ar02_0/controls/P3/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/P3: '-5722.95' (QoS 0, retained)
+<< 00 C8 87 BB A2 59
+EnqueueMercury230PFResponse()
+>> 00 08 11 30 8D A2
+Publish: /devices/mercury230ar02_0/controls/PF/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF: '-561.287' (QoS 0, retained)
+<< 00 88 87 90 E3 92
+EnqueueMercury230PF1Response()
+>> 00 08 11 31 4C 62
+Publish: /devices/mercury230ar02_0/controls/PF1/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF1: '-559.239' (QoS 0, retained)
+<< 00 88 87 88 E3 98
+EnqueueMercury230PF2Response()
+>> 00 08 11 32 0C 63
+Publish: /devices/mercury230ar02_0/controls/PF2/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF2: '-546.951' (QoS 0, retained)
+<< 00 88 87 58 E2 04
+EnqueueMercury230PF3Response()
+>> 00 08 11 33 CD A3
+Publish: /devices/mercury230ar02_0/controls/PF3/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/PF3: '-546.918' (QoS 0, retained)
+<< 00 88 66 58 AA 54
+EnqueueMercury230QResponse()
+>> 00 08 11 04 8C 75
+Publish: /devices/mercury230ar02_0/controls/Q/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q1Response()
+>> 00 08 11 05 4D B5
+Publish: /devices/mercury230ar02_0/controls/Q1/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q1: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q2Response()
+>> 00 08 11 06 0D B4
+Publish: /devices/mercury230ar02_0/controls/Q2/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q2: '5530.95' (QoS 0, retained)
+<< 00 88 87 70 E2 1A
+EnqueueMercury230Q3Response()
+>> 00 08 11 07 CC 74
+Publish: /devices/mercury230ar02_0/controls/Q3/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Q3: '5530.95' (QoS 0, retained)
+<< 00 88 87 70 E2 1A
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+Publish: /devices/mercury230ar02_0/controls/Temperature/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Temperature: '24' (QoS 0, retained)
+>>> LoopOnce()
+<< 00 00 18 71 CA
+EnqueueMercury230EnergyResponse1()
+>> 00 05 00 00 10 25
+Publish: /devices/mercury230ar02_0/controls/Total consumption: '3196.2' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Total reactive energy: '300.444' (QoS 0, retained)
+<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+Publish: /devices/mercury230ar02_0/controls/U1: '241.28' (QoS 0, retained)
+<< 00 00 40 5E B0 1C
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+Publish: /devices/mercury230ar02_0/controls/U2: '240.43' (QoS 0, retained)
+<< 00 00 EB 5D 8F 2D
+EnqueueMercury230U3Response()
+>> 00 08 11 13 CC 7B
+Publish: /devices/mercury230ar02_0/controls/U3: '504.05' (QoS 0, retained)
+<< 00 00 E5 C4 4B 27
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+Publish: /devices/mercury230ar02_0/controls/I1: '0.069' (QoS 0, retained)
+<< 00 00 45 00 32 B4
+EnqueueMercury230I2Response()
+>> 00 08 11 22 0D AF
+Publish: /devices/mercury230ar02_0/controls/I2: '0.096' (QoS 0, retained)
+<< 00 00 60 00 28 24
+EnqueueMercury230I3Response()
+>> 00 08 11 23 CC 6F
+Publish: /devices/mercury230ar02_0/controls/I3: '0.102' (QoS 0, retained)
+<< 00 00 66 00 2B 84
+EnqueueMercury230FrequencyResponse()
+>> 00 08 11 40 8C 46
+Publish: /devices/mercury230ar02_0/controls/Frequency: '1.44' (QoS 0, retained)
+<< 00 00 90 00 6C 24
+EnqueueMercury230KU1Response()
+>> 00 08 11 61 4C 5E
+Publish: /devices/mercury230ar02_0/controls/KU1: '368.65' (QoS 0, retained)
+<< 00 01 90 70 3C
+EnqueueMercury230KU2Response()
+>> 00 08 11 62 0C 5F
+Publish: /devices/mercury230ar02_0/controls/KU2: '650.25' (QoS 0, retained)
+<< 00 01 FE F1 D0
+EnqueueMercury230KU3Response()
+>> 00 08 11 63 CD 9F
+Publish: /devices/mercury230ar02_0/controls/KU3: '348.28' (QoS 0, retained)
+<< 00 0C 88 74 A6
+EnqueueMercury230PResponse()
+>> 00 08 11 00 8D B6
+Publish: /devices/mercury230ar02_0/controls/P: '5530.95' (QoS 0, retained)
+<< 00 48 87 70 E2 26
+EnqueueMercury230P1Response()
+>> 00 08 11 01 4C 76
+Publish: /devices/mercury230ar02_0/controls/P1: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230P2Response()
+>> 00 08 11 02 0C 77
+Publish: /devices/mercury230ar02_0/controls/P2: '-5546.31' (QoS 0, retained)
+<< 00 C8 87 76 63 CC
+EnqueueMercury230P3Response()
+>> 00 08 11 03 CD B7
+Publish: /devices/mercury230ar02_0/controls/P3: '-5722.95' (QoS 0, retained)
+<< 00 C8 87 BB A2 59
+EnqueueMercury230PFResponse()
+>> 00 08 11 30 8D A2
+Publish: /devices/mercury230ar02_0/controls/PF: '-561.287' (QoS 0, retained)
+<< 00 88 87 90 E3 92
+EnqueueMercury230PF1Response()
+>> 00 08 11 31 4C 62
+Publish: /devices/mercury230ar02_0/controls/PF1: '-559.239' (QoS 0, retained)
+<< 00 88 87 88 E3 98
+EnqueueMercury230PF2Response()
+>> 00 08 11 32 0C 63
+Publish: /devices/mercury230ar02_0/controls/PF2: '-546.951' (QoS 0, retained)
+<< 00 88 87 58 E2 04
+EnqueueMercury230PF3Response()
+>> 00 08 11 33 CD A3
+Publish: /devices/mercury230ar02_0/controls/PF3: '-546.918' (QoS 0, retained)
+<< 00 88 66 58 AA 54
+EnqueueMercury230QResponse()
+>> 00 08 11 04 8C 75
+Publish: /devices/mercury230ar02_0/controls/Q: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q1Response()
+>> 00 08 11 05 4D B5
+Publish: /devices/mercury230ar02_0/controls/Q1: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q2Response()
+>> 00 08 11 06 0D B4
+Publish: /devices/mercury230ar02_0/controls/Q2: '5530.95' (QoS 0, retained)
+<< 00 88 87 70 E2 1A
+EnqueueMercury230Q3Response()
+>> 00 08 11 07 CC 74
+Publish: /devices/mercury230ar02_0/controls/Q3: '5530.95' (QoS 0, retained)
+<< 00 88 87 70 E2 1A
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+Publish: /devices/mercury230ar02_0/controls/Temperature: '24' (QoS 0, retained)
+>>> LoopOnce()
+<< 00 00 18 71 CA
+EnqueueMercury230EnergyResponse1()
+>> 00 05 00 00 10 25
+Publish: /devices/mercury230ar02_0/controls/Total consumption: '3196.2' (QoS 0, retained)
+Publish: /devices/mercury230ar02_0/controls/Total reactive energy: '300.444' (QoS 0, retained)
+<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+Publish: /devices/mercury230ar02_0/controls/U1: '241.28' (QoS 0, retained)
+<< 00 00 40 5E B0 1C
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+Publish: /devices/mercury230ar02_0/controls/U2: '240.43' (QoS 0, retained)
+<< 00 00 EB 5D 8F 2D
+EnqueueMercury230U3Response()
+>> 00 08 11 13 CC 7B
+Publish: /devices/mercury230ar02_0/controls/U3: '504.05' (QoS 0, retained)
+<< 00 00 E5 C4 4B 27
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+Publish: /devices/mercury230ar02_0/controls/I1: '0.069' (QoS 0, retained)
+<< 00 00 45 00 32 B4
+EnqueueMercury230I2Response()
+>> 00 08 11 22 0D AF
+Publish: /devices/mercury230ar02_0/controls/I2: '0.096' (QoS 0, retained)
+<< 00 00 60 00 28 24
+EnqueueMercury230I3Response()
+>> 00 08 11 23 CC 6F
+Publish: /devices/mercury230ar02_0/controls/I3: '0.102' (QoS 0, retained)
+<< 00 00 66 00 2B 84
+EnqueueMercury230FrequencyResponse()
+>> 00 08 11 40 8C 46
+Publish: /devices/mercury230ar02_0/controls/Frequency: '1.44' (QoS 0, retained)
+<< 00 00 90 00 6C 24
+EnqueueMercury230KU1Response()
+>> 00 08 11 61 4C 5E
+Publish: /devices/mercury230ar02_0/controls/KU1: '368.65' (QoS 0, retained)
+<< 00 01 90 70 3C
+EnqueueMercury230KU2Response()
+>> 00 08 11 62 0C 5F
+Publish: /devices/mercury230ar02_0/controls/KU2: '650.25' (QoS 0, retained)
+<< 00 01 FE F1 D0
+EnqueueMercury230KU3Response()
+>> 00 08 11 63 CD 9F
+Publish: /devices/mercury230ar02_0/controls/KU3: '348.28' (QoS 0, retained)
+<< 00 0C 88 74 A6
+EnqueueMercury230PResponse()
+>> 00 08 11 00 8D B6
+Publish: /devices/mercury230ar02_0/controls/P: '5530.95' (QoS 0, retained)
+<< 00 48 87 70 E2 26
+EnqueueMercury230P1Response()
+>> 00 08 11 01 4C 76
+Publish: /devices/mercury230ar02_0/controls/P1: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230P2Response()
+>> 00 08 11 02 0C 77
+Publish: /devices/mercury230ar02_0/controls/P2: '-5546.31' (QoS 0, retained)
+<< 00 C8 87 76 63 CC
+EnqueueMercury230P3Response()
+>> 00 08 11 03 CD B7
+Publish: /devices/mercury230ar02_0/controls/P3: '-5722.95' (QoS 0, retained)
+<< 00 C8 87 BB A2 59
+EnqueueMercury230PFResponse()
+>> 00 08 11 30 8D A2
+Publish: /devices/mercury230ar02_0/controls/PF: '-561.287' (QoS 0, retained)
+<< 00 88 87 90 E3 92
+EnqueueMercury230PF1Response()
+>> 00 08 11 31 4C 62
+Publish: /devices/mercury230ar02_0/controls/PF1: '-559.239' (QoS 0, retained)
+<< 00 88 87 88 E3 98
+EnqueueMercury230PF2Response()
+>> 00 08 11 32 0C 63
+Publish: /devices/mercury230ar02_0/controls/PF2: '-546.951' (QoS 0, retained)
+<< 00 88 87 58 E2 04
+EnqueueMercury230PF3Response()
+>> 00 08 11 33 CD A3
+Publish: /devices/mercury230ar02_0/controls/PF3: '-546.918' (QoS 0, retained)
+<< 00 88 66 58 AA 54
+EnqueueMercury230QResponse()
+>> 00 08 11 04 8C 75
+Publish: /devices/mercury230ar02_0/controls/Q: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q1Response()
+>> 00 08 11 05 4D B5
+Publish: /devices/mercury230ar02_0/controls/Q1: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q2Response()
+>> 00 08 11 06 0D B4
+Publish: /devices/mercury230ar02_0/controls/Q2: '5530.95' (QoS 0, retained)
+<< 00 88 87 70 E2 1A
+EnqueueMercury230Q3Response()
+>> 00 08 11 07 CC 74
+Publish: /devices/mercury230ar02_0/controls/Q3: '5530.95' (QoS 0, retained)
+<< 00 88 87 70 E2 1A
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+Publish: /devices/mercury230ar02_0/controls/Temperature: '24' (QoS 0, retained)
+<< 00 00 18 71 CA
+Close()
