@@ -24,28 +24,28 @@
       {
         "name": "Ch1 P1",
         "reg_type": "input",
-        "address": "0x10B1",
+        "address": "0x1302",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch1 Q1",
         "reg_type": "input",
-        "address": "0x10B5",
+        "address": "0x130A",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch1 S1",
         "reg_type": "input",
-        "address": "0x10B9",
+        "address": "0x1312",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch1 Power factor 1",
@@ -95,28 +95,28 @@
       {
         "name": "Ch1 P2",
         "reg_type": "input",
-        "address": "0x10B2",
+        "address": "0x1304",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch1 Q2",
         "reg_type": "input",
-        "address": "0x10B6",
+        "address": "0x130C",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch1 S2",
         "reg_type": "input",
-        "address": "0x10BA",
+        "address": "0x1314",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch1 Power factor 2",
@@ -166,28 +166,28 @@
       {
         "name": "Ch1 P3",
         "reg_type": "input",
-        "address": "0x10B3",
+        "address": "0x1306",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch1 Q3",
         "reg_type": "input",
-        "address": "0x10B7",
+        "address": "0x130E",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch1 S3",
         "reg_type": "input",
-        "address": "0x10BB",
+        "address": "0x1316",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch1 Power factor 3",
@@ -273,28 +273,28 @@
       {
         "name": "Ch2 P1",
         "reg_type": "input",
-        "address": "0x20B1",
+        "address": "0x2302",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch2 Q1",
         "reg_type": "input",
-        "address": "0x20B5",
+        "address": "0x230A",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch2 S1",
         "reg_type": "input",
-        "address": "0x20B9",
+        "address": "0x2312",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch2 Power factor 1",
@@ -344,28 +344,28 @@
       {
         "name": "Ch2 P2",
         "reg_type": "input",
-        "address": "0x20B2",
+        "address": "0x2304",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch2 Q2",
         "reg_type": "input",
-        "address": "0x20B6",
+        "address": "0x230C",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch2 S2",
         "reg_type": "input",
-        "address": "0x20BA",
+        "address": "0x2314",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch2 Power factor 2",
@@ -415,28 +415,28 @@
       {
         "name": "Ch2 P3",
         "reg_type": "input",
-        "address": "0x20B3",
+        "address": "0x2306",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch2 Q3",
         "reg_type": "input",
-        "address": "0x20B7",
+        "address": "0x230E",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch2 S3",
         "reg_type": "input",
-        "address": "0x20BB",
+        "address": "0x2316",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch2 Power factor 3",
@@ -522,28 +522,28 @@
       {
         "name": "Ch3 P1",
         "reg_type": "input",
-        "address": "0x30B1",
+        "address": "0x3302",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch3 Q1",
         "reg_type": "input",
-        "address": "0x30B5",
+        "address": "0x330A",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch3 S1",
         "reg_type": "input",
-        "address": "0x30B9",
+        "address": "0x3312",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch3 Power factor 1",
@@ -593,28 +593,28 @@
       {
         "name": "Ch3 P2",
         "reg_type": "input",
-        "address": "0x30B2",
+        "address": "0x3304",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch3 Q2",
         "reg_type": "input",
-        "address": "0x30B6",
+        "address": "0x330C",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch3 S2",
         "reg_type": "input",
-        "address": "0x30BA",
+        "address": "0x3314",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch3 Power factor 2",
@@ -664,28 +664,28 @@
       {
         "name": "Ch3 P3",
         "reg_type": "input",
-        "address": "0x30B3",
+        "address": "0x3306",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch3 Q3",
         "reg_type": "input",
-        "address": "0x30B7",
+        "address": "0x330E",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch3 S3",
         "reg_type": "input",
-        "address": "0x30BB",
+        "address": "0x3316",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch3 Power factor 3",
@@ -771,28 +771,28 @@
       {
         "name": "Ch4 P1",
         "reg_type": "input",
-        "address": "0x40B1",
+        "address": "0x4302",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch4 Q1",
         "reg_type": "input",
-        "address": "0x40B5",
+        "address": "0x430A",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch4 S1",
         "reg_type": "input",
-        "address": "0x40B9",
+        "address": "0x4312",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch4 Power factor 1",
@@ -842,28 +842,28 @@
       {
         "name": "Ch4 P2",
         "reg_type": "input",
-        "address": "0x40B2",
+        "address": "0x4304",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch4 Q2",
         "reg_type": "input",
-        "address": "0x40B6",
+        "address": "0x430C",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch4 S2",
         "reg_type": "input",
-        "address": "0x40BA",
+        "address": "0x4314",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch4 Power factor 2",
@@ -913,28 +913,28 @@
       {
         "name": "Ch4 P3",
         "reg_type": "input",
-        "address": "0x40B3",
+        "address": "0x4306",
         "type": "power",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch4 Q3",
         "reg_type": "input",
-        "address": "0x40B7",
+        "address": "0x430E",
         "type": "power",
         "units": "kvar",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch4 S3",
         "reg_type": "input",
-        "address": "0x40BB",
+        "address": "0x4316",
         "type": "power",
         "units": "kVA",
-        "format": "s16",
-        "scale": 1
+        "format": "s32",
+        "scale": 0.00390625
       },
       {
         "name": "Ch4 Power factor 3",
