@@ -27,7 +27,7 @@
         "address": "0x1302",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch1 Q1",
@@ -36,7 +36,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch1 S1",
@@ -45,7 +45,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch1 Power factor 1",
@@ -98,7 +98,7 @@
         "address": "0x1304",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch1 Q2",
@@ -107,7 +107,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch1 S2",
@@ -116,7 +116,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch1 Power factor 2",
@@ -169,7 +169,7 @@
         "address": "0x1306",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch1 Q3",
@@ -178,7 +178,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch1 S3",
@@ -187,7 +187,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch1 Power factor 3",
@@ -276,7 +276,7 @@
         "address": "0x2302",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch2 Q1",
@@ -285,7 +285,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch2 S1",
@@ -294,7 +294,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch2 Power factor 1",
@@ -347,7 +347,7 @@
         "address": "0x2304",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch2 Q2",
@@ -356,7 +356,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch2 S2",
@@ -365,7 +365,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch2 Power factor 2",
@@ -418,7 +418,7 @@
         "address": "0x2306",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch2 Q3",
@@ -427,7 +427,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch2 S3",
@@ -436,7 +436,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch2 Power factor 3",
@@ -525,7 +525,7 @@
         "address": "0x3302",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch3 Q1",
@@ -534,7 +534,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch3 S1",
@@ -543,7 +543,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch3 Power factor 1",
@@ -596,7 +596,7 @@
         "address": "0x3304",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch3 Q2",
@@ -605,7 +605,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch3 S2",
@@ -614,7 +614,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch3 Power factor 2",
@@ -667,7 +667,7 @@
         "address": "0x3306",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch3 Q3",
@@ -676,7 +676,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch3 S3",
@@ -685,7 +685,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch3 Power factor 3",
@@ -774,7 +774,7 @@
         "address": "0x4302",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch4 Q1",
@@ -783,7 +783,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch4 S1",
@@ -792,7 +792,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch4 Power factor 1",
@@ -845,7 +845,7 @@
         "address": "0x4304",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch4 Q2",
@@ -854,7 +854,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch4 S2",
@@ -863,7 +863,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch4 Power factor 2",
@@ -916,7 +916,7 @@
         "address": "0x4306",
         "type": "power",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch4 Q3",
@@ -925,7 +925,7 @@
         "type": "power",
         "units": "kvar",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch4 S3",
@@ -934,7 +934,7 @@
         "type": "power",
         "units": "kVA",
         "format": "s32",
-        "scale": 0.00390625
+        "scale": 1.5259e-05
       },
       {
         "name": "Ch4 Power factor 3",
