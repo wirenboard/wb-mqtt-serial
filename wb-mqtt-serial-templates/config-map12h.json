@@ -9,7 +9,7 @@
         "reg_type": "input",
         "address": "0x10D9",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -18,7 +18,7 @@
         "address": "0x10DD",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -80,7 +80,7 @@
         "reg_type": "input",
         "address": "0x10DA",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -89,7 +89,7 @@
         "address": "0x10DE",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -151,7 +151,7 @@
         "reg_type": "input",
         "address": "0x10DB",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -160,7 +160,7 @@
         "address": "0x10DF",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -258,7 +258,7 @@
         "reg_type": "input",
         "address": "0x20D9",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -267,7 +267,7 @@
         "address": "0x20DD",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -329,7 +329,7 @@
         "reg_type": "input",
         "address": "0x20DA",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -338,7 +338,7 @@
         "address": "0x20DE",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -400,7 +400,7 @@
         "reg_type": "input",
         "address": "0x20DB",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -409,7 +409,7 @@
         "address": "0x20DF",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -507,7 +507,7 @@
         "reg_type": "input",
         "address": "0x30D9",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -516,7 +516,7 @@
         "address": "0x30DD",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -578,7 +578,7 @@
         "reg_type": "input",
         "address": "0x30DA",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -587,7 +587,7 @@
         "address": "0x30DE",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -649,7 +649,7 @@
         "reg_type": "input",
         "address": "0x30DB",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -658,7 +658,7 @@
         "address": "0x30DF",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -756,7 +756,7 @@
         "reg_type": "input",
         "address": "0x40D9",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -765,7 +765,7 @@
         "address": "0x40DD",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -827,7 +827,7 @@
         "reg_type": "input",
         "address": "0x40DA",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -836,7 +836,7 @@
         "address": "0x40DE",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
@@ -898,7 +898,7 @@
         "reg_type": "input",
         "address": "0x40DB",
         "type": "voltage",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.01
       },
       {
@@ -907,7 +907,7 @@
         "address": "0x40DF",
         "type": "value",
         "units": "A",
-        "format": "s16",
+        "format": "u16",
         "scale": 0.001
       },
       {
