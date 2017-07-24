@@ -254,6 +254,46 @@
         "scale": 0.00003125
       },
       {
+        "name": "Ch1 phase angle A",
+        "reg_type": "input",
+        "address": "0x10F9",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch1 phase angle B",
+        "reg_type": "input",
+        "address": "0x10FA",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch1 phase angle C",
+        "reg_type": "input",
+        "address": "0x10FB",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch1 voltage angle B",
+        "reg_type": "input",
+        "address": "0x10FE",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch1 voltage angle C",
+        "reg_type": "input",
+        "address": "0x10FF",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
         "name": "Ch2 U1",
         "reg_type": "input",
         "address": "0x20D9",
@@ -501,6 +541,46 @@
         "format": "u64",
         "word_order": "little_endian",
         "scale": 0.00003125
+      },
+      {
+        "name": "Ch2 phase angle A",
+        "reg_type": "input",
+        "address": "0x20F9",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch2 phase angle B",
+        "reg_type": "input",
+        "address": "0x20FA",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch2 phase angle C",
+        "reg_type": "input",
+        "address": "0x20FB",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch2 voltage angle B",
+        "reg_type": "input",
+        "address": "0x20FE",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch2 voltage angle C",
+        "reg_type": "input",
+        "address": "0x20FF",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
       },
       {
         "name": "Ch3 U1",
@@ -752,6 +832,46 @@
         "scale": 0.00003125
       },
       {
+        "name": "Ch3 phase angle A",
+        "reg_type": "input",
+        "address": "0x30F9",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch3 phase angle B",
+        "reg_type": "input",
+        "address": "0x30FA",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch3 phase angle C",
+        "reg_type": "input",
+        "address": "0x30FB",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch3 voltage angle B",
+        "reg_type": "input",
+        "address": "0x30FE",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch3 voltage angle C",
+        "reg_type": "input",
+        "address": "0x30FF",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
         "name": "Ch4 U1",
         "reg_type": "input",
         "address": "0x40D9",
@@ -999,6 +1119,46 @@
         "format": "u64",
         "word_order": "little_endian",
         "scale": 0.00003125
+      },
+      {
+        "name": "Ch4 phase angle A",
+        "reg_type": "input",
+        "address": "0x40F9",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch4 phase angle B",
+        "reg_type": "input",
+        "address": "0x40FA",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch4 phase angle C",
+        "reg_type": "input",
+        "address": "0x40FB",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch4 voltage angle B",
+        "reg_type": "input",
+        "address": "0x40FE",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
+      },
+      {
+        "name": "Ch4 voltage angle C",
+        "reg_type": "input",
+        "address": "0x40FF",
+        "type": "value",
+        "format": "s16",
+        "scale": 0.1
       }
     ]
   }
