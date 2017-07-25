@@ -5,6 +5,7 @@
 
 REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
             { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },
+            { TMercury230Device::REG_VALUE_ARRAY12, "array12", "power_consumption", U32, true },
             { TMercury230Device::REG_PARAM, "param", "value", U24, true },
             { TMercury230Device::REG_PARAM_SIGN_ACT, "param_sign_active", "value", S24, true },
             { TMercury230Device::REG_PARAM_SIGN_REACT, "param_sign_reactive", "value", S24, true },
@@ -68,7 +69,7 @@ TEMDevice<TMercury230Protocol>::ErrorType TMercury230Device::CheckForException(u
     return TEMDevice<TMercury230Protocol>::OTHER_ERROR;
 }
 
-const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray( uint32_t address)
+const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(uint32_t address, int resp_len)
 {
     int key = (address >> 4) | (SlaveId << 24);
     auto it = CachedValues.find(key);
@@ -80,8 +81,8 @@ const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray( uint32_
     cmdBuf[1] = (uint8_t)((address >> 12) & 0x0f); // tariff
     uint8_t buf[MAX_LEN], *p = buf;
     TValueArray a;
-    Talk(0x05, cmdBuf, 2, -1, buf, 16);
-    for (int i = 0; i < 4; i++, p += 4) {
+    Talk(0x05, cmdBuf, 2, -1, buf, resp_len * 4);
+    for (int i = 0; i < resp_len; i++, p += 4) {
         a.values[i] = ((uint32_t)p[1] << 24) +
                       ((uint32_t)p[0] << 16) +
                       ((uint32_t)p[3] << 8 ) +
@@ -139,7 +140,9 @@ uint64_t TMercury230Device::ReadRegister(PRegister reg)
 {
     switch (reg->Type) {
     case REG_VALUE_ARRAY:
-        return ReadValueArray(reg->Address).values[reg->Address & 0x03];
+        return ReadValueArray(reg->Address, 4).values[reg->Address & 0x03];
+    case REG_VALUE_ARRAY12:
+        return ReadValueArray(reg->Address, 3).values[reg->Address & 0x03];
     case REG_PARAM:
     case REG_PARAM_SIGN_ACT:
     case REG_PARAM_SIGN_REACT:

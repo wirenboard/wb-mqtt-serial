@@ -282,6 +282,7 @@ void TMercury230IntegrationTest::ExpectQueries(bool firstPoll)
 	EnqueueMercury230Q3Response();
 
 	EnqueueMercury230TempResponse();
+	EnqueueMercury230PerPhaseEnergyResponse();
 }
 
 TEST_F(TMercury230IntegrationTest, Poll)

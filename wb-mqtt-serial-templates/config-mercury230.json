@@ -22,6 +22,30 @@
         "scale": 0.001
       },
       {
+        "name": "AP1",
+        "reg_type": "array12",
+        "address": "0x0600",
+        "format": "u32",
+        "type": "power_consumption",
+        "scale": 0.001
+      },
+      {
+        "name": "AP2",
+        "reg_type": "array12",
+        "address": "0x0601",
+        "format": "u32",
+        "type": "power_consumption",
+        "scale": 0.001
+      },
+      {
+        "name": "AP3",
+        "reg_type": "array12",
+        "address": "0x0602",
+        "format": "u32",
+        "type": "power_consumption",
+        "scale": 0.001
+      },
+      {
         "name": "P",
         "reg_type": "param_sign_active",
         "address": "0x1100",

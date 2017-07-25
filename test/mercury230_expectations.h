@@ -39,6 +39,7 @@ public:
 	void EnqueueMercury230Q3Response();
 
 	void EnqueueMercury230TempResponse();
+	void EnqueueMercury230PerPhaseEnergyResponse();
 	void EnqueueMercury230NoSessionResponse();
 	void EnqueueMercury230InternalMeterErrorResponse();
 };
