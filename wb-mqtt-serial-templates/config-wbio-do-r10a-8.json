@@ -1,0 +1,105 @@
+{
+    "device_type" : "WBIO-DO-R10A-8",
+    "device" : {
+        "name": "WBIO-DO-R10A-8",
+        "id": "wb-mio-gpio",
+        "max_read_registers": 0,
+    "setup": [
+            {
+                "title": "IODIR",
+                "address": 11500,
+                "value": "0x0000"
+            },
+            {
+                "title": "IPOL",
+                "address": 11501,
+                "value": "0x0000"
+            },
+            {
+                "title": "GPINTEN",
+                "address": 11502,
+                "value": "0xffff"
+            },
+            {
+                "title": "DEFVAL",
+                "address": 11503,
+                "value": "0x0000"
+            },
+            {
+                "title": "INTCON",
+                "address": 11504,
+                "value": "0x0000"
+            },
+            {
+                "title": "IOCON",
+                "address": 11505,
+                "value": "0x4444"
+            },
+            {
+                "title": "FLAG",
+                "address": "10500",
+                "value": 1
+            }
+        ],
+        "channels": [
+           
+            {
+                "name" : "EXT_K1",
+                "reg_type" : "coil",
+                "address" : 1500,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_K2",
+                "reg_type" : "coil",
+                "address" : 1501,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_K3",
+                "reg_type" : "coil",
+                "address" : 1502,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_K4",
+                "reg_type" : "coil",
+                "address" : 1503,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_K5",
+                "reg_type" : "coil",
+                "address" : 1504,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_K6",
+                "reg_type" : "coil",
+                "address" : 1505,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_K7",
+                "reg_type" : "coil",
+                "address" : 1506,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_K8",
+                "reg_type" : "coil",
+                "address" : 1507,
+                "type" : "switch"
+
+            }
+
+        ]
+    }
+}
