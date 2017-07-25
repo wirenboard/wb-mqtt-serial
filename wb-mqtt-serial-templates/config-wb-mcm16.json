@@ -4,6 +4,7 @@
 	"device" : {
 	    "name" : "WB-MCM16",
 	    "id" : "wb-mcm16",
+	    "max_read_registers": 0,
 	    "channels" : [
             {
                 "name" : "Input 1",

@@ -4,6 +4,7 @@
 	"device" : {
 	    "name" : "WB-MRM2",
 	    "id" : "wb-mrm2",
+	    "max_read_registers": 0,
 	    "channels" : [
             {
                 "name" : "Relay 1",

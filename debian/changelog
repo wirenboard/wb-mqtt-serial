@@ -1,8 +1,30 @@
-wb-mqtt-serial (1.26.3) stable; urgency=medium
+wb-mqtt-serial (1.26.6) stable; urgency=medium
 
   * mercury23x: adds per-phase energy registers
 
  -- Evgeny Boger <boger@contactless.ru>  Sat, 01 Jul 2017 22:25:25 +0300
+
+wb-mqtt-serial (1.26.5) stable; urgency=medium
+
+  * milur and mercury integration tests
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Mon, 17 Jul 2017 14:08:20 +0300
+
+wb-mqtt-serial (1.26.4) stable; urgency=medium
+
+  * max read registers default 1
+  * corrected configs and tests
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Mon, 17 Jul 2017 13:58:12 +0300
+
+wb-mqtt-serial (1.26.3) stable; urgency=medium
+
+  * detect serial device reconnect
+  * write setup section on reconnect (covered by tests)
+  * do not poll not available registers
+  * reset list of unavailable registers after reconnect
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Fri, 14 Jul 2017 18:34:02 +0300
 
 wb-mqtt-serial (1.26.2) stable; urgency=medium
 

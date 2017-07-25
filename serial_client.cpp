@@ -176,7 +176,9 @@ void TSerialClient::PollRange(PRegisterRange range)
     PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
     dev->ReadRegisterRange(range);
-    range->MapRange([this](PRegister reg, uint64_t new_value) {
+    bool all_failed = true;
+    range->MapRange([this, &all_failed](PRegister reg, uint64_t new_value) {
+    		all_failed = false;
             bool changed;
             auto handler = Handlers[reg];
             if (handler->NeedToPoll()) {
@@ -195,6 +197,15 @@ void TSerialClient::PollRange(PRegisterRange range)
                 // TBD: separate AcceptDeviceReadError method (changed is unused here)
                 MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
         });
+    if (all_failed) {
+    	dev->OnFailedRead();
+    }
+    else {
+    	if (dev->GetIsDisconnected()) {
+    		OnDeviceReconnect(dev);
+    	}
+    	dev->OnSuccessfulRead();
+    }
 }
 
 void TSerialClient::Cycle()
@@ -212,12 +223,11 @@ void TSerialClient::Cycle()
         p->EndPollCycle();
 }
 
-void TSerialClient::WriteSetupRegister(PRegister reg, uint64_t value)
+bool TSerialClient::WriteSetupRegisters(PSerialDevice dev)
 {
     Connect();
-    PSerialDevice dev = reg->Device();
     PrepareToAccessDevice(dev);
-    dev->WriteRegister(reg, value);
+    return dev->WriteSetupRegisters();
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
@@ -276,4 +286,13 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
         LastAccessedDevice = dev;
         dev->Prepare();
     }
+}
+
+void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
+{
+	if (Debug) {
+		std::cerr << "device " << dev->ToString() << " reconnected" << std::endl;
+	}
+	dev->ResetUnavailableAddresses();
+	WriteSetupRegisters(dev);
 }

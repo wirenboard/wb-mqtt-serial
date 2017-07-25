@@ -4,6 +4,7 @@
     "device" : {
         "name": "WB-MIR (simple)",
         "id": "wb-mir-simple",
+        "max_read_registers": 0,
         "channels": [
             {
                 "name" : "Input Voltage",

@@ -20,6 +20,19 @@
 class IProtocol;
 typedef std::shared_ptr<IProtocol> PProtocol;
 
+struct TDeviceSetupItem : public TDeviceSetupItemConfig
+{
+    TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
+        : TDeviceSetupItemConfig(*config)
+    {
+        Register = TRegister::Intern(device, config->RegisterConfig);
+    }
+
+    PRegister Register;
+};
+
+typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
+
 
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {
 public:
@@ -42,15 +55,30 @@ public:
 
     virtual std::string ToString() const;
     
+    // Initialize setup items' registers
+    void InitSetupItems();
+
+    bool WriteSetupRegisters();
+
     PAbstractSerialPort Port() const { return SerialPort; }
     PDeviceConfig DeviceConfig() const { return _DeviceConfig; }
     PProtocol Protocol() const { return _Protocol; }
+
+    void OnSuccessfulRead();
+    void OnFailedRead();
+    bool GetIsDisconnected() const;
+
+    void ResetUnavailableAddresses();
 
 private:
     std::chrono::milliseconds Delay;
     PAbstractSerialPort SerialPort;
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
+    std::vector<PDeviceSetupItem> SetupItems;
+    std::chrono::steady_clock::time_point LastSuccessfulRead;
+    bool IsDisconnected;
+    std::set<int> UnavailableAddresses;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
@@ -146,7 +174,9 @@ public:
             throw TSerialDeviceException(ss.str());
         }
 
-        return _Devices[sid] = std::make_shared<Dev>(config, port, IProtocol::shared_from_this());
+        PSerialDevice dev = _Devices[sid] = std::make_shared<Dev>(config, port, IProtocol::shared_from_this());
+        dev->InitSetupItems();
+        return dev;
     }
 
     /*!

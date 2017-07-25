@@ -61,11 +61,14 @@ TEST_SRCS= \
   $(TEST_DIR)/uniel_test.o \
   $(TEST_DIR)/s2k_expectations.o \
   $(TEST_DIR)/s2k_test.o \
-  $(TEST_DIR)/em_expectations.o \
   $(TEST_DIR)/em_test.o \
   $(TEST_DIR)/em_integration.o \
   $(TEST_DIR)/mercury200_expectations.o \
   $(TEST_DIR)/mercury200_test.o \
+  $(TEST_DIR)/mercury230_expectations.o \
+  $(TEST_DIR)/mercury230_test.o \
+  $(TEST_DIR)/milur_expectations.o \
+  $(TEST_DIR)/milur_test.o \
   $(TEST_DIR)/ivtm_test.o \
   $(TEST_DIR)/pulsar_test.o \
   $(TEST_DIR)/fake_mqtt.o \
@@ -73,6 +76,7 @@ TEST_SRCS= \
   $(TEST_DIR)/pty_based_fake_serial.o \
   $(TEST_DIR)/pty_based_fake_serial_test.o \
   $(TEST_DIR)/device_templates_file_extension_test.o \
+  $(TEST_DIR)/reconnect_detection_test.o \
   $(TEST_DIR)/main.o
 TEST_OBJS=$(TEST_SRCS:.cpp=.o)
 TEST_LIBS=-lgtest -lpthread -lmosquittopp

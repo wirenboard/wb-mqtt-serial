@@ -88,6 +88,7 @@
                     "id" : "wb-mrgb",
                     "slave_id" : 2,
                     "poll_interval" : 101,
+                    "max_read_registers": 0,
                     "channels" : [
                         {
                             "name" : "RGB",

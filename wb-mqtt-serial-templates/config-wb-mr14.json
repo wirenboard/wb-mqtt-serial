@@ -3,6 +3,7 @@
     "device" : {
         "name" : "WB-MR14",
         "id" : "wb-mr14",
+        "max_read_registers": 0,
         "channels" : [
             {
                 "name" : "K1",

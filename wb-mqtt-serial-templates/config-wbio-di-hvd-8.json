@@ -1,0 +1,114 @@
+{
+    "device_type" : "WBIO-DI-HVD-8",
+    "device" : {
+        "name": "WBIO-DI-HVD-8",
+        "id": "wb-mio-gpio",
+        "max_read_registers": 0,
+    "setup": [
+            {
+                "title": "IODIR",
+                "address": 11000,
+                "value": "0xffff"
+            },
+            {
+                "title": "IPOL",
+                "address": 11001,
+                "value": "0x0000"
+            },
+            {
+                "title": "GPINTEN",
+                "address": 11002,
+                "value": "0xffff"
+            },
+            {
+                "title": "DEFVAL",
+                "address": 11003,
+                "value": "0x0000"
+            },
+            {
+                "title": "INTCON",
+                "address": 11004,
+                "value": "0x0000"
+            },
+            {
+                "title": "IOCON",
+                "address": 11005,
+                "value": "0x4444"
+            },
+            {
+                "title": "CONFIG-FLAG",
+                "address": "10000",
+                "value": 1
+            }
+
+        ],
+        "channels": [
+           
+            {
+                "name" : "EXT_IN1",
+                "reg_type" : "coil",
+                "readonly" : true,
+                "address" : 1000,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_IN2",
+                "reg_type" : "coil",
+                "readonly" : true,
+                "address" : 1001,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_IN3",
+                "reg_type" : "coil",
+                "readonly" : true,
+                "address" : 1002,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_IN4",
+                "reg_type" : "coil",
+                "readonly" : true,
+                "address" : 1003,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_IN5",
+                "reg_type" : "coil",
+                "readonly" : true,
+                "address" : 1004,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_IN6",
+                "reg_type" : "coil",
+                "readonly" : true,
+                "address" : 1005,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_IN7",
+                "reg_type" : "coil",
+                "readonly" : true,
+                "address" : 1006,
+                "type" : "switch"
+
+            },
+            {
+                "name" : "EXT_IN8",
+                "reg_type" : "coil",
+                "readonly" : true,
+                "address" : 1007,
+                "type" : "switch"
+
+            }    
+            
+        ]
+    }
+}

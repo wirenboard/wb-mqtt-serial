@@ -27,22 +27,6 @@ struct TDeviceChannel : public TDeviceChannelConfig
 typedef std::shared_ptr<TDeviceChannel> PDeviceChannel;
 
 
-struct TDeviceSetupItem : public TDeviceSetupItemConfig
-{
-    TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
-        : TDeviceSetupItemConfig(*config)
-        , Device(device)
-    {
-        Register = TRegister::Intern(device, config->RegisterConfig);    
-    }
-
-    PSerialDevice Device;
-    PRegister Register;
-};
-
-typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
-
-
 class TMQTTWrapper;
 
 class TSerialPortDriver
@@ -67,7 +51,6 @@ private:
     PAbstractSerialPort Port;
     PSerialClient SerialClient;
     std::vector<PSerialDevice> Devices;
-    std::vector<PDeviceSetupItem> SetupItems;
 
     std::unordered_map<PRegister, PDeviceChannel> RegisterToChannelMap;
     std::unordered_map<PDeviceChannelConfig, std::vector<PRegister>> ChannelRegistersMap;

@@ -4,6 +4,7 @@
     "device" : {
             "name" : "WB-MRGB",
             "id" : "wb-mrgb",
+            "max_read_registers": 0,
             "channels" : [
                 {
                     "name" : "RGB",

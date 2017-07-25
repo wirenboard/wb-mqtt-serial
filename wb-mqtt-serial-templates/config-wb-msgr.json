@@ -3,6 +3,7 @@
 	"device" : {
 		"name": "WB-MSGR",
 		"id": "wb-msgr",
+		"max_read_registers": 0,
 		"channels": [
 			{
 				"name": "Relay",
