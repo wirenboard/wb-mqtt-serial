@@ -1,17 +1,9 @@
 #pragma once
 #include <chrono>
 #include <memory>
-#include <modbus/modbus.h>
 #include "binary_semaphore.h"
 #include "portsettings.h"
 
-struct TLibModbusContext {
-    TLibModbusContext(const TSerialPortSettings& settings);
-    ~TLibModbusContext() { modbus_free(Inner); }
-    modbus_t* Inner;
-};
-
-typedef std::shared_ptr<TLibModbusContext> PLibModbusContext;
 
 class TAbstractSerialPort: public std::enable_shared_from_this<TAbstractSerialPort> {
 public:
@@ -33,7 +25,6 @@ public:
         const std::chrono::microseconds& timeout = std::chrono::microseconds(-1),
         TFrameCompletePred frame_complete = 0) = 0;
     virtual void SkipNoise() =0;
-    virtual PLibModbusContext LibModbusContext() const = 0;
     // TBD: The following methods don't really belong here.
     // Need to use separate class for them
     // (somewhat painful without DI)
@@ -63,14 +54,13 @@ public:
     void Open();
     void Close();
     bool IsOpen() const;
-    PLibModbusContext LibModbusContext() const;
     bool Select(const std::chrono::microseconds& us);
     TTimePoint CurrentTime() const;
     bool Wait(PBinarySemaphore semaphore, const TTimePoint& until);
+    const TSerialPortSettings& GetSettings() const;
 
 private:
     TSerialPortSettings Settings;
-    PLibModbusContext Context;
     bool Dbg;
     int Fd;
 };

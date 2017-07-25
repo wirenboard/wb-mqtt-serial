@@ -30,7 +30,7 @@ CFLAGS=$(if $(or $(DEBUG),$(filter test, $(MAKECMDGOALS))), $(DEBUG_CFLAGS),$(NO
 LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
 SERIAL_BIN=wb-mqtt-serial
-SERIAL_LIBS=-lmodbus
+SERIAL_LIBS=
 SERIAL_SRCS=register.cpp \
   poll_plan.cpp \
   serial_client.cpp \
@@ -55,7 +55,8 @@ SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
   $(TEST_DIR)/poll_plan_test.o \
-  $(TEST_DIR)/modbus_server.o \
+  $(TEST_DIR)/serial_client_test.o \
+  $(TEST_DIR)/modbus_expectations.o \
   $(TEST_DIR)/modbus_test.o \
   $(TEST_DIR)/uniel_expectations.o \
   $(TEST_DIR)/uniel_test.o \
@@ -73,8 +74,7 @@ TEST_SRCS= \
   $(TEST_DIR)/pulsar_test.o \
   $(TEST_DIR)/fake_mqtt.o \
   $(TEST_DIR)/fake_serial_port.o \
-  $(TEST_DIR)/pty_based_fake_serial.o \
-  $(TEST_DIR)/pty_based_fake_serial_test.o \
+  $(TEST_DIR)/fake_serial_device.o \
   $(TEST_DIR)/device_templates_file_extension_test.o \
   $(TEST_DIR)/reconnect_detection_test.o \
   $(TEST_DIR)/main.o

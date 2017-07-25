@@ -158,6 +158,11 @@ void TSerialDeviceFactory::RemoveDevice(PSerialDevice device)
     }
 }
 
+PSerialDevice TSerialDeviceFactory::GetDevice(const std::string& slave_id, const std::string& protocol_name)
+{
+    return GetProtocol(protocol_name)->GetDevice(slave_id);
+}
+
 PRegisterTypeMap TSerialDeviceFactory::GetRegisterTypes(PDeviceConfig device_config)
 {
     return GetProtocolEntry(device_config)->GetRegTypes();

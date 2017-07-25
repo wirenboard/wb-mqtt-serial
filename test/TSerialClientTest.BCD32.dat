@@ -1,0 +1,13 @@
+>>> server -> client: 0x1234 0x5678
+>>> Cycle()
+Open()
+Sleep(100000)
+Error Callback: <fake:1:holding: 20>: no error
+Read Callback: <fake:1:holding: 20> becomes 12345678
+>>> client -> server: 12345678
+>>> Cycle()
+Read Callback: <fake:1:holding: 20> becomes 12345678 [unchanged]
+>>> client -> server: 567890
+>>> Cycle()
+Read Callback: <fake:1:holding: 20> becomes 567890 [unchanged]
+Close()

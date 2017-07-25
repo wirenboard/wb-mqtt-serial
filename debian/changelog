@@ -1,3 +1,10 @@
+wb-mqtt-serial (1.26.7) stable; urgency=medium
+
+  * removed libmodbus dependency
+  * redone modbus tests
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 26 Jul 2017 11:48:50 +0300
+
 wb-mqtt-serial (1.26.6) stable; urgency=medium
 
   * mercury23x: adds per-phase energy registers

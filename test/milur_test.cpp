@@ -8,7 +8,6 @@ class TMilurTest: public TSerialDeviceTest, public TMilurExpectations
 {
 protected:
     void SetUp();
-    void VerifyEnergyQuery();
     void VerifyParamQuery();
 
     virtual PDeviceConfig GetDeviceConfig();

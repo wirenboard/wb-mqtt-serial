@@ -20,39 +20,53 @@
 namespace {
     const std::chrono::milliseconds DefaultFrameTimeout(15);
     const std::chrono::milliseconds NoiseTimeout(10);
+
+    int ConvertBaudRate(int rate)
+    {
+        switch (rate) {
+        case 110:   return B110;
+        case 300:   return B300;
+        case 600:   return B600;
+        case 1200:  return B1200;
+        case 2400:  return B2400;
+        case 4800:  return B4800;
+        case 9600:  return B9600;
+        case 19200: return B19200;
+        case 38400: return B38400;
+        case 57600: return B57600;
+        case 115200: return B115200;
+        default:
+            std::cerr << "Warning: unsupported baud rate " << rate << " defaulting to 9600" << std::endl;
+            return B9600;
+        }
+    }
+
+    int ConvertDataBits(int data_bits)
+    {
+        switch (data_bits) {
+        case 5: return CS5;
+        case 6: return CS6;
+        case 7: return CS7;
+        case 8: return CS8;
+        default:
+            std::cerr << "Warning: unsupported data bits count " << data_bits << " defaulting to 8" << std::endl;
+            return CS8;
+        }
+    }
 };
 
-TLibModbusContext::TLibModbusContext(const TSerialPortSettings& settings)
-    : Inner(modbus_new_rtu(settings.Device.c_str(), settings.BaudRate,
-                           settings.Parity, settings.DataBits, settings.StopBits))
-{
-    modbus_set_error_recovery(Inner, MODBUS_ERROR_RECOVERY_PROTOCOL); // FIXME
-
-    if (settings.ResponseTimeout.count() > 0) {
-        std::chrono::milliseconds response_timeout = settings.ResponseTimeout;
-        struct timeval tv;
-        tv.tv_sec = response_timeout.count() / 1000;
-        tv.tv_usec = (response_timeout.count() % 1000) * 1000;
-#if LIBMODBUS_VERSION_CHECK(3,1,2)
-        modbus_set_response_timeout(Inner, tv.tv_sec, tv.tv_usec);
-#else
-        modbus_set_response_timeout(Inner, &tv);
-#endif
-    }
-}
 
 TAbstractSerialPort::~TAbstractSerialPort() {}
 
 TSerialPort::TSerialPort(const TSerialPortSettings& settings)
     : Settings(settings),
-      Context(new TLibModbusContext(settings)),
       Dbg(false),
       Fd(-1) {}
 
 TSerialPort::~TSerialPort()
 {
     if (Fd >= 0)
-        modbus_close(Context->Inner);
+        close(Fd);
 }
 
 void TSerialPort::SetDebug(bool debug)
@@ -69,15 +83,63 @@ void TSerialPort::Open()
 {
     if (Fd >= 0)
         throw TSerialDeviceException("port already open");
-    if (modbus_connect(Context->Inner) < 0)
+
+    Fd = open(Settings.Device.c_str(), O_RDWR | O_NOCTTY | O_EXCL | O_NDELAY);
+    if (Fd < 0)
         throw TSerialDeviceException("cannot open serial port");
-    Fd = modbus_get_socket(Context->Inner);
+
+    termios dev;
+    memset(&dev, 0, sizeof(termios));
+
+    if (tcgetattr(Fd, &dev) != 0) {
+        auto error_code = errno;
+        Close();
+        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcgetattr");
+    }
+
+    auto baud_rate = ConvertBaudRate(Settings.BaudRate);
+    if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
+        auto error_code = errno;
+        Close();
+        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from cfsetospeed / cfsetispeed; baud rate is " + std::to_string(Settings.BaudRate));
+    }
+
+    if (Settings.StopBits == 1) {
+        dev.c_cflag &= ~CSTOPB;
+    } else {
+        dev.c_cflag |= CSTOPB;
+    }
+
+    switch (Settings.Parity) {
+    case 'N':
+        dev.c_cflag &= ~PARENB;
+        break;
+    case 'E':
+        dev.c_cflag |= PARENB;
+        dev.c_cflag &= ~PARODD;
+        break;
+    case 'O':
+        dev.c_cflag |= PARENB;
+        dev.c_cflag |= PARODD;
+        break;
+    default:
+        Close();
+        throw TSerialDeviceException("cannot open serial port: invalid parity value: '" + std::string(1, Settings.Parity) + "'");
+    }
+
+    dev.c_cflag = (dev.c_cflag & ~CSIZE) | CS8;
+
+    if (tcsetattr (Fd, TCSANOW, &dev) != 0) {
+        auto error_code = errno;
+        Close();
+        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcsetattr");
+    }
 }
 
 void TSerialPort::Close()
 {
     CheckPortOpen();
-    modbus_close(Context->Inner);
+    close(Fd);
     Fd = -1;
 }
 
@@ -240,11 +302,6 @@ void TSerialPort::Sleep(const std::chrono::microseconds& us)
     usleep(us.count());
 }
 
-PLibModbusContext TSerialPort::LibModbusContext() const
-{
-    return Context;
-}
-
 TAbstractSerialPort::TTimePoint TSerialPort::CurrentTime() const
 {
     return std::chrono::steady_clock::now();
@@ -261,4 +318,9 @@ bool TSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
         }
             
     return semaphore->Wait(until);
+}
+
+const TSerialPortSettings& TSerialPort::GetSettings() const
+{
+    return Settings;
 }

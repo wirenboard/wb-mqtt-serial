@@ -8,6 +8,8 @@
 #include "serial_device.h"
 
 class TModbusDevice : public TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>> {
+    using TRTUReadRequest = std::array<uint8_t, 8>;
+    using TRTUWriteRequest = std::vector<uint8_t>;
 public:
     static const int DefaultTimeoutMs = 1000;
     enum RegisterType {
@@ -24,5 +26,8 @@ public:
     void ReadRegisterRange(PRegisterRange range);
 
 private:
-    PLibModbusContext Context;
+    void ComposeRTUReadRequest(TRTUReadRequest& req, PRegisterRange range);
+    void ComposeRTUWriteRequest(TRTUWriteRequest& req, PRegister reg, uint64_t value);
+
+    std::chrono::microseconds FrameTimeout;
 };
