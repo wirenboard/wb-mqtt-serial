@@ -77,6 +77,11 @@ void TFakeSerialDevice::BlockWriteFor(int addr, bool block)
     Blockings[addr].second = block;
 }
 
+uint32_t TFakeSerialDevice::Read2Registers(int addr)
+{
+    return (uint32_t(Registers[addr]) << 16) | Registers[addr + 1];
+}
+
 TFakeSerialDevice::~TFakeSerialDevice()
 {}
 

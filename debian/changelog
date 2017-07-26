@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.26.8) stable; urgency=medium
+
+  * round channel's value
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 26 Jul 2017 18:37:14 +0300
+
 wb-mqtt-serial (1.26.7) stable; urgency=medium
 
   * removed libmodbus dependency

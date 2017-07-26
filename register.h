@@ -69,12 +69,13 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 {
     TRegisterConfig(int type, int address,
               RegisterFormat format, double scale, double offset,
-              bool poll, bool readonly,
+              double round_to, bool poll, bool readonly,
               const std::string& type_name,
               bool has_error_value, uint64_t error_value,
               const EWordOrder word_order)
         : Type(type), Address(address), Format(format),
-          Scale(scale), Offset(offset), Poll(poll), ReadOnly(readonly), TypeName(type_name),
+          Scale(scale), Offset(offset), RoundTo(round_to),
+          Poll(poll), ReadOnly(readonly), TypeName(type_name),
           HasErrorValue(has_error_value), ErrorValue(error_value),
           WordOrder(word_order)
     {
@@ -84,14 +85,14 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 
     static PRegisterConfig Create(int type = 0, int address = 0,
                             RegisterFormat format = U16, double scale = 1, double offset = 0,
-                            bool poll = true, bool readonly = false,
+                            double round_to = 0, bool poll = true, bool readonly = false,
                             const std::string& type_name = "",
                             bool has_error_value = false,
                             uint64_t error_value = 0,
                             const EWordOrder word_order = EWordOrder::BigEndian
                             )
     {
-        return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, poll, readonly,
+        return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
                                             type_name, has_error_value, error_value, word_order);
     }
 
@@ -130,6 +131,7 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
     RegisterFormat Format;
     double Scale;
     double Offset;
+    double RoundTo;
     bool Poll;
     bool ReadOnly;
     std::string TypeName;

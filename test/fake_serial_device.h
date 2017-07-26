@@ -14,6 +14,7 @@ public:
     void WriteRegister(PRegister reg, uint64_t value) override;
     void BlockReadFor(int addr, bool block);
     void BlockWriteFor(int addr, bool block);
+    uint32_t Read2Registers(int addr);
     ~TFakeSerialDevice();
 
     uint16_t Registers[256] {};
