@@ -23,43 +23,43 @@
                         "type": "rgb",
                         "consists_of": [
                         {
-                            "reg_type" : "holding",
+                            "reg_type" : "fake",
                             "address" : 4
                         },
                         {
-                            "reg_type" : "holding",
+                            "reg_type" : "fake",
                             "address" : 5
                         },
                         {
-                            "reg_type" : "holding",
+                            "reg_type" : "fake",
                             "address" : 6
                         }
                         ]
                     },
                     {
                         "name" : "White",
-                        "reg_type" : "holding",
+                        "reg_type" : "fake",
                         "address" : 7,
                         "type": "dimmer",
                         "max": "0xff"
                     },
                     {
                         "name" : "RGB_All",
-                        "reg_type" : "holding",
+                        "reg_type" : "fake",
                         "address" : 8,
                         "type": "range",
                         "max": 100
                     },
                     {
                         "name" : "White1",
-                        "reg_type" : "holding",
+                        "reg_type" : "fake",
                         "address" : 9,
                         "type": "range",
                         "max": 100
                     },
                     {
                         "name" : "Voltage",
-                        "reg_type" : "holding",
+                        "reg_type" : "fake",
                         "address" : 18,
                         "type": "text"
                     }
@@ -74,7 +74,7 @@
                     "channels": [
                         {
                             "name" : "Relay 1",
-                            "reg_type" : "holding",
+                            "reg_type" : "fake",
                             "address" : "0x00",
                             "type": "switch",
                             "on_value" : 500
@@ -90,7 +90,7 @@
                     "channels": [
                         {
                             "name" : "Voltage",
-                            "reg_type" : "holding",
+                            "reg_type" : "fake",
                             "format" : "u64",
                             "address" : 0,
                             "word_order" : "little_endian",

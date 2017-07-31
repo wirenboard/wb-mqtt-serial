@@ -2,6 +2,6 @@
 >>> Cycle()
 Open()
 Sleep(100000)
-Error Callback: <fake:1:holding: 24>: no error
-Read Callback: <fake:1:holding: 24> becomes -87
+Error Callback: <fake:1:fake: 24>: no error
+Read Callback: <fake:1:fake: 24> becomes -87
 Close()

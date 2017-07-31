@@ -1,6 +1,7 @@
 #include "fake_serial_port.h"
 #include "modbus_expectations.h"
 #include "modbus_device.h"
+#include "modbus_common.h"
 
 using namespace std;
 
@@ -37,12 +38,12 @@ void TModbusTest::SetUp()
 
     ModbusDev = std::make_shared<TModbusDevice>(GetDeviceConfig(), SerialPort,
                                 TSerialDeviceFactory::GetProtocol("modbus"));
-    ModbusCoil0 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(TModbusDevice::REG_COIL, 0, U8));
-    ModbusCoil1 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(TModbusDevice::REG_COIL, 1, U8));
-    ModbusDiscrete = TRegister::Intern(ModbusDev, TRegisterConfig::Create(TModbusDevice::REG_DISCRETE, 20, U8));
-    ModbusHolding = TRegister::Intern(ModbusDev, TRegisterConfig::Create(TModbusDevice::REG_HOLDING, 70, U16));
-    ModbusInput = TRegister::Intern(ModbusDev, TRegisterConfig::Create(TModbusDevice::REG_INPUT, 40, U16));
-    ModbusHoldingS64 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(TModbusDevice::REG_HOLDING, 30, S64));
+    ModbusCoil0 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 0, U8));
+    ModbusCoil1 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 1, U8));
+    ModbusDiscrete = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_DISCRETE, 20, U8));
+    ModbusHolding = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 70, U16));
+    ModbusInput = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_INPUT, 40, U16));
+    ModbusHoldingS64 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 30, S64));
 
     SerialPort->Open();
 }

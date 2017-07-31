@@ -3,14 +3,12 @@
 using namespace std;
 
 REGISTER_BASIC_INT_PROTOCOL("fake", TFakeSerialDevice, TRegisterTypes({
-    { TFakeSerialDevice::REG_COIL, "coil", "switch", U8 },
-    { TFakeSerialDevice::REG_DISCRETE, "discrete", "switch", U8, true },
-    { TFakeSerialDevice::REG_HOLDING, "holding", "text", U16 },
-    { TFakeSerialDevice::REG_INPUT, "input", "text", U16, true }
+    { TFakeSerialDevice::REG_FAKE, "fake", "text", U16 },
 }));
 
 
-namespace { //utility
+namespace //utility
+{
     uint64_t GetValue(uint16_t* src, int width)
     {
         uint64_t res = 0;
@@ -37,51 +35,46 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PAbstractSerialPort p
 
 uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 {
-    if(Blockings[reg->Type][reg->Address].first) {
+    if(Blockings[reg->Address].first) {
         throw TSerialDeviceTransientErrorException("read blocked");
     }
 
-    switch (reg->Type) {
-    case REG_COIL:      return Coils[reg->Address];
-    case REG_DISCRETE:  return Discrete[reg->Address];
-    case REG_HOLDING:   return GetValue(&Holding[reg->Address], reg->Width());
-    case REG_INPUT:     return GetValue(&Input[reg->Address], reg->Width());
-    default: throw runtime_error("invalid register type");
+    if (reg->Address < 0 || reg->Address > 256) {
+        throw runtime_error("invalid register address");
     }
+    
+    if (reg->Type != REG_FAKE) {
+        throw runtime_error("invalid register type");
+    }
+
+    return GetValue(&Registers[reg->Address], reg->Width());
 }
 
 void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    if(Blockings[reg->Type][reg->Address].second) {
+    if(Blockings[reg->Address].second) {
         throw TSerialDeviceTransientErrorException("write blocked");
     }
 
-    switch (reg->Type) {
-    case REG_COIL:
-        Coils[reg->Address] = value ? 1: 0;
-        break;
-    case REG_DISCRETE:
-        Discrete[reg->Address] = value ? 1: 0;
-        break;
-    case REG_HOLDING:
-        SetValue(&Holding[reg->Address], reg->Width(), value);
-        break;
-    case REG_INPUT:
-        SetValue(&Input[reg->Address], reg->Width(), value);
-        break;
-    default:
+    if (reg->Address < 0 || reg->Address > 256) {
+        throw runtime_error("invalid register address");
+    }
+    
+    if (reg->Type != REG_FAKE) {
         throw runtime_error("invalid register type");
     }
+
+    SetValue(&Registers[reg->Address], reg->Width(), value);
 }
 
-void TFakeSerialDevice::BlockReadFor(RegisterType type, int addr, bool block)
+void TFakeSerialDevice::BlockReadFor(int addr, bool block)
 {
-    Blockings[type][addr].first = block;
+    Blockings[addr].first = block;
 }
 
-void TFakeSerialDevice::BlockWriteFor(RegisterType type, int addr, bool block)
+void TFakeSerialDevice::BlockWriteFor(int addr, bool block)
 {
-    Blockings[type][addr].second = block;
+    Blockings[addr].second = block;
 }
 
 TFakeSerialDevice::~TFakeSerialDevice()

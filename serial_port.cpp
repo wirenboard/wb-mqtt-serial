@@ -113,14 +113,17 @@ void TSerialPort::Open()
     switch (Settings.Parity) {
     case 'N':
         dev.c_cflag &= ~PARENB;
+        dev.c_iflag &= ~INPCK;
         break;
     case 'E':
         dev.c_cflag |= PARENB;
         dev.c_cflag &= ~PARODD;
+        dev.c_iflag |= INPCK;
         break;
     case 'O':
         dev.c_cflag |= PARENB;
         dev.c_cflag |= PARODD;
+        dev.c_iflag |= INPCK;
         break;
     default:
         Close();
@@ -214,6 +217,7 @@ uint8_t TSerialPort::ReadByte()
     return b;
 }
 
+// Reading becomes unstable when using timeout less than default because of bufferization
 int TSerialPort::ReadFrame(uint8_t* buf, int size,
                            const std::chrono::microseconds& timeout,
                            TFrameCompletePred frame_complete)
@@ -264,7 +268,7 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size,
 
         nread += nb;
     }
-
+    
     if (!nread)
         throw TSerialDeviceTransientErrorException("request timed out");
 
@@ -318,9 +322,4 @@ bool TSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
         }
             
     return semaphore->Wait(until);
-}
-
-const TSerialPortSettings& TSerialPort::GetSettings() const
-{
-    return Settings;
 }

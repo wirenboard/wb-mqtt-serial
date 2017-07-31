@@ -2,9 +2,9 @@
 >>> Cycle()
 Open()
 Sleep(100000)
-Error Callback: <fake:1:holding: 20>: no error
-Read Callback: <fake:1:holding: 20> becomes 1234
+Error Callback: <fake:1:fake: 20>: no error
+Read Callback: <fake:1:fake: 20> becomes 1234
 >>> client -> server: 1234
 >>> Cycle()
-Read Callback: <fake:1:holding: 20> becomes 1234 [unchanged]
+Read Callback: <fake:1:fake: 20> becomes 1234 [unchanged]
 Close()

@@ -57,7 +57,6 @@ public:
     bool Select(const std::chrono::microseconds& us);
     TTimePoint CurrentTime() const;
     bool Wait(PBinarySemaphore semaphore, const TTimePoint& until);
-    const TSerialPortSettings& GetSettings() const;
 
 private:
     TSerialPortSettings Settings;
