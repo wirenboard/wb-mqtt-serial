@@ -1,10 +1,8 @@
 #pragma once
 
-#include "expector.h"
+#include "modbus_expectations_base.h"
 
-#include <stdint.h>
-
-class TModbusExpectations: public virtual TExpectorProvider
+class TModbusExpectations: public TModbusExpectationsBase
 {
 public:
     void EnqueueCoilReadResponse(uint8_t exception = 0);
@@ -30,17 +28,6 @@ public:
     void Enqueue10CoilsReadResponse(uint8_t exception = 0);
 
     void Enqueue10CoilsMax3ReadResponse(uint8_t exception = 0);
-
-protected:
-    enum ModbusType {MODBUS_RTU};
-
-    ModbusType GetSelectedModbusType() const;
-    void SelectModbusType(ModbusType selectedModbusType);
-
-private:
-    ModbusType SelectedModbusType = MODBUS_RTU;
-
-    std::vector<int> WrapPDU(const std::vector<int>& pdu);
 };
 
 

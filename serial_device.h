@@ -34,6 +34,34 @@ struct TDeviceSetupItem : public TDeviceSetupItemConfig
 typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
 
 
+struct TAggregatedSlaveId
+{
+    int Primary;
+    int Secondary;
+
+    bool operator==(const TAggregatedSlaveId & other) const
+    {
+        return Primary == other.Primary && Secondary == other.Secondary;
+    }
+};
+
+namespace std
+{
+    inline string to_string(const TAggregatedSlaveId & x)
+    {
+        return to_string(x.Primary) + ':' + to_string(x.Secondary);
+    }
+
+    template <> struct hash<TAggregatedSlaveId>
+    {
+        inline size_t operator()(const TAggregatedSlaveId & x) const
+        {
+            return hash<string>{}(to_string(x));
+        }
+    };
+}
+
+
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {
 public:
     TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
@@ -123,6 +151,9 @@ public:
 template<>
 int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s) const;
 
+template<>
+TAggregatedSlaveId TBasicProtocolConverter<TAggregatedSlaveId>::ConvertSlaveId(const std::string &s) const;
+
 /*!
  * Basic protocol implementation with slave ID collision check
  * using Slave ID extractor and registered slave ID map
@@ -170,7 +201,7 @@ public:
 
         if (_Devices.find(sid) != _Devices.end()) {
             std::stringstream ss;
-            ss << "device address collision for slave id " << sid << " (\"" << config->SlaveId << "\")";
+            ss << "device address collision for slave id " << std::to_string(sid) << " (\"" << config->SlaveId << "\")";
             throw TSerialDeviceException(ss.str());
         }
 
@@ -188,7 +219,7 @@ public:
 
         if (_Devices.find(sid) == _Devices.cend()) {
             std::stringstream ss;
-            ss << "no device with slave id " << sid << " (\"" << slave_id << "\") found in " << this->GetName();
+            ss << "no device with slave id " << std::to_string(sid) << " (\"" << slave_id << "\") found in " << this->GetName();
             throw TSerialDeviceException(ss.str());
         }
 
@@ -229,6 +260,7 @@ public:
         auto p = std::dynamic_pointer_cast<Proto>(protocol);
 
         if (!p) {
+            std::cerr << "cannot cast " << protocol->GetName() << " to " << typeid(Proto).name() << std::endl;
             throw std::runtime_error("Wrong protocol cast, check registration code and class header");
         }
 
@@ -273,6 +305,10 @@ public:
 
 #define REGISTER_BASIC_INT_PROTOCOL(name, cls, regTypes) \
     TProtocolRegistrator reg__##cls(std::make_shared<TBasicProtocol<cls>>(name, regTypes))
+
+
+#define REGISTER_BASIC_PROTOCOL(name, cls, slave, regTypes) \
+    TProtocolRegistrator reg__##cls(std::make_shared<TBasicProtocol<cls, slave>>(name, regTypes))
 
 
 /* Usage:

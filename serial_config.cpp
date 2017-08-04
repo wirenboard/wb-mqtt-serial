@@ -307,6 +307,9 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
         format = RegisterFormatFromName(item_data["format"].asString());
     PRegisterConfig reg = TRegisterConfig::Create(
         type, address, format, 1, 0, 0, true, true, type_name);
+    if (item_data.isMember("is_config_flag")) {
+        reg->IsConfigFlag = item_data["is_config_flag"].asBool();
+    }
 
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");
@@ -350,6 +353,10 @@ void TConfigParser::LoadDeviceTemplatableConfigPart(PDeviceConfig device_config,
         device_config->MaxReadRegisters = GetInt(device_data, "max_read_registers");
     if (device_data.isMember("guard_interval_us"))
         device_config->GuardInterval = std::chrono::microseconds(GetInt(device_data, "guard_interval_us"));
+    if (device_data.isMember("stride"))
+        device_config->Stride = GetInt(device_data, "stride");
+    if (device_data.isMember("shift"))
+        device_config->Shift = GetInt(device_data, "shift");
 }
 
 int TConfigParser::ToInt(const Json::Value& v, const std::string& title)

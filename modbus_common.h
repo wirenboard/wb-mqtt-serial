@@ -51,12 +51,15 @@ namespace ModbusRTU // modbus rtu protocol utilities
     using TReadResponse = std::vector<uint8_t>;
     using TWriteResponse = std::array<uint8_t, 8>;
 
+    // libmodbus default
+    const static std::chrono::milliseconds FrameTimeout(500);
+
     // returns predicate for frame ending detection
     TAbstractSerialPort::TFrameCompletePred ExpectNBytes(int n);
 
-    void ComposeReadRequest(TReadRequest& req, Modbus::PModbusRegisterRange range, uint8_t slaveId);
+    void ComposeReadRequest(TReadRequest& req, Modbus::PModbusRegisterRange range, uint8_t slaveId, int shift = 0);
 
-    void ComposeWriteRequest(TWriteRequest& req, PRegister reg, uint8_t slaveId, uint64_t value);
+    void ComposeWriteRequest(TWriteRequest& req, PRegister reg, uint8_t slaveId, uint64_t value, int shift = 0);
 
     // parses modbus rtu response, checks crc and stores result
     void ParseReadResponse(const TReadResponse& res, Modbus::PModbusRegisterRange range);

@@ -177,3 +177,14 @@ int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s) const
         throw TSerialDeviceException("slave ID \"" + s + "\" is not convertible to string");
     }
 }
+
+template<>
+TAggregatedSlaveId TBasicProtocolConverter<TAggregatedSlaveId>::ConvertSlaveId(const std::string &s) const
+{
+    try {
+        auto delimiter_it = s.find(':');
+        return {std::stoi(s.substr(0, delimiter_it), 0, 0), std::stoi(s.substr(delimiter_it + 1), 0, 0)};
+    } catch (const std::logic_error &e) {
+        throw TSerialDeviceException("slave ID \"" + s + "\" is not convertible to string");
+    }
+}

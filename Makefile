@@ -46,6 +46,7 @@ SERIAL_SRCS=register.cpp \
   crc16.cpp \
   modbus_common.cpp \
   modbus_device.cpp \
+  modbus_io_device.cpp \
   em_device.cpp \
   milur_device.cpp \
   mercury230_device.cpp \
@@ -57,8 +58,11 @@ TEST_SRCS= \
   $(TEST_DIR)/testlog.o \
   $(TEST_DIR)/poll_plan_test.o \
   $(TEST_DIR)/serial_client_test.o \
+  $(TEST_DIR)/modbus_expectations_base.o \
   $(TEST_DIR)/modbus_expectations.o \
   $(TEST_DIR)/modbus_test.o \
+  $(TEST_DIR)/modbus_io_expectations.o \
+  $(TEST_DIR)/modbus_io_test.o \
   $(TEST_DIR)/uniel_expectations.o \
   $(TEST_DIR)/uniel_test.o \
   $(TEST_DIR)/s2k_expectations.o \

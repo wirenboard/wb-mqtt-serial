@@ -336,26 +336,26 @@ namespace Modbus    // modbus protocol common utilities
     }
     
     // fills pdu with read request data according to Modbus specification
-    void ComposeReadRequestPDU(uint8_t* pdu, PRegister reg)
+    void ComposeReadRequestPDU(uint8_t* pdu, PRegister reg, int shift)
     {
         pdu[0] = GetFunction(reg, OperationType::OP_READ);
-        WriteAs2Bytes(pdu + 1, reg->Address);
+        WriteAs2Bytes(pdu + 1, reg->Address + shift);
         WriteAs2Bytes(pdu + 3, GetQuantity(reg));
     }
 
-    void ComposeReadRequestPDU(uint8_t* pdu, PModbusRegisterRange range)
+    void ComposeReadRequestPDU(uint8_t* pdu, PModbusRegisterRange range, int shift)
     {
         pdu[0] = GetFunction(range, OperationType::OP_READ);
-        WriteAs2Bytes(pdu + 1, range->GetStart());
+        WriteAs2Bytes(pdu + 1, range->GetStart() + shift);
         WriteAs2Bytes(pdu + 3, GetQuantity(range));
     }
 
     // fills pdu with write request data according to Modbus specification
-    void ComposeMultipleWriteRequestPDU(uint8_t* pdu, PRegister reg, uint64_t value)
+    void ComposeMultipleWriteRequestPDU(uint8_t* pdu, PRegister reg, uint64_t value, int shift)
     {
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
-        WriteAs2Bytes(pdu + 1, reg->Address);
+        WriteAs2Bytes(pdu + 1, reg->Address + shift);
         WriteAs2Bytes(pdu + 3, reg->Width());
 
         pdu[5] = reg->Width() * 2;
@@ -366,7 +366,7 @@ namespace Modbus    // modbus protocol common utilities
         }
     }
 
-    void ComposeSingleWriteRequestPDU(uint8_t* pdu, PRegister reg, uint16_t value)
+    void ComposeSingleWriteRequestPDU(uint8_t* pdu, PRegister reg, uint16_t value, int shift)
     {
         if (reg->Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8: 0x00;
@@ -374,7 +374,7 @@ namespace Modbus    // modbus protocol common utilities
 
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
-        WriteAs2Bytes(pdu + 1, reg->Address);
+        WriteAs2Bytes(pdu + 1, reg->Address + shift);
         WriteAs2Bytes(pdu + 3, value);
     }
     
@@ -506,22 +506,22 @@ namespace ModbusRTU // modbus rtu protocol utilities
         };
     }
 
-    void ComposeReadRequest(TReadRequest& req, Modbus::PModbusRegisterRange range, uint8_t slaveId)
+    void ComposeReadRequest(TReadRequest& req, Modbus::PModbusRegisterRange range, uint8_t slaveId, int shift)
     {
         req[0] = slaveId;
-        Modbus::ComposeReadRequestPDU(PDU(req), range);
+        Modbus::ComposeReadRequestPDU(PDU(req), range, shift);
         WriteAs2Bytes(&req[6], CRC16::CalculateCRC16(req.data(), 6));
     }
 
-    void ComposeWriteRequest(TWriteRequest& req, PRegister reg, uint8_t slaveId, uint64_t value)
+    void ComposeWriteRequest(TWriteRequest& req, PRegister reg, uint8_t slaveId, uint64_t value, int shift)
     {
         req.resize(InferWriteRequestSize(reg));
         req[0] = slaveId;
 
         if (IsPacking(reg)) {
-            Modbus::ComposeMultipleWriteRequestPDU(PDU(req), reg, value);
+            Modbus::ComposeMultipleWriteRequestPDU(PDU(req), reg, value, shift);
         } else {
-            Modbus::ComposeSingleWriteRequestPDU(PDU(req), reg, static_cast<uint16_t>(value));
+            Modbus::ComposeSingleWriteRequestPDU(PDU(req), reg, static_cast<uint16_t>(value), shift);
         }
 
         WriteAs2Bytes(&req[req.size() - 2], CRC16::CalculateCRC16(req.data(), req.size() - 2));

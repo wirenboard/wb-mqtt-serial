@@ -1,43 +1,45 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "modbus_device.h"
+#include "modbus_io_device.h"
 #include "modbus_common.h"
 
 
-REGISTER_BASIC_INT_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
+REGISTER_BASIC_PROTOCOL("modbus_io", TModbusIODevice, TAggregatedSlaveId, TRegisterTypes({
             { Modbus::REG_COIL, "coil", "switch", U8 },
             { Modbus::REG_DISCRETE, "discrete", "switch", U8, true },
             { Modbus::REG_HOLDING, "holding", "text", U16 },
             { Modbus::REG_INPUT, "input", "text", U16, true }
         }));
 
-TModbusDevice::TModbusDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>>(config, port, protocol)
-{}
+TModbusIODevice::TModbusIODevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+    : TBasicProtocolSerialDevice<TBasicProtocol<TModbusIODevice, TAggregatedSlaveId>>(config, port, protocol)
+{
+    Shift = SlaveId.Secondary * DeviceConfig()->Stride + DeviceConfig()->Shift;
+}
 
-std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> reg_list) const
+std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRegister> reg_list) const
 {
     return Modbus::SplitRegisterList(reg_list, DeviceConfig(), Port()->Debug());
 }
 
-uint64_t TModbusDevice::ReadRegister(PRegister reg)
+uint64_t TModbusIODevice::ReadRegister(PRegister reg)
 {
-    throw TSerialDeviceException("modbus: single register reading is not supported");
+    throw TSerialDeviceException("modbus extension module: single register reading is not supported");
 }
 
-void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
+void TModbusIODevice::WriteRegister(PRegister reg, uint64_t value)
 {
     int w = reg->Width();
 
     if (Port()->Debug())
-        std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
+        std::cerr << "modbus extension module: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
             " of device " << reg->Device()->ToString() << std::endl;
     std::string exception_message;
     try {
         {   // Send request
             ModbusRTU::TWriteRequest request;
-            ModbusRTU::ComposeWriteRequest(request, reg, SlaveId, value);
+            ModbusRTU::ComposeWriteRequest(request, reg, SlaveId.Primary, value, GetShift(reg));
             Port()->WriteBytes(request.data(), request.size());
         }
 
@@ -58,7 +60,7 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
         " @ " + std::to_string(reg->Address) + exception_message);
 }
 
-void TModbusDevice::ReadRegisterRange(PRegisterRange range)
+void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 {
     auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
     if (!modbus_range) {
@@ -66,7 +68,7 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
     }
 
     if (Port()->Debug())
-        std::cerr << "modbus: read " << modbus_range->GetCount() << " " <<
+        std::cerr << "modbus extension module: read " << modbus_range->GetCount() << " " <<
             modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
             " of device " << modbus_range->Device()->ToString() << std::endl;
 
@@ -74,7 +76,7 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
     try {
         {   // Send request
             ModbusRTU::TReadRequest request;
-            ModbusRTU::ComposeReadRequest(request, modbus_range, SlaveId);
+            ModbusRTU::ComposeReadRequest(request, modbus_range, SlaveId.Primary, GetShift(range));
             Port()->WriteBytes(request.data(), request.size());
         }
 
@@ -93,7 +95,7 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
 
     modbus_range->SetError(true);
     std::ios::fmtflags f(std::cerr.flags());
-    std::cerr << "TModbusDevice::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
+    std::cerr << "TModbusIODevice::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
         modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
         " of device " << modbus_range->Device()->ToString();
     if (!exception_message.empty()) {
@@ -101,4 +103,14 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
     }
     std::cerr << std::endl;
     std::cerr.flags(f);
+}
+
+int TModbusIODevice::GetShift(PRegister reg) const
+{
+    return reg->IsConfigFlag ? (SlaveId.Secondary - 1 + DeviceConfig()->Shift) : Shift;
+}
+
+int TModbusIODevice::GetShift(PRegisterRange range) const
+{
+    return Shift;
 }
