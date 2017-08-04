@@ -6,7 +6,6 @@
 #include <sys/select.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <termios.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <iostream>
@@ -61,7 +60,10 @@ TAbstractSerialPort::~TAbstractSerialPort() {}
 TSerialPort::TSerialPort(const TSerialPortSettings& settings)
     : Settings(settings),
       Dbg(false),
-      Fd(-1) {}
+      Fd(-1) 
+{
+    memset(&OldTermios, 0, sizeof(termios));
+}
 
 TSerialPort::~TSerialPort()
 {
@@ -90,12 +92,6 @@ void TSerialPort::Open()
 
     termios dev;
     memset(&dev, 0, sizeof(termios));
-
-    if (tcgetattr(Fd, &dev) != 0) {
-        auto error_code = errno;
-        Close();
-        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcgetattr");
-    }
 
     auto baud_rate = ConvertBaudRate(Settings.BaudRate);
     if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
@@ -130,7 +126,18 @@ void TSerialPort::Open()
         throw TSerialDeviceException("cannot open serial port: invalid parity value: '" + std::string(1, Settings.Parity) + "'");
     }
 
-    dev.c_cflag = (dev.c_cflag & ~CSIZE) | CS8;
+    dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(Settings.DataBits) | CREAD | CLOCAL;
+    dev.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+    dev.c_iflag &= ~(IXON | IXOFF | IXANY);
+    dev.c_oflag &=~ OPOST;
+    dev.c_cc[VMIN] = 0;
+    dev.c_cc[VTIME] = 0;
+
+    if (tcgetattr(Fd, &OldTermios) != 0) {
+        auto error_code = errno;
+        Close();
+        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcgetattr");
+    }
 
     if (tcsetattr (Fd, TCSANOW, &dev) != 0) {
         auto error_code = errno;
@@ -142,6 +149,7 @@ void TSerialPort::Open()
 void TSerialPort::Close()
 {
     CheckPortOpen();
+    tcsetattr(Fd, TCSANOW, &OldTermios);
     close(Fd);
     Fd = -1;
 }

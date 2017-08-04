@@ -1,6 +1,8 @@
 #pragma once
 #include <chrono>
 #include <memory>
+#include <termios.h>
+
 #include "binary_semaphore.h"
 #include "portsettings.h"
 
@@ -62,6 +64,7 @@ private:
     TSerialPortSettings Settings;
     bool Dbg;
     int Fd;
+    termios OldTermios;
 };
 
 typedef std::shared_ptr<TSerialPort> PSerialPort;
