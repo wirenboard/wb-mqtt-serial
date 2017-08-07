@@ -110,6 +110,66 @@
                 "address" : 70,
                 "type": "value",
                 "format": "u16"
+            },
+            {
+                "name" : "Coil 2",
+                "reg_type" : "coil",
+                "address" : 72,
+                "type": "switch"
+            },
+            {
+                "name" : "Coil 3",
+                "reg_type" : "coil",
+                "address" : 73,
+                "type": "switch"
+            },
+            {
+                "name" : "Coil 4",
+                "reg_type" : "coil",
+                "address" : 74,
+                "type": "switch"
+            },
+            {
+                "name" : "Coil 5",
+                "reg_type" : "coil",
+                "address" : 75,
+                "type": "switch"
+            },
+            {
+                "name" : "Coil 6",
+                "reg_type" : "coil",
+                "address" : 76,
+                "type": "switch"
+            },
+            {
+                "name" : "Coil 7",
+                "reg_type" : "coil",
+                "address" : 77,
+                "type": "switch"
+            },
+            {
+                "name" : "Coil 8",
+                "reg_type" : "coil",
+                "address" : 78,
+                "type": "switch"
+            },
+            {
+                "name" : "Coil 9",
+                "reg_type" : "coil",
+                "address" : 79,
+                "type": "switch"
+            },
+            {
+                "name" : "Coil 10",
+                "reg_type" : "coil",
+                "address" : 80,
+                "type": "switch"
+            },
+            {
+                "name" : "Coil 11",
+                "reg_type" : "coil",
+                "address" : 81,
+                "type": "switch"
             }
             ]
         }

@@ -493,6 +493,100 @@ void TModbusExpectations::EnqueueRGBWriteResponse(uint8_t exception)
     }), __func__);
 }
 
+// read 10 coils (more than can fit into 1 byte)
+void TModbusExpectations::Enqueue10CoilsReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x01,   //function code
+        0x00,   //starting address Hi
+        72,     //starting address Lo
+        0x00,   //quantity Hi
+        0x0a,   //quantity Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x01,   //function code
+        0x02,   //byte count
+        0x49,   //coils status
+        0x02,   //coils status
+    } : std::vector<int> {
+        0x81,   //function code + 80
+        exception
+    }), __func__);
+}
+
+// read 10 coils with max_read_registers = 3
+void TModbusExpectations::Enqueue10CoilsMax3ReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x01,   //function code
+        0x00,   //starting address Hi
+        72,     //starting address Lo
+        0x00,   //quantity Hi
+        0x03,   //quantity Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x01,   //function code
+        0x01,   //byte count
+        0x01,   //coils status
+    } : std::vector<int> {
+        0x81,   //function code + 80
+        exception
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x01,   //function code
+        0x00,   //starting address Hi
+        75,     //starting address Lo
+        0x00,   //quantity Hi
+        0x03,   //quantity Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x01,   //function code
+        0x01,   //byte count
+        0x01,   //coils status
+    } : std::vector<int> {
+        0x81,   //function code + 80
+        exception
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x01,   //function code
+        0x00,   //starting address Hi
+        78,     //starting address Lo
+        0x00,   //quantity Hi
+        0x03,   //quantity Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x01,   //function code
+        0x01,   //byte count
+        0x01,   //coils status
+    } : std::vector<int> {
+        0x81,   //function code + 80
+        exception
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x01,   //function code
+        0x00,   //starting address Hi
+        81,     //starting address Lo
+        0x00,   //quantity Hi
+        0x01,   //quantity Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x01,   //function code
+        0x01,   //byte count
+        0x01,   //coils status
+    } : std::vector<int> {
+        0x81,   //function code + 80
+        exception
+    }), __func__);
+}
+
 TModbusExpectations::ModbusType TModbusExpectations::GetSelectedModbusType() const
 {
     return SelectedModbusType;

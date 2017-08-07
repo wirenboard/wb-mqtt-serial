@@ -182,6 +182,13 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
     EnqueueHoldingReadU16Response();
     EnqueueInputReadU16Response();
     EnqueueCoilReadResponse();
+
+    if (mode == TEST_MAX_READ_REGISTERS) {
+        Enqueue10CoilsMax3ReadResponse();
+    } else {
+        Enqueue10CoilsReadResponse();
+    }
+    
     EnqueueDiscreteReadResponse();
 }
 
@@ -236,6 +243,7 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueHoldingReadU16Response(0x6);
     EnqueueInputReadU16Response(0x8);
     EnqueueCoilReadResponse(0xa);
+    Enqueue10CoilsReadResponse(0x1);
     EnqueueDiscreteReadResponse(0xb);
 
     Note() << "LoopOnce()";
