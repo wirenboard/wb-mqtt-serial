@@ -1,7 +1,7 @@
 {
-    "device_type": "WB-MAP12H",
+    "device_type": "WB-MAP12H (+ harmonics)",
     "device": {
-        "name": "WB-MAP12H",
+        "name": "WB-MAP12H (+ harmonics)",
         "id": "wb-map12h",
         "max_read_registers": 60,
     "channels": [
