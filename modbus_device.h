@@ -10,19 +10,10 @@
 class TModbusDevice : public TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>> {
 public:
     static const int DefaultTimeoutMs = 1000;
-    enum RegisterType {
-        REG_HOLDING = 0, // used for 'setup' regsb
-        REG_INPUT,
-        REG_COIL,
-        REG_DISCRETE,
-    };
 
     TModbusDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
-    virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list) const;
-    uint64_t ReadRegister(PRegister reg);
-    void WriteRegister(PRegister reg, uint64_t value);
-    void ReadRegisterRange(PRegisterRange range);
-
-private:
-    PLibModbusContext Context;
+    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list) const override;
+    uint64_t ReadRegister(PRegister reg) override;
+    void WriteRegister(PRegister reg, uint64_t value) override;
+    void ReadRegisterRange(PRegisterRange range) override;
 };

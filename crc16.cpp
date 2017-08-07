@@ -60,7 +60,7 @@ namespace {
     };
 }
 
-uint16_t CRC16::CalculateCRC16(uint8_t *buffer, uint16_t len)
+uint16_t CRC16::CalculateCRC16(const uint8_t *buffer, uint16_t len)
 {
     uint8_t crch = 0xff, crcl = 0xff;
     while (len--) {

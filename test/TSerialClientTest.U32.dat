@@ -1,0 +1,21 @@
+>>> server -> client: 10, 20
+>>> Cycle()
+Open()
+Sleep(100000)
+Error Callback: <fake:1:fake: 20>: no error
+Read Callback: <fake:1:fake: 20> becomes 11141307
+Error Callback: <fake:1:fake: 30>: no error
+Read Callback: <fake:1:fake: 30> becomes 4294967295
+>>> client -> server: 10
+>>> Cycle()
+Read Callback: <fake:1:fake: 20> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 30> becomes 4294967295 [unchanged]
+>>> client -> server: -1 (overflow)
+>>> Cycle()
+Read Callback: <fake:1:fake: 20> becomes 4294967295 [unchanged]
+Read Callback: <fake:1:fake: 30> becomes 4294967295 [unchanged]
+>>> client -> server: 4294967296 (overflow)
+>>> Cycle()
+Read Callback: <fake:1:fake: 20> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 30> becomes 4294967295 [unchanged]
+Close()

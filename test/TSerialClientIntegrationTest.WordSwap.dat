@@ -1,25 +1,13 @@
+SetDebug(1)
 Publish: /devices/WordsLETest/meta/name: 'WordsLETest' (QoS 0, retained)
 Publish: /devices/WordsLETest/controls/Voltage/meta/type: 'voltage' (QoS 0, retained)
 Publish: /devices/WordsLETest/controls/Voltage/meta/order: '1' (QoS 0, retained)
 Subscribe: /devices/WordsLETest/controls/Voltage/on (QoS 0)
 >>> LoopOnce()
->> 91 03 00 00 00 04 59 59
+Open()
+Sleep(100000)
 Publish: /devices/WordsLETest/controls/Voltage/meta/error: '' (QoS 0, retained)
 Publish: /devices/WordsLETest/controls/Voltage: '0' (QoS 0, retained)
 >>> Publish: /devices/WordsLETest/controls/Voltage/on: '123' (QoS 0)
 Publish: /devices/WordsLETest/controls/Voltage: '123' (QoS 0, retained)
 >>> LoopOnce()
-<< 91 03 08 00 00 00 00 00 00 00 00 68 D5
->> 91 10 00 00 00 04 08 00 7B 00 00 00 00 00 00 ED 11
-<< 91 10 00 00 00 04 DC 9A
->> 91 03 00 00 00 04 59 59
->>> LoopOnce() after slave update
-<< 91 03 08 00 7B 00 00 00 00 00 00 A3 D2
->> 91 03 00 00 00 04 59 59
-Publish: /devices/WordsLETest/controls/Voltage: '0' (QoS 0, retained)
->>> LoopOnce() after second slave update
-<< 91 03 08 00 00 00 00 00 00 00 00 68 D5
->> 91 03 00 00 00 04 59 59
-Publish: /devices/WordsLETest/controls/Voltage: '200' (QoS 0, retained)
-<< 91 03 08 00 C8 00 00 00 00 00 00 21 19
-(pty-based fake serial -- stopping forwarding)

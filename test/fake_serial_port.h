@@ -27,7 +27,6 @@ public:
                   TFrameCompletePred frame_complete = 0);
     void SkipNoise();
     void Sleep(const std::chrono::microseconds& us);
-    PLibModbusContext LibModbusContext() const;
     TTimePoint CurrentTime() const;
     bool Wait(PBinarySemaphore semaphore, const TTimePoint& until);
 

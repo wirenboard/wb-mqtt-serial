@@ -254,6 +254,7 @@ public:
     static PRegisterTypeMap GetRegisterTypes(PDeviceConfig device_config);
     static PSerialDevice CreateDevice(PDeviceConfig device_config, PAbstractSerialPort port);
     static void RemoveDevice(PSerialDevice device);
+    static PSerialDevice GetDevice(const std::string& slave_id, const std::string& protocol_name);
     static PProtocol GetProtocol(const std::string &name);
 
 private:

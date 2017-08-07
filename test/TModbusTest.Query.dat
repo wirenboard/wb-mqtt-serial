@@ -1,0 +1,17 @@
+Open()
+EnqueueCoilReadResponse()
+>> 01 01 00 00 00 02 BD CB
+<< 01 01 01 02 D0 49
+EnqueueDiscreteReadResponse()
+>> 01 02 00 14 00 01 F9 CE
+<< 01 02 01 01 60 48
+EnqueueHoldingReadU16Response()
+>> 01 03 00 46 00 01 65 DF
+<< 01 03 02 00 15 79 8B
+EnqueueInputReadU16Response()
+>> 01 04 00 28 00 01 B1 C2
+<< 01 04 02 00 66 39 1A
+EnqueueHoldingReadS64Response()
+>> 01 03 00 1E 00 04 24 0F
+<< 01 03 08 01 02 03 04 05 06 07 08 65 13
+Close()

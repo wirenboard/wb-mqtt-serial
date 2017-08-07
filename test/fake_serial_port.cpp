@@ -156,11 +156,6 @@ void TFakeSerialPort::Sleep(const std::chrono::microseconds& us)
     Fixture.Emit() << "Sleep(" << us.count() << ")";
 }
 
-PLibModbusContext TFakeSerialPort::LibModbusContext() const
-{
-    throw std::runtime_error("TFakeSerialPort doesn't support LibModbusContext()");
-}
-
 TAbstractSerialPort::TTimePoint TFakeSerialPort::CurrentTime() const
 {
     return Time;
