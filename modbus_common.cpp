@@ -392,14 +392,13 @@ namespace Modbus    // modbus protocol common utilities
             auto coil_count = range->GetCount();
             while (start != end) {
                 std::bitset<8> coils(*start++);
-                for (int i = 0; i < coil_count; ++i) {
+                auto coils_in_byte = std::min(coil_count, 8);
+                for (int i = 0; i < coils_in_byte; ++i) {
                     destination[i] = coils[i];
                 }
 
-                if (coil_count < 8)
-                    coil_count = 0;
-                else
-                    coil_count -= 8;
+                coil_count -= coils_in_byte;
+                destination += coils_in_byte;
             }
         } else {
             auto destination = range->GetWords();
