@@ -1,6 +1,6 @@
-wb-mqtt-serial (1.26.8) stable; urgency=medium
+wb-mqtt-serial (1.27) stable; urgency=medium
 
-  * round channel's value
+  * added "round_to" channel parameter, if specified, channel's value becomes closest multiple of round_to
 
  -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 26 Jul 2017 18:37:14 +0300
 
