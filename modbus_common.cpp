@@ -40,6 +40,26 @@ namespace Modbus    // modbus protocol common utilities
     const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
     const size_t WRITE_RESPONSE_PDU_SIZE = 5;
 
+    class TModbusRegisterRange: public TRegisterRange {
+    public:
+        TModbusRegisterRange(const std::list<PRegister>& regs);
+        ~TModbusRegisterRange();
+        void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
+        int GetStart() const { return Start; }
+        int GetCount() const { return Count; }
+        uint8_t* GetBits();
+        uint16_t* GetWords();
+        void SetError(bool error) { Error = error; }
+        bool GetError() const { return Error; }
+    private:
+        bool Error = false;
+        int Start, Count;
+        uint8_t* Bits = 0;
+        uint16_t* Words = 0;
+    };
+
+    using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
+
     TModbusRegisterRange::TModbusRegisterRange(const std::list<PRegister>& regs):
         TRegisterRange(regs)
     {
@@ -120,7 +140,6 @@ namespace Modbus    // modbus protocol common utilities
             Words = new uint16_t[Count];
         return Words;
     }
-
 
     const uint8_t EXCEPTION_BIT = 1 << 7;
 
@@ -480,7 +499,14 @@ namespace Modbus    // modbus protocol common utilities
 
 namespace ModbusRTU // modbus rtu protocol utilities
 {
+    using TReadRequest = std::array<uint8_t, 8>;
+    using TWriteRequest = std::vector<uint8_t>;
+
+    using TReadResponse = std::vector<uint8_t>;
+    using TWriteResponse = std::array<uint8_t, 8>;
+
     const size_t DATA_SIZE = 3;  // number of bytes in ADU that is not in PDU (slaveID (1b) + crc value (2b))
+    const std::chrono::milliseconds FrameTimeout(500);   // libmodbus default
 
     // get pointer to PDU in message
     template <class T>
@@ -493,6 +519,16 @@ namespace ModbusRTU // modbus rtu protocol utilities
     inline uint8_t* PDU(T& msg)
     {
         return &msg[1];
+    }
+
+    inline size_t InferWriteRequestSize(PRegister reg)
+    {
+        return Modbus::InferWriteRequestPDUSize(reg) + DATA_SIZE;
+    }
+
+    inline size_t InferReadResponseSize(Modbus::PModbusRegisterRange range)
+    {
+        return Modbus::InferReadResponsePDUSize(range) + DATA_SIZE;
     }
 
     TAbstractSerialPort::TFrameCompletePred ExpectNBytes(int n)
@@ -551,13 +587,82 @@ namespace ModbusRTU // modbus rtu protocol utilities
         Modbus::ParseWriteResponse(PDU(res));
     }
 
-    size_t InferWriteRequestSize(PRegister reg)
+    void WriteRegister(PAbstractSerialPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift)
     {
-        return Modbus::InferWriteRequestPDUSize(reg) + DATA_SIZE;
+        int w = reg->Width();
+
+        if (port->Debug())
+            std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
+                " of device " << reg->Device()->ToString() << std::endl;
+        std::string exception_message;
+        try {
+            {   // Send request
+                TWriteRequest request;
+                ComposeWriteRequest(request, reg, slaveId, value, shift);
+                port->WriteBytes(request.data(), request.size());
+            }
+
+            {   // Receive response
+                TWriteResponse response;
+                if (port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size())) > 0) {
+                    ParseWriteResponse(response);
+                    return;
+                }
+            }
+        } catch (TSerialDeviceTransientErrorException& e) {
+            exception_message = ": ";
+            exception_message += e.what();
+        }
+
+        throw TSerialDeviceTransientErrorException(
+            "failed to write " + reg->TypeName +
+            " @ " + std::to_string(reg->Address) + exception_message);
     }
 
-    size_t InferReadResponseSize(Modbus::PModbusRegisterRange range)
+    void ReadRegisterRange(PAbstractSerialPort port, uint8_t slaveId, PRegisterRange range, int shift)
     {
-        return Modbus::InferReadResponsePDUSize(range) + DATA_SIZE;
+        auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
+        if (!modbus_range) {
+            throw std::runtime_error("modbus range expected");
+        }
+
+        if (port->Debug())
+            std::cerr << "modbus: read " << modbus_range->GetCount() << " " <<
+                modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
+                " of device " << modbus_range->Device()->ToString() << std::endl;
+
+        std::string exception_message;
+        try {
+            {   // Send request
+                TReadRequest request;
+                ComposeReadRequest(request, modbus_range, slaveId, shift);
+                port->WriteBytes(request.data(), request.size());
+            }
+
+            {   // Receive response
+                auto byte_count = InferReadResponseSize(modbus_range);
+                TReadResponse response(byte_count);
+
+                auto rc = port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size()));
+                if (rc > 0) {
+                    ModbusRTU::ParseReadResponse(response, modbus_range);
+                    modbus_range->SetError(false);
+                    return;
+                }
+            }
+        } catch (TSerialDeviceTransientErrorException& e) {
+            exception_message = e.what();
+        }
+
+        modbus_range->SetError(true);
+        std::ios::fmtflags f(std::cerr.flags());
+        std::cerr << "ModbusRTU::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
+            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
+            " of device " << modbus_range->Device()->ToString();
+        if (!exception_message.empty()) {
+            std::cerr << ": " << exception_message;
+        }
+        std::cerr << std::endl;
+        std::cerr.flags(f);
     }
 };  // modbus rtu protocol utilities
