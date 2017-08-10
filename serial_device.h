@@ -92,8 +92,8 @@ public:
     PDeviceConfig DeviceConfig() const { return _DeviceConfig; }
     PProtocol Protocol() const { return _Protocol; }
 
-    void OnSuccessfulRead();
-    void OnFailedRead();
+    void OnConnectionOk();
+    void OnConnectionError();
     bool GetIsDisconnected() const;
 
     void ResetUnavailableAddresses();
@@ -104,7 +104,7 @@ private:
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
     std::vector<PDeviceSetupItem> SetupItems;
-    std::chrono::steady_clock::time_point LastSuccessfulRead;
+    std::chrono::steady_clock::time_point LastOkConnectionTimepoint;
     bool IsDisconnected;
     std::set<int> UnavailableAddresses;
 };

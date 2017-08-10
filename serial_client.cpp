@@ -176,9 +176,7 @@ void TSerialClient::PollRange(PRegisterRange range)
     PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
     dev->ReadRegisterRange(range);
-    bool all_failed = true;
-    range->MapRange([this, &all_failed](PRegister reg, uint64_t new_value) {
-    		all_failed = false;
+    range->MapRange([this](PRegister reg, uint64_t new_value) {
             bool changed;
             auto handler = Handlers[reg];
             if (handler->NeedToPoll()) {
@@ -197,15 +195,6 @@ void TSerialClient::PollRange(PRegisterRange range)
                 // TBD: separate AcceptDeviceReadError method (changed is unused here)
                 MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
         });
-    if (all_failed) {
-    	dev->OnFailedRead();
-    }
-    else {
-    	if (dev->GetIsDisconnected()) {
-    		OnDeviceReconnect(dev);
-    	}
-    	dev->OnSuccessfulRead();
-    }
 }
 
 void TSerialClient::Cycle()
@@ -215,14 +204,39 @@ void TSerialClient::Cycle()
     Port->CycleBegin();
 
     WaitForPollAndFlush();
-    Plan->ProcessPending([this](const PPollEntry& entry) {
-            for (auto range: std::dynamic_pointer_cast<TSerialPollEntry>(entry)->Ranges)
+    std::map<PSerialDevice, std::set<TRegisterRange::EStatus>> devices_ranges_statuses;
+    Plan->ProcessPending([this, &devices_ranges_statuses](const PPollEntry& entry) {
+            for (auto range: std::dynamic_pointer_cast<TSerialPollEntry>(entry)->Ranges) {
                 PollRange(range);
+                devices_ranges_statuses[range->Device()].insert(range->GetStatus());
+            }
             MaybeFlushAvoidingPollStarvationButDontWait();
         });
 
-    for (const auto& p: DevicesList)
+    for (auto device_ranges_statuses: devices_ranges_statuses) {
+        auto device = device_ranges_statuses.first;
+        const auto & statuses = device_ranges_statuses.second;
+        // device with all registers with unknown error is considered disconnected
+        bool device_is_disconnected = statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size();
+
+        if (statuses.count(TRegisterRange::ST_DEVICE_ERROR)) {
+            DisableRegHoles(device);
+        }
+
+        if (device_is_disconnected) {
+            device->OnConnectionError();
+        }
+        else {
+            if (device->GetIsDisconnected()) {
+                OnDeviceReconnect(device);
+            }
+            device->OnConnectionOk();
+        }
+    }
+
+    for (const auto& p: DevicesList) {
         p->EndPollCycle();
+    }
 }
 
 bool TSerialClient::WriteSetupRegisters(PSerialDevice dev)
@@ -298,3 +312,14 @@ void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
 	dev->ResetUnavailableAddresses();
 	WriteSetupRegisters(dev);
 }
+
+void TSerialClient::DisableRegHoles(PSerialDevice dev)
+{
+    if (Debug) {
+        std::cerr << "disabling reg hole feature for device " << dev->ToString() << std::endl;
+    }
+    dev->DeviceConfig()->MaxRegHole = 0;
+    dev->DeviceConfig()->MaxBitHole = 0;
+    PrepareRegisterRanges();
+}
+

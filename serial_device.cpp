@@ -8,7 +8,7 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
     , SerialPort(port)
     , _DeviceConfig(config)
     , _Protocol(protocol)
-    , LastSuccessfulRead()
+    , LastOkConnectionTimepoint()
     , IsDisconnected(false)
 {}
 
@@ -69,19 +69,19 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
     }
 }
 
-void TSerialDevice::OnSuccessfulRead()
+void TSerialDevice::OnConnectionOk()
 {
-	LastSuccessfulRead = std::chrono::steady_clock::now();
+	LastOkConnectionTimepoint = std::chrono::steady_clock::now();
 	IsDisconnected = false;
 }
 
-void TSerialDevice::OnFailedRead()
+void TSerialDevice::OnConnectionError()
 {
-	if (LastSuccessfulRead == std::chrono::steady_clock::time_point()) {
-		LastSuccessfulRead = std::chrono::steady_clock::now();
+	if (LastOkConnectionTimepoint == std::chrono::steady_clock::time_point()) {
+		LastOkConnectionTimepoint = std::chrono::steady_clock::now();
 	}
 
-	if (std::chrono::steady_clock::now() - LastSuccessfulRead > _DeviceConfig->DeviceTimeout) {
+	if (std::chrono::steady_clock::now() - LastOkConnectionTimepoint > _DeviceConfig->DeviceTimeout) {
 		IsDisconnected = true;
 	}
 }

@@ -52,6 +52,11 @@ void TSimpleRegisterRange::MapRange(TValueCallback value_callback, TErrorCallbac
     }
 }
 
+TRegisterRange::EStatus TSimpleRegisterRange::GetStatus() const
+{
+    return Errors.size() == RegisterList().size() ? ST_UNKNOWN_ERROR: ST_OK;
+}
+
 std::string TRegisterConfig::ToString() const {
     std::stringstream s;
     s << TypeName << ": " << Address;

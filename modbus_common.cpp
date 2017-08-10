@@ -41,19 +41,37 @@ namespace Modbus    // modbus protocol common utilities
     const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
     const size_t WRITE_RESPONSE_PDU_SIZE = 5;
 
+    enum ModbusError: uint8_t {
+        ERR_NONE                                    = 0x0,
+        ERR_ILLEGAL_FUNCTION                        = 0x1,
+        ERR_ILLEGAL_DATA_ADDRESS                    = 0x2,
+        ERR_ILLEGAL_DATA_VALUE                      = 0x3,
+        ERR_SERVER_DEVICE_FAILURE                   = 0x4,
+        ERR_ACKNOWLEDGE                             = 0x5,
+        ERR_SERVER_DEVICE_BUSY                      = 0x6,
+        ERR_MEMORY_PARITY_ERROR                     = 0x8,
+        ERR_GATEWAY_PATH_UNAVAILABLE                = 0xA,
+        ERR_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND = 0xB
+    };
+
     class TModbusRegisterRange: public TRegisterRange {
     public:
         TModbusRegisterRange(const std::list<PRegister>& regs);
         ~TModbusRegisterRange();
         void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
+        EStatus GetStatus() const override;
         int GetStart() const { return Start; }
         int GetCount() const { return Count; }
         uint8_t* GetBits();
         uint16_t* GetWords();
         void SetError(bool error) { Error = error; }
         bool GetError() const { return Error; }
+        void ResetModbusError() { SetModbusError(ERR_NONE); }
+        void SetModbusError(ModbusError error) { ModbusErrorCode = error; }
+        ModbusError GetModbusError() const { return ModbusErrorCode; }
     private:
         bool Error = false;
+        ModbusError ModbusErrorCode = ERR_NONE;
         int Start, Count;
         uint8_t* Bits = 0;
         uint16_t* Words = 0;
@@ -119,6 +137,20 @@ namespace Modbus    // modbus protocol common utilities
         }
     }
 
+    TRegisterRange::EStatus TModbusRegisterRange::GetStatus() const
+    {
+        switch (ModbusErrorCode) {
+        case ERR_ILLEGAL_FUNCTION:
+        case ERR_ILLEGAL_DATA_ADDRESS:
+        case ERR_ILLEGAL_DATA_VALUE:
+            return ST_DEVICE_ERROR;
+
+        case ERR_NONE:
+        default:
+            return Error ? ST_UNKNOWN_ERROR : ST_OK;
+        }
+    }
+
     TModbusRegisterRange::~TModbusRegisterRange() {
         if (Bits)
             delete[] Bits;
@@ -143,18 +175,6 @@ namespace Modbus    // modbus protocol common utilities
     }
 
     const uint8_t EXCEPTION_BIT = 1 << 7;
-
-    enum ModbusError: uint8_t {
-        ERR_ILLEGAL_FUNCTION                        = 0x1,
-        ERR_ILLEGAL_DATA_ADDRESS                    = 0x2,
-        ERR_ILLEGAL_DATA_VALUE                      = 0x3,
-        ERR_SERVER_DEVICE_FAILURE                   = 0x4,
-        ERR_ACKNOWLEDGE                             = 0x5,
-        ERR_SERVER_DEVICE_BUSY                      = 0x6,
-        ERR_MEMORY_PARITY_ERROR                     = 0x8,
-        ERR_GATEWAY_PATH_UNAVAILABLE                = 0xA,
-        ERR_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND = 0xB
-    };
 
     enum ModbusFunction: uint8_t {
         FN_READ_COILS               = 0x1,
@@ -402,7 +422,9 @@ namespace Modbus    // modbus protocol common utilities
     // parses modbus response and stores result
     void ParseReadResponse(const uint8_t* pdu, PModbusRegisterRange range)
     {
-        ThrowIfModbusException(GetExceptionCode(pdu));
+        auto exception_code = GetExceptionCode(pdu);
+        range->SetModbusError(static_cast<ModbusError>(exception_code));
+        ThrowIfModbusException(exception_code);
 
         uint8_t byte_count = pdu[1];
 
@@ -665,6 +687,10 @@ namespace ModbusRTU // modbus rtu protocol utilities
         }
 
         auto config = modbus_range->Device()->DeviceConfig();
+        // in case if connection error occures right after modbus error
+        // (probability of which is very low, but still),
+        // we need to clear any modbus errors from previous cycle
+        modbus_range->ResetModbusError();
 
         if (port->Debug())
             std::cerr << "modbus: read " << modbus_range->GetCount() << " " <<

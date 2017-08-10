@@ -65,7 +65,7 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
     
     if (Reg->HasErrorValue && Reg->ErrorValue == new_value) {
         if (Debug) {
-            std::cerr << "register " << Reg->ToString() << " contains error value";
+            std::cerr << "register " << Reg->ToString() << " contains error value" << std::endl;
         }
         return UpdateReadError(true);
     }
