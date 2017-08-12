@@ -275,28 +275,35 @@
             "scale": {
               "type": "number",
               "title": "Scale (value multiplier)",
-              "description": "Value displayed = (value read * scale) + offset",
+              "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
               "default" : 1,
               "propertyOrder": 7
             },
             "offset": {
               "type": "number",
               "title": "Value offset",
-              "description": "Value displayed = (value read * scale) + offset",
+              "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
               "default" : 0,
               "propertyOrder": 8
+            },
+            "round_to": {
+              "type": "number",
+              "title": "Round to",
+              "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
+              "default" : 1,
+              "propertyOrder": 9
             },
             "channel_readonly": {
               "title": "Read-only",
               "type": "boolean",
-              "propertyOrder": 9
+              "propertyOrder": 10
             },
             "on_value": {
               // TBD: only use on_value for 'switch' and 'wo-switch' types
               "title": "'On' value",
               "description": "Value corresponding to the 'On' state of the switch",
               "$ref": "#/definitions/serial_int",
-              "propertyOrder": 9
+              "propertyOrder": 10
             },
             "poll_interval": {
               "type": "integer",
@@ -304,17 +311,17 @@
               "description" : "This option specifies the desired interval between two consecutive polls of the channel",
               "minimum": 0,
               "default": 20,
-              "propertyOrder": 10
+              "propertyOrder": 11
             },
             "error_value": {
               "type": "integer",
               "title": "Error value",
               "description": "Value which should be treated as read error",
-              "propertyOrder": 11
+              "propertyOrder": 12
             },
             "word_order": {
               "$ref": "#/definitions/word_order",
-              "propertyOrder": 12
+              "propertyOrder": 13
             },
           },
           // FIXME: require "reg_type" and "address" for non-templated devices

@@ -20,10 +20,10 @@ protected:
     void SetUp();
     void TearDown();
     PRegister Reg(int addr, RegisterFormat fmt = U16, double scale = 1, 
-        double offset = 0, EWordOrder word_order = EWordOrder::BigEndian) {
+        double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian) {
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
-            TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, true, false,
+            TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
             "fake", false, 0, word_order));
     }
     PFakeSerialPort Port;
@@ -334,8 +334,8 @@ TEST_F(TSerialClientTest, S32)
 
 TEST_F(TSerialClientTest, WordSwap)
 {
-    PRegister reg20 = Reg(20, S32, 1, 0, EWordOrder::LittleEndian);
-    PRegister reg24 = Reg(24, U64, 1, 0, EWordOrder::LittleEndian);
+    PRegister reg20 = Reg(20, S32, 1, 0, 0, EWordOrder::LittleEndian);
+    PRegister reg24 = Reg(24, U64, 1, 0, 0, EWordOrder::LittleEndian);
     SerialClient->AddRegister(reg24);
     SerialClient->AddRegister(reg20);
 
@@ -659,6 +659,55 @@ TEST_F(TSerialClientTest, offset)
     EXPECT_EQ(0xffe8, Device->Registers[24]);
 }
 
+TEST_F(TSerialClientTest, Round)
+{
+    PRegister reg24_0_01 = Reg(24, Float, 1, 0, 0.01);
+    PRegister reg26_1 = Reg(26, Float, 1, 0, 1);
+    PRegister reg28_10 = Reg(28, Float, 1, 0, 10);
+    PRegister reg30_0_2 = Reg(30, Float, 1, 0, 0.2);
+    PRegister reg32_0_01 = Reg(32, Float, 1, 0, 0.01);
+
+    SerialClient->AddRegister(reg24_0_01);
+    SerialClient->AddRegister(reg26_1);
+    SerialClient->AddRegister(reg28_10);
+    SerialClient->AddRegister(reg30_0_2);
+    SerialClient->AddRegister(reg32_0_01);
+
+    Note() << "client -> server: 12.345 (not rounded)";
+    SerialClient->SetTextValue(reg24_0_01, "12.345");
+    SerialClient->SetTextValue(reg26_1, "12.345");
+    SerialClient->SetTextValue(reg28_10, "12.345");
+    SerialClient->SetTextValue(reg30_0_2, "12.345");
+    SerialClient->SetTextValue(reg32_0_01, "12.344");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ("12.35", SerialClient->GetTextValue(reg24_0_01));
+    EXPECT_EQ("12", SerialClient->GetTextValue(reg26_1));
+    EXPECT_EQ("10", SerialClient->GetTextValue(reg28_10));
+    EXPECT_EQ("12.4", SerialClient->GetTextValue(reg30_0_2));
+    EXPECT_EQ("12.34", SerialClient->GetTextValue(reg32_0_01));
+
+    union {
+        uint32_t words;
+        float value;
+    } data;
+
+    data.words = Device->Read2Registers(24);
+    ASSERT_EQ(12.35f, data.value);
+
+    data.words = Device->Read2Registers(26);
+    ASSERT_EQ(12.f, data.value);
+
+    data.words = Device->Read2Registers(28);
+    ASSERT_EQ(10.f, data.value);
+
+    data.words = Device->Read2Registers(30);
+    ASSERT_EQ(12.4f, data.value);
+
+    data.words = Device->Read2Registers(32);
+    ASSERT_EQ(12.34f, data.value);
+}
+
 TEST_F(TSerialClientTest, Errors)
 {
     PRegister reg20 = Reg(20);
@@ -796,6 +845,49 @@ TEST_F(TSerialClientIntegrationTest, WordSwap)
     ASSERT_EQ(0, Device->Registers[1]);
     ASSERT_EQ(0, Device->Registers[2]);
     ASSERT_EQ(0, Device->Registers[3]);
+}
+
+TEST_F(TSerialClientIntegrationTest, Round)
+{
+    FilterConfig("RoundTest");
+
+    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
+    observer->SetUp();
+
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x92", "fake"));
+
+    if (!Device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    Device->Registers[0] = 0;
+    Note() << "LoopOnce()";
+    observer->LoopOnce();
+
+    MQTTClient->DoPublish(true, 0, "/devices/RoundTest/controls/Float_0_01/on", "12.345");
+    MQTTClient->DoPublish(true, 0, "/devices/RoundTest/controls/Float_1/on", "12.345");
+    MQTTClient->DoPublish(true, 0, "/devices/RoundTest/controls/Float_10/on", "12.345");
+    MQTTClient->DoPublish(true, 0, "/devices/RoundTest/controls/Float_0_2/on", "12.345");
+
+    Note() << "LoopOnce()";
+    observer->LoopOnce();
+
+    union {
+        uint32_t words;
+        float value;
+    } data;
+
+    data.words = Device->Read2Registers(0);
+    ASSERT_EQ(12.35f, data.value);
+
+    data.words = Device->Read2Registers(2);
+    ASSERT_EQ(12.f, data.value);
+
+    data.words = Device->Read2Registers(4);
+    ASSERT_EQ(10.f, data.value);
+
+    data.words = Device->Read2Registers(6);
+    ASSERT_EQ(12.4f, data.value);
 }
 
 TEST_F(TSerialClientIntegrationTest, Errors)

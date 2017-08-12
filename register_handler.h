@@ -36,6 +36,7 @@ public:
     void SetDebug(bool debug) { Debug = debug; }
 
 private:
+    template<typename T> static T RoundValue(T val, double round_to);
     template<typename T> std::string ToScaledTextValue(T val) const;
     template<typename T> T FromScaledTextValue(const std::string& str) const;
     uint64_t ConvertMasterValue(const std::string& v) const;
@@ -55,25 +56,32 @@ private:
     bool Debug;
 };
 
+template<typename T>
+inline T TRegisterHandler::RoundValue(T val, double round_to)
+{
+    static_assert(std::is_floating_point<T>::value, "TRegisterHandler::RoundValue accepts only floating point types");
+    return round_to > 0 ? std::round(val / round_to) * round_to : val;
+}
+
 template<>
 inline std::string TRegisterHandler::ToScaledTextValue(float val) const
 {
-    return StringFormat("%.7g", Reg->Scale * val + Reg->Offset);
+    return StringFormat("%.7g", RoundValue(Reg->Scale * val + Reg->Offset, Reg->RoundTo));
 }
 
 template<>
 inline std::string TRegisterHandler::ToScaledTextValue(double val) const
 {
-    return StringFormat("%.15g", Reg->Scale * val + Reg->Offset);
+    return StringFormat("%.15g", RoundValue(Reg->Scale * val + Reg->Offset, Reg->RoundTo));
 }
 
 template<typename A>
 inline std::string TRegisterHandler::ToScaledTextValue(A val) const
 {
-    if (Reg->Scale == 1 && Reg->Offset == 0) {
+    if (Reg->Scale == 1 && Reg->Offset == 0 && Reg->RoundTo == 0) {
         return std::to_string(val);
     } else {
-        return StringFormat("%.15g", Reg->Scale * val + Reg->Offset);
+        return StringFormat("%.15g", RoundValue(Reg->Scale * val + Reg->Offset, Reg->RoundTo));
     }
 }
 
@@ -83,7 +91,7 @@ inline uint64_t TRegisterHandler::FromScaledTextValue(const std::string& str) co
     if (Reg->Scale == 1 && Reg->Offset == 0) {
         return std::stoull(str);
     } else {
-        return round((stod(str) - Reg->Offset) / Reg->Scale);
+        return round((RoundValue(stod(str), Reg->RoundTo) - Reg->Offset) / Reg->Scale);
     }
 }
 
@@ -93,14 +101,14 @@ inline int64_t TRegisterHandler::FromScaledTextValue(const std::string& str) con
     if (Reg->Scale == 1 && Reg->Offset == 0) {
         return std::stoll(str);
     } else {
-        return round((stod(str) - Reg->Offset) / Reg->Scale);
+        return round((RoundValue(stod(str), Reg->RoundTo) - Reg->Offset) / Reg->Scale);
     }
 }
 
 template<>
 inline double TRegisterHandler::FromScaledTextValue(const std::string& str) const
 {
-    return (stod(str) - Reg->Offset) / Reg->Scale;
+    return (RoundValue(stod(str), Reg->RoundTo) - Reg->Offset) / Reg->Scale;
 }
 
 typedef std::shared_ptr<TRegisterHandler> PRegisterHandler;

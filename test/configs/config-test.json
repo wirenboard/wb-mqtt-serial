@@ -98,6 +98,46 @@
                         }
 
                     ]
+                },
+                {
+                    "name": "RoundTest",
+                    "id": "RoundTest",
+                    "slave_id": "0x92",
+                    "protocol": "fake",
+                    "channels": [
+                        {
+                            "name" : "Float_0_01",
+                            "round_to": 0.01,
+                            "reg_type" : "fake",
+                            "format" : "float",
+                            "address" : 0,
+                            "type": "value"
+                        },
+                        {
+                            "name" : "Float_1",
+                            "round_to": 1,
+                            "reg_type" : "fake",
+                            "format" : "float",
+                            "address" : 2,
+                            "type": "value"
+                        },
+                        {
+                            "name" : "Float_10",
+                            "round_to": 10,
+                            "reg_type" : "fake",
+                            "format" : "float",
+                            "address" : 4,
+                            "type": "value"
+                        },
+                        {
+                            "name" : "Float_0_2",
+                            "round_to": 0.2,
+                            "reg_type" : "fake",
+                            "format" : "float",
+                            "address" : 6,
+                            "type": "value"
+                        }
+                    ]
                 }
             ]
         }
