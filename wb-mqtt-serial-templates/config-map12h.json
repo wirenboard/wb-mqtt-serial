@@ -599,7 +599,7 @@
             "address": "0x1098",
             "type": "value",
             "format": "s32",
-            "scale": 0,
+            "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
         },{
@@ -1356,7 +1356,7 @@
             "address": "0x2098",
             "type": "value",
             "format": "s32",
-            "scale": 0,
+            "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
         },{
@@ -2113,7 +2113,7 @@
             "address": "0x3098",
             "type": "value",
             "format": "s32",
-            "scale": 0,
+            "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
         },{
@@ -2870,7 +2870,7 @@
             "address": "0x4098",
             "type": "value",
             "format": "s32",
-            "scale": 0,
+            "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
         },{
