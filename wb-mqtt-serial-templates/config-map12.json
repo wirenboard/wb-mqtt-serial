@@ -6,7 +6,7 @@
         "max_read_registers": 60,
     "channels": [
     {
-            "name": "Ch 1 Urms A",
+            "name": "Urms A",
             "reg_type": "input",
             "address": "0x10d9",
             "type": "voltage",
@@ -14,6 +14,60 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
+        },{
+            "name": "Urms B",
+            "reg_type": "input",
+            "address": "0x10da",
+            "type": "voltage",
+            "format": "s16",
+            "scale": 0.01,
+            "round_to": 0.01,
+            "poll_interval": 300
+        },{
+            "name": "Urms C",
+            "reg_type": "input",
+            "address": "0x10db",
+            "type": "voltage",
+            "format": "s16",
+            "scale": 0.01,
+            "round_to": 0.01,
+            "poll_interval": 300
+        },{
+            "name": "Frequency",
+            "reg_type": "input",
+            "address": "0x10f8",
+            "type": "value",
+            "format": "s16",
+            "scale": 0.01,
+            "round_to": 0.01,
+            "poll_interval": 8000
+        },{
+            "name": "Voltage angle A",
+            "reg_type": "input",
+            "address": "0x10fd",
+            "type": "value",
+            "format": "s16",
+            "scale": 0.1,
+            "round_to": 0.01,
+            "poll_interval": 8000
+        },{
+            "name": "Voltage angle B",
+            "reg_type": "input",
+            "address": "0x10fe",
+            "type": "value",
+            "format": "s16",
+            "scale": 0.1,
+            "round_to": 0.01,
+            "poll_interval": 8000
+        },{
+            "name": "Voltage angle C",
+            "reg_type": "input",
+            "address": "0x10ff",
+            "type": "value",
+            "format": "s16",
+            "scale": 0.1,
+            "round_to": 0.01,
+            "poll_interval": 8000
         },{
             "name": "Ch 1 Irms A",
             "reg_type": "input",
@@ -157,15 +211,6 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 Urms B",
-            "reg_type": "input",
-            "address": "0x10da",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
-        },{
             "name": "Ch 1 Irms B",
             "reg_type": "input",
             "address": "0x10de",
@@ -307,15 +352,6 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
-            "name": "Ch 1 Urms C",
-            "reg_type": "input",
-            "address": "0x10db",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
         },{
             "name": "Ch 1 Irms C",
             "reg_type": "input",
@@ -583,15 +619,6 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 Frequency",
-            "reg_type": "input",
-            "address": "0x10f8",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
             "name": "Ch 1 Phase angle A",
             "reg_type": "input",
             "address": "0x10f9",
@@ -618,42 +645,6 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
-            "name": "Ch 1 Voltage angle A",
-            "reg_type": "input",
-            "address": "0x10fd",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 1 Voltage angle B",
-            "reg_type": "input",
-            "address": "0x10fe",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 1 Voltage angle C",
-            "reg_type": "input",
-            "address": "0x10ff",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 2 Urms A",
-            "reg_type": "input",
-            "address": "0x20d9",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
         },{
             "name": "Ch 2 Irms A",
             "reg_type": "input",
@@ -797,15 +788,6 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 Urms B",
-            "reg_type": "input",
-            "address": "0x20da",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
-        },{
             "name": "Ch 2 Irms B",
             "reg_type": "input",
             "address": "0x20de",
@@ -947,15 +929,6 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
-            "name": "Ch 2 Urms C",
-            "reg_type": "input",
-            "address": "0x20db",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
         },{
             "name": "Ch 2 Irms C",
             "reg_type": "input",
@@ -1223,15 +1196,6 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 Frequency",
-            "reg_type": "input",
-            "address": "0x20f8",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
             "name": "Ch 2 Phase angle A",
             "reg_type": "input",
             "address": "0x20f9",
@@ -1258,42 +1222,6 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
-            "name": "Ch 2 Voltage angle A",
-            "reg_type": "input",
-            "address": "0x20fd",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 2 Voltage angle B",
-            "reg_type": "input",
-            "address": "0x20fe",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 2 Voltage angle C",
-            "reg_type": "input",
-            "address": "0x20ff",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 3 Urms A",
-            "reg_type": "input",
-            "address": "0x30d9",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
         },{
             "name": "Ch 3 Irms A",
             "reg_type": "input",
@@ -1437,15 +1365,6 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 Urms B",
-            "reg_type": "input",
-            "address": "0x30da",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
-        },{
             "name": "Ch 3 Irms B",
             "reg_type": "input",
             "address": "0x30de",
@@ -1587,15 +1506,6 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
-            "name": "Ch 3 Urms C",
-            "reg_type": "input",
-            "address": "0x30db",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
         },{
             "name": "Ch 3 Irms C",
             "reg_type": "input",
@@ -1863,15 +1773,6 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 Frequency",
-            "reg_type": "input",
-            "address": "0x30f8",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
             "name": "Ch 3 Phase angle A",
             "reg_type": "input",
             "address": "0x30f9",
@@ -1898,42 +1799,6 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
-            "name": "Ch 3 Voltage angle A",
-            "reg_type": "input",
-            "address": "0x30fd",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 3 Voltage angle B",
-            "reg_type": "input",
-            "address": "0x30fe",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 3 Voltage angle C",
-            "reg_type": "input",
-            "address": "0x30ff",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 4 Urms A",
-            "reg_type": "input",
-            "address": "0x40d9",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
         },{
             "name": "Ch 4 Irms A",
             "reg_type": "input",
@@ -2077,15 +1942,6 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 Urms B",
-            "reg_type": "input",
-            "address": "0x40da",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
-        },{
             "name": "Ch 4 Irms B",
             "reg_type": "input",
             "address": "0x40de",
@@ -2227,15 +2083,6 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
-            "name": "Ch 4 Urms C",
-            "reg_type": "input",
-            "address": "0x40db",
-            "type": "voltage",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 300
         },{
             "name": "Ch 4 Irms C",
             "reg_type": "input",
@@ -2503,15 +2350,6 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 Frequency",
-            "reg_type": "input",
-            "address": "0x40f8",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.01,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
             "name": "Ch 4 Phase angle A",
             "reg_type": "input",
             "address": "0x40f9",
@@ -2533,33 +2371,6 @@
             "name": "Ch 4 Phase angle C",
             "reg_type": "input",
             "address": "0x40fb",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 4 Voltage angle A",
-            "reg_type": "input",
-            "address": "0x40fd",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 4 Voltage angle B",
-            "reg_type": "input",
-            "address": "0x40fe",
-            "type": "value",
-            "format": "s16",
-            "scale": 0.1,
-            "round_to": 0.01,
-            "poll_interval": 8000
-        },{
-            "name": "Ch 4 Voltage angle C",
-            "reg_type": "input",
-            "address": "0x40ff",
             "type": "value",
             "format": "s16",
             "scale": 0.1,
