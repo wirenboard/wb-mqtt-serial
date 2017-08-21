@@ -11,8 +11,5 @@ public:
     void ReadRegisterRange(PRegisterRange range) override;
 
 private:
-    int GetShift(PRegister reg) const;
-    int GetShift(PRegisterRange range) const;
-
     int Shift;
 };

@@ -30,20 +30,10 @@ uint64_t TModbusIODevice::ReadRegister(PRegister reg)
 
 void TModbusIODevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    ModbusRTU::WriteRegister(Port(), SlaveId.Primary, reg, value, GetShift(reg));
+    ModbusRTU::WriteRegister(Port(), SlaveId.Primary, reg, value, Shift);
 }
 
 void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 {
-    ModbusRTU::ReadRegisterRange(Port(), SlaveId.Primary, range, GetShift(range));
-}
-
-int TModbusIODevice::GetShift(PRegister reg) const
-{
-    return reg->IsConfigFlag ? (SlaveId.Secondary - 1 + DeviceConfig()->Shift) : Shift;
-}
-
-int TModbusIODevice::GetShift(PRegisterRange range) const
-{
-    return Shift;
+    ModbusRTU::ReadRegisterRange(Port(), SlaveId.Primary, range, Shift);
 }

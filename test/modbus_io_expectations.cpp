@@ -25,15 +25,15 @@ void TModbusIOExpectations::EnqueueSetupSectionWriteResponse()
     Expector()->Expect(
     WrapPDU({
         0x06,   //function code
-        0x27,   //starting address Hi   (10000)
-        0x10,   //starting address Lo
+        0x2A,   //starting address Hi   (10999)
+        0xF7,   //starting address Lo
         0x00,   //value Hi
         0x01,   //value Lo
     }),
     WrapPDU({
         0x06,   //function code
-        0x27,   //starting address Hi   (10000)
-        0x10,   //starting address Lo
+        0x2A,   //starting address Hi   (10999)
+        0xF7,   //starting address Lo
         0x00,   //value Hi
         0x01,   //value Lo
     }), __func__);
@@ -60,15 +60,15 @@ void TModbusIOExpectations::EnqueueSetupSectionWriteResponse()
     Expector()->Expect(
     WrapPDU({
         0x06,   //function code
-        0x29,   //starting address Hi   (10501)
-        0x05,   //starting address Lo
+        0x30,   //starting address Hi   (12499)
+        0xD3,   //starting address Lo
         0x00,   //value Hi
         0x01,   //value Lo
     }),
     WrapPDU({
         0x06,   //function code
-        0x29,   //starting address Hi   (10501)
-        0x05,   //starting address Lo
+        0x30,   //starting address Hi   (12499)
+        0xD3,   //starting address Lo
         0x00,   //value Hi
         0x01,   //value Lo
     }), __func__);

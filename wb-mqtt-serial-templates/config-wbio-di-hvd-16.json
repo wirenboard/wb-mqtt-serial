@@ -39,8 +39,7 @@
             },
             {
                 "title": "CONFIG-FLAG",
-                "is_config_flag": true,
-                "address": 10000,
+                "address": 9999,
                 "value": 1
             }
 
