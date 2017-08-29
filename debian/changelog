@@ -3,8 +3,7 @@ wb-mqtt-serial (1.28) stable; urgency=medium
   * support for IO extensions via modbus
   * new protocol "modbus_io"
   * new slave id type aggregated slave id - only for "modbus_io", format: <modbus slave id>:<module position>
-  * new config parameter in setup "is_config_flag" - only for "modbus_io": if true, address is <specified address> + <module position> - 1, if false - next entry
-  * new config parameters "stride" and "shift" - only for "modbus_io": register address is (if not is_config_flag) <address in channel config> + <stride>*<module position> + <shift>
+  * new config parameters "stride" and "shift" - only for "modbus_io": register address is <address in channel config> + <stride>*<module position> + <shift>
 
  -- Islam Boziev <i.boziev@wirenboard.ru>  Mon, 14 Aug 2017 13:21:31 +0300
 
