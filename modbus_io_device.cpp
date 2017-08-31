@@ -15,7 +15,7 @@ REGISTER_BASIC_PROTOCOL("modbus_io", TModbusIODevice, TAggregatedSlaveId, TRegis
 TModbusIODevice::TModbusIODevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TModbusIODevice, TAggregatedSlaveId>>(config, port, protocol)
 {
-    Shift = SlaveId.Secondary * DeviceConfig()->Stride + DeviceConfig()->Shift;
+    Shift = (((SlaveId.Secondary - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
 }
 
 std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRegister> reg_list) const
