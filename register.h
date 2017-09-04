@@ -72,12 +72,12 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
               double round_to, bool poll, bool readonly,
               const std::string& type_name,
               bool has_error_value, uint64_t error_value,
-              const EWordOrder word_order)
+              const EWordOrder word_order, int write_retries)
         : Type(type), Address(address), Format(format),
           Scale(scale), Offset(offset), RoundTo(round_to),
           Poll(poll), ReadOnly(readonly), TypeName(type_name),
           HasErrorValue(has_error_value), ErrorValue(error_value),
-          WordOrder(word_order)
+          WordOrder(word_order), WriteRetries(write_retries)
     {
         if (TypeName.empty())
             TypeName = "(type " + std::to_string(Type) + ")";
@@ -89,11 +89,12 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
                             const std::string& type_name = "",
                             bool has_error_value = false,
                             uint64_t error_value = 0,
-                            const EWordOrder word_order = EWordOrder::BigEndian
+                            const EWordOrder word_order = EWordOrder::BigEndian,
+                            int write_retries = 0
                             )
     {
         return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
-                                            type_name, has_error_value, error_value, word_order);
+                                            type_name, has_error_value, error_value, word_order, write_retries);
     }
 
 
@@ -140,7 +141,7 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
     bool HasErrorValue;
     uint64_t ErrorValue;
     EWordOrder WordOrder;
-
+    int WriteRetries;
 };
 
 struct TRegister;

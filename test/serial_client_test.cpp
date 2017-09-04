@@ -20,11 +20,12 @@ protected:
     void SetUp();
     void TearDown();
     PRegister Reg(int addr, RegisterFormat fmt = U16, double scale = 1, 
-        double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian) {
+        double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian,
+        int retry_count = 0) {
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
             TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
-            "fake", false, 0, word_order));
+            "fake", false, 0, word_order, retry_count));
     }
     PFakeSerialPort Port;
     PSerialClient SerialClient;
@@ -753,6 +754,72 @@ TEST_F(TSerialClientTest, Errors)
     SerialClient->Cycle();
 }
 
+TEST_F(TSerialClientTest, WriteRetry)
+{
+    // [<address>, <write count>]
+    vector<int> writes_counts(6);
+    vector<uint64_t> writes_values {4, 6, 90, 100, 10, 15};
+    const uint32_t cycles_count = 15;
+
+    auto reg0_10 = Reg(0, U16, 1, 0, 0, EWordOrder::BigEndian, 10);
+    auto reg1_5  = Reg(1, U16, 1, 0, 0, EWordOrder::BigEndian, 5);
+    auto reg2_12 = Reg(2, U16, 1, 0, 0, EWordOrder::BigEndian, 12);
+    auto reg3_0  = Reg(3, U16, 1, 0, 0, EWordOrder::BigEndian, 0);
+
+    auto reg4_8 = Reg(4, U16, 1, 0, 0, EWordOrder::BigEndian, 8);
+    auto reg5_7 = Reg(5, U16, 1, 0, 0, EWordOrder::BigEndian, 7);
+
+    Device->SetWriteCallback([&](PRegister reg, uint64_t value) {
+        auto expected = writes_values[reg->Address];
+        if (value != expected) {
+            throw runtime_error("values mismatch! expected: " + to_string(expected) + " got: " + to_string(value));
+        }
+        ++writes_counts[reg->Address];
+    });
+
+    SerialClient->AddRegister(reg0_10);
+    SerialClient->AddRegister(reg1_5);
+    SerialClient->AddRegister(reg2_12);
+    SerialClient->AddRegister(reg3_0);
+
+    SerialClient->AddRegister(reg4_8);
+    SerialClient->AddRegister(reg5_7);
+
+
+    SerialClient->SetTextValue(reg0_10, "4");
+    SerialClient->SetTextValue(reg1_5, "6");
+    SerialClient->SetTextValue(reg2_12, "90");
+    SerialClient->SetTextValue(reg3_0, "100");
+
+    SerialClient->SetTextValue(reg4_8, "10");
+    SerialClient->SetTextValue(reg5_7, "15");
+
+    Device->BlockWriteFor(0, true);
+    Device->BlockWriteFor(1, true);
+    Device->BlockWriteFor(2, true);
+    Device->BlockWriteFor(3, true);
+
+    Device->BlockWriteFor(4, false);
+    Device->BlockWriteFor(5, false);
+
+    {
+        uint32_t _cycles_count = cycles_count;
+        while (_cycles_count--) {
+            SerialClient->Cycle();
+            SerialClient->SetTextValue(reg1_5, "6");
+        }
+    }
+
+    // expect 1 normal try + expected retries
+    ASSERT_EQ(11,           writes_counts[0]);
+    ASSERT_EQ(cycles_count, writes_counts[1]);
+    ASSERT_EQ(13,           writes_counts[2]);
+    ASSERT_EQ(1,            writes_counts[3]);
+
+    ASSERT_EQ(1, writes_counts[4]);
+    ASSERT_EQ(1, writes_counts[5]);
+}
+
 
 class TSerialClientIntegrationTest: public TSerialClientTest
 {
@@ -933,6 +1000,57 @@ TEST_F(TSerialClientIntegrationTest, Errors)
 
     Note() << "LoopOnce() [read, nothing blacklisted] (2)";
     observer->LoopOnce();
+}
+
+TEST_F(TSerialClientIntegrationTest, WriteRetry)
+{
+    FilterConfig("WriteRetryTest");
+
+    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
+    observer->SetUp();
+
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x93", "fake"));
+
+    if (!Device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    // [<address>, <write count>]
+    vector<int> writes_counts(4);
+    vector<uint64_t> writes_values {4, 6, 90, 100};
+    const uint32_t cycles_count = 20;
+
+    Device->SetWriteCallback([&](PRegister reg, uint64_t value) {
+        auto expected = writes_values[reg->Address];
+        if (value != expected) {
+            throw runtime_error("values mismatch! expected: " + to_string(expected) + " got: " + to_string(value));
+        }
+        ++writes_counts[reg->Address];
+    });
+
+    MQTTClient->DoPublish(true, 0, "/devices/WriteRetryTest/controls/Reg0/on", to_string(writes_values[0]));
+    MQTTClient->DoPublish(true, 0, "/devices/WriteRetryTest/controls/Reg1/on", to_string(writes_values[1]));
+    MQTTClient->DoPublish(true, 0, "/devices/WriteRetryTest/controls/Reg2/on", to_string(writes_values[2]));
+    MQTTClient->DoPublish(true, 0, "/devices/WriteRetryTest/controls/Reg3/on", to_string(writes_values[3]));
+
+    Device->BlockWriteFor(0, true);
+    Device->BlockWriteFor(1, true);
+    Device->BlockWriteFor(2, false);
+    Device->BlockWriteFor(3, true);
+
+    {
+        uint32_t _cycles_count = cycles_count;
+        while (_cycles_count--) {
+            observer->LoopOnce();
+            MQTTClient->DoPublish(true, 0, "/devices/WriteRetryTest/controls/Reg1/on", to_string(writes_values[1]));
+        }
+    }
+
+    // expect 1 normal try + expected retries
+    ASSERT_EQ(16,           writes_counts[0]);
+    ASSERT_EQ(cycles_count, writes_counts[1]);
+    ASSERT_EQ(1,            writes_counts[2]);
+    ASSERT_EQ(1,            writes_counts[3]);
 }
 
 

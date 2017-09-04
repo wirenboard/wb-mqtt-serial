@@ -162,10 +162,15 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
         error_value = strtoull(register_data["error_value"].asString().c_str(), NULL, 0);
     }
 
+    int write_retries = 0;
+    if (register_data.isMember("write_retries")) {
+        write_retries = register_data["write_retries"].asInt();
+    }
+
     PRegisterConfig reg = TRegisterConfig::Create(
         it->second.Index,
         address, format, scale, offset, round_to, true, force_readonly || it->second.ReadOnly,
-        it->second.Name, has_error_value, error_value, word_order);
+        it->second.Name, has_error_value, error_value, word_order, write_retries);
     if (register_data.isMember("poll_interval"))
         reg->PollInterval = std::chrono::milliseconds(GetInt(register_data, "poll_interval"));
     return reg;

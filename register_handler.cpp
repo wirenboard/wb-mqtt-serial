@@ -4,7 +4,7 @@
 #include "register_handler.h"
 
 TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed, bool debug)
-    : Dev(dev), Reg(reg), FlushNeeded(flush_needed), Debug(debug) {}
+    : Dev(dev), Reg(reg), FlushNeeded(flush_needed), Debug(debug), WriteRetries(reg->WriteRetries) {}
 
 TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
     TErrorState newState;
@@ -105,7 +105,7 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
     if (!NeedToFlush())
         return ErrorStateUnchanged;
 
-    {
+    if (!WriteRetries) {
         std::lock_guard<std::mutex> lock(SetValueMutex);
         Dirty = false;
     }
@@ -117,8 +117,17 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
         std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " for device " <<
             Reg->Device()->ToString() <<  std::endl;
         std::cerr.flags(f);
+        if (WriteRetries) {
+            --WriteRetries;
+        }
         return UpdateWriteError(true);
     }
+
+    if (WriteRetries) {
+        std::lock_guard<std::mutex> lock(SetValueMutex);
+        Dirty = false;
+    }
+
     return UpdateWriteError(false);
 }
 
@@ -203,6 +212,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
         std::lock_guard<std::mutex> lock(SetValueMutex);
         Dirty = true;
         Value = InvertWordOrderIfNeeded(ConvertMasterValue(v));
+        WriteRetries = Reg->WriteRetries;
     }
     FlushNeeded->Signal();
 }

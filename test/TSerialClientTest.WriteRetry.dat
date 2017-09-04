@@ -1,0 +1,62 @@
+Open()
+Sleep(100000)
+Error Callback: <fake:1:fake: 0>: write error
+Error Callback: <fake:1:fake: 1>: write error
+Error Callback: <fake:1:fake: 2>: write error
+Error Callback: <fake:1:fake: 3>: write error
+Error Callback: <fake:1:fake: 4>: no error
+Error Callback: <fake:1:fake: 5>: no error
+Read Callback: <fake:1:fake: 3> becomes 0
+Read Callback: <fake:1:fake: 4> becomes 10
+Read Callback: <fake:1:fake: 5> becomes 15
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 0> becomes 0
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 0> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 0> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 2> becomes 0
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 0> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 2> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Read Callback: <fake:1:fake: 0> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 2> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Close()
