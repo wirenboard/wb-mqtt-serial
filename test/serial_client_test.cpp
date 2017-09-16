@@ -770,6 +770,7 @@ TEST_F(TSerialClientTest, WriteRetry)
     auto reg5_7 = Reg(5, U16, 1, 0, 0, EWordOrder::BigEndian, 7);
 
     Device->SetWriteCallback([&](PRegister reg, uint64_t value) {
+        Emit() << "trying to write value " << value << " to register " << reg->ToString();
         auto expected = writes_values[reg->Address];
         if (value != expected) {
             throw runtime_error("values mismatch! expected: " + to_string(expected) + " got: " + to_string(value));
@@ -806,13 +807,15 @@ TEST_F(TSerialClientTest, WriteRetry)
         uint32_t _cycles_count = cycles_count;
         while (_cycles_count--) {
             SerialClient->Cycle();
-            SerialClient->SetTextValue(reg1_5, "6");
+            if (_cycles_count % 5 == 0) {   // each time when retry count is depleted try to set value again
+                SerialClient->SetTextValue(reg1_5, "6");
+            }
         }
     }
 
     // expect 1 normal try + expected retries
     ASSERT_EQ(11,           writes_counts[0]);
-    ASSERT_EQ(cycles_count, writes_counts[1]);
+    ASSERT_EQ(cycles_count, writes_counts[1]);  // because we tried to set value before retry count became 0, expect write attempt on each cycle
     ASSERT_EQ(13,           writes_counts[2]);
     ASSERT_EQ(1,            writes_counts[3]);
 
@@ -1021,6 +1024,7 @@ TEST_F(TSerialClientIntegrationTest, WriteRetry)
     const uint32_t cycles_count = 20;
 
     Device->SetWriteCallback([&](PRegister reg, uint64_t value) {
+        Emit() << "trying to write value " << value << " to register " << reg->ToString();
         auto expected = writes_values[reg->Address];
         if (value != expected) {
             throw runtime_error("values mismatch! expected: " + to_string(expected) + " got: " + to_string(value));
@@ -1042,13 +1046,15 @@ TEST_F(TSerialClientIntegrationTest, WriteRetry)
         uint32_t _cycles_count = cycles_count;
         while (_cycles_count--) {
             observer->LoopOnce();
-            MQTTClient->DoPublish(true, 0, "/devices/WriteRetryTest/controls/Reg1/on", to_string(writes_values[1]));
+            if (_cycles_count % 10 == 0) {  // each time when retry count is depleted try to set value again
+                MQTTClient->DoPublish(true, 0, "/devices/WriteRetryTest/controls/Reg1/on", to_string(writes_values[1]));
+            }
         }
     }
 
     // expect 1 normal try + expected retries
     ASSERT_EQ(16,           writes_counts[0]);
-    ASSERT_EQ(cycles_count, writes_counts[1]);
+    ASSERT_EQ(cycles_count, writes_counts[1]);  // because we tried to set value before retry count became 0, expect write attempt on each cycle
     ASSERT_EQ(1,            writes_counts[2]);
     ASSERT_EQ(1,            writes_counts[3]);
 }

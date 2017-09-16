@@ -39,7 +39,7 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 {
     ReadCallback(reg);
     if(Blockings[reg->Address].first) {
-        throw TSerialDeviceTransientErrorException("read blocked");
+        throw TSerialDeviceTransientErrorException("read blocked for register " + to_string(reg->Address));
     }
 
     if (reg->Address < 0 || reg->Address > 256) {
@@ -57,7 +57,7 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 {
     WriteCallback(reg, value);
     if(Blockings[reg->Address].second) {
-        throw TSerialDeviceTransientErrorException("write blocked");
+        throw TSerialDeviceTransientErrorException("write blocked for register " + to_string(reg->Address));
     }
 
     if (reg->Address < 0 || reg->Address > 256) {

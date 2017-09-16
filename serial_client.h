@@ -38,9 +38,9 @@ public:
 
 private:
     void PrepareRegisterRanges();
-    void DoFlush();
-    void WaitForPollAndFlush();
-    void MaybeFlushAvoidingPollStarvationButDontWait();
+    bool DoFlush();
+    bool WaitForPollAndFlush();
+    bool MaybeFlushAvoidingPollStarvationButDontWait();
     void PollRange(PRegisterRange range);
     PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
