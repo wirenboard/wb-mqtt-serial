@@ -74,6 +74,13 @@
                 "address" : 34,
                 "type" : "value"
             },
+            {
+                "name" : "Input 0 counter",
+                "reg_type" : "input",
+                "address" : 39,
+                "type" : "value"
+            },
+
 //--------------------------------------------------------------------------------------
             {
                 "name" : "Supply voltage",
