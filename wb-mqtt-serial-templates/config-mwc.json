@@ -1,0 +1,304 @@
+{
+    "device_type" : "WBIO-MWC",
+    "device" : {
+        "name": "WBIO-MWC",
+        "id": "wb-mwc",
+        "max_read_registers": 0,
+    "setup": [
+            
+        ],
+        "channels": [
+            {
+                "name" : "SIGNAL_LEVEL",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1000,
+ 		"format": "s16",
+                "type" : "value"
+            },
+            {
+                "name" : "BIT_RATE",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1001,
+                "type" : "value"
+            },
+            {
+                "name" : "QUALITY_VALUE",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1002,
+                "type" : "value"
+            },
+            {
+                "name" : "QUALITY_BASE",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1003,
+                "type" : "value"
+            },
+            {
+                "name" : "PING",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1005,
+		"scale" : 0.01,
+                "type" : "value"
+            },
+            {
+                "name" : "DOWNLOAD",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1006,
+                "scale" : 0.1,
+                "type" : "value"
+            },
+            {
+                "name" : "UPLOAD",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1007,
+                "scale" : 0.1,
+                "type" : "value"
+            },
+            {
+                "name" : "CLIENTS",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1004,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_ID1",
+                "reg_type" : "holding",
+                "readonly" : true,
+		"format" : "u64",
+                "address" : 1200,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_DISTANCE1",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1204,
+                "type" : "value"
+            },
+            {
+                "name" : "RSSI1",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1205,
+ 		"format": "s16",
+                "type" : "value"
+            },
+            {
+                "name" : "BT_ID2",
+                "reg_type" : "holding",
+                "readonly" : true,
+		"format" : "u64",
+                "address" : 1206,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_DISTANCE2",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1210,
+                "type" : "value"
+            },
+            {
+                "name" : "RSSI2",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1211,
+ 		"format": "s16",
+                "type" : "value"
+            },
+            {
+                "name" : "BT_ID3",
+                "reg_type" : "holding",
+                "readonly" : true,
+		"format" : "u64",
+                "address" : 1212,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_DISTANCE3",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1216,
+                "type" : "value"
+            },
+            {
+                "name" : "RSSI3",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1217,
+ 		"format": "s16",
+                "type" : "value"
+            },
+            {
+                "name" : "BT_ID4",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "format" : "u64",
+                "address" : 1218,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_DISTANCE4",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1222,
+                "type" : "value"
+            },
+            {
+                "name" : "RSSI4",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1223,
+ 		"format": "s16",
+                "type" : "value"
+            },
+            {
+                "name" : "BT_ID5",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "format" : "u64",
+                "address" : 1224,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_DISTANCE5",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1228,
+                "type" : "value"
+            },
+            {
+                "name" : "RSSI5",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1229,
+ 		"format": "s16",
+                "type" : "value"
+            },
+            {
+                "name" : "BT_ID6",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "format" : "u64",
+                "address" : 1230,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_DISTANCE6",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1234,
+                "type" : "value"
+            },
+            {
+                "name" : "RSSI6",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1235,
+ 		"format": "s16",
+                "type" : "value"
+            },
+            {
+                "name" : "BT_ID7",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "format" : "u64",
+                "address" : 1236,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_DISTANCE7",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1240,
+                "type" : "value"
+            },
+            {
+                "name" : "RSSI7",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1241,
+ 		"format": "s16",
+                "type" : "value"
+            },
+            {
+                "name" : "BT_ID8",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "format" : "u64",
+                "address" : 1242,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_DISTANCE8",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1246,
+                "type" : "value"
+            },
+            {
+                "name" : "RSSI8",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1247,
+ 		"format": "s16",
+                "type" : "value"
+            },
+            {
+                "name" : "BT_ID9",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "format" : "u64",
+                "address" : 1248,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_DISTANCE9",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1252,
+                "type" : "value"
+            },
+            {
+                "name" : "RSSI9",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1253,
+ 		"format": "s16",
+                "type" : "value"
+            },
+            {
+                "name" : "BT_ID10",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "format" : "u64",
+                "address" : 1254,
+                "type" : "value"
+            },
+            {
+                "name" : "BT_DISTANCE10",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1258,
+                "type" : "value"
+            },
+            {
+                "name" : "RSSI10",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 1259,
+ 		"format": "s16",
+                "type" : "value"
+            }
+
+        ]
+    }
+}
