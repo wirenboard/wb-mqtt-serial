@@ -35,6 +35,9 @@ wb-mqtt-lirc/debian/wb-mqtt-lirc/
 wb-mqtt-db/debian/wb-mqtt-db/
 .d
 wb-mqtt-serial/build
+wb-mqtt-serial
+vgcore.*
+test/*.out
 
 ### JetBrains ###
 */.idea/workspace.xml
@@ -61,3 +64,6 @@ workspace.xml
 **/.cproject
 **/.project
 **/.settings
+
+# core
+*.core

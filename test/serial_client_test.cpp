@@ -1,3 +1,11 @@
+#include "serial_driver.h"
+#include "fake_serial_port.h"
+#include "fake_serial_device.h"
+
+#include <wbmqtt/testing/fake_driver.h>
+#include <wbmqtt/testing/fake_mqtt.h>
+#include <wbmqtt/driver_args.h>
+
 #include <string>
 #include <map>
 #include <memory>
@@ -5,13 +13,9 @@
 #include <cassert>
 #include <gtest/gtest.h>
 
-#include "testlog.h"
-#include "serial_observer.h"
-#include "fake_mqtt.h"
-#include "fake_serial_port.h"
-#include "fake_serial_device.h"
-
 using namespace std;
+using namespace WBMQTT;
+using namespace WBMQTT::Testing;
 
 
 class TSerialClientTest: public TLoggedFixture
@@ -758,19 +762,55 @@ class TSerialClientIntegrationTest: public TSerialClientTest
 {
 protected:
     void SetUp();
+    void TearDown();
     void FilterConfig(const std::string& device_name);
+    void Publish(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
+    void PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
 
-    PFakeMQTTClient MQTTClient;
-    PHandlerConfig Config;
+    static const char * const Name,
+                      * const OtherName;
+
+    PFakeMqttBroker MqttBroker;
+    PFakeMqttClient MqttClient;
+    PDeviceDriver   Driver;
+    PMQTTSerialDriver SerialDriver;
+    PHandlerConfig  Config;
 };
+
+const char * const TSerialClientIntegrationTest::Name = "serial-client-integration-test";
+const char * const TSerialClientIntegrationTest::OtherName = "serial-client-integration-test-other";
 
 void TSerialClientIntegrationTest::SetUp()
 {
+    SetMode(E_Unordered);
     TSerialClientTest::SetUp();
-    MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("serial-client-integration-test", *this));
+
+    MqttBroker = NewFakeMqttBroker(*this);
+    MqttClient = MqttBroker->MakeClient(Name);
+    auto backend = NewDriverBackend(MqttClient);
+    Driver = NewDriver(TDriverArgs{}
+        .SetId(Name)
+        .SetBackend(backend)
+        .SetIsTesting(true)
+        .SetReownUnknownDevices(true)
+        .SetUseStorage(true)
+        .SetStoragePath("/tmp/wb-mqtt-serial-test.db")
+    );
+
+    Driver->StartLoop();
+
     TConfigParser parser(GetDataFilePath("configs/config-test.json"), false,
                          TSerialDeviceFactory::GetRegisterTypes);
     Config = parser.Parse();
+}
+
+void TSerialClientIntegrationTest::TearDown()
+{
+    if (SerialDriver) {
+        SerialDriver->ClearDevices();
+    }
+    Driver->StopLoop();
+    TSerialClientTest::TearDown();
 }
 
 void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
@@ -795,12 +835,28 @@ void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
     ASSERT_FALSE(Config->PortConfigs.empty()) << "device not found: " << device_name;
 }
 
+void TSerialClientIntegrationTest::Publish(const std::string & topic, const std::string & payload, uint8_t qos, bool retain)
+{
+    MqttBroker->Publish("em-test-other", {TMqttMessage{topic, payload, qos, retain}});
+}
+
+void TSerialClientIntegrationTest::PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos, bool retain)
+{
+    auto done = std::make_shared<WBMQTT::TPromise<void>>();
+    Driver->On<WBMQTT::TControlOnValueEvent>([=](const WBMQTT::TControlOnValueEvent & event) {
+        if (!done->IsFulfilled()) {
+            done->Complete();
+        }
+    });
+    Publish(topic, payload, qos, retain);
+    done->GetFuture().Sync();
+}
+
 TEST_F(TSerialClientIntegrationTest, OnValue)
 {
     FilterConfig("OnValueTest");
 
-    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
-    observer->SetUp();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
 
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x90", "fake", Port));
 
@@ -810,12 +866,12 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
 
     Device->Registers[0] = 0;
     Note() << "LoopOnce()";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
-    MQTTClient->DoPublish(true, 0, "/devices/OnValueTest/controls/Relay 1/on", "1");
+    PublishWaitOnValue("/devices/OnValueTest/controls/Relay 1/on", "1", 0, true);
 
     Note() << "LoopOnce()";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
     ASSERT_EQ(500, Device->Registers[0]);
 }
 
@@ -824,8 +880,7 @@ TEST_F(TSerialClientIntegrationTest, WordSwap)
 {
     FilterConfig("WordsLETest");
 
-    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
-    observer->SetUp();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
 
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x91", "fake", Port));
 
@@ -835,12 +890,12 @@ TEST_F(TSerialClientIntegrationTest, WordSwap)
 
     Device->Registers[0] = 0;
     Note() << "LoopOnce()";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
-    MQTTClient->DoPublish(true, 0, "/devices/WordsLETest/controls/Voltage/on", "123");
+    PublishWaitOnValue("/devices/WordsLETest/controls/Voltage/on", "123", 0, true);
 
     Note() << "LoopOnce()";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
     ASSERT_EQ(123, Device->Registers[0]);
     ASSERT_EQ(0, Device->Registers[1]);
     ASSERT_EQ(0, Device->Registers[2]);
@@ -851,8 +906,7 @@ TEST_F(TSerialClientIntegrationTest, Round)
 {
     FilterConfig("RoundTest");
 
-    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
-    observer->SetUp();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
 
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x92", "fake", Port));
 
@@ -862,15 +916,15 @@ TEST_F(TSerialClientIntegrationTest, Round)
 
     Device->Registers[0] = 0;
     Note() << "LoopOnce()";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
-    MQTTClient->DoPublish(true, 0, "/devices/RoundTest/controls/Float_0_01/on", "12.345");
-    MQTTClient->DoPublish(true, 0, "/devices/RoundTest/controls/Float_1/on", "12.345");
-    MQTTClient->DoPublish(true, 0, "/devices/RoundTest/controls/Float_10/on", "12.345");
-    MQTTClient->DoPublish(true, 0, "/devices/RoundTest/controls/Float_0_2/on", "12.345");
+    PublishWaitOnValue("/devices/RoundTest/controls/Float_0_01/on", "12.345", 0, true);
+    PublishWaitOnValue("/devices/RoundTest/controls/Float_1/on", "12.345", 0, true);
+    PublishWaitOnValue("/devices/RoundTest/controls/Float_10/on", "12.345", 0, true);
+    PublishWaitOnValue("/devices/RoundTest/controls/Float_0_2/on", "12.345", 0, true);
 
     Note() << "LoopOnce()";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
     union {
         uint32_t words;
@@ -894,8 +948,7 @@ TEST_F(TSerialClientIntegrationTest, Errors)
 {
     FilterConfig("DDL24");
 
-    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
-    observer->SetUp();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
 
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("23", "fake", Port));
 
@@ -909,13 +962,13 @@ TEST_F(TSerialClientIntegrationTest, Errors)
     Device->BlockWriteFor(7, true);
 
     Note() << "LoopOnce() [read, rw blacklisted]";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
-    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/RGB/on", "10;20;30");
-    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/White/on", "42");
+    PublishWaitOnValue("/devices/ddl24/controls/RGB/on", "10;20;30", 0, true);
+    PublishWaitOnValue("/devices/ddl24/controls/White/on", "42", 0, true);
 
     Note() << "LoopOnce() [write, rw blacklisted]";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
     Device->BlockReadFor(4, false);
     Device->BlockWriteFor(4, false);
@@ -923,16 +976,16 @@ TEST_F(TSerialClientIntegrationTest, Errors)
     Device->BlockWriteFor(7, false);
 
     Note() << "LoopOnce() [read, nothing blacklisted]";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
-    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/RGB/on", "10;20;30");
-    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/White/on", "42");
+    PublishWaitOnValue("/devices/ddl24/controls/RGB/on", "10;20;30", 0, true);
+    PublishWaitOnValue("/devices/ddl24/controls/White/on", "42", 0, true);
 
     Note() << "LoopOnce() [write, nothing blacklisted]";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
     Note() << "LoopOnce() [read, nothing blacklisted] (2)";
-    observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
@@ -940,13 +993,13 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
     {
         TConfigParser parser(GetDataFilePath("configs/config-collision-test.json"), false, TSerialDeviceFactory::GetRegisterTypes);
         Config = parser.Parse();
-        EXPECT_THROW(make_shared<TMQTTSerialObserver>(MQTTClient, Config), TSerialDeviceException);
+        EXPECT_THROW(make_shared<TMQTTSerialDriver>(Driver, Config), TSerialDeviceException);
     }
 
     {
         TConfigParser parser(GetDataFilePath("configs/config-no-collision-test.json"), false, TSerialDeviceFactory::GetRegisterTypes);
         Config = parser.Parse();
-        EXPECT_NO_THROW(make_shared<TMQTTSerialObserver>(MQTTClient, Config));
+        EXPECT_NO_THROW(make_shared<TMQTTSerialDriver>(Driver, Config));
     }
 }
 

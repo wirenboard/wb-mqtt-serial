@@ -2,7 +2,7 @@
 #include <set>
 #include <list>
 #include <wbmqtt/mqtt_wrapper.h>
-#include "testlog.h"
+#include <wbmqtt/testing/testlog.h>
 
 class TFakeMQTTClient: public TMQTTClientBase
 {

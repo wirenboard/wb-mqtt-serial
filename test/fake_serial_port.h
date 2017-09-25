@@ -4,11 +4,14 @@
 #include <memory>
 #include <deque>
 
+#include <wbmqtt/testing/fake_mqtt.h>
+#include <wbmqtt/testing/testlog.h>
+
 #include "expector.h"
-#include "testlog.h"
-#include "fake_mqtt.h"
 #include "../serial_device.h"
-#include "../serial_observer.h"
+#include "../serial_driver.h"
+
+using WBMQTT::Testing::TLoggedFixture;
 
 class TFakeSerialPort: public TAbstractSerialPort, public TExpector {
 public:
@@ -65,11 +68,16 @@ class TSerialDeviceIntegrationTest: public virtual TSerialDeviceTest {
 protected:
     void SetUp();
     void TearDown();
+    void Publish(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
+    void PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
     virtual const char* ConfigPath() const = 0;
     virtual const char* GetTemplatePath() const { return nullptr;};
 
-    PFakeMQTTClient MQTTClient;
-    PMQTTSerialObserver Observer;
+    WBMQTT::Testing::PFakeMqttBroker MqttBroker;
+    WBMQTT::Testing::PFakeMqttClient MqttClient;
+    WBMQTT::PDeviceDriver            Driver;
+
+    PMQTTSerialDriver SerialDriver;
     PHandlerConfig Config;
     bool PortMakerCalled;
 };

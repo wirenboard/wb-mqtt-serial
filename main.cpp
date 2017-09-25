@@ -1,23 +1,28 @@
-#include <iostream>
-#include <cstdio>
+#include "serial_device.h"
+#include "serial_driver.h"
+#include "signal_handling.h"
+
+#include <wbmqtt/wbmqtt.h>
+
 #include <getopt.h>
 #include <unistd.h>
-#include <mosquittopp.h>
-
-#include "serial_observer.h"
-#include "serial_device.h"
 
 using namespace std;
+using namespace WBMQTT;
+
+const auto driverName      = "wb-modbus";
+const auto libwbmqttDbFile = "/var/lib/wb-mqtt-serial/libwbmqtt.db";
 
 int main(int argc, char *argv[])
 {
-    TMQTTClient::TConfig mqtt_config;
-    string templates_folder = "/usr/share/wb-mqtt-serial/templates";
-    mqtt_config.Host = "localhost";
-    mqtt_config.Port = 1883;
-    string config_fname;
+    WBMQTT::TMosquittoMqttConfig mqttConfig;
+    string templatesFolder = "/usr/share/wb-mqtt-serial/templates";
+    string configFilename;
     bool debug = false;
     std::string mqtt_prefix = "";
+
+    SignalHandling::Subscribe(SIGINT);
+    SignalHandling::OnSignal(SIGINT, [&]{ SignalHandling::Stop(); });
 
     int c;
     //~ int digit_optind = 0;
@@ -30,27 +35,26 @@ int main(int argc, char *argv[])
             debug = true;
             break;
         case 'c':
-            config_fname = optarg;
+            configFilename = optarg;
             break;
         case 'p':
-            mqtt_config.Port = stoi(optarg);
+            mqttConfig.Port = stoi(optarg);
             break;
         case 'h':
-        case 'H':
-            mqtt_config.Host = optarg;
+            mqttConfig.Host = optarg;
             break;
 
         case 'T':
            mqtt_prefix = optarg;
            break;
 
-        case 'u':
-            mqtt_config.User = optarg;
-           break;
+        // case 'u':
+        //     mqtt_config.User = optarg;
+        //    break;
 
-        case 'P':
-            mqtt_config.Password = optarg;
-            break;
+        // case 'P':
+        //     mqtt_config.Password = optarg;
+        //     break;
 
         case '?':
         default:
@@ -69,43 +73,58 @@ int main(int argc, char *argv[])
         }
     }
 
-    PHandlerConfig handler_config;
+    WBMQTT::Debug.SetEnabled(debug);
+    WBMQTT::Info.SetEnabled(debug);
+
+    PHandlerConfig handlerConfig;
     try {
-        TConfigTemplateParser device_parser(templates_folder, debug);
-        TConfigParser parser(config_fname, debug, TSerialDeviceFactory::GetRegisterTypes,
-                             device_parser.Parse());
-        handler_config = parser.Parse();
+        TConfigTemplateParser deviceParser(templatesFolder, debug);
+        TConfigParser parser(configFilename, debug, TSerialDeviceFactory::GetRegisterTypes,
+                             deviceParser.Parse());
+        handlerConfig = parser.Parse();
     } catch (const TConfigParserException& e) {
-        cerr << "FATAL: " << e.what() << endl;
+        Error.Log() << "[serial] FATAL: " << e.what();
         return 1;
     }
 
-	mosqpp::lib_init();
+    if (mqttConfig.Id.empty())
+        mqttConfig.Id = driverName;
 
-    if (mqtt_config.Id.empty())
-        mqtt_config.Id = "wb-modbus";
+    auto mqtt = WBMQTT::NewMosquittoMqttClient(mqttConfig);
+    auto backend = WBMQTT::NewDriverBackend(mqtt);
+    auto driver = WBMQTT::NewDriver(WBMQTT::TDriverArgs{}
+        .SetId(driverName)
+        .SetBackend(backend)
+        .SetUseStorage(true)
+        .SetReownUnknownDevices(true)
+        .SetStoragePath(libwbmqttDbFile)
+    );
 
-    PMQTTClient mqtt_client(new TMQTTPrefixedClient(std::move(mqtt_prefix), mqtt_config));
+    driver->StartLoop();
+    SignalHandling::OnSignal(SIGINT, [&]{ driver->StopLoop(); });
+
+    driver->WaitForReady();
 
     try {
-        PMQTTSerialObserver observer(new TMQTTSerialObserver(mqtt_client, handler_config));
-        observer->SetUp();
-        if (observer->WriteInitValues() && handler_config->Debug)
-            cerr << "Register-based setup performed." << endl;
-        mqtt_client->StartLoop();
-        observer->Loop();
-    } catch (const TSerialDeviceException& e) {
-        cerr << "FATAL: " << e.what() << endl;
+        auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
+
+        if (serialDriver->WriteInitValues()) {
+            Debug.Log() << "register-based setup performed.";
+        }
+
+        serialDriver->Start();
+
+        SignalHandling::OnSignal(SIGINT, [&]{ serialDriver->Stop(); });
+
+        SignalHandling::Start();
+        SignalHandling::Wait();
+    } catch (const TSerialDeviceException & e) {
+        Error.Log() << "[serial] FATAL: " << e.what();
+        return 1;
+    } catch (const WBMQTT::TBaseException & e) {
+        Error.Log() << "[serial] FATAL: " << e.what();
         return 1;
     }
-
-    for (;;) sleep(1);
-
-#if 0
-    // FIXME: handle Ctrl-C etc.
-    mqtt_handler->StopLoop();
-	mosqpp::lib_cleanup();
-#endif
 
 	return 0;
 }

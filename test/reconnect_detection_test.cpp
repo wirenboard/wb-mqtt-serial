@@ -74,18 +74,17 @@ void TReconnectDetectionTest::EnqueueSetupSectionI2(bool reset, bool read)
 void TReconnectDetectionTest::TryInitiateDisconnect(std::chrono::milliseconds delay)
 {
     {   // Test initial WriteInitValues
-        Observer->SetUp();
         ASSERT_TRUE(!!SerialPort);
         EnqueueSetupSectionI1(false, false);
         EnqueueSetupSectionI2(false, false);
-        Observer->WriteInitValues();
+        SerialDriver->WriteInitValues();
     }
 
     {   // Test read
         EnqueueSetupSectionI1(false, true);
         EnqueueSetupSectionI2(false, true);
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
         SerialPort->DumpWhatWasRead();
     }
 
@@ -98,13 +97,13 @@ void TReconnectDetectionTest::TryInitiateDisconnect(std::chrono::milliseconds de
         // Couple of unsuccessful reads
         while (std::chrono::steady_clock::now() - disconnectTimepoint < delay) {
             Note() << "LoopOnce()";
-            Observer->LoopOnce();
+            SerialDriver->LoopOnce();
             usleep(std::chrono::duration_cast<std::chrono::microseconds>(delay).count() / 10);
         }
 
         // Final unsuccessful read after timeout, after this loop we expect device to be counted as disconnected
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
     }
 }
 
@@ -126,7 +125,7 @@ TEST_F(TReconnectDetectionTest, Reconnect)
         EnqueueSetupSectionI2(false, true);
 
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
         SerialPort->DumpWhatWasRead();
     }
 
@@ -134,7 +133,7 @@ TEST_F(TReconnectDetectionTest, Reconnect)
         EnqueueSetupSectionI1(false, true);
         EnqueueSetupSectionI2(false, true);
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
         SerialPort->DumpWhatWasRead();
     }
 
@@ -154,7 +153,7 @@ TEST_F(TReconnectDetectionTest, ReconnectMiss)
         EnqueueSetupSectionI2(false, true);
 
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
         SerialPort->DumpWhatWasRead();
     }
 

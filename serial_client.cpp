@@ -31,8 +31,7 @@ TSerialClient::~TSerialClient()
         Disconnect();
 
     // remove all registered devices
-    for (auto &dev : DevicesList)
-        TSerialDeviceFactory::RemoveDevice(dev);
+    ClearDevices();
 }
 
 PSerialDevice TSerialClient::CreateDevice(PDeviceConfig device_config)
@@ -228,6 +227,14 @@ bool TSerialClient::WriteSetupRegisters(PSerialDevice dev)
     Connect();
     PrepareToAccessDevice(dev);
     return dev->WriteSetupRegisters();
+}
+
+void TSerialClient::ClearDevices()
+{
+    for (auto &dev : DevicesList) {
+        TSerialDeviceFactory::RemoveDevice(dev);
+    }
+    DevicesList.clear();
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)

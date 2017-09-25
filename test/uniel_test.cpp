@@ -1,5 +1,5 @@
 #include <string>
-#include "testlog.h"
+#include <wbmqtt/testing/testlog.h>
 #include "fake_serial_port.h"
 #include "uniel_device.h"
 #include "uniel_expectations.h"
@@ -109,7 +109,6 @@ void TUnielIntegrationTest::TearDown()
 
 TEST_F(TUnielIntegrationTest, Poll)
 {
-    Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 
     EnqueueRelayOffQueryResponse();
@@ -118,12 +117,12 @@ TEST_F(TUnielIntegrationTest, Poll)
     EnqueueBrightnessQueryResponse();
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
     SerialPort->DumpWhatWasRead();
 
-    MQTTClient->DoPublish(true, 0, "/devices/pseudo_uniel/controls/Relay 1/on", "1");
-    MQTTClient->DoPublish(true, 0, "/devices/pseudo_uniel/controls/LowThr/on", "112");
-    MQTTClient->DoPublish(true, 0, "/devices/pseudo_uniel/controls/LED 1/on", "66");
+    PublishWaitOnValue("/devices/pseudo_uniel/controls/Relay 1/on", "1");
+    PublishWaitOnValue("/devices/pseudo_uniel/controls/LowThr/on", "112");
+    PublishWaitOnValue("/devices/pseudo_uniel/controls/LED 1/on", "66");
 
     EnqueueSetRelayOnResponse();
     EnqueueSetLowThreshold0Response();
@@ -135,7 +134,7 @@ TEST_F(TUnielIntegrationTest, Poll)
     EnqueueBrightnessQueryResponse();
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
     SerialPort->DumpWhatWasRead();
 
     SerialPort->Close();

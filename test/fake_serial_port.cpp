@@ -1,8 +1,15 @@
+#include "fake_serial_port.h"
+#include "utils.h"
+
+#include <wbmqtt/driver.h>
+#include <wbmqtt/backend.h>
+#include <wbmqtt/driver_args.h>
+
 #include <cassert>
 #include <algorithm>
 #include <stdexcept>
-#include "fake_serial_port.h"
-#include "utils.h"
+
+using namespace WBMQTT;
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
@@ -237,6 +244,7 @@ void TSerialDeviceTest::TearDown()
 
 void TSerialDeviceIntegrationTest::SetUp()
 {
+    SetMode(E_Unordered);
     TSerialDeviceTest::SetUp();
     PortMakerCalled = false;
 
@@ -249,13 +257,43 @@ void TSerialDeviceIntegrationTest::SetUp()
 
 
     Config = parser.Parse();
-    MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("em-test", *this));
-    Observer = PMQTTSerialObserver(new TMQTTSerialObserver(MQTTClient, Config, SerialPort));
+    MqttBroker = NewFakeMqttBroker(*this);
+    MqttClient = MqttBroker->MakeClient("em-test");
+    auto backend = NewDriverBackend(MqttClient);
+    Driver = NewDriver(TDriverArgs{}
+        .SetId("em-test")
+        .SetBackend(backend)
+        .SetIsTesting(true)
+        .SetReownUnknownDevices(true)
+        .SetUseStorage(true)
+        .SetStoragePath("/tmp/wb-mqtt-serial-test.db")
+    );
+
+    Driver->StartLoop();
+
+    SerialDriver = std::make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
 }
 
 void TSerialDeviceIntegrationTest::TearDown()
 {
-    MQTTClient->Unobserve(Observer);
-    Observer.reset();
+    SerialDriver->ClearDevices();
+    Driver->StopLoop();
     TSerialDeviceTest::TearDown();
+}
+
+void TSerialDeviceIntegrationTest::Publish(const std::string & topic, const std::string & payload, uint8_t qos, bool retain)
+{
+    MqttBroker->Publish("em-test-other", {TMqttMessage{topic, payload, qos, retain}});
+}
+
+void TSerialDeviceIntegrationTest::PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos, bool retain)
+{
+    auto done = std::make_shared<WBMQTT::TPromise<void>>();
+    Driver->On<WBMQTT::TControlOnValueEvent>([=](const WBMQTT::TControlOnValueEvent & event) {
+        if (!done->IsFulfilled()) {
+            done->Complete();
+        }
+    });
+    Publish(topic, payload, qos, retain);
+    done->GetFuture().Sync();
 }

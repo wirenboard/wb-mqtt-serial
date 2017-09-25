@@ -3,6 +3,8 @@
 #include "modbus_device.h"
 #include "modbus_common.h"
 
+#include <wbmqtt/control.h>
+
 using namespace std;
 
 
@@ -235,7 +237,6 @@ void TModbusIntegrationTest::SetUp()
 {
     SelectModbusType(MODBUS_RTU);
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 }
 
@@ -277,14 +278,14 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 
 void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
 {
-    TSerialDeviceFactory::RemoveDevice(TSerialDeviceFactory::GetDevice("1", "modbus", SerialPort));
-    Observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, SerialPort);
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
 
-    Observer->SetUp();
+    SerialPort->Open();
 
     ExpectPollQueries(mode);
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 
@@ -292,15 +293,15 @@ TEST_F(TModbusIntegrationTest, Poll)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, Write)
 {
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Coil 0/on", "1");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/RGB/on", "10;20;30");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding S64/on", "81985529216486895");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U16/on", "3905");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Coil 0/on", "1");
+    PublishWaitOnValue("/devices/modbus-sample/controls/RGB/on", "10;20;30");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Holding S64/on", "81985529216486895");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Holding U16/on", "3905");
 
     EnqueueCoilWriteResponse();
     EnqueueRGBWriteResponse();
@@ -308,14 +309,15 @@ TEST_F(TModbusIntegrationTest, Write)
     EnqueueHoldingWriteU16Response();
 
     ExpectPollQueries();
+
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, Errors)
 {
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Coil 0/on", "1");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U16/on", "3905");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Coil 0/on", "1");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Holding U16/on", "3905");
 
     EnqueueCoilWriteResponse(0x1);
     EnqueueHoldingWriteU16Response(0x2);
@@ -330,7 +332,7 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueDiscreteReadResponse(0xb);
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, Holes)

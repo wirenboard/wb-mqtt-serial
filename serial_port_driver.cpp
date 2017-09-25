@@ -1,47 +1,81 @@
+#include "serial_port_driver.h"
+
+#include <wbmqtt/wbmqtt.h>
+
 #include <algorithm>
 #include <sstream>
 #include <iostream>
+#include <cassert>
 
-#include <wbmqtt/utils.h>
-#include "serial_port_driver.h"
+using namespace std;
+using namespace WBMQTT;
 
-TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig port_config,
-                                     PAbstractSerialPort port_override)
-    : MQTTClient(mqtt_client),
-      Config(port_config),
-      Port(port_override ? port_override : std::make_shared<TSerialPort>(Config->ConnSettings)),
+#define LOG_DEBUG Debug.Log() << "[serial port driver] "
+#define LOG_WARNING Warn.Log() << "[serial port driver] "
+#define LOG_ERROR Error.Log() << "[serial port driver] "
+
+namespace
+{
+    template <class T, class V>
+    inline void UpdateOrMake(unique_ptr<T> & pointer, const V & value)
+    {
+        if (pointer) {
+            *pointer = value;
+        } else {
+            pointer = MakeUnique<T>(value);
+        }
+    }
+}
+
+
+TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig portConfig,
+                                     PAbstractSerialPort portOverride)
+    : MqttDriver(mqttDriver),
+      Config(portConfig),
+      Port(portOverride ? portOverride : std::make_shared<TSerialPort>(Config->ConnSettings)),
       SerialClient(new TSerialClient(Port))
 {
     SerialClient->SetDebug(Config->Debug);
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
-            OnValueRead(reg, changed);
-        });
-    SerialClient->SetErrorCallback(
-        [this](PRegister reg, TRegisterHandler::TErrorState state) {
-            UpdateError(reg, state);
-        });
+        OnValueRead(reg, changed);
+    });
+    SerialClient->SetErrorCallback([this](PRegister reg, TRegisterHandler::TErrorState state) {
+        UpdateError(reg, state);
+    });
 
-    if (Config->Debug)
-        std::cerr << "Setting up devices at " << port_config->ConnSettings.Device << std::endl;
+    if (Config->Debug) {
+        LOG_DEBUG << "setting up devices at " << portConfig->ConnSettings.Device;
+    }
 
-    for (auto& device_config: Config->DeviceConfigs) {
-        auto device = SerialClient->CreateDevice(device_config);
-        Devices.push_back(device);
+    try {
+        auto tx = MqttDriver->BeginTx();
+        vector<TFuture<PControl>> futureControls;
 
-        // init channels' registers
-        for (auto& channel_config: device_config->DeviceChannelConfigs) {
-            
-            auto channel = std::make_shared<TDeviceChannel>(device, channel_config);
-            NameToChannelMap[device_config->Id + "/" + channel->Name] = channel;
-            
-            ChannelRegistersMap[channel] = std::vector<PRegister>();
-            
-            for (auto& reg: channel->Registers) {
-                RegisterToChannelMap[reg] = channel;
-                SerialClient->AddRegister(reg);
-                ChannelRegistersMap[channel].push_back(reg);
+        for (auto & deviceConfig: Config->DeviceConfigs) {
+            auto device = SerialClient->CreateDevice(deviceConfig);
+            auto mqttDevice = tx->CreateDevice(From(device)).GetValue();
+            assert(mqttDevice);
+            Devices.push_back(device);
+            // init channels' registers
+            for (auto & channelConfig: deviceConfig->DeviceChannelConfigs) {
+
+                auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
+                futureControls.push_back(mqttDevice->CreateControl(tx, From(channel)));
+
+                for (auto & reg: channel->Registers) {
+                    RegisterToChannelStateMap.emplace(reg, TDeviceChannelState{channel, TRegisterHandler::UnknownErrorState, nullptr});
+                    SerialClient->AddRegister(reg);
+                }
             }
         }
+
+        for (auto & futureControl: futureControls) {
+            futureControl.GetValue();   // wait for control creation, receive exceptions if any
+        }
+    } catch (...) {
+        LOG_ERROR << "unable to create device or control. Cleaning.";
+        ClearDevices();
+        throw;
     }
 }
 
@@ -49,99 +83,35 @@ TSerialPortDriver::~TSerialPortDriver()
 {
 }
 
-void TSerialPortDriver::PubSubSetup()
+void TSerialPortDriver::HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event)
 {
-    for (auto device_config : Config->DeviceConfigs) {
-        /* Only attempt to Subscribe on a successful connect. */
-        std::string id = device_config->Id.empty() ? MQTTClient->Id() : device_config->Id;
-        std::string prefix = std::string("/devices/") + id + "/";
-        // Meta
-        MQTTClient->Publish(NULL, prefix + "meta/name", device_config->Name, 0, true);
-        for (const auto& channel : device_config->DeviceChannelConfigs) {
-            std::string control_prefix = prefix + "controls/" + channel->Name;
-            MQTTClient->Publish(NULL, control_prefix + "/meta/type", channel->Type, 0, true);
-            if (channel->ReadOnly)
-                MQTTClient->Publish(NULL, control_prefix + "/meta/readonly", "1", 0, true);
-            if (channel->Type == "range" || channel->Type == "dimmer")
-                MQTTClient->Publish(NULL, control_prefix + "/meta/max",
-                                 channel->Max < 0 ? "65535" : std::to_string(channel->Max),
-                                 0, true);
-            MQTTClient->Publish(NULL, control_prefix + "/meta/order",
-                             std::to_string(channel->Order), 0, true);
-            MQTTClient->Subscribe(NULL, control_prefix + "/on");
-        }
+    auto value = event.Control->GetRawValue();
+    auto channel = event.Control->GetUserData().As<TControlLinkData>().DeviceChannel;
+    const auto & registers = channel->Registers;
+
+    std::vector<std::string> valueItems = StringSplit(value, ';');
+
+    if (valueItems.size() != registers.size()) {
+        LOG_WARNING << "invalid value for " << channel->Describe() << ": '" << value << "'";
+        return;
     }
 
-//~ /devices/293723-demo/controls/Demo-Switch 0
-//~ /devices/293723-demo/controls/Demo-Switch/on 1
-//~ /devices/293723-demo/controls/Demo-Switch/meta/type switch
-}
-
-bool TSerialPortDriver::HandleMessage(const std::string& topic, const std::string& payload)
-{
-    const std::vector<std::string>& tokens = StringSplit(topic, '/');
-    if ((tokens.size() != 6) ||
-        (tokens[0] != "") || (tokens[1] != "devices") ||
-        (tokens[3] != "controls") || (tokens[5] != "on"))
-        return false;
-
-    std::string device_id = tokens[2];
-    std::string channel_name = tokens[4];
-    const auto& dev_config_it =
-        std::find_if(Config->DeviceConfigs.begin(),
-                     Config->DeviceConfigs.end(),
-                     [device_id](PDeviceConfig c) {
-                         return c->Id == device_id;
-                     });
-
-    if (dev_config_it == Config->DeviceConfigs.end())
-        return false;
-
-    const auto& it = NameToChannelMap.find((*dev_config_it)->Id + "/" + channel_name);
-    if (it == NameToChannelMap.end())
-        return false;
-
-    const auto& reglist = ChannelRegistersMap[it->second];
-
-    std::vector<std::string> payload_items = StringSplit(payload, ';');
-
-    if (payload_items.size() != reglist.size()) {
-        std::cerr << "warning: invalid payload for topic '" << topic <<
-            "': '" << payload << "'" << std::endl;
-        // here 'true' means that the message doesn't need to be passed
-        // to other port handlers
-        return true;
-    }
-
-    for (size_t i = 0; i < reglist.size(); ++i) {
-        PRegister reg = reglist[i];
+    for (size_t i = 0; i < registers.size(); ++i) {
+        PRegister reg = registers[i];
         if (Config->Debug)
-            std::cerr << "setting device register: " << reg->ToString() << " <- " <<
-                payload_items[i] << std::endl;
+            LOG_DEBUG << "setting device register: " << reg->ToString() << " <- " << valueItems[i];
 
         try {
-			SerialClient->SetTextValue(reg,
-				it->second->OnValue.empty() ? payload_items[i]
-                                       : (payload_items[i] == "1" ?  it->second->OnValue : "0")
-			);
+            SerialClient->SetTextValue(reg,
+                channel->OnValue.empty() ? valueItems[i]
+                                       : (valueItems[i] == "1" ?  channel->OnValue : "0")
+            );
 
-		} catch (std::exception& err) {
-			std::cerr << "warning: invalid payload for topic '" << topic <<
-				"': '" << payload << "' : " << err.what()  << std::endl;
-
-			return true;
-		}
-
+        } catch (std::exception& err) {
+            LOG_WARNING << "invalid value for " << channel->Describe() << ": '" << value << "' : " << err.what();
+            return;
+        }
     }
-
-    MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
-    return true;
-}
-
-std::string TSerialPortDriver::GetChannelTopic(const TDeviceChannelConfig& channel)
-{
-    std::string controls_prefix = std::string("/devices/") + channel.DeviceId + "/controls/";
-    return (controls_prefix + channel.Name);
 }
 
 bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
@@ -154,56 +124,58 @@ bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
     if (Config->MaxUnchangedInterval < 0)
         return changed;
 
+    auto it = RegisterToChannelStateMap.find(reg);
+    if (it == RegisterToChannelStateMap.end()) {
+        return false;   // should not happen
+    }
+
     // max_unchanged_interval > 0: update if changed or the time interval is exceeded
     auto now = Port->CurrentTime();
     if (changed) {
-        RegLastPublishTimeMap[reg] = now;
+        UpdateOrMake(it->second.LastPublishTime, now);
         return true;
     }
 
-    auto it = RegLastPublishTimeMap.find(reg);
-    if (it == RegLastPublishTimeMap.end()) {
+    if (!it->second.LastPublishTime) {
         // too strange - unchanged, but not tracked yet, but ok, let's publish it
-        RegLastPublishTimeMap[reg] = now;
+        UpdateOrMake(it->second.LastPublishTime, now);
         return true;
     }
 
-    std::chrono::duration<double> elapsed = now - it->second;
+    std::chrono::duration<double> elapsed = now - *it->second.LastPublishTime;
     if (elapsed.count() < Config->MaxUnchangedInterval)
         return false; // still fresh
 
     // unchanged interval elapsed
-    it->second = now;
+    UpdateOrMake(it->second.LastPublishTime, now);
     return true;
 }
 
 void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
 {
-    auto it = RegisterToChannelMap.find(reg);
-    if (it == RegisterToChannelMap.end()) {
-        std::cerr << "warning: got unexpected register from serial client" << std::endl;
+    auto it = RegisterToChannelStateMap.find(reg);
+    if (it == RegisterToChannelStateMap.end()) {
+        LOG_WARNING << "got unexpected register from serial client";
         return;
     }
-
-    const auto &reglist = it->second->Registers;
+    const auto & channel = it->second.Channel;
+    const auto & registers = channel->Registers;
 
     if (Config->Debug && changed)
-        std::cerr << "register value change: " << reg->ToString() << " <- " <<
-            SerialClient->GetTextValue(reg) << std::endl;
+        LOG_DEBUG << "register value change: " << reg->ToString() << " <- " << SerialClient->GetTextValue(reg);
 
     if (!NeedToPublish(reg, changed))
         return;
 
-    std::string payload;
-    if (!it->second->OnValue.empty()) {
-        payload = SerialClient->GetTextValue(reg) == it->second->OnValue ? "1" : "0";
+    std::string value;
+    if (!channel->OnValue.empty()) {
+        value = SerialClient->GetTextValue(reg) == channel->OnValue ? "1" : "0";
         if (Config->Debug)
-            std::cerr << "OnValue: " << it->second->OnValue << "; payload: " <<
-                payload << std::endl;
+            LOG_DEBUG << "OnValue: " << channel->OnValue << "; value: " << value;
     } else {
         std::stringstream s;
-        for (size_t i = 0; i < reglist.size(); ++i) {
-            PRegister reg = reglist[i];
+        for (size_t i = 0; i < registers.size(); ++i) {
+            PRegister reg = registers[i];
             // avoid publishing incomplete value
             if (!SerialClient->DidRead(reg))
                 return;
@@ -211,39 +183,41 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
                 s << ";";
             s << SerialClient->GetTextValue(reg);
         }
-        payload = s.str();
+        value = s.str();
         // check if there any errors in this Channel
     }
 
     // Publish current value (make retained)
     if (Config->Debug)
-        std::cerr << "channel " << it->second->Name << " device id: " <<
-            it->second->DeviceId << " -- topic: " << GetChannelTopic(*it->second) <<
-            " <-- " << payload << std::endl;
+        LOG_DEBUG << channel->Describe() << " <-- " << value;
 
-    MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
+    {
+        auto tx = MqttDriver->BeginTx();
+        tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetRawValue(tx, value);
+    }
 }
 
 TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)
 {
-    auto it = RegErrorStateMap.find(reg);
-    if (it == RegErrorStateMap.end())
+    auto it = RegisterToChannelStateMap.find(reg);
+    if (it == RegisterToChannelStateMap.end())
         return TRegisterHandler::UnknownErrorState;
-    return it->second;
+    return it->second.ErrorState;
 }
 
 void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState)
 {
-    auto it = RegisterToChannelMap.find(reg);
-    if (it == RegisterToChannelMap.end()) {
-        std::cerr << "warning: got unexpected register from serial client" << std::endl;
+    auto it = RegisterToChannelStateMap.find(reg);
+    if (it == RegisterToChannelStateMap.end()) {
+        LOG_WARNING << "got unexpected register from serial client";
         return;
     }
-    const auto &reglist = it->second->Registers;
+    const auto & channel = it->second.Channel;
+    const auto & registers = channel->Registers;
 
-    RegErrorStateMap[reg] = errorState;
+    it->second.ErrorState = errorState;
     bool readError = false, writeError = false;
-    for (auto r: reglist) {
+    for (auto r: registers) {
         switch (RegErrorState(r)) {
         case TRegisterHandler::WriteError:
             writeError = true;
@@ -258,12 +232,11 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
             ; // make compiler happy
         }
     }
-    std::string errorStr = readError ? (writeError ? "rw" : "r") : (writeError ? "w" : ""),
-        errorTopic = GetChannelTopic(*it->second) + "/meta/error";
-    auto errMapIt = PublishedErrorMap.find(errorTopic);
-    if (errMapIt == PublishedErrorMap.end() || errMapIt->second != errorStr) {
-        PublishedErrorMap[errorTopic] = errorStr;
-        MQTTClient->Publish(NULL, errorTopic, errorStr.c_str(), 0, true);
+
+    std::string errorStr = readError ? (writeError ? "rw" : "r") : (writeError ? "w" : "");
+    {
+        auto tx = MqttDriver->BeginTx();
+        tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetError(tx, errorStr);
     }
 }
 
@@ -272,17 +245,57 @@ void TSerialPortDriver::Cycle()
     try {
         SerialClient->Cycle();
     } catch (TSerialDeviceException& e) {
-        std::cerr << "FATAL: " << e.what() << ". Stopping event loops." << std::endl;
+        LOG_ERROR << "FATAL: " << e.what() << ". Stopping event loops.";
         exit(1);
     }
 }
 
 bool TSerialPortDriver::WriteInitValues()
 {
-    bool did_write = false;
+    bool didWrite = false;
     for (auto& device : Devices) {
-    	did_write |= SerialClient->WriteSetupRegisters(device);
+    	didWrite |= SerialClient->WriteSetupRegisters(device);
     }
 
-    return did_write;
+    return didWrite;
+}
+
+void TSerialPortDriver::ClearDevices()
+{
+    auto tx = MqttDriver->BeginTx();
+
+    try {
+        for (const auto & device: Devices) {
+            tx->RemoveDeviceById(device->DeviceConfig()->Id).Sync();
+            LOG_DEBUG << "device " << device->DeviceConfig()->Id << " removed successfully";
+        }
+        Devices.clear();
+        SerialClient->ClearDevices();
+    } catch (const exception & e) {
+        LOG_WARNING << "exception during device removal: " << e.what();
+    } catch (...) {
+        LOG_WARNING << "unknown exception during device removal";
+    }
+}
+
+TLocalDeviceArgs TSerialPortDriver::From(const PSerialDevice & device)
+{
+    return TLocalDeviceArgs{}.SetId(device->DeviceConfig()->Id)
+                             .SetTitle(device->DeviceConfig()->Name)
+                             .SetUserData(TDeviceLinkData{this, device.get()});
+}
+
+TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
+{
+    auto args = TControlArgs{}.SetId(channel->Name)
+                              .SetOrder(channel->Order)
+                              .SetType(channel->Type)
+                              .SetReadonly(channel->ReadOnly)
+                              .SetUserData(TControlLinkData{this, channel.get()});
+
+    if (channel->Type == "range" || channel->Type == "dimmer") {
+        args.SetMax(channel->Max < 0 ? 65535 : channel->Max);
+    }
+
+    return args;
 }

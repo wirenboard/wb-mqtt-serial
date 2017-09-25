@@ -110,7 +110,6 @@ protected:
 void TMercury200IntegrationTest::SetUp()
 {
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
     SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(150));
     ASSERT_TRUE(!!SerialPort);
 }
@@ -128,5 +127,5 @@ TEST_F(TMercury200IntegrationTest, Poll)
     EnqueueMercury200ParamResponse();
     EnqueueMercury200EnergyResponse();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }

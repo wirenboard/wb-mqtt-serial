@@ -233,7 +233,6 @@ protected:
 void TMercury230IntegrationTest::SetUp()
 {
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
     SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(150));
     ASSERT_TRUE(!!SerialPort);
 }
@@ -289,7 +288,7 @@ TEST_F(TMercury230IntegrationTest, Poll)
 {
 	ExpectQueries(true);
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 // NOTE: max unchanged interval tests concern the whole driver,
@@ -303,7 +302,7 @@ TEST_F(TMercury230IntegrationTest, MaxUnchangedInterval) {
         ExpectQueries(i == 0);
 
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
     }
 }
 
@@ -318,6 +317,6 @@ TEST_F(TMercury230IntegrationTest, ZeroMaxUnchangedInterval) {
     for (int i = 0; i < 3; ++i) {
         ExpectQueries(i == 0);
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
     }
 }

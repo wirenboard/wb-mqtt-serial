@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "testlog.h"
+#include <wbmqtt/testing/testlog.h>
 #include "serial_config.h"
+
+using WBMQTT::Testing::TLoggedFixture;
 
 class TDeviceTemplateFileExtensionTest: public ::testing::Test {
 protected:

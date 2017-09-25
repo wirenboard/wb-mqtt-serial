@@ -1,5 +1,5 @@
 #include <string>
-#include "testlog.h"
+#include <wbmqtt/testing/testlog.h>
 #include "fake_serial_port.h"
 #include "pulsar_device.h"
 

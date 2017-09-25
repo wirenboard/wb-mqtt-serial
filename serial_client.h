@@ -35,6 +35,7 @@ public:
     bool DebugEnabled() const;
     void NotifyFlushNeeded();
     bool WriteSetupRegisters(PSerialDevice dev);
+    void ClearDevices();
 
 private:
     void PrepareRegisterRanges();

@@ -9,6 +9,8 @@
 #include "binary_semaphore.h"
 #include "bcd_utils.h"
 
+using WBMQTT::StringFormat;
+
 class TRegisterHandler
 {
 public:

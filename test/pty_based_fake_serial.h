@@ -7,7 +7,7 @@
 #include <memory>
 #include <condition_variable>
 #include "expector.h"
-#include "testlog.h"
+#include <wbmqtt/testing/testlog.h>
 
 class TPtyBasedFakeSerial: public TExpector {
 public:

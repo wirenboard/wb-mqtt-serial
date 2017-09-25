@@ -25,66 +25,68 @@ endif
 
 #CFLAGS=
 DEBUG_CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
-NORMAL_CFLAGS=-Wall -std=c++0x -Os -I.
-CFLAGS=$(if $(or $(DEBUG),$(filter test, $(MAKECMDGOALS))), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
+NORMAL_CFLAGS=-Wall -std=c++0x -O3 -I.
+CFLAGS=$(if $(or $(DEBUG)), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
 LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
 SERIAL_BIN=wb-mqtt-serial
 SERIAL_LIBS=
-SERIAL_SRCS=register.cpp \
-  poll_plan.cpp \
-  serial_client.cpp \
-  register_handler.cpp \
-  serial_config.cpp \
-  serial_port_driver.cpp \
-  serial_observer.cpp \
-  serial_port.cpp \
-  serial_device.cpp \
-  uniel_device.cpp \
-  s2k_device.cpp \
-  ivtm_device.cpp \
-  crc16.cpp \
-  modbus_common.cpp \
-  modbus_device.cpp \
-  modbus_io_device.cpp \
-  em_device.cpp \
-  milur_device.cpp \
-  mercury230_device.cpp \
-  mercury200_device.cpp \
-  pulsar_device.cpp \
-  bcd_utils.cpp
+SERIAL_SRCS= \
+  register.cpp            \
+  poll_plan.cpp           \
+  serial_client.cpp       \
+  register_handler.cpp    \
+  serial_config.cpp       \
+  serial_port_driver.cpp  \
+  serial_driver.cpp       \
+  serial_port.cpp         \
+  serial_device.cpp       \
+  uniel_device.cpp        \
+  s2k_device.cpp          \
+  ivtm_device.cpp         \
+  crc16.cpp               \
+  modbus_common.cpp       \
+  modbus_device.cpp       \
+  modbus_io_device.cpp    \
+  em_device.cpp           \
+  milur_device.cpp        \
+  mercury230_device.cpp   \
+  mercury200_device.cpp   \
+  pulsar_device.cpp       \
+  bcd_utils.cpp           \
+  signal_handling.cpp     \
+
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 TEST_SRCS= \
-  $(TEST_DIR)/testlog.o \
-  $(TEST_DIR)/poll_plan_test.o \
-  $(TEST_DIR)/serial_client_test.o \
-  $(TEST_DIR)/modbus_expectations_base.o \
-  $(TEST_DIR)/modbus_expectations.o \
-  $(TEST_DIR)/modbus_test.o \
-  $(TEST_DIR)/modbus_io_expectations.o \
-  $(TEST_DIR)/modbus_io_test.o \
-  $(TEST_DIR)/uniel_expectations.o \
-  $(TEST_DIR)/uniel_test.o \
-  $(TEST_DIR)/s2k_expectations.o \
-  $(TEST_DIR)/s2k_test.o \
-  $(TEST_DIR)/em_test.o \
-  $(TEST_DIR)/em_integration.o \
-  $(TEST_DIR)/mercury200_expectations.o \
-  $(TEST_DIR)/mercury200_test.o \
-  $(TEST_DIR)/mercury230_expectations.o \
-  $(TEST_DIR)/mercury230_test.o \
-  $(TEST_DIR)/milur_expectations.o \
-  $(TEST_DIR)/milur_test.o \
-  $(TEST_DIR)/ivtm_test.o \
-  $(TEST_DIR)/pulsar_test.o \
-  $(TEST_DIR)/fake_mqtt.o \
-  $(TEST_DIR)/fake_serial_port.o \
-  $(TEST_DIR)/fake_serial_device.o \
-  $(TEST_DIR)/device_templates_file_extension_test.o \
-  $(TEST_DIR)/reconnect_detection_test.o \
-  $(TEST_DIR)/main.o
+  $(TEST_DIR)/poll_plan_test.o                        \
+  $(TEST_DIR)/serial_client_test.o                    \
+  $(TEST_DIR)/modbus_expectations_base.o              \
+  $(TEST_DIR)/modbus_expectations.o                   \
+  $(TEST_DIR)/modbus_test.o                           \
+  $(TEST_DIR)/modbus_io_expectations.o                \
+  $(TEST_DIR)/modbus_io_test.o                        \
+  $(TEST_DIR)/uniel_expectations.o                    \
+  $(TEST_DIR)/uniel_test.o                            \
+  $(TEST_DIR)/s2k_expectations.o                      \
+  $(TEST_DIR)/s2k_test.o                              \
+  $(TEST_DIR)/em_test.o                               \
+  $(TEST_DIR)/em_integration.o                        \
+  $(TEST_DIR)/mercury200_expectations.o               \
+  $(TEST_DIR)/mercury200_test.o                       \
+  $(TEST_DIR)/mercury230_expectations.o               \
+  $(TEST_DIR)/mercury230_test.o                       \
+  $(TEST_DIR)/milur_expectations.o                    \
+  $(TEST_DIR)/milur_test.o                            \
+  $(TEST_DIR)/ivtm_test.o                             \
+  $(TEST_DIR)/pulsar_test.o                           \
+  $(TEST_DIR)/fake_serial_port.o                      \
+  $(TEST_DIR)/fake_serial_device.o                    \
+  $(TEST_DIR)/device_templates_file_extension_test.o  \
+  $(TEST_DIR)/reconnect_detection_test.o              \
+  $(TEST_DIR)/main.o                                  \
+
 TEST_OBJS=$(TEST_SRCS:.cpp=.o)
-TEST_LIBS=-lgtest -lpthread -lmosquittopp
+TEST_LIBS=-lgtest -lpthread -lmosquittopp -lwbmqtt_test_utils
 TEST_DIR=test
 TEST_BIN=wb-homa-test
 SRCS=$(SERIAL_SRCS) $(TEST_SRCS)
