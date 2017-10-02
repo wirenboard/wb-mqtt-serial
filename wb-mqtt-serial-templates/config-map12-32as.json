@@ -1,12 +1,12 @@
 {
-    "device_type": "WB-MAP12",
+    "device_type": "WB-MAP12-32AS",
     "device": {
-        "name": "WB-MAP12",
-        "id": "wb-map12",
+        "name": "WB-MAP12-32AS",
+        "id": "wb-map12-32as",
         "max_read_registers": 60,
     "channels": [
     {
-            "name": "Urms A",
+            "name": "Urms L1",
             "reg_type": "input",
             "address": "0x10d9",
             "type": "voltage",
@@ -15,7 +15,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Urms B",
+            "name": "Urms L2",
             "reg_type": "input",
             "address": "0x10da",
             "type": "voltage",
@@ -24,7 +24,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Urms C",
+            "name": "Urms L3",
             "reg_type": "input",
             "address": "0x10db",
             "type": "voltage",
@@ -42,7 +42,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Voltage angle A",
+            "name": "Voltage angle L1",
             "reg_type": "input",
             "address": "0x10fd",
             "type": "value",
@@ -51,7 +51,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Voltage angle B",
+            "name": "Voltage angle L2",
             "reg_type": "input",
             "address": "0x10fe",
             "type": "value",
@@ -60,7 +60,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Voltage angle C",
+            "name": "Voltage angle L3",
             "reg_type": "input",
             "address": "0x10ff",
             "type": "value",
@@ -69,7 +69,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 1 Irms A",
+            "name": "Ch 1 Irms L1",
             "reg_type": "input",
             "address": "0x10dd",
             "type": "value",
@@ -78,7 +78,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 P A",
+            "name": "Ch 1 P L1",
             "reg_type": "input",
             "address": "0x1302",
             "type": "power",
@@ -87,7 +87,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 Q A",
+            "name": "Ch 1 Q L1",
             "reg_type": "input",
             "address": "0x130a",
             "type": "value",
@@ -96,7 +96,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 S A",
+            "name": "Ch 1 S L1",
             "reg_type": "input",
             "address": "0x1312",
             "type": "value",
@@ -105,7 +105,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 N A",
+            "name": "Ch 1 N L1",
             "reg_type": "input",
             "address": "0x1582",
             "type": "value",
@@ -114,7 +114,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 PF A",
+            "name": "Ch 1 PF L1",
             "reg_type": "input",
             "address": "0x10bd",
             "type": "value",
@@ -123,7 +123,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 Pfund A",
+            "name": "Ch 1 Pfund L1",
             "reg_type": "input",
             "address": "0x1402",
             "type": "value",
@@ -132,7 +132,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 1 Pharm A",
+            "name": "Ch 1 Pharm L1",
             "reg_type": "input",
             "address": "0x140a",
             "type": "value",
@@ -141,7 +141,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 1 AP energy A",
+            "name": "Ch 1 AP energy L1",
             "reg_type": "input",
             "address": "0x1204",
             "type": "power_consumption",
@@ -151,7 +151,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 AN energy A",
+            "name": "Ch 1 AN energy L1",
             "reg_type": "input",
             "address": "0x1214",
             "type": "power_consumption",
@@ -161,7 +161,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 RP energy A",
+            "name": "Ch 1 RP energy L1",
             "reg_type": "input",
             "address": "0x1224",
             "type": "value",
@@ -171,7 +171,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 RN energy A",
+            "name": "Ch 1 RN energy L1",
             "reg_type": "input",
             "address": "0x1234",
             "type": "value",
@@ -181,7 +181,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 S energy A",
+            "name": "Ch 1 S energy L1",
             "reg_type": "input",
             "address": "0x1244",
             "type": "value",
@@ -191,7 +191,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 NP energy A",
+            "name": "Ch 1 NP energy L1",
             "reg_type": "input",
             "address": "0x1506",
             "type": "value",
@@ -201,7 +201,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 NN energy A",
+            "name": "Ch 1 NN energy L1",
             "reg_type": "input",
             "address": "0x1516",
             "type": "value",
@@ -211,7 +211,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 Irms B",
+            "name": "Ch 1 Irms L2",
             "reg_type": "input",
             "address": "0x10de",
             "type": "value",
@@ -220,7 +220,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 P B",
+            "name": "Ch 1 P L2",
             "reg_type": "input",
             "address": "0x1304",
             "type": "power",
@@ -229,7 +229,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 Q B",
+            "name": "Ch 1 Q L2",
             "reg_type": "input",
             "address": "0x130c",
             "type": "value",
@@ -238,7 +238,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 S B",
+            "name": "Ch 1 S L2",
             "reg_type": "input",
             "address": "0x1314",
             "type": "value",
@@ -247,7 +247,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 N B",
+            "name": "Ch 1 N L2",
             "reg_type": "input",
             "address": "0x1584",
             "type": "value",
@@ -256,7 +256,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 PF B",
+            "name": "Ch 1 PF L2",
             "reg_type": "input",
             "address": "0x10be",
             "type": "value",
@@ -265,7 +265,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 Pfund B",
+            "name": "Ch 1 Pfund L2",
             "reg_type": "input",
             "address": "0x1404",
             "type": "value",
@@ -274,7 +274,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 1 Pharm B",
+            "name": "Ch 1 Pharm L2",
             "reg_type": "input",
             "address": "0x140c",
             "type": "value",
@@ -283,7 +283,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 1 AP energy B",
+            "name": "Ch 1 AP energy L2",
             "reg_type": "input",
             "address": "0x1208",
             "type": "power_consumption",
@@ -293,7 +293,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 AN energy B",
+            "name": "Ch 1 AN energy L2",
             "reg_type": "input",
             "address": "0x1218",
             "type": "power_consumption",
@@ -303,7 +303,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 RP energy B",
+            "name": "Ch 1 RP energy L2",
             "reg_type": "input",
             "address": "0x1228",
             "type": "value",
@@ -313,7 +313,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 RN energy B",
+            "name": "Ch 1 RN energy L2",
             "reg_type": "input",
             "address": "0x1238",
             "type": "value",
@@ -323,7 +323,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 S energy B",
+            "name": "Ch 1 S energy L2",
             "reg_type": "input",
             "address": "0x1248",
             "type": "value",
@@ -333,7 +333,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 NP energy B",
+            "name": "Ch 1 NP energy L2",
             "reg_type": "input",
             "address": "0x150a",
             "type": "value",
@@ -343,7 +343,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 NN energy B",
+            "name": "Ch 1 NN energy L2",
             "reg_type": "input",
             "address": "0x151a",
             "type": "value",
@@ -353,7 +353,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 Irms C",
+            "name": "Ch 1 Irms L3",
             "reg_type": "input",
             "address": "0x10df",
             "type": "value",
@@ -362,7 +362,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 P C",
+            "name": "Ch 1 P L3",
             "reg_type": "input",
             "address": "0x1306",
             "type": "power",
@@ -371,7 +371,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 Q C",
+            "name": "Ch 1 Q L3",
             "reg_type": "input",
             "address": "0x130e",
             "type": "value",
@@ -380,7 +380,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 S C",
+            "name": "Ch 1 S L3",
             "reg_type": "input",
             "address": "0x1316",
             "type": "value",
@@ -389,7 +389,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 N C",
+            "name": "Ch 1 N L3",
             "reg_type": "input",
             "address": "0x1586",
             "type": "value",
@@ -398,7 +398,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 PF C",
+            "name": "Ch 1 PF L3",
             "reg_type": "input",
             "address": "0x10bf",
             "type": "value",
@@ -407,7 +407,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 1 Pfund C",
+            "name": "Ch 1 Pfund L3",
             "reg_type": "input",
             "address": "0x1406",
             "type": "value",
@@ -416,7 +416,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 1 Pharm C",
+            "name": "Ch 1 Pharm L3",
             "reg_type": "input",
             "address": "0x140e",
             "type": "value",
@@ -425,7 +425,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 1 AP energy C",
+            "name": "Ch 1 AP energy L3",
             "reg_type": "input",
             "address": "0x120c",
             "type": "power_consumption",
@@ -435,7 +435,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 AN energy C",
+            "name": "Ch 1 AN energy L3",
             "reg_type": "input",
             "address": "0x121c",
             "type": "power_consumption",
@@ -445,7 +445,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 RP energy C",
+            "name": "Ch 1 RP energy L3",
             "reg_type": "input",
             "address": "0x122c",
             "type": "value",
@@ -455,7 +455,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 RN energy C",
+            "name": "Ch 1 RN energy L3",
             "reg_type": "input",
             "address": "0x123c",
             "type": "value",
@@ -465,7 +465,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 S energy C",
+            "name": "Ch 1 S energy L3",
             "reg_type": "input",
             "address": "0x124c",
             "type": "value",
@@ -475,7 +475,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 NP energy C",
+            "name": "Ch 1 NP energy L3",
             "reg_type": "input",
             "address": "0x150e",
             "type": "value",
@@ -485,7 +485,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 NN energy C",
+            "name": "Ch 1 NN energy L3",
             "reg_type": "input",
             "address": "0x151e",
             "type": "value",
@@ -619,7 +619,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 1 Phase angle A",
+            "name": "Ch 1 Phase angle L1",
             "reg_type": "input",
             "address": "0x10f9",
             "type": "value",
@@ -628,7 +628,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 1 Phase angle B",
+            "name": "Ch 1 Phase angle L2",
             "reg_type": "input",
             "address": "0x10fa",
             "type": "value",
@@ -637,7 +637,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 1 Phase angle C",
+            "name": "Ch 1 Phase angle L3",
             "reg_type": "input",
             "address": "0x10fb",
             "type": "value",
@@ -646,7 +646,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 2 Irms A",
+            "name": "Ch 2 Irms L1",
             "reg_type": "input",
             "address": "0x20dd",
             "type": "value",
@@ -655,7 +655,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 P A",
+            "name": "Ch 2 P L1",
             "reg_type": "input",
             "address": "0x2302",
             "type": "power",
@@ -664,7 +664,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 Q A",
+            "name": "Ch 2 Q L1",
             "reg_type": "input",
             "address": "0x230a",
             "type": "value",
@@ -673,7 +673,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 S A",
+            "name": "Ch 2 S L1",
             "reg_type": "input",
             "address": "0x2312",
             "type": "value",
@@ -682,7 +682,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 N A",
+            "name": "Ch 2 N L1",
             "reg_type": "input",
             "address": "0x2582",
             "type": "value",
@@ -691,7 +691,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 PF A",
+            "name": "Ch 2 PF L1",
             "reg_type": "input",
             "address": "0x20bd",
             "type": "value",
@@ -700,7 +700,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 Pfund A",
+            "name": "Ch 2 Pfund L1",
             "reg_type": "input",
             "address": "0x2402",
             "type": "value",
@@ -709,7 +709,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 2 Pharm A",
+            "name": "Ch 2 Pharm L1",
             "reg_type": "input",
             "address": "0x240a",
             "type": "value",
@@ -718,7 +718,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 2 AP energy A",
+            "name": "Ch 2 AP energy L1",
             "reg_type": "input",
             "address": "0x2204",
             "type": "power_consumption",
@@ -728,7 +728,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 AN energy A",
+            "name": "Ch 2 AN energy L1",
             "reg_type": "input",
             "address": "0x2214",
             "type": "power_consumption",
@@ -738,7 +738,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 RP energy A",
+            "name": "Ch 2 RP energy L1",
             "reg_type": "input",
             "address": "0x2224",
             "type": "value",
@@ -748,7 +748,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 RN energy A",
+            "name": "Ch 2 RN energy L1",
             "reg_type": "input",
             "address": "0x2234",
             "type": "value",
@@ -758,7 +758,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 S energy A",
+            "name": "Ch 2 S energy L1",
             "reg_type": "input",
             "address": "0x2244",
             "type": "value",
@@ -768,7 +768,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 NP energy A",
+            "name": "Ch 2 NP energy L1",
             "reg_type": "input",
             "address": "0x2506",
             "type": "value",
@@ -778,7 +778,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 NN energy A",
+            "name": "Ch 2 NN energy L1",
             "reg_type": "input",
             "address": "0x2516",
             "type": "value",
@@ -788,7 +788,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 Irms B",
+            "name": "Ch 2 Irms L2",
             "reg_type": "input",
             "address": "0x20de",
             "type": "value",
@@ -797,7 +797,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 P B",
+            "name": "Ch 2 P L2",
             "reg_type": "input",
             "address": "0x2304",
             "type": "power",
@@ -806,7 +806,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 Q B",
+            "name": "Ch 2 Q L2",
             "reg_type": "input",
             "address": "0x230c",
             "type": "value",
@@ -815,7 +815,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 S B",
+            "name": "Ch 2 S L2",
             "reg_type": "input",
             "address": "0x2314",
             "type": "value",
@@ -824,7 +824,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 N B",
+            "name": "Ch 2 N L2",
             "reg_type": "input",
             "address": "0x2584",
             "type": "value",
@@ -833,7 +833,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 PF B",
+            "name": "Ch 2 PF L2",
             "reg_type": "input",
             "address": "0x20be",
             "type": "value",
@@ -842,7 +842,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 Pfund B",
+            "name": "Ch 2 Pfund L2",
             "reg_type": "input",
             "address": "0x2404",
             "type": "value",
@@ -851,7 +851,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 2 Pharm B",
+            "name": "Ch 2 Pharm L2",
             "reg_type": "input",
             "address": "0x240c",
             "type": "value",
@@ -860,7 +860,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 2 AP energy B",
+            "name": "Ch 2 AP energy L2",
             "reg_type": "input",
             "address": "0x2208",
             "type": "power_consumption",
@@ -870,7 +870,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 AN energy B",
+            "name": "Ch 2 AN energy L2",
             "reg_type": "input",
             "address": "0x2218",
             "type": "power_consumption",
@@ -880,7 +880,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 RP energy B",
+            "name": "Ch 2 RP energy L2",
             "reg_type": "input",
             "address": "0x2228",
             "type": "value",
@@ -890,7 +890,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 RN energy B",
+            "name": "Ch 2 RN energy L2",
             "reg_type": "input",
             "address": "0x2238",
             "type": "value",
@@ -900,7 +900,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 S energy B",
+            "name": "Ch 2 S energy L2",
             "reg_type": "input",
             "address": "0x2248",
             "type": "value",
@@ -910,7 +910,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 NP energy B",
+            "name": "Ch 2 NP energy L2",
             "reg_type": "input",
             "address": "0x250a",
             "type": "value",
@@ -920,7 +920,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 NN energy B",
+            "name": "Ch 2 NN energy L2",
             "reg_type": "input",
             "address": "0x251a",
             "type": "value",
@@ -930,7 +930,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 Irms C",
+            "name": "Ch 2 Irms L3",
             "reg_type": "input",
             "address": "0x20df",
             "type": "value",
@@ -939,7 +939,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 P C",
+            "name": "Ch 2 P L3",
             "reg_type": "input",
             "address": "0x2306",
             "type": "power",
@@ -948,7 +948,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 Q C",
+            "name": "Ch 2 Q L3",
             "reg_type": "input",
             "address": "0x230e",
             "type": "value",
@@ -957,7 +957,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 S C",
+            "name": "Ch 2 S L3",
             "reg_type": "input",
             "address": "0x2316",
             "type": "value",
@@ -966,7 +966,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 N C",
+            "name": "Ch 2 N L3",
             "reg_type": "input",
             "address": "0x2586",
             "type": "value",
@@ -975,7 +975,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 PF C",
+            "name": "Ch 2 PF L3",
             "reg_type": "input",
             "address": "0x20bf",
             "type": "value",
@@ -984,7 +984,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 2 Pfund C",
+            "name": "Ch 2 Pfund L3",
             "reg_type": "input",
             "address": "0x2406",
             "type": "value",
@@ -993,7 +993,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 2 Pharm C",
+            "name": "Ch 2 Pharm L3",
             "reg_type": "input",
             "address": "0x240e",
             "type": "value",
@@ -1002,7 +1002,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 2 AP energy C",
+            "name": "Ch 2 AP energy L3",
             "reg_type": "input",
             "address": "0x220c",
             "type": "power_consumption",
@@ -1012,7 +1012,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 AN energy C",
+            "name": "Ch 2 AN energy L3",
             "reg_type": "input",
             "address": "0x221c",
             "type": "power_consumption",
@@ -1022,7 +1022,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 RP energy C",
+            "name": "Ch 2 RP energy L3",
             "reg_type": "input",
             "address": "0x222c",
             "type": "value",
@@ -1032,7 +1032,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 RN energy C",
+            "name": "Ch 2 RN energy L3",
             "reg_type": "input",
             "address": "0x223c",
             "type": "value",
@@ -1042,7 +1042,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 S energy C",
+            "name": "Ch 2 S energy L3",
             "reg_type": "input",
             "address": "0x224c",
             "type": "value",
@@ -1052,7 +1052,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 NP energy C",
+            "name": "Ch 2 NP energy L3",
             "reg_type": "input",
             "address": "0x250e",
             "type": "value",
@@ -1062,7 +1062,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 NN energy C",
+            "name": "Ch 2 NN energy L3",
             "reg_type": "input",
             "address": "0x251e",
             "type": "value",
@@ -1196,7 +1196,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 2 Phase angle A",
+            "name": "Ch 2 Phase angle L1",
             "reg_type": "input",
             "address": "0x20f9",
             "type": "value",
@@ -1205,7 +1205,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 2 Phase angle B",
+            "name": "Ch 2 Phase angle L2",
             "reg_type": "input",
             "address": "0x20fa",
             "type": "value",
@@ -1214,7 +1214,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 2 Phase angle C",
+            "name": "Ch 2 Phase angle L3",
             "reg_type": "input",
             "address": "0x20fb",
             "type": "value",
@@ -1223,7 +1223,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 3 Irms A",
+            "name": "Ch 3 Irms L1",
             "reg_type": "input",
             "address": "0x30dd",
             "type": "value",
@@ -1232,7 +1232,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 P A",
+            "name": "Ch 3 P L1",
             "reg_type": "input",
             "address": "0x3302",
             "type": "power",
@@ -1241,7 +1241,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 Q A",
+            "name": "Ch 3 Q L1",
             "reg_type": "input",
             "address": "0x330a",
             "type": "value",
@@ -1250,7 +1250,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 S A",
+            "name": "Ch 3 S L1",
             "reg_type": "input",
             "address": "0x3312",
             "type": "value",
@@ -1259,7 +1259,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 N A",
+            "name": "Ch 3 N L1",
             "reg_type": "input",
             "address": "0x3582",
             "type": "value",
@@ -1268,7 +1268,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 PF A",
+            "name": "Ch 3 PF L1",
             "reg_type": "input",
             "address": "0x30bd",
             "type": "value",
@@ -1277,7 +1277,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 Pfund A",
+            "name": "Ch 3 Pfund L1",
             "reg_type": "input",
             "address": "0x3402",
             "type": "value",
@@ -1286,7 +1286,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 3 Pharm A",
+            "name": "Ch 3 Pharm L1",
             "reg_type": "input",
             "address": "0x340a",
             "type": "value",
@@ -1295,7 +1295,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 3 AP energy A",
+            "name": "Ch 3 AP energy L1",
             "reg_type": "input",
             "address": "0x3204",
             "type": "power_consumption",
@@ -1305,7 +1305,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 AN energy A",
+            "name": "Ch 3 AN energy L1",
             "reg_type": "input",
             "address": "0x3214",
             "type": "power_consumption",
@@ -1315,7 +1315,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 RP energy A",
+            "name": "Ch 3 RP energy L1",
             "reg_type": "input",
             "address": "0x3224",
             "type": "value",
@@ -1325,7 +1325,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 RN energy A",
+            "name": "Ch 3 RN energy L1",
             "reg_type": "input",
             "address": "0x3234",
             "type": "value",
@@ -1335,7 +1335,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 S energy A",
+            "name": "Ch 3 S energy L1",
             "reg_type": "input",
             "address": "0x3244",
             "type": "value",
@@ -1345,7 +1345,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 NP energy A",
+            "name": "Ch 3 NP energy L1",
             "reg_type": "input",
             "address": "0x3506",
             "type": "value",
@@ -1355,7 +1355,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 NN energy A",
+            "name": "Ch 3 NN energy L1",
             "reg_type": "input",
             "address": "0x3516",
             "type": "value",
@@ -1365,7 +1365,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 Irms B",
+            "name": "Ch 3 Irms L2",
             "reg_type": "input",
             "address": "0x30de",
             "type": "value",
@@ -1374,7 +1374,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 P B",
+            "name": "Ch 3 P L2",
             "reg_type": "input",
             "address": "0x3304",
             "type": "power",
@@ -1383,7 +1383,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 Q B",
+            "name": "Ch 3 Q L2",
             "reg_type": "input",
             "address": "0x330c",
             "type": "value",
@@ -1392,7 +1392,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 S B",
+            "name": "Ch 3 S L2",
             "reg_type": "input",
             "address": "0x3314",
             "type": "value",
@@ -1401,7 +1401,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 N B",
+            "name": "Ch 3 N L2",
             "reg_type": "input",
             "address": "0x3584",
             "type": "value",
@@ -1410,7 +1410,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 PF B",
+            "name": "Ch 3 PF L2",
             "reg_type": "input",
             "address": "0x30be",
             "type": "value",
@@ -1419,7 +1419,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 Pfund B",
+            "name": "Ch 3 Pfund L2",
             "reg_type": "input",
             "address": "0x3404",
             "type": "value",
@@ -1428,7 +1428,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 3 Pharm B",
+            "name": "Ch 3 Pharm L2",
             "reg_type": "input",
             "address": "0x340c",
             "type": "value",
@@ -1437,7 +1437,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 3 AP energy B",
+            "name": "Ch 3 AP energy L2",
             "reg_type": "input",
             "address": "0x3208",
             "type": "power_consumption",
@@ -1447,7 +1447,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 AN energy B",
+            "name": "Ch 3 AN energy L2",
             "reg_type": "input",
             "address": "0x3218",
             "type": "power_consumption",
@@ -1457,7 +1457,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 RP energy B",
+            "name": "Ch 3 RP energy L2",
             "reg_type": "input",
             "address": "0x3228",
             "type": "value",
@@ -1467,7 +1467,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 RN energy B",
+            "name": "Ch 3 RN energy L2",
             "reg_type": "input",
             "address": "0x3238",
             "type": "value",
@@ -1477,7 +1477,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 S energy B",
+            "name": "Ch 3 S energy L2",
             "reg_type": "input",
             "address": "0x3248",
             "type": "value",
@@ -1487,7 +1487,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 NP energy B",
+            "name": "Ch 3 NP energy L2",
             "reg_type": "input",
             "address": "0x350a",
             "type": "value",
@@ -1497,7 +1497,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 NN energy B",
+            "name": "Ch 3 NN energy L2",
             "reg_type": "input",
             "address": "0x351a",
             "type": "value",
@@ -1507,7 +1507,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 Irms C",
+            "name": "Ch 3 Irms L3",
             "reg_type": "input",
             "address": "0x30df",
             "type": "value",
@@ -1516,7 +1516,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 P C",
+            "name": "Ch 3 P L3",
             "reg_type": "input",
             "address": "0x3306",
             "type": "power",
@@ -1525,7 +1525,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 Q C",
+            "name": "Ch 3 Q L3",
             "reg_type": "input",
             "address": "0x330e",
             "type": "value",
@@ -1534,7 +1534,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 S C",
+            "name": "Ch 3 S L3",
             "reg_type": "input",
             "address": "0x3316",
             "type": "value",
@@ -1543,7 +1543,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 N C",
+            "name": "Ch 3 N L3",
             "reg_type": "input",
             "address": "0x3586",
             "type": "value",
@@ -1552,7 +1552,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 PF C",
+            "name": "Ch 3 PF L3",
             "reg_type": "input",
             "address": "0x30bf",
             "type": "value",
@@ -1561,7 +1561,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 3 Pfund C",
+            "name": "Ch 3 Pfund L3",
             "reg_type": "input",
             "address": "0x3406",
             "type": "value",
@@ -1570,7 +1570,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 3 Pharm C",
+            "name": "Ch 3 Pharm L3",
             "reg_type": "input",
             "address": "0x340e",
             "type": "value",
@@ -1579,7 +1579,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 3 AP energy C",
+            "name": "Ch 3 AP energy L3",
             "reg_type": "input",
             "address": "0x320c",
             "type": "power_consumption",
@@ -1589,7 +1589,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 AN energy C",
+            "name": "Ch 3 AN energy L3",
             "reg_type": "input",
             "address": "0x321c",
             "type": "power_consumption",
@@ -1599,7 +1599,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 RP energy C",
+            "name": "Ch 3 RP energy L3",
             "reg_type": "input",
             "address": "0x322c",
             "type": "value",
@@ -1609,7 +1609,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 RN energy C",
+            "name": "Ch 3 RN energy L3",
             "reg_type": "input",
             "address": "0x323c",
             "type": "value",
@@ -1619,7 +1619,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 S energy C",
+            "name": "Ch 3 S energy L3",
             "reg_type": "input",
             "address": "0x324c",
             "type": "value",
@@ -1629,7 +1629,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 NP energy C",
+            "name": "Ch 3 NP energy L3",
             "reg_type": "input",
             "address": "0x350e",
             "type": "value",
@@ -1639,7 +1639,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 NN energy C",
+            "name": "Ch 3 NN energy L3",
             "reg_type": "input",
             "address": "0x351e",
             "type": "value",
@@ -1773,7 +1773,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 3 Phase angle A",
+            "name": "Ch 3 Phase angle L1",
             "reg_type": "input",
             "address": "0x30f9",
             "type": "value",
@@ -1782,7 +1782,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 3 Phase angle B",
+            "name": "Ch 3 Phase angle L2",
             "reg_type": "input",
             "address": "0x30fa",
             "type": "value",
@@ -1791,7 +1791,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 3 Phase angle C",
+            "name": "Ch 3 Phase angle L3",
             "reg_type": "input",
             "address": "0x30fb",
             "type": "value",
@@ -1800,7 +1800,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 4 Irms A",
+            "name": "Ch 4 Irms L1",
             "reg_type": "input",
             "address": "0x40dd",
             "type": "value",
@@ -1809,7 +1809,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 P A",
+            "name": "Ch 4 P L1",
             "reg_type": "input",
             "address": "0x4302",
             "type": "power",
@@ -1818,7 +1818,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 Q A",
+            "name": "Ch 4 Q L1",
             "reg_type": "input",
             "address": "0x430a",
             "type": "value",
@@ -1827,7 +1827,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 S A",
+            "name": "Ch 4 S L1",
             "reg_type": "input",
             "address": "0x4312",
             "type": "value",
@@ -1836,7 +1836,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 N A",
+            "name": "Ch 4 N L1",
             "reg_type": "input",
             "address": "0x4582",
             "type": "value",
@@ -1845,7 +1845,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 PF A",
+            "name": "Ch 4 PF L1",
             "reg_type": "input",
             "address": "0x40bd",
             "type": "value",
@@ -1854,7 +1854,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 Pfund A",
+            "name": "Ch 4 Pfund L1",
             "reg_type": "input",
             "address": "0x4402",
             "type": "value",
@@ -1863,7 +1863,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 4 Pharm A",
+            "name": "Ch 4 Pharm L1",
             "reg_type": "input",
             "address": "0x440a",
             "type": "value",
@@ -1872,7 +1872,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 4 AP energy A",
+            "name": "Ch 4 AP energy L1",
             "reg_type": "input",
             "address": "0x4204",
             "type": "power_consumption",
@@ -1882,7 +1882,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 AN energy A",
+            "name": "Ch 4 AN energy L1",
             "reg_type": "input",
             "address": "0x4214",
             "type": "power_consumption",
@@ -1892,7 +1892,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 RP energy A",
+            "name": "Ch 4 RP energy L1",
             "reg_type": "input",
             "address": "0x4224",
             "type": "value",
@@ -1902,7 +1902,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 RN energy A",
+            "name": "Ch 4 RN energy L1",
             "reg_type": "input",
             "address": "0x4234",
             "type": "value",
@@ -1912,7 +1912,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 S energy A",
+            "name": "Ch 4 S energy L1",
             "reg_type": "input",
             "address": "0x4244",
             "type": "value",
@@ -1922,7 +1922,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 NP energy A",
+            "name": "Ch 4 NP energy L1",
             "reg_type": "input",
             "address": "0x4506",
             "type": "value",
@@ -1932,7 +1932,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 NN energy A",
+            "name": "Ch 4 NN energy L1",
             "reg_type": "input",
             "address": "0x4516",
             "type": "value",
@@ -1942,7 +1942,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 Irms B",
+            "name": "Ch 4 Irms L2",
             "reg_type": "input",
             "address": "0x40de",
             "type": "value",
@@ -1951,7 +1951,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 P B",
+            "name": "Ch 4 P L2",
             "reg_type": "input",
             "address": "0x4304",
             "type": "power",
@@ -1960,7 +1960,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 Q B",
+            "name": "Ch 4 Q L2",
             "reg_type": "input",
             "address": "0x430c",
             "type": "value",
@@ -1969,7 +1969,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 S B",
+            "name": "Ch 4 S L2",
             "reg_type": "input",
             "address": "0x4314",
             "type": "value",
@@ -1978,7 +1978,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 N B",
+            "name": "Ch 4 N L2",
             "reg_type": "input",
             "address": "0x4584",
             "type": "value",
@@ -1987,7 +1987,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 PF B",
+            "name": "Ch 4 PF L2",
             "reg_type": "input",
             "address": "0x40be",
             "type": "value",
@@ -1996,7 +1996,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 Pfund B",
+            "name": "Ch 4 Pfund L2",
             "reg_type": "input",
             "address": "0x4404",
             "type": "value",
@@ -2005,7 +2005,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 4 Pharm B",
+            "name": "Ch 4 Pharm L2",
             "reg_type": "input",
             "address": "0x440c",
             "type": "value",
@@ -2014,7 +2014,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 4 AP energy B",
+            "name": "Ch 4 AP energy L2",
             "reg_type": "input",
             "address": "0x4208",
             "type": "power_consumption",
@@ -2024,7 +2024,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 AN energy B",
+            "name": "Ch 4 AN energy L2",
             "reg_type": "input",
             "address": "0x4218",
             "type": "power_consumption",
@@ -2034,7 +2034,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 RP energy B",
+            "name": "Ch 4 RP energy L2",
             "reg_type": "input",
             "address": "0x4228",
             "type": "value",
@@ -2044,7 +2044,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 RN energy B",
+            "name": "Ch 4 RN energy L2",
             "reg_type": "input",
             "address": "0x4238",
             "type": "value",
@@ -2054,7 +2054,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 S energy B",
+            "name": "Ch 4 S energy L2",
             "reg_type": "input",
             "address": "0x4248",
             "type": "value",
@@ -2064,7 +2064,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 NP energy B",
+            "name": "Ch 4 NP energy L2",
             "reg_type": "input",
             "address": "0x450a",
             "type": "value",
@@ -2074,7 +2074,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 NN energy B",
+            "name": "Ch 4 NN energy L2",
             "reg_type": "input",
             "address": "0x451a",
             "type": "value",
@@ -2084,7 +2084,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 Irms C",
+            "name": "Ch 4 Irms L3",
             "reg_type": "input",
             "address": "0x40df",
             "type": "value",
@@ -2093,7 +2093,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 P C",
+            "name": "Ch 4 P L3",
             "reg_type": "input",
             "address": "0x4306",
             "type": "power",
@@ -2102,7 +2102,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 Q C",
+            "name": "Ch 4 Q L3",
             "reg_type": "input",
             "address": "0x430e",
             "type": "value",
@@ -2111,7 +2111,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 S C",
+            "name": "Ch 4 S L3",
             "reg_type": "input",
             "address": "0x4316",
             "type": "value",
@@ -2120,7 +2120,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 N C",
+            "name": "Ch 4 N L3",
             "reg_type": "input",
             "address": "0x4586",
             "type": "value",
@@ -2129,7 +2129,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 PF C",
+            "name": "Ch 4 PF L3",
             "reg_type": "input",
             "address": "0x40bf",
             "type": "value",
@@ -2138,7 +2138,7 @@
             "round_to": 0.01,
             "poll_interval": 300
         },{
-            "name": "Ch 4 Pfund C",
+            "name": "Ch 4 Pfund L3",
             "reg_type": "input",
             "address": "0x4406",
             "type": "value",
@@ -2147,7 +2147,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 4 Pharm C",
+            "name": "Ch 4 Pharm L3",
             "reg_type": "input",
             "address": "0x440e",
             "type": "value",
@@ -2156,7 +2156,7 @@
             "round_to": 0.01,
             "poll_interval": 2000
         },{
-            "name": "Ch 4 AP energy C",
+            "name": "Ch 4 AP energy L3",
             "reg_type": "input",
             "address": "0x420c",
             "type": "power_consumption",
@@ -2166,7 +2166,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 AN energy C",
+            "name": "Ch 4 AN energy L3",
             "reg_type": "input",
             "address": "0x421c",
             "type": "power_consumption",
@@ -2176,7 +2176,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 RP energy C",
+            "name": "Ch 4 RP energy L3",
             "reg_type": "input",
             "address": "0x422c",
             "type": "value",
@@ -2186,7 +2186,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 RN energy C",
+            "name": "Ch 4 RN energy L3",
             "reg_type": "input",
             "address": "0x423c",
             "type": "value",
@@ -2196,7 +2196,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 S energy C",
+            "name": "Ch 4 S energy L3",
             "reg_type": "input",
             "address": "0x424c",
             "type": "value",
@@ -2206,7 +2206,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 NP energy C",
+            "name": "Ch 4 NP energy L3",
             "reg_type": "input",
             "address": "0x450e",
             "type": "value",
@@ -2216,7 +2216,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 NN energy C",
+            "name": "Ch 4 NN energy L3",
             "reg_type": "input",
             "address": "0x451e",
             "type": "value",
@@ -2350,7 +2350,7 @@
             "poll_interval": 8000,
             "word_order": "little_endian" 
         },{
-            "name": "Ch 4 Phase angle A",
+            "name": "Ch 4 Phase angle L1",
             "reg_type": "input",
             "address": "0x40f9",
             "type": "value",
@@ -2359,7 +2359,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 4 Phase angle B",
+            "name": "Ch 4 Phase angle L2",
             "reg_type": "input",
             "address": "0x40fa",
             "type": "value",
@@ -2368,7 +2368,7 @@
             "round_to": 0.01,
             "poll_interval": 8000
         },{
-            "name": "Ch 4 Phase angle C",
+            "name": "Ch 4 Phase angle L3",
             "reg_type": "input",
             "address": "0x40fb",
             "type": "value",
