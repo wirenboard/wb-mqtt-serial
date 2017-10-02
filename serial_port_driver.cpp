@@ -1,17 +1,32 @@
+#include "serial_port_driver.h"
+#include "serial_port.h"
+#include "tcp_port.h"
+#include "global.h"
+
+#include <wbmqtt/utils.h>
+
 #include <algorithm>
 #include <sstream>
 #include <iostream>
 
-#include <wbmqtt/utils.h>
-#include "serial_port_driver.h"
 
 TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig port_config,
-                                     PAbstractSerialPort port_override)
-    : MQTTClient(mqtt_client),
-      Config(port_config),
-      Port(port_override ? port_override : std::make_shared<TSerialPort>(Config->ConnSettings)),
-      SerialClient(new TSerialClient(Port))
+                                     PPort port_override)
+    : MQTTClient(mqtt_client)
+    , Config(port_config)
 {
+    if (port_override) {
+        Port = port_override;
+    } else if (auto serial_port_settings = std::dynamic_pointer_cast<TSerialPortSettings>(port_config->ConnSettings)) {
+        Port = std::make_shared<TSerialPort>(serial_port_settings);
+    } else if (auto tcp_port_settings = std::dynamic_pointer_cast<TTcpPortSettings>(port_config->ConnSettings)) {
+        Port = std::make_shared<TTcpPort>(tcp_port_settings);
+    } else {
+        throw TSerialDeviceException("invalid connection settings");
+    }
+
+    SerialClient = std::make_shared<TSerialClient>(Port);
+
     SerialClient->SetDebug(Config->Debug);
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             OnValueRead(reg, changed);
@@ -22,7 +37,7 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
         });
 
     if (Config->Debug)
-        std::cerr << "Setting up devices at " << port_config->ConnSettings.Device << std::endl;
+        std::cerr << "Setting up devices at " << port_config->ConnSettings->ToString() << std::endl;
 
     for (auto& device_config: Config->DeviceConfigs) {
         auto device = SerialClient->CreateDevice(device_config);
@@ -155,7 +170,7 @@ bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
         return changed;
 
     // max_unchanged_interval > 0: update if changed or the time interval is exceeded
-    auto now = Port->CurrentTime();
+    auto now = Global::CurrentTime();
     if (changed) {
         RegLastPublishTimeMap[reg] = now;
         return true;

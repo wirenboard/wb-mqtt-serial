@@ -22,7 +22,7 @@ namespace {
 
 REGISTER_BASIC_INT_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
-TIVTMDevice::TIVTMDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
+TIVTMDevice::TIVTMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TIVTMDevice>>(device_config, port, protocol)
 {}
 

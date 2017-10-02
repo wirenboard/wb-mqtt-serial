@@ -5,14 +5,14 @@
 
 TMQTTSerialObserver::TMQTTSerialObserver(PMQTTClientBase mqtt_client,
                                          PHandlerConfig handler_config,
-                                         PAbstractSerialPort port_override)
+                                         PPort port_override)
     : MQTTClient(mqtt_client),
       Config(handler_config)
 {
     for (const auto& port_config : Config->PortConfigs) {
         if (port_config->DeviceConfigs.empty()) {
             std::cerr << "Warning: no devices defined for port "
-                      << port_config->ConnSettings.Device
+                      << port_config->ConnSettings->ToString()
                       << " . Skipping. " << std::endl;
             continue;
         }

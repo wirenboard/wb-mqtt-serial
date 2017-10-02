@@ -32,7 +32,7 @@ class TMQTTWrapper;
 class TSerialPortDriver
 {
 public:
-    TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig port_config, PAbstractSerialPort port_override = 0);
+    TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig port_config, PPort port_override = 0);
     ~TSerialPortDriver();
     void Cycle();
     void PubSubSetup();
@@ -48,7 +48,7 @@ private:
 
     PMQTTClientBase MQTTClient;
     PPortConfig Config;
-    PAbstractSerialPort Port;
+    PPort Port;
     PSerialClient SerialClient;
     std::vector<PSerialDevice> Devices;
 

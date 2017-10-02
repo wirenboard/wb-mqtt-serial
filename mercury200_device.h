@@ -23,7 +23,7 @@ public:
         REG_PARAM_VALUE32 = 3,
     };
 
-    TMercury200Device(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
+    TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol);
     virtual ~TMercury200Device();
     virtual uint64_t ReadRegister(PRegister reg);
     virtual void WriteRegister(PRegister reg, uint64_t value);

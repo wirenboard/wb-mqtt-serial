@@ -26,7 +26,7 @@ public:
         REG_VALUE_ARRAY12 = 6
     };
 
-    TMercury230Device(PDeviceConfig, PAbstractSerialPort port, PProtocol protocol);
+    TMercury230Device(PDeviceConfig, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void EndPollCycle();
 

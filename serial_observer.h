@@ -13,7 +13,7 @@ class TMQTTSerialObserver : public IMQTTObserver,
 public:
     TMQTTSerialObserver(PMQTTClientBase mqtt_client,
                         PHandlerConfig handler_config,
-                        PAbstractSerialPort port_override = 0);
+                        PPort port_override = 0);
 
     void SetUp();
     void OnConnect(int rc);

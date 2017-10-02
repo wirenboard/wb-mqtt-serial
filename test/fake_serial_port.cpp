@@ -22,7 +22,7 @@ void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& t
     ExpectedFrameTimeout = timeout;
 }
 
-void TFakeSerialPort::CheckPortOpen()
+void TFakeSerialPort::CheckPortOpen() const
 {
     if (!IsPortOpen)
         throw TSerialDeviceException("port not open");
@@ -154,21 +154,6 @@ void TFakeSerialPort::Sleep(const std::chrono::microseconds& us)
     SkipFrameBoundary();
     DumpWhatWasRead();
     Fixture.Emit() << "Sleep(" << us.count() << ")";
-}
-
-TAbstractSerialPort::TTimePoint TFakeSerialPort::CurrentTime() const
-{
-    return Time;
-}
-
-bool TFakeSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
-{
-    if (semaphore->TryWait())
-        return true;
-    if (until < Time)
-        throw std::runtime_error("TFakeSerialPort::Wait(): going back in time");
-    Time = until;
-    return false;
 }
 
 void TFakeSerialPort::DumpWhatWasRead()

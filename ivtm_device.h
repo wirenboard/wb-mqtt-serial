@@ -8,7 +8,7 @@
 
 class TIVTMDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TIVTMDevice>> {
 public:
-    TIVTMDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol);
+    TIVTMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 

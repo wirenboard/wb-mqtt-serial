@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "serial_client.h"
+#include "global.h"
 
 namespace {
     struct TSerialPollEntry: public TPollEntry {
@@ -17,13 +18,13 @@ namespace {
     typedef std::shared_ptr<TSerialPollEntry> PSerialPollEntry;
 };
 
-TSerialClient::TSerialClient(PAbstractSerialPort port)
+TSerialClient::TSerialClient(PPort port)
     : Port(port),
       Active(false),
       ReadCallback([](PRegister, bool){}),
       ErrorCallback([](PRegister, bool){}),
       FlushNeeded(new TBinarySemaphore),
-      Plan(std::make_shared<TPollPlan>([this]() { return Port->CurrentTime(); })) {}
+      Plan(std::make_shared<TPollPlan>([this]() { return Global::CurrentTime(); })) {}
 
 TSerialClient::~TSerialClient()
 {
@@ -153,7 +154,7 @@ void TSerialClient::WaitForPollAndFlush()
         return;
     }
     auto wait_until = Plan->GetNextPollTimePoint();
-    while (Port->Wait(FlushNeeded, wait_until)) {
+    while (Global::Wait(FlushNeeded, wait_until)) {
         // Don't hold the lock while flushing
         DoFlush();
         if (Plan->PollIsDue()) {
@@ -258,7 +259,6 @@ void TSerialClient::SetErrorCallback(const TSerialClient::TErrorCallback& callba
 void TSerialClient::SetDebug(bool debug)
 {
     Debug = debug;
-    Port->SetDebug(debug);
     for (const auto& p: Handlers)
         p.second->SetDebug(debug);
 }

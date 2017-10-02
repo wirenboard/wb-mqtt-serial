@@ -12,7 +12,7 @@ REGISTER_BASIC_PROTOCOL("modbus_io", TModbusIODevice, TAggregatedSlaveId, TRegis
             { Modbus::REG_INPUT, "input", "text", U16, true }
         }));
 
-TModbusIODevice::TModbusIODevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+TModbusIODevice::TModbusIODevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TModbusIODevice, TAggregatedSlaveId>>(config, port, protocol)
 {
     Shift = (((SlaveId.Secondary - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;

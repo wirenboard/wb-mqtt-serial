@@ -1,6 +1,7 @@
 #include "modbus_common.h"
 #include "serial_device.h"
 #include "crc16.h"
+#include "global.h"
 
 #include <cmath>
 #include <array>
@@ -344,7 +345,7 @@ namespace Modbus    // modbus protocol common utilities
 
     inline size_t ReadResponsePDUSize(const uint8_t* pdu)
     {
-        // Modbus stores data byte count in second byte of PDU, 
+        // Modbus stores data byte count in second byte of PDU,
         // so PDU size is data size + 2 (1b function code + 1b byte count itself)
         return IsException(pdu) ? EXCEPTION_RESPONSE_PDU_SIZE : pdu[1] + 2;
     }
@@ -353,7 +354,7 @@ namespace Modbus    // modbus protocol common utilities
     {
         return IsException(pdu) ? EXCEPTION_RESPONSE_PDU_SIZE : WRITE_RESPONSE_PDU_SIZE;
     }
-    
+
     // fills pdu with read request data according to Modbus specification
     void ComposeReadRequestPDU(uint8_t* pdu, PRegister reg, int shift)
     {
@@ -396,7 +397,7 @@ namespace Modbus    // modbus protocol common utilities
         WriteAs2Bytes(pdu + 1, reg->Address + shift);
         WriteAs2Bytes(pdu + 3, value);
     }
-    
+
     // parses modbus response and stores result
     void ParseReadResponse(const uint8_t* pdu, PModbusRegisterRange range)
     {
@@ -434,7 +435,7 @@ namespace Modbus    // modbus protocol common utilities
         ThrowIfModbusException(GetExceptionCode(pdu));
     }
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list, PDeviceConfig deviceConfig, bool debug)
+    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list, PDeviceConfig deviceConfig)
     {
         std::list<PRegisterRange> r;
         if (reg_list.empty())
@@ -466,7 +467,7 @@ namespace Modbus    // modbus protocol common utilities
                 new_end - prev_start <= max_regs)) {
                 if (!l.empty()) {
                     auto range = std::make_shared<TModbusRegisterRange>(l);
-                    if (debug)
+                    if (Global::Debug())
                         std::cerr << "Adding range: " << range->GetCount() << " " <<
                             range->TypeName() << "(s) @ " << range->GetStart() <<
                             " of device " << range->Device()->ToString() << std::endl;
@@ -482,7 +483,7 @@ namespace Modbus    // modbus protocol common utilities
         }
         if (!l.empty()) {
             auto range = std::make_shared<TModbusRegisterRange>(l);
-            if (debug)
+            if (Global::Debug())
                 std::cerr << "Adding range: " << range->GetCount() << " " <<
                     range->TypeName() << "(s) @ " << range->GetStart() <<
                     " of device " << range->Device()->ToString() << std::endl;
@@ -531,7 +532,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         return Modbus::InferReadResponsePDUSize(range) + DATA_SIZE;
     }
 
-    TAbstractSerialPort::TFrameCompletePred ExpectNBytes(int n)
+    TPort::TFrameCompletePred ExpectNBytes(int n)
     {
         return [n](uint8_t* buf, int size) {
             if (size < 2)
@@ -587,7 +588,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         Modbus::ParseWriteResponse(PDU(res));
     }
 
-    void WriteRegister(PAbstractSerialPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift)
+    void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift)
     {
         int w = reg->Width();
 
@@ -619,7 +620,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
             " @ " + std::to_string(reg->Address) + exception_message);
     }
 
-    void ReadRegisterRange(PAbstractSerialPort port, uint8_t slaveId, PRegisterRange range, int shift)
+    void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift)
     {
         auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
         if (!modbus_range) {

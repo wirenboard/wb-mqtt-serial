@@ -9,7 +9,7 @@ class TFakeSerialDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TFakeS
 public:
     enum RegisterType {REG_FAKE = 123};
 
-    TFakeSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
+    TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg) override;
     void WriteRegister(PRegister reg, uint64_t value) override;
     void BlockReadFor(int addr, bool block);

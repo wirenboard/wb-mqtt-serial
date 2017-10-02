@@ -1,8 +1,10 @@
-#include <iostream>
 #include "serial_device.h"
+#include "global.h"
+
+#include <iostream>
 #include <unistd.h>
 
-TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : Delay(config->Delay)
     , SerialPort(port)
     , _DeviceConfig(config)
@@ -31,7 +33,7 @@ std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegi
 
 void TSerialDevice::Prepare()
 {
-    SerialPort->Sleep(Delay);
+    Port()->Sleep(Delay);
 }
 
 void TSerialDevice::EndPollCycle() {}
@@ -144,7 +146,7 @@ PProtocol TSerialDeviceFactory::GetProtocol(const std::string &name)
     return it->second;
 }
 
-PSerialDevice TSerialDeviceFactory::CreateDevice(PDeviceConfig device_config, PAbstractSerialPort port)
+PSerialDevice TSerialDeviceFactory::CreateDevice(PDeviceConfig device_config, PPort port)
 {
     return GetProtocolEntry(device_config)->CreateDevice(device_config, port);
 }
