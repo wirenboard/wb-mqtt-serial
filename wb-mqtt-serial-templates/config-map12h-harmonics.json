@@ -152,7 +152,7 @@
         },{
             "name": "HR U 2 L1",
             "reg_type": "input",
-            "address": "0x1629",
+            "address": "0x167b",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -162,7 +162,7 @@
         },{
             "name": "HR U 3 L1",
             "reg_type": "input",
-            "address": "0x162a",
+            "address": "0x167c",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -172,7 +172,7 @@
         },{
             "name": "HR U 4 L1",
             "reg_type": "input",
-            "address": "0x162b",
+            "address": "0x167d",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -182,7 +182,7 @@
         },{
             "name": "HR U 5 L1",
             "reg_type": "input",
-            "address": "0x162c",
+            "address": "0x167e",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -192,7 +192,7 @@
         },{
             "name": "HR U 6 L1",
             "reg_type": "input",
-            "address": "0x162d",
+            "address": "0x167f",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -202,7 +202,7 @@
         },{
             "name": "HR U 7 L1",
             "reg_type": "input",
-            "address": "0x162e",
+            "address": "0x1680",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -212,7 +212,7 @@
         },{
             "name": "HR U 2 L2",
             "reg_type": "input",
-            "address": "0x167b",
+            "address": "0x16a4",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -222,7 +222,7 @@
         },{
             "name": "HR U 3 L2",
             "reg_type": "input",
-            "address": "0x167c",
+            "address": "0x16a5",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -232,7 +232,7 @@
         },{
             "name": "HR U 4 L2",
             "reg_type": "input",
-            "address": "0x167d",
+            "address": "0x16a6",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -242,7 +242,7 @@
         },{
             "name": "HR U 5 L2",
             "reg_type": "input",
-            "address": "0x167e",
+            "address": "0x16a7",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -252,7 +252,7 @@
         },{
             "name": "HR U 6 L2",
             "reg_type": "input",
-            "address": "0x167f",
+            "address": "0x16a8",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -262,7 +262,7 @@
         },{
             "name": "HR U 7 L2",
             "reg_type": "input",
-            "address": "0x1680",
+            "address": "0x16a9",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1099,7 +1099,7 @@
         },{
             "name": "Ch 1 HR I 2 L2",
             "reg_type": "input",
-            "address": "0x1652",
+            "address": "0x1629",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1109,7 +1109,7 @@
         },{
             "name": "Ch 1 HR I 3 L2",
             "reg_type": "input",
-            "address": "0x1653",
+            "address": "0x162a",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1119,7 +1119,7 @@
         },{
             "name": "Ch 1 HR I 4 L2",
             "reg_type": "input",
-            "address": "0x1654",
+            "address": "0x162b",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1129,7 +1129,7 @@
         },{
             "name": "Ch 1 HR I 5 L2",
             "reg_type": "input",
-            "address": "0x1655",
+            "address": "0x162c",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1139,7 +1139,7 @@
         },{
             "name": "Ch 1 HR I 6 L2",
             "reg_type": "input",
-            "address": "0x1656",
+            "address": "0x162d",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1149,7 +1149,7 @@
         },{
             "name": "Ch 1 HR I 7 L2",
             "reg_type": "input",
-            "address": "0x1657",
+            "address": "0x162e",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1159,7 +1159,7 @@
         },{
             "name": "Ch 1 HR I 9 L2",
             "reg_type": "input",
-            "address": "0x1659",
+            "address": "0x1630",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1169,7 +1169,7 @@
         },{
             "name": "Ch 1 HR I 11 L2",
             "reg_type": "input",
-            "address": "0x165b",
+            "address": "0x1632",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1179,7 +1179,7 @@
         },{
             "name": "Ch 1 HR I 13 L2",
             "reg_type": "input",
-            "address": "0x165d",
+            "address": "0x1634",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1189,7 +1189,7 @@
         },{
             "name": "Ch 1 HR I 15 L2",
             "reg_type": "input",
-            "address": "0x165f",
+            "address": "0x1636",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1199,7 +1199,7 @@
         },{
             "name": "Ch 1 HR I 2 L3",
             "reg_type": "input",
-            "address": "0x16a4",
+            "address": "0x1652",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1209,7 +1209,7 @@
         },{
             "name": "Ch 1 HR I 3 L3",
             "reg_type": "input",
-            "address": "0x16a5",
+            "address": "0x1653",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1219,7 +1219,7 @@
         },{
             "name": "Ch 1 HR I 4 L3",
             "reg_type": "input",
-            "address": "0x16a6",
+            "address": "0x1654",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1229,7 +1229,7 @@
         },{
             "name": "Ch 1 HR I 5 L3",
             "reg_type": "input",
-            "address": "0x16a7",
+            "address": "0x1655",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1239,7 +1239,7 @@
         },{
             "name": "Ch 1 HR I 6 L3",
             "reg_type": "input",
-            "address": "0x16a8",
+            "address": "0x1656",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1249,7 +1249,7 @@
         },{
             "name": "Ch 1 HR I 7 L3",
             "reg_type": "input",
-            "address": "0x16a9",
+            "address": "0x1657",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1259,7 +1259,7 @@
         },{
             "name": "Ch 1 HR I 9 L3",
             "reg_type": "input",
-            "address": "0x16ab",
+            "address": "0x1659",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1269,7 +1269,7 @@
         },{
             "name": "Ch 1 HR I 11 L3",
             "reg_type": "input",
-            "address": "0x16ad",
+            "address": "0x165b",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1279,7 +1279,7 @@
         },{
             "name": "Ch 1 HR I 13 L3",
             "reg_type": "input",
-            "address": "0x16af",
+            "address": "0x165d",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1289,7 +1289,7 @@
         },{
             "name": "Ch 1 HR I 15 L3",
             "reg_type": "input",
-            "address": "0x16b1",
+            "address": "0x165f",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2066,7 +2066,7 @@
         },{
             "name": "Ch 2 HR I 2 L2",
             "reg_type": "input",
-            "address": "0x2652",
+            "address": "0x2629",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2076,7 +2076,7 @@
         },{
             "name": "Ch 2 HR I 3 L2",
             "reg_type": "input",
-            "address": "0x2653",
+            "address": "0x262a",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2086,7 +2086,7 @@
         },{
             "name": "Ch 2 HR I 4 L2",
             "reg_type": "input",
-            "address": "0x2654",
+            "address": "0x262b",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2096,7 +2096,7 @@
         },{
             "name": "Ch 2 HR I 5 L2",
             "reg_type": "input",
-            "address": "0x2655",
+            "address": "0x262c",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2106,7 +2106,7 @@
         },{
             "name": "Ch 2 HR I 6 L2",
             "reg_type": "input",
-            "address": "0x2656",
+            "address": "0x262d",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2116,7 +2116,7 @@
         },{
             "name": "Ch 2 HR I 7 L2",
             "reg_type": "input",
-            "address": "0x2657",
+            "address": "0x262e",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2126,7 +2126,7 @@
         },{
             "name": "Ch 2 HR I 9 L2",
             "reg_type": "input",
-            "address": "0x2659",
+            "address": "0x2630",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2136,7 +2136,7 @@
         },{
             "name": "Ch 2 HR I 11 L2",
             "reg_type": "input",
-            "address": "0x265b",
+            "address": "0x2632",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2146,7 +2146,7 @@
         },{
             "name": "Ch 2 HR I 13 L2",
             "reg_type": "input",
-            "address": "0x265d",
+            "address": "0x2634",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2156,7 +2156,7 @@
         },{
             "name": "Ch 2 HR I 15 L2",
             "reg_type": "input",
-            "address": "0x265f",
+            "address": "0x2636",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2166,7 +2166,7 @@
         },{
             "name": "Ch 2 HR I 2 L3",
             "reg_type": "input",
-            "address": "0x26a4",
+            "address": "0x2652",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2176,7 +2176,7 @@
         },{
             "name": "Ch 2 HR I 3 L3",
             "reg_type": "input",
-            "address": "0x26a5",
+            "address": "0x2653",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2186,7 +2186,7 @@
         },{
             "name": "Ch 2 HR I 4 L3",
             "reg_type": "input",
-            "address": "0x26a6",
+            "address": "0x2654",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2196,7 +2196,7 @@
         },{
             "name": "Ch 2 HR I 5 L3",
             "reg_type": "input",
-            "address": "0x26a7",
+            "address": "0x2655",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2206,7 +2206,7 @@
         },{
             "name": "Ch 2 HR I 6 L3",
             "reg_type": "input",
-            "address": "0x26a8",
+            "address": "0x2656",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2216,7 +2216,7 @@
         },{
             "name": "Ch 2 HR I 7 L3",
             "reg_type": "input",
-            "address": "0x26a9",
+            "address": "0x2657",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2226,7 +2226,7 @@
         },{
             "name": "Ch 2 HR I 9 L3",
             "reg_type": "input",
-            "address": "0x26ab",
+            "address": "0x2659",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2236,7 +2236,7 @@
         },{
             "name": "Ch 2 HR I 11 L3",
             "reg_type": "input",
-            "address": "0x26ad",
+            "address": "0x265b",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2246,7 +2246,7 @@
         },{
             "name": "Ch 2 HR I 13 L3",
             "reg_type": "input",
-            "address": "0x26af",
+            "address": "0x265d",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2256,7 +2256,7 @@
         },{
             "name": "Ch 2 HR I 15 L3",
             "reg_type": "input",
-            "address": "0x26b1",
+            "address": "0x265f",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3033,7 +3033,7 @@
         },{
             "name": "Ch 3 HR I 2 L2",
             "reg_type": "input",
-            "address": "0x3652",
+            "address": "0x3629",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3043,7 +3043,7 @@
         },{
             "name": "Ch 3 HR I 3 L2",
             "reg_type": "input",
-            "address": "0x3653",
+            "address": "0x362a",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3053,7 +3053,7 @@
         },{
             "name": "Ch 3 HR I 4 L2",
             "reg_type": "input",
-            "address": "0x3654",
+            "address": "0x362b",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3063,7 +3063,7 @@
         },{
             "name": "Ch 3 HR I 5 L2",
             "reg_type": "input",
-            "address": "0x3655",
+            "address": "0x362c",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3073,7 +3073,7 @@
         },{
             "name": "Ch 3 HR I 6 L2",
             "reg_type": "input",
-            "address": "0x3656",
+            "address": "0x362d",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3083,7 +3083,7 @@
         },{
             "name": "Ch 3 HR I 7 L2",
             "reg_type": "input",
-            "address": "0x3657",
+            "address": "0x362e",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3093,7 +3093,7 @@
         },{
             "name": "Ch 3 HR I 9 L2",
             "reg_type": "input",
-            "address": "0x3659",
+            "address": "0x3630",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3103,7 +3103,7 @@
         },{
             "name": "Ch 3 HR I 11 L2",
             "reg_type": "input",
-            "address": "0x365b",
+            "address": "0x3632",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3113,7 +3113,7 @@
         },{
             "name": "Ch 3 HR I 13 L2",
             "reg_type": "input",
-            "address": "0x365d",
+            "address": "0x3634",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3123,7 +3123,7 @@
         },{
             "name": "Ch 3 HR I 15 L2",
             "reg_type": "input",
-            "address": "0x365f",
+            "address": "0x3636",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3133,7 +3133,7 @@
         },{
             "name": "Ch 3 HR I 2 L3",
             "reg_type": "input",
-            "address": "0x36a4",
+            "address": "0x3652",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3143,7 +3143,7 @@
         },{
             "name": "Ch 3 HR I 3 L3",
             "reg_type": "input",
-            "address": "0x36a5",
+            "address": "0x3653",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3153,7 +3153,7 @@
         },{
             "name": "Ch 3 HR I 4 L3",
             "reg_type": "input",
-            "address": "0x36a6",
+            "address": "0x3654",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3163,7 +3163,7 @@
         },{
             "name": "Ch 3 HR I 5 L3",
             "reg_type": "input",
-            "address": "0x36a7",
+            "address": "0x3655",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3173,7 +3173,7 @@
         },{
             "name": "Ch 3 HR I 6 L3",
             "reg_type": "input",
-            "address": "0x36a8",
+            "address": "0x3656",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3183,7 +3183,7 @@
         },{
             "name": "Ch 3 HR I 7 L3",
             "reg_type": "input",
-            "address": "0x36a9",
+            "address": "0x3657",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3193,7 +3193,7 @@
         },{
             "name": "Ch 3 HR I 9 L3",
             "reg_type": "input",
-            "address": "0x36ab",
+            "address": "0x3659",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3203,7 +3203,7 @@
         },{
             "name": "Ch 3 HR I 11 L3",
             "reg_type": "input",
-            "address": "0x36ad",
+            "address": "0x365b",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3213,7 +3213,7 @@
         },{
             "name": "Ch 3 HR I 13 L3",
             "reg_type": "input",
-            "address": "0x36af",
+            "address": "0x365d",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -3223,7 +3223,7 @@
         },{
             "name": "Ch 3 HR I 15 L3",
             "reg_type": "input",
-            "address": "0x36b1",
+            "address": "0x365f",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4000,7 +4000,7 @@
         },{
             "name": "Ch 4 HR I 2 L2",
             "reg_type": "input",
-            "address": "0x4652",
+            "address": "0x4629",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4010,7 +4010,7 @@
         },{
             "name": "Ch 4 HR I 3 L2",
             "reg_type": "input",
-            "address": "0x4653",
+            "address": "0x462a",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4020,7 +4020,7 @@
         },{
             "name": "Ch 4 HR I 4 L2",
             "reg_type": "input",
-            "address": "0x4654",
+            "address": "0x462b",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4030,7 +4030,7 @@
         },{
             "name": "Ch 4 HR I 5 L2",
             "reg_type": "input",
-            "address": "0x4655",
+            "address": "0x462c",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4040,7 +4040,7 @@
         },{
             "name": "Ch 4 HR I 6 L2",
             "reg_type": "input",
-            "address": "0x4656",
+            "address": "0x462d",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4050,7 +4050,7 @@
         },{
             "name": "Ch 4 HR I 7 L2",
             "reg_type": "input",
-            "address": "0x4657",
+            "address": "0x462e",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4060,7 +4060,7 @@
         },{
             "name": "Ch 4 HR I 9 L2",
             "reg_type": "input",
-            "address": "0x4659",
+            "address": "0x4630",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4070,7 +4070,7 @@
         },{
             "name": "Ch 4 HR I 11 L2",
             "reg_type": "input",
-            "address": "0x465b",
+            "address": "0x4632",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4080,7 +4080,7 @@
         },{
             "name": "Ch 4 HR I 13 L2",
             "reg_type": "input",
-            "address": "0x465d",
+            "address": "0x4634",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4090,7 +4090,7 @@
         },{
             "name": "Ch 4 HR I 15 L2",
             "reg_type": "input",
-            "address": "0x465f",
+            "address": "0x4636",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4100,7 +4100,7 @@
         },{
             "name": "Ch 4 HR I 2 L3",
             "reg_type": "input",
-            "address": "0x46a4",
+            "address": "0x4652",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4110,7 +4110,7 @@
         },{
             "name": "Ch 4 HR I 3 L3",
             "reg_type": "input",
-            "address": "0x46a5",
+            "address": "0x4653",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4120,7 +4120,7 @@
         },{
             "name": "Ch 4 HR I 4 L3",
             "reg_type": "input",
-            "address": "0x46a6",
+            "address": "0x4654",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4130,7 +4130,7 @@
         },{
             "name": "Ch 4 HR I 5 L3",
             "reg_type": "input",
-            "address": "0x46a7",
+            "address": "0x4655",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4140,7 +4140,7 @@
         },{
             "name": "Ch 4 HR I 6 L3",
             "reg_type": "input",
-            "address": "0x46a8",
+            "address": "0x4656",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4150,7 +4150,7 @@
         },{
             "name": "Ch 4 HR I 7 L3",
             "reg_type": "input",
-            "address": "0x46a9",
+            "address": "0x4657",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4160,7 +4160,7 @@
         },{
             "name": "Ch 4 HR I 9 L3",
             "reg_type": "input",
-            "address": "0x46ab",
+            "address": "0x4659",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4170,7 +4170,7 @@
         },{
             "name": "Ch 4 HR I 11 L3",
             "reg_type": "input",
-            "address": "0x46ad",
+            "address": "0x465b",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4180,7 +4180,7 @@
         },{
             "name": "Ch 4 HR I 13 L3",
             "reg_type": "input",
-            "address": "0x46af",
+            "address": "0x465d",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -4190,7 +4190,7 @@
         },{
             "name": "Ch 4 HR I 15 L3",
             "reg_type": "input",
-            "address": "0x46b1",
+            "address": "0x465f",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
