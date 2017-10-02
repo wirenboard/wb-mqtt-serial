@@ -10,7 +10,7 @@
             "reg_type": "input",
             "address": "0x10d9",
             "type": "voltage",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -19,7 +19,7 @@
             "reg_type": "input",
             "address": "0x1701",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -28,7 +28,7 @@
             "reg_type": "input",
             "address": "0x10f1",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -37,7 +37,7 @@
             "reg_type": "input",
             "address": "0x1711",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -46,7 +46,7 @@
             "reg_type": "input",
             "address": "0x10da",
             "type": "voltage",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -55,7 +55,7 @@
             "reg_type": "input",
             "address": "0x1703",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -64,7 +64,7 @@
             "reg_type": "input",
             "address": "0x10f2",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -73,7 +73,7 @@
             "reg_type": "input",
             "address": "0x1713",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -82,7 +82,7 @@
             "reg_type": "input",
             "address": "0x10db",
             "type": "voltage",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -91,7 +91,7 @@
             "reg_type": "input",
             "address": "0x1705",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -100,7 +100,7 @@
             "reg_type": "input",
             "address": "0x10f3",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -109,7 +109,7 @@
             "reg_type": "input",
             "address": "0x1715",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -118,7 +118,7 @@
             "reg_type": "input",
             "address": "0x10f8",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 8000
@@ -154,7 +154,7 @@
             "reg_type": "input",
             "address": "0x10dd",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -163,7 +163,7 @@
             "reg_type": "input",
             "address": "0x1700",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -172,7 +172,7 @@
             "reg_type": "input",
             "address": "0x10f5",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -181,7 +181,7 @@
             "reg_type": "input",
             "address": "0x1710",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -323,7 +323,7 @@
             "reg_type": "input",
             "address": "0x10de",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -332,7 +332,7 @@
             "reg_type": "input",
             "address": "0x1702",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -341,7 +341,7 @@
             "reg_type": "input",
             "address": "0x10f6",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -350,7 +350,7 @@
             "reg_type": "input",
             "address": "0x1712",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -492,7 +492,7 @@
             "reg_type": "input",
             "address": "0x10df",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -501,7 +501,7 @@
             "reg_type": "input",
             "address": "0x1704",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -510,7 +510,7 @@
             "reg_type": "input",
             "address": "0x10f7",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -519,7 +519,7 @@
             "reg_type": "input",
             "address": "0x1714",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -821,7 +821,7 @@
             "reg_type": "input",
             "address": "0x20dd",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -830,7 +830,7 @@
             "reg_type": "input",
             "address": "0x2700",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -839,7 +839,7 @@
             "reg_type": "input",
             "address": "0x20f5",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -848,7 +848,7 @@
             "reg_type": "input",
             "address": "0x2710",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -990,7 +990,7 @@
             "reg_type": "input",
             "address": "0x20de",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -999,7 +999,7 @@
             "reg_type": "input",
             "address": "0x2702",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1008,7 +1008,7 @@
             "reg_type": "input",
             "address": "0x20f6",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1017,7 +1017,7 @@
             "reg_type": "input",
             "address": "0x2712",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1159,7 +1159,7 @@
             "reg_type": "input",
             "address": "0x20df",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1168,7 +1168,7 @@
             "reg_type": "input",
             "address": "0x2704",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1177,7 +1177,7 @@
             "reg_type": "input",
             "address": "0x20f7",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1186,7 +1186,7 @@
             "reg_type": "input",
             "address": "0x2714",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1488,7 +1488,7 @@
             "reg_type": "input",
             "address": "0x30dd",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1497,7 +1497,7 @@
             "reg_type": "input",
             "address": "0x3700",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1506,7 +1506,7 @@
             "reg_type": "input",
             "address": "0x30f5",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1515,7 +1515,7 @@
             "reg_type": "input",
             "address": "0x3710",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1657,7 +1657,7 @@
             "reg_type": "input",
             "address": "0x30de",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1666,7 +1666,7 @@
             "reg_type": "input",
             "address": "0x3702",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1675,7 +1675,7 @@
             "reg_type": "input",
             "address": "0x30f6",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1684,7 +1684,7 @@
             "reg_type": "input",
             "address": "0x3712",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1826,7 +1826,7 @@
             "reg_type": "input",
             "address": "0x30df",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1835,7 +1835,7 @@
             "reg_type": "input",
             "address": "0x3704",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1844,7 +1844,7 @@
             "reg_type": "input",
             "address": "0x30f7",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -1853,7 +1853,7 @@
             "reg_type": "input",
             "address": "0x3714",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2155,7 +2155,7 @@
             "reg_type": "input",
             "address": "0x40dd",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2164,7 +2164,7 @@
             "reg_type": "input",
             "address": "0x4700",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2173,7 +2173,7 @@
             "reg_type": "input",
             "address": "0x40f5",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2182,7 +2182,7 @@
             "reg_type": "input",
             "address": "0x4710",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2324,7 +2324,7 @@
             "reg_type": "input",
             "address": "0x40de",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2333,7 +2333,7 @@
             "reg_type": "input",
             "address": "0x4702",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2342,7 +2342,7 @@
             "reg_type": "input",
             "address": "0x40f6",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2351,7 +2351,7 @@
             "reg_type": "input",
             "address": "0x4712",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2493,7 +2493,7 @@
             "reg_type": "input",
             "address": "0x40df",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2502,7 +2502,7 @@
             "reg_type": "input",
             "address": "0x4704",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2511,7 +2511,7 @@
             "reg_type": "input",
             "address": "0x40f7",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
@@ -2520,7 +2520,7 @@
             "reg_type": "input",
             "address": "0x4714",
             "type": "value",
-            "format": "s16",
+            "format": "u16",
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
