@@ -1,7 +1,6 @@
 #include "serial_port_driver.h"
 #include "serial_port.h"
 #include "tcp_port.h"
-#include "global.h"
 
 #include <wbmqtt/utils.h>
 
@@ -170,7 +169,7 @@ bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
         return changed;
 
     // max_unchanged_interval > 0: update if changed or the time interval is exceeded
-    auto now = Global::CurrentTime();
+    auto now = Port->CurrentTime();
     if (changed) {
         RegLastPublishTimeMap[reg] = now;
         return true;

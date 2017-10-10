@@ -156,6 +156,21 @@ void TFakeSerialPort::Sleep(const std::chrono::microseconds& us)
     Fixture.Emit() << "Sleep(" << us.count() << ")";
 }
 
+bool TFakeSerialPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)
+{
+    if (semaphore->TryWait())
+        return true;
+    if (until < Time)
+        throw std::runtime_error("TFakeSerialPort::Wait(): going back in time");
+    Time = until;
+    return false;
+}
+
+TTimePoint TFakeSerialPort::CurrentTime() const
+{
+    return Time;
+}
+
 void TFakeSerialPort::DumpWhatWasRead()
 {
     assert(DumpPos <= RespPos);

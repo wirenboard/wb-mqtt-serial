@@ -3,7 +3,11 @@
 #include "port_settings.h"
 
 #include <string>
-#include <ostream>
+#include <sstream>
+
+struct TTcpPortSettings;
+
+::std::ostream& operator<<(::std::ostream& os, const TTcpPortSettings & settings);
 
 struct TTcpPortSettings final: TPortSettings
 {
@@ -17,7 +21,9 @@ struct TTcpPortSettings final: TPortSettings
     
     std::string ToString() const override
     {
-        return Address + ":" + std::to_string(Port);
+        std::ostringstream ss;
+        ss << *this;
+        return ss.str();
     }
 
     std::string Address;

@@ -21,11 +21,17 @@ public:
     void Close() override;
     void CheckPortOpen() const override;
     bool IsOpen() const override;
+
     void Sleep(const std::chrono::microseconds & us) override;
+    bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
+    void SetDebug(bool debug) override;
+    bool Debug() const override;
+    TTimePoint CurrentTime() const override;
 
 protected:
     bool Select(const std::chrono::microseconds& us);
 
     int             Fd;
     PPortSettings   Settings;
+    bool            DebugEnabled;
 };

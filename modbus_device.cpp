@@ -1,6 +1,5 @@
 #include "modbus_device.h"
 #include "modbus_common.h"
-#include "global.h"
 
 #include <iostream>
 #include <stdexcept>

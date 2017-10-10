@@ -3,7 +3,11 @@
 #include "port_settings.h"
 
 #include <string>
-#include <ostream>
+#include <sstream>
+
+struct TSerialPortSettings;
+
+::std::ostream& operator<<(::std::ostream& os, const TSerialPortSettings& settings);
 
 struct TSerialPortSettings final: TPortSettings
 {
@@ -23,7 +27,9 @@ struct TSerialPortSettings final: TPortSettings
 
     std::string ToString() const override
     {
-        return Device;
+        std::ostringstream ss;
+        ss << *this;
+        return ss.str();
     }
 
     std::string Device;

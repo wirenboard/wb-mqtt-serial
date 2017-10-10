@@ -26,8 +26,10 @@ public:
                   const std::chrono::microseconds& timeout = std::chrono::microseconds(-1),
                   TFrameCompletePred frame_complete = 0);
     void SkipNoise();
-    void Sleep(const std::chrono::microseconds& us);
-    bool Wait(PBinarySemaphore semaphore, const TTimePoint& until);
+
+    void Sleep(const std::chrono::microseconds & us) override;
+    bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
+    TTimePoint CurrentTime() const override;
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     void DumpWhatWasRead();

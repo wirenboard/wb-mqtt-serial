@@ -38,7 +38,6 @@ SERIAL_SRCS=register.cpp \
   serial_config.cpp \
   serial_port_driver.cpp \
   serial_observer.cpp \
-  global.cpp \
   file_descriptor_port.cpp \
   tcp_port.cpp \
   serial_port.cpp \

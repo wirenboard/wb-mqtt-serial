@@ -1,8 +1,6 @@
 #include "serial_port.h"
 #include "serial_exc.h"
 
-#include "global.h"
-
 #include <map>
 #include <string.h>
 #include <fcntl.h>

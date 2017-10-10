@@ -1,6 +1,6 @@
 #include "file_descriptor_port.h"
 #include "serial_exc.h"
-#include "global.h"
+#include "binary_semaphore.h"
 
 #include <unistd.h>
 #include <iomanip>
@@ -8,10 +8,11 @@
 #include <sys/select.h>
 #include <sys/ioctl.h>
 
+using namespace std;
 
 namespace {
-    const std::chrono::milliseconds DefaultFrameTimeout(15);
-    const std::chrono::milliseconds NoiseTimeout(10);
+    const chrono::milliseconds DefaultFrameTimeout(15);
+    const chrono::milliseconds NoiseTimeout(10);
 }
 
 TFileDescriptorPort::TFileDescriptorPort(const PPortSettings & settings)
@@ -50,18 +51,18 @@ void TFileDescriptorPort::WriteBytes(const uint8_t * buf, int count) {
         throw TSerialDeviceException("serial write failed");
     }
 
-    if (Global::Debug()) {
+    if (Debug()) {
         // TBD: move this to libwbmqtt (HexDump?)
-        std::ios::fmtflags f(std::cerr.flags());
-        std::cerr << "Write:" << std::hex << std::setfill('0');
+        ios::fmtflags f(cerr.flags());
+        cerr << "Write:" << hex << setfill('0');
         for (int i = 0; i < count; ++i)
-            std::cerr << " " << std::setw(2) << int(buf[i]);
-        std::cerr << std::endl;
-        std::cerr.flags(f);
+            cerr << " " << setw(2) << int(buf[i]);
+        cerr << endl;
+        cerr.flags(f);
     }
 }
 
-bool TFileDescriptorPort::Select(const std::chrono::microseconds& us)
+bool TFileDescriptorPort::Select(const chrono::microseconds& us)
 {
     fd_set rfds;
     struct timeval tv, *tvp = 0;
@@ -69,7 +70,7 @@ bool TFileDescriptorPort::Select(const std::chrono::microseconds& us)
 #if 0
     // too verbose
     if (Dbg)
-        std::cerr << "Select on " << Settings.Device << ": " << ms.count() << " us" << std::endl;
+        cerr << "Select on " << Settings.Device << ": " << ms.count() << " us" << endl;
 #endif
 
     FD_ZERO(&rfds);
@@ -101,10 +102,10 @@ uint8_t TFileDescriptorPort::ReadByte()
         throw TSerialDeviceException("read() failed");
     }
 
-    if (Global::Debug()) {
-        std::ios::fmtflags f(std::cerr.flags());
-        std::cerr << "Read: " << std::hex << std::setw(2) << std::setfill('0') << int(b) << std::endl;
-        std::cerr.flags(f);
+    if (Debug()) {
+        ios::fmtflags f(cerr.flags());
+        cerr << "Read: " << hex << setw(2) << setfill('0') << int(b) << endl;
+        cerr.flags(f);
     }
 
     return b;
@@ -112,7 +113,7 @@ uint8_t TFileDescriptorPort::ReadByte()
 
 // Reading becomes unstable when using timeout less than default because of bufferization
 int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
-                           const std::chrono::microseconds& timeout,
+                           const chrono::microseconds& timeout,
                            TFrameCompletePred frame_complete)
 {
     CheckPortOpen();
@@ -174,15 +175,15 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
         throw TSerialDeviceTransientErrorException("request timed out");
     }
 
-    if (Global::Debug()) {
+    if (Debug()) {
         // TBD: move this to libwbmqtt (HexDump?)
-        std::ios::fmtflags f(std::cerr.flags());
-        std::cerr << "ReadFrame:" << std::hex << std::uppercase << std::setfill('0');
+        ios::fmtflags f(cerr.flags());
+        cerr << "ReadFrame:" << hex << uppercase << setfill('0');
         for (int i = 0; i < nread; ++i) {
-            std::cerr << " " << std::setw(2) << int(buf[i]);
+            cerr << " " << setw(2) << int(buf[i]);
         }
-        std::cerr << std::endl;
-        std::cerr.flags(f);
+        cerr << endl;
+        cerr.flags(f);
     }
 
     return nread;
@@ -195,15 +196,43 @@ void TFileDescriptorPort::SkipNoise()
         if (read(Fd, &b, 1) < 1) {
             throw TSerialDeviceException("read() failed");
         }
-        if (Global::Debug()) {
-            std::ios::fmtflags f(std::cerr.flags());
-            std::cerr << "read noise: " << std::hex << std::setfill('0') << std::setw(2) << int(b) << std::endl;
-            std::cerr.flags(f);
+        if (Debug()) {
+            ios::fmtflags f(cerr.flags());
+            cerr << "read noise: " << hex << setfill('0') << setw(2) << int(b) << endl;
+            cerr.flags(f);
         }
     }
 }
 
-void TFileDescriptorPort::Sleep(const std::chrono::microseconds & us)
+void TFileDescriptorPort::Sleep(const chrono::microseconds & us)
 {
-    Global::Sleep(us);
+    usleep(us.count());
+}
+
+bool TFileDescriptorPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)
+{
+    if (DebugEnabled) {
+        cerr << chrono::duration_cast<chrono::milliseconds>(
+            chrono::steady_clock::now().time_since_epoch()).count() <<
+            ": Wait until " <<
+            chrono::duration_cast<chrono::milliseconds>(until.time_since_epoch()).count() <<
+            endl;
+        }
+            
+    return semaphore->Wait(until);
+}
+
+void TFileDescriptorPort::SetDebug(bool debug)
+{
+    DebugEnabled = debug;
+}
+
+bool TFileDescriptorPort::Debug() const
+{
+    return DebugEnabled;
+}
+
+TTimePoint TFileDescriptorPort::CurrentTime() const
+{
+    return chrono::steady_clock::now();
 }

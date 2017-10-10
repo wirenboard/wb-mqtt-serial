@@ -1,7 +1,6 @@
 #include "modbus_common.h"
 #include "serial_device.h"
 #include "crc16.h"
-#include "global.h"
 
 #include <cmath>
 #include <array>
@@ -435,7 +434,7 @@ namespace Modbus    // modbus protocol common utilities
         ThrowIfModbusException(GetExceptionCode(pdu));
     }
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list, PDeviceConfig deviceConfig)
+    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list, PDeviceConfig deviceConfig, bool debug)
     {
         std::list<PRegisterRange> r;
         if (reg_list.empty())
@@ -467,7 +466,7 @@ namespace Modbus    // modbus protocol common utilities
                 new_end - prev_start <= max_regs)) {
                 if (!l.empty()) {
                     auto range = std::make_shared<TModbusRegisterRange>(l);
-                    if (Global::Debug())
+                    if (debug)
                         std::cerr << "Adding range: " << range->GetCount() << " " <<
                             range->TypeName() << "(s) @ " << range->GetStart() <<
                             " of device " << range->Device()->ToString() << std::endl;
@@ -483,7 +482,7 @@ namespace Modbus    // modbus protocol common utilities
         }
         if (!l.empty()) {
             auto range = std::make_shared<TModbusRegisterRange>(l);
-            if (Global::Debug())
+            if (debug)
                 std::cerr << "Adding range: " << range->GetCount() << " " <<
                     range->TypeName() << "(s) @ " << range->GetStart() <<
                     " of device " << range->Device()->ToString() << std::endl;

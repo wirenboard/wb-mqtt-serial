@@ -1,5 +1,4 @@
 #include "serial_device.h"
-#include "global.h"
 
 #include <iostream>
 #include <unistd.h>
