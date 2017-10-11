@@ -17,7 +17,7 @@
         },{
             "name": "THD U L1",
             "reg_type": "input",
-            "address": "0x1701",
+            "address": "0x1703",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -53,7 +53,7 @@
         },{
             "name": "THD U L2",
             "reg_type": "input",
-            "address": "0x1703",
+            "address": "0x1704",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -330,7 +330,7 @@
         },{
             "name": "Ch 1 THD I L2",
             "reg_type": "input",
-            "address": "0x1702",
+            "address": "0x1701",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -499,7 +499,7 @@
         },{
             "name": "Ch 1 THD I L3",
             "reg_type": "input",
-            "address": "0x1704",
+            "address": "0x1702",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -997,7 +997,7 @@
         },{
             "name": "Ch 2 THD I L2",
             "reg_type": "input",
-            "address": "0x2702",
+            "address": "0x2701",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1166,7 +1166,7 @@
         },{
             "name": "Ch 2 THD I L3",
             "reg_type": "input",
-            "address": "0x2704",
+            "address": "0x2702",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1664,7 +1664,7 @@
         },{
             "name": "Ch 3 THD I L2",
             "reg_type": "input",
-            "address": "0x3702",
+            "address": "0x3701",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -1833,7 +1833,7 @@
         },{
             "name": "Ch 3 THD I L3",
             "reg_type": "input",
-            "address": "0x3704",
+            "address": "0x3702",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2331,7 +2331,7 @@
         },{
             "name": "Ch 4 THD I L2",
             "reg_type": "input",
-            "address": "0x4702",
+            "address": "0x4701",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
@@ -2500,7 +2500,7 @@
         },{
             "name": "Ch 4 THD I L3",
             "reg_type": "input",
-            "address": "0x4704",
+            "address": "0x4702",
             "type": "value",
             "format": "u16",
             "scale": 0.00610352,
