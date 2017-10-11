@@ -1,3 +1,11 @@
+wb-mqtt-serial (1.29) stable; urgency=medium
+
+  * TCP port support
+  * added "address" port parameter - IPv4 address or host name. If specified instead of "path", TCP port will be created
+  * added "port" port parameter - TCP port. Required if "address" port parameter was specified
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 23 Oct 2017 17:24:54 +0300
+
 wb-mqtt-serial (1.28) stable; urgency=medium
 
   * support for IO extensions via modbus
