@@ -6,7 +6,7 @@
 
 struct TPortSettings
 {
-    TPortSettings(const std::chrono::milliseconds & responseTimeout = std::chrono::milliseconds(500))
+    TPortSettings(const std::chrono::milliseconds & responseTimeout)
         : ResponseTimeout(responseTimeout)
     {}
     virtual ~TPortSettings() = default;

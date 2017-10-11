@@ -535,9 +535,7 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
         }
 
         // we are making serial port
-        auto serial_port_settings = make_shared<TSerialPortSettings>();
-
-        serial_port_settings->Device = port_data["path"].asString();
+        auto serial_port_settings = make_shared<TSerialPortSettings>(port_data["path"].asString());
 
         if (port_data.isMember("baud_rate"))
         serial_port_settings->BaudRate = GetInt(port_data, "baud_rate");
@@ -551,17 +549,11 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
         if (port_data.isMember("stop_bits"))
             serial_port_settings->StopBits = GetInt(port_data, "stop_bits");
 
-        if (port_data.isMember("response_timeout_ms"))
-            serial_port_settings->ResponseTimeout = chrono::milliseconds(
-                GetInt(port_data, "response_timeout_ms"));
-
         port_config->ConnSettings = serial_port_settings;
 
     } else if (port_data.isMember("address")) {
         // we are making TCP port
-        auto tcp_port_settings = make_shared<TTcpPortSettings>();
-
-        tcp_port_settings->Address = port_data["address"].asString();
+        auto tcp_port_settings = make_shared<TTcpPortSettings>(port_data["address"].asString());
 
         if (port_data.isMember("port")) {
             tcp_port_settings->Port = GetInt(port_data, "port");
@@ -574,6 +566,9 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
     } else {
         throw TConfigParserException("neither path nor address are not specified");
     }
+
+    if (port_data.isMember("response_timeout_ms"))
+        port_config->ConnSettings->ResponseTimeout = chrono::milliseconds(GetInt(port_data, "response_timeout_ms"));
 
     if (port_data.isMember("poll_interval"))
         port_config->PollInterval = chrono::milliseconds(GetInt(port_data, "poll_interval"));
