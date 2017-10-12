@@ -49,6 +49,7 @@ private:
     uint64_t Value = 0;
     PRegister Reg;
     volatile bool Dirty = false;
+    int WriteRetries;
     bool DidReadReg = false;
     std::mutex SetValueMutex;
     TErrorState ErrorState = UnknownErrorState;

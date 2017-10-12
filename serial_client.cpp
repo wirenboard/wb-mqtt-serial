@@ -133,42 +133,48 @@ void TSerialClient::MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErro
         ErrorCallback(reg, state);
 }
 
-void TSerialClient::DoFlush()
+bool TSerialClient::DoFlush()
 {
+    bool need_flush = false;
     for (const auto& reg: RegList) {
         auto handler = Handlers[reg];
         if (!handler->NeedToFlush())
             continue;
         PrepareToAccessDevice(handler->Device());
         MaybeUpdateErrorState(reg, handler->Flush());
+        need_flush |= handler->NeedToFlush(); // register might still need to flush due to retry on fail functionality
     }
+    return need_flush;
 }
 
-void TSerialClient::WaitForPollAndFlush()
+bool TSerialClient::WaitForPollAndFlush()
 {
+    bool need_flush = false;
     // When it's time for a next poll, take measures
     // to avoid poll starvation
     if (Plan->PollIsDue()) {
-        MaybeFlushAvoidingPollStarvationButDontWait();
-        return;
+        return MaybeFlushAvoidingPollStarvationButDontWait();
     }
     auto wait_until = Plan->GetNextPollTimePoint();
     while (Port->Wait(FlushNeeded, wait_until)) {
         // Don't hold the lock while flushing
-        DoFlush();
+        need_flush |= DoFlush();
         if (Plan->PollIsDue()) {
-            MaybeFlushAvoidingPollStarvationButDontWait();
-            return;
+            return MaybeFlushAvoidingPollStarvationButDontWait();
         }
     }
+    return need_flush;
 }
 
-void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
+bool TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 {
+    bool need_flush = false;
     // avoid poll starvation
     int flush_count_remaining = MAX_FLUSHES_WHEN_POLL_IS_DUE;
-    while (flush_count_remaining-- && FlushNeeded->TryWait())
-        DoFlush();
+    while (flush_count_remaining-- && FlushNeeded->TryWait()) {
+        need_flush |= DoFlush();
+    }
+    return need_flush;
 }
 
 void TSerialClient::PollRange(PRegisterRange range)
@@ -212,15 +218,19 @@ void TSerialClient::Cycle()
 {
     Connect();
 
-    WaitForPollAndFlush();
-    Plan->ProcessPending([this](const PPollEntry& entry) {
+    bool need_flush = WaitForPollAndFlush();
+    Plan->ProcessPending([this, &need_flush](const PPollEntry& entry) {
             for (auto range: std::dynamic_pointer_cast<TSerialPollEntry>(entry)->Ranges)
                 PollRange(range);
-            MaybeFlushAvoidingPollStarvationButDontWait();
+            need_flush |= MaybeFlushAvoidingPollStarvationButDontWait();
         });
 
     for (const auto& p: DevicesList)
         p->EndPollCycle();
+
+    if (need_flush) {
+        NotifyFlushNeeded();
+    }
 }
 
 bool TSerialClient::WriteSetupRegisters(PSerialDevice dev)

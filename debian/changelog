@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.28) stable; urgency=medium
+
+  * added "write_retries" channel parameter: defines max count of register write retries on write error (default 0)
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Sat, 16 Sep 2017 16:53:22 +0300
+
 wb-mqtt-serial (1.27) stable; urgency=medium
 
   * added "round_to" channel parameter, if specified, channel's value becomes closest multiple of round_to

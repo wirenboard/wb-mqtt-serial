@@ -1,0 +1,73 @@
+SetDebug(1)
+Publish: /devices/WriteRetryTest/meta/name: 'WriteRetryTest' (QoS 0, retained)
+Publish: /devices/WriteRetryTest/controls/Reg0/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/WriteRetryTest/controls/Reg0/meta/order: '1' (QoS 0, retained)
+Subscribe: /devices/WriteRetryTest/controls/Reg0/on (QoS 0)
+Publish: /devices/WriteRetryTest/controls/Reg1/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/WriteRetryTest/controls/Reg1/meta/order: '2' (QoS 0, retained)
+Subscribe: /devices/WriteRetryTest/controls/Reg1/on (QoS 0)
+Publish: /devices/WriteRetryTest/controls/Reg2/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/WriteRetryTest/controls/Reg2/meta/order: '3' (QoS 0, retained)
+Subscribe: /devices/WriteRetryTest/controls/Reg2/on (QoS 0)
+Publish: /devices/WriteRetryTest/controls/Reg3/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/WriteRetryTest/controls/Reg3/meta/order: '4' (QoS 0, retained)
+Subscribe: /devices/WriteRetryTest/controls/Reg3/on (QoS 0)
+>>> Publish: /devices/WriteRetryTest/controls/Reg0/on: '4' (QoS 0)
+Publish: /devices/WriteRetryTest/controls/Reg0: '4' (QoS 0, retained)
+>>> Publish: /devices/WriteRetryTest/controls/Reg1/on: '6' (QoS 0)
+Publish: /devices/WriteRetryTest/controls/Reg1: '6' (QoS 0, retained)
+>>> Publish: /devices/WriteRetryTest/controls/Reg2/on: '90' (QoS 0)
+Publish: /devices/WriteRetryTest/controls/Reg2: '90' (QoS 0, retained)
+>>> Publish: /devices/WriteRetryTest/controls/Reg3/on: '100' (QoS 0)
+Publish: /devices/WriteRetryTest/controls/Reg3: '100' (QoS 0, retained)
+Open()
+Sleep(100000)
+trying to write value 4 to register <fake:147:fake: 0>
+Publish: /devices/WriteRetryTest/controls/Reg0/meta/error: 'w' (QoS 0, retained)
+trying to write value 6 to register <fake:147:fake: 1>
+Publish: /devices/WriteRetryTest/controls/Reg1/meta/error: 'w' (QoS 0, retained)
+trying to write value 90 to register <fake:147:fake: 2>
+Publish: /devices/WriteRetryTest/controls/Reg2/meta/error: '' (QoS 0, retained)
+trying to write value 100 to register <fake:147:fake: 3>
+Publish: /devices/WriteRetryTest/controls/Reg3/meta/error: 'w' (QoS 0, retained)
+Publish: /devices/WriteRetryTest/controls/Reg2: '90' (QoS 0, retained)
+Publish: /devices/WriteRetryTest/controls/Reg3: '0' (QoS 0, retained)
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+>>> Publish: /devices/WriteRetryTest/controls/Reg1/on: '6' (QoS 0)
+Publish: /devices/WriteRetryTest/controls/Reg1: '6' (QoS 0, retained)
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 4 to register <fake:147:fake: 0>
+trying to write value 6 to register <fake:147:fake: 1>
+Publish: /devices/WriteRetryTest/controls/Reg0: '0' (QoS 0, retained)
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 6 to register <fake:147:fake: 1>
+trying to write value 6 to register <fake:147:fake: 1>
+>>> Publish: /devices/WriteRetryTest/controls/Reg1/on: '6' (QoS 0)
+Publish: /devices/WriteRetryTest/controls/Reg1: '6' (QoS 0, retained)

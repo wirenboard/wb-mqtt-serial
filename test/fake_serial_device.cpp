@@ -29,14 +29,17 @@ namespace //utility
 };  //utility
 
 
-TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol):
-    TBasicProtocolSerialDevice<TBasicProtocol<TFakeSerialDevice>>(config, port, protocol)
+TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+    : TBasicProtocolSerialDevice<TBasicProtocol<TFakeSerialDevice>>(config, port, protocol)
+    , ReadCallback([](PRegister){})
+    , WriteCallback([](PRegister, uint64_t){})
 {}
 
 uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 {
+    ReadCallback(reg);
     if(Blockings[reg->Address].first) {
-        throw TSerialDeviceTransientErrorException("read blocked");
+        throw TSerialDeviceTransientErrorException("read blocked for register " + to_string(reg->Address));
     }
 
     if (reg->Address < 0 || reg->Address > 256) {
@@ -52,8 +55,9 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 
 void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 {
+    WriteCallback(reg, value);
     if(Blockings[reg->Address].second) {
-        throw TSerialDeviceTransientErrorException("write blocked");
+        throw TSerialDeviceTransientErrorException("write blocked for register " + to_string(reg->Address));
     }
 
     if (reg->Address < 0 || reg->Address > 256) {
@@ -80,6 +84,16 @@ void TFakeSerialDevice::BlockWriteFor(int addr, bool block)
 uint32_t TFakeSerialDevice::Read2Registers(int addr)
 {
     return (uint32_t(Registers[addr]) << 16) | Registers[addr + 1];
+}
+
+void TFakeSerialDevice::SetReadCallback(TReadCallback read_callback)
+{
+    ReadCallback = read_callback;
+}
+
+void TFakeSerialDevice::SetWriteCallback(TWriteCallback write_callback)
+{
+    WriteCallback = write_callback;
 }
 
 TFakeSerialDevice::~TFakeSerialDevice()

@@ -1,0 +1,104 @@
+Open()
+Sleep(100000)
+trying to write value 4 to register <fake:1:fake: 0>
+Error Callback: <fake:1:fake: 0>: write error
+trying to write value 6 to register <fake:1:fake: 1>
+Error Callback: <fake:1:fake: 1>: write error
+trying to write value 90 to register <fake:1:fake: 2>
+Error Callback: <fake:1:fake: 2>: write error
+trying to write value 100 to register <fake:1:fake: 3>
+Error Callback: <fake:1:fake: 3>: write error
+trying to write value 10 to register <fake:1:fake: 4>
+Error Callback: <fake:1:fake: 4>: no error
+trying to write value 15 to register <fake:1:fake: 5>
+Error Callback: <fake:1:fake: 5>: no error
+Read Callback: <fake:1:fake: 3> becomes 0
+Read Callback: <fake:1:fake: 4> becomes 10
+Read Callback: <fake:1:fake: 5> becomes 15
+trying to write value 4 to register <fake:1:fake: 0>
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 4 to register <fake:1:fake: 0>
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 4 to register <fake:1:fake: 0>
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 4 to register <fake:1:fake: 0>
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 4 to register <fake:1:fake: 0>
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 4 to register <fake:1:fake: 0>
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 4 to register <fake:1:fake: 0>
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 4 to register <fake:1:fake: 0>
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 4 to register <fake:1:fake: 0>
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 4 to register <fake:1:fake: 0>
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 0> becomes 0
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 0> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 6 to register <fake:1:fake: 1>
+trying to write value 90 to register <fake:1:fake: 2>
+Read Callback: <fake:1:fake: 0> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 2> becomes 0
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 6 to register <fake:1:fake: 1>
+Read Callback: <fake:1:fake: 0> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 2> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+trying to write value 6 to register <fake:1:fake: 1>
+Read Callback: <fake:1:fake: 0> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 2> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 3> becomes 0 [unchanged]
+Read Callback: <fake:1:fake: 4> becomes 10 [unchanged]
+Read Callback: <fake:1:fake: 5> becomes 15 [unchanged]
+Close()

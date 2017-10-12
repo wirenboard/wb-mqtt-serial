@@ -4,7 +4,7 @@
 #include "register_handler.h"
 
 TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed, bool debug)
-    : Dev(dev), Reg(reg), FlushNeeded(flush_needed), Debug(debug) {}
+    : Dev(dev), Reg(reg), WriteRetries(reg->WriteRetries), FlushNeeded(flush_needed), Debug(debug) {}
 
 TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
     TErrorState newState;
@@ -105,11 +105,6 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
     if (!NeedToFlush())
         return ErrorStateUnchanged;
 
-    {
-        std::lock_guard<std::mutex> lock(SetValueMutex);
-        Dirty = false;
-    }
-
     try {
         Device()->WriteRegister(Reg, Value);
     } catch (const TSerialDeviceTransientErrorException& e) {
@@ -117,8 +112,29 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
         std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " for device " <<
             Reg->Device()->ToString() <<  std::endl;
         std::cerr.flags(f);
+
+        {   // case #1 write transient error: retry in next cycle if can
+            std::lock_guard<std::mutex> lock(SetValueMutex);
+            if (WriteRetries) {
+                --WriteRetries;
+            } else {
+                Dirty = false;
+            }
+        }
         return UpdateWriteError(true);
+    } catch (...) {
+        // case #2 write non-transient error: no point in retry in this case
+        std::lock_guard<std::mutex> lock(SetValueMutex);
+        Dirty = false;
+        
+        throw;
     }
+
+    {   // case #3 write successful
+        std::lock_guard<std::mutex> lock(SetValueMutex);
+        Dirty = false;
+    }
+
     return UpdateWriteError(false);
 }
 
@@ -203,6 +219,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
         std::lock_guard<std::mutex> lock(SetValueMutex);
         Dirty = true;
         Value = InvertWordOrderIfNeeded(ConvertMasterValue(v));
+        WriteRetries = Reg->WriteRetries;
     }
     FlushNeeded->Signal();
 }

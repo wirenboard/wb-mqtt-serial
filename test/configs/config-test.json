@@ -138,6 +138,46 @@
                             "type": "value"
                         }
                     ]
+                },
+                {
+                    "name": "WriteRetryTest",
+                    "id": "WriteRetryTest",
+                    "slave_id": "0x93",
+                    "protocol": "fake",
+                    "channels": [
+                        {
+                            "name" : "Reg0",
+                            "reg_type" : "fake",
+                            "format" : "u16",
+                            "address" : 0,
+                            "type": "value",
+                            "write_retries": 15
+                        },
+                        {
+                            "name" : "Reg1",
+                            "reg_type" : "fake",
+                            "format" : "u16",
+                            "address" : 1,
+                            "type": "value",
+                            "write_retries": 10
+                        },
+                        {
+                            "name" : "Reg2",
+                            "reg_type" : "fake",
+                            "format" : "u16",
+                            "address" : 2,
+                            "type": "value",
+                            "write_retries": 5
+                        },
+                        {
+                            "name" : "Reg3",
+                            "reg_type" : "fake",
+                            "format" : "u16",
+                            "address" : 3,
+                            "type": "value",
+                            "write_retries": 0
+                        }
+                    ]
                 }
             ]
         }
