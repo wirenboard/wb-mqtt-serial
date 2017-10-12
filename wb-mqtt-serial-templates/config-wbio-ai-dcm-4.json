@@ -1,0 +1,159 @@
+{
+    "device_type" : "WBIO-AI-DCM-4",
+    "device" : {
+        "name": "WBIO-AI-DCM-4",
+        "id": "wb-mio-adc",
+        "protocol": "modbus_io",
+        "stride": 1000,
+        "max_read_registers": 0,
+    "setup": [
+            {
+                "title": "CONF_CH1",
+                "address": 19500,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH2",
+                "address": 19501,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH3",
+                "address": 19502,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH4",
+                "address": 19503,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH5",
+                "address": 19504,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH6",
+                "address": 19505,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH7",
+                "address": 19506,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH8",
+                "address": 19507,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH9",
+                "address": 19508,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH10",
+                "address": 19509,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH11",
+                "address": 19510,
+                "value": "0x0"
+            },
+            {
+                "title": "CONF_CH12",
+                "address": 19511,
+                "value": "0x0"
+            }
+
+        ],
+        "channels": [
+            {
+                "name" : "A1",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19000,
+                "type" : "value"
+            },
+            {
+                "name" : "A2",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19001,
+                "type" : "value"
+            },
+            {
+                "name" : "A3",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19002,
+                "type" : "value"
+            },
+            {
+                "name" : "A4",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19003,
+                "type" : "value"
+            },
+            {
+                "name" : "A5",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19004,
+                "type" : "value"
+            },
+            {
+                "name" : "A6",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19005,
+                "type" : "value"
+            },
+            {
+                "name" : "A7",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19006,
+                "type" : "value"
+            },
+            {
+                "name" : "A8",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19007,
+                "type" : "value"
+            },
+            {
+                "name" : "A9",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19008,
+                "type" : "value"
+            },
+            {
+                "name" : "A10",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19009,
+                "type" : "value"
+            },
+            {
+                "name" : "A11",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19010,
+                "type" : "value"
+            },
+            {
+                "name" : "A12",
+                "reg_type" : "holding",
+                "readonly" : true,
+                "address" : 19011,
+                "type" : "value"
+            }
+        ]
+    }
+}
