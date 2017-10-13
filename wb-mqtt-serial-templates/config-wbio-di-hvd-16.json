@@ -1,12 +1,12 @@
 {
-    "device_type" : "WBIO-DI-HVD-16",
-    "device" : {
+    "device_type": "WBIO-DI-HVD-16",
+    "device": {
         "name": "WBIO-DI-HVD-16",
         "id": "wb-mio-gpio",
         "protocol": "modbus_io",
         "stride": 1000,
         "max_read_registers": 0,
-    "setup": [
+        "setup": [
             {
                 "title": "IODIR",
                 "address": 10000,
@@ -42,139 +42,120 @@
                 "address": 9999,
                 "value": 1
             }
-
         ],
         "channels": [
-           
             {
-                "name" : "EXT_IN1",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 0,
-                "type" : "switch"
-
+                "name": "IN1",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 0,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN2",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 1,
-                "type" : "switch"
-
+                "name": "IN2",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 1,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN3",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 2,
-                "type" : "switch"
-
+                "name": "IN3",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 2,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN4",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 3,
-                "type" : "switch"
-
+                "name": "IN4",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 3,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN5",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 4,
-                "type" : "switch"
-
+                "name": "IN5",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 4,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN6",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 5,
-                "type" : "switch"
-
+                "name": "IN6",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 5,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN7",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 6,
-                "type" : "switch"
-
+                "name": "IN7",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 6,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN8",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 7,
-                "type" : "switch"
-
+                "name": "IN8",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 7,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN9",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 8,
-                "type" : "switch"
-
+                "name": "IN9",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 8,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN10",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 9,
-                "type" : "switch"
-
+                "name": "IN10",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 9,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN11",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 10,
-                "type" : "switch"
-
+                "name": "IN11",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 10,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN12",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 11,
-                "type" : "switch"
-
+                "name": "IN12",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 11,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN13",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 12,
-                "type" : "switch"
-
+                "name": "IN13",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 12,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN14",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 13,
-                "type" : "switch"
-
+                "name": "IN14",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 13,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN15",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 14,
-                "type" : "switch"
-
+                "name": "IN15",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 14,
+                "type": "switch"
             },
             {
-                "name" : "EXT_IN16",
-                "reg_type" : "coil",
-                "readonly" : true,
-                "address" : 15,
-                "type" : "switch"
-
-            }       
-            
+                "name": "IN16",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 15,
+                "type": "switch"
+            }
         ]
     }
 }

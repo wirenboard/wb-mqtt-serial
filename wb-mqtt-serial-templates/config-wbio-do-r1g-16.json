@@ -1,13 +1,13 @@
 {
-    "device_type" : "WBIO-DO-R1G-16",
-    "device" : {
+    "device_type": "WBIO-DO-R1G-16",
+    "device": {
         "name": "WBIO-DO-R1G-16",
         "id": "wb-mio-gpio",
         "protocol": "modbus_io",
         "stride": 1000,
         "shift": 500,
         "max_read_registers": 0,
-    "setup": [
+        "setup": [
             {
                 "title": "IODIR",
                 "address": 10000,
@@ -44,129 +44,109 @@
                 "value": 1
             }
         ],
-         "channels": [
-           
+        "channels": [
             {
-                "name" : "EXT_K1",
-                "reg_type" : "coil",
-                "address" : 0,
-                "type" : "switch"
-
+                "name": "K1",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K2",
-                "reg_type" : "coil",
-                "address" : 1,
-                "type" : "switch"
-
+                "name": "K2",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K3",
-                "reg_type" : "coil",
-                "address" : 2,
-                "type" : "switch"
-
+                "name": "K3",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K4",
-                "reg_type" : "coil",
-                "address" : 3,
-                "type" : "switch"
-
+                "name": "K4",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K5",
-                "reg_type" : "coil",
-                "address" : 4,
-                "type" : "switch"
-
+                "name": "K5",
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K6",
-                "reg_type" : "coil",
-                "address" : 5,
-                "type" : "switch"
-
+                "name": "K6",
+                "reg_type": "coil",
+                "address": 5,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K7",
-                "reg_type" : "coil",
-                "address" : 6,
-                "type" : "switch"
-
+                "name": "K7",
+                "reg_type": "coil",
+                "address": 6,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K8",
-                "reg_type" : "coil",
-                "address" : 7,
-                "type" : "switch"
-
+                "name": "K8",
+                "reg_type": "coil",
+                "address": 7,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K9",
-                "reg_type" : "coil",
-                "address" : 8,
-                "type" : "switch"
-
+                "name": "K9",
+                "reg_type": "coil",
+                "address": 8,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K10",
-                "reg_type" : "coil",
-                "address" : 9,
-                "type" : "switch"
-
+                "name": "K10",
+                "reg_type": "coil",
+                "address": 9,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K11",
-                "reg_type" : "coil",
-                "address" : 10,
-                "type" : "switch"
-
+                "name": "K11",
+                "reg_type": "coil",
+                "address": 10,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K12",
-                "reg_type" : "coil",
-                "address" : 11,
-                "type" : "switch"
-
-            },            
-	    {
-                "name" : "EXT_K13",
-                "reg_type" : "coil",
-                "address" : 12,
-                "type" : "switch"
-
+                "name": "K12",
+                "reg_type": "coil",
+                "address": 11,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K14",
-                "reg_type" : "coil",
-                "address" : 13,
-                "type" : "switch"
-
+                "name": "K13",
+                "reg_type": "coil",
+                "address": 12,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K15",
-                "reg_type" : "coil",
-                "address" : 14,
-                "type" : "switch"
-
+                "name": "K14",
+                "reg_type": "coil",
+                "address": 13,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K16",
-                "reg_type" : "coil",
-                "address" : 15,
-                "type" : "switch"
-
+                "name": "K15",
+                "reg_type": "coil",
+                "address": 14,
+                "type": "switch"
             },
             {
-                "name" : "EXT_K12",
-                "reg_type" : "coil",
-                "address" : 11,
-                "type" : "switch"
-
+                "name": "K16",
+                "reg_type": "coil",
+                "address": 15,
+                "type": "switch"
+            },
+            {
+                "name": "K12",
+                "reg_type": "coil",
+                "address": 11,
+                "type": "switch"
             }
-
-
         ]
     }
 }

@@ -1,13 +1,13 @@
 {
-    "device_type" : "WBIO-DO-R10R-4",
-    "device" : {
+    "device_type": "WBIO-DO-R10R-4",
+    "device": {
         "name": "WBIO-DO-R10R-4",
         "id": "wb-mio-gpio",
         "protocol": "modbus_io",
         "stride": 1000,
         "shift": 500,
         "max_read_registers": 0,
-    "setup": [
+        "setup": [
             {
                 "title": "IODIR",
                 "address": 10000,
@@ -45,64 +45,54 @@
             }
         ],
         "channels": [
-       
             {
-                "name" : "EXT_DIR1",
-                "reg_type" : "coil",
-                "address" : 0,
-                "type" : "switch"
-
-            },    
-            {
-                "name" : "EXT_ON1",
-                "reg_type" : "coil",
-                "address" : 1,
-                "type" : "switch"
-
+                "name": "DIR1",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "switch"
             },
             {
-                "name" : "EXT_DIR2",
-                "reg_type" : "coil",
-                "address" : 2,
-                "type" : "switch"
-
+                "name": "ON1",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch"
             },
             {
-                "name" : "EXT_ON2",
-                "reg_type" : "coil",
-                "address" : 3,
-                "type" : "switch"
-
+                "name": "DIR2",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch"
             },
             {
-                "name" : "EXT_DIR3",
-                "reg_type" : "coil",
-                "address" : 4,
-                "type" : "switch"
-
-            },    
-            {
-                "name" : "EXT_ON3",
-                "reg_type" : "coil",
-                "address" : 5,
-                "type" : "switch"
-
+                "name": "ON2",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch"
             },
             {
-                "name" : "EXT_DIR4",
-                "reg_type" : "coil",
-                "address" : 6,
-                "type" : "switch"
-
+                "name": "DIR3",
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch"
             },
             {
-                "name" : "EXT_ON4",
-                "reg_type" : "coil",
-                "address" : 7,
-                "type" : "switch"
-
+                "name": "ON3",
+                "reg_type": "coil",
+                "address": 5,
+                "type": "switch"
+            },
+            {
+                "name": "DIR4",
+                "reg_type": "coil",
+                "address": 6,
+                "type": "switch"
+            },
+            {
+                "name": "ON4",
+                "reg_type": "coil",
+                "address": 7,
+                "type": "switch"
             }
-
         ]
     }
 }

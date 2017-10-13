@@ -1,13 +1,13 @@
 {
-    "device_type" : "WBIO-DO-HS-8",
-    "device" : {
+    "device_type": "WBIO-DO-HS-8",
+    "device": {
         "name": "WBIO-DO-HS-8",
         "id": "wb-mio-gpio",
         "protocol": "modbus_io",
         "stride": 1000,
         "shift": 500,
         "max_read_registers": 0,
-    "setup": [
+        "setup": [
             {
                 "title": "IODIR",
                 "address": 10000,
@@ -45,65 +45,54 @@
             }
         ],
         "channels": [
-           
             {
-                "name" : "EXT_HS1",
-                "reg_type" : "coil",
-                "address" : 0,
-                "type" : "switch"
-
+                "name": "HS1",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "switch"
             },
             {
-                "name" : "EXT_HS2",
-                "reg_type" : "coil",
-                "address" : 1,
-                "type" : "switch"
-
+                "name": "HS2",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch"
             },
             {
-                "name" : "EXT_HS3",
-                "reg_type" : "coil",
-                "address" : 2,
-                "type" : "switch"
-
+                "name": "HS3",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch"
             },
             {
-                "name" : "EXT_HS4",
-                "reg_type" : "coil",
-                "address" : 3,
-                "type" : "switch"
-
+                "name": "HS4",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch"
             },
             {
-                "name" : "EXT_HS5",
-                "reg_type" : "coil",
-                "address" : 4,
-                "type" : "switch"
-
+                "name": "HS5",
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch"
             },
             {
-                "name" : "EXT_HS6",
-                "reg_type" : "coil",
-                "address" : 5,
-                "type" : "switch"
-
+                "name": "HS6",
+                "reg_type": "coil",
+                "address": 5,
+                "type": "switch"
             },
             {
-                "name" : "EXT_HS7",
-                "reg_type" : "coil",
-                "address" : 6,
-                "type" : "switch"
-
+                "name": "HS7",
+                "reg_type": "coil",
+                "address": 6,
+                "type": "switch"
             },
             {
-                "name" : "EXT_HS8",
-                "reg_type" : "coil",
-                "address" : 7,
-                "type" : "switch"
-
+                "name": "HS8",
+                "reg_type": "coil",
+                "address": 7,
+                "type": "switch"
             }
-
-
         ]
     }
 }

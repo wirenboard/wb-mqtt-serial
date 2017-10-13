@@ -1,13 +1,13 @@
 {
-    "device_type" : "WBIO-DIO-TTL-8",
-    "device" : {
+    "device_type": "WBIO-DIO-TTL-8",
+    "device": {
         "name": "WBIO-DIO-TTL-8",
         "id": "wb-mio-gpio",
         "protocol": "modbus_io",
         "stride": 1000,
         "shift": 500,
         "max_read_registers": 0,
-    "setup": [
+        "setup": [
             {
                 "title": "IODIR",
                 "address": 10000,
@@ -45,65 +45,54 @@
             }
         ],
         "channels": [
-           
             {
-                "name" : "EXT_TTL1",
-                "reg_type" : "coil",
-                "address" : 0,
-                "type" : "switch"
-
+                "name": "TTL1",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "switch"
             },
             {
-                "name" : "EXT_TTL2",
-                "reg_type" : "coil",
-                "address" : 1,
-                "type" : "switch"
-
+                "name": "TTL2",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch"
             },
             {
-                "name" : "EXT_TTL3",
-                "reg_type" : "coil",
-                "address" : 2,
-                "type" : "switch"
-
+                "name": "TTL3",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch"
             },
             {
-                "name" : "EXT_TTL4",
-                "reg_type" : "coil",
-                "address" : 3,
-                "type" : "switch"
-
+                "name": "TTL4",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch"
             },
             {
-                "name" : "EXT_TTL5",
-                "reg_type" : "coil",
-                "address" : 4,
-                "type" : "switch"
-
+                "name": "TTL5",
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch"
             },
             {
-                "name" : "EXT_TTL6",
-                "reg_type" : "coil",
-                "address" : 5,
-                "type" : "switch"
-
+                "name": "TTL6",
+                "reg_type": "coil",
+                "address": 5,
+                "type": "switch"
             },
             {
-                "name" : "EXT_TTL7",
-                "reg_type" : "coil",
-                "address" : 6,
-                "type" : "switch"
-
+                "name": "TTL7",
+                "reg_type": "coil",
+                "address": 6,
+                "type": "switch"
             },
             {
-                "name" : "EXT_TTL8",
-                "reg_type" : "coil",
-                "address" : 7,
-                "type" : "switch"
-
+                "name": "TTL8",
+                "reg_type": "coil",
+                "address": 7,
+                "type": "switch"
             }
-
-
         ]
     }
 }

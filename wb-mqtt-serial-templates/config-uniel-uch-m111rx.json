@@ -1,13 +1,12 @@
 //Template config for uniel
 {
-    "device_type" : "UCH-M111RX",
-    "device" : {
+    "device_type": "UCH-M111RX",
+    "device": {
         "name": "UCH-M111RX 0808",
         "id": "uchm111rx",
         "enabled": true,
         "protocol": "uniel",
-        "setup": [
-        ],
+        "setup": [],
         "channels": [
             {
                 "name": "Input 0",
@@ -50,42 +49,42 @@
                 "address": "0x11"
             },
             {
-                "name" : "Relay 0",
+                "name": "Relay 0",
                 "reg_type": "relay",
                 "address": "0x12"
             },
             {
-                "name" : "Relay 1",
+                "name": "Relay 1",
                 "reg_type": "relay",
                 "address": "0x13"
             },
             {
-                "name" : "Relay 2",
+                "name": "Relay 2",
                 "reg_type": "relay",
                 "address": "0x14"
             },
             {
-                "name" : "Relay 3",
+                "name": "Relay 3",
                 "reg_type": "relay",
                 "address": "0x15"
             },
             {
-                "name" : "Relay 4",
+                "name": "Relay 4",
                 "reg_type": "relay",
                 "address": "0x16"
             },
             {
-                "name" : "Relay 5",
+                "name": "Relay 5",
                 "reg_type": "relay",
                 "address": "0x17"
             },
             {
-                "name" : "Relay 6",
+                "name": "Relay 6",
                 "reg_type": "relay",
                 "address": "0x18"
             },
             {
-                "name" : "Relay 7",
+                "name": "Relay 7",
                 "reg_type": "relay",
                 "address": "0x19"
             },
@@ -103,9 +102,7 @@
                 "type": "range",
                 "max": "0xff"
             },
-
             // Timers. set switch off delay
-
             {
                 "name": "Timer 0",
                 "reg_type": "param",
@@ -162,50 +159,47 @@
                 "type": "range",
                 "max": "0xff"
             },
-
             // Input types. 0 = SW (normally open), 0xff = MS (normally closed)
-
             {
-                "name" : "Type 0",
+                "name": "Type 0",
                 "reg_type": "relay",
                 "address": "0x22"
             },
             {
-                "name" : "Type 1",
+                "name": "Type 1",
                 "reg_type": "relay",
                 "address": "0x23"
             },
             {
-                "name" : "Type 2",
+                "name": "Type 2",
                 "reg_type": "relay",
                 "address": "0x24"
             },
             {
-                "name" : "Type 3",
+                "name": "Type 3",
                 "reg_type": "relay",
                 "address": "0x25"
             },
             {
-                "name" : "Type 4",
+                "name": "Type 4",
                 "reg_type": "relay",
                 "address": "0x26"
             },
             {
-                "name" : "Type 5",
+                "name": "Type 5",
                 "reg_type": "relay",
                 "address": "0x27"
             },
             {
-                "name" : "Type 6",
+                "name": "Type 6",
                 "reg_type": "relay",
                 "address": "0x28"
             },
             {
-                "name" : "Type 7",
+                "name": "Type 7",
                 "reg_type": "relay",
                 "address": "0x29"
             }
         ]
     }
 }
-

@@ -1,9 +1,9 @@
 //Template config for uniel
 {
-    "device_type" : "UCH-M121RX",
-    "device" : {
-        "name" : "UCH-M121RX 0808",
-        "id" : "uchm121rx",
+    "device_type": "UCH-M121RX",
+    "device": {
+        "name": "UCH-M121RX 0808",
+        "id": "uchm121rx",
         "protocol": "uniel",
         "setup": [
             {
@@ -89,42 +89,42 @@
                 "address": "0x11"
             },
             {
-                "name" : "Relay 0",
+                "name": "Relay 0",
                 "reg_type": "relay",
                 "address": "0x1a"
             },
             {
-                "name" : "Relay 1",
+                "name": "Relay 1",
                 "reg_type": "relay",
                 "address": "0x1b"
             },
             {
-                "name" : "Relay 2",
+                "name": "Relay 2",
                 "reg_type": "relay",
                 "address": "0x1c"
             },
             {
-                "name" : "Relay 3",
+                "name": "Relay 3",
                 "reg_type": "relay",
                 "address": "0x1d"
             },
             {
-                "name" : "Relay 4",
+                "name": "Relay 4",
                 "reg_type": "relay",
                 "address": "0x1e"
             },
             {
-                "name" : "Relay 5",
+                "name": "Relay 5",
                 "reg_type": "relay",
                 "address": "0x1f"
             },
             {
-                "name" : "Relay 6",
+                "name": "Relay 6",
                 "reg_type": "relay",
                 "address": "0x20"
             },
             {
-                "name" : "Relay 7",
+                "name": "Relay 7",
                 "reg_type": "relay",
                 "address": "0x21"
             },
