@@ -14,11 +14,42 @@
 
 namespace {
     const char* DefaultProtocol = "modbus";
-}
 
-bool EndsWith(const std::string& str, const std::string& suffix)
-{
-	return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+    bool EndsWith(const std::string& str, const std::string& suffix)
+    {
+        return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+    }
+
+    using TIndexedJsonArray = std::map<std::string, Json::ArrayIndex>;
+
+    class TPropertyIsEmptyError {};
+    class TIsNotArrayError {};
+    class TIsNotObjectError {};
+
+    TIndexedJsonArray IndexArrayOfObjectsBy(const std::string & property_name, const Json::Value & array)
+    {
+        if (!array.isArray()) {
+            throw TIsNotArrayError();
+        }
+
+        TIndexedJsonArray result;
+
+        for(Json::ArrayIndex i = 0; i < array.size(); ++i) {
+            const auto & object = array[i];
+            if (!object.isObject()) {
+                throw TIsNotObjectError();
+            }
+
+            const auto & property = object[property_name].asString();
+            if (property.empty()) {
+                throw TPropertyIsEmptyError();
+            }
+
+            result[property] = i;
+        }
+
+        return result;
+    }
 }
 
 TTemplate::TTemplate(const Json::Value& device_data):
@@ -36,7 +67,6 @@ TTemplate::TTemplate(const Json::Value& device_data):
         std::string name = channel_data["name"].asString();
         if (name.empty())
             throw TConfigParserException("template channel with empty name");
-        ChannelMap[name] = channel_data;
     }
 }
 
@@ -173,46 +203,56 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
 
 void TConfigParser::MergeAndLoadChannels(PDeviceConfig device_config, const Json::Value& device_data, PTemplate tmpl)
 {
-    std::set<std::string> loaded;
+    TIndexedJsonArray device_channels_index_by_name;
+    std::set<Json::ArrayIndex> loaded;
+
     if (device_data.isMember("channels")) {
-        const Json::Value& channels = device_data["channels"];
-        if (!channels.isArray())
+        const auto & device_channels = device_data["channels"];
+        try {
+            device_channels_index_by_name = IndexArrayOfObjectsBy("name", device_channels);
+        } catch (const TIsNotArrayError &) {
             throw TConfigParserException("device channels member must be an array");
+        } catch (const TIsNotObjectError &) {
+            throw TConfigParserException("channel definition is not an object");
+        } catch (const TPropertyIsEmptyError &) {
+            throw TConfigParserException("channel name is empty");
+        }
+    }
 
-        // Merge channels mentioned both in template and device definition
-        for(Json::ArrayIndex i = 0; i < channels.size(); ++i) {
-            Json::Value channel_data = channels[i];
-            if (!channel_data.isObject())
-                throw TConfigParserException("channel definition is not an object");
+    if (tmpl) {
+        // Load template channels first
+        auto template_channels = tmpl->DeviceData["channels"];
+        const auto & device_channels = device_data["channels"];
 
-            std::string name = channel_data["name"].asString();
-            if (name.empty())
-                throw TConfigParserException("channel name is empty");
-            loaded.insert(name);
+        for (Json::ArrayIndex i = 0; i < template_channels.size(); ++i) {
+            auto & channel_data = template_channels[i];
+            const auto & name = channel_data["name"].asString();
 
-            // If the template has a channel with the same name as current one,
-            // pull template channel properties
-            if (tmpl && tmpl->ChannelMap.isMember(name)) {
-                const Json::Value& tmpl_channel_data = tmpl->ChannelMap[name];
-                for (auto it = tmpl_channel_data.begin(); it != tmpl_channel_data.end(); ++it) {
+            auto it = device_channels_index_by_name.find(name);
+            if (it != device_channels_index_by_name.end()) {
+                const Json::Value & override_channel_data = device_channels[it->second];
+
+                for (auto it = override_channel_data.begin(); it != override_channel_data.end(); ++it) {
+                    std::cerr << "override property " << it.memberName() << std::endl;
                     // Channel fields from current device config
                     // take precedence over template field values
-                    if (!channel_data.isMember(it.memberName()))
-                        channel_data[it.memberName()] = *it;
+                    channel_data[it.memberName()] = *it;
                 }
+                loaded.insert(it->second);
             }
 
             LoadChannel(device_config, channel_data);
         }
     }
 
-    if (tmpl) {
-        // Load template channels that weren't mentioned in device definition
-        const Json::Value& template_channels = tmpl->DeviceData["channels"];
-        for(Json::ArrayIndex i = 0; i < template_channels.size(); ++i) {
-            Json::Value channel_data = template_channels[i];
-            if (loaded.find(channel_data["name"].asString()) == loaded.end())
-                LoadChannel(device_config, channel_data);
+    if (device_data.isMember("channels")) {
+        // Load remaining channels that were declared in main config
+        const auto & device_channels = device_data["channels"];
+        for (Json::ArrayIndex i = 0; i < device_channels.size(); ++i) {
+            if (loaded.count(i)) {
+                continue;
+            }
+            LoadChannel(device_config, device_channels[i]);
         }
     }
 }
@@ -415,8 +455,8 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
         device_config->SlaveId = device_data["slave_id"].asString();
     else if (device_data["slave_id"].isInt()) // legacy
         device_config->SlaveId = std::to_string(device_data["slave_id"].asInt());
-    else 
-        throw TConfigParserException("Wrong type for property slave_id: should be string or integer, but " 
+    else
+        throw TConfigParserException("Wrong type for property slave_id: should be string or integer, but "
                                         + std::to_string(device_data["slave_id"].type()) + " given");
 
 
@@ -549,5 +589,5 @@ void TPortConfig::AddDeviceConfig(PDeviceConfig device_config)
             throw TConfigParserException("device redefinition: " + dev->Protocol + ":" + dev->SlaveId);
     }
 
-    DeviceConfigs.push_back(device_config); 
+    DeviceConfigs.push_back(device_config);
 }
