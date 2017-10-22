@@ -107,9 +107,8 @@
         "slave_id": {
           "title": "Slave id of the device",
           "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
-          "minimum": 0,
           "propertyOrder": 3,
-          "$ref": "#/definitions/serial_int"
+          "$ref": "#/definitions/slave_id"
         },
         "enabled": {
           "type": "boolean",
@@ -463,6 +462,17 @@
         {
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    },
+    "slave_id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$"
         },
         {
           "type": "integer"

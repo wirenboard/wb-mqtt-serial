@@ -1,3 +1,12 @@
+wb-mqtt-serial (1.28) stable; urgency=medium
+
+  * support for IO extensions via modbus
+  * new protocol "modbus_io"
+  * new slave id type aggregated slave id - only for "modbus_io", format: <modbus slave id>:<module position>
+  * new config parameters "stride" and "shift" - only for "modbus_io": register address is <address in channel config> + <stride>*<module position> + <shift>
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Mon, 14 Aug 2017 13:21:31 +0300
+
 wb-mqtt-serial (1.27.1) stable; urgency=medium
 
   * config parser: load template channels first, preserve order on override

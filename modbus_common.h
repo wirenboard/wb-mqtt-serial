@@ -17,57 +17,12 @@ namespace Modbus  // modbus protocol common utilities
         REG_DISCRETE,
     };
 
-    class TModbusRegisterRange: public TRegisterRange {
-    public:
-        TModbusRegisterRange(const std::list<PRegister>& regs);
-        ~TModbusRegisterRange();
-        void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
-        int GetStart() const { return Start; }
-        int GetCount() const { return Count; }
-        uint8_t* GetBits();
-        uint16_t* GetWords();
-        void SetError(bool error) { Error = error; }
-        bool GetError() const { return Error; }
-
-    private:
-        bool Error = false;
-        int Start, Count;
-        uint8_t* Bits = 0;
-        uint16_t* Words = 0;
-    };
-
-    using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
-
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list, PDeviceConfig deviceConfig, bool debug);
-
-    std::chrono::microseconds GetFrameTimeout(int baudRate);
 };  // modbus protocol common utilities
 
 namespace ModbusRTU // modbus rtu protocol utilities
 {
-    using TReadRequest = std::array<uint8_t, 8>;
-    using TWriteRequest = std::vector<uint8_t>;
+    void WriteRegister(PAbstractSerialPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift = 0);
 
-    using TReadResponse = std::vector<uint8_t>;
-    using TWriteResponse = std::array<uint8_t, 8>;
-
-    // returns predicate for frame ending detection
-    TAbstractSerialPort::TFrameCompletePred ExpectNBytes(int n);
-
-    void ComposeReadRequest(TReadRequest& req, Modbus::PModbusRegisterRange range, uint8_t slaveId);
-
-    void ComposeWriteRequest(TWriteRequest& req, PRegister reg, uint8_t slaveId, uint64_t value);
-
-    // parses modbus rtu response, checks crc and stores result
-    void ParseReadResponse(const TReadResponse& res, Modbus::PModbusRegisterRange range);
-
-    // checks modbus rtu response on write with crc check
-    void ParseWriteResponse(const TWriteResponse& res);
-
-    // returns number of bytes needed to hold request
-    size_t InferWriteRequestSize(PRegister reg);
-
-    // returns number of bytes needed to hold response
-    size_t InferReadResponseSize(Modbus::PModbusRegisterRange range);
-
+    void ReadRegisterRange(PAbstractSerialPort port, uint8_t slaveId, PRegisterRange range, int shift = 0);
 };  // modbus rtu protocol utilities

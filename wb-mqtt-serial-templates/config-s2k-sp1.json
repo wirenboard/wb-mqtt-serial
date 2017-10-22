@@ -1,110 +1,110 @@
 {
-  "device_type": "S2K-SP1",
-  "device": {
-    "name": "S2K-SP1",
-    "id": "s2k-sp1",
-    "protocol": "s2k",
-    "channels": [
-      {
-        "name": "Relay 1",
-        "reg_type": "relay",
-        "address": "0x01",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 2",
-        "reg_type": "relay",
-        "address": "0x02",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 3",
-        "reg_type": "relay",
-        "address": "0x03",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 4",
-        "reg_type": "relay",
-        "address": "0x04",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 1 Mode",
-        "reg_type": "relay_mode",
-        "address": "0x01",
-        "format": "u8",
-        "max": "0x0A"
-      },
-      {
-        "name": "Relay 2 Mode",
-        "reg_type": "relay_mode",
-        "address": "0x02",
-        "format": "u8",
-        "max": "0x0A"
-      },
-      {
-        "name": "Relay 3 Mode",
-        "reg_type": "relay_mode",
-        "address": "0x03",
-        "format": "u8",
-        "max": "0x0A"
-      },
-      {
-        "name": "Relay 4 Mode",
-        "reg_type": "relay_mode",
-        "address": "0x04",
-        "format": "u8",
-        "max": "0x0A"
-      },
-      {
-        "name": "Relay 1 Default",
-        "reg_type": "relay_default",
-        "address": "0x01",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 2 Default",
-        "reg_type": "relay_default",
-        "address": "0x02",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 3 Default",
-        "reg_type": "relay_default",
-        "address": "0x03",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 4 Default",
-        "reg_type": "relay_default",
-        "address": "0x04",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 1 Delay",
-        "reg_type": "relay_delay",
-        "address": "0x01",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 2 Delay",
-        "reg_type": "relay_delay",
-        "address": "0x02",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 3 Delay",
-        "reg_type": "relay_delay",
-        "address": "0x03",
-        "format": "u8"
-      },
-      {
-        "name": "Relay 4 Delay",
-        "reg_type": "relay_delay",
-        "address": "0x04",
-        "format": "u8"
-      }
-    ]
-  }
+    "device_type": "S2K-SP1",
+    "device": {
+        "name": "S2K-SP1",
+        "id": "s2k-sp1",
+        "protocol": "s2k",
+        "channels": [
+            {
+                "name": "Relay 1",
+                "reg_type": "relay",
+                "address": "0x01",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 2",
+                "reg_type": "relay",
+                "address": "0x02",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 3",
+                "reg_type": "relay",
+                "address": "0x03",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 4",
+                "reg_type": "relay",
+                "address": "0x04",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 1 Mode",
+                "reg_type": "relay_mode",
+                "address": "0x01",
+                "format": "u8",
+                "max": "0x0A"
+            },
+            {
+                "name": "Relay 2 Mode",
+                "reg_type": "relay_mode",
+                "address": "0x02",
+                "format": "u8",
+                "max": "0x0A"
+            },
+            {
+                "name": "Relay 3 Mode",
+                "reg_type": "relay_mode",
+                "address": "0x03",
+                "format": "u8",
+                "max": "0x0A"
+            },
+            {
+                "name": "Relay 4 Mode",
+                "reg_type": "relay_mode",
+                "address": "0x04",
+                "format": "u8",
+                "max": "0x0A"
+            },
+            {
+                "name": "Relay 1 Default",
+                "reg_type": "relay_default",
+                "address": "0x01",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 2 Default",
+                "reg_type": "relay_default",
+                "address": "0x02",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 3 Default",
+                "reg_type": "relay_default",
+                "address": "0x03",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 4 Default",
+                "reg_type": "relay_default",
+                "address": "0x04",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 1 Delay",
+                "reg_type": "relay_delay",
+                "address": "0x01",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 2 Delay",
+                "reg_type": "relay_delay",
+                "address": "0x02",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 3 Delay",
+                "reg_type": "relay_delay",
+                "address": "0x03",
+                "format": "u8"
+            },
+            {
+                "name": "Relay 4 Delay",
+                "reg_type": "relay_delay",
+                "address": "0x04",
+                "format": "u8"
+            }
+        ]
+    }
 }

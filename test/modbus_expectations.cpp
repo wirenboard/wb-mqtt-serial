@@ -1,21 +1,4 @@
 #include "modbus_expectations.h"
-#include "crc16.h"
-
-#include <stdexcept>
-
-namespace { //utility
-    std::vector<int> WrapAsRTU(const std::vector<int>& pdu)
-    {
-        std::vector<uint8_t> adu;
-        adu.reserve(pdu.size() + 3);
-        adu.push_back(1);   // slaveId
-        adu.insert(adu.end(), pdu.begin(), pdu.end());
-        uint16_t crc = CRC16::CalculateCRC16(adu.data(), adu.size());
-        adu.push_back(crc >> 8);
-        adu.push_back(crc & 0x00FF);
-        return std::vector<int>(adu.begin(), adu.end());
-    }
-}   //utility
 
 
 // read 2 coils
@@ -585,22 +568,4 @@ void TModbusExpectations::Enqueue10CoilsMax3ReadResponse(uint8_t exception)
         0x81,   //function code + 80
         exception
     }), __func__);
-}
-
-TModbusExpectations::ModbusType TModbusExpectations::GetSelectedModbusType() const
-{
-    return SelectedModbusType;
-}
-
-void TModbusExpectations::SelectModbusType(ModbusType selectedModbusType)
-{
-    SelectedModbusType = selectedModbusType;
-}
-
-std::vector<int> TModbusExpectations::WrapPDU(const std::vector<int>& pdu)
-{
-    switch (SelectedModbusType) {
-    case MODBUS_RTU: return WrapAsRTU(pdu);
-    default: throw std::runtime_error("unsupported modbus type " + std::to_string(SelectedModbusType));
-    }
 }

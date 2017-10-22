@@ -140,7 +140,6 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
     bool HasErrorValue;
     uint64_t ErrorValue;
     EWordOrder WordOrder;
-
 };
 
 struct TRegister;
