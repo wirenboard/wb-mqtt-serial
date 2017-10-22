@@ -18,7 +18,7 @@
 
 struct TTemplate {
     TTemplate(const Json::Value& device_data);
-    Json::Value DeviceData, ChannelMap = Json::Value(Json::objectValue);
+    Json::Value DeviceData;
 };
 
 typedef std::shared_ptr<TTemplate> PTemplate;

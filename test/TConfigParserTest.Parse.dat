@@ -14,10 +14,19 @@ Ports:
         GuardInterval: 20000
         DeviceChannels:
             ------
+            Name: Temp 1
+            Type: temperature
+            DeviceId: msu34tlp_2
+            Order: 1
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers: input: 0 (poll_interval=10)
+            ------
             Name: Illuminance
             Type: lux
             DeviceId: msu34tlp_2
-            Order: 1
+            Order: 2
             OnValue: 
             Max: -1
             ReadOnly: 1
@@ -26,20 +35,11 @@ Ports:
             Name: Pressure
             Type: pressure
             DeviceId: msu34tlp_2
-            Order: 2
-            OnValue: 
-            Max: -1
-            ReadOnly: 1
-            Registers: input: 2 (poll_interval=10000)
-            ------
-            Name: Temp 1
-            Type: temperature
-            DeviceId: msu34tlp_2
             Order: 3
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: input: 0 (poll_interval=10)
+            Registers: input: 2 (poll_interval=10000)
             ------
             Name: Temp 2
             Type: temperature

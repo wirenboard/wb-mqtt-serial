@@ -7,6 +7,12 @@ wb-mqtt-serial (1.28) stable; urgency=medium
 
  -- Islam Boziev <i.boziev@wirenboard.ru>  Mon, 14 Aug 2017 13:21:31 +0300
 
+wb-mqtt-serial (1.27.1) stable; urgency=medium
+
+  * config parser: load template channels first, preserve order on override
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Thu, 20 Oct 2017 23:01:14 +0300
+
 wb-mqtt-serial (1.27) stable; urgency=medium
 
   * added "round_to" channel parameter, if specified, channel's value becomes closest multiple of round_to
