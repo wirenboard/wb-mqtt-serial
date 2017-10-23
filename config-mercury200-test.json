@@ -2,6 +2,7 @@
   "debug": true,
   "ports": [
     {
+      "port_type" : "serial",
       "path": "/dev/ttyAPP4",
       "protocol": "mercury200",
       "baud_rate": 9600,

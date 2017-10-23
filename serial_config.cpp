@@ -529,16 +529,17 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
 
     auto port_config = make_shared<TPortConfig>();
 
-    if (port_data.isMember("path")) {
-        if (port_data.isMember("address")) {
-            throw TConfigParserException("only either 'path' or 'address' should be specified");
+    auto port_type = port_data.get("port_type", "serial").asString();
+
+    if (port_type == "serial") {
+        if (!port_data.isMember("path")) {
+            throw TConfigParserException("path is not specified");
         }
 
-        // we are making serial port
         auto serial_port_settings = make_shared<TSerialPortSettings>(port_data["path"].asString());
 
         if (port_data.isMember("baud_rate"))
-        serial_port_settings->BaudRate = GetInt(port_data, "baud_rate");
+            serial_port_settings->BaudRate = GetInt(port_data, "baud_rate");
 
         if (port_data.isMember("parity"))
             serial_port_settings->Parity = port_data["parity"].asCString()[0]; // FIXME (can be '\0')
@@ -551,20 +552,19 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
 
         port_config->ConnSettings = serial_port_settings;
 
-    } else if (port_data.isMember("address")) {
-        // we are making TCP port
-        auto tcp_port_settings = make_shared<TTcpPortSettings>(port_data["address"].asString());
-
-        if (port_data.isMember("port")) {
-            tcp_port_settings->Port = GetInt(port_data, "port");
-        } else {
-            throw TConfigParserException("port number should be specified with 'address'");
+    } else if (port_type == "tcp") {
+        if (!port_data.isMember("address")) {
+            throw TConfigParserException("address is not specified");
         }
 
-        port_config->ConnSettings = tcp_port_settings;
+        if (!port_data.isMember("port")) {
+            throw TConfigParserException("port number is not specified");
+        }
+
+        port_config->ConnSettings = make_shared<TTcpPortSettings>(port_data["address"].asString(), GetInt(port_data, "port"));
 
     } else {
-        throw TConfigParserException("neither path nor address are not specified");
+        throw TConfigParserException("invalid port_type: '" + port_type + "'");
     }
 
     if (port_data.isMember("response_timeout_ms"))

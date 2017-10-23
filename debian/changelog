@@ -1,8 +1,9 @@
 wb-mqtt-serial (1.29) stable; urgency=medium
 
   * TCP port support
-  * added "address" port parameter - IPv4 address or host name. If specified instead of "path", TCP port will be created
-  * added "port" port parameter - TCP port. Required if "address" port parameter was specified
+  * added "port_type" port parameter - can be either "serial" or "tcp" (default "serial")
+  * added "address" port parameter - IPv4 address or host name. Required if "port_type" is "tcp"
+  * added "port" port parameter - TCP port. Required if "port_type" is "tcp"
 
  -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 23 Oct 2017 17:24:54 +0300
 

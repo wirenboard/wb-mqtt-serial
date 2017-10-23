@@ -3,6 +3,7 @@
     "debug": true,
     "ports": [
         {
+            "port_type" : "serial",
             "path" : "/dev/ttyUSB0",
             "baud_rate": 9600,
             "parity": "N",

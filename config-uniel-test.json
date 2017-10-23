@@ -3,6 +3,7 @@
   "debug": false,
   "ports": [
     {
+      "port_type" : "serial",
       "path" : "/dev/ttyNSC1",
       "baud_rate": 9600,
       "parity": "N",
