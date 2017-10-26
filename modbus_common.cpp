@@ -344,7 +344,7 @@ namespace Modbus    // modbus protocol common utilities
 
     inline size_t ReadResponsePDUSize(const uint8_t* pdu)
     {
-        // Modbus stores data byte count in second byte of PDU, 
+        // Modbus stores data byte count in second byte of PDU,
         // so PDU size is data size + 2 (1b function code + 1b byte count itself)
         return IsException(pdu) ? EXCEPTION_RESPONSE_PDU_SIZE : pdu[1] + 2;
     }
@@ -353,7 +353,7 @@ namespace Modbus    // modbus protocol common utilities
     {
         return IsException(pdu) ? EXCEPTION_RESPONSE_PDU_SIZE : WRITE_RESPONSE_PDU_SIZE;
     }
-    
+
     // fills pdu with read request data according to Modbus specification
     void ComposeReadRequestPDU(uint8_t* pdu, PRegister reg, int shift)
     {
@@ -396,7 +396,7 @@ namespace Modbus    // modbus protocol common utilities
         WriteAs2Bytes(pdu + 1, reg->Address + shift);
         WriteAs2Bytes(pdu + 3, value);
     }
-    
+
     // parses modbus response and stores result
     void ParseReadResponse(const uint8_t* pdu, PModbusRegisterRange range)
     {
@@ -505,6 +505,13 @@ namespace ModbusRTU // modbus rtu protocol utilities
     using TReadResponse = std::vector<uint8_t>;
     using TWriteResponse = std::array<uint8_t, 8>;
 
+    class TInvalidCRCError: public TSerialDeviceTransientErrorException
+    {
+    public:
+        TInvalidCRCError(): TSerialDeviceTransientErrorException("invalid crc")
+        {}
+    };
+
     const size_t DATA_SIZE = 3;  // number of bytes in ADU that is not in PDU (slaveID (1b) + crc value (2b))
     const std::chrono::milliseconds FrameTimeout(500);   // libmodbus default
 
@@ -569,7 +576,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
         uint16_t crc = (res[pdu_size + 1] << 8) + res[pdu_size + 2];
         if (crc != CRC16::CalculateCRC16(res.data(), pdu_size + 1)) {
-            throw TSerialDeviceTransientErrorException("invalid crc");
+            throw TInvalidCRCError();
         }
 
         Modbus::ParseReadResponse(PDU(res), range);
@@ -581,7 +588,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
         uint16_t crc = (res[pdu_size + 1] << 8) + res[pdu_size + 2];
         if (crc != CRC16::CalculateCRC16(res.data(), pdu_size + 1)) {
-            throw TSerialDeviceTransientErrorException("invalid crc");
+            throw TInvalidCRCError();
         }
 
         Modbus::ParseWriteResponse(PDU(res));
@@ -605,7 +612,16 @@ namespace ModbusRTU // modbus rtu protocol utilities
             {   // Receive response
                 TWriteResponse response;
                 if (port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size())) > 0) {
-                    ParseWriteResponse(response);
+                    try {
+                        ParseWriteResponse(response);
+                    } catch (const TInvalidCRCError &) {
+                        try {
+                            port->SkipNoise();
+                        } catch (const std::exception & e) {
+                            std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                        }
+                        throw;
+                    }
                     return;
                 }
             }
@@ -645,7 +661,16 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
                 auto rc = port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size()));
                 if (rc > 0) {
-                    ModbusRTU::ParseReadResponse(response, modbus_range);
+                    try {
+                        ModbusRTU::ParseReadResponse(response, modbus_range);
+                    } catch (const TInvalidCRCError &) {
+                        try {
+                            port->SkipNoise();
+                        } catch (const std::exception & e) {
+                            std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                        }
+                        throw;
+                    }
                     modbus_range->SetError(false);
                     return;
                 }

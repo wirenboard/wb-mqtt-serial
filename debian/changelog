@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.28.1) stable; urgency=medium
+
+  * skip entire frame on modbus crc checksum error
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Thu, 26 Oct 2017 16:53:34 +0300
+
 wb-mqtt-serial (1.28) stable; urgency=medium
 
   * support for IO extensions via modbus
