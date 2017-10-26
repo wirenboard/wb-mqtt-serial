@@ -135,6 +135,15 @@ TEST_F(TModbusTest, Errors)
     SerialPort->Close();
 }
 
+TEST_F(TModbusTest, CRCError)
+{
+    EnqueueInvalidCRCCoilReadResponse();
+
+    ModbusDev->ReadRegisterRange(ModbusDev->SplitRegisterList({ ModbusCoil0 }).front());
+
+    SerialPort->Close();
+}
+
 
 class TModbusIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
 {
@@ -188,7 +197,7 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
     } else {
         Enqueue10CoilsReadResponse();
     }
-    
+
     EnqueueDiscreteReadResponse();
 }
 
@@ -267,4 +276,3 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
     Config->PortConfigs[0]->DeviceConfigs[0]->MaxReadRegisters = 3;
     InvalidateConfigPoll(TEST_MAX_READ_REGISTERS);
 }
-

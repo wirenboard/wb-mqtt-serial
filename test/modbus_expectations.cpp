@@ -569,3 +569,24 @@ void TModbusExpectations::Enqueue10CoilsMax3ReadResponse(uint8_t exception)
         exception
     }), __func__);
 }
+
+void TModbusExpectations::EnqueueInvalidCRCCoilReadResponse()
+{
+    auto response = WrapPDU(std::vector<int> {
+        0x01,   //function code
+        0x01,   //byte count
+        1<<1,   //coils status
+    });
+
+    ++response.back(); // make sure CRC is not equal to correct value
+
+    Expector()->Expect(
+    WrapPDU({
+        0x01,   //function code
+        0x00,   //starting address Hi
+        0x00,   //starting address Lo
+        0x00,   //quantity Hi
+        0x01,   //quantity Lo
+    }),
+    response, __func__);
+}
