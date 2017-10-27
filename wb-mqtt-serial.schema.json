@@ -208,6 +208,14 @@
           "minimum": 0,
           "default": 0,
           "propertyOrder": 16
+        },
+        "frame_timeout_ms": {
+          "type": "integer",
+          "title": "Frame timeout (ms)",
+          "description": "Specifies max frame transmission duration for some protocols",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 17
         }
       },
       "required": ["slave_id"],
