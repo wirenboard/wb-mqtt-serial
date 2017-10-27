@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.29.3) stable; urgency=medium
+
+  * fixes default config on WB6
+
+ -- Evgeny Boger <boger@contactless.ru>  Fri, 27 Oct 2017 17:18:46 +0300
+
 wb-mqtt-serial (1.29.2) stable; urgency=medium
 
   * update libwbmqtt version
@@ -34,7 +40,6 @@ wb-mqtt-serial (1.28.3) stable; urgency=medium
   * add frame_timeout_ms to schema
 
  -- Evgeny Boger <boger@contactless.ru>  Fri, 27 Oct 2017 20:46:59 +0300
-
 wb-mqtt-serial (1.28.2) stable; urgency=medium
 
   * do not exit on modbus invalid exception code
