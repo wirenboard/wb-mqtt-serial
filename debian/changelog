@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.28.2) stable; urgency=medium
+
+  * add frame_timeout_ms to schema
+
+ -- Evgeny Boger <boger@contactless.ru>  Fri, 27 Oct 2017 20:46:59 +0300
+
 wb-mqtt-serial (1.28.1) stable; urgency=medium
 
   * skip entire frame on modbus crc checksum error
