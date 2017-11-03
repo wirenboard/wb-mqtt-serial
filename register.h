@@ -314,7 +314,7 @@ public:
     typedef std::function<void(PRegister reg, uint64_t new_value)> TValueCallback;
     typedef std::function<void(PRegister reg)> TErrorCallback;
     enum EStatus {
-        ST_OK, 
+        ST_OK,
         ST_UNKNOWN_ERROR, // response from device either not parsed or not received at all (crc error, timeout)
         ST_DEVICE_ERROR // valid response from device, which reports error
     };
@@ -327,6 +327,7 @@ public:
     std::chrono::milliseconds PollInterval() const { return RegPollInterval; }
     virtual void MapRange(TValueCallback value_callback, TErrorCallback error_callback) = 0;
     virtual EStatus GetStatus() const = 0;
+    virtual bool NeedsSplit() const = 0;
 
 protected:
     TRegisterRange(const std::list<PRegister>& regs);
@@ -351,6 +352,7 @@ public:
     void SetError(PRegister reg);
     void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
     EStatus GetStatus() const override;
+    bool NeedsSplit() const override;
 
 private:
     std::unordered_map<PRegister, uint64_t> Values;

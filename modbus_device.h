@@ -12,7 +12,7 @@ public:
     static const int DefaultTimeoutMs = 1000;
 
     TModbusDevice(PDeviceConfig config, PPort port, PProtocol protocol);
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list) const override;
+    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles = true) const override;
     uint64_t ReadRegister(PRegister reg) override;
     void WriteRegister(PRegister reg, uint64_t value) override;
     void ReadRegisterRange(PRegisterRange range) override;

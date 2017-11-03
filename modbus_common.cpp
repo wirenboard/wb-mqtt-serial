@@ -56,10 +56,11 @@ namespace Modbus    // modbus protocol common utilities
 
     class TModbusRegisterRange: public TRegisterRange {
     public:
-        TModbusRegisterRange(const std::list<PRegister>& regs);
+        TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles);
         ~TModbusRegisterRange();
         void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
         EStatus GetStatus() const override;
+        bool NeedsSplit() const override;
         int GetStart() const { return Start; }
         int GetCount() const { return Count; }
         uint8_t* GetBits();
@@ -70,6 +71,7 @@ namespace Modbus    // modbus protocol common utilities
         void SetModbusError(ModbusError error) { ModbusErrorCode = error; }
         ModbusError GetModbusError() const { return ModbusErrorCode; }
     private:
+        bool HasHoles = false;
         bool Error = false;
         ModbusError ModbusErrorCode = ERR_NONE;
         int Start, Count;
@@ -79,8 +81,9 @@ namespace Modbus    // modbus protocol common utilities
 
     using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
 
-    TModbusRegisterRange::TModbusRegisterRange(const std::list<PRegister>& regs):
-        TRegisterRange(regs)
+    TModbusRegisterRange::TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles)
+        : TRegisterRange(regs)
+        , HasHoles(hasHoles)
     {
         if (regs.empty()) // shouldn't happen
             throw std::runtime_error("cannot construct empty register range");
@@ -148,6 +151,17 @@ namespace Modbus    // modbus protocol common utilities
         case ERR_NONE:
         default:
             return Error ? ST_UNKNOWN_ERROR : ST_OK;
+        }
+    }
+
+    bool TModbusRegisterRange::NeedsSplit() const
+    {
+        switch (ModbusErrorCode) {
+        case ERR_ILLEGAL_DATA_ADDRESS:
+        case ERR_ILLEGAL_DATA_VALUE:
+            return HasHoles;
+        default:
+            return false;
         }
     }
 
@@ -458,7 +472,7 @@ namespace Modbus    // modbus protocol common utilities
         ThrowIfModbusException(GetExceptionCode(pdu));
     }
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list, PDeviceConfig deviceConfig, bool debug)
+    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, PDeviceConfig deviceConfig, bool debug, bool enableHoles)
     {
         std::list<PRegisterRange> r;
         if (reg_list.empty())
@@ -467,7 +481,7 @@ namespace Modbus    // modbus protocol common utilities
         std::list<PRegister> l;
         int prev_start = -1, prev_type = -1, prev_end = -1;
         std::chrono::milliseconds prev_interval;
-        int max_hole = IsSingleBitType(reg_list.front()->Type) ? deviceConfig->MaxBitHole : deviceConfig->MaxRegHole;
+        int max_hole = enableHoles ? (IsSingleBitType(reg_list.front()->Type) ? deviceConfig->MaxBitHole : deviceConfig->MaxRegHole) : 0;
         int max_regs;
 
         if (IsSingleBitType(reg_list.front()->Type)) {
@@ -480,6 +494,7 @@ namespace Modbus    // modbus protocol common utilities
             }
         }
 
+        bool hasHoles = false;
         for (auto reg: reg_list) {
             int new_end = reg->Address + reg->Width();
             if (!(prev_end >= 0 &&
@@ -489,7 +504,8 @@ namespace Modbus    // modbus protocol common utilities
                 reg->PollInterval == prev_interval &&
                 new_end - prev_start <= max_regs)) {
                 if (!l.empty()) {
-                    auto range = std::make_shared<TModbusRegisterRange>(l);
+                    auto range = std::make_shared<TModbusRegisterRange>(l, hasHoles);
+                    hasHoles = false;
                     if (debug)
                         std::cerr << "Adding range: " << range->GetCount() << " " <<
                             range->TypeName() << "(s) @ " << range->GetStart() <<
@@ -501,11 +517,14 @@ namespace Modbus    // modbus protocol common utilities
                 prev_type = reg->Type;
                 prev_interval = reg->PollInterval;
             }
+            if (!l.empty()) {
+                hasHoles |= (reg->Address != prev_end);
+            }
             l.push_back(reg);
             prev_end = new_end;
         }
         if (!l.empty()) {
-            auto range = std::make_shared<TModbusRegisterRange>(l);
+            auto range = std::make_shared<TModbusRegisterRange>(l, hasHoles);
             if (debug)
                 std::cerr << "Adding range: " << range->GetCount() << " " <<
                     range->TypeName() << "(s) @ " << range->GetStart() <<

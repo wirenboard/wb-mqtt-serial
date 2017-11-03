@@ -68,7 +68,7 @@ public:
     TSerialDevice(const TSerialDevice&) = delete;
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
-    virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list) const;
+    virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles = true) const;
 
     // Prepare to access device (pauses for configured delay by default)
     virtual void Prepare();

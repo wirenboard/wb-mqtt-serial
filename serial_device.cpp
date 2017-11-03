@@ -22,7 +22,7 @@ std::string TSerialDevice::ToString() const
     return DeviceConfig()->Name + "(" + DeviceConfig()->SlaveId + ")";
 }
 
-std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegister> reg_list) const
+std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool) const
 {
     std::list<PRegisterRange> r;
     for (auto reg: reg_list)

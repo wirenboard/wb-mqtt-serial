@@ -46,7 +46,7 @@ private:
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
     void PrepareToAccessDevice(PSerialDevice dev);
     void OnDeviceReconnect(PSerialDevice dev);
-    void DisableRegHoles(PSerialDevice dev);
+    void SplitRegisterRanges(std::set<PRegisterRange> &&);
 
     PPort Port;
     std::list<PRegister> RegList;

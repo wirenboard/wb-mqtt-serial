@@ -365,9 +365,6 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
     Note() << "LoopOnce()";
     Observer->LoopOnce();
 
-    ASSERT_EQ(device->DeviceConfig()->MaxRegHole, 0);
-    ASSERT_EQ(device->DeviceConfig()->MaxBitHole, 0);
-
     EnqueueHoldingPackReadResponse();
     EnqueueHoldingReadS64Response();
     EnqueueHoldingReadF32Response();

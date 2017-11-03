@@ -23,7 +23,7 @@ public:
     bool PollIsDue();
     TTimePoint GetNextPollTimePoint();
     void Reset();
-
+    void Modify(std::function<bool(const PPollEntry & entry)> && thunk);
 private:
     struct TQueueItem {
         TQueueItem(TTimePoint* current_time, std::chrono::milliseconds* avg_request_duration,
