@@ -9,7 +9,7 @@
 #include <exception>
 #include <algorithm>
 #include <stdint.h>
-
+#include <iostream>
 #include "portsettings.h"
 #include "register.h"
 #include "serial_exc.h"
