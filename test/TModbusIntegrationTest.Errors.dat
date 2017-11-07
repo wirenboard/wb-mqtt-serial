@@ -130,7 +130,7 @@ Publish: /devices/modbus-sample/controls/Coil 8/meta/error: 'r' (QoS 0, retained
 Publish: /devices/modbus-sample/controls/Coil 9/meta/error: 'r' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Coil 10/meta/error: 'r' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Coil 11/meta/error: 'r' (QoS 0, retained)
-<< 01 81 01 81 90
+<< 01 81 54 41 AF
 EnqueueDiscreteReadResponse()
 >> 01 02 00 14 00 01 F9 CE
 Publish: /devices/modbus-sample/controls/Discrete 0/meta/error: 'r' (QoS 0, retained)

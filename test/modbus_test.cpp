@@ -252,7 +252,7 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueHoldingReadU16Response(0x6);
     EnqueueInputReadU16Response(0x8);
     EnqueueCoilReadResponse(0xa);
-    Enqueue10CoilsReadResponse(0x1);
+    Enqueue10CoilsReadResponse(0x54);   // invalid exception code
     EnqueueDiscreteReadResponse(0xb);
 
     Note() << "LoopOnce()";

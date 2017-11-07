@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.28.2) stable; urgency=medium
+
+  * do not exit on modbus invalid exception code
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Tue, 7 Nov 2017 16:53:34 +0300
+
 wb-mqtt-serial (1.28.1) stable; urgency=medium
 
   * skip entire frame on modbus crc checksum error
