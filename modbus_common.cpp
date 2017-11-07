@@ -285,7 +285,8 @@ namespace Modbus    // modbus protocol common utilities
             message = "gateway target device failed to respond";
             break;
         default:
-            throw std::runtime_error("invalid modbus error code");
+            message = "invalid modbus error code (" + std::to_string(code) + ")";
+            break;
         }
         if (is_transient) {
             throw TSerialDeviceTransientErrorException(message);
