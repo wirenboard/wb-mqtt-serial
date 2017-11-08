@@ -208,6 +208,14 @@
           "minimum": 0,
           "default": 0,
           "propertyOrder": 16
+        },
+        "frame_timeout_ms": {
+          "type": "integer",
+          "title": "Frame timeout (ms)",
+          "description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
+          "minimum": -1,
+          "default": -1,
+          "propertyOrder": 17
         }
       },
       "required": ["slave_id"],
