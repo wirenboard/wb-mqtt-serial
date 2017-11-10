@@ -248,141 +248,121 @@
                 "name": "Play from ROM1",
                 "reg_type": "coil",
                 "address": 5100,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM2",
                 "reg_type": "coil",
                 "address": 5101,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM3",
                 "reg_type": "coil",
                 "address": 5102,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM4",
                 "reg_type": "coil",
                 "address": 5103,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM5",
                 "reg_type": "coil",
                 "address": 5104,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM6",
                 "reg_type": "coil",
                 "address": 5105,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM7",
                 "reg_type": "coil",
                 "address": 5106,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM8",
                 "reg_type": "coil",
                 "address": 5107,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM9",
                 "reg_type": "coil",
                 "address": 5108,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM10",
                 "reg_type": "coil",
                 "address": 5109,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM11",
                 "reg_type": "coil",
                 "address": 5110,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM12",
                 "reg_type": "coil",
                 "address": 5111,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM13",
                 "reg_type": "coil",
                 "address": 5112,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM14",
                 "reg_type": "coil",
                 "address": 5113,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM15",
                 "reg_type": "coil",
                 "address": 5114,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM16",
                 "reg_type": "coil",
                 "address": 5115,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM17",
                 "reg_type": "coil",
                 "address": 5116,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM18",
                 "reg_type": "coil",
                 "address": 5117,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM19",
                 "reg_type": "coil",
                 "address": 5118,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Play from ROM20",
                 "reg_type": "coil",
                 "address": 5119,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "ROM1 -> RAM",
