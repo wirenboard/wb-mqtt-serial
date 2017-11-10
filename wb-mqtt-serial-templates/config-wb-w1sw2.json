@@ -1,0 +1,52 @@
+{
+    "device_type": "WB-M1W2",
+    "device": {
+        "name": "WB-M1W2",
+        "id": "wb-m1w2",
+        "max_read_registers": 0,
+        "channels": [{
+                "name": "Input Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "scale": 0.001,
+                "type": "voltage"
+            },
+            {
+                "name": "Internal Temperature Sensor",
+                "type": "temperature",
+                "reg_type": "holding",
+                "address": "6",
+                "format": "s16",
+                "scale": 0.0625,
+                "poll_interval": 2000
+            },
+            {
+                "name": "External Sensor 1",
+                "type": "temperature",
+                "reg_type": "holding",
+                "address": "7",
+                "format": "s16",
+                "scale": 0.0625,
+                "error_value": "0x7FFF",
+                "poll_interval": 2000
+            },
+            {
+                "name": "External Sensor 2",
+                "type": "temperature",
+                "reg_type": "holding",
+                "address": "8",
+                "format": "s16",
+                "scale": 0.0625,
+                "error_value": "0x7FFF",
+                "poll_interval": 2000
+            },
+            {
+                "name": "Serial NO",
+                "type": "text",
+                "reg_type": "holding",
+                "address": 270,
+                "format": "u32"
+            }
+        ]
+    }
+}
