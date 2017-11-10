@@ -42,7 +42,7 @@
                 "address": 5301,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM2 size",
                 "reg_type": "input",
                 "address": 5401
@@ -53,7 +53,7 @@
                 "address": 5302,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM3 size",
                 "reg_type": "input",
                 "address": 5402
@@ -64,7 +64,7 @@
                 "address": 5303,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM4 size",
                 "reg_type": "input",
                 "address": 5403
@@ -75,7 +75,7 @@
                 "address": 5304,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM5 size",
                 "reg_type": "input",
                 "address": 5404
@@ -86,7 +86,7 @@
                 "address": 5305,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM6 size",
                 "reg_type": "input",
                 "address": 5405
@@ -97,7 +97,7 @@
                 "address": 5306,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM7 size",
                 "reg_type": "input",
                 "address": 5406
@@ -108,7 +108,7 @@
                 "address": 5307,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM8 size",
                 "reg_type": "input",
                 "address": 5407
@@ -119,7 +119,7 @@
                 "address": 5308,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM9 size",
                 "reg_type": "input",
                 "address": 5408
@@ -130,7 +130,7 @@
                 "address": 5309,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM10 size",
                 "reg_type": "input",
                 "address": 5409
@@ -141,7 +141,7 @@
                 "address": 5310,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM11 size",
                 "reg_type": "input",
                 "address": 5410
@@ -152,7 +152,7 @@
                 "address": 5311,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM12 size",
                 "reg_type": "input",
                 "address": 5411
@@ -163,7 +163,7 @@
                 "address": 5312,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM13 size",
                 "reg_type": "input",
                 "address": 5412
@@ -174,7 +174,7 @@
                 "address": 5313,
                 "type": "switch"
             },
-    	    {
+            {
                 "name": "ROM14 size",
                 "reg_type": "input",
                 "address": 5413
@@ -492,8 +492,8 @@
                 "address": "6",
                 "format": "s16",
                 "scale": 0.0625,
-		        "error_value": "0x7FFF",
-		        "poll_interval": 2000
+                "error_value": "0x7FFF",
+                "poll_interval": 2000
             },
             {
                 "name": "External Temperature Sensor",
