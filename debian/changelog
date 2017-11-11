@@ -1,4 +1,4 @@
-wb-mqtt-serial (1.29) stable; urgency=medium
+wb-mqtt-serial (1.30) stable; urgency=medium
 
   * TCP port support
   * added "port_type" port parameter - can be either "serial" or "tcp" (default "serial")
@@ -6,6 +6,24 @@ wb-mqtt-serial (1.29) stable; urgency=medium
   * added "port" port parameter - TCP port. Required if "port_type" is "tcp"
 
  -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 23 Oct 2017 17:24:54 +0300
+
+wb-mqtt-serial (1.28.3) stable; urgency=medium
+
+  * add frame_timeout_ms to schema
+
+ -- Evgeny Boger <boger@contactless.ru>  Fri, 27 Oct 2017 20:46:59 +0300
+
+wb-mqtt-serial (1.28.2) stable; urgency=medium
+
+  * do not exit on modbus invalid exception code
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Tue, 7 Nov 2017 16:53:34 +0300
+
+wb-mqtt-serial (1.28.1) stable; urgency=medium
+
+  * skip entire frame on modbus crc checksum error
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Thu, 26 Oct 2017 16:53:34 +0300
 
 wb-mqtt-serial (1.28) stable; urgency=medium
 

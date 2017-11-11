@@ -3,7 +3,7 @@
 #include "port.h"
 #include "serial_config.h"
 #include "register.h"
-
+#include <ostream>
 #include <bitset>
 #include <array>
 

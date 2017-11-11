@@ -285,7 +285,8 @@ namespace Modbus    // modbus protocol common utilities
             message = "gateway target device failed to respond";
             break;
         default:
-            throw std::runtime_error("invalid modbus error code");
+            message = "invalid modbus error code (" + std::to_string(code) + ")";
+            break;
         }
         if (is_transient) {
             throw TSerialDeviceTransientErrorException(message);
@@ -505,6 +506,13 @@ namespace ModbusRTU // modbus rtu protocol utilities
     using TReadResponse = std::vector<uint8_t>;
     using TWriteResponse = std::array<uint8_t, 8>;
 
+    class TInvalidCRCError: public TSerialDeviceTransientErrorException
+    {
+    public:
+        TInvalidCRCError(): TSerialDeviceTransientErrorException("invalid crc")
+        {}
+    };
+
     const size_t DATA_SIZE = 3;  // number of bytes in ADU that is not in PDU (slaveID (1b) + crc value (2b))
     const std::chrono::milliseconds FrameTimeout(500);   // libmodbus default
 
@@ -569,7 +577,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
         uint16_t crc = (res[pdu_size + 1] << 8) + res[pdu_size + 2];
         if (crc != CRC16::CalculateCRC16(res.data(), pdu_size + 1)) {
-            throw TSerialDeviceTransientErrorException("invalid crc");
+            throw TInvalidCRCError();
         }
 
         Modbus::ParseReadResponse(PDU(res), range);
@@ -581,7 +589,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
         uint16_t crc = (res[pdu_size + 1] << 8) + res[pdu_size + 2];
         if (crc != CRC16::CalculateCRC16(res.data(), pdu_size + 1)) {
-            throw TSerialDeviceTransientErrorException("invalid crc");
+            throw TInvalidCRCError();
         }
 
         Modbus::ParseWriteResponse(PDU(res));
@@ -605,7 +613,16 @@ namespace ModbusRTU // modbus rtu protocol utilities
             {   // Receive response
                 TWriteResponse response;
                 if (port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size())) > 0) {
-                    ParseWriteResponse(response);
+                    try {
+                        ParseWriteResponse(response);
+                    } catch (const TInvalidCRCError &) {
+                        try {
+                            port->SkipNoise();
+                        } catch (const std::exception & e) {
+                            std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                        }
+                        throw;
+                    }
                     return;
                 }
             }
@@ -645,7 +662,16 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
                 auto rc = port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size()));
                 if (rc > 0) {
-                    ModbusRTU::ParseReadResponse(response, modbus_range);
+                    try {
+                        ModbusRTU::ParseReadResponse(response, modbus_range);
+                    } catch (const TInvalidCRCError &) {
+                        try {
+                            port->SkipNoise();
+                        } catch (const std::exception & e) {
+                            std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                        }
+                        throw;
+                    }
                     modbus_range->SetError(false);
                     return;
                 }
