@@ -4,8 +4,8 @@
         "name": "WB-MAP12H",
         "id": "wb-map12h",
         "max_read_registers": 60,
-    "channels": [
-    {
+        "channels": [
+        {
             "name": "Urms L1",
             "reg_type": "input",
             "address": "0x10d9",
@@ -14,7 +14,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "THD U L1",
             "reg_type": "input",
             "address": "0x1703",
@@ -23,7 +24,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "THDN U L1",
             "reg_type": "input",
             "address": "0x10f1",
@@ -32,7 +34,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ufund L1",
             "reg_type": "input",
             "address": "0x1711",
@@ -41,7 +44,8 @@
             "scale": 0.032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Urms L2",
             "reg_type": "input",
             "address": "0x10da",
@@ -50,7 +54,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "THD U L2",
             "reg_type": "input",
             "address": "0x1704",
@@ -59,7 +64,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "THDN U L2",
             "reg_type": "input",
             "address": "0x10f2",
@@ -68,7 +74,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ufund L2",
             "reg_type": "input",
             "address": "0x1713",
@@ -77,7 +84,8 @@
             "scale": 0.032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Urms L3",
             "reg_type": "input",
             "address": "0x10db",
@@ -86,7 +94,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "THD U L3",
             "reg_type": "input",
             "address": "0x1705",
@@ -95,7 +104,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "THDN U L3",
             "reg_type": "input",
             "address": "0x10f3",
@@ -104,7 +114,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ufund L3",
             "reg_type": "input",
             "address": "0x1715",
@@ -113,7 +124,8 @@
             "scale": 0.032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Frequency",
             "reg_type": "input",
             "address": "0x10f8",
@@ -122,7 +134,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Voltage angle L1",
             "reg_type": "input",
             "address": "0x10fd",
@@ -131,7 +144,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Voltage angle L2",
             "reg_type": "input",
             "address": "0x10fe",
@@ -140,7 +154,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Voltage angle L3",
             "reg_type": "input",
             "address": "0x10ff",
@@ -149,7 +164,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 1 Irms L1",
             "reg_type": "input",
             "address": "0x10dd",
@@ -158,7 +174,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 THD I L1",
             "reg_type": "input",
             "address": "0x1700",
@@ -167,7 +184,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 THDN I L1",
             "reg_type": "input",
             "address": "0x10f5",
@@ -176,7 +194,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 Ifund L1",
             "reg_type": "input",
             "address": "0x1710",
@@ -185,7 +204,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 P L1",
             "reg_type": "input",
             "address": "0x1302",
@@ -194,7 +214,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 Q L1",
             "reg_type": "input",
             "address": "0x130a",
@@ -203,7 +224,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 S L1",
             "reg_type": "input",
             "address": "0x1312",
@@ -212,7 +234,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 N L1",
             "reg_type": "input",
             "address": "0x1582",
@@ -221,7 +244,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 PF L1",
             "reg_type": "input",
             "address": "0x10bd",
@@ -230,7 +254,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 Pfund L1",
             "reg_type": "input",
             "address": "0x1402",
@@ -239,7 +264,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 Pharm L1",
             "reg_type": "input",
             "address": "0x140a",
@@ -248,7 +274,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 AP energy L1",
             "reg_type": "input",
             "address": "0x1204",
@@ -258,7 +285,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 AN energy L1",
             "reg_type": "input",
             "address": "0x1214",
@@ -268,7 +296,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 RP energy L1",
             "reg_type": "input",
             "address": "0x1224",
@@ -278,7 +307,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 RN energy L1",
             "reg_type": "input",
             "address": "0x1234",
@@ -288,7 +318,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 S energy L1",
             "reg_type": "input",
             "address": "0x1244",
@@ -298,7 +329,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 NP energy L1",
             "reg_type": "input",
             "address": "0x1506",
@@ -308,7 +340,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 NN energy L1",
             "reg_type": "input",
             "address": "0x1516",
@@ -318,7 +351,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 Irms L2",
             "reg_type": "input",
             "address": "0x10de",
@@ -327,7 +361,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 THD I L2",
             "reg_type": "input",
             "address": "0x1701",
@@ -336,7 +371,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 THDN I L2",
             "reg_type": "input",
             "address": "0x10f6",
@@ -345,7 +381,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 Ifund L2",
             "reg_type": "input",
             "address": "0x1712",
@@ -354,7 +391,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 P L2",
             "reg_type": "input",
             "address": "0x1304",
@@ -363,7 +401,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 Q L2",
             "reg_type": "input",
             "address": "0x130c",
@@ -372,7 +411,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 S L2",
             "reg_type": "input",
             "address": "0x1314",
@@ -381,7 +421,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 N L2",
             "reg_type": "input",
             "address": "0x1584",
@@ -390,7 +431,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 PF L2",
             "reg_type": "input",
             "address": "0x10be",
@@ -399,7 +441,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 Pfund L2",
             "reg_type": "input",
             "address": "0x1404",
@@ -408,7 +451,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 Pharm L2",
             "reg_type": "input",
             "address": "0x140c",
@@ -417,7 +461,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 AP energy L2",
             "reg_type": "input",
             "address": "0x1208",
@@ -427,7 +472,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 AN energy L2",
             "reg_type": "input",
             "address": "0x1218",
@@ -437,7 +483,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 RP energy L2",
             "reg_type": "input",
             "address": "0x1228",
@@ -447,7 +494,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 RN energy L2",
             "reg_type": "input",
             "address": "0x1238",
@@ -457,7 +505,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 S energy L2",
             "reg_type": "input",
             "address": "0x1248",
@@ -467,7 +516,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 NP energy L2",
             "reg_type": "input",
             "address": "0x150a",
@@ -477,7 +527,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 NN energy L2",
             "reg_type": "input",
             "address": "0x151a",
@@ -487,7 +538,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 Irms L3",
             "reg_type": "input",
             "address": "0x10df",
@@ -496,7 +548,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 THD I L3",
             "reg_type": "input",
             "address": "0x1702",
@@ -505,7 +558,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 THDN I L3",
             "reg_type": "input",
             "address": "0x10f7",
@@ -514,7 +568,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 Ifund L3",
             "reg_type": "input",
             "address": "0x1714",
@@ -523,7 +578,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 P L3",
             "reg_type": "input",
             "address": "0x1306",
@@ -532,7 +588,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 Q L3",
             "reg_type": "input",
             "address": "0x130e",
@@ -541,7 +598,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 S L3",
             "reg_type": "input",
             "address": "0x1316",
@@ -550,7 +608,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 N L3",
             "reg_type": "input",
             "address": "0x1586",
@@ -559,7 +618,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 PF L3",
             "reg_type": "input",
             "address": "0x10bf",
@@ -568,7 +628,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 1 Pfund L3",
             "reg_type": "input",
             "address": "0x1406",
@@ -577,7 +638,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 Pharm L3",
             "reg_type": "input",
             "address": "0x140e",
@@ -586,7 +648,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 AP energy L3",
             "reg_type": "input",
             "address": "0x120c",
@@ -596,7 +659,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 AN energy L3",
             "reg_type": "input",
             "address": "0x121c",
@@ -606,7 +670,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 RP energy L3",
             "reg_type": "input",
             "address": "0x122c",
@@ -616,7 +681,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 RN energy L3",
             "reg_type": "input",
             "address": "0x123c",
@@ -626,7 +692,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 S energy L3",
             "reg_type": "input",
             "address": "0x124c",
@@ -636,7 +703,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 NP energy L3",
             "reg_type": "input",
             "address": "0x150e",
@@ -646,7 +714,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 NN energy L3",
             "reg_type": "input",
             "address": "0x151e",
@@ -656,7 +725,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 Total P",
             "reg_type": "input",
             "address": "0x1300",
@@ -665,7 +735,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 Total Q",
             "reg_type": "input",
             "address": "0x1308",
@@ -674,7 +745,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 Total S",
             "reg_type": "input",
             "address": "0x1310",
@@ -683,7 +755,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 Total SV",
             "reg_type": "input",
             "address": "0x1098",
@@ -692,7 +765,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 Total N",
             "reg_type": "input",
             "address": "0x1580",
@@ -701,7 +775,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 Total Pfund",
             "reg_type": "input",
             "address": "0x1400",
@@ -710,7 +785,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 Total Pharm",
             "reg_type": "input",
             "address": "0x1408",
@@ -719,7 +795,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 1 Total AP energy",
             "reg_type": "input",
             "address": "0x1200",
@@ -729,7 +806,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 Total AN energy",
             "reg_type": "input",
             "address": "0x1210",
@@ -739,7 +817,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 Total RP energy",
             "reg_type": "input",
             "address": "0x1220",
@@ -749,7 +828,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 Total RN energy",
             "reg_type": "input",
             "address": "0x1230",
@@ -759,7 +839,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 Total S energy",
             "reg_type": "input",
             "address": "0x1240",
@@ -769,7 +850,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 Total NP energy",
             "reg_type": "input",
             "address": "0x1502",
@@ -779,7 +861,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 Total NN energy",
             "reg_type": "input",
             "address": "0x1512",
@@ -789,7 +872,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 1 Phase angle L1",
             "reg_type": "input",
             "address": "0x10f9",
@@ -798,7 +882,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 1 Phase angle L2",
             "reg_type": "input",
             "address": "0x10fa",
@@ -807,7 +892,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 1 Phase angle L3",
             "reg_type": "input",
             "address": "0x10fb",
@@ -816,7 +902,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 2 Irms L1",
             "reg_type": "input",
             "address": "0x20dd",
@@ -825,7 +912,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 THD I L1",
             "reg_type": "input",
             "address": "0x2700",
@@ -834,7 +922,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 THDN I L1",
             "reg_type": "input",
             "address": "0x20f5",
@@ -843,7 +932,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 Ifund L1",
             "reg_type": "input",
             "address": "0x2710",
@@ -852,7 +942,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 P L1",
             "reg_type": "input",
             "address": "0x2302",
@@ -861,7 +952,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 Q L1",
             "reg_type": "input",
             "address": "0x230a",
@@ -870,7 +962,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 S L1",
             "reg_type": "input",
             "address": "0x2312",
@@ -879,7 +972,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 N L1",
             "reg_type": "input",
             "address": "0x2582",
@@ -888,7 +982,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 PF L1",
             "reg_type": "input",
             "address": "0x20bd",
@@ -897,7 +992,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 Pfund L1",
             "reg_type": "input",
             "address": "0x2402",
@@ -906,7 +1002,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 Pharm L1",
             "reg_type": "input",
             "address": "0x240a",
@@ -915,7 +1012,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 AP energy L1",
             "reg_type": "input",
             "address": "0x2204",
@@ -925,7 +1023,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 AN energy L1",
             "reg_type": "input",
             "address": "0x2214",
@@ -935,7 +1034,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 RP energy L1",
             "reg_type": "input",
             "address": "0x2224",
@@ -945,7 +1045,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 RN energy L1",
             "reg_type": "input",
             "address": "0x2234",
@@ -955,7 +1056,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 S energy L1",
             "reg_type": "input",
             "address": "0x2244",
@@ -965,7 +1067,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 NP energy L1",
             "reg_type": "input",
             "address": "0x2506",
@@ -975,7 +1078,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 NN energy L1",
             "reg_type": "input",
             "address": "0x2516",
@@ -985,7 +1089,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 Irms L2",
             "reg_type": "input",
             "address": "0x20de",
@@ -994,7 +1099,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 THD I L2",
             "reg_type": "input",
             "address": "0x2701",
@@ -1003,7 +1109,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 THDN I L2",
             "reg_type": "input",
             "address": "0x20f6",
@@ -1012,7 +1119,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 Ifund L2",
             "reg_type": "input",
             "address": "0x2712",
@@ -1021,7 +1129,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 P L2",
             "reg_type": "input",
             "address": "0x2304",
@@ -1030,7 +1139,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 Q L2",
             "reg_type": "input",
             "address": "0x230c",
@@ -1039,7 +1149,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 S L2",
             "reg_type": "input",
             "address": "0x2314",
@@ -1048,7 +1159,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 N L2",
             "reg_type": "input",
             "address": "0x2584",
@@ -1057,7 +1169,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 PF L2",
             "reg_type": "input",
             "address": "0x20be",
@@ -1066,7 +1179,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 Pfund L2",
             "reg_type": "input",
             "address": "0x2404",
@@ -1075,7 +1189,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 Pharm L2",
             "reg_type": "input",
             "address": "0x240c",
@@ -1084,7 +1199,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 AP energy L2",
             "reg_type": "input",
             "address": "0x2208",
@@ -1094,7 +1210,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 AN energy L2",
             "reg_type": "input",
             "address": "0x2218",
@@ -1104,7 +1221,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 RP energy L2",
             "reg_type": "input",
             "address": "0x2228",
@@ -1114,7 +1232,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 RN energy L2",
             "reg_type": "input",
             "address": "0x2238",
@@ -1124,7 +1243,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 S energy L2",
             "reg_type": "input",
             "address": "0x2248",
@@ -1134,7 +1254,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 NP energy L2",
             "reg_type": "input",
             "address": "0x250a",
@@ -1144,7 +1265,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 NN energy L2",
             "reg_type": "input",
             "address": "0x251a",
@@ -1154,7 +1276,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 Irms L3",
             "reg_type": "input",
             "address": "0x20df",
@@ -1163,7 +1286,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 THD I L3",
             "reg_type": "input",
             "address": "0x2702",
@@ -1172,7 +1296,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 THDN I L3",
             "reg_type": "input",
             "address": "0x20f7",
@@ -1181,7 +1306,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 Ifund L3",
             "reg_type": "input",
             "address": "0x2714",
@@ -1190,7 +1316,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 P L3",
             "reg_type": "input",
             "address": "0x2306",
@@ -1199,7 +1326,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 Q L3",
             "reg_type": "input",
             "address": "0x230e",
@@ -1208,7 +1336,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 S L3",
             "reg_type": "input",
             "address": "0x2316",
@@ -1217,7 +1346,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 N L3",
             "reg_type": "input",
             "address": "0x2586",
@@ -1226,7 +1356,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 PF L3",
             "reg_type": "input",
             "address": "0x20bf",
@@ -1235,7 +1366,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 2 Pfund L3",
             "reg_type": "input",
             "address": "0x2406",
@@ -1244,7 +1376,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 Pharm L3",
             "reg_type": "input",
             "address": "0x240e",
@@ -1253,7 +1386,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 AP energy L3",
             "reg_type": "input",
             "address": "0x220c",
@@ -1263,7 +1397,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 AN energy L3",
             "reg_type": "input",
             "address": "0x221c",
@@ -1273,7 +1408,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 RP energy L3",
             "reg_type": "input",
             "address": "0x222c",
@@ -1283,7 +1419,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 RN energy L3",
             "reg_type": "input",
             "address": "0x223c",
@@ -1293,7 +1430,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 S energy L3",
             "reg_type": "input",
             "address": "0x224c",
@@ -1303,7 +1441,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 NP energy L3",
             "reg_type": "input",
             "address": "0x250e",
@@ -1313,7 +1452,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 NN energy L3",
             "reg_type": "input",
             "address": "0x251e",
@@ -1323,7 +1463,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 Total P",
             "reg_type": "input",
             "address": "0x2300",
@@ -1332,7 +1473,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 Total Q",
             "reg_type": "input",
             "address": "0x2308",
@@ -1341,7 +1483,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 Total S",
             "reg_type": "input",
             "address": "0x2310",
@@ -1350,7 +1493,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 Total SV",
             "reg_type": "input",
             "address": "0x2098",
@@ -1359,7 +1503,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 Total N",
             "reg_type": "input",
             "address": "0x2580",
@@ -1368,7 +1513,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 Total Pfund",
             "reg_type": "input",
             "address": "0x2400",
@@ -1377,7 +1523,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 Total Pharm",
             "reg_type": "input",
             "address": "0x2408",
@@ -1386,7 +1533,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 2 Total AP energy",
             "reg_type": "input",
             "address": "0x2200",
@@ -1396,7 +1544,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 Total AN energy",
             "reg_type": "input",
             "address": "0x2210",
@@ -1406,7 +1555,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 Total RP energy",
             "reg_type": "input",
             "address": "0x2220",
@@ -1416,7 +1566,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 Total RN energy",
             "reg_type": "input",
             "address": "0x2230",
@@ -1426,7 +1577,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 Total S energy",
             "reg_type": "input",
             "address": "0x2240",
@@ -1436,7 +1588,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 Total NP energy",
             "reg_type": "input",
             "address": "0x2502",
@@ -1446,7 +1599,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 Total NN energy",
             "reg_type": "input",
             "address": "0x2512",
@@ -1456,7 +1610,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 2 Phase angle L1",
             "reg_type": "input",
             "address": "0x20f9",
@@ -1465,7 +1620,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 2 Phase angle L2",
             "reg_type": "input",
             "address": "0x20fa",
@@ -1474,7 +1630,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 2 Phase angle L3",
             "reg_type": "input",
             "address": "0x20fb",
@@ -1483,7 +1640,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 3 Irms L1",
             "reg_type": "input",
             "address": "0x30dd",
@@ -1492,7 +1650,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 THD I L1",
             "reg_type": "input",
             "address": "0x3700",
@@ -1501,7 +1660,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 THDN I L1",
             "reg_type": "input",
             "address": "0x30f5",
@@ -1510,7 +1670,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 Ifund L1",
             "reg_type": "input",
             "address": "0x3710",
@@ -1519,7 +1680,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 P L1",
             "reg_type": "input",
             "address": "0x3302",
@@ -1528,7 +1690,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 Q L1",
             "reg_type": "input",
             "address": "0x330a",
@@ -1537,7 +1700,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 S L1",
             "reg_type": "input",
             "address": "0x3312",
@@ -1546,7 +1710,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 N L1",
             "reg_type": "input",
             "address": "0x3582",
@@ -1555,7 +1720,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 PF L1",
             "reg_type": "input",
             "address": "0x30bd",
@@ -1564,7 +1730,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 Pfund L1",
             "reg_type": "input",
             "address": "0x3402",
@@ -1573,7 +1740,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 Pharm L1",
             "reg_type": "input",
             "address": "0x340a",
@@ -1582,7 +1750,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 AP energy L1",
             "reg_type": "input",
             "address": "0x3204",
@@ -1592,7 +1761,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 AN energy L1",
             "reg_type": "input",
             "address": "0x3214",
@@ -1602,7 +1772,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 RP energy L1",
             "reg_type": "input",
             "address": "0x3224",
@@ -1612,7 +1783,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 RN energy L1",
             "reg_type": "input",
             "address": "0x3234",
@@ -1622,7 +1794,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 S energy L1",
             "reg_type": "input",
             "address": "0x3244",
@@ -1632,7 +1805,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 NP energy L1",
             "reg_type": "input",
             "address": "0x3506",
@@ -1642,7 +1816,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 NN energy L1",
             "reg_type": "input",
             "address": "0x3516",
@@ -1652,7 +1827,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 Irms L2",
             "reg_type": "input",
             "address": "0x30de",
@@ -1661,7 +1837,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 THD I L2",
             "reg_type": "input",
             "address": "0x3701",
@@ -1670,7 +1847,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 THDN I L2",
             "reg_type": "input",
             "address": "0x30f6",
@@ -1679,7 +1857,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 Ifund L2",
             "reg_type": "input",
             "address": "0x3712",
@@ -1688,7 +1867,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 P L2",
             "reg_type": "input",
             "address": "0x3304",
@@ -1697,7 +1877,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 Q L2",
             "reg_type": "input",
             "address": "0x330c",
@@ -1706,7 +1887,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 S L2",
             "reg_type": "input",
             "address": "0x3314",
@@ -1715,7 +1897,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 N L2",
             "reg_type": "input",
             "address": "0x3584",
@@ -1724,7 +1907,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 PF L2",
             "reg_type": "input",
             "address": "0x30be",
@@ -1733,7 +1917,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 Pfund L2",
             "reg_type": "input",
             "address": "0x3404",
@@ -1742,7 +1927,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 Pharm L2",
             "reg_type": "input",
             "address": "0x340c",
@@ -1751,7 +1937,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 AP energy L2",
             "reg_type": "input",
             "address": "0x3208",
@@ -1761,7 +1948,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 AN energy L2",
             "reg_type": "input",
             "address": "0x3218",
@@ -1771,7 +1959,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 RP energy L2",
             "reg_type": "input",
             "address": "0x3228",
@@ -1781,7 +1970,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 RN energy L2",
             "reg_type": "input",
             "address": "0x3238",
@@ -1791,7 +1981,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 S energy L2",
             "reg_type": "input",
             "address": "0x3248",
@@ -1801,7 +1992,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 NP energy L2",
             "reg_type": "input",
             "address": "0x350a",
@@ -1811,7 +2003,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 NN energy L2",
             "reg_type": "input",
             "address": "0x351a",
@@ -1821,7 +2014,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 Irms L3",
             "reg_type": "input",
             "address": "0x30df",
@@ -1830,7 +2024,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 THD I L3",
             "reg_type": "input",
             "address": "0x3702",
@@ -1839,7 +2034,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 THDN I L3",
             "reg_type": "input",
             "address": "0x30f7",
@@ -1848,7 +2044,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 Ifund L3",
             "reg_type": "input",
             "address": "0x3714",
@@ -1857,7 +2054,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 P L3",
             "reg_type": "input",
             "address": "0x3306",
@@ -1866,7 +2064,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 Q L3",
             "reg_type": "input",
             "address": "0x330e",
@@ -1875,7 +2074,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 S L3",
             "reg_type": "input",
             "address": "0x3316",
@@ -1884,7 +2084,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 N L3",
             "reg_type": "input",
             "address": "0x3586",
@@ -1893,7 +2094,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 PF L3",
             "reg_type": "input",
             "address": "0x30bf",
@@ -1902,7 +2104,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 3 Pfund L3",
             "reg_type": "input",
             "address": "0x3406",
@@ -1911,7 +2114,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 Pharm L3",
             "reg_type": "input",
             "address": "0x340e",
@@ -1920,7 +2124,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 AP energy L3",
             "reg_type": "input",
             "address": "0x320c",
@@ -1930,7 +2135,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 AN energy L3",
             "reg_type": "input",
             "address": "0x321c",
@@ -1940,7 +2146,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 RP energy L3",
             "reg_type": "input",
             "address": "0x322c",
@@ -1950,7 +2157,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 RN energy L3",
             "reg_type": "input",
             "address": "0x323c",
@@ -1960,7 +2168,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 S energy L3",
             "reg_type": "input",
             "address": "0x324c",
@@ -1970,7 +2179,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 NP energy L3",
             "reg_type": "input",
             "address": "0x350e",
@@ -1980,7 +2190,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 NN energy L3",
             "reg_type": "input",
             "address": "0x351e",
@@ -1990,7 +2201,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 Total P",
             "reg_type": "input",
             "address": "0x3300",
@@ -1999,7 +2211,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 Total Q",
             "reg_type": "input",
             "address": "0x3308",
@@ -2008,7 +2221,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 Total S",
             "reg_type": "input",
             "address": "0x3310",
@@ -2017,7 +2231,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 Total SV",
             "reg_type": "input",
             "address": "0x3098",
@@ -2026,7 +2241,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 Total N",
             "reg_type": "input",
             "address": "0x3580",
@@ -2035,7 +2251,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 Total Pfund",
             "reg_type": "input",
             "address": "0x3400",
@@ -2044,7 +2261,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 Total Pharm",
             "reg_type": "input",
             "address": "0x3408",
@@ -2053,7 +2271,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 3 Total AP energy",
             "reg_type": "input",
             "address": "0x3200",
@@ -2063,7 +2282,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 Total AN energy",
             "reg_type": "input",
             "address": "0x3210",
@@ -2073,7 +2293,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 Total RP energy",
             "reg_type": "input",
             "address": "0x3220",
@@ -2083,7 +2304,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 Total RN energy",
             "reg_type": "input",
             "address": "0x3230",
@@ -2093,7 +2315,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 Total S energy",
             "reg_type": "input",
             "address": "0x3240",
@@ -2103,7 +2326,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 Total NP energy",
             "reg_type": "input",
             "address": "0x3502",
@@ -2113,7 +2337,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 Total NN energy",
             "reg_type": "input",
             "address": "0x3512",
@@ -2123,7 +2348,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 3 Phase angle L1",
             "reg_type": "input",
             "address": "0x30f9",
@@ -2132,7 +2358,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 3 Phase angle L2",
             "reg_type": "input",
             "address": "0x30fa",
@@ -2141,7 +2368,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 3 Phase angle L3",
             "reg_type": "input",
             "address": "0x30fb",
@@ -2150,7 +2378,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 4 Irms L1",
             "reg_type": "input",
             "address": "0x40dd",
@@ -2159,7 +2388,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 THD I L1",
             "reg_type": "input",
             "address": "0x4700",
@@ -2168,7 +2398,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 THDN I L1",
             "reg_type": "input",
             "address": "0x40f5",
@@ -2177,7 +2408,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 Ifund L1",
             "reg_type": "input",
             "address": "0x4710",
@@ -2186,7 +2418,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 P L1",
             "reg_type": "input",
             "address": "0x4302",
@@ -2195,7 +2428,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 Q L1",
             "reg_type": "input",
             "address": "0x430a",
@@ -2204,7 +2438,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 S L1",
             "reg_type": "input",
             "address": "0x4312",
@@ -2213,7 +2448,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 N L1",
             "reg_type": "input",
             "address": "0x4582",
@@ -2222,7 +2458,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 PF L1",
             "reg_type": "input",
             "address": "0x40bd",
@@ -2231,7 +2468,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 Pfund L1",
             "reg_type": "input",
             "address": "0x4402",
@@ -2240,7 +2478,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 Pharm L1",
             "reg_type": "input",
             "address": "0x440a",
@@ -2249,7 +2488,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 AP energy L1",
             "reg_type": "input",
             "address": "0x4204",
@@ -2259,7 +2499,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 AN energy L1",
             "reg_type": "input",
             "address": "0x4214",
@@ -2269,7 +2510,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 RP energy L1",
             "reg_type": "input",
             "address": "0x4224",
@@ -2279,7 +2521,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 RN energy L1",
             "reg_type": "input",
             "address": "0x4234",
@@ -2289,7 +2532,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 S energy L1",
             "reg_type": "input",
             "address": "0x4244",
@@ -2299,7 +2543,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 NP energy L1",
             "reg_type": "input",
             "address": "0x4506",
@@ -2309,7 +2554,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 NN energy L1",
             "reg_type": "input",
             "address": "0x4516",
@@ -2319,7 +2565,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 Irms L2",
             "reg_type": "input",
             "address": "0x40de",
@@ -2328,7 +2575,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 THD I L2",
             "reg_type": "input",
             "address": "0x4701",
@@ -2337,7 +2585,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 THDN I L2",
             "reg_type": "input",
             "address": "0x40f6",
@@ -2346,7 +2595,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 Ifund L2",
             "reg_type": "input",
             "address": "0x4712",
@@ -2355,7 +2605,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 P L2",
             "reg_type": "input",
             "address": "0x4304",
@@ -2364,7 +2615,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 Q L2",
             "reg_type": "input",
             "address": "0x430c",
@@ -2373,7 +2625,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 S L2",
             "reg_type": "input",
             "address": "0x4314",
@@ -2382,7 +2635,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 N L2",
             "reg_type": "input",
             "address": "0x4584",
@@ -2391,7 +2645,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 PF L2",
             "reg_type": "input",
             "address": "0x40be",
@@ -2400,7 +2655,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 Pfund L2",
             "reg_type": "input",
             "address": "0x4404",
@@ -2409,7 +2665,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 Pharm L2",
             "reg_type": "input",
             "address": "0x440c",
@@ -2418,7 +2675,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 AP energy L2",
             "reg_type": "input",
             "address": "0x4208",
@@ -2428,7 +2686,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 AN energy L2",
             "reg_type": "input",
             "address": "0x4218",
@@ -2438,7 +2697,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 RP energy L2",
             "reg_type": "input",
             "address": "0x4228",
@@ -2448,7 +2708,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 RN energy L2",
             "reg_type": "input",
             "address": "0x4238",
@@ -2458,7 +2719,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 S energy L2",
             "reg_type": "input",
             "address": "0x4248",
@@ -2468,7 +2730,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 NP energy L2",
             "reg_type": "input",
             "address": "0x450a",
@@ -2478,7 +2741,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 NN energy L2",
             "reg_type": "input",
             "address": "0x451a",
@@ -2488,7 +2752,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 Irms L3",
             "reg_type": "input",
             "address": "0x40df",
@@ -2497,7 +2762,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 THD I L3",
             "reg_type": "input",
             "address": "0x4702",
@@ -2506,7 +2772,8 @@
             "scale": 0.00610352,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 THDN I L3",
             "reg_type": "input",
             "address": "0x40f7",
@@ -2515,7 +2782,8 @@
             "scale": 0.01,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 Ifund L3",
             "reg_type": "input",
             "address": "0x4714",
@@ -2524,7 +2792,8 @@
             "scale": 0.0032656,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 P L3",
             "reg_type": "input",
             "address": "0x4306",
@@ -2533,7 +2802,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 Q L3",
             "reg_type": "input",
             "address": "0x430e",
@@ -2542,7 +2812,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 S L3",
             "reg_type": "input",
             "address": "0x4316",
@@ -2551,7 +2822,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 N L3",
             "reg_type": "input",
             "address": "0x4586",
@@ -2560,7 +2832,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 PF L3",
             "reg_type": "input",
             "address": "0x40bf",
@@ -2569,7 +2842,8 @@
             "scale": 0.001,
             "round_to": 0.01,
             "poll_interval": 300
-        },{
+        },
+        {
             "name": "Ch 4 Pfund L3",
             "reg_type": "input",
             "address": "0x4406",
@@ -2578,7 +2852,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 Pharm L3",
             "reg_type": "input",
             "address": "0x440e",
@@ -2587,7 +2862,8 @@
             "scale": 1.52588e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 AP energy L3",
             "reg_type": "input",
             "address": "0x420c",
@@ -2597,7 +2873,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 AN energy L3",
             "reg_type": "input",
             "address": "0x421c",
@@ -2607,7 +2884,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 RP energy L3",
             "reg_type": "input",
             "address": "0x422c",
@@ -2617,7 +2895,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 RN energy L3",
             "reg_type": "input",
             "address": "0x423c",
@@ -2627,7 +2906,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 S energy L3",
             "reg_type": "input",
             "address": "0x424c",
@@ -2637,7 +2917,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 NP energy L3",
             "reg_type": "input",
             "address": "0x450e",
@@ -2647,7 +2928,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 NN energy L3",
             "reg_type": "input",
             "address": "0x451e",
@@ -2657,7 +2939,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 Total P",
             "reg_type": "input",
             "address": "0x4300",
@@ -2666,7 +2949,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 Total Q",
             "reg_type": "input",
             "address": "0x4308",
@@ -2675,7 +2959,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 Total S",
             "reg_type": "input",
             "address": "0x4310",
@@ -2684,7 +2969,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 Total SV",
             "reg_type": "input",
             "address": "0x4098",
@@ -2693,7 +2979,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 Total N",
             "reg_type": "input",
             "address": "0x4580",
@@ -2702,7 +2989,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 Total Pfund",
             "reg_type": "input",
             "address": "0x4400",
@@ -2711,7 +2999,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 Total Pharm",
             "reg_type": "input",
             "address": "0x4408",
@@ -2720,7 +3009,8 @@
             "scale": 6.10352e-05,
             "round_to": 0.01,
             "poll_interval": 2000
-        },{
+        },
+        {
             "name": "Ch 4 Total AP energy",
             "reg_type": "input",
             "address": "0x4200",
@@ -2730,7 +3020,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 Total AN energy",
             "reg_type": "input",
             "address": "0x4210",
@@ -2740,7 +3031,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 Total RP energy",
             "reg_type": "input",
             "address": "0x4220",
@@ -2750,7 +3042,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 Total RN energy",
             "reg_type": "input",
             "address": "0x4230",
@@ -2760,7 +3053,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 Total S energy",
             "reg_type": "input",
             "address": "0x4240",
@@ -2770,7 +3064,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 Total NP energy",
             "reg_type": "input",
             "address": "0x4502",
@@ -2780,7 +3075,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 Total NN energy",
             "reg_type": "input",
             "address": "0x4512",
@@ -2790,7 +3086,8 @@
             "round_to": 0.0001,
             "poll_interval": 8000,
             "word_order": "little_endian" 
-        },{
+        },
+        {
             "name": "Ch 4 Phase angle L1",
             "reg_type": "input",
             "address": "0x40f9",
@@ -2799,7 +3096,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 4 Phase angle L2",
             "reg_type": "input",
             "address": "0x40fa",
@@ -2808,7 +3106,8 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },{
+        },
+        {
             "name": "Ch 4 Phase angle L3",
             "reg_type": "input",
             "address": "0x40fb",
@@ -2817,6 +3116,7 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        }]
+        },
+       ]
     }
 }
