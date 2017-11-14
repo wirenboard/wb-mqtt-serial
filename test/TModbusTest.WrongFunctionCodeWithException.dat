@@ -1,0 +1,5 @@
+Open()
+EnqueueWrongFunctionCodeCoilReadResponse()
+>> 01 01 00 00 00 01 FD CA
+<< 01 82 02 C1 61
+Close()
