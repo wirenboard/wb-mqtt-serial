@@ -4634,7 +4634,7 @@
             "round_to": 0.01,
             "poll_interval": 2000,
             "error_value": "0xffff" 
-        },
-       ]
+        }
+        ]
     }
 }

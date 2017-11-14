@@ -3116,7 +3116,7 @@
             "scale": 0.1,
             "round_to": 0.01,
             "poll_interval": 8000
-        },
-       ]
+        }
+        ]
     }
 }
