@@ -90,3 +90,29 @@ bool TMQTTSerialObserver::WriteInitValues()
 
     return did_write;
 }
+
+
+int TMQTTPrefixedClient::Publish(int *mid, const std::string& topic, const std::string& payload, int qos, bool retain) {
+    
+    return Base::Publish(mid, Prefix + topic, payload, qos, retain);
+}
+
+int TMQTTPrefixedClient::Subscribe(int *mid, const std::string & sub, int qos)
+{
+    return Base::Subscribe(mid, Prefix + sub, qos);
+}
+
+void TMQTTPrefixedClient::on_message(const struct mosquitto_message *message)
+{
+    auto modified_message = *message;
+    auto & topic = modified_message.topic;
+
+    for (auto c: Prefix) {
+        if (c == *topic) {
+            ++topic;
+        } else {
+            return;
+        }
+    }
+    Base::on_message(&modified_message);
+}
