@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.28.4) stable; urgency=medium
+
+  * check modbus slave id and function code in response
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Tue, 14 Nov 2017 16:53:34 +0300
+
 wb-mqtt-serial (1.28.3) stable; urgency=medium
 
   * add frame_timeout_ms to schema
