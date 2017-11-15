@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.28.5) stable; urgency=medium
+
+  * flush port on connect
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 15 Nov 2017 16:19:56 +0300
+
 wb-mqtt-serial (1.28.4) stable; urgency=medium
 
   * check modbus slave id and function code in response
