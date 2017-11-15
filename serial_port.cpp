@@ -60,7 +60,7 @@ TAbstractSerialPort::~TAbstractSerialPort() {}
 TSerialPort::TSerialPort(const TSerialPortSettings& settings)
     : Settings(settings),
       Dbg(false),
-      Fd(-1) 
+      Fd(-1)
 {
     memset(&OldTermios, 0, sizeof(termios));
 }
@@ -144,6 +144,8 @@ void TSerialPort::Open()
         Close();
         throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcsetattr");
     }
+
+    SkipNoise();    // flush data from previous instance if any
 }
 
 void TSerialPort::Close()
@@ -276,7 +278,7 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size,
 
         nread += nb;
     }
-    
+
     if (!nread)
         throw TSerialDeviceTransientErrorException("request timed out");
 
@@ -328,6 +330,6 @@ bool TSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
             std::chrono::duration_cast<std::chrono::milliseconds>(until.time_since_epoch()).count() <<
             std::endl;
         }
-            
+
     return semaphore->Wait(until);
 }
