@@ -590,3 +590,87 @@ void TModbusExpectations::EnqueueInvalidCRCCoilReadResponse()
     }),
     response, __func__);
 }
+
+void TModbusExpectations::EnqueueWrongSlaveIdCoilReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x01,   //function code
+        0x00,   //starting address Hi
+        0x00,   //starting address Lo
+        0x00,   //quantity Hi
+        0x01,   //quantity Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x01,   //function code
+        0x01,   //byte count
+        0x01,   //coils status
+    } : std::vector<int> {
+        0x81,   //function code + 80
+        exception
+    }, GetModbusRTUSlaveId() + 1), __func__);
+}
+
+void TModbusExpectations::EnqueueWrongFunctionCodeCoilReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x01,   //function code
+        0x00,   //starting address Hi
+        0x00,   //starting address Lo
+        0x00,   //quantity Hi
+        0x01,   //quantity Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x02,   //function code
+        0x01,   //byte count
+        0x01,   //coils status
+    } : std::vector<int> {
+        0x82,   //function code + 80
+        exception
+    }), __func__);
+}
+
+void TModbusExpectations::EnqueueWrongSlaveIdCoilWriteResponse(uint8_t exception)
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x05,   //function code
+        0x00,   //starting address Hi
+        0x00,   //starting address Lo
+        0xFF,   //value Hi
+        0x00,   //value Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x05,   //function code
+        0x00,   //starting address Hi
+        0x00,   //starting address Lo
+        0xFF,   //value Hi
+        0x00,   //value Lo
+    } : std::vector<int> {
+        0x85,   //function code + 80
+        exception
+    }, GetModbusRTUSlaveId() + 1), __func__);
+}
+
+void TModbusExpectations::EnqueueWrongFunctionCodeCoilWriteResponse(uint8_t exception)
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x05,   //function code
+        0x00,   //starting address Hi
+        0x00,   //starting address Lo
+        0xFF,   //value Hi
+        0x00,   //value Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x07,   //function code
+        0x00,   //starting address Hi
+        0x00,   //starting address Lo
+        0xFF,   //value Hi
+        0x00,   //value Lo
+    } : std::vector<int> {
+        0x87,   //function code + 80
+        exception
+    }), __func__);
+}
