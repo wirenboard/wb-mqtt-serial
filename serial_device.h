@@ -82,7 +82,7 @@ public:
     virtual void ReadRegisterRange(PRegisterRange range);
 
     virtual std::string ToString() const;
-    
+
     // Initialize setup items' registers
     void InitSetupItems();
 
@@ -130,7 +130,7 @@ public:
     virtual PSerialDevice CreateDevice(PDeviceConfig config, PAbstractSerialPort port) = 0;
 
     /*! Get device with specified Slave ID */
-    virtual PSerialDevice GetDevice(const std::string &slave_id) const = 0;
+    virtual PSerialDevice GetDevice(const std::string &slave_id, PAbstractSerialPort port) const = 0;
 
     /*! Remove device */
     virtual void RemoveDevice(PSerialDevice device) = 0;
@@ -199,13 +199,16 @@ public:
     {
         TSlaveId sid = this->ConvertSlaveId(config->SlaveId); // "this->" to avoid -fpermissive
 
-        if (_Devices.find(sid) != _Devices.end()) {
+        try {
+            _Devices.at(port.get()).at(sid);
             std::stringstream ss;
             ss << "device address collision for slave id " << std::to_string(sid) << " (\"" << config->SlaveId << "\")";
             throw TSerialDeviceException(ss.str());
+        } catch (const std::out_of_range &) {
+            // pass
         }
 
-        PSerialDevice dev = _Devices[sid] = std::make_shared<Dev>(config, port, IProtocol::shared_from_this());
+        PSerialDevice dev = _Devices[port.get()][sid] = std::make_shared<Dev>(config, port, IProtocol::shared_from_this());
         dev->InitSetupItems();
         return dev;
     }
@@ -213,17 +216,17 @@ public:
     /*!
      * Return existing device instance by string Slave ID representation
      */
-    PSerialDevice GetDevice(const std::string &slave_id) const
+    PSerialDevice GetDevice(const std::string &slave_id, PAbstractSerialPort port) const
     {
         TSlaveId sid = this->ConvertSlaveId(slave_id);
 
-        if (_Devices.find(sid) == _Devices.cend()) {
+        try {
+            return _Devices.at(port.get()).at(sid);
+        } catch (const std::out_of_range &) {
             std::stringstream ss;
             ss << "no device with slave id " << std::to_string(sid) << " (\"" << slave_id << "\") found in " << this->GetName();
             throw TSerialDeviceException(ss.str());
         }
-
-        return _Devices.find(sid)->second;
     }
 
     void RemoveDevice(PSerialDevice dev)
@@ -231,18 +234,22 @@ public:
         if (!dev) {
             throw TSerialDeviceException("can't remove null device");
         }
-        const auto &it = std::find_if(_Devices.begin(), _Devices.end(), [dev](const std::pair<TSlaveId, PSerialDevice>& p) -> bool { return dev == p.second; });
-        if (it == _Devices.end()) {
-            throw TSerialDeviceException("no such device found: " + dev->ToString());
+        for (auto & portDevices: _Devices) {
+            auto & devices = portDevices.second;
+            const auto &it = std::find_if(devices.begin(), devices.end(), [dev](const std::pair<TSlaveId, PSerialDevice>& p) -> bool { return dev == p.second; });
+            if (it != devices.end()) {
+                devices.erase(it);
+                return;
+            }
         }
 
-        _Devices.erase(it);
+        throw TSerialDeviceException("no such device found: " + dev->ToString());
     }
 
 private:
     std::string _Name;
     PRegisterTypeMap _RegTypes;
-    std::unordered_map<TSlaveId, PSerialDevice> _Devices;
+    std::unordered_map<TAbstractSerialPort *, std::unordered_map<TSlaveId, PSerialDevice>> _Devices;
 };
 
 
@@ -286,7 +293,7 @@ public:
     static PRegisterTypeMap GetRegisterTypes(PDeviceConfig device_config);
     static PSerialDevice CreateDevice(PDeviceConfig device_config, PAbstractSerialPort port);
     static void RemoveDevice(PSerialDevice device);
-    static PSerialDevice GetDevice(const std::string& slave_id, const std::string& protocol_name);
+    static PSerialDevice GetDevice(const std::string& slave_id, const std::string& protocol_name, PAbstractSerialPort port);
     static PProtocol GetProtocol(const std::string &name);
 
 private:

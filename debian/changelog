@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.29.1) stable; urgency=medium
+
+  * fixed slave id collision on different ports
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Mon, 20 Nov 2017 17:49:17 +0300
+
 wb-mqtt-serial (1.29) stable; urgency=medium
 
   * add MQTT topic prefix support (new command line arg: -T <topic prefix>)
