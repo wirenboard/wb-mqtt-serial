@@ -277,7 +277,7 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 
 void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
 {
-    TSerialDeviceFactory::RemoveDevice(TSerialDeviceFactory::GetDevice("1", "modbus"));
+    TSerialDeviceFactory::RemoveDevice(TSerialDeviceFactory::GetDevice("1", "modbus", SerialPort));
     Observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, SerialPort);
 
     Observer->SetUp();
