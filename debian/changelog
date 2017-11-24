@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.29.2) stable; urgency=medium
+
+  * update libwbmqtt version
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Thu, 23 Nov 2017 15:30:30 +0300
+
 wb-mqtt-serial (1.29.1) stable; urgency=medium
 
   * fixed slave id collision on different ports

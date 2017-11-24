@@ -18,6 +18,8 @@ int main(int argc, char *argv[])
     string config_fname;
     bool debug = false;
     std::string mqtt_prefix = "";
+    std::string user = "";
+    std::string password = "";
 
     int c;
     //~ int digit_optind = 0;
@@ -45,11 +47,11 @@ int main(int argc, char *argv[])
            break;
 
         case 'u':
-            mqtt_config.User = optarg;
+            user = optarg;
            break;
 
         case 'P':
-            mqtt_config.Password = optarg;
+            password = optarg;
             break;
 
         case '?':
@@ -86,6 +88,7 @@ int main(int argc, char *argv[])
         mqtt_config.Id = "wb-modbus";
 
     PMQTTClient mqtt_client(new TMQTTPrefixedClient(std::move(mqtt_prefix), mqtt_config));
+    mqtt_client->Authenticate(user, password);
 
     try {
         PMQTTSerialObserver observer(new TMQTTSerialObserver(mqtt_client, handler_config));
