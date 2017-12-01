@@ -111,6 +111,8 @@ void TSerialPort::Open()
         Close();
         throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcsetattr");
     }
+
+    SkipNoise();    // flush data from previous instance if any
 }
 
 void TSerialPort::Close()
@@ -120,4 +122,3 @@ void TSerialPort::Close()
     }
     Base::Close();
 }
-

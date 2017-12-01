@@ -11,7 +11,7 @@ class TModbusTest: public TSerialDeviceTest, public TModbusExpectations
     typedef shared_ptr<TModbusDevice> PModbusDevice;
 protected:
     void SetUp();
-    set<int> VerifyQuery();
+    set<int> VerifyQuery(list<PRegister> registerList = list<PRegister>());
 
     virtual PDeviceConfig GetDeviceConfig();
 
@@ -48,18 +48,23 @@ void TModbusTest::SetUp()
     SerialPort->Open();
 }
 
-set<int> TModbusTest::VerifyQuery()
+set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
 {
-    list<PRegister> registerList {
-        ModbusCoil0, ModbusCoil1, ModbusDiscrete, ModbusHolding, ModbusInput, ModbusHoldingS64
-    };
+    std::list<PRegisterRange> ranges;
 
-    auto ranges = ModbusDev->SplitRegisterList(registerList);
+    if (registerList.empty()) {
+        registerList = {
+            ModbusCoil0, ModbusCoil1, ModbusDiscrete, ModbusHolding, ModbusInput, ModbusHoldingS64
+        };
 
-    if (ranges.size() != 5) {
-        throw runtime_error("wrong range count: " + to_string(ranges.size()));
+        ranges = ModbusDev->SplitRegisterList(registerList);
+
+        if (ranges.size() != 5) {
+            throw runtime_error("wrong range count: " + to_string(ranges.size()));
+        }
+    } else {
+        ranges = ModbusDev->SplitRegisterList(registerList);
     }
-
     set<int> readAddresses;
     set<int> errorRegisters;
     map<int, uint64_t> registerValues;
@@ -144,6 +149,75 @@ TEST_F(TModbusTest, CRCError)
     SerialPort->Close();
 }
 
+TEST_F(TModbusTest, WrongSlaveId)
+{
+    EnqueueWrongSlaveIdCoilReadResponse();
+
+    EXPECT_EQ(1, VerifyQuery({ ModbusCoil0 }).size());
+
+    SerialPort->Close();
+}
+
+TEST_F(TModbusTest, WrongFunctionCode)
+{
+    EnqueueWrongFunctionCodeCoilReadResponse();
+
+    EXPECT_EQ(1, VerifyQuery({ ModbusCoil0 }).size());
+
+    SerialPort->Close();
+}
+
+TEST_F(TModbusTest, WrongFunctionCodeWithException)
+{
+    EnqueueWrongFunctionCodeCoilReadResponse(0x2);
+
+    EXPECT_EQ(1, VerifyQuery({ ModbusCoil0 }).size());
+
+    SerialPort->Close();
+}
+
+TEST_F(TModbusTest, WrongSlaveIdWrite)
+{
+    EnqueueWrongSlaveIdCoilWriteResponse();
+
+    try {
+        ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
+        EXPECT_FALSE(true);
+    } catch (const TSerialDeviceTransientErrorException & e) {
+        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response slave id mismatch"), e.what());
+    }
+
+    SerialPort->Close();
+}
+
+TEST_F(TModbusTest, WrongFunctionCodeWrite)
+{
+    EnqueueWrongFunctionCodeCoilWriteResponse();
+
+    try {
+        ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
+        EXPECT_FALSE(true);
+    } catch (const TSerialDeviceTransientErrorException & e) {
+        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response function code mismatch"), e.what());
+    }
+
+    SerialPort->Close();
+}
+
+TEST_F(TModbusTest, WrongFunctionCodeWithExceptionWrite)
+{
+    EnqueueWrongFunctionCodeCoilWriteResponse(0x2);
+
+    try {
+        ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
+        EXPECT_FALSE(true);
+    } catch (const TSerialDeviceTransientErrorException & e) {
+        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response function code mismatch"), e.what());
+    }
+
+    SerialPort->Close();
+}
+
 
 class TModbusIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
 {
@@ -203,7 +277,7 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 
 void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
 {
-    TSerialDeviceFactory::RemoveDevice(TSerialDeviceFactory::GetDevice("1", "modbus"));
+    TSerialDeviceFactory::RemoveDevice(TSerialDeviceFactory::GetDevice("1", "modbus", SerialPort));
     Observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, SerialPort);
 
     Observer->SetUp();

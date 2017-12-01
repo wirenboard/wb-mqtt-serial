@@ -17,12 +17,15 @@ int main(int argc, char *argv[])
     mqtt_config.Port = 1883;
     string config_fname;
     bool debug = false;
+    std::string mqtt_prefix = "";
+    std::string user = "";
+    std::string password = "";
 
     int c;
     //~ int digit_optind = 0;
     //~ int aopt = 0, bopt = 0;
     //~ char *copt = 0, *dopt = 0;
-    while ( (c = getopt(argc, argv, "dsc:h:p:")) != -1) {
+    while ( (c = getopt(argc, argv, "dsc:h:H:p:u:P:T:")) != -1) {
         //~ int this_option_optind = optind ? optind : 1;
         switch (c) {
         case 'd':
@@ -35,12 +38,36 @@ int main(int argc, char *argv[])
             mqtt_config.Port = stoi(optarg);
             break;
         case 'h':
+        case 'H':
             mqtt_config.Host = optarg;
             break;
-        case '?':
+
+        case 'T':
+           mqtt_prefix = optarg;
+           break;
+
+        case 'u':
+            user = optarg;
+           break;
+
+        case 'P':
+            password = optarg;
             break;
+
+        case '?':
         default:
             printf ("?? getopt returned character code 0%o ??\n", c);
+
+            printf("Usage:\n wb-mqtt-serial [options]\n");
+            printf("Options:\n");
+            printf("\t-d          \t\t\t enable debuging output\n");
+            printf("\t-c config   \t\t\t config file\n");
+            printf("\t-p PORT     \t\t\t set to what port wb-mqtt-serial should connect (default: 1883)\n");
+            printf("\t-H IP       \t\t\t set to what IP wb-mqtt-serial should connect (default: localhost)\n");
+            printf("\t-u USER     \t\t\t MQTT user (optional)\n");
+            printf("\t-P PASSWORD \t\t\t MQTT user password (optional)\n");
+            printf("\t-T prefix   \t\t\t MQTT topic prefix (optional)\n");
+
         }
     }
 
@@ -60,7 +87,8 @@ int main(int argc, char *argv[])
     if (mqtt_config.Id.empty())
         mqtt_config.Id = "wb-modbus";
 
-    PMQTTClient mqtt_client(new TMQTTClient(mqtt_config));
+    PMQTTClient mqtt_client(new TMQTTPrefixedClient(std::move(mqtt_prefix), mqtt_config));
+    mqtt_client->Authenticate(user, password);
 
     try {
         PMQTTSerialObserver observer(new TMQTTSerialObserver(mqtt_client, handler_config));

@@ -12,9 +12,9 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
     , IsDisconnected(false)
 {}
 
-TSerialDevice::~TSerialDevice() 
+TSerialDevice::~TSerialDevice()
 {
-    /* TSerialDeviceFactory::RemoveDevice(shared_from_this()); */    
+    /* TSerialDeviceFactory::RemoveDevice(shared_from_this()); */
 }
 
 std::string TSerialDevice::ToString() const
@@ -159,9 +159,9 @@ void TSerialDeviceFactory::RemoveDevice(PSerialDevice device)
     }
 }
 
-PSerialDevice TSerialDeviceFactory::GetDevice(const std::string& slave_id, const std::string& protocol_name)
+PSerialDevice TSerialDeviceFactory::GetDevice(const std::string& slave_id, const std::string& protocol_name, PPort port)
 {
-    return GetProtocol(protocol_name)->GetDevice(slave_id);
+    return GetProtocol(protocol_name)->GetDevice(slave_id, port);
 }
 
 PRegisterTypeMap TSerialDeviceFactory::GetRegisterTypes(PDeviceConfig device_config)

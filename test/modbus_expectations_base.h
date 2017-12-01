@@ -15,6 +15,7 @@ protected:
     uint8_t GetModbusRTUSlaveId() const;
     void SetModbusRTUSlaveId(uint8_t slaveId);
 
+    std::vector<int> WrapPDU(const std::vector<int>& pdu, uint8_t slaveId);
     std::vector<int> WrapPDU(const std::vector<int>& pdu);
 
 private:

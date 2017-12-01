@@ -571,28 +571,38 @@ namespace ModbusRTU // modbus rtu protocol utilities
         WriteAs2Bytes(&req[req.size() - 2], CRC16::CalculateCRC16(req.data(), req.size() - 2));
     }
 
-    void ParseReadResponse(const TReadResponse& res, Modbus::PModbusRegisterRange range)
+    size_t GetResponsePDUSize(const TReadResponse & res)
     {
-        auto pdu_size = Modbus::ReadResponsePDUSize(PDU(res));
-
-        uint16_t crc = (res[pdu_size + 1] << 8) + res[pdu_size + 2];
-        if (crc != CRC16::CalculateCRC16(res.data(), pdu_size + 1)) {
-            throw TInvalidCRCError();
-        }
-
-        Modbus::ParseReadResponse(PDU(res), range);
+        return Modbus::ReadResponsePDUSize(PDU(res));
     }
 
-    void ParseWriteResponse(const TWriteResponse& res)
+    size_t GetResponsePDUSize(const TWriteResponse & res)
     {
-        auto pdu_size = Modbus::WriteResponsePDUSize(PDU(res));
+        return Modbus::WriteResponsePDUSize(PDU(res));
+    }
+
+    template <class TRequest, class TResponse>
+    void CheckResponse(const TRequest & req, const TResponse & res)
+    {
+        auto pdu_size = GetResponsePDUSize(res);
 
         uint16_t crc = (res[pdu_size + 1] << 8) + res[pdu_size + 2];
         if (crc != CRC16::CalculateCRC16(res.data(), pdu_size + 1)) {
             throw TInvalidCRCError();
         }
 
-        Modbus::ParseWriteResponse(PDU(res));
+        auto requestSlaveId = req[0];
+        auto responseSlaveId = res[0];
+        if (requestSlaveId != responseSlaveId) {
+            throw TSerialDeviceTransientErrorException("request and response slave id mismatch");
+        }
+
+        auto requestFunctionCode = PDU(req)[0];
+        auto responseFunctionCode = PDU(res)[0] & 127; // get actual function code even if exception
+
+        if (requestFunctionCode != responseFunctionCode) {
+            throw TSerialDeviceTransientErrorException("request and response function code mismatch");
+        }
     }
 
     void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift)
@@ -604,8 +614,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
                 " of device " << reg->Device()->ToString() << std::endl;
         std::string exception_message;
         try {
+            TWriteRequest request;
             {   // Send request
-                TWriteRequest request;
                 ComposeWriteRequest(request, reg, slaveId, value, shift);
                 port->WriteBytes(request.data(), request.size());
             }
@@ -614,7 +624,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
                 TWriteResponse response;
                 if (port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size())) > 0) {
                     try {
-                        ParseWriteResponse(response);
+                        ModbusRTU::CheckResponse(request, response);
+                        Modbus::ParseWriteResponse(PDU(response));
                     } catch (const TInvalidCRCError &) {
                         try {
                             port->SkipNoise();
@@ -650,8 +661,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
         std::string exception_message;
         try {
+            TReadRequest request;
+
             {   // Send request
-                TReadRequest request;
                 ComposeReadRequest(request, modbus_range, slaveId, shift);
                 port->WriteBytes(request.data(), request.size());
             }
@@ -663,7 +675,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
                 auto rc = port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size()));
                 if (rc > 0) {
                     try {
-                        ModbusRTU::ParseReadResponse(response, modbus_range);
+                        ModbusRTU::CheckResponse(request, response);
+                        Modbus::ParseReadResponse(PDU(response), modbus_range);
                     } catch (const TInvalidCRCError &) {
                         try {
                             port->SkipNoise();

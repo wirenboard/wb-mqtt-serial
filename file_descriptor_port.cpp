@@ -17,6 +17,7 @@ namespace {
 
 TFileDescriptorPort::TFileDescriptorPort(const PPortSettings & settings)
     : Fd(-1)
+    , DebugEnabled(false)
     , Settings(settings)
 {}
 
@@ -26,7 +27,7 @@ TFileDescriptorPort::~TFileDescriptorPort()
         close(Fd);
     }
 }
-    
+
 void TFileDescriptorPort::Close()
 {
     CheckPortOpen();
@@ -170,7 +171,7 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
 
         nread += nb;
     }
-    
+
     if (!nread) {
         throw TSerialDeviceTransientErrorException("request timed out");
     }
@@ -218,7 +219,7 @@ bool TFileDescriptorPort::Wait(const PBinarySemaphore & semaphore, const TTimePo
             chrono::duration_cast<chrono::milliseconds>(until.time_since_epoch()).count() <<
             endl;
         }
-            
+
     return semaphore->Wait(until);
 }
 

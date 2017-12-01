@@ -1,0 +1,5 @@
+Open()
+EnqueueWrongSlaveIdCoilWriteResponse()
+>> 01 05 00 00 FF 00 8C 3A
+<< 02 05 00 00 FF 00 8C 09
+Close()

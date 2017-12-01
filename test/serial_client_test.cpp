@@ -19,7 +19,7 @@ class TSerialClientTest: public TLoggedFixture
 protected:
     void SetUp();
     void TearDown();
-    PRegister Reg(int addr, RegisterFormat fmt = U16, double scale = 1, 
+    PRegister Reg(int addr, RegisterFormat fmt = U16, double scale = 1,
         double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian) {
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
@@ -802,7 +802,7 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
     PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
     observer->SetUp();
 
-    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x90", "fake"));
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x90", "fake", Port));
 
     if (!Device) {
         throw std::runtime_error("device not found or wrong type");
@@ -827,7 +827,7 @@ TEST_F(TSerialClientIntegrationTest, WordSwap)
     PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
     observer->SetUp();
 
-    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x91", "fake"));
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x91", "fake", Port));
 
     if (!Device) {
         throw std::runtime_error("device not found or wrong type");
@@ -854,7 +854,7 @@ TEST_F(TSerialClientIntegrationTest, Round)
     PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
     observer->SetUp();
 
-    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x92", "fake"));
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x92", "fake", Port));
 
     if (!Device) {
         throw std::runtime_error("device not found or wrong type");
@@ -897,7 +897,7 @@ TEST_F(TSerialClientIntegrationTest, Errors)
     PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
     observer->SetUp();
 
-    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("23", "fake"));
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("23", "fake", Port));
 
     if (!Device) {
         throw std::runtime_error("device not found or wrong type");
@@ -933,6 +933,21 @@ TEST_F(TSerialClientIntegrationTest, Errors)
 
     Note() << "LoopOnce() [read, nothing blacklisted] (2)";
     observer->LoopOnce();
+}
+
+TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
+{
+    {
+        TConfigParser parser(GetDataFilePath("configs/config-collision-test.json"), false, TSerialDeviceFactory::GetRegisterTypes);
+        Config = parser.Parse();
+        EXPECT_THROW(make_shared<TMQTTSerialObserver>(MQTTClient, Config), TSerialDeviceException);
+    }
+
+    {
+        TConfigParser parser(GetDataFilePath("configs/config-no-collision-test.json"), false, TSerialDeviceFactory::GetRegisterTypes);
+        Config = parser.Parse();
+        EXPECT_NO_THROW(make_shared<TMQTTSerialObserver>(MQTTClient, Config));
+    }
 }
 
 

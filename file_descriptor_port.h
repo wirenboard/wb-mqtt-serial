@@ -11,7 +11,7 @@ class TFileDescriptorPort: public TPort
 public:
     TFileDescriptorPort(const PPortSettings & settings);
     ~TFileDescriptorPort();
-    
+
     void WriteBytes(const uint8_t * buf, int count) override;
     uint8_t ReadByte() override;
     int ReadFrame(uint8_t * buf, int count,
@@ -32,6 +32,6 @@ protected:
     bool Select(const std::chrono::microseconds& us);
 
     int             Fd;
-    PPortSettings   Settings;
     bool            DebugEnabled;
+    PPortSettings   Settings;
 };
