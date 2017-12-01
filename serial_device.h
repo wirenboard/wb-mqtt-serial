@@ -11,8 +11,6 @@
 #include <stdint.h>
 #include <iostream>
 
-#include "portsettings.h"
-
 #include "register.h"
 #include "serial_exc.h"
 #include "serial_config.h"
@@ -84,7 +82,7 @@ public:
     virtual void ReadRegisterRange(PRegisterRange range);
 
     virtual std::string ToString() const;
-    
+
     // Initialize setup items' registers
     void InitSetupItems();
 
