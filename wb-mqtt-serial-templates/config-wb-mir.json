@@ -1,10 +1,11 @@
- {
+{
     "device_type": "WB-MIR",
     "device": {
         "name": "WB-MIR",
         "id": "wb-mir",
         "max_read_registers": 0,
-        "channels": [{
+        "channels": [
+            {
                 "name": "Input Voltage",
                 "reg_type": "input",
                 "address": 121,
