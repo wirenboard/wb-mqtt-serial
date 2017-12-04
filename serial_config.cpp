@@ -561,7 +561,13 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
             throw TConfigParserException("port number is not specified");
         }
 
-        port_config->ConnSettings = make_shared<TTcpPortSettings>(port_data["address"].asString(), GetInt(port_data, "port"));
+        auto tcp_port_settings = make_shared<TTcpPortSettings>(port_data["address"].asString(), GetInt(port_data, "port"));
+
+        if (port_data.isMember("connection_timeout_ms")) {
+            tcp_port_settings->ConnectionTimeout = chrono::milliseconds(GetInt(port_data, "connection_timeout_ms"));
+        }
+
+        port_config->ConnSettings = tcp_port_settings;
 
     } else {
         throw TConfigParserException("invalid port_type: '" + port_type + "'");

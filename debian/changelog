@@ -4,6 +4,7 @@ wb-mqtt-serial (1.30) stable; urgency=medium
   * added "port_type" port parameter - can be either "serial" or "tcp" (default "serial")
   * added "address" port parameter - IPv4 address or host name. Required if "port_type" is "tcp"
   * added "port" port parameter - TCP port. Required if "port_type" is "tcp"
+  * added "connection_timeout_ms" port parameter - connection reset timeout in milliseconds for disconnect detection
 
  -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 23 Oct 2017 17:24:54 +0300
 

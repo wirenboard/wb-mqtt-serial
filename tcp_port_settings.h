@@ -13,12 +13,13 @@ struct TTcpPortSettings final: TPortSettings
 {
     TTcpPortSettings(const std::string & address = "localhost",
                      uint16_t port = 0,
-                     const std::chrono::milliseconds & responseTimeout = std::chrono::milliseconds(500))
+                     const std::chrono::milliseconds & responseTimeout = std::chrono::milliseconds(500),
+                     const std::chrono::milliseconds & connectionTimeout = std::chrono::milliseconds(5000))
         : TPortSettings(responseTimeout)
         , Address(address)
         , Port(port)
     {}
-    
+
     std::string ToString() const override
     {
         std::ostringstream ss;
@@ -26,8 +27,9 @@ struct TTcpPortSettings final: TPortSettings
         return ss.str();
     }
 
-    std::string Address;
-    uint16_t    Port;
+    std::string                 Address;
+    uint16_t                    Port;
+    std::chrono::milliseconds   ConnectionTimeout;
 };
 
 using PTcpPortSettings = std::shared_ptr<TTcpPortSettings>;

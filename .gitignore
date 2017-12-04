@@ -61,3 +61,5 @@ workspace.xml
 **/.cproject
 **/.project
 **/.settings
+
+wb-mqtt-serial

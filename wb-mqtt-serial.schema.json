@@ -139,20 +139,28 @@
           "default": 0,
           "propertyOrder": 5
         },
+        "connection_timeout_ms": {
+          "type": "integer",
+          "title": "Connection timeout (ms)",
+          "description": "Zero means no timeout. Used for disconnect detection. If not set, the default timeout (5000ms) is used.",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 6
+        },
         "poll_interval": {
           "type": "integer",
           "title": "Desired poll interval (ms)",
           "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 6
+          "propertyOrder": 7
         },
         "devices": {
           "type": "array",
           "title": "List of devices",
           "description": "Lists devices attached to the port",
           "items": { "$ref": "#/definitions/device" },
-          "propertyOrder": 7
+          "propertyOrder": 8
         }
       },
       "required": ["address", "port"],
