@@ -1,7 +1,7 @@
 {
-    "device_type" : "WBIO-AI-DCM-4",
+    "device_type" : "WBIO-AI-DV-12",
     "device" : {
-        "name": "WBIO-AI-DCM-4",
+        "name": "WBIO-AI-DV-12",
         "id": "wb-mio-adc",
         "protocol": "modbus_io",
         "stride": 1000,
