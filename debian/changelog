@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.30~beta1) stable; urgency=medium
+
+  * fixes guard_interval_us for Modbus protocol
+
+ -- Evgeny Boger <boger@contactless.ru>  Sat, 09 Dec 2017 02:58:57 +0300
+
 wb-mqtt-serial (1.29.3) stable; urgency=medium
 
   * fixes default config on WB6
