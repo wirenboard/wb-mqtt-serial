@@ -4,7 +4,6 @@
 
 #include <cmath>
 #include <array>
-#include <unistd.h>
 
 
 namespace   // general utilities
@@ -659,10 +658,6 @@ namespace ModbusRTU // modbus rtu protocol utilities
             std::cerr << "modbus: read " << modbus_range->GetCount() << " " <<
                 modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
                 " of device " << modbus_range->Device()->ToString() << std::endl;
-
-        if (modbus_range->Device()->DeviceConfig()->GuardInterval.count()){
-            usleep(modbus_range->Device()->DeviceConfig()->GuardInterval.count());
-        }
 
         std::string exception_message;
         try {
