@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.31) stable; urgency=medium
+
+  * adds WB-M1W2 template
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 11 Dec 2017 16:15:21 +0300
+
 wb-mqtt-serial (1.30) stable; urgency=medium
 
   * TCP port support
