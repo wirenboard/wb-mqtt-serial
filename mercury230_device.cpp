@@ -13,7 +13,7 @@ REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
             { TMercury230Device::REG_PARAM_BE, "param_be", "value", S24, true }
         }));
 
-TMercury230Device::TMercury230Device(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
+TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TEMDevice<TBasicProtocol<TMercury230Device>>(device_config, port, protocol)
 {}
 

@@ -2,6 +2,7 @@
   "debug": true,
   "ports": [
     {
+      "port_type" : "serial",
       "path" : "/tmp/ttyNSC1",
       "protocol": "pulsar",
       "baud_rate": 9600,

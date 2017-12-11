@@ -539,7 +539,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         return Modbus::InferReadResponsePDUSize(range) + DATA_SIZE;
     }
 
-    TAbstractSerialPort::TFrameCompletePred ExpectNBytes(int n)
+    TPort::TFrameCompletePred ExpectNBytes(int n)
     {
         return [n](uint8_t* buf, int size) {
             if (size < 2)
@@ -605,7 +605,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         }
     }
 
-    void WriteRegister(PAbstractSerialPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift)
+    void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift)
     {
         int w = reg->Width();
 
@@ -647,7 +647,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
             " @ " + std::to_string(reg->Address) + exception_message);
     }
 
-    void ReadRegisterRange(PAbstractSerialPort port, uint8_t slaveId, PRegisterRange range, int shift)
+    void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift)
     {
         auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
         if (!modbus_range) {

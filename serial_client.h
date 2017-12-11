@@ -16,7 +16,7 @@ public:
     typedef std::function<void(PRegister reg, bool changed)> TReadCallback;
     typedef std::function<void(PRegister reg, TRegisterHandler::TErrorState errorState)> TErrorCallback;
 
-    TSerialClient(PAbstractSerialPort port);
+    TSerialClient(PPort port);
     TSerialClient(const TSerialClient& client) = delete;
     TSerialClient& operator=(const TSerialClient&) = delete;
     ~TSerialClient();
@@ -47,7 +47,7 @@ private:
     void PrepareToAccessDevice(PSerialDevice dev);
     void OnDeviceReconnect(PSerialDevice dev);
 
-    PAbstractSerialPort Port;
+    PPort Port;
     std::list<PRegister> RegList;
     std::list<PSerialDevice> DevicesList; /* for EndPollCycle */
     std::unordered_map<PRegister, PRegisterHandler> Handlers;

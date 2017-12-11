@@ -3,7 +3,7 @@
 
 namespace {
 
-    TAbstractSerialPort::TFrameCompletePred ExpectNBytes(int slave_id_width, int n)
+    TPort::TFrameCompletePred ExpectNBytes(int slave_id_width, int n)
     {
         return [slave_id_width, n](uint8_t* buf, int size) {
             if (size < 2)
@@ -23,7 +23,7 @@ REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
             { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", S16, true }
                                                         }));
 
-TMilurDevice::TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
+TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TEMDevice<TBasicProtocol<TMilurDevice>>(device_config, port, protocol)
 {
     /* FIXME: Milur driver should set address width based on slave_id string:
@@ -205,7 +205,7 @@ int main(int, char**)
 {
     try {
         TSerialPortSettings settings("/dev/ttyNSC0", 9600, 'N', 8, 2, 1000);
-        PAbstractSerialPort port(new TSerialPort(settings, true));
+        PPort port(new TSerialPort(settings, true));
         port->Open();
         TMilurDevice milur(port);
         std::ios::fmtflags f(std::cerr.flags());

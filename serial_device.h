@@ -10,11 +10,11 @@
 #include <algorithm>
 #include <stdint.h>
 #include <iostream>
-#include "portsettings.h"
+
 #include "register.h"
 #include "serial_exc.h"
 #include "serial_config.h"
-#include "serial_port.h"
+#include "port.h"
 
 
 class IProtocol;
@@ -64,7 +64,7 @@ namespace std
 
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {
 public:
-    TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
+    TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     TSerialDevice(const TSerialDevice&) = delete;
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
@@ -88,7 +88,7 @@ public:
 
     bool WriteSetupRegisters();
 
-    PAbstractSerialPort Port() const { return SerialPort; }
+    PPort Port() const { return SerialPort; }
     PDeviceConfig DeviceConfig() const { return _DeviceConfig; }
     PProtocol Protocol() const { return _Protocol; }
 
@@ -100,7 +100,7 @@ public:
 
 private:
     std::chrono::milliseconds Delay;
-    PAbstractSerialPort SerialPort;
+    PPort SerialPort;
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
     std::vector<PDeviceSetupItem> SetupItems;
@@ -112,7 +112,7 @@ private:
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
 
 typedef PSerialDevice (*TSerialDeviceMaker)(PDeviceConfig device_config,
-                                                PAbstractSerialPort port);
+                                                PPort port);
 
 /*!
  * Protocol interface
@@ -127,10 +127,10 @@ public:
     virtual PRegisterTypeMap GetRegTypes() const = 0;
 
     /*! Create new device of given type */
-    virtual PSerialDevice CreateDevice(PDeviceConfig config, PAbstractSerialPort port) = 0;
+    virtual PSerialDevice CreateDevice(PDeviceConfig config, PPort port) = 0;
 
     /*! Get device with specified Slave ID */
-    virtual PSerialDevice GetDevice(const std::string &slave_id, PAbstractSerialPort port) const = 0;
+    virtual PSerialDevice GetDevice(const std::string &slave_id, PPort port) const = 0;
 
     /*! Remove device */
     virtual void RemoveDevice(PSerialDevice device) = 0;
@@ -195,7 +195,7 @@ public:
      * \param port      Serial port
      * \return          Smart pointer to created device
      */
-    PSerialDevice CreateDevice(PDeviceConfig config, PAbstractSerialPort port)
+    PSerialDevice CreateDevice(PDeviceConfig config, PPort port)
     {
         TSlaveId sid = this->ConvertSlaveId(config->SlaveId); // "this->" to avoid -fpermissive
 
@@ -216,7 +216,7 @@ public:
     /*!
      * Return existing device instance by string Slave ID representation
      */
-    PSerialDevice GetDevice(const std::string &slave_id, PAbstractSerialPort port) const
+    PSerialDevice GetDevice(const std::string &slave_id, PPort port) const
     {
         TSlaveId sid = this->ConvertSlaveId(slave_id);
 
@@ -249,7 +249,7 @@ public:
 private:
     std::string _Name;
     PRegisterTypeMap _RegTypes;
-    std::unordered_map<TAbstractSerialPort *, std::unordered_map<TSlaveId, PSerialDevice>> _Devices;
+    std::unordered_map<TPort *, std::unordered_map<TSlaveId, PSerialDevice>> _Devices;
 };
 
 
@@ -261,7 +261,7 @@ template<class Proto>
 class TBasicProtocolSerialDevice : public TSerialDevice
 {
 public:
-    TBasicProtocolSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+    TBasicProtocolSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
         : TSerialDevice(config, port, protocol)
     {
         auto p = std::dynamic_pointer_cast<Proto>(protocol);
@@ -291,9 +291,9 @@ public:
                                     const TRegisterTypes& register_types); */
     static void RegisterProtocol(PProtocol protocol);
     static PRegisterTypeMap GetRegisterTypes(PDeviceConfig device_config);
-    static PSerialDevice CreateDevice(PDeviceConfig device_config, PAbstractSerialPort port);
+    static PSerialDevice CreateDevice(PDeviceConfig device_config, PPort port);
     static void RemoveDevice(PSerialDevice device);
-    static PSerialDevice GetDevice(const std::string& slave_id, const std::string& protocol_name, PAbstractSerialPort port);
+    static PSerialDevice GetDevice(const std::string& slave_id, const std::string& protocol_name, PPort port);
     static PProtocol GetProtocol(const std::string &name);
 
 private:

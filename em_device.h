@@ -17,7 +17,7 @@ class TEMDevice: public TBasicProtocolSerialDevice<Proto> {
 public:
     static const int DefaultTimeoutMs = 1000;
 
-    TEMDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
+    TEMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
         : TBasicProtocolSerialDevice<Proto>(device_config, port, protocol)
     {}
 
@@ -58,7 +58,7 @@ protected:
     }
 
     bool ReadResponse( int expectedByte1, uint8_t* payload, int len,
-                               TAbstractSerialPort::TFrameCompletePred frame_complete = 0)
+                               TPort::TFrameCompletePred frame_complete = 0)
     {
         uint8_t buf[MAX_LEN], *p = buf;
         int nread = this->Port()->ReadFrame(buf, MAX_LEN, this->DeviceConfig()->FrameTimeout, frame_complete);
@@ -101,7 +101,7 @@ protected:
     }
     void Talk( uint8_t cmd, uint8_t* payload, int payload_len,
               int expected_byte1, uint8_t* resp_payload, int resp_payload_len,
-              TAbstractSerialPort::TFrameCompletePred frame_complete = 0)
+              TPort::TFrameCompletePred frame_complete = 0)
     {
         EnsureSlaveConnected();
         WriteCommand(cmd, payload, payload_len);

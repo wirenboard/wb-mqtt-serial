@@ -1,6 +1,6 @@
 #pragma once
 
-#include "serial_port.h"
+#include "port.h"
 #include "serial_config.h"
 #include "register.h"
 #include <ostream>
@@ -22,7 +22,7 @@ namespace Modbus  // modbus protocol common utilities
 
 namespace ModbusRTU // modbus rtu protocol utilities
 {
-    void WriteRegister(PAbstractSerialPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift = 0);
+    void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift = 0);
 
-    void ReadRegisterRange(PAbstractSerialPort port, uint8_t slaveId, PRegisterRange range, int shift = 0);
+    void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift = 0);
 };  // modbus rtu protocol utilities

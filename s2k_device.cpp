@@ -25,7 +25,7 @@ REGISTER_BASIC_INT_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
             { TS2KDevice::REG_RELAY_DELAY, "relay_delay", "value", U8, true }
         }));
 
-TS2KDevice::TS2KDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+TS2KDevice::TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TS2KDevice>>(config, port, protocol)
 {
     RelayState[1] = 2;

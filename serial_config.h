@@ -8,7 +8,7 @@
 #include <map>
 
 #include "register.h"
-#include "portsettings.h"
+#include "port_settings.h"
 
 #if defined(__APPLE__) || defined(__APPLE_CC__)
 #   include <json/json.h>
@@ -91,7 +91,7 @@ typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
 
 struct TPortConfig {
     void AddDeviceConfig(PDeviceConfig device_config);
-    TSerialPortSettings ConnSettings;
+    PPortSettings ConnSettings;
     std::chrono::milliseconds PollInterval = std::chrono::milliseconds(20);
     bool Debug = false;
     int MaxUnchangedInterval;

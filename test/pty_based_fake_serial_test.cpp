@@ -9,16 +9,16 @@ protected:
     void SetUp();
     void TearDown();
 
-    void Write3(uint32_t v, PAbstractSerialPort port = PAbstractSerialPort());
+    void Write3(uint32_t v, PPort port = PPort());
     // returns value via reference to make using FAIL() possible
     // inside the function
-    uint32_t Read3(PAbstractSerialPort port = PAbstractSerialPort());
+    uint32_t Read3(PPort port = PPort());
 
     PPtyBasedFakeSerial FakeSerial;
-    PAbstractSerialPort Serial;
+    PPort Serial;
 };
 
-void TPtyBasedFakeSerialTest::Write3(uint32_t v, PAbstractSerialPort port)
+void TPtyBasedFakeSerialTest::Write3(uint32_t v, PPort port)
 {
     if (!port)
         port = Serial;
@@ -28,7 +28,7 @@ void TPtyBasedFakeSerialTest::Write3(uint32_t v, PAbstractSerialPort port)
     port->WriteBytes(buf, 3);
 }
 
-uint32_t TPtyBasedFakeSerialTest::Read3(PAbstractSerialPort port)
+uint32_t TPtyBasedFakeSerialTest::Read3(PPort port)
 {
     if (!port)
         port = Serial;
@@ -42,7 +42,7 @@ void TPtyBasedFakeSerialTest::SetUp()
 {
     TLoggedFixture::SetUp();
     FakeSerial = PPtyBasedFakeSerial(new TPtyBasedFakeSerial(*this));
-    Serial = PAbstractSerialPort(
+    Serial = PPort(
         new TSerialPort(
             TSerialPortSettings(
                 FakeSerial->GetPrimaryPtsName(),
@@ -74,7 +74,7 @@ TEST_F(TPtyBasedFakeSerialTest, Expect)
 TEST_F(TPtyBasedFakeSerialTest, Forward)
 {
     FakeSerial->StartForwarding();
-    PAbstractSerialPort secondary_serial = PAbstractSerialPort(
+    PPort secondary_serial = PPort(
         new TSerialPort(
             TSerialPortSettings(
                 FakeSerial->GetSecondaryPtsName(),

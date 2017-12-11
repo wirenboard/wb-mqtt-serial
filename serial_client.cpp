@@ -17,7 +17,7 @@ namespace {
     typedef std::shared_ptr<TSerialPollEntry> PSerialPollEntry;
 };
 
-TSerialClient::TSerialClient(PAbstractSerialPort port)
+TSerialClient::TSerialClient(PPort port)
     : Port(port),
       Active(false),
       ReadCallback([](PRegister, bool){}),
@@ -43,7 +43,7 @@ PSerialDevice TSerialClient::CreateDevice(PDeviceConfig device_config)
         std::cerr << "CreateDevice: " << device_config->Id <<
             (device_config->DeviceType.empty() ? "" : " (" + device_config->DeviceType + ")") <<
             " @ " << device_config->SlaveId << " -- protocol: " << device_config->Protocol << std::endl;
-    
+
     try {
         PSerialDevice dev = TSerialDeviceFactory::CreateDevice(device_config, Port);
         DevicesList.push_back(dev);
@@ -212,6 +212,8 @@ void TSerialClient::Cycle()
 {
     Connect();
 
+    Port->CycleBegin();
+
     WaitForPollAndFlush();
     Plan->ProcessPending([this](const PPollEntry& entry) {
             for (auto range: std::dynamic_pointer_cast<TSerialPollEntry>(entry)->Ranges)
@@ -267,7 +269,7 @@ bool TSerialClient::DebugEnabled() const {
     return Debug;
 }
 
-void TSerialClient::NotifyFlushNeeded() 
+void TSerialClient::NotifyFlushNeeded()
 {
     FlushNeeded->Signal();
 }

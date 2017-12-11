@@ -965,7 +965,7 @@ TEST_F(TConfigParserTest, Parse)
         TTestLogIndent indent(*this);
         ASSERT_EQ(config->Debug, port_config->Debug);
         Emit() << "------";
-        Emit() << "ConnSettings: " << port_config->ConnSettings;
+        Emit() << "ConnSettings: " << port_config->ConnSettings->ToString();
         Emit() << "PollInterval: " << port_config->PollInterval.count();
         if (port_config->DeviceConfigs.empty()) {
             Emit() << "No device configs.";

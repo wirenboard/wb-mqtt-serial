@@ -11,7 +11,7 @@ class TModbusDevice : public TBasicProtocolSerialDevice<TBasicProtocol<TModbusDe
 public:
     static const int DefaultTimeoutMs = 1000;
 
-    TModbusDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
+    TModbusDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list) const override;
     uint64_t ReadRegister(PRegister reg) override;
     void WriteRegister(PRegister reg, uint64_t value) override;

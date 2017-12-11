@@ -28,7 +28,7 @@ REGISTER_BASIC_INT_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
             { TUnielDevice::REG_BRIGHTNESS, "brightness", "value", U8 }
         }));
 
-TUnielDevice::TUnielDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+TUnielDevice::TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TUnielDevice>>(config, port, protocol)
 {}
 

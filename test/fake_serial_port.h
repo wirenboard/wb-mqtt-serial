@@ -10,13 +10,13 @@
 #include "../serial_device.h"
 #include "../serial_observer.h"
 
-class TFakeSerialPort: public TAbstractSerialPort, public TExpector {
+class TFakeSerialPort: public TPort, public TExpector {
 public:
     TFakeSerialPort(TLoggedFixture& fixture);
     void SetDebug(bool debug);
     bool Debug() const;
     void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
-    void CheckPortOpen();
+    void CheckPortOpen() const;
     void Open();
     void Close();
     bool IsOpen() const;
@@ -26,9 +26,10 @@ public:
                   const std::chrono::microseconds& timeout = std::chrono::microseconds(-1),
                   TFrameCompletePred frame_complete = 0);
     void SkipNoise();
-    void Sleep(const std::chrono::microseconds& us);
-    TTimePoint CurrentTime() const;
-    bool Wait(PBinarySemaphore semaphore, const TTimePoint& until);
+
+    void Sleep(const std::chrono::microseconds & us) override;
+    bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
+    TTimePoint CurrentTime() const override;
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     void DumpWhatWasRead();

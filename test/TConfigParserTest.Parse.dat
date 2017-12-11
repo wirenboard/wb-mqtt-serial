@@ -179,3 +179,7 @@ Ports:
             Max: -1
             ReadOnly: 1
             Registers: input: 0 (poll_interval=100)
+    ------
+    ConnSettings: <192.168.0.1:3000 timeout 500>
+    PollInterval: 20
+    No device configs.
