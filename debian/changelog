@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.33) stable; urgency=medium
+
+  * adds json template for WB-MDM2 (former WB-MD2)
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 11 Dec 2017 19:58:59 +0300
+
 wb-mqtt-serial (1.32) stable; urgency=medium
 
   * adds WB-MRPS6 json template
