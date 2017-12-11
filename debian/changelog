@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.32) stable; urgency=medium
+
+  * adds WB-MRPS6 json template
+
+ -- Attila Door <a.door@contactless.ru>  Fri, 11 Dec 2017 11:00:00 +0300
+
 wb-mqtt-serial (1.31) stable; urgency=medium
 
   * adds WB-M1W2 template
