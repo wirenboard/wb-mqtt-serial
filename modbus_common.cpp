@@ -613,6 +613,11 @@ namespace ModbusRTU // modbus rtu protocol utilities
         if (port->Debug())
             std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
                 " of device " << reg->Device()->ToString() << std::endl;
+
+        if (reg->Device()->DeviceConfig()->GuardInterval.count()){
+            usleep(reg->Device()->DeviceConfig()->GuardInterval.count());
+        }
+
         std::string exception_message;
         try {
             TWriteRequest request;
