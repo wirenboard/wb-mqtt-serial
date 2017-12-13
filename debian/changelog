@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.33.1) stable; urgency=medium
+
+  * fixed libwbmqtt dependency
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 13 Dec 2017 14:55:15 +0300
+
 wb-mqtt-serial (1.33) stable; urgency=medium
 
   * adds json template for WB-MDM2 (former WB-MD2)
