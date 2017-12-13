@@ -1,0 +1,79 @@
+{
+  "device_type": "WB-MDM2",
+  "device": {
+    "name": "WB-MDM2",
+    "id": "wb-mdm2",
+    "channels": [
+      {
+        "name": "Channel 1",
+        "reg_type": "holding",
+        "address": 0,
+        "type": "range",
+        "max": 100
+      },
+      {
+        "name": "Channel 2",
+        "reg_type": "holding",
+        "address": 1,
+        "type": "range",
+        "max": 100
+      },
+      {
+        "name": "Button 1",
+        "reg_type": "holding",
+        "readonly": true,
+        "address": 20,
+        "type": "switch"
+      },
+      {
+        "name": "Button 2",
+        "reg_type": "holding",
+        "readonly": true,
+        "address": 21,
+        "type": "switch"
+      },
+      {
+        "name": "Button 3",
+        "reg_type": "holding",
+        "readonly": true,
+        "address": 22,
+        "type": "switch"
+      },
+      {
+        "name": "Button 4",
+        "reg_type": "holding",
+        "readonly": true,
+        "address": 23,
+        "type": "switch"
+      },
+      {
+        "name": "Button 1 counter",
+        "reg_type": "holding",
+        "readonly": true,
+        "address": 40,
+        "type": "value"
+      },
+      {
+        "name": "Button 2 counter",
+        "reg_type": "holding",
+        "readonly": true,
+        "address": 41,
+        "type": "value"
+      },
+      {
+        "name": "Button 3 counter",
+        "reg_type": "holding",
+        "readonly": true,
+        "address": 42,
+        "type": "value"
+      },
+      {
+        "name": "Button 4 counter",
+        "reg_type": "holding",
+        "readonly": true,
+        "address": 43,
+        "type": "value"
+      }
+    ]
+  }
+}

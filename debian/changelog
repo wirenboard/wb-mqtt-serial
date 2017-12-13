@@ -1,8 +1,26 @@
-wb-mqtt-serial (1.32~beta1) stable; urgency=medium
+wb-mqtt-serial (1.33.2) stable; urgency=medium
 
   * fixes guard_interval_us for Modbus protocol
 
  -- Evgeny Boger <boger@contactless.ru>  Sat, 09 Dec 2017 02:58:57 +0300
+
+wb-mqtt-serial (1.33.1) stable; urgency=medium
+
+  * fixed libwbmqtt dependency
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 13 Dec 2017 14:55:15 +0300
+
+wb-mqtt-serial (1.33) stable; urgency=medium
+
+  * adds json template for WB-MDM2 (former WB-MD2)
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 11 Dec 2017 19:58:59 +0300
+
+wb-mqtt-serial (1.32) stable; urgency=medium
+
+  * adds WB-MRPS6 json template
+
+ -- Attila Door <a.door@contactless.ru>  Fri, 11 Dec 2017 11:00:00 +0300
 
 wb-mqtt-serial (1.31) stable; urgency=medium
 
