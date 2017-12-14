@@ -1,8 +1,8 @@
 {
-    "device_type": "WBIO-AI-DV-12-single", 
+    "device_type": "WBIO-AI-DV-12-Single", 
     "device": {
-        "name": "WBIO-AI-DV-12-single", 
-        "id": "wb-mio-adc", 
+        "name": "WBIO-AI-DV-12-Single", 
+        "id": "wbio-ai-dv-12", 
         "protocol": "modbus_io", 
         "max_read_registers": 0, 
         "setup": [
