@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.33.2) stable; urgency=medium
+
+  * ai-dv-12 and ai-dv-12-single serial templates are added
+
+ -- Attila Door <a.door@wirenboard.ru>  Thu, 14 Dec 2017 17:00:15 +0300
+
 wb-mqtt-serial (1.33.1) stable; urgency=medium
 
   * fixed libwbmqtt dependency
