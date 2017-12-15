@@ -967,6 +967,7 @@ TEST_F(TConfigParserTest, Parse)
         Emit() << "------";
         Emit() << "ConnSettings: " << port_config->ConnSettings->ToString();
         Emit() << "PollInterval: " << port_config->PollInterval.count();
+        Emit() << "GuardInterval: " << port_config->GuardInterval.count();
         if (port_config->DeviceConfigs.empty()) {
             Emit() << "No device configs.";
             continue;

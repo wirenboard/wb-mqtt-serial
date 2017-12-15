@@ -3,6 +3,7 @@ Ports:
     ------
     ConnSettings: </dev/ttyNSC0 9600 8 N2 timeout 500>
     PollInterval: 10
+    GuardInterval: 0
     DeviceConfigs:
         ------
         Id: msu34tlp_2
@@ -11,7 +12,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
-        GuardInterval: 20000
+        GuardInterval: 0
         DeviceChannels:
             ------
             Name: Temp 1
@@ -70,6 +71,7 @@ Ports:
     ------
     ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 500>
     PollInterval: 100
+    GuardInterval: 105
     DeviceConfigs:
         ------
         Id: lc103
@@ -78,7 +80,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
-        GuardInterval: 0
+        GuardInterval: 1000
         DeviceChannels:
             ------
             Name: Relay 1
@@ -123,7 +125,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 0
-        GuardInterval: 0
+        GuardInterval: 105
         DeviceChannels:
             ------
             Name: RGB
@@ -150,7 +152,7 @@ Ports:
         MaxRegHole: 2
         MaxBitHole: 2
         MaxReadRegisters: 42
-        GuardInterval: 0
+        GuardInterval: 105
         DeviceChannels:
             ------
             Name: Chan 1
@@ -168,7 +170,7 @@ Ports:
         MaxRegHole: 1
         MaxBitHole: 1
         MaxReadRegisters: 1
-        GuardInterval: 0
+        GuardInterval: 105
         DeviceChannels:
             ------
             Name: Chan 1
@@ -182,4 +184,5 @@ Ports:
     ------
     ConnSettings: <192.168.0.1:3000 timeout 500>
     PollInterval: 20
+    GuardInterval: 0
     No device configs.

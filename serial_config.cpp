@@ -504,6 +504,10 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     if (device_config->DeviceChannelConfigs.empty())
         throw TConfigParserException("the device has no channels: " + device_config->Name);
 
+    if (!device_data.isMember("guard_interval_us")) {
+        device_config->GuardInterval = port_config->GuardInterval;
+    }
+
     port_config->AddDeviceConfig(device_config);
     for (auto channel: device_config->DeviceChannelConfigs) {
         for (auto reg: channel->RegisterConfigs) {
@@ -511,7 +515,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
                 if (device_poll_interval.count() >= 0) {
                     reg->PollInterval = device_poll_interval;
                 } else {
-                reg->PollInterval = port_config->PollInterval;
+                    reg->PollInterval = port_config->PollInterval;
                 }
             }
         }
@@ -578,6 +582,9 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
 
     if (port_data.isMember("poll_interval"))
         port_config->PollInterval = chrono::milliseconds(GetInt(port_data, "poll_interval"));
+
+    if (port_data.isMember("guard_interval_us"))
+        port_config->GuardInterval = chrono::microseconds(GetInt(port_data, "guard_interval_us"));
 
     const Json::Value array = port_data["devices"];
     for(unsigned int index = 0; index < array.size(); ++index)

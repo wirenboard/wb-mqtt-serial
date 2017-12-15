@@ -614,8 +614,10 @@ namespace ModbusRTU // modbus rtu protocol utilities
             std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
                 " of device " << reg->Device()->ToString() << std::endl;
 
-        if (reg->Device()->DeviceConfig()->GuardInterval.count()){
-            usleep(reg->Device()->DeviceConfig()->GuardInterval.count());
+        auto config = reg->Device()->DeviceConfig();
+
+        if (config->GuardInterval.count()){
+            port->Sleep(config->GuardInterval);
         }
 
         std::string exception_message;
@@ -628,7 +630,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
             {   // Receive response
                 TWriteResponse response;
-                if (port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size())) > 0) {
+                auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
+
+                if (port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size())) > 0) {
                     try {
                         ModbusRTU::CheckResponse(request, response);
                         Modbus::ParseWriteResponse(PDU(response));
@@ -660,13 +664,15 @@ namespace ModbusRTU // modbus rtu protocol utilities
             throw std::runtime_error("modbus range expected");
         }
 
+        auto config = modbus_range->Device()->DeviceConfig();
+
         if (port->Debug())
             std::cerr << "modbus: read " << modbus_range->GetCount() << " " <<
                 modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
                 " of device " << modbus_range->Device()->ToString() << std::endl;
 
-        if (modbus_range->Device()->DeviceConfig()->GuardInterval.count()){
-            usleep(modbus_range->Device()->DeviceConfig()->GuardInterval.count());
+        if (config->GuardInterval.count()){
+            port->Sleep(config->GuardInterval);
         }
 
         std::string exception_message;
@@ -681,8 +687,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
             {   // Receive response
                 auto byte_count = InferReadResponseSize(modbus_range);
                 TReadResponse response(byte_count);
+                auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
 
-                auto rc = port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size()));
+                auto rc = port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size()));
                 if (rc > 0) {
                     try {
                         ModbusRTU::CheckResponse(request, response);

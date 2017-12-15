@@ -1,6 +1,6 @@
 wb-mqtt-serial (1.33.2) stable; urgency=medium
 
-  * fixes guard_interval_us for Modbus protocol
+  * fixes guard_interval_us and frame_timeout_ms for Modbus protocol
 
  -- Evgeny Boger <boger@contactless.ru>  Sat, 09 Dec 2017 02:58:57 +0300
 
