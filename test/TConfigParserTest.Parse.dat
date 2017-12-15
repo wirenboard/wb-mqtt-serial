@@ -12,7 +12,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
-        GuardInterval: 0
+        GuardInterval: 20000
         DeviceChannels:
             ------
             Name: Temp 1

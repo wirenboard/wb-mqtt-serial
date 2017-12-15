@@ -504,7 +504,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
     if (device_config->DeviceChannelConfigs.empty())
         throw TConfigParserException("the device has no channels: " + device_config->Name);
 
-    if (!device_data.isMember("guard_interval_us")) {
+    if (device_config->GuardInterval.count() == 0) {
         device_config->GuardInterval = port_config->GuardInterval;
     }
 
