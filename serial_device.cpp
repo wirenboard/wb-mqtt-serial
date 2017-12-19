@@ -48,9 +48,9 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
         	continue;
         }
     	try {
-	    if (DeviceConfig()->GuardInterval.count()){
-	        usleep(DeviceConfig()->GuardInterval.count());
-	    }
+            if (DeviceConfig()->GuardInterval.count()){
+                Port()->Sleep(DeviceConfig()->GuardInterval);
+            }
             simple_range->SetValue(reg, ReadRegister(reg));
         } catch (const TSerialDeviceTransientErrorException& e) {
             simple_range->SetError(reg);
