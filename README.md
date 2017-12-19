@@ -127,7 +127,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 
             "poll_interval": 10,
 
-            // Дополнительная задержка перед кжадой отправкой данных в порт,
+            // Дополнительная задержка перед каждой отправкой данных в порт,
             // в микросекундах
 
             "guard_interval_us": 1000,
