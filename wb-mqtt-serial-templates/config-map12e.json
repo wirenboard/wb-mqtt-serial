@@ -1,8 +1,8 @@
 {
- "device_type": "WB-MAP12-32AS", 
+ "device_type": "WB-MAP12E", 
  "device": {
-  "name": "WB-MAP12-32AS", 
-  "id": "wb-map12-32as", 
+  "name": "WB-MAP12E", 
+  "id": "wb-map12e", 
   "max_read_registers": 60, 
   "channels": [
    {
