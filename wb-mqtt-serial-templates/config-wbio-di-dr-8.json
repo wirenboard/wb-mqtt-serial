@@ -52,25 +52,11 @@
                 "type": "switch"
             },
             {
-                "name": "CNTR1",
-                "reg_type": "holding",
-                "readonly": true,
-                "address": 250,
-                "type": "value"
-            },
-            {
                 "name": "DR2",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 1,
                 "type": "switch"
-            },
-            {
-                "name": "CNTR2",
-                "reg_type": "holding",
-                "readonly": true,
-                "address": 251,
-                "type": "value"
             },
             {
                 "name": "DR3",
@@ -80,25 +66,11 @@
                 "type": "switch"
             },
             {
-                "name": "CNTR3",
-                "reg_type": "holding",
-                "readonly": true,
-                "address": 252,
-                "type": "value"
-            },
-            {
                 "name": "DR4",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 3,
                 "type": "switch"
-            },
-            {
-                "name": "CNTR4",
-                "reg_type": "holding",
-                "readonly": true,
-                "address": 253,
-                "type": "value"
             },
             {
                 "name": "DR5",
@@ -108,25 +80,11 @@
                 "type": "switch"
             },
             {
-                "name": "CNTR5",
-                "reg_type": "holding",
-                "readonly": true,
-                "address": 254,
-                "type": "value"
-            },
-            {
                 "name": "DR6",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 5,
                 "type": "switch"
-            },
-            {
-                "name": "CNTR6",
-                "reg_type": "holding",
-                "readonly": true,
-                "address": 255,
-                "type": "value"
             },
             {
                 "name": "DR7",
@@ -136,13 +94,6 @@
                 "type": "switch"
             },
             {
-                "name": "CNTR7",
-                "reg_type": "holding",
-                "readonly": true,
-                "address": 256,
-                "type": "value"
-            },
-            {
                 "name": "DR8",
                 "reg_type": "coil",
                 "readonly": true,
@@ -150,7 +101,56 @@
                 "type": "switch"
             },
             {
-                "name": "CNTR8",
+                "name": "Counter 1",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 250,
+                "type": "value"
+            },
+            {
+                "name": "Counter 2",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 251,
+                "type": "value"
+            },
+            {
+                "name": "Counter 3",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 252,
+                "type": "value"
+            },
+            {
+                "name": "Counter 4",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 253,
+                "type": "value"
+            },
+            {
+                "name": "Counter 5",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 254,
+                "type": "value"
+            },
+            {
+                "name": "Counter 6",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 255,
+                "type": "value"
+            },
+            {
+                "name": "Counter 7",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 256,
+                "type": "value"
+            },
+            {
+                "name": "Counter 8",
                 "reg_type": "holding",
                 "readonly": true,
                 "address": 257,
