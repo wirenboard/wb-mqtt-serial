@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.37.1~beta1) stable; urgency=medium
+
+  * beta
+
+ -- Evgeny Boger <boger@contactless.ru>  Sat, 23 Dec 2017 16:58:11 +0300
+
 wb-mqtt-serial (1.36) stable; urgency=medium
 
   * adds WB-MAP12 templates

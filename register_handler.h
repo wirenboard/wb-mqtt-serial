@@ -60,6 +60,10 @@ template<typename T>
 inline T TRegisterHandler::RoundValue(T val, double round_to)
 {
     static_assert(std::is_floating_point<T>::value, "TRegisterHandler::RoundValue accepts only floating point types");
+    if (round_to < 0) {
+        return std::round(val / (-round_to)) * (-round_to) * (val > 0 ? 1.0 : -1.0);
+    }
+
     return round_to > 0 ? std::round(val / round_to) * round_to : val;
 }
 
