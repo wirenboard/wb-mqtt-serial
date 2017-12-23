@@ -179,10 +179,6 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     double round_to = 0.0;
     if (register_data.isMember("round_to")) {
         round_to = register_data["round_to"].asDouble();
-        if (round_to < 0) {
-            throw TConfigParserException("round_to must be greater than or equal to 0 -- " +
-                                         device_config->DeviceType);
-        }
     }
 
     bool force_readonly = false;
