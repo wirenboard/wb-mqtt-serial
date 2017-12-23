@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.36) stable; urgency=medium
+
+  * adds WB-MAP12 templates
+
+ -- Evgeny Boger <boger@contactless.ru>  Sat, 23 Dec 2017 17:16:46 +0300
+
 wb-mqtt-serial (1.35) stable; urgency=medium
 
   * fixes WBIO templates
