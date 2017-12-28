@@ -322,6 +322,14 @@
           "minimum": -1,
           "default": -1,
           "propertyOrder": 17
+        },
+        "device_timeout_ms": {
+          "type": "integer",
+          "title": "Device timeout (ms)",
+          "description": "Specifies timeout for device connection. If not set, default value 3000ms is used.",
+          "minimum": 0,
+          "default": 3000,
+          "propertyOrder": 17
         }
       },
       "required": ["slave_id"],

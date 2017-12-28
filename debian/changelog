@@ -1,3 +1,11 @@
+wb-mqtt-serial (1.37) stable; urgency=medium
+
+  * added device_timeout_ms in config
+  * increased default device timeout to 3000ms
+  * fixed connection_timeout bug
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Thu, 28 Dec 2017 17:55:17 +0300
+
 wb-mqtt-serial (1.36) stable; urgency=medium
 
   * adds WB-MAP12 templates

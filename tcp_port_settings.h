@@ -18,6 +18,7 @@ struct TTcpPortSettings final: TPortSettings
         : TPortSettings(responseTimeout)
         , Address(address)
         , Port(port)
+        , ConnectionTimeout(connectionTimeout)
     {}
 
     std::string ToString() const override

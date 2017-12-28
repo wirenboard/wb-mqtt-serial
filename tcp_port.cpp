@@ -147,6 +147,8 @@ void TTcpPort::WriteBytes(const uint8_t * buf, int count)
 {
     if (IsOpen()) {
         Base::WriteBytes(buf, count);
+    } else {
+        cerr << "WARNING: attempt to write to not open port" << endl;
     }
 }
 
@@ -154,6 +156,8 @@ int TTcpPort::ReadFrame(uint8_t * buf, int count, const std::chrono::microsecond
 {
     if (IsOpen()) {
         return Base::ReadFrame(buf, count, timeout, frame_complete);
+    } else {
+        cerr << "WARNING: attempt to read from not open port" << endl;
     }
     return 0;
 }
@@ -164,7 +168,7 @@ void TTcpPort::OnBadSelect()
 		LastSuccessfulSelect = std::chrono::steady_clock::now();
 	}
 
-    if (std::chrono::steady_clock::now() - LastSuccessfulSelect > Settings->ConnectionTimeout) {
+    if ((std::chrono::steady_clock::now() - LastSuccessfulSelect) > Settings->ConnectionTimeout) {
         Reset();
 	}
 }

@@ -59,7 +59,7 @@ typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
 
 static const int DEFAULT_INTER_DEVICE_DELAY_MS = 100;
 static const int DEFAULT_ACCESS_LEVEL = 1;
-static const int DEFAULT_DEVICE_TIMEOUT_MS = 1000;
+static const int DEFAULT_DEVICE_TIMEOUT_MS = 3000;
 
 struct TDeviceConfig {
     TDeviceConfig(std::string name = "", std::string slave_id = "", std::string protocol = "")
