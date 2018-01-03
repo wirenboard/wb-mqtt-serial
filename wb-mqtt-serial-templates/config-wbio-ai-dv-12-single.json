@@ -1,0 +1,266 @@
+{
+    "device_type": "WBIO-AI-DV-12-Single", 
+    "device": {
+        "name": "WBIO-AI-DV-12", 
+        "id": "wbio-ai-dv-12", 
+        "protocol": "modbus_io", 
+        "max_read_registers": 0, 
+        "setup": [
+            {
+                "title": "CONF_CH1", 
+                "address": 21500, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH2", 
+                "address": 21501, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH3", 
+                "address": 21502, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH4", 
+                "address": 21503, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_DIFF1", 
+                "address": 21504, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_DIFF2", 
+                "address": 21505, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH5", 
+                "address": 21506, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH6", 
+                "address": 21507, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH7", 
+                "address": 21508, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH8", 
+                "address": 21509, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_DIFF3", 
+                "address": 21510, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_DIFF4", 
+                "address": 21511, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH9", 
+                "address": 21512, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH10", 
+                "address": 21513, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH11", 
+                "address": 21514, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_CH12", 
+                "address": 21515, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_DIFF5", 
+                "address": 21516, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_DIFF6", 
+                "address": 21517, 
+                "value": "0x0"
+            }
+        ], 
+        "channels": [
+            {
+                "name": "CH1", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21000, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "CH2", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21001, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "CH3", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21002, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "CH4", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21003, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "DIFF1", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21004, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "DIFF2", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21005, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A5", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21006, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A6", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21007, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A7", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21008, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A8", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21009, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "DIFF3", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21010, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "DIFF4", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21011, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A9", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21012, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A10", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21013, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A11", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21014, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A12", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21015, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "DIFF5", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21016, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "DIFF6", 
+                "reg_type": "holding", 
+                "readonly": true, 
+                "address": 21017, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }
+        ]
+    }
+}
+
