@@ -22,8 +22,7 @@
                 "name": "Play from RAM",
                 "reg_type": "coil",
                 "address": 5002,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             },
             {
                 "name": "Learn to ROM1",
@@ -516,8 +515,7 @@
                 "name": "Reset all ROM",
                 "reg_type": "coil",
                 "address": 5000,
-                "type": "pushbutton",
-                "poll_interval": 0
+                "type": "pushbutton"
             }
         ]
     }
