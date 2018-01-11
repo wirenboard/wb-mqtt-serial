@@ -13,6 +13,7 @@ Ports:
         MaxBitHole: 0
         MaxReadRegisters: 1
         GuardInterval: 20000
+        DeviceTimeout: 3000
         DeviceChannels:
             ------
             Name: Temp 1
@@ -58,6 +59,7 @@ Ports:
         MaxBitHole: 0
         MaxReadRegisters: 1
         GuardInterval: 0
+        DeviceTimeout: 3000
         DeviceChannels:
             ------
             Name: Relay 1
@@ -81,6 +83,7 @@ Ports:
         MaxBitHole: 0
         MaxReadRegisters: 1
         GuardInterval: 1000
+        DeviceTimeout: 2000
         DeviceChannels:
             ------
             Name: Relay 1
@@ -126,6 +129,7 @@ Ports:
         MaxBitHole: 0
         MaxReadRegisters: 0
         GuardInterval: 105
+        DeviceTimeout: 3000
         DeviceChannels:
             ------
             Name: RGB
@@ -153,6 +157,7 @@ Ports:
         MaxBitHole: 2
         MaxReadRegisters: 42
         GuardInterval: 105
+        DeviceTimeout: 3000
         DeviceChannels:
             ------
             Name: Chan 1
@@ -171,6 +176,7 @@ Ports:
         MaxBitHole: 1
         MaxReadRegisters: 1
         GuardInterval: 105
+        DeviceTimeout: 3000
         DeviceChannels:
             ------
             Name: Chan 1
@@ -185,4 +191,11 @@ Ports:
     ConnSettings: <192.168.0.1:3000 timeout 500>
     PollInterval: 20
     GuardInterval: 0
+    ConnectionTimeout: 5000
+    No device configs.
+    ------
+    ConnSettings: <192.168.0.1:3000 timeout 500>
+    PollInterval: 20
+    GuardInterval: 0
+    ConnectionTimeout: 10000
     No device configs.

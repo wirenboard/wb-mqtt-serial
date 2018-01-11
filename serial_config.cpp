@@ -386,6 +386,8 @@ void TConfigParser::LoadDeviceTemplatableConfigPart(PDeviceConfig device_config,
 
     if (device_data.isMember("frame_timeout_ms"))
         device_config->FrameTimeout = chrono::milliseconds(GetInt(device_data, "frame_timeout_ms"));
+    if (device_data.isMember("device_timeout_ms"))
+        device_config->DeviceTimeout = chrono::milliseconds(GetInt(device_data, "device_timeout_ms"));
     if (device_data.isMember("max_reg_hole"))
         device_config->MaxRegHole = GetInt(device_data, "max_reg_hole");
     if (device_data.isMember("max_bit_hole"))
