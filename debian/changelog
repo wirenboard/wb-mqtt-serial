@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.36.1) stable; urgency=medium
+
+  * fixed invalid config on "type" property in config
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Tue, 09 Jan 2018 18:52:41 +0300
+
 wb-mqtt-serial (1.36) stable; urgency=medium
 
   * adds WB-MAP12 templates
