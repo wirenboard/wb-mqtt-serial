@@ -26,6 +26,23 @@
             "forceDefault": true
           }
         },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true
+          }
+        },
         "path": {
           "type": "string",
           "title": "Path to device",
@@ -117,6 +134,23 @@
           "options": {
             "hidden": true,
             "forceDefault": true
+          }
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true
           }
         },
         "address": {
