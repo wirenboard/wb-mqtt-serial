@@ -112,7 +112,7 @@ void TTcpPort::OpenTcpPort()
             }
         } else {
             ostringstream ss;
-            ss << "connect error: " << error;
+            ss << "connect error: " << error << " - " << strerror(error);
             throw TSerialDeviceException(ss.str());
         }
     }
