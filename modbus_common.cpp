@@ -142,16 +142,8 @@ namespace Modbus    // modbus protocol common utilities
 
     TRegisterRange::EStatus TModbusRegisterRange::GetStatus() const
     {
-        switch (ModbusErrorCode) {
-        case ERR_ILLEGAL_FUNCTION:
-        case ERR_ILLEGAL_DATA_ADDRESS:
-        case ERR_ILLEGAL_DATA_VALUE:
-            return ST_DEVICE_ERROR;
-
-        case ERR_NONE:
-        default:
-            return Error ? ST_UNKNOWN_ERROR : ST_OK;
-        }
+        // any modbus error means successful response read
+        return ModbusErrorCode == ERR_NONE ? (Error ? ST_UNKNOWN_ERROR : ST_OK) : ST_DEVICE_ERROR;
     }
 
     bool TModbusRegisterRange::NeedsSplit() const
