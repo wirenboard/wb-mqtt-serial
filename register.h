@@ -327,6 +327,8 @@ public:
     std::chrono::milliseconds PollInterval() const { return RegPollInterval; }
     virtual void MapRange(TValueCallback value_callback, TErrorCallback error_callback) = 0;
     virtual EStatus GetStatus() const = 0;
+
+    // returns true when occured error is likely caused by hole registers
     virtual bool NeedsSplit() const = 0;
 
 protected:
