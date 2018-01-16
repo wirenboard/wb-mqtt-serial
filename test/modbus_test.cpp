@@ -149,6 +149,15 @@ TEST_F(TModbusTest, CRCError)
     SerialPort->Close();
 }
 
+TEST_F(TModbusTest, WrongResponseDataSize)
+{
+    EnqueueWrongDataSizeReadResponse();
+
+    ModbusDev->ReadRegisterRange(ModbusDev->SplitRegisterList({ ModbusCoil0 }).front());
+
+    SerialPort->Close();
+}
+
 TEST_F(TModbusTest, WrongSlaveId)
 {
     EnqueueWrongSlaveIdCoilReadResponse();
@@ -339,6 +348,43 @@ TEST_F(TModbusIntegrationTest, Holes)
     Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
     Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
     InvalidateConfigPoll(TEST_HOLES);
+}
+
+TEST_F(TModbusIntegrationTest, HolesAutoDisable)
+{
+    // we check that driver issue long read request, reading registers 4-18 at once
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+    InvalidateConfigPoll(TEST_HOLES);
+
+    auto device = TSerialDeviceFactory::GetDevice("1", "modbus", SerialPort);
+
+    ASSERT_EQ(device->DeviceConfig()->MaxRegHole, 10);
+    ASSERT_EQ(device->DeviceConfig()->MaxBitHole, 80);
+
+    EnqueueHoldingPackHoles10ReadResponse(0x3); // this must result in auto-disabling holes feature
+    EnqueueHoldingReadS64Response();
+    EnqueueHoldingReadF32Response();
+    EnqueueHoldingReadU16Response();
+    EnqueueInputReadU16Response();
+    EnqueueCoilReadResponse();
+    Enqueue10CoilsReadResponse();
+    EnqueueDiscreteReadResponse();
+
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+
+    EnqueueHoldingPackReadResponse();
+    EnqueueHoldingReadS64Response();
+    EnqueueHoldingReadF32Response();
+    EnqueueHoldingReadU16Response();
+    EnqueueInputReadU16Response();
+    EnqueueCoilReadResponse();
+    Enqueue10CoilsReadResponse();
+    EnqueueDiscreteReadResponse();
+
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, MaxReadRegisters)

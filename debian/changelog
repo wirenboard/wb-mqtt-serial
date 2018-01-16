@@ -1,3 +1,10 @@
+wb-mqtt-serial (1.37.1) stable; urgency=medium
+
+  * disable hole registers on modbus error code
+  * fix modbus read response invalid data size vulnerability
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Thu, 02 Nov 2017 18:14:23 +0300
+
 wb-mqtt-serial (1.37) stable; urgency=medium
 
   * added device_timeout_ms in config

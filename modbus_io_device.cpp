@@ -18,9 +18,9 @@ TModbusIODevice::TModbusIODevice(PDeviceConfig config, PPort port, PProtocol pro
     Shift = (((SlaveId.Secondary - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
 }
 
-std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRegister> reg_list) const
+std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
 {
-    return Modbus::SplitRegisterList(reg_list, DeviceConfig(), Port()->Debug());
+    return Modbus::SplitRegisterList(reg_list, DeviceConfig(), Port()->Debug(), enableHoles);
 }
 
 uint64_t TModbusIODevice::ReadRegister(PRegister reg)
