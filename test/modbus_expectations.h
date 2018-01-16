@@ -30,6 +30,7 @@ public:
     void Enqueue10CoilsMax3ReadResponse(uint8_t exception = 0);
 
     void EnqueueInvalidCRCCoilReadResponse();
+    void EnqueueWrongDataSizeReadResponse();
     void EnqueueWrongSlaveIdCoilReadResponse(uint8_t exception = 0);
     void EnqueueWrongFunctionCodeCoilReadResponse(uint8_t exception = 0);
     void EnqueueWrongSlaveIdCoilWriteResponse(uint8_t exception = 0);

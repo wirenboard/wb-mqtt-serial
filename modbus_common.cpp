@@ -547,6 +547,13 @@ namespace ModbusRTU // modbus rtu protocol utilities
         {}
     };
 
+    class TMalformedResponseError: public TSerialDeviceTransientErrorException
+    {
+    public:
+        TMalformedResponseError(const std::string & what): TSerialDeviceTransientErrorException("malformed response: " + what)
+        {}
+    };
+
     const size_t DATA_SIZE = 3;  // number of bytes in ADU that is not in PDU (slaveID (1b) + crc value (2b))
     const std::chrono::milliseconds FrameTimeout(500);   // libmodbus default
 
@@ -619,6 +626,10 @@ namespace ModbusRTU // modbus rtu protocol utilities
     void CheckResponse(const TRequest & req, const TResponse & res)
     {
         auto pdu_size = GetResponsePDUSize(res);
+
+        if (pdu_size >= (res.size() - 2)) {
+            throw TMalformedResponseError("invalid data size");
+        }
 
         uint16_t crc = (res[pdu_size + 1] << 8) + res[pdu_size + 2];
         if (crc != CRC16::CalculateCRC16(res.data(), pdu_size + 1)) {

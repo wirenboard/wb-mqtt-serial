@@ -149,6 +149,15 @@ TEST_F(TModbusTest, CRCError)
     SerialPort->Close();
 }
 
+TEST_F(TModbusTest, WrongResponseDataSize)
+{
+    EnqueueWrongDataSizeReadResponse();
+
+    ModbusDev->ReadRegisterRange(ModbusDev->SplitRegisterList({ ModbusCoil0 }).front());
+
+    SerialPort->Close();
+}
+
 TEST_F(TModbusTest, WrongSlaveId)
 {
     EnqueueWrongSlaveIdCoilReadResponse();
