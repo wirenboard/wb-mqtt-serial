@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.37.2) stable; urgency=medium
+
+  * SkipNoise on malformed response
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Fri, 19 Jan 2018 20:38:53 +0300
+
 wb-mqtt-serial (1.37.1) stable; urgency=medium
 
   * disable hole registers on modbus error code
