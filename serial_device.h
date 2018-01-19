@@ -85,15 +85,14 @@ public:
 
     // Initialize setup items' registers
     void InitSetupItems();
-
-    bool WriteSetupRegisters();
+    bool HasSetupItems() const;
+    bool WriteSetupRegisters(bool tryAll = true);
 
     PPort Port() const { return SerialPort; }
     PDeviceConfig DeviceConfig() const { return _DeviceConfig; }
     PProtocol Protocol() const { return _Protocol; }
 
-    void OnConnectionOk();
-    void OnConnectionError();
+    void OnCycleEnd(bool ok);
     bool GetIsDisconnected() const;
 
     void ResetUnavailableAddresses();
@@ -104,9 +103,10 @@ private:
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
     std::vector<PDeviceSetupItem> SetupItems;
-    std::chrono::steady_clock::time_point LastOkConnectionTimepoint;
+    std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
     std::set<int> UnavailableAddresses;
+    int RemainingFailCycles;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

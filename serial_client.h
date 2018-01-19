@@ -52,6 +52,7 @@ private:
     std::list<PRegister> RegList;
     std::list<PSerialDevice> DevicesList; /* for EndPollCycle */
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
+    std::unordered_map<PSerialDevice, std::vector<PRegisterHandler>> DeviceRegisterHandlers;
 
     bool Active;
     int PollInterval;

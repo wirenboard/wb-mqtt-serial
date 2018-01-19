@@ -117,13 +117,13 @@ TEST_F(TReconnectDetectionTest, Reconnect)
     {   // Device is connected back
         Note() << "SimulateDisconnect(false)";
         SerialPort->SimulateDisconnect(false);
-        // After first successful range read ...
-        EnqueueSetupSectionI1(true);
-        EnqueueSetupSectionI2(true);
 
-        // We expect reconnect so we expect setup section to be written in response to successfull polling
+        // We expect reconnect so we expect setup section to be written before polling
         EnqueueSetupSectionI1(false);
         EnqueueSetupSectionI2(false);
+
+        EnqueueSetupSectionI1(true);
+        EnqueueSetupSectionI2(true);
 
         Note() << "LoopOnce()";
         Observer->LoopOnce();
@@ -160,4 +160,3 @@ TEST_F(TReconnectDetectionTest, ReconnectMiss)
 
     SerialPort->Close();
 }
-

@@ -12,8 +12,8 @@ public:
     ~TTcpPort() = default;
 
     void CycleBegin() override;
+    void CycleEnd(bool ok) override;
     void Open() override;
-    bool Select(const std::chrono::microseconds& us) override;
     void WriteBytes(const uint8_t * buf, int count) override;
     int ReadFrame(uint8_t * buf, int count,
                   const std::chrono::microseconds & timeout = std::chrono::microseconds(-1),
@@ -23,9 +23,7 @@ private:
     void OpenTcpPort();
     void Reset() noexcept;
 
-    void OnBadSelect();
-    void OnOkSelect();
-
     PTcpPortSettings                        Settings;
-    std::chrono::steady_clock::time_point   LastSuccessfulSelect;
+    std::chrono::steady_clock::time_point   LastSuccessfulCycle;
+    int                                     RemainingFailCycles;
 };

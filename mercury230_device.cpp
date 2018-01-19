@@ -97,7 +97,7 @@ uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_l
     uint8_t cmdBuf[2];
     cmdBuf[0] = (address >> 8) & 0xff; // param
     cmdBuf[1] = address & 0xff; // subparam (BWRI)
-    
+
     assert(resp_payload_len <= 3);
     uint8_t buf[3] = {};
     Talk( 0x08, cmdBuf, 2, -1, buf, resp_payload_len);
@@ -112,9 +112,9 @@ uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_l
             int reactive_power_sign = (buf[0] & (1 << 6)) ? -1 : 1;
 
             int sign = 1;
-            
-            if (reg_type == REG_PARAM_SIGN_ACT)  {       
-                    sign = active_power_sign;                    
+
+            if (reg_type == REG_PARAM_SIGN_ACT)  {
+                    sign = active_power_sign;
             } else if (reg_type == REG_PARAM_SIGN_REACT) {
                     sign = reactive_power_sign;
             }
@@ -157,6 +157,8 @@ uint64_t TMercury230Device::ReadRegister(PRegister reg)
 void TMercury230Device::EndPollCycle()
 {
     CachedValues.clear();
+
+    TSerialDevice::EndPollCycle();
 }
 
 // TBD: custom password?
