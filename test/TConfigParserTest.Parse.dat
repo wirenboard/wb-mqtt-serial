@@ -130,6 +130,142 @@ Ports:
                 PollInterval: 10
                 ErrorValue: not set
                 WordOrder: BigEndian
+        ------
+        Id: ErrorValueTest
+        Name: ErrorValueTest
+        SlaveId: 0x91
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 0
+        DeviceTimeout: 3000
+        DeviceChannels:
+            ------
+            Name: uint16
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 1
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 0
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 65535
+                WordOrder: BigEndian
+            ------
+            Name: uint32
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 2
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 4294967295
+                WordOrder: BigEndian
+            ------
+            Name: str-uint32
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 3
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 2
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 4294967295
+                WordOrder: BigEndian
+            ------
+            Name: str-hex-uint32
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 4
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 3
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 4294967295
+                WordOrder: BigEndian
+            ------
+            Name: str-uint64
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 5
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 4
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 18446744073709551615
+                WordOrder: BigEndian
+            ------
+            Name: str-hex-uint64
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 6
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 5
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 18446744073709551615
+                WordOrder: BigEndian
     ------
     ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 500>
     PollInterval: 100
