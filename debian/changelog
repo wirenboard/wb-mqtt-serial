@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.37.3) stable; urgency=medium
+
+  * handle numeric error_value in config
+
+ -- Evgeny Boger <boger@contactless.ru>  Sat, 20 Jan 2018 17:18:14 +0300
+
 wb-mqtt-serial (1.37.2) stable; urgency=medium
 
   * SkipNoise on malformed response
