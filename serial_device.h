@@ -92,7 +92,7 @@ public:
     PDeviceConfig DeviceConfig() const { return _DeviceConfig; }
     PProtocol Protocol() const { return _Protocol; }
 
-    void OnCycleEnd(bool ok);
+    virtual void OnCycleEnd(bool ok);
     bool GetIsDisconnected() const;
 
     void ResetUnavailableAddresses();

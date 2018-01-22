@@ -30,11 +30,14 @@ public:
     void Sleep(const std::chrono::microseconds & us) override;
     bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
     TTimePoint CurrentTime() const override;
+    void CycleEnd(bool ok) override;
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     void DumpWhatWasRead();
     void Elapse(const std::chrono::milliseconds& ms);
     void SimulateDisconnect(bool simulate);
+    bool GetDoSimulateDisconnect() const;
+    TLoggedFixture& GetFixture();
 
 private:
     void SkipFrameBoundary();

@@ -49,6 +49,11 @@ void TFakeSerialPort::Close()
         throw std::runtime_error("not all bytes in the response consumed");
 }
 
+TLoggedFixture & TFakeSerialPort::GetFixture()
+{
+    return Fixture;
+}
+
 bool TFakeSerialPort::IsOpen() const
 {
     return IsPortOpen;
@@ -171,6 +176,11 @@ TTimePoint TFakeSerialPort::CurrentTime() const
     return Time;
 }
 
+void TFakeSerialPort::CycleEnd(bool ok)
+{
+    Fixture.Emit() << (ok ? "Port cycle OK" : "Port cycle FAIL");
+}
+
 void TFakeSerialPort::DumpWhatWasRead()
 {
     assert(DumpPos <= RespPos);
@@ -201,6 +211,11 @@ void TFakeSerialPort::Elapse(const std::chrono::milliseconds& ms)
 void TFakeSerialPort::SimulateDisconnect(bool simulate)
 {
     DoSimulateDisconnect = simulate;
+}
+
+bool TFakeSerialPort::GetDoSimulateDisconnect() const
+{
+    return DoSimulateDisconnect;
 }
 
 void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func)

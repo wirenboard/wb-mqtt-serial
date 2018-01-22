@@ -162,6 +162,7 @@ EnqueueMilurFrequencyResponse()
 >> FF 01 09 80 66
 Publish: /devices/milur305_255/controls/Frequency/meta/error: '' (QoS 0, retained)
 Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 0, retained)
+Port cycle OK
 >>> LoopOnce()
 << FF 01 09 02 A0 C3 B3 D9
 EnqueueMilurPhaseAVoltageResponse()
@@ -214,179 +215,7 @@ EnqueueMilurTotalReactiveEnergyResponse()
 << FF 01 7F 04 F0 D8 FF FF 57 4B
 EnqueueMilurFrequencyResponse()
 >> FF 01 09 80 66
->>> LoopOnce()
-<< FF 01 09 02 A0 C3 B3 D9
-EnqueueMilurPhaseAVoltageResponse()
->> FF 01 64 41 8B
-Publish: /devices/milur305_255/controls/Phase A voltage: '234.607' (QoS 0, retained)
-<< FF 01 64 03 6F 94 03 7A 8E
-EnqueueMilurPhaseBVoltageResponse()
->> FF 01 65 80 4B
-Publish: /devices/milur305_255/controls/Phase B voltage: '234.607' (QoS 0, retained)
-<< FF 01 65 03 6F 94 03 47 4E
-EnqueueMilurPhaseCVoltageResponse()
->> FF 01 66 C0 4A
-Publish: /devices/milur305_255/controls/Phase C voltage: '234.607' (QoS 0, retained)
-<< FF 01 66 03 6F 94 03 03 4E
-EnqueueMilurPhaseACurrentResponse()
->> FF 01 67 01 8A
-Publish: /devices/milur305_255/controls/Phase A current: '-10' (QoS 0, retained)
-<< FF 01 67 03 F0 D8 FF 3A 21
-EnqueueMilurPhaseBCurrentResponse()
->> FF 01 68 41 8E
-Publish: /devices/milur305_255/controls/Phase B current: '-10' (QoS 0, retained)
-<< FF 01 68 03 F0 D8 FF 6E 20
-EnqueueMilurPhaseCCurrentResponse()
->> FF 01 69 80 4E
-Publish: /devices/milur305_255/controls/Phase C current: '-10' (QoS 0, retained)
-<< FF 01 69 03 F0 D8 FF 53 E0
-EnqueueMilurPhaseAActivePowerResponse()
->> FF 01 6A C0 4F
-Publish: /devices/milur305_255/controls/Phase A active power: '-100' (QoS 0, retained)
-<< FF 01 6A 04 F0 D8 FF FF 55 8E
-EnqueueMilurPhaseBActivePowerResponse()
->> FF 01 6B 01 8F
-Publish: /devices/milur305_255/controls/Phase B active power: '-100' (QoS 0, retained)
-<< FF 01 6B 04 F0 D8 FF FF 54 5F
-EnqueueMilurPhaseCActivePowerResponse()
->> FF 01 6C 40 4D
-Publish: /devices/milur305_255/controls/Phase C active power: '-100' (QoS 0, retained)
-<< FF 01 6C 04 F0 D8 FF FF 55 E8
-EnqueueMilurTotalActivePowerResponse()
->> FF 01 6D 81 8D
-Publish: /devices/milur305_255/controls/Total active power: '-100' (QoS 0, retained)
-<< FF 01 6D 04 F0 D8 FF FF 54 39
-EnqueueMilurPhaseAReactivePowerResponse()
->> FF 01 6E C1 8C
-Publish: /devices/milur305_255/controls/Phase A reactive power: '-100' (QoS 0, retained)
-<< FF 01 6E 04 F0 D8 FF FF 54 0A
-EnqueueMilurPhaseBReactivePowerResponse()
->> FF 01 6F 00 4C
-Publish: /devices/milur305_255/controls/Phase B reactive power: '-100' (QoS 0, retained)
-<< FF 01 6F 04 F0 D8 FF FF 55 DB
-EnqueueMilurPhaseCReactivePowerResponse()
->> FF 01 70 41 84
-Publish: /devices/milur305_255/controls/Phase C reactive power: '-100' (QoS 0, retained)
-<< FF 01 70 04 F0 D8 FF FF 57 B4
-EnqueueMilurTotalReactivePowerResponse()
->> FF 01 71 80 44
-Publish: /devices/milur305_255/controls/Total reactive power: '-100' (QoS 0, retained)
-<< FF 01 71 04 F0 D8 FF FF 56 65
-EnqueueMilurTotalConsumptionResponse()
->> FF 01 76 C1 86
-Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 0, retained)
-<< FF 01 76 04 44 11 10 00 AC 6C
-EnqueueMilurTotalReactiveEnergyResponse()
->> FF 01 7F 01 80
-Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 0, retained)
-<< FF 01 7F 04 F0 D8 FF FF 57 4B
-EnqueueMilurFrequencyResponse()
->> FF 01 09 80 66
-Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 0, retained)
->>> LoopOnce()
-<< FF 01 09 02 A0 C3 B3 D9
-EnqueueMilurPhaseAVoltageResponse()
->> FF 01 64 41 8B
-<< FF 01 64 03 6F 94 03 7A 8E
-EnqueueMilurPhaseBVoltageResponse()
->> FF 01 65 80 4B
-<< FF 01 65 03 6F 94 03 47 4E
-EnqueueMilurPhaseCVoltageResponse()
->> FF 01 66 C0 4A
-<< FF 01 66 03 6F 94 03 03 4E
-EnqueueMilurPhaseACurrentResponse()
->> FF 01 67 01 8A
-<< FF 01 67 03 F0 D8 FF 3A 21
-EnqueueMilurPhaseBCurrentResponse()
->> FF 01 68 41 8E
-<< FF 01 68 03 F0 D8 FF 6E 20
-EnqueueMilurPhaseCCurrentResponse()
->> FF 01 69 80 4E
-<< FF 01 69 03 F0 D8 FF 53 E0
-EnqueueMilurPhaseAActivePowerResponse()
->> FF 01 6A C0 4F
-<< FF 01 6A 04 F0 D8 FF FF 55 8E
-EnqueueMilurPhaseBActivePowerResponse()
->> FF 01 6B 01 8F
-<< FF 01 6B 04 F0 D8 FF FF 54 5F
-EnqueueMilurPhaseCActivePowerResponse()
->> FF 01 6C 40 4D
-<< FF 01 6C 04 F0 D8 FF FF 55 E8
-EnqueueMilurTotalActivePowerResponse()
->> FF 01 6D 81 8D
-<< FF 01 6D 04 F0 D8 FF FF 54 39
-EnqueueMilurPhaseAReactivePowerResponse()
->> FF 01 6E C1 8C
-<< FF 01 6E 04 F0 D8 FF FF 54 0A
-EnqueueMilurPhaseBReactivePowerResponse()
->> FF 01 6F 00 4C
-<< FF 01 6F 04 F0 D8 FF FF 55 DB
-EnqueueMilurPhaseCReactivePowerResponse()
->> FF 01 70 41 84
-<< FF 01 70 04 F0 D8 FF FF 57 B4
-EnqueueMilurTotalReactivePowerResponse()
->> FF 01 71 80 44
-<< FF 01 71 04 F0 D8 FF FF 56 65
-EnqueueMilurTotalConsumptionResponse()
->> FF 01 76 C1 86
-<< FF 01 76 04 44 11 10 00 AC 6C
-EnqueueMilurTotalReactiveEnergyResponse()
->> FF 01 7F 01 80
-<< FF 01 7F 04 F0 D8 FF FF 57 4B
-EnqueueMilurFrequencyResponse()
->> FF 01 09 80 66
->>> LoopOnce()
-<< FF 01 09 02 A0 C3 B3 D9
-EnqueueMilurPhaseAVoltageResponse()
->> FF 01 64 41 8B
-<< FF 01 64 03 6F 94 03 7A 8E
-EnqueueMilurPhaseBVoltageResponse()
->> FF 01 65 80 4B
-<< FF 01 65 03 6F 94 03 47 4E
-EnqueueMilurPhaseCVoltageResponse()
->> FF 01 66 C0 4A
-<< FF 01 66 03 6F 94 03 03 4E
-EnqueueMilurPhaseACurrentResponse()
->> FF 01 67 01 8A
-<< FF 01 67 03 F0 D8 FF 3A 21
-EnqueueMilurPhaseBCurrentResponse()
->> FF 01 68 41 8E
-<< FF 01 68 03 F0 D8 FF 6E 20
-EnqueueMilurPhaseCCurrentResponse()
->> FF 01 69 80 4E
-<< FF 01 69 03 F0 D8 FF 53 E0
-EnqueueMilurPhaseAActivePowerResponse()
->> FF 01 6A C0 4F
-<< FF 01 6A 04 F0 D8 FF FF 55 8E
-EnqueueMilurPhaseBActivePowerResponse()
->> FF 01 6B 01 8F
-<< FF 01 6B 04 F0 D8 FF FF 54 5F
-EnqueueMilurPhaseCActivePowerResponse()
->> FF 01 6C 40 4D
-<< FF 01 6C 04 F0 D8 FF FF 55 E8
-EnqueueMilurTotalActivePowerResponse()
->> FF 01 6D 81 8D
-<< FF 01 6D 04 F0 D8 FF FF 54 39
-EnqueueMilurPhaseAReactivePowerResponse()
->> FF 01 6E C1 8C
-<< FF 01 6E 04 F0 D8 FF FF 54 0A
-EnqueueMilurPhaseBReactivePowerResponse()
->> FF 01 6F 00 4C
-<< FF 01 6F 04 F0 D8 FF FF 55 DB
-EnqueueMilurPhaseCReactivePowerResponse()
->> FF 01 70 41 84
-<< FF 01 70 04 F0 D8 FF FF 57 B4
-EnqueueMilurTotalReactivePowerResponse()
->> FF 01 71 80 44
-<< FF 01 71 04 F0 D8 FF FF 56 65
-EnqueueMilurTotalConsumptionResponse()
->> FF 01 76 C1 86
-<< FF 01 76 04 44 11 10 00 AC 6C
-EnqueueMilurTotalReactiveEnergyResponse()
->> FF 01 7F 01 80
-<< FF 01 7F 04 F0 D8 FF FF 57 4B
-EnqueueMilurFrequencyResponse()
->> FF 01 09 80 66
+Port cycle OK
 >>> LoopOnce()
 << FF 01 09 02 A0 C3 B3 D9
 EnqueueMilurPhaseAVoltageResponse()
@@ -456,5 +285,182 @@ Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS
 EnqueueMilurFrequencyResponse()
 >> FF 01 09 80 66
 Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 0, retained)
+Port cycle OK
+>>> LoopOnce()
+<< FF 01 09 02 A0 C3 B3 D9
+EnqueueMilurPhaseAVoltageResponse()
+>> FF 01 64 41 8B
+<< FF 01 64 03 6F 94 03 7A 8E
+EnqueueMilurPhaseBVoltageResponse()
+>> FF 01 65 80 4B
+<< FF 01 65 03 6F 94 03 47 4E
+EnqueueMilurPhaseCVoltageResponse()
+>> FF 01 66 C0 4A
+<< FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurPhaseACurrentResponse()
+>> FF 01 67 01 8A
+<< FF 01 67 03 F0 D8 FF 3A 21
+EnqueueMilurPhaseBCurrentResponse()
+>> FF 01 68 41 8E
+<< FF 01 68 03 F0 D8 FF 6E 20
+EnqueueMilurPhaseCCurrentResponse()
+>> FF 01 69 80 4E
+<< FF 01 69 03 F0 D8 FF 53 E0
+EnqueueMilurPhaseAActivePowerResponse()
+>> FF 01 6A C0 4F
+<< FF 01 6A 04 F0 D8 FF FF 55 8E
+EnqueueMilurPhaseBActivePowerResponse()
+>> FF 01 6B 01 8F
+<< FF 01 6B 04 F0 D8 FF FF 54 5F
+EnqueueMilurPhaseCActivePowerResponse()
+>> FF 01 6C 40 4D
+<< FF 01 6C 04 F0 D8 FF FF 55 E8
+EnqueueMilurTotalActivePowerResponse()
+>> FF 01 6D 81 8D
+<< FF 01 6D 04 F0 D8 FF FF 54 39
+EnqueueMilurPhaseAReactivePowerResponse()
+>> FF 01 6E C1 8C
+<< FF 01 6E 04 F0 D8 FF FF 54 0A
+EnqueueMilurPhaseBReactivePowerResponse()
+>> FF 01 6F 00 4C
+<< FF 01 6F 04 F0 D8 FF FF 55 DB
+EnqueueMilurPhaseCReactivePowerResponse()
+>> FF 01 70 41 84
+<< FF 01 70 04 F0 D8 FF FF 57 B4
+EnqueueMilurTotalReactivePowerResponse()
+>> FF 01 71 80 44
+<< FF 01 71 04 F0 D8 FF FF 56 65
+EnqueueMilurTotalConsumptionResponse()
+>> FF 01 76 C1 86
+<< FF 01 76 04 44 11 10 00 AC 6C
+EnqueueMilurTotalReactiveEnergyResponse()
+>> FF 01 7F 01 80
+<< FF 01 7F 04 F0 D8 FF FF 57 4B
+EnqueueMilurFrequencyResponse()
+>> FF 01 09 80 66
+Port cycle OK
+>>> LoopOnce()
+<< FF 01 09 02 A0 C3 B3 D9
+EnqueueMilurPhaseAVoltageResponse()
+>> FF 01 64 41 8B
+<< FF 01 64 03 6F 94 03 7A 8E
+EnqueueMilurPhaseBVoltageResponse()
+>> FF 01 65 80 4B
+<< FF 01 65 03 6F 94 03 47 4E
+EnqueueMilurPhaseCVoltageResponse()
+>> FF 01 66 C0 4A
+<< FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurPhaseACurrentResponse()
+>> FF 01 67 01 8A
+<< FF 01 67 03 F0 D8 FF 3A 21
+EnqueueMilurPhaseBCurrentResponse()
+>> FF 01 68 41 8E
+<< FF 01 68 03 F0 D8 FF 6E 20
+EnqueueMilurPhaseCCurrentResponse()
+>> FF 01 69 80 4E
+<< FF 01 69 03 F0 D8 FF 53 E0
+EnqueueMilurPhaseAActivePowerResponse()
+>> FF 01 6A C0 4F
+<< FF 01 6A 04 F0 D8 FF FF 55 8E
+EnqueueMilurPhaseBActivePowerResponse()
+>> FF 01 6B 01 8F
+<< FF 01 6B 04 F0 D8 FF FF 54 5F
+EnqueueMilurPhaseCActivePowerResponse()
+>> FF 01 6C 40 4D
+<< FF 01 6C 04 F0 D8 FF FF 55 E8
+EnqueueMilurTotalActivePowerResponse()
+>> FF 01 6D 81 8D
+<< FF 01 6D 04 F0 D8 FF FF 54 39
+EnqueueMilurPhaseAReactivePowerResponse()
+>> FF 01 6E C1 8C
+<< FF 01 6E 04 F0 D8 FF FF 54 0A
+EnqueueMilurPhaseBReactivePowerResponse()
+>> FF 01 6F 00 4C
+<< FF 01 6F 04 F0 D8 FF FF 55 DB
+EnqueueMilurPhaseCReactivePowerResponse()
+>> FF 01 70 41 84
+<< FF 01 70 04 F0 D8 FF FF 57 B4
+EnqueueMilurTotalReactivePowerResponse()
+>> FF 01 71 80 44
+<< FF 01 71 04 F0 D8 FF FF 56 65
+EnqueueMilurTotalConsumptionResponse()
+>> FF 01 76 C1 86
+<< FF 01 76 04 44 11 10 00 AC 6C
+EnqueueMilurTotalReactiveEnergyResponse()
+>> FF 01 7F 01 80
+<< FF 01 7F 04 F0 D8 FF FF 57 4B
+EnqueueMilurFrequencyResponse()
+>> FF 01 09 80 66
+Port cycle OK
+>>> LoopOnce()
+<< FF 01 09 02 A0 C3 B3 D9
+EnqueueMilurPhaseAVoltageResponse()
+>> FF 01 64 41 8B
+Publish: /devices/milur305_255/controls/Phase A voltage: '234.607' (QoS 0, retained)
+<< FF 01 64 03 6F 94 03 7A 8E
+EnqueueMilurPhaseBVoltageResponse()
+>> FF 01 65 80 4B
+Publish: /devices/milur305_255/controls/Phase B voltage: '234.607' (QoS 0, retained)
+<< FF 01 65 03 6F 94 03 47 4E
+EnqueueMilurPhaseCVoltageResponse()
+>> FF 01 66 C0 4A
+Publish: /devices/milur305_255/controls/Phase C voltage: '234.607' (QoS 0, retained)
+<< FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurPhaseACurrentResponse()
+>> FF 01 67 01 8A
+Publish: /devices/milur305_255/controls/Phase A current: '-10' (QoS 0, retained)
+<< FF 01 67 03 F0 D8 FF 3A 21
+EnqueueMilurPhaseBCurrentResponse()
+>> FF 01 68 41 8E
+Publish: /devices/milur305_255/controls/Phase B current: '-10' (QoS 0, retained)
+<< FF 01 68 03 F0 D8 FF 6E 20
+EnqueueMilurPhaseCCurrentResponse()
+>> FF 01 69 80 4E
+Publish: /devices/milur305_255/controls/Phase C current: '-10' (QoS 0, retained)
+<< FF 01 69 03 F0 D8 FF 53 E0
+EnqueueMilurPhaseAActivePowerResponse()
+>> FF 01 6A C0 4F
+Publish: /devices/milur305_255/controls/Phase A active power: '-100' (QoS 0, retained)
+<< FF 01 6A 04 F0 D8 FF FF 55 8E
+EnqueueMilurPhaseBActivePowerResponse()
+>> FF 01 6B 01 8F
+Publish: /devices/milur305_255/controls/Phase B active power: '-100' (QoS 0, retained)
+<< FF 01 6B 04 F0 D8 FF FF 54 5F
+EnqueueMilurPhaseCActivePowerResponse()
+>> FF 01 6C 40 4D
+Publish: /devices/milur305_255/controls/Phase C active power: '-100' (QoS 0, retained)
+<< FF 01 6C 04 F0 D8 FF FF 55 E8
+EnqueueMilurTotalActivePowerResponse()
+>> FF 01 6D 81 8D
+Publish: /devices/milur305_255/controls/Total active power: '-100' (QoS 0, retained)
+<< FF 01 6D 04 F0 D8 FF FF 54 39
+EnqueueMilurPhaseAReactivePowerResponse()
+>> FF 01 6E C1 8C
+Publish: /devices/milur305_255/controls/Phase A reactive power: '-100' (QoS 0, retained)
+<< FF 01 6E 04 F0 D8 FF FF 54 0A
+EnqueueMilurPhaseBReactivePowerResponse()
+>> FF 01 6F 00 4C
+Publish: /devices/milur305_255/controls/Phase B reactive power: '-100' (QoS 0, retained)
+<< FF 01 6F 04 F0 D8 FF FF 55 DB
+EnqueueMilurPhaseCReactivePowerResponse()
+>> FF 01 70 41 84
+Publish: /devices/milur305_255/controls/Phase C reactive power: '-100' (QoS 0, retained)
+<< FF 01 70 04 F0 D8 FF FF 57 B4
+EnqueueMilurTotalReactivePowerResponse()
+>> FF 01 71 80 44
+Publish: /devices/milur305_255/controls/Total reactive power: '-100' (QoS 0, retained)
+<< FF 01 71 04 F0 D8 FF FF 56 65
+EnqueueMilurTotalConsumptionResponse()
+>> FF 01 76 C1 86
+Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 0, retained)
+<< FF 01 76 04 44 11 10 00 AC 6C
+EnqueueMilurTotalReactiveEnergyResponse()
+>> FF 01 7F 01 80
+Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 0, retained)
+<< FF 01 7F 04 F0 D8 FF FF 57 4B
+EnqueueMilurFrequencyResponse()
+>> FF 01 09 80 66
+Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 0, retained)
+Port cycle OK
 << FF 01 09 02 A0 C3 B3 D9
 Close()

@@ -31,10 +31,6 @@ public:
     void SetTextValue(const std::string& v);
     bool DidRead() const { return DidReadReg; }
     TErrorState CurrentErrorState() const { return ErrorState; }
-
-    void SetRangeStatus(TRegisterRange::EStatus rangeStatus) { RangeStatus = rangeStatus; }
-    TRegisterRange::EStatus GetRangeStatus() const { return RangeStatus; }
-
     PSerialDevice Device() const { return Dev.lock(); }
     void SetDebug(bool debug) { Debug = debug; }
 
@@ -55,7 +51,6 @@ private:
     bool DidReadReg = false;
     std::mutex SetValueMutex;
     TErrorState ErrorState = UnknownErrorState;
-    TRegisterRange::EStatus RangeStatus = TRegisterRange::ST_OK;
     PBinarySemaphore FlushNeeded;
     bool Debug;
 };
