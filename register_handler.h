@@ -17,15 +17,14 @@ public:
         WriteError,
         ReadError,
         ReadWriteError,
-        UnknownErrorState,
-        ErrorStateUnchanged
+        UnknownErrorState
     };
     TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed, bool debug = false);
     PRegister Register() const { return Reg; }
     bool NeedToPoll();
-    TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
+    bool AcceptDeviceValue(uint64_t new_value, bool ok, bool* pChanged = nullptr);
     bool NeedToFlush();
-    TErrorState Flush();
+    void Flush();
     std::string TextValue() const;
 
     void SetTextValue(const std::string& v);
@@ -40,8 +39,8 @@ private:
     template<typename T> T FromScaledTextValue(const std::string& str) const;
     uint64_t ConvertMasterValue(const std::string& v) const;
     std::string ConvertSlaveValue(uint64_t value) const;
-    TErrorState UpdateReadError(bool error);
-    TErrorState UpdateWriteError(bool error);
+    bool UpdateReadError(bool error);
+    bool UpdateWriteError(bool error);
     uint64_t InvertWordOrderIfNeeded(const uint64_t value) const;
 
     std::weak_ptr<TSerialDevice> Dev;

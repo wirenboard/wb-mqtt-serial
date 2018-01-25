@@ -6,7 +6,7 @@
 TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed, bool debug)
     : Dev(dev), Reg(reg), FlushNeeded(flush_needed), Debug(debug) {}
 
-TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
+bool TRegisterHandler::UpdateReadError(bool error) {
     TErrorState newState;
     if (error) {
         newState = ErrorState == WriteError ||
@@ -18,13 +18,11 @@ TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
             WriteError : NoError;
     }
 
-    if (ErrorState == newState)
-        return ErrorStateUnchanged;
-    ErrorState = newState;
-    return ErrorState;
+    std::swap(ErrorState, newState);
+    return ErrorState != newState;
 }
 
-TRegisterHandler::TErrorState TRegisterHandler::UpdateWriteError(bool error) {
+bool TRegisterHandler::UpdateWriteError(bool error) {
     TErrorState newState;
     if (error) {
         newState = ErrorState == ReadError ||
@@ -36,10 +34,8 @@ TRegisterHandler::TErrorState TRegisterHandler::UpdateWriteError(bool error) {
             ReadError : NoError;
     }
 
-    if (ErrorState == newState)
-        return ErrorStateUnchanged;
-    ErrorState = newState;
-    return ErrorState;
+    std::swap(ErrorState, newState);
+    return ErrorState != newState;
 }
 
 bool TRegisterHandler::NeedToPoll()
@@ -48,13 +44,19 @@ bool TRegisterHandler::NeedToPoll()
     return Reg->Poll && !Dirty;
 }
 
-TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_value, bool ok, bool *changed)
+bool TRegisterHandler::AcceptDeviceValue(uint64_t new_value, bool ok, bool *pChanged)
 {
-    *changed = false;
+    auto set_changed = [&](bool changed) {
+        if (pChanged) {
+            *pChanged = changed;
+        }
+    };
+
+    set_changed(false);
 
     // don't poll write-only and dirty registers
     if (!NeedToPoll())
-        return ErrorStateUnchanged;
+        return false;
 
     if (!ok)
         return UpdateReadError(true);
@@ -85,12 +87,12 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
             std::cerr << "new val for " << Reg->ToString() << ": " << std::hex << new_value << std::endl;
             std::cerr.flags(f);
         }
-        *changed = true;
+        set_changed(true);
         return UpdateReadError(false);
     } else
         SetValueMutex.unlock();
 
-    *changed = first_poll;
+    set_changed(first_poll);
     return UpdateReadError(false);
 }
 
@@ -100,10 +102,10 @@ bool TRegisterHandler::NeedToFlush()
     return Dirty;
 }
 
-TRegisterHandler::TErrorState TRegisterHandler::Flush()
+void TRegisterHandler::Flush()
 {
     if (!NeedToFlush())
-        return ErrorStateUnchanged;
+        return;
 
     {
         std::lock_guard<std::mutex> lock(SetValueMutex);
@@ -112,14 +114,15 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
 
     try {
         Device()->WriteRegister(Reg, Value);
-    } catch (const TSerialDeviceTransientErrorException& e) {
+    } catch (const TSerialDeviceException & e) {
         std::ios::fmtflags f(std::cerr.flags());
         std::cerr << "TRegisterHandler::Flush(): warning: " << e.what() << " for device " <<
             Reg->Device()->ToString() <<  std::endl;
         std::cerr.flags(f);
-        return UpdateWriteError(true);
+        UpdateWriteError(true);
+        throw;
     }
-    return UpdateWriteError(false);
+    UpdateWriteError(false);
 }
 
 uint64_t TRegisterHandler::InvertWordOrderIfNeeded(const uint64_t value) const

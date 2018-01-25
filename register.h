@@ -316,7 +316,8 @@ public:
     enum EStatus {
         ST_OK,
         ST_UNKNOWN_ERROR, // response from device either not parsed or not received at all (crc error, timeout)
-        ST_DEVICE_ERROR // valid response from device, which reports error
+        ST_DEVICE_TRANSIENT_ERROR, // valid response from device, which reports transient error
+        ST_DEVICE_PERMANENT_ERROR  // valid response from device, which reports permanent error
     };
 
     virtual ~TRegisterRange();
@@ -327,9 +328,13 @@ public:
     std::chrono::milliseconds PollInterval() const { return RegPollInterval; }
     virtual void MapRange(TValueCallback value_callback, TErrorCallback error_callback) = 0;
     virtual EStatus GetStatus() const = 0;
+    bool HasHoles() const { return HasRegHoles; }
+    virtual std::string ToString() const;
 
-    // returns true when occured error is likely caused by hole registers
-    virtual bool NeedsSplit() const = 0;
+    // returns true when occured error is permanent and nothing can resolve it
+    virtual bool NeedsDisable() const { return false; }
+    // returns true when occured error is permanent and split can help to resolve it
+    virtual bool NeedsSplit() const { return false; }
 
 protected:
     TRegisterRange(const std::list<PRegister>& regs);
@@ -341,6 +346,7 @@ private:
     std::string RegTypeName;
     std::chrono::milliseconds RegPollInterval = std::chrono::milliseconds(-1);
     std::list<PRegister> RegList;
+    bool HasRegHoles;
 };
 
 typedef std::shared_ptr<TRegisterRange> PRegisterRange;
@@ -354,7 +360,6 @@ public:
     void SetError(PRegister reg);
     void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
     EStatus GetStatus() const override;
-    bool NeedsSplit() const override;
 
 private:
     std::unordered_map<PRegister, uint64_t> Values;

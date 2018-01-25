@@ -47,8 +47,13 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        if(Blockings[reg->Address].first) {
-            throw TSerialDeviceTransientErrorException("read blocked");
+        switch(Blockings[reg->Address].BlockRead) {
+            case TRANSIENT:
+                throw TSerialDeviceTransientErrorException("read blocked (transient)");
+            case PERMANENT:
+                throw TSerialDevicePermanentErrorException("read blocked (permanent)");
+            default:
+                break;
         }
 
         if (reg->Address < 0 || reg->Address > 256) {
@@ -78,8 +83,13 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        if(Blockings[reg->Address].second) {
-            throw TSerialDeviceTransientErrorException("write blocked");
+        switch(Blockings[reg->Address].BlockWrite) {
+            case TRANSIENT:
+                throw TSerialDeviceTransientErrorException("write blocked (transient)");
+            case PERMANENT:
+                throw TSerialDevicePermanentErrorException("write blocked (permanent)");
+            default:
+                break;
         }
 
         if (reg->Address < 0 || reg->Address > 256) {
@@ -115,16 +125,16 @@ void TFakeSerialDevice::OnCycleEnd(bool ok)
     }
 }
 
-void TFakeSerialDevice::BlockReadFor(int addr, bool block)
+void TFakeSerialDevice::BlockReadFor(int addr, BlockMode block)
 {
-    Blockings[addr].first = block;
+    Blockings[addr].BlockRead = block;
 
     FakePort->GetFixture().Emit() << "fake_serial_device: block address '" << addr << "' for reading";
 }
 
-void TFakeSerialDevice::BlockWriteFor(int addr, bool block)
+void TFakeSerialDevice::BlockWriteFor(int addr, BlockMode block)
 {
-    Blockings[addr].second = block;
+    Blockings[addr].BlockWrite = block;
 
     FakePort->GetFixture().Emit() << "fake_serial_device: block address '" << addr << "' for writing";
 }

@@ -10,6 +10,7 @@ public:
     void EnqueueHoldingPackReadResponse(uint8_t exception = 0);
     void EnqueueHoldingPackHoles10ReadResponse(uint8_t exception = 0);
     void EnqueueHoldingPackMax3ReadResponse(uint8_t exception = 0);
+    void EnqueueHoldingPackDisableReadResponse(int stage);
 
     void EnqueueDiscreteReadResponse(uint8_t exception = 0);
     void EnqueueHoldingReadS64Response(uint8_t exception = 0);

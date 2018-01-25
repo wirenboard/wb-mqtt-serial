@@ -8,6 +8,68 @@
 /* FIXME: move this to configuration file! */
 namespace {
     const int FrameTimeout = 300;
+
+    const uint8_t ERROR_FUNCTION_CODE = 0x00;
+    const uint8_t ERROR_RESPONSE_SIZE = 14;
+
+    enum PulsarError: uint8_t
+    {
+        ERR_UNKNOWN                 = 0x00,
+        ERR_MISSING_ERROR_CODE      = 0x01,
+        ERR_REQUEST_BITMASK         = 0x02,
+        ERR_REQUEST_SIZE            = 0x03,
+        ERR_MISSING_PARAMETER       = 0x04,
+        ERR_AUTHORIZATION_REQUIRED  = 0x05,
+        ERR_OUT_OF_RANGE            = 0x06,
+        ERR_MISSING_ARCHIVE_TYPE    = 0x07,
+        ERR_TOO_MANY_ARCHIVE_VALUES = 0x08
+    };
+
+    void ThrowPulsarException(uint32_t code)
+    {
+        const char * message = nullptr;
+        bool is_transient = true;
+
+        switch (code) {
+            case ERR_UNKNOWN:
+                message = "unknown error";
+                break;
+            case ERR_MISSING_ERROR_CODE:
+                message = "missing error code";
+                break;
+            case ERR_REQUEST_BITMASK:
+                message = "request bitmask error";
+                break;
+            case ERR_REQUEST_SIZE:
+                message = "request size error";
+                break;
+            case ERR_MISSING_PARAMETER:
+                message = "missing parameter";
+                is_transient = false;
+                break;
+            case ERR_AUTHORIZATION_REQUIRED:
+                message = "write locked, authorization required";
+                break;
+            case ERR_OUT_OF_RANGE:
+                message = "value to write (parameter) is out of range";
+                is_transient = false;
+                break;
+            case ERR_MISSING_ARCHIVE_TYPE:
+                message = "missing requested archive type";
+                break;
+            case ERR_TOO_MANY_ARCHIVE_VALUES:
+                message = "too many archive values in one package";
+                break;
+            default:
+                throw TSerialDeviceTransientErrorException("invalid pulsar error code (" + std::to_string(code) + ")");
+        }
+
+        if (is_transient) {
+            throw TSerialDeviceTransientErrorException(message);
+        } else {
+            throw TSerialDevicePermanentErrorException(message);
+        }
+    }
 }
 
 REGISTER_BASIC_INT_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
@@ -155,10 +217,14 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, u
     if (nread < 6)
         throw TSerialDeviceTransientErrorException("frame is too short");
 
-    if (nread != exp_size)
+    bool is_error = response[4] == ERROR_FUNCTION_CODE;
+
+    uint8_t response_size = is_error ? ERROR_RESPONSE_SIZE : exp_size;
+
+    if (nread != response_size)
         throw TSerialDeviceTransientErrorException("unexpected end of frame");
 
-    if (exp_size != response[5])
+    if (response_size != response[5])
         throw TSerialDeviceTransientErrorException("unexpected frame length");
 
     /* check CRC16 */
@@ -175,6 +241,13 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, u
     uint16_t id_recv = ReadHex(&response[nread - 4], sizeof (uint16_t), false);
     if (id_recv != id)
         throw TSerialDeviceTransientErrorException("request ID mismatch");
+
+    if (is_error) {
+        uint32_t error_code;
+        memcpy(&error_code, response + 6, 4);
+
+        ThrowPulsarException(error_code);
+    }
 
     /* copy payload data to external buffer */
     memcpy(payload, response + 6, size);
@@ -221,7 +294,7 @@ uint64_t TPulsarDevice::ReadRegister(PRegister reg)
     case REG_DEFAULT:
         return ReadDataRegister(reg);
     case REG_SYSTIME: // TODO: think about return value
-        return ReadSysTimeRegister(reg);   
+        return ReadSysTimeRegister(reg);
     default:
         throw TSerialDeviceException("Pulsar protocol: wrong register type");
     }

@@ -25,7 +25,7 @@ fake_serial_device: block address '7' for writing
 >>> LoopOnce() [read, rw blacklisted]
 Open()
 Sleep(100000)
-fake_serial_device '23': read address '4' failed: 'Serial protocol error: read blocked (transient)'
+fake_serial_device '23': read address '4' failed: 'Serial protocol error: read blocked (permanent)'
 Publish: /devices/ddl24/controls/RGB/meta/error: 'r' (QoS 0, retained)
 fake_serial_device '23': read address '5' value '0'
 fake_serial_device '23': read address '6' value '0'
@@ -51,60 +51,11 @@ fake_serial_device '23': write address '4' failed: 'Serial protocol error: write
 Publish: /devices/ddl24/controls/RGB/meta/error: 'rw' (QoS 0, retained)
 fake_serial_device '23': write to address '5' value '20'
 fake_serial_device '23': write to address '6' value '30'
-fake_serial_device '23': write address '7' failed: 'Serial protocol error: write blocked (transient)'
+fake_serial_device '23': write address '7' failed: 'Serial protocol error: write blocked (permanent)'
 Publish: /devices/ddl24/controls/White/meta/error: 'rw' (QoS 0, retained)
-fake_serial_device '23': read address '4' failed: 'Serial protocol error: read blocked (transient)'
 fake_serial_device '23': read address '5' value '20'
 fake_serial_device '23': read address '6' value '30'
 fake_serial_device '23': read address '7' failed: 'Serial protocol error: read blocked (transient)'
-fake_serial_device '23': read address '8' value '0'
-fake_serial_device '23': read address '9' value '0'
-fake_serial_device '23': read address '18' value '0'
-fake_serial_device '23': Device cycle OK
-Port cycle OK
-fake_serial_device: block address '4' for reading
-fake_serial_device: block address '4' for writing
-fake_serial_device: block address '7' for reading
-fake_serial_device: block address '7' for writing
->>> LoopOnce() [read, nothing blacklisted]
-fake_serial_device '23': read address '4' value '0'
-Publish: /devices/ddl24/controls/RGB/meta/error: 'w' (QoS 0, retained)
-Publish: /devices/ddl24/controls/RGB: '0;20;30' (QoS 0, retained)
-fake_serial_device '23': read address '5' value '20'
-fake_serial_device '23': read address '6' value '30'
-fake_serial_device '23': read address '7' value '0'
-Publish: /devices/ddl24/controls/White/meta/error: 'w' (QoS 0, retained)
-Publish: /devices/ddl24/controls/White: '0' (QoS 0, retained)
-fake_serial_device '23': read address '8' value '0'
-fake_serial_device '23': read address '9' value '0'
-fake_serial_device '23': read address '18' value '0'
-fake_serial_device '23': Device cycle OK
-Port cycle OK
->>> Publish: /devices/ddl24/controls/RGB/on: '10;20;30' (QoS 0)
-Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 0, retained)
->>> Publish: /devices/ddl24/controls/White/on: '42' (QoS 0)
-Publish: /devices/ddl24/controls/White: '42' (QoS 0, retained)
->>> LoopOnce() [write, nothing blacklisted]
-fake_serial_device '23': write to address '4' value '10'
-Publish: /devices/ddl24/controls/RGB/meta/error: '' (QoS 0, retained)
-fake_serial_device '23': write to address '5' value '20'
-fake_serial_device '23': write to address '6' value '30'
-fake_serial_device '23': write to address '7' value '42'
-Publish: /devices/ddl24/controls/White/meta/error: '' (QoS 0, retained)
-fake_serial_device '23': read address '4' value '10'
-fake_serial_device '23': read address '5' value '20'
-fake_serial_device '23': read address '6' value '30'
-fake_serial_device '23': read address '7' value '42'
-fake_serial_device '23': read address '8' value '0'
-fake_serial_device '23': read address '9' value '0'
-fake_serial_device '23': read address '18' value '0'
-fake_serial_device '23': Device cycle OK
-Port cycle OK
->>> LoopOnce() [read, nothing blacklisted] (2)
-fake_serial_device '23': read address '4' value '10'
-fake_serial_device '23': read address '5' value '20'
-fake_serial_device '23': read address '6' value '30'
-fake_serial_device '23': read address '7' value '42'
 fake_serial_device '23': read address '8' value '0'
 fake_serial_device '23': read address '9' value '0'
 fake_serial_device '23': read address '18' value '0'

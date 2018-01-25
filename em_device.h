@@ -83,7 +83,7 @@ protected:
         if (err == NO_OPEN_SESSION)
             return false;
         if (err == PERMANENT_ERROR)
-        	throw TSerialDevicePermanentRegisterException(msg);
+        	throw TSerialDevicePermanentErrorException(msg);
         if (err != NO_ERROR)
             throw TSerialDeviceTransientErrorException(msg);
 
@@ -112,6 +112,9 @@ protected:
             }
         } catch ( const TSerialDeviceTransientErrorException& e) {
             this->Port()->SkipNoise();
+            throw;
+        } catch ( const TSerialDevicePermanentErrorException& e) {
+            this->Port()->SkipNoise();  // keep old behaviour
             throw;
         }
     }

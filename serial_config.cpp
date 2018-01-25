@@ -193,7 +193,11 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     uint64_t error_value = 0;
     if (register_data.isMember("error_value")) {
         has_error_value = true;
-        error_value = strtoull(register_data["error_value"].asString().c_str(), NULL, 0);
+        if (register_data["error_value"].isConvertibleTo(Json::uintValue)) {
+            error_value = register_data["error_value"].asUInt64();
+        } else {
+            error_value = strtoull(register_data["error_value"].asString().c_str(), NULL, 0);
+        }
     }
 
     PRegisterConfig reg = TRegisterConfig::Create(

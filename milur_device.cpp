@@ -62,6 +62,9 @@ bool TMilurDevice::ConnectionSetup()
     } catch (TSerialDeviceTransientErrorException &) {
         // retry upon response from a wrong slave
         return false;
+    } catch (TSerialDevicePermanentErrorException &) {
+        // retry upon response from a wrong slave
+        return false;
     }
 }
 
@@ -75,10 +78,10 @@ TEMDevice<TMilurProtocol>::ErrorType TMilurDevice::CheckForException(uint8_t* fr
     switch (frame[2]) {
     case 0x01:
         *message = "Illegal function";
-        break;
+        return TEMDevice<TMilurProtocol>::PERMANENT_ERROR;
     case 0x02:
         *message = "Illegal data address";
-        break;
+        return TEMDevice<TMilurProtocol>::PERMANENT_ERROR;
     case 0x03:
         *message = "Illegal data value";
         break;

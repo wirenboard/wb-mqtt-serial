@@ -387,6 +387,67 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
     Observer->LoopOnce();
 }
 
+TEST_F(TModbusIntegrationTest, RegisterAutoDisable)
+{
+    // we check that driver issue long read request, reading registers 4-18 at once
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+    InvalidateConfigPoll(TEST_HOLES);
+
+    auto device = TSerialDeviceFactory::GetDevice("1", "modbus", SerialPort);
+
+    ASSERT_EQ(device->DeviceConfig()->MaxRegHole, 10);
+    ASSERT_EQ(device->DeviceConfig()->MaxBitHole, 80);
+
+    EnqueueHoldingPackDisableReadResponse(1); // this must result in auto-disabling holes feature
+    EnqueueHoldingReadS64Response();
+    EnqueueHoldingReadF32Response();
+    EnqueueHoldingReadU16Response();
+    EnqueueInputReadU16Response();
+    EnqueueCoilReadResponse();
+    Enqueue10CoilsReadResponse();
+    EnqueueDiscreteReadResponse();
+
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+
+    EnqueueHoldingPackDisableReadResponse(2); // this must result in splitting ranges to individual registers and disabling single register ranges
+    EnqueueHoldingReadS64Response();
+    EnqueueHoldingReadF32Response();
+    EnqueueHoldingReadU16Response();
+    EnqueueInputReadU16Response();
+    EnqueueCoilReadResponse();
+    Enqueue10CoilsReadResponse();
+    EnqueueDiscreteReadResponse();
+
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+
+    EnqueueHoldingPackDisableReadResponse(3); // this must result in disabling registers
+    EnqueueHoldingReadS64Response();
+    EnqueueHoldingReadF32Response();
+    EnqueueHoldingReadU16Response();
+    EnqueueInputReadU16Response();
+    EnqueueCoilReadResponse();
+    Enqueue10CoilsReadResponse();
+    EnqueueDiscreteReadResponse();
+
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+
+    // no registers here
+    EnqueueHoldingReadS64Response();
+    EnqueueHoldingReadF32Response();
+    EnqueueHoldingReadU16Response();
+    EnqueueInputReadU16Response();
+    EnqueueCoilReadResponse();
+    Enqueue10CoilsReadResponse();
+    EnqueueDiscreteReadResponse();
+
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+}
+
 TEST_F(TModbusIntegrationTest, MaxReadRegisters)
 {
     // Normally registers 4-9 (6 in total) are read or written in a single request.

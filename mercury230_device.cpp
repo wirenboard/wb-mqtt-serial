@@ -37,7 +37,7 @@ bool TMercury230Device::ConnectionSetup( )
     } catch (TSerialDeviceTransientErrorException&) {
             // retry upon response from a wrong slave
         return false;
-    } catch (TSerialDevicePermanentRegisterException&) {
+    } catch (TSerialDevicePermanentErrorException&) {
     	return false;
     }
 }

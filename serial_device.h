@@ -95,7 +95,16 @@ public:
     virtual void OnCycleEnd(bool ok);
     bool GetIsDisconnected() const;
 
-    void ResetUnavailableAddresses();
+    void AddToUnavailableRegisters(const PRegister & reg);
+    void AddToUnavailableRegisters(const PRegisterRange & reg);
+
+    bool IsUnavailable(const PRegister & reg) const;
+    bool IsUnavailable(const PRegisterRange & range) const;
+
+    void ResetUnavailableRegisters();
+
+protected:
+    std::set<int> UnavailableAddresses;
 
 private:
     std::chrono::milliseconds Delay;
@@ -105,7 +114,6 @@ private:
     std::vector<PDeviceSetupItem> SetupItems;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
-    std::set<int> UnavailableAddresses;
     int RemainingFailCycles;
 };
 

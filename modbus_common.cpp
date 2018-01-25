@@ -56,10 +56,11 @@ namespace Modbus    // modbus protocol common utilities
 
     class TModbusRegisterRange: public TRegisterRange {
     public:
-        TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles);
+        TModbusRegisterRange(const std::list<PRegister>& regs);
         ~TModbusRegisterRange();
         void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
         EStatus GetStatus() const override;
+        bool NeedsDisable() const override;
         bool NeedsSplit() const override;
         int GetStart() const { return Start; }
         int GetCount() const { return Count; }
@@ -70,8 +71,8 @@ namespace Modbus    // modbus protocol common utilities
         void ResetModbusError() { SetModbusError(ERR_NONE); }
         void SetModbusError(ModbusError error) { ModbusErrorCode = error; }
         ModbusError GetModbusError() const { return ModbusErrorCode; }
+        std::string ToString() const override;
     private:
-        bool HasHoles = false;
         bool Error = false;
         ModbusError ModbusErrorCode = ERR_NONE;
         int Start, Count;
@@ -81,9 +82,8 @@ namespace Modbus    // modbus protocol common utilities
 
     using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
 
-    TModbusRegisterRange::TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles)
+    TModbusRegisterRange::TModbusRegisterRange(const std::list<PRegister>& regs)
         : TRegisterRange(regs)
-        , HasHoles(hasHoles)
     {
         if (regs.empty()) // shouldn't happen
             throw std::runtime_error("cannot construct empty register range");
@@ -143,18 +143,26 @@ namespace Modbus    // modbus protocol common utilities
     TRegisterRange::EStatus TModbusRegisterRange::GetStatus() const
     {
         // any modbus error means successful response read
-        return ModbusErrorCode == ERR_NONE ? (Error ? ST_UNKNOWN_ERROR : ST_OK) : ST_DEVICE_ERROR;
+        switch (ModbusErrorCode) {
+            case ERR_NONE:
+                return Error ? ST_UNKNOWN_ERROR : ST_OK;
+            case ERR_ILLEGAL_DATA_ADDRESS:
+            case ERR_ILLEGAL_DATA_VALUE:
+            case ERR_ILLEGAL_FUNCTION:
+                return ST_DEVICE_PERMANENT_ERROR;
+            default:
+                return ST_DEVICE_TRANSIENT_ERROR;
+        }
+    }
+
+    bool TModbusRegisterRange::NeedsDisable() const
+    {
+        return GetStatus() == ST_DEVICE_PERMANENT_ERROR && RegisterList().size() == 1;
     }
 
     bool TModbusRegisterRange::NeedsSplit() const
     {
-        switch (ModbusErrorCode) {
-        case ERR_ILLEGAL_DATA_ADDRESS:
-        case ERR_ILLEGAL_DATA_VALUE:
-            return HasHoles;
-        default:
-            return false;
-        }
+        return GetStatus() == ST_DEVICE_PERMANENT_ERROR && RegisterList().size() > 1;
     }
 
     TModbusRegisterRange::~TModbusRegisterRange() {
@@ -178,6 +186,12 @@ namespace Modbus    // modbus protocol common utilities
         if (!Words)
             Words = new uint16_t[Count];
         return Words;
+    }
+
+    std::string TModbusRegisterRange::ToString() const {
+        return std::to_string(GetCount()) + " " +
+               TypeName() + "(s) @ " + std::to_string(GetStart()) +
+               " of device " + Device()->ToString();
     }
 
     const uint8_t EXCEPTION_BIT = 1 << 7;
@@ -286,12 +300,15 @@ namespace Modbus    // modbus protocol common utilities
             return; // not an error
         case ERR_ILLEGAL_FUNCTION:
             message = "illegal function";
+            is_transient = false;
             break;
         case ERR_ILLEGAL_DATA_ADDRESS:
             message = "illegal data address";
+            is_transient = false;
             break;
         case ERR_ILLEGAL_DATA_VALUE:
             message = "illegal data value";
+            is_transient = false;
             break;
         case ERR_SERVER_DEVICE_FAILURE:
             message = "server device failure";
@@ -318,7 +335,7 @@ namespace Modbus    // modbus protocol common utilities
         if (is_transient) {
             throw TSerialDeviceTransientErrorException(message);
         } else {
-            throw TSerialDevicePermanentRegisterException(message);
+            throw TSerialDevicePermanentErrorException(message);
         }
     }
 
@@ -486,7 +503,6 @@ namespace Modbus    // modbus protocol common utilities
             }
         }
 
-        bool hasHoles = false;
         for (auto reg: reg_list) {
             int new_end = reg->Address + reg->Width();
             if (!(prev_end >= 0 &&
@@ -496,12 +512,9 @@ namespace Modbus    // modbus protocol common utilities
                 reg->PollInterval == prev_interval &&
                 new_end - prev_start <= max_regs)) {
                 if (!l.empty()) {
-                    auto range = std::make_shared<TModbusRegisterRange>(l, hasHoles);
-                    hasHoles = false;
+                    auto range = std::make_shared<TModbusRegisterRange>(l);
                     if (debug)
-                        std::cerr << "Adding range: " << range->GetCount() << " " <<
-                            range->TypeName() << "(s) @ " << range->GetStart() <<
-                            " of device " << range->Device()->ToString() << std::endl;
+                        std::cerr << "Adding range: " << range->ToString() << std::endl;
                     r.push_back(range);
                     l.clear();
                 }
@@ -509,18 +522,13 @@ namespace Modbus    // modbus protocol common utilities
                 prev_type = reg->Type;
                 prev_interval = reg->PollInterval;
             }
-            if (!l.empty()) {
-                hasHoles |= (reg->Address != prev_end);
-            }
             l.push_back(reg);
             prev_end = new_end;
         }
         if (!l.empty()) {
-            auto range = std::make_shared<TModbusRegisterRange>(l, hasHoles);
+            auto range = std::make_shared<TModbusRegisterRange>(l);
             if (debug)
-                std::cerr << "Adding range: " << range->GetCount() << " " <<
-                    range->TypeName() << "(s) @ " << range->GetStart() <<
-                    " of device " << range->Device()->ToString() << std::endl;
+                std::cerr << "Adding range: " << range->ToString() << std::endl;
             r.push_back(range);
         }
         return r;
@@ -701,6 +709,13 @@ namespace ModbusRTU // modbus rtu protocol utilities
         } catch (TSerialDeviceTransientErrorException& e) {
             exception_message = ": ";
             exception_message += e.what();
+        } catch (TSerialDevicePermanentErrorException& e) {
+            exception_message = ": ";
+            exception_message += e.what();
+
+            throw TSerialDevicePermanentErrorException(
+                "failed to write " + reg->TypeName +
+                " @ " + std::to_string(reg->Address) + exception_message);
         }
 
         throw TSerialDeviceTransientErrorException(
@@ -762,6 +777,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
                 }
             }
         } catch (TSerialDeviceTransientErrorException& e) {
+            exception_message = e.what();
+        } catch (TSerialDevicePermanentErrorException& e) {
             exception_message = e.what();
         }
 

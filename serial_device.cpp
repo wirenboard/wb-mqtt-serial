@@ -45,7 +45,7 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
         throw std::runtime_error("simple range expected");
     simple_range->Reset();
     for (auto reg: simple_range->RegisterList()) {
-        if (UnavailableAddresses.count(reg->Address)) {
+        if (IsUnavailable(reg)) {
         	continue;
         }
     	try {
@@ -59,12 +59,12 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
             std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "]" << std::endl;
             std::cerr.flags(f);
-        } catch (const TSerialDevicePermanentRegisterException& e) {
-        	UnavailableAddresses.insert(reg->Address);
+        } catch (const TSerialDevicePermanentErrorException& e) {
+        	AddToUnavailableRegisters(reg);
         	simple_range->SetError(reg);
 			std::ios::fmtflags f(std::cerr.flags());
 			std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-					  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported" << std::endl;
+					  << reg->Device()->ToString() + "]" << std::endl;
 			std::cerr.flags(f);
         }
     }
@@ -104,7 +104,31 @@ bool TSerialDevice::GetIsDisconnected() const
 	return IsDisconnected;
 }
 
-void TSerialDevice::ResetUnavailableAddresses() {
+void TSerialDevice::AddToUnavailableRegisters(const PRegister & reg) {
+    UnavailableAddresses.insert(reg->Address);
+
+    std::cerr << "register " << reg->ToString() << " is now counts as unsupported" << std::endl;
+}
+
+void TSerialDevice::AddToUnavailableRegisters(const PRegisterRange & range) {
+    for (const auto & reg: range->RegisterList()) {
+        AddToUnavailableRegisters(reg);
+    }
+}
+
+bool TSerialDevice::IsUnavailable(const PRegister & reg) const {
+    return UnavailableAddresses.count(reg->Address);
+}
+
+bool TSerialDevice::IsUnavailable(const PRegisterRange & range) const {
+    return std::all_of(range->RegisterList().begin(), range->RegisterList().end(),
+        [this](const PRegister & reg) {
+            return IsUnavailable(reg);
+        }
+    );
+}
+
+void TSerialDevice::ResetUnavailableRegisters() {
 	UnavailableAddresses.clear();
 }
 
