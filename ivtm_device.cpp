@@ -31,7 +31,7 @@ void TIVTMDevice::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_l
     Port()->CheckPortOpen();
     uint8_t buf[16];
     buf[0] = '$';
-    
+
     snprintf((char*) &buf[1], 3, "%02X", addr >> 8);
     snprintf((char*) &buf[3], 3, "%02X", addr & 0xFF );
 
@@ -44,7 +44,7 @@ void TIVTMDevice::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_l
     snprintf((char*) &buf[11], 3, "%02X", data_len);
 
     uint8_t crc8 = 0;
-    for (size_t i=0; i < 13; ++i) { 
+    for (size_t i=0; i < 13; ++i) {
         crc8 += buf[i];
     }
 
@@ -92,12 +92,16 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     if (nread < 10)
         throw TSerialDeviceTransientErrorException("frame too short");
 
+    if (buf[0] == '?') {
+        throw TSerialDevicePermanentErrorException("error response");
+    }
+
     if ( (buf[0] != '!') || (buf[5] != 'R') || (buf[6] != 'R')) {
         throw TSerialDeviceTransientErrorException("invalid response header");
     }
 
     if (buf[nread-1] != 0x0D) {
-        throw TSerialDeviceTransientErrorException("invalid response footer");   
+        throw TSerialDeviceTransientErrorException("invalid response footer");
     }
 
     if (DecodeASCIIWord(&buf[1]) != addr) {
@@ -105,7 +109,7 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     }
 
     uint8_t crc8 = 0;
-    for (size_t i=0; i < (size_t) nread - 3; ++i) { 
+    for (size_t i=0; i < (size_t) nread - 3; ++i) {
         crc8 += buf[i];
     }
 
@@ -137,8 +141,8 @@ uint64_t TIVTMDevice::ReadRegister(PRegister reg)
 
     // the response is little-endian. We inverse the byte order here to make it big-endian.
 
-    return (p[3] << 24) | 
-           (p[2] << 16) | 
+    return (p[3] << 24) |
+           (p[2] << 16) |
            (p[1] << 8) |
            p[0];
 }

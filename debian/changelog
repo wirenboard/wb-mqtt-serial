@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.38.2-dev) unstable; urgency=medium
+
+  * ignore unsupported registers for ivtm
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Thu, 25 Jan 2018 18:39:56 +0300
+
 wb-mqtt-serial (1.38.1) stable; urgency=medium
 
   * ignore unsupported registers for modbus, milur and pulsar
