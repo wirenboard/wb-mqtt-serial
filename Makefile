@@ -54,7 +54,7 @@ SERIAL_SRCS= \
   mercury200_device.cpp   \
   pulsar_device.cpp       \
   bcd_utils.cpp           \
-  signal_handling.cpp     \
+  log.cpp                 \
 
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 TEST_SRCS= \

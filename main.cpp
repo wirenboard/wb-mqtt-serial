@@ -1,38 +1,38 @@
 #include "serial_device.h"
 #include "serial_driver.h"
-#include "signal_handling.h"
+#include "log.h"
 
 #include <wbmqtt/wbmqtt.h>
+#include <wbmqtt/signal_handling.h>
 
 #include <getopt.h>
 #include <unistd.h>
 
 using namespace std;
-using namespace WBMQTT;
 
 const auto driverName      = "wb-modbus";
 const auto libwbmqttDbFile = "/var/lib/wb-mqtt-serial/libwbmqtt.db";
+const auto templatesFolder = "/usr/share/wb-mqtt-serial/templates";
 
 int main(int argc, char *argv[])
 {
     WBMQTT::TMosquittoMqttConfig mqttConfig;
-    string templatesFolder = "/usr/share/wb-mqtt-serial/templates";
     string configFilename;
-    bool debug = false;
+    int debug = 0;
     std::string mqtt_prefix = "";
 
-    SignalHandling::Subscribe(SIGINT);
-    SignalHandling::OnSignal(SIGINT, [&]{ SignalHandling::Stop(); });
+    WBMQTT::SignalHandling::Handle({ SIGINT, SIGSTOP });
+    WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ WBMQTT::SignalHandling::Stop(); });
 
     int c;
     //~ int digit_optind = 0;
     //~ int aopt = 0, bopt = 0;
     //~ char *copt = 0, *dopt = 0;
-    while ( (c = getopt(argc, argv, "dsc:h:H:p:u:P:T:")) != -1) {
+    while ( (c = getopt(argc, argv, "d:sc:h:H:p:u:P:T:")) != -1) {
         //~ int this_option_optind = optind ? optind : 1;
         switch (c) {
         case 'd':
-            debug = true;
+            debug = stoi(optarg);
             break;
         case 'c':
             configFilename = optarg;
@@ -48,13 +48,13 @@ int main(int argc, char *argv[])
            mqtt_prefix = optarg;
            break;
 
-        // case 'u':
-        //     mqtt_config.User = optarg;
-        //    break;
+        case 'u':
+            mqttConfig.User = optarg;
+           break;
 
-        // case 'P':
-        //     mqtt_config.Password = optarg;
-        //     break;
+        case 'P':
+            mqttConfig.Password = optarg;
+            break;
 
         case '?':
         default:
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 
             printf("Usage:\n wb-mqtt-serial [options]\n");
             printf("Options:\n");
-            printf("\t-d          \t\t\t enable debuging output\n");
+            printf("\t-d level    \t\t\t enable debuging output\n");
             printf("\t-c config   \t\t\t config file\n");
             printf("\t-p PORT     \t\t\t set to what port wb-mqtt-serial should connect (default: 1883)\n");
             printf("\t-H IP       \t\t\t set to what IP wb-mqtt-serial should connect (default: localhost)\n");
@@ -70,11 +70,21 @@ int main(int argc, char *argv[])
             printf("\t-P PASSWORD \t\t\t MQTT user password (optional)\n");
             printf("\t-T prefix   \t\t\t MQTT topic prefix (optional)\n");
 
+            exit(2);
         }
     }
 
-    WBMQTT::Debug.SetEnabled(debug);
-    WBMQTT::Info.SetEnabled(debug);
+    switch(debug) {
+        case 3:
+            WBMQTT::Debug.SetEnabled(true);
+        case 2:
+            Debug.SetEnabled(true);
+        case 1:
+            Info.SetEnabled(true);
+            WBMQTT::Info.SetEnabled(true);
+        default:
+            break;
+    }
 
     PHandlerConfig handlerConfig;
     try {
@@ -101,7 +111,7 @@ int main(int argc, char *argv[])
     );
 
     driver->StartLoop();
-    SignalHandling::OnSignal(SIGINT, [&]{ driver->StopLoop(); });
+    WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ driver->StopLoop(); });
 
     driver->WaitForReady();
 
@@ -114,10 +124,10 @@ int main(int argc, char *argv[])
 
         serialDriver->Start();
 
-        SignalHandling::OnSignal(SIGINT, [&]{ serialDriver->Stop(); });
+        WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ serialDriver->Stop(); });
 
-        SignalHandling::Start();
-        SignalHandling::Wait();
+        WBMQTT::SignalHandling::Start();
+        WBMQTT::SignalHandling::Wait();
     } catch (const TSerialDeviceException & e) {
         Error.Log() << "[serial] FATAL: " << e.what();
         return 1;
