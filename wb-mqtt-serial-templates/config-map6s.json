@@ -33,7 +33,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 Irms L1", 
+    "name": "Irms 1",
     "reg_type": "input", 
     "address": "0x10dd", 
     "type": "value", 
@@ -42,7 +42,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 THDN I L1", 
+    "name": "THDN I 1" 
     "reg_type": "input", 
     "address": "0x10f5", 
     "type": "value", 
@@ -51,7 +51,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 P L1", 
+    "name": "P 1" 
     "reg_type": "input", 
     "address": "0x1302", 
     "type": "power", 
@@ -60,7 +60,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 Q L1", 
+    "name": "Q 1" 
     "reg_type": "input", 
     "address": "0x130a", 
     "type": "value", 
@@ -69,7 +69,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 S L1", 
+    "name": "S 1" 
     "reg_type": "input", 
     "address": "0x1312", 
     "type": "value", 
@@ -78,7 +78,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 PF L1", 
+    "name": "PF 1" 
     "reg_type": "input", 
     "address": "0x10bd", 
     "type": "value", 
@@ -87,7 +87,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 AP energy L1", 
+    "name": "AP energy 1" 
     "reg_type": "input", 
     "address": "0x1204", 
     "type": "power_consumption", 
@@ -97,7 +97,7 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 1 RP energy L1", 
+    "name": "RP energy 1" 
     "reg_type": "input", 
     "address": "0x1224", 
     "type": "value", 
@@ -107,7 +107,16 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 1 Irms L2", 
+    "name": "Phase angle 1", 
+    "reg_type": "input", 
+    "address": "0x10f9", 
+    "type": "value", 
+    "format": "s16", 
+    "scale": 0.1, 
+    "round_to": 0.01
+   }, 
+   {
+    "name": "Irms 2" 
     "reg_type": "input", 
     "address": "0x10de", 
     "type": "value", 
@@ -116,7 +125,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 THDN I L2", 
+    "name": "THDN I 2" 
     "reg_type": "input", 
     "address": "0x10f6", 
     "type": "value", 
@@ -125,7 +134,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 P L2", 
+    "name": "P 2" 
     "reg_type": "input", 
     "address": "0x1304", 
     "type": "power", 
@@ -134,7 +143,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 Q L2", 
+    "name": "Q 2" 
     "reg_type": "input", 
     "address": "0x130c", 
     "type": "value", 
@@ -143,7 +152,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 S L2", 
+    "name": "S 2" 
     "reg_type": "input", 
     "address": "0x1314", 
     "type": "value", 
@@ -152,7 +161,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 PF L2", 
+    "name": "PF 2" 
     "reg_type": "input", 
     "address": "0x10be", 
     "type": "value", 
@@ -161,7 +170,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 AP energy L2", 
+    "name": "AP energy 2" 
     "reg_type": "input", 
     "address": "0x1208", 
     "type": "power_consumption", 
@@ -171,7 +180,7 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 1 RP energy L2", 
+    "name": "RP energy 2" 
     "reg_type": "input", 
     "address": "0x1228", 
     "type": "value", 
@@ -181,7 +190,16 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 1 Irms L3", 
+    "name": "Phase angle 2", 
+    "reg_type": "input", 
+    "address": "0x10fa", 
+    "type": "value", 
+    "format": "s16", 
+    "scale": 0.1, 
+    "round_to": 0.01
+   }, 
+   {
+    "name": "Irms 3" 
     "reg_type": "input", 
     "address": "0x10df", 
     "type": "value", 
@@ -190,7 +208,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 THDN I L3", 
+    "name": "THDN I 3" 
     "reg_type": "input", 
     "address": "0x10f7", 
     "type": "value", 
@@ -199,7 +217,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 P L3", 
+    "name": "P 3" 
     "reg_type": "input", 
     "address": "0x1306", 
     "type": "power", 
@@ -208,7 +226,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 Q L3", 
+    "name": "Q 3" 
     "reg_type": "input", 
     "address": "0x130e", 
     "type": "value", 
@@ -217,7 +235,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 S L3", 
+    "name": "S 3" 
     "reg_type": "input", 
     "address": "0x1316", 
     "type": "value", 
@@ -226,7 +244,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 PF L3", 
+    "name": "PF 3" 
     "reg_type": "input", 
     "address": "0x10bf", 
     "type": "value", 
@@ -235,7 +253,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 1 AP energy L3", 
+    "name": "AP energy 3" 
     "reg_type": "input", 
     "address": "0x120c", 
     "type": "power_consumption", 
@@ -245,7 +263,7 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 1 RP energy L3", 
+    "name": "RP energy 3" 
     "reg_type": "input", 
     "address": "0x122c", 
     "type": "value", 
@@ -255,72 +273,7 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 1 Total P", 
-    "reg_type": "input", 
-    "address": "0x1300", 
-    "type": "power", 
-    "format": "s32", 
-    "scale": 6.10352e-05, 
-    "round_to": 0.01
-   }, 
-   {
-    "name": "Ch 1 Total Q", 
-    "reg_type": "input", 
-    "address": "0x1308", 
-    "type": "value", 
-    "format": "s32", 
-    "scale": 6.10352e-05, 
-    "round_to": 0.01
-   }, 
-   {
-    "name": "Ch 1 Total S", 
-    "reg_type": "input", 
-    "address": "0x1310", 
-    "type": "value", 
-    "format": "s32", 
-    "scale": 6.10352e-05, 
-    "round_to": 0.01
-   }, 
-   {
-    "name": "Ch 1 Total AP energy", 
-    "reg_type": "input", 
-    "address": "0x1200", 
-    "type": "power_consumption", 
-    "format": "u64", 
-    "scale": 3.125e-05, 
-    "round_to": 0.0001, 
-    "word_order": "little_endian"
-   }, 
-   {
-    "name": "Ch 1 Total RP energy", 
-    "reg_type": "input", 
-    "address": "0x1220", 
-    "type": "value", 
-    "format": "u64", 
-    "scale": 3.125e-05, 
-    "round_to": 0.0001, 
-    "word_order": "little_endian"
-   }, 
-   {
-    "name": "Ch 1 Phase angle L1", 
-    "reg_type": "input", 
-    "address": "0x10f9", 
-    "type": "value", 
-    "format": "s16", 
-    "scale": 0.1, 
-    "round_to": 0.01
-   }, 
-   {
-    "name": "Ch 1 Phase angle L2", 
-    "reg_type": "input", 
-    "address": "0x10fa", 
-    "type": "value", 
-    "format": "s16", 
-    "scale": 0.1, 
-    "round_to": 0.01
-   }, 
-   {
-    "name": "Ch 1 Phase angle L3", 
+    "name": "Phase angle 3", 
     "reg_type": "input", 
     "address": "0x10fb", 
     "type": "value", 
@@ -329,7 +282,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 Irms L1", 
+    "name": "Irms 4" 
     "reg_type": "input", 
     "address": "0x20dd", 
     "type": "value", 
@@ -338,7 +291,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 THDN I L1", 
+    "name": "THDN I 4" 
     "reg_type": "input", 
     "address": "0x20f5", 
     "type": "value", 
@@ -347,7 +300,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 P L1", 
+    "name": "P 4" 
     "reg_type": "input", 
     "address": "0x2302", 
     "type": "power", 
@@ -356,7 +309,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 Q L1", 
+    "name": "Q 4" 
     "reg_type": "input", 
     "address": "0x230a", 
     "type": "value", 
@@ -365,7 +318,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 S L1", 
+    "name": "S 4" 
     "reg_type": "input", 
     "address": "0x2312", 
     "type": "value", 
@@ -374,7 +327,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 PF L1", 
+    "name": "PF 4" 
     "reg_type": "input", 
     "address": "0x20bd", 
     "type": "value", 
@@ -383,7 +336,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 AP energy L1", 
+    "name": "AP energy 4" 
     "reg_type": "input", 
     "address": "0x2204", 
     "type": "power_consumption", 
@@ -393,7 +346,7 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 2 RP energy L1", 
+    "name": "RP energy 4" 
     "reg_type": "input", 
     "address": "0x2224", 
     "type": "value", 
@@ -403,7 +356,16 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 2 Irms L2", 
+    "name": "Phase angle 4", 
+    "reg_type": "input", 
+    "address": "0x20f9", 
+    "type": "value", 
+    "format": "s16", 
+    "scale": 0.1, 
+    "round_to": 0.01
+   }, 
+   {
+    "name": "Irms 5" 
     "reg_type": "input", 
     "address": "0x20de", 
     "type": "value", 
@@ -412,7 +374,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 THDN I L2", 
+    "name": "THDN I 5" 
     "reg_type": "input", 
     "address": "0x20f6", 
     "type": "value", 
@@ -421,7 +383,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 P L2", 
+    "name": "P 5" 
     "reg_type": "input", 
     "address": "0x2304", 
     "type": "power", 
@@ -430,7 +392,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 Q L2", 
+    "name": "Q 5" 
     "reg_type": "input", 
     "address": "0x230c", 
     "type": "value", 
@@ -439,7 +401,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 S L2", 
+    "name": "S 5" 
     "reg_type": "input", 
     "address": "0x2314", 
     "type": "value", 
@@ -448,7 +410,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 PF L2", 
+    "name": "PF 5" 
     "reg_type": "input", 
     "address": "0x20be", 
     "type": "value", 
@@ -457,7 +419,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 AP energy L2", 
+    "name": "AP energy 5" 
     "reg_type": "input", 
     "address": "0x2208", 
     "type": "power_consumption", 
@@ -467,7 +429,7 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 2 RP energy L2", 
+    "name": "RP energy 5" 
     "reg_type": "input", 
     "address": "0x2228", 
     "type": "value", 
@@ -477,7 +439,16 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 2 Irms L3", 
+    "name": "Phase angle 5", 
+    "reg_type": "input", 
+    "address": "0x20fa", 
+    "type": "value", 
+    "format": "s16", 
+    "scale": 0.1, 
+    "round_to": 0.01
+   }, 
+   {
+    "name": "Irms 6" 
     "reg_type": "input", 
     "address": "0x20df", 
     "type": "value", 
@@ -486,7 +457,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 THDN I L3", 
+    "name": "THDN I 6" 
     "reg_type": "input", 
     "address": "0x20f7", 
     "type": "value", 
@@ -495,7 +466,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 P L3", 
+    "name": "P 6" 
     "reg_type": "input", 
     "address": "0x2306", 
     "type": "power", 
@@ -504,7 +475,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 Q L3", 
+    "name": "Q 6" 
     "reg_type": "input", 
     "address": "0x230e", 
     "type": "value", 
@@ -513,7 +484,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 S L3", 
+    "name": "S 6" 
     "reg_type": "input", 
     "address": "0x2316", 
     "type": "value", 
@@ -522,7 +493,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 PF L3", 
+    "name": "PF 6" 
     "reg_type": "input", 
     "address": "0x20bf", 
     "type": "value", 
@@ -531,7 +502,7 @@
     "round_to": 0.01
    }, 
    {
-    "name": "Ch 2 AP energy L3", 
+    "name": "AP energy 6" 
     "reg_type": "input", 
     "address": "0x220c", 
     "type": "power_consumption", 
@@ -541,7 +512,7 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 2 RP energy L3", 
+    "name": "RP energy 6" 
     "reg_type": "input", 
     "address": "0x222c", 
     "type": "value", 
@@ -551,72 +522,7 @@
     "word_order": "little_endian"
    }, 
    {
-    "name": "Ch 2 Total P", 
-    "reg_type": "input", 
-    "address": "0x2300", 
-    "type": "power", 
-    "format": "s32", 
-    "scale": 6.10352e-05, 
-    "round_to": 0.01
-   }, 
-   {
-    "name": "Ch 2 Total Q", 
-    "reg_type": "input", 
-    "address": "0x2308", 
-    "type": "value", 
-    "format": "s32", 
-    "scale": 6.10352e-05, 
-    "round_to": 0.01
-   }, 
-   {
-    "name": "Ch 2 Total S", 
-    "reg_type": "input", 
-    "address": "0x2310", 
-    "type": "value", 
-    "format": "s32", 
-    "scale": 6.10352e-05, 
-    "round_to": 0.01
-   }, 
-   {
-    "name": "Ch 2 Total AP energy", 
-    "reg_type": "input", 
-    "address": "0x2200", 
-    "type": "power_consumption", 
-    "format": "u64", 
-    "scale": 3.125e-05, 
-    "round_to": 0.0001, 
-    "word_order": "little_endian"
-   }, 
-   {
-    "name": "Ch 2 Total RP energy", 
-    "reg_type": "input", 
-    "address": "0x2220", 
-    "type": "value", 
-    "format": "u64", 
-    "scale": 3.125e-05, 
-    "round_to": 0.0001, 
-    "word_order": "little_endian"
-   }, 
-   {
-    "name": "Ch 2 Phase angle L1", 
-    "reg_type": "input", 
-    "address": "0x20f9", 
-    "type": "value", 
-    "format": "s16", 
-    "scale": 0.1, 
-    "round_to": 0.01
-   }, 
-   {
-    "name": "Ch 2 Phase angle L2", 
-    "reg_type": "input", 
-    "address": "0x20fa", 
-    "type": "value", 
-    "format": "s16", 
-    "scale": 0.1, 
-    "round_to": 0.01
-   }, 
-   {
-    "name": "Ch 2 Phase angle L3", 
+    "name": "Phase angle 6", 
     "reg_type": "input", 
     "address": "0x20fb", 
     "type": "value", 
