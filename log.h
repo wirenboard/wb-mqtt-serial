@@ -1,6 +1,6 @@
 #pragma once
 
-#include <wbmqtt/log.h>
+#include <wblib/log.h>
 
 extern WBMQTT::TLogger Error;
 extern WBMQTT::TLogger Warn;

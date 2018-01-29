@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <wbmqtt/testing/testlog.h>
-#include <wbmqtt/utils.h>
+#include <wblib/testing/testlog.h>
+#include <wblib/utils.h>
 
 using WBMQTT::Testing::TLoggedFixture;
 

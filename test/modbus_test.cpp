@@ -3,7 +3,7 @@
 #include "modbus_device.h"
 #include "modbus_common.h"
 
-#include <wbmqtt/control.h>
+#include <wblib/control.h>
 
 using namespace std;
 

@@ -1,5 +1,5 @@
 #include <string>
-#include <wbmqtt/testing/testlog.h>
+#include <wblib/testing/testlog.h>
 #include "fake_serial_port.h"
 #include "s2k_device.h"
 #include "s2k_expectations.h"

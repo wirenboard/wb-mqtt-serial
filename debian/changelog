@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.29~libwbmqtt1) UNRELEASED; urgency=medium
+
+  * implement using new libwbmqtt
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Mon, 29 Jan 2018 20:37:43 +0300
+
 wb-mqtt-serial (1.29) stable; urgency=medium
 
   * add MQTT topic prefix support (new command line arg: -T <topic prefix>)

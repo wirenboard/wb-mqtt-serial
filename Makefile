@@ -27,7 +27,7 @@ endif
 DEBUG_CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
 NORMAL_CFLAGS=-Wall -std=c++0x -O3 -I.
 CFLAGS=$(if $(or $(DEBUG)), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
-LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
+LDFLAGS= -pthread -ljsoncpp -lwbmqtt1
 
 SERIAL_BIN=wb-mqtt-serial
 SERIAL_LIBS=
@@ -136,6 +136,7 @@ install: all
 	install -d $(DESTDIR)/usr/bin
 	install -d $(DESTDIR)/usr/lib
 	install -d $(DESTDIR)/usr/share/wb-mqtt-serial
+	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
 
 	install -m 0644  config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
 

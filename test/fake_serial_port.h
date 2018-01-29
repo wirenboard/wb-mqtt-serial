@@ -4,8 +4,8 @@
 #include <memory>
 #include <deque>
 
-#include <wbmqtt/testing/fake_mqtt.h>
-#include <wbmqtt/testing/testlog.h>
+#include <wblib/testing/fake_mqtt.h>
+#include <wblib/testing/testlog.h>
 
 #include "expector.h"
 #include "../serial_device.h"

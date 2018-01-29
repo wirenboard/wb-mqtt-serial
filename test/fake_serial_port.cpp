@@ -1,9 +1,9 @@
 #include "fake_serial_port.h"
 #include "utils.h"
 
-#include <wbmqtt/driver.h>
-#include <wbmqtt/backend.h>
-#include <wbmqtt/driver_args.h>
+#include <wblib/driver.h>
+#include <wblib/backend.h>
+#include <wblib/driver_args.h>
 
 #include <cassert>
 #include <algorithm>

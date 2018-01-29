@@ -1,6 +1,7 @@
 #include "serial_port_driver.h"
+#include "log.h"
 
-#include <wbmqtt/wbmqtt.h>
+#include <wblib/wbmqtt.h>
 
 #include <algorithm>
 #include <sstream>
@@ -10,9 +11,9 @@
 using namespace std;
 using namespace WBMQTT;
 
-#define LOG_DEBUG Debug.Log() << "[serial port driver] "
-#define LOG_WARNING Warn.Log() << "[serial port driver] "
-#define LOG_ERROR Error.Log() << "[serial port driver] "
+#define LOG_DEBUG ::Debug.Log() << "[serial port driver] "
+#define LOG_WARNING ::Warn.Log() << "[serial port driver] "
+#define LOG_ERROR ::Error.Log() << "[serial port driver] "
 
 namespace
 {

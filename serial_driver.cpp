@@ -1,7 +1,7 @@
 #include "serial_driver.h"
 
-#include <wbmqtt/control.h>
-#include <wbmqtt/log.h>
+#include <wblib/control.h>
+#include <wblib/log.h>
 
 #include <thread>
 #include <iostream>
@@ -24,7 +24,7 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
             }
 
             if (portConfig->DeviceConfigs.empty()) {
-                LOG_WARNING << "no devices defined for port " << portConfig->ConnSettings.Device << ". Skipping.";
+                LOG_WARNING << "no devices defined for port " << portConfig->ConnSettings << ". Skipping.";
                 continue;
             }
 

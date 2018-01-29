@@ -2,8 +2,8 @@
 #include "serial_driver.h"
 #include "log.h"
 
-#include <wbmqtt/wbmqtt.h>
-#include <wbmqtt/signal_handling.h>
+#include <wblib/wbmqtt.h>
+#include <wblib/signal_handling.h>
 
 #include <getopt.h>
 #include <unistd.h>
@@ -19,10 +19,10 @@ int main(int argc, char *argv[])
     WBMQTT::TMosquittoMqttConfig mqttConfig;
     string configFilename;
     int debug = 0;
-    std::string mqtt_prefix = "";
 
-    WBMQTT::SignalHandling::Handle({ SIGINT, SIGSTOP });
+    WBMQTT::SignalHandling::Handle({ SIGINT });
     WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ WBMQTT::SignalHandling::Stop(); });
+    WBMQTT::SetThreadName("main");
 
     int c;
     //~ int digit_optind = 0;
@@ -45,12 +45,12 @@ int main(int argc, char *argv[])
             break;
 
         case 'T':
-           mqtt_prefix = optarg;
-           break;
+            mqttConfig.Prefix = optarg;
+            break;
 
         case 'u':
             mqttConfig.User = optarg;
-           break;
+            break;
 
         case 'P':
             mqttConfig.Password = optarg;
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
         auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
 
         if (serialDriver->WriteInitValues()) {
-            Debug.Log() << "register-based setup performed.";
+            Debug.Log() << "[serial] register-based setup performed.";
         }
 
         serialDriver->Start();

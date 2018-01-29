@@ -6,7 +6,7 @@
 #include "serial_config.h"
 #include "serial_port_driver.h"
 
-#include <wbmqtt/driver.h>
+#include <wblib/driver.h>
 
 class TMQTTSerialDriver
 {

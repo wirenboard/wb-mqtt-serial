@@ -2,9 +2,9 @@
 #include "fake_serial_port.h"
 #include "fake_serial_device.h"
 
-#include <wbmqtt/testing/fake_driver.h>
-#include <wbmqtt/testing/fake_mqtt.h>
-#include <wbmqtt/driver_args.h>
+#include <wblib/testing/fake_driver.h>
+#include <wblib/testing/fake_mqtt.h>
+#include <wblib/driver_args.h>
 
 #include <string>
 #include <map>

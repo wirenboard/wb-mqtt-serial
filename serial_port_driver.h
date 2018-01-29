@@ -2,7 +2,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include <wbmqtt/driver.h>
+#include <wblib/driver.h>
 #include "serial_config.h"
 #include "serial_client.h"
 #include "register_handler.h"

@@ -1,5 +1,5 @@
 #include <string>
-#include <wbmqtt/testing/testlog.h>
+#include <wblib/testing/testlog.h>
 #include "fake_serial_port.h"
 #include "uniel_device.h"
 #include "uniel_expectations.h"
@@ -9,7 +9,7 @@ protected:
     void SetUp();
     void TearDown();
     PUnielDevice Dev;
-    
+
     PRegister InputReg;
     PRegister RelayReg;
     PRegister ThresholdReg;
@@ -24,7 +24,7 @@ void TUnielDeviceTest::SetUp()
         std::make_shared<TDeviceConfig>("uniel", std::to_string(0x01), "uniel"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("uniel"));
-    
+
     InputReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_INPUT, 0x0a, U8));
     RelayReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_RELAY, 0x1b, U8));
     ThresholdReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_PARAM, 0x02, U8));
