@@ -71,6 +71,18 @@ Subscribe: /devices/modbus-sample/controls/Coil 10/on (QoS 0)
 Publish: /devices/modbus-sample/controls/Coil 11/meta/type: 'switch' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Coil 11/meta/order: '22' (QoS 0, retained)
 Subscribe: /devices/modbus-sample/controls/Coil 11/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/order: '23' (QoS 0, retained)
+Subscribe: /devices/modbus-sample/controls/Holding U64 Single/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/order: '24' (QoS 0, retained)
+Subscribe: /devices/modbus-sample/controls/Holding U16 Single/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/order: '25' (QoS 0, retained)
+Subscribe: /devices/modbus-sample/controls/Holding U64 Multi/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/order: '26' (QoS 0, retained)
+Subscribe: /devices/modbus-sample/controls/Holding U16 Multi/on (QoS 0)
 Publish: /devices/modbus-sample/controls/Coil 0/on: '1' (QoS 0)
 Publish: /devices/modbus-sample/controls/Coil 0: '1' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/RGB/on: '10;20;30' (QoS 0)
@@ -79,6 +91,10 @@ Publish: /devices/modbus-sample/controls/Holding S64/on: '81985529216486895' (Qo
 Publish: /devices/modbus-sample/controls/Holding S64: '81985529216486895' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Holding U16/on: '3905' (QoS 0)
 Publish: /devices/modbus-sample/controls/Holding U16: '3905' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/on: '283686952306183' (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding U64 Single: '283686952306183' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/on: '81985529216486895' (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi: '81985529216486895' (QoS 0, retained)
 >>> LoopOnce()
 Open()
 Sleep(100000)
@@ -104,6 +120,23 @@ EnqueueHoldingWriteU16Response()
 >> 01 06 00 46 0F 41 AD DF
 Publish: /devices/modbus-sample/controls/Holding U16/meta/error: '' (QoS 0, retained)
 << 01 06 00 46 0F 41 AD DF
+EnqueueHoldingSingleWriteU64Response()
+>> 01 06 00 5D 06 07 5A 7A
+<< 01 06 00 5D 06 07 5A 7A
+EnqueueHoldingSingleWriteU64Response()
+>> 01 06 00 5C 04 05 8B 1B
+<< 01 06 00 5C 04 05 8B 1B
+EnqueueHoldingSingleWriteU64Response()
+>> 01 06 00 5B 02 03 B9 78
+<< 01 06 00 5B 02 03 B9 78
+EnqueueHoldingSingleWriteU64Response()
+>> 01 06 00 5A 00 01 68 19
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/error: '' (QoS 0, retained)
+<< 01 06 00 5A 00 01 68 19
+EnqueueHoldingMultiWriteU64Response()
+>> 01 10 00 5F 00 04 08 01 23 45 67 89 AB CD EF C4 5D
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/error: '' (QoS 0, retained)
+<< 01 10 00 5F 00 04 F1 D8
 EnqueueHoldingPackReadResponse()
 >> 01 03 00 04 00 06 84 09
 Publish: /devices/modbus-sample/controls/RGB: '10;20;30' (QoS 0, retained)
@@ -171,4 +204,16 @@ EnqueueDiscreteReadResponse()
 Publish: /devices/modbus-sample/controls/Discrete 0/meta/error: '' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Discrete 0: '1' (QoS 0, retained)
 << 01 02 01 01 60 48
+EnqueueHoldingSingleReadResponse()
+>> 01 03 00 5A 00 05 A5 DA
+Publish: /devices/modbus-sample/controls/Holding U64 Single: '72340172838076673' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/error: '' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single: '257' (QoS 0, retained)
+<< 01 03 0A 01 01 01 01 01 01 01 01 01 01 05 92
+EnqueueHoldingMultiReadResponse()
+>> 01 03 00 5F 00 05 B5 DB
+Publish: /devices/modbus-sample/controls/Holding U64 Multi: '144680345676153346' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/error: '' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi: '514' (QoS 0, retained)
+<< 01 03 0A 02 02 02 02 02 02 02 02 02 02 66 FE
 Close()

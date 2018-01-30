@@ -169,6 +169,34 @@
                 "reg_type" : "coil",
                 "address" : 81,
                 "type": "switch"
+            },
+            {
+                "name" : "Holding U64 Single",
+                "reg_type" : "holding_single",
+                "address" : 90,
+                "type": "value",
+                "format": "u64"
+            },
+            {
+                "name" : "Holding U16 Single",
+                "reg_type" : "holding_single",
+                "address" : 94,
+                "type": "value",
+                "format": "u16"
+            },
+            {
+                "name" : "Holding U64 Multi",
+                "reg_type" : "holding_multi",
+                "address" : 95,
+                "type": "value",
+                "format": "u64"
+            },
+            {
+                "name" : "Holding U16 Multi",
+                "reg_type" : "holding_multi",
+                "address" : 99,
+                "type": "value",
+                "format": "u16"
             }
             ]
         }

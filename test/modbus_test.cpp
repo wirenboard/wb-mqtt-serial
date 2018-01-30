@@ -24,6 +24,11 @@ protected:
     PRegister ModbusInput;
 
     PRegister ModbusHoldingS64;
+
+    PRegister ModbusHoldingU64Single;
+    PRegister ModbusHoldingU16Single;
+    PRegister ModbusHoldingU64Multi;
+    PRegister ModbusHoldingU16Multi;
 };
 
 PDeviceConfig TModbusTest::GetDeviceConfig()
@@ -44,6 +49,11 @@ void TModbusTest::SetUp()
     ModbusHolding = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 70, U16));
     ModbusInput = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_INPUT, 40, U16));
     ModbusHoldingS64 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 30, S64));
+
+    ModbusHoldingU64Single = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 90, U64));
+    ModbusHoldingU16Single = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 94, U16));
+    ModbusHoldingU64Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64));
+    ModbusHoldingU16Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
 
     SerialPort->Open();
 }
@@ -122,6 +132,21 @@ TEST_F(TModbusTest, Query)
     EnqueueHoldingReadS64Response();
 
     ASSERT_EQ(0, VerifyQuery().size()); // we don't expect any errors to occur here
+    SerialPort->Close();
+}
+
+TEST_F(TModbusTest, HoldingSingleMulti)
+{
+    EnqueueHoldingSingleWriteU16Response();
+    EnqueueHoldingSingleWriteU64Response();
+    EnqueueHoldingMultiWriteU16Response();
+    EnqueueHoldingMultiWriteU64Response();
+
+    ModbusDev->WriteRegister(ModbusHoldingU16Single, 0x0f41);
+    ModbusDev->WriteRegister(ModbusHoldingU64Single, 0x01020304050607);
+    ModbusDev->WriteRegister(ModbusHoldingU16Multi, 0x0123);
+    ModbusDev->WriteRegister(ModbusHoldingU64Multi, 0x0123456789ABCDEF);
+
     SerialPort->Close();
 }
 
@@ -282,6 +307,14 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
     }
 
     EnqueueDiscreteReadResponse();
+
+    if (mode == TEST_MAX_READ_REGISTERS) {
+        EnqueueHoldingSingleMax3ReadResponse();
+        EnqueueHoldingMultiMax3ReadResponse();
+    } else {
+        EnqueueHoldingSingleReadResponse();
+        EnqueueHoldingMultiReadResponse();
+    }
 }
 
 void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
@@ -310,11 +343,15 @@ TEST_F(TModbusIntegrationTest, Write)
     MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/RGB/on", "10;20;30");
     MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding S64/on", "81985529216486895");
     MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U16/on", "3905");
+    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U64 Single/on", "283686952306183");
+    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U64 Multi/on", "81985529216486895");
 
     EnqueueCoilWriteResponse();
     EnqueueRGBWriteResponse();
     EnqueueHoldingWriteS64Response();
     EnqueueHoldingWriteU16Response();
+    EnqueueHoldingSingleWriteU64Response();
+    EnqueueHoldingMultiWriteU64Response();
 
     ExpectPollQueries();
     Note() << "LoopOnce()";
@@ -325,9 +362,11 @@ TEST_F(TModbusIntegrationTest, Errors)
 {
     MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Coil 0/on", "1");
     MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U16/on", "3905");
+    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U64 Single/on", "283686952306183");
 
     EnqueueCoilWriteResponse(0x1);
     EnqueueHoldingWriteU16Response(0x2);
+    EnqueueHoldingSingleWriteU64Response(0x2);
 
     EnqueueHoldingPackReadResponse(0x3);
     EnqueueHoldingReadS64Response(0x4);
@@ -337,6 +376,8 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueCoilReadResponse(0xa);
     Enqueue10CoilsReadResponse(0x54);   // invalid exception code
     EnqueueDiscreteReadResponse(0xb);
+    EnqueueHoldingSingleReadResponse(0x2);
+    EnqueueHoldingMultiReadResponse(0x3);
 
     Note() << "LoopOnce()";
     Observer->LoopOnce();
@@ -370,6 +411,8 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
     EnqueueCoilReadResponse();
     Enqueue10CoilsReadResponse();
     EnqueueDiscreteReadResponse();
+    EnqueueHoldingSingleReadResponse();
+    EnqueueHoldingMultiReadResponse();
 
     Note() << "LoopOnce()";
     Observer->LoopOnce();
@@ -382,6 +425,8 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
     EnqueueCoilReadResponse();
     Enqueue10CoilsReadResponse();
     EnqueueDiscreteReadResponse();
+    EnqueueHoldingSingleReadResponse();
+    EnqueueHoldingMultiReadResponse();
 
     Note() << "LoopOnce()";
     Observer->LoopOnce();
