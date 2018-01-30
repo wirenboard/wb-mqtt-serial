@@ -10,7 +10,7 @@ namespace {
     const int FrameTimeout = 300;
 
     const uint8_t ERROR_FUNCTION_CODE = 0x00;
-    const uint8_t ERROR_RESPONSE_SIZE = 14;
+    const uint8_t ERROR_RESPONSE_SIZE = 11;
 
     enum PulsarError: uint8_t
     {
@@ -25,7 +25,7 @@ namespace {
         ERR_TOO_MANY_ARCHIVE_VALUES = 0x08
     };
 
-    void ThrowPulsarException(uint32_t code)
+    void ThrowPulsarException(uint8_t code)
     {
         const char * message = nullptr;
         bool is_transient = true;
@@ -39,6 +39,7 @@ namespace {
                 break;
             case ERR_REQUEST_BITMASK:
                 message = "request bitmask error";
+                is_transient = false;
                 break;
             case ERR_REQUEST_SIZE:
                 message = "request size error";
@@ -52,7 +53,6 @@ namespace {
                 break;
             case ERR_OUT_OF_RANGE:
                 message = "value to write (parameter) is out of range";
-                is_transient = false;
                 break;
             case ERR_MISSING_ARCHIVE_TYPE:
                 message = "missing requested archive type";
@@ -243,8 +243,8 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, u
         throw TSerialDeviceTransientErrorException("request ID mismatch");
 
     if (is_error) {
-        uint32_t error_code;
-        memcpy(&error_code, response + 6, 4);
+        uint8_t error_code;
+        memcpy(&error_code, &response[nread - 5], 1);
 
         ThrowPulsarException(error_code);
     }
