@@ -1,8 +1,11 @@
+#include "serial_client.h"
+#include "log.h"
+
 #include <unistd.h>
 #include <unordered_map>
 #include <iostream>
 
-#include "serial_client.h"
+#define LOG(logger) ::logger.Log() << "[serial client] "
 
 namespace {
     struct TSerialPollEntry: public TPollEntry {
@@ -38,11 +41,10 @@ PSerialDevice TSerialClient::CreateDevice(PDeviceConfig device_config)
 {
     if (Active)
         throw TSerialDeviceException("can't add registers to the active client");
-    if (Debug)
-        std::cerr << "CreateDevice: " << device_config->Id <<
+    LOG(Debug) << "CreateDevice: " << device_config->Id <<
             (device_config->DeviceType.empty() ? "" : " (" + device_config->DeviceType + ")") <<
-            " @ " << device_config->SlaveId << " -- protocol: " << device_config->Protocol << std::endl;
-    
+            " @ " << device_config->SlaveId << " -- protocol: " << device_config->Protocol;
+
     try {
         PSerialDevice dev = TSerialDeviceFactory::CreateDevice(device_config, Port);
         DevicesList.push_back(dev);
@@ -59,10 +61,9 @@ void TSerialClient::AddRegister(PRegister reg)
         throw TSerialDeviceException("can't add registers to the active client");
     if (Handlers.find(reg) != Handlers.end())
         throw TSerialDeviceException("duplicate register");
-    Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg, FlushNeeded, Debug);
+    Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg, FlushNeeded);
     RegList.push_back(reg);
-    if (Debug)
-        std::cerr << "AddRegister: " << reg << std::endl;
+    LOG(Debug) << "AddRegister: " << reg;
 }
 
 void TSerialClient::Connect()
@@ -262,19 +263,7 @@ void TSerialClient::SetErrorCallback(const TSerialClient::TErrorCallback& callba
     ErrorCallback = callback;
 }
 
-void TSerialClient::SetDebug(bool debug)
-{
-    Debug = debug;
-    Port->SetDebug(debug);
-    for (const auto& p: Handlers)
-        p.second->SetDebug(debug);
-}
-
-bool TSerialClient::DebugEnabled() const {
-    return Debug;
-}
-
-void TSerialClient::NotifyFlushNeeded() 
+void TSerialClient::NotifyFlushNeeded()
 {
     FlushNeeded->Signal();
 }
@@ -297,9 +286,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
 
 void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
 {
-	if (Debug) {
-		std::cerr << "device " << dev->ToString() << " reconnected" << std::endl;
-	}
+	LOG(Debug) << "device " << dev->ToString() << " reconnected";
 	dev->ResetUnavailableAddresses();
 	WriteSetupRegisters(dev);
 }

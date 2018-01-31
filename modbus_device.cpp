@@ -18,7 +18,7 @@ TModbusDevice::TModbusDevice(PDeviceConfig config, PAbstractSerialPort port, PPr
 
 std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> reg_list) const
 {
-    return Modbus::SplitRegisterList(reg_list, DeviceConfig(), Port()->Debug());
+    return Modbus::SplitRegisterList(reg_list, DeviceConfig());
 }
 
 uint64_t TModbusDevice::ReadRegister(PRegister reg)

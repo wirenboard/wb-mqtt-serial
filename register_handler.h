@@ -22,7 +22,7 @@ public:
         UnknownErrorState,
         ErrorStateUnchanged
     };
-    TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed, bool debug = false);
+    TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed);
     PRegister Register() const { return Reg; }
     bool NeedToPoll();
     TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
@@ -35,7 +35,6 @@ public:
     TErrorState CurrentErrorState() const { return ErrorState; }
 
     PSerialDevice Device() const { return Dev.lock(); }
-    void SetDebug(bool debug) { Debug = debug; }
 
 private:
     template<typename T> static T RoundValue(T val, double round_to);
@@ -55,7 +54,6 @@ private:
     std::mutex SetValueMutex;
     TErrorState ErrorState = UnknownErrorState;
     PBinarySemaphore FlushNeeded;
-    bool Debug;
 };
 
 template<typename T>

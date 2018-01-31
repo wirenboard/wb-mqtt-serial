@@ -1,3 +1,7 @@
+#include "serial_exc.h"
+#include "serial_port.h"
+#include "log.h"
+
 #include <map>
 #include <errno.h>
 #include <string.h>
@@ -9,12 +13,11 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <iostream>
-#include <iomanip>
 #include <utility>
 
+#define LOG(logger) ::logger.Log() << "[serial port] "
 
-#include "serial_exc.h"
-#include "serial_port.h"
+using namespace WBMQTT;
 
 namespace {
     const std::chrono::milliseconds DefaultFrameTimeout(15);
@@ -58,9 +61,8 @@ namespace {
 TAbstractSerialPort::~TAbstractSerialPort() {}
 
 TSerialPort::TSerialPort(const TSerialPortSettings& settings)
-    : Settings(settings),
-      Dbg(false),
-      Fd(-1)
+    : Settings(settings)
+    , Fd(-1)
 {
     memset(&OldTermios, 0, sizeof(termios));
 }
@@ -69,16 +71,6 @@ TSerialPort::~TSerialPort()
 {
     if (Fd >= 0)
         close(Fd);
-}
-
-void TSerialPort::SetDebug(bool debug)
-{
-    Dbg = debug;
-}
-
-bool TSerialPort::Debug() const
-{
-    return Dbg;
 }
 
 void TSerialPort::Open()
@@ -170,27 +162,14 @@ void TSerialPort::CheckPortOpen()
 void TSerialPort::WriteBytes(const uint8_t* buf, int count) {
     if (write(Fd, buf, count) < count)
         throw TSerialDeviceException("serial write failed");
-    if (Dbg) {
-        // TBD: move this to libwbmqtt (HexDump?)
-        std::ios::fmtflags f(std::cerr.flags());
-        std::cerr << "Write:" << std::hex << std::setfill('0');
-        for (int i = 0; i < count; ++i)
-            std::cerr << " " << std::setw(2) << int(buf[i]);
-        std::cerr << std::endl;
-        std::cerr.flags(f);
-    }
+
+    LOG(Debug) << "Write:" << TLogger::HexDump(buf, count);
 }
 
 bool TSerialPort::Select(const std::chrono::microseconds& us)
 {
     fd_set rfds;
     struct timeval tv, *tvp = 0;
-
-#if 0
-    // too verbose
-    if (Dbg)
-        std::cerr << "Select on " << Settings.Device << ": " << ms.count() << " us" << std::endl;
-#endif
 
     FD_ZERO(&rfds);
     FD_SET(Fd, &rfds);
@@ -218,11 +197,7 @@ uint8_t TSerialPort::ReadByte()
     if (read(Fd, &b, 1) < 1)
         throw TSerialDeviceException("read() failed");
 
-    if (Dbg) {
-        std::ios::fmtflags f(std::cerr.flags());
-        std::cerr << "Read: " << std::hex << std::setw(2) << std::setfill('0') << int(b) << std::endl;
-        std::cerr.flags(f);
-    }
+    LOG(Debug) << "Read: " << TLogger::HexDump(b);
 
     return b;
 }
@@ -282,16 +257,7 @@ int TSerialPort::ReadFrame(uint8_t* buf, int size,
     if (!nread)
         throw TSerialDeviceTransientErrorException("request timed out");
 
-    if (Dbg) {
-        // TBD: move this to libwbmqtt (HexDump?)
-        std::ios::fmtflags f(std::cerr.flags());
-        std::cerr << "ReadFrame:" << std::hex << std::uppercase << std::setfill('0');
-        for (int i = 0; i < nread; ++i) {
-            std::cerr << " " << std::setw(2) << int(buf[i]);
-        }
-        std::cerr << std::endl;
-        std::cerr.flags(f);
-    }
+    LOG(Debug) << "ReadFrame:" << TLogger::HexDump(buf, nread);
 
     return nread;
 }
@@ -302,12 +268,8 @@ void TSerialPort::SkipNoise()
     while (Select(NoiseTimeout)) {
         if (read(Fd, &b, 1) < 1)
             throw TSerialDeviceException("read() failed");
-        if (Dbg) {
-            std::ios::fmtflags f(std::cerr.flags());
-            std::cerr << "read noise: " << std::hex << std::setfill('0') << std::setw(2) << int(b) << std::endl;
-            std::cerr.flags(f);
-        }
 
+        LOG(Debug) << "read noise: " << TLogger::HexDump(b);
     }
 }
 
@@ -323,13 +285,10 @@ TAbstractSerialPort::TTimePoint TSerialPort::CurrentTime() const
 
 bool TSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
 {
-    if (Dbg) {
-        std::cerr << std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::steady_clock::now().time_since_epoch()).count() <<
-            ": Wait until " <<
-            std::chrono::duration_cast<std::chrono::milliseconds>(until.time_since_epoch()).count() <<
-            std::endl;
-        }
+    LOG(Debug) << std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now().time_since_epoch()).count() <<
+        ": Wait until " <<
+        std::chrono::duration_cast<std::chrono::milliseconds>(until.time_since_epoch()).count();
 
     return semaphore->Wait(until);
 }

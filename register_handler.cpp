@@ -1,10 +1,10 @@
-#include <iomanip>
-#include <iostream>
-
 #include "register_handler.h"
+#include "log.h"
 
-TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed, bool debug)
-    : Dev(dev), Reg(reg), FlushNeeded(flush_needed), Debug(debug) {}
+#define LOG(logger) ::logger.Log() << "[register handler] "
+
+TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed)
+    : Dev(dev), Reg(reg), FlushNeeded(flush_needed){}
 
 TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
     TErrorState newState;
@@ -62,14 +62,12 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
 
     bool first_poll = !DidReadReg;
     DidReadReg = true;
-    
+
     if (Reg->HasErrorValue && Reg->ErrorValue == new_value) {
-        if (Debug) {
-            std::cerr << "register " << Reg->ToString() << " contains error value";
-        }
+        LOG(Debug) << "register " << Reg->ToString() << " contains error value";
         return UpdateReadError(true);
     }
-    
+
     SetValueMutex.lock();
     if (Value != new_value) {
         if (Dirty) {
@@ -80,11 +78,8 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
         Value = new_value;
         SetValueMutex.unlock();
 
-        if (Debug) {
-            std::ios::fmtflags f(std::cerr.flags());
-            std::cerr << "new val for " << Reg->ToString() << ": " << std::hex << new_value << std::endl;
-            std::cerr.flags(f);
-        }
+        LOG(Debug) << "new val for " << Reg->ToString() << ": " << std::hex << new_value;
+
         *changed = true;
         return UpdateReadError(false);
     } else

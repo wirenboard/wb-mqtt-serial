@@ -48,20 +48,22 @@ struct TDeviceChannelState
 };
 
 
-class TSerialPortDriver
+class TSerialPortDriver: public std::enable_shared_from_this<TSerialPortDriver>
 {
 public:
     TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig port_config, PAbstractSerialPort port_override = 0);
     ~TSerialPortDriver();
     void Cycle();
-    void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event);
     bool WriteInitValues();
     void ClearDevices();
+
+    static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event);
 
 private:
     WBMQTT::TLocalDeviceArgs From(const PSerialDevice & device);
     WBMQTT::TControlArgs From(const PDeviceChannel & channel);
 
+    void SetValueToChannel(const PDeviceChannel & channel, const std::string & value);
     bool NeedToPublish(PRegister reg, bool changed);
     void OnValueRead(PRegister reg, bool changed);
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
@@ -80,12 +82,12 @@ typedef std::shared_ptr<TSerialPortDriver> PSerialPortDriver;
 
 struct TDeviceLinkData
 {
-    TSerialPortDriver*  PortDriver;
-    TSerialDevice*      SerialDevice;
+    std::weak_ptr<TSerialPortDriver>  PortDriver;
+    std::weak_ptr<TSerialDevice>      SerialDevice;
 };
 
 struct TControlLinkData
 {
-    TSerialPortDriver*  PortDriver;
-    TDeviceChannel*     DeviceChannel;
+    std::weak_ptr<TSerialPortDriver>  PortDriver;
+    std::weak_ptr<TDeviceChannel>     DeviceChannel;
 };

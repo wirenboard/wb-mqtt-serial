@@ -14,16 +14,6 @@ using namespace WBMQTT;
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
 
-void TFakeSerialPort::SetDebug(bool debug)
-{
-    Fixture.Emit() << "SetDebug(" << debug << ")";
-}
-
-bool TFakeSerialPort::Debug() const
-{
-    return false;
-}
-
 void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
 {
     ExpectedFrameTimeout = timeout;

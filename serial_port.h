@@ -30,8 +30,6 @@ public:
     // TBD: The following methods don't really belong here.
     // Need to use separate class for them
     // (somewhat painful without DI)
-    virtual void SetDebug(bool debug) = 0;
-    virtual bool Debug() const = 0;
     virtual void Sleep(const std::chrono::microseconds& us) = 0;
     virtual TTimePoint CurrentTime() const = 0;
     virtual bool Wait(PBinarySemaphore semaphore, const TTimePoint& until) = 0;
@@ -43,8 +41,6 @@ class TSerialPort: public TAbstractSerialPort {
 public:
     TSerialPort(const TSerialPortSettings& settings);
     ~TSerialPort();
-    void SetDebug(bool debug);
-    bool Debug() const;
     void CheckPortOpen();
     void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte();
@@ -62,7 +58,6 @@ public:
 
 private:
     TSerialPortSettings Settings;
-    bool Dbg;
     int Fd;
     termios OldTermios;
 };

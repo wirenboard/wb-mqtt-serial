@@ -16,8 +16,6 @@ using WBMQTT::Testing::TLoggedFixture;
 class TFakeSerialPort: public TAbstractSerialPort, public TExpector {
 public:
     TFakeSerialPort(TLoggedFixture& fixture);
-    void SetDebug(bool debug);
-    bool Debug() const;
     void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
     void CheckPortOpen();
     void Open();
