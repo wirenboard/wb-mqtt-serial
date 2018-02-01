@@ -1,5 +1,4 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
-SetDebug(1)
 Publish: /devices/modbus-io-1-1/meta/driver: 'em-test' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/meta/name: 'ModbusIO_1_1' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Coil 0/meta/readonly: '' (QoS 1, retained)

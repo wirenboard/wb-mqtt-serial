@@ -12,6 +12,8 @@
 
 #include "uniel_device.h"
 
+#define LOG(logger) ::logger.Log() << "[uniel device] "
+
 namespace {
     enum {
         READ_CMD           = 0x05,
@@ -52,7 +54,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
     for (;;) {
         uint8_t first = Port()->ReadByte();
         if (first != 0xff) {
-            std::cerr << "uniel: warning: resync" << std::endl;
+            LOG(Warn) << "resync";
             continue;
         }
         uint8_t second = Port()->ReadByte();

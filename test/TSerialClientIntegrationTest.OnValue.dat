@@ -1,5 +1,4 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
-SetDebug(1)
 Publish: /devices/OnValueTest/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
 Publish: /devices/OnValueTest/meta/name: 'OnValueTest' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1/meta/order: '1' (QoS 1, retained)

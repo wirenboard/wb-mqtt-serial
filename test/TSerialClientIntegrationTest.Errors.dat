@@ -1,5 +1,4 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
-SetDebug(1)
 Publish: /devices/ddl24/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
 Publish: /devices/ddl24/meta/name: 'DDL24' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB/meta/order: '1' (QoS 1, retained)

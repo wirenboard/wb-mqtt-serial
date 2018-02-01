@@ -1,5 +1,4 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
-SetDebug(1)
 Publish: /devices/WordsLETest/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
 Publish: /devices/WordsLETest/meta/name: 'WordsLETest' (QoS 1, retained)
 Publish: /devices/WordsLETest/controls/Voltage/meta/order: '1' (QoS 1, retained)

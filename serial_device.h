@@ -1,5 +1,12 @@
 #pragma once
 
+#include "portsettings.h"
+#include "register.h"
+#include "serial_exc.h"
+#include "serial_config.h"
+#include "serial_port.h"
+#include "log.h"
+
 #include <list>
 #include <set>
 #include <vector>
@@ -9,12 +16,6 @@
 #include <exception>
 #include <algorithm>
 #include <stdint.h>
-#include <iostream>
-#include "portsettings.h"
-#include "register.h"
-#include "serial_exc.h"
-#include "serial_config.h"
-#include "serial_port.h"
 
 
 class IProtocol;
@@ -267,7 +268,7 @@ public:
         auto p = std::dynamic_pointer_cast<Proto>(protocol);
 
         if (!p) {
-            std::cerr << "cannot cast " << protocol->GetName() << " to " << typeid(Proto).name() << std::endl;
+            Error.Log() << "[serial device] cannot cast " << protocol->GetName() << " to " << typeid(Proto).name();
             throw std::runtime_error("Wrong protocol cast, check registration code and class header");
         }
 

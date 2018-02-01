@@ -2,9 +2,7 @@
 
 #undef POLL_PLAN_DEBUG
 
-#ifdef POLL_PLAN_DEBUG
-#include <iostream>
-#endif
+#define LOG(logger) ::logger.Log() << "[poll plan] "
 
 void TPollPlan::TQueueItem::Update(const std::chrono::milliseconds& new_interval,
                                    const std::chrono::milliseconds& request_duration)
@@ -22,13 +20,12 @@ void TPollPlan::TQueueItem::Update(const std::chrono::milliseconds& new_interval
     RequestDuration = request_duration;
 
 #ifdef POLL_PLAN_DEBUG
-    std::cout << "Poll interval " << PollInterval.count() << ": CurrentTime is " <<
+    LOG(Info) << "Poll interval " << PollInterval.count() << ": CurrentTime is " <<
         std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime->time_since_epoch()).count() <<
         ". Was scheduled at " <<
         std::chrono::duration_cast<std::chrono::milliseconds>(DueAt.time_since_epoch()).count() <<
         ". Rescheduling to " <<
-        std::chrono::duration_cast<std::chrono::milliseconds>((*CurrentTime + PollInterval).time_since_epoch()).count() <<
-        std::endl;
+        std::chrono::duration_cast<std::chrono::milliseconds>((*CurrentTime + PollInterval).time_since_epoch()).count();
 #endif
     DueAt = *CurrentTime + PollInterval;
 }
@@ -72,11 +69,10 @@ void TPollPlan::ProcessPending(const TCallback& callback)
         PendingItems.pop();
 #ifdef POLL_PLAN_DEBUG
     if (!Queue.empty())
-        std::cout << "top due at " <<
+        LOG(Info) << "top due at " <<
             std::chrono::duration_cast<std::chrono::milliseconds>(Queue.top()->DueAt.time_since_epoch()).count() <<
             "; now is " <<
-            std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime.time_since_epoch()).count() <<
-            std::endl;
+            std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime.time_since_epoch()).count();
 #endif
     while (!Queue.empty() && Queue.top()->DueAt <= CurrentTime) {
         PendingItems.push(Queue.top());

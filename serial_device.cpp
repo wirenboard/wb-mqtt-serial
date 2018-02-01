@@ -1,6 +1,9 @@
-#include <iostream>
 #include "serial_device.h"
+#include "log.h"
+
 #include <unistd.h>
+
+#define LOG(logger) ::logger.Log() << "[serial device] "
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
     : Delay(config->Delay)
@@ -47,23 +50,19 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
         	continue;
         }
     	try {
-	    if (DeviceConfig()->GuardInterval.count()){
-	        usleep(DeviceConfig()->GuardInterval.count());
-	    }
+            if (DeviceConfig()->GuardInterval.count()){
+                usleep(DeviceConfig()->GuardInterval.count());
+            }
             simple_range->SetValue(reg, ReadRegister(reg));
         } catch (const TSerialDeviceTransientErrorException& e) {
             simple_range->SetError(reg);
-            std::ios::fmtflags f(std::cerr.flags());
-            std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-                      << reg->Device()->ToString() + "]" << std::endl;
-            std::cerr.flags(f);
+            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
+                      << reg->Device()->ToString() + "]";
         } catch (const TSerialDevicePermanentRegisterException& e) {
         	UnavailableAddresses.insert(reg->Address);
         	simple_range->SetError(reg);
-			std::ios::fmtflags f(std::cerr.flags());
-			std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-					  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported" << std::endl;
-			std::cerr.flags(f);
+			LOG(Warn) << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
+					  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported";
         }
     }
 }
@@ -106,22 +105,21 @@ bool TSerialDevice::WriteSetupRegisters()
     bool did_write = false;
     for (const auto& setup_item : SetupItems) {
         try {
-        	std::cerr << "Init: " << setup_item->Name << ": setup register " <<
-        			setup_item->Register->ToString() << " <-- " << setup_item->Value << std::endl;
+        	LOG(Info) << "Init: " << setup_item->Name << ": setup register " <<
+        			setup_item->Register->ToString() << " <-- " << setup_item->Value;
             WriteRegister(setup_item->Register, setup_item->Value);
             did_write = true;
-        } catch (const TSerialDeviceException& e) {
-            std::cerr << "WARNING: device '" << setup_item->Register->Device()->ToString() <<
+        } catch (const TSerialDeviceException & e) {
+            LOG(Warn) << "device '" << setup_item->Register->Device()->ToString() <<
                 "' register '" << setup_item->Register->ToString() <<
-                "' setup failed: " << e.what() << std::endl;
+                "' setup failed: " << e.what();
         }
     }
 
     return did_write;
 }
 
-std::unordered_map<std::string, PProtocol>
-    *TSerialDeviceFactory::Protocols = 0;
+std::unordered_map<std::string, PProtocol> * TSerialDeviceFactory::Protocols = nullptr;
 
 void TSerialDeviceFactory::RegisterProtocol(PProtocol protocol)
 {

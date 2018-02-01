@@ -1,6 +1,7 @@
 #include "serial_driver.h"
 #include "fake_serial_port.h"
 #include "fake_serial_device.h"
+#include "log.h"
 
 #include <wblib/testing/fake_driver.h>
 #include <wblib/testing/fake_mqtt.h>
@@ -17,6 +18,7 @@ using namespace std;
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 
+#define LOG(logger) ::logger.Log() << "[serial client test] "
 
 class TSerialClientTest: public TLoggedFixture
 {
@@ -816,7 +818,7 @@ void TSerialClientIntegrationTest::TearDown()
 void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
 {
     for (auto port_config: Config->PortConfigs) {
-        cout << "port devices: " << port_config->DeviceConfigs.size() << endl;
+        LOG(Info) << "port devices: " << port_config->DeviceConfigs.size();
         port_config->DeviceConfigs.erase(
             remove_if(port_config->DeviceConfigs.begin(),
                       port_config->DeviceConfigs.end(),

@@ -33,6 +33,12 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConf
       Config(portConfig),
       Port(portOverride ? portOverride : std::make_shared<TSerialPort>(Config->ConnSettings)),
       SerialClient(new TSerialClient(Port))
+{}
+
+TSerialPortDriver::~TSerialPortDriver()
+{}
+
+void TSerialPortDriver::SetUpDevices()
 {
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
         OnValueRead(reg, changed);
@@ -41,7 +47,7 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConf
         UpdateError(reg, state);
     });
 
-    LOG(Debug) << "setting up devices at " << portConfig->ConnSettings.Device;
+    LOG(Debug) << "setting up devices at " << Config->ConnSettings.Device;
 
     try {
         auto tx = MqttDriver->BeginTx();
@@ -68,15 +74,15 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConf
         for (auto & futureControl: futureControls) {
             futureControl.GetValue();   // wait for control creation, receive exceptions if any
         }
+    } catch (const exception & e) {
+        LOG(Error) << "unable to create device or control: '" << e.what() << "' Cleaning.";
+        ClearDevices();
+        throw;
     } catch (...) {
         LOG(Error) << "unable to create device or control. Cleaning.";
         ClearDevices();
         throw;
     }
-}
-
-TSerialPortDriver::~TSerialPortDriver()
-{
 }
 
 void TSerialPortDriver::HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event)
@@ -277,21 +283,29 @@ bool TSerialPortDriver::WriteInitValues()
     return didWrite;
 }
 
-void TSerialPortDriver::ClearDevices()
+void TSerialPortDriver::ClearDevices() noexcept
 {
-    auto tx = MqttDriver->BeginTx();
-
     try {
-        for (const auto & device: Devices) {
-            tx->RemoveDeviceById(device->DeviceConfig()->Id).Sync();
-            LOG(Debug) << "device " << device->DeviceConfig()->Id << " removed successfully";
+        {
+            auto tx = MqttDriver->BeginTx();
+
+            for (const auto & device: Devices) {
+                try {
+                    tx->RemoveDeviceById(device->DeviceConfig()->Id).Sync();
+                    LOG(Debug) << "device " << device->DeviceConfig()->Id << " removed successfully";
+                } catch (const exception & e) {
+                    LOG(Warn) << "exception during device removal: " << e.what();
+                } catch (...) {
+                    LOG(Warn) << "unknown exception during device removal";
+                }
+            }
         }
         Devices.clear();
         SerialClient->ClearDevices();
     } catch (const exception & e) {
-        LOG(Warn) << "exception during device removal: " << e.what();
+        LOG(Warn) << "TSerialPortDriver::ClearDevices(): " << e.what();
     } catch (...) {
-        LOG(Warn) << "unknown exception during device removal";
+        LOG(Warn) << "TSerialPortDriver::ClearDevices(): unknown exception";
     }
 }
 

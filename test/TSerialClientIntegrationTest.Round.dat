@@ -1,5 +1,4 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
-SetDebug(1)
 Publish: /devices/RoundTest/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
 Publish: /devices/RoundTest/meta/name: 'RoundTest' (QoS 1, retained)
 Publish: /devices/RoundTest/controls/Float_0_01/meta/order: '1' (QoS 1, retained)

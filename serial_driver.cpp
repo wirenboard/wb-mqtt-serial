@@ -25,7 +25,12 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
             }
 
             PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, portOverride));
+            PortDrivers.back()->SetUpDevices();
         }
+    } catch (const exception & e) {
+        LOG(Error) << "unable to create port driver: '" << e.what() << "'. Cleaning.";
+        ClearDevices();
+        throw;
     } catch (...) {
         LOG(Error) << "unable to create port driver. Cleaning.";
         ClearDevices();
@@ -37,13 +42,13 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
 
 void TMQTTSerialDriver::LoopOnce()
 {
-    for (const auto& portDriver: PortDrivers)
+    for (const auto & portDriver: PortDrivers)
         portDriver->Cycle();
 }
 
 void TMQTTSerialDriver::ClearDevices()
 {
-    for (auto & portDriver : PortDrivers) {
+    for (const auto & portDriver : PortDrivers) {
         portDriver->ClearDevices();
     }
 }

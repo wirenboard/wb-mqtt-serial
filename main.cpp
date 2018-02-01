@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 
             printf("Usage:\n wb-mqtt-serial [options]\n");
             printf("Options:\n");
-            printf("\t-d level    \t\t\t enable debuging output\n");
+            printf("\t-d level    \t\t\t enable debuging output (1 - serial only; 2 - mqtt only; 3 - both; negative values - silent mode (-1, -2, -3))\n");
             printf("\t-c config   \t\t\t config file\n");
             printf("\t-p PORT     \t\t\t set to what port wb-mqtt-serial should connect (default: 1883)\n");
             printf("\t-H IP       \t\t\t set to what IP wb-mqtt-serial should connect (default: localhost)\n");
@@ -75,13 +75,32 @@ int main(int argc, char *argv[])
     }
 
     switch(debug) {
+        case -1:
+            Info.SetEnabled(false);
+            break;
+
+        case -2:
+            WBMQTT::Info.SetEnabled(false);
+            break;
+
+        case -3:
+            WBMQTT::Info.SetEnabled(false);
+            Info.SetEnabled(false);
+            break;
+
+        case 1:
+            Debug.SetEnabled(true);
+            break;
+
+        case 2:
+            WBMQTT::Debug.SetEnabled(true);
+            break;
+
         case 3:
             WBMQTT::Debug.SetEnabled(true);
-        case 2:
             Debug.SetEnabled(true);
-        case 1:
-            Info.SetEnabled(true);
-            WBMQTT::Info.SetEnabled(true);
+            break;
+
         default:
             break;
     }

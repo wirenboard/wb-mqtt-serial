@@ -1,5 +1,4 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
-SetDebug(1)
 Publish: /devices/mercury200.02_22417438/meta/driver: 'em-test' (QoS 1, retained)
 Publish: /devices/mercury200.02_22417438/meta/name: 'Mercury 200.02 22417438' (QoS 1, retained)
 Publish: /devices/mercury200.02_22417438/controls/Power consumption tariff 1/meta/order: '1' (QoS 1, retained)

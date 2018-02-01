@@ -53,9 +53,10 @@ class TSerialPortDriver: public std::enable_shared_from_this<TSerialPortDriver>
 public:
     TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig port_config, PAbstractSerialPort port_override = 0);
     ~TSerialPortDriver();
+    void SetUpDevices();
     void Cycle();
     bool WriteInitValues();
-    void ClearDevices();
+    void ClearDevices() noexcept;
 
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event);
 

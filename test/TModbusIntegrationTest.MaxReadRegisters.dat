@@ -1,5 +1,4 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
-SetDebug(1)
 Publish: /devices/modbus-sample/meta/driver: 'em-test' (QoS 1, retained)
 Publish: /devices/modbus-sample/meta/name: 'Modbus-sample' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 0/meta/order: '1' (QoS 1, retained)
@@ -272,7 +271,6 @@ Publish: /devices/modbus-sample/controls/Discrete 0/meta/type: '' (QoS 1, retain
 Publish: /devices/modbus-sample/controls/Discrete 0/meta/writable: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/meta/driver: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/meta/name: '' (QoS 1, retained)
-SetDebug(1)
 Publish: /devices/modbus-sample/meta/driver: 'em-test' (QoS 1, retained)
 Publish: /devices/modbus-sample/meta/name: 'Modbus-sample' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 0/meta/order: '1' (QoS 1, retained)

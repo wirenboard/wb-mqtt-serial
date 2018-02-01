@@ -694,10 +694,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
         modbus_range->SetError(true);
 
-        const auto & logWarn = LOG(Warn);
-        logWarn << "ModbusRTU::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
-            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
-            " of device " << modbus_range->Device()->ToString();
+        auto logWarn(std::move(LOG(Warn) << "ModbusRTU::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
+            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() << " of device " << modbus_range->Device()->ToString()));
+
         if (!exception_message.empty()) {
             logWarn << ": " << exception_message;
         }

@@ -1,4 +1,3 @@
-#include <iostream>
 #include <stdexcept>
 
 #include "modbus_device.h"

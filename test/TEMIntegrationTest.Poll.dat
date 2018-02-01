@@ -1,5 +1,4 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
-SetDebug(1)
 Publish: /devices/milur305.32r-test/meta/driver: 'em-test' (QoS 1, retained)
 Publish: /devices/milur305.32r-test/meta/name: 'Milur 305.32R (test)' (QoS 1, retained)
 Publish: /devices/milur305.32r-test/controls/Phase C voltage/meta/order: '1' (QoS 1, retained)

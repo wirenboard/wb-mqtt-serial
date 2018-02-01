@@ -1,5 +1,4 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
-SetDebug(0)
 Publish: /devices/pseudo_uniel/meta/driver: 'em-test' (QoS 1, retained)
 Publish: /devices/pseudo_uniel/meta/name: 'PseudoUniel' (QoS 1, retained)
 Publish: /devices/pseudo_uniel/controls/Input 0/meta/order: '1' (QoS 1, retained)
