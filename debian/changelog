@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.39) stable; urgency=medium
+
+  * Adds WB-MAP6S template
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 05 Feb 2018 13:46:29 +0300
+
 wb-mqtt-serial (1.38) stable; urgency=medium
 
   * deferred device and port disconnect (only at end of cycle)
