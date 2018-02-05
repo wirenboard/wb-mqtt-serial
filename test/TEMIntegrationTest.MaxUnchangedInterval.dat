@@ -138,6 +138,7 @@ EnqueueMercury230PerPhaseEnergyResponse()
 >> 00 05 60 00 38 25
 Publish: /devices/mercury230ar02-test/controls/AP2/meta/error: '' (QoS 0, retained)
 Publish: /devices/mercury230ar02-test/controls/AP2: '3145.769' (QoS 0, retained)
+Port cycle OK
 >>> LoopOnce()
 << 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
 EnqueueMilurIgnoredPacketWorkaround()
@@ -183,155 +184,7 @@ EnqueueMercury230TempResponse()
 << 00 00 18 71 CA
 EnqueueMercury230PerPhaseEnergyResponse()
 >> 00 05 60 00 38 25
->>> LoopOnce()
-<< 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
-EnqueueMilurIgnoredPacketWorkaround()
->> FF
-Sleep(100000)
-SkipNoise()
-EnqueueMilurPhaseCVoltageResponse()
->> FF 01 66 C0 4A
-Publish: /devices/milur305.32r-test/controls/Phase C voltage: '234.607' (QoS 0, retained)
-<< FF 01 66 03 6F 94 03 03 4E
-EnqueueMilurPhaseCCurrentResponse()
->> FF 01 69 80 4E
-Publish: /devices/milur305.32r-test/controls/Phase C current: '-10' (QoS 0, retained)
-<< FF 01 69 03 F0 D8 FF 53 E0
-EnqueueMilurTotalConsumptionResponse()
->> FF 01 76 C1 86
-Publish: /devices/milur305.32r-test/controls/Total consumption: '111.44' (QoS 0, retained)
-<< FF 01 76 04 44 11 10 00 AC 6C
-Sleep(100000)
-EnqueueMercury230EnergyResponse1()
->> 00 05 00 00 10 25
-Publish: /devices/mercury230ar02-test/controls/Total consumption: '3196.2' (QoS 0, retained)
-Publish: /devices/mercury230ar02-test/controls/Total reactive energy: '300.444' (QoS 0, retained)
-<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
-EnqueueMercury230U1Response()
->> 00 08 11 11 4D BA
-Publish: /devices/mercury230ar02-test/controls/U1: '241.28' (QoS 0, retained)
-<< 00 00 40 5E B0 1C
-EnqueueMercury230U2Response()
->> 00 08 11 12 0D BB
-Publish: /devices/mercury230ar02-test/controls/U2: '240.43' (QoS 0, retained)
-<< 00 00 EB 5D 8F 2D
-EnqueueMercury230I1Response()
->> 00 08 11 21 4D AE
-Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
-<< 00 00 45 00 32 B4
-EnqueueMercury230PResponse()
->> 00 08 11 00 8D B6
-Publish: /devices/mercury230ar02-test/controls/P: '5530.95' (QoS 0, retained)
-<< 00 48 87 70 E2 26
-EnqueueMercury230P1Response()
->> 00 08 11 01 4C 76
-Publish: /devices/mercury230ar02-test/controls/P1: '-5530.95' (QoS 0, retained)
-<< 00 C8 87 70 E3 CE
-EnqueueMercury230Q1Response()
->> 00 08 11 05 4D B5
-Publish: /devices/mercury230ar02-test/controls/Q1: '-5530.95' (QoS 0, retained)
-<< 00 C8 87 70 E3 CE
-EnqueueMercury230Q2Response()
->> 00 08 11 06 0D B4
-Publish: /devices/mercury230ar02-test/controls/Q2: '5530.95' (QoS 0, retained)
-<< 00 88 87 70 E2 1A
-EnqueueMercury230TempResponse()
->> 00 08 11 70 8C 52
-Publish: /devices/mercury230ar02-test/controls/Temperature: '24' (QoS 0, retained)
-<< 00 00 18 71 CA
-EnqueueMercury230PerPhaseEnergyResponse()
->> 00 05 60 00 38 25
-Publish: /devices/mercury230ar02-test/controls/AP2: '3145.769' (QoS 0, retained)
->>> LoopOnce()
-<< 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
-EnqueueMilurIgnoredPacketWorkaround()
->> FF
-Sleep(100000)
-SkipNoise()
-EnqueueMilurPhaseCVoltageResponse()
->> FF 01 66 C0 4A
-<< FF 01 66 03 6F 94 03 03 4E
-EnqueueMilurPhaseCCurrentResponse()
->> FF 01 69 80 4E
-<< FF 01 69 03 F0 D8 FF 53 E0
-EnqueueMilurTotalConsumptionResponse()
->> FF 01 76 C1 86
-<< FF 01 76 04 44 11 10 00 AC 6C
-Sleep(100000)
-EnqueueMercury230EnergyResponse1()
->> 00 05 00 00 10 25
-<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
-EnqueueMercury230U1Response()
->> 00 08 11 11 4D BA
-<< 00 00 40 5E B0 1C
-EnqueueMercury230U2Response()
->> 00 08 11 12 0D BB
-<< 00 00 EB 5D 8F 2D
-EnqueueMercury230I1Response()
->> 00 08 11 21 4D AE
-<< 00 00 45 00 32 B4
-EnqueueMercury230PResponse()
->> 00 08 11 00 8D B6
-<< 00 48 87 70 E2 26
-EnqueueMercury230P1Response()
->> 00 08 11 01 4C 76
-<< 00 C8 87 70 E3 CE
-EnqueueMercury230Q1Response()
->> 00 08 11 05 4D B5
-<< 00 C8 87 70 E3 CE
-EnqueueMercury230Q2Response()
->> 00 08 11 06 0D B4
-<< 00 88 87 70 E2 1A
-EnqueueMercury230TempResponse()
->> 00 08 11 70 8C 52
-<< 00 00 18 71 CA
-EnqueueMercury230PerPhaseEnergyResponse()
->> 00 05 60 00 38 25
->>> LoopOnce()
-<< 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
-EnqueueMilurIgnoredPacketWorkaround()
->> FF
-Sleep(100000)
-SkipNoise()
-EnqueueMilurPhaseCVoltageResponse()
->> FF 01 66 C0 4A
-<< FF 01 66 03 6F 94 03 03 4E
-EnqueueMilurPhaseCCurrentResponse()
->> FF 01 69 80 4E
-<< FF 01 69 03 F0 D8 FF 53 E0
-EnqueueMilurTotalConsumptionResponse()
->> FF 01 76 C1 86
-<< FF 01 76 04 44 11 10 00 AC 6C
-Sleep(100000)
-EnqueueMercury230EnergyResponse1()
->> 00 05 00 00 10 25
-<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
-EnqueueMercury230U1Response()
->> 00 08 11 11 4D BA
-<< 00 00 40 5E B0 1C
-EnqueueMercury230U2Response()
->> 00 08 11 12 0D BB
-<< 00 00 EB 5D 8F 2D
-EnqueueMercury230I1Response()
->> 00 08 11 21 4D AE
-<< 00 00 45 00 32 B4
-EnqueueMercury230PResponse()
->> 00 08 11 00 8D B6
-<< 00 48 87 70 E2 26
-EnqueueMercury230P1Response()
->> 00 08 11 01 4C 76
-<< 00 C8 87 70 E3 CE
-EnqueueMercury230Q1Response()
->> 00 08 11 05 4D B5
-<< 00 C8 87 70 E3 CE
-EnqueueMercury230Q2Response()
->> 00 08 11 06 0D B4
-<< 00 88 87 70 E2 1A
-EnqueueMercury230TempResponse()
->> 00 08 11 70 8C 52
-<< 00 00 18 71 CA
-EnqueueMercury230PerPhaseEnergyResponse()
->> 00 05 60 00 38 25
+Port cycle OK
 >>> LoopOnce()
 << 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
 EnqueueMilurIgnoredPacketWorkaround()
@@ -391,5 +244,158 @@ Publish: /devices/mercury230ar02-test/controls/Temperature: '24' (QoS 0, retaine
 EnqueueMercury230PerPhaseEnergyResponse()
 >> 00 05 60 00 38 25
 Publish: /devices/mercury230ar02-test/controls/AP2: '3145.769' (QoS 0, retained)
+Port cycle OK
+>>> LoopOnce()
+<< 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
+EnqueueMilurIgnoredPacketWorkaround()
+>> FF
+Sleep(100000)
+SkipNoise()
+EnqueueMilurPhaseCVoltageResponse()
+>> FF 01 66 C0 4A
+<< FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurPhaseCCurrentResponse()
+>> FF 01 69 80 4E
+<< FF 01 69 03 F0 D8 FF 53 E0
+EnqueueMilurTotalConsumptionResponse()
+>> FF 01 76 C1 86
+<< FF 01 76 04 44 11 10 00 AC 6C
+Sleep(100000)
+EnqueueMercury230EnergyResponse1()
+>> 00 05 00 00 10 25
+<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+<< 00 00 40 5E B0 1C
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+<< 00 00 EB 5D 8F 2D
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+<< 00 00 45 00 32 B4
+EnqueueMercury230PResponse()
+>> 00 08 11 00 8D B6
+<< 00 48 87 70 E2 26
+EnqueueMercury230P1Response()
+>> 00 08 11 01 4C 76
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q1Response()
+>> 00 08 11 05 4D B5
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q2Response()
+>> 00 08 11 06 0D B4
+<< 00 88 87 70 E2 1A
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+<< 00 00 18 71 CA
+EnqueueMercury230PerPhaseEnergyResponse()
+>> 00 05 60 00 38 25
+Port cycle OK
+>>> LoopOnce()
+<< 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
+EnqueueMilurIgnoredPacketWorkaround()
+>> FF
+Sleep(100000)
+SkipNoise()
+EnqueueMilurPhaseCVoltageResponse()
+>> FF 01 66 C0 4A
+<< FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurPhaseCCurrentResponse()
+>> FF 01 69 80 4E
+<< FF 01 69 03 F0 D8 FF 53 E0
+EnqueueMilurTotalConsumptionResponse()
+>> FF 01 76 C1 86
+<< FF 01 76 04 44 11 10 00 AC 6C
+Sleep(100000)
+EnqueueMercury230EnergyResponse1()
+>> 00 05 00 00 10 25
+<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+<< 00 00 40 5E B0 1C
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+<< 00 00 EB 5D 8F 2D
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+<< 00 00 45 00 32 B4
+EnqueueMercury230PResponse()
+>> 00 08 11 00 8D B6
+<< 00 48 87 70 E2 26
+EnqueueMercury230P1Response()
+>> 00 08 11 01 4C 76
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q1Response()
+>> 00 08 11 05 4D B5
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q2Response()
+>> 00 08 11 06 0D B4
+<< 00 88 87 70 E2 1A
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+<< 00 00 18 71 CA
+EnqueueMercury230PerPhaseEnergyResponse()
+>> 00 05 60 00 38 25
+Port cycle OK
+>>> LoopOnce()
+<< 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
+EnqueueMilurIgnoredPacketWorkaround()
+>> FF
+Sleep(100000)
+SkipNoise()
+EnqueueMilurPhaseCVoltageResponse()
+>> FF 01 66 C0 4A
+Publish: /devices/milur305.32r-test/controls/Phase C voltage: '234.607' (QoS 0, retained)
+<< FF 01 66 03 6F 94 03 03 4E
+EnqueueMilurPhaseCCurrentResponse()
+>> FF 01 69 80 4E
+Publish: /devices/milur305.32r-test/controls/Phase C current: '-10' (QoS 0, retained)
+<< FF 01 69 03 F0 D8 FF 53 E0
+EnqueueMilurTotalConsumptionResponse()
+>> FF 01 76 C1 86
+Publish: /devices/milur305.32r-test/controls/Total consumption: '111.44' (QoS 0, retained)
+<< FF 01 76 04 44 11 10 00 AC 6C
+Sleep(100000)
+EnqueueMercury230EnergyResponse1()
+>> 00 05 00 00 10 25
+Publish: /devices/mercury230ar02-test/controls/Total consumption: '3196.2' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Total reactive energy: '300.444' (QoS 0, retained)
+<< 00 30 00 28 C5 FF FF FF FF 04 00 9C 95 FF FF FF FF 44 AB
+EnqueueMercury230U1Response()
+>> 00 08 11 11 4D BA
+Publish: /devices/mercury230ar02-test/controls/U1: '241.28' (QoS 0, retained)
+<< 00 00 40 5E B0 1C
+EnqueueMercury230U2Response()
+>> 00 08 11 12 0D BB
+Publish: /devices/mercury230ar02-test/controls/U2: '240.43' (QoS 0, retained)
+<< 00 00 EB 5D 8F 2D
+EnqueueMercury230I1Response()
+>> 00 08 11 21 4D AE
+Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
+<< 00 00 45 00 32 B4
+EnqueueMercury230PResponse()
+>> 00 08 11 00 8D B6
+Publish: /devices/mercury230ar02-test/controls/P: '5530.95' (QoS 0, retained)
+<< 00 48 87 70 E2 26
+EnqueueMercury230P1Response()
+>> 00 08 11 01 4C 76
+Publish: /devices/mercury230ar02-test/controls/P1: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q1Response()
+>> 00 08 11 05 4D B5
+Publish: /devices/mercury230ar02-test/controls/Q1: '-5530.95' (QoS 0, retained)
+<< 00 C8 87 70 E3 CE
+EnqueueMercury230Q2Response()
+>> 00 08 11 06 0D B4
+Publish: /devices/mercury230ar02-test/controls/Q2: '5530.95' (QoS 0, retained)
+<< 00 88 87 70 E2 1A
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+Publish: /devices/mercury230ar02-test/controls/Temperature: '24' (QoS 0, retained)
+<< 00 00 18 71 CA
+EnqueueMercury230PerPhaseEnergyResponse()
+>> 00 05 60 00 38 25
+Publish: /devices/mercury230ar02-test/controls/AP2: '3145.769' (QoS 0, retained)
+Port cycle OK
 << 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
 Close()

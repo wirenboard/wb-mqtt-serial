@@ -134,5 +134,6 @@ Publish: /devices/modbus-sample/controls/Coil 11/meta/error: 'r' (QoS 0, retaine
 EnqueueDiscreteReadResponse()
 >> 01 02 00 14 00 01 F9 CE
 Publish: /devices/modbus-sample/controls/Discrete 0/meta/error: 'r' (QoS 0, retained)
+Port cycle OK
 << 01 82 0B 01 67
 Close()

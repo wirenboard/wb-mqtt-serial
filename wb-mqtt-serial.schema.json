@@ -192,10 +192,18 @@
         "connection_timeout_ms": {
           "type": "integer",
           "title": "Connection timeout (ms)",
-          "description": "Zero means no timeout. Used for disconnect detection. If not set, the default timeout (5000ms) is used.",
-          "minimum": 0,
-          "default": 0,
+          "description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
+          "minimum": -1,
+          "default": 5000,
           "propertyOrder": 7
+        },
+        "connection_max_fail_cycles": {
+          "type": "integer",
+          "title": "Connection max fail cycles",
+          "description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
+          "minimum": -1,
+          "default": 2,
+          "propertyOrder": 8
         },
         "poll_interval": {
           "type": "integer",
@@ -203,14 +211,14 @@
           "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 8
+          "propertyOrder": 9
         },
         "devices": {
           "type": "array",
           "title": "List of devices",
           "description": "Lists devices attached to the port",
           "items": { "$ref": "#/definitions/device" },
-          "propertyOrder": 9
+          "propertyOrder": 10
         }
       },
       "required": ["address", "port"],
@@ -360,10 +368,18 @@
         "device_timeout_ms": {
           "type": "integer",
           "title": "Device timeout (ms)",
-          "description": "Specifies timeout for device connection. If not set, default value 3000ms is used.",
-          "minimum": 0,
+          "description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
+          "minimum": -1,
           "default": 3000,
           "propertyOrder": 17
+        },
+        "device_max_fail_cycles": {
+          "type": "integer",
+          "title": "Device max fail cycles",
+          "description": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
+          "minimum": -1,
+          "default": 2,
+          "propertyOrder": 18
         }
       },
       "required": ["slave_id"],
