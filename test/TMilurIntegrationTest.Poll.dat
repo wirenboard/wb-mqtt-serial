@@ -162,5 +162,6 @@ EnqueueMilurFrequencyResponse()
 >> FF 01 09 80 66
 Publish: /devices/milur305_255/controls/Frequency/meta/error: '' (QoS 0, retained)
 Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 0, retained)
+Port cycle OK
 << FF 01 09 02 A0 C3 B3 D9
 Close()

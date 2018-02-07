@@ -136,4 +136,3 @@ bool TMercury200Device::IsBadHeader(uint32_t slave_expected, uint8_t cmd_expecte
     }
     return response[4] != cmd_expected;
 }
-

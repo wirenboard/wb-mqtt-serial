@@ -31,7 +31,6 @@ public:
     void SetTextValue(const std::string& v);
     bool DidRead() const { return DidReadReg; }
     TErrorState CurrentErrorState() const { return ErrorState; }
-
     PSerialDevice Device() const { return Dev.lock(); }
     void SetDebug(bool debug) { Debug = debug; }
 

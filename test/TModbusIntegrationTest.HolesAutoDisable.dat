@@ -286,6 +286,7 @@ EnqueueDiscreteReadResponse()
 >> 01 02 00 14 00 01 F9 CE
 Publish: /devices/modbus-sample/controls/Discrete 0/meta/error: '' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Discrete 0: '1' (QoS 0, retained)
+Port cycle OK
 >>> LoopOnce()
 << 01 02 01 01 60 48
 EnqueueHoldingPackHoles10ReadResponse()
@@ -316,6 +317,7 @@ Enqueue10CoilsReadResponse()
 << 01 01 02 49 02 0F AD
 EnqueueDiscreteReadResponse()
 >> 01 02 00 14 00 01 F9 CE
+Port cycle OK
 >>> LoopOnce()
 << 01 02 01 01 60 48
 EnqueueHoldingPackReadResponse()
@@ -349,5 +351,6 @@ Enqueue10CoilsReadResponse()
 << 01 01 02 49 02 0F AD
 EnqueueDiscreteReadResponse()
 >> 01 02 00 14 00 01 F9 CE
+Port cycle OK
 << 01 02 01 01 60 48
 Close()

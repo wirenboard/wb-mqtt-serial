@@ -63,3 +63,4 @@ workspace.xml
 **/.settings
 
 wb-mqtt-serial
+vgcore.*

@@ -249,6 +249,7 @@ Publish: /devices/mercury230ar02_0/controls/AP2/meta/error: '' (QoS 0, retained)
 Publish: /devices/mercury230ar02_0/controls/AP2: '3145.769' (QoS 0, retained)
 Publish: /devices/mercury230ar02_0/controls/AP3/meta/error: '' (QoS 0, retained)
 Publish: /devices/mercury230ar02_0/controls/AP3: '300.445' (QoS 0, retained)
+Port cycle OK
 >>> LoopOnce()
 << 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
 EnqueueMercury230EnergyResponse1()
@@ -353,6 +354,7 @@ EnqueueMercury230PerPhaseEnergyResponse()
 Publish: /devices/mercury230ar02_0/controls/AP1: '3196.201' (QoS 0, retained)
 Publish: /devices/mercury230ar02_0/controls/AP2: '3145.769' (QoS 0, retained)
 Publish: /devices/mercury230ar02_0/controls/AP3: '300.445' (QoS 0, retained)
+Port cycle OK
 >>> LoopOnce()
 << 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
 EnqueueMercury230EnergyResponse1()
@@ -457,5 +459,6 @@ EnqueueMercury230PerPhaseEnergyResponse()
 Publish: /devices/mercury230ar02_0/controls/AP1: '3196.201' (QoS 0, retained)
 Publish: /devices/mercury230ar02_0/controls/AP2: '3145.769' (QoS 0, retained)
 Publish: /devices/mercury230ar02_0/controls/AP3: '300.445' (QoS 0, retained)
+Port cycle OK
 << 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
 Close()

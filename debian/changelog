@@ -1,8 +1,24 @@
-wb-mqtt-serial (1.37.3) stable; urgency=medium
+wb-mqtt-serial (1.39.1) stable; urgency=medium
 
   * handle numeric error_value in config
 
  -- Evgeny Boger <boger@contactless.ru>  Sat, 20 Jan 2018 17:18:14 +0300
+
+wb-mqtt-serial (1.39) stable; urgency=medium
+
+  * Adds WB-MAP6S template
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 05 Feb 2018 13:46:29 +0300
+
+wb-mqtt-serial (1.38) stable; urgency=medium
+
+  * deferred device and port disconnect (only at end of cycle)
+  * added "device_max_fail_cycles" option for device. Defines number of full device polling cycles with all failed registers before marking device as disconnected
+  * added "connection_max_fail_cycles" option for TCP port. Defines number of driver cycles with all devices being disconnected before resetting connection
+  * limited polling for devices marked as disconnected. (only one request if not succefull)
+  * try to write setup section to disconnected device before polling
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Fri, 19 Jan 2018 16:00:21 +0300
 
 wb-mqtt-serial (1.37.2) stable; urgency=medium
 
