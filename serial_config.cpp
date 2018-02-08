@@ -428,19 +428,23 @@ uint64_t TConfigParser::ToUint64(const Json::Value& v, const string& title)
         return v.asUInt();
     if (v.isInt()) {
         int val = v.asInt();
-        if (val > 0) {
+        if (val >= 0) {
             return val;
         }
     }
 
     if (v.isString()) {
-        try {
-            return stoull(v.asString(), /*pos= */ 0, /*base= */ 0);
-        } catch (const logic_error& e) {}
+        auto val = v.asString();
+        if (val.find("-") == std::string::npos) {
+            // don't try to parse strings containing munus sign
+            try {
+                return stoull(val, /*pos= */ 0, /*base= */ 0);
+            } catch (const logic_error& e) {}
+        }
     }
 
     throw TConfigParserException(
-        title + ": plain unsigned integer or '0x..' hex string expected instead of '" + v.asString() +
+        title + ": 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of '" + v.asString() +
         "'");
 }
 

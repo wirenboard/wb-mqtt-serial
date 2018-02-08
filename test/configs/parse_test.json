@@ -90,7 +90,8 @@
                             "error_value" : "0xFFFFFFFFFFFFFFFF"
                         }
                     ]
-                }            ]
+                }
+            ]
         },
         {
             "path" : "/dev/ttyNSC1",

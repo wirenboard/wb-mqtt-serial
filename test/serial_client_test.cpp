@@ -1397,4 +1397,19 @@ TEST_F(TConfigParserTest, ForceDebug)
     ASSERT_TRUE(config->Debug);
 }
 
+TEST_F(TConfigParserTest, UnsuccessfulParse)
+{
+    for (size_t i = 0; i < 4; ++i) {
+        auto fname = std::string("configs/unsuccessful/unsuccessful-") + to_string(i) +  ".json";
+        Emit() << "Parsing config " << fname;
+        TConfigParser parser(GetDataFilePath(fname), true,
+                            TSerialDeviceFactory::GetRegisterTypes);
+        try {
+            PHandlerConfig config = parser.Parse();
+        } catch (const std::exception& e) {
+            Emit() << e.what();
+        }
+    }
+
+}
 // TBD: the code must check mosquitto return values
