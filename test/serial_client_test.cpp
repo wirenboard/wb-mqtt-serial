@@ -1348,18 +1348,28 @@ TEST_F(TConfigParserTest, Parse)
                     Emit() << "OnValue: " << device_channel->OnValue;
                     Emit() << "Max: " << device_channel->Max;
                     Emit() << "ReadOnly: " << device_channel->ReadOnly;
-                    std::stringstream s;
-                    bool first = true;
-                    for (auto reg: device_channel->RegisterConfigs) {
-                        if (first)
-                            first = false;
-                        else
-                            s << ", ";
-                        s << reg;
-                        if (reg->PollInterval.count())
-                            s << " (poll_interval=" << reg->PollInterval.count() << ")";
+                    if (!device_channel->RegisterConfigs.empty()) {
+                        Emit() << "Registers:";
                     }
-                    Emit() << "Registers: " << s.str();
+                    for (auto reg: device_channel->RegisterConfigs) {
+                        TTestLogIndent indent(*this);
+                        Emit() << "------";
+                        Emit() << "Type and Address: " << reg;
+                        Emit() << "Format: " << RegisterFormatName(reg->Format);
+                        Emit() << "Scale: " << reg->Scale;
+                        Emit() << "Offset: " << reg->Offset;
+                        Emit() << "RoundTo: " << reg->RoundTo;
+                        Emit() << "Poll: " << reg->Poll;
+                        Emit() << "ReadOnly: " << reg->ReadOnly;
+                        Emit() << "TypeName: " << reg->TypeName;
+                        Emit() << "PollInterval: " << reg->PollInterval.count();
+                        if (reg->HasErrorValue) {
+                            Emit() << "ErrorValue: " << reg->ErrorValue;
+                        } else {
+                            Emit() << "ErrorValue: not set";
+                        }
+                        Emit() << "WordOrder: " << reg->WordOrder;
+                    }
                 }
 
                 if (device_config->SetupItemConfigs.empty())
@@ -1387,4 +1397,19 @@ TEST_F(TConfigParserTest, ForceDebug)
     ASSERT_TRUE(config->Debug);
 }
 
+TEST_F(TConfigParserTest, UnsuccessfulParse)
+{
+    for (size_t i = 0; i < 4; ++i) {
+        auto fname = std::string("configs/unsuccessful/unsuccessful-") + to_string(i) +  ".json";
+        Emit() << "Parsing config " << fname;
+        TConfigParser parser(GetDataFilePath(fname), true,
+                            TSerialDeviceFactory::GetRegisterTypes);
+        try {
+            PHandlerConfig config = parser.Parse();
+        } catch (const std::exception& e) {
+            Emit() << e.what();
+        }
+    }
+
+}
 // TBD: the code must check mosquitto return values
