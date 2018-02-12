@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.40) stable; urgency=medium
+
+  * added holding_single and holding_multi modbus register types
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Tue, 30 Jan 2018 19:53:57 +0300
+
 wb-mqtt-serial (1.39.1) stable; urgency=medium
 
   * handle numeric error_value in config

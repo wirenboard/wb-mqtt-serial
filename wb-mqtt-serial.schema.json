@@ -598,7 +598,7 @@
     "reg_type": {
       "type": "string",
       "title": "Register type",
-      "enum": ["coil", "discrete", "holding", "input", "direct"]
+      "enum": ["coil", "discrete", "holding", "holding_single", "holding_multi", "input", "direct"]
     },
     "format": {
       "type": "string",

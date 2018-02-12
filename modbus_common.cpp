@@ -4,32 +4,11 @@
 
 #include <cmath>
 #include <array>
+#include <cassert>
 #include <unistd.h>
 
 
-namespace   // general utilities
-{
-    // write 16-bit value to byte array in big-endian order
-    inline void WriteAs2Bytes(uint8_t* dst, uint16_t val)
-    {
-        dst[0] = static_cast<uint8_t>(val >> 8);
-        dst[1] = static_cast<uint8_t>(val);
-    }
-
-    // returns true if more than one modbus register is needed to represent TRegister
-    inline bool IsPacking(PRegister reg)
-    {
-        return (reg->Type == Modbus::REG_HOLDING) && (reg->Width() > 1);
-    }
-
-    inline bool IsSingleBitType(int type)
-    {
-        return (type == Modbus::REG_COIL) || (type == Modbus::REG_DISCRETE);
-    }
-}   // general utilities
-
-
-namespace Modbus    // modbus protocol common utilities
+namespace Modbus    // modbus protocol declarations
 {
     const int MAX_READ_BITS = 2000;
     const int MAX_WRITE_BITS = 1968;
@@ -80,7 +59,39 @@ namespace Modbus    // modbus protocol common utilities
     };
 
     using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
+}
 
+namespace   // general utilities
+{
+    // write 16-bit value to byte array in big-endian order
+    inline void WriteAs2Bytes(uint8_t* dst, uint16_t val)
+    {
+        dst[0] = static_cast<uint8_t>(val >> 8);
+        dst[1] = static_cast<uint8_t>(val);
+    }
+
+    // returns true if multi write needs to be done
+    inline bool IsPacking(PRegister reg)
+    {
+        return (reg->Type == Modbus::REG_HOLDING_MULTI) ||
+              ((reg->Type == Modbus::REG_HOLDING) && (reg->Width() > 1));
+    }
+
+    inline bool IsPacking(Modbus::PModbusRegisterRange range)
+    {
+        return (range->Type() == Modbus::REG_HOLDING_MULTI) ||
+              ((range->Type() == Modbus::REG_HOLDING) && (range->GetCount() > 1));
+    }
+
+    inline bool IsSingleBitType(int type)
+    {
+        return (type == Modbus::REG_COIL) || (type == Modbus::REG_DISCRETE);
+    }
+}   // general utilities
+
+
+namespace Modbus    // modbus protocol common utilities
+{
     TModbusRegisterRange::TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles)
         : TRegisterRange(regs)
         , HasHoles(hasHoles)
@@ -216,6 +227,8 @@ namespace Modbus    // modbus protocol common utilities
     uint8_t GetFunctionImpl(int registerType, OperationType op, const std::string& typeName, bool many)
     {
         switch (registerType) {
+        case REG_HOLDING_SINGLE:
+        case REG_HOLDING_MULTI:
         case REG_HOLDING:
             switch (op) {
             case OperationType::OP_READ:
@@ -271,9 +284,9 @@ namespace Modbus    // modbus protocol common utilities
         return GetFunctionImpl(reg->Type, op, reg->TypeName, IsPacking(reg));
     }
 
-    inline uint8_t GetFunction(PRegisterRange range, OperationType op)
+    inline uint8_t GetFunction(PModbusRegisterRange range, OperationType op)
     {
-        return GetFunctionImpl(range->Type(), op, range->TypeName(), true);
+        return GetFunctionImpl(range->Type(), op, range->TypeName(), IsPacking(range));
     }
 
     // throws C++ exception on modbus error code
@@ -345,7 +358,12 @@ namespace Modbus    // modbus protocol common utilities
     {
         auto type = range->Type();
 
-        if (!IsSingleBitType(type) && type != REG_HOLDING && type != REG_INPUT) {
+        if (!IsSingleBitType(type) &&
+             type != REG_HOLDING &&
+             type != REG_HOLDING_SINGLE &&
+             type != REG_HOLDING_MULTI &&
+             type != REG_INPUT
+        ) {
             throw TSerialDeviceException("invalid register type");
         }
 
@@ -356,6 +374,12 @@ namespace Modbus    // modbus protocol common utilities
     size_t InferWriteRequestPDUSize(PRegister reg)
     {
        return IsPacking(reg) ? 6 + reg->Width() * 2 : 5;
+    }
+
+    // returns number of requests needed to write register
+    size_t InferWriteRequestsCount(PRegister reg)
+    {
+       return IsPacking(reg) ? 1 : reg->Width();
     }
 
     // returns number of bytes needed to hold response
@@ -598,18 +622,25 @@ namespace ModbusRTU // modbus rtu protocol utilities
         WriteAs2Bytes(&req[6], CRC16::CalculateCRC16(req.data(), 6));
     }
 
-    void ComposeWriteRequest(TWriteRequest& req, PRegister reg, uint8_t slaveId, uint64_t value, int shift)
+    void ComposeWriteRequests(std::vector<TWriteRequest> & requests, PRegister reg, uint8_t slaveId, uint64_t value, int shift)
     {
-        req.resize(InferWriteRequestSize(reg));
-        req[0] = slaveId;
+        requests.resize(Modbus::InferWriteRequestsCount(reg));
 
-        if (IsPacking(reg)) {
-            Modbus::ComposeMultipleWriteRequestPDU(PDU(req), reg, value, shift);
-        } else {
-            Modbus::ComposeSingleWriteRequestPDU(PDU(req), reg, static_cast<uint16_t>(value), shift);
+        for (std::size_t i = 0; i < requests.size(); ++i) {
+            auto & req = requests[i];
+            req.resize(InferWriteRequestSize(reg));
+            req[0] = slaveId;
+
+            if (IsPacking(reg)) {
+                assert(requests.size() == 1 && "only one request is expected when using multiple write");
+                Modbus::ComposeMultipleWriteRequestPDU(PDU(req), reg, value, shift);
+            } else {
+                Modbus::ComposeSingleWriteRequestPDU(PDU(req), reg, static_cast<uint16_t>(value & 0xffff), shift + requests.size() - i - 1);
+                value >>= 16;
+            }
+
+            WriteAs2Bytes(&req[req.size() - 2], CRC16::CalculateCRC16(req.data(), req.size() - 2));
         }
-
-        WriteAs2Bytes(&req[req.size() - 2], CRC16::CalculateCRC16(req.data(), req.size() - 2));
     }
 
     size_t GetResponsePDUSize(const TReadResponse & res)
@@ -660,44 +691,47 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
         auto config = reg->Device()->DeviceConfig();
 
-        if (config->GuardInterval.count()){
-            port->Sleep(config->GuardInterval);
-        }
-
         std::string exception_message;
         try {
-            TWriteRequest request;
-            {   // Send request
-                ComposeWriteRequest(request, reg, slaveId, value, shift);
+            std::vector<TWriteRequest> requests;
+            ComposeWriteRequests(requests, reg, slaveId, value, shift);
+
+            for (const auto & request: requests) {
+                // Send request
+                if (config->GuardInterval.count()) {
+                    port->Sleep(config->GuardInterval);
+                }
                 port->WriteBytes(request.data(), request.size());
-            }
 
-            {   // Receive response
-                TWriteResponse response;
-                auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
+                {   // Receive response
+                    TWriteResponse response;
+                    auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
 
-                if (port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size())) > 0) {
-                    try {
-                        ModbusRTU::CheckResponse(request, response);
-                        Modbus::ParseWriteResponse(PDU(response));
-                    } catch (const TInvalidCRCError &) {
+                    if (port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size())) > 0) {
                         try {
-                            port->SkipNoise();
-                        } catch (const std::exception & e) {
-                            std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                            ModbusRTU::CheckResponse(request, response);
+                            Modbus::ParseWriteResponse(PDU(response));
+                        } catch (const TInvalidCRCError &) {
+                            try {
+                                port->SkipNoise();
+                            } catch (const std::exception & e) {
+                                std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                            }
+                            throw;
+                        } catch (const TMalformedResponseError &) {
+                            try {
+                                port->SkipNoise();
+                            } catch (const std::exception & e) {
+                                std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                            }
+                            throw;
                         }
-                        throw;
-                    } catch (const TMalformedResponseError &) {
-                        try {
-                            port->SkipNoise();
-                        } catch (const std::exception & e) {
-                            std::cerr << "SkipNoise failed: " << e.what() << std::endl;
-                        }
-                        throw;
+                    } else {
+                        break;
                     }
-                    return;
                 }
             }
+            return;
         } catch (TSerialDeviceTransientErrorException& e) {
             exception_message = ": ";
             exception_message += e.what();
