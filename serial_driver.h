@@ -1,12 +1,13 @@
 #pragma once
 
-#include <vector>
-#include <memory>
-
 #include "serial_config.h"
 #include "serial_port_driver.h"
 
-#include <wblib/driver.h>
+#include <wblib/declarations.h>
+
+#include <vector>
+#include <memory>
+
 
 class TMQTTSerialDriver
 {

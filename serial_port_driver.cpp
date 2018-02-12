@@ -312,8 +312,7 @@ void TSerialPortDriver::ClearDevices() noexcept
 TLocalDeviceArgs TSerialPortDriver::From(const PSerialDevice & device)
 {
     return TLocalDeviceArgs{}.SetId(device->DeviceConfig()->Id)
-                             .SetTitle(device->DeviceConfig()->Name)
-                             .SetUserData(TDeviceLinkData{ shared_from_this(), device });
+                             .SetTitle(device->DeviceConfig()->Name);
 }
 
 TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)

@@ -1,12 +1,13 @@
 #pragma once
-#include <memory>
-#include <unordered_map>
-
-#include <wblib/driver.h>
 #include "serial_config.h"
 #include "serial_client.h"
 #include "register_handler.h"
+
+#include <wblib/declarations.h>
+
 #include <chrono>
+#include <memory>
+#include <unordered_map>
 
 
 struct TDeviceChannel : public TDeviceChannelConfig
@@ -80,12 +81,6 @@ private:
 };
 
 typedef std::shared_ptr<TSerialPortDriver> PSerialPortDriver;
-
-struct TDeviceLinkData
-{
-    std::weak_ptr<TSerialPortDriver>  PortDriver;
-    std::weak_ptr<TSerialDevice>      SerialDevice;
-};
 
 struct TControlLinkData
 {

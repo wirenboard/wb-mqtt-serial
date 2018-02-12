@@ -1,6 +1,8 @@
 #include "serial_driver.h"
 #include "log.h"
 
+#include <wblib/driver.h>
+
 #include <thread>
 #include <iostream>
 
