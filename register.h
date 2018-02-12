@@ -42,6 +42,17 @@ enum class EWordOrder {
     LittleEndian
 };
 
+inline ::std::ostream& operator<<(::std::ostream& os, EWordOrder val) {
+    switch (val) {
+        case EWordOrder::BigEndian:
+            return os << "BigEndian";
+        case EWordOrder::LittleEndian:
+            return os << "LittleEndian";
+    }
+
+    return os;
+}
+
 struct TRegisterType {
     TRegisterType(int index, const std::string& name, const std::string& defaultControlType,
                   RegisterFormat defaultFormat = U16,

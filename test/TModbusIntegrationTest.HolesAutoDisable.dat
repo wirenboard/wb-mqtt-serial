@@ -336,6 +336,7 @@ Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/error: '' (QoS 0
 Publish: /devices/modbus-sample/controls/Holding U64 Multi: '144680345676153346' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/error: '' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Holding U16 Multi: '514' (QoS 0, retained)
+Port cycle OK
 >>> LoopOnce()
 << 01 03 0A 02 02 02 02 02 02 02 02 02 02 66 FE
 EnqueueHoldingPackHoles10ReadResponse()
@@ -372,6 +373,7 @@ EnqueueHoldingSingleReadResponse()
 << 01 03 0A 01 01 01 01 01 01 01 01 01 01 05 92
 EnqueueHoldingMultiReadResponse()
 >> 01 03 00 5F 00 05 B5 DB
+Port cycle OK
 >>> LoopOnce()
 << 01 03 0A 02 02 02 02 02 02 02 02 02 02 66 FE
 EnqueueHoldingPackReadResponse()
@@ -411,5 +413,6 @@ EnqueueHoldingSingleReadResponse()
 << 01 03 0A 01 01 01 01 01 01 01 01 01 01 05 92
 EnqueueHoldingMultiReadResponse()
 >> 01 03 00 5F 00 05 B5 DB
+Port cycle OK
 << 01 03 0A 02 02 02 02 02 02 02 02 02 02 66 FE
 Close()

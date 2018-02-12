@@ -1,0 +1,55 @@
+SetDebug(1)
+Publish: /devices/reconnect-test/meta/name: 'Reconnect test' (QoS 0, retained)
+Publish: /devices/reconnect-test/controls/I1/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/reconnect-test/controls/I1/meta/order: '1' (QoS 0, retained)
+Subscribe: /devices/reconnect-test/controls/I1/on (QoS 0)
+Publish: /devices/reconnect-test/controls/I2/meta/type: 'value' (QoS 0, retained)
+Publish: /devices/reconnect-test/controls/I2/meta/order: '2' (QoS 0, retained)
+Subscribe: /devices/reconnect-test/controls/I2/on (QoS 0)
+Open()
+Sleep(100000)
+fake_serial_device '12': write to address '1' value '42'
+fake_serial_device '12': write to address '2' value '24'
+>>> LoopOnce()
+fake_serial_device '12': read address '1' value '42'
+Publish: /devices/reconnect-test/controls/I1/meta/error: '' (QoS 0, retained)
+Publish: /devices/reconnect-test/controls/I1: '0.042' (QoS 0, retained)
+fake_serial_device '12': read address '2' value '24'
+Publish: /devices/reconnect-test/controls/I2/meta/error: '' (QoS 0, retained)
+Publish: /devices/reconnect-test/controls/I2: '0.024' (QoS 0, retained)
+fake_serial_device '12': Device cycle OK
+Port cycle OK
+>>> SimulateDisconnect(true)
+>>> LoopOnce()
+fake_serial_device '12': read address '1' failed: 'Serial protocol error: device disconnected'
+Publish: /devices/reconnect-test/controls/I1/meta/error: 'r' (QoS 0, retained)
+fake_serial_device '12': read address '2' failed: 'Serial protocol error: device disconnected'
+Publish: /devices/reconnect-test/controls/I2/meta/error: 'r' (QoS 0, retained)
+fake_serial_device '12': Device cycle FAIL
+Port cycle OK
+>>> LoopOnce()
+fake_serial_device '12': read address '1' failed: 'Serial protocol error: device disconnected'
+fake_serial_device '12': read address '2' failed: 'Serial protocol error: device disconnected'
+fake_serial_device '12': Device cycle FAIL
+Port cycle OK
+>>> LoopOnce()
+fake_serial_device '12': read address '1' failed: 'Serial protocol error: device disconnected'
+fake_serial_device '12': read address '2' failed: 'Serial protocol error: device disconnected'
+fake_serial_device '12': Device cycle FAIL
+fake_serial_device '12': disconnected
+Port cycle FAIL
+>>> LoopOnce() (limited polling expected)
+fake_serial_device '12': write address '1' failed: 'Serial protocol error: device disconnected'
+fake_serial_device '12': Device cycle FAIL
+Port cycle FAIL
+>>> SimulateDisconnect(false)
+>>> LoopOnce()
+fake_serial_device '12': write to address '1' value '42'
+fake_serial_device '12': write to address '2' value '24'
+fake_serial_device '12': read address '1' value '42'
+Publish: /devices/reconnect-test/controls/I1/meta/error: '' (QoS 0, retained)
+fake_serial_device '12': read address '2' value '24'
+Publish: /devices/reconnect-test/controls/I2/meta/error: '' (QoS 0, retained)
+fake_serial_device '12': Device cycle OK
+fake_serial_device '12': reconnected
+Port cycle OK

@@ -215,5 +215,6 @@ EnqueueHoldingMultiReadResponse()
 Publish: /devices/modbus-sample/controls/Holding U64 Multi: '144680345676153346' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/error: '' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Holding U16 Multi: '514' (QoS 0, retained)
+Port cycle OK
 << 01 03 0A 02 02 02 02 02 02 02 02 02 02 66 FE
 Close()

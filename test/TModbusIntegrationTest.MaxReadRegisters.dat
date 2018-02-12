@@ -357,5 +357,6 @@ EnqueueHoldingMultiMax3ReadResponse()
 >> 01 03 00 63 00 01 74 14
 Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/error: '' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Holding U16 Multi: '21' (QoS 0, retained)
+Port cycle OK
 << 01 03 02 00 15 79 8B
 Close()

@@ -23,7 +23,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: input: 0 (poll_interval=10)
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 10
+                ErrorValue: not set
+                WordOrder: BigEndian
             ------
             Name: Illuminance
             Type: lux
@@ -32,7 +44,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: input: 1 (poll_interval=300)
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 300
+                ErrorValue: not set
+                WordOrder: BigEndian
             ------
             Name: Pressure
             Type: pressure
@@ -41,7 +65,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: input: 2 (poll_interval=10000)
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 0.075
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 10000
+                ErrorValue: not set
+                WordOrder: BigEndian
             ------
             Name: Temp 2
             Type: temperature
@@ -50,7 +86,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: input: 3 (poll_interval=10)
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 10
+                ErrorValue: not set
+                WordOrder: BigEndian
         ------
         Id: OnValueTest
         Name: OnValueTest
@@ -69,7 +117,155 @@ Ports:
             OnValue: 500
             Max: -1
             ReadOnly: 0
-            Registers: holding: 0 (poll_interval=10)
+            Registers:
+                ------
+                Type and Address: holding: 0
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: not set
+                WordOrder: BigEndian
+        ------
+        Id: ErrorValueTest
+        Name: ErrorValueTest
+        SlaveId: 0x91
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 0
+        DeviceTimeout: 3000
+        DeviceChannels:
+            ------
+            Name: uint16
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 1
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 0
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 65535
+                WordOrder: BigEndian
+            ------
+            Name: uint32
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 2
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 4294967295
+                WordOrder: BigEndian
+            ------
+            Name: str-uint32
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 3
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 2
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 4294967295
+                WordOrder: BigEndian
+            ------
+            Name: str-hex-uint32
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 4
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 3
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 4294967295
+                WordOrder: BigEndian
+            ------
+            Name: str-uint64
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 5
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 4
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 18446744073709551615
+                WordOrder: BigEndian
+            ------
+            Name: str-hex-uint64
+            Type: switch
+            DeviceId: ErrorValueTest
+            Order: 6
+            OnValue: 
+            Max: -1
+            ReadOnly: 0
+            Registers:
+                ------
+                Type and Address: holding: 5
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 10
+                ErrorValue: 18446744073709551615
+                WordOrder: BigEndian
     ------
     ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 500>
     PollInterval: 100
@@ -93,7 +289,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: coil: 0 (poll_interval=100)
+            Registers:
+                ------
+                Type and Address: coil: 0
+                Format: U8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: coil
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
             ------
             Name: Relay 2
             Type: switch
@@ -102,7 +310,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: coil: 1 (poll_interval=100)
+            Registers:
+                ------
+                Type and Address: coil: 1
+                Format: U8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: coil
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
             ------
             Name: Relay 3
             Type: switch
@@ -111,7 +331,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: coil: 2 (poll_interval=100)
+            Registers:
+                ------
+                Type and Address: coil: 2
+                Format: U8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: coil
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
             ------
             Name: Switch AC In
             Type: switch
@@ -120,7 +352,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: discrete: 0 (poll_interval=100)
+            Registers:
+                ------
+                Type and Address: discrete: 0
+                Format: U8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: discrete
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
         ------
         Id: wb-mrgb
         Name: WB-MRGB
@@ -139,7 +383,43 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 0
-            Registers: holding: 1 (poll_interval=103), holding: 0 (poll_interval=102), holding: 2 (poll_interval=102)
+            Registers:
+                ------
+                Type and Address: holding: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 103
+                ErrorValue: not set
+                WordOrder: BigEndian
+                ------
+                Type and Address: holding: 0
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 102
+                ErrorValue: not set
+                WordOrder: BigEndian
+                ------
+                Type and Address: holding: 2
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 0
+                TypeName: holding
+                PollInterval: 102
+                ErrorValue: not set
+                WordOrder: BigEndian
             ------
             Name: Button 1 counter
             Type: value
@@ -148,7 +428,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: holding: 32 (poll_interval=101)
+            Registers:
+                ------
+                Type and Address: holding: 32
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: holding
+                PollInterval: 101
+                ErrorValue: not set
+                WordOrder: BigEndian
         ------
         Id: TestDeviceOverride:config
         Name: TestDeviceOverride:config
@@ -167,7 +459,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: input: 0 (poll_interval=100)
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
         ------
         Id: TestDeviceOverride:template_6
         Name: TestDeviceOverride:template 6
@@ -186,7 +490,19 @@ Ports:
             OnValue: 
             Max: -1
             ReadOnly: 1
-            Registers: input: 0 (poll_interval=100)
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
     ------
     ConnSettings: <192.168.0.1:3000 timeout 500>
     PollInterval: 20

@@ -29,7 +29,7 @@ public:
     TTimePoint CurrentTime() const override;
 
 protected:
-    virtual bool Select(const std::chrono::microseconds& us);
+    bool Select(const std::chrono::microseconds& us);
 
     int             Fd;
     bool            DebugEnabled;

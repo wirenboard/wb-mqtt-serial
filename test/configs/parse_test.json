@@ -40,6 +40,56 @@
                         }
 
                     ]
+                },
+                {
+                    "name": "ErrorValueTest",
+                    "id": "ErrorValueTest",
+                    "enabled": true,
+                    "slave_id": "0x91",
+                    "channels": [
+                        {
+                            "name" : "uint16",
+                            "reg_type" : "holding",
+                            "address" : "0x00",
+                            "type": "switch",
+                            "error_value" : 65535
+                        },
+                        {
+                            "name" : "uint32",
+                            "reg_type" : "holding",
+                            "address" : "0x01",
+                            "type": "switch",
+                            "error_value" : 4294967295
+                        },
+                        {
+                            "name" : "str-uint32",
+                            "reg_type" : "holding",
+                            "address" : "0x02",
+                            "type": "switch",
+                            "error_value" : "4294967295"
+                        },
+                        {
+                            "name" : "str-hex-uint32",
+                            "reg_type" : "holding",
+                            "address" : "0x03",
+                            "type": "switch",
+                            "error_value" : "0xFFFFFFFF"
+                        },
+                        {
+                            "name" : "str-uint64",
+                            "reg_type" : "holding",
+                            "address" : "0x04",
+                            "type": "switch",
+                            "error_value" : "18446744073709551615"
+                        },
+                        {
+                            "name" : "str-hex-uint64",
+                            "reg_type" : "holding",
+                            "address" : "0x05",
+                            "type": "switch",
+                            "error_value" : "0xFFFFFFFFFFFFFFFF"
+                        }
+                    ]
                 }
             ]
         },
