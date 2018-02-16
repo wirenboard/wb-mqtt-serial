@@ -1,6 +1,6 @@
 #pragma once
 
-#include "definitions.h"
+#include "declarations.h"
 
 #include <chrono>
 #include <functional>

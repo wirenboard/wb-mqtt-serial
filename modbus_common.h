@@ -3,9 +3,6 @@
 #include "port.h"
 #include "serial_config.h"
 #include "register.h"
-#include <ostream>
-#include <bitset>
-#include <array>
 
 
 namespace Modbus  // modbus protocol common utilities
@@ -19,7 +16,7 @@ namespace Modbus  // modbus protocol common utilities
         REG_HOLDING_MULTI,
     };
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, PDeviceConfig deviceConfig, bool debug, bool enableHoles);
+    const TProtocolInfo & GetProtocolInfo();
 };  // modbus protocol common utilities
 
 namespace ModbusRTU // modbus rtu protocol utilities
@@ -27,4 +24,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
     void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift = 0);
 
     void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift = 0);
+
+    void Read(const PPort & port, uint8_t slaveId, const PIRDeviceReadQueryEntry &, int shift = 0);
+    void Write(const PPort & port, uint8_t slaveId, const PIRDeviceWriteQueryEntry &, int shift = 0);
 };  // modbus rtu protocol utilities

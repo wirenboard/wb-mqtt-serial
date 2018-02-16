@@ -1,4 +1,7 @@
 #pragma once
+
+#include "register_config.h"
+
 #include <map>
 #include <list>
 #include <mutex>
@@ -16,42 +19,8 @@
 #include "registry.h"
 #include "serial_exc.h"
 
-enum RegisterFormat {
-    AUTO,
-    U8,
-    S8,
-    U16,
-    S16,
-    S24,
-    U24,
-    U32,
-    S32,
-    S64,
-    U64,
-    BCD8,
-    BCD16,
-    BCD24,
-    BCD32,
-    Float,
-    Double,
-    Char8
-};
 
-enum class EWordOrder {
-    BigEndian,
-    LittleEndian
-};
 
-inline ::std::ostream& operator<<(::std::ostream& os, EWordOrder val) {
-    switch (val) {
-        case EWordOrder::BigEndian:
-            return os << "BigEndian";
-        case EWordOrder::LittleEndian:
-            return os << "LittleEndian";
-    }
-
-    return os;
-}
 
 struct TRegisterType {
     TRegisterType(int index, const std::string& name, const std::string& defaultControlType,
@@ -70,88 +39,8 @@ typedef std::vector<TRegisterType> TRegisterTypes;
 typedef std::map<std::string, TRegisterType> TRegisterTypeMap;
 typedef std::shared_ptr<TRegisterTypeMap> PRegisterTypeMap;
 
-struct TRegisterConfig;
-typedef std::shared_ptr<TRegisterConfig> PRegisterConfig;
-
-class TSerialDevice;
-typedef std::shared_ptr<TSerialDevice> PSerialDevice;
-
-struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
-{
-    TRegisterConfig(int type, int address,
-              RegisterFormat format, double scale, double offset,
-              double round_to, bool poll, bool readonly,
-              const std::string& type_name,
-              bool has_error_value, uint64_t error_value,
-              const EWordOrder word_order)
-        : Type(type), Address(address), Format(format),
-          Scale(scale), Offset(offset), RoundTo(round_to),
-          Poll(poll), ReadOnly(readonly), TypeName(type_name),
-          HasErrorValue(has_error_value), ErrorValue(error_value),
-          WordOrder(word_order)
-    {
-        if (TypeName.empty())
-            TypeName = "(type " + std::to_string(Type) + ")";
-    }
-
-    static PRegisterConfig Create(int type = 0, int address = 0,
-                            RegisterFormat format = U16, double scale = 1, double offset = 0,
-                            double round_to = 0, bool poll = true, bool readonly = false,
-                            const std::string& type_name = "",
-                            bool has_error_value = false,
-                            uint64_t error_value = 0,
-                            const EWordOrder word_order = EWordOrder::BigEndian
-                            )
-    {
-        return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
-                                            type_name, has_error_value, error_value, word_order);
-    }
 
 
-
-    uint8_t ByteWidth() const {
-        switch (Format) {
-            case S64:
-            case U64:
-            case Double:
-                return 8;
-            case U32:
-            case S32:
-            case BCD32:
-            case Float:
-                return 4;
-            case U24:
-            case S24:
-            case BCD24:
-                return 3;
-            case Char8:
-                return 1;
-            default:
-                return 2;
-        }
-    }
-
-    uint8_t Width() const {
-        return (ByteWidth() + 1) / 2;
-    }
-
-    std::string ToString() const;
-
-    int Type;
-    int Address;
-    RegisterFormat Format;
-    double Scale;
-    double Offset;
-    double RoundTo;
-    bool Poll;
-    bool ReadOnly;
-    std::string TypeName;
-    std::chrono::milliseconds PollInterval = std::chrono::milliseconds(-1);
-
-    bool HasErrorValue;
-    uint64_t ErrorValue;
-    EWordOrder WordOrder;
-};
 
 struct TRegister;
 typedef std::shared_ptr<TRegister> PRegister;
@@ -322,20 +211,15 @@ inline EWordOrder WordOrderFromName(const std::string& name) {
 
 class TRegisterRange {
 public:
-    typedef std::function<void(PRegister reg, uint64_t new_value)> TValueCallback;
-    typedef std::function<void(PRegister reg)> TErrorCallback;
-    enum EStatus {
-        ST_OK,
-        ST_UNKNOWN_ERROR, // response from device either not parsed or not received at all (crc error, timeout)
-        ST_DEVICE_ERROR // valid response from device, which reports error
-    };
+    typedef std::function<void(PProtocolRegister reg, uint64_t new_value)> TValueCallback;
+    typedef std::function<void(PProtocolRegister reg)> TErrorCallback;
+
 
     virtual ~TRegisterRange();
-    const std::list<PRegister>& RegisterList() const { return RegList; }
+    const std::list<PProtocolRegister>& RegisterList() const { return RegList; }
     PSerialDevice Device() const { return RegDevice.lock(); }
     int Type() const { return RegType; }
     std::string TypeName() const  { return RegTypeName; }
-    std::chrono::milliseconds PollInterval() const { return RegPollInterval; }
     virtual void MapRange(TValueCallback value_callback, TErrorCallback error_callback) = 0;
     virtual EStatus GetStatus() const = 0;
 
@@ -343,33 +227,32 @@ public:
     virtual bool NeedsSplit() const = 0;
 
 protected:
-    TRegisterRange(const std::list<PRegister>& regs);
-    TRegisterRange(PRegister reg);
+    TRegisterRange(const std::list<PProtocolRegister>& regs);
+    TRegisterRange(PProtocolRegister reg);
 
 private:
     std::weak_ptr<TSerialDevice> RegDevice;
     int RegType;
     std::string RegTypeName;
-    std::chrono::milliseconds RegPollInterval = std::chrono::milliseconds(-1);
-    std::list<PRegister> RegList;
+    std::list<PProtocolRegister> RegList;
 };
 
 typedef std::shared_ptr<TRegisterRange> PRegisterRange;
 
 class TSimpleRegisterRange: public TRegisterRange {
 public:
-    TSimpleRegisterRange(const std::list<PRegister>& regs);
-    TSimpleRegisterRange(PRegister reg);
+    TSimpleRegisterRange(const std::list<PProtocolRegister>& regs);
+    TSimpleRegisterRange(PProtocolRegister reg);
     void Reset();
-    void SetValue(PRegister reg, uint64_t value);
-    void SetError(PRegister reg);
+    void SetValue(PProtocolRegister reg, uint64_t value);
+    void SetError(PProtocolRegister reg);
     void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
     EStatus GetStatus() const override;
     bool NeedsSplit() const override;
 
 private:
-    std::unordered_map<PRegister, uint64_t> Values;
-    std::unordered_set<PRegister> Errors;
+    std::unordered_map<PProtocolRegister, uint64_t> Values;
+    std::unordered_set<PProtocolRegister> Errors;
 };
 
 typedef std::shared_ptr<TSimpleRegisterRange> PSimpleRegisterRange;

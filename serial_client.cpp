@@ -1,18 +1,25 @@
+#include "serial_client.h"
+#include "virtual_register.h"
+#include "ir_device_query.h"
+
 #include <unistd.h>
 #include <unordered_map>
 #include <iostream>
 
-#include "serial_client.h"
 
 namespace {
     struct TSerialPollEntry: public TPollEntry {
-        TSerialPollEntry(PRegisterRange range) {
-            Ranges.push_back(range);
+        PIRDeviceReadQuery ReadQuery;
+        TIntervalMs        PollIntervalValue;
+
+        TSerialPollEntry(TIntervalMs pollInterval, const PIRDeviceReadQuery & readQuery)
+            : ReadQuery(readQuery)
+            , PollIntervalValue(pollInterval)
+        {}
+
+        TIntervalMs PollInterval() const override {
+            return PollIntervalValue;
         }
-        std::chrono::milliseconds PollInterval() const {
-            return Ranges.front()->PollInterval();
-        }
-        std::list<PRegisterRange> Ranges;
     };
     typedef std::shared_ptr<TSerialPollEntry> PSerialPollEntry;
 };
@@ -54,14 +61,24 @@ PSerialDevice TSerialClient::CreateDevice(PDeviceConfig device_config)
     }
 }
 
-void TSerialClient::AddRegister(PRegister reg)
+void TSerialClient::AddRegister(PVirtualRegister reg)
 {
     if (Active)
         throw TSerialDeviceException("can't add registers to the active client");
-    if (Handlers.find(reg) != Handlers.end())
+
+    bool inserted = VirtualRegisters.insert(reg).second;
+    if (!inserted) {
         throw TSerialDeviceException("duplicate register");
-    auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg, FlushNeeded, Debug);
-    RegList.push_back(reg);
+    }
+
+    {
+        auto & deviceProtocolRegisters = ProtocolRegisters[reg->GetDevice()];
+        auto & protocolRegisters = reg->GetProtocolRegisters();
+        deviceProtocolRegisters.insert(protocolRegisters.begin(), protocolRegisters.end());
+    }
+
+    //auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg->GetDevice(), reg, FlushNeeded, Debug);
+
     if (Debug)
         std::cerr << "AddRegister: " << reg << std::endl;
 }
@@ -74,7 +91,7 @@ void TSerialClient::Connect()
         throw TSerialDeviceException("no registers defined");
     if (!Port->IsOpen())
         Port->Open();
-    PrepareRegisterRanges();
+    GenerateReadQueries();
     Active = true;
 }
 
@@ -85,45 +102,31 @@ void TSerialClient::Disconnect()
     Active = false;
 }
 
-void TSerialClient::PrepareRegisterRanges()
+void TSerialClient::GenerateReadQueries()
 {
     // all of this is seemingly slow but it's actually only done once
     Plan->Reset();
-    PSerialDevice last_device(0);
-    std::list<PRegister> cur_regs;
-    auto it = RegList.begin();
-    std::list<PSerialPollEntry> entries;
-    std::unordered_map<long long, PSerialPollEntry> interval_map;
-    for (;;) {
-        bool at_end = it == RegList.end();
-        if ((at_end || (*it)->Device() != last_device) && !cur_regs.empty()) {
-            cur_regs.sort([](const PRegister& a, const PRegister& b) {
-                    return a->Type < b->Type || (a->Type == b->Type && a->Address < b->Address);
-                });
-            interval_map.clear();
+    TProtocolRegisterSet curentRegisters;
 
-            // Join multiple ranges with same poll period into a
-            // single scheduling entry. This is necessary because
-            // switching between devices may require extra
-            // delays. This is far from being an ideal solution
-            // though.
-            for (auto range: last_device->SplitRegisterList(cur_regs)) {
-                PSerialPollEntry entry;
-                long long interval = range->PollInterval().count();
-                auto it = interval_map.find(interval);
-                if (it == interval_map.end()) {
-                    entry = std::make_shared<TSerialPollEntry>(range);
-                    interval_map[interval] = entry;
-                    Plan->AddEntry(entry);
-                } else
-                    it->second->Ranges.push_back(range);
+    for (const auto & deviceProtocolRegisters: ProtocolRegisters) {
+        std::unordered_map<TIntervalMs, TProtocolRegisterSet> protocolRegistersByInterval;
+
+        const auto & device            = deviceProtocolRegisters.first;
+        const auto & protocolRegisters = deviceProtocolRegisters.second;
+
+        for (const auto & protocolRegister: protocolRegisters) {
+            for (const auto & pollInterval: protocolRegister->GetPollIntervals()) {
+                protocolRegistersByInterval[pollInterval].insert(protocolRegister);
             }
-            cur_regs.clear();
         }
-        if (at_end)
-            break;
-        last_device = (*it)->Device();
-        cur_regs.push_back(*it++);
+
+        for (const auto & pollIntervalRegisters: protocolRegistersByInterval) {
+            const auto & pollInterval = pollIntervalRegisters.first;
+            const auto & registers    = pollIntervalRegisters.second;
+
+            const auto & query = std::make_shared<TIRDeviceReadQuery>(registers);
+            Plan->AddEntry(std::make_shared<TSerialPollEntry>(pollInterval, query));
+        }
     }
 }
 
@@ -164,7 +167,7 @@ void TSerialClient::MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErro
 
 void TSerialClient::DoFlush()
 {
-    for (const auto& reg: RegList) {
+    for (const auto& reg: VirtualRegisters) {
         auto handler = Handlers[reg];
         if (!handler->NeedToFlush())
             continue;
@@ -238,14 +241,14 @@ void TSerialClient::Cycle()
 
     // devices whose registers were polled during this cycle and statues
     std::map<PSerialDevice, std::set<TRegisterRange::EStatus>> devicesRangesStatuses;
-    // ranges that needs to split
-    std::set<PRegisterRange> rangesToSplit;
 
     Plan->ProcessPending([&](const PPollEntry& entry) {
-        for (auto range: std::dynamic_pointer_cast<TSerialPollEntry>(entry)->Ranges) {
-            auto device = range->Device();
-            auto & statuses = devicesRangesStatuses[device];
+        const auto & query = std::dynamic_pointer_cast<TSerialPollEntry>(entry)->ReadQuery;
+        auto device = query->Device;
 
+        auto & statuses = devicesRangesStatuses[device];
+
+        for (const auto & entry: query->Entries) {
             if (device->GetIsDisconnected()) {
                 // limited polling mode
                 if (statuses.empty()) {
@@ -267,10 +270,10 @@ void TSerialClient::Cycle()
 
             PollRange(range);
             statuses.insert(range->GetStatus());
-            if (range->NeedsSplit()) {
-                rangesToSplit.insert(range);
-            }
         }
+
+        query->SplitIfNeeded();
+
         MaybeFlushAvoidingPollStarvationButDontWait();
     });
 

@@ -22,7 +22,7 @@ public:
     ~TSerialClient();
 
     PSerialDevice CreateDevice(PDeviceConfig device_config);
-    void AddRegister(PRegister reg);
+    void AddRegister(PVirtualRegister reg);
     void Connect();
     void Disconnect();
     void Cycle();
@@ -38,6 +38,7 @@ public:
 
 private:
     void PrepareRegisterRanges();
+    void GenerateReadQueries();
     void DoFlush();
     void WaitForPollAndFlush();
     void MaybeFlushAvoidingPollStarvationButDontWait();
@@ -49,7 +50,8 @@ private:
     void SplitRegisterRanges(std::set<PRegisterRange> &&);
 
     PPort Port;
-    std::list<PRegister> RegList;
+    TPSet<TVirtualRegister> VirtualRegisters;
+    std::unordered_map<PSerialDevice, std::set<PProtocolRegister, utils::ptr_cmp<TProtocolRegister>>> ProtocolRegisters;
     std::list<PSerialDevice> DevicesList; /* for EndPollCycle */
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 

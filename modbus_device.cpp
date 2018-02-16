@@ -18,9 +18,9 @@ TModbusDevice::TModbusDevice(PDeviceConfig config, PPort port, PProtocol protoco
     : TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>>(config, port, protocol)
 {}
 
-std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
+const TProtocolInfo & TModbusDevice::GetProtocolInfo() const
 {
-    return Modbus::SplitRegisterList(reg_list, DeviceConfig(), Port()->Debug(), enableHoles);
+    return Modbus::GetProtocolInfo();
 }
 
 uint64_t TModbusDevice::ReadRegister(PRegister reg)
@@ -36,4 +36,14 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
 void TModbusDevice::ReadRegisterRange(PRegisterRange range)
 {
     ModbusRTU::ReadRegisterRange(Port(), SlaveId, range);
+}
+
+void Read(const PIRDeviceReadQueryEntry & entry)
+{
+
+}
+
+void Write(const PIRDeviceWriteQueryEntry & entry)
+{
+
 }

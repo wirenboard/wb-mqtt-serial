@@ -3,6 +3,21 @@
 #include <iostream>
 #include <unistd.h>
 
+bool TProtocolInfo::IsSingleBitType(int) const
+{
+    return false;
+}
+
+int TProtocolInfo::GetMaxReadRegisters() const
+{
+    return 1;
+}
+
+int TProtocolInfo::GetMaxReadBits() const
+{
+    return 1;
+}
+
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : Delay(config->Delay)
     , SerialPort(port)
@@ -18,18 +33,17 @@ TSerialDevice::~TSerialDevice()
     /* TSerialDeviceFactory::RemoveDevice(shared_from_this()); */
 }
 
+const TProtocolInfo & TSerialDevice::GetProtocolInfo() const
+{
+    static TProtocolInfo info;
+    return info;
+}
+
 std::string TSerialDevice::ToString() const
 {
     return DeviceConfig()->Name + "(" + DeviceConfig()->SlaveId + ")";
 }
 
-std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool) const
-{
-    std::list<PRegisterRange> r;
-    for (auto reg: reg_list)
-        r.push_back(std::make_shared<TSimpleRegisterRange>(reg));
-    return r;
-}
 
 void TSerialDevice::Prepare()
 {

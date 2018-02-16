@@ -1,5 +1,7 @@
 #pragma once
 
+#include "protocol_register.h"
+
 #include <list>
 #include <set>
 #include <vector>
@@ -16,9 +18,6 @@
 #include "serial_config.h"
 #include "port.h"
 
-
-class IProtocol;
-typedef std::shared_ptr<IProtocol> PProtocol;
 
 struct TDeviceSetupItem : public TDeviceSetupItemConfig
 {
@@ -61,6 +60,17 @@ namespace std
     };
 }
 
+/**
+ * describes general protocol properties
+ */
+struct TProtocolInfo
+{
+    virtual ~TProtocolInfo() = default;
+
+    virtual bool IsSingleBitType(int type) const;
+    virtual int GetMaxReadRegisters() const;
+    virtual int GetMaxReadBits() const;
+};
 
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {
 public:
@@ -68,7 +78,7 @@ public:
     TSerialDevice(const TSerialDevice&) = delete;
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
-    virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles = true) const;
+    virtual const TProtocolInfo & GetProtocolInfo() const;
 
     // Prepare to access device (pauses for configured delay by default)
     virtual void Prepare();
@@ -80,6 +90,9 @@ public:
     virtual void EndPollCycle();
     // Read multiple registers
     virtual void ReadRegisterRange(PRegisterRange range);
+
+    virtual void Read(const PIRDeviceReadQueryEntry &) = 0;
+    virtual void Write(const PIRDeviceWriteQueryEntry &) = 0;
 
     virtual std::string ToString() const;
 

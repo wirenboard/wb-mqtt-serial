@@ -1,30 +1,30 @@
 #include "register.h"
 #include "serial_device.h"
+#include "protocol_register.h"
+#include "virtual_register.h"
 
-TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
+TRegisterRange::TRegisterRange(const std::list<PProtocolRegister>& regs): RegList(regs)
 {
     if (RegList.empty())
         throw std::runtime_error("cannot construct empty register range");
-    PRegister first = regs.front();
-    RegDevice = first->Device();
+    PProtocolRegister first = regs.front();
+    RegDevice = first->GetParent()->GetDevice();
     RegType = first->Type;
     RegTypeName = first->TypeName;
-    RegPollInterval = first->PollInterval;
 }
 
-TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
+TRegisterRange::TRegisterRange(PProtocolRegister reg): RegList(1, reg)
 {
-    RegDevice = reg->Device();
+    RegDevice = reg->GetParent()->GetDevice();
     RegType = reg->Type;
     RegTypeName = reg->TypeName;
-    RegPollInterval = reg->PollInterval;
 }
 
 TRegisterRange::~TRegisterRange() {}
 
-TSimpleRegisterRange::TSimpleRegisterRange(const std::list<PRegister>& regs): TRegisterRange(regs) {}
+TSimpleRegisterRange::TSimpleRegisterRange(const std::list<PProtocolRegister>& regs): TRegisterRange(regs) {}
 
-TSimpleRegisterRange::TSimpleRegisterRange(PRegister reg): TRegisterRange(reg) {}
+TSimpleRegisterRange::TSimpleRegisterRange(PProtocolRegister reg): TRegisterRange(reg) {}
 
 void TSimpleRegisterRange::Reset()
 {
@@ -32,12 +32,12 @@ void TSimpleRegisterRange::Reset()
     Errors.clear();
 }
 
-void TSimpleRegisterRange::SetValue(PRegister reg, uint64_t value)
+void TSimpleRegisterRange::SetValue(PProtocolRegister reg, uint64_t value)
 {
     Values[reg] = value;
 }
 
-void TSimpleRegisterRange::SetError(PRegister reg)
+void TSimpleRegisterRange::SetError(PProtocolRegister reg)
 {
     Errors.insert(reg);
 }
@@ -60,12 +60,6 @@ TRegisterRange::EStatus TSimpleRegisterRange::GetStatus() const
 bool TSimpleRegisterRange::NeedsSplit() const
 {
     return false;
-}
-
-std::string TRegisterConfig::ToString() const {
-    std::stringstream s;
-    s << TypeName << ": " << Address;
-    return s.str();
 }
 
 std::string TRegister::ToString() const

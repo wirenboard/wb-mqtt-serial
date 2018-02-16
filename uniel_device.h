@@ -19,7 +19,7 @@ public:
 
     TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
-    void WriteRegister(PRegister reg, uint64_t value);
+    void WriteRegister(PVirtualRegister reg, uint64_t value);
 
 private:
     void WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3);

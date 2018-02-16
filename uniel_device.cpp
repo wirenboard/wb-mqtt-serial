@@ -95,7 +95,7 @@ uint64_t TUnielDevice::ReadRegister(PRegister reg)
     return response[0];
 }
 
-void TUnielDevice::WriteRegister(PRegister reg, uint64_t value)
+void TUnielDevice::WriteRegister(PVirtualRegister reg, uint64_t value)
 {
     uint8_t cmd, addr;
     if (reg->Type == REG_BRIGHTNESS) {

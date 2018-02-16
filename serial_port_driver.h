@@ -1,4 +1,7 @@
 #pragma once
+
+#include "virtual_register.h"
+
 #include <memory>
 #include <unordered_map>
 
@@ -11,17 +14,17 @@
 
 struct TDeviceChannel : public TDeviceChannelConfig
 {
-    TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config)
+    TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config, TVirtualRegister::TInitContext & context)
         : TDeviceChannelConfig(*config)
         , Device(device)
     {
         for (const auto &reg_config: config->RegisterConfigs) {
-            Registers.push_back(TRegister::Intern(device, reg_config));
+            Registers.push_back(TVirtualRegister::Create(reg_config, device, context));
         }
     }
 
     PSerialDevice Device;
-    std::vector<PRegister> Registers;
+    std::vector<PVirtualRegister> Registers;
 };
 
 typedef std::shared_ptr<TDeviceChannel> PDeviceChannel;
@@ -42,9 +45,9 @@ public:
 
 private:
     bool NeedToPublish(PRegister reg, bool changed);
-    void OnValueRead(PRegister reg, bool changed);
+    void OnValueRead(PVirtualRegister reg, bool changed);
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
-    void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);
+    void UpdateError(PVirtualRegister reg, TRegisterHandler::TErrorState errorState);
 
     PMQTTClientBase MQTTClient;
     PPortConfig Config;

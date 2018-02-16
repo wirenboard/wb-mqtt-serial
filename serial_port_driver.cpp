@@ -38,18 +38,21 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
     if (Config->Debug)
         std::cerr << "Setting up devices at " << port_config->ConnSettings->ToString() << std::endl;
 
+    // holds pointers to created protocol registers to eliminate duplicates and detect collisions
+    TVirtualRegister::TInitContext context;
+
     for (auto& device_config: Config->DeviceConfigs) {
         auto device = SerialClient->CreateDevice(device_config);
         Devices.push_back(device);
 
         // init channels' registers
         for (auto& channel_config: device_config->DeviceChannelConfigs) {
-            
-            auto channel = std::make_shared<TDeviceChannel>(device, channel_config);
+
+            auto channel = std::make_shared<TDeviceChannel>(device, channel_config, context);
             NameToChannelMap[device_config->Id + "/" + channel->Name] = channel;
-            
+
             ChannelRegistersMap[channel] = std::vector<PRegister>();
-            
+
             for (auto& reg: channel->Registers) {
                 RegisterToChannelMap[reg] = channel;
                 SerialClient->AddRegister(reg);
@@ -191,7 +194,7 @@ bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
     return true;
 }
 
-void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
+void TSerialPortDriver::OnValueRead(PVirtualRegister reg, bool changed)
 {
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
