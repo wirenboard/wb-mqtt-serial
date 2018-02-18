@@ -52,15 +52,15 @@ std::set<TIntervalMs> TProtocolRegister::GetPollIntervals() const
 
 const string & TProtocolRegister::GetTypeName() const
 {
-    return AccessAssociatedVirtualRegister()->TypeName;
+    return AssociatedVirtualRegister()->TypeName;
 }
 
 PSerialDevice TProtocolRegister::GetDevice() const
 {
-    return AccessAssociatedVirtualRegister()->GetDevice();
+    return AssociatedVirtualRegister()->GetDevice();
 }
 
-PVirtualRegister TProtocolRegister::AccessAssociatedVirtualRegister() const
+PVirtualRegister TProtocolRegister::AssociatedVirtualRegister() const
 {
     assert(!VirtualRegisters.empty());
 

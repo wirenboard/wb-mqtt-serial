@@ -7,16 +7,17 @@
  * intermediate, protocol-agnostic device query representation format data structures
  */
 
-struct TIRDeviceQueryEntry
+struct TIRDeviceQuery
 {
     // NOTE: DO NOT REORDER "Registers" AND "HasHoles" FIELDS
     const TPSet<TProtocolRegister> Registers;
     const bool                     HasHoles;
     mutable EQueryStatus           Status;
 
-    TIRDeviceQueryEntry(TPSet<TProtocolRegister> &&);
+    TIRDeviceQuery(TPSet<TProtocolRegister> &&);
+    virtual ~TIRDeviceQuery() = default;
 
-    bool operator<(const TIRDeviceQueryEntry &) const noexcept;
+    bool operator<(const TIRDeviceQuery &) const noexcept;
 
     PSerialDevice GetDevice() const;
     uint32_t GetCount() const;
@@ -25,51 +26,50 @@ struct TIRDeviceQueryEntry
     const std::string & GetTypeName() const;
     bool NeedsSplit() const;
 
+    virtual void IterRegisterValues(std::function<bool(const TProtocolRegister &, uint64_t)> && accessor) const = 0;
+    virtual void AcceptValues() const = 0;
+
     std::string Describe() const;
 };
 
 template <typename T>
-struct TIRDeviceValueQueryEntry: TIRDeviceQueryEntry
+struct TIRDeviceValueQuery: TIRDeviceQuery
 {
-    const std::vector<T> Values;
+    const std::vector<_mutable<T>> Values;
 
-    TIRDeviceValueQueryEntry(TPSet<TProtocolRegister> && registerSet)
-        : TIRDeviceQueryEntry(std::move(registerSet))
+    TIRDeviceValueQuery(TPSet<TProtocolRegister> && registerSet)
+        : TIRDeviceQuery(std::move(registerSet))
         , Values(registerSet.size())
     {}
+
+    void IterRegisterValues(std::function<bool(const TProtocolRegister &, uint64_t)> && accessor) const override
+    {
+        uint32_t i = 0;
+        for (const auto & protocolRegister: Registers) {
+            if (accessor(*protocolRegister, Values[i++].Value)) {
+                return;
+            }
+        }
+    }
 };
 
-using TIRDevice64QueryEntry  = TIRDeviceValueQueryEntry<uint64_t>;
-using TIRDeviceBitQueryEntry = TIRDeviceValueQueryEntry<bool>;
+struct TIRDevice64BitQuery: TIRDeviceValueQuery<uint64_t> {};
+struct TIRDeviceSingleBitQuery: TIRDeviceValueQuery<bool> {};
 
-struct TIRDeviceQuery
+
+struct TIRDeviceQuerySet
 {
-    using Entry = TIRDeviceQueryEntry;
-    using PEntry = std::shared_ptr<Entry>;
+    TPSet<TIRDeviceQuery> Queries;
 
-    TPSet<Entry> Entries;
+    TIRDeviceQuerySet(const TPSet<TProtocolRegister> & registers);
 
     std::string Describe() const;
-};
-
-struct TIRDeviceReadQuery: TIRDeviceQuery
-{
-    using ActualEntry = TIRDeviceReadQueryEntry;
-
-    PSerialDevice Device;
-
-    TIRDeviceReadQuery(const TPSet<TProtocolRegister> & registers);
+    PSerialDevice GetDevice() const;
 
     void SplitIfNeeded();
 
 private:
-    static TPSet<Entry> GenerateEntries(const TPSet<TProtocolRegister> & registers, bool enableHoles);
+    static TPSet<TIRDeviceQuery> GenerateQueries(const TPSet<TProtocolRegister> & registers, bool enableHoles);
 
     void Initialize(const TPSet<TProtocolRegister> & registers, bool enableHoles);
-    void AddEntry(const PEntry &);
-};
-
-struct TIRDeviceWriteQuery: TIRDeviceQuery
-{
-    using ActualEntry = TIRDeviceWriteQueryEntry;
 };

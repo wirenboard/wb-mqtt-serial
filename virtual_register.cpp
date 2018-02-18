@@ -2,6 +2,7 @@
 #include "serial_device.h"
 
 #include <cassert>
+#include <cmath>
 
 using namespace std;
 
@@ -50,9 +51,22 @@ TVirtualRegister::TVirtualRegister(const PRegisterConfig & config)
     : TRegisterConfig(*config)
 {}
 
-uint64_t TVirtualRegister::GetBitPosition() const
+uint32_t TVirtualRegister::GetBitPosition() const
 {
     return (uint64_t(Address) * ProtocolRegisterWidth * 8) + BitOffset;
+}
+
+uint32_t TVirtualRegister::GetBitSize() const
+{
+    return ProtocolRegisterWidth * 8 * ProtocolRegisters.size();
+}
+
+bool TVirtualRegister::operator<(const TVirtualRegister & rhs) const noexcept
+{
+    auto lhsEnd = GetBitPosition() + GetBitSize();
+    auto rhsBegin = rhs.GetBitPosition();
+
+    return lhsEnd <= rhsBegin;
 }
 
 const PSerialDevice & TVirtualRegister::GetDevice() const
@@ -60,7 +74,7 @@ const PSerialDevice & TVirtualRegister::GetDevice() const
     return Device;
 }
 
-const TProtocolRegisterSet & TVirtualRegister::GetProtocolRegisters() const
+const TPSet<TProtocolRegister> & TVirtualRegister::GetProtocolRegisters() const
 {
     return ProtocolRegisters;
 }
@@ -71,17 +85,16 @@ void TVirtualRegister::AssociateWith(const PProtocolRegister & reg)
         throw TSerialDeviceException("different protocol register types within same virtual register are not supported");
     }
 
-    bool inserted = ProtocolRegisters.insert(reg).second;
+    bool inserted = ProtocolRegisters.insert({reg, false}).second;
 
     assert(inserted);
 
     reg->AssociateWith(shared_from_this());
 }
 
-bool TVirtualRegister::operator<(const TVirtualRegister & rhs) const noexcept
+void TVirtualRegister::NotifyRead(const PProtocolRegister & reg)
 {
-    uint64_t lhsEnd = GetBitPosition() + GetBitSize();
-    uint64_t rhsBegin = rhs.GetBitPosition();
+    assert(ProtocolRegisters.count(reg));
 
-    return lhsEnd <= rhsBegin;
+    ProtocolRegisters.at(reg) = true;
 }

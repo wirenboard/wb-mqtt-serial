@@ -25,6 +25,6 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
     void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift = 0);
 
-    void Read(const PPort & port, uint8_t slaveId, const PIRDeviceReadQueryEntry &, int shift = 0);
-    void Write(const PPort & port, uint8_t slaveId, const PIRDeviceWriteQueryEntry &, int shift = 0);
+    void Read(const PPort & port, uint8_t slaveId, const PIRDeviceQuery &, int shift = 0);
+    void Write(const PPort & port, uint8_t slaveId, const PIRDeviceQuery &, int shift = 0);
 };  // modbus rtu protocol utilities

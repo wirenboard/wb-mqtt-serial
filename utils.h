@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <type_traits>
 
 namespace utils
 {
@@ -26,5 +27,31 @@ namespace utils
     };
 }
 
+template <typename K>
+using TPSet = std::set<std::shared_ptr<K>, utils::ptr_cmp<K>>;
+
+template <typename K, typename V>
+using TPMap = std::map<std::shared_ptr<K>, V, utils::ptr_cmp<K>>;
+
 template <typename T>
-using TPSet = std::set<std::shared_ptr<T>, utils::ptr_cmp<T>>;
+struct _mutable
+{
+    static_assert(std::is_fundamental<T>::value, "'_mutable' wrapper should be used only with fundamental types");
+
+    mutable T Value;
+
+    _mutable() = default;
+    _mutable(const T & value)
+        : Value(value)
+    {}
+
+    T operator=(const T & value) const
+    {
+        Value = value;
+    }
+
+    operator T() const
+    {
+        return Value;
+    }
+};

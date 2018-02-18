@@ -43,6 +43,7 @@ private:
     void WaitForPollAndFlush();
     void MaybeFlushAvoidingPollStarvationButDontWait();
     void PollRange(PRegisterRange range);
+    void ReadQuery(const PIRDeviceQuery & query);
     PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
     void PrepareToAccessDevice(PSerialDevice dev);

@@ -21,16 +21,30 @@ namespace
 
         return false;
     }
+
+    template <class Entry>
+    PIRDeviceQuery CreateEntry(TPSet<TProtocolRegister> && registerSet)
+    {
+        return make_shared<Entry>(move(registerSet));
+    }
+
+    template <class Entry>
+    void AddEntry(TPSet<TProtocolRegister> && registerSet, TPSet<TIRDeviceQuery> & result)
+    {
+        bool inserted = result.insert(CreateEntry<Entry>(registerSet)).second;
+        assert(inserted);
+    }
 }
 
-TIRDeviceQueryEntry::TIRDeviceQueryEntry(TPSet<TProtocolRegister> && registerSet)
+TIRDeviceQuery::TIRDeviceQuery(TPSet<TProtocolRegister> && registerSet)
     : Registers(move(registerSet))
     , HasHoles(DetectHoles(Registers))
+    , Status(EQueryStatus::OK)
 {
     assert(!Registers.empty());
 }
 
-bool TIRDeviceQueryEntry::operator<(const TIRDeviceQueryEntry & rhs) const noexcept
+bool TIRDeviceQuery::operator<(const TIRDeviceQuery & rhs) const noexcept
 {
     const auto & lhsLastRegister = *Registers.rbegin();
     const auto & rhsFirstRegister = *rhs.Registers.begin();
@@ -38,47 +52,47 @@ bool TIRDeviceQueryEntry::operator<(const TIRDeviceQueryEntry & rhs) const noexc
     return *lhsLastRegister < *rhsFirstRegister;
 }
 
-PSerialDevice TIRDeviceQueryEntry::GetDevice() const
+PSerialDevice TIRDeviceQuery::GetDevice() const
 {
     const auto & firstRegister = *Registers.begin();
 
     return firstRegister->GetDevice();
 }
 
-uint32_t TIRDeviceQueryEntry::GetCount() const
+uint32_t TIRDeviceQuery::GetCount() const
 {
     const auto & firstRegister = *Registers.begin(), lastRegister = *Registers.rbegin();
 
     return (lastRegister->Address - firstRegister->Address) + 1;
 }
 
-uint32_t TIRDeviceQueryEntry::GetStart() const
+uint32_t TIRDeviceQuery::GetStart() const
 {
     const auto & firstRegister = *Registers.begin();
 
     return firstRegister->Address;
 }
 
-uint32_t TIRDeviceQueryEntry::GetType() const
+uint32_t TIRDeviceQuery::GetType() const
 {
     const auto & firstRegister = *Registers.begin();
 
     return firstRegister->Type;
 }
 
-const std::string & TIRDeviceQueryEntry::GetTypeName() const
+const std::string & TIRDeviceQuery::GetTypeName() const
 {
     const auto & firstRegister = *Registers.begin();
 
     return firstRegister->GetTypeName();
 }
 
-bool TIRDeviceQueryEntry::NeedsSplit() const
+bool TIRDeviceQuery::NeedsSplit() const
 {
     return Status == EQueryStatus::DEVICE_PERMANENT_ERROR && GetCount() > 1;
 }
 
-string TIRDeviceQueryEntry::Describe() const
+string TIRDeviceQuery::Describe() const
 {
     ostringstream ss;
 
@@ -98,51 +112,64 @@ string TIRDeviceQueryEntry::Describe() const
     return ss.str();
 }
 
-std::string TIRDeviceQuery::Describe() const
+std::string TIRDeviceQuerySet::Describe() const
 {
     ostringstream ss;
 
     ss << "[" << endl;
-    for (const auto & entry: Entries) {
-        ss << "\t" << entry->Describe() << endl;
+    for (const auto & query: Queries) {
+        ss << "\t" << query->Describe() << endl;
     }
     ss << "]";
 
     return ss.str();
 }
 
-TIRDeviceReadQuery::TIRDeviceReadQuery(const TPSet<TProtocolRegister> & registers)
+TIRDeviceQuerySet::TIRDeviceQuerySet(const TPSet<TProtocolRegister> & registers)
 {
     Initialize(registers, true);
 }
 
-void TIRDeviceReadQuery::SplitIfNeeded()
+PSerialDevice TIRDeviceQuerySet::GetDevice() const
 {
-    vector<PEntry> newEntries;
+    assert(!Queries.empty());
 
-    for (auto itEntry = Entries.begin(); itEntry != Entries.end();) {
-        const auto & entry = static_pointer_cast<ActualEntry>(*itEntry);
+    const auto & query = *Queries.begin();
 
-        if (entry->NeedsSplit) {
-            if (entry->HasHoles) {
-                const auto & generatedEntries = GenerateEntries(entry->Registers, false);
-                newEntries.insert(newEntries.end(), generatedEntries.begin(), generatedEntries.end());
+    return query->GetDevice();
+}
+
+void TIRDeviceQuerySet::SplitIfNeeded()
+{
+    const auto & protocolInfo = GetDevice()->GetProtocolInfo();
+
+    vector<PIRDeviceQuery> newQueries;
+
+    for (auto itEntry = Queries.begin(); itEntry != Queries.end();) {
+        const auto & query       = *itEntry;
+        const auto & createEntry = protocolInfo.IsSingleBitType(query->GetType()) ? CreateEntry<TIRDeviceSingleBitQuery>
+                                                                                  : CreateEntry<TIRDevice64BitQuery>;
+
+        if (query->NeedsSplit) {
+            if (query->HasHoles) {
+                const auto & generatedQueries = GenerateQueries(query->Registers, false);
+                newQueries.insert(newQueries.end(), generatedQueries.begin(), generatedQueries.end());
             } else {
-                for (const auto & protocolRegister: entry->Registers) {
-                    newEntries.push_back(make_shared<ActualEntry>(TPSet<TProtocolRegister>{ protocolRegister }));
+                for (const auto & protocolRegister: query->Registers) {
+                    newQueries.push_back(createEntry(TPSet<TProtocolRegister>{ protocolRegister }));
                 }
             }
 
-            itEntry = Entries.erase(itEntry);
+            itEntry = Queries.erase(itEntry);
         } else {
             ++itEntry;
         }
     }
 
-    Entries.insert(newEntries.begin(), newEntries.end());
+    Queries.insert(newQueries.begin(), newQueries.end());
 }
 
-TPSet<TIRDeviceReadQuery::Entry> TIRDeviceReadQuery::GenerateEntries(const TPSet<TProtocolRegister> & registers, bool enableHoles)
+TPSet<TIRDeviceQuery> TIRDeviceQuerySet::GenerateQueries(const TPSet<TProtocolRegister> & registers, bool enableHoles)
 {
     assert(!registers.empty());
 
@@ -153,10 +180,17 @@ TPSet<TIRDeviceReadQuery::Entry> TIRDeviceReadQuery::GenerateEntries(const TPSet
     const auto & deviceConfig = device->DeviceConfig();
     const auto & protocolInfo = device->GetProtocolInfo();
 
-    int maxHole = enableHoles ? (protocolInfo.IsSingleBitType((*registers.begin())->Type) ? deviceConfig->MaxBitHole : deviceConfig->MaxRegHole) : 0;
+    bool isSingleBitType = protocolInfo.IsSingleBitType((*registers.begin())->Type);
+
+    const auto & addEntry = isSingleBitType ? AddEntry<TIRDeviceSingleBitQuery>
+                                            : AddEntry<TIRDevice64BitQuery>;
+
+    int maxHole = enableHoles ? (isSingleBitType ? deviceConfig->MaxBitHole
+                                                 : deviceConfig->MaxRegHole)
+                              : 0;
     int maxRegs;
 
-    if (protocolInfo.IsSingleBitType((*registers.begin())->Type)) {
+    if (isSingleBitType) {
         maxRegs = protocolInfo.GetMaxReadBits();
     } else {
         if ((deviceConfig->MaxReadRegisters > 0) && (deviceConfig->MaxReadRegisters <= protocolInfo.GetMaxReadRegisters())) {
@@ -166,8 +200,8 @@ TPSet<TIRDeviceReadQuery::Entry> TIRDeviceReadQuery::GenerateEntries(const TPSet
         }
     }
 
-    TPSet<Entry>                result;
-    TPSet<TProtocolRegister>    currentRegisterSet;
+    TPSet<TIRDeviceQuery> result;
+    TPSet<TProtocolRegister>   currentRegisterSet;
 
     for (const auto & protocolRegister: registers) {
         assert(protocolRegister->GetDevice() == device);
@@ -180,8 +214,7 @@ TPSet<TIRDeviceReadQuery::Entry> TIRDeviceReadQuery::GenerateEntries(const TPSet
             newEnd - prevStart <= maxRegs))
         {
             if (!currentRegisterSet.empty()) {
-                bool inserted = result.insert(make_shared<ActualEntry>(move(currentRegisterSet))).second;
-                assert(inserted);
+                addEntry(move(currentRegisterSet), result);
             }
             prevStart = protocolRegister->Address;
             prevType = protocolRegister->Type;
@@ -189,40 +222,40 @@ TPSet<TIRDeviceReadQuery::Entry> TIRDeviceReadQuery::GenerateEntries(const TPSet
         currentRegisterSet.insert(protocolRegister);
         prevEnd = newEnd;
     }
+
     if (!currentRegisterSet.empty()) {
-        bool inserted = result.insert(make_shared<ActualEntry>(move(currentRegisterSet))).second;
-        assert(inserted);
+        addEntry(move(currentRegisterSet), result);
     }
 
     return result;
 }
 
-void TIRDeviceReadQuery::Initialize(const TPSet<TProtocolRegister> & registers, bool enableHoles)
+void TIRDeviceQuerySet::Initialize(const TPSet<TProtocolRegister> & registers, bool enableHoles)
 {
-    Entries = GenerateEntries(registers, enableHoles);
+    Queries = GenerateQueries(registers, enableHoles);
 
     if (true) { // TODO: only in debug
         cerr << "Initialized read query: " << Describe() << endl;
     }
 }
 
-void TIRDeviceReadQuery::AddEntry(const PEntry & entry)
-{
-    const auto & insertionResult = Entries.insert(entry);
+// void TIRDeviceQuerySet::AddEntry(const PEntry & query)
+// {
+//     const auto & insertionResult = Queries.insert(query);
 
-    bool inserted = insertionResult.second;
-    assert(inserted);
-}
+//     bool inserted = insertionResult.second;
+//     assert(inserted);
+// }
 
-// void TIRDeviceReadQuery::AddRegister(const PProtocolRegister & reg)
+// void TIRDeviceQuerySet::AddRegister(const PProtocolRegister & reg)
 // {
 //     assert(reg->GetDevice() == Device);
 
-//     auto searchQuery = make_shared<TIRDeviceQueryEntry>(reg);
+//     auto searchQuery = make_shared<TIRDeviceQuery>(reg);
 
-//     const auto & itEntry = Entries.lower_bound(searchQuery);
+//     const auto & itEntry = Queries.lower_bound(searchQuery);
 
-//     if (itEntry != Entries.end()) {
+//     if (itEntry != Queries.end()) {
 
 //     }
 

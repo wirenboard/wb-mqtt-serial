@@ -7,7 +7,12 @@
 
 class TProtocolRegister
 {
+    friend TIRDeviceQuery;
+
     std::set<PWVirtualRegister, utils::weak_ptr_cmp<TVirtualRegister>> VirtualRegisters;
+
+    PVirtualRegister AssociatedVirtualRegister() const;
+
 public:
     uint32_t Address;
     uint32_t Type;
@@ -25,5 +30,5 @@ public:
     PSerialDevice GetDevice() const;
 
 private:
-    PVirtualRegister AccessAssociatedVirtualRegister() const;
+    void NotifyRead(const PProtocolRegister &);
 };

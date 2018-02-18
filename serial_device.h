@@ -91,8 +91,8 @@ public:
     // Read multiple registers
     virtual void ReadRegisterRange(PRegisterRange range);
 
-    virtual void Read(const PIRDeviceReadQueryEntry &) = 0;
-    virtual void Write(const PIRDeviceWriteQueryEntry &) = 0;
+    virtual void Read(const PIRDeviceQuery &) = 0;
+    virtual void Write(const PIRDeviceQuery &) = 0;
 
     virtual std::string ToString() const;
 

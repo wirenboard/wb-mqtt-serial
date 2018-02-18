@@ -38,12 +38,12 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
     ModbusRTU::ReadRegisterRange(Port(), SlaveId, range);
 }
 
-void Read(const PIRDeviceReadQueryEntry & entry)
+void Read(const PIRDeviceReadQueryEntry & query)
 {
 
 }
 
-void Write(const PIRDeviceWriteQueryEntry & entry)
+void Write(const PIRDeviceWriteQueryEntry & query)
 {
 
 }
