@@ -424,7 +424,7 @@ namespace Modbus    // modbus protocol common utilities
         pdu[5] = byteCount;
 
         if (IsSingleBitType(query)) {
-            const auto & valueEntry = static_cast<const TIRDeviceSingleBitQuery &>(query);
+            const auto & valueEntry = query.As<TIRDeviceSingleBitQuery>();
             const auto bitCount = min((int)valueEntry.GetCount(), 8);
 
             for (uint32_t iByte = 0; iByte < byteCount; ++iByte) {
@@ -435,7 +435,7 @@ namespace Modbus    // modbus protocol common utilities
                 pdu[6 + iByte] = static_cast<uint8_t>(coils.to_ulong());
             }
         } else {
-            const auto & valueEntry = static_cast<const TIRDevice64BitQuery &>(query);
+            const auto & valueEntry = query.As<TIRDevice64BitQuery>();
             uint32_t i = 0;
             for (const auto & value: valueEntry.Values) {
                 WriteAs2Bytes(pdu + 6 + i * 2, value & 0xffff); ++i;
@@ -661,7 +661,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         WriteAs2Bytes(&req[6], CRC16::CalculateCRC16(req.data(), 6));
     }
 
-    void ComposeWriteRequests(vector<TWriteRequest> & requests, const TIRDeviceQuery & query, uint8_t slaveId, int shift)
+    void ComposeWriteRequests(vector<TWriteRequest> & requests, const TIRDeviceValueQuery & query, uint8_t slaveId, int shift)
     {
         requests.reserve(Modbus::InferWriteRequestsCount(query));
 
@@ -673,15 +673,15 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
             Modbus::ComposeMultipleWriteRequestPDU(PDU(request), query, shift);
         } else {
-            query.IterRegisterValues([&](const TProtocolRegister & protocolRegister, uint64_t value) {
+            const auto & valueQuery = query.As<TIRDeviceValueQuery>();
+
+            valueQuery.IterRegisterValues([&](const TProtocolRegister & protocolRegister, uint64_t value) {
                 requests.emplace_back(InferWriteRequestSize(query));
                 auto & request = requests.back();
 
                 request[0] = slaveId;
 
                 Modbus::ComposeSingleWriteRequestPDU(PDU(request), protocolRegister, value, shift);
-
-                return false;
             });
         }
     }
@@ -768,8 +768,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
                     } catch (const TMalformedResponseError &) {
                         try {
                             port->SkipNoise();
-                        } catch (const std::exception & e) {
-                            std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                        } catch (const exception & e) {
+                            cerr << "SkipNoise failed: " << e.what() << endl;
                         }
                         throw;
                     }
@@ -793,7 +793,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         cerr.flags(f);
     }
 
-    void Write(const PPort & port, uint8_t slaveId, const TIRDeviceQuery & query, int shift)
+    void Write(const PPort & port, uint8_t slaveId, const TIRDeviceValueQuery & query, int shift)
     {
         auto config = query.GetDevice()->DeviceConfig();
 
@@ -841,12 +841,25 @@ namespace ModbusRTU // modbus rtu protocol utilities
                     }
                 }
             }
+
+            query.
+
             return;
         } catch (TSerialDeviceTransientErrorException& e) {
             exception_message = ": ";
             exception_message += e.what();
         }
 
-        throw TSerialDeviceTransientErrorException("failed to write query " + query.Describe() + ": " + exception_message);
+        if (query.Status == EQueryStatus::OK) {
+            query.Status = EQueryStatus::UNKNOWN_ERROR;
+        }
+
+        ios::fmtflags f(cerr.flags());
+        cerr << "ModbusRTU::Write(): failed to write query " << query.Describe() << " of device " << query.GetDevice()->ToString();
+        if (!exception_message.empty()) {
+            cerr << ": " << exception_message;
+        }
+        cerr << endl;
+        cerr.flags(f);
     }
 };  // modbus rtu protocol utilities

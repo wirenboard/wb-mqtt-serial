@@ -9,7 +9,57 @@ using namespace std;
 TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t type)
     : Address(address)
     , Type(type)
+    , Value(0)
 {}
+
+TPMap<TProtocolRegister, TRegisterBindInfo> TProtocolRegister::GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device, TRegisterCache && cache)
+{
+    TPMap<TProtocolRegister, TRegisterBindInfo> registersBindInfo;
+
+    const auto & regType = device->Protocol()->GetRegTypes()->at(config->TypeName);
+
+    const uint8_t registerBitWidth = RegisterFormatByteWidth(regType.DefaultFormat) * 8;
+    auto bitsToAllocate = config->GetBitWidth();
+
+    auto regCount = max((uint32_t)ceil(float(bitsToAllocate) / registerBitWidth), 1u);
+
+    cerr << "split " << config->ToString() << " to " << regCount << " " << config->TypeName << " registers" << endl;
+
+    for (auto regIndex = 0u, regIndexEnd = regCount - 1; regIndex != regIndexEnd; ++regIndex) {
+        auto type    = config->Type;
+        auto address = config->Address + regIndex;
+
+        PProtocolRegister _protocolRegisterFallback;
+
+        auto & protocolRegister = (cache ? cache(address) : _protocolRegisterFallback);
+
+        if (!protocolRegister) {
+            protocolRegister = make_shared<TProtocolRegister>(address, type);
+        }
+
+        TRegisterBindInfo bindInfo {};
+
+        bindInfo.BitStart = regIndex * registerBitWidth;
+        bindInfo.BitEnd = bindInfo.BitStart + min(registerBitWidth, bitsToAllocate);
+
+        auto localBitShift = max(config->BitOffset - bindInfo.BitStart, 0);
+
+        bindInfo.BitStart = min(uint16_t(bindInfo.BitStart + localBitShift), uint16_t(bindInfo.BitEnd));
+
+        if (bindInfo.BitStart == bindInfo.BitEnd) {
+            if (bitsToAllocate) {
+                ++regIndexEnd;
+            }
+            continue;
+        }
+
+        bitsToAllocate -= bindInfo.BitCount();
+
+        registersBindInfo[protocolRegister] = bindInfo;
+    }
+
+    return move(registersBindInfo);
+}
 
 bool TProtocolRegister::operator<(const TProtocolRegister & rhs)
 {
@@ -47,6 +97,26 @@ std::set<TIntervalMs> TProtocolRegister::GetPollIntervals() const
         intervals.insert(virtualRegister->PollInterval);
     }
 
+    // remove multiples of each other intervals and keep the smallest of them in set
+    // NOTE: maybe replace with explicit check inside cycle (more expensive, but more obvious and maybe more reliable)
+    for (auto itInterval1 = intervals.begin(); itInterval1 != intervals.end(); ++itInterval1) {
+        for (auto itInterval2 = itInterval1; itInterval2 != intervals.end(); ++itInterval2) {
+            if (itInterval1 == itInterval2) {
+                continue;
+            }
+
+            auto i = *itInterval1, j = *itInterval2;
+
+            if (i.count() % j.count() == 0) {
+                if (i < j) {
+                    itInterval2 = intervals.erase(itInterval2);
+                } else {
+                    itInterval1 = intervals.erase(itInterval1);
+                }
+            }
+        }
+    }
+
     return intervals;
 }
 
@@ -60,6 +130,21 @@ PSerialDevice TProtocolRegister::GetDevice() const
     return AssociatedVirtualRegister()->GetDevice();
 }
 
+TPSet<TVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
+{
+    TPSet<TVirtualRegister> result;
+
+    for (const auto & virtualRegister: VirtualRegisters) {
+        const auto & locked = virtualRegister.lock();
+
+        assert(locked);
+
+        assert(result.insert(locked).second);
+    }
+
+    return result;
+}
+
 PVirtualRegister TProtocolRegister::AssociatedVirtualRegister() const
 {
     assert(!VirtualRegisters.empty());
@@ -69,4 +154,22 @@ PVirtualRegister TProtocolRegister::AssociatedVirtualRegister() const
     assert(virtualReg);
 
     return virtualReg;
+}
+
+void TProtocolRegister::SetValueFromDevice(uint64_t value)
+{
+    Value = value;
+
+    for (const auto & virtualRegister: VirtualRegisters) {
+        const auto & reg = virtualRegister.lock();
+
+        assert(reg);
+
+        reg->NotifyRead(shared_from_this());
+    }
+}
+
+void TProtocolRegister::SetValueFromClient(uint64_t value)
+{
+    Value = value;
 }

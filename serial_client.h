@@ -13,8 +13,8 @@
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
-    typedef std::function<void(PRegister reg, bool changed)> TReadCallback;
-    typedef std::function<void(PRegister reg, TRegisterHandler::TErrorState errorState)> TErrorCallback;
+    typedef std::function<void(PVirtualRegister reg, bool changed)> TReadCallback;
+    typedef std::function<void(PVirtualRegister reg, EErrorState errorState)> TErrorCallback;
 
     TSerialClient(PPort port);
     TSerialClient(const TSerialClient& client) = delete;
@@ -45,7 +45,7 @@ private:
     void PollRange(PRegisterRange range);
     void ReadQuery(const PIRDeviceQuery & query);
     PRegisterHandler GetHandler(PRegister) const;
-    void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
+    void MaybeUpdateErrorState(PVirtualRegister reg);
     void PrepareToAccessDevice(PSerialDevice dev);
     void OnDeviceReconnect(PSerialDevice dev);
     void SplitRegisterRanges(std::set<PRegisterRange> &&);

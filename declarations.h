@@ -12,9 +12,22 @@ class TVirtualRegister;
 struct TRegisterConfig;
 struct TIRDeviceQuerySet;
 struct TIRDeviceQuery;
+struct TIRDeviceValueQuery;
 struct TIRDevice64BitQuery;
 struct TIRDeviceSingleBitQuery;
 struct TProtocolInfo;
+
+struct TRegisterBindInfo
+{
+    uint8_t BitStart,
+            BitEnd;
+    bool    IsRead = false;
+
+    inline uint8_t BitCount() const
+    {
+        return BitEnd - BitStart;
+    }
+};
 
 using TTimePoint        = std::chrono::steady_clock::time_point;
 using TIntervalMs       = std::chrono::milliseconds;

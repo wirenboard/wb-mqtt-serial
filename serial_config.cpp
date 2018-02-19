@@ -151,8 +151,48 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
                                       const Json::Value& register_data,
                                       string& default_type_str)
 {
-    int address = GetInt(register_data, "address");
+    int address, bitShift = 0, bitCount = 0;
+    {
+        try {
+            address = GetInt(register_data, "address");
+        } catch (const TConfigParserException &) {
+            const auto & addressValue = register_data["address"];
+
+            if (addressValue.isString()) {
+                const auto & addressStr = addressValue.asString();
+                auto pos1 = addressStr.find(':');
+                auto pos2 = addressStr.find(':', pos1 + 1);
+
+                if (pos1 == string::npos) {
+                    throw TConfigParserException("unable to parse address string: '" + addressStr + "'");
+                }
+                address = stoi(addressStr.substr(0, pos1));
+                bitShift = stoi(addressStr.substr(pos1 + 1, pos2));
+
+                if (bitShift < 0 || bitShift > 255) {
+                    throw TConfigParserException("error during address parsing: bit shift must be in range [0, 255] (address string: '" + addressStr + "')");
+                }
+
+                if (pos2 != string::npos) {
+                    bitCount = stoi(addressStr.substr(pos2 + 1));
+                    if (bitCount < 0 || bitCount > 64) {
+                        throw TConfigParserException("error during address parsing: bit count must be in range [0, 64] (address string: '" + addressStr + "')");
+                    }
+                }
+            } else {
+                throw;
+            }
+        }
+    }
     cout << "address: " << address << endl;
+    if (bitShift) {
+        cout << "bit shift: " << bitShift << endl;
+    }
+
+    if (bitCount) {
+        cout << "bit count: " << bitCount << endl;
+    }
+
     string reg_type_str = register_data["reg_type"].asString();
     default_type_str = "text";
     auto it = device_config->TypeMap->find(reg_type_str);
@@ -161,7 +201,7 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     if (!it->second.DefaultControlType.empty())
         default_type_str = it->second.DefaultControlType;
 
-    RegisterFormat format = register_data.isMember("format") ?
+    ERegisterFormat format = register_data.isMember("format") ?
         RegisterFormatFromName(register_data["format"].asString()) :
         it->second.DefaultFormat;
 
@@ -200,7 +240,7 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     PRegisterConfig reg = TRegisterConfig::Create(
         it->second.Index,
         address, format, scale, offset, round_to, true, force_readonly || it->second.ReadOnly,
-        it->second.Name, has_error_value, error_value, word_order);
+        it->second.Name, has_error_value, error_value, word_order, static_cast<uint8_t>(bitShift), static_cast<uint8_t>(bitCount));
     if (register_data.isMember("poll_interval"))
         reg->PollInterval = chrono::milliseconds(GetInt(register_data, "poll_interval"));
     return reg;
@@ -347,7 +387,7 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
                                          reg_type_str + " -- " + device_config->DeviceType);
         type = it->second.Index;
     }
-    RegisterFormat format = U16;
+    ERegisterFormat format = U16;
     if (item_data.isMember("format"))
         format = RegisterFormatFromName(item_data["format"].asString());
     PRegisterConfig reg = TRegisterConfig::Create(

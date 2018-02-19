@@ -24,13 +24,13 @@
 
 struct TRegisterType {
     TRegisterType(int index, const std::string& name, const std::string& defaultControlType,
-                  RegisterFormat defaultFormat = U16,
+                  ERegisterFormat defaultFormat = U16,
                   bool read_only = false, EWordOrder defaultWordOrder = EWordOrder::BigEndian):
         Index(index), Name(name), DefaultControlType(defaultControlType),
         DefaultFormat(defaultFormat), DefaultWordOrder(defaultWordOrder), ReadOnly(read_only) {}
     int Index;
     std::string Name, DefaultControlType;
-    RegisterFormat DefaultFormat;
+    ERegisterFormat DefaultFormat;
     EWordOrder DefaultWordOrder;
     bool ReadOnly;
 };
@@ -119,7 +119,7 @@ inline ::std::ostream& operator<<(::std::ostream& os, const TRegisterConfig& reg
     return os << reg.ToString();
 }
 
-inline const char* RegisterFormatName(RegisterFormat fmt) {
+inline const char* RegisterFormatName(ERegisterFormat fmt) {
     switch (fmt) {
     case AUTO:
         return "AUTO";
@@ -162,7 +162,7 @@ inline const char* RegisterFormatName(RegisterFormat fmt) {
     }
 }
 
-inline RegisterFormat RegisterFormatFromName(const std::string& name) {
+inline ERegisterFormat RegisterFormatFromName(const std::string& name) {
     if (name == "s16")
         return S16;
     else if (name == "u8")

@@ -21,13 +21,9 @@
 
 struct TDeviceSetupItem : public TDeviceSetupItemConfig
 {
-    TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
-        : TDeviceSetupItemConfig(*config)
-    {
-        Register = TRegister::Intern(device, config->RegisterConfig);
-    }
+    TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config);
 
-    PRegister Register;
+    PIRDeviceQuerySet QuerySet;
 };
 
 typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;

@@ -7,14 +7,14 @@
 struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 {
     TRegisterConfig(int type, int address,
-                    RegisterFormat format, double scale, double offset,
+                    ERegisterFormat format, double scale, double offset,
                     double round_to, bool poll, bool readonly,
                     const std::string& type_name,
                     bool has_error_value, uint64_t error_value,
                     const EWordOrder word_order, uint8_t bit_offset, uint8_t bit_width);
 
     static PRegisterConfig Create(int type = 0, int address = 0,
-                                  RegisterFormat format = U16, double scale = 1, double offset = 0,
+                                  ERegisterFormat format = U16, double scale = 1, double offset = 0,
                                   double round_to = 0, bool poll = true, bool readonly = false,
                                   const std::string& type_name = "",
                                   bool has_error_value = false,
@@ -30,7 +30,7 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 
     int Type;
     int Address;
-    RegisterFormat Format;
+    ERegisterFormat Format;
     double Scale;
     double Offset;
     double RoundTo;

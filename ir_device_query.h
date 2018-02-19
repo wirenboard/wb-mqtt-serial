@@ -9,8 +9,9 @@
 
 struct TIRDeviceQuery
 {
-    // NOTE: DO NOT REORDER "Registers" AND "HasHoles" FIELDS
+    // NOTE: DO NOT REORDER "Registers" , "VirtualRegisters" AND "HasHoles" FIELDS
     const TPSet<TProtocolRegister> Registers;
+    const TPSet<TVirtualRegister>  VirtualRegisters;
     const bool                     HasHoles;
     mutable EQueryStatus           Status;
 
@@ -25,15 +26,29 @@ struct TIRDeviceQuery
     uint32_t GetType() const;
     const std::string & GetTypeName() const;
     bool NeedsSplit() const;
+    const TPSet<TVirtualRegister> & GetAffectedVirtualRegisters() const;
 
-    virtual void IterRegisterValues(std::function<bool(const TProtocolRegister &, uint64_t)> && accessor) const = 0;
-    virtual void AcceptValues() const = 0;
+    template <class T>
+    const T & As() const
+    {
+        static_assert(std::is_base_of<TIRDeviceQuery, T>::value, "trying to cast to type not derived from TIRDeviceQuery");
+
+        const T * pointer = dynamic_cast<const T *>(this);
+        assert(pointer);
+        return *pointer;
+    }
 
     std::string Describe() const;
 };
 
-template <typename T>
 struct TIRDeviceValueQuery: TIRDeviceQuery
+{
+    virtual void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const = 0;
+    void AcceptValues() const;
+};
+
+template <typename T>
+struct TIRDeviceValueQueryImpl: TIRDeviceValueQuery
 {
     const std::vector<_mutable<T>> Values;
 
@@ -42,19 +57,17 @@ struct TIRDeviceValueQuery: TIRDeviceQuery
         , Values(registerSet.size())
     {}
 
-    void IterRegisterValues(std::function<bool(const TProtocolRegister &, uint64_t)> && accessor) const override
+    void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const override
     {
         uint32_t i = 0;
         for (const auto & protocolRegister: Registers) {
-            if (accessor(*protocolRegister, Values[i++].Value)) {
-                return;
-            }
+            accessor(*protocolRegister, Values[i++].Value);
         }
     }
 };
 
-struct TIRDevice64BitQuery: TIRDeviceValueQuery<uint64_t> {};
-struct TIRDeviceSingleBitQuery: TIRDeviceValueQuery<bool> {};
+struct TIRDevice64BitQuery: TIRDeviceValueQueryImpl<uint64_t> {};
+struct TIRDeviceSingleBitQuery: TIRDeviceValueQueryImpl<bool> {};
 
 
 struct TIRDeviceQuerySet

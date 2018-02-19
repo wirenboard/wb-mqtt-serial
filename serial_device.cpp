@@ -1,7 +1,30 @@
 #include "serial_device.h"
+#include "ir_device_query.h"
+#include "virtual_register.h"
 
 #include <iostream>
 #include <unistd.h>
+
+
+TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
+    : TDeviceSetupItemConfig(*config)
+{
+    TPSet<TProtocolRegister> protocolRegistersSet;
+    {
+        const auto & protocolRegisters = TProtocolRegister::GenerateProtocolRegisters(config->RegisterConfig, device);
+
+        std::transform(protocolRegisters.begin(), protocolRegisters.end(),
+            std::inserter(protocolRegistersSet, protocolRegistersSet.end()),
+            [](const std::pair<PProtocolRegister, TRegisterBindInfo> & item) {
+                return item.first;
+            }
+        );
+
+        TVirtualRegister::MapValueTo(protocolRegisters, Value);
+    }
+
+    QuerySet = std::make_shared<TIRDeviceQuerySet>(protocolRegistersSet);
+}
 
 bool TProtocolInfo::IsSingleBitType(int) const
 {
@@ -138,17 +161,19 @@ bool TSerialDevice::WriteSetupRegisters(bool tryAll)
 {
     bool did_write = false;
     for (const auto& setup_item : SetupItems) {
-        try {
-        	std::cerr << "Init: " << setup_item->Name << ": setup register " <<
-        			setup_item->Register->ToString() << " <-- " << setup_item->Value << std::endl;
-            WriteRegister(setup_item->Register, setup_item->Value);
-            did_write = true;
-        } catch (const TSerialDeviceException& e) {
-            std::cerr << "WARNING: device '" << setup_item->Register->Device()->ToString() <<
-                "' register '" << setup_item->Register->ToString() <<
-                "' setup failed: " << e.what() << std::endl;
-            if (!did_write && !tryAll) {
-                break;
+        for (const auto & query: setup_item->QuerySet->Queries) {
+            try {
+                std::cerr << "Init: " << setup_item->Name << ": setup register " <<
+                        query->Describe() << " <-- " << setup_item->Value << std::endl;
+                Write(query);
+                did_write = true;
+            } catch (const TSerialDeviceException& e) {
+                std::cerr << "WARNING: device '" << setup_item->QuerySet->GetDevice()->ToString() <<
+                    "' registers '" << setup_item->QuerySet->Describe() <<
+                    "' setup failed: " << e.what() << std::endl;
+                if (!did_write && !tryAll) {
+                    break;
+                }
             }
         }
     }

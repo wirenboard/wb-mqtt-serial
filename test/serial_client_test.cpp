@@ -21,7 +21,7 @@ class TSerialClientTest: public TLoggedFixture
 protected:
     void SetUp();
     void TearDown();
-    PRegister Reg(int addr, RegisterFormat fmt = U16, double scale = 1,
+    PRegister Reg(int addr, ERegisterFormat fmt = U16, double scale = 1,
         double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian) {
         return TRegister::Intern(
             Device, TRegisterConfig::Create(

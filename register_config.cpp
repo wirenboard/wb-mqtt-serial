@@ -6,7 +6,7 @@ using namespace std;
 
 
 TRegisterConfig::TRegisterConfig(int type, int address,
-            RegisterFormat format, double scale, double offset,
+            ERegisterFormat format, double scale, double offset,
             double round_to, bool poll, bool readonly,
             const std::string& type_name,
             bool has_error_value, uint64_t error_value,
@@ -22,7 +22,7 @@ TRegisterConfig::TRegisterConfig(int type, int address,
 }
 
 PRegisterConfig TRegisterConfig::Create(int type = 0, int address = 0,
-                        RegisterFormat format = U16, double scale = 1, double offset = 0,
+                        ERegisterFormat format = U16, double scale = 1, double offset = 0,
                         double round_to = 0, bool poll = true, bool readonly = false,
                         const std::string& type_name = "",
                         bool has_error_value = false,

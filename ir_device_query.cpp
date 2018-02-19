@@ -22,6 +22,18 @@ namespace
         return false;
     }
 
+    TPSet<TVirtualRegister> GetVirtualRegisters(const TPSet<TProtocolRegister> & registerSet)
+    {
+        TPSet<TVirtualRegister> result;
+
+        for (const auto & reg: registerSet) {
+            const auto & localVirtualRegisters = reg->GetVirtualRegsiters();
+            result.insert(localVirtualRegisters.begin(), localVirtualRegisters.end());
+        }
+
+        return result;
+    }
+
     template <class Entry>
     PIRDeviceQuery CreateEntry(TPSet<TProtocolRegister> && registerSet)
     {
@@ -38,6 +50,7 @@ namespace
 
 TIRDeviceQuery::TIRDeviceQuery(TPSet<TProtocolRegister> && registerSet)
     : Registers(move(registerSet))
+    , VirtualRegisters(GetVirtualRegisters(Registers))
     , HasHoles(DetectHoles(Registers))
     , Status(EQueryStatus::OK)
 {
@@ -92,6 +105,11 @@ bool TIRDeviceQuery::NeedsSplit() const
     return Status == EQueryStatus::DEVICE_PERMANENT_ERROR && GetCount() > 1;
 }
 
+const TPSet<TVirtualRegister> & TIRDeviceQuery::GetAffectedVirtualRegisters() const
+{
+    return VirtualRegisters;
+}
+
 string TIRDeviceQuery::Describe() const
 {
     ostringstream ss;
@@ -110,6 +128,13 @@ string TIRDeviceQuery::Describe() const
     ss << "]";
 
     return ss.str();
+}
+
+void TIRDeviceValueQuery::AcceptValues() const
+{
+    IterRegisterValues([this](TProtocolRegister & reg, uint64_t value) {
+        reg.SetValueFromDevice(value);
+    });
 }
 
 std::string TIRDeviceQuerySet::Describe() const

@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-enum RegisterFormat {
+enum ERegisterFormat {
     AUTO,
     U8,
     S8,
@@ -35,6 +35,14 @@ enum class EQueryStatus {
     DEVICE_PERMANENT_ERROR    // valid response from device, which reports error that cannot disappear by itself and driver needs to take actions in order to eliminate this error
 };
 
+enum class EErrorState {
+    NoError,
+    WriteError,
+    ReadError,
+    ReadWriteError,
+    UnknownErrorState
+};
+
 std::ostream& operator<<(::std::ostream& os, EWordOrder val);
 
-uint8_t RegisterFormatByteWidth(RegisterFormat format);
+uint8_t RegisterFormatByteWidth(ERegisterFormat format);
