@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.40.1) stable; urgency=high
+
+  * SkipNoise at malformed response (final)
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Mon, 19 Feb 2018 17:07:45 +0300
+
 wb-mqtt-serial (1.40) stable; urgency=medium
 
   * added holding_single and holding_multi modbus register types
