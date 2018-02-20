@@ -170,7 +170,7 @@ namespace Modbus    // modbus protocol common utilities
             uint8_t bitsWritten = 0;
 
             while (w--) {
-                cout << "reverseWordIndex: " << reg->Address - Start + w << endl;
+                // cout << "reverseWordIndex: " << reg->Address - Start + w << endl;
                 uint16_t data = Words[reg->Address - Start + w];
 
                 auto localBitOffset = std::max(reg->BitOffset - wordIndex * 16, 0);
@@ -505,7 +505,7 @@ namespace Modbus    // modbus protocol common utilities
 
             auto mask = MersenneNumber(bitCount);
 
-            cout << "rBitPos: " << rBitPos << endl;
+            // cout << "rBitPos: " << rBitPos << endl;
 
             auto valuePart = mask & (value >> rBitPos);
 
@@ -515,7 +515,7 @@ namespace Modbus    // modbus protocol common utilities
 
             auto wordValue = (~mask & cachedValue) | (valuePart << localBitOffset);
 
-            cout << "word: " << wordValue << " cached value: " << cachedValue << " value: " << value << " offset: " << (int)bitPos << " bit count: " << (int)bitCount << endl;
+            // cout << "word: " << wordValue << " cached value: " << cachedValue << " value: " << value << " offset: " << (int)bitPos << " bit count: " << (int)bitCount << endl;
 
             tmpCache[address.AbsAddress] = wordValue & 0xffff;
 
