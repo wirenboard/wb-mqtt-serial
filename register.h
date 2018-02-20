@@ -12,6 +12,7 @@
 #include <utility>
 #include <mutex>
 #include <tuple>
+#include <cmath>
 
 #include "registry.h"
 #include "serial_exc.h"
@@ -83,15 +84,19 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
               double round_to, bool poll, bool readonly,
               const std::string& type_name,
               bool has_error_value, uint64_t error_value,
-              const EWordOrder word_order)
+              const EWordOrder word_order, uint8_t bit_offset, uint8_t bit_width)
         : Type(type), Address(address), Format(format),
           Scale(scale), Offset(offset), RoundTo(round_to),
           Poll(poll), ReadOnly(readonly), TypeName(type_name),
           HasErrorValue(has_error_value), ErrorValue(error_value),
-          WordOrder(word_order)
+          WordOrder(word_order), BitOffset(bit_offset), BitWidth(bit_width)
     {
         if (TypeName.empty())
             TypeName = "(type " + std::to_string(Type) + ")";
+
+        if (BitOffset >= 16) {
+            throw TSerialDeviceException("bit offset must not exceed 16 bits");
+        }
     }
 
     static PRegisterConfig Create(int type = 0, int address = 0,
@@ -100,11 +105,11 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
                             const std::string& type_name = "",
                             bool has_error_value = false,
                             uint64_t error_value = 0,
-                            const EWordOrder word_order = EWordOrder::BigEndian
-                            )
+                            const EWordOrder word_order = EWordOrder::BigEndian,
+                            uint8_t bit_offset = 0, uint8_t bit_width = 0)
     {
         return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
-                                            type_name, has_error_value, error_value, word_order);
+                                            type_name, has_error_value, error_value, word_order, bit_offset, bit_width);
     }
 
 
@@ -132,7 +137,18 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
     }
 
     uint8_t Width() const {
-        return (ByteWidth() + 1) / 2;
+        auto w = uint8_t(ceil(((float)BitOffset + GetBitWidth()) / 8) + 1) / 2;
+
+        return w;
+    }
+
+    uint8_t GetBitWidth() const
+    {
+        if (BitWidth) {
+            return BitWidth;
+        }
+
+        return ByteWidth() * 8;
     }
 
     std::string ToString() const;
@@ -151,6 +167,8 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
     bool HasErrorValue;
     uint64_t ErrorValue;
     EWordOrder WordOrder;
+    uint8_t BitOffset;
+    uint8_t BitWidth;
 };
 
 struct TRegister;

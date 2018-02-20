@@ -8,6 +8,8 @@
 #include <unistd.h>
 
 
+using namespace std;
+
 namespace Modbus    // modbus protocol declarations
 {
     const int MAX_READ_BITS = 2000;
@@ -31,6 +33,15 @@ namespace Modbus    // modbus protocol declarations
         ERR_MEMORY_PARITY_ERROR                     = 0x8,
         ERR_GATEWAY_PATH_UNAVAILABLE                = 0xA,
         ERR_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND = 0xB
+    };
+
+    union TAddress
+    {
+        int64_t AbsAddress;
+        struct {
+            int Type;
+            int Address;
+        };
     };
 
     class TModbusRegisterRange: public TRegisterRange {
@@ -87,6 +98,12 @@ namespace   // general utilities
     {
         return (type == Modbus::REG_COIL) || (type == Modbus::REG_DISCRETE);
     }
+
+    inline uint64_t MersenneNumber(uint8_t bitCount)
+    {
+        assert(bitCount <= 64);
+        return (uint64_t(1) << bitCount) - 1;
+    }
 }   // general utilities
 
 
@@ -141,12 +158,37 @@ namespace Modbus    // modbus protocol common utilities
             throw std::runtime_error("words not loaded");
         for (auto reg: RegisterList()) {
             int w = reg->Width();
+            auto bitWidth = reg->GetBitWidth();
+
             if (reg->Address - Start + w > Count)
                 throw std::runtime_error("address out of range");
             uint64_t r = 0;
-            uint16_t* data = Words + (reg->Address - Start);
-            while (w--)
-                r = (r << 16) + *data++;
+
+            auto wordIndex = (reg->Address - Start);
+            auto reverseWordIndex = w - 1;
+
+            uint8_t bitsWritten = 0;
+
+            while (w--) {
+                cout << "reverseWordIndex: " << reg->Address - Start + w << endl;
+                uint16_t data = Words[reg->Address - Start + w];
+
+                auto localBitOffset = std::max(reg->BitOffset - wordIndex * 16, 0);
+
+                auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
+
+                //cout << "word: " << data << " offset: " << (int)localBitOffset << " bit count: " << (int)bitCount << endl;
+
+                auto mask = MersenneNumber(bitCount);
+
+                r |= (mask & (data >> localBitOffset)) << bitsWritten;
+
+                --reverseWordIndex;
+                ++wordIndex;
+                bitWidth -= bitCount;
+                bitsWritten += bitCount;
+
+            }
             value_callback(reg, r);
         }
     }
@@ -346,7 +388,7 @@ namespace Modbus    // modbus protocol common utilities
             }
             return 1;
         } else {
-            if (w > 4) {
+            if (w > 4 && reg->BitOffset == 0) {
                 throw TSerialDeviceException("can't pack more than 4 " + reg->TypeName + "s into a single value");
             }
             return w;
@@ -424,34 +466,117 @@ namespace Modbus    // modbus protocol common utilities
     // fills pdu with write request data according to Modbus specification
     void ComposeMultipleWriteRequestPDU(uint8_t* pdu, PRegister reg, uint64_t value, int shift)
     {
+        auto & tmpCache = reg->Device()->ModbusTmpCache;
+        const auto & cache = reg->Device()->ModbusCache;
+
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
-        WriteAs2Bytes(pdu + 1, reg->Address + shift);
+        auto baseAddress = reg->Address + shift;
+        const auto bitWidth = reg->GetBitWidth();
+
+        auto bitsToAllocate = bitWidth;
+
+        TAddress address;
+
+        address.Type = reg->Type;
+
+        WriteAs2Bytes(pdu + 1, baseAddress);
         WriteAs2Bytes(pdu + 3, reg->Width());
 
         pdu[5] = reg->Width() * 2;
 
-        for (int p = reg->Width() - 1; p >= 0; --p) {
-            WriteAs2Bytes(pdu + 6 + p * 2, value & 0xffff);
-            value >>= 16;
+        uint8_t bitPos = 0, bitPosEnd = bitWidth;
+
+        for (int i = 0; i < reg->Width(); ++i) {
+            address.Address = baseAddress + i;
+
+            uint16_t cachedValue;
+            if (cache.count(address.AbsAddress)) {
+                cachedValue = cache.at(address.AbsAddress);
+            } else {
+                cachedValue = value & 0xffff;
+            }
+
+            auto localBitOffset = std::max(reg->BitOffset - bitPos, 0);
+
+            auto bitCount = std::min(uint8_t(16 - localBitOffset), bitsToAllocate);
+
+            auto rBitPos = bitPosEnd - bitPos - bitCount;
+
+            auto mask = MersenneNumber(bitCount);
+
+            cout << "rBitPos: " << rBitPos << endl;
+
+            auto valuePart = mask & (value >> rBitPos);
+
+            // cout << "value part: " << (valuePart << localBitOffset) << endl;
+
+            // cout << "cached part: " << (~(mask << rBitPos) & cachedValue) << endl;
+
+            auto wordValue = (~mask & cachedValue) | (valuePart << localBitOffset);
+
+            cout << "word: " << wordValue << " cached value: " << cachedValue << " value: " << value << " offset: " << (int)bitPos << " bit count: " << (int)bitCount << endl;
+
+            tmpCache[address.AbsAddress] = wordValue & 0xffff;
+
+            WriteAs2Bytes(pdu + 6 + i * 2, wordValue & 0xffff);
+            bitsToAllocate -= bitCount;
+            bitPos += bitCount;
         }
     }
 
-    void ComposeSingleWriteRequestPDU(uint8_t* pdu, PRegister reg, uint16_t value, int shift)
+    void ComposeSingleWriteRequestPDU(uint8_t* pdu, PRegister reg, uint16_t value, int shift, uint8_t wordIndex)
     {
+        auto & tmpCache = reg->Device()->ModbusTmpCache;
+        const auto & cache = reg->Device()->ModbusCache;
+
         if (reg->Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8: 0x00;
         }
 
+        auto bitWidth = reg->GetBitWidth();
+
+        TAddress address;
+
+        address.Type = reg->Type;
+        address.Address = reg->Address + shift + wordIndex;
+
+        uint16_t cachedValue;
+        if (cache.count(address.AbsAddress)) {
+            cachedValue = cache.at(address.AbsAddress);
+        } else {
+            cachedValue = value & 0xffff;
+        }
+
+
+        auto localBitOffset = std::max(reg->BitOffset - wordIndex * 16, 0);
+
+        auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
+
+        auto mask = MersenneNumber(bitCount) << localBitOffset;
+
+        auto wordValue = (~mask & cachedValue) | (mask & (value << localBitOffset));
+
+        //cout << "cached: " << cachedValue << " input: " << value << " result: " << wordValue << " offset: " << localBitOffset << endl;
+
+        tmpCache[address.AbsAddress] = wordValue & 0xffff;
+
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
-        WriteAs2Bytes(pdu + 1, reg->Address + shift);
-        WriteAs2Bytes(pdu + 3, value);
+        WriteAs2Bytes(pdu + 1, address.Address);
+        WriteAs2Bytes(pdu + 3, wordValue);
     }
 
     // parses modbus response and stores result
     void ParseReadResponse(const uint8_t* pdu, PModbusRegisterRange range)
     {
+        TAddress address;
+
+        address.Type = range->Type();
+
+        auto & cache = range->Device()->ModbusCache;
+        auto baseAddress = range->GetStart();
+
         auto exception_code = GetExceptionCode(pdu);
         range->SetModbusError(static_cast<ModbusError>(exception_code));
         ThrowIfModbusException(exception_code);
@@ -476,7 +601,10 @@ namespace Modbus    // modbus protocol common utilities
         } else {
             auto destination = range->GetWords();
             for (int i = 0; i < byte_count / 2; ++i) {
-                destination[i] = (*start << 8) | *(start + 1);
+                address.Address = baseAddress + i;
+
+                cache[address.AbsAddress] = destination[i] = (*start << 8) | *(start + 1);
+
                 start += 2;
             }
         }
@@ -635,7 +763,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
                 assert(requests.size() == 1 && "only one request is expected when using multiple write");
                 Modbus::ComposeMultipleWriteRequestPDU(PDU(req), reg, value, shift);
             } else {
-                Modbus::ComposeSingleWriteRequestPDU(PDU(req), reg, static_cast<uint16_t>(value & 0xffff), shift + requests.size() - i - 1);
+                Modbus::ComposeSingleWriteRequestPDU(PDU(req), reg, static_cast<uint16_t>(value & 0xffff), shift, requests.size() - i - 1);
                 value >>= 16;
             }
 
@@ -683,6 +811,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
     void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift)
     {
+        reg->Device()->DismissTmpCache();
+
         int w = reg->Width();
 
         if (port->Debug())
@@ -727,15 +857,19 @@ namespace ModbusRTU // modbus rtu protocol utilities
                             throw;
                         }
                     } else {
-                        break;
+                        throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
                     }
                 }
             }
+
+            reg->Device()->ApplyTmpCache();
             return;
         } catch (TSerialDeviceTransientErrorException& e) {
             exception_message = ": ";
             exception_message += e.what();
         }
+
+        reg->Device()->DismissTmpCache();
 
         throw TSerialDeviceTransientErrorException(
             "failed to write " + reg->TypeName +

@@ -46,4 +46,15 @@ public:
     void EnqueueWrongFunctionCodeCoilReadResponse(uint8_t exception = 0);
     void EnqueueWrongSlaveIdCoilWriteResponse(uint8_t exception = 0);
     void EnqueueWrongFunctionCodeCoilWriteResponse(uint8_t exception = 0);
+
+    /*------------ bitmasks ----------------*/
+
+    void EnqueueU8Shift0Bits8HoldingReadResponse();
+    void EnqueueU16Shift8HoldingReadResponse(bool afterWrite);
+    void EnqueueU8Shift0SingleBitHoldingReadResponse(bool afterWrite);
+    void EnqueueU8Shift1SingleBitHoldingReadResponse(bool afterWrite);
+    void EnqueueU8Shift2SingleBitHoldingReadResponse(bool afterWrite);
+
+    void EnqueueU8Shift1SingleBitHoldingWriteResponse();
+    void EnqueueU16Shift8HoldingWriteResponse();
 };
