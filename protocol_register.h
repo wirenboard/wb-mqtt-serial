@@ -7,9 +7,11 @@
 /**
  * Each ProtocolRegister represents single actual register of device protocol.
  * This layer caches values and acts like bridge between VirtualRegister and IR layers.
+ * Protocol registers cannot overlap each other.
  */
 class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
 {
+    friend TIRDeviceQuery;
     friend TIRDeviceValueQuery;
     friend TVirtualRegister;
 
@@ -29,6 +31,7 @@ public:
     static TPMap<TProtocolRegister, TRegisterBindInfo> GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device, TRegisterCache && = TRegisterCache());
 
     bool operator<(const TProtocolRegister &);
+    bool operator==(const TProtocolRegister &);
 
     void AssociateWith(const PVirtualRegister &);
     bool IsAssociatedWith(const PVirtualRegister &);
@@ -40,6 +43,7 @@ public:
     TPSet<TVirtualRegister> GetVirtualRegsiters() const;
 
 private:
+    void NotifyErrorFromDevice();
     void SetValueFromDevice(uint64_t value);
     void SetValueFromClient(uint64_t value);
 };

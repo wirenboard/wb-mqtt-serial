@@ -44,10 +44,9 @@ public:
     bool WriteInitValues();
 
 private:
-    bool NeedToPublish(PRegister reg, bool changed);
-    void OnValueRead(PVirtualRegister reg, bool changed);
-    TRegisterHandler::TErrorState RegErrorState(PRegister reg);
-    void UpdateError(PVirtualRegister reg, TRegisterHandler::TErrorState errorState);
+    bool NeedToPublish(const PVirtualRegister & reg, bool changed);
+    void OnValueRead(const PVirtualRegister & reg, bool changed);
+    void UpdateError(const PVirtualRegister & reg);
 
     PMQTTClientBase MQTTClient;
     PPortConfig Config;
@@ -55,10 +54,9 @@ private:
     PSerialClient SerialClient;
     std::vector<PSerialDevice> Devices;
 
-    std::unordered_map<PRegister, PDeviceChannel> RegisterToChannelMap;
-    std::unordered_map<PDeviceChannelConfig, std::vector<PRegister>> ChannelRegistersMap;
-    std::unordered_map<PRegister, TRegisterHandler::TErrorState> RegErrorStateMap;
-    std::unordered_map<PRegister, std::chrono::time_point<std::chrono::steady_clock>> RegLastPublishTimeMap;
+    std::unordered_map<PVirtualRegister, PDeviceChannel> RegisterToChannelMap;
+    std::unordered_map<PDeviceChannelConfig, std::vector<PVirtualRegister>> ChannelRegistersMap;
+    std::unordered_map<PVirtualRegister, std::chrono::time_point<std::chrono::steady_clock>> RegLastPublishTimeMap;
     std::unordered_map<std::string, std::string> PublishedErrorMap;
     std::unordered_map<std::string, PDeviceChannel> NameToChannelMap;
 };

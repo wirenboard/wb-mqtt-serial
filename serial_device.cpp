@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <cassert>
 
 
 TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
@@ -13,12 +14,7 @@ TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig 
     {
         const auto & protocolRegisters = TProtocolRegister::GenerateProtocolRegisters(config->RegisterConfig, device);
 
-        std::transform(protocolRegisters.begin(), protocolRegisters.end(),
-            std::inserter(protocolRegistersSet, protocolRegistersSet.end()),
-            [](const std::pair<PProtocolRegister, TRegisterBindInfo> & item) {
-                return item.first;
-            }
-        );
+        protocolRegistersSet = GetKeysAsSet(protocolRegisters);
 
         TVirtualRegister::MapValueTo(protocolRegisters, Value);
     }
@@ -67,6 +63,21 @@ std::string TSerialDevice::ToString() const
     return DeviceConfig()->Name + "(" + DeviceConfig()->SlaveId + ")";
 }
 
+void TSerialDevice::Execute(const PIRDeviceQuery & query)
+{
+    assert(query);
+
+    switch(query->Operation) {
+        case EQueryOperation::READ:
+            return Read(*query);
+
+        case EQueryOperation::WRITE:
+            return Write(query->As<TIRDeviceValueQuery>());
+
+        default:
+            break;
+    }
+}
 
 void TSerialDevice::Prepare()
 {

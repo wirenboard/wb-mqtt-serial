@@ -13,8 +13,12 @@ struct TIRDeviceQuery
     const TPSet<TProtocolRegister> Registers;
     const TPSet<TVirtualRegister>  VirtualRegisters;
     const bool                     HasHoles;
+    const EQueryOperation          Operation;
+
+private:
     mutable EQueryStatus           Status;
 
+public:
     TIRDeviceQuery(TPSet<TProtocolRegister> &&);
     virtual ~TIRDeviceQuery() = default;
 
@@ -26,7 +30,10 @@ struct TIRDeviceQuery
     uint32_t GetType() const;
     const std::string & GetTypeName() const;
     bool NeedsSplit() const;
+    void SetValuesFromDevice(const std::vector<uint64_t> & values) const;
     const TPSet<TVirtualRegister> & GetAffectedVirtualRegisters() const;
+    void SetStatus(EQueryStatus) const;
+    EQueryStatus GetStatus() const;
 
     template <class T>
     const T & As() const
@@ -55,7 +62,9 @@ struct TIRDeviceValueQueryImpl: TIRDeviceValueQuery
     TIRDeviceValueQuery(TPSet<TProtocolRegister> && registerSet)
         : TIRDeviceQuery(std::move(registerSet))
         , Values(registerSet.size())
-    {}
+    {
+        Operation = EQueryOperation::WRITE;
+    }
 
     void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const override
     {
@@ -74,7 +83,7 @@ struct TIRDeviceQuerySet
 {
     TPSet<TIRDeviceQuery> Queries;
 
-    TIRDeviceQuerySet(const TPSet<TProtocolRegister> & registers);
+    TIRDeviceQuerySet(const TPSet<TProtocolRegister> & registers, EQueryOperation);
 
     std::string Describe() const;
     PSerialDevice GetDevice() const;
@@ -82,7 +91,5 @@ struct TIRDeviceQuerySet
     void SplitIfNeeded();
 
 private:
-    static TPSet<TIRDeviceQuery> GenerateQueries(const TPSet<TProtocolRegister> & registers, bool enableHoles);
-
-    void Initialize(const TPSet<TProtocolRegister> & registers, bool enableHoles);
+    static TPSet<TIRDeviceQuery> GenerateQueries(const TPSet<TProtocolRegister> & registers, bool enableHoles, EQueryOperation);
 };

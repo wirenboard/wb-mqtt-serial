@@ -29,14 +29,6 @@ TPMap<TProtocolRegister, TRegisterBindInfo> TProtocolRegister::GenerateProtocolR
         auto type    = config->Type;
         auto address = config->Address + regIndex;
 
-        PProtocolRegister _protocolRegisterFallback;
-
-        auto & protocolRegister = (cache ? cache(address) : _protocolRegisterFallback);
-
-        if (!protocolRegister) {
-            protocolRegister = make_shared<TProtocolRegister>(address, type);
-        }
-
         TRegisterBindInfo bindInfo {};
 
         bindInfo.BitStart = regIndex * registerBitWidth;
@@ -53,6 +45,14 @@ TPMap<TProtocolRegister, TRegisterBindInfo> TProtocolRegister::GenerateProtocolR
             continue;
         }
 
+        PProtocolRegister _protocolRegisterFallback = nullptr;
+
+        auto & protocolRegister = (cache ? cache(address) : _protocolRegisterFallback);
+
+        if (!protocolRegister) {
+            protocolRegister = make_shared<TProtocolRegister>(address, type);
+        }
+
         bitsToAllocate -= bindInfo.BitCount();
 
         registersBindInfo[protocolRegister] = bindInfo;
@@ -64,6 +64,15 @@ TPMap<TProtocolRegister, TRegisterBindInfo> TProtocolRegister::GenerateProtocolR
 bool TProtocolRegister::operator<(const TProtocolRegister & rhs)
 {
     return Type < rhs.Type || (Type == rhs.Type && Address < rhs.Address);
+}
+
+bool TProtocolRegister::operator==(const TProtocolRegister & rhs)
+{
+    if (this == &rhs) {
+        return true;
+    }
+
+    return Type == rhs.Type && Address == rhs.Address && GetDevice() == rhs.GetDevice();
 }
 
 void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
@@ -122,11 +131,15 @@ std::set<TIntervalMs> TProtocolRegister::GetPollIntervals() const
 
 const string & TProtocolRegister::GetTypeName() const
 {
-    return AssociatedVirtualRegister()->TypeName;
+    return AssociatedVirtualRegister()->GetTypeName();
 }
 
 PSerialDevice TProtocolRegister::GetDevice() const
 {
+    if (VirtualRegisters.empty()) {
+        return nullptr;
+    }
+
     return AssociatedVirtualRegister()->GetDevice();
 }
 
@@ -156,6 +169,11 @@ PVirtualRegister TProtocolRegister::AssociatedVirtualRegister() const
     return virtualReg;
 }
 
+void TProtocolRegister::NotifyErrorFromDevice()
+{
+
+}
+
 void TProtocolRegister::SetValueFromDevice(uint64_t value)
 {
     Value = value;
@@ -165,7 +183,7 @@ void TProtocolRegister::SetValueFromDevice(uint64_t value)
 
         assert(reg);
 
-        reg->NotifyRead(shared_from_this());
+        reg->NotifyRead(shared_from_this(), true);
     }
 }
 

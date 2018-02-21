@@ -87,10 +87,9 @@ public:
     // Read multiple registers
     virtual void ReadRegisterRange(PRegisterRange range);
 
-    virtual void Read(const PIRDeviceQuery &) = 0;
-    virtual void Write(const PIRDeviceQuery &) = 0;
-
     virtual std::string ToString() const;
+
+    void Execute(const PIRDeviceQuery &);
 
     // Initialize setup items' registers
     void InitSetupItems();
@@ -105,6 +104,10 @@ public:
     bool GetIsDisconnected() const;
 
     void ResetUnavailableAddresses();
+
+protected:
+    virtual void Read(const TIRDeviceQuery &) = 0;
+    virtual void Write(const TIRDeviceValueQuery &) = 0;
 
 private:
     std::chrono::milliseconds Delay;

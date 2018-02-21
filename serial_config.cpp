@@ -151,46 +151,19 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
                                       const Json::Value& register_data,
                                       string& default_type_str)
 {
-    int address, bitShift = 0, bitCount = 0;
-    {
-        try {
-            address = GetInt(register_data, "address");
-        } catch (const TConfigParserException &) {
-            const auto & addressValue = register_data["address"];
+    int address;
+    uint8_t bitOffset;
+    uint8_t bitWidth;
 
-            if (addressValue.isString()) {
-                const auto & addressStr = addressValue.asString();
-                auto pos1 = addressStr.find(':');
-                auto pos2 = addressStr.find(':', pos1 + 1);
+    tie(address, bitOffset, bitWidth) = ParseRegisterAddress(register_data, "address");
 
-                if (pos1 == string::npos) {
-                    throw TConfigParserException("unable to parse address string: '" + addressStr + "'");
-                }
-                address = stoi(addressStr.substr(0, pos1));
-                bitShift = stoi(addressStr.substr(pos1 + 1, pos2));
-
-                if (bitShift < 0 || bitShift > 255) {
-                    throw TConfigParserException("error during address parsing: bit shift must be in range [0, 255] (address string: '" + addressStr + "')");
-                }
-
-                if (pos2 != string::npos) {
-                    bitCount = stoi(addressStr.substr(pos2 + 1));
-                    if (bitCount < 0 || bitCount > 64) {
-                        throw TConfigParserException("error during address parsing: bit count must be in range [0, 64] (address string: '" + addressStr + "')");
-                    }
-                }
-            } else {
-                throw;
-            }
-        }
-    }
     cout << "address: " << address << endl;
-    if (bitShift) {
-        cout << "bit shift: " << bitShift << endl;
+    if (bitOffset) {
+        cout << "bit offset: " << bitOffset << endl;
     }
 
-    if (bitCount) {
-        cout << "bit count: " << bitCount << endl;
+    if (bitWidth) {
+        cout << "bit width: " << bitWidth << endl;
     }
 
     string reg_type_str = register_data["reg_type"].asString();
@@ -240,7 +213,7 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     PRegisterConfig reg = TRegisterConfig::Create(
         it->second.Index,
         address, format, scale, offset, round_to, true, force_readonly || it->second.ReadOnly,
-        it->second.Name, has_error_value, error_value, word_order, static_cast<uint8_t>(bitShift), static_cast<uint8_t>(bitCount));
+        it->second.Name, has_error_value, error_value, word_order, bitOffset, bitWidth);
     if (register_data.isMember("poll_interval"))
         reg->PollInterval = chrono::milliseconds(GetInt(register_data, "poll_interval"));
     return reg;
@@ -376,7 +349,12 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
     if (!item_data.isMember("address"))
         throw TConfigParserException("no address specified for init item");
 
-    int address = GetInt(item_data, "address");
+    int address;
+    uint8_t bitOffset;
+    uint8_t bitWidth;
+
+    tie(address, bitOffset, bitWidth) = ParseRegisterAddress(item_data, "address");
+
     string reg_type_str = item_data["reg_type"].asString();
     int type = 0;
     string type_name = "<unspec>";
@@ -391,7 +369,7 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
     if (item_data.isMember("format"))
         format = RegisterFormatFromName(item_data["format"].asString());
     PRegisterConfig reg = TRegisterConfig::Create(
-        type, address, format, 1, 0, 0, true, true, type_name);
+        type, address, format, 1, 0, 0, true, true, type_name, false, 0, EWordOrder::BigEndian, bitOffset, bitWidth);
 
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");
@@ -486,6 +464,43 @@ uint64_t TConfigParser::ToUint64(const Json::Value& v, const string& title)
     throw TConfigParserException(
         title + ": 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of '" + v.asString() +
         "'");
+}
+
+tuple<int, uint8_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Value& obj, const std::string& key)
+{
+    int address;
+    int bitOffset = 0;
+    int bitWidth = 0;
+
+    const auto & value = obj[key];
+
+    if (value.isString()) {
+        const auto & addressStr = value.asString();
+        auto pos1 = addressStr.find(':');
+        if (pos1 == string::npos) {
+            address = GetInt(obj, key);
+        } else {
+            auto pos2 = addressStr.find(':', pos1 + 1);
+
+            address = stoi(addressStr.substr(0, pos1));
+            bitOffset = stoi(addressStr.substr(pos1 + 1, pos2));
+
+            if (bitOffset < 0 || bitOffset > 255) {
+                throw TConfigParserException("error during address parsing: bit shift must be in range [0, 255] (address string: '" + addressStr + "')");
+            }
+
+            if (pos2 != string::npos) {
+                bitWidth = stoi(addressStr.substr(pos2 + 1));
+                if (bitWidth < 0 || bitWidth > 64) {
+                    throw TConfigParserException("error during address parsing: bit count must be in range [0, 64] (address string: '" + addressStr + "')");
+                }
+            }
+        }
+    } else {
+        address = TConfigParser::GetInt(obj, key);
+    }
+
+    return {address, static_cast<uint8_t>(bitOffset), static_cast<uint8_t>(bitWidth)};
 }
 
 int TConfigParser::GetInt(const Json::Value& obj, const string& key)

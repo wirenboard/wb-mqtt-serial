@@ -171,7 +171,7 @@ void TSerialClient::DoFlush()
     for (const auto & reg: VirtualRegisters) {
         if (!reg->NeedToFlush())
             continue;
-        PrepareToAccessDevice(reg->Device());
+        PrepareToAccessDevice(reg->GetDevice());
         if (reg->Flush()) {
             MaybeUpdateErrorState(reg);
         }
@@ -233,31 +233,32 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 //         });
 // }
 
-void TSerialClient::ReadQuery(const PIRDeviceQuery & query)
+void TSerialClient::ExecuteQuery(const PIRDeviceQuery & query)
 {
     auto device = query->GetDevice();
-    device->Read(query);
+    device->Execute(query);
 
-    if (query->Status == EQueryStatus::OK) {
-        for (const auto & virtualRegister: query->GetAffectedVirtualRegisters()) {
-            if (virtualRegister->IsReady()) {
-                virtualRegister->ResetReady();
-                bool valueChanged;
-                if(virtualRegister->AcceptDeviceValue(&valueChanged)) {
-                    MaybeUpdateErrorState(virtualRegister->GetErrorState());
-                }
+    if (query->Operation == EQueryOperation::READ) {
+        if (query->Status == EQueryStatus::OK) {
+            for (const auto & virtualRegister: query->GetAffectedVirtualRegisters()) {
+                if (virtualRegister->NeedToPublish()) {
+                    bool valueChanged;
+                    if(virtualRegister->AcceptDeviceValue(valueChanged)) {
+                        MaybeUpdateErrorState(virtualRegister);
+                    }
 
-                if (virtualRegister->GetErrorState() != EErrorState::ReadError &&
-                    virtualRegister->GetErrorState() != EErrorState::ReadWriteError)
-                {
-                    ReadCallback(virtualRegister, valueChanged);
+                    if (virtualRegister->GetErrorState() != EErrorState::ReadError &&
+                        virtualRegister->GetErrorState() != EErrorState::ReadWriteError)
+                    {
+                        ReadCallback(virtualRegister, valueChanged);
+                    }
                 }
             }
-        }
-    } else {
-        for (const auto & virtualRegister: query->GetAffectedVirtualRegisters()) {
-            if(virtualRegister->AcceptDeviceReadError()) {
-                MaybeUpdateErrorState(virtualRegister->GetErrorState());
+        } else {
+            for (const auto & virtualRegister: query->GetAffectedVirtualRegisters()) {
+                if(virtualRegister->AcceptDeviceReadError()) {
+                    MaybeUpdateErrorState(virtualRegister);
+                }
             }
         }
     }
@@ -300,7 +301,7 @@ void TSerialClient::Cycle()
                 }
             }
 
-            ReadQuery(query);
+            ExecuteQuery(query);
             statuses.insert(query->Status);
         }
 

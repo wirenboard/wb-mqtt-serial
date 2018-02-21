@@ -27,12 +27,12 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
     SerialClient = std::make_shared<TSerialClient>(Port);
 
     SerialClient->SetDebug(Config->Debug);
-    SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
+    SerialClient->SetReadCallback([this](const PVirtualRegister & reg, bool changed) {
             OnValueRead(reg, changed);
         });
     SerialClient->SetErrorCallback(
-        [this](PRegister reg, TRegisterHandler::TErrorState state) {
-            UpdateError(reg, state);
+        [this](const PVirtualRegister & reg) {
+            UpdateError(reg);
         });
 
     if (Config->Debug)
@@ -161,7 +161,7 @@ std::string TSerialPortDriver::GetChannelTopic(const TDeviceChannelConfig& chann
     return (controls_prefix + channel.Name);
 }
 
-bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
+bool TSerialPortDriver::NeedToPublish(const PVirtualRegister & reg, bool changed)
 {
     // max_unchanged_interval = 0: always update, don't track last change time
     if (!Config->MaxUnchangedInterval)
@@ -194,7 +194,7 @@ bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
     return true;
 }
 
-void TSerialPortDriver::OnValueRead(PVirtualRegister reg, bool changed)
+void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg, bool changed)
 {
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
@@ -206,14 +206,14 @@ void TSerialPortDriver::OnValueRead(PVirtualRegister reg, bool changed)
 
     if (Config->Debug && changed)
         std::cerr << "register value change: " << reg->ToString() << " <- " <<
-            SerialClient->GetTextValue(reg) << std::endl;
+            reg->GetTextValue() << std::endl;
 
     if (!NeedToPublish(reg, changed))
         return;
 
     std::string payload;
     if (!it->second->OnValue.empty()) {
-        payload = SerialClient->GetTextValue(reg) == it->second->OnValue ? "1" : "0";
+        payload = reg->GetTextValue() == it->second->OnValue ? "1" : "0";
         if (Config->Debug)
             std::cerr << "OnValue: " << it->second->OnValue << "; payload: " <<
                 payload << std::endl;
@@ -241,15 +241,7 @@ void TSerialPortDriver::OnValueRead(PVirtualRegister reg, bool changed)
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
 }
 
-TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)
-{
-    auto it = RegErrorStateMap.find(reg);
-    if (it == RegErrorStateMap.end())
-        return TRegisterHandler::UnknownErrorState;
-    return it->second;
-}
-
-void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState)
+void TSerialPortDriver::UpdateError(const PVirtualRegister & reg)
 {
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
@@ -258,17 +250,16 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
     }
     const auto &reglist = it->second->Registers;
 
-    RegErrorStateMap[reg] = errorState;
     bool readError = false, writeError = false;
     for (auto r: reglist) {
-        switch (RegErrorState(r)) {
-        case TRegisterHandler::WriteError:
+        switch (reg->GetErrorState()) {
+        case EErrorState::WriteError:
             writeError = true;
             break;
-        case TRegisterHandler::ReadError:
+        case EErrorState::ReadError:
             readError = true;
             break;
-        case TRegisterHandler::ReadWriteError:
+        case EErrorState::ReadWriteError:
             readError = writeError = true;
             break;
         default:

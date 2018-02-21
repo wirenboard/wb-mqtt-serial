@@ -159,9 +159,10 @@ public:
     void LoadConfig();
 
 private:
-    int GetInt(const Json::Value& obj, const std::string& key);
-    int ToInt(const Json::Value& v, const std::string& title);
-    uint64_t ToUint64(const Json::Value& v, const std::string& title);
+    static int GetInt(const Json::Value& obj, const std::string& key);
+    static int ToInt(const Json::Value& v, const std::string& title);
+    static uint64_t ToUint64(const Json::Value& v, const std::string& title);
+    static tuple<int, uint8_t, uint8_t> ParseRegisterAddress(const Json::Value& obj, const std::string& key);
 
     std::string ConfigFileName;
     PHandlerConfig HandlerConfig;

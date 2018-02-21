@@ -35,6 +35,11 @@ enum class EQueryStatus {
     DEVICE_PERMANENT_ERROR    // valid response from device, which reports error that cannot disappear by itself and driver needs to take actions in order to eliminate this error
 };
 
+enum class EQueryOperation: uint8_t {
+    READ = 0,
+    WRITE
+};
+
 enum class EErrorState {
     NoError,
     WriteError,

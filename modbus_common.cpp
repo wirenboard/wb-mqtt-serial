@@ -68,9 +68,8 @@ namespace   // general utilities
               ((query.GetType() == Modbus::REG_HOLDING) && (query.GetCount() > 1));
     }
 
-    inline bool IsSingleBitType(const TIRDeviceQuery & query)
+    inline bool IsSingleBitType(int type)
     {
-        auto type = query.GetType();
         return (type == Modbus::REG_COIL) || (type == Modbus::REG_DISCRETE);
     }
 
@@ -206,11 +205,6 @@ namespace Modbus    // modbus protocol common utilities
         FN_WRITE_MULTIPLE_REGISTERS = 0x10,
     };
 
-    enum class OperationType: uint8_t {
-        OP_READ = 0,
-        OP_WRITE
-    };
-
     inline bool IsException(const uint8_t* pdu)
     {
         return pdu[0] & EXCEPTION_BIT;
@@ -226,16 +220,16 @@ namespace Modbus    // modbus protocol common utilities
     }
 
     // choose function code for modbus request
-    uint8_t GetFunctionImpl(uint32_t type, bool isPacking, OperationType op, function<const string &()> && getTypeName)
+    uint8_t GetFunctionImpl(uint32_t type, bool isPacking, EQueryOperation op, function<const string &()> && getTypeName)
     {
         switch (type) {
         case REG_HOLDING_SINGLE:
         case REG_HOLDING_MULTI:
         case REG_HOLDING:
             switch (op) {
-            case OperationType::OP_READ:
+            case EQueryOperation::READ:
                 return FN_READ_HOLDING;
-            case OperationType::OP_WRITE:
+            case EQueryOperation::WRITE:
                 return isPacking ? FN_WRITE_MULTIPLE_REGISTERS : FN_WRITE_SINGLE_REGISTER;
             default:
                 break;
@@ -243,7 +237,7 @@ namespace Modbus    // modbus protocol common utilities
             break;
         case REG_INPUT:
             switch (op) {
-            case OperationType::OP_READ:
+            case EQueryOperation::READ:
                 return FN_READ_INPUT;
             default:
                 break;
@@ -251,9 +245,9 @@ namespace Modbus    // modbus protocol common utilities
             break;
         case REG_COIL:
             switch (op) {
-            case OperationType::OP_READ:
+            case EQueryOperation::READ:
                 return FN_READ_COILS;
-            case OperationType::OP_WRITE:
+            case EQueryOperation::WRITE:
                 return isPacking ? FN_WRITE_MULTIPLE_COILS : FN_WRITE_SINGLE_COIL;
             default:
                 break;
@@ -261,7 +255,7 @@ namespace Modbus    // modbus protocol common utilities
             break;
         case REG_DISCRETE:
             switch (op) {
-            case OperationType::OP_READ:
+            case EQueryOperation::READ:
                 return FN_READ_DISCRETE;
             default:
                 break;
@@ -272,10 +266,10 @@ namespace Modbus    // modbus protocol common utilities
         }
 
         switch (op) {
-        case OperationType::OP_READ:
+        case EQueryOperation::READ:
             cerr << "reading of " << getTypeName() << " is not implemented" << endl;
             assert(false);
-        case OperationType::OP_WRITE:
+        case EQueryOperation::WRITE:
             cerr << "writing to " << getTypeName() << " is not implemented" << endl;
             assert(false);
         default:
@@ -284,12 +278,12 @@ namespace Modbus    // modbus protocol common utilities
         }
     }
 
-    uint8_t GetFunction(const TIRDeviceQuery & query, OperationType op)
+    uint8_t GetFunction(const TIRDeviceQuery & query)
     {
-        return GetFunctionImpl(query.GetType(), IsPacking(query), op, [&]{ return query.GetTypeName(); });
+        return GetFunctionImpl(query.GetType(), IsPacking(query), query.Operation, [&]{ return query.GetTypeName(); });
     }
 
-    uint8_t GetFunction(const TProtocolRegister & protocolRegister, OperationType op)
+    uint8_t GetFunction(const TProtocolRegister & protocolRegister, EQueryOperation op)
     {
         return GetFunctionImpl(protocolRegister.Type, false, op, [&]{ return protocolRegister.GetTypeName(); });
     }
@@ -337,24 +331,6 @@ namespace Modbus    // modbus protocol common utilities
             throw TSerialDeviceTransientErrorException(message);
         } else {
             throw TSerialDevicePermanentRegisterException(message);
-        }
-    }
-
-    // returns count of modbus registers needed to represent TRegister
-    uint16_t GetQuantity(PRegister reg)
-    {
-        int w = reg->Width();
-
-        if (IsSingleBitType(reg->Type)) {
-            if (w != 1) {
-                throw TSerialDeviceException("width other than 1 is not currently supported for reg type" + reg->TypeName);
-            }
-            return 1;
-        } else {
-            if (w > 4) {
-                throw TSerialDeviceException("can't pack more than 4 " + reg->TypeName + "s into a single value");
-            }
-            return w;
         }
     }
 
@@ -406,7 +382,7 @@ namespace Modbus    // modbus protocol common utilities
     // fills pdu with read request data according to Modbus specification
     void ComposeReadRequestPDU(uint8_t* pdu, const TIRDeviceQuery & query, int shift)
     {
-        pdu[0] = GetFunction(query, OperationType::OP_READ);
+        pdu[0] = GetFunction(query);
         WriteAs2Bytes(pdu + 1, query.GetStart() + shift);
         WriteAs2Bytes(pdu + 3, query.GetCount());
     }
@@ -414,7 +390,7 @@ namespace Modbus    // modbus protocol common utilities
     // fills pdu with write request data according to Modbus specification
     void ComposeMultipleWriteRequestPDU(uint8_t* pdu, const TIRDeviceQuery & query, int shift)
     {
-        pdu[0] = GetFunction(query, OperationType::OP_WRITE);
+        pdu[0] = GetFunction(query);
 
         WriteAs2Bytes(pdu + 1, query.GetStart() + shift);
         WriteAs2Bytes(pdu + 3, query.GetCount());
@@ -423,7 +399,7 @@ namespace Modbus    // modbus protocol common utilities
 
         pdu[5] = byteCount;
 
-        if (IsSingleBitType(query)) {
+        if (IsSingleBitType(query.GetType())) {
             const auto & valueEntry = query.As<TIRDeviceSingleBitQuery>();
             const auto bitCount = min((int)valueEntry.GetCount(), 8);
 
@@ -454,7 +430,7 @@ namespace Modbus    // modbus protocol common utilities
             value = value ? uint16_t(0xFF) << 8: 0x00;
         }
 
-        pdu[0] = GetFunction(protocolRegister, OperationType::OP_WRITE);
+        pdu[0] = GetFunction(protocolRegister, EQueryOperation::WRITE);
 
         assert(pdu[0] == FN_WRITE_SINGLE_COIL || pdu[0] == FN_WRITE_SINGLE_REGISTER);
 
@@ -498,24 +474,30 @@ namespace Modbus    // modbus protocol common utilities
 
         auto bytes = pdu + 2;
 
-        if (IsSingleBitType(query)) {
-            const auto & valueEntry = static_cast<const TIRDeviceSingleBitQuery &>(query);
-            const auto bitCount = min((int)query.GetCount(), 8);
+        vector<uint64_t> values(query.GetCount());
+
+        if (IsSingleBitType(query.GetType())) {
+            assert(byteCount == query.GetCount());
 
             for (uint32_t iByte = 0; iByte < byteCount; ++iByte) {
                 bitset<8> coils(bytes[iByte]);
-                for (uint32_t iBit = iByte * 8; iBit < bitCount; ++iBit) {
-                    valueEntry.Values[iBit] = coils[iBit];
+                uint32_t iBit = iByte * 8;
+                const auto bitCount = min(query.GetCount() - iBit, 8u);
+
+                for (;iBit < bitCount; ++iBit) {
+                    values[iBit] = coils[iBit];
                 }
             }
         } else {
-            const auto & valueEntry = static_cast<const TIRDevice64BitQuery &>(query);
-            uint32_t i = 0;
-            for (const auto & value: valueEntry.Values) {
-                value = (bytes[i] << 8) | bytes[i + 1];
-                ++i;
+            assert(byteCount % 2 == 0);
+            assert(byteCount / 2 == query.GetCount());
+
+            for (uint32_t iByte = 0, i = 0; iByte < byteCount; iByte+=2) {
+                values[i++] = (bytes[iByte] << 8) | bytes[iByte + 1];
             }
         }
+
+        query.SetValuesFromDevice(values);
     }
 
     // checks modbus response on write
@@ -661,7 +643,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         WriteAs2Bytes(&req[6], CRC16::CalculateCRC16(req.data(), 6));
     }
 
-    void ComposeWriteRequests(vector<TWriteRequest> & requests, const TIRDeviceValueQuery & query, uint8_t slaveId, int shift)
+    void ComposeWriteRequests(vector<TWriteRequest> & requests, const TIRDeviceQuery & query, uint8_t slaveId, int shift)
     {
         requests.reserve(Modbus::InferWriteRequestsCount(query));
 
@@ -842,7 +824,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
                 }
             }
 
-            query.
+            query.AcceptValues();
 
             return;
         } catch (TSerialDeviceTransientErrorException& e) {
