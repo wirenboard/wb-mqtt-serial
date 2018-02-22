@@ -27,8 +27,8 @@ namespace {
 TSerialClient::TSerialClient(PPort port)
     : Port(port),
       Active(false),
-      ReadCallback([](PRegister, bool){}),
-      ErrorCallback([](PRegister, bool){}),
+      ReadCallback([](PVirtualRegister, bool){}),
+      ErrorCallback([](PVirtualRegister){}),
       FlushNeeded(new TBinarySemaphore),
       Plan(std::make_shared<TPollPlan>([this]() { return Port->CurrentTime(); })) {}
 
@@ -161,9 +161,8 @@ void TSerialClient::GenerateReadQueries()
 
 void TSerialClient::MaybeUpdateErrorState(PVirtualRegister reg)
 {
-    auto state = reg->GetErrorState();
-    if (state != EErrorState::UnknownErrorState)
-        ErrorCallback(reg, state);
+    if (reg->GetErrorState() != EErrorState::UnknownErrorState)
+        ErrorCallback(reg);
 }
 
 void TSerialClient::DoFlush()
@@ -239,7 +238,7 @@ void TSerialClient::ExecuteQuery(const PIRDeviceQuery & query)
     device->Execute(query);
 
     if (query->Operation == EQueryOperation::READ) {
-        if (query->Status == EQueryStatus::OK) {
+        if (query->GetStatus() == EQueryStatus::OK) {
             for (const auto & virtualRegister: query->GetAffectedVirtualRegisters()) {
                 if (virtualRegister->NeedToPublish()) {
                     bool valueChanged;
@@ -247,8 +246,7 @@ void TSerialClient::ExecuteQuery(const PIRDeviceQuery & query)
                         MaybeUpdateErrorState(virtualRegister);
                     }
 
-                    if (virtualRegister->GetErrorState() != EErrorState::ReadError &&
-                        virtualRegister->GetErrorState() != EErrorState::ReadWriteError)
+                    if (!(virtualRegister->GetErrorState() & EErrorState::ReadError))
                     {
                         ReadCallback(virtualRegister, valueChanged);
                     }
@@ -302,7 +300,7 @@ void TSerialClient::Cycle()
             }
 
             ExecuteQuery(query);
-            statuses.insert(query->Status);
+            statuses.insert(query->GetStatus());
         }
 
         querySet->SplitIfNeeded();

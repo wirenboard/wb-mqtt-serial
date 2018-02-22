@@ -10,16 +10,17 @@
 TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
     : TDeviceSetupItemConfig(*config)
 {
-    TPSet<TProtocolRegister> protocolRegistersSet;
-    {
-        const auto & protocolRegisters = TProtocolRegister::GenerateProtocolRegisters(config->RegisterConfig, device);
+    const auto & protocolInfo = device->GetProtocolInfo();
+    const auto & protocolRegisters = TProtocolRegister::GenerateProtocolRegisters(config->RegisterConfig, device);
+    const auto & protocolRegistersSet = GetKeysAsSet(protocolRegisters);
 
-        protocolRegistersSet = GetKeysAsSet(protocolRegisters);
-
-        TVirtualRegister::MapValueTo(protocolRegisters, Value);
+    if (protocolInfo.IsSingleBitType(config->RegisterConfig->Type)) {
+        Query = std::make_shared<TIRDeviceSingleBitQuery>(protocolRegistersSet);
+    } else {
+        Query = std::make_shared<TIRDevice64BitQuery>(protocolRegistersSet);
     }
 
-    QuerySet = std::make_shared<TIRDeviceQuerySet>(protocolRegistersSet);
+    TVirtualRegister::MapValueTo(protocolRegisters, *Query, Value);
 }
 
 bool TProtocolInfo::IsSingleBitType(int) const
@@ -36,6 +37,17 @@ int TProtocolInfo::GetMaxReadBits() const
 {
     return 1;
 }
+
+int TProtocolInfo::GetMaxWriteRegisters() const
+{
+    return 1;
+}
+
+int TProtocolInfo::GetMaxWriteBits() const
+{
+    return 1;
+}
+
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : Delay(config->Delay)
@@ -86,37 +98,37 @@ void TSerialDevice::Prepare()
 
 void TSerialDevice::EndPollCycle() {}
 
-void TSerialDevice::ReadRegisterRange(PRegisterRange range)
-{
-    PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
-    if (!simple_range)
-        throw std::runtime_error("simple range expected");
-    simple_range->Reset();
-    for (auto reg: simple_range->RegisterList()) {
-        if (UnavailableAddresses.count(reg->Address)) {
-        	continue;
-        }
-    	try {
-            if (DeviceConfig()->GuardInterval.count()){
-                Port()->Sleep(DeviceConfig()->GuardInterval);
-            }
-            simple_range->SetValue(reg, ReadRegister(reg));
-        } catch (const TSerialDeviceTransientErrorException& e) {
-            simple_range->SetError(reg);
-            std::ios::fmtflags f(std::cerr.flags());
-            std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-                      << reg->Device()->ToString() + "]" << std::endl;
-            std::cerr.flags(f);
-        } catch (const TSerialDevicePermanentRegisterException& e) {
-        	UnavailableAddresses.insert(reg->Address);
-        	simple_range->SetError(reg);
-			std::ios::fmtflags f(std::cerr.flags());
-			std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-					  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported" << std::endl;
-			std::cerr.flags(f);
-        }
-    }
-}
+// void TSerialDevice::ReadRegisterRange(PRegisterRange range)
+// {
+//     PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
+//     if (!simple_range)
+//         throw std::runtime_error("simple range expected");
+//     simple_range->Reset();
+//     for (auto reg: simple_range->RegisterList()) {
+//         if (UnavailableAddresses.count(reg->Address)) {
+//         	continue;
+//         }
+//     	try {
+//             if (DeviceConfig()->GuardInterval.count()){
+//                 Port()->Sleep(DeviceConfig()->GuardInterval);
+//             }
+//             simple_range->SetValue(reg, ReadRegister(reg));
+//         } catch (const TSerialDeviceTransientErrorException& e) {
+//             simple_range->SetError(reg);
+//             std::ios::fmtflags f(std::cerr.flags());
+//             std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
+//                       << reg->GetDevice()->ToString() + "]" << std::endl;
+//             std::cerr.flags(f);
+//         } catch (const TSerialDevicePermanentRegisterException& e) {
+//         	UnavailableAddresses.insert(reg->Address);
+//         	simple_range->SetError(reg);
+// 			std::ios::fmtflags f(std::cerr.flags());
+// 			std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
+// 					  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported" << std::endl;
+// 			std::cerr.flags(f);
+//         }
+//     }
+// }
 
 void TSerialDevice::OnCycleEnd(bool ok)
 {
@@ -171,20 +183,18 @@ bool TSerialDevice::HasSetupItems() const
 bool TSerialDevice::WriteSetupRegisters(bool tryAll)
 {
     bool did_write = false;
-    for (const auto& setup_item : SetupItems) {
-        for (const auto & query: setup_item->QuerySet->Queries) {
-            try {
-                std::cerr << "Init: " << setup_item->Name << ": setup register " <<
-                        query->Describe() << " <-- " << setup_item->Value << std::endl;
-                Write(query);
-                did_write = true;
-            } catch (const TSerialDeviceException& e) {
-                std::cerr << "WARNING: device '" << setup_item->QuerySet->GetDevice()->ToString() <<
-                    "' registers '" << setup_item->QuerySet->Describe() <<
-                    "' setup failed: " << e.what() << std::endl;
-                if (!did_write && !tryAll) {
-                    break;
-                }
+    for (const auto & setupItem : SetupItems) {
+        try {
+            std::cerr << "Init: " << setupItem->Name << ": setup register " <<
+                    setupItem->Query->Describe() << " <-- " << setupItem->Value << std::endl;
+            Execute(setupItem->Query);
+            did_write = true;
+        } catch (const TSerialDeviceException& e) {
+            std::cerr << "WARNING: device '" << setupItem->Query->GetDevice()->ToString() <<
+                "' registers '" << setupItem->Query->Describe() <<
+                "' setup failed: " << e.what() << std::endl;
+            if (!did_write && !tryAll) {
+                break;
             }
         }
     }

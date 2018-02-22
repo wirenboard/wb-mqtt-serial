@@ -1,6 +1,6 @@
 #include "protocol_register.h"
 #include "serial_device.h"
-#include "virtual_register.h"
+#include "basic_virtual_register.h"
 
 #include <cassert>
 
@@ -21,7 +21,7 @@ TPMap<TProtocolRegister, TRegisterBindInfo> TProtocolRegister::GenerateProtocolR
     const uint8_t registerBitWidth = RegisterFormatByteWidth(regType.DefaultFormat) * 8;
     auto bitsToAllocate = config->GetBitWidth();
 
-    auto regCount = max((uint32_t)ceil(float(bitsToAllocate) / registerBitWidth), 1u);
+    uint32_t regCount = ceil(float(bitsToAllocate) / registerBitWidth);
 
     cerr << "split " << config->ToString() << " to " << regCount << " " << config->TypeName << " registers" << endl;
 
@@ -31,12 +31,12 @@ TPMap<TProtocolRegister, TRegisterBindInfo> TProtocolRegister::GenerateProtocolR
 
         TRegisterBindInfo bindInfo {};
 
-        bindInfo.BitStart = regIndex * registerBitWidth;
-        bindInfo.BitEnd = bindInfo.BitStart + min(registerBitWidth, bitsToAllocate);
+        bindInfo.BitStart = 0;
+        bindInfo.BitEnd = min(registerBitWidth, bitsToAllocate);
 
-        auto localBitShift = max(config->BitOffset - bindInfo.BitStart, 0);
+        auto localBitShift = max(int(config->BitOffset) - int(regIndex * registerBitWidth), 0);
 
-        bindInfo.BitStart = min(uint16_t(bindInfo.BitStart + localBitShift), uint16_t(bindInfo.BitEnd));
+        bindInfo.BitStart = min(uint16_t(localBitShift), uint16_t(bindInfo.BitEnd));
 
         if (bindInfo.BitStart == bindInfo.BitEnd) {
             if (bitsToAllocate) {
@@ -92,7 +92,11 @@ void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
 
 bool TProtocolRegister::IsAssociatedWith(const PVirtualRegister & reg)
 {
-    return VirtualRegisters.count(reg);
+    if (auto basicVirtualRegister = dynamic_pointer_cast<TVirtualRegister>(reg))
+        return VirtualRegisters.count(basicVirtualRegister);
+    else {
+        return false;
+    }
 }
 
 std::set<TIntervalMs> TProtocolRegister::GetPollIntervals() const

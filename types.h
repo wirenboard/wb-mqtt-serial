@@ -40,13 +40,15 @@ enum class EQueryOperation: uint8_t {
     WRITE
 };
 
-enum class EErrorState {
-    NoError,
-    WriteError,
-    ReadError,
-    ReadWriteError,
-    UnknownErrorState
+enum class EErrorState: uint8_t {
+    NoError             = 0x0,
+    WriteError          = 0x1,
+    ReadError           = 0x2,
+    ReadWriteError      = ReadError | WriteError,
+    UnknownErrorState   = 255
 };
+
+bool operator&(EErrorState, EErrorState);
 
 std::ostream& operator<<(::std::ostream& os, EWordOrder val);
 

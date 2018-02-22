@@ -66,6 +66,9 @@ namespace utils
 template <typename K>
 using TPSet = std::set<std::shared_ptr<K>, utils::ptr_cmp<K>>;
 
+template <typename K>
+using TPWSet = std::set<std::weak_ptr<K>, utils::weak_ptr_cmp<K>>;
+
 template <typename K, typename V>
 using TPMap = std::map<std::shared_ptr<K>, V, utils::ptr_cmp<K>>;
 

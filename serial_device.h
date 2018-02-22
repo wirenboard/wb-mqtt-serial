@@ -23,7 +23,7 @@ struct TDeviceSetupItem : public TDeviceSetupItemConfig
 {
     TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config);
 
-    PIRDeviceQuerySet QuerySet;
+    PIRDeviceValueQuery Query;
 };
 
 typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
@@ -49,7 +49,7 @@ namespace std
 
     template <> struct hash<TAggregatedSlaveId>
     {
-        inline size_t operator()(const TAggregatedSlaveId & x) const
+        inline size_t operator()(const TAggregatedSlaveId & x) const noexcept
         {
             return hash<string>{}(to_string(x));
         }
@@ -66,6 +66,8 @@ struct TProtocolInfo
     virtual bool IsSingleBitType(int type) const;
     virtual int GetMaxReadRegisters() const;
     virtual int GetMaxReadBits() const;
+    virtual int GetMaxWriteRegisters() const;
+    virtual int GetMaxWriteBits() const;
 };
 
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {

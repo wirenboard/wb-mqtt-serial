@@ -15,7 +15,7 @@ class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
     friend TIRDeviceValueQuery;
     friend TVirtualRegister;
 
-    std::set<PWVirtualRegister, utils::weak_ptr_cmp<TVirtualRegister>> VirtualRegisters;
+    TPWSet<TVirtualRegister> VirtualRegisters;
     uint64_t Value; //  most recent value of register (from successful writes and reads)
 
     PVirtualRegister AssociatedVirtualRegister() const;

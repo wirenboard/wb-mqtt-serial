@@ -13,47 +13,83 @@
  * ProtocolRegisters have to be of same type (debatable)
  * VirtualRegister cannot be compared since they may overlap each other
  */
-class TVirtualRegister
+class TVirtualRegister final: public TRegisterConfig, public std::enable_shared_from_this<TVirtualRegister>
 {
     friend TProtocolRegister;
+    // /**
+    //  * Continious memory block
+    //  */
+    // struct TBitRange
+    // {
+    //     uint32_t BitStart;
+    //     uint32_t BitCount;
+
+    //     bool operator<(const TBitRange & rhs) const noexcept;
+    // };
+
+    PSerialDevice                               Device;
+    TPMap<TProtocolRegister, TRegisterBindInfo> ProtocolRegisters;
+    uint8_t                                     ProtocolRegisterWidth;
+    PBinarySemaphore                            FlushNeeded;
+    std::atomic_bool                            Dirty;
+    std::atomic<uint64_t>                       ValueToWrite;
+    bool                                        ValueWasAccepted;
+    uint64_t                                    ReadValue;
+    PIRDeviceValueQuery                         WriteQuery;
+    EErrorState                                 ErrorState;
+
+    static void MapValueFromIteration(const PProtocolRegister &, const TRegisterBindInfo &, uint64_t &, uint8_t &);
+
+    TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device, PBinarySemaphore flushNeeded, TInitContext & context);
+
+    uint32_t GetBitPosition() const;
+    uint32_t GetBitSize() const;
+
+    void AssociateWithProtocolRegisters();
+
+    bool UpdateReadError(bool error);
+    bool UpdateWriteError(bool error);
 
 public:
     using TInitContext = std::map<std::pair<PSerialDevice, uint64_t>, PProtocolRegister>;
 
-    static PVirtualRegister Create(const std::vector<PRegisterConfig> & config, const PSerialDevice & device, PBinarySemaphore flushNeeded, TInitContext &);
+    static PVirtualRegister Create(const PRegisterConfig & config, const PSerialDevice & device, PBinarySemaphore flushNeeded, TInitContext &);
 
     /**
      * Build resulting value from protocol registers' values according to binding info
      */
+    static uint64_t MapValueFrom(const TPSet<TProtocolRegister> &, const std::vector<TRegisterBindInfo> &);
     static uint64_t MapValueFrom(const TPMap<TProtocolRegister, TRegisterBindInfo> &);
 
     /**
      * Split given value and set to protocol registers according to binding info
      */
-    static void MapValueTo(const TPMap<TProtocolRegister, TRegisterBindInfo> &, uint64_t);
+    static void MapValueTo(const PIRDeviceValueQuery &, const TPMap<TProtocolRegister, TRegisterBindInfo> &, uint64_t);
 
     virtual ~TVirtualRegister() = default;
 
     /**
      * Returns hash that can be used by unordered_* containers
      */
-    virtual size_t GetHash() const noexcept = 0;
-    virtual bool operator==(const TVirtualRegister & rhs) const noexcept = 0;
-    virtual const PSerialDevice & GetDevice() const = 0;
-    virtual const TPSet<TProtocolRegister> & GetProtocolRegisters() const = 0;
-    virtual EErrorState GetErrorState() const = 0;
-    virtual std::string GetTextValue() const = 0;
-    virtual const std::string & GetTypeName() const = 0;
-    virtual void SetTextValue(const std::string & value) = 0;
-    virtual bool NeedToPublish() const = 0;
-    virtual bool NeedToFlush() const = 0;
-    virtual bool Flush() = 0;
+    size_t GetHash() const noexcept;
+    bool operator==(const TVirtualRegister & rhs) const noexcept;
 
-    virtual bool AcceptDeviceValue(bool & changed) = 0;
-    virtual bool AcceptDeviceReadError() = 0;
+    const PSerialDevice & GetDevice() const;
+    const TPSet<TProtocolRegister> & GetProtocolRegisters() const;
+    EErrorState GetErrorState() const;
+    std::string GetTextValue() const;
+    const std::string & GetTypeName() const;
+    void SetTextValue(const std::string & value);
+    bool NeedToPublish() const;
+    bool NeedToFlush() const;
+    bool Flush();
+    bool AcceptDeviceValue(bool & changed);
+    bool AcceptDeviceReadError();
 
-    virtual void NotifyPublished() = 0;
+    void NotifyPublished();
 
-protected:
-    virtual bool NotifyRead(const PProtocolRegister &, bool ok) = 0;
+    uint64_t GetValue() const;
+
+private:
+    bool NotifyRead(const PProtocolRegister &, bool ok);
 };

@@ -263,14 +263,18 @@ TPSet<TIRDeviceQuery> TIRDeviceQuerySet::GenerateQueries(const TPSet<TProtocolRe
                               : 0;
     int maxRegs;
 
-    if (singleBitType) {
-        maxRegs = protocolInfo.GetMaxReadBits();
-    } else {
-        if ((deviceConfig->MaxReadRegisters > 0) && (deviceConfig->MaxReadRegisters <= protocolInfo.GetMaxReadRegisters())) {
-            maxRegs = deviceConfig->MaxReadRegisters;
+    if (isRead) {
+        if (singleBitType) {
+            maxRegs = protocolInfo.GetMaxReadBits();
         } else {
-            maxRegs = protocolInfo.GetMaxReadRegisters();
+            if ((deviceConfig->MaxReadRegisters > 0) && (deviceConfig->MaxReadRegisters <= protocolInfo.GetMaxReadRegisters())) {
+                maxRegs = deviceConfig->MaxReadRegisters;
+            } else {
+                maxRegs = protocolInfo.GetMaxReadRegisters();
+            }
         }
+    } else {
+        maxRegs = singleBitType ? protocolInfo.GetMaxWriteBits() : protocolInfo.GetMaxWriteRegisters();
     }
 
     TPSet<TIRDeviceQuery> result;

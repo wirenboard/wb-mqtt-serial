@@ -14,7 +14,7 @@ class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
     typedef std::function<void(PVirtualRegister reg, bool changed)> TReadCallback;
-    typedef std::function<void(PVirtualRegister reg, EErrorState errorState)> TErrorCallback;
+    typedef std::function<void(PVirtualRegister reg)> TErrorCallback;
 
     TSerialClient(PPort port);
     TSerialClient(const TSerialClient& client) = delete;

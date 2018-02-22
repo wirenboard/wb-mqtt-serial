@@ -44,6 +44,8 @@ namespace Modbus    // modbus protocol declarations
         bool IsSingleBitType(int type) const override;
         int GetMaxReadRegisters() const override;
         int GetMaxReadBits() const override;
+        int GetMaxWriteRegisters() const override;
+        int GetMaxWriteBits() const override;
     };
 }
 
@@ -184,6 +186,16 @@ namespace Modbus    // modbus protocol common utilities
     int TModbusProtocolInfo::GetMaxReadBits() const
     {
         return MAX_READ_BITS;
+    }
+
+    int TModbusProtocolInfo::GetMaxWriteRegisters() const
+    {
+        return MAX_WRITE_REGISTERS;
+    }
+
+    int TModbusProtocolInfo::GetMaxWriteBits() const
+    {
+        return MAX_WRITE_BITS;
     }
 
     const TProtocolInfo & GetProtocolInfo()
@@ -465,7 +477,7 @@ namespace Modbus    // modbus protocol common utilities
     void ParseReadResponse(const uint8_t* pdu, const TIRDeviceQuery & query)
     {
         auto exception_code = GetExceptionCode(pdu);
-        query.Status = ToQueryStatus(static_cast<ModbusError>(exception_code));
+        query.SetStatus(ToQueryStatus(static_cast<ModbusError>(exception_code)));
         ThrowIfModbusException(exception_code);
 
         CheckReadResponse(pdu, query);
@@ -712,7 +724,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         // in case if connection error occures right after modbus error
         // (probability of which is very low, but still),
         // we need to clear any modbus errors from previous cycle
-        query.Status = EQueryStatus::OK;
+        query.SetStatus(EQueryStatus::OK);
 
         if (port->Debug())
             cerr << "modbus: read " << query.Describe() << endl;
@@ -762,8 +774,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
             exception_message = e.what();
         }
 
-        if (query.Status == EQueryStatus::OK) {
-            query.Status = EQueryStatus::UNKNOWN_ERROR;
+        if (query.GetStatus() == EQueryStatus::OK) {
+            query.SetStatus(EQueryStatus::UNKNOWN_ERROR);
         }
 
         ios::fmtflags f(cerr.flags());
@@ -832,8 +844,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
             exception_message += e.what();
         }
 
-        if (query.Status == EQueryStatus::OK) {
-            query.Status = EQueryStatus::UNKNOWN_ERROR;
+        if (query.GetStatus() == EQueryStatus::OK) {
+            query.SetStatus(EQueryStatus::UNKNOWN_ERROR);
         }
 
         ios::fmtflags f(cerr.flags());

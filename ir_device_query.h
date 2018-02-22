@@ -2,6 +2,7 @@
 
 #include "declarations.h"
 #include "utils.h"
+#include "types.h"
 
 /**
  * intermediate, protocol-agnostic device query representation format data structures
@@ -51,6 +52,7 @@ public:
 struct TIRDeviceValueQuery: TIRDeviceQuery
 {
     virtual void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const = 0;
+    virtual void SetValue(size_t index, uint64_t value) = 0;
     void AcceptValues() const;
 };
 
@@ -61,7 +63,7 @@ struct TIRDeviceValueQueryImpl: TIRDeviceValueQuery
 
     TIRDeviceValueQuery(TPSet<TProtocolRegister> && registerSet)
         : TIRDeviceQuery(std::move(registerSet))
-        , Values(registerSet.size())
+        , Values(Registers.size())
     {
         Operation = EQueryOperation::WRITE;
     }
@@ -72,6 +74,12 @@ struct TIRDeviceValueQueryImpl: TIRDeviceValueQuery
         for (const auto & protocolRegister: Registers) {
             accessor(*protocolRegister, Values[i++].Value);
         }
+    }
+
+    void SetValue(size_t index, uint64_t value) override
+    {
+        assert(index < Values.size());
+        Values[index] = value;
     }
 };
 
