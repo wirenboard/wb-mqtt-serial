@@ -1,3 +1,6 @@
+#include "s2k_device.h"
+#include "ir_device_query.h"
+
 #include <errno.h>
 #include <string.h>
 #include <sys/types.h>
@@ -10,7 +13,6 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "s2k_device.h"
 
 namespace
 {
@@ -67,7 +69,7 @@ uint8_t TS2KDevice::CrcS2K(const uint8_t *array, int size)
 
 // TODO: refactor this when more registers are writable, move writing
 // and error handling into separate function
-void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
+void TS2KDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
 {
     if (reg->Type != REG_RELAY) {
         throw TSerialDeviceException("S2K protocol: invalid register for writing");
@@ -79,22 +81,22 @@ void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
 
     Port()->CheckPortOpen();
     uint8_t command[7] = {
-            /* Address = */(uint8_t)SlaveId,
-            /* Command length = */0x06,
-            /* Key = */0x00,
-            /* Command = */0x15,/* Relay control */
-            /* Relay No = */(uint8_t)reg->Address,
-            /* Relay program = */(uint8_t)(value ? 0x1/* ON */ : 0x2/* OFF */),
-            /* CRC placeholder */0x0
-        };
+        /* Address = */(uint8_t)SlaveId,
+        /* Command length = */0x06,
+        /* Key = */0x00,
+        /* Command = */0x15,/* Relay control */
+        /* Relay No = */(uint8_t)reg->Address,
+        /* Relay program = */(uint8_t)(value ? 0x1/* ON */ : 0x2/* OFF */),
+        /* CRC placeholder */0x0
+    };
     command[6] = CrcS2K(command, 6);
     Port()->WriteBytes(command, 7);
     uint8_t response[256];
     int size = Port()->ReadFrame(response, 256, std::chrono::microseconds(PAUSE_US));
     if (size != 6 ||
-       response[0] != (uint8_t)SlaveId ||
-       response[1] != 5 ||
-       response[2]!= 0x16)
+    response[0] != (uint8_t)SlaveId ||
+    response[1] != 5 ||
+    response[2]!= 0x16)
     {
         throw TSerialDeviceTransientErrorException("incorrect response for 0x15 command");
     }
@@ -102,19 +104,20 @@ void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
         throw TSerialDeviceTransientErrorException("bad CRC for 0x15 command");
     }
     RelayState[response[3]] = response[4];
+    reg->SetValueFromClient(value);
 }
 
 // TODO: refactor this when more registers are actually readable, move reading
 // and error handling into separate function
-uint64_t TS2KDevice::ReadRegister(PRegister reg)
+void TS2KDevice::ReadProtocolRegister(const PProtocolRegister & reg)
 {
     /* We have no way to get current relay state from device. Thats why we save last
        successful write to relay register and return it when regiter is read */
     switch (reg->Type) {
     case REG_RELAY:
-        return RelayState[reg->Address] != 0 && RelayState[reg->Address] != 2;
+        return reg->SetValueFromDevice(RelayState[reg->Address] != 0 && RelayState[reg->Address] != 2);
     case REG_RELAY_MODE:
-        return RelayState[reg->Address];
+        return reg->SetValueFromDevice(RelayState[reg->Address]);
     case REG_RELAY_DEFAULT:
     case REG_RELAY_DELAY:
     {
@@ -145,7 +148,7 @@ uint64_t TS2KDevice::ReadRegister(PRegister reg)
         if (response[5] != CrcS2K(response, 5)){
             throw TSerialDeviceTransientErrorException("bad CRC for 0x5 command");
         }
-        return response[4];
+        return reg->SetValueFromDevice(response[4]);
     }
     default:
         throw TSerialDeviceException("S2K protocol: invalid register for reading");

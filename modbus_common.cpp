@@ -489,7 +489,7 @@ namespace Modbus    // modbus protocol common utilities
         vector<uint64_t> values(query.GetCount());
 
         if (IsSingleBitType(query.GetType())) {
-            assert(byteCount == query.GetCount());
+            assert(byteCount == GetByteCount(query));
 
             for (uint32_t iByte = 0; iByte < byteCount; ++iByte) {
                 bitset<8> coils(bytes[iByte]);

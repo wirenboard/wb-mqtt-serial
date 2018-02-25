@@ -108,8 +108,13 @@ public:
     void ResetUnavailableAddresses();
 
 protected:
-    virtual void Read(const TIRDeviceQuery &) = 0;
-    virtual void Write(const TIRDeviceValueQuery &) = 0;
+    void SleepGuardInterval() const;
+
+    virtual void Read(const TIRDeviceQuery &);
+    virtual void Write(const TIRDeviceValueQuery &);
+
+    virtual void ReadProtocolRegister(const PProtocolRegister & reg);
+    virtual void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value);
 
 private:
     std::chrono::milliseconds Delay;

@@ -96,6 +96,41 @@ void TSerialDevice::Prepare()
     Port()->Sleep(Delay);
 }
 
+void TSerialDevice::SleepGuardInterval() const
+{
+    if (DeviceConfig()->GuardInterval.count()) {
+        Port()->Sleep(DeviceConfig()->GuardInterval);
+    }
+}
+
+void TSerialDevice::Read(const TIRDeviceQuery & query)
+{
+    for (const auto & reg: query.Registers) {
+        SleepGuardInterval();
+        ReadProtocolRegister(reg);
+    }
+}
+
+void TSerialDevice::Write(const TIRDeviceValueQuery & query)
+{
+    int i = 0;
+    for (const auto & reg: query.Registers) {
+        SleepGuardInterval();
+        WriteProtocolRegister(reg, query.GetValue(i));
+    }
+}
+
+void ReadProtocolRegister(const PProtocolRegister & reg)
+{
+    throw TSerialDeviceException("ReadProtocolRegister not implemented");
+}
+
+void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
+{
+    throw TSerialDeviceException("WriteProtocolRegister not implemented");
+}
+
+
 void TSerialDevice::EndPollCycle() {}
 
 // void TSerialDevice::ReadRegisterRange(PRegisterRange range)

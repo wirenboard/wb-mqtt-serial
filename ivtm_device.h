@@ -1,16 +1,17 @@
 #pragma once
 
+#include "serial_device.h"
+
 #include <string>
 #include <memory>
 #include <exception>
 #include <stdint.h>
-#include "serial_device.h"
 
 class TIVTMDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TIVTMDevice>> {
 public:
     TIVTMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
-    uint64_t ReadRegister(PRegister reg);
-    void WriteRegister(PRegister reg, uint64_t value);
+    void ReadProtocolRegister(const PProtocolRegister & reg) override;
+    void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value) override;
 
 private:
     void WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len);

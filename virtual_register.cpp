@@ -223,7 +223,7 @@ TVirtualRegister::TVirtualRegister(const PRegisterConfig & config, const PSerial
     , ValueToWrite(0)
     , ValueWasAccepted(false)
     , ReadValue(0)
-    , WriteQuerySet(nullptr)
+    , WriteQuery(nullptr)
     , ErrorState(EErrorState::UnknownErrorState)
 {
     const auto & regType = Device->Protocol()->GetRegTypes()->at(TypeName);
@@ -239,7 +239,7 @@ TVirtualRegister::TVirtualRegister(const PRegisterConfig & config, const PSerial
         return context[make_pair(device, protocolRegisterAddress.AbsoluteAddress)];
     });
 
-    {
+    if (!ReadOnly) {
         const auto & protocolInfo = device->GetProtocolInfo();
 
         if (protocolInfo.IsSingleBitType(Type)) {
@@ -357,29 +357,23 @@ bool TVirtualRegister::operator==(const TVirtualRegister & rhs) const noexcept
         return true;
     }
 
-    auto pRhs = dynamic_cast<const TVirtualRegister *>(&rhs);
-
-    if (!pRhs) {
-        return false;
-    }
-
-    if (Device != pRhs->Device) {
+    if (Device != rhs.Device) {
         return false;
     }
 
     auto lhsBegin = GetBitPosition();
-    auto rhsBegin = pRhs->GetBitPosition();
+    auto rhsBegin = rhs.GetBitPosition();
     if (lhsBegin != rhsBegin) {
         return false;
     }
 
     auto lhsEnd = lhsBegin + GetBitSize();
-    auto rhsEnd = rhsBegin + pRhs->GetBitSize();
+    auto rhsEnd = rhsBegin + rhs.GetBitSize();
     if (lhsEnd != rhsEnd) {
         return false;
     }
 
-    return ProtocolRegisters == pRhs->ProtocolRegisters;
+    return ProtocolRegisters == rhs.ProtocolRegisters;
 }
 
 const PSerialDevice & TVirtualRegister::GetDevice() const
@@ -417,6 +411,10 @@ std::string TVirtualRegister::GetTextValue() const
 
 void TVirtualRegister::SetTextValue(const std::string & value)
 {
+    if (ReadOnly) {
+        cerr << "WARNING: attempt to write to read-only register. Ignored" << endl;
+        return;
+    }
     Dirty.store(true);
     ValueToWrite = InvertWordOrderIfNeeded(*this, ConvertMasterValue(*this, value));
     FlushNeeded->Signal();
@@ -521,7 +519,7 @@ void TVirtualRegister::MapValueTo(const PIRDeviceValueQuery & query, const TPMap
 
         auto registerValue = (~registerLocalMask & cachedRegisterValue) | (valueLocalMask & value) << bindInfo.BitStart;
 
-        query.SetValue(index++, registerValue);
+        query->SetValue(index++, registerValue);
 
         value >>= bindInfo.BitCount();
     }

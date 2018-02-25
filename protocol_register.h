@@ -42,8 +42,9 @@ public:
     PSerialDevice GetDevice() const;
     TPSet<TVirtualRegister> GetVirtualRegsiters() const;
 
-private:
-    void NotifyErrorFromDevice();
     void SetValueFromDevice(uint64_t value);
     void SetValueFromClient(uint64_t value);
+
+private:
+    void NotifyErrorFromDevice();
 };

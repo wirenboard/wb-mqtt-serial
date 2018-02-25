@@ -11,21 +11,11 @@
  * It can be associated with multiple ProtocolRegisters.
  * ProtocolRegisters don't have to be adjacent by addresses.
  * ProtocolRegisters have to be of same type (debatable)
- * VirtualRegister cannot be compared since they may overlap each other
+ * VirtualRegisters cannot be compared since they may overlap each other
  */
 class TVirtualRegister final: public TRegisterConfig, public std::enable_shared_from_this<TVirtualRegister>
 {
     friend TProtocolRegister;
-    // /**
-    //  * Continious memory block
-    //  */
-    // struct TBitRange
-    // {
-    //     uint32_t BitStart;
-    //     uint32_t BitCount;
-
-    //     bool operator<(const TBitRange & rhs) const noexcept;
-    // };
 
     PSerialDevice                               Device;
     TPMap<TProtocolRegister, TRegisterBindInfo> ProtocolRegisters;
@@ -37,18 +27,6 @@ class TVirtualRegister final: public TRegisterConfig, public std::enable_shared_
     uint64_t                                    ReadValue;
     PIRDeviceValueQuery                         WriteQuery;
     EErrorState                                 ErrorState;
-
-    static void MapValueFromIteration(const PProtocolRegister &, const TRegisterBindInfo &, uint64_t &, uint8_t &);
-
-    TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device, PBinarySemaphore flushNeeded, TInitContext & context);
-
-    uint32_t GetBitPosition() const;
-    uint32_t GetBitSize() const;
-
-    void AssociateWithProtocolRegisters();
-
-    bool UpdateReadError(bool error);
-    bool UpdateWriteError(bool error);
 
 public:
     using TInitContext = std::map<std::pair<PSerialDevice, uint64_t>, PProtocolRegister>;
@@ -91,5 +69,17 @@ public:
     uint64_t GetValue() const;
 
 private:
+    static void MapValueFromIteration(const PProtocolRegister &, const TRegisterBindInfo &, uint64_t &, uint8_t &);
+
+    TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device, PBinarySemaphore flushNeeded, TInitContext & context);
+
+    uint32_t GetBitPosition() const;
+    uint32_t GetBitSize() const;
+
+    void AssociateWithProtocolRegisters();
+
+    bool UpdateReadError(bool error);
+    bool UpdateWriteError(bool error);
+
     bool NotifyRead(const PProtocolRegister &, bool ok);
 };

@@ -48,7 +48,7 @@ namespace utils
         {
             if (!ptr) return std::hash<Pointer>()(ptr);
 
-            return T::hash()(*ptr);
+            return ptr->GetHash();
         }
     };
 

@@ -40,3 +40,4 @@ using PVirtualRegisterSet    = std::shared_ptr<TVirtualRegisterSet>;
 using PRegisterConfig        = std::shared_ptr<TRegisterConfig>;
 using PIRDeviceQuerySet      = std::shared_ptr<TIRDeviceQuerySet>;
 using PIRDeviceQuery         = std::shared_ptr<TIRDeviceQuery>;
+using PIRDeviceValueQuery    = std::shared_ptr<TIRDeviceValueQuery>;

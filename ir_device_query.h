@@ -53,6 +53,7 @@ struct TIRDeviceValueQuery: TIRDeviceQuery
 {
     virtual void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const = 0;
     virtual void SetValue(size_t index, uint64_t value) = 0;
+    virtual uint64_t GetValue(size_t index) const = 0;
     void AcceptValues() const;
 };
 
@@ -80,6 +81,12 @@ struct TIRDeviceValueQueryImpl: TIRDeviceValueQuery
     {
         assert(index < Values.size());
         Values[index] = value;
+    }
+
+    uint64_t GetValue(size_t index) const override
+    {
+        assert(index < Values.size());
+        return Values[index];
     }
 };
 
