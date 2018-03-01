@@ -37,7 +37,7 @@ bool TMercury230Device::ConnectionSetup( )
     } catch (TSerialDeviceTransientErrorException&) {
             // retry upon response from a wrong slave
         return false;
-    } catch (TSerialDevicePermanentRegisterException&) {
+    } catch (TSerialDevicePermanentErrorException&) {
     	return false;
     }
 }
@@ -136,7 +136,7 @@ uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_l
     }
 }
 
-uint64_t TMercury230Device::ReadRegister(PRegister reg)
+uint64_t TMercury230Device::ReadProtocolRegister(const PProtocolRegister & reg)
 {
     switch (reg->Type) {
     case REG_VALUE_ARRAY:
@@ -148,7 +148,7 @@ uint64_t TMercury230Device::ReadRegister(PRegister reg)
     case REG_PARAM_SIGN_REACT:
     case REG_PARAM_SIGN_IGNORE:
     case REG_PARAM_BE:
-        return ReadParam( reg->Address & 0xffff, reg->ByteWidth(), (RegisterType) reg->Type);
+        return ReadParam( reg->Address & 0xffff, reg->GetUsedByteCount(), (RegisterType) reg->Type);
     default:
         throw TSerialDeviceException("mercury230: invalid register type");
     }

@@ -2,11 +2,6 @@
 
 using namespace std;
 
-bool operator&(EErrorState lhs, EErrorState rhs)
-{
-    return static_cast<uint8_t>(lhs) & static_cast<uint8_t>(rhs);
-}
-
 ostream& operator<<(ostream& os, EWordOrder val)
 {
     switch (val) {

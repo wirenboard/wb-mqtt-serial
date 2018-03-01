@@ -3,8 +3,16 @@
 #include "declarations.h"
 #include "types.h"
 
+#include <map>
 
-struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
+using TRegisterTypeMap  = std::map<std::string, TRegisterType>;
+using PRegisterTypeMap  = std::shared_ptr<TRegisterTypeMap>;
+
+const char* RegisterFormatName(ERegisterFormat fmt);
+ERegisterFormat RegisterFormatFromName(const std::string& name);
+EWordOrder WordOrderFromName(const std::string& name);
+
+struct TRegisterConfig
 {
     TRegisterConfig(int type, int address,
                     ERegisterFormat format, double scale, double offset,
@@ -20,7 +28,11 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
                                   bool has_error_value = false,
                                   uint64_t error_value = 0,
                                   const EWordOrder word_order = EWordOrder::BigEndian,
-                                  uint8_t bit_offset = 0, uint8_t bit_width = 0);
+                                  uint8_t bit_offset = 0, uint8_t bit_width = 0)
+    {
+        return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
+                                            type_name, has_error_value, error_value, word_order, bit_offset, bit_width);
+    }
 
     uint8_t GetBitWidth() const;
     uint8_t ByteWidth() const;
@@ -36,6 +48,7 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
     double RoundTo;
     bool Poll;
     bool ReadOnly;
+    std::string OnValue;
     std::string TypeName;
     std::chrono::milliseconds PollInterval = std::chrono::milliseconds(-1);
 
@@ -45,3 +58,11 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
     uint8_t BitOffset;
     uint8_t BitWidth;
 };
+
+inline ::std::ostream& operator<<(::std::ostream& os, PRegisterConfig reg) {
+    return os << reg->ToString();
+}
+
+inline ::std::ostream& operator<<(::std::ostream& os, const TRegisterConfig& reg) {
+    return os << reg.ToString();
+}

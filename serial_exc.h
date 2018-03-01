@@ -14,7 +14,12 @@ public:
     // using TSerialDeviceException::TSerialDeviceException;
 };
 
-class TSerialDevicePermanentRegisterException: public TSerialDeviceException {
+class TSerialDevicePermanentErrorException: public TSerialDeviceException {
 public:
-	TSerialDevicePermanentRegisterException(std::string message): TSerialDeviceException(message) {}
+	TSerialDevicePermanentErrorException(std::string message): TSerialDeviceException(message) {}
+};
+
+class TSerialDeviceUnknownErrorException: public TSerialDeviceException {
+public:
+	TSerialDeviceUnknownErrorException(std::string message): TSerialDeviceException(message) {}
 };

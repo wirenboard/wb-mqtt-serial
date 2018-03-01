@@ -4,15 +4,23 @@
 
 #include <wbmqtt/utils.h>
 
+#include <cassert>
 #include <sstream>
+#include <iostream>
+#include <algorithm>
 
 using namespace std;
 
-TVirtualRegisterSet::TVirtualRegisterSet(vector<PVirtualRegister> && virtualRegisters)
-    : VirtualRegisters(move(virtualRegisters))
-{}
+TVirtualRegisterSet::TVirtualRegisterSet(const vector<PVirtualRegister> & virtualRegisters)
+{
+    VirtualRegisters.reserve(virtualRegisters.size());
 
-std::string TVirtualRegisterSet::GetTextValue() const
+    for (const auto & virtualRegister: virtualRegisters) {
+        VirtualRegisters.push_back(virtualRegister);
+    }
+}
+
+string TVirtualRegisterSet::GetTextValue() const
 {
     ostringstream ss;
     bool first = true;
@@ -29,7 +37,7 @@ std::string TVirtualRegisterSet::GetTextValue() const
     return ss.str();
 }
 
-void TVirtualRegisterSet::SetTextValue(const std::string & value)
+void TVirtualRegisterSet::SetTextValue(const string & value)
 {
     const auto & textValues = StringSplit(value, ';');
     const auto valueCount = textValues.size();
@@ -44,6 +52,38 @@ void TVirtualRegisterSet::SetTextValue(const std::string & value)
     }
 
     for (size_t i = 0; i < valueCount; ++i) {
-        VirtualRegisters[i]->SetTextValue(textValues[i]);
+        const auto & virtualRegister = VirtualRegisters[i];
+
+        if (true) {  // TODO: only in debug
+            std::cerr << "setting device register: " << virtualRegister->ToString() << " <- " <<
+                textValues[i] << std::endl;
+        }
+
+        virtualRegister->SetTextValue(textValues[i]);
     }
+}
+
+EErrorState TVirtualRegisterSet::GetErrorState() const
+{
+    EErrorState result = EErrorState::NoError;
+
+    for (const auto & virtualRegister: VirtualRegisters) {
+        Add(result, virtualRegister->GetErrorState());
+    }
+
+    return result;
+}
+
+bool TVirtualRegisterSet::ValueIsRead() const
+{
+    return all_of(VirtualRegisters.begin(), VirtualRegisters.end(), [](const PVirtualRegister & virtualRegister){
+        return virtualRegister->ValueIsRead();
+    });
+}
+
+bool TVirtualRegisterSet::IsChanged(EPublishData data) const
+{
+    return any_of(VirtualRegisters.begin(), VirtualRegisters.end(), [data](const PVirtualRegister & virtualRegister){
+        return virtualRegister->IsChanged(data);
+    });
 }

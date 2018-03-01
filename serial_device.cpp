@@ -10,17 +10,15 @@
 TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
     : TDeviceSetupItemConfig(*config)
 {
-    const auto & protocolInfo = device->GetProtocolInfo();
     const auto & protocolRegisters = TProtocolRegister::GenerateProtocolRegisters(config->RegisterConfig, device);
-    const auto & protocolRegistersSet = GetKeysAsSet(protocolRegisters);
 
-    if (protocolInfo.IsSingleBitType(config->RegisterConfig->Type)) {
-        Query = std::make_shared<TIRDeviceSingleBitQuery>(protocolRegistersSet);
-    } else {
-        Query = std::make_shared<TIRDevice64BitQuery>(protocolRegistersSet);
-    }
+    TIRDeviceQuerySet querySet({ GetKeysAsSet(protocolRegisters) }, EQueryOperation::Write);
+    assert(querySet.Queries.size() == 1);
 
-    TVirtualRegister::MapValueTo(protocolRegisters, *Query, Value);
+    Query = std::dynamic_pointer_cast<TIRDeviceValueQuery>(*querySet.Queries.begin());
+    assert(Query);
+
+    TVirtualRegister::MapValueTo(Query, protocolRegisters, Value);
 }
 
 bool TProtocolInfo::IsSingleBitType(int) const
@@ -80,10 +78,10 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
     assert(query);
 
     switch(query->Operation) {
-        case EQueryOperation::READ:
+        case EQueryOperation::Read:
             return Read(*query);
 
-        case EQueryOperation::WRITE:
+        case EQueryOperation::Write:
             return Write(query->As<TIRDeviceValueQuery>());
 
         default:
@@ -105,29 +103,70 @@ void TSerialDevice::SleepGuardInterval() const
 
 void TSerialDevice::Read(const TIRDeviceQuery & query)
 {
-    for (const auto & reg: query.Registers) {
-        SleepGuardInterval();
-        ReadProtocolRegister(reg);
+    assert(query.GetCount() == 1);
+
+    const auto & reg = query.ProtocolRegisters.begin()->first;
+
+    SleepGuardInterval();
+
+    try {
+        try {
+            reg->SetReadValue(ReadProtocolRegister(reg));
+            query.SetStatus(EQueryStatus::Ok);
+        } catch (std::exception & e) {
+            std::ios::fmtflags f(std::cerr.flags());
+            std::cerr << "TSerialDevice::Read(): warning: " << e.what() << " [slave_id is "
+                      << ToString() + "]" << std::endl;
+            std::cerr.flags(f);
+            throw;
+        }
+    } catch (const TSerialDeviceTransientErrorException & e) {
+        query.SetStatus(EQueryStatus::DeviceTransientError);
+    } catch (const TSerialDevicePermanentErrorException & e) {
+        query.SetStatus(EQueryStatus::DevicePermanentError);
+    } catch (const TSerialDeviceUnknownErrorException & e) {
+        query.SetStatus(EQueryStatus::UnknownError);
     }
 }
 
 void TSerialDevice::Write(const TIRDeviceValueQuery & query)
 {
-    int i = 0;
-    for (const auto & reg: query.Registers) {
-        SleepGuardInterval();
-        WriteProtocolRegister(reg, query.GetValue(i));
+    assert(query.GetCount() == 1);
+
+    const auto & reg = query.ProtocolRegisters.begin()->first;
+    const auto & value = query.GetValue(0);
+
+    SleepGuardInterval();
+
+    try {
+        try {
+            WriteProtocolRegister(reg, value);
+            reg->SetWriteValue(value);
+            query.SetStatus(EQueryStatus::Ok);
+        } catch (std::exception & e) {
+            std::ios::fmtflags f(std::cerr.flags());
+            std::cerr << "TSerialDevice::Write(): warning: " << e.what() << " [slave_id is "
+                      << ToString() + "]" << std::endl;
+            std::cerr.flags(f);
+            throw;
+        }
+    } catch (const TSerialDeviceTransientErrorException & e) {
+        query.SetStatus(EQueryStatus::DeviceTransientError);
+    } catch (const TSerialDevicePermanentErrorException & e) {
+        query.SetStatus(EQueryStatus::DevicePermanentError);
+    } catch (const TSerialDeviceUnknownErrorException & e) {
+        query.SetStatus(EQueryStatus::UnknownError);
     }
 }
 
-void ReadProtocolRegister(const PProtocolRegister & reg)
+uint64_t TSerialDevice::ReadProtocolRegister(const PProtocolRegister & reg)
 {
-    throw TSerialDeviceException("ReadProtocolRegister not implemented");
+    throw TSerialDeviceException("ReadProtocolRegister is not implemented");
 }
 
-void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
+void TSerialDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
 {
-    throw TSerialDeviceException("WriteProtocolRegister not implemented");
+    throw TSerialDeviceException("WriteProtocolRegister is not implemented");
 }
 
 
@@ -154,7 +193,7 @@ void TSerialDevice::EndPollCycle() {}
 //             std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
 //                       << reg->GetDevice()->ToString() + "]" << std::endl;
 //             std::cerr.flags(f);
-//         } catch (const TSerialDevicePermanentRegisterException& e) {
+//         } catch (const TSerialDevicePermanentErrorException& e) {
 //         	UnavailableAddresses.insert(reg->Address);
 //         	simple_range->SetError(reg);
 // 			std::ios::fmtflags f(std::cerr.flags());
@@ -197,10 +236,6 @@ void TSerialDevice::OnCycleEnd(bool ok)
 bool TSerialDevice::GetIsDisconnected() const
 {
 	return IsDisconnected;
-}
-
-void TSerialDevice::ResetUnavailableAddresses() {
-	UnavailableAddresses.clear();
 }
 
 void TSerialDevice::InitSetupItems()

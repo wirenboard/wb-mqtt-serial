@@ -1,17 +1,21 @@
 #pragma once
 
 #include "declarations.h"
+#include "abstract_virtual_register.h"
 
 #include <vector>
 
 
-class TVirtualRegisterSet
+class TVirtualRegisterSet final: public TAbstractVirtualRegister
 {
     std::vector<PVirtualRegister> VirtualRegisters;
 
 public:
-    TVirtualRegisterSet(std::vector<PVirtualRegister> &&);
+    TVirtualRegisterSet(const std::vector<PVirtualRegister> &);
 
-    std::string GetTextValue() const;
-    void SetTextValue(const std::string &);
+    std::string GetTextValue() const override;
+    void SetTextValue(const std::string &) override;
+    EErrorState GetErrorState() const override;
+    bool ValueIsRead() const override;
+    bool IsChanged(EPublishData) const override;
 };

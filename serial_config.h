@@ -7,7 +7,7 @@
 #include <exception>
 #include <map>
 
-#include "register.h"
+#include "register_config.h"
 #include "port_settings.h"
 
 #if defined(__APPLE__) || defined(__APPLE_CC__)
@@ -29,17 +29,16 @@ typedef std::shared_ptr<TTemplateMap> PTemplateMap;
 struct TDeviceChannelConfig {
     TDeviceChannelConfig(std::string name = "", std::string type = "text",
                    std::string device_id = "", int order = 0,
-                   std::string on_value = "", int max = - 1, bool read_only = false,
+                   int max = - 1, bool read_only = false,
                    const std::vector<PRegisterConfig> regs =
                        std::vector<PRegisterConfig>())
         : Name(name), Type(type), DeviceId(device_id),
-          Order(order), OnValue(on_value), Max(max),
+          Order(order), Max(max),
           ReadOnly(read_only), RegisterConfigs(regs) {}
     std::string Name;
     std::string Type;
     std::string DeviceId; // FIXME
     int Order;
-    std::string OnValue;
     int Max;
     bool ReadOnly;
     std::vector<PRegisterConfig> RegisterConfigs;
@@ -162,7 +161,7 @@ private:
     static int GetInt(const Json::Value& obj, const std::string& key);
     static int ToInt(const Json::Value& v, const std::string& title);
     static uint64_t ToUint64(const Json::Value& v, const std::string& title);
-    static tuple<int, uint8_t, uint8_t> ParseRegisterAddress(const Json::Value& obj, const std::string& key);
+    static std::tuple<int, uint8_t, uint8_t> ParseRegisterAddress(const Json::Value& obj, const std::string& key);
 
     std::string ConfigFileName;
     PHandlerConfig HandlerConfig;

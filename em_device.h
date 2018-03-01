@@ -21,7 +21,7 @@ public:
         : TBasicProtocolSerialDevice<Proto>(device_config, port, protocol)
     {}
 
-    void WriteRegister(PRegister reg, uint64_t value)
+    void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value) override
     {
         throw TSerialDeviceException("EM protocol: writing to registers not supported");
     }
@@ -83,7 +83,7 @@ protected:
         if (err == NO_OPEN_SESSION)
             return false;
         if (err == PERMANENT_ERROR)
-        	throw TSerialDevicePermanentRegisterException(msg);
+        	throw TSerialDevicePermanentErrorException(msg);
         if (err != NO_ERROR)
             throw TSerialDeviceTransientErrorException(msg);
 

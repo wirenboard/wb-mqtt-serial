@@ -82,7 +82,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-uint64_t TUnielDevice::ReadRegister(PRegister reg)
+uint64_t TUnielDevice::ReadProtocolRegister(const PProtocolRegister & reg)
 {
     WriteCommand(READ_CMD, SlaveId, 0, uint8_t(reg->Address), 0);
     uint8_t response[3];
@@ -95,7 +95,7 @@ uint64_t TUnielDevice::ReadRegister(PRegister reg)
     return response[0];
 }
 
-void TUnielDevice::WriteRegister(PVirtualRegister reg, uint64_t value)
+void TUnielDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
 {
     uint8_t cmd, addr;
     if (reg->Type == REG_BRIGHTNESS) {

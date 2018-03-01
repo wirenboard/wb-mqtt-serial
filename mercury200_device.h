@@ -24,10 +24,10 @@ public:
     };
 
     TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol);
-    virtual ~TMercury200Device();
-    virtual uint64_t ReadRegister(PRegister reg);
-    virtual void WriteRegister(PRegister reg, uint64_t value);
-    virtual void EndPollCycle();
+    ~TMercury200Device();
+    uint64_t ReadProtocolRegister(const PProtocolRegister & reg) override;
+    void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value) override;
+    void EndPollCycle() override;
 
 private:
     std::vector<uint8_t> ExecCommand(uint8_t cmd);

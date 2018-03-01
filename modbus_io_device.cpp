@@ -23,17 +23,12 @@ const TProtocolInfo & TModbusIODevice::GetProtocolInfo() const
     return Modbus::GetProtocolInfo();
 }
 
-uint64_t TModbusIODevice::ReadRegister(PRegister reg)
+void TModbusIODevice::Write(const TIRDeviceValueQuery & query)
 {
-    throw TSerialDeviceException("modbus extension module: single register reading is not supported");
+    ModbusRTU::Write(Port(), SlaveId.Primary, query, Shift);
 }
 
-void TModbusIODevice::WriteRegister(PRegister reg, uint64_t value)
+void TModbusIODevice::Read(const TIRDeviceQuery & query)
 {
-    ModbusRTU::WriteRegister(Port(), SlaveId.Primary, reg, value, Shift);
-}
-
-void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
-{
-    ModbusRTU::ReadRegisterRange(Port(), SlaveId.Primary, range, Shift);
+    ModbusRTU::Read(Port(), SlaveId.Primary, query, Shift);
 }

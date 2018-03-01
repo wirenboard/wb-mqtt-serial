@@ -4,23 +4,29 @@
 #include "utils.h"
 #include "types.h"
 
+#include <list>
+#include <cassert>
+
 /**
  * intermediate, protocol-agnostic device query representation format data structures
  */
 
 struct TIRDeviceQuery
 {
-    // NOTE: DO NOT REORDER "Registers" , "VirtualRegisters" AND "HasHoles" FIELDS
-    const TPSet<TProtocolRegister> Registers;
-    const TPSet<TVirtualRegister>  VirtualRegisters;
-    const bool                     HasHoles;
-    const EQueryOperation          Operation;
+    friend class TIRDeviceQueryFactory;
+
+    const TPMap<PProtocolRegister, uint16_t> ProtocolRegisters;
+    const TPUnorderedSet<PVirtualRegister>   VirtualRegisters;
+    const bool                               HasHoles;
+    const EQueryOperation                    Operation;
 
 private:
-    mutable EQueryStatus           Status;
+    mutable EQueryStatus Status;
+
+protected:
+    explicit TIRDeviceQuery(const TPSet<PProtocolRegister> &, EQueryOperation = EQueryOperation::Read);
 
 public:
-    TIRDeviceQuery(TPSet<TProtocolRegister> &&);
     virtual ~TIRDeviceQuery() = default;
 
     bool operator<(const TIRDeviceQuery &) const noexcept;
@@ -30,11 +36,12 @@ public:
     uint32_t GetStart() const;
     uint32_t GetType() const;
     const std::string & GetTypeName() const;
-    bool NeedsSplit() const;
     void SetValuesFromDevice(const std::vector<uint64_t> & values) const;
-    const TPSet<TVirtualRegister> & GetAffectedVirtualRegisters() const;
-    void SetStatus(EQueryStatus) const;
+    void SetStatus(EQueryStatus, bool propagate = true) const;
     EQueryStatus GetStatus() const;
+
+    void SetEnabledWithRegisters(bool);
+    bool IsEnabled() const;
 
     template <class T>
     const T & As() const
@@ -53,27 +60,27 @@ struct TIRDeviceValueQuery: TIRDeviceQuery
 {
     virtual void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const = 0;
     virtual void SetValue(size_t index, uint64_t value) = 0;
+    virtual void SetValue(const PProtocolRegister & reg, uint64_t value) = 0;
     virtual uint64_t GetValue(size_t index) const = 0;
     void AcceptValues() const;
+
+protected:
+    TIRDeviceValueQuery(const TPSet<PProtocolRegister> & registerSet, EQueryOperation operation)
+        : TIRDeviceQuery(registerSet, operation)
+    {}
 };
 
 template <typename T>
 struct TIRDeviceValueQueryImpl: TIRDeviceValueQuery
 {
-    const std::vector<_mutable<T>> Values;
+    friend class TIRDeviceQueryFactory;
 
-    TIRDeviceValueQuery(TPSet<TProtocolRegister> && registerSet)
-        : TIRDeviceQuery(std::move(registerSet))
-        , Values(Registers.size())
-    {
-        Operation = EQueryOperation::WRITE;
-    }
+    const std::vector<_mutable<T>> Values;
 
     void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const override
     {
-        uint32_t i = 0;
-        for (const auto & protocolRegister: Registers) {
-            accessor(*protocolRegister, Values[i++].Value);
+        for (const auto & regIndex: ProtocolRegisters) {
+            accessor(*regIndex.first, Values[regIndex.second].Value);
         }
     }
 
@@ -83,28 +90,36 @@ struct TIRDeviceValueQueryImpl: TIRDeviceValueQuery
         Values[index] = value;
     }
 
+    void SetValue(const PProtocolRegister & reg, uint64_t value) override
+    {
+        SetValue(ProtocolRegisters.at(reg), value);
+    }
+
     uint64_t GetValue(size_t index) const override
     {
         assert(index < Values.size());
         return Values[index];
     }
+
+protected:
+    explicit TIRDeviceValueQueryImpl(const TPSet<PProtocolRegister> & registerSet, EQueryOperation operation = EQueryOperation::Write)
+        : TIRDeviceValueQuery(registerSet, operation)
+        , Values(registerSet.size())
+    {}
 };
 
-struct TIRDevice64BitQuery: TIRDeviceValueQueryImpl<uint64_t> {};
-struct TIRDeviceSingleBitQuery: TIRDeviceValueQueryImpl<bool> {};
+using TIRDevice64BitQuery = TIRDeviceValueQueryImpl<uint64_t>;
+using TIRDeviceSingleBitQuery = TIRDeviceValueQueryImpl<bool>;
 
 
 struct TIRDeviceQuerySet
 {
-    TPSet<TIRDeviceQuery> Queries;
+    friend class TIRDeviceQuerySetHandler;
 
-    TIRDeviceQuerySet(const TPSet<TProtocolRegister> & registers, EQueryOperation);
+    TQueries Queries;
+
+    TIRDeviceQuerySet(std::list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation);
 
     std::string Describe() const;
     PSerialDevice GetDevice() const;
-
-    void SplitIfNeeded();
-
-private:
-    static TPSet<TIRDeviceQuery> GenerateQueries(const TPSet<TProtocolRegister> & registers, bool enableHoles, EQueryOperation);
 };

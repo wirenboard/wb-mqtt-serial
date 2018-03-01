@@ -13,11 +13,12 @@
 #include <stdint.h>
 #include <iostream>
 
-#include "register.h"
 #include "serial_exc.h"
 #include "serial_config.h"
 #include "port.h"
 
+
+using TRegisterTypes = std::vector<TRegisterType>;
 
 struct TDeviceSetupItem : public TDeviceSetupItemConfig
 {
@@ -80,14 +81,8 @@ public:
 
     // Prepare to access device (pauses for configured delay by default)
     virtual void Prepare();
-    // Read register value
-    virtual uint64_t ReadRegister(PRegister reg) = 0;
-    // Write register value
-    virtual void WriteRegister(PRegister reg, uint64_t value) = 0;
     // Handle end of poll cycle e.g. by resetting values caches
     virtual void EndPollCycle();
-    // Read multiple registers
-    virtual void ReadRegisterRange(PRegisterRange range);
 
     virtual std::string ToString() const;
 
@@ -105,15 +100,13 @@ public:
     virtual void OnCycleEnd(bool ok);
     bool GetIsDisconnected() const;
 
-    void ResetUnavailableAddresses();
-
 protected:
     void SleepGuardInterval() const;
 
     virtual void Read(const TIRDeviceQuery &);
     virtual void Write(const TIRDeviceValueQuery &);
 
-    virtual void ReadProtocolRegister(const PProtocolRegister & reg);
+    virtual uint64_t ReadProtocolRegister(const PProtocolRegister & reg);
     virtual void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value);
 
 private:
@@ -124,7 +117,6 @@ private:
     std::vector<PDeviceSetupItem> SetupItems;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
-    std::set<int> UnavailableAddresses;
     int RemainingFailCycles;
 };
 

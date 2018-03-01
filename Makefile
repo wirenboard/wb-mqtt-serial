@@ -31,10 +31,17 @@ LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
 SERIAL_BIN=wb-mqtt-serial
 SERIAL_LIBS=
-SERIAL_SRCS=register.cpp \
+SERIAL_SRCS= \
   poll_plan.cpp \
+  protocol_register.cpp \
+  virtual_register.cpp \
+  virtual_register_set.cpp \
+  ir_device_query.cpp \
+  ir_device_query_factory.cpp \
+  ir_device_query_handler.cpp \
+  register_config.cpp \
+  types.cpp \
   serial_client.cpp \
-  register_handler.cpp \
   serial_config.cpp \
   serial_port_driver.cpp \
   serial_observer.cpp \

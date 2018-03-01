@@ -320,12 +320,11 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
             reg->Poll = false;
     }
 
-    string on_value = "";
     if (channel_data.isMember("on_value")) {
         if (registers.size() != 1)
             throw TConfigParserException("can only use on_value for single-valued controls -- " +
                                          device_config->DeviceType);
-        on_value = to_string(GetInt(channel_data, "on_value"));
+        registers[0]->OnValue = to_string(GetInt(channel_data, "on_value"));
     }
 
     int max = -1;
@@ -334,8 +333,7 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
 
     int order = device_config->NextOrderValue();
     PDeviceChannelConfig channel(new TDeviceChannelConfig(name, type_str, device_config->Id, order,
-                                              on_value, max, registers[0]->ReadOnly,
-                                              registers));
+                                              max, registers[0]->ReadOnly, registers));
     device_config->AddChannel(channel);
 }
 
@@ -500,7 +498,7 @@ tuple<int, uint8_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Val
         address = TConfigParser::GetInt(obj, key);
     }
 
-    return {address, static_cast<uint8_t>(bitOffset), static_cast<uint8_t>(bitWidth)};
+    return tuple<int, uint8_t, uint8_t>{address, static_cast<uint8_t>(bitOffset), static_cast<uint8_t>(bitWidth)};
 }
 
 int TConfigParser::GetInt(const Json::Value& obj, const string& key)

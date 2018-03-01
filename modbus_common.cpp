@@ -79,13 +79,13 @@ namespace   // general utilities
     {
         switch (errorCode) {
             case Modbus::ERR_NONE:
-                return EQueryStatus::OK;
+                return EQueryStatus::Ok;
             case Modbus::ERR_ILLEGAL_DATA_ADDRESS:
             case Modbus::ERR_ILLEGAL_DATA_VALUE:
             case Modbus::ERR_ILLEGAL_FUNCTION:
-                return EQueryStatus::DEVICE_PERMANENT_ERROR;
+                return EQueryStatus::DevicePermanentError;
             default:
-                return EQueryStatus::DEVICE_TRANSIENT_ERROR;
+                return EQueryStatus::DeviceTransientError;
         }
     }
 }   // general utilities
@@ -239,9 +239,9 @@ namespace Modbus    // modbus protocol common utilities
         case REG_HOLDING_MULTI:
         case REG_HOLDING:
             switch (op) {
-            case EQueryOperation::READ:
+            case EQueryOperation::Read:
                 return FN_READ_HOLDING;
-            case EQueryOperation::WRITE:
+            case EQueryOperation::Write:
                 return isPacking ? FN_WRITE_MULTIPLE_REGISTERS : FN_WRITE_SINGLE_REGISTER;
             default:
                 break;
@@ -249,7 +249,7 @@ namespace Modbus    // modbus protocol common utilities
             break;
         case REG_INPUT:
             switch (op) {
-            case EQueryOperation::READ:
+            case EQueryOperation::Read:
                 return FN_READ_INPUT;
             default:
                 break;
@@ -257,9 +257,9 @@ namespace Modbus    // modbus protocol common utilities
             break;
         case REG_COIL:
             switch (op) {
-            case EQueryOperation::READ:
+            case EQueryOperation::Read:
                 return FN_READ_COILS;
-            case EQueryOperation::WRITE:
+            case EQueryOperation::Write:
                 return isPacking ? FN_WRITE_MULTIPLE_COILS : FN_WRITE_SINGLE_COIL;
             default:
                 break;
@@ -267,7 +267,7 @@ namespace Modbus    // modbus protocol common utilities
             break;
         case REG_DISCRETE:
             switch (op) {
-            case EQueryOperation::READ:
+            case EQueryOperation::Read:
                 return FN_READ_DISCRETE;
             default:
                 break;
@@ -278,10 +278,10 @@ namespace Modbus    // modbus protocol common utilities
         }
 
         switch (op) {
-        case EQueryOperation::READ:
+        case EQueryOperation::Read:
             cerr << "reading of " << getTypeName() << " is not implemented" << endl;
             assert(false);
-        case EQueryOperation::WRITE:
+        case EQueryOperation::Write:
             cerr << "writing to " << getTypeName() << " is not implemented" << endl;
             assert(false);
         default:
@@ -342,14 +342,14 @@ namespace Modbus    // modbus protocol common utilities
         if (is_transient) {
             throw TSerialDeviceTransientErrorException(message);
         } else {
-            throw TSerialDevicePermanentRegisterException(message);
+            throw TSerialDevicePermanentErrorException(message);
         }
     }
 
     inline size_t GetByteCount(const TIRDeviceQuery & query)
     {
         if (IsSingleBitType(query.GetType())) {
-            return ceil(static_cast<float>(query.GetCount()) / 8);    // coil values are packed into bytes as bitset
+            return BitCountToByteCount(query.GetCount());    // coil values are packed into bytes as bitset
         } else {
             return query.GetCount() * 2;   // count is for uint16_t, we need byte count
         }
@@ -370,13 +370,7 @@ namespace Modbus    // modbus protocol common utilities
     // returns number of bytes needed to hold response
     size_t InferReadResponsePDUSize(const TIRDeviceQuery & query)
     {
-        auto count = query.GetCount();
-
-        if (IsSingleBitType(query.GetType())) {
-            return 2 + ceil(static_cast<float>(count) / 8);    // coil values are packed into bytes as bitset
-        } else {
-            return 2 + count * 2;   // count is for uint16_t, we need byte count
-        }
+        return 2 + GetByteCount(query);
     }
 
     inline size_t ReadResponsePDUSize(const uint8_t* pdu)
@@ -412,20 +406,20 @@ namespace Modbus    // modbus protocol common utilities
         pdu[5] = byteCount;
 
         if (IsSingleBitType(query.GetType())) {
-            const auto & valueEntry = query.As<TIRDeviceSingleBitQuery>();
-            const auto bitCount = min((int)valueEntry.GetCount(), 8);
+            const auto & valueQuery = query.As<TIRDeviceSingleBitQuery>();
+            const auto bitCount = min(valueQuery.GetCount(), 8u);
 
             for (uint32_t iByte = 0; iByte < byteCount; ++iByte) {
                 bitset<8> coils;
                 for (uint32_t iBit = iByte * 8; iBit < bitCount; ++iBit) {
-                    coils[iBit] = valueEntry.Values[iBit];
+                    coils[iBit] = valueQuery.Values[iBit];
                 }
                 pdu[6 + iByte] = static_cast<uint8_t>(coils.to_ulong());
             }
         } else {
-            const auto & valueEntry = query.As<TIRDevice64BitQuery>();
+            const auto & valueQuery = query.As<TIRDevice64BitQuery>();
             uint32_t i = 0;
-            for (const auto & value: valueEntry.Values) {
+            for (const auto & value: valueQuery.Values) {
                 WriteAs2Bytes(pdu + 6 + i * 2, value & 0xffff); ++i;
             }
 
@@ -442,7 +436,7 @@ namespace Modbus    // modbus protocol common utilities
             value = value ? uint16_t(0xFF) << 8: 0x00;
         }
 
-        pdu[0] = GetFunction(protocolRegister, EQueryOperation::WRITE);
+        pdu[0] = GetFunction(protocolRegister, EQueryOperation::Write);
 
         assert(pdu[0] == FN_WRITE_SINGLE_COIL || pdu[0] == FN_WRITE_SINGLE_REGISTER);
 
@@ -724,7 +718,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         // in case if connection error occures right after modbus error
         // (probability of which is very low, but still),
         // we need to clear any modbus errors from previous cycle
-        query.SetStatus(EQueryStatus::OK);
+        query.SetStatus(EQueryStatus::Ok);
 
         if (port->Debug())
             cerr << "modbus: read " << query.Describe() << endl;
@@ -774,8 +768,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
             exception_message = e.what();
         }
 
-        if (query.GetStatus() == EQueryStatus::OK) {
-            query.SetStatus(EQueryStatus::UNKNOWN_ERROR);
+        if (query.GetStatus() == EQueryStatus::Ok) {
+            query.SetStatus(EQueryStatus::UnknownError);
         }
 
         ios::fmtflags f(cerr.flags());
@@ -844,8 +838,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
             exception_message += e.what();
         }
 
-        if (query.GetStatus() == EQueryStatus::OK) {
-            query.SetStatus(EQueryStatus::UNKNOWN_ERROR);
+        if (query.GetStatus() == EQueryStatus::Ok) {
+            query.SetStatus(EQueryStatus::UnknownError);
         }
 
         ios::fmtflags f(cerr.flags());

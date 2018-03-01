@@ -1,31 +1,36 @@
 #include "protocol_register.h"
 #include "serial_device.h"
-#include "basic_virtual_register.h"
+#include "virtual_register.h"
 
 #include <cassert>
 
 using namespace std;
 
 TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t type)
-    : Address(address)
+    : Value(0)
+    , Enabled(true)
+    , Address(address)
     , Type(type)
-    , Value(0)
 {}
 
-TPMap<TProtocolRegister, TRegisterBindInfo> TProtocolRegister::GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device, TRegisterCache && cache)
+TPMap<PProtocolRegister, TRegisterBindInfo> TProtocolRegister::GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device, TRegisterCache && cache)
 {
-    TPMap<TProtocolRegister, TRegisterBindInfo> registersBindInfo;
+    TPMap<PProtocolRegister, TRegisterBindInfo> registersBindInfo;
 
     const auto & regType = device->Protocol()->GetRegTypes()->at(config->TypeName);
 
     const uint8_t registerBitWidth = RegisterFormatByteWidth(regType.DefaultFormat) * 8;
     auto bitsToAllocate = config->GetBitWidth();
 
-    uint32_t regCount = ceil(float(bitsToAllocate) / registerBitWidth);
+    cerr << "bits: " << (int)bitsToAllocate << endl;
+
+    uint32_t regCount = BitCountToRegCount(bitsToAllocate, registerBitWidth);
+
+    cerr << "registers: " << regCount << endl;
 
     cerr << "split " << config->ToString() << " to " << regCount << " " << config->TypeName << " registers" << endl;
 
-    for (auto regIndex = 0u, regIndexEnd = regCount - 1; regIndex != regIndexEnd; ++regIndex) {
+    for (auto regIndex = 0u, regIndexEnd = regCount; regIndex != regIndexEnd; ++regIndex) {
         auto type    = config->Type;
         auto address = config->Address + regIndex;
 
@@ -50,6 +55,7 @@ TPMap<TProtocolRegister, TRegisterBindInfo> TProtocolRegister::GenerateProtocolR
         auto & protocolRegister = (cache ? cache(address) : _protocolRegisterFallback);
 
         if (!protocolRegister) {
+            cerr << "create protocol register at " << address << endl;
             protocolRegister = make_shared<TProtocolRegister>(address, type);
         }
 
@@ -61,12 +67,12 @@ TPMap<TProtocolRegister, TRegisterBindInfo> TProtocolRegister::GenerateProtocolR
     return move(registersBindInfo);
 }
 
-bool TProtocolRegister::operator<(const TProtocolRegister & rhs)
+bool TProtocolRegister::operator<(const TProtocolRegister & rhs) const
 {
     return Type < rhs.Type || (Type == rhs.Type && Address < rhs.Address);
 }
 
-bool TProtocolRegister::operator==(const TProtocolRegister & rhs)
+bool TProtocolRegister::operator==(const TProtocolRegister & rhs) const
 {
     if (this == &rhs) {
         return true;
@@ -81,7 +87,7 @@ void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
         assert(GetDevice() == reg->GetDevice());
     }
 
-    assert(Type == reg->Type);
+    assert((int)Type == reg->Type);
 
     bool inserted = VirtualRegisters.insert(reg).second;
 
@@ -92,11 +98,7 @@ void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
 
 bool TProtocolRegister::IsAssociatedWith(const PVirtualRegister & reg)
 {
-    if (auto basicVirtualRegister = dynamic_pointer_cast<TVirtualRegister>(reg))
-        return VirtualRegisters.count(basicVirtualRegister);
-    else {
-        return false;
-    }
+    return VirtualRegisters.count(reg);
 }
 
 std::set<TIntervalMs> TProtocolRegister::GetPollIntervals() const
@@ -135,7 +137,7 @@ std::set<TIntervalMs> TProtocolRegister::GetPollIntervals() const
 
 const string & TProtocolRegister::GetTypeName() const
 {
-    return AssociatedVirtualRegister()->GetTypeName();
+    return AssociatedVirtualRegister()->TypeName;
 }
 
 PSerialDevice TProtocolRegister::GetDevice() const
@@ -147,51 +149,113 @@ PSerialDevice TProtocolRegister::GetDevice() const
     return AssociatedVirtualRegister()->GetDevice();
 }
 
-TPSet<TVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
+TPUnorderedSet<PVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
 {
-    TPSet<TVirtualRegister> result;
+    TPUnorderedSet<PVirtualRegister> result;
 
     for (const auto & virtualRegister: VirtualRegisters) {
         const auto & locked = virtualRegister.lock();
 
         assert(locked);
 
-        assert(result.insert(locked).second);
+        bool inserted = result.insert(locked).second;
+
+        assert(inserted);
     }
 
     return result;
+}
+
+uint8_t TProtocolRegister::GetUsedByteCount() const
+{
+    uint8_t bitCount = 0;
+
+    for (const auto & virtualRegister: VirtualRegisters) {
+        const auto & locked = virtualRegister.lock();
+
+        assert(locked);
+
+        bitCount = max(bitCount, locked->GetUsedBitCount(const_pointer_cast<TProtocolRegister>(shared_from_this())));
+    }
+
+    return BitCountToByteCount(bitCount);
 }
 
 PVirtualRegister TProtocolRegister::AssociatedVirtualRegister() const
 {
     assert(!VirtualRegisters.empty());
 
-    auto virtualReg = VirtualRegisters.rbegin()->lock();
+    auto virtualReg = VirtualRegisters.begin()->lock();
 
     assert(virtualReg);
 
     return virtualReg;
 }
 
-void TProtocolRegister::NotifyErrorFromDevice()
+void TProtocolRegister::DisableIfNotUsed()
 {
+    bool used = false;
 
+    for (const auto & reg: VirtualRegisters) {
+        auto virtualRegister = reg.lock();
+
+        if (!virtualRegister) {
+            continue;
+        }
+
+        used |= virtualRegister->IsEnabled();
+
+        if (used) {
+            break;
+        }
+    }
+
+    if (!used) {
+        Enabled = false;    // no need to notify associated virtual registers - they are all already disabled
+    }
 }
 
-void TProtocolRegister::SetValueFromDevice(uint64_t value)
+void TProtocolRegister::SetReadValue(uint64_t value)
 {
     Value = value;
 
+    SetReadError(false);
+}
+
+void TProtocolRegister::SetWriteValue(uint64_t value)
+{
+    Value = value;
+
+    SetWriteError(false);
+}
+
+void TProtocolRegister::SetReadError(bool error)
+{
     for (const auto & virtualRegister: VirtualRegisters) {
         const auto & reg = virtualRegister.lock();
 
         assert(reg);
 
-        reg->NotifyRead(shared_from_this(), true);
+        bool found = reg->NotifyRead(shared_from_this(), !error);
+
+        assert(found);
     }
 }
 
-void TProtocolRegister::SetValueFromClient(uint64_t value)
+void TProtocolRegister::SetWriteError(bool error)
 {
-    Value = value;
+    for (const auto & virtualRegister: VirtualRegisters) {
+        const auto & reg = virtualRegister.lock();
+
+        assert(reg);
+
+        bool found = reg->NotifyWrite(shared_from_this(), !error);
+
+        assert(found);
+    }
+}
+
+bool TProtocolRegister::IsEnabled() const
+{
+    return Enabled;
 }

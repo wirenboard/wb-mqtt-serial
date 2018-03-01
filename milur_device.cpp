@@ -118,7 +118,7 @@ TEMDevice<TMilurProtocol>::ErrorType TMilurDevice::CheckForException(uint8_t* fr
     return TEMDevice<TMilurProtocol>::OTHER_ERROR;
 }
 
-uint64_t TMilurDevice::ReadRegister(PRegister reg)
+uint64_t TMilurDevice::ReadProtocolRegister(const PProtocolRegister & reg)
 {
     int size = GetExpectedSize(reg->Type);
     uint8_t addr = static_cast<uint8_t>(reg->Address);

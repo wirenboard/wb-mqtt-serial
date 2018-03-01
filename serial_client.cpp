@@ -1,6 +1,7 @@
 #include "serial_client.h"
 #include "virtual_register.h"
 #include "ir_device_query.h"
+#include "ir_device_query_handler.h"
 
 #include <unistd.h>
 #include <unordered_map>
@@ -15,7 +16,9 @@ namespace {
         TSerialPollEntry(TIntervalMs pollInterval, const PIRDeviceQuerySet & querySet)
             : QuerySet(querySet)
             , PollIntervalValue(pollInterval)
-        {}
+        {
+            assert(!QuerySet->Queries.empty());
+        }
 
         TIntervalMs PollInterval() const override {
             return PollIntervalValue;
@@ -27,7 +30,7 @@ namespace {
 TSerialClient::TSerialClient(PPort port)
     : Port(port),
       Active(false),
-      ReadCallback([](PVirtualRegister, bool){}),
+      ReadCallback([](PVirtualRegister){}),
       ErrorCallback([](PVirtualRegister){}),
       FlushNeeded(new TBinarySemaphore),
       Plan(std::make_shared<TPollPlan>([this]() { return Port->CurrentTime(); })) {}
@@ -66,15 +69,16 @@ void TSerialClient::AddRegister(PVirtualRegister reg)
     if (Active)
         throw TSerialDeviceException("can't add registers to the active client");
 
-    bool inserted = VirtualRegisters.insert(reg).second;
+    bool inserted = VirtualRegisters[reg->GetDevice()].insert(reg).second;
     if (!inserted) {
         throw TSerialDeviceException("duplicate register");
     }
 
     {
         auto & deviceProtocolRegisters = ProtocolRegisters[reg->GetDevice()];
-        auto & protocolRegisters = reg->GetProtocolRegisters();
+        const auto & protocolRegisters = reg->GetProtocolRegisters();
         deviceProtocolRegisters.insert(protocolRegisters.begin(), protocolRegisters.end());
+        reg->SetFlushSignal(FlushNeeded);
     }
 
     //auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg->GetDevice(), reg, FlushNeeded, Debug);
@@ -87,7 +91,7 @@ void TSerialClient::Connect()
 {
     if (Active)
         return;
-    if (!Handlers.size())
+    if (!VirtualRegisters.size())
         throw TSerialDeviceException("no registers defined");
     if (!Port->IsOpen())
         Port->Open();
@@ -104,30 +108,41 @@ void TSerialClient::Disconnect()
 
 void TSerialClient::GenerateReadQueries()
 {
+    std::cerr << "generating read queries..." << std::endl;
+    uint32_t queryCount = 0;
     // all of this is seemingly slow but it's actually only done once
     Plan->Reset();
-    TPSet<TProtocolRegister> curentRegisters;
 
     for (const auto & deviceProtocolRegisters: ProtocolRegisters) {
-        std::unordered_map<TIntervalMs, TPSet<TProtocolRegister>> protocolRegistersByInterval;
+        std::unordered_map<int64_t, std::map<uint32_t, std::list<TPSet<PProtocolRegister>>>> protocolRegistersByTypeAndInterval;
 
-        const auto & device            = deviceProtocolRegisters.first;
         const auto & protocolRegisters = deviceProtocolRegisters.second;
 
+        TPUnorderedSet<PVirtualRegister> virtualRegisters;
+
         for (const auto & protocolRegister: protocolRegisters) {
-            for (const auto & pollInterval: protocolRegister->GetPollIntervals()) {
-                protocolRegistersByInterval[pollInterval].insert(protocolRegister);
+            for (const auto & virtualRegister: protocolRegister->GetVirtualRegsiters()) {
+                if (virtualRegisters.insert(virtualRegister).second) {
+                    protocolRegistersByTypeAndInterval[virtualRegister->PollInterval.count()][virtualRegister->Type].push_back(virtualRegister->GetProtocolRegisters());
+                }
             }
         }
 
-        for (const auto & pollIntervalRegisters: protocolRegistersByInterval) {
-            const auto & pollInterval = pollIntervalRegisters.first;
-            const auto & registers    = pollIntervalRegisters.second;
+        for (auto & pollIntervalTypesRegisters: protocolRegistersByTypeAndInterval) {
+            auto pollInterval     = TIntervalMs(pollIntervalTypesRegisters.first);
+            auto & typesRegisters = pollIntervalTypesRegisters.second;
+            for (auto & typeRegisters: typesRegisters) {
+                auto & registers = typeRegisters.second;
 
-            const auto & query = std::make_shared<TIRDeviceQuerySet>(registers);
-            Plan->AddEntry(std::make_shared<TSerialPollEntry>(pollInterval, query));
+                const auto & querySet = std::make_shared<TIRDeviceQuerySet>(std::move(registers), EQueryOperation::Read);
+                Plan->AddEntry(std::make_shared<TSerialPollEntry>(pollInterval, querySet));
+
+                queryCount += querySet->Queries.size();
+            }
         }
     }
+
+    std::cerr << queryCount <<  " queries generated" << std::endl;
 }
 
 // void TSerialClient::SplitRegisterRanges(std::set<PRegisterRange> && ranges)
@@ -167,12 +182,15 @@ void TSerialClient::MaybeUpdateErrorState(PVirtualRegister reg)
 
 void TSerialClient::DoFlush()
 {
-    for (const auto & reg: VirtualRegisters) {
-        if (!reg->NeedToFlush())
-            continue;
-        PrepareToAccessDevice(reg->GetDevice());
-        if (reg->Flush()) {
-            MaybeUpdateErrorState(reg);
+    for (const auto & deviceRegisters: VirtualRegisters) {
+        const auto & device = deviceRegisters.first;
+        for (const auto & reg: deviceRegisters.second) {
+            if (!reg->NeedToFlush())
+                continue;
+            PrepareToAccessDevice(device);
+            if (reg->Flush()) {
+                MaybeUpdateErrorState(reg);
+            }
         }
     }
 }
@@ -232,36 +250,6 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 //         });
 // }
 
-void TSerialClient::ExecuteQuery(const PIRDeviceQuery & query)
-{
-    auto device = query->GetDevice();
-    device->Execute(query);
-
-    if (query->Operation == EQueryOperation::READ) {
-        if (query->GetStatus() == EQueryStatus::OK) {
-            for (const auto & virtualRegister: query->GetAffectedVirtualRegisters()) {
-                if (virtualRegister->NeedToPublish()) {
-                    bool valueChanged;
-                    if(virtualRegister->AcceptDeviceValue(valueChanged)) {
-                        MaybeUpdateErrorState(virtualRegister);
-                    }
-
-                    if (!(virtualRegister->GetErrorState() & EErrorState::ReadError))
-                    {
-                        ReadCallback(virtualRegister, valueChanged);
-                    }
-                }
-            }
-        } else {
-            for (const auto & virtualRegister: query->GetAffectedVirtualRegisters()) {
-                if(virtualRegister->AcceptDeviceReadError()) {
-                    MaybeUpdateErrorState(virtualRegister);
-                }
-            }
-        }
-    }
-}
-
 void TSerialClient::Cycle()
 {
     Connect();
@@ -272,6 +260,7 @@ void TSerialClient::Cycle()
 
     // devices whose registers were polled during this cycle and statues
     std::map<PSerialDevice, std::set<EQueryStatus>> devicesRangesStatuses;
+    TPUnorderedSet<PVirtualRegister> allAffectedRegisters;
 
     Plan->ProcessPending([&](const PPollEntry& entry) {
         const auto & querySet = std::dynamic_pointer_cast<TSerialPollEntry>(entry)->QuerySet;
@@ -280,30 +269,52 @@ void TSerialClient::Cycle()
         auto & statuses = devicesRangesStatuses[device];
 
         for (const auto & query: querySet->Queries) {
+            if (!query->IsEnabled()) {
+                continue;
+            }
+
             if (device->GetIsDisconnected()) {
                 // limited polling mode
                 if (statuses.empty()) {
                     // First interaction with disconnected device within this cycle: Try to reconnect
                     if (device->HasSetupItems()) {
                         auto wrote = device->WriteSetupRegisters(false);
-                        statuses.insert(wrote ? EQueryStatus::OK : EQueryStatus::UNKNOWN_ERROR);
+                        statuses.insert(wrote ? EQueryStatus::Ok : EQueryStatus::UnknownError);
                         if (!wrote) {
                             continue;
                         }
                     }
                 } else {
                     // Not first interaction with disconnected device that has only errors - still disconnected
-                    if (statuses.count(EQueryStatus::UNKNOWN_ERROR) == statuses.size()) {
+                    if (statuses.count(EQueryStatus::UnknownError) == statuses.size()) {
                         continue;
                     }
                 }
             }
 
-            ExecuteQuery(query);
+            auto device = query->GetDevice();
+            device->Execute(query);
+
+            for (const auto & virtualRegister: query->VirtualRegisters) {
+                if (virtualRegister->IsChanged(EPublishData::Error)) {
+                    MaybeUpdateErrorState(virtualRegister);
+                }
+
+                if (!Has(virtualRegister->GetErrorState(), EErrorState::ReadError) && virtualRegister->ValueIsRead()) {
+                    ReadCallback(virtualRegister);
+                }
+
+                allAffectedRegisters.insert(virtualRegister);
+            }
             statuses.insert(query->GetStatus());
         }
 
-        querySet->SplitIfNeeded();
+        TIRDeviceQuerySetHandler::HandleQuerySetPostExecution(querySet);
+
+        // EXPL: A protocol register value that was read inside cycle expires at end of that cycle
+        for (const auto & virtualRegister: allAffectedRegisters) {
+            virtualRegister->InvalidateProtocolRegisterValues();
+        }
 
         MaybeFlushAvoidingPollStarvationButDontWait();
     });
@@ -319,7 +330,7 @@ void TSerialClient::Cycle()
 
         bool deviceWasDisconnected = device->GetIsDisconnected(); // don't move after device->OnCycleEnd(...);
         {
-            bool cycleFailed = statuses.count(EQueryStatus::UNKNOWN_ERROR) == statuses.size();
+            bool cycleFailed = statuses.count(EQueryStatus::UnknownError) == statuses.size();
             device->OnCycleEnd(!cycleFailed);
         }
 
@@ -349,21 +360,6 @@ bool TSerialClient::WriteSetupRegisters(PSerialDevice dev)
     return dev->WriteSetupRegisters();
 }
 
-void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
-{
-    GetHandler(reg)->SetTextValue(value);
-}
-
-std::string TSerialClient::GetTextValue(PRegister reg) const
-{
-    return GetHandler(reg)->TextValue();
-}
-
-bool TSerialClient::DidRead(PRegister reg) const
-{
-    return GetHandler(reg)->DidRead();
-}
-
 void TSerialClient::SetReadCallback(const TSerialClient::TReadCallback& callback)
 {
     ReadCallback = callback;
@@ -378,8 +374,6 @@ void TSerialClient::SetDebug(bool debug)
 {
     Debug = debug;
     Port->SetDebug(debug);
-    for (const auto& p: Handlers)
-        p.second->SetDebug(debug);
 }
 
 bool TSerialClient::DebugEnabled() const {
@@ -389,14 +383,6 @@ bool TSerialClient::DebugEnabled() const {
 void TSerialClient::NotifyFlushNeeded()
 {
     FlushNeeded->Signal();
-}
-
-PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
-{
-    auto it = Handlers.find(reg);
-    if (it == Handlers.end())
-        throw TSerialDeviceException("register not found");
-    return it->second;
 }
 
 void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
@@ -412,5 +398,8 @@ void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
 	if (Debug) {
 		std::cerr << "device " << dev->ToString() << " reconnected" << std::endl;
 	}
-	dev->ResetUnavailableAddresses();
+
+    for (const auto & virtualRegister: VirtualRegisters[dev]) {
+        virtualRegister->SetEnabled(true);
+    }
 }

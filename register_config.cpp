@@ -5,6 +5,96 @@
 using namespace std;
 
 
+const char* RegisterFormatName(ERegisterFormat fmt) {
+    switch (fmt) {
+    case AUTO:
+        return "AUTO";
+    case U8:
+        return "U8";
+    case S8:
+        return "S8";
+    case U16:
+        return "U16";
+    case S16:
+        return "S16";
+    case S24:
+        return "S24";
+    case U24:
+        return "U24";
+    case U32:
+        return "U32";
+    case S32:
+        return "S32";
+    case S64:
+        return "S64";
+    case U64:
+        return "U64";
+    case BCD8:
+        return "BCD8";
+    case BCD16:
+        return "BCD16";
+    case BCD24:
+        return "BCD24";
+    case BCD32:
+        return "BCD32";
+    case Float:
+        return "Float";
+    case Double:
+        return "Double";
+    case Char8:
+        return "Char8";
+    default:
+        return "<unknown register type>";
+    }
+}
+
+ERegisterFormat RegisterFormatFromName(const std::string& name) {
+    if (name == "s16")
+        return S16;
+    else if (name == "u8")
+        return U8;
+    else if (name == "s8")
+        return S8;
+    else if (name == "u24")
+        return U24;
+    else if (name == "s24")
+        return S24;
+    else if (name == "u32")
+        return U32;
+    else if (name == "s32")
+        return S32;
+    else if (name == "s64")
+        return S64;
+    else if (name == "u64")
+        return U64;
+    else if (name == "bcd8")
+        return BCD8;
+    else if (name == "bcd16")
+        return BCD16;
+    else if (name == "bcd24")
+        return BCD24;
+    else if (name == "bcd32")
+        return BCD32;
+    else if (name == "float")
+        return Float;
+    else if (name == "double")
+        return Double;
+    else if (name == "char8")
+        return Char8;
+    else
+        return U16; // FIXME!
+}
+
+EWordOrder WordOrderFromName(const std::string& name) {
+    if (name == "big_endian")
+        return EWordOrder::BigEndian;
+    else if (name == "little_endian")
+        return EWordOrder::LittleEndian;
+    else
+        return EWordOrder::BigEndian;
+}
+
+
 TRegisterConfig::TRegisterConfig(int type, int address,
             ERegisterFormat format, double scale, double offset,
             double round_to, bool poll, bool readonly,
@@ -19,20 +109,6 @@ TRegisterConfig::TRegisterConfig(int type, int address,
 {
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
-}
-
-PRegisterConfig TRegisterConfig::Create(int type = 0, int address = 0,
-                        ERegisterFormat format = U16, double scale = 1, double offset = 0,
-                        double round_to = 0, bool poll = true, bool readonly = false,
-                        const std::string& type_name = "",
-                        bool has_error_value = false,
-                        uint64_t error_value = 0,
-                        const EWordOrder word_order = EWordOrder::BigEndian,
-                        uint8_t bit_offset = 0, uint8_t bit_width = 0
-                        )
-{
-    return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
-                                        type_name, has_error_value, error_value, word_order, bit_offset, bit_width);
 }
 
 uint8_t TRegisterConfig::GetBitWidth() const {

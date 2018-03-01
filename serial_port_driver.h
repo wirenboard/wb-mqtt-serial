@@ -1,33 +1,26 @@
 #pragma once
 
-#include "virtual_register.h"
+#include "serial_config.h"
+#include "serial_client.h"
+
+#include <wbmqtt/mqtt_wrapper.h>
 
 #include <memory>
 #include <unordered_map>
-
-#include <wbmqtt/mqtt_wrapper.h>
-#include "serial_config.h"
-#include "serial_client.h"
-#include "register_handler.h"
 #include <chrono>
 
 
 struct TDeviceChannel : public TDeviceChannelConfig
 {
-    TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config, TVirtualRegister::TInitContext & context)
+    TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config, PAbstractVirtualRegister reg)
         : TDeviceChannelConfig(*config)
         , Device(device)
-    {
-        for (const auto &reg_config: config->RegisterConfigs) {
-            Registers.push_back(TVirtualRegister::Create(reg_config, device, context));
-        }
-    }
+        , Register(reg)
+    {}
 
     PSerialDevice Device;
-    std::vector<PVirtualRegister> Registers;
+    PAbstractVirtualRegister Register;
 };
-
-typedef std::shared_ptr<TDeviceChannel> PDeviceChannel;
 
 
 class TMQTTWrapper;
@@ -44,8 +37,8 @@ public:
     bool WriteInitValues();
 
 private:
-    bool NeedToPublish(const PVirtualRegister & reg, bool changed);
-    void OnValueRead(const PVirtualRegister & reg, bool changed);
+    bool NeedToPublish(const PVirtualRegister & reg);
+    void OnValueRead(const PVirtualRegister & reg);
     void UpdateError(const PVirtualRegister & reg);
 
     PMQTTClientBase MQTTClient;
@@ -54,9 +47,9 @@ private:
     PSerialClient SerialClient;
     std::vector<PSerialDevice> Devices;
 
-    std::unordered_map<PVirtualRegister, PDeviceChannel> RegisterToChannelMap;
-    std::unordered_map<PDeviceChannelConfig, std::vector<PVirtualRegister>> ChannelRegistersMap;
-    std::unordered_map<PVirtualRegister, std::chrono::time_point<std::chrono::steady_clock>> RegLastPublishTimeMap;
+    std::unordered_map<PAbstractVirtualRegister, PDeviceChannel> RegisterToChannelMap;
+    std::unordered_map<PDeviceChannelConfig, PAbstractVirtualRegister> ChannelRegisterMap;
+    std::unordered_map<PAbstractVirtualRegister, std::chrono::time_point<std::chrono::steady_clock>> RegLastPublishTimeMap;
     std::unordered_map<std::string, std::string> PublishedErrorMap;
     std::unordered_map<std::string, PDeviceChannel> NameToChannelMap;
 };

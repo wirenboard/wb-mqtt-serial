@@ -180,7 +180,7 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, u
     memcpy(payload, response + 6, size);
 }
 
-uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
+uint64_t TPulsarDevice::ReadDataRegister(const PProtocolRegister & reg)
 {
     // raw payload data
     uint8_t payload[sizeof (uint64_t)];
@@ -188,17 +188,19 @@ uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
     // form register mask from address
     uint32_t mask = 1 << reg->Address; // TODO: register range or something like this
 
+    auto byteCount = reg->GetUsedByteCount();
+
     // send data request and receive response
     WriteDataRequest(SlaveId, mask, RequestID);
-    ReadResponse(SlaveId, payload, reg->ByteWidth(), RequestID);
+    ReadResponse(SlaveId, payload, byteCount, RequestID);
 
     ++RequestID;
 
     // decode little-endian double64_t value
-    return ReadHex(payload, reg->ByteWidth(), false);
+    return ReadHex(payload, byteCount, false);
 }
 
-uint64_t TPulsarDevice::ReadSysTimeRegister(PRegister reg)
+uint64_t TPulsarDevice::ReadSysTimeRegister(const PProtocolRegister & reg)
 {
     // raw payload data
     uint8_t payload[6];
@@ -213,7 +215,7 @@ uint64_t TPulsarDevice::ReadSysTimeRegister(PRegister reg)
     return ReadHex(payload, sizeof (payload), false);
 }
 
-uint64_t TPulsarDevice::ReadRegister(PRegister reg)
+uint64_t TPulsarDevice::ReadProtocolRegister(const PProtocolRegister & reg)
 {
     Port()->SkipNoise();
 
@@ -221,13 +223,13 @@ uint64_t TPulsarDevice::ReadRegister(PRegister reg)
     case REG_DEFAULT:
         return ReadDataRegister(reg);
     case REG_SYSTIME: // TODO: think about return value
-        return ReadSysTimeRegister(reg);   
+        return ReadSysTimeRegister(reg);
     default:
         throw TSerialDeviceException("Pulsar protocol: wrong register type");
     }
 }
 
-void TPulsarDevice::WriteRegister(PRegister reg, uint64_t value)
+void TPulsarDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
 {
     throw TSerialDeviceException("Pulsar protocol: writing to registers is not supported");
 }

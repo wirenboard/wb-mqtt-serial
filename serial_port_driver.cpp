@@ -1,12 +1,15 @@
 #include "serial_port_driver.h"
 #include "serial_port.h"
 #include "tcp_port.h"
+#include "virtual_register.h"
+#include "virtual_register_set.h"
 
 #include <wbmqtt/utils.h>
 
 #include <algorithm>
 #include <sstream>
 #include <iostream>
+#include <cassert>
 
 
 TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig port_config,
@@ -27,13 +30,12 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
     SerialClient = std::make_shared<TSerialClient>(Port);
 
     SerialClient->SetDebug(Config->Debug);
-    SerialClient->SetReadCallback([this](const PVirtualRegister & reg, bool changed) {
-            OnValueRead(reg, changed);
-        });
-    SerialClient->SetErrorCallback(
-        [this](const PVirtualRegister & reg) {
-            UpdateError(reg);
-        });
+    SerialClient->SetReadCallback([this](const PVirtualRegister & reg) {
+        OnValueRead(reg);
+    });
+    SerialClient->SetErrorCallback([this](const PVirtualRegister & reg) {
+        UpdateError(reg);
+    });
 
     if (Config->Debug)
         std::cerr << "Setting up devices at " << port_config->ConnSettings->ToString() << std::endl;
@@ -45,18 +47,36 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
         auto device = SerialClient->CreateDevice(device_config);
         Devices.push_back(device);
 
-        // init channels' registers
         for (auto& channel_config: device_config->DeviceChannelConfigs) {
 
-            auto channel = std::make_shared<TDeviceChannel>(device, channel_config, context);
+            std::vector<PVirtualRegister> registers;
+            registers.reserve(channel_config->RegisterConfigs.size());
+
+            for (const auto &reg_config: channel_config->RegisterConfigs) {
+                registers.push_back(TVirtualRegister::Create(reg_config, device, context));
+            }
+
+            PAbstractVirtualRegister abstractRegister;
+            if (registers.size() == 1) {
+                abstractRegister = registers[0];
+            } else {
+                auto virtualRegisterSet = std::make_shared<TVirtualRegisterSet>(registers);
+
+                for (auto& reg: registers) {
+                    reg->AssociateWithSet(virtualRegisterSet);
+                }
+
+                abstractRegister = virtualRegisterSet;
+            }
+
+            auto channel = std::make_shared<TDeviceChannel>(device, channel_config, abstractRegister);
             NameToChannelMap[device_config->Id + "/" + channel->Name] = channel;
 
-            ChannelRegistersMap[channel] = std::vector<PRegister>();
+            ChannelRegisterMap[channel] = abstractRegister;
+            RegisterToChannelMap[abstractRegister] = channel;
 
-            for (auto& reg: channel->Registers) {
-                RegisterToChannelMap[reg] = channel;
+            for (auto& reg: registers) {
                 SerialClient->AddRegister(reg);
-                ChannelRegistersMap[channel].push_back(reg);
             }
         }
     }
@@ -118,37 +138,15 @@ bool TSerialPortDriver::HandleMessage(const std::string& topic, const std::strin
     if (it == NameToChannelMap.end())
         return false;
 
-    const auto& reglist = ChannelRegistersMap[it->second];
+    const auto& reg = ChannelRegisterMap[it->second];
 
-    std::vector<std::string> payload_items = StringSplit(payload, ';');
-
-    if (payload_items.size() != reglist.size()) {
+    try {
+        reg->SetTextValue(payload);
+    } catch (std::exception& err) {
         std::cerr << "warning: invalid payload for topic '" << topic <<
-            "': '" << payload << "'" << std::endl;
-        // here 'true' means that the message doesn't need to be passed
-        // to other port handlers
+            "': '" << payload << "' : " << err.what()  << std::endl;
+
         return true;
-    }
-
-    for (size_t i = 0; i < reglist.size(); ++i) {
-        PRegister reg = reglist[i];
-        if (Config->Debug)
-            std::cerr << "setting device register: " << reg->ToString() << " <- " <<
-                payload_items[i] << std::endl;
-
-        try {
-			SerialClient->SetTextValue(reg,
-				it->second->OnValue.empty() ? payload_items[i]
-                                       : (payload_items[i] == "1" ?  it->second->OnValue : "0")
-			);
-
-		} catch (std::exception& err) {
-			std::cerr << "warning: invalid payload for topic '" << topic <<
-				"': '" << payload << "' : " << err.what()  << std::endl;
-
-			return true;
-		}
-
     }
 
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
@@ -161,19 +159,21 @@ std::string TSerialPortDriver::GetChannelTopic(const TDeviceChannelConfig& chann
     return (controls_prefix + channel.Name);
 }
 
-bool TSerialPortDriver::NeedToPublish(const PVirtualRegister & reg, bool changed)
+bool TSerialPortDriver::NeedToPublish(const PVirtualRegister & reg)
 {
     // max_unchanged_interval = 0: always update, don't track last change time
     if (!Config->MaxUnchangedInterval)
         return true;
 
+    bool valueChanged = reg->IsChanged(EPublishData::Value);
+
     // max_unchanged_interval < 0: update if changed, don't track last change time
     if (Config->MaxUnchangedInterval < 0)
-        return changed;
+        return valueChanged;
 
     // max_unchanged_interval > 0: update if changed or the time interval is exceeded
     auto now = Port->CurrentTime();
-    if (changed) {
+    if (valueChanged) {
         RegLastPublishTimeMap[reg] = now;
         return true;
     }
@@ -194,43 +194,36 @@ bool TSerialPortDriver::NeedToPublish(const PVirtualRegister & reg, bool changed
     return true;
 }
 
-void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg, bool changed)
+void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
 {
-    auto it = RegisterToChannelMap.find(reg);
+    const auto & abstractRegister = reg->GetTopLevel();
+
+    auto it = RegisterToChannelMap.find(abstractRegister);
     if (it == RegisterToChannelMap.end()) {
         std::cerr << "warning: got unexpected register from serial client" << std::endl;
         return;
     }
 
-    const auto &reglist = it->second->Registers;
+    bool valueChanged = abstractRegister->IsChanged(EPublishData::Value);
+    bool valueIsRead = abstractRegister->ValueIsRead();
 
-    if (Config->Debug && changed)
+    assert(!valueChanged || valueIsRead);
+
+    if (!valueIsRead) {
+        return;
+    }
+
+    if (Config->Debug && valueChanged)
         std::cerr << "register value change: " << reg->ToString() << " <- " <<
             reg->GetTextValue() << std::endl;
 
-    if (!NeedToPublish(reg, changed))
+    if (!NeedToPublish(reg))
         return;
 
-    std::string payload;
-    if (!it->second->OnValue.empty()) {
-        payload = reg->GetTextValue() == it->second->OnValue ? "1" : "0";
-        if (Config->Debug)
-            std::cerr << "OnValue: " << it->second->OnValue << "; payload: " <<
-                payload << std::endl;
-    } else {
-        std::stringstream s;
-        for (size_t i = 0; i < reglist.size(); ++i) {
-            PRegister reg = reglist[i];
-            // avoid publishing incomplete value
-            if (!SerialClient->DidRead(reg))
-                return;
-            if (i)
-                s << ";";
-            s << SerialClient->GetTextValue(reg);
-        }
-        payload = s.str();
-        // check if there any errors in this Channel
-    }
+    const auto & payload = abstractRegister->GetTextValue();
+
+    if (Config->Debug && !reg->OnValue.empty())
+        std::cerr << "OnValue: " << reg->OnValue << "; payload: " << payload << std::endl;
 
     // Publish current value (make retained)
     if (Config->Debug)
@@ -243,31 +236,22 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg, bool changed)
 
 void TSerialPortDriver::UpdateError(const PVirtualRegister & reg)
 {
-    auto it = RegisterToChannelMap.find(reg);
+    const auto & abstractRegister = reg->GetTopLevel();
+
+    auto it = RegisterToChannelMap.find(abstractRegister);
     if (it == RegisterToChannelMap.end()) {
         std::cerr << "warning: got unexpected register from serial client" << std::endl;
         return;
     }
-    const auto &reglist = it->second->Registers;
 
-    bool readError = false, writeError = false;
-    for (auto r: reglist) {
-        switch (reg->GetErrorState()) {
-        case EErrorState::WriteError:
-            writeError = true;
-            break;
-        case EErrorState::ReadError:
-            readError = true;
-            break;
-        case EErrorState::ReadWriteError:
-            readError = writeError = true;
-            break;
-        default:
-            ; // make compiler happy
-        }
-    }
-    std::string errorStr = readError ? (writeError ? "rw" : "r") : (writeError ? "w" : ""),
-        errorTopic = GetChannelTopic(*it->second) + "/meta/error";
+    auto errorState = abstractRegister->GetErrorState();
+
+    bool readError  = Has(errorState, EErrorState::ReadError),
+         writeError = Has(errorState, EErrorState::WriteError);
+
+    std::string errorStr   = readError ? (writeError ? "rw" : "r") : (writeError ? "w" : ""),
+                errorTopic = GetChannelTopic(*it->second) + "/meta/error";
+
     auto errMapIt = PublishedErrorMap.find(errorTopic);
     if (errMapIt == PublishedErrorMap.end() || errMapIt->second != errorStr) {
         PublishedErrorMap[errorTopic] = errorStr;

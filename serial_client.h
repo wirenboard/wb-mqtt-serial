@@ -7,13 +7,12 @@
 
 #include "poll_plan.h"
 #include "serial_device.h"
-#include "register_handler.h"
 #include "binary_semaphore.h"
 
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
-    typedef std::function<void(PVirtualRegister reg, bool changed)> TReadCallback;
+    typedef std::function<void(PVirtualRegister reg)> TReadCallback;
     typedef std::function<void(PVirtualRegister reg)> TErrorCallback;
 
     TSerialClient(PPort port);
@@ -26,9 +25,6 @@ public:
     void Connect();
     void Disconnect();
     void Cycle();
-    void SetTextValue(PRegister reg, const std::string& value);
-    std::string GetTextValue(PRegister reg) const;
-    bool DidRead(PRegister reg) const;
     void SetReadCallback(const TReadCallback& callback);
     void SetErrorCallback(const TErrorCallback& callback);
     void SetDebug(bool debug);
@@ -42,19 +38,14 @@ private:
     void DoFlush();
     void WaitForPollAndFlush();
     void MaybeFlushAvoidingPollStarvationButDontWait();
-    void PollRange(PRegisterRange range);
-    void ExecuteQuery(const PIRDeviceQuery & query);
-    PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PVirtualRegister reg);
     void PrepareToAccessDevice(PSerialDevice dev);
     void OnDeviceReconnect(PSerialDevice dev);
-    void SplitRegisterRanges(std::set<PRegisterRange> &&);
 
     PPort Port;
-    TPSet<TVirtualRegister> VirtualRegisters;
-    std::unordered_map<PSerialDevice, std::set<PProtocolRegister, utils::ptr_cmp<TProtocolRegister>>> ProtocolRegisters;
+    std::unordered_map<PSerialDevice, TPUnorderedSet<PVirtualRegister>> VirtualRegisters;
+    std::unordered_map<PSerialDevice, TPSet<PProtocolRegister>> ProtocolRegisters;
     std::list<PSerialDevice> DevicesList; /* for EndPollCycle */
-    std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
     bool Active;
     int PollInterval;

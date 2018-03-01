@@ -16,8 +16,8 @@ public:
     };
 
     TPulsarDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
-    uint64_t ReadRegister(PRegister reg);
-    void WriteRegister(PRegister reg, uint64_t value);
+    uint64_t ReadProtocolRegister(const PProtocolRegister & reg) override;
+    void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value) override;
 
 private:
     void WriteBCD(uint64_t data, uint8_t *buffer, size_t size, bool big_endian = true);
@@ -32,9 +32,9 @@ private:
     void WriteSysTimeRequest(uint32_t addr, uint16_t id);
 
     void ReadResponse(uint32_t addr, uint8_t *payload, size_t size, uint16_t id);
-    
-    uint64_t ReadDataRegister(PRegister reg);
-    uint64_t ReadSysTimeRegister(PRegister reg);
+
+    uint64_t ReadDataRegister(const PProtocolRegister & reg);
+    uint64_t ReadSysTimeRegister(const PProtocolRegister & reg);
 
     uint16_t RequestID;
 };

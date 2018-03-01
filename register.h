@@ -22,22 +22,7 @@
 
 
 
-struct TRegisterType {
-    TRegisterType(int index, const std::string& name, const std::string& defaultControlType,
-                  ERegisterFormat defaultFormat = U16,
-                  bool read_only = false, EWordOrder defaultWordOrder = EWordOrder::BigEndian):
-        Index(index), Name(name), DefaultControlType(defaultControlType),
-        DefaultFormat(defaultFormat), DefaultWordOrder(defaultWordOrder), ReadOnly(read_only) {}
-    int Index;
-    std::string Name, DefaultControlType;
-    ERegisterFormat DefaultFormat;
-    EWordOrder DefaultWordOrder;
-    bool ReadOnly;
-};
 
-typedef std::vector<TRegisterType> TRegisterTypes;
-typedef std::map<std::string, TRegisterType> TRegisterTypeMap;
-typedef std::shared_ptr<TRegisterTypeMap> PRegisterTypeMap;
 
 
 
@@ -111,102 +96,7 @@ public:
 
 typedef std::vector<PRegister> TRegistersList;
 
-inline ::std::ostream& operator<<(::std::ostream& os, PRegisterConfig reg) {
-    return os << reg->ToString();
-}
 
-inline ::std::ostream& operator<<(::std::ostream& os, const TRegisterConfig& reg) {
-    return os << reg.ToString();
-}
-
-inline const char* RegisterFormatName(ERegisterFormat fmt) {
-    switch (fmt) {
-    case AUTO:
-        return "AUTO";
-    case U8:
-        return "U8";
-    case S8:
-        return "S8";
-    case U16:
-        return "U16";
-    case S16:
-        return "S16";
-    case S24:
-        return "S24";
-    case U24:
-        return "U24";
-    case U32:
-        return "U32";
-    case S32:
-        return "S32";
-    case S64:
-        return "S64";
-    case U64:
-        return "U64";
-    case BCD8:
-        return "BCD8";
-    case BCD16:
-        return "BCD16";
-    case BCD24:
-        return "BCD24";
-    case BCD32:
-        return "BCD32";
-    case Float:
-        return "Float";
-    case Double:
-        return "Double";
-    case Char8:
-        return "Char8";
-    default:
-        return "<unknown register type>";
-    }
-}
-
-inline ERegisterFormat RegisterFormatFromName(const std::string& name) {
-    if (name == "s16")
-        return S16;
-    else if (name == "u8")
-        return U8;
-    else if (name == "s8")
-        return S8;
-    else if (name == "u24")
-        return U24;
-    else if (name == "s24")
-        return S24;
-    else if (name == "u32")
-        return U32;
-    else if (name == "s32")
-        return S32;
-    else if (name == "s64")
-        return S64;
-    else if (name == "u64")
-        return U64;
-    else if (name == "bcd8")
-        return BCD8;
-    else if (name == "bcd16")
-        return BCD16;
-    else if (name == "bcd24")
-        return BCD24;
-    else if (name == "bcd32")
-        return BCD32;
-    else if (name == "float")
-        return Float;
-    else if (name == "double")
-        return Double;
-    else if (name == "char8")
-        return Char8;
-    else
-        return U16; // FIXME!
-}
-
-inline EWordOrder WordOrderFromName(const std::string& name) {
-    if (name == "big_endian")
-        return EWordOrder::BigEndian;
-    else if (name == "little_endian")
-        return EWordOrder::LittleEndian;
-    else
-        return EWordOrder::BigEndian;
-}
 
 
 class TRegisterRange {

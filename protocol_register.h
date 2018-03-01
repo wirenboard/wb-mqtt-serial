@@ -15,23 +15,26 @@ class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
     friend TIRDeviceValueQuery;
     friend TVirtualRegister;
 
-    TPWSet<TVirtualRegister> VirtualRegisters;
+    TPWUnorderedSet<PWVirtualRegister> VirtualRegisters;
     uint64_t Value; //  most recent value of register (from successful writes and reads)
+    bool     Enabled;
 
     PVirtualRegister AssociatedVirtualRegister() const;
+
+    void DisableIfNotUsed();
 
 public:
     using TRegisterCache = std::function<PProtocolRegister &(int)>; // address
 
-    uint32_t Address;
-    uint32_t Type;
+    const uint32_t Address;
+    const uint32_t Type;
 
     TProtocolRegister(uint32_t address, uint32_t type);
 
-    static TPMap<TProtocolRegister, TRegisterBindInfo> GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device, TRegisterCache && = TRegisterCache());
+    static TPMap<PProtocolRegister, TRegisterBindInfo> GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device, TRegisterCache && = TRegisterCache());
 
-    bool operator<(const TProtocolRegister &);
-    bool operator==(const TProtocolRegister &);
+    bool operator<(const TProtocolRegister &) const;
+    bool operator==(const TProtocolRegister &) const;
 
     void AssociateWith(const PVirtualRegister &);
     bool IsAssociatedWith(const PVirtualRegister &);
@@ -40,11 +43,13 @@ public:
     const std::string & GetTypeName() const;
 
     PSerialDevice GetDevice() const;
-    TPSet<TVirtualRegister> GetVirtualRegsiters() const;
+    TPUnorderedSet<PVirtualRegister> GetVirtualRegsiters() const;
+    uint8_t GetUsedByteCount() const;
 
-    void SetValueFromDevice(uint64_t value);
-    void SetValueFromClient(uint64_t value);
+    void SetReadValue(uint64_t value);
+    void SetWriteValue(uint64_t value);
+    void SetReadError(bool error = true);
+    void SetWriteError(bool error = true);
 
-private:
-    void NotifyErrorFromDevice();
+    bool IsEnabled() const;
 };

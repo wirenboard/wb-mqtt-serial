@@ -23,6 +23,11 @@ namespace {
 
 REGISTER_BASIC_INT_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
+uint16_t GetByteCount(const TIRDeviceQuery & query)
+{
+    return RegisterFormatByteWidth(Float) * query.GetCount();
+}
+
 TIVTMDevice::TIVTMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TIVTMDevice>>(device_config, port, protocol)
 {}
@@ -126,25 +131,23 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 }
 
 
-void TIVTMDevice::Read(const TIRDeviceQuery & query)
+uint64_t TIVTMDevice::ReadProtocolRegister(const PProtocolRegister & reg)
 {
     Port()->SkipNoise();
 
-    WriteCommand(SlaveId, query.GetStart(), query.GetByteWidth());
+    auto byteCount = reg->GetUsedByteCount();
+
+    WriteCommand(SlaveId, reg->Address, byteCount);
     uint8_t response[4];
-    ReadResponse(SlaveId, response, reg->ByteWidth());
+    ReadResponse(SlaveId, response, byteCount);
 
     uint8_t * p = response;//&response[(address % 2) * 4];
 
     // the response is little-endian. We inverse the byte order here to make it big-endian.
-
-    return (p[3] << 24) |
-           (p[2] << 16) |
-           (p[1] << 8) |
-           p[0];
+    return (p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0];
 }
 
-void TIVTMDevice::WriteRegister(PRegister, uint64_t)
+void TIVTMDevice::WriteProtocolRegister(const PProtocolRegister &, uint64_t)
 {
     throw TSerialDeviceException("IVTM protocol: writing register is not supported");
 }

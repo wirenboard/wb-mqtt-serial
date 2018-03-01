@@ -29,15 +29,15 @@ enum class EWordOrder {
 };
 
 enum class EQueryStatus {
-    OK,
-    UNKNOWN_ERROR,            // response from device either not parsed or not received at all (crc error, timeout)
-    DEVICE_TRANSIENT_ERROR,   // valid response from device, which reports error that can disappear over time by itself
-    DEVICE_PERMANENT_ERROR    // valid response from device, which reports error that cannot disappear by itself and driver needs to take actions in order to eliminate this error
+    Ok,
+    UnknownError,           // response from device either not parsed or not received at all (crc error, timeout)
+    DeviceTransientError,   // valid response from device, which reports error that can disappear over time by itself
+    DevicePermanentError    // valid response from device, which reports error that cannot disappear by itself and driver needs to take actions in order to eliminate this error
 };
 
 enum class EQueryOperation: uint8_t {
-    READ = 0,
-    WRITE
+    Read = 0,
+    Write
 };
 
 enum class EErrorState: uint8_t {
@@ -48,7 +48,36 @@ enum class EErrorState: uint8_t {
     UnknownErrorState   = 255
 };
 
-bool operator&(EErrorState, EErrorState);
+enum class EPublishData: uint8_t {
+    None            = 0x0,              // no publish needed
+    Value           = 0x1,              // only value needs to publish
+    Error           = 0x2,              // only error needs to publish
+    ValueAndError   = Value | Error     // both error and value needs to publish
+};
+
+template <typename T>
+bool Has(T a, T b)
+{
+    static_assert(std::is_enum<T>::value, "'Has' ment to be used with enums");
+
+    return static_cast<uint64_t>(a) & static_cast<uint64_t>(b);
+}
+
+template <typename T>
+void Add(T & a, T b)
+{
+    static_assert(std::is_enum<T>::value, "'Add' ment to be used with enums");
+
+    a = static_cast<T>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
+}
+
+template <typename T>
+void Remove(T & a, T b)
+{
+    static_assert(std::is_enum<T>::value, "'Add' ment to be used with enums");
+
+    a = static_cast<T>(static_cast<uint64_t>(a) & ~static_cast<uint64_t>(b));
+}
 
 std::ostream& operator<<(::std::ostream& os, EWordOrder val);
 
