@@ -8,21 +8,17 @@
 
 using namespace std;
 
-namespace
-{
-
-}
-
 void TIRDeviceQuerySetHandler::HandleQuerySetPostExecution(const PIRDeviceQuerySet & querySet)
 {
     DisableHolesIfNeeded(querySet);
     SplitByRegisterIfNeeded(querySet);
     DisableRegistersIfNeeded(querySet);
+    ResetQueriesStatuses(querySet);
 }
 
 void TIRDeviceQuerySetHandler::DisableHolesIfNeeded(const PIRDeviceQuerySet & querySet)
 {
-    static auto filter = [](const PIRDeviceQuery & query){
+    static auto condition = [](const PIRDeviceQuery & query){
         return query->GetStatus() == EQueryStatus::DevicePermanentError
             && query->VirtualRegisters.size() > 1
             && query->HasHoles;
@@ -31,7 +27,7 @@ void TIRDeviceQuerySetHandler::DisableHolesIfNeeded(const PIRDeviceQuerySet & qu
     for (auto itQuery = querySet->Queries.begin(); itQuery != querySet->Queries.end();) {
         const auto & query = *itQuery;
 
-        if (!filter(query)) {
+        if (!condition(query)) {
             ++itQuery; continue;
         }
 
@@ -51,7 +47,7 @@ void TIRDeviceQuerySetHandler::DisableHolesIfNeeded(const PIRDeviceQuerySet & qu
 
 void TIRDeviceQuerySetHandler::SplitByRegisterIfNeeded(const PIRDeviceQuerySet & querySet)
 {
-    static auto filter = [](const PIRDeviceQuery & query){
+    static auto condition = [](const PIRDeviceQuery & query){
         return query->GetStatus() == EQueryStatus::DevicePermanentError
             && query->VirtualRegisters.size() > 1
             && !query->HasHoles;
@@ -69,7 +65,7 @@ void TIRDeviceQuerySetHandler::SplitByRegisterIfNeeded(const PIRDeviceQuerySet &
     for (auto itQuery = querySet->Queries.begin(); itQuery != querySet->Queries.end();) {
         const auto & query = *itQuery;
 
-        if (!filter(query)) {
+        if (!condition(query)) {
             ++itQuery; continue;
         }
 
@@ -82,16 +78,23 @@ void TIRDeviceQuerySetHandler::SplitByRegisterIfNeeded(const PIRDeviceQuerySet &
 
 void TIRDeviceQuerySetHandler::DisableRegistersIfNeeded(const PIRDeviceQuerySet & querySet)
 {
-    static auto filter = [](const PIRDeviceQuery & query){
+    static auto condition = [](const PIRDeviceQuery & query){
         return query->GetStatus() == EQueryStatus::DevicePermanentError
             && query->VirtualRegisters.size() == 1;
     };
 
     for (const auto & query: querySet->Queries) {
-        if (!filter(query)) {
+        if (!condition(query)) {
             continue;
         }
 
         query->SetEnabledWithRegisters(false);
+    }
+}
+
+void TIRDeviceQuerySetHandler::ResetQueriesStatuses(const PIRDeviceQuerySet & querySet)
+{
+    for (const auto & query: querySet->Queries) {
+        query->SetStatus(EQueryStatus::Unknown);
     }
 }

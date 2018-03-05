@@ -1,9 +1,11 @@
 /* vim: set ts=4 sw=4: */
 
+#include "pulsar_device.h"
+#include "protocol_register.h"
+
 #include <cstring>
 #include <cstdlib>
 
-#include "pulsar_device.h"
 
 /* FIXME: move this to configuration file! */
 namespace {

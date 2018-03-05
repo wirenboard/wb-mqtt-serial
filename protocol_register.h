@@ -16,22 +16,16 @@ class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
     friend TVirtualRegister;
 
     TPWUnorderedSet<PWVirtualRegister> VirtualRegisters;
+
+public:
+    const uint32_t Address;
+    const uint32_t Type;
+private:
     uint64_t Value; //  most recent value of register (from successful writes and reads)
     bool     Enabled;
 
-    PVirtualRegister AssociatedVirtualRegister() const;
-
-    void DisableIfNotUsed();
-
 public:
-    using TRegisterCache = std::function<PProtocolRegister &(int)>; // address
-
-    const uint32_t Address;
-    const uint32_t Type;
-
     TProtocolRegister(uint32_t address, uint32_t type);
-
-    static TPMap<PProtocolRegister, TRegisterBindInfo> GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device, TRegisterCache && = TRegisterCache());
 
     bool operator<(const TProtocolRegister &) const;
     bool operator==(const TProtocolRegister &) const;
@@ -39,7 +33,6 @@ public:
     void AssociateWith(const PVirtualRegister &);
     bool IsAssociatedWith(const PVirtualRegister &);
 
-    std::set<TIntervalMs> GetPollIntervals() const;
     const std::string & GetTypeName() const;
 
     PSerialDevice GetDevice() const;
@@ -52,4 +45,10 @@ public:
     void SetWriteError(bool error = true);
 
     bool IsEnabled() const;
+
+    std::string Describe() const;
+
+private:
+    PVirtualRegister AssociatedVirtualRegister() const;
+    void DisableIfNotUsed();
 };

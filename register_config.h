@@ -5,6 +5,19 @@
 
 #include <map>
 
+struct TRegisterType {
+    TRegisterType(int index, const std::string& name, const std::string& defaultControlType,
+                  ERegisterFormat defaultFormat = U16,
+                  bool read_only = false, EWordOrder defaultWordOrder = EWordOrder::BigEndian):
+        Index(index), Name(name), DefaultControlType(defaultControlType),
+        DefaultFormat(defaultFormat), DefaultWordOrder(defaultWordOrder), ReadOnly(read_only) {}
+    int Index;
+    std::string Name, DefaultControlType;
+    ERegisterFormat DefaultFormat;
+    EWordOrder DefaultWordOrder;
+    bool ReadOnly;
+};
+
 using TRegisterTypeMap  = std::map<std::string, TRegisterType>;
 using PRegisterTypeMap  = std::shared_ptr<TRegisterTypeMap>;
 

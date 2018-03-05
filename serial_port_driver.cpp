@@ -232,6 +232,7 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
             " <-- " << payload << std::endl;
 
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
+    reg->NotifyPublished(EPublishData::Value);
 }
 
 void TSerialPortDriver::UpdateError(const PVirtualRegister & reg)
@@ -256,6 +257,7 @@ void TSerialPortDriver::UpdateError(const PVirtualRegister & reg)
     if (errMapIt == PublishedErrorMap.end() || errMapIt->second != errorStr) {
         PublishedErrorMap[errorTopic] = errorStr;
         MQTTClient->Publish(NULL, errorTopic, errorStr.c_str(), 0, true);
+        reg->NotifyPublished(EPublishData::Error);
     }
 }
 

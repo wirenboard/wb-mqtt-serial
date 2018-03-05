@@ -13,8 +13,8 @@ public:
 
     TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
 
-    uint64_t ReadRegister(PRegister reg) override;
-    void WriteRegister(PRegister reg, uint64_t value) override;
+    uint64_t ReadProtocolRegister(const PProtocolRegister & reg) override;
+    void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value) override;
     void OnCycleEnd(bool ok) override;
 
     void BlockReadFor(int addr, bool block);
@@ -23,7 +23,7 @@ public:
     void SetIsConnected(bool);
     ~TFakeSerialDevice();
 
-    uint16_t Registers[256] {};
+    uint64_t Registers[256] {};
 private:
     PFakeSerialPort FakePort;
     std::map<int, std::pair<bool, bool>> Blockings;

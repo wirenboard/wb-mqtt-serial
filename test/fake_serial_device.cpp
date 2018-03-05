@@ -1,33 +1,12 @@
 #include "fake_serial_device.h"
 #include "fake_serial_port.h"
+#include "protocol_register.h"
 
 using namespace std;
 
 REGISTER_BASIC_INT_PROTOCOL("fake", TFakeSerialDevice, TRegisterTypes({
-    { TFakeSerialDevice::REG_FAKE, "fake", "text", U16 },
+    { TFakeSerialDevice::REG_FAKE, "fake", "text", U64 },
 }));
-
-
-namespace //utility
-{
-    uint64_t GetValue(uint16_t* src, int width)
-    {
-        uint64_t res = 0;
-        for (int i = 0; i < width; ++i) {
-            auto bitCount = ((width - i) - 1) * 16;
-            res |= uint64_t(src[i]) << bitCount;
-        }
-        return res;
-    }
-
-    void SetValue(uint16_t* dst, int width, uint64_t value)
-    {
-        for (int p = width - 1; p >= 0; --p) {
-            dst[p] = value & 0xffff;
-            value >>= 16;
-        }
-    }
-};  //utility
 
 
 TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
@@ -40,11 +19,11 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
     }
 }
 
-uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
+uint64_t TFakeSerialDevice::ReadProtocolRegister(const PProtocolRegister & reg)
 {
     try {
         if (!Connected || FakePort->GetDoSimulateDisconnect()) {
-            throw TSerialDeviceTransientErrorException("device disconnected");
+            throw TSerialDeviceUnknownErrorException("device disconnected");
         }
 
         if(Blockings[reg->Address].first) {
@@ -59,7 +38,7 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
             throw runtime_error("invalid register type");
         }
 
-        auto value = GetValue(&Registers[reg->Address], reg->Width());
+        auto value = Registers[reg->Address];
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << value << "'";
 
@@ -71,11 +50,11 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
     }
 }
 
-void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
+void TFakeSerialDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
 {
     try {
         if (!Connected || FakePort->GetDoSimulateDisconnect()) {
-            throw TSerialDeviceTransientErrorException("device disconnected");
+            throw TSerialDeviceUnknownErrorException("device disconnected");
         }
 
         if(Blockings[reg->Address].second) {
@@ -90,7 +69,7 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
             throw runtime_error("invalid register type");
         }
 
-        SetValue(&Registers[reg->Address], reg->Width(), value);
+        Registers[reg->Address] = value;
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << value << "'";
     } catch (const exception & e) {

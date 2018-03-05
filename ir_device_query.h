@@ -37,7 +37,7 @@ public:
     uint32_t GetType() const;
     const std::string & GetTypeName() const;
     void SetValuesFromDevice(const std::vector<uint64_t> & values) const;
-    void SetStatus(EQueryStatus, bool propagate = true) const;
+    void SetStatus(EQueryStatus) const;
     EQueryStatus GetStatus() const;
 
     void SetEnabledWithRegisters(bool);
@@ -60,8 +60,9 @@ struct TIRDeviceValueQuery: TIRDeviceQuery
 {
     virtual void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const = 0;
     virtual void SetValue(size_t index, uint64_t value) = 0;
-    virtual void SetValue(const PProtocolRegister & reg, uint64_t value) = 0;
     virtual uint64_t GetValue(size_t index) const = 0;
+
+    void SetValue(const PProtocolRegister & reg, uint64_t value);
     void AcceptValues() const;
 
 protected:
@@ -88,11 +89,6 @@ struct TIRDeviceValueQueryImpl: TIRDeviceValueQuery
     {
         assert(index < Values.size());
         Values[index] = value;
-    }
-
-    void SetValue(const PProtocolRegister & reg, uint64_t value) override
-    {
-        SetValue(ProtocolRegisters.at(reg), value);
     }
 
     uint64_t GetValue(size_t index) const override

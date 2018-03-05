@@ -1,5 +1,5 @@
 #include "ivtm_device.h"
-#include "ir_device_query.h"
+#include "protocol_register.h"
 
 #include <errno.h>
 #include <string.h>
@@ -23,10 +23,6 @@ namespace {
 
 REGISTER_BASIC_INT_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
-uint16_t GetByteCount(const TIRDeviceQuery & query)
-{
-    return RegisterFormatByteWidth(Float) * query.GetCount();
-}
 
 TIVTMDevice::TIVTMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TIVTMDevice>>(device_config, port, protocol)
@@ -96,7 +92,7 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
             return size > 0 && buf[size - 1] == '\r';
         });
     if (nread < 10)
-        throw TSerialDeviceTransientErrorException("frame too short");
+        throw TSerialDeviceUnknownErrorException("frame too short");
 
     if ( (buf[0] != '!') || (buf[5] != 'R') || (buf[6] != 'R')) {
         throw TSerialDeviceTransientErrorException("invalid response header");
@@ -118,11 +114,11 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     uint8_t actualCrc = DecodeASCIIByte(&buf[nread-3]);
 
     if (crc8 != actualCrc)
-        throw TSerialDeviceTransientErrorException("invalid crc");
+        throw TSerialDeviceUnknownErrorException("invalid crc");
 
     int actualPayloadSize = nread - 10; // in ASCII symbols
     if (len * 2 != actualPayloadSize) {
-        throw TSerialDeviceTransientErrorException("unexpected frame size");
+        throw TSerialDeviceUnknownErrorException("unexpected frame size");
     } else {
         len = actualPayloadSize / 2;
     }

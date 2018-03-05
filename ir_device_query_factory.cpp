@@ -1,6 +1,8 @@
 #include "ir_device_query_factory.h"
 #include "ir_device_query.h"
 #include "serial_device.h"
+#include "protocol_register.h"
+#include "virtual_register.h"
 
 #include <iostream>
 #include <cassert>
@@ -58,6 +60,31 @@ namespace // utility
     }
 }
 
+map<TIntervalMs, vector<PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuerySets(const TPUnorderedSet<PVirtualRegister> & virtualRegisters, EQueryOperation operation)
+{
+    map<TIntervalMs, vector<PIRDeviceQuerySet>> querySetsByPollInterval;
+    {
+        unordered_map<int64_t, map<uint32_t, list<TPSet<PProtocolRegister>>>> protocolRegistersByTypeAndInterval;
+
+        for (const auto & virtualRegister: virtualRegisters) {
+            protocolRegistersByTypeAndInterval[virtualRegister->PollInterval.count()][virtualRegister->Type].push_back(virtualRegister->GetProtocolRegisters());
+        }
+
+        for (auto & pollIntervalTypesRegisters: protocolRegistersByTypeAndInterval) {
+            auto pollInterval = TIntervalMs(pollIntervalTypesRegisters.first);
+
+            for (auto & typeRegisters: pollIntervalTypesRegisters.second) {
+                auto & registers = typeRegisters.second;
+
+                const auto & querySet = std::make_shared<TIRDeviceQuerySet>(std::move(registers), operation);
+                querySetsByPollInterval[pollInterval].push_back(querySet);
+            }
+        }
+    }
+
+    return querySetsByPollInterval;
+}
+
 TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> && registerSets, bool enableHoles, EQueryOperation operation)
 {
     assert(!registerSets.empty());
@@ -96,9 +123,13 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
     }
     /** done gathering data **/
 
-    cerr << "merging sets" << endl;
+    if (Global::Debug)
+        cerr << "merging sets" << endl;
+
     MergeSets(registerSets, static_cast<uint32_t>(maxHole), static_cast<uint32_t>(maxRegs));
-    cerr << "merging sets done" << endl;
+
+    if (Global::Debug)
+        cerr << "merging sets done" << endl;
 
     TQueries result;
 
@@ -129,7 +160,10 @@ void TIRDeviceQueryFactory::MergeSets(list<TPSet<PProtocolRegister>> & registerS
     uint8_t Stage = HoleEliminate;
 
     while (Stage != Done) {
-        cerr << "begin " << (int)Stage << " stage" << endl;
+
+        if (Global::Debug)
+            cerr << "begin " << (int)Stage << " stage" << endl;
+
         for (auto itRegisterSet = registerSets.begin(); itRegisterSet != registerSets.end(); ++itRegisterSet) {
             auto & registerSet = *itRegisterSet;
             auto holeSize = GetMaxHoleSize(registerSet);
@@ -238,7 +272,9 @@ void TIRDeviceQueryFactory::MergeSets(list<TPSet<PProtocolRegister>> & registerS
             }
         }
 
-        cerr << "end " << (int)Stage << " stage" << endl;
+        if (Global::Debug)
+            cerr << "end " << (int)Stage << " stage" << endl;
+
         ++Stage;
     }
 }

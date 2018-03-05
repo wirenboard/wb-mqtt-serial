@@ -26,4 +26,9 @@ private:
      * if query has permanent error and associated with only one virtual register - disable it
      */
     static void DisableRegistersIfNeeded(const PIRDeviceQuerySet &);
+
+    /**
+     * reset statuses of queries (must run last)
+     */
+    static void ResetQueriesStatuses(const PIRDeviceQuerySet &);
 };

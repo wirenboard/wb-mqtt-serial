@@ -1,3 +1,6 @@
+#include "uniel_device.h"
+#include "protocol_register.h"
+
 #include <errno.h>
 #include <string.h>
 #include <sys/types.h>
@@ -9,8 +12,6 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <iostream>
-
-#include "uniel_device.h"
 
 namespace {
     enum {
@@ -67,7 +68,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         }
 
         if (Port()->ReadByte() != s)
-            throw TSerialDeviceTransientErrorException("uniel: warning: checksum failure");
+            throw TSerialDeviceUnknownErrorException("uniel: warning: checksum failure");
 
         break;
     }

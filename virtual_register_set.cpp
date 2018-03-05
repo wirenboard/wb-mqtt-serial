@@ -54,7 +54,7 @@ void TVirtualRegisterSet::SetTextValue(const string & value)
     for (size_t i = 0; i < valueCount; ++i) {
         const auto & virtualRegister = VirtualRegisters[i];
 
-        if (true) {  // TODO: only in debug
+        if (Global::Debug) {
             std::cerr << "setting device register: " << virtualRegister->ToString() << " <- " <<
                 textValues[i] << std::endl;
         }

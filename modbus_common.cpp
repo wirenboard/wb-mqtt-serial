@@ -59,11 +59,6 @@ namespace   // general utilities
     }
 
     // returns true if multi write needs to be done
-    inline bool IsPacking(PProtocolRegister reg)
-    {
-        return reg->Type == Modbus::REG_HOLDING_MULTI;
-    }
-
     inline bool IsPacking(const TIRDeviceQuery & query)
     {
         return (query.GetType() == Modbus::REG_HOLDING_MULTI) ||
@@ -715,10 +710,6 @@ namespace ModbusRTU // modbus rtu protocol utilities
     void Read(const PPort & port, uint8_t slaveId, const TIRDeviceQuery & query, int shift)
     {
         auto config = query.GetDevice()->DeviceConfig();
-        // in case if connection error occures right after modbus error
-        // (probability of which is very low, but still),
-        // we need to clear any modbus errors from previous cycle
-        query.SetStatus(EQueryStatus::Ok);
 
         if (port->Debug())
             cerr << "modbus: read " << query.Describe() << endl;
@@ -768,7 +759,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
             exception_message = e.what();
         }
 
-        if (query.GetStatus() == EQueryStatus::Ok) {
+        if (query.GetStatus() == EQueryStatus::Unknown) {
             query.SetStatus(EQueryStatus::UnknownError);
         }
 
@@ -838,7 +829,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
             exception_message += e.what();
         }
 
-        if (query.GetStatus() == EQueryStatus::Ok) {
+        if (query.GetStatus() == EQueryStatus::Unknown) {
             query.SetStatus(EQueryStatus::UnknownError);
         }
 

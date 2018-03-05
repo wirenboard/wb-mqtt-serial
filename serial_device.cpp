@@ -1,6 +1,8 @@
 #include "serial_device.h"
 #include "ir_device_query.h"
 #include "virtual_register.h"
+#include "protocol_register_factory.h"
+#include "protocol_register.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -10,7 +12,7 @@
 TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
     : TDeviceSetupItemConfig(*config)
 {
-    const auto & protocolRegisters = TProtocolRegister::GenerateProtocolRegisters(config->RegisterConfig, device);
+    const auto & protocolRegisters = TProtocolRegisterFactory::GenerateProtocolRegisters(config->RegisterConfig, device);
 
     TIRDeviceQuerySet querySet({ GetKeysAsSet(protocolRegisters) }, EQueryOperation::Write);
     assert(querySet.Queries.size() == 1);

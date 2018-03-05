@@ -1,11 +1,11 @@
 #pragma once
 
+#include "global_variables.h"
 #include "types.h"
 
 #include <chrono>
 #include <memory>
 #include <list>
-
 
 class IProtocol;
 class TSerialDevice;
@@ -20,35 +20,6 @@ struct TIRDeviceQuery;
 struct TIRDeviceValueQuery;
 struct TProtocolInfo;
 struct TDeviceChannel;
-
-/* protocol register - local bit shifts for virtual register */ //TODO: move somewhere else
-struct TRegisterBindInfo
-{
-    enum EReadState {NotRead, ReadOk, ReadError};
-
-    uint8_t     BitStart,
-                BitEnd;
-    EReadState  IsRead = NotRead;
-
-    inline uint8_t BitCount() const
-    {
-        return BitEnd - BitStart;
-    }
-};
-
-struct TRegisterType {
-    TRegisterType(int index, const std::string& name, const std::string& defaultControlType,
-                  ERegisterFormat defaultFormat = U16,
-                  bool read_only = false, EWordOrder defaultWordOrder = EWordOrder::BigEndian):
-        Index(index), Name(name), DefaultControlType(defaultControlType),
-        DefaultFormat(defaultFormat), DefaultWordOrder(defaultWordOrder), ReadOnly(read_only) {}
-    int Index;
-    std::string Name, DefaultControlType;
-    ERegisterFormat DefaultFormat;
-    EWordOrder DefaultWordOrder;
-    bool ReadOnly;
-};
-
 
 using TTimePoint                = std::chrono::steady_clock::time_point;
 using TIntervalMs               = std::chrono::milliseconds;

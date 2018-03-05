@@ -1,5 +1,6 @@
 #pragma once
 
+#include "protocol_register_bind_info.h"
 #include "abstract_virtual_register.h"
 #include "register_config.h"
 #include "utils.h"
@@ -20,7 +21,7 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
 
     PWVirtualRegisterSet                        VirtualRegisterSet;
     PWSerialDevice                              Device;
-    TPMap<PProtocolRegister, TRegisterBindInfo> ProtocolRegisters;
+    TPMap<PProtocolRegister, TProtocolRegisterBindInfo> ProtocolRegisters;
     PBinarySemaphore                            FlushNeeded;
     std::atomic<uint64_t>                       ValueToWrite;
     uint64_t                                    CurrentValue;
@@ -30,7 +31,6 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
     uint8_t                                     ProtocolRegisterWidth;
     uint8_t                                     ReadRegistersCount;     // optimization
     bool                                        ValueWasAccepted;
-    mutable bool                                IsRead;                 // optimization
     bool                                        Enabled;
     std::atomic_bool                            Dirty;
 
@@ -42,13 +42,12 @@ public:
     /**
      * Build resulting value from protocol registers' values according to binding info
      */
-    static uint64_t MapValueFrom(const TPSet<PProtocolRegister> &, const std::vector<TRegisterBindInfo> &);
-    static uint64_t MapValueFrom(const TPMap<PProtocolRegister, TRegisterBindInfo> &);
+    static uint64_t MapValueFrom(const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> &);
 
     /**
      * Split given value and set to protocol registers according to binding info
      */
-    static void MapValueTo(const PIRDeviceValueQuery &, const TPMap<PProtocolRegister, TRegisterBindInfo> &, uint64_t);
+    static void MapValueTo(const PIRDeviceValueQuery &, const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> &, uint64_t);
 
     /**
      * Returns hash that can be used by unordered_* containers
@@ -68,7 +67,7 @@ public:
     void InvalidateProtocolRegisterValues();
     bool IsChanged(EPublishData) const;
     bool NeedToFlush() const;
-    bool Flush();
+    void Flush();
 
     void AssociateWithSet(const PVirtualRegisterSet & virtualRegisterSet);
 
@@ -85,13 +84,11 @@ public:
     void SetEnabled(bool);
 
 private:
-    static void MapValueFromIteration(const PProtocolRegister &, const TRegisterBindInfo &, uint64_t &, uint8_t &);
-
     TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device, TInitContext & context);
 
     uint64_t ComposeValue() const;
 
-    bool AcceptDeviceValue(bool & changed, bool ok);
+    void AcceptDeviceValue(bool ok);
 
     uint32_t GetBitPosition() const;
     uint8_t GetBitSize() const;
@@ -100,8 +97,8 @@ private:
 
     void AssociateWithProtocolRegisters();
 
-    bool UpdateReadError(bool error);
-    bool UpdateWriteError(bool error);
+    void UpdateReadError(bool error);
+    void UpdateWriteError(bool error);
 
     bool NotifyRead(const PProtocolRegister &, bool ok);
     bool NotifyWrite(const PProtocolRegister &, bool ok);

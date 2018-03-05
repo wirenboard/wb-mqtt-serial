@@ -1,11 +1,10 @@
+#include "serial_observer.h"
+
 #include <iostream>
 #include <cstdio>
 #include <getopt.h>
 #include <unistd.h>
 #include <mosquittopp.h>
-
-#include "serial_observer.h"
-#include "serial_device.h"
 
 using namespace std;
 
@@ -30,6 +29,7 @@ int main(int argc, char *argv[])
         switch (c) {
         case 'd':
             debug = true;
+            Global::Debug = true;
             break;
         case 'c':
             config_fname = optarg;

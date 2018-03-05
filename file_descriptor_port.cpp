@@ -98,7 +98,7 @@ uint8_t TFileDescriptorPort::ReadByte()
     CheckPortOpen();
 
     if (!Select(Settings->ResponseTimeout)) {
-        throw TSerialDeviceTransientErrorException("timeout");
+        throw TSerialDeviceUnknownErrorException("timeout");
     }
 
     uint8_t b;
@@ -177,7 +177,7 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
     }
 
     if (!nread) {
-        throw TSerialDeviceTransientErrorException("request timed out");
+        throw TSerialDeviceUnknownErrorException("request timed out");
     }
 
     if (Debug()) {

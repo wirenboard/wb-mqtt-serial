@@ -29,7 +29,8 @@ enum class EWordOrder {
 };
 
 enum class EQueryStatus {
-    Ok,
+    Unknown,                // query wasn't yet executed in this cycle
+    Ok,                     // exec is ok
     UnknownError,           // response from device either not parsed or not received at all (crc error, timeout)
     DeviceTransientError,   // valid response from device, which reports error that can disappear over time by itself
     DevicePermanentError    // valid response from device, which reports error that cannot disappear by itself and driver needs to take actions in order to eliminate this error
@@ -42,16 +43,16 @@ enum class EQueryOperation: uint8_t {
 
 enum class EErrorState: uint8_t {
     NoError             = 0x0,
-    WriteError          = 0x1,
-    ReadError           = 0x2,
+    WriteError          = 0x1 << 0,
+    ReadError           = 0x1 << 1,
     ReadWriteError      = ReadError | WriteError,
-    UnknownErrorState   = 255
+    UnknownErrorState   = 0x1 << 2
 };
 
 enum class EPublishData: uint8_t {
     None            = 0x0,              // no publish needed
-    Value           = 0x1,              // only value needs to publish
-    Error           = 0x2,              // only error needs to publish
+    Value           = 0x1 << 0,         // only value needs to publish
+    Error           = 0x1 << 1,         // only error needs to publish
     ValueAndError   = Value | Error     // both error and value needs to publish
 };
 

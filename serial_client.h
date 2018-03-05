@@ -8,6 +8,7 @@
 #include "poll_plan.h"
 #include "serial_device.h"
 #include "binary_semaphore.h"
+#include "utils.h"
 
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
@@ -44,7 +45,6 @@ private:
 
     PPort Port;
     std::unordered_map<PSerialDevice, TPUnorderedSet<PVirtualRegister>> VirtualRegisters;
-    std::unordered_map<PSerialDevice, TPSet<PProtocolRegister>> ProtocolRegisters;
     std::list<PSerialDevice> DevicesList; /* for EndPollCycle */
 
     bool Active;

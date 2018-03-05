@@ -1,10 +1,10 @@
+#include "mercury200_device.h"
+#include "protocol_register.h"
+#include "bcd_utils.h"
+#include "crc16.h"
+
 #include <cstdint>
 #include <chrono>
-
-#include "crc16.h"
-#include "serial_device.h"
-#include "mercury200_device.h"
-#include "bcd_utils.h"
 
 namespace
 {

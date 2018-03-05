@@ -1,7 +1,9 @@
+#include "mercury230_device.h"
+#include "protocol_register.h"
+#include "crc16.h"
+
 #include <cassert>
 #include <iostream>
-#include "mercury230_device.h"
-#include "crc16.h"
 
 REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
             { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },

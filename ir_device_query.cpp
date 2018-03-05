@@ -53,7 +53,7 @@ TIRDeviceQuery::TIRDeviceQuery(const TPSet<PProtocolRegister> & registerSet, EQu
     , VirtualRegisters(GetVirtualRegisters(registerSet))
     , HasHoles(DetectHoles(registerSet))
     , Operation(operation)
-    , Status(EQueryStatus::Ok)
+    , Status(EQueryStatus::Unknown)
 {
     assert(!ProtocolRegisters.empty());
 }
@@ -110,19 +110,18 @@ void TIRDeviceQuery::SetValuesFromDevice(const std::vector<uint64_t> & values) c
     }
 }
 
-void TIRDeviceQuery::SetStatus(EQueryStatus status, bool propagate) const
+void TIRDeviceQuery::SetStatus(EQueryStatus status) const
 {
     Status = status;
 
-    if (propagate) {
-        bool error = Status != EQueryStatus::Ok;
+    if (Status != EQueryStatus::Unknown && Status != EQueryStatus::Ok) {
         if (Operation == EQueryOperation::Read) {
             for (const auto & regIndex: ProtocolRegisters) {
-                regIndex.first->SetReadError(error);
+                regIndex.first->SetReadError();
             }
         } else if (Operation == EQueryOperation::Write) {
             for (const auto & regIndex: ProtocolRegisters) {
-                regIndex.first->SetWriteError(error);
+                regIndex.first->SetWriteError();
             }
         }
     }
@@ -167,6 +166,14 @@ string TIRDeviceQuery::Describe() const
     return ss.str();
 }
 
+void TIRDeviceValueQuery::SetValue(const PProtocolRegister & reg, uint64_t value)
+{
+    auto itRegIndex = ProtocolRegisters.find(reg);
+    if (itRegIndex != ProtocolRegisters.end()) {
+        SetValue(itRegIndex->second, value);
+    }
+}
+
 void TIRDeviceValueQuery::AcceptValues() const
 {
     IterRegisterValues([this](TProtocolRegister & reg, uint64_t value) {
@@ -191,7 +198,7 @@ TIRDeviceQuerySet::TIRDeviceQuerySet(list<TPSet<PProtocolRegister>> && registerS
 {
     Queries = TIRDeviceQueryFactory::GenerateQueries(move(registerSets), true, operation);
 
-    if (true) { // TODO: only in debug
+    if (Global::Debug) {
         cerr << "Initialized query set: " << Describe() << endl;
     }
 
@@ -206,40 +213,3 @@ PSerialDevice TIRDeviceQuerySet::GetDevice() const
 
     return query->GetDevice();
 }
-
-// void TIRDeviceQuerySet::SetValue(const PProtocolRegister & reg, uint64_t value)
-// {
-//     auto searchQuery = make_shared<TIRDeviceQuery>(TPSet<PProtocolRegister>{reg});
-
-//     auto itQuery = Queries.find(searchQuery);
-
-//     assert(itQuery != Queries.end());
-
-//     auto query = dynamic_pointer_cast<TIRDeviceValueQuery>(*itQuery);
-
-//     assert(query);
-
-//     query->SetValue(reg, value);
-// }
-
-// void TIRDeviceQuerySet::AddQuery(const PEntry & query)
-// {
-//     const auto & insertionResult = Queries.insert(query);
-
-//     bool inserted = insertionResult.second;
-//     assert(inserted);
-// }
-
-// void TIRDeviceQuerySet::AddRegister(const PProtocolRegister & reg)
-// {
-//     assert(reg->GetDevice() == Device);
-
-//     auto searchQuery = make_shared<TIRDeviceQuery>(reg);
-
-//     const auto & itQuery = Queries.lower_bound(searchQuery);
-
-//     if (itQuery != Queries.end()) {
-
-//     }
-
-// }
