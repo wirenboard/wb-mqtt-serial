@@ -1,5 +1,5 @@
 #include "ir_device_query_factory.h"
-#include "ir_device_query.h"
+#include "ir_device_value_query_impl.h"
 #include "serial_device.h"
 #include "protocol_register.h"
 #include "virtual_register.h"
@@ -25,6 +25,11 @@ namespace // utility
         }
 
         return hole;
+    }
+
+    uint32_t GetIntervalSize(const TPSet<PProtocolRegister> & registerSet)
+    {
+        return (*registerSet.rbegin())->Address - (*registerSet.begin())->Address + 1;
     }
 
     bool IsReadOperation(EQueryOperation operation)
@@ -85,7 +90,7 @@ map<TIntervalMs, vector<PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuery
     return querySetsByPollInterval;
 }
 
-TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> && registerSets, bool enableHoles, EQueryOperation operation)
+TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation operation, EQueryGenerationPolicy policy)
 {
     assert(!registerSets.empty());
     assert(!registerSets.front().empty());
@@ -102,6 +107,9 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
     const auto & addQuery = isRead ? AddQuery<TIRDeviceQuery>
                                    : singleBitType ? AddQuery<TIRDeviceSingleBitQuery>
                                                    : AddQuery<TIRDevice64BitQuery>;
+
+    const bool performMerge = (policy == Minify || policy == NoHoles),
+               enableHoles  = (policy == Minify);
 
     const int maxHole = enableHoles ? (singleBitType ? deviceConfig->MaxBitHole
                                                      : deviceConfig->MaxRegHole)
@@ -126,7 +134,11 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
     if (Global::Debug)
         cerr << "merging sets" << endl;
 
-    MergeSets(registerSets, static_cast<uint32_t>(maxHole), static_cast<uint32_t>(maxRegs));
+    if (performMerge) {
+        MergeSets(registerSets, static_cast<uint32_t>(maxHole), static_cast<uint32_t>(maxRegs));
+    } else {
+        CheckSets(registerSets, static_cast<uint32_t>(maxHole), static_cast<uint32_t>(maxRegs));
+    }
 
     if (Global::Debug)
         cerr << "merging sets done" << endl;
@@ -140,6 +152,19 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
     assert(!result.empty());
 
     return result;
+}
+
+void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PProtocolRegister>> & registerSets, uint32_t maxHole, uint32_t maxRegs)
+{
+    for (const auto & registerSet: registerSets) {
+        if (GetMaxHoleSize(registerSet) > maxHole) {
+            throw TSerialDeviceException("unable to create queries for given register configuration: max hole count exceeded");
+        }
+
+        if (GetIntervalSize(registerSet) > maxRegs) {
+            throw TSerialDeviceException("unable to create queries for given register configuration: max reg count exceeded");
+        }
+    }
 }
 
 /**

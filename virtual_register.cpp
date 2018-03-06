@@ -233,10 +233,10 @@ TVirtualRegister::TVirtualRegister(const PRegisterConfig & config, const PSerial
     , WriteQuery(nullptr)
     , ErrorState(EErrorState::UnknownErrorState)
     , ChangedPublishData(EPublishData::None)
-    , ReadRegistersCount(0)
-    , ValueWasAccepted(false)
-    , Enabled(true)
     , Dirty(false)
+    , Enabled(true)
+    , ValueIsRead(false)
+    , ValueWasAccepted(false)
 {
     const auto & regType = device->Protocol()->GetRegTypes()->at(TypeName);
 
@@ -273,23 +273,25 @@ uint8_t TVirtualRegister::GetBitSize() const
     return RegisterFormatByteWidth(Format) * 8;
 }
 
-uint8_t TVirtualRegister::GetUsedBitCount(const PProtocolRegister & reg) const
+const TProtocolRegisterBindInfo & TVirtualRegister::GetBindInfo(const PProtocolRegister & reg) const
 {
     try {
-        return ProtocolRegisters.at(reg).BitCount();
+        return ProtocolRegisters.at(reg);
     } catch (out_of_range &) {
-        return 0;
+        throw runtime_error("Invariant violation: TVirtualRegister::GetBindInfo must be called only with associated protocol register");
     }
 }
 
 uint64_t TVirtualRegister::ComposeValue() const
 {
+    assert(ValueIsRead);
+
     return MapValueFrom(ProtocolRegisters);
 }
 
 void TVirtualRegister::AcceptDeviceValue(bool ok)
 {
-    assert(ValueIsRead());
+    assert(GetValueIsRead());
 
     if (!NeedToPoll()) {
         return;
@@ -465,28 +467,10 @@ bool TVirtualRegister::IsEnabled() const
 
 void TVirtualRegister::SetEnabled(bool enabled)
 {
-    swap(Enabled, enabled);
+    Enabled = enabled;
 
-    if (Enabled != enabled) {
-        if (Enabled) {
-
-            if (Global::Debug) {
-                cerr << "re-enabled register: " << Describe() << endl;
-            }
-
-            for (const auto & regIndex: ProtocolRegisters) {
-                regIndex.first->Enabled = true;
-            }
-        } else {
-
-            if (Global::Debug) {
-                cerr << "disabled register: " << Describe() << endl;
-            }
-
-            for (const auto & regIndex: ProtocolRegisters) {
-                regIndex.first->DisableIfNotUsed();
-            }
-        }
+    if (Global::Debug) {
+        cerr << (Enabled ? "re-enabled" : "disabled") << " register: " << ToString() << endl;
     }
 }
 
@@ -519,24 +503,22 @@ void TVirtualRegister::AssociateWithProtocolRegisters()
     }
 }
 
-bool TVirtualRegister::ValueIsRead() const
+bool TVirtualRegister::GetValueIsRead() const
 {
-    return ReadRegistersCount == ProtocolRegisters.size();
+    return ValueIsRead;
 }
 
 void TVirtualRegister::InvalidateProtocolRegisterValues()
 {
-    for (auto & registerBindInfo: ProtocolRegisters) {
-        registerBindInfo.second.IsRead = TProtocolRegisterBindInfo::NotRead;
-    }
-    ReadRegistersCount = 0;
+    ValueIsRead = false;
 }
 
 void TVirtualRegister::UpdateReadError(bool error)
 {
+    EErrorState before = ErrorState;
+
     Remove(ErrorState, EErrorState::UnknownErrorState);
 
-    EErrorState before = ErrorState;
     if (error) {
         Add(ErrorState, EErrorState::ReadError);
     } else {
@@ -553,9 +535,10 @@ void TVirtualRegister::UpdateReadError(bool error)
 
 void TVirtualRegister::UpdateWriteError(bool error)
 {
+    EErrorState before = ErrorState;
+
     Remove(ErrorState, EErrorState::UnknownErrorState);
 
-    EErrorState before = ErrorState;
     if (error) {
         Add(ErrorState, EErrorState::WriteError);
     } else {
@@ -570,49 +553,26 @@ void TVirtualRegister::UpdateWriteError(bool error)
     }
 }
 
-bool TVirtualRegister::NotifyRead(const PProtocolRegister & reg, bool ok)
+void TVirtualRegister::NotifyRead(bool ok)
 {
     if (Global::Debug) {
-        cerr << "NotifyRead from: " << reg->Describe() << ": " << (ok ? "OK" : "ERROR") << endl;
-    }
-
-    const auto & itProtocolRegisterBindInfo = ProtocolRegisters.find(reg);
-
-    if (itProtocolRegisterBindInfo == ProtocolRegisters.end()) {
-        return false;
+        cerr << "NotifyRead for: " << ToString() << ": " << (ok ? "OK" : "ERROR") << endl;
     }
 
     if (!NeedToPoll()) {
-        return true;
+        return;
     }
 
-    auto & bindInfo = itProtocolRegisterBindInfo->second;
+    assert(!ValueIsRead);
 
-    if (bindInfo.IsRead == TProtocolRegisterBindInfo::NotRead) {
-        bindInfo.IsRead = ok ? TProtocolRegisterBindInfo::ReadOk : TProtocolRegisterBindInfo::ReadError;
-        if (ok) {
-            ++ReadRegistersCount;
-            if (ValueIsRead()) {
-                AcceptDeviceValue(ok);
-                return true;
-            }
-        }
-    }
+    ValueIsRead = true;
 
-    UpdateReadError(!ok);
-
-    return true;
+    AcceptDeviceValue(ok);
 }
 
-bool TVirtualRegister::NotifyWrite(const PProtocolRegister & reg, bool ok)
+void TVirtualRegister::NotifyWrite(bool ok)
 {
-    if (!ProtocolRegisters.count(reg)) {
-        return false;
-    }
-
     UpdateWriteError(!ok);
-
-    return true;
 }
 
 PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const PSerialDevice & device, TInitContext & context)
@@ -631,8 +591,6 @@ uint64_t TVirtualRegister::MapValueFrom(const TPMap<PProtocolRegister, TProtocol
     for (const auto & protocolRegisterBindInfo: registersBindInfo) {
         const auto & protocolRegister = protocolRegisterBindInfo.first;
         const auto & bindInfo = protocolRegisterBindInfo.second;
-
-        assert(bindInfo.IsRead);
 
         auto mask = MersenneNumber(bindInfo.BitCount());
         value |= ((mask & (protocolRegister->Value >> bindInfo.BitStart)) << bitPosition);

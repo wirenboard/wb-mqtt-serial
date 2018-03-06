@@ -92,7 +92,7 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
             return size > 0 && buf[size - 1] == '\r';
         });
     if (nread < 10)
-        throw TSerialDeviceUnknownErrorException("frame too short");
+        throw TSerialDeviceTransientErrorException("frame too short");
 
     if ( (buf[0] != '!') || (buf[5] != 'R') || (buf[6] != 'R')) {
         throw TSerialDeviceTransientErrorException("invalid response header");
@@ -114,11 +114,11 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     uint8_t actualCrc = DecodeASCIIByte(&buf[nread-3]);
 
     if (crc8 != actualCrc)
-        throw TSerialDeviceUnknownErrorException("invalid crc");
+        throw TSerialDeviceTransientErrorException("invalid crc");
 
     int actualPayloadSize = nread - 10; // in ASCII symbols
     if (len * 2 != actualPayloadSize) {
-        throw TSerialDeviceUnknownErrorException("unexpected frame size");
+        throw TSerialDeviceTransientErrorException("unexpected frame size");
     } else {
         len = actualPayloadSize / 2;
     }

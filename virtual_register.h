@@ -17,7 +17,8 @@
  */
 class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterConfig, public std::enable_shared_from_this<TVirtualRegister>
 {
-    friend TProtocolRegister;
+    friend TIRDeviceQuery;
+    friend TIRDeviceValueQuery;
 
     PWVirtualRegisterSet                        VirtualRegisterSet;
     PWSerialDevice                              Device;
@@ -29,10 +30,10 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
     EErrorState                                 ErrorState;
     EPublishData                                ChangedPublishData;
     uint8_t                                     ProtocolRegisterWidth;
-    uint8_t                                     ReadRegistersCount;     // optimization
-    bool                                        ValueWasAccepted;
-    bool                                        Enabled;
     std::atomic_bool                            Dirty;
+    bool                                        Enabled : 1;
+    bool                                        ValueIsRead : 1;
+    bool                                        ValueWasAccepted : 1;
 
 public:
     using TInitContext = std::map<std::pair<PSerialDevice, uint64_t>, PProtocolRegister>;
@@ -63,7 +64,7 @@ public:
     std::string Describe() const;
     void SetTextValue(const std::string & value);
     bool NeedToPoll() const;
-    bool ValueIsRead() const;
+    bool GetValueIsRead() const;
     void InvalidateProtocolRegisterValues();
     bool IsChanged(EPublishData) const;
     bool NeedToFlush() const;
@@ -83,6 +84,8 @@ public:
     bool IsEnabled() const;
     void SetEnabled(bool);
 
+    const TProtocolRegisterBindInfo & GetBindInfo(const PProtocolRegister & reg) const;
+
 private:
     TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device, TInitContext & context);
 
@@ -93,13 +96,11 @@ private:
     uint32_t GetBitPosition() const;
     uint8_t GetBitSize() const;
 
-    uint8_t GetUsedBitCount(const PProtocolRegister & reg) const;
-
     void AssociateWithProtocolRegisters();
 
     void UpdateReadError(bool error);
     void UpdateWriteError(bool error);
 
-    bool NotifyRead(const PProtocolRegister &, bool ok);
-    bool NotifyWrite(const PProtocolRegister &, bool ok);
+    void NotifyRead(bool ok);
+    void NotifyWrite(bool ok);
 };

@@ -249,14 +249,16 @@ void TSerialClient::Cycle()
             auto device = query->GetDevice();
             device->Execute(query);
 
-            assert(query->GetStatus() != EQueryStatus::Unknown);
+            assert(query->GetStatus() != EQueryStatus::NotExecuted);
 
             for (const auto & virtualRegister: query->VirtualRegisters) {
                 if (virtualRegister->IsChanged(EPublishData::Error)) {
                     MaybeUpdateErrorState(virtualRegister);
                 }
 
-                if (!Has(virtualRegister->GetErrorState(), EErrorState::ReadError) && virtualRegister->ValueIsRead()) {
+                assert(virtualRegister->GetValueIsRead());
+
+                if (!Has(virtualRegister->GetErrorState(), EErrorState::ReadError)) {
                     ReadCallback(virtualRegister);
                 }
 
@@ -267,7 +269,9 @@ void TSerialClient::Cycle()
 
         TIRDeviceQuerySetHandler::HandleQuerySetPostExecution(querySet);
 
-        // EXPL: A protocol register value that was read inside cycle expires at end of that cycle
+        /**
+         * EXPL: A protocol register value that was read inside cycle expires at end of that cycle
+         */
         for (const auto & virtualRegister: allAffectedRegisters) {
             virtualRegister->InvalidateProtocolRegisterValues();
         }

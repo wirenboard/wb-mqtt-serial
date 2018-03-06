@@ -16,6 +16,6 @@ public:
     std::string GetTextValue() const override;
     void SetTextValue(const std::string &) override;
     EErrorState GetErrorState() const override;
-    bool ValueIsRead() const override;
+    bool GetValueIsRead() const override;
     bool IsChanged(EPublishData) const override;
 };

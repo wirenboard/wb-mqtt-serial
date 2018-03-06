@@ -103,9 +103,15 @@ public:
 protected:
     void SleepGuardInterval() const;
 
+    /**
+     * Override these methods if protocol supports multiple read / write
+     */
     virtual void Read(const TIRDeviceQuery &);
     virtual void Write(const TIRDeviceValueQuery &);
 
+    /**
+     * Override these methods if protocol supports only single register read / write
+     */
     virtual uint64_t ReadProtocolRegister(const PProtocolRegister & reg);
     virtual void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value);
 

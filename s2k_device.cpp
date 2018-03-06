@@ -101,7 +101,7 @@ void TS2KDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t v
         throw TSerialDeviceTransientErrorException("incorrect response for 0x15 command");
     }
     if (response[5] != CrcS2K(response, 5)) {
-        throw TSerialDeviceUnknownErrorException("bad CRC for 0x15 command");
+        throw TSerialDeviceTransientErrorException("bad CRC for 0x15 command");
     }
     RelayState[response[3]] = response[4];
 }
@@ -145,7 +145,7 @@ uint64_t TS2KDevice::ReadProtocolRegister(const PProtocolRegister & reg)
             throw TSerialDeviceTransientErrorException("incorrect response for 0x5 command");
         }
         if (response[5] != CrcS2K(response, 5)){
-            throw TSerialDeviceUnknownErrorException("bad CRC for 0x5 command");
+            throw TSerialDeviceTransientErrorException("bad CRC for 0x5 command");
         }
         return response[4];
     }

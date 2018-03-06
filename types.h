@@ -29,10 +29,10 @@ enum class EWordOrder {
 };
 
 enum class EQueryStatus {
-    Unknown,                // query wasn't yet executed in this cycle
+    NotExecuted,            // query wasn't yet executed in this cycle
     Ok,                     // exec is ok
-    UnknownError,           // response from device either not parsed or not received at all (crc error, timeout)
-    DeviceTransientError,   // valid response from device, which reports error that can disappear over time by itself
+    UnknownError,           // response from device not received at all (timeout)
+    DeviceTransientError,   // valid or invalid response from device, which reports error that can disappear over time by itself (crc error)
     DevicePermanentError    // valid response from device, which reports error that cannot disappear by itself and driver needs to take actions in order to eliminate this error
 };
 

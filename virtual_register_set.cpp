@@ -74,10 +74,10 @@ EErrorState TVirtualRegisterSet::GetErrorState() const
     return result;
 }
 
-bool TVirtualRegisterSet::ValueIsRead() const
+bool TVirtualRegisterSet::GetValueIsRead() const
 {
     return all_of(VirtualRegisters.begin(), VirtualRegisters.end(), [](const PVirtualRegister & virtualRegister){
-        return virtualRegister->ValueIsRead();
+        return virtualRegister->GetValueIsRead();
     });
 }
 

@@ -205,7 +205,7 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
     }
 
     bool valueChanged = abstractRegister->IsChanged(EPublishData::Value);
-    bool valueIsRead = abstractRegister->ValueIsRead();
+    bool valueIsRead = abstractRegister->GetValueIsRead();
 
     assert(!valueChanged || valueIsRead);
 

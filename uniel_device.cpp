@@ -68,7 +68,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         }
 
         if (Port()->ReadByte() != s)
-            throw TSerialDeviceUnknownErrorException("uniel: warning: checksum failure");
+            throw TSerialDeviceTransientErrorException("uniel: warning: checksum failure");
 
         break;
     }

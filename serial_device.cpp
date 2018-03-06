@@ -79,15 +79,35 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
 {
     assert(query);
 
-    switch(query->Operation) {
-        case EQueryOperation::Read:
-            return Read(*query);
+    try {
+        try {
+            switch(query->Operation) {
+                case EQueryOperation::Read:
+                    return Read(*query);
 
-        case EQueryOperation::Write:
-            return Write(query->As<TIRDeviceValueQuery>());
+                case EQueryOperation::Write:
+                    return Write(query->As<TIRDeviceValueQuery>());
 
-        default:
-            break;
+                default:
+                    throw TSerialDeviceException("unsupported query operation");
+            }
+
+            if (!query->IsExecuted()) {
+                throw TSerialDeviceUnknownErrorException("query was not executed");
+            }
+
+        } catch (const std::exception & e) {
+            std::ios::fmtflags f(std::cerr.flags());
+            std::cerr << "TSerialDevice::Execute(): failed to execute " << query->DescribeOperation() << " query " << query->Describe() << " of device " << ToString() << ": " << e.what() << std::endl;
+            std::cerr.flags(f);
+            throw;
+        }
+    } catch (const TSerialDeviceTransientErrorException & e) {
+        query->SetStatus(EQueryStatus::DeviceTransientError);
+    } catch (const TSerialDevicePermanentErrorException & e) {
+        query->SetStatus(EQueryStatus::DevicePermanentError);
+    } catch (const TSerialDeviceUnknownErrorException & e) {
+        query->SetStatus(EQueryStatus::UnknownError);
     }
 }
 
@@ -111,24 +131,7 @@ void TSerialDevice::Read(const TIRDeviceQuery & query)
 
     SleepGuardInterval();
 
-    try {
-        try {
-            reg->SetReadValue(ReadProtocolRegister(reg));
-            query.SetStatus(EQueryStatus::Ok);
-        } catch (std::exception & e) {
-            std::ios::fmtflags f(std::cerr.flags());
-            std::cerr << "TSerialDevice::Read(): warning: " << e.what() << " [slave_id is "
-                      << ToString() + "]" << std::endl;
-            std::cerr.flags(f);
-            throw;
-        }
-    } catch (const TSerialDeviceTransientErrorException & e) {
-        query.SetStatus(EQueryStatus::DeviceTransientError);
-    } catch (const TSerialDevicePermanentErrorException & e) {
-        query.SetStatus(EQueryStatus::DevicePermanentError);
-    } catch (const TSerialDeviceUnknownErrorException & e) {
-        query.SetStatus(EQueryStatus::UnknownError);
-    }
+    query.FinalizeRead(ReadProtocolRegister(reg));
 }
 
 void TSerialDevice::Write(const TIRDeviceValueQuery & query)
@@ -140,25 +143,8 @@ void TSerialDevice::Write(const TIRDeviceValueQuery & query)
 
     SleepGuardInterval();
 
-    try {
-        try {
-            WriteProtocolRegister(reg, value);
-            reg->SetWriteValue(value);
-            query.SetStatus(EQueryStatus::Ok);
-        } catch (std::exception & e) {
-            std::ios::fmtflags f(std::cerr.flags());
-            std::cerr << "TSerialDevice::Write(): warning: " << e.what() << " [slave_id is "
-                      << ToString() + "]" << std::endl;
-            std::cerr.flags(f);
-            throw;
-        }
-    } catch (const TSerialDeviceTransientErrorException & e) {
-        query.SetStatus(EQueryStatus::DeviceTransientError);
-    } catch (const TSerialDevicePermanentErrorException & e) {
-        query.SetStatus(EQueryStatus::DevicePermanentError);
-    } catch (const TSerialDeviceUnknownErrorException & e) {
-        query.SetStatus(EQueryStatus::UnknownError);
-    }
+    WriteProtocolRegister(reg, value);
+    query.FinalizeWrite();
 }
 
 uint64_t TSerialDevice::ReadProtocolRegister(const PProtocolRegister & reg)
@@ -171,40 +157,7 @@ void TSerialDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_
     throw TSerialDeviceException("WriteProtocolRegister is not implemented");
 }
 
-
 void TSerialDevice::EndPollCycle() {}
-
-// void TSerialDevice::ReadRegisterRange(PRegisterRange range)
-// {
-//     PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
-//     if (!simple_range)
-//         throw std::runtime_error("simple range expected");
-//     simple_range->Reset();
-//     for (auto reg: simple_range->RegisterList()) {
-//         if (UnavailableAddresses.count(reg->Address)) {
-//         	continue;
-//         }
-//     	try {
-//             if (DeviceConfig()->GuardInterval.count()){
-//                 Port()->Sleep(DeviceConfig()->GuardInterval);
-//             }
-//             simple_range->SetValue(reg, ReadRegister(reg));
-//         } catch (const TSerialDeviceTransientErrorException& e) {
-//             simple_range->SetError(reg);
-//             std::ios::fmtflags f(std::cerr.flags());
-//             std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-//                       << reg->GetDevice()->ToString() + "]" << std::endl;
-//             std::cerr.flags(f);
-//         } catch (const TSerialDevicePermanentErrorException& e) {
-//         	UnavailableAddresses.insert(reg->Address);
-//         	simple_range->SetError(reg);
-// 			std::ios::fmtflags f(std::cerr.flags());
-// 			std::cerr << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-// 					  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported" << std::endl;
-// 			std::cerr.flags(f);
-//         }
-//     }
-// }
 
 void TSerialDevice::OnCycleEnd(bool ok)
 {
@@ -229,8 +182,10 @@ void TSerialDevice::OnCycleEnd(bool ok)
         if ((std::chrono::steady_clock::now() - LastSuccessfulCycle > _DeviceConfig->DeviceTimeout) &&
             RemainingFailCycles == 0)
         {
-            IsDisconnected = true;
-            std::cerr << "device " << ToString() << " disconnected" << std::endl;
+            if (!IsDisconnected) {
+                IsDisconnected = true;
+                std::cerr << "device " << ToString() << " disconnected" << std::endl;
+            }
         }
     }
 }

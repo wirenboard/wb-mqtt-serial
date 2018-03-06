@@ -10,7 +10,7 @@ TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t type)
     : Address(address)
     , Type(type)
     , Value(0)
-    , Enabled(true)
+    , UsedBitCount(0)
 {}
 
 bool TProtocolRegister::operator<(const TProtocolRegister & rhs) const
@@ -38,8 +38,18 @@ void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
     bool inserted = VirtualRegisters.insert(reg).second;
 
     if (!inserted) {
-        throw TSerialDeviceException("register instersection at " + reg->ToString());
+        throw TSerialDeviceException("register collision at " + reg->ToString());
     }
+
+    /**
+     * Find out how many bytes we have to read to cover all bits required by virtual registers
+     *  thus, if, for instance, there is single virtual register that uses 1 last bit (64th),
+     *  we'll have to read all 8 bytes in order to fill that single bit
+     */
+
+    const auto & bindInfo = reg->GetBindInfo(const_pointer_cast<TProtocolRegister>(shared_from_this()));
+
+    UsedBitCount = max(UsedBitCount, bindInfo.BitEnd);
 }
 
 bool TProtocolRegister::IsAssociatedWith(const PVirtualRegister & reg)
@@ -80,17 +90,7 @@ TPUnorderedSet<PVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
 
 uint8_t TProtocolRegister::GetUsedByteCount() const
 {
-    uint8_t bitCount = 0;
-
-    for (const auto & virtualRegister: VirtualRegisters) {
-        const auto & locked = virtualRegister.lock();
-
-        assert(locked);
-
-        bitCount = max(bitCount, locked->GetUsedBitCount(const_pointer_cast<TProtocolRegister>(shared_from_this())));
-    }
-
-    return BitCountToByteCount(bitCount);
+    return BitCountToByteCount(UsedBitCount);
 }
 
 PVirtualRegister TProtocolRegister::AssociatedVirtualRegister() const
@@ -104,72 +104,9 @@ PVirtualRegister TProtocolRegister::AssociatedVirtualRegister() const
     return virtualReg;
 }
 
-void TProtocolRegister::DisableIfNotUsed()
-{
-    bool used = false;
-
-    for (const auto & reg: VirtualRegisters) {
-        auto virtualRegister = reg.lock();
-
-        if (!virtualRegister) {
-            continue;
-        }
-
-        used |= virtualRegister->IsEnabled();
-
-        if (used) {
-            break;
-        }
-    }
-
-    if (!used) {
-        Enabled = false;    // no need to notify associated virtual registers - they are all already disabled
-    }
-}
-
-void TProtocolRegister::SetReadValue(uint64_t value)
+void TProtocolRegister::SetValue(uint64_t value)
 {
     Value = value;
-
-    SetReadError(false);
-}
-
-void TProtocolRegister::SetWriteValue(uint64_t value)
-{
-    Value = value;
-
-    SetWriteError(false);
-}
-
-void TProtocolRegister::SetReadError(bool error)
-{
-    for (const auto & virtualRegister: VirtualRegisters) {
-        const auto & reg = virtualRegister.lock();
-
-        assert(reg);
-
-        bool found = reg->NotifyRead(shared_from_this(), !error);
-
-        assert(found);
-    }
-}
-
-void TProtocolRegister::SetWriteError(bool error)
-{
-    for (const auto & virtualRegister: VirtualRegisters) {
-        const auto & reg = virtualRegister.lock();
-
-        assert(reg);
-
-        bool found = reg->NotifyWrite(shared_from_this(), !error);
-
-        assert(found);
-    }
-}
-
-bool TProtocolRegister::IsEnabled() const
-{
-    return Enabled;
 }
 
 std::string TProtocolRegister::Describe() const

@@ -69,105 +69,11 @@ namespace   // general utilities
     {
         return (type == Modbus::REG_COIL) || (type == Modbus::REG_DISCRETE);
     }
-
-    inline EQueryStatus ToQueryStatus(Modbus::ModbusError errorCode)
-    {
-        switch (errorCode) {
-            case Modbus::ERR_NONE:
-                return EQueryStatus::Ok;
-            case Modbus::ERR_ILLEGAL_DATA_ADDRESS:
-            case Modbus::ERR_ILLEGAL_DATA_VALUE:
-            case Modbus::ERR_ILLEGAL_FUNCTION:
-                return EQueryStatus::DevicePermanentError;
-            default:
-                return EQueryStatus::DeviceTransientError;
-        }
-    }
 }   // general utilities
 
 
 namespace Modbus    // modbus protocol common utilities
 {
-    // TModbusRegisterRange::TModbusRegisterRange(const list<PProtocolRegister>& regs, bool hasHoles)
-    //     : TRegisterRange(regs)
-    //     , HasHoles(hasHoles)
-    // {
-    //     if (regs.empty()) // shouldn't happen
-    //         throw runtime_error("cannot construct empty register range");
-
-    //     Start = (*regs.begin())->Address;
-    //     Count = regs.size();
-    //     if (Count > (IsSingleBitType(Type()) ? MAX_READ_BITS : MAX_READ_REGISTERS))
-    //         throw runtime_error("Modbus register range too large");
-    // }
-
-    // void TModbusRegisterRange::MapRange(TValueCallback value_callback, TErrorCallback error_callback)
-    // {
-    //     if (Error) {
-    //         for (auto reg: RegisterList())
-    //             error_callback(reg);
-    //         return;
-    //     }
-    //     if (IsSingleBitType(Type())) {
-    //         if (!Bits)
-    //             throw runtime_error("bits not loaded");
-    //         for (auto reg: RegisterList()) {
-    //             if (reg->Address - Start >= Count)
-    //                 throw runtime_error("address out of range");
-    //             value_callback(reg, Bits[reg->Address - Start]);
-    //         }
-    //         return;
-    //     }
-
-    //     if (!Words)
-    //         throw runtime_error("words not loaded");
-    //     for (auto reg: RegisterList()) {
-    //         if (reg->Address - Start >= Count)
-    //             throw runtime_error("address out of range");
-    //         value_callback(reg, Words[reg->Address - Start]);
-    //     }
-    // }
-
-    // TRegisterRange::EStatus TModbusRegisterRange::GetStatus() const
-    // {
-    //     // any modbus error means successful response read
-    //     return ModbusErrorCode == ERR_NONE ? (Error ? ST_UNKNOWN_ERROR : ST_OK) : ST_DEVICE_ERROR;
-    // }
-
-    // bool TModbusRegisterRange::NeedsSplit() const
-    // {
-    //     switch (ModbusErrorCode) {
-    //     case ERR_ILLEGAL_DATA_ADDRESS:
-    //     case ERR_ILLEGAL_DATA_VALUE:
-    //         return HasHoles;
-    //     default:
-    //         return false;
-    //     }
-    // }
-
-    // TModbusRegisterRange::~TModbusRegisterRange() {
-    //     if (Bits)
-    //         delete[] Bits;
-    //     if (Words)
-    //         delete[] Words;
-    // }
-
-    // uint8_t* TModbusRegisterRange::GetBits() {
-    //     if (!IsSingleBitType(Type()))
-    //         throw runtime_error("GetBits() for non-bit register");
-    //     if (!Bits)
-    //         Bits = new uint8_t[Count];
-    //     return Bits;
-    // }
-
-    // uint16_t* TModbusRegisterRange::GetWords() {
-    //     if (IsSingleBitType(Type()))
-    //         throw runtime_error("GetWords() for non-word register");
-    //     if (!Words)
-    //         Words = new uint16_t[Count];
-    //     return Words;
-    // }
-
     bool TModbusProtocolInfo::IsSingleBitType(int type) const
     {
         return ::IsSingleBitType(type);
@@ -305,12 +211,15 @@ namespace Modbus    // modbus protocol common utilities
             return; // not an error
         case ERR_ILLEGAL_FUNCTION:
             message = "illegal function";
+            is_transient = false;
             break;
         case ERR_ILLEGAL_DATA_ADDRESS:
             message = "illegal data address";
+            is_transient = false;
             break;
         case ERR_ILLEGAL_DATA_VALUE:
             message = "illegal data value";
+            is_transient = false;
             break;
         case ERR_SERVER_DEVICE_FAILURE:
             message = "server device failure";
@@ -389,7 +298,7 @@ namespace Modbus    // modbus protocol common utilities
     }
 
     // fills pdu with write request data according to Modbus specification
-    void ComposeMultipleWriteRequestPDU(uint8_t* pdu, const TIRDeviceQuery & query, int shift)
+    void ComposeMultipleWriteRequestPDU(uint8_t* pdu, const TIRDeviceValueQuery & query, int shift)
     {
         pdu[0] = GetFunction(query);
 
@@ -401,27 +310,19 @@ namespace Modbus    // modbus protocol common utilities
         pdu[5] = byteCount;
 
         if (IsSingleBitType(query.GetType())) {
-            const auto & valueQuery = query.As<TIRDeviceSingleBitQuery>();
-            const auto bitCount = min(valueQuery.GetCount(), 8u);
+            const auto bitCount = min(query.GetCount(), 8u);
 
             for (uint32_t iByte = 0; iByte < byteCount; ++iByte) {
                 bitset<8> coils;
                 for (uint32_t iBit = iByte * 8; iBit < bitCount; ++iBit) {
-                    coils[iBit] = valueQuery.Values[iBit];
+                    coils[iBit] = query.GetValue(iBit);
                 }
                 pdu[6 + iByte] = static_cast<uint8_t>(coils.to_ulong());
             }
         } else {
-            const auto & valueQuery = query.As<TIRDevice64BitQuery>();
-            uint32_t i = 0;
-            for (const auto & value: valueQuery.Values) {
-                WriteAs2Bytes(pdu + 6 + i * 2, value & 0xffff); ++i;
+            for (uint32_t i = 0; i < query.GetCount(); ++i) {
+                WriteAs2Bytes(pdu + 6 + i * 2, query.GetValue(i) & 0xffff);
             }
-
-            // for (int p = query.GetCount() - 1; p >= 0; --p) {
-            //     WriteAs2Bytes(pdu + 6 + p * 2, value & 0xffff);
-            //     value >>= 16;
-            // }
         }
     }
 
@@ -466,7 +367,6 @@ namespace Modbus    // modbus protocol common utilities
     void ParseReadResponse(const uint8_t* pdu, const TIRDeviceQuery & query)
     {
         auto exception_code = GetExceptionCode(pdu);
-        query.SetStatus(ToQueryStatus(static_cast<ModbusError>(exception_code)));
         ThrowIfModbusException(exception_code);
 
         CheckReadResponse(pdu, query);
@@ -498,7 +398,7 @@ namespace Modbus    // modbus protocol common utilities
             }
         }
 
-        query.SetValuesFromDevice(values);
+        query.FinalizeRead(values);
     }
 
     // checks modbus response on write
@@ -508,68 +408,6 @@ namespace Modbus    // modbus protocol common utilities
 
         CheckWriteResponse(reqPDU, resPDU);
     }
-
-    // list<PRegisterRange> SplitRegisterList(const list<PRegister> & reg_list, PDeviceConfig deviceConfig, bool debug, bool enableHoles)
-    // {
-    //     list<PRegisterRange> r;
-    //     if (reg_list.empty())
-    //         return r;
-
-    //     list<PRegister> l;
-    //     int prev_start = -1, prev_type = -1, prev_end = -1;
-    //     chrono::milliseconds prev_interval;
-    //     int max_hole = enableHoles ? (IsSingleBitType(reg_list.front()->Type) ? deviceConfig->MaxBitHole : deviceConfig->MaxRegHole) : 0;
-    //     int max_regs;
-
-    //     if (IsSingleBitType(reg_list.front()->Type)) {
-    //         max_regs = MAX_READ_BITS;
-    //     } else {
-    //         if ((deviceConfig->MaxReadRegisters > 0) && (deviceConfig->MaxReadRegisters <= MAX_READ_REGISTERS)) {
-    //             max_regs = deviceConfig->MaxReadRegisters;
-    //         } else {
-    //             max_regs = MAX_READ_REGISTERS;
-    //         }
-    //     }
-
-    //     bool hasHoles = false;
-    //     for (auto reg: reg_list) {
-    //         int new_end = reg->Address + reg->Width();
-    //         if (!(prev_end >= 0 &&
-    //             reg->Type == prev_type &&
-    //             reg->Address >= prev_end &&
-    //             reg->Address <= prev_end + max_hole &&
-    //             reg->PollInterval == prev_interval &&
-    //             new_end - prev_start <= max_regs)) {
-    //             if (!l.empty()) {
-    //                 auto range = make_shared<TModbusRegisterRange>(l, hasHoles);
-    //                 hasHoles = false;
-    //                 if (debug)
-    //                     cerr << "Adding range: " << range->GetCount() << " " <<
-    //                         range->TypeName() << "(s) @ " << range->GetStart() <<
-    //                         " of device " << range->Device()->ToString() << endl;
-    //                 r.push_back(range);
-    //                 l.clear();
-    //             }
-    //             prev_start = reg->Address;
-    //             prev_type = reg->Type;
-    //             prev_interval = reg->PollInterval;
-    //         }
-    //         if (!l.empty()) {
-    //             hasHoles |= (reg->Address != prev_end);
-    //         }
-    //         l.push_back(reg);
-    //         prev_end = new_end;
-    //     }
-    //     if (!l.empty()) {
-    //         auto range = make_shared<TModbusRegisterRange>(l, hasHoles);
-    //         if (debug)
-    //             cerr << "Adding range: " << range->GetCount() << " " <<
-    //                 range->TypeName() << "(s) @ " << range->GetStart() <<
-    //                 " of device " << range->Device()->ToString() << endl;
-    //         r.push_back(range);
-    //     }
-    //     return r;
-    // }
 
     chrono::microseconds GetFrameTimeout(int baudRate)
     {
@@ -644,7 +482,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         WriteAs2Bytes(&req[6], CRC16::CalculateCRC16(req.data(), 6));
     }
 
-    void ComposeWriteRequests(vector<TWriteRequest> & requests, const TIRDeviceQuery & query, uint8_t slaveId, int shift)
+    void ComposeWriteRequests(vector<TWriteRequest> & requests, const TIRDeviceValueQuery & query, uint8_t slaveId, int shift)
     {
         requests.reserve(Modbus::InferWriteRequestsCount(query));
 
@@ -719,24 +557,72 @@ namespace ModbusRTU // modbus rtu protocol utilities
         }
 
         string exception_message;
-        try {
-            TReadRequest request;
+        TReadRequest request;
 
-            {   // Send request
-                ComposeReadRequest(request, query, slaveId, shift);
-                port->WriteBytes(request.data(), request.size());
+        {   // Send request
+            ComposeReadRequest(request, query, slaveId, shift);
+            port->WriteBytes(request.data(), request.size());
+        }
+
+        {   // Receive response
+            auto byte_count = InferReadResponseSize(query);
+            TReadResponse response(byte_count);
+            auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
+
+            auto rc = port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size()));
+            if (rc > 0) {
+                try {
+                    ModbusRTU::CheckResponse(request, response);
+                    Modbus::ParseReadResponse(PDU(response), query);
+                } catch (const TInvalidCRCError &) {
+                    try {
+                        port->SkipNoise();
+                    } catch (const exception & e) {
+                        cerr << "SkipNoise failed: " << e.what() << endl;
+                    }
+                    throw;
+                } catch (const TMalformedResponseError &) {
+                    try {
+                        port->SkipNoise();
+                    } catch (const exception & e) {
+                        cerr << "SkipNoise failed: " << e.what() << endl;
+                    }
+                    throw;
+                }
+                return;
+            }
+        }
+    }
+
+    void Write(const PPort & port, uint8_t slaveId, const TIRDeviceValueQuery & query, int shift)
+    {
+        auto config = query.GetDevice()->DeviceConfig();
+
+        if (port->Debug())
+            cerr << "modbus: write query " << query.Describe() << " of device " << query.GetDevice()->ToString() << endl;
+
+        string exception_message;
+        vector<TWriteRequest> requests;
+        ComposeWriteRequests(requests, query, slaveId, shift);
+
+        size_t writtenCount = 0;
+        for (const auto & request: requests) {
+            // Send request
+            if (config->GuardInterval.count()) {
+                port->Sleep(config->GuardInterval);
             }
 
+            port->WriteBytes(request.data(), request.size());
+
             {   // Receive response
-                auto byte_count = InferReadResponseSize(query);
-                TReadResponse response(byte_count);
+                TWriteResponse response;
                 auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
 
-                auto rc = port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size()));
-                if (rc > 0) {
+                if (port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size())) > 0) {
                     try {
                         ModbusRTU::CheckResponse(request, response);
-                        Modbus::ParseReadResponse(PDU(response), query);
+                        Modbus::ParseWriteResponse(PDU(request), PDU(response));
+                        ++writtenCount; // no throw - successful write
                     } catch (const TInvalidCRCError &) {
                         try {
                             port->SkipNoise();
@@ -752,93 +638,16 @@ namespace ModbusRTU // modbus rtu protocol utilities
                         }
                         throw;
                     }
-                    return;
+                } else {
+                    break;
                 }
             }
-        } catch (TSerialDeviceTransientErrorException& e) {
-            exception_message = e.what();
         }
 
-        if (query.GetStatus() == EQueryStatus::Unknown) {
-            query.SetStatus(EQueryStatus::UnknownError);
+        if (writtenCount == requests.size()) {
+            query.FinalizeWrite();
         }
 
-        ios::fmtflags f(cerr.flags());
-        cerr << "ModbusRTU::Read(): failed to read query " << query.Describe() << " of device " << query.GetDevice()->ToString();
-        if (!exception_message.empty()) {
-            cerr << ": " << exception_message;
-        }
-        cerr << endl;
-        cerr.flags(f);
-    }
-
-    void Write(const PPort & port, uint8_t slaveId, const TIRDeviceValueQuery & query, int shift)
-    {
-        auto config = query.GetDevice()->DeviceConfig();
-
-        if (port->Debug())
-            cerr << "modbus: write query " << query.Describe() << " of device " << query.GetDevice()->ToString() << endl;
-
-        string exception_message;
-        try {
-            vector<TWriteRequest> requests;
-            ComposeWriteRequests(requests, query, slaveId, shift);
-
-            for (const auto & request: requests) {
-                // Send request
-                if (config->GuardInterval.count()) {
-                    port->Sleep(config->GuardInterval);
-                }
-
-                port->WriteBytes(request.data(), request.size());
-
-                {   // Receive response
-                    TWriteResponse response;
-                    auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
-
-                    if (port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size())) > 0) {
-                        try {
-                            ModbusRTU::CheckResponse(request, response);
-                            Modbus::ParseWriteResponse(PDU(request), PDU(response));
-                        } catch (const TInvalidCRCError &) {
-                            try {
-                                port->SkipNoise();
-                            } catch (const exception & e) {
-                                cerr << "SkipNoise failed: " << e.what() << endl;
-                            }
-                            throw;
-                        } catch (const TMalformedResponseError &) {
-                            try {
-                                port->SkipNoise();
-                            } catch (const exception & e) {
-                                cerr << "SkipNoise failed: " << e.what() << endl;
-                            }
-                            throw;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            query.AcceptValues();
-
-            return;
-        } catch (TSerialDeviceTransientErrorException& e) {
-            exception_message = ": ";
-            exception_message += e.what();
-        }
-
-        if (query.GetStatus() == EQueryStatus::Unknown) {
-            query.SetStatus(EQueryStatus::UnknownError);
-        }
-
-        ios::fmtflags f(cerr.flags());
-        cerr << "ModbusRTU::Write(): failed to write query " << query.Describe() << " of device " << query.GetDevice()->ToString();
-        if (!exception_message.empty()) {
-            cerr << ": " << exception_message;
-        }
-        cerr << endl;
-        cerr.flags(f);
+        return;
     }
 };  // modbus rtu protocol utilities

@@ -21,8 +21,9 @@ public:
     const uint32_t Address;
     const uint32_t Type;
 private:
+    // TODO: (optimization) move value to dedicated device-centric cache and store only shared (VirtualRegisters.size() > 1) protocol registers' values
     uint64_t Value; //  most recent value of register (from successful writes and reads)
-    bool     Enabled;
+    uint8_t  UsedBitCount;
 
 public:
     TProtocolRegister(uint32_t address, uint32_t type);
@@ -37,18 +38,17 @@ public:
 
     PSerialDevice GetDevice() const;
     TPUnorderedSet<PVirtualRegister> GetVirtualRegsiters() const;
+
+    /**
+     * Amount of bytes of protocol register that
+     *  needs to be read to cover all required bits
+     */
     uint8_t GetUsedByteCount() const;
 
-    void SetReadValue(uint64_t value);
-    void SetWriteValue(uint64_t value);
-    void SetReadError(bool error = true);
-    void SetWriteError(bool error = true);
-
-    bool IsEnabled() const;
+    void SetValue(uint64_t value);
 
     std::string Describe() const;
 
 private:
     PVirtualRegister AssociatedVirtualRegister() const;
-    void DisableIfNotUsed();
 };
