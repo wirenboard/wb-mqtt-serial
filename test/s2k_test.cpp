@@ -3,6 +3,7 @@
 #include "fake_serial_port.h"
 #include "s2k_device.h"
 #include "s2k_expectations.h"
+#include "protocol_register.h"
 
 class TS2KDeviceTest: public TSerialDeviceTest, public TS2KDeviceExpectations {
 protected:
@@ -10,10 +11,10 @@ protected:
     void TearDown();
     PS2KDevice Dev;
 
-    PRegister RelayReg1;
-    PRegister RelayReg2;
-    PRegister RelayReg3;
-    PRegister RelayReg4;
+    PProtocolRegister RelayReg1;
+    PProtocolRegister RelayReg2;
+    PProtocolRegister RelayReg3;
+    PProtocolRegister RelayReg4;
 };
 
 void TS2KDeviceTest::SetUp()
@@ -25,10 +26,10 @@ void TS2KDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("s2k"));
 
-    RelayReg1 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x01, U8));
-    RelayReg2 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x02, U8));
-    RelayReg3 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x03, U8));
-    RelayReg4 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x04, U8));
+    RelayReg1 = std::make_shared<TProtocolRegister>(0x01, TS2KDevice::REG_RELAY);
+    RelayReg2 = std::make_shared<TProtocolRegister>(0x02, TS2KDevice::REG_RELAY);
+    RelayReg3 = std::make_shared<TProtocolRegister>(0x03, TS2KDevice::REG_RELAY);
+    RelayReg4 = std::make_shared<TProtocolRegister>(0x04, TS2KDevice::REG_RELAY);
 
     SerialPort->Open();
 }
@@ -43,11 +44,11 @@ void TS2KDeviceTest::TearDown()
 TEST_F(TS2KDeviceTest, TestSetRelayState)
 {
     EnqueueSetRelayOnResponse();
-    Dev->WriteRegister(RelayReg1, 1);
+    Dev->WriteProtocolRegister(RelayReg1, 1);
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
-    Dev->WriteRegister(RelayReg1, 0);
+    Dev->WriteProtocolRegister(RelayReg1, 0);
 }
 
 class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDeviceExpectations {

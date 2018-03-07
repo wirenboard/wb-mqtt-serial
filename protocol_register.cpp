@@ -41,6 +41,10 @@ void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
         throw TSerialDeviceException("register collision at " + reg->ToString());
     }
 
+    if (Global::Debug) {
+        cerr << Describe() << " associate with virtual register " << reg->ToString() << endl;
+    }
+
     /**
      * Find out how many bytes we have to read to cover all bits required by virtual registers
      *  thus, if, for instance, there is single virtual register that uses 1 last bit (64th),
@@ -65,15 +69,16 @@ const string & TProtocolRegister::GetTypeName() const
 PSerialDevice TProtocolRegister::GetDevice() const
 {
     if (VirtualRegisters.empty()) {
+        cerr << "WARNING: called TProtocolRegister::GetDevice() of register without any associated virtual register: returning null" << endl;
         return nullptr;
     }
 
     return AssociatedVirtualRegister()->GetDevice();
 }
 
-TPUnorderedSet<PVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
+TPSet<PVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
 {
-    TPUnorderedSet<PVirtualRegister> result;
+    TPSet<PVirtualRegister> result;
 
     for (const auto & virtualRegister: VirtualRegisters) {
         const auto & locked = virtualRegister.lock();
@@ -102,11 +107,6 @@ PVirtualRegister TProtocolRegister::AssociatedVirtualRegister() const
     assert(virtualReg);
 
     return virtualReg;
-}
-
-void TProtocolRegister::SetValue(uint64_t value)
-{
-    Value = value;
 }
 
 std::string TProtocolRegister::Describe() const

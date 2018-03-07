@@ -64,7 +64,7 @@ TEST_F(TModbusIOIntegrationTest, Write)
 
     MQTTClient->Publish(nullptr, "/devices/modbus-io-1-1/controls/Coil 0/on", "1");
     MQTTClient->Publish(nullptr, "/devices/modbus-io-1-2/controls/Coil 0/on", "0");
-    
+
     EnqueueCoilWriteResponse();
 
     ExpectPollQueries();

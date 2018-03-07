@@ -65,7 +65,7 @@ namespace // utility
     }
 }
 
-map<TIntervalMs, vector<PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuerySets(const TPUnorderedSet<PVirtualRegister> & virtualRegisters, EQueryOperation operation)
+map<TIntervalMs, vector<PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuerySets(const TPSet<PVirtualRegister> & virtualRegisters, EQueryOperation operation)
 {
     map<TIntervalMs, vector<PIRDeviceQuerySet>> querySetsByPollInterval;
     {
@@ -97,6 +97,8 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
 
     /** gathering data **/
     const auto & device = (*registerSets.front().begin())->GetDevice();
+
+    assert(device);
 
     const auto & deviceConfig = device->DeviceConfig();
     const auto & protocolInfo = device->GetProtocolInfo();
@@ -140,6 +142,8 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
         CheckSets(registerSets, static_cast<uint32_t>(maxHole), static_cast<uint32_t>(maxRegs));
     }
 
+
+
     if (Global::Debug)
         cerr << "merging sets done" << endl;
 
@@ -182,6 +186,15 @@ void TIRDeviceQueryFactory::MergeSets(list<TPSet<PProtocolRegister>> & registerS
         Done
     };
 
+    TPSet<PProtocolRegister> allRegisters;
+    for (const auto & registerSet: registerSets) {
+        allRegisters.insert(registerSet.begin(), registerSet.end());
+    }
+
+    auto assignMissingRegisters = [&](TPSet<PProtocolRegister> & registerSet) {
+        registerSet.insert(allRegisters.find(*registerSet.begin()), ++allRegisters.find(*registerSet.rbegin()));
+    };
+
     uint8_t Stage = HoleEliminate;
 
     while (Stage != Done) {
@@ -195,6 +208,13 @@ void TIRDeviceQueryFactory::MergeSets(list<TPSet<PProtocolRegister>> & registerS
 
             bool done = false;
             while (!done) {
+                if (Stage == HoleEliminate) {
+                    if (holeSize <= maxHole) {
+                        done = true;
+                        continue;
+                    }
+                }
+
                 map<uint32_t, map<uint32_t, vector<list<TPSet<PProtocolRegister>>::iterator>>> setsForMerge;
 
                 for (auto itOtherRegisterSet = registerSets.begin(); itOtherRegisterSet != registerSets.end(); ++itOtherRegisterSet) {
@@ -279,8 +299,14 @@ void TIRDeviceQueryFactory::MergeSets(list<TPSet<PProtocolRegister>> & registerS
                             break;
                     }
 
-                    if (merged)
+                    if (merged) {
                         break;
+                    } else {
+                        if (holeSize) {
+                            assignMissingRegisters(registerSet);
+                            holeSize = GetMaxHoleSize(registerSet);
+                        }
+                    }
                 }
 
                 if (Stage == HoleEliminate) {

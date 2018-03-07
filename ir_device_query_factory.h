@@ -20,7 +20,7 @@ public:
      * Generate query sets grouping protocol registers by virtual registers' type and poll interval
      * and return query sets grouped by poll interval
      */
-    static std::map<TIntervalMs, std::vector<PIRDeviceQuerySet>> GenerateQuerySets(const TPUnorderedSet<PVirtualRegister> &, EQueryOperation);
+    static std::map<TIntervalMs, std::vector<PIRDeviceQuerySet>> GenerateQuerySets(const TPSet<PVirtualRegister> &, EQueryOperation);
 
     static TQueries GenerateQueries(std::list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation, EQueryGenerationPolicy = Minify);
 

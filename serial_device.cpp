@@ -109,6 +109,8 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
     } catch (const TSerialDeviceUnknownErrorException & e) {
         query->SetStatus(EQueryStatus::UnknownError);
     }
+
+    assert(query->IsExecuted());
 }
 
 void TSerialDevice::Prepare()

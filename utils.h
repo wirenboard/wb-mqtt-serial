@@ -137,6 +137,21 @@ TPSet<K> GetKeysAsSet(const TPMap<K, V> & map)
     return keys;
 }
 
+template <typename V, typename K, typename C>
+std::map<K, V, C> MapFromSet(const std::set<K, C> & set)
+{
+    static_assert(std::is_default_constructible<V>::value, "value type must be default constructible");
+
+    std::map<K, V, C> map;
+
+    for (const auto & key: set) {
+        map[key] = V();
+    }
+
+    return map;
+}
+
+
 inline uint8_t BitCountToRegCount(uint8_t bitCount, uint8_t width)
 {
     return bitCount / width + bool(bitCount % width);
@@ -167,5 +182,32 @@ struct _mutable
     operator T() const
     {
         return Value;
+    }
+};
+
+template <typename Pointer>
+struct TPSetView
+{
+    using TSet = TPSet<Pointer>;
+    using Iterator = TSet::iterator;
+
+    const Iterator Begin, End;
+    const size_t Count;
+
+    TPSetView(const Iterator & begin, const Iterator & end)
+        : Begin(begin)
+        , End(end)
+        , Count(std::distance(begin, end))
+    {}
+
+    Pointer GetFirst() const
+    {
+        return *Begin;
+    }
+
+    Pointer GetLast() const
+    {
+        auto end = End;
+        return *(--end);
     }
 };

@@ -2,16 +2,17 @@
 #include "testlog.h"
 #include "fake_serial_port.h"
 #include "ivtm_device.h"
+#include "protocol_register.h"
 
 class TIVTMDeviceTest: public TSerialDeviceTest
 {
 protected:
     void SetUp();
     PIVTMDevice Dev;
- 
-    PRegister Dev1Temp;
-    PRegister Dev1Humidity;
-    PRegister Dev2Temp;
+
+    PProtocolRegister Dev1Temp;
+    PProtocolRegister Dev1Humidity;
+    PProtocolRegister Dev2Temp;
 };
 
 void TIVTMDeviceTest::SetUp()
@@ -22,18 +23,18 @@ void TIVTMDeviceTest::SetUp()
         std::make_shared<TDeviceConfig>("ivtm", std::to_string(0x0001), "ivtm"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("ivtm"));
-    
-    Dev1Temp = TRegister::Intern(Dev, TRegisterConfig::Create(0, 0, Float));
-    Dev1Humidity = TRegister::Intern(Dev, TRegisterConfig::Create(0, 4, Float));
-    Dev2Temp = TRegister::Intern(Dev, TRegisterConfig::Create(0, 0, Float));
-    
+
+    Dev1Temp = std::make_shared<TProtocolRegister>(0, 0);
+    Dev1Humidity = std::make_shared<TProtocolRegister>(0, 4);
+    Dev2Temp = std::make_shared<TProtocolRegister>(0, 0);
+
     SerialPort->Open();
 }
 
 TEST_F(TIVTMDeviceTest, IVTM7MQuery)
 {
     // >> 24 30 30 30 31 52 52 30 30 30 30 30 34 41 44 0d
-    // << 21 30 30 30 31 52 52 43 45 44 33 44 31 34 31 35 46 0D 
+    // << 21 30 30 30 31 52 52 43 45 44 33 44 31 34 31 35 46 0D
     // temperature == 26.228420
 
     SerialPort->Expect(
@@ -50,7 +51,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    ASSERT_EQ(0x41D1D3CE, Dev->ReadRegister(Dev1Temp)); //big-endian
+    ASSERT_EQ(0x41D1D3CE, Dev->ReadProtocolRegister(Dev1Temp)); //big-endian
 
 	// >> 24 30 30 30 31 52 52 30 30 30 34 30 34 42 31 0d
 	// << 21 30 30 30 31 52 52 33 30 39 41 45 42 34 31 34 46 0D
@@ -70,7 +71,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0D                  // footer
         });
 
-    ASSERT_EQ(0x41EB9A30, Dev->ReadRegister(Dev1Humidity)); //big-endian
+    ASSERT_EQ(0x41EB9A30, Dev->ReadProtocolRegister(Dev1Humidity)); //big-endian
 
     Dev->EndPollCycle();
 
@@ -94,6 +95,6 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    ASSERT_EQ(0x41C7855E, Dev->ReadRegister(Dev2Temp)); //big-endian
+    ASSERT_EQ(0x41C7855E, Dev->ReadProtocolRegister(Dev2Temp)); //big-endian
     SerialPort->Close();
 }

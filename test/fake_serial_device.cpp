@@ -1,11 +1,12 @@
 #include "fake_serial_device.h"
 #include "fake_serial_port.h"
+#include "ir_device_query.h"
 #include "protocol_register.h"
 
 using namespace std;
 
 REGISTER_BASIC_INT_PROTOCOL("fake", TFakeSerialDevice, TRegisterTypes({
-    { TFakeSerialDevice::REG_FAKE, "fake", "text", U64 },
+    { TFakeSerialDevice::REG_FAKE, "fake", "text", U16 },
 }));
 
 
@@ -19,53 +20,65 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
     }
 }
 
-uint64_t TFakeSerialDevice::ReadProtocolRegister(const PProtocolRegister & reg)
+void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
 {
     try {
         if (!Connected || FakePort->GetDoSimulateDisconnect()) {
             throw TSerialDeviceUnknownErrorException("device disconnected");
         }
 
-        if(Blockings[reg->Address].first) {
+        auto start = query.GetStart();
+        auto end = start + query.GetCount();
+
+        if (end > 256) {
+            throw runtime_error("register address out of range");
+        }
+
+        bool blocked = any_of(query.ProtocolRegisters.begin(), query.ProtocolRegisters.end(), [this](const pair<PProtocolRegister, uint16_t> & registerIndex) {
+            return Blockings[registerIndex.first->Address].first;
+        });
+
+        if (blocked) {
             throw TSerialDeviceTransientErrorException("read blocked");
         }
 
-        if (reg->Address < 0 || reg->Address > 256) {
-            throw runtime_error("invalid register address");
-        }
-
-        if (reg->Type != REG_FAKE) {
+        if (query.GetType() != REG_FAKE) {
             throw runtime_error("invalid register type");
         }
 
-        auto value = Registers[reg->Address];
+        query.FinalizeRead(vector<uint16_t>(Registers + start, Registers + end));
 
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << value << "'";
-
-        return value;
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read query '" << query.Describe() << "'";
     } catch (const exception & e) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' failed: '" << e.what() << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read query '" << query.Describe() << "' failed: '" << e.what() << "'";
 
         throw;
     }
 }
 
-void TFakeSerialDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
+void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
 {
-    try {
+     try {
         if (!Connected || FakePort->GetDoSimulateDisconnect()) {
             throw TSerialDeviceUnknownErrorException("device disconnected");
         }
 
-        if(Blockings[reg->Address].second) {
+        auto start = query.GetStart();
+        auto end = start + query.GetCount();
+
+        if (end > 256) {
+            throw runtime_error("register address out of range");
+        }
+
+        bool blocked = any_of(query.ProtocolRegisters.begin(), query.ProtocolRegisters.end(), [this](const pair<PProtocolRegister, uint16_t> & registerIndex) {
+            return Blockings[registerIndex.first->Address].second;
+        });
+
+        if (blocked) {
             throw TSerialDeviceTransientErrorException("write blocked");
         }
 
-        if (reg->Address < 0 || reg->Address > 256) {
-            throw runtime_error("invalid register address");
-        }
-
-        if (reg->Type != REG_FAKE) {
+        if (query.GetType() != REG_FAKE) {
             throw runtime_error("invalid register type");
         }
 

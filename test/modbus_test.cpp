@@ -2,6 +2,9 @@
 #include "modbus_expectations.h"
 #include "modbus_device.h"
 #include "modbus_common.h"
+#include "ir_device_query_factory.h"
+#include "ir_device_query.h"
+#include "virtual_register.h"
 
 using namespace std;
 
@@ -11,29 +14,28 @@ class TModbusTest: public TSerialDeviceTest, public TModbusExpectations
     typedef shared_ptr<TModbusDevice> PModbusDevice;
 protected:
     void SetUp();
-    set<int> VerifyQuery(list<PRegister> registerList = list<PRegister>());
+    set<int> VerifyQuery(TPSet<PVirtualRegister> registerList = TPSet<PVirtualRegister>());
+    PIRDeviceQuery GenerateReadQueryForVirtualRegister(const PVirtualRegister & virtualRegister);
 
     virtual PDeviceConfig GetDeviceConfig();
 
     PModbusDevice ModbusDev;
 
-    PRegister ModbusCoil0;
-    PRegister ModbusCoil1;
-    PRegister ModbusDiscrete;
-    PRegister ModbusHolding;
-    PRegister ModbusInput;
-
-    PRegister ModbusHoldingS64;
-
-    PRegister ModbusHoldingU64Single;
-    PRegister ModbusHoldingU16Single;
-    PRegister ModbusHoldingU64Multi;
-    PRegister ModbusHoldingU16Multi;
+    PVirtualRegister ModbusCoil0;
+    PVirtualRegister ModbusCoil1;
+    PVirtualRegister ModbusDiscrete;
+    PVirtualRegister ModbusHolding;
+    PVirtualRegister ModbusInput;
+    PVirtualRegister ModbusHoldingS64;
+    PVirtualRegister ModbusHoldingU64Single;
+    PVirtualRegister ModbusHoldingU16Single;
+    PVirtualRegister ModbusHoldingU64Multi;
+    PVirtualRegister ModbusHoldingU16Multi;
 };
 
 PDeviceConfig TModbusTest::GetDeviceConfig()
 {
-    return std::make_shared<TDeviceConfig>("modbus", std::to_string(0x01), "modbus");
+    return make_shared<TDeviceConfig>("modbus", to_string(0x01), "modbus");
 }
 
 void TModbusTest::SetUp()
@@ -41,56 +43,71 @@ void TModbusTest::SetUp()
     SelectModbusType(MODBUS_RTU);
     TSerialDeviceTest::SetUp();
 
-    ModbusDev = std::make_shared<TModbusDevice>(GetDeviceConfig(), SerialPort,
+    ModbusDev = make_shared<TModbusDevice>(GetDeviceConfig(), SerialPort,
                                 TSerialDeviceFactory::GetProtocol("modbus"));
-    ModbusCoil0 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 0, U8));
-    ModbusCoil1 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 1, U8));
-    ModbusDiscrete = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_DISCRETE, 20, U8));
-    ModbusHolding = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 70, U16));
-    ModbusInput = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_INPUT, 40, U16));
-    ModbusHoldingS64 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 30, S64));
 
-    ModbusHoldingU64Single = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 90, U64));
-    ModbusHoldingU16Single = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 94, U16));
-    ModbusHoldingU64Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64));
-    ModbusHoldingU16Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
+    TVirtualRegister::TInitContext InitContext;
+
+    ModbusCoil0 = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_COIL, 0, U8), ModbusDev, InitContext);
+    ModbusCoil1 = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_COIL, 1, U8), ModbusDev, InitContext);
+    ModbusDiscrete = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_DISCRETE, 20, U8), ModbusDev, InitContext);
+    ModbusHolding = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING, 70, U16), ModbusDev, InitContext);
+    ModbusInput = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_INPUT, 40, U16), ModbusDev, InitContext);
+    ModbusHoldingS64 = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING, 30, S64), ModbusDev, InitContext);
+
+    ModbusHoldingU64Single = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 90, U64), ModbusDev, InitContext);
+    ModbusHoldingU16Single = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 94, U16), ModbusDev, InitContext);
+    ModbusHoldingU64Multi = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64), ModbusDev, InitContext);
+    ModbusHoldingU16Multi = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16), ModbusDev, InitContext);
 
     SerialPort->Open();
 }
 
-set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
+set<int> TModbusTest::VerifyQuery(TPSet<PVirtualRegister> registerSet)
 {
-    std::list<PRegisterRange> ranges;
+    size_t expectedQuerySetCount = 0;
 
-    if (registerList.empty()) {
-        registerList = {
+    if (registerSet.empty()) {
+        registerSet = {
             ModbusCoil0, ModbusCoil1, ModbusDiscrete, ModbusHolding, ModbusInput, ModbusHoldingS64
         };
 
-        ranges = ModbusDev->SplitRegisterList(registerList);
-
-        if (ranges.size() != 5) {
-            throw runtime_error("wrong range count: " + to_string(ranges.size()));
-        }
-    } else {
-        ranges = ModbusDev->SplitRegisterList(registerList);
+        expectedQuerySetCount = 4;
     }
+
+    auto querySetsByPollInterval = TIRDeviceQueryFactory::GenerateQuerySets(registerSet, EQueryOperation::Read);
+
+    if (expectedQuerySetCount > 0) {
+        if (querySetsByPollInterval.size() != expectedQuerySetCount) {
+            throw runtime_error("wrong query sets count: " + to_string(querySetsByPollInterval.size()) + " expected: " + to_string(expectedQuerySetCount));
+        }
+    }
+
     set<int> readAddresses;
     set<int> errorRegisters;
     map<int, uint64_t> registerValues;
 
-    for (auto range: ranges) {
-        ModbusDev->ReadRegisterRange(range);
-        range->MapRange([&](PRegister reg, uint64_t value){
-            registerValues[reg->Address] = value;
-            readAddresses.insert(reg->Address);
-        }, [&](PRegister reg){
-            readAddresses.insert(reg->Address);
-            errorRegisters.insert(reg->Address);
-        });
+    for (const auto & pollIntervalQuerySets: querySetsByPollInterval) {
+        const auto & querySets = pollIntervalQuerySets.second;
+
+        for (const auto & querySet: querySets) {
+            for (const auto & query: querySet->Queries) {
+                ModbusDev->Execute(query);
+
+                for (const auto & virtualRegister: query->VirtualRegisters) {
+                    if (query->GetStatus() == EQueryStatus::Ok) {
+                        registerValues[virtualRegister->Address] = virtualRegister->GetValue();
+                    } else {
+                        errorRegisters.insert(virtualRegister->Address);
+                    }
+
+                    readAddresses.insert(virtualRegister->Address);
+                }
+            }
+        }
     }
 
-    EXPECT_EQ(to_string(registerList.size()), to_string(readAddresses.size()));
+    EXPECT_EQ(to_string(registerSet.size()), to_string(readAddresses.size()));
 
     for (auto registerValue: registerValues) {
         auto address = registerValue.first;
@@ -123,6 +140,17 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
     return errorRegisters;
 }
 
+PIRDeviceQuery TModbusTest::GenerateReadQueryForVirtualRegister(const PVirtualRegister & virtualRegister)
+{
+    auto querySetsByPollInterval = TIRDeviceQueryFactory::GenerateQuerySets({ virtualRegister }, EQueryOperation::Read);
+
+    EXPECT_EQ(1, querySetsByPollInterval.size());
+    EXPECT_EQ(1, querySetsByPollInterval.begin()->second.size());
+    EXPECT_EQ(1, querySetsByPollInterval.begin()->second.front()->Queries.size());
+
+    return *querySetsByPollInterval.begin()->second.front()->Queries.begin();
+}
+
 TEST_F(TModbusTest, Query)
 {
     EnqueueCoilReadResponse();
@@ -142,10 +170,17 @@ TEST_F(TModbusTest, HoldingSingleMulti)
     EnqueueHoldingMultiWriteU16Response();
     EnqueueHoldingMultiWriteU64Response();
 
-    ModbusDev->WriteRegister(ModbusHoldingU16Single, 0x0f41);
-    ModbusDev->WriteRegister(ModbusHoldingU64Single, 0x01020304050607);
-    ModbusDev->WriteRegister(ModbusHoldingU16Multi, 0x0123);
-    ModbusDev->WriteRegister(ModbusHoldingU64Multi, 0x0123456789ABCDEF);
+    ModbusHoldingU16Single->SetValue(0x0f41);
+    ModbusHoldingU16Single->Flush();
+
+    ModbusHoldingU64Single->SetValue(0x01020304050607);
+    ModbusHoldingU64Single->Flush();
+
+    ModbusHoldingU16Multi->SetValue(0x0123);
+    ModbusHoldingU16Multi->Flush();
+
+    ModbusHoldingU64Multi->SetValue(0x0123456789ABCDEF);
+    ModbusHoldingU64Multi->Flush();
 
     SerialPort->Close();
 }
@@ -165,11 +200,29 @@ TEST_F(TModbusTest, Errors)
     SerialPort->Close();
 }
 
+#define READ_COIL_0_EMIT_TRANSIENT_ERROR \
+    try {                                                               \
+        auto query = GenerateReadQueryForVirtualRegister(ModbusCoil0);  \
+        ModbusDev->Read(*query);                                        \
+        EXPECT_FALSE(true);                                             \
+    } catch (const TSerialDeviceTransientErrorException & e) {          \
+        Emit() << e.what();                                             \
+    }
+
+#define WRITE_COIL_0_EMIT_TRANSIENT_ERROR \
+    try {                                                       \
+        ModbusCoil0->SetValue(0xFF);                            \
+        ModbusCoil0->Flush();                                   \
+        EXPECT_FALSE(true);                                     \
+    } catch (const TSerialDeviceTransientErrorException & e) {  \
+        Emit() << e.what();                                     \
+    }
+
 TEST_F(TModbusTest, CRCError)
 {
     EnqueueInvalidCRCCoilReadResponse();
 
-    ModbusDev->ReadRegisterRange(ModbusDev->SplitRegisterList({ ModbusCoil0 }).front());
+    READ_COIL_0_EMIT_TRANSIENT_ERROR
 
     SerialPort->Close();
 }
@@ -178,7 +231,7 @@ TEST_F(TModbusTest, WrongResponseDataSize)
 {
     EnqueueWrongDataSizeReadResponse();
 
-    ModbusDev->ReadRegisterRange(ModbusDev->SplitRegisterList({ ModbusCoil0 }).front());
+    READ_COIL_0_EMIT_TRANSIENT_ERROR
 
     SerialPort->Close();
 }
@@ -187,7 +240,7 @@ TEST_F(TModbusTest, WrongSlaveId)
 {
     EnqueueWrongSlaveIdCoilReadResponse();
 
-    EXPECT_EQ(1, VerifyQuery({ ModbusCoil0 }).size());
+    READ_COIL_0_EMIT_TRANSIENT_ERROR
 
     SerialPort->Close();
 }
@@ -196,7 +249,7 @@ TEST_F(TModbusTest, WrongFunctionCode)
 {
     EnqueueWrongFunctionCodeCoilReadResponse();
 
-    EXPECT_EQ(1, VerifyQuery({ ModbusCoil0 }).size());
+    READ_COIL_0_EMIT_TRANSIENT_ERROR
 
     SerialPort->Close();
 }
@@ -205,7 +258,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWithException)
 {
     EnqueueWrongFunctionCodeCoilReadResponse(0x2);
 
-    EXPECT_EQ(1, VerifyQuery({ ModbusCoil0 }).size());
+    READ_COIL_0_EMIT_TRANSIENT_ERROR
 
     SerialPort->Close();
 }
@@ -214,12 +267,7 @@ TEST_F(TModbusTest, WrongSlaveIdWrite)
 {
     EnqueueWrongSlaveIdCoilWriteResponse();
 
-    try {
-        ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
-        EXPECT_FALSE(true);
-    } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response slave id mismatch"), e.what());
-    }
+    WRITE_COIL_0_EMIT_TRANSIENT_ERROR
 
     SerialPort->Close();
 }
@@ -228,12 +276,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWrite)
 {
     EnqueueWrongFunctionCodeCoilWriteResponse();
 
-    try {
-        ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
-        EXPECT_FALSE(true);
-    } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response function code mismatch"), e.what());
-    }
+    WRITE_COIL_0_EMIT_TRANSIENT_ERROR
 
     SerialPort->Close();
 }
@@ -242,15 +285,13 @@ TEST_F(TModbusTest, WrongFunctionCodeWithExceptionWrite)
 {
     EnqueueWrongFunctionCodeCoilWriteResponse(0x2);
 
-    try {
-        ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
-        EXPECT_FALSE(true);
-    } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response function code mismatch"), e.what());
-    }
+    WRITE_COIL_0_EMIT_TRANSIENT_ERROR
 
     SerialPort->Close();
 }
+
+#undef READ_COIL_0_EMIT_TRANSIENT_ERROR
+#undef WRITE_COIL_0_EMIT_TRANSIENT_ERROR
 
 
 class TModbusIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations

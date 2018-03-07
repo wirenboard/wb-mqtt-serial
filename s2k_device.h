@@ -19,10 +19,10 @@ public:
 
     TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol);
 
-private:
     uint64_t ReadProtocolRegister(const PProtocolRegister & reg) override;
     void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value) override;
 
+private:
     uint8_t CrcS2K(const uint8_t *array, int size);
     static uint8_t CrcTable[];
     uint8_t RelayState[5];

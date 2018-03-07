@@ -375,10 +375,10 @@ namespace Modbus    // modbus protocol common utilities
 
         auto bytes = pdu + 2;
 
-        vector<uint64_t> values(query.GetCount());
-
         if (IsSingleBitType(query.GetType())) {
             assert(byteCount == GetByteCount(query));
+
+            vector<uint8_t> values(query.GetCount());
 
             for (uint32_t iByte = 0; iByte < byteCount; ++iByte) {
                 bitset<8> coils(bytes[iByte]);
@@ -389,16 +389,21 @@ namespace Modbus    // modbus protocol common utilities
                     values[iBit] = coils[iBit];
                 }
             }
+
+            query.FinalizeRead(values);
+
         } else {
             assert(byteCount % 2 == 0);
             assert(byteCount / 2 == query.GetCount());
 
+            vector<uint16_t> values(query.GetCount());
+
             for (uint32_t iByte = 0, i = 0; iByte < byteCount; iByte+=2) {
                 values[i++] = (bytes[iByte] << 8) | bytes[iByte + 1];
             }
-        }
 
-        query.FinalizeRead(values);
+            query.FinalizeRead(values);
+        }
     }
 
     // checks modbus response on write

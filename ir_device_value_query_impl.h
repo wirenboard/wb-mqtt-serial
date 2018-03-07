@@ -2,37 +2,96 @@
 
 #include "ir_device_query.h"
 
+#include <cstring>
+
 template <typename T>
 struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
 {
     friend class TIRDeviceQueryFactory;
 
-    const std::vector<_mutable<T>> Values;
+    static_assert(std::is_fundamental<T>::value, "query can store only values of fundamental types");
+
+    const TPMap<PProtocolRegister, _mutable<T>> ProtocolRegisterValues;
+
 
     void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const override
     {
-        for (const auto & regIndex: ProtocolRegisters) {
-            accessor(*regIndex.first, Values[regIndex.second].Value);
+        for (const auto & registerValue: ProtocolRegisterValues) {
+            accessor(*registerValue.first, registerValue.second);
         }
     }
 
-    void SetValue(size_t index, uint64_t value) const override
+    void SetValue(const PProtocolRegister & reg, uint64_t value) const override
     {
-        assert(index < Values.size());
-        Values[index] = value;
+        auto itRegisterValue = ProtocolRegisterValues.find(reg);
+        assert(itRegisterValue != ProtocolRegisterValues.end());
+
+        itRegisterValue->second = value;
     }
 
-    uint64_t GetValue(size_t index) const override
+    void GetValuesImpl(void * mem, size_t size, size_t count) const override
     {
-        assert(index < Values.size());
-        return Values[index];
+        assert(size <= sizeof(T));
+        assert(GetCount() == count);
+
+        auto itProtocolRegister = ProtocolRegistersView.Begin;
+        auto itProtocolRegisterValue = ProtocolRegisterValues.begin();
+        auto bytes = static_cast<uint8_t*>(mem);
+
+        assert(*itProtocolRegister == itProtocolRegisterValue->first);
+
+        for (size_t i = 0; i < count; ++i) {
+            const auto requestedRegisterAddress = GetStart() + i;
+
+            assert(itProtocolRegister != ProtocolRegistersView.End);
+            assert(itProtocolRegisterValue != ProtocolRegisterValues.end());
+
+            // try read value from query itself
+            {
+                const auto & protocolRegister = itProtocolRegisterValue->first;
+                const auto & value = itProtocolRegisterValue->second;
+
+                if (protocolRegister->Address == requestedRegisterAddress) {    // this register exists and query has its value - write from query
+                    memcpy(bytes, &value, size);
+
+                    ++itProtocolRegister;
+                    ++itProtocolRegisterValue;
+                    bytes += size;
+                    continue;
+                }
+            }
+
+            // try read value from cache
+            {
+                const auto & protocolRegister = *itProtocolRegister;
+
+                if (protocolRegister->Address == requestedRegisterAddress) {    // this register exists but query doesn't have value for it - write cached value
+                    memcpy(bytes, &protocolRegister->GetValue(), size);
+
+                    ++itProtocolRegister;
+                    bytes += size;
+                    continue;
+                }
+            }
+
+            // driver doesn't use this address (hole) - fill with zeroes
+            {
+                memset(bytes, size, 0);
+                bytes += size;
+            }
+        }
+
+        assert(itProtocolRegister == ProtocolRegistersView.End);
+        assert(itProtocolRegisterValue == ProtocolRegisterValues.end());
     }
 
 protected:
     explicit TIRDeviceValueQueryImpl(const TPSet<PProtocolRegister> & registerSet, EQueryOperation operation = EQueryOperation::Write)
         : TIRDeviceValueQuery(registerSet, operation)
-        , Values(registerSet.size())
-    {}
+        , ProtocolRegisterValues(MapFromSet<_mutable<T>>(registerSet))
+    {
+        assert(!ProtocolRegistersValues.empty());
+    }
 };
 
 using TIRDevice64BitQuery = TIRDeviceValueQueryImpl<uint64_t>;

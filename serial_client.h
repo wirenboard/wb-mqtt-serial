@@ -44,7 +44,7 @@ private:
     void OnDeviceReconnect(PSerialDevice dev);
 
     PPort Port;
-    std::unordered_map<PSerialDevice, TPUnorderedSet<PVirtualRegister>> VirtualRegisters;
+    std::unordered_map<PSerialDevice, TPSet<PVirtualRegister>> VirtualRegisters;
     std::list<PSerialDevice> DevicesList; /* for EndPollCycle */
 
     bool Active;

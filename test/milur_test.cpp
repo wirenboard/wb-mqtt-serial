@@ -2,6 +2,7 @@
 #include "fake_serial_port.h"
 #include "milur_expectations.h"
 #include "milur_device.h"
+#include "protocol_register.h"
 
 
 class TMilurTest: public TSerialDeviceTest, public TMilurExpectations
@@ -14,27 +15,27 @@ protected:
 
     PMilurDevice MilurDev;
 
-    PRegister MilurPhaseAVoltageReg;
-    PRegister MilurPhaseBVoltageReg;
-    PRegister MilurPhaseCVoltageReg;
+    PProtocolRegister MilurPhaseAVoltageReg;
+    PProtocolRegister MilurPhaseBVoltageReg;
+    PProtocolRegister MilurPhaseCVoltageReg;
 
-    PRegister MilurPhaseACurrentReg;
-    PRegister MilurPhaseBCurrentReg;
-	PRegister MilurPhaseCCurrentReg;
+    PProtocolRegister MilurPhaseACurrentReg;
+    PProtocolRegister MilurPhaseBCurrentReg;
+	PProtocolRegister MilurPhaseCCurrentReg;
 
-	PRegister MilurPhaseAActivePowerReg;
-	PRegister MilurPhaseBActivePowerReg;
-	PRegister MilurPhaseCActivePowerReg;
-	PRegister MilurTotalActivePowerReg;
+	PProtocolRegister MilurPhaseAActivePowerReg;
+	PProtocolRegister MilurPhaseBActivePowerReg;
+	PProtocolRegister MilurPhaseCActivePowerReg;
+	PProtocolRegister MilurTotalActivePowerReg;
 
-	PRegister MilurPhaseAReactivePowerReg;
-	PRegister MilurPhaseBReactivePowerReg;
-	PRegister MilurPhaseCReactivePowerReg;
-	PRegister MilurTotalReactivePowerReg;
+	PProtocolRegister MilurPhaseAReactivePowerReg;
+	PProtocolRegister MilurPhaseBReactivePowerReg;
+	PProtocolRegister MilurPhaseCReactivePowerReg;
+	PProtocolRegister MilurTotalReactivePowerReg;
 
-	PRegister MilurTotalConsumptionReg;
-	PRegister MilurTotalReactiveEnergyReg;
-	PRegister MilurFrequencyReg;
+	PProtocolRegister MilurTotalConsumptionReg;
+	PProtocolRegister MilurTotalReactiveEnergyReg;
+	PProtocolRegister MilurFrequencyReg;
 };
 
 PDeviceConfig TMilurTest::GetDeviceConfig()
@@ -49,27 +50,27 @@ void TMilurTest::SetUp()
 	MilurDev = std::make_shared<TMilurDevice>(GetDeviceConfig(), SerialPort,
 	                            TSerialDeviceFactory::GetProtocol("milur"));
 
-	MilurPhaseAVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 100, U24));
-	MilurPhaseBVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 101, U24));
-	MilurPhaseCVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 102, U24));
+	MilurPhaseAVoltageReg = std::make_shared<TProtocolRegister>(100, TMilurDevice::REG_PARAM);
+	MilurPhaseBVoltageReg = std::make_shared<TProtocolRegister>(101, TMilurDevice::REG_PARAM);
+	MilurPhaseCVoltageReg = std::make_shared<TProtocolRegister>(102, TMilurDevice::REG_PARAM);
 
-	MilurPhaseACurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 103, S24));
-	MilurPhaseBCurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 104, S24));
-	MilurPhaseCCurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 105, S24));
+	MilurPhaseACurrentReg = std::make_shared<TProtocolRegister>(103, TMilurDevice::REG_PARAM);
+	MilurPhaseBCurrentReg = std::make_shared<TProtocolRegister>(104, TMilurDevice::REG_PARAM);
+	MilurPhaseCCurrentReg = std::make_shared<TProtocolRegister>(105, TMilurDevice::REG_PARAM);
 
-	MilurPhaseAActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 106, S32));
-	MilurPhaseBActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 107, S32));
-	MilurPhaseCActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 108, S32));
-	MilurTotalActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 109, S32));
+	MilurPhaseAActivePowerReg = std::make_shared<TProtocolRegister>(106, TMilurDevice::REG_POWER);
+	MilurPhaseBActivePowerReg = std::make_shared<TProtocolRegister>(107, TMilurDevice::REG_POWER);
+	MilurPhaseCActivePowerReg = std::make_shared<TProtocolRegister>(108, TMilurDevice::REG_POWER);
+	MilurTotalActivePowerReg = std::make_shared<TProtocolRegister>(109, TMilurDevice::REG_POWER);
 
-	MilurPhaseAReactivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 110, S32));
-	MilurPhaseBReactivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 111, S32));
-	MilurPhaseCReactivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 112, S32));
-	MilurTotalReactivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 113, S32));
+	MilurPhaseAReactivePowerReg = std::make_shared<TProtocolRegister>(110, TMilurDevice::REG_POWER);
+	MilurPhaseBReactivePowerReg = std::make_shared<TProtocolRegister>(111, TMilurDevice::REG_POWER);
+	MilurPhaseCReactivePowerReg = std::make_shared<TProtocolRegister>(112, TMilurDevice::REG_POWER);
+	MilurTotalReactivePowerReg = std::make_shared<TProtocolRegister>(113, TMilurDevice::REG_POWER);
 
-	MilurTotalConsumptionReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
-	MilurTotalReactiveEnergyReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 127, BCD32));
-	MilurFrequencyReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_FREQ, 9, U16));
+	MilurTotalConsumptionReg = std::make_shared<TProtocolRegister>(118, TMilurDevice::REG_ENERGY);
+	MilurTotalReactiveEnergyReg = std::make_shared<TProtocolRegister>(127, TMilurDevice::REG_ENERGY);
+	MilurFrequencyReg = std::make_shared<TProtocolRegister>(9, TMilurDevice::REG_FREQ);
 
 	SerialPort->Open();
 }
@@ -77,17 +78,17 @@ void TMilurTest::SetUp()
 void TMilurTest::VerifyParamQuery()
 {
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadRegister(MilurPhaseCVoltageReg));
+    ASSERT_EQ(0x03946f, MilurDev->ReadProtocolRegister(MilurPhaseCVoltageReg));
 
     EnqueueMilurPhaseCCurrentResponse();
-    ASSERT_EQ(0xffd8f0, MilurDev->ReadRegister(MilurPhaseCCurrentReg));
+    ASSERT_EQ(0xffd8f0, MilurDev->ReadProtocolRegister(MilurPhaseCCurrentReg));
 
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
-    ASSERT_EQ(0x11144, MilurDev->ReadRegister(MilurTotalConsumptionReg));
+    ASSERT_EQ(0x11144, MilurDev->ReadProtocolRegister(MilurTotalConsumptionReg));
 
     EnqueueMilurFrequencyResponse();
-    ASSERT_EQ(50080, MilurDev->ReadRegister(MilurFrequencyReg));
+    ASSERT_EQ(50080, MilurDev->ReadProtocolRegister(MilurFrequencyReg));
 }
 
 TEST_F(TMilurTest, Query)
@@ -105,7 +106,7 @@ TEST_F(TMilurTest, Reconnect)
     // reconnection
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadRegister(MilurPhaseCVoltageReg));
+    ASSERT_EQ(0x03946f, MilurDev->ReadProtocolRegister(MilurPhaseCVoltageReg));
 }
 
 TEST_F(TMilurTest, Exception)
@@ -113,7 +114,7 @@ TEST_F(TMilurTest, Exception)
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurExceptionResponse();
     try {
-        MilurDev->ReadRegister(MilurPhaseCVoltageReg);
+        MilurDev->ReadProtocolRegister(MilurPhaseCVoltageReg);
         FAIL() << "No exception thrown";
     } catch (const TSerialDeviceException& e) {
         ASSERT_STREQ("Serial protocol error: EEPROM access error", e.what());
@@ -243,7 +244,7 @@ protected:
     virtual PDeviceConfig MilurConfig();
     PMilurDevice MilurDev;
 
-    PRegister MilurTotalConsumptionReg;
+    PProtocolRegister MilurTotalConsumptionReg;
 };
 
 PDeviceConfig TMilur32Test::MilurConfig()
@@ -256,7 +257,7 @@ void TMilur32Test::SetUp()
     TSerialDeviceTest::SetUp();
     MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort,
                             TSerialDeviceFactory::GetProtocol("milur"));
-    MilurTotalConsumptionReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
+    MilurTotalConsumptionReg = std::make_shared<TProtocolRegister>(118, TMilurDevice::REG_ENERGY);
 
     SerialPort->Open();
 }
@@ -264,7 +265,7 @@ void TMilur32Test::SetUp()
 void TMilur32Test::VerifyMilurQuery()
 {
     EnqueueMilur32TotalConsumptionResponse();
-    ASSERT_EQ(0x11144, MilurDev->ReadRegister(MilurTotalConsumptionReg));
+    ASSERT_EQ(0x11144, MilurDev->ReadProtocolRegister(MilurTotalConsumptionReg));
 }
 
 TEST_F(TMilur32Test, MilurQuery)

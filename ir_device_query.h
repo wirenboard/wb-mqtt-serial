@@ -14,10 +14,10 @@ struct TIRDeviceQuery
 {
     friend class TIRDeviceQueryFactory;
 
-    const TPMap<PProtocolRegister, uint16_t> ProtocolRegisters;
-    const TPUnorderedSet<PVirtualRegister>   VirtualRegisters;    // registers that will be fully read or written after execution of query
-    const bool                               HasHoles;
-    const EQueryOperation                    Operation;
+    const TPSetView<PProtocolRegister> ProtocolRegistersView;
+    const TPSet<PVirtualRegister>      VirtualRegisters;    // registers that will be fully read or written after execution of query
+    const bool                         HasHoles;
+    const EQueryOperation              Operation;
 
 private:
     mutable EQueryStatus Status;
@@ -37,16 +37,6 @@ public:
     uint32_t GetStart() const;
     uint32_t GetType() const;
     const std::string & GetTypeName() const;
-
-    /**
-     * Accept values read from device as current and set status to Ok
-     */
-    void FinalizeRead(const std::vector<uint64_t> & values) const;
-
-    /**
-     * Accept value read from device as current and set status to Ok (for single read to avoid unnecesary vector creation)
-     */
-    void FinalizeRead(const uint64_t & value) const;
 
     void SetStatus(EQueryStatus);
     EQueryStatus GetStatus() const;
@@ -68,17 +58,52 @@ public:
         return *pointer;
     }
 
+    /**
+     * Accept values read from device as current and set status to Ok
+     */
+    template <typename T>
+    void FinalizeRead(const std::vector<T> & values) const
+    {
+        static_assert(std::is_fundamental<T>::value, "only vector of fundamental types is allowed");
+        static_assert(sizeof(T) <= sizeof(uint64_t), "size of type exceeded 64 bits");
+
+        FinalizeReadImpl(values.data(), sizeof(T), values.size());
+    }
+
+    /**
+     * Accept value read from device as current and set status to Ok (for single read to avoid unnecesary vector creation)
+     */
+    template <typename T>
+    void FinalizeRead(T value) const
+    {
+        static_assert(std::is_fundamental<T>::value, "only fundamental types are allowed");
+        static_assert(sizeof(T) <= sizeof(uint64_t), "size of type exceeded 64 bits");
+
+        FinalizeReadImpl(&value, sizeof(T), 1);
+    }
+
     std::string Describe() const;
     std::string DescribeOperation() const;
+
+private:
+    void FinalizeReadImpl(void * mem, size_t size, size_t count) const;
 };
 
 struct TIRDeviceValueQuery: TIRDeviceQuery
 {
     virtual void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const = 0;
-    virtual void SetValue(size_t index, uint64_t value) const = 0;
-    virtual uint64_t GetValue(size_t index) const = 0;
+    virtual void SetValue(const PProtocolRegister & reg, uint64_t value) const = 0;
 
-    void SetValue(const PProtocolRegister & reg, uint64_t value) const;
+    template <typename T>
+    void GetValues(std::vector<T> & values)
+    {
+        static_assert(std::is_fundamental<T>::value, "only vector of fundamental types is allowed");
+        static_assert(sizeof(T) <= sizeof(uint64_t), "size of type exceeded 64 bits");
+
+        values.resize(GetCount());
+
+        GetValuesImpl(values.data(), sizeof(T), values.size());
+    }
 
     /**
      * Accept written values to device as current and set status to Ok
@@ -89,6 +114,8 @@ protected:
     TIRDeviceValueQuery(const TPSet<PProtocolRegister> & registerSet, EQueryOperation operation)
         : TIRDeviceQuery(registerSet, operation)
     {}
+
+    virtual void GetValuesImpl(void * mem, size_t size, size_t count) const = 0;
 };
 
 struct TIRDeviceQuerySet

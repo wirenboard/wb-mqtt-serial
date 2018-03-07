@@ -588,6 +588,3 @@ void TMilurExpectations::EnqueueMilurExceptionResponse()
             0x28  // crc
         }, __func__);
 }
-
-
-

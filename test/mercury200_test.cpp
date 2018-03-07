@@ -2,6 +2,8 @@
 #include "fake_serial_port.h"
 #include "mercury200_expectations.h"
 #include "mercury200_device.h"
+#include "protocol_register.h"
+
 
 class TMercury200Test: public TSerialDeviceTest, public TMercury200Expectations
 {
@@ -14,14 +16,14 @@ protected:
 
     PMercury200Device Mercury200Dev;
 
-    PRegister Mercury200RET1Reg;
-    PRegister Mercury200RET2Reg;
-    PRegister Mercury200RET3Reg;
-    PRegister Mercury200RET4Reg;
-    PRegister Mercury200UReg;
-    PRegister Mercury200IReg;
-    PRegister Mercury200PReg;
-    PRegister Mercury200BatReg;
+    PProtocolRegister Mercury200RET1Reg;
+    PProtocolRegister Mercury200RET2Reg;
+    PProtocolRegister Mercury200RET3Reg;
+    PProtocolRegister Mercury200RET4Reg;
+    PProtocolRegister Mercury200UReg;
+    PProtocolRegister Mercury200IReg;
+    PProtocolRegister Mercury200PReg;
+    PProtocolRegister Mercury200BatReg;
 };
 
 PDeviceConfig TMercury200Test::GetDeviceConfig()
@@ -32,17 +34,17 @@ PDeviceConfig TMercury200Test::GetDeviceConfig()
 void TMercury200Test::SetUp()
 {
     TSerialDeviceTest::SetUp();
-    Mercury200Dev = std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort, 
+    Mercury200Dev = std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort,
                             TSerialDeviceFactory::GetProtocol("mercury200"));
 
-    Mercury200RET1Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2700, BCD32));
-    Mercury200RET2Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2704, BCD32));
-    Mercury200RET3Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2708, BCD32));
-    Mercury200RET4Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x270C, BCD32));
-    Mercury200UReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x6300, BCD16));
-    Mercury200IReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x6302, BCD16));
-    Mercury200PReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE24, 0x6304, BCD24));
-    Mercury200BatReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x2900, BCD16));
+    Mercury200RET1Reg = std::make_shared<TProtocolRegister>(0x2700, TMercury200Device::REG_PARAM_VALUE32);
+    Mercury200RET2Reg = std::make_shared<TProtocolRegister>(0x2704, TMercury200Device::REG_PARAM_VALUE32);
+    Mercury200RET3Reg = std::make_shared<TProtocolRegister>(0x2708, TMercury200Device::REG_PARAM_VALUE32);
+    Mercury200RET4Reg = std::make_shared<TProtocolRegister>(0x270C, TMercury200Device::REG_PARAM_VALUE32);
+    Mercury200UReg = std::make_shared<TProtocolRegister>(0x6300, TMercury200Device::REG_PARAM_VALUE16);
+    Mercury200IReg = std::make_shared<TProtocolRegister>(0x6302, TMercury200Device::REG_PARAM_VALUE16);
+    Mercury200PReg = std::make_shared<TProtocolRegister>(0x6304, TMercury200Device::REG_PARAM_VALUE24);
+    Mercury200BatReg = std::make_shared<TProtocolRegister>(0x2900, TMercury200Device::REG_PARAM_VALUE16);
 
     SerialPort->Open();
 }
@@ -50,19 +52,19 @@ void TMercury200Test::SetUp()
 void TMercury200Test::VerifyEnergyQuery()
 {
     EnqueueMercury200EnergyResponse();
-    ASSERT_EQ(0x62142, Mercury200Dev->ReadRegister(Mercury200RET1Reg));
-    ASSERT_EQ(0x20834, Mercury200Dev->ReadRegister(Mercury200RET2Reg));
-    ASSERT_EQ(0x11111, Mercury200Dev->ReadRegister(Mercury200RET3Reg));
-    ASSERT_EQ(0x22222, Mercury200Dev->ReadRegister(Mercury200RET4Reg));
+    ASSERT_EQ(0x62142, Mercury200Dev->ReadProtocolRegister(Mercury200RET1Reg));
+    ASSERT_EQ(0x20834, Mercury200Dev->ReadProtocolRegister(Mercury200RET2Reg));
+    ASSERT_EQ(0x11111, Mercury200Dev->ReadProtocolRegister(Mercury200RET3Reg));
+    ASSERT_EQ(0x22222, Mercury200Dev->ReadProtocolRegister(Mercury200RET4Reg));
     Mercury200Dev->EndPollCycle();
 }
 
 void TMercury200Test::VerifyParamQuery()
 {
     EnqueueMercury200ParamResponse();
-    ASSERT_EQ(0x1234, Mercury200Dev->ReadRegister(Mercury200UReg));
-    ASSERT_EQ(0x5678, Mercury200Dev->ReadRegister(Mercury200IReg));
-    ASSERT_EQ(0x765432, Mercury200Dev->ReadRegister(Mercury200PReg));
+    ASSERT_EQ(0x1234, Mercury200Dev->ReadProtocolRegister(Mercury200UReg));
+    ASSERT_EQ(0x5678, Mercury200Dev->ReadProtocolRegister(Mercury200IReg));
+    ASSERT_EQ(0x765432, Mercury200Dev->ReadProtocolRegister(Mercury200PReg));
     Mercury200Dev->EndPollCycle();
 }
 
@@ -92,7 +94,7 @@ TEST_F(TMercury200Test, ParamsQuery)
 TEST_F(TMercury200Test, BatteryVoltageQuery)
 {
     EnqueueMercury200BatteryVoltageResponse();
-    ASSERT_EQ(0x0391, Mercury200Dev->ReadRegister(Mercury200BatReg));
+    ASSERT_EQ(0x0391, Mercury200Dev->ReadProtocolRegister(Mercury200BatReg));
     Mercury200Dev->EndPollCycle();
     SerialPort->Close();
 }

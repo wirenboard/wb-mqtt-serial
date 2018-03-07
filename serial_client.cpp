@@ -77,8 +77,6 @@ void TSerialClient::AddRegister(PVirtualRegister reg)
 
     reg->SetFlushSignal(FlushNeeded);
 
-    //auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg->GetDevice(), reg, FlushNeeded, Debug);
-
     if (Debug)
         std::cerr << "AddRegister: " << reg << std::endl;
 }
@@ -125,35 +123,6 @@ void TSerialClient::GenerateReadQueries()
 
     std::cerr << queryCount <<  " queries generated" << std::endl;
 }
-
-// void TSerialClient::SplitRegisterRanges(std::set<PRegisterRange> && ranges)
-// {
-//     if (ranges.empty()) {
-//         return;
-//     }
-
-//     Plan->Modify([&](const PPollEntry & entry){
-//         if (auto serial_entry = std::dynamic_pointer_cast<TSerialPollEntry>(entry)) {
-//             for (auto itRange = serial_entry->Ranges.begin(); itRange != serial_entry->Ranges.end();) {
-//                 if (ranges.count(*itRange)) {
-//                     auto device = (*itRange)->Device();
-
-//                     std::cerr << "Disabling holes feature for register range" << std::endl;
-
-//                     auto newRanges = device->SplitRegisterList((*itRange)->RegisterList(), false);
-//                     serial_entry->Ranges.insert(itRange, newRanges.begin(), newRanges.end());
-
-//                     ranges.erase(*itRange);
-//                     itRange = serial_entry->Ranges.erase(itRange);
-//                 } else {
-//                     ++itRange;
-//                 }
-//             }
-//         }
-
-//         return ranges.empty();
-//     });
-// }
 
 void TSerialClient::MaybeUpdateErrorState(PVirtualRegister reg)
 {
@@ -214,7 +183,7 @@ void TSerialClient::Cycle()
 
     // devices whose registers were polled during this cycle and statues
     std::map<PSerialDevice, std::set<EQueryStatus>> devicesRangesStatuses;
-    TPUnorderedSet<PVirtualRegister> allAffectedRegisters;
+    TPSet<PVirtualRegister> allAffectedRegisters;
 
     Plan->ProcessPending([&](const PPollEntry& entry) {
         const auto & querySet = std::dynamic_pointer_cast<TSerialPollEntry>(entry)->QuerySet;
@@ -246,10 +215,8 @@ void TSerialClient::Cycle()
                 }
             }
 
-            auto device = query->GetDevice();
+            PrepareToAccessDevice(device);
             device->Execute(query);
-
-            assert(query->GetStatus() != EQueryStatus::NotExecuted);
 
             for (const auto & virtualRegister: query->VirtualRegisters) {
                 if (virtualRegister->IsChanged(EPublishData::Error)) {
@@ -322,12 +289,18 @@ bool TSerialClient::WriteSetupRegisters(PSerialDevice dev)
 
 void TSerialClient::SetReadCallback(const TSerialClient::TReadCallback& callback)
 {
-    ReadCallback = callback;
+    ReadCallback = [=](const PVirtualRegister & reg){
+        callback(reg);
+        reg->ResetChanged(EPublishData::Value);
+    };
 }
 
 void TSerialClient::SetErrorCallback(const TSerialClient::TErrorCallback& callback)
 {
-    ErrorCallback = callback;
+    ErrorCallback = [=](const PVirtualRegister & reg){
+        callback(reg);
+        reg->ResetChanged(EPublishData::Error);
+    };
 }
 
 void TSerialClient::SetDebug(bool debug)

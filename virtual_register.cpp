@@ -18,15 +18,6 @@ using namespace std;
 
 namespace // utility
 {
-    union TAddress
-    {
-        uint64_t AbsoluteAddress;
-        struct {
-            uint32_t Type;
-            uint32_t Address;
-        };
-    };
-
     template<typename T>
     inline T RoundValue(T val, double round_to)
     {
@@ -224,7 +215,7 @@ namespace // utility
     }
 }
 
-TVirtualRegister::TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device, TInitContext & context)
+TVirtualRegister::TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device)
     : TRegisterConfig(*config)
     , Device(device)
     , FlushNeeded(nullptr)
@@ -237,19 +228,27 @@ TVirtualRegister::TVirtualRegister(const PRegisterConfig & config, const PSerial
     , Enabled(true)
     , ValueIsRead(false)
     , ValueWasAccepted(false)
+{}
+
+void TVirtualRegister::Initialize()
 {
+    auto device = Device.lock();
+    auto self = shared_from_this();
+
+    assert(device);
+
     const auto & regType = device->Protocol()->GetRegTypes()->at(TypeName);
 
     ProtocolRegisterWidth = RegisterFormatByteWidth(regType.DefaultFormat);
 
-    TAddress protocolRegisterAddress;
+    ProtocolRegisters = TProtocolRegisterFactory::GenerateProtocolRegisters(self, device);
 
-    ProtocolRegisters = TProtocolRegisterFactory::GenerateProtocolRegisters(config, device, [&](int address) -> PProtocolRegister & {
-        protocolRegisterAddress.Type    = config->Type;
-        protocolRegisterAddress.Address = address;
+    for (const auto protocolRegisterBindInfo: ProtocolRegisters) {
+        const auto & protocolRegister = protocolRegisterBindInfo.first;
 
-        return context[make_pair(device, protocolRegisterAddress.AbsoluteAddress)];
-    });
+        assert(Type == (int)protocolRegister->Type);
+        protocolRegister->AssociateWith(self);
+    }
 
     if (!ReadOnly) {
         TIRDeviceQuerySet querySet({GetProtocolRegisters()}, EQueryOperation::Write);
@@ -363,6 +362,11 @@ bool TVirtualRegister::operator==(const TVirtualRegister & rhs) const noexcept
     return true; // ProtocolRegisters == rhs.ProtocolRegisters;
 }
 
+bool TVirtualRegister::operator<(const TVirtualRegister & rhs) const noexcept
+{
+    return Type < rhs.Type || (Type == rhs.Type && Address < rhs.Address);
+}
+
 void TVirtualRegister::SetFlushSignal(PBinarySemaphore flushNeeded)
 {
     FlushNeeded = flushNeeded;
@@ -419,9 +423,18 @@ void TVirtualRegister::SetTextValue(const std::string & value)
         cerr << "WARNING: attempt to write to read-only register. Ignored" << endl;
         return;
     }
+
+    SetValue(InvertWordOrderIfNeeded(*this, ConvertMasterValue(*this, OnValue.empty() ? value : (value == "1" ? OnValue : "0"))));
+}
+
+void TVirtualRegister::SetValue(uint64_t value)
+{
     Dirty.store(true);
-    ValueToWrite = InvertWordOrderIfNeeded(*this, ConvertMasterValue(*this, OnValue.empty() ? value : (value == "1" ? OnValue : "0")));
-    FlushNeeded->Signal();
+    ValueToWrite = value;
+
+    if (FlushNeeded) {
+        FlushNeeded->Signal();
+    }
 }
 
 bool TVirtualRegister::NeedToPoll() const
@@ -451,6 +464,7 @@ void TVirtualRegister::Flush()
         GetDevice()->Execute(WriteQuery);
 
         bool error = WriteQuery->GetStatus() != EQueryStatus::Ok;
+        WriteQuery->ResetStatus();
 
         if (!error) {
             CurrentValue = ValueToWrite;
@@ -474,6 +488,11 @@ void TVirtualRegister::SetEnabled(bool enabled)
     }
 }
 
+std::string TVirtualRegister::ToString() const
+{
+    return "<" + GetDevice()->ToString() + ":" + TRegisterConfig::ToString() + ">";
+}
+
 void TVirtualRegister::AssociateWithSet(const PVirtualRegisterSet & virtualRegisterSet)
 {
     VirtualRegisterSet = virtualRegisterSet;
@@ -488,19 +507,9 @@ PAbstractVirtualRegister TVirtualRegister::GetTopLevel()
     }
 }
 
-void TVirtualRegister::NotifyPublished(EPublishData state)
+void TVirtualRegister::ResetChanged(EPublishData state)
 {
     Remove(ChangedPublishData, state);
-}
-
-void TVirtualRegister::AssociateWithProtocolRegisters()
-{
-    for (const auto protocolRegisterBindInfo: ProtocolRegisters) {
-        const auto & protocolRegister = protocolRegisterBindInfo.first;
-
-        assert(Type == (int)protocolRegister->Type);
-        protocolRegister->AssociateWith(shared_from_this());
-    }
 }
 
 bool TVirtualRegister::GetValueIsRead() const
@@ -517,7 +526,9 @@ void TVirtualRegister::UpdateReadError(bool error)
 {
     EErrorState before = ErrorState;
 
-    Remove(ErrorState, EErrorState::UnknownErrorState);
+    if (ErrorState == EErrorState::UnknownErrorState) {
+        ErrorState = EErrorState::NoError;
+    }
 
     if (error) {
         Add(ErrorState, EErrorState::ReadError);
@@ -527,7 +538,7 @@ void TVirtualRegister::UpdateReadError(bool error)
 
     if (ErrorState != before) {
         Add(ChangedPublishData, EPublishData::Error);
-        if (Global::Debug) {
+        if (Global::Debug || true) {
             cerr << "UpdateReadError: changed error to " << (int)ErrorState << endl;
         }
     }
@@ -537,7 +548,9 @@ void TVirtualRegister::UpdateWriteError(bool error)
 {
     EErrorState before = ErrorState;
 
-    Remove(ErrorState, EErrorState::UnknownErrorState);
+    if (ErrorState == EErrorState::UnknownErrorState) {
+        ErrorState = EErrorState::NoError;
+    }
 
     if (error) {
         Add(ErrorState, EErrorState::WriteError);
@@ -575,10 +588,10 @@ void TVirtualRegister::NotifyWrite(bool ok)
     UpdateWriteError(!ok);
 }
 
-PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const PSerialDevice & device, TInitContext & context)
+PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const PSerialDevice & device)
 {
-    auto reg = PVirtualRegister(new TVirtualRegister(config, device, context));
-    reg->AssociateWithProtocolRegisters();
+    auto reg = PVirtualRegister(new TVirtualRegister(config, device));
+    reg->Initialize();
 
     return reg;
 }

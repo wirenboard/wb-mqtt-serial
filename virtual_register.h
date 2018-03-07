@@ -13,7 +13,7 @@
  * It can be associated with multiple ProtocolRegisters.
  * ProtocolRegisters don't have to be adjacent by addresses.
  * ProtocolRegisters have to be of same type (debatable)
- * VirtualRegisters cannot be compared since they may overlap each other
+ * VirtualRegisters may share same protocol register
  */
 class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterConfig, public std::enable_shared_from_this<TVirtualRegister>
 {
@@ -36,9 +36,7 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
     bool                                        ValueWasAccepted : 1;
 
 public:
-    using TInitContext = std::map<std::pair<PSerialDevice, uint64_t>, PProtocolRegister>;
-
-    static PVirtualRegister Create(const PRegisterConfig & config, const PSerialDevice & device, TInitContext &);
+    static PVirtualRegister Create(const PRegisterConfig & config, const PSerialDevice & device);
 
     /**
      * Build resulting value from protocol registers' values according to binding info
@@ -55,14 +53,13 @@ public:
      */
     size_t GetHash() const noexcept;
     bool operator==(const TVirtualRegister & rhs) const noexcept;
+    bool operator<(const TVirtualRegister & rhs) const noexcept;
 
     void SetFlushSignal(PBinarySemaphore flushNeeded);
     PSerialDevice GetDevice() const;
     TPSet<PProtocolRegister> GetProtocolRegisters() const;
     EErrorState GetErrorState() const;
-    std::string GetTextValue() const;
     std::string Describe() const;
-    void SetTextValue(const std::string & value);
     bool NeedToPoll() const;
     bool GetValueIsRead() const;
     void InvalidateProtocolRegisterValues();
@@ -77,17 +74,24 @@ public:
      */
     PAbstractVirtualRegister GetTopLevel();
 
-    void NotifyPublished(EPublishData);
+    void ResetChanged(EPublishData);
 
+    std::string GetTextValue() const;
     uint64_t GetValue() const;
+
+    void SetTextValue(const std::string & value);
+    void SetValue(uint64_t value);
 
     bool IsEnabled() const;
     void SetEnabled(bool);
 
+    std::string ToString() const;
+
     const TProtocolRegisterBindInfo & GetBindInfo(const PProtocolRegister & reg) const;
 
 private:
-    TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device, TInitContext & context);
+    TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device);
+    void Initialize();
 
     uint64_t ComposeValue() const;
 
@@ -95,8 +99,6 @@ private:
 
     uint32_t GetBitPosition() const;
     uint8_t GetBitSize() const;
-
-    void AssociateWithProtocolRegisters();
 
     void UpdateReadError(bool error);
     void UpdateWriteError(bool error);

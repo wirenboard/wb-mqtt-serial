@@ -2,6 +2,7 @@
 #include "fake_serial_port.h"
 #include "mercury230_expectations.h"
 #include "mercury230_device.h"
+#include "protocol_register.h"
 
 
 class TMercury230Test: public TSerialDeviceTest, public TMercury230Expectations
@@ -15,31 +16,31 @@ protected:
 
     PMercury230Device Mercury230Dev;
 
-    PRegister Mercury230TotalReactiveEnergyReg;
-	PRegister Mercury230TotalConsumptionReg;
-	PRegister Mercury230PReg;
-	PRegister Mercury230P1Reg;
-	PRegister Mercury230P2Reg;
-	PRegister Mercury230P3Reg;
-	PRegister Mercury230QReg;
-	PRegister Mercury230Q1Reg;
-	PRegister Mercury230Q2Reg;
-	PRegister Mercury230Q3Reg;
-	PRegister Mercury230U1Reg;
-	PRegister Mercury230U2Reg;
-	PRegister Mercury230U3Reg;
-	PRegister Mercury230I1Reg;
-	PRegister Mercury230I2Reg;
-	PRegister Mercury230I3Reg;
-	PRegister Mercury230FrequencyReg;
-	PRegister Mercury230PFReg;
-	PRegister Mercury230PF1Reg;
-	PRegister Mercury230PF2Reg;
-	PRegister Mercury230PF3Reg;
-	PRegister Mercury230KU1Reg;
-	PRegister Mercury230KU2Reg;
-	PRegister Mercury230KU3Reg;
-	PRegister Mercury230TempReg;
+    PProtocolRegister Mercury230TotalReactiveEnergyReg;
+	PProtocolRegister Mercury230TotalConsumptionReg;
+	PProtocolRegister Mercury230PReg;
+	PProtocolRegister Mercury230P1Reg;
+	PProtocolRegister Mercury230P2Reg;
+	PProtocolRegister Mercury230P3Reg;
+	PProtocolRegister Mercury230QReg;
+	PProtocolRegister Mercury230Q1Reg;
+	PProtocolRegister Mercury230Q2Reg;
+	PProtocolRegister Mercury230Q3Reg;
+	PProtocolRegister Mercury230U1Reg;
+	PProtocolRegister Mercury230U2Reg;
+	PProtocolRegister Mercury230U3Reg;
+	PProtocolRegister Mercury230I1Reg;
+	PProtocolRegister Mercury230I2Reg;
+	PProtocolRegister Mercury230I3Reg;
+	PProtocolRegister Mercury230FrequencyReg;
+	PProtocolRegister Mercury230PFReg;
+	PProtocolRegister Mercury230PF1Reg;
+	PProtocolRegister Mercury230PF2Reg;
+	PProtocolRegister Mercury230PF3Reg;
+	PProtocolRegister Mercury230KU1Reg;
+	PProtocolRegister Mercury230KU2Reg;
+	PProtocolRegister Mercury230KU3Reg;
+	PProtocolRegister Mercury230TempReg;
 };
 
 PDeviceConfig TMercury230Test::GetDeviceConfig()
@@ -54,40 +55,40 @@ void TMercury230Test::SetUp()
 	Mercury230Dev = std::make_shared<TMercury230Device>(GetDeviceConfig(), SerialPort,
 	                            TSerialDeviceFactory::GetProtocol("mercury230"));
 	Mercury230TotalConsumptionReg =
-		TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32));
+		std::make_shared<TProtocolRegister>(0x0000, TMercury230Device::REG_VALUE_ARRAY);
 	Mercury230TotalReactiveEnergyReg =
-		TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32));
+		std::make_shared<TProtocolRegister>(0x0002, TMercury230Device::REG_VALUE_ARRAY);
 
-	Mercury230PReg  = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24));
-	Mercury230P1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1101, S24));
-	Mercury230P2Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1102, S24));
-	Mercury230P3Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1103, S24));
+	Mercury230PReg  = std::make_shared<TProtocolRegister>(0x1100, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230P1Reg = std::make_shared<TProtocolRegister>(0x1101, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230P2Reg = std::make_shared<TProtocolRegister>(0x1102, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230P3Reg = std::make_shared<TProtocolRegister>(0x1103, TMercury230Device::REG_PARAM_SIGN_ACT);
 
-	Mercury230QReg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1104, S24));
-	Mercury230Q1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1105, S24));
-	Mercury230Q2Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1106, S24));
-	Mercury230Q3Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1107, S24));
+	Mercury230QReg = std::make_shared<TProtocolRegister>(0x1104, TMercury230Device::REG_PARAM_SIGN_REACT);
+	Mercury230Q1Reg = std::make_shared<TProtocolRegister>(0x1105, TMercury230Device::REG_PARAM_SIGN_REACT);
+	Mercury230Q2Reg = std::make_shared<TProtocolRegister>(0x1106, TMercury230Device::REG_PARAM_SIGN_REACT);
+	Mercury230Q3Reg = std::make_shared<TProtocolRegister>(0x1107, TMercury230Device::REG_PARAM_SIGN_REACT);
 
-	Mercury230U1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1111, U24));
-	Mercury230U2Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1112, U24));
-	Mercury230U3Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1113, U24));
+	Mercury230U1Reg = std::make_shared<TProtocolRegister>(0x1111, TMercury230Device::REG_PARAM);
+	Mercury230U2Reg = std::make_shared<TProtocolRegister>(0x1112, TMercury230Device::REG_PARAM);
+	Mercury230U3Reg = std::make_shared<TProtocolRegister>(0x1113, TMercury230Device::REG_PARAM);
 
-	Mercury230I1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1121, U24));
-	Mercury230I2Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1122, U24));
-	Mercury230I3Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1123, U24));
+	Mercury230I1Reg = std::make_shared<TProtocolRegister>(0x1121, TMercury230Device::REG_PARAM);
+	Mercury230I2Reg = std::make_shared<TProtocolRegister>(0x1122, TMercury230Device::REG_PARAM);
+	Mercury230I3Reg = std::make_shared<TProtocolRegister>(0x1123, TMercury230Device::REG_PARAM);
 
-	Mercury230FrequencyReg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1140, U24));
+	Mercury230FrequencyReg = std::make_shared<TProtocolRegister>(0x1140, TMercury230Device::REG_PARAM);
 
-	Mercury230PFReg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1130, S24));
-	Mercury230PF1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1131, S24));
-	Mercury230PF2Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1132, S24));
-	Mercury230PF3Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1133, S24));
+	Mercury230PFReg = std::make_shared<TProtocolRegister>(0x1130, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230PF1Reg = std::make_shared<TProtocolRegister>(0x1131, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230PF2Reg = std::make_shared<TProtocolRegister>(0x1132, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230PF3Reg = std::make_shared<TProtocolRegister>(0x1133, TMercury230Device::REG_PARAM_SIGN_ACT);
 
-	Mercury230KU1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1161, U16));
-	Mercury230KU2Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1162, U16));
-	Mercury230KU3Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1163, U16));
+	Mercury230KU1Reg = std::make_shared<TProtocolRegister>(0x1161, TMercury230Device::REG_PARAM);
+	Mercury230KU2Reg = std::make_shared<TProtocolRegister>(0x1162, TMercury230Device::REG_PARAM);
+	Mercury230KU3Reg = std::make_shared<TProtocolRegister>(0x1163, TMercury230Device::REG_PARAM);
 
-	Mercury230TempReg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_BE, 0x1170, U16));
+	Mercury230TempReg = std::make_shared<TProtocolRegister>(0x1170, TMercury230Device::REG_PARAM_BE);
 
 
 	SerialPort->Open();
@@ -110,15 +111,15 @@ TEST_F(TMercury230Test, ReadEnergy)
 
     // Here we make sure that consecutive requests querying the same array
     // don't cause redundant requests during the single poll cycle.
-    ASSERT_EQ(3196200, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
-    ASSERT_EQ(300444, Mercury230Dev->ReadRegister(Mercury230TotalReactiveEnergyReg));
-    ASSERT_EQ(3196200, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
+    ASSERT_EQ(3196200, Mercury230Dev->ReadProtocolRegister(Mercury230TotalConsumptionReg));
+    ASSERT_EQ(300444, Mercury230Dev->ReadProtocolRegister(Mercury230TotalReactiveEnergyReg));
+    ASSERT_EQ(3196200, Mercury230Dev->ReadProtocolRegister(Mercury230TotalConsumptionReg));
     Mercury230Dev->EndPollCycle();
 
     EnqueueMercury230EnergyResponse2();
-    ASSERT_EQ(3196201, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
-    ASSERT_EQ(300445, Mercury230Dev->ReadRegister(Mercury230TotalReactiveEnergyReg));
-    ASSERT_EQ(3196201, Mercury230Dev->ReadRegister(Mercury230TotalConsumptionReg));
+    ASSERT_EQ(3196201, Mercury230Dev->ReadProtocolRegister(Mercury230TotalConsumptionReg));
+    ASSERT_EQ(300445, Mercury230Dev->ReadProtocolRegister(Mercury230TotalReactiveEnergyReg));
+    ASSERT_EQ(3196201, Mercury230Dev->ReadProtocolRegister(Mercury230TotalConsumptionReg));
     Mercury230Dev->EndPollCycle();
     SerialPort->Close();
 }
@@ -131,30 +132,30 @@ void TMercury230Test::VerifyParamQuery()
     // C = command (0x08)
     // N = param number (0x11)
     // B = subparam spec (BWRI), 0x11 = voltage, phase 1
-    ASSERT_EQ(24128, Mercury230Dev->ReadRegister(Mercury230U1Reg));
+    ASSERT_EQ(24128, Mercury230Dev->ReadProtocolRegister(Mercury230U1Reg));
 
     EnqueueMercury230I1Response();
     // subparam 0x21 = current (phase 1)
-    ASSERT_EQ(69, Mercury230Dev->ReadRegister(Mercury230I1Reg));
+    ASSERT_EQ(69, Mercury230Dev->ReadProtocolRegister(Mercury230I1Reg));
 
     EnqueueMercury230I2Response();
     // subparam 0x22 = current (phase 2)
-    ASSERT_EQ(96, Mercury230Dev->ReadRegister(Mercury230I2Reg));
+    ASSERT_EQ(96, Mercury230Dev->ReadProtocolRegister(Mercury230I2Reg));
 
     EnqueueMercury230U2Response();
     // subparam 0x12 = voltage (phase 2)
-    ASSERT_EQ(24043, Mercury230Dev->ReadRegister(Mercury230U2Reg));
+    ASSERT_EQ(24043, Mercury230Dev->ReadProtocolRegister(Mercury230U2Reg));
 
     EnqueueMercury230U3Response();
 	// subparam 0x12 = voltage (phase 3)
-	ASSERT_EQ(50405, Mercury230Dev->ReadRegister(Mercury230U3Reg));
+	ASSERT_EQ(50405, Mercury230Dev->ReadProtocolRegister(Mercury230U3Reg));
 
     EnqueueMercury230PResponse();
     // Total power (P)
-    ASSERT_EQ(553095, Mercury230Dev->ReadRegister(Mercury230PReg));
+    ASSERT_EQ(553095, Mercury230Dev->ReadProtocolRegister(Mercury230PReg));
 
     EnqueueMercury230TempResponse();
-    ASSERT_EQ(24, Mercury230Dev->ReadRegister(Mercury230TempReg));
+    ASSERT_EQ(24, Mercury230Dev->ReadProtocolRegister(Mercury230TempReg));
 }
 
 TEST_F(TMercury230Test, ReadParams)
@@ -176,7 +177,7 @@ TEST_F(TMercury230Test, Reconnect)
     EnqueueMercury230U2Response();
 
     // subparam 0x12 = voltage (phase 2)
-    ASSERT_EQ(24043, Mercury230Dev->ReadRegister(Mercury230U2Reg));
+    ASSERT_EQ(24043, Mercury230Dev->ReadProtocolRegister(Mercury230U2Reg));
 
     Mercury230Dev->EndPollCycle();
     SerialPort->Close();
@@ -187,7 +188,7 @@ TEST_F(TMercury230Test, Exception)
     EnqueueMercury230SessionSetupResponse();
     EnqueueMercury230InternalMeterErrorResponse();
     try {
-        Mercury230Dev->ReadRegister(Mercury230U2Reg);
+        Mercury230Dev->ReadProtocolRegister(Mercury230U2Reg);
         FAIL() << "No exception thrown";
     } catch (const TSerialDeviceException& e) {
         ASSERT_STREQ("Serial protocol error: Internal meter error", e.what());

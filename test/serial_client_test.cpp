@@ -1346,7 +1346,6 @@ TEST_F(TConfigParserTest, Parse)
                     Emit() << "Type: " << device_channel->Type;
                     Emit() << "DeviceId: " << device_channel->DeviceId;
                     Emit() << "Order: " << device_channel->Order;
-                    Emit() << "OnValue: " << device_channel->OnValue;
                     Emit() << "Max: " << device_channel->Max;
                     Emit() << "ReadOnly: " << device_channel->ReadOnly;
                     if (!device_channel->RegisterConfigs.empty()) {
@@ -1360,6 +1359,7 @@ TEST_F(TConfigParserTest, Parse)
                         Emit() << "Scale: " << reg->Scale;
                         Emit() << "Offset: " << reg->Offset;
                         Emit() << "RoundTo: " << reg->RoundTo;
+                        Emit() << "OnValue: " << reg->OnValue;
                         Emit() << "Poll: " << reg->Poll;
                         Emit() << "ReadOnly: " << reg->ReadOnly;
                         Emit() << "TypeName: " << reg->TypeName;

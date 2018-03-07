@@ -157,13 +157,13 @@ int main(int, char**)
         int v = bus.ReadRegister(0x01, 0x0a);
         std::cout << "value of mod 0x01 reg 0x0a: " << v << std::endl;
         for (int i = 0; i < 8; ++i) {
-            bus.WriteRegister(0x01, 0x02 + i, 0x00); // manual control of the channel (low threshold = 0)
+            bus.WriteProtocolRegister(0x01, 0x02 + i, 0x00); // manual control of the channel (low threshold = 0)
             int address = 0x1a + i;
             std::cout << "value of relay " << i << ": " << (int)bus.ReadRegister(0x01, address) << std::endl;
-            bus.WriteRegister(0x01, address, 0xff);
+            bus.WriteProtocolRegister(0x01, address, 0xff);
             std::cout << "value of relay " << i << " (on): " << (int)bus.ReadRegister(0x01, address) << std::endl;
             sleep(1);
-            bus.WriteRegister(0x01, address, 0x00);
+            bus.WriteProtocolRegister(0x01, address, 0x00);
             std::cout << "value of relay " << i << " (off): " << (int)bus.ReadRegister(0x01, address) << std::endl;
         }
     } catch (const TIVTMDeviceException& e) {

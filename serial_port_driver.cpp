@@ -40,9 +40,6 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
     if (Config->Debug)
         std::cerr << "Setting up devices at " << port_config->ConnSettings->ToString() << std::endl;
 
-    // holds pointers to created protocol registers to eliminate duplicates and detect collisions
-    TVirtualRegister::TInitContext context;
-
     for (auto& device_config: Config->DeviceConfigs) {
         auto device = SerialClient->CreateDevice(device_config);
         Devices.push_back(device);
@@ -53,7 +50,7 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
             registers.reserve(channel_config->RegisterConfigs.size());
 
             for (const auto &reg_config: channel_config->RegisterConfigs) {
-                registers.push_back(TVirtualRegister::Create(reg_config, device, context));
+                registers.push_back(TVirtualRegister::Create(reg_config, device));
             }
 
             PAbstractVirtualRegister abstractRegister;
@@ -207,8 +204,6 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
     bool valueChanged = abstractRegister->IsChanged(EPublishData::Value);
     bool valueIsRead = abstractRegister->GetValueIsRead();
 
-    assert(!valueChanged || valueIsRead);
-
     if (!valueIsRead) {
         return;
     }
@@ -232,7 +227,6 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
             " <-- " << payload << std::endl;
 
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
-    reg->NotifyPublished(EPublishData::Value);
 }
 
 void TSerialPortDriver::UpdateError(const PVirtualRegister & reg)
@@ -257,7 +251,6 @@ void TSerialPortDriver::UpdateError(const PVirtualRegister & reg)
     if (errMapIt == PublishedErrorMap.end() || errMapIt->second != errorStr) {
         PublishedErrorMap[errorTopic] = errorStr;
         MQTTClient->Publish(NULL, errorTopic, errorStr.c_str(), 0, true);
-        reg->NotifyPublished(EPublishData::Error);
     }
 }
 

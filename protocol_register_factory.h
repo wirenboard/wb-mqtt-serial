@@ -8,8 +8,10 @@ class TProtocolRegisterFactory
 {
     TProtocolRegisterFactory() = delete;
 
-public:
-    using TRegisterCache = std::function<PProtocolRegister &(int)>; // address
+    static std::unordered_map<PSerialDevice, TPSet<PProtocolRegister>> ProtocolRegisters;
 
-    static TPMap<PProtocolRegister, TProtocolRegisterBindInfo> GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device, TRegisterCache && = TRegisterCache());
+public:
+    static void ResetCache();
+    static TPSetView<PProtocolRegister> CreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last);
+    static TPMap<PProtocolRegister, TProtocolRegisterBindInfo> GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device);
 };

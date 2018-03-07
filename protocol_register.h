@@ -12,7 +12,6 @@
 class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
 {
     friend TIRDeviceQuery;
-    friend TIRDeviceValueQuery;
     friend TVirtualRegister;
 
     TPWUnorderedSet<PWVirtualRegister> VirtualRegisters;
@@ -37,7 +36,7 @@ public:
     const std::string & GetTypeName() const;
 
     PSerialDevice GetDevice() const;
-    TPUnorderedSet<PVirtualRegister> GetVirtualRegsiters() const;
+    TPSet<PVirtualRegister> GetVirtualRegsiters() const;
 
     /**
      * Amount of bytes of protocol register that
@@ -45,7 +44,11 @@ public:
      */
     uint8_t GetUsedByteCount() const;
 
-    void SetValue(uint64_t value);
+    inline void SetValue(const uint64_t & value)
+    {   Value = value;  }
+
+    inline const uint64_t & GetValue() const
+    {   return Value;   }
 
     std::string Describe() const;
 
