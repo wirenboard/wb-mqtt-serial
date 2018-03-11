@@ -4,6 +4,8 @@
 #include "utils.h"
 #include "declarations.h"
 
+#include <iostream>
+
 /**
  * Each ProtocolRegister represents single actual register of device protocol.
  * This layer caches values and acts like bridge between VirtualRegister and IR layers.
@@ -45,7 +47,7 @@ public:
     uint8_t GetUsedByteCount() const;
 
     inline void SetValue(const uint64_t & value)
-    {   Value = value;  }
+    {   Value = value;  std::cerr << " reg set val: " << value << std::endl; }
 
     inline const uint64_t & GetValue() const
     {   return Value;   }

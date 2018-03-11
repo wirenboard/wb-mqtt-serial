@@ -189,7 +189,7 @@ template <typename Pointer>
 struct TPSetView
 {
     using TSet = TPSet<Pointer>;
-    using Iterator = TSet::iterator;
+    using Iterator = typename TSet::iterator;
 
     const Iterator Begin, End;
     const size_t Count;

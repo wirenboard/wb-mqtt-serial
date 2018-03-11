@@ -178,14 +178,14 @@ string TIRDeviceQuery::DescribeOperation() const
     }
 }
 
-void TIRDeviceQuery::FinalizeReadImpl(void * mem, size_t size, size_t count) const
+void TIRDeviceQuery::FinalizeReadImpl(const void * mem, size_t size, size_t count) const
 {
     assert(Operation == EQueryOperation::Read);
     assert(GetStatus() == EQueryStatus::NotExecuted);
     assert(GetCount() == count);
     assert(size <= sizeof(uint64_t));
 
-    auto bytes = static_cast<uint8_t*>(mem);
+    auto bytes = static_cast<const uint8_t*>(mem);
 
     auto itProtocolRegister = ProtocolRegistersView.Begin;
 
@@ -195,7 +195,7 @@ void TIRDeviceQuery::FinalizeReadImpl(void * mem, size_t size, size_t count) con
         auto addressShift = protocolRegister->Address - GetStart();
 
         if (addressShift == i) {    // avoid holes values
-            uint64_t value;
+            uint64_t value = 0;
             memcpy(&value, bytes, size);
             protocolRegister->SetValue(value);
             ++itProtocolRegister;

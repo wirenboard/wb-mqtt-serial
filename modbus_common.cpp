@@ -311,18 +311,18 @@ namespace Modbus    // modbus protocol common utilities
 
         if (IsSingleBitType(query.GetType())) {
             const auto bitCount = min(query.GetCount(), 8u);
+            vector<uint8_t> coilValues; // it is actually values of individual coils, bool is not used to avoid possible bit specialization of vector
+            query.GetValues(coilValues);
 
             for (uint32_t iByte = 0; iByte < byteCount; ++iByte) {
                 bitset<8> coils;
                 for (uint32_t iBit = iByte * 8; iBit < bitCount; ++iBit) {
-                    coils[iBit] = query.GetValue(iBit);
+                    coils[iBit] = coilValues[iBit];
                 }
                 pdu[6 + iByte] = static_cast<uint8_t>(coils.to_ulong());
             }
         } else {
-            for (uint32_t i = 0; i < query.GetCount(); ++i) {
-                WriteAs2Bytes(pdu + 6 + i * 2, query.GetValue(i) & 0xffff);
-            }
+            query.GetValues<uint16_t>(pdu + 6);
         }
     }
 

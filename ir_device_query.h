@@ -27,6 +27,20 @@ protected:
     explicit TIRDeviceQuery(const TPSet<PProtocolRegister> &, EQueryOperation = EQueryOperation::Read);
     void SetStatus(EQueryStatus) const;
 
+    template <typename T>
+    static void CheckTypeSingle()
+    {
+        static_assert(std::is_fundamental<T>::value, "only vector of fundamental types is allowed");
+        static_assert(sizeof(T) <= sizeof(uint64_t), "size of type exceeded 64 bits");
+    };
+
+    template <typename T>
+    static void CheckTypeMany()
+    {
+        CheckTypeSingle<T>();
+        static_assert(!std::is_same<T, bool>::value, "vector<bool> is not supported");
+    };
+
 public:
     virtual ~TIRDeviceQuery() = default;
 
@@ -62,10 +76,20 @@ public:
      * Accept values read from device as current and set status to Ok
      */
     template <typename T>
+    void FinalizeRead(const void * values) const
+    {
+        CheckTypeMany<T>();
+
+        FinalizeReadImpl(values, sizeof(T), GetCount());
+    }
+
+    /**
+     * Accept values read from device as current and set status to Ok
+     */
+    template <typename T>
     void FinalizeRead(const std::vector<T> & values) const
     {
-        static_assert(std::is_fundamental<T>::value, "only vector of fundamental types is allowed");
-        static_assert(sizeof(T) <= sizeof(uint64_t), "size of type exceeded 64 bits");
+        CheckTypeMany<T>();
 
         FinalizeReadImpl(values.data(), sizeof(T), values.size());
     }
@@ -76,8 +100,7 @@ public:
     template <typename T>
     void FinalizeRead(T value) const
     {
-        static_assert(std::is_fundamental<T>::value, "only fundamental types are allowed");
-        static_assert(sizeof(T) <= sizeof(uint64_t), "size of type exceeded 64 bits");
+        CheckTypeSingle<T>();
 
         FinalizeReadImpl(&value, sizeof(T), 1);
     }
@@ -86,7 +109,7 @@ public:
     std::string DescribeOperation() const;
 
 private:
-    void FinalizeReadImpl(void * mem, size_t size, size_t count) const;
+    void FinalizeReadImpl(const void * mem, size_t size, size_t count) const;
 };
 
 struct TIRDeviceValueQuery: TIRDeviceQuery
@@ -95,10 +118,17 @@ struct TIRDeviceValueQuery: TIRDeviceQuery
     virtual void SetValue(const PProtocolRegister & reg, uint64_t value) const = 0;
 
     template <typename T>
-    void GetValues(std::vector<T> & values)
+    void GetValues(void * values) const
     {
-        static_assert(std::is_fundamental<T>::value, "only vector of fundamental types is allowed");
-        static_assert(sizeof(T) <= sizeof(uint64_t), "size of type exceeded 64 bits");
+        CheckTypeMany<T>();
+
+        GetValuesImpl(values, sizeof(T), GetCount());
+    }
+
+    template <typename T>
+    void GetValues(std::vector<T> & values) const
+    {
+        CheckTypeMany<T>();
 
         values.resize(GetCount());
 

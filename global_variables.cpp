@@ -2,5 +2,5 @@
 
 namespace Global
 {
-    bool Debug = false;
+    bool Debug = true;
 }

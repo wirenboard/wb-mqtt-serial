@@ -636,6 +636,9 @@ void TVirtualRegister::MapValueTo(const PIRDeviceValueQuery & query, const TPMap
 
         auto cachedRegisterValue = protocolRegister->Value;
 
+        cerr << "cached reg val: " << cachedRegisterValue << endl;
+        cerr << "reg mask: " << ~registerLocalMask << endl;
+
         auto registerValue = (~registerLocalMask & cachedRegisterValue) | (valueLocalMask & (value >> bitPosition)) << bindInfo.BitStart;
 
         if (Global::Debug)

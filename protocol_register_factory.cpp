@@ -7,6 +7,8 @@
 
 using namespace std;
 
+unordered_map<PSerialDevice, TPSet<PProtocolRegister>> TProtocolRegisterFactory::ProtocolRegisters;
+
 void TProtocolRegisterFactory::ResetCache()
 {
     ProtocolRegisters.clear();

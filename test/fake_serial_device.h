@@ -9,6 +9,8 @@ using PFakeSerialPort = std::shared_ptr<TFakeSerialPort>;
 
 class TFakeSerialDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TFakeSerialDevice>> {
 public:
+    using RegisterValueType = uint16_t;
+
     enum RegisterType {REG_FAKE = 123};
 
     TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
@@ -23,7 +25,7 @@ public:
     void SetIsConnected(bool);
     ~TFakeSerialDevice();
 
-    uint16_t Registers[256] {};
+    RegisterValueType Registers[256] {};
 private:
     PFakeSerialPort FakePort;
     std::map<int, std::pair<bool, bool>> Blockings;

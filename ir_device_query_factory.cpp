@@ -2,6 +2,7 @@
 #include "ir_device_value_query_impl.h"
 #include "serial_device.h"
 #include "protocol_register.h"
+#include "protocol_register_factory.h"
 #include "virtual_register.h"
 
 #include <iostream>
@@ -11,12 +12,19 @@ using namespace std;
 
 namespace // utility
 {
-    uint32_t GetMaxHoleSize(const TPSet<PProtocolRegister> & registerSet)
+    inline uint32_t GetMaxHoleSize(const PProtocolRegister & first, const PProtocolRegister & last)
     {
+        assert(first->Address <= last->Address);
+
+        // perform lookup not on set itself but on range - thus taking into account all created registers
+        const auto & registerSetView = TProtocolRegisterFactory::CreateRegisterSetView(first, last);
+
         uint32_t hole = 0;
 
         int prev = -1;
-        for (const auto & reg: registerSet) {
+        for (auto itReg = registerSetView.Begin; itReg != registerSetView.End; ++itReg) {
+            const auto & reg = *itReg;
+
             if (prev >= 0) {
                 hole = max(hole, reg->Address - prev);
             }
@@ -27,9 +35,21 @@ namespace // utility
         return hole;
     }
 
-    uint32_t GetIntervalSize(const TPSet<PProtocolRegister> & registerSet)
+    inline uint32_t GetMaxHoleSize(const TPSet<PProtocolRegister> & registerSet)
     {
-        return (*registerSet.rbegin())->Address - (*registerSet.begin())->Address + 1;
+        return GetMaxHoleSize(*registerSet.begin(), *registerSet.rbegin());
+    }
+
+    inline uint32_t GetRegCount(const PProtocolRegister & first, const PProtocolRegister & last)
+    {
+        assert(first->Address <= last->Address);
+
+        return last->Address - first->Address + 1;
+    }
+
+    inline uint32_t GetRegCount(const TPSet<PProtocolRegister> & registerSet)
+    {
+        return GetRegCount(*registerSet.begin(), *registerSet.rbegin());
     }
 
     bool IsReadOperation(EQueryOperation operation)
@@ -133,19 +153,11 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
     }
     /** done gathering data **/
 
-    if (Global::Debug)
-        cerr << "merging sets" << endl;
-
     if (performMerge) {
         MergeSets(registerSets, static_cast<uint32_t>(maxHole), static_cast<uint32_t>(maxRegs));
     } else {
         CheckSets(registerSets, static_cast<uint32_t>(maxHole), static_cast<uint32_t>(maxRegs));
     }
-
-
-
-    if (Global::Debug)
-        cerr << "merging sets done" << endl;
 
     TQueries result;
 
@@ -160,15 +172,21 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
 
 void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PProtocolRegister>> & registerSets, uint32_t maxHole, uint32_t maxRegs)
 {
+    if (Global::Debug)
+        cerr << "checking sets" << endl;
+
     for (const auto & registerSet: registerSets) {
         if (GetMaxHoleSize(registerSet) > maxHole) {
             throw TSerialDeviceException("unable to create queries for given register configuration: max hole count exceeded");
         }
 
-        if (GetIntervalSize(registerSet) > maxRegs) {
+        if (GetRegCount(registerSet) > maxRegs) {
             throw TSerialDeviceException("unable to create queries for given register configuration: max reg count exceeded");
         }
     }
+
+    if (Global::Debug)
+        cerr << "checking sets done" << endl;
 }
 
 /**
@@ -180,152 +198,42 @@ void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PProtocolRegister>> 
  */
 void TIRDeviceQueryFactory::MergeSets(list<TPSet<PProtocolRegister>> & registerSets, uint32_t maxHole, uint32_t maxRegs)
 {
-    enum EStage: uint8_t {
-        HoleEliminate,
-        Merge,
-        Done
-    };
+    CheckSets(registerSets, maxHole, maxRegs);
 
-    TPSet<PProtocolRegister> allRegisters;
-    for (const auto & registerSet: registerSets) {
-        allRegisters.insert(registerSet.begin(), registerSet.end());
-    }
+    if (Global::Debug)
+        cerr << "merging sets" << endl;
 
-    auto assignMissingRegisters = [&](TPSet<PProtocolRegister> & registerSet) {
-        registerSet.insert(allRegisters.find(*registerSet.begin()), ++allRegisters.find(*registerSet.rbegin()));
-    };
+    for (auto itRegisterSet = registerSets.begin(); itRegisterSet != registerSets.end(); ++itRegisterSet) {
+        auto & registerSet = *itRegisterSet;
 
-    uint8_t Stage = HoleEliminate;
+        auto itOtherRegisterSet = itRegisterSet;
+        ++itOtherRegisterSet;
 
-    while (Stage != Done) {
+        for (;itOtherRegisterSet != registerSets.end();) {
+            assert(itRegisterSet != itOtherRegisterSet);
 
-        if (Global::Debug)
-            cerr << "begin " << (int)Stage << " stage" << endl;
+            const auto & otherRegisterSet = *itOtherRegisterSet;
 
-        for (auto itRegisterSet = registerSets.begin(); itRegisterSet != registerSets.end(); ++itRegisterSet) {
-            auto & registerSet = *itRegisterSet;
-            auto holeSize = GetMaxHoleSize(registerSet);
+            auto first = **registerSet.begin() < **otherRegisterSet.begin() ? *registerSet.begin() : *otherRegisterSet.begin();
+            auto last = **otherRegisterSet.rbegin() < **registerSet.rbegin() ? *registerSet.rbegin() : *otherRegisterSet.rbegin();
 
-            bool done = false;
-            while (!done) {
-                if (Stage == HoleEliminate) {
-                    if (holeSize <= maxHole) {
-                        done = true;
-                        continue;
-                    }
-                }
-
-                map<uint32_t, map<uint32_t, vector<list<TPSet<PProtocolRegister>>::iterator>>> setsForMerge;
-
-                for (auto itOtherRegisterSet = registerSets.begin(); itOtherRegisterSet != registerSets.end(); ++itOtherRegisterSet) {
-                    const auto & otherRegisterSet = *itOtherRegisterSet;
-
-                    if (itRegisterSet == itOtherRegisterSet) {
-                        continue;
-                    }
-
-                    uint32_t start     = (*registerSet.begin())->Address,
-                            end        = (*registerSet.rbegin())->Address + 1,
-                            startOther = (*otherRegisterSet.begin())->Address,
-                            endOther   = (*otherRegisterSet.rbegin())->Address + 1;
-
-                    bool overlap = startOther < end && start < endOther;
-
-                    if (overlap || Stage == Merge) {
-
-                        if (!overlap) {
-                            uint32_t distance = max(start, startOther) - min(end, endOther);
-
-                            if (distance > maxHole) {
-                                continue;
-                            }
-                        }
-
-                        // size after merge
-                        uint32_t size = end - start;
-                        uint32_t otherSize = endOther - startOther;
-                        uint32_t minMergedSize = max(size, otherSize);
-                        uint32_t mergedSize = max(end, endOther) - min(start, startOther);
-
-                        if (size > maxRegs) {
-                            throw TSerialDeviceException("unable to create queries for given register configuration: max reg count exceeded");
-                        }
-
-                        if (mergedSize > maxRegs) {
-                            continue;
-                        }
-
-                        // EXPL: difference between actual size after merge and minimal possible size after merge
-                        //       shows how much sets overlap each other as intervals (0 - means one set covers another entirely)
-                        uint32_t sortingFactor = mergedSize - minMergedSize;
-
-                        setsForMerge[sortingFactor][otherSize].push_back(itOtherRegisterSet);
-                    }
-                }
-
-                bool holeSizeDecreased = false;
-                bool merged = false;
-                for (const auto & sortFactorRegisterSetsBySize: setsForMerge) {
-                    const auto & registerSetsBySize = sortFactorRegisterSetsBySize.second;
-
-                    for (const auto & sizeRegisterSets: registerSetsBySize) {
-                        const auto & setsForMerge = sizeRegisterSets.second;
-
-                        for (const auto & setForMerge: setsForMerge) {
-                            if (Stage == HoleEliminate) {
-                                if (holeSize > maxHole) {
-                                    auto mergedSet = registerSet;
-                                    mergedSet.insert(setForMerge->begin(), setForMerge->end());
-                                    auto newHoleSize = GetMaxHoleSize(mergedSet);
-                                    holeSizeDecreased = newHoleSize < holeSize;
-
-                                    if (holeSizeDecreased) {
-                                        registerSets.erase(setForMerge);
-                                        registerSet = move(mergedSet);
-                                        holeSize = newHoleSize;
-                                        merged = true;
-                                        break;
-                                    }
-                                }
-                            } else {
-                                registerSet.insert(setForMerge->begin(), setForMerge->end());
-                                registerSets.erase(setForMerge);
-                                merged = true;
-                                break;
-                            }
-                        }
-
-                        if (merged)
-                            break;
-                    }
-
-                    if (merged) {
-                        break;
-                    } else {
-                        if (holeSize) {
-                            assignMissingRegisters(registerSet);
-                            holeSize = GetMaxHoleSize(registerSet);
-                        }
-                    }
-                }
-
-                if (Stage == HoleEliminate) {
-                    if (holeSize <= maxHole) {
-                        done = true;
-                    } else if (!holeSizeDecreased) {
-                        throw TSerialDeviceException("unable to create queries for given register configuration: max hole count exceeded");
-                    }
-                } else if (Stage == Merge) {
-                    if (!merged) {
-                        done = true;
-                    }
-                }
+            auto holeSizeAfterMerge = GetMaxHoleSize(first, last);
+            if (holeSizeAfterMerge > maxHole) {
+                ++itOtherRegisterSet;
+                continue;
             }
+
+            auto regCountAfterMerge = last->Address - first->Address + 1;
+            if (regCountAfterMerge > maxRegs) {
+                ++itOtherRegisterSet;
+                continue;
+            }
+
+            registerSet.insert(otherRegisterSet.begin(), otherRegisterSet.end());
+            itOtherRegisterSet = registerSets.erase(itOtherRegisterSet);
         }
-
-        if (Global::Debug)
-            cerr << "end " << (int)Stage << " stage" << endl;
-
-        ++Stage;
     }
+
+    if (Global::Debug)
+        cerr << "merging sets done" << endl;
 }

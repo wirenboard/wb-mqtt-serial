@@ -5,6 +5,7 @@
 #include "fake_serial_device.h"
 #include "tcp_port_settings.h"
 #include "virtual_register.h"
+#include "protocol_register_factory.h"
 
 #include <gtest/gtest.h>
 
@@ -27,12 +28,11 @@ protected:
         return TVirtualRegister::Create(
             TRegisterConfig::Create(
                 TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
-                "fake", false, 0, word_order), Device, InitContext);
+                "fake", false, 0, word_order), Device);
     }
     PFakeSerialPort Port;
     PSerialClient SerialClient;
     PFakeSerialDevice Device;
-    TVirtualRegister::TInitContext InitContext;
 };
 
 void TSerialClientTest::SetUp()
@@ -76,7 +76,7 @@ void TSerialClientTest::TearDown()
 {
     SerialClient.reset();
     TLoggedFixture::TearDown();
-    InitContext.clear();
+    TProtocolRegisterFactory::ResetCache();
 }
 
 

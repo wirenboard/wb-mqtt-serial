@@ -34,8 +34,8 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
             throw runtime_error("register address out of range");
         }
 
-        bool blocked = any_of(query.ProtocolRegisters.begin(), query.ProtocolRegisters.end(), [this](const pair<PProtocolRegister, uint16_t> & registerIndex) {
-            return Blockings[registerIndex.first->Address].first;
+        bool blocked = any_of(query.ProtocolRegistersView.Begin, query.ProtocolRegistersView.End, [this](const PProtocolRegister & reg) {
+            return Blockings[reg->Address].first;
         });
 
         if (blocked) {
@@ -70,8 +70,8 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
             throw runtime_error("register address out of range");
         }
 
-        bool blocked = any_of(query.ProtocolRegisters.begin(), query.ProtocolRegisters.end(), [this](const pair<PProtocolRegister, uint16_t> & registerIndex) {
-            return Blockings[registerIndex.first->Address].second;
+        bool blocked = any_of(query.ProtocolRegistersView.Begin, query.ProtocolRegistersView.End, [this](const PProtocolRegister & reg) {
+            return Blockings[reg->Address].second;
         });
 
         if (blocked) {
@@ -82,11 +82,11 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
             throw runtime_error("invalid register type");
         }
 
-        Registers[reg->Address] = value;
+        query.GetValues<typename TFakeSerialDevice::RegisterValueType>(&Registers[query.GetStart()]);
 
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << value << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write query '" << query.Describe() << "'";
     } catch (const exception & e) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->Address << "' failed: '" << e.what() << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read query '" << query.Describe() << "' failed: '" << e.what() << "'";
 
         throw;
     }

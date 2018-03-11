@@ -129,7 +129,7 @@ void TSerialDevice::Read(const TIRDeviceQuery & query)
 {
     assert(query.GetCount() == 1);
 
-    const auto & reg = query.ProtocolRegisters.begin()->first;
+    const auto & reg = query.ProtocolRegistersView.GetFirst();
 
     SleepGuardInterval();
 
@@ -140,8 +140,9 @@ void TSerialDevice::Write(const TIRDeviceValueQuery & query)
 {
     assert(query.GetCount() == 1);
 
-    const auto & reg = query.ProtocolRegisters.begin()->first;
-    const auto & value = query.GetValue(0);
+    const auto & reg = query.ProtocolRegistersView.GetFirst();
+    uint64_t value;
+    query.GetValues<uint64_t>(&value);
 
     SleepGuardInterval();
 
