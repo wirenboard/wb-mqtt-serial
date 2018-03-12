@@ -14,7 +14,7 @@ struct TIRDeviceQuery
 {
     friend class TIRDeviceQueryFactory;
 
-    const TPSetView<PProtocolRegister> ProtocolRegistersView;
+    const TPSetView<PProtocolRegister> RegView;
     const TPSet<PVirtualRegister>      VirtualRegisters;    // registers that will be fully read or written after execution of query
     const bool                         HasHoles;
     const EQueryOperation              Operation;

@@ -5,7 +5,6 @@
 #include "fake_serial_device.h"
 #include "tcp_port_settings.h"
 #include "virtual_register.h"
-#include "protocol_register_factory.h"
 
 #include <gtest/gtest.h>
 
@@ -76,7 +75,6 @@ void TSerialClientTest::TearDown()
 {
     SerialClient.reset();
     TLoggedFixture::TearDown();
-    TProtocolRegisterFactory::ResetCache();
 }
 
 
@@ -312,7 +310,6 @@ TEST_F(TSerialClientTest, S32)
 
     Note() << "client -> server: -2";
     reg20->SetTextValue("-2");
-    EXPECT_EQ(to_string(-2), reg20->GetTextValue());
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), reg20->GetTextValue());
@@ -351,7 +348,6 @@ TEST_F(TSerialClientTest, WordSwap)
 
     Note() << "client -> server: -2";
     reg20->SetTextValue("-2");
-    EXPECT_EQ(to_string(-2), reg20->GetTextValue());
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), reg20->GetTextValue());
@@ -368,7 +364,6 @@ TEST_F(TSerialClientTest, WordSwap)
     EXPECT_EQ(0x00CC, Device->Registers[25]);
     EXPECT_EQ(0x00BB, Device->Registers[26]);
     EXPECT_EQ(0x00AA, Device->Registers[27]);
-
 }
 
 TEST_F(TSerialClientTest, U32)

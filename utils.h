@@ -7,6 +7,7 @@
 #include <memory>
 #include <algorithm>
 #include <type_traits>
+#include <sstream>
 
 namespace utils
 {
@@ -16,44 +17,46 @@ namespace utils
     template < template <typename...> class Template, typename... Args >
     struct is_instantiation_of< Template, Template<Args...> > : std::true_type {};
 
+    template < typename T >
+    struct is_pointer : std::integral_constant<bool, std::is_pointer<T>::value || is_instantiation_of<std::shared_ptr, T>::value> {};
+
+    template < typename T >
+    struct is_weak_pointer : is_instantiation_of<std::weak_ptr, T> {};
+
     template <typename Pointer>
     struct ptr_cmp
     {
-        static_assert(std::is_pointer<Pointer>::value || is_instantiation_of<std::shared_ptr, Pointer>::value, "ptr_cmp must be used only with pointers and shared_ptrs");
+        static_assert(is_pointer<Pointer>::value, "ptr_cmp must be used only with pointers and shared_ptrs");
 
-        inline bool operator()(const Pointer & lptr, const Pointer & rptr) const
+        static bool cmp(const Pointer & lptr, const Pointer & rptr)
         {
             if (!rptr) return false; // nothing after expired pointer
             if (!lptr) return true;  // every not expired after expired pointer
             return *lptr < *rptr;
+        }
+
+        inline bool operator()(const Pointer & lptr, const Pointer & rptr) const
+        {
+            return cmp(lptr, rptr);
         }
     };
 
     template <typename WeakPointer>
     struct weak_ptr_cmp
     {
-        static_assert(is_instantiation_of<std::weak_ptr, WeakPointer>::value, "weak_ptr_cmp must be used only with weak_ptrs");
+        static_assert(is_weak_pointer<WeakPointer>::value, "weak_ptr_cmp must be used only with weak_ptrs");
 
         inline bool operator()(const WeakPointer & lhs, const WeakPointer & rhs) const
         {
             auto lptr = lhs.lock(), rptr = rhs.lock();
-            return ptr_cmp<decltype(lptr)>()(lptr, rptr);
+            return ptr_cmp<decltype(lptr)>::cmp(lptr, rptr);
         }
-    };
-
-    /**
-     * same as std::remove_pointer but works for all types with dereference operator
-     */
-    template <typename T>
-    struct dereferenced_type
-    {
-        using type = decltype(*T());
     };
 
     template <typename Pointer>
     struct ptr_hash
     {
-        static_assert(std::is_pointer<Pointer>::value || is_instantiation_of<std::shared_ptr, Pointer>::value, "ptr_hash must be used only with pointers and shared_ptrs");
+        static_assert(is_pointer<Pointer>::value, "ptr_hash must be used only with pointers and shared_ptrs");
 
         inline size_t operator()(const Pointer & ptr) const
         {
@@ -66,7 +69,7 @@ namespace utils
     template <typename WeakPointer>
     struct weak_ptr_hash
     {
-        static_assert(is_instantiation_of<std::weak_ptr, WeakPointer>::value, "weak_ptr_hash must be used only with weak_ptrs");
+        static_assert(is_weak_pointer<WeakPointer>::value, "weak_ptr_hash must be used only with weak_ptrs");
 
         inline size_t operator()(const WeakPointer & wptr) const
         {
@@ -78,7 +81,7 @@ namespace utils
     template <typename Pointer>
     struct ptr_equal
     {
-        static_assert(std::is_pointer<Pointer>::value || is_instantiation_of<std::shared_ptr, Pointer>::value, "ptr_hash must be used only with pointers and shared_ptrs");
+        static_assert(is_pointer<Pointer>::value, "ptr_hash must be used only with pointers and shared_ptrs");
 
         inline bool operator()(const Pointer & lhs, const Pointer & rhs) const
         {
@@ -97,7 +100,7 @@ namespace utils
     template <typename WeakPointer>
     struct weak_ptr_equal
     {
-        static_assert(is_instantiation_of<std::weak_ptr, WeakPointer>::value, "weak_ptr_hash must be used only with weak_ptrs");
+        static_assert(is_weak_pointer<WeakPointer>::value, "weak_ptr_hash must be used only with weak_ptrs");
 
         inline bool operator()(const WeakPointer & lhs, const WeakPointer & rhs) const
         {
@@ -105,6 +108,12 @@ namespace utils
             return ptr_equal<decltype(lptr)>()(lptr, rptr);
         }
     };
+
+    template<typename T, typename ... Args>
+    std::unique_ptr<T> make_unique(Args && ... args)
+    {
+        return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+    }
 }
 
 template <typename K>
@@ -114,10 +123,10 @@ template <typename K, typename V>
 using TPMap = std::map<K, V, utils::ptr_cmp<K>>;
 
 template <typename K>
-using TPUnorderedSet = std::unordered_set<K, utils::ptr_hash<K>, utils::ptr_equal<K>>;
+using TPWSet = std::set<K, utils::weak_ptr_cmp<K>>;
 
 template <typename K>
-using TPWUnorderedSet = std::unordered_set<K, utils::weak_ptr_hash<K>, utils::weak_ptr_equal<K>>;
+using TPUnorderedSet = std::unordered_set<K, utils::ptr_hash<K>, utils::ptr_equal<K>>;
 
 template <typename K, typename V>
 using TPUnorderedMap = std::unordered_map<K, V, utils::ptr_hash<K>, utils::ptr_equal<K>>;
@@ -162,6 +171,12 @@ inline uint8_t BitCountToByteCount(uint8_t bitCount)
     return BitCountToRegCount(bitCount, 8);
 }
 
+template<typename Pointer>
+inline bool IsSubset(const TPSet<Pointer> & set, const TPSet<Pointer> & subset)
+{
+    return includes(set.begin(), set.end(), subset.begin(), subset.end(), utils::ptr_cmp<Pointer>::cmp);
+}
+
 template <typename T>
 struct _mutable
 {
@@ -191,23 +206,78 @@ struct TPSetView
     using TSet = TPSet<Pointer>;
     using Iterator = typename TSet::iterator;
 
-    const Iterator Begin, End;
+    const Iterator First, Last;
     const size_t Count;
 
-    TPSetView(const Iterator & begin, const Iterator & end)
-        : Begin(begin)
-        , End(end)
-        , Count(std::distance(begin, end))
+    TPSetView(const Iterator & first, const Iterator & last)
+        : First(first)
+        , Last(last)
+        , Count(std::distance(first, last) + 1)
     {}
 
     Pointer GetFirst() const
     {
-        return *Begin;
+        return *First;
     }
 
     Pointer GetLast() const
     {
-        auto end = End;
-        return *(--end);
+        return *Last;
+    }
+
+    Iterator Begin() const
+    {
+        return First;
+    }
+
+    Iterator End() const
+    {
+        auto end = Last;
+        return ++end;
     }
 };
+
+template<typename Iterator>
+std::string PrintRange(
+    Iterator pos,
+    const Iterator end,
+    std::function<void(std::ostream&, typename Iterator::value_type)> && toStream = [](std::ostream & s, typename Iterator::value_type val){ s << val; },
+    bool multiline = false,
+    const char * delimiter = ", "
+)
+{
+    std::ostringstream ss;
+
+    ss << "[";
+
+    if (multiline) {
+        ss << std::endl;
+    }
+
+    while (pos != end) {
+        toStream(ss, *pos);
+
+        if (++pos != end) {
+            ss << delimiter;
+        }
+
+        if (multiline) {
+            ss << std::endl;
+        }
+    }
+
+    ss << "]";
+
+    return ss.str();
+}
+
+template<typename Collection>
+std::string PrintCollection(
+    const Collection & c,
+    std::function<void(std::ostream&, typename Collection::value_type)> && toStream = [](std::ostream & s, typename Collection::value_type val){ s << val; },
+    bool multiline = false,
+    const char * delimiter = ", "
+)
+{
+    return PrintRange(c.begin(), c.end(), std::move(toStream), multiline, delimiter);
+}

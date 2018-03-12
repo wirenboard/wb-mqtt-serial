@@ -1,4 +1,5 @@
 #include "serial_device.h"
+#include "ir_device_query_factory.h"
 #include "ir_device_query.h"
 #include "virtual_register.h"
 #include "protocol_register_factory.h"
@@ -14,10 +15,10 @@ TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig 
 {
     const auto & protocolRegisters = TProtocolRegisterFactory::GenerateProtocolRegisters(config->RegisterConfig, device);
 
-    TIRDeviceQuerySet querySet({ GetKeysAsSet(protocolRegisters) }, EQueryOperation::Write);
-    assert(querySet.Queries.size() == 1);
+    auto queries = TIRDeviceQueryFactory::GenerateQueries({ GetKeysAsSet(protocolRegisters) }, EQueryOperation::Write, TIRDeviceQueryFactory::Default, device);
+    assert(queries.size() == 1);
 
-    Query = std::dynamic_pointer_cast<TIRDeviceValueQuery>(*querySet.Queries.begin());
+    Query = std::dynamic_pointer_cast<TIRDeviceValueQuery>(*queries.begin());
     assert(Query);
 
     TVirtualRegister::MapValueTo(Query, protocolRegisters, Value);
@@ -113,6 +114,45 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
     assert(query->IsExecuted());
 }
 
+PProtocolRegister TSerialDevice::GetCreateRegister(uint32_t address, uint32_t type)
+{
+    auto protocolRegister = std::make_shared<TProtocolRegister>(address, type, shared_from_this());
+
+    const auto & insRes = Registers.insert(protocolRegister);
+
+    if (insRes.second) {
+        if (Global::Debug) {
+            std::cerr << "device " << ToString() << ": create register at " << address << std::endl;
+        }
+    } else {
+        protocolRegister = *insRes.first;
+    }
+
+    return protocolRegister;
+}
+
+TPSetView<PProtocolRegister> TSerialDevice::CreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last) const
+{
+    assert(!Registers.empty());
+
+    auto itFirst = Registers.find(first);
+    auto itLast  = Registers.find(last);
+
+    assert(itFirst != Registers.end());
+    assert(itLast  != Registers.end());
+
+    return {itFirst, itLast};
+}
+
+TPSetView<PProtocolRegister> TSerialDevice::StaticCreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last)
+{
+    auto device = first->GetDevice();
+
+    assert(device);
+
+    return device->CreateRegisterSetView(first, last);
+}
+
 void TSerialDevice::Prepare()
 {
     Port()->Sleep(Delay);
@@ -129,7 +169,7 @@ void TSerialDevice::Read(const TIRDeviceQuery & query)
 {
     assert(query.GetCount() == 1);
 
-    const auto & reg = query.ProtocolRegistersView.GetFirst();
+    const auto & reg = query.RegView.GetFirst();
 
     SleepGuardInterval();
 
@@ -140,7 +180,7 @@ void TSerialDevice::Write(const TIRDeviceValueQuery & query)
 {
     assert(query.GetCount() == 1);
 
-    const auto & reg = query.ProtocolRegistersView.GetFirst();
+    const auto & reg = query.RegView.GetFirst();
     uint64_t value;
     query.GetValues<uint64_t>(&value);
 

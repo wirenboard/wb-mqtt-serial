@@ -16,13 +16,15 @@ public:
         AsIs        // do not modify sets, <number of queries> == <number of sets>
     };
 
+    static const EQueryGenerationPolicy Default;
+
     /**
      * Generate query sets grouping protocol registers by virtual registers' type and poll interval
      * and return query sets grouped by poll interval
      */
     static std::map<TIntervalMs, std::vector<PIRDeviceQuerySet>> GenerateQuerySets(const TPSet<PVirtualRegister> &, EQueryOperation);
 
-    static TQueries GenerateQueries(std::list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation, EQueryGenerationPolicy = Minify);
+    static TQueries GenerateQueries(std::list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation, EQueryGenerationPolicy = Default, PSerialDevice = nullptr);
 
     template <class Query>
     static PIRDeviceQuery CreateQuery(const TPSet<PProtocolRegister> & registerSet)

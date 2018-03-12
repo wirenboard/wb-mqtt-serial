@@ -16,7 +16,21 @@ class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
     friend TIRDeviceQuery;
     friend TVirtualRegister;
 
-    TPWUnorderedSet<PWVirtualRegister> VirtualRegisters;
+    struct IExternalLinkage
+    {
+        virtual ~IExternalLinkage() = default;
+        virtual PSerialDevice GetDevice() const = 0;
+        virtual TPSet<PVirtualRegister> GetVirtualRegsiters() const = 0;
+        virtual void LinkWith(const PProtocolRegister &, const PVirtualRegister &) = 0;
+        virtual bool IsLinkedWith(const PVirtualRegister &) const = 0;
+        virtual uint8_t GetUsedByteCount() const = 0;
+        virtual const std::string & GetTypeName() const = 0;
+    };
+
+    std::unique_ptr<IExternalLinkage> ExternalLinkage;
+
+    void InitExternalLinkage(const PSerialDevice &);
+    void InitExternalLinkage(const PVirtualRegister &);
 
 public:
     const uint32_t Address;
@@ -24,16 +38,15 @@ public:
 private:
     // TODO: (optimization) move value to dedicated device-centric cache and store only shared (VirtualRegisters.size() > 1) protocol registers' values
     uint64_t Value; //  most recent value of register (from successful writes and reads)
-    uint8_t  UsedBitCount;
 
 public:
-    TProtocolRegister(uint32_t address, uint32_t type);
+    TProtocolRegister(uint32_t address, uint32_t type, const PSerialDevice & = nullptr);
 
     bool operator<(const TProtocolRegister &) const;
     bool operator==(const TProtocolRegister &) const;
 
     void AssociateWith(const PVirtualRegister &);
-    bool IsAssociatedWith(const PVirtualRegister &);
+    bool IsAssociatedWith(const PVirtualRegister &) const;
 
     const std::string & GetTypeName() const;
 
@@ -53,7 +66,4 @@ public:
     {   return Value;   }
 
     std::string Describe() const;
-
-private:
-    PVirtualRegister AssociatedVirtualRegister() const;
 };

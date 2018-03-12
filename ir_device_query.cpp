@@ -1,7 +1,6 @@
 #include "ir_device_query.h"
 #include "ir_device_query_factory.h"
 #include "protocol_register.h"
-#include "protocol_register_factory.h"
 #include "virtual_register.h"
 #include "serial_device.h"
 
@@ -11,6 +10,11 @@ using namespace std;
 
 namespace
 {
+    void PrintAddr(ostream & s, const PProtocolRegister & reg)
+    {
+        s << reg->Address;
+    }
+
     TPSet<PVirtualRegister> GetVirtualRegisters(const TPSet<PProtocolRegister> & registerSet)
     {
         TPSet<PVirtualRegister> result;
@@ -19,9 +23,7 @@ namespace
             const auto & localVirtualRegisters = protocolRegister->GetVirtualRegsiters();
             for (const auto & virtualRegister: localVirtualRegisters) {
                 const auto & protocolRegisters = virtualRegister->GetProtocolRegisters();
-                if (includes(registerSet.begin(),       registerSet.end(),
-                             protocolRegisters.begin(), protocolRegisters.end())
-                ) {
+                if (IsSubset(registerSet, protocolRegisters)) {
                     result.insert(virtualRegister);
                 }
             }
@@ -46,43 +48,47 @@ namespace
 }
 
 TIRDeviceQuery::TIRDeviceQuery(const TPSet<PProtocolRegister> & registerSet, EQueryOperation operation)
-    : ProtocolRegistersView(TProtocolRegisterFactory::CreateRegisterSetView(*registerSet.begin(), *registerSet.rbegin()))
+    : RegView(TSerialDevice::StaticCreateRegisterSetView(*registerSet.begin(), *registerSet.rbegin()))
     , VirtualRegisters(GetVirtualRegisters(registerSet))
     , HasHoles(DetectHoles(registerSet))
     , Operation(operation)
     , Status(EQueryStatus::NotExecuted)
 {
     AbleToSplit = (VirtualRegisters.size() > 1);
+
+    for (const auto & reg: VirtualRegisters) {
+        cerr << "\t" << reg->ToString() << endl;
+    }
 }
 
 bool TIRDeviceQuery::operator<(const TIRDeviceQuery & rhs) const noexcept
 {
-    return *ProtocolRegistersView.GetLast() < *rhs.ProtocolRegistersView.GetFirst();
+    return *RegView.GetLast() < *rhs.RegView.GetFirst();
 }
 
 PSerialDevice TIRDeviceQuery::GetDevice() const
 {
-    return ProtocolRegistersView.GetFirst()->GetDevice();
+    return RegView.GetFirst()->GetDevice();
 }
 
 uint32_t TIRDeviceQuery::GetCount() const
 {
-    return (ProtocolRegistersView.GetLast()->Address - ProtocolRegistersView.GetFirst()->Address) + 1;
+    return (RegView.GetLast()->Address - RegView.GetFirst()->Address) + 1;
 }
 
 uint32_t TIRDeviceQuery::GetStart() const
 {
-    return ProtocolRegistersView.GetFirst()->Address;
+    return RegView.GetFirst()->Address;
 }
 
 uint32_t TIRDeviceQuery::GetType() const
 {
-    return ProtocolRegistersView.GetFirst()->Type;
+    return RegView.GetFirst()->Type;
 }
 
 const string & TIRDeviceQuery::GetTypeName() const
 {
-    return ProtocolRegistersView.GetFirst()->GetTypeName();
+    return RegView.GetFirst()->GetTypeName();
 }
 
 void TIRDeviceQuery::SetStatus(EQueryStatus status) const
@@ -148,22 +154,7 @@ void TIRDeviceQuery::SetAbleToSplit(bool ableToSplit)
 
 string TIRDeviceQuery::Describe() const
 {
-    ostringstream ss;
-
-    ss << "[";
-
-    size_t i = 0;
-    for (auto itReg = ProtocolRegistersView.Begin; itReg != ProtocolRegistersView.End; ++itReg) {
-        ss << (*itReg)->Address;
-
-        if (++i < ProtocolRegistersView.Count) {
-            ss << ", ";
-        }
-    }
-
-    ss << "]";
-
-    return ss.str();
+    return PrintRange(RegView.Begin(), RegView.End(), PrintAddr);
 }
 
 string TIRDeviceQuery::DescribeOperation() const
@@ -187,7 +178,7 @@ void TIRDeviceQuery::FinalizeReadImpl(const void * mem, size_t size, size_t coun
 
     auto bytes = static_cast<const uint8_t*>(mem);
 
-    auto itProtocolRegister = ProtocolRegistersView.Begin;
+    auto itProtocolRegister = RegView.First;
 
     for (size_t i = 0; i < count; ++i) {
         const auto & protocolRegister = *itProtocolRegister;
@@ -204,7 +195,7 @@ void TIRDeviceQuery::FinalizeReadImpl(const void * mem, size_t size, size_t coun
         bytes += size;
     }
 
-    assert(itProtocolRegister == ProtocolRegistersView.End);
+    assert(itProtocolRegister == RegView.End());
 
     SetStatus(EQueryStatus::Ok);
 }
@@ -225,13 +216,9 @@ string TIRDeviceQuerySet::Describe() const
 {
     ostringstream ss;
 
-    ss << "[" << endl;
-    for (const auto & query: Queries) {
-        ss << "\t" << query->Describe() << endl;
-    }
-    ss << "]";
-
-    return ss.str();
+    return PrintCollection(Queries, [](ostream & s, const PIRDeviceQuery & query){
+        s << "\t" << query->Describe();
+    }, true, "");
 }
 
 TIRDeviceQuerySet::TIRDeviceQuerySet(list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation operation)

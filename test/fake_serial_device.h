@@ -4,6 +4,8 @@
 
 #include <map>
 
+const auto FAKE_DEVICE_REG_COUNT = 256;
+
 class TFakeSerialPort;
 using PFakeSerialPort = std::shared_ptr<TFakeSerialPort>;
 
@@ -23,9 +25,10 @@ public:
     void BlockWriteFor(int addr, bool block);
     uint32_t Read2Registers(int addr);
     void SetIsConnected(bool);
+    const TProtocolInfo & GetProtocolInfo() const override;
     ~TFakeSerialDevice();
 
-    RegisterValueType Registers[256] {};
+    RegisterValueType Registers[FAKE_DEVICE_REG_COUNT] {};
 private:
     PFakeSerialPort FakePort;
     std::map<int, std::pair<bool, bool>> Blockings;

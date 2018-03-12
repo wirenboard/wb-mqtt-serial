@@ -257,6 +257,10 @@ void TSerialClient::Cycle()
 
         bool deviceWasDisconnected = device->GetIsDisconnected(); // don't move after device->OnCycleEnd(...);
         {
+            std::cerr << "device: " << device->ToString() << " statuses: " << PrintCollection(statuses, [](std::ostream & s, EQueryStatus status) {
+                s << (int)status;
+            }) << std::endl;
+
             bool cycleFailed = statuses.count(EQueryStatus::UnknownError) == statuses.size();
             device->OnCycleEnd(!cycleFailed);
         }

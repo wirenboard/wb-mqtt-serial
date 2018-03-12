@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #include <list>
 #include <set>
 #include <vector>
@@ -12,10 +10,12 @@
 #include <algorithm>
 #include <stdint.h>
 #include <iostream>
+#include <cassert>
 
 #include "serial_exc.h"
 #include "serial_config.h"
 #include "port.h"
+#include "utils.h"
 
 
 using TRegisterTypes = std::vector<TRegisterType>;
@@ -78,6 +78,8 @@ public:
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
     virtual const TProtocolInfo & GetProtocolInfo() const;
+    PProtocolRegister GetCreateRegister(uint32_t address, uint32_t type);
+    TPSetView<PProtocolRegister> CreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last) const;
 
     // Prepare to access device (pauses for configured delay by default)
     virtual void Prepare();
@@ -100,6 +102,8 @@ public:
     virtual void OnCycleEnd(bool ok);
     bool GetIsDisconnected() const;
 
+    static TPSetView<PProtocolRegister> StaticCreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last);
+
 protected:
     void SleepGuardInterval() const;
 
@@ -110,7 +114,7 @@ protected:
     virtual void Write(const TIRDeviceValueQuery &);
 
     /**
-     * Override these methods if protocol supports only single register read / write
+     * Implement these methods if protocol supports only single register read / write
      */
     virtual uint64_t ReadProtocolRegister(const PProtocolRegister & reg);
     virtual void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value);
@@ -121,6 +125,7 @@ private:
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
     std::vector<PDeviceSetupItem> SetupItems;
+    TPSet<PProtocolRegister> Registers;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
     int RemainingFailCycles;
@@ -142,6 +147,12 @@ public:
 
     /*! Get map of register types */
     virtual PRegisterTypeMap GetRegTypes() const = 0;
+
+    /*! Get register type by name */
+    virtual const TRegisterType & GetRegType(const std::string & name) const = 0;
+
+    /*! Get register type by index */
+    virtual const TRegisterType & GetRegType(size_t index) const = 0;
 
     /*! Create new device of given type */
     virtual PSerialDevice CreateDevice(PDeviceConfig config, PPort port) = 0;
@@ -187,9 +198,21 @@ public:
     TBasicProtocol(std::string name, const TRegisterTypes &reg_types)
         : _Name(name)
     {
+        int maxIndex = 0;
+
         _RegTypes = std::make_shared<TRegisterTypeMap>();
-        for (const auto& rt : reg_types)
+        for (const auto& rt : reg_types) {
+            assert(rt.Index >= 0);
+
             _RegTypes->insert(std::make_pair(rt.Name, rt));
+            maxIndex = std::max(maxIndex, rt.Index);
+        }
+
+        _RegTypeNameByIndex.resize(maxIndex + 1);
+
+        for (const auto& rt : reg_types) {
+            _RegTypeNameByIndex[rt.Index] = rt.Name;
+        }
     }
 
 protected:
@@ -200,8 +223,15 @@ protected:
     {}
 
 public:
-    std::string GetName() const { return _Name; }
-    PRegisterTypeMap GetRegTypes() const { return _RegTypes; }
+    std::string GetName() const override { return _Name; }
+    PRegisterTypeMap GetRegTypes() const override { return _RegTypes; }
+    const TRegisterType & GetRegType(const std::string & name) const override { return _RegTypes->at(name); }
+    const TRegisterType & GetRegType(size_t index) const override
+    {
+        assert(index < _RegTypeNameByIndex.size());
+
+        return GetRegType(_RegTypeNameByIndex[index]);
+    }
 
     /*!
      * New concrete device builder
@@ -266,6 +296,7 @@ public:
 private:
     std::string _Name;
     PRegisterTypeMap _RegTypes;
+    std::vector<std::string> _RegTypeNameByIndex;
     std::unordered_map<TPort *, std::unordered_map<TSlaveId, PSerialDevice>> _Devices;
 };
 

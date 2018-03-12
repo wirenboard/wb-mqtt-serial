@@ -466,10 +466,6 @@ void TVirtualRegister::Flush()
         bool error = WriteQuery->GetStatus() != EQueryStatus::Ok;
         WriteQuery->ResetStatus();
 
-        if (!error) {
-            CurrentValue = ValueToWrite;
-        }
-
         UpdateWriteError(error);
     }
 }
@@ -586,6 +582,10 @@ void TVirtualRegister::NotifyRead(bool ok)
 void TVirtualRegister::NotifyWrite(bool ok)
 {
     UpdateWriteError(!ok);
+
+    if (ok) {
+        CurrentValue = ValueToWrite;
+    }
 }
 
 PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const PSerialDevice & device)
@@ -596,14 +596,14 @@ PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const 
     return reg;
 }
 
-uint64_t TVirtualRegister::MapValueFrom(const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & registersBindInfo)
+uint64_t TVirtualRegister::MapValueFrom(const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & registerMap)
 {
     uint64_t value = 0;
 
     uint8_t bitPosition = 0;
-    for (const auto & protocolRegisterBindInfo: registersBindInfo) {
-        const auto & protocolRegister = protocolRegisterBindInfo.first;
-        const auto & bindInfo = protocolRegisterBindInfo.second;
+    for (auto protocolRegisterBindInfo = registerMap.rbegin(); protocolRegisterBindInfo != registerMap.rend(); ++protocolRegisterBindInfo) {
+        const auto & protocolRegister = protocolRegisterBindInfo->first;
+        const auto & bindInfo = protocolRegisterBindInfo->second;
 
         auto mask = MersenneNumber(bindInfo.BitCount());
         value |= ((mask & (protocolRegister->Value >> bindInfo.BitStart)) << bitPosition);
@@ -627,9 +627,9 @@ void TVirtualRegister::MapValueTo(const PIRDeviceValueQuery & query, const TPMap
         cerr << "map value to registers: " << value << endl;
 
     uint8_t bitPosition = 0;
-    for (const auto & protocolRegisterBindInfo: registerMap) {
-        const auto & protocolRegister = protocolRegisterBindInfo.first;
-        const auto & bindInfo = protocolRegisterBindInfo.second;
+    for (auto protocolRegisterBindInfo = registerMap.rbegin(); protocolRegisterBindInfo != registerMap.rend(); ++protocolRegisterBindInfo) {
+        const auto & protocolRegister = protocolRegisterBindInfo->first;
+        const auto & bindInfo = protocolRegisterBindInfo->second;
 
         auto valueLocalMask = MersenneNumber(bindInfo.BitCount());
         auto registerLocalMask = valueLocalMask << bindInfo.BitStart;
@@ -642,7 +642,7 @@ void TVirtualRegister::MapValueTo(const PIRDeviceValueQuery & query, const TPMap
         auto registerValue = (~registerLocalMask & cachedRegisterValue) | (valueLocalMask & (value >> bitPosition)) << bindInfo.BitStart;
 
         if (Global::Debug)
-            cerr << "writing [" << bitPosition << ", " << int(bitPosition + bindInfo.BitCount() - 1) << "]" << " bits of value "
+            cerr << "writing [" << (int)bitPosition << ", " << int(bitPosition + bindInfo.BitCount() - 1) << "]" << " bits of value "
                  << " to " << bindInfo.Describe() << " bits of " << protocolRegister->Describe() << endl;
 
         query->SetValue(protocolRegister, registerValue);

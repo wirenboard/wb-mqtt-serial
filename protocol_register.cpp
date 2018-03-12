@@ -6,12 +6,173 @@
 
 using namespace std;
 
-TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t type)
+
+void TProtocolRegister::InitExternalLinkage(const PSerialDevice & device)
+{
+    struct TSerialDeviceLinkage: TProtocolRegister::IExternalLinkage
+    {
+        PWSerialDevice          Device;
+        TProtocolRegister &     Register;
+
+
+        TSerialDeviceLinkage(const PSerialDevice & device, TProtocolRegister & reg)
+            : Device(device)
+            , Register(reg)
+        {}
+
+        PSerialDevice GetDevice() const override
+        {
+            auto device = Device.lock();
+
+            assert(device);
+
+            return device;
+        }
+
+        TPSet<PVirtualRegister> GetVirtualRegsiters() const override
+        {
+            return {};
+        }
+
+        void LinkWith(const PProtocolRegister &, const PVirtualRegister &) override
+        {
+            assert(false);
+        }
+
+        bool IsLinkedWith(const PVirtualRegister &) const override
+        {
+            return false;
+        }
+
+        uint8_t GetUsedByteCount() const override
+        {
+            return RegisterFormatByteWidth(GetDevice()->Protocol()->GetRegType(Register.Type).DefaultFormat);
+        }
+
+        const std::string & GetTypeName() const override
+        {
+            return GetDevice()->Protocol()->GetRegType(Register.Type).Name;
+        }
+    };
+
+    if (ExternalLinkage && dynamic_cast<TSerialDeviceLinkage*>(ExternalLinkage.get())) {
+        return;
+    }
+
+    ExternalLinkage = utils::make_unique<TSerialDeviceLinkage>(device, *this);
+}
+
+void TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg)
+{
+    struct TVirtualRegisterLinkage: TProtocolRegister::IExternalLinkage
+    {
+        TPWSet<PWVirtualRegister> VirtualRegisters;
+        uint8_t                   UsedBitCount;
+
+
+        TVirtualRegisterLinkage(const PVirtualRegister & reg)
+            : VirtualRegisters({ reg })
+            , UsedBitCount(0)
+        {}
+
+        PVirtualRegister AssociatedVirtualRegister() const
+        {
+            assert(!VirtualRegisters.empty());
+
+            auto virtualReg = VirtualRegisters.begin()->lock();
+
+            assert(virtualReg);
+
+            return virtualReg;
+        }
+
+        TPSet<PVirtualRegister> GetVirtualRegsiters() const override
+        {
+            assert(!VirtualRegisters.empty());
+
+            TPSet<PVirtualRegister> result;
+
+            for (const auto & virtualRegister: VirtualRegisters) {
+                const auto & locked = virtualRegister.lock();
+
+                assert(locked);
+
+                bool inserted = result.insert(locked).second;
+
+                assert(inserted);
+            }
+
+            return result;
+        }
+
+        PSerialDevice GetDevice() const
+        {
+            assert(!VirtualRegisters.empty());
+
+            return AssociatedVirtualRegister()->GetDevice();
+        }
+
+        void LinkWith(const PProtocolRegister & self, const PVirtualRegister & reg) override
+        {
+            assert(!VirtualRegisters.empty());
+            assert(GetDevice() == reg->GetDevice());
+            assert(AssociatedVirtualRegister()->Type == reg->Type);
+
+            bool inserted = VirtualRegisters.insert(reg).second;
+
+            if (!inserted) {
+                throw TSerialDeviceException("register collision at " + reg->ToString());
+            }
+
+            /**
+             * Find out how many bytes we have to read to cover all bits required by virtual registers
+             *  thus, if, for instance, there is single virtual register that uses 1 last bit (64th),
+             *  we'll have to read all 8 bytes in order to fill that single bit
+             */
+
+            const auto & bindInfo = reg->GetBindInfo(self);
+
+            UsedBitCount = max(UsedBitCount, bindInfo.BitEnd);
+        }
+
+        bool IsLinkedWith(const PVirtualRegister & reg) const override
+        {
+            assert(!VirtualRegisters.empty());
+
+            return VirtualRegisters.count(reg);
+        }
+
+        uint8_t GetUsedByteCount() const override
+        {
+            assert(!VirtualRegisters.empty());
+
+            return BitCountToByteCount(UsedBitCount);
+        }
+
+        const std::string & GetTypeName() const override
+        {
+            assert(!VirtualRegisters.empty());
+
+            return AssociatedVirtualRegister()->TypeName;
+        }
+    };
+
+    if (ExternalLinkage && dynamic_cast<TVirtualRegisterLinkage*>(ExternalLinkage.get())) {
+        return;
+    }
+
+    ExternalLinkage = utils::make_unique<TVirtualRegisterLinkage>(reg);
+}
+
+TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t type, const PSerialDevice & device)
     : Address(address)
     , Type(type)
     , Value(0)
-    , UsedBitCount(0)
-{}
+{
+    if (device) {
+        InitExternalLinkage(device);
+    }
+}
 
 bool TProtocolRegister::operator<(const TProtocolRegister & rhs) const
 {
@@ -29,84 +190,44 @@ bool TProtocolRegister::operator==(const TProtocolRegister & rhs) const
 
 void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
 {
-    if (!VirtualRegisters.empty()) {
-        assert(GetDevice() == reg->GetDevice());
-    }
+    InitExternalLinkage(reg);
 
-    assert((int)Type == reg->Type);
-
-    bool inserted = VirtualRegisters.insert(reg).second;
-
-    if (!inserted) {
-        throw TSerialDeviceException("register collision at " + reg->ToString());
-    }
-
-    if (Global::Debug) {
-        cerr << Describe() << " associate with virtual register " << reg->ToString() << endl;
-    }
-
-    /**
-     * Find out how many bytes we have to read to cover all bits required by virtual registers
-     *  thus, if, for instance, there is single virtual register that uses 1 last bit (64th),
-     *  we'll have to read all 8 bytes in order to fill that single bit
-     */
-
-    const auto & bindInfo = reg->GetBindInfo(const_pointer_cast<TProtocolRegister>(shared_from_this()));
-
-    UsedBitCount = max(UsedBitCount, bindInfo.BitEnd);
+    ExternalLinkage->LinkWith(shared_from_this(), reg);
 }
 
-bool TProtocolRegister::IsAssociatedWith(const PVirtualRegister & reg)
+bool TProtocolRegister::IsAssociatedWith(const PVirtualRegister & reg) const
 {
-    return VirtualRegisters.count(reg);
+    assert(ExternalLinkage);
+
+    return ExternalLinkage->IsLinkedWith(reg);
 }
 
 const string & TProtocolRegister::GetTypeName() const
 {
-    return AssociatedVirtualRegister()->TypeName;
+    assert(ExternalLinkage);
+
+    return ExternalLinkage->GetTypeName();
 }
 
 PSerialDevice TProtocolRegister::GetDevice() const
 {
-    if (VirtualRegisters.empty()) {
-        cerr << "WARNING: called TProtocolRegister::GetDevice() of register without any associated virtual register: returning null" << endl;
-        return nullptr;
-    }
+    assert(ExternalLinkage);
 
-    return AssociatedVirtualRegister()->GetDevice();
+    return ExternalLinkage->GetDevice();
 }
 
 TPSet<PVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
 {
-    TPSet<PVirtualRegister> result;
+    assert(ExternalLinkage);
 
-    for (const auto & virtualRegister: VirtualRegisters) {
-        const auto & locked = virtualRegister.lock();
-
-        assert(locked);
-
-        bool inserted = result.insert(locked).second;
-
-        assert(inserted);
-    }
-
-    return result;
+    return ExternalLinkage->GetVirtualRegsiters();
 }
 
 uint8_t TProtocolRegister::GetUsedByteCount() const
 {
-    return BitCountToByteCount(UsedBitCount);
-}
+    assert(ExternalLinkage);
 
-PVirtualRegister TProtocolRegister::AssociatedVirtualRegister() const
-{
-    assert(!VirtualRegisters.empty());
-
-    auto virtualReg = VirtualRegisters.begin()->lock();
-
-    assert(virtualReg);
-
-    return virtualReg;
+    return ExternalLinkage->GetUsedByteCount();
 }
 
 std::string TProtocolRegister::Describe() const

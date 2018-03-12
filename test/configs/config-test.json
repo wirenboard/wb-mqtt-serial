@@ -87,6 +87,7 @@
                     "id": "WordsLETest",
                     "slave_id": "0x91",
                     "protocol": "fake",
+                    "max_read_registers": 4,
                     "channels": [
                         {
                             "name" : "Voltage",
@@ -104,6 +105,7 @@
                     "id": "RoundTest",
                     "slave_id": "0x92",
                     "protocol": "fake",
+                    "max_read_registers": 2,
                     "channels": [
                         {
                             "name" : "Float_0_01",

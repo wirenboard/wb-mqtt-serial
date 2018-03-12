@@ -2,7 +2,6 @@
 #include "ir_device_value_query_impl.h"
 #include "serial_device.h"
 #include "protocol_register.h"
-#include "protocol_register_factory.h"
 #include "virtual_register.h"
 
 #include <iostream>
@@ -17,16 +16,19 @@ namespace // utility
         assert(first->Address <= last->Address);
 
         // perform lookup not on set itself but on range - thus taking into account all created registers
-        const auto & registerSetView = TProtocolRegisterFactory::CreateRegisterSetView(first, last);
+        const auto & registerSetView = TSerialDevice::StaticCreateRegisterSetView(first, last);
 
         uint32_t hole = 0;
 
         int prev = -1;
-        for (auto itReg = registerSetView.Begin; itReg != registerSetView.End; ++itReg) {
+        auto end = registerSetView.End();
+        for (auto itReg = registerSetView.First; itReg != end; ++itReg) {
             const auto & reg = *itReg;
 
+            assert((int)reg->Address > prev);
+
             if (prev >= 0) {
-                hole = max(hole, reg->Address - prev);
+                hole = max(hole, (reg->Address - prev) - 1);
             }
 
             prev = reg->Address;
@@ -85,6 +87,8 @@ namespace // utility
     }
 }
 
+const TIRDeviceQueryFactory::EQueryGenerationPolicy TIRDeviceQueryFactory::Default = TIRDeviceQueryFactory::Minify;
+
 map<TIntervalMs, vector<PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuerySets(const TPSet<PVirtualRegister> & virtualRegisters, EQueryOperation operation)
 {
     map<TIntervalMs, vector<PIRDeviceQuerySet>> querySetsByPollInterval;
@@ -110,13 +114,15 @@ map<TIntervalMs, vector<PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuery
     return querySetsByPollInterval;
 }
 
-TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation operation, EQueryGenerationPolicy policy)
+TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation operation, EQueryGenerationPolicy policy, PSerialDevice device)
 {
     assert(!registerSets.empty());
     assert(!registerSets.front().empty());
 
     /** gathering data **/
-    const auto & device = (*registerSets.front().begin())->GetDevice();
+    if (!device) {
+        device = (*registerSets.front().begin())->GetDevice();
+    }
 
     assert(device);
 
@@ -176,12 +182,26 @@ void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PProtocolRegister>> 
         cerr << "checking sets" << endl;
 
     for (const auto & registerSet: registerSets) {
-        if (GetMaxHoleSize(registerSet) > maxHole) {
-            throw TSerialDeviceException("unable to create queries for given register configuration: max hole count exceeded");
+        auto hole = GetMaxHoleSize(registerSet);
+        if (hole > maxHole) {
+            throw TSerialDeviceException("unable to create queries for given register configuration: max hole count exceeded (detected: " +
+                to_string(hole) +
+                ", max: " + to_string(maxHole) +
+                ", set: " + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
+                    s << reg->Address;
+                })
+            );
         }
 
-        if (GetRegCount(registerSet) > maxRegs) {
-            throw TSerialDeviceException("unable to create queries for given register configuration: max reg count exceeded");
+        auto regCount = GetRegCount(registerSet);
+        if (regCount > maxRegs) {
+            throw TSerialDeviceException("unable to create queries for given register configuration: max reg count exceeded (detected: " +
+                to_string(regCount) +
+                ", max: " + to_string(maxRegs) +
+                ", set: " + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
+                    s << reg->Address;
+                })
+            );
         }
     }
 

@@ -7,39 +7,18 @@
 
 using namespace std;
 
-unordered_map<PSerialDevice, TPSet<PProtocolRegister>> TProtocolRegisterFactory::ProtocolRegisters;
-
-void TProtocolRegisterFactory::ResetCache()
-{
-    ProtocolRegisters.clear();
-}
-
-TPSetView<PProtocolRegister> TProtocolRegisterFactory::CreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last)
-{
-    const auto & device = first->GetDevice();
-
-    assert(device);
-
-    const auto & registerSet = ProtocolRegisters[device];
-
-    assert(!registerSet.empty());
-
-    auto begin = registerSet.find(first);
-    auto end = registerSet.find(last);
-
-    assert(begin != registerSet.end());
-    assert(end++ != registerSet.end());
-
-    return {begin, end};
-}
-
 TPMap<PProtocolRegister, TProtocolRegisterBindInfo> TProtocolRegisterFactory::GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device)
 {
     TPMap<PProtocolRegister, TProtocolRegisterBindInfo> registersBindInfo;
 
-    const auto & regType = device->Protocol()->GetRegTypes()->at(config->TypeName);
+    ERegisterFormat regFormat;
+    try {
+        regFormat = device->Protocol()->GetRegTypes()->at(config->TypeName).DefaultFormat;
+    } catch (out_of_range &) {
+        throw TSerialDeviceException("unknown type name: '" + config->TypeName + "' of " + device->ToString() + ": " + config->ToString());
+    }
 
-    const uint8_t registerBitWidth = RegisterFormatByteWidth(regType.DefaultFormat) * 8;
+    const uint8_t registerBitWidth = RegisterFormatByteWidth(regFormat) * 8;
     auto bitsToAllocate = config->GetBitWidth();
 
     uint32_t regCount = BitCountToRegCount(bitsToAllocate, registerBitWidth);
@@ -52,9 +31,10 @@ TPMap<PProtocolRegister, TProtocolRegisterBindInfo> TProtocolRegisterFactory::Ge
         cerr << "split " << config->ToString() << " to " << regCount << " " << config->TypeName << " registers" << endl;
     }
 
-    for (auto regIndex = 0u, regIndexEnd = regCount; regIndex != regIndexEnd; ++regIndex) {
-        auto type    = config->Type;
-        auto address = config->Address + regIndex;
+    for (auto regIndex = 0u, regIndexEnd = regCount; regIndex != regIndexEnd;) {
+        const auto regReverseIndex = regIndexEnd - regIndex - 1;
+        const auto type            = config->Type;
+        const auto address         = config->Address + regReverseIndex;
 
         TProtocolRegisterBindInfo bindInfo {};
 
@@ -72,21 +52,13 @@ TPMap<PProtocolRegister, TProtocolRegisterBindInfo> TProtocolRegisterFactory::Ge
             continue;
         }
 
-        auto protocolRegister = make_shared<TProtocolRegister>(address, type);
-
-        const auto & insRes = ProtocolRegisters[device].insert(protocolRegister);
-
-        if (insRes.second) {
-            if (Global::Debug) {
-                cerr << "create protocol register at " << address << endl;
-            }
-        } else {
-            protocolRegister = *insRes.first;
-        }
+        auto protocolRegister = device->GetCreateRegister(address, type);
 
         bitsToAllocate -= bindInfo.BitCount();
 
         registersBindInfo[protocolRegister] = bindInfo;
+
+        ++regIndex;
     }
 
     return move(registersBindInfo);

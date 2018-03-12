@@ -39,18 +39,20 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
         assert(size <= sizeof(T));
         assert(GetCount() == count);
 
-        auto itProtocolRegister = ProtocolRegistersView.Begin;
+        auto itProtocolRegister = RegView.First;
         auto itProtocolRegisterValue = ProtocolRegisterValues.begin();
         auto bytes = static_cast<uint8_t*>(mem);
 
         assert(*itProtocolRegister == itProtocolRegisterValue->first);
+
+        std::cerr << "GetValuesImpl: count: " << count << std::endl;
 
         for (size_t i = 0; i < count; ++i) {
             const auto requestedRegisterAddress = GetStart() + i;
 
             std::cerr << "GetValuesImpl: addr: " << requestedRegisterAddress << std::endl;
 
-            assert(itProtocolRegister != ProtocolRegistersView.End);
+            assert(itProtocolRegister != RegView.End());
             assert(itProtocolRegisterValue != ProtocolRegisterValues.end());
 
             // try read value from query itself
@@ -95,7 +97,7 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
             }
         }
 
-        assert(itProtocolRegister == ProtocolRegistersView.End);
+        assert(itProtocolRegister == RegView.End());
         assert(itProtocolRegisterValue == ProtocolRegisterValues.end());
     }
 
