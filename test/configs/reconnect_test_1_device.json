@@ -18,7 +18,7 @@
           "enabled": true,
           "protocol": "fake",
           "frame_timeout_ms": 150,
-          "max_read_registers": 10,
+          "max_read_registers": 1,
           "setup": [
           	{
                 "title": "Input 1",

@@ -14,7 +14,7 @@ class TModbusTest: public TSerialDeviceTest, public TModbusExpectations
     typedef shared_ptr<TModbusDevice> PModbusDevice;
 protected:
     void SetUp();
-    set<int> VerifyQuery(TPSet<PVirtualRegister> registerList = TPSet<PVirtualRegister>());
+    set<int> VerifyQuery(vector<PVirtualRegister> registerList = {});
     PIRDeviceQuery GenerateReadQueryForVirtualRegister(const PVirtualRegister & virtualRegister);
 
     virtual PDeviceConfig GetDeviceConfig();
@@ -61,7 +61,7 @@ void TModbusTest::SetUp()
     SerialPort->Open();
 }
 
-set<int> TModbusTest::VerifyQuery(TPSet<PVirtualRegister> registerSet)
+set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> registerSet)
 {
     size_t expectedQuerySetCount = 0;
 
@@ -85,22 +85,20 @@ set<int> TModbusTest::VerifyQuery(TPSet<PVirtualRegister> registerSet)
     set<int> errorRegisters;
     map<int, uint64_t> registerValues;
 
-    for (const auto & pollIntervalQuerySets: querySetsByPollInterval) {
-        const auto & querySets = pollIntervalQuerySets.second;
+    for (const auto & pollIntervalQuerySet: querySetsByPollInterval) {
+        const auto & querySet = pollIntervalQuerySet.second;
 
-        for (const auto & querySet: querySets) {
-            for (const auto & query: querySet->Queries) {
-                ModbusDev->Execute(query);
+        for (const auto & query: querySet->Queries) {
+            ModbusDev->Execute(query);
 
-                for (const auto & virtualRegister: query->VirtualRegisters) {
-                    if (query->GetStatus() == EQueryStatus::Ok) {
-                        registerValues[virtualRegister->Address] = virtualRegister->GetValue();
-                    } else {
-                        errorRegisters.insert(virtualRegister->Address);
-                    }
-
-                    readAddresses.insert(virtualRegister->Address);
+            for (const auto & virtualRegister: query->VirtualRegisters) {
+                if (query->GetStatus() == EQueryStatus::Ok) {
+                    registerValues[virtualRegister->Address] = virtualRegister->GetValue();
+                } else {
+                    errorRegisters.insert(virtualRegister->Address);
                 }
+
+                readAddresses.insert(virtualRegister->Address);
             }
         }
     }
@@ -143,10 +141,9 @@ PIRDeviceQuery TModbusTest::GenerateReadQueryForVirtualRegister(const PVirtualRe
     auto querySetsByPollInterval = TIRDeviceQueryFactory::GenerateQuerySets({ virtualRegister }, EQueryOperation::Read);
 
     EXPECT_EQ(1, querySetsByPollInterval.size());
-    EXPECT_EQ(1, querySetsByPollInterval.begin()->second.size());
-    EXPECT_EQ(1, querySetsByPollInterval.begin()->second.front()->Queries.size());
+    EXPECT_EQ(1, querySetsByPollInterval.begin()->second->Queries.size());
 
-    return *querySetsByPollInterval.begin()->second.front()->Queries.begin();
+    return *querySetsByPollInterval.begin()->second->Queries.begin();
 }
 
 TEST_F(TModbusTest, Query)
@@ -301,7 +298,9 @@ protected:
     void TearDown();
     const char* ConfigPath() const { return "configs/config-modbus-test.json"; }
     void ExpectPollQueries(TestMode mode = TEST_DEFAULT);
+    void InvalidateConfig();
     void InvalidateConfigPoll(TestMode mode = TEST_DEFAULT);
+    void ChooseConfig(const char * path);
 };
 
 void TModbusIntegrationTest::SetUp()
@@ -320,6 +319,14 @@ void TModbusIntegrationTest::TearDown()
 
 void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 {
+    EnqueueCoilReadResponse();
+
+    if (mode == TEST_MAX_READ_REGISTERS) {
+        Enqueue10CoilsMax3ReadResponse();
+    } else {
+        Enqueue10CoilsReadResponse();
+    }
+
     switch (mode) {
     case TEST_HOLES:
         EnqueueHoldingPackHoles10ReadResponse();
@@ -336,16 +343,11 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
     EnqueueHoldingReadS64Response();
     EnqueueHoldingReadF32Response();
     EnqueueHoldingReadU16Response();
-    EnqueueInputReadU16Response();
-    EnqueueCoilReadResponse();
-
-    if (mode == TEST_MAX_READ_REGISTERS) {
-        Enqueue10CoilsMax3ReadResponse();
-    } else {
-        Enqueue10CoilsReadResponse();
-    }
 
     EnqueueDiscreteReadResponse();
+
+    EnqueueInputReadU16Response();
+
 
     if (mode == TEST_MAX_READ_REGISTERS) {
         EnqueueHoldingSingleMax3ReadResponse();
@@ -356,16 +358,34 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
     }
 }
 
-void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
+void TModbusIntegrationTest::InvalidateConfig()
 {
     TSerialDeviceFactory::RemoveDevice(TSerialDeviceFactory::GetDevice("1", "modbus", SerialPort));
     Observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, SerialPort);
 
     Observer->SetUp();
+}
+
+void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
+{
+    InvalidateConfig();
 
     ExpectPollQueries(mode);
     Note() << "LoopOnce()";
     Observer->LoopOnce();
+}
+
+void TModbusIntegrationTest::ChooseConfig(const char * path)
+{
+    PTemplateMap templateMap = std::make_shared<TTemplateMap>();
+    if (GetTemplatePath()) {
+        TConfigTemplateParser templateParser(GetDataFilePath(GetTemplatePath()), false);
+        templateMap = templateParser.Parse();
+    }
+    TConfigParser parser(GetDataFilePath(path), false, TSerialDeviceFactory::GetRegisterTypes, templateMap);
+    Config = parser.Parse();
+
+    InvalidateConfig();
 }
 
 
@@ -477,8 +497,22 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
     // By limiting the max_read_registers to 3 we force driver to issue two requests
     //    for this register range instead of one
 
-    Config->PortConfigs[0]->DeviceConfigs[0]->MaxReadRegisters = 3;
-    InvalidateConfigPoll(TEST_MAX_READ_REGISTERS);
+    ChooseConfig("configs/config-modbus-max-read-regs-test.json");
+
+    EnqueueHoldingPackMax3ReadResponse();
+
+    // test different lengths and register types
+    EnqueueHoldingReadF32Response();
+    EnqueueHoldingReadU16Response();
+    EnqueueInputReadU16Response();
+    EnqueueCoilReadResponse();
+
+    Enqueue10CoilsMax3ReadResponse();
+
+    EnqueueDiscreteReadResponse();
+
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, GuardInterval)

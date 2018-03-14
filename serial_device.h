@@ -225,7 +225,14 @@ protected:
 public:
     std::string GetName() const override { return _Name; }
     PRegisterTypeMap GetRegTypes() const override { return _RegTypes; }
-    const TRegisterType & GetRegType(const std::string & name) const override { return _RegTypes->at(name); }
+    const TRegisterType & GetRegType(const std::string & name) const override
+    {
+        try {
+            return _RegTypes->at(name);
+        } catch (std::out_of_range&) {
+            throw TSerialDeviceException("unknown register type: '" + name + "'");
+        }
+    }
     const TRegisterType & GetRegType(size_t index) const override
     {
         assert(index < _RegTypeNameByIndex.size());

@@ -7,23 +7,23 @@
 using namespace std;
 
 
-void TProtocolRegister::InitExternalLinkage(const PSerialDevice & device)
+bool TProtocolRegister::InitExternalLinkage(const PSerialDevice & device)
 {
     struct TSerialDeviceLinkage: TProtocolRegister::IExternalLinkage
     {
-        PWSerialDevice          Device;
-        TProtocolRegister &     Register;
+        PWSerialDevice      Device;
+        TProtocolRegister & Register;
+        uint8_t             BitWidth;
 
 
-        TSerialDeviceLinkage(const PSerialDevice & device, TProtocolRegister & reg)
+        TSerialDeviceLinkage(const PSerialDevice & device, TProtocolRegister & self)
             : Device(device)
-            , Register(reg)
+            , Register(self)
         {}
 
         PSerialDevice GetDevice() const override
         {
             auto device = Device.lock();
-
             assert(device);
 
             return device;
@@ -56,13 +56,15 @@ void TProtocolRegister::InitExternalLinkage(const PSerialDevice & device)
     };
 
     if (ExternalLinkage && dynamic_cast<TSerialDeviceLinkage*>(ExternalLinkage.get())) {
-        return;
+        return false;
     }
 
     ExternalLinkage = utils::make_unique<TSerialDeviceLinkage>(device, *this);
+
+    return true;
 }
 
-void TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg)
+bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg)
 {
     struct TVirtualRegisterLinkage: TProtocolRegister::IExternalLinkage
     {
@@ -80,7 +82,6 @@ void TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg)
             assert(!VirtualRegisters.empty());
 
             auto virtualReg = VirtualRegisters.begin()->lock();
-
             assert(virtualReg);
 
             return virtualReg;
@@ -94,11 +95,9 @@ void TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg)
 
             for (const auto & virtualRegister: VirtualRegisters) {
                 const auto & locked = virtualRegister.lock();
-
                 assert(locked);
 
                 bool inserted = result.insert(locked).second;
-
                 assert(inserted);
             }
 
@@ -158,20 +157,23 @@ void TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg)
     };
 
     if (ExternalLinkage && dynamic_cast<TVirtualRegisterLinkage*>(ExternalLinkage.get())) {
-        return;
+        return false;
     }
 
     ExternalLinkage = utils::make_unique<TVirtualRegisterLinkage>(reg);
+    return true;
 }
 
-TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t type, const PSerialDevice & device)
+TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t type)
     : Address(address)
     , Type(type)
     , Value(0)
+{}
+
+TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t type, const PSerialDevice & device)
+    : TProtocolRegister(address, type)
 {
-    if (device) {
-        InitExternalLinkage(device);
-    }
+    InitExternalLinkage(device);
 }
 
 bool TProtocolRegister::operator<(const TProtocolRegister & rhs) const
@@ -190,9 +192,9 @@ bool TProtocolRegister::operator==(const TProtocolRegister & rhs) const
 
 void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
 {
-    InitExternalLinkage(reg);
-
-    ExternalLinkage->LinkWith(shared_from_this(), reg);
+    if (!InitExternalLinkage(reg)) {
+        ExternalLinkage->LinkWith(shared_from_this(), reg);
+    }
 }
 
 bool TProtocolRegister::IsAssociatedWith(const PVirtualRegister & reg) const
@@ -200,6 +202,11 @@ bool TProtocolRegister::IsAssociatedWith(const PVirtualRegister & reg) const
     assert(ExternalLinkage);
 
     return ExternalLinkage->IsLinkedWith(reg);
+}
+
+bool TProtocolRegister::IsReady() const
+{
+    return bool(ExternalLinkage);
 }
 
 const string & TProtocolRegister::GetTypeName() const

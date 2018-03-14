@@ -126,13 +126,16 @@ struct TIRDeviceValueQuery: TIRDeviceQuery
     }
 
     template <typename T>
-    void GetValues(std::vector<T> & values) const
+    std::vector<T> GetValues() const
     {
         CheckTypeMany<T>();
 
+        std::vector<T> values;
         values.resize(GetCount());
 
         GetValuesImpl(values.data(), sizeof(T), values.size());
+
+        return std::move(values);
     }
 
     /**

@@ -15,7 +15,7 @@ TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig 
 {
     const auto & protocolRegisters = TProtocolRegisterFactory::GenerateProtocolRegisters(config->RegisterConfig, device);
 
-    auto queries = TIRDeviceQueryFactory::GenerateQueries({ GetKeysAsSet(protocolRegisters) }, EQueryOperation::Write, TIRDeviceQueryFactory::Default, device);
+    auto queries = TIRDeviceQueryFactory::GenerateQueries({ GetKeysAsSet(protocolRegisters) }, EQueryOperation::Write);
     assert(queries.size() == 1);
 
     Query = std::dynamic_pointer_cast<TIRDeviceValueQuery>(*queries.begin());
@@ -254,15 +254,20 @@ bool TSerialDevice::WriteSetupRegisters(bool tryAll)
 {
     bool did_write = false;
     for (const auto & setupItem : SetupItems) {
-        try {
-            std::cerr << "Init: " << setupItem->Name << ": setup register " <<
-                    setupItem->Query->Describe() << " <-- " << setupItem->Value << std::endl;
-            Execute(setupItem->Query);
+        std::cerr << "Init: " << setupItem->Name << ": setup register " <<
+                setupItem->Query->Describe() << " <-- " << setupItem->Value << std::endl;
+        Execute(setupItem->Query);
+
+        bool ok = setupItem->Query->GetStatus() == EQueryStatus::Ok;
+
+        setupItem->Query->ResetStatus();
+
+        if (ok) {
             did_write = true;
-        } catch (const TSerialDeviceException& e) {
+        } else {
             std::cerr << "WARNING: device '" << setupItem->Query->GetDevice()->ToString() <<
                 "' registers '" << setupItem->Query->Describe() <<
-                "' setup failed: " << e.what() << std::endl;
+                "' setup failed" << std::endl;
             if (!did_write && !tryAll) {
                 break;
             }

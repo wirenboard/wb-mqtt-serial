@@ -70,10 +70,7 @@ void TSerialClient::AddRegister(PVirtualRegister reg)
     if (Active)
         throw TSerialDeviceException("can't add registers to the active client");
 
-    bool inserted = VirtualRegisters[reg->GetDevice()].insert(reg).second;
-    if (!inserted) {
-        throw TSerialDeviceException("duplicate register");
-    }
+    VirtualRegisters[reg->GetDevice()].push_back(reg);
 
     reg->SetFlushSignal(FlushNeeded);
 
@@ -107,17 +104,23 @@ void TSerialClient::GenerateReadQueries()
     // all of this is seemingly slow but it's actually only done once
     Plan->Reset();
 
-    for (const auto & deviceVirtualRegisters: VirtualRegisters) {
-        const auto & virtualRegisters = deviceVirtualRegisters.second;
+    // iterate over DevicesList to preserve order
+    for (const auto & device: DevicesList) {
+        auto itVirtualRegisters = VirtualRegisters.find(device);
+        if (itVirtualRegisters == VirtualRegisters.end()) {
+            continue;
+        }
 
-        for (const auto & pollIntervalQuerySets: TIRDeviceQueryFactory::GenerateQuerySets(virtualRegisters, EQueryOperation::Read)) {
-            const auto & pollInterval = pollIntervalQuerySets.first;
-            const auto & querySets = pollIntervalQuerySets.second;
+        const auto & virtualRegisters = itVirtualRegisters->second;
 
-            for (const auto & querySet: querySets) {
-                Plan->AddEntry(std::make_shared<TSerialPollEntry>(pollInterval, querySet));
-                queryCount += querySet->Queries.size();
-            }
+        std::cerr << "!!!device: " << device->ToString() << std::endl;
+
+        for (const auto & pollIntervalQuerySet: TIRDeviceQueryFactory::GenerateQuerySets(virtualRegisters, EQueryOperation::Read)) {
+            const auto & pollInterval = pollIntervalQuerySet.first;
+            const auto & querySet = pollIntervalQuerySet.second;
+
+            Plan->AddEntry(std::make_shared<TSerialPollEntry>(pollInterval, querySet));
+            queryCount += querySet->Queries.size();
         }
     }
 
@@ -132,9 +135,21 @@ void TSerialClient::MaybeUpdateErrorState(PVirtualRegister reg)
 
 void TSerialClient::DoFlush()
 {
-    for (const auto & deviceRegisters: VirtualRegisters) {
-        const auto & device = deviceRegisters.first;
-        for (const auto & reg: deviceRegisters.second) {
+    for (const auto & device: DevicesList) {
+        auto itVirtualRegisters = VirtualRegisters.find(device);
+        if (itVirtualRegisters == VirtualRegisters.end()) {
+            continue;
+        }
+
+        const auto & virtualRegisters = itVirtualRegisters->second;
+
+        std::cerr << "regs: " << PrintCollection(virtualRegisters, [](std::ostream & s, const PVirtualRegister & reg){
+            s << reg->ToString();
+        }) << std::endl;
+
+        for (const auto & reg: virtualRegisters) {
+            std::cerr << "check reg: " << reg->ToString() << std::endl;
+
             if (!reg->NeedToFlush())
                 continue;
             PrepareToAccessDevice(device);
@@ -183,7 +198,6 @@ void TSerialClient::Cycle()
 
     // devices whose registers were polled during this cycle and statues
     std::map<PSerialDevice, std::set<EQueryStatus>> devicesRangesStatuses;
-    TPSet<PVirtualRegister> allAffectedRegisters;
 
     Plan->ProcessPending([&](const PPollEntry& entry) {
         const auto & querySet = std::dynamic_pointer_cast<TSerialPollEntry>(entry)->QuerySet;
@@ -198,6 +212,7 @@ void TSerialClient::Cycle()
 
             if (device->GetIsDisconnected()) {
                 // limited polling mode
+                std::cerr << "!!!Limited polling" << std::endl;
                 if (statuses.empty()) {
                     // First interaction with disconnected device within this cycle: Try to reconnect
                     if (device->HasSetupItems()) {
@@ -229,26 +244,23 @@ void TSerialClient::Cycle()
                     ReadCallback(virtualRegister);
                 }
 
-                allAffectedRegisters.insert(virtualRegister);
+                /**
+                 * EXPL: A protocol register value that was read inside cycle expires at end of that cycle
+                 */
+                virtualRegister->InvalidateProtocolRegisterValues();
             }
             statuses.insert(query->GetStatus());
         }
 
         TIRDeviceQuerySetHandler::HandleQuerySetPostExecution(querySet);
 
-        /**
-         * EXPL: A protocol register value that was read inside cycle expires at end of that cycle
-         */
-        for (const auto & virtualRegister: allAffectedRegisters) {
-            virtualRegister->InvalidateProtocolRegisterValues();
-        }
-
         MaybeFlushAvoidingPollStarvationButDontWait();
     });
 
-    for (const auto & deviceRangesStatuses: devicesRangesStatuses) {
-        const auto & device = deviceRangesStatuses.first;
-        const auto & statuses = deviceRangesStatuses.second;
+    for (const auto & device: DevicesList) {
+        auto it = devicesRangesStatuses.find(device);
+        assert(it != devicesRangesStatuses.end());
+        const auto & statuses = it->second;
 
         if (statuses.empty()) {
             std::cerr << "invariant violation: statuses empty @ " << __func__ << std::endl;

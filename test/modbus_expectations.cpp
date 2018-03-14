@@ -463,16 +463,16 @@ void TModbusExpectations::EnqueueHoldingSingleWriteU64Response(uint8_t exception
     WrapPDU({
         0x06,   //function code
         0x00,   //starting address Hi
-        93,     //starting address Lo
-        0x06,   //value Hi
-        0x07,   //value Lo
+        90,     //starting address Lo
+        0x00,   //value Hi
+        0x01,   //value Lo
     }),
     WrapPDU(exception == 0 ? std::vector<int> {
         0x06,   //function code
         0x00,   //starting address Hi
-        93,     //starting address Lo
-        0x06,   //value Hi
-        0x07,   //value Lo
+        90,     //starting address Lo
+        0x00,   //value Hi
+        0x01,   //value Lo
     } : std::vector<int> {
         0x86,   //function code + 80
         exception
@@ -486,25 +486,6 @@ void TModbusExpectations::EnqueueHoldingSingleWriteU64Response(uint8_t exception
     WrapPDU({
         0x06,   //function code
         0x00,   //starting address Hi
-        92,     //starting address Lo
-        0x04,   //value Hi
-        0x05,   //value Lo
-    }),
-    WrapPDU(exception == 0 ? std::vector<int> {
-        0x06,   //function code
-        0x00,   //starting address Hi
-        92,     //starting address Lo
-        0x04,   //value Hi
-        0x05,   //value Lo
-    } : std::vector<int> {
-        0x86,   //function code + 80
-        exception
-    }), __func__);
-
-    Expector()->Expect(
-    WrapPDU({
-        0x06,   //function code
-        0x00,   //starting address Hi
         91,     //starting address Lo
         0x02,   //value Hi
         0x03,   //value Lo
@@ -524,16 +505,35 @@ void TModbusExpectations::EnqueueHoldingSingleWriteU64Response(uint8_t exception
     WrapPDU({
         0x06,   //function code
         0x00,   //starting address Hi
-        90,     //starting address Lo
-        0x00,   //value Hi
-        0x01,   //value Lo
+        92,     //starting address Lo
+        0x04,   //value Hi
+        0x05,   //value Lo
     }),
     WrapPDU(exception == 0 ? std::vector<int> {
         0x06,   //function code
         0x00,   //starting address Hi
-        90,     //starting address Lo
-        0x00,   //value Hi
-        0x01,   //value Lo
+        92,     //starting address Lo
+        0x04,   //value Hi
+        0x05,   //value Lo
+    } : std::vector<int> {
+        0x86,   //function code + 80
+        exception
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x06,   //function code
+        0x00,   //starting address Hi
+        93,     //starting address Lo
+        0x06,   //value Hi
+        0x07,   //value Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x06,   //function code
+        0x00,   //starting address Hi
+        93,     //starting address Lo
+        0x06,   //value Hi
+        0x07,   //value Lo
     } : std::vector<int> {
         0x86,   //function code + 80
         exception

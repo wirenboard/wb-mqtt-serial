@@ -311,8 +311,7 @@ namespace Modbus    // modbus protocol common utilities
 
         if (IsSingleBitType(query.GetType())) {
             const auto bitCount = min(query.GetCount(), 8u);
-            vector<uint8_t> coilValues; // it is actually values of individual coils, bool is not used to avoid possible bit specialization of vector
-            query.GetValues(coilValues);
+            const auto & coilValues = query.GetValues<uint8_t>(); // it is actually values of individual coils, bool is not used to avoid possible bit specialization of vector
 
             for (uint32_t iByte = 0; iByte < byteCount; ++iByte) {
                 bitset<8> coils;
@@ -322,7 +321,11 @@ namespace Modbus    // modbus protocol common utilities
                 pdu[6 + iByte] = static_cast<uint8_t>(coils.to_ulong());
             }
         } else {
-            query.GetValues<uint16_t>(pdu + 6);
+            const auto & values = query.GetValues<uint16_t>();
+
+            for (uint32_t i = 0; i < values.size(); ++i) {
+                WriteAs2Bytes(pdu + 6 + i * 2, values[i]);
+            }
         }
     }
 
@@ -382,11 +385,11 @@ namespace Modbus    // modbus protocol common utilities
 
             for (uint32_t iByte = 0; iByte < byteCount; ++iByte) {
                 bitset<8> coils(bytes[iByte]);
-                uint32_t iBit = iByte * 8;
-                const auto bitCount = min(query.GetCount() - iBit, 8u);
+                auto bitOffset = iByte * 8;
+                const auto bitCount = min(query.GetCount() - bitOffset, 8u);
 
-                for (;iBit < bitCount; ++iBit) {
-                    values[iBit] = coils[iBit];
+                for (uint8_t iBit = 0; iBit < bitCount; ++iBit) {
+                    values[bitOffset + iBit] = coils[iBit];
                 }
             }
 
@@ -469,6 +472,12 @@ namespace ModbusRTU // modbus rtu protocol utilities
         return Modbus::InferReadResponsePDUSize(query) + DATA_SIZE;
     }
 
+    template <class T>
+    inline void SignCRC16(T & msg)
+    {
+        WriteAs2Bytes(&msg[msg.size() - 2], CRC16::CalculateCRC16(msg.data(), msg.size() - 2));
+    }
+
     TPort::TFrameCompletePred ExpectNBytes(int n)
     {
         return [n](uint8_t* buf, int size) {
@@ -480,11 +489,11 @@ namespace ModbusRTU // modbus rtu protocol utilities
         };
     }
 
-    void ComposeReadRequest(TReadRequest& req, const TIRDeviceQuery & query, uint8_t slaveId, int shift)
+    void ComposeReadRequest(TReadRequest & request, const TIRDeviceQuery & query, uint8_t slaveId, int shift)
     {
-        req[0] = slaveId;
-        Modbus::ComposeReadRequestPDU(PDU(req), query, shift);
-        WriteAs2Bytes(&req[6], CRC16::CalculateCRC16(req.data(), 6));
+        request[0] = slaveId;
+        Modbus::ComposeReadRequestPDU(PDU(request), query, shift);
+        SignCRC16(request);
     }
 
     void ComposeWriteRequests(vector<TWriteRequest> & requests, const TIRDeviceValueQuery & query, uint8_t slaveId, int shift)
@@ -498,6 +507,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
             request[0] = slaveId;
 
             Modbus::ComposeMultipleWriteRequestPDU(PDU(request), query, shift);
+            SignCRC16(request);
         } else {
             const auto & valueQuery = query.As<TIRDeviceValueQuery>();
 
@@ -508,6 +518,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
                 request[0] = slaveId;
 
                 Modbus::ComposeSingleWriteRequestPDU(PDU(request), protocolRegister, value, shift);
+                SignCRC16(request);
             });
         }
     }

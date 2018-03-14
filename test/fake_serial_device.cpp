@@ -62,12 +62,26 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
 
         query.FinalizeRead(vector<uint16_t>(Registers + start, Registers + end));
 
-        for (const auto & reg: query.VirtualRegisters) {
-            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << reg->GetValue() << "'";
+        if (!query.VirtualRegisters.empty()) {
+            for (const auto & reg: query.VirtualRegisters) {
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << reg->GetValue() << "'";
+            }
+        } else {
+            for (int i = 0; i < query.GetCount(); ++i) {
+                auto addr = query.GetStart() + i;
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read to address '" << addr << "' value '" <<  Registers[addr] << "'";
+            }
         }
     } catch (const exception & e) {
-        for (const auto & reg: query.VirtualRegisters) {
-            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' failed: '" << e.what() << "'";
+        if (!query.VirtualRegisters.empty()) {
+            for (const auto & reg: query.VirtualRegisters) {
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' failed: '" << e.what() << "'";
+            }
+        } else {
+            for (int i = 0; i < query.GetCount(); ++i) {
+                auto addr = query.GetStart() + i;
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << addr << "' failed: '" << e.what() << "'";
+            }
         }
 
         throw;
@@ -104,12 +118,26 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
 
         query.FinalizeWrite();
 
-        for (const auto & reg: query.VirtualRegisters) {
-            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << reg->GetValue() << "'";
+        if (!query.VirtualRegisters.empty()) {
+            for (const auto & reg: query.VirtualRegisters) {
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << reg->GetValue() << "'";
+            }
+        } else {
+            for (int i = 0; i < query.GetCount(); ++i) {
+                auto addr = query.GetStart() + i;
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << addr << "' value '" <<  Registers[addr] << "'";
+            }
         }
     } catch (const exception & e) {
-        for (const auto & reg: query.VirtualRegisters) {
-            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->Address << "' failed: '" << e.what() << "'";
+        if (!query.VirtualRegisters.empty()) {
+            for (const auto & reg: query.VirtualRegisters) {
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->Address << "' failed: '" << e.what() << "'";
+            }
+        } else {
+            for (int i = 0; i < query.GetCount(); ++i) {
+                auto addr = query.GetStart() + i;
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << addr << "' failed: '" << e.what() << "'";
+            }
         }
 
         throw;

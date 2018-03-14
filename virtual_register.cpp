@@ -364,6 +364,8 @@ bool TVirtualRegister::operator==(const TVirtualRegister & rhs) const noexcept
 
 bool TVirtualRegister::operator<(const TVirtualRegister & rhs) const noexcept
 {
+    assert(GetDevice() == rhs.GetDevice());     // comparison makes sense only if registers are of same device
+
     return Type < rhs.Type || (Type == rhs.Type && Address < rhs.Address);
 }
 

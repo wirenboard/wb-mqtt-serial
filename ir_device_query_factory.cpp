@@ -89,40 +89,51 @@ namespace // utility
 
 const TIRDeviceQueryFactory::EQueryGenerationPolicy TIRDeviceQueryFactory::Default = TIRDeviceQueryFactory::Minify;
 
-map<TIntervalMs, vector<PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuerySets(const TPSet<PVirtualRegister> & virtualRegisters, EQueryOperation operation)
+vector<pair<TIntervalMs, PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuerySets(const vector<PVirtualRegister> & virtualRegisters, EQueryOperation operation)
 {
-    map<TIntervalMs, vector<PIRDeviceQuerySet>> querySetsByPollInterval;
+    vector<pair<TIntervalMs, PIRDeviceQuerySet>> querySetsByPollInterval;
     {
-        unordered_map<int64_t, map<uint32_t, list<TPSet<PProtocolRegister>>>> protocolRegistersByTypeAndInterval;
+        map<pair<int64_t, uint32_t>, list<TPSet<PProtocolRegister>>> protocolRegistersByTypeAndInterval;
+        vector<pair<int64_t, uint32_t>> pollIntervalsAndTypes;  // for order preservation
 
         for (const auto & virtualRegister: virtualRegisters) {
-            protocolRegistersByTypeAndInterval[virtualRegister->PollInterval.count()][virtualRegister->Type].push_back(virtualRegister->GetProtocolRegisters());
+            pair<int64_t, uint32_t> pollIntervalAndType {
+                virtualRegister->PollInterval.count(),
+                virtualRegister->Type
+            };
+
+            auto & registerSets = protocolRegistersByTypeAndInterval[pollIntervalAndType];
+
+            if (registerSets.empty()) {
+                pollIntervalsAndTypes.push_back(pollIntervalAndType);
+            }
+
+            registerSets.push_back(virtualRegister->GetProtocolRegisters());
         }
 
-        for (auto & pollIntervalTypesRegisters: protocolRegistersByTypeAndInterval) {
-            auto pollInterval = TIntervalMs(pollIntervalTypesRegisters.first);
+        for (auto & pollIntervalAndType: pollIntervalsAndTypes) {
+            auto pollInterval = TIntervalMs(pollIntervalAndType.first);
 
-            for (auto & typeRegisters: pollIntervalTypesRegisters.second) {
-                auto & registers = typeRegisters.second;
+            auto it = protocolRegistersByTypeAndInterval.find(pollIntervalAndType);
+            assert(it != protocolRegistersByTypeAndInterval.end());
 
-                const auto & querySet = std::make_shared<TIRDeviceQuerySet>(std::move(registers), operation);
-                querySetsByPollInterval[pollInterval].push_back(querySet);
-            }
+            auto & registers = it->second;
+
+            const auto & querySet = std::make_shared<TIRDeviceQuerySet>(std::move(registers), operation);
+            querySetsByPollInterval.push_back({ pollInterval, querySet });
         }
     }
 
     return querySetsByPollInterval;
 }
 
-TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation operation, EQueryGenerationPolicy policy, PSerialDevice device)
+TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation operation, EQueryGenerationPolicy policy)
 {
     assert(!registerSets.empty());
     assert(!registerSets.front().empty());
 
     /** gathering data **/
-    if (!device) {
-        device = (*registerSets.front().begin())->GetDevice();
-    }
+    auto device = (*registerSets.front().begin())->GetDevice();
 
     assert(device);
 
@@ -145,14 +156,12 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
     int maxRegs;
 
     if (isRead) {
-        if (singleBitType) {
-            maxRegs = protocolInfo.GetMaxReadBits();
+        const auto protocolMaximum = singleBitType ? protocolInfo.GetMaxReadBits() : protocolInfo.GetMaxReadRegisters();
+
+        if (deviceConfig->MaxReadRegisters > 0) {
+            maxRegs = min(deviceConfig->MaxReadRegisters, protocolMaximum);
         } else {
-            if ((deviceConfig->MaxReadRegisters > 0) && (deviceConfig->MaxReadRegisters <= protocolInfo.GetMaxReadRegisters())) {
-                maxRegs = deviceConfig->MaxReadRegisters;
-            } else {
-                maxRegs = protocolInfo.GetMaxReadRegisters();
-            }
+            maxRegs = protocolMaximum;
         }
     } else {
         maxRegs = singleBitType ? protocolInfo.GetMaxWriteBits() : protocolInfo.GetMaxWriteRegisters();

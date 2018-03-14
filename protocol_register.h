@@ -4,8 +4,6 @@
 #include "utils.h"
 #include "declarations.h"
 
-#include <iostream>
-
 /**
  * Each ProtocolRegister represents single actual register of device protocol.
  * This layer caches values and acts like bridge between VirtualRegister and IR layers.
@@ -15,6 +13,17 @@ class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
 {
     friend TIRDeviceQuery;
     friend TVirtualRegister;
+
+    bool InitExternalLinkage(const PSerialDevice &);
+    bool InitExternalLinkage(const PVirtualRegister &);
+
+public:
+    const uint32_t Address;
+    const uint32_t Type;
+
+private:
+    // TODO: (optimization) move value to dedicated device-centric cache and store only shared (VirtualRegisters.size() > 1) protocol registers' values
+    uint64_t Value; //  most recent value of register (from successful writes and reads)
 
     struct IExternalLinkage
     {
@@ -29,24 +38,23 @@ class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
 
     std::unique_ptr<IExternalLinkage> ExternalLinkage;
 
-    void InitExternalLinkage(const PSerialDevice &);
-    void InitExternalLinkage(const PVirtualRegister &);
-
 public:
-    const uint32_t Address;
-    const uint32_t Type;
-private:
-    // TODO: (optimization) move value to dedicated device-centric cache and store only shared (VirtualRegisters.size() > 1) protocol registers' values
-    uint64_t Value; //  most recent value of register (from successful writes and reads)
+    /**
+     * Create with no external linkage
+     */
+    TProtocolRegister(uint32_t address, uint32_t type);
 
-public:
-    TProtocolRegister(uint32_t address, uint32_t type, const PSerialDevice & = nullptr);
+    /**
+     * Create and link to device
+     */
+    TProtocolRegister(uint32_t address, uint32_t type, const PSerialDevice &);
 
     bool operator<(const TProtocolRegister &) const;
     bool operator==(const TProtocolRegister &) const;
 
     void AssociateWith(const PVirtualRegister &);
     bool IsAssociatedWith(const PVirtualRegister &) const;
+    bool IsReady() const;
 
     const std::string & GetTypeName() const;
 
@@ -60,7 +68,7 @@ public:
     uint8_t GetUsedByteCount() const;
 
     inline void SetValue(const uint64_t & value)
-    {   Value = value;  std::cerr << " reg set val: " << value << std::endl; }
+    {   Value = value; }
 
     inline const uint64_t & GetValue() const
     {   return Value;   }
