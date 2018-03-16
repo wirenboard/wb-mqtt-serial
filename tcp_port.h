@@ -22,6 +22,9 @@ public:
 private:
     void OpenTcpPort();
     void Reset() noexcept;
+    void OnConnectionOk();
+
+    void OnReadyEmptyFd() override;
 
     PTcpPortSettings                        Settings;
     std::chrono::steady_clock::time_point   LastSuccessfulCycle;

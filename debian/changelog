@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.40.2) stable; urgency=medium
+
+  * TCP port: detect socket close
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Fri, 16 Mar 2018 20:58:45 +0300
+
 wb-mqtt-serial (1.40.1) stable; urgency=high
 
   * SkipNoise at malformed response (final)

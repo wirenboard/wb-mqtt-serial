@@ -90,6 +90,9 @@ bool TFileDescriptorPort::Select(const chrono::microseconds& us)
     return r > 0;
 }
 
+void TFileDescriptorPort::OnReadyEmptyFd()
+{}
+
 uint8_t TFileDescriptorPort::ReadByte()
 {
     CheckPortOpen();
@@ -153,7 +156,8 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
         }
 
         if (!nb) {
-            continue; // shouldn't happen, actually
+            OnReadyEmptyFd();
+            continue;
         }
 
         if (nb > size - nread) {

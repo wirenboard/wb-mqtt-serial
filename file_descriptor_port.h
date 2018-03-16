@@ -30,6 +30,7 @@ public:
 
 protected:
     bool Select(const std::chrono::microseconds& us);
+    virtual void OnReadyEmptyFd();
 
     int             Fd;
     bool            DebugEnabled;
