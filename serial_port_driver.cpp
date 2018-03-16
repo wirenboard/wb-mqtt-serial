@@ -156,7 +156,7 @@ std::string TSerialPortDriver::GetChannelTopic(const TDeviceChannelConfig& chann
     return (controls_prefix + channel.Name);
 }
 
-bool TSerialPortDriver::NeedToPublish(const PVirtualRegister & reg)
+bool TSerialPortDriver::NeedToPublish(const PAbstractVirtualRegister & reg)
 {
     // max_unchanged_interval = 0: always update, don't track last change time
     if (!Config->MaxUnchangedInterval)
@@ -212,8 +212,9 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
         std::cerr << "register value change: " << reg->ToString() << " <- " <<
             reg->GetTextValue() << std::endl;
 
-    if (!NeedToPublish(reg))
+    if (!NeedToPublish(abstractRegister)) {
         return;
+    }
 
     const auto & payload = abstractRegister->GetTextValue();
 
@@ -227,6 +228,7 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
             " <-- " << payload << std::endl;
 
     MQTTClient->Publish(NULL, GetChannelTopic(*it->second), payload, 0, true);
+    abstractRegister->ResetChanged(EPublishData::Value);
 }
 
 void TSerialPortDriver::UpdateError(const PVirtualRegister & reg)
@@ -252,6 +254,8 @@ void TSerialPortDriver::UpdateError(const PVirtualRegister & reg)
         PublishedErrorMap[errorTopic] = errorStr;
         MQTTClient->Publish(NULL, errorTopic, errorStr.c_str(), 0, true);
     }
+
+    abstractRegister->ResetChanged(EPublishData::Error);
 }
 
 void TSerialPortDriver::Cycle()

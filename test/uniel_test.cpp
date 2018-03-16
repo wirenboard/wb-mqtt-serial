@@ -26,10 +26,10 @@ void TUnielDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("uniel"));
 
-    InputReg = std::make_shared<TProtocolRegister>(0x0a, TUnielDevice::REG_INPUT);
-    RelayReg = std::make_shared<TProtocolRegister>(0x1b, TUnielDevice::REG_RELAY);
-    ThresholdReg = std::make_shared<TProtocolRegister>(0x02, TUnielDevice::REG_PARAM);
-    BrightnessReg = std::make_shared<TProtocolRegister>(0x141, TUnielDevice::REG_BRIGHTNESS);
+    InputReg = Dev->GetCreateRegister(0x0a, TUnielDevice::REG_INPUT);
+    RelayReg = Dev->GetCreateRegister(0x1b, TUnielDevice::REG_RELAY);
+    ThresholdReg = Dev->GetCreateRegister(0x02, TUnielDevice::REG_PARAM);
+    BrightnessReg = Dev->GetCreateRegister(0x141, TUnielDevice::REG_BRIGHTNESS);
 
     SerialPort->Open();
 }
@@ -113,8 +113,8 @@ TEST_F(TUnielIntegrationTest, Poll)
     Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 
-    EnqueueRelayOffQueryResponse();
     EnqueueVoltageQueryResponse();
+    EnqueueRelayOffQueryResponse();
     EnqueueThreshold0QueryResponse();
     EnqueueBrightnessQueryResponse();
 
@@ -130,8 +130,8 @@ TEST_F(TUnielIntegrationTest, Poll)
     EnqueueSetLowThreshold0Response();
     EnqueueSetBrightnessResponse();
 
-    EnqueueRelayOnQueryResponse();
     EnqueueVoltageQueryResponse();
+    EnqueueRelayOnQueryResponse();
     EnqueueThreshold0QueryResponse();
     EnqueueBrightnessQueryResponse();
 

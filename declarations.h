@@ -11,6 +11,7 @@ class IProtocol;
 class TSerialDevice;
 class TBinarySemaphore;
 class TProtocolRegister;
+class TProtocolRegisterBindInfo;
 class TAbstractVirtualRegister;
 class TVirtualRegister;
 class TVirtualRegisterSet;

@@ -1,5 +1,6 @@
 Open()
 EnqueueWrongSlaveIdCoilWriteResponse()
 >> 01 05 00 00 FF 00 8C 3A
+Serial protocol error: request and response slave id mismatch
 << 02 05 00 00 FF 00 8C 09
 Close()

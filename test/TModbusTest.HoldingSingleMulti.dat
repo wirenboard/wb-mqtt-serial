@@ -3,17 +3,17 @@ EnqueueHoldingSingleWriteU16Response()
 >> 01 06 00 5E 0F 41 2D D8
 << 01 06 00 5E 0F 41 2D D8
 EnqueueHoldingSingleWriteU64Response()
->> 01 06 00 5D 06 07 5A 7A
-<< 01 06 00 5D 06 07 5A 7A
-EnqueueHoldingSingleWriteU64Response()
->> 01 06 00 5C 04 05 8B 1B
-<< 01 06 00 5C 04 05 8B 1B
+>> 01 06 00 5A 00 01 68 19
+<< 01 06 00 5A 00 01 68 19
 EnqueueHoldingSingleWriteU64Response()
 >> 01 06 00 5B 02 03 B9 78
 << 01 06 00 5B 02 03 B9 78
 EnqueueHoldingSingleWriteU64Response()
->> 01 06 00 5A 00 01 68 19
-<< 01 06 00 5A 00 01 68 19
+>> 01 06 00 5C 04 05 8B 1B
+<< 01 06 00 5C 04 05 8B 1B
+EnqueueHoldingSingleWriteU64Response()
+>> 01 06 00 5D 06 07 5A 7A
+<< 01 06 00 5D 06 07 5A 7A
 EnqueueHoldingMultiWriteU16Response()
 >> 01 10 00 63 00 01 02 01 23 EF 8A
 << 01 10 00 63 00 01 F1 D7

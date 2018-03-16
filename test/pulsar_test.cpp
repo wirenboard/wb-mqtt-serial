@@ -3,6 +3,7 @@
 #include "fake_serial_port.h"
 #include "pulsar_device.h"
 #include "protocol_register.h"
+#include "virtual_register.h"
 
 
 class TPulsarDeviceTest: public TSerialDeviceTest
@@ -10,8 +11,8 @@ class TPulsarDeviceTest: public TSerialDeviceTest
 protected:
     void SetUp();
     PPulsarDevice Dev;
-    PProtocolRegister Heat_TempIn;
-    PProtocolRegister Heat_TempOut;
+    PVirtualRegister Heat_TempIn;
+    PVirtualRegister Heat_TempOut;
     // TODO: time register
 };
 
@@ -25,8 +26,8 @@ void TPulsarDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("pulsar"));
 
-    Heat_TempIn = std::make_shared<TProtocolRegister>(2, 0);
-    Heat_TempOut = std::make_shared<TProtocolRegister>(3, 0);
+    Heat_TempIn = TVirtualRegister::Create(TRegisterConfig::Create(TPulsarDevice::REG_DEFAULT, 2, Float), Dev);
+    Heat_TempOut = TVirtualRegister::Create(TRegisterConfig::Create(TPulsarDevice::REG_DEFAULT, 3, Float), Dev);
 
     SerialPort->Open();
 }
@@ -45,7 +46,12 @@ TEST_F(TPulsarDeviceTest, PulsarHeatMeterFloatQuery)
                 0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x5a, 0xb3, 0xc5, 0x41, 0x00, 0x00, 0x18, 0xdb
             });
 
-    ASSERT_EQ(0x41C5B35A, Dev->ReadProtocolRegister(Heat_TempIn));
+    const auto & protocolRegisters = Heat_TempIn->GetProtocolRegisters();
+    ASSERT_EQ(1, protocolRegisters.size());
+
+    const auto & protocolRegister = *protocolRegisters.begin();
+
+    ASSERT_EQ(0x41C5B35A, Dev->ReadProtocolRegister(protocolRegister));
 
     SerialPort->Close();
 }

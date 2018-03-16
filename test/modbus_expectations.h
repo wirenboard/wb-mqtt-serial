@@ -37,8 +37,8 @@ public:
     void EnqueueRGBWriteResponse(uint8_t exception = 0);
 
     void Enqueue10CoilsReadResponse(uint8_t exception = 0);
-
     void Enqueue10CoilsMax3ReadResponse(uint8_t exception = 0);
+    void Enqueue82CoilsReadResponse(uint8_t exception = 0);
 
     void EnqueueInvalidCRCCoilReadResponse();
     void EnqueueWrongDataSizeReadResponse();

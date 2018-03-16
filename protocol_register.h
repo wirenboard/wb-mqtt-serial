@@ -13,24 +13,23 @@ class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
 {
     friend TIRDeviceQuery;
     friend TVirtualRegister;
+    friend TSerialDevice;
 
-    bool InitExternalLinkage(const PSerialDevice &);
-    bool InitExternalLinkage(const PVirtualRegister &);
+    // TODO: (optimization) move value to dedicated device-centric cache and store only shared (VirtualRegisters.size() > 1) protocol registers' values
+    uint64_t Value; //  most recent value of register (from successful writes and reads)
 
 public:
     const uint32_t Address;
     const uint32_t Type;
+    const uint8_t  Width;
 
 private:
-    // TODO: (optimization) move value to dedicated device-centric cache and store only shared (VirtualRegisters.size() > 1) protocol registers' values
-    uint64_t Value; //  most recent value of register (from successful writes and reads)
-
     struct IExternalLinkage
     {
         virtual ~IExternalLinkage() = default;
         virtual PSerialDevice GetDevice() const = 0;
         virtual TPSet<PVirtualRegister> GetVirtualRegsiters() const = 0;
-        virtual void LinkWith(const PProtocolRegister &, const PVirtualRegister &) = 0;
+        virtual void LinkWith(const PVirtualRegister &, const TProtocolRegisterBindInfo &) = 0;
         virtual bool IsLinkedWith(const PVirtualRegister &) const = 0;
         virtual uint8_t GetUsedByteCount() const = 0;
         virtual const std::string & GetTypeName() const = 0;
@@ -38,21 +37,24 @@ private:
 
     std::unique_ptr<IExternalLinkage> ExternalLinkage;
 
-public:
+    bool InitExternalLinkage(const PSerialDevice &);
+    bool InitExternalLinkage(const PVirtualRegister &, const TProtocolRegisterBindInfo &);
+
     /**
      * Create with no external linkage
      */
-    TProtocolRegister(uint32_t address, uint32_t type);
+    TProtocolRegister(uint32_t address, uint32_t type, uint8_t width);
 
     /**
      * Create and link to device
      */
     TProtocolRegister(uint32_t address, uint32_t type, const PSerialDevice &);
 
+public:
     bool operator<(const TProtocolRegister &) const;
     bool operator==(const TProtocolRegister &) const;
 
-    void AssociateWith(const PVirtualRegister &);
+    void AssociateWith(const PVirtualRegister &, const TProtocolRegisterBindInfo &);
     bool IsAssociatedWith(const PVirtualRegister &) const;
     bool IsReady() const;
 

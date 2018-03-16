@@ -55,10 +55,6 @@ TIRDeviceQuery::TIRDeviceQuery(const TPSet<PProtocolRegister> & registerSet, EQu
     , Status(EQueryStatus::NotExecuted)
 {
     AbleToSplit = (VirtualRegisters.size() > 1);
-
-    for (const auto & reg: VirtualRegisters) {
-        cerr << "\t" << reg->ToString() << endl;
-    }
 }
 
 bool TIRDeviceQuery::operator<(const TIRDeviceQuery & rhs) const noexcept
@@ -121,6 +117,15 @@ EQueryStatus TIRDeviceQuery::GetStatus() const
 void TIRDeviceQuery::ResetStatus()
 {
     SetStatus(EQueryStatus::NotExecuted);
+}
+
+void TIRDeviceQuery::InvalidateReadValues()
+{
+    assert(Operation == EQueryOperation::Read);
+
+    for (const auto & reg: VirtualRegisters) {
+        reg->InvalidateReadValues();
+    }
 }
 
 void TIRDeviceQuery::SetEnabledWithRegisters(bool enabled)

@@ -20,7 +20,6 @@ Ports:
             Type: temperature
             DeviceId: msu34tlp_2
             Order: 1
-            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers:
@@ -30,6 +29,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
@@ -41,7 +41,6 @@ Ports:
             Type: lux
             DeviceId: msu34tlp_2
             Order: 2
-            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers:
@@ -51,6 +50,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
@@ -62,7 +62,6 @@ Ports:
             Type: pressure
             DeviceId: msu34tlp_2
             Order: 3
-            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers:
@@ -72,6 +71,7 @@ Ports:
                 Scale: 0.075
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
@@ -83,7 +83,6 @@ Ports:
             Type: temperature
             DeviceId: msu34tlp_2
             Order: 4
-            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers:
@@ -93,6 +92,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
@@ -114,7 +114,6 @@ Ports:
             Type: switch
             DeviceId: OnValueTest
             Order: 1
-            OnValue: 500
             Max: -1
             ReadOnly: 0
             Registers:
@@ -124,6 +123,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 500
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
@@ -145,7 +145,6 @@ Ports:
             Type: switch
             DeviceId: ErrorValueTest
             Order: 1
-            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers:
@@ -155,6 +154,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
@@ -166,7 +166,6 @@ Ports:
             Type: switch
             DeviceId: ErrorValueTest
             Order: 2
-            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers:
@@ -176,6 +175,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
@@ -187,7 +187,6 @@ Ports:
             Type: switch
             DeviceId: ErrorValueTest
             Order: 3
-            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers:
@@ -197,6 +196,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
@@ -208,7 +208,6 @@ Ports:
             Type: switch
             DeviceId: ErrorValueTest
             Order: 4
-            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers:
@@ -218,6 +217,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
@@ -229,7 +229,6 @@ Ports:
             Type: switch
             DeviceId: ErrorValueTest
             Order: 5
-            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers:
@@ -239,6 +238,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
@@ -250,7 +250,6 @@ Ports:
             Type: switch
             DeviceId: ErrorValueTest
             Order: 6
-            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers:
@@ -260,6 +259,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
@@ -286,7 +286,6 @@ Ports:
             Type: switch
             DeviceId: lc103
             Order: 1
-            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers:
@@ -296,6 +295,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: coil
@@ -307,7 +307,6 @@ Ports:
             Type: switch
             DeviceId: lc103
             Order: 2
-            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers:
@@ -317,6 +316,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: coil
@@ -328,7 +328,6 @@ Ports:
             Type: switch
             DeviceId: lc103
             Order: 3
-            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers:
@@ -338,6 +337,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: coil
@@ -349,7 +349,6 @@ Ports:
             Type: switch
             DeviceId: lc103
             Order: 4
-            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers:
@@ -359,6 +358,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 1
                 TypeName: discrete
@@ -380,7 +380,6 @@ Ports:
             Type: rgb
             DeviceId: wb-mrgb
             Order: 1
-            OnValue: 
             Max: -1
             ReadOnly: 0
             Registers:
@@ -390,6 +389,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
@@ -402,6 +402,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
@@ -414,6 +415,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
@@ -425,7 +427,6 @@ Ports:
             Type: value
             DeviceId: wb-mrgb
             Order: 2
-            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers:
@@ -435,6 +436,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 1
                 TypeName: holding
@@ -456,7 +458,6 @@ Ports:
             Type: temperature
             DeviceId: TestDeviceOverride:config
             Order: 1
-            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers:
@@ -466,6 +467,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
@@ -487,7 +489,6 @@ Ports:
             Type: temperature
             DeviceId: TestDeviceOverride:template_6
             Order: 1
-            OnValue: 
             Max: -1
             ReadOnly: 1
             Registers:
@@ -497,6 +498,7 @@ Ports:
                 Scale: 1
                 Offset: 0
                 RoundTo: 0
+                OnValue: 
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input

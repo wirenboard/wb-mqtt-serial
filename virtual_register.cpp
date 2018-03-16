@@ -237,17 +237,14 @@ void TVirtualRegister::Initialize()
 
     assert(device);
 
-    const auto & regType = device->Protocol()->GetRegTypes()->at(TypeName);
-
-    ProtocolRegisterWidth = RegisterFormatByteWidth(regType.DefaultFormat);
-
     ProtocolRegisters = TProtocolRegisterFactory::GenerateProtocolRegisters(self, device);
 
     for (const auto protocolRegisterBindInfo: ProtocolRegisters) {
         const auto & protocolRegister = protocolRegisterBindInfo.first;
+        const auto & bindInfo = protocolRegisterBindInfo.second;
 
         assert(Type == (int)protocolRegister->Type);
-        protocolRegister->AssociateWith(self);
+        protocolRegister->AssociateWith(self, bindInfo);
     }
 
     if (!ReadOnly) {
@@ -264,7 +261,7 @@ void TVirtualRegister::Initialize()
 
 uint32_t TVirtualRegister::GetBitPosition() const
 {
-    return (uint32_t(Address) * ProtocolRegisterWidth * 8) + BitOffset;
+    return (uint32_t(Address) * ProtocolRegisters.begin()->first->Width * 8) + BitOffset;
 }
 
 uint8_t TVirtualRegister::GetBitSize() const
@@ -272,13 +269,14 @@ uint8_t TVirtualRegister::GetBitSize() const
     return RegisterFormatByteWidth(Format) * 8;
 }
 
-const TProtocolRegisterBindInfo & TVirtualRegister::GetBindInfo(const PProtocolRegister & reg) const
+const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
 {
-    try {
-        return ProtocolRegisters.at(reg);
-    } catch (out_of_range &) {
-        throw runtime_error("Invariant violation: TVirtualRegister::GetBindInfo must be called only with associated protocol register");
-    }
+    return WriteQuery;
+}
+
+void TVirtualRegister::WriteValueToQuery()
+{
+    MapValueTo(WriteQuery, ProtocolRegisters, ValueToWrite);
 }
 
 uint64_t TVirtualRegister::ComposeValue() const
@@ -290,8 +288,6 @@ uint64_t TVirtualRegister::ComposeValue() const
 
 void TVirtualRegister::AcceptDeviceValue(bool ok)
 {
-    assert(GetValueIsRead());
-
     if (!NeedToPoll()) {
         return;
     }
@@ -463,12 +459,11 @@ void TVirtualRegister::Flush()
 
         MapValueTo(WriteQuery, ProtocolRegisters, ValueToWrite);
 
-        GetDevice()->Execute(WriteQuery);
-
-        bool error = WriteQuery->GetStatus() != EQueryStatus::Ok;
         WriteQuery->ResetStatus();
 
-        UpdateWriteError(error);
+        GetDevice()->Execute(WriteQuery);
+
+        UpdateWriteError(WriteQuery->GetStatus() != EQueryStatus::Ok);
     }
 }
 
@@ -515,11 +510,6 @@ bool TVirtualRegister::GetValueIsRead() const
     return ValueIsRead;
 }
 
-void TVirtualRegister::InvalidateProtocolRegisterValues()
-{
-    ValueIsRead = false;
-}
-
 void TVirtualRegister::UpdateReadError(bool error)
 {
     EErrorState before = ErrorState;
@@ -536,7 +526,7 @@ void TVirtualRegister::UpdateReadError(bool error)
 
     if (ErrorState != before) {
         Add(ChangedPublishData, EPublishData::Error);
-        if (Global::Debug || true) {
+        if (Global::Debug) {
             cerr << "UpdateReadError: changed error to " << (int)ErrorState << endl;
         }
     }
@@ -576,7 +566,7 @@ void TVirtualRegister::NotifyRead(bool ok)
 
     assert(!ValueIsRead);
 
-    ValueIsRead = true;
+    ValueIsRead = ok;
 
     AcceptDeviceValue(ok);
 }
@@ -588,6 +578,11 @@ void TVirtualRegister::NotifyWrite(bool ok)
     if (ok) {
         CurrentValue = ValueToWrite;
     }
+}
+
+void TVirtualRegister::InvalidateReadValues()
+{
+    ValueIsRead = false;
 }
 
 PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const PSerialDevice & device)
@@ -638,8 +633,10 @@ void TVirtualRegister::MapValueTo(const PIRDeviceValueQuery & query, const TPMap
 
         auto cachedRegisterValue = protocolRegister->Value;
 
-        cerr << "cached reg val: " << cachedRegisterValue << endl;
-        cerr << "reg mask: " << ~registerLocalMask << endl;
+        if (Global::Debug) {
+            cerr << "cached reg val: " << cachedRegisterValue << endl;
+            cerr << "reg mask: " << ~registerLocalMask << endl;
+        }
 
         auto registerValue = (~registerLocalMask & cachedRegisterValue) | (valueLocalMask & (value >> bitPosition)) << bindInfo.BitStart;
 

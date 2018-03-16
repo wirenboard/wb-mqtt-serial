@@ -35,7 +35,11 @@ protected:
 
 PDeviceConfig TModbusTest::GetDeviceConfig()
 {
-    return make_shared<TDeviceConfig>("modbus", to_string(0x01), "modbus");
+    auto config = make_shared<TDeviceConfig>("modbus", to_string(0x01), "modbus");
+
+    config->MaxReadRegisters = 4;
+
+    return config;
 }
 
 void TModbusTest::SetUp()
@@ -64,13 +68,21 @@ void TModbusTest::SetUp()
 set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> registerSet)
 {
     size_t expectedQuerySetCount = 0;
+    size_t expectedQueryCount = 0;
 
     if (registerSet.empty()) {
         registerSet = {
             ModbusCoil0, ModbusCoil1, ModbusDiscrete, ModbusHolding, ModbusInput, ModbusHoldingS64
         };
 
-        expectedQuerySetCount = 4;
+        EnqueueCoilReadResponse();
+        EnqueueDiscreteReadResponse();
+        EnqueueHoldingReadU16Response();
+        EnqueueInputReadU16Response();
+        EnqueueHoldingReadS64Response();
+
+        expectedQuerySetCount = 1;
+        expectedQueryCount = 5;
     }
 
     auto querySetsByPollInterval = TIRDeviceQueryFactory::GenerateQuerySets(registerSet, EQueryOperation::Read);
@@ -78,6 +90,16 @@ set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> registerSet)
     if (expectedQuerySetCount > 0) {
         if (querySetsByPollInterval.size() != expectedQuerySetCount) {
             throw runtime_error("wrong query sets count: " + to_string(querySetsByPollInterval.size()) + " expected: " + to_string(expectedQuerySetCount));
+        } else if (expectedQueryCount > 0) {
+            size_t actualQueryCount = 0;
+
+            for (const auto & pollIntervalQuerySet: querySetsByPollInterval) {
+                actualQueryCount += pollIntervalQuerySet.second->Queries.size();
+            }
+
+            if (actualQueryCount != expectedQueryCount) {
+                throw runtime_error("wrong query count: " + to_string(actualQueryCount) + " expected: " + to_string(expectedQueryCount));
+            }
         }
     }
 
@@ -148,12 +170,6 @@ PIRDeviceQuery TModbusTest::GenerateReadQueryForVirtualRegister(const PVirtualRe
 
 TEST_F(TModbusTest, Query)
 {
-    EnqueueCoilReadResponse();
-    EnqueueDiscreteReadResponse();
-    EnqueueHoldingReadU16Response();
-    EnqueueInputReadU16Response();
-    EnqueueHoldingReadS64Response();
-
     ASSERT_EQ(0, VerifyQuery().size()); // we don't expect any errors to occur here
     SerialPort->Close();
 }
@@ -189,7 +205,9 @@ TEST_F(TModbusTest, Errors)
     EnqueueHoldingReadS64Response();
 
     set<int> expectedAddresses {0, 1, 20}; // errors in 2 coils and 1 input
-    auto errorAddresses = VerifyQuery();
+    auto errorAddresses = VerifyQuery({
+        ModbusCoil0, ModbusCoil1, ModbusDiscrete, ModbusHolding, ModbusInput, ModbusHoldingS64
+    });
 
     ASSERT_EQ(expectedAddresses, errorAddresses);
     SerialPort->Close();
@@ -207,7 +225,10 @@ TEST_F(TModbusTest, Errors)
 #define WRITE_COIL_0_EMIT_TRANSIENT_ERROR \
     try {                                                       \
         ModbusCoil0->SetValue(0xFF);                            \
-        ModbusCoil0->Flush();                                   \
+        ModbusCoil0->WriteValueToQuery();                       \
+        auto query = ModbusCoil0->GetWriteQuery();              \
+        query->ResetStatus();                                   \
+        ModbusDev->Write(*query);                               \
         EXPECT_FALSE(true);                                     \
     } catch (const TSerialDeviceTransientErrorException & e) {  \
         Emit() << e.what();                                     \
@@ -319,12 +340,15 @@ void TModbusIntegrationTest::TearDown()
 
 void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 {
-    EnqueueCoilReadResponse();
-
-    if (mode == TEST_MAX_READ_REGISTERS) {
-        Enqueue10CoilsMax3ReadResponse();
-    } else {
-        Enqueue10CoilsReadResponse();
+    switch (mode) {
+    case TEST_HOLES:
+        Enqueue82CoilsReadResponse();
+        break;
+    case TEST_MAX_READ_REGISTERS:
+    case TEST_DEFAULT:
+    default:
+        EnqueueCoilReadResponse();
+        break;
     }
 
     switch (mode) {
@@ -340,14 +364,22 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
         break;
     }
     // test different lengths and register types
+    EnqueueDiscreteReadResponse();
     EnqueueHoldingReadS64Response();
+    EnqueueInputReadU16Response();
     EnqueueHoldingReadF32Response();
     EnqueueHoldingReadU16Response();
 
-    EnqueueDiscreteReadResponse();
-
-    EnqueueInputReadU16Response();
-
+    switch (mode) {
+    case TEST_HOLES:
+        break;
+    case TEST_MAX_READ_REGISTERS:
+        Enqueue10CoilsMax3ReadResponse();
+    case TEST_DEFAULT:
+    default:
+        Enqueue10CoilsReadResponse();
+        break;
+    }
 
     if (mode == TEST_MAX_READ_REGISTERS) {
         EnqueueHoldingSingleMax3ReadResponse();
@@ -427,14 +459,15 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueHoldingWriteU16Response(0x2);
     EnqueueHoldingSingleWriteU64Response(0x2);
 
+    EnqueueCoilReadResponse(0xa);
+
     EnqueueHoldingPackReadResponse(0x3);
+    EnqueueDiscreteReadResponse(0xb);
     EnqueueHoldingReadS64Response(0x4);
+    EnqueueInputReadU16Response(0x8);
     EnqueueHoldingReadF32Response(0x5);
     EnqueueHoldingReadU16Response(0x6);
-    EnqueueInputReadU16Response(0x8);
-    EnqueueCoilReadResponse(0xa);
     Enqueue10CoilsReadResponse(0x54);   // invalid exception code
-    EnqueueDiscreteReadResponse(0xb);
     EnqueueHoldingSingleReadResponse(0x2);
     EnqueueHoldingMultiReadResponse(0x3);
 
@@ -462,28 +495,26 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
     ASSERT_EQ(device->DeviceConfig()->MaxRegHole, 10);
     ASSERT_EQ(device->DeviceConfig()->MaxBitHole, 80);
 
+    Enqueue82CoilsReadResponse();
     EnqueueHoldingPackHoles10ReadResponse(0x3); // this must result in auto-disabling holes feature
+    EnqueueDiscreteReadResponse();
     EnqueueHoldingReadS64Response();
+    EnqueueInputReadU16Response();
     EnqueueHoldingReadF32Response();
     EnqueueHoldingReadU16Response();
-    EnqueueInputReadU16Response();
-    EnqueueCoilReadResponse();
-    Enqueue10CoilsReadResponse();
-    EnqueueDiscreteReadResponse();
     EnqueueHoldingSingleReadResponse();
     EnqueueHoldingMultiReadResponse();
 
     Note() << "LoopOnce()";
     Observer->LoopOnce();
 
+    Enqueue82CoilsReadResponse();
     EnqueueHoldingPackReadResponse();
+    EnqueueDiscreteReadResponse();
     EnqueueHoldingReadS64Response();
+    EnqueueInputReadU16Response();
     EnqueueHoldingReadF32Response();
     EnqueueHoldingReadU16Response();
-    EnqueueInputReadU16Response();
-    EnqueueCoilReadResponse();
-    Enqueue10CoilsReadResponse();
-    EnqueueDiscreteReadResponse();
     EnqueueHoldingSingleReadResponse();
     EnqueueHoldingMultiReadResponse();
 
@@ -499,17 +530,17 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
 
     ChooseConfig("configs/config-modbus-max-read-regs-test.json");
 
+    EnqueueCoilReadResponse();
+
     EnqueueHoldingPackMax3ReadResponse();
+    EnqueueDiscreteReadResponse();
+    EnqueueInputReadU16Response();
 
     // test different lengths and register types
     EnqueueHoldingReadF32Response();
     EnqueueHoldingReadU16Response();
-    EnqueueInputReadU16Response();
-    EnqueueCoilReadResponse();
 
     Enqueue10CoilsMax3ReadResponse();
-
-    EnqueueDiscreteReadResponse();
 
     Note() << "LoopOnce()";
     Observer->LoopOnce();

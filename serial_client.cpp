@@ -113,8 +113,6 @@ void TSerialClient::GenerateReadQueries()
 
         const auto & virtualRegisters = itVirtualRegisters->second;
 
-        std::cerr << "!!!device: " << device->ToString() << std::endl;
-
         for (const auto & pollIntervalQuerySet: TIRDeviceQueryFactory::GenerateQuerySets(virtualRegisters, EQueryOperation::Read)) {
             const auto & pollInterval = pollIntervalQuerySet.first;
             const auto & querySet = pollIntervalQuerySet.second;
@@ -129,8 +127,9 @@ void TSerialClient::GenerateReadQueries()
 
 void TSerialClient::MaybeUpdateErrorState(PVirtualRegister reg)
 {
-    if (reg->GetErrorState() != EErrorState::UnknownErrorState)
+    if (reg->GetErrorState() != EErrorState::UnknownErrorState) {
         ErrorCallback(reg);
+    }
 }
 
 void TSerialClient::DoFlush()
@@ -143,13 +142,7 @@ void TSerialClient::DoFlush()
 
         const auto & virtualRegisters = itVirtualRegisters->second;
 
-        std::cerr << "regs: " << PrintCollection(virtualRegisters, [](std::ostream & s, const PVirtualRegister & reg){
-            s << reg->ToString();
-        }) << std::endl;
-
         for (const auto & reg: virtualRegisters) {
-            std::cerr << "check reg: " << reg->ToString() << std::endl;
-
             if (!reg->NeedToFlush())
                 continue;
             PrepareToAccessDevice(device);
@@ -212,7 +205,6 @@ void TSerialClient::Cycle()
 
             if (device->GetIsDisconnected()) {
                 // limited polling mode
-                std::cerr << "!!!Limited polling" << std::endl;
                 if (statuses.empty()) {
                     // First interaction with disconnected device within this cycle: Try to reconnect
                     if (device->HasSetupItems()) {
@@ -238,16 +230,9 @@ void TSerialClient::Cycle()
                     MaybeUpdateErrorState(virtualRegister);
                 }
 
-                assert(virtualRegister->GetValueIsRead());
-
                 if (!Has(virtualRegister->GetErrorState(), EErrorState::ReadError)) {
                     ReadCallback(virtualRegister);
                 }
-
-                /**
-                 * EXPL: A protocol register value that was read inside cycle expires at end of that cycle
-                 */
-                virtualRegister->InvalidateProtocolRegisterValues();
             }
             statuses.insert(query->GetStatus());
         }
@@ -269,10 +254,6 @@ void TSerialClient::Cycle()
 
         bool deviceWasDisconnected = device->GetIsDisconnected(); // don't move after device->OnCycleEnd(...);
         {
-            std::cerr << "device: " << device->ToString() << " statuses: " << PrintCollection(statuses, [](std::ostream & s, EQueryStatus status) {
-                s << (int)status;
-            }) << std::endl;
-
             bool cycleFailed = statuses.count(EQueryStatus::UnknownError) == statuses.size();
             device->OnCycleEnd(!cycleFailed);
         }
@@ -305,18 +286,12 @@ bool TSerialClient::WriteSetupRegisters(PSerialDevice dev)
 
 void TSerialClient::SetReadCallback(const TSerialClient::TReadCallback& callback)
 {
-    ReadCallback = [=](const PVirtualRegister & reg){
-        callback(reg);
-        reg->ResetChanged(EPublishData::Value);
-    };
+    ReadCallback = callback;
 }
 
 void TSerialClient::SetErrorCallback(const TSerialClient::TErrorCallback& callback)
 {
-    ErrorCallback = [=](const PVirtualRegister & reg){
-        callback(reg);
-        reg->ResetChanged(EPublishData::Error);
-    };
+    ErrorCallback = callback;
 }
 
 void TSerialClient::SetDebug(bool debug)

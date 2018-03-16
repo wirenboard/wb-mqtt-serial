@@ -26,10 +26,10 @@ void TS2KDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("s2k"));
 
-    RelayReg1 = std::make_shared<TProtocolRegister>(0x01, TS2KDevice::REG_RELAY);
-    RelayReg2 = std::make_shared<TProtocolRegister>(0x02, TS2KDevice::REG_RELAY);
-    RelayReg3 = std::make_shared<TProtocolRegister>(0x03, TS2KDevice::REG_RELAY);
-    RelayReg4 = std::make_shared<TProtocolRegister>(0x04, TS2KDevice::REG_RELAY);
+    RelayReg1 = Dev->GetCreateRegister(0x01, TS2KDevice::REG_RELAY);
+    RelayReg2 = Dev->GetCreateRegister(0x02, TS2KDevice::REG_RELAY);
+    RelayReg3 = Dev->GetCreateRegister(0x03, TS2KDevice::REG_RELAY);
+    RelayReg4 = Dev->GetCreateRegister(0x04, TS2KDevice::REG_RELAY);
 
     SerialPort->Open();
 }

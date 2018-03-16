@@ -15,7 +15,7 @@
                     "slave_id": 23,
                     "id": "ddl24",
                     "enabled": true,
-                    "max_read_registers": 0,
+                    "max_read_registers": 1,
                     "protocol": "fake",
                     "channels": [
                     {

@@ -13,7 +13,7 @@ TPMap<PProtocolRegister, TProtocolRegisterBindInfo> TProtocolRegisterFactory::Ge
 
     ERegisterFormat regFormat;
     try {
-        regFormat = device->Protocol()->GetRegTypes()->at(config->TypeName).DefaultFormat;
+        regFormat = device->Protocol()->GetRegType(config->Type).DefaultFormat;
     } catch (out_of_range &) {
         throw TSerialDeviceException("unknown type name: '" + config->TypeName + "' of " + device->ToString() + ": " + config->ToString());
     }

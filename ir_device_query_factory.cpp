@@ -54,6 +54,11 @@ namespace // utility
         return GetRegCount(*registerSet.begin(), *registerSet.rbegin());
     }
 
+    inline uint32_t GetType(const TPSet<PProtocolRegister> & registerSet)
+    {
+        return (*registerSet.begin())->Type;
+    }
+
     bool IsReadOperation(EQueryOperation operation)
     {
         switch(operation) {
@@ -93,28 +98,25 @@ vector<pair<TIntervalMs, PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuer
 {
     vector<pair<TIntervalMs, PIRDeviceQuerySet>> querySetsByPollInterval;
     {
-        map<pair<int64_t, uint32_t>, list<TPSet<PProtocolRegister>>> protocolRegistersByTypeAndInterval;
-        vector<pair<int64_t, uint32_t>> pollIntervalsAndTypes;  // for order preservation
+        map<int64_t, list<TPSet<PProtocolRegister>>> protocolRegistersByTypeAndInterval;
+        vector<int64_t> pollIntervals;  // for order preservation
 
         for (const auto & virtualRegister: virtualRegisters) {
-            pair<int64_t, uint32_t> pollIntervalAndType {
-                virtualRegister->PollInterval.count(),
-                virtualRegister->Type
-            };
+            int64_t pollInterval = virtualRegister->PollInterval.count();
 
-            auto & registerSets = protocolRegistersByTypeAndInterval[pollIntervalAndType];
+            auto & registerSets = protocolRegistersByTypeAndInterval[pollInterval];
 
             if (registerSets.empty()) {
-                pollIntervalsAndTypes.push_back(pollIntervalAndType);
+                pollIntervals.push_back(pollInterval);
             }
 
             registerSets.push_back(virtualRegister->GetProtocolRegisters());
         }
 
-        for (auto & pollIntervalAndType: pollIntervalsAndTypes) {
-            auto pollInterval = TIntervalMs(pollIntervalAndType.first);
+        for (auto & _pollInterval: pollIntervals) {
+            auto pollInterval = TIntervalMs(_pollInterval);
 
-            auto it = protocolRegistersByTypeAndInterval.find(pollIntervalAndType);
+            auto it = protocolRegistersByTypeAndInterval.find(_pollInterval);
             assert(it != protocolRegistersByTypeAndInterval.end());
 
             auto & registers = it->second;
@@ -140,44 +142,56 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
     const auto & deviceConfig = device->DeviceConfig();
     const auto & protocolInfo = device->GetProtocolInfo();
 
-    const bool singleBitType = protocolInfo.IsSingleBitType((*registerSets.front().begin())->Type);
     const bool isRead = IsReadOperation(operation);
-
-    const auto & addQuery = isRead ? AddQuery<TIRDeviceQuery>
-                                   : singleBitType ? AddQuery<TIRDeviceSingleBitQuery>
-                                                   : AddQuery<TIRDevice64BitQuery>;
 
     const bool performMerge = (policy == Minify || policy == NoHoles),
                enableHoles  = (policy == Minify);
 
-    const int maxHole = enableHoles ? (singleBitType ? deviceConfig->MaxBitHole
-                                                     : deviceConfig->MaxRegHole)
-                                    : 0;
-    int maxRegs;
+    TRegisterTypeInfo getMaxHoleAndRegs = [&](uint32_t type) {
+        const bool singleBitType = protocolInfo.IsSingleBitType(type);
 
-    if (isRead) {
-        const auto protocolMaximum = singleBitType ? protocolInfo.GetMaxReadBits() : protocolInfo.GetMaxReadRegisters();
+        const int maxHole = enableHoles ? (singleBitType ? deviceConfig->MaxBitHole
+                                                         : deviceConfig->MaxRegHole)
+                                        : 0;
+        int maxRegs;
 
-        if (deviceConfig->MaxReadRegisters > 0) {
-            maxRegs = min(deviceConfig->MaxReadRegisters, protocolMaximum);
+        if (isRead) {
+            const auto protocolMaximum = singleBitType ? protocolInfo.GetMaxReadBits() : protocolInfo.GetMaxReadRegisters();
+
+            if (deviceConfig->MaxReadRegisters > 0) {
+                maxRegs = min(deviceConfig->MaxReadRegisters, protocolMaximum);
+            } else {
+                maxRegs = protocolMaximum;
+            }
         } else {
-            maxRegs = protocolMaximum;
+            maxRegs = singleBitType ? protocolInfo.GetMaxWriteBits() : protocolInfo.GetMaxWriteRegisters();
         }
-    } else {
-        maxRegs = singleBitType ? protocolInfo.GetMaxWriteBits() : protocolInfo.GetMaxWriteRegisters();
-    }
+
+        return pair<uint32_t, uint32_t>{ maxHole, maxRegs };
+    };
+
+    auto addQuery = [&](const TPSet<PProtocolRegister> & registerSet, TQueries & result) {
+        const bool singleBitType = protocolInfo.IsSingleBitType(GetType(registerSet));
+
+        const auto & chosenAddQuery = isRead ? AddQuery<TIRDeviceQuery>
+                                             : singleBitType ? AddQuery<TIRDeviceSingleBitQuery>
+                                                             : AddQuery<TIRDevice64BitQuery>;
+
+        return chosenAddQuery(registerSet, result);
+    };
+
     /** done gathering data **/
 
     if (performMerge) {
-        MergeSets(registerSets, static_cast<uint32_t>(maxHole), static_cast<uint32_t>(maxRegs));
+        MergeSets(registerSets, getMaxHoleAndRegs);
     } else {
-        CheckSets(registerSets, static_cast<uint32_t>(maxHole), static_cast<uint32_t>(maxRegs));
+        CheckSets(registerSets, getMaxHoleAndRegs);
     }
 
     TQueries result;
 
     for (auto & registerSet: registerSets) {
-        addQuery(move(registerSet), result);
+        addQuery(registerSet, result);
     }
 
     assert(!result.empty());
@@ -185,12 +199,17 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PProtocolRegister>> &
     return result;
 }
 
-void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PProtocolRegister>> & registerSets, uint32_t maxHole, uint32_t maxRegs)
+void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PProtocolRegister>> & registerSets, const TRegisterTypeInfo & typeInfo)
 {
     if (Global::Debug)
         cerr << "checking sets" << endl;
 
     for (const auto & registerSet: registerSets) {
+        uint32_t maxHole;
+        uint32_t maxRegs;
+
+        tie(maxHole, maxRegs) = typeInfo(GetType(registerSet));
+
         auto hole = GetMaxHoleSize(registerSet);
         if (hole > maxHole) {
             throw TSerialDeviceException("unable to create queries for given register configuration: max hole count exceeded (detected: " +
@@ -198,7 +217,7 @@ void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PProtocolRegister>> 
                 ", max: " + to_string(maxHole) +
                 ", set: " + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
                     s << reg->Address;
-                })
+                })  + ")"
             );
         }
 
@@ -209,8 +228,21 @@ void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PProtocolRegister>> 
                 ", max: " + to_string(maxRegs) +
                 ", set: " + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
                     s << reg->Address;
-                })
+                })  + ")"
             );
+        }
+
+        {   // check types
+            auto type = (*registerSet.begin())->Type;
+            for (const auto & reg: registerSet) {
+                if (reg->Type != type) {
+                    throw TSerialDeviceException("unable to create queries for given register configuration: different register types in same set (set: "
+                        + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
+                            s << reg->Address << " (type: " << reg->GetTypeName() << ")";
+                        }) + ")"
+                    );
+                }
+            }
         }
     }
 
@@ -225,15 +257,20 @@ void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PProtocolRegister>> 
  *  3) allows same register to appear in different sets if those sets couldn't merge (same register will be read more than once during same cycle)
  *  4) doesn't split initial sets (registers that were in one set will stay in one set)
  */
-void TIRDeviceQueryFactory::MergeSets(list<TPSet<PProtocolRegister>> & registerSets, uint32_t maxHole, uint32_t maxRegs)
+void TIRDeviceQueryFactory::MergeSets(list<TPSet<PProtocolRegister>> & registerSets, const TRegisterTypeInfo & typeInfo)
 {
-    CheckSets(registerSets, maxHole, maxRegs);
+    CheckSets(registerSets, typeInfo);
 
     if (Global::Debug)
         cerr << "merging sets" << endl;
 
     for (auto itRegisterSet = registerSets.begin(); itRegisterSet != registerSets.end(); ++itRegisterSet) {
         auto & registerSet = *itRegisterSet;
+
+        uint32_t maxHole;
+        uint32_t maxRegs;
+
+        tie(maxHole, maxRegs) = typeInfo(GetType(registerSet));
 
         auto itOtherRegisterSet = itRegisterSet;
         ++itOtherRegisterSet;
@@ -242,6 +279,11 @@ void TIRDeviceQueryFactory::MergeSets(list<TPSet<PProtocolRegister>> & registerS
             assert(itRegisterSet != itOtherRegisterSet);
 
             const auto & otherRegisterSet = *itOtherRegisterSet;
+
+            if (GetType(registerSet) != GetType(otherRegisterSet)) {
+                ++itOtherRegisterSet;
+                continue;
+            }
 
             auto first = **registerSet.begin() < **otherRegisterSet.begin() ? *registerSet.begin() : *otherRegisterSet.begin();
             auto last = **otherRegisterSet.rbegin() < **registerSet.rbegin() ? *registerSet.rbegin() : *otherRegisterSet.rbegin();

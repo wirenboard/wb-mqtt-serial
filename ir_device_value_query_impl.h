@@ -26,8 +26,6 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
 
     void SetValue(const PProtocolRegister & reg, uint64_t value) const override
     {
-        std::cerr << "set reg: " << reg->Describe() << " val: " << value << std::endl;
-
         auto itRegisterValue = ProtocolRegisterValues.find(reg);
         assert(itRegisterValue != ProtocolRegisterValues.end());
 
@@ -45,12 +43,8 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
 
         assert(*itProtocolRegister == itProtocolRegisterValue->first);
 
-        std::cerr << "GetValuesImpl: count: " << count << std::endl;
-
-        for (size_t i = 0; i < count; ++i) {
+        for (uint32_t i = 0; i < count; ++i) {
             const auto requestedRegisterAddress = GetStart() + i;
-
-            std::cerr << "GetValuesImpl: addr: " << requestedRegisterAddress << std::endl;
 
             assert(itProtocolRegister != RegView.End());
             assert(itProtocolRegisterValue != ProtocolRegisterValues.end());
@@ -60,12 +54,12 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
                 const auto & protocolRegister = itProtocolRegisterValue->first;
                 const auto & value = itProtocolRegisterValue->second;
 
-                std::cerr << "\treg: '" << protocolRegister->Describe() << "'" << std::endl;
-
                 if (protocolRegister->Address == requestedRegisterAddress) {    // this register exists and query has its value - write from query
                     memcpy(bytes, &value, size);
 
-                    std::cerr << "\tread from query: '" << value << "'" << std::endl;
+                    if (Global::Debug) {
+                        std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: read address '" << requestedRegisterAddress << "' from query: '" << value << "'" << std::endl;
+                    }
 
                     ++itProtocolRegister;
                     ++itProtocolRegisterValue;
@@ -81,8 +75,9 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
                 if (protocolRegister->Address == requestedRegisterAddress) {    // this register exists but query doesn't have value for it - write cached value
                     memcpy(bytes, &protocolRegister->GetValue(), size);
 
-                    std::cerr << "\tread from cache: '" << protocolRegister->GetValue() << "'" << std::endl;
-
+                    if (Global::Debug) {
+                        std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: read address '" << requestedRegisterAddress << "' from cache: '" << protocolRegister->GetValue() << "'" << std::endl;
+                    }
                     ++itProtocolRegister;
                     bytes += size;
                     continue;
@@ -91,7 +86,9 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
 
             // driver doesn't use this address (hole) - fill with zeroes
             {
-                std::cerr << "\tzfill" << std::endl;
+                if (Global::Debug) {
+                    std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: zfill address '" << requestedRegisterAddress << "'" << std::endl;
+                }
                 memset(bytes, 0, size);
                 bytes += size;
             }
@@ -107,10 +104,6 @@ protected:
         , ProtocolRegisterValues(MapFromSet<_mutable<T>>(registerSet))
     {
         assert(!ProtocolRegisterValues.empty());
-
-        for (const auto & regVal: ProtocolRegisterValues) {
-            std::cerr << "reg: " << regVal.first->Describe() << " val: " << regVal.second << std::endl;
-        }
     }
 };
 

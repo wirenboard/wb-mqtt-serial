@@ -87,3 +87,10 @@ bool TVirtualRegisterSet::IsChanged(EPublishData data) const
         return virtualRegister->IsChanged(data);
     });
 }
+
+void TVirtualRegisterSet::ResetChanged(EPublishData data)
+{
+    for (const auto & virtualRegister: VirtualRegisters) {
+        virtualRegister->ResetChanged(data);
+    }
+}

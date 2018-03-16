@@ -50,6 +50,8 @@ void TSerialClientTest::SetUp()
     SerialClient->SetReadCallback([this](const PVirtualRegister & reg) {
             Emit() << "Read Callback: " << reg->ToString() << " becomes " <<
                 reg->GetTextValue() << (reg->IsChanged(EPublishData::Value) ? "" : " [unchanged]");
+
+            reg->ResetChanged(EPublishData::Value);
         });
     SerialClient->SetErrorCallback(
         [this](const PVirtualRegister & reg) {
@@ -68,6 +70,8 @@ void TSerialClientTest::SetUp()
                 what = "no error";
             }
             Emit() << "Error Callback: " << reg->ToString() << ": " << what;
+
+            reg->ResetChanged(EPublishData::Error);
         });
 }
 
@@ -282,13 +286,12 @@ TEST_F(TSerialClientTest, U64)
 TEST_F(TSerialClientTest, S32)
 {
     auto reg20 = Reg(20, S32);
-    auto reg30 = Reg(30, S32);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
-
     // create scaled register
     auto reg24 = Reg(24, S32, 0.001);
+    auto reg30 = Reg(30, S32);
+    SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg24);
+    SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 10, 20";
     Device->Registers[20] = 0x00AA;
@@ -336,8 +339,8 @@ TEST_F(TSerialClientTest, WordSwap)
 {
     auto reg20 = Reg(20, S32, 1, 0, 0, EWordOrder::LittleEndian);
     auto reg24 = Reg(24, U64, 1, 0, 0, EWordOrder::LittleEndian);
-    SerialClient->AddRegister(reg24);
     SerialClient->AddRegister(reg20);
+    SerialClient->AddRegister(reg24);
 
     Note() << "server -> client: 0x00BB, 0x00AA";
     Device->Registers[20] = 0x00BB;
@@ -524,13 +527,14 @@ TEST_F(TSerialClientTest, BCD8)
 
 TEST_F(TSerialClientTest, Float32)
 {
+    auto reg20 = Reg(20, Float);
 	// create scaled register
     auto reg24 = Reg(24, Float, 100);
-    SerialClient->AddRegister(reg24);
-
-    auto reg20 = Reg(20, Float);
     auto reg30 = Reg(30, Float);
+
+    // order of polling is same as add order
     SerialClient->AddRegister(reg20);
+    SerialClient->AddRegister(reg24);
     SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 0x45d2 0x0000, 0x449d 0x8000";

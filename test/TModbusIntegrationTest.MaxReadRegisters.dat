@@ -240,6 +240,13 @@ Subscribe: /devices/modbus-sample/controls/Coil 11/on (QoS 0)
 >>> LoopOnce()
 Open()
 Sleep(100000)
+EnqueueCoilReadResponse()
+>> 01 01 00 00 00 02 BD CB
+Publish: /devices/modbus-sample/controls/Coil 0/meta/error: '' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Coil 0: '0' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Coil 1/meta/error: '' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Coil 1: '1' (QoS 0, retained)
+<< 01 01 01 02 D0 49
 EnqueueHoldingPackMax3ReadResponse()
 >> 01 03 00 04 00 03 44 0A
 Publish: /devices/modbus-sample/controls/RGB/meta/error: '' (QoS 0, retained)
@@ -259,6 +266,16 @@ EnqueueHoldingPackMax3ReadResponse()
 Publish: /devices/modbus-sample/controls/Voltage/meta/error: '' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Voltage: '4' (QoS 0, retained)
 << 01 03 02 00 04 B9 87
+EnqueueDiscreteReadResponse()
+>> 01 02 00 14 00 01 F9 CE
+Publish: /devices/modbus-sample/controls/Discrete 0/meta/error: '' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Discrete 0: '1' (QoS 0, retained)
+<< 01 02 01 01 60 48
+EnqueueInputReadU16Response()
+>> 01 04 00 28 00 01 B1 C2
+Publish: /devices/modbus-sample/controls/Input U16/meta/error: '' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Input U16: '102' (QoS 0, retained)
+<< 01 04 02 00 66 39 1A
 EnqueueHoldingReadF32Response()
 >> 01 03 00 32 00 02 65 C4
 Publish: /devices/modbus-sample/controls/Holding Float/meta/error: '' (QoS 0, retained)
@@ -269,18 +286,6 @@ EnqueueHoldingReadU16Response()
 Publish: /devices/modbus-sample/controls/Holding U16/meta/error: '' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Holding U16: '21' (QoS 0, retained)
 << 01 03 02 00 15 79 8B
-EnqueueInputReadU16Response()
->> 01 04 00 28 00 01 B1 C2
-Publish: /devices/modbus-sample/controls/Input U16/meta/error: '' (QoS 0, retained)
-Publish: /devices/modbus-sample/controls/Input U16: '102' (QoS 0, retained)
-<< 01 04 02 00 66 39 1A
-EnqueueCoilReadResponse()
->> 01 01 00 00 00 02 BD CB
-Publish: /devices/modbus-sample/controls/Coil 0/meta/error: '' (QoS 0, retained)
-Publish: /devices/modbus-sample/controls/Coil 0: '0' (QoS 0, retained)
-Publish: /devices/modbus-sample/controls/Coil 1/meta/error: '' (QoS 0, retained)
-Publish: /devices/modbus-sample/controls/Coil 1: '1' (QoS 0, retained)
-<< 01 01 01 02 D0 49
 Enqueue10CoilsMax3ReadResponse()
 >> 01 01 00 48 00 03 FC 1D
 Publish: /devices/modbus-sample/controls/Coil 2/meta/error: '' (QoS 0, retained)
@@ -312,11 +317,6 @@ Enqueue10CoilsMax3ReadResponse()
 >> 01 01 00 51 00 01 AC 1B
 Publish: /devices/modbus-sample/controls/Coil 11/meta/error: '' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Coil 11: '1' (QoS 0, retained)
-<< 01 01 01 01 90 48
-EnqueueDiscreteReadResponse()
->> 01 02 00 14 00 01 F9 CE
-Publish: /devices/modbus-sample/controls/Discrete 0/meta/error: '' (QoS 0, retained)
-Publish: /devices/modbus-sample/controls/Discrete 0: '1' (QoS 0, retained)
 Port cycle OK
-<< 01 02 01 01 60 48
+<< 01 01 01 01 90 48
 Close()

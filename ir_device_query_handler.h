@@ -31,4 +31,11 @@ private:
      * reset statuses of queries (must run last)
      */
     static void ResetQueriesStatuses(const PIRDeviceQuerySet &);
+
+    /**
+     * invalidate protocol registers values for all affected virtual registers
+     *
+     * EXPL: A protocol register value that was read inside cycle expires at end of that cycle
+     */
+    static void InvalidateReadValues(const PIRDeviceQuerySet &);
 };

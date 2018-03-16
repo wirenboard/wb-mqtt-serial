@@ -1,5 +1,6 @@
 Open()
 EnqueueWrongSlaveIdCoilReadResponse()
 >> 01 01 00 00 00 01 FD CA
+Serial protocol error: request and response slave id mismatch
 << 02 01 01 01 90 0C
 Close()

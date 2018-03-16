@@ -18,4 +18,5 @@ public:
     EErrorState GetErrorState() const override;
     bool GetValueIsRead() const override;
     bool IsChanged(EPublishData) const override;
+    void ResetChanged(EPublishData) override;
 };

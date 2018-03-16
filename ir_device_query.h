@@ -55,6 +55,7 @@ public:
     void SetStatus(EQueryStatus);
     EQueryStatus GetStatus() const;
     void ResetStatus();
+    void InvalidateReadValues();
 
     void SetEnabledWithRegisters(bool);
     bool IsEnabled() const;

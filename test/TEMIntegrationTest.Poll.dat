@@ -109,6 +109,11 @@ EnqueueMercury230I1Response()
 Publish: /devices/mercury230ar02-test/controls/I1/meta/error: '' (QoS 0, retained)
 Publish: /devices/mercury230ar02-test/controls/I1: '0.069' (QoS 0, retained)
 << 00 00 45 00 32 B4
+EnqueueMercury230TempResponse()
+>> 00 08 11 70 8C 52
+Publish: /devices/mercury230ar02-test/controls/Temperature/meta/error: '' (QoS 0, retained)
+Publish: /devices/mercury230ar02-test/controls/Temperature: '24' (QoS 0, retained)
+<< 00 00 18 71 CA
 EnqueueMercury230PResponse()
 >> 00 08 11 00 8D B6
 Publish: /devices/mercury230ar02-test/controls/P/meta/error: '' (QoS 0, retained)
@@ -129,11 +134,6 @@ EnqueueMercury230Q2Response()
 Publish: /devices/mercury230ar02-test/controls/Q2/meta/error: '' (QoS 0, retained)
 Publish: /devices/mercury230ar02-test/controls/Q2: '5530.95' (QoS 0, retained)
 << 00 88 87 70 E2 1A
-EnqueueMercury230TempResponse()
->> 00 08 11 70 8C 52
-Publish: /devices/mercury230ar02-test/controls/Temperature/meta/error: '' (QoS 0, retained)
-Publish: /devices/mercury230ar02-test/controls/Temperature: '24' (QoS 0, retained)
-<< 00 00 18 71 CA
 EnqueueMercury230PerPhaseEnergyResponse()
 >> 00 05 60 00 38 25
 Publish: /devices/mercury230ar02-test/controls/AP2/meta/error: '' (QoS 0, retained)

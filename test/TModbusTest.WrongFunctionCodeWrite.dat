@@ -1,5 +1,6 @@
 Open()
 EnqueueWrongFunctionCodeCoilWriteResponse()
 >> 01 05 00 00 FF 00 8C 3A
+Serial protocol error: request and response function code mismatch
 << 01 07 00 00 FF 00 F5 FA
 Close()

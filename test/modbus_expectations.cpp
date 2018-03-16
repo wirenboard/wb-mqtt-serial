@@ -879,6 +879,36 @@ void TModbusExpectations::Enqueue10CoilsMax3ReadResponse(uint8_t exception)
     }), __func__);
 }
 
+void TModbusExpectations::Enqueue82CoilsReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x01,   //function code
+        0x00,   //starting address Hi
+        00,     //starting address Lo
+        0x00,   //quantity Hi
+        0x52,   //quantity Lo
+    }),
+    WrapPDU(exception == 0 ? std::vector<int> {
+        0x01,   //function code
+        0x0b,   //byte count
+        0x01,   //coils status  7  - 0      (c1:0, c0:1)
+        0x00,   //coils status  15 - 8
+        0x00,   //coils status  23 - 16
+        0x00,   //coils status  31 - 24
+        0x00,   //coils status  39 - 32
+        0x00,   //coils status  47 - 40
+        0x00,   //coils status  55 - 48
+        0x00,   //coils status  63 - 56
+        0x00,   //coils status  71 - 64
+        0x92,   //coils status  79 - 72     (c9:1,  c8:0, c7:0, c6:1, c5:0, c4:0, c3:1, c2:0)
+        0x03,   //coils status  87 - 80     (c11:1, c10:1)
+    } : std::vector<int> {
+        0x81,   //function code + 80
+        exception
+    }), __func__);
+}
+
 void TModbusExpectations::EnqueueInvalidCRCCoilReadResponse()
 {
     auto response = WrapPDU(std::vector<int> {

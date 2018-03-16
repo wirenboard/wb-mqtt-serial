@@ -11,14 +11,16 @@ using namespace std;
 namespace   // utility
 {
     template <typename TCondition>
-    void RecreateQueries(const PIRDeviceQuerySet & querySet, const TCondition & condition, TIRDeviceQueryFactory::EQueryGenerationPolicy policy)
+    void RecreateQueries(const PIRDeviceQuerySet & querySet, const TCondition & condition, TIRDeviceQueryFactory::EQueryGenerationPolicy policy, const char * actionName)
     {
         for (auto itQuery = querySet->Queries.begin(); itQuery != querySet->Queries.end();) {
-            const auto & query = *itQuery;
+            auto query = *itQuery;
 
             if (!condition(query)) {
                 ++itQuery; continue;
             }
+
+            cerr << "INFO: [IR device query handler] " << actionName << " on query " << query->Describe() << endl;
 
             std::list<TPSet<PProtocolRegister>> groupedRegisters;
             for (const auto & virtualRegister: query->VirtualRegisters) {
@@ -29,6 +31,11 @@ namespace   // utility
                 const auto & generatedQueries = TIRDeviceQueryFactory::GenerateQueries(move(groupedRegisters), query->Operation, policy);
                 itQuery = querySet->Queries.erase(itQuery);
                 querySet->Queries.insert(itQuery, generatedQueries.begin(), generatedQueries.end());
+
+                cerr << "INFO: [IR device query handler] recreated query " << query->Describe() << " as " << PrintCollection(generatedQueries, [](ostream & s, const PIRDeviceQuery & query){
+                    s << "\t" << query->Describe();
+                }, true, "") << endl;
+
             } catch (const TSerialDeviceException & e) {
                 query->SetAbleToSplit(false);
 
@@ -48,6 +55,7 @@ void TIRDeviceQuerySetHandler::HandleQuerySetPostExecution(const PIRDeviceQueryS
     SplitByRegisterIfNeeded(querySet);
     DisableRegistersIfNeeded(querySet);
     ResetQueriesStatuses(querySet);
+    InvalidateReadValues(querySet);
 }
 
 void TIRDeviceQuerySetHandler::DisableHolesIfNeeded(const PIRDeviceQuerySet & querySet)
@@ -58,7 +66,7 @@ void TIRDeviceQuerySetHandler::DisableHolesIfNeeded(const PIRDeviceQuerySet & qu
             && query->HasHoles;
     };
 
-    RecreateQueries(querySet, condition, TIRDeviceQueryFactory::NoHoles);
+    RecreateQueries(querySet, condition, TIRDeviceQueryFactory::NoHoles, "disable holes");
 }
 
 void TIRDeviceQuerySetHandler::SplitByRegisterIfNeeded(const PIRDeviceQuerySet & querySet)
@@ -69,7 +77,7 @@ void TIRDeviceQuerySetHandler::SplitByRegisterIfNeeded(const PIRDeviceQuerySet &
             && !query->HasHoles;
     };
 
-    RecreateQueries(querySet, condition, TIRDeviceQueryFactory::AsIs);
+    RecreateQueries(querySet, condition, TIRDeviceQueryFactory::AsIs, "split by register");
 }
 
 void TIRDeviceQuerySetHandler::DisableRegistersIfNeeded(const PIRDeviceQuerySet & querySet)
@@ -84,6 +92,8 @@ void TIRDeviceQuerySetHandler::DisableRegistersIfNeeded(const PIRDeviceQuerySet 
             continue;
         }
 
+        cerr << "INFO: [IR device query handler] disable query " << query->Describe() << endl;
+
         query->SetEnabledWithRegisters(false);
     }
 }
@@ -92,5 +102,12 @@ void TIRDeviceQuerySetHandler::ResetQueriesStatuses(const PIRDeviceQuerySet & qu
 {
     for (const auto & query: querySet->Queries) {
         query->ResetStatus();
+    }
+}
+
+void TIRDeviceQuerySetHandler::InvalidateReadValues(const PIRDeviceQuerySet & querySet)
+{
+    for (const auto & query: querySet->Queries) {
+        query->InvalidateReadValues();
     }
 }

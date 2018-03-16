@@ -37,14 +37,14 @@ void TMercury200Test::SetUp()
     Mercury200Dev = std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort,
                             TSerialDeviceFactory::GetProtocol("mercury200"));
 
-    Mercury200RET1Reg = std::make_shared<TProtocolRegister>(0x2700, TMercury200Device::REG_PARAM_VALUE32);
-    Mercury200RET2Reg = std::make_shared<TProtocolRegister>(0x2704, TMercury200Device::REG_PARAM_VALUE32);
-    Mercury200RET3Reg = std::make_shared<TProtocolRegister>(0x2708, TMercury200Device::REG_PARAM_VALUE32);
-    Mercury200RET4Reg = std::make_shared<TProtocolRegister>(0x270C, TMercury200Device::REG_PARAM_VALUE32);
-    Mercury200UReg = std::make_shared<TProtocolRegister>(0x6300, TMercury200Device::REG_PARAM_VALUE16);
-    Mercury200IReg = std::make_shared<TProtocolRegister>(0x6302, TMercury200Device::REG_PARAM_VALUE16);
-    Mercury200PReg = std::make_shared<TProtocolRegister>(0x6304, TMercury200Device::REG_PARAM_VALUE24);
-    Mercury200BatReg = std::make_shared<TProtocolRegister>(0x2900, TMercury200Device::REG_PARAM_VALUE16);
+    Mercury200RET1Reg = Mercury200Dev->GetCreateRegister(0x2700, TMercury200Device::REG_PARAM_VALUE32);
+    Mercury200RET2Reg = Mercury200Dev->GetCreateRegister(0x2704, TMercury200Device::REG_PARAM_VALUE32);
+    Mercury200RET3Reg = Mercury200Dev->GetCreateRegister(0x2708, TMercury200Device::REG_PARAM_VALUE32);
+    Mercury200RET4Reg = Mercury200Dev->GetCreateRegister(0x270C, TMercury200Device::REG_PARAM_VALUE32);
+    Mercury200UReg = Mercury200Dev->GetCreateRegister(0x6300, TMercury200Device::REG_PARAM_VALUE16);
+    Mercury200IReg = Mercury200Dev->GetCreateRegister(0x6302, TMercury200Device::REG_PARAM_VALUE16);
+    Mercury200PReg = Mercury200Dev->GetCreateRegister(0x6304, TMercury200Device::REG_PARAM_VALUE24);
+    Mercury200BatReg = Mercury200Dev->GetCreateRegister(0x2900, TMercury200Device::REG_PARAM_VALUE16);
 
     SerialPort->Open();
 }
@@ -126,9 +126,9 @@ void TMercury200IntegrationTest::TearDown()
 
 TEST_F(TMercury200IntegrationTest, Poll)
 {
-    EnqueueMercury200BatteryVoltageResponse();
-    EnqueueMercury200ParamResponse();
     EnqueueMercury200EnergyResponse();
+    EnqueueMercury200ParamResponse();
+    EnqueueMercury200BatteryVoltageResponse();
     Note() << "LoopOnce()";
     Observer->LoopOnce();
 }

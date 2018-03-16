@@ -14,4 +14,5 @@ public:
     virtual EErrorState GetErrorState() const = 0;
     virtual bool GetValueIsRead() const = 0;
     virtual bool IsChanged(EPublishData) const = 0;
+    virtual void ResetChanged(EPublishData) = 0;
 };

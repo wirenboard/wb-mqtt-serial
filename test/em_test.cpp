@@ -5,6 +5,19 @@
 #include "milur_device.h"
 #include "mercury230_device.h"
 #include "protocol_register.h"
+#include "virtual_register.h"
+
+namespace
+{
+    PProtocolRegister GetProtocolRegister(const PVirtualRegister & reg)
+    {
+        const auto & protocolRegisters = reg->GetProtocolRegisters();
+
+        assert(protocolRegisters.size() == 1);
+
+        return *protocolRegisters.begin();
+    }
+}
 
 class TEMDeviceTest: public TSerialDeviceTest, public TMilurExpectations, public TMercury230Expectations
 {
@@ -16,17 +29,17 @@ protected:
     virtual PDeviceConfig Mercury230Config();
     PMilurDevice MilurDev;
     PMercury230Device Mercury230Dev;
-    PProtocolRegister MilurPhaseCVoltageReg;
-    PProtocolRegister MilurPhaseCCurrentReg;
-    PProtocolRegister MilurTotalConsumptionReg;
-    PProtocolRegister MilurFrequencyReg;
-    PProtocolRegister Mercury230TotalReactiveEnergyReg;
-    PProtocolRegister Mercury230TotalConsumptionReg;
-    PProtocolRegister Mercury230U1Reg;
-    PProtocolRegister Mercury230I1Reg;
-    PProtocolRegister Mercury230U2Reg;
-    PProtocolRegister Mercury230TempReg;
-    PProtocolRegister Mercury230PReg;
+    PVirtualRegister MilurPhaseCVoltageReg;
+    PVirtualRegister MilurPhaseCCurrentReg;
+    PVirtualRegister MilurTotalConsumptionReg;
+    PVirtualRegister MilurFrequencyReg;
+    PVirtualRegister Mercury230TotalReactiveEnergyReg;
+    PVirtualRegister Mercury230TotalConsumptionReg;
+    PVirtualRegister Mercury230U1Reg;
+    PVirtualRegister Mercury230I1Reg;
+    PVirtualRegister Mercury230U2Reg;
+    PVirtualRegister Mercury230TempReg;
+    PVirtualRegister Mercury230PReg;
 };
 
 PDeviceConfig TEMDeviceTest::MilurConfig()
@@ -47,21 +60,19 @@ void TEMDeviceTest::SetUp()
     Mercury230Dev = std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort,
                             TSerialDeviceFactory::GetProtocol("mercury230"));
 
-
-    MilurPhaseCVoltageReg = std::make_shared<TProtocolRegister>(102, TMilurDevice::REG_PARAM);
-    MilurPhaseCVoltageReg = std::make_shared<TProtocolRegister>(102, TMilurDevice::REG_PARAM);
-    MilurPhaseCCurrentReg = std::make_shared<TProtocolRegister>(105, TMilurDevice::REG_PARAM);
-    MilurTotalConsumptionReg = std::make_shared<TProtocolRegister>(118, TMilurDevice::REG_ENERGY);
-    MilurFrequencyReg = std::make_shared<TProtocolRegister>(9, TMilurDevice::REG_FREQ);
+    MilurPhaseCVoltageReg = TVirtualRegister::Create(TRegisterConfig::Create(TMilurDevice::REG_PARAM, 102, U24), MilurDev);
+    MilurPhaseCCurrentReg = TVirtualRegister::Create(TRegisterConfig::Create(TMilurDevice::REG_PARAM, 105, U24), MilurDev);
+    MilurTotalConsumptionReg = TVirtualRegister::Create(TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32), MilurDev);
+    MilurFrequencyReg = TVirtualRegister::Create(TRegisterConfig::Create(TMilurDevice::REG_FREQ, 9, U16), MilurDev);
     Mercury230TotalConsumptionReg =
-        std::make_shared<TProtocolRegister>(0x0000, TMercury230Device::REG_VALUE_ARRAY);
+        TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32), Mercury230Dev);
     Mercury230TotalReactiveEnergyReg =
-        std::make_shared<TProtocolRegister>(0x0002, TMercury230Device::REG_VALUE_ARRAY);
-    Mercury230U1Reg = std::make_shared<TProtocolRegister>(0x1111, TMercury230Device::REG_PARAM);
-    Mercury230I1Reg = std::make_shared<TProtocolRegister>(0x1121, TMercury230Device::REG_PARAM);
-    Mercury230U2Reg = std::make_shared<TProtocolRegister>(0x1112, TMercury230Device::REG_PARAM);
-    Mercury230TempReg = std::make_shared<TProtocolRegister>(0x1170, TMercury230Device::REG_PARAM_BE);
-    Mercury230PReg  = std::make_shared<TProtocolRegister>(0x1100, TMercury230Device::REG_PARAM_SIGN_ACT);
+        TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32), Mercury230Dev);
+    Mercury230U1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1111, U24), Mercury230Dev);
+    Mercury230I1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1121, U24), Mercury230Dev);
+    Mercury230U2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1112, U24), Mercury230Dev);
+    Mercury230TempReg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_BE, 0x1170, S16), Mercury230Dev);
+    Mercury230PReg  = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24), Mercury230Dev);
 
     SerialPort->Open();
 }
@@ -69,17 +80,17 @@ void TEMDeviceTest::SetUp()
 void TEMDeviceTest::VerifyMilurQuery()
 {
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadProtocolRegister(MilurPhaseCVoltageReg));
+    ASSERT_EQ(0x03946f, MilurDev->ReadProtocolRegister(GetProtocolRegister(MilurPhaseCVoltageReg)));
 
     EnqueueMilurPhaseCCurrentResponse();
-    ASSERT_EQ(0xffd8f0, MilurDev->ReadProtocolRegister(MilurPhaseCCurrentReg));
+    ASSERT_EQ(0xffd8f0, MilurDev->ReadProtocolRegister(GetProtocolRegister(MilurPhaseCCurrentReg)));
 
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
-    ASSERT_EQ(0x11144, MilurDev->ReadProtocolRegister(MilurTotalConsumptionReg));
+    ASSERT_EQ(0x11144, MilurDev->ReadProtocolRegister(GetProtocolRegister(MilurTotalConsumptionReg)));
 
     EnqueueMilurFrequencyResponse();
-    ASSERT_EQ(50080, MilurDev->ReadProtocolRegister(MilurFrequencyReg));
+    ASSERT_EQ(50080, MilurDev->ReadProtocolRegister(GetProtocolRegister(MilurFrequencyReg)));
 }
 
 void TEMDeviceTest::VerifyMercuryParamQuery()
@@ -90,22 +101,22 @@ void TEMDeviceTest::VerifyMercuryParamQuery()
     // C = command (0x08)
     // N = param number (0x11)
     // B = subparam spec (BWRI), 0x11 = voltage, phase 1
-    ASSERT_EQ(24128, Mercury230Dev->ReadProtocolRegister(Mercury230U1Reg));
+    ASSERT_EQ(24128, Mercury230Dev->ReadProtocolRegister(GetProtocolRegister(Mercury230U1Reg)));
 
     EnqueueMercury230I1Response();
     // subparam 0x21 = current (phase 1)
-    ASSERT_EQ(69, Mercury230Dev->ReadProtocolRegister(Mercury230I1Reg));
+    ASSERT_EQ(69, Mercury230Dev->ReadProtocolRegister(GetProtocolRegister(Mercury230I1Reg)));
 
     EnqueueMercury230U2Response();
     // subparam 0x12 = voltage (phase 2)
-    ASSERT_EQ(24043, Mercury230Dev->ReadProtocolRegister(Mercury230U2Reg));
+    ASSERT_EQ(24043, Mercury230Dev->ReadProtocolRegister(GetProtocolRegister(Mercury230U2Reg)));
 
     EnqueueMercury230PResponse();
     // Total power (P)
-    ASSERT_EQ(553095, Mercury230Dev->ReadProtocolRegister(Mercury230PReg));
+    ASSERT_EQ(553095, Mercury230Dev->ReadProtocolRegister(GetProtocolRegister(Mercury230PReg)));
 
     EnqueueMercury230TempResponse();
-    ASSERT_EQ(24, Mercury230Dev->ReadProtocolRegister(Mercury230TempReg));
+    ASSERT_EQ(24, Mercury230Dev->ReadProtocolRegister(GetProtocolRegister(Mercury230TempReg)));
 }
 
 TEST_F(TEMDeviceTest, Combined)

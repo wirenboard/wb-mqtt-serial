@@ -29,7 +29,6 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
     PIRDeviceValueQuery                         WriteQuery;
     EErrorState                                 ErrorState;
     EPublishData                                ChangedPublishData;
-    uint8_t                                     ProtocolRegisterWidth;
     std::atomic_bool                            Dirty;
     bool                                        Enabled : 1;
     bool                                        ValueIsRead : 1;
@@ -58,12 +57,11 @@ public:
     void SetFlushSignal(PBinarySemaphore flushNeeded);
     PSerialDevice GetDevice() const;
     TPSet<PProtocolRegister> GetProtocolRegisters() const;
-    EErrorState GetErrorState() const;
+    EErrorState GetErrorState() const override;
     std::string Describe() const;
     bool NeedToPoll() const;
-    bool GetValueIsRead() const;
-    void InvalidateProtocolRegisterValues();
-    bool IsChanged(EPublishData) const;
+    bool GetValueIsRead() const override;
+    bool IsChanged(EPublishData) const override;
     bool NeedToFlush() const;
     void Flush();
 
@@ -74,12 +72,12 @@ public:
      */
     PAbstractVirtualRegister GetTopLevel();
 
-    void ResetChanged(EPublishData);
+    void ResetChanged(EPublishData) override;
 
-    std::string GetTextValue() const;
+    std::string GetTextValue() const override;
     uint64_t GetValue() const;
 
-    void SetTextValue(const std::string & value);
+    void SetTextValue(const std::string & value) override;
     void SetValue(uint64_t value);
 
     bool IsEnabled() const;
@@ -87,7 +85,11 @@ public:
 
     std::string ToString() const;
 
-    const TProtocolRegisterBindInfo & GetBindInfo(const PProtocolRegister & reg) const;
+    /**
+     * Only for testing purposes
+     */
+    const PIRDeviceValueQuery & GetWriteQuery() const;
+    void WriteValueToQuery();
 
 private:
     TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device);
@@ -105,4 +107,6 @@ private:
 
     void NotifyRead(bool ok);
     void NotifyWrite(bool ok);
+
+    void InvalidateReadValues();
 };

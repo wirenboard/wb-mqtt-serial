@@ -33,6 +33,8 @@ public:
     }
 
 private:
-    static void CheckSets(const std::list<TPSet<PProtocolRegister>> & registerSets, uint32_t maxHole, uint32_t maxRegs);
-    static void MergeSets(std::list<TPSet<PProtocolRegister>> & registerSets, uint32_t maxHole, uint32_t maxRegs);
+    using TRegisterTypeInfo = std::function<std::pair<uint32_t, uint32_t>(uint32_t)>;
+
+    static void CheckSets(const std::list<TPSet<PProtocolRegister>> & registerSets, const TRegisterTypeInfo &);
+    static void MergeSets(std::list<TPSet<PProtocolRegister>> & registerSets, const TRegisterTypeInfo &);
 };

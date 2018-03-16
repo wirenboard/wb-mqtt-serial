@@ -116,7 +116,7 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
 
 PProtocolRegister TSerialDevice::GetCreateRegister(uint32_t address, uint32_t type)
 {
-    auto protocolRegister = std::make_shared<TProtocolRegister>(address, type, shared_from_this());
+    PProtocolRegister protocolRegister(new TProtocolRegister(address, type, shared_from_this()));
 
     const auto & insRes = Registers.insert(protocolRegister);
 

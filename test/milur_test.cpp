@@ -50,27 +50,27 @@ void TMilurTest::SetUp()
 	MilurDev = std::make_shared<TMilurDevice>(GetDeviceConfig(), SerialPort,
 	                            TSerialDeviceFactory::GetProtocol("milur"));
 
-	MilurPhaseAVoltageReg = std::make_shared<TProtocolRegister>(100, TMilurDevice::REG_PARAM);
-	MilurPhaseBVoltageReg = std::make_shared<TProtocolRegister>(101, TMilurDevice::REG_PARAM);
-	MilurPhaseCVoltageReg = std::make_shared<TProtocolRegister>(102, TMilurDevice::REG_PARAM);
+	MilurPhaseAVoltageReg = MilurDev->GetCreateRegister(100, TMilurDevice::REG_PARAM);
+	MilurPhaseBVoltageReg = MilurDev->GetCreateRegister(101, TMilurDevice::REG_PARAM);
+	MilurPhaseCVoltageReg = MilurDev->GetCreateRegister(102, TMilurDevice::REG_PARAM);
 
-	MilurPhaseACurrentReg = std::make_shared<TProtocolRegister>(103, TMilurDevice::REG_PARAM);
-	MilurPhaseBCurrentReg = std::make_shared<TProtocolRegister>(104, TMilurDevice::REG_PARAM);
-	MilurPhaseCCurrentReg = std::make_shared<TProtocolRegister>(105, TMilurDevice::REG_PARAM);
+	MilurPhaseACurrentReg = MilurDev->GetCreateRegister(103, TMilurDevice::REG_PARAM);
+	MilurPhaseBCurrentReg = MilurDev->GetCreateRegister(104, TMilurDevice::REG_PARAM);
+	MilurPhaseCCurrentReg = MilurDev->GetCreateRegister(105, TMilurDevice::REG_PARAM);
 
-	MilurPhaseAActivePowerReg = std::make_shared<TProtocolRegister>(106, TMilurDevice::REG_POWER);
-	MilurPhaseBActivePowerReg = std::make_shared<TProtocolRegister>(107, TMilurDevice::REG_POWER);
-	MilurPhaseCActivePowerReg = std::make_shared<TProtocolRegister>(108, TMilurDevice::REG_POWER);
-	MilurTotalActivePowerReg = std::make_shared<TProtocolRegister>(109, TMilurDevice::REG_POWER);
+	MilurPhaseAActivePowerReg = MilurDev->GetCreateRegister(106, TMilurDevice::REG_POWER);
+	MilurPhaseBActivePowerReg = MilurDev->GetCreateRegister(107, TMilurDevice::REG_POWER);
+	MilurPhaseCActivePowerReg = MilurDev->GetCreateRegister(108, TMilurDevice::REG_POWER);
+	MilurTotalActivePowerReg = MilurDev->GetCreateRegister(109, TMilurDevice::REG_POWER);
 
-	MilurPhaseAReactivePowerReg = std::make_shared<TProtocolRegister>(110, TMilurDevice::REG_POWER);
-	MilurPhaseBReactivePowerReg = std::make_shared<TProtocolRegister>(111, TMilurDevice::REG_POWER);
-	MilurPhaseCReactivePowerReg = std::make_shared<TProtocolRegister>(112, TMilurDevice::REG_POWER);
-	MilurTotalReactivePowerReg = std::make_shared<TProtocolRegister>(113, TMilurDevice::REG_POWER);
+	MilurPhaseAReactivePowerReg = MilurDev->GetCreateRegister(110, TMilurDevice::REG_POWER);
+	MilurPhaseBReactivePowerReg = MilurDev->GetCreateRegister(111, TMilurDevice::REG_POWER);
+	MilurPhaseCReactivePowerReg = MilurDev->GetCreateRegister(112, TMilurDevice::REG_POWER);
+	MilurTotalReactivePowerReg = MilurDev->GetCreateRegister(113, TMilurDevice::REG_POWER);
 
-	MilurTotalConsumptionReg = std::make_shared<TProtocolRegister>(118, TMilurDevice::REG_ENERGY);
-	MilurTotalReactiveEnergyReg = std::make_shared<TProtocolRegister>(127, TMilurDevice::REG_ENERGY);
-	MilurFrequencyReg = std::make_shared<TProtocolRegister>(9, TMilurDevice::REG_FREQ);
+	MilurTotalConsumptionReg = MilurDev->GetCreateRegister(118, TMilurDevice::REG_ENERGY);
+	MilurTotalReactiveEnergyReg = MilurDev->GetCreateRegister(127, TMilurDevice::REG_ENERGY);
+	MilurFrequencyReg = MilurDev->GetCreateRegister(9, TMilurDevice::REG_FREQ);
 
 	SerialPort->Open();
 }
@@ -257,7 +257,7 @@ void TMilur32Test::SetUp()
     TSerialDeviceTest::SetUp();
     MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort,
                             TSerialDeviceFactory::GetProtocol("milur"));
-    MilurTotalConsumptionReg = std::make_shared<TProtocolRegister>(118, TMilurDevice::REG_ENERGY);
+    MilurTotalConsumptionReg = MilurDev->GetCreateRegister(118, TMilurDevice::REG_ENERGY);
 
     SerialPort->Open();
 }

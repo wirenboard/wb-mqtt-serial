@@ -37,7 +37,7 @@ public:
     bool WriteInitValues();
 
 private:
-    bool NeedToPublish(const PVirtualRegister & reg);
+    bool NeedToPublish(const PAbstractVirtualRegister & reg);
     void OnValueRead(const PVirtualRegister & reg);
     void UpdateError(const PVirtualRegister & reg);
 

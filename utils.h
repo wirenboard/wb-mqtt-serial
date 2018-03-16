@@ -154,7 +154,7 @@ std::map<K, V, C> MapFromSet(const std::set<K, C> & set)
     std::map<K, V, C> map;
 
     for (const auto & key: set) {
-        map[key] = V();
+        map.emplace(key, V{});
     }
 
     return map;
