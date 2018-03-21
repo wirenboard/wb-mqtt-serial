@@ -1,3 +1,14 @@
+wb-mqtt-serial (1.41) unstable; urgency=medium
+
+  * bitmask support
+  * free associative register architecture
+  * unified device read/write interface via intermediate representation device query
+  * unsupported register handling on client level
+  * unsupported register detection for modbus protocol
+  * disconnect on timeouts only
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 21 Mar 2018 21:50:24 +0300
+
 wb-mqtt-serial (1.40.2) stable; urgency=medium
 
   * TCP port: detect socket close
