@@ -551,3 +551,53 @@ TEST_F(TModbusIntegrationTest, GuardInterval)
     Config->PortConfigs[0]->DeviceConfigs[0]->GuardInterval = chrono::microseconds(1000);
     InvalidateConfigPoll();
 }
+
+
+class TModbusBitmasksIntegrationTest: public TModbusIntegrationTest
+{
+protected:
+    const char* ConfigPath() const override { return "configs/config-modbus-bitmasks-test.json"; }
+
+    void ExpectPollQueries(bool afterWrite = false, bool afterWriteMultiple = false);
+};
+
+void TModbusBitmasksIntegrationTest::ExpectPollQueries(bool afterWriteSingle, bool afterWriteMultiple)
+{
+    EnqueueU16Shift8Bits8U32Shift8Bits16HoldingReadResponse(afterWriteMultiple);
+    EnqueueU8SingleBitsHoldingReadResponse(afterWriteSingle);
+}
+
+TEST_F(TModbusBitmasksIntegrationTest, Poll)
+{
+    ExpectPollQueries();
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+}
+
+TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
+{
+    ExpectPollQueries();
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+
+    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/U8:1:1/on", "1");
+
+    EnqueueU8Shift1SingleBitHoldingWriteResponse();
+    ExpectPollQueries(true);
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+}
+
+TEST_F(TModbusBitmasksIntegrationTest, MultipleWrite)
+{
+    ExpectPollQueries();
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+
+    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/U32:8:16/on", "5555");
+
+    EnqueueU32Shift8HoldingWriteResponse();
+    ExpectPollQueries(false, true);
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+}

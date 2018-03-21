@@ -85,6 +85,7 @@ public:
 
     std::string ToString() const;
 
+    bool AreOverlapping(const TVirtualRegister & other) const;
     /**
      * Only for testing purposes
      */
@@ -100,7 +101,7 @@ private:
     void AcceptDeviceValue(bool ok);
 
     uint32_t GetBitPosition() const;
-    uint8_t GetBitSize() const;
+    uint32_t GetBitEnd() const;
 
     void UpdateReadError(bool error);
     void UpdateWriteError(bool error);

@@ -140,6 +140,71 @@
                             "type": "value"
                         }
                     ]
+                },
+                {
+                    "name": "Bitmasks",
+                    "id": "Bitmasks",
+                    "slave_id": "0x99",
+                    "protocol": "fake",
+                    "max_read_registers": 4,
+                    "channels": [
+                        {
+                            "name" : "U16:0:8",
+                            "reg_type" : "fake",
+                            "address" : "70:0:8",
+                            "type": "value",
+                            "format": "u16"
+                        },
+                        {
+                            "name" : "U16:8:8",
+                            "reg_type" : "fake",
+                            "address" : "70:8:8",
+                            "type": "value",
+                            "format": "u16"
+                        },
+                        {
+                            "name" : "U8:0:1",
+                            "reg_type" : "fake",
+                            "address" : "72:0:1",
+                            "type": "value",
+                            "format": "u8"
+                        },
+                        {
+                            "name" : "U8:1:1",
+                            "reg_type" : "fake",
+                            "address" : "72:1:1",
+                            "type": "value",
+                            "format": "u8"
+                        },
+                        {
+                            "name" : "U8:2:1",
+                            "reg_type" : "fake",
+                            "address" : "72:2:1",
+                            "type": "value",
+                            "format": "u8"
+                        },
+                        {
+                            "name" : "U64:0:16",
+                            "reg_type" : "fake",
+                            "address" : "73:0:16",
+                            "type": "value",
+                            "format": "u64"
+                        },
+                        {
+                            "name" : "U64:16:16",
+                            "reg_type" : "fake",
+                            "address" : "73:16:16",
+                            "type": "value",
+                            "format": "u64"
+                        },
+                        {
+                            "name" : "U64:32:32",
+                            "reg_type" : "fake",
+                            "address" : "73:32:32",
+                            "type": "value",
+                            "format": "u64"
+                        }
+                    ]
                 }
             ]
         }

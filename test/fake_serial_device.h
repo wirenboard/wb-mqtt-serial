@@ -4,7 +4,7 @@
 
 #include <map>
 
-const auto FAKE_DEVICE_REG_COUNT = 256;
+const uint32_t FAKE_DEVICE_REG_COUNT = 256;
 
 class TFakeSerialPort;
 using PFakeSerialPort = std::shared_ptr<TFakeSerialPort>;

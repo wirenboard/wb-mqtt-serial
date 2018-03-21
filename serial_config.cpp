@@ -159,11 +159,11 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
 
     cout << "address: " << address << endl;
     if (bitOffset) {
-        cout << "bit offset: " << bitOffset << endl;
+        cout << "bit offset: " << (int)bitOffset << endl;
     }
 
     if (bitWidth) {
-        cout << "bit width: " << bitWidth << endl;
+        cout << "bit width: " << (int)bitWidth << endl;
     }
 
     string reg_type_str = register_data["reg_type"].asString();

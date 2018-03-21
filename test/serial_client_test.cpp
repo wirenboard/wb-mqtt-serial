@@ -23,11 +23,12 @@ protected:
     void SetUp();
     void TearDown();
     PVirtualRegister Reg(int addr, ERegisterFormat fmt = U16, double scale = 1,
-        double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian) {
+        double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian,
+        uint8_t bitOffset = 0, uint8_t bitWidth = 0) {
         return TVirtualRegister::Create(
             TRegisterConfig::Create(
                 TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
-                "fake", false, 0, word_order), Device);
+                "fake", false, 0, word_order, bitOffset, bitWidth), Device);
     }
     PFakeSerialPort Port;
     PSerialClient SerialClient;
@@ -755,6 +756,110 @@ TEST_F(TSerialClientTest, Errors)
     SerialClient->Cycle();
 }
 
+TEST_F(TSerialClientTest, Bitmasks)
+{
+    auto reg70O0W8 = Reg(70, U16, 1.0, 0, 0, EWordOrder::BigEndian, 0, 8);  // Reg70 Lo
+    auto reg70O8W8 = Reg(70, U16, 1.0, 0, 0, EWordOrder::BigEndian, 8, 8);  // Reg70 Hi
+
+    auto reg72O0W1 = Reg(72, U8, 1, 0, 0, EWordOrder::BigEndian, 0, 1);     // Reg72 bit-0
+    auto reg72O1W1 = Reg(72, U8, 1, 0, 0, EWordOrder::BigEndian, 1, 1);     // Reg72 bit-1
+    auto reg72O2W1 = Reg(72, U8, 1, 0, 0, EWordOrder::BigEndian, 2, 1);     // Reg72 bit-2
+
+    auto reg73O0W16  = Reg(73, U64, 1.0, 0, 0, EWordOrder::BigEndian, 0, 16);   // Reg76 16-bit
+    auto reg73O16W16 = Reg(73, U64, 1.0, 0, 0, EWordOrder::BigEndian, 16, 16);  // Reg75 16-bit
+    auto reg73O32W32 = Reg(73, U64, 1.0, 0, 0, EWordOrder::BigEndian, 32, 32);  // Reg73 16-bit and Reg74 16-bit
+
+    //------------------------------------Errors-------------------------------------------
+    #define EXPECT_THROW_EMIT(...) try {         \
+        __VA_ARGS__;                             \
+        ADD_FAILURE() << "Expected exception";   \
+    } catch (const std::exception & e) {         \
+        Emit() << e.what();                      \
+    }
+
+    EXPECT_THROW_EMIT(Reg(73, U32, 1.0, 0, 0, EWordOrder::BigEndian, 16, 16))   // overlapping with reg73O32W32
+    EXPECT_THROW_EMIT(Reg(76, U16))                                             // overlapping with reg73O0W16
+    EXPECT_THROW_EMIT(Reg(76, U16, 1.0, 0, 0, EWordOrder::BigEndian, 0, 1))     // overlapping with reg73O0W16
+    EXPECT_THROW_EMIT(Reg(76, U16, 1.0, 0, 0, EWordOrder::BigEndian, 15, 1))    // overlapping with reg73O0W16
+    EXPECT_THROW_EMIT(Reg(76, U16, 1.0, 0, 0, EWordOrder::BigEndian, 16, 1))    // too large shift
+
+    #undef EXPECT_THROW_EMIT
+    //----------------------------------Errors End------------------------------------------
+
+    SerialClient->AddRegister(reg70O0W8);
+    SerialClient->AddRegister(reg70O8W8);
+    SerialClient->AddRegister(reg72O0W1);
+    SerialClient->AddRegister(reg72O1W1);
+    SerialClient->AddRegister(reg72O2W1);
+    SerialClient->AddRegister(reg73O0W16);
+    SerialClient->AddRegister(reg73O16W16);
+    SerialClient->AddRegister(reg73O32W32);
+
+    reg70O0W8->SetTextValue("255");
+    reg70O0W8->Flush();
+
+    EXPECT_EQ(0xFF, Device->Registers[70]);
+
+    cerr << "set val: 63" << endl;
+    reg70O8W8->SetTextValue("63");
+    reg70O8W8->Flush();
+
+    EXPECT_EQ(0x3FFF, Device->Registers[70]);
+
+    reg72O0W1->SetTextValue("1");
+    reg72O0W1->Flush();
+    EXPECT_EQ(0x1, Device->Registers[72]);
+
+    reg72O1W1->SetTextValue("1");
+    reg72O1W1->Flush();
+    EXPECT_EQ(0x3, Device->Registers[72]);
+
+    reg72O2W1->SetTextValue("1");
+    reg73O0W16->SetTextValue("4321");
+    reg73O16W16->SetTextValue("7654");
+    reg73O32W32->SetTextValue("1234567890");
+
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 70 << "' value '" << Device->Registers[70] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 72 << "' value '" << Device->Registers[72] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 73 << "' value '" << Device->Registers[73] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 74 << "' value '" << Device->Registers[74] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 75 << "' value '" << Device->Registers[75] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 76 << "' value '" << Device->Registers[76] << "'";
+
+    EXPECT_EQ(0x3FFF, Device->Registers[70]);
+    EXPECT_EQ(0x7, Device->Registers[72]);
+    EXPECT_EQ(0x4996, Device->Registers[73]);
+    EXPECT_EQ(0x02D2, Device->Registers[74]);
+    EXPECT_EQ(0x1DE6, Device->Registers[75]);
+    EXPECT_EQ(0x10E1, Device->Registers[76]);
+
+    EXPECT_EQ("255", reg70O0W8->GetTextValue());
+    EXPECT_EQ("63", reg70O8W8->GetTextValue());
+    EXPECT_EQ("1", reg72O0W1->GetTextValue());
+    EXPECT_EQ("1", reg72O1W1->GetTextValue());
+    EXPECT_EQ("1", reg72O2W1->GetTextValue());
+    EXPECT_EQ("4321", reg73O0W16->GetTextValue());
+    EXPECT_EQ("7654", reg73O16W16->GetTextValue());
+    EXPECT_EQ("1234567890", reg73O32W32->GetTextValue());
+
+    Device->Registers[72] = 0x5;     // disable reg72O1W1
+
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+
+    EXPECT_EQ("255", reg70O0W8->GetTextValue());
+    EXPECT_EQ("63", reg70O8W8->GetTextValue());
+    EXPECT_EQ("1", reg72O0W1->GetTextValue());
+    EXPECT_EQ("0", reg72O1W1->GetTextValue());
+    EXPECT_EQ("1", reg72O2W1->GetTextValue());
+    EXPECT_EQ("4321", reg73O0W16->GetTextValue());
+    EXPECT_EQ("7654", reg73O16W16->GetTextValue());
+    EXPECT_EQ("1234567890", reg73O32W32->GetTextValue());
+}
+
 
 class TSerialClientIntegrationTest: public TSerialClientTest
 {
@@ -1295,6 +1400,47 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
         EXPECT_EQ(1, Device->Registers[1]);
         EXPECT_EQ(2, Device->Registers[2]);
     }
+}
+
+TEST_F(TSerialClientIntegrationTest, Bitmasks)
+{
+    FilterConfig("Bitmasks");
+
+    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
+    observer->SetUp();
+
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x99", "fake", Port));
+
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U16:0:8/on", "255");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U16:8:8/on", "63");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U8:0:1/on", "1");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U8:1:1/on", "1");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U8:2:1/on", "1");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U64:0:16/on", "4321");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U64:16:16/on", "7654");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U64:32:32/on", "1234567890");
+
+    Note() << "LoopOnce()";
+    observer->LoopOnce();
+
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 70 << "' value '" << Device->Registers[70] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 72 << "' value '" << Device->Registers[72] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 73 << "' value '" << Device->Registers[73] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 74 << "' value '" << Device->Registers[74] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 75 << "' value '" << Device->Registers[75] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 76 << "' value '" << Device->Registers[76] << "'";
+
+    EXPECT_EQ(0x3FFF, Device->Registers[70]);
+    EXPECT_EQ(0x7, Device->Registers[72]);
+    EXPECT_EQ(0x4996, Device->Registers[73]);
+    EXPECT_EQ(0x02D2, Device->Registers[74]);
+    EXPECT_EQ(0x1DE6, Device->Registers[75]);
+    EXPECT_EQ(0x10E1, Device->Registers[76]);
+
+    Device->Registers[72] = 0x5;     // disable reg72O1W1
+
+    Note() << "LoopOnce()";
+    observer->LoopOnce();
 }
 
 

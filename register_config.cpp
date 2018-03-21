@@ -116,20 +116,33 @@ uint8_t TRegisterConfig::GetBitWidth() const {
         return BitWidth;
     }
 
-    return ByteWidth() * 8;
+    return GetFormatBitWidth() - BitOffset;
 }
 
-uint8_t TRegisterConfig::ByteWidth() const {
+uint8_t TRegisterConfig::GetFormatByteWidth() const {
     return RegisterFormatByteWidth(Format);
 }
 
-uint8_t TRegisterConfig::Width() const {
-    return (ByteWidth() + 1) / 2;
+uint8_t TRegisterConfig::GetFormatBitWidth() const {
+    return GetFormatByteWidth() * 8;
+}
+
+uint8_t TRegisterConfig::GetFormatWordWidth() const {
+    return (GetFormatByteWidth() + 1) / 2;
 }
 
 string TRegisterConfig::ToString() const
 {
     stringstream s;
     s << TypeName << ": " << Address;
+    if (BitOffset || BitWidth) {
+        s << ":" << (int)BitOffset << ":" << (int)BitWidth;
+    }
+
     return s.str();
+}
+
+string TRegisterConfig::ToStringWithFormat() const
+{
+    return ToString() + " (" + RegisterFormatName(Format) + ")";
 }

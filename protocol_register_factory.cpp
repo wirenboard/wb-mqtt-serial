@@ -19,46 +19,50 @@ TPMap<PProtocolRegister, TProtocolRegisterBindInfo> TProtocolRegisterFactory::Ge
     }
 
     const uint8_t registerBitWidth = RegisterFormatByteWidth(regFormat) * 8;
+    const auto formatBitWidth = config->GetFormatBitWidth();
     auto bitsToAllocate = config->GetBitWidth();
 
-    uint32_t regCount = BitCountToRegCount(bitsToAllocate, registerBitWidth);
+    if (formatBitWidth <= config->BitOffset) {
+        throw TSerialDeviceException("unable to create protocol registers by config " + config->ToString() +
+                                     ": specified bit shift (" + to_string((int)config->BitOffset) +
+                                     ") must be less than specified format's (" + RegisterFormatName(config->Format) + ") bit width");
+    }
+
+    if (bitsToAllocate > (formatBitWidth - config->BitOffset)) {
+        throw TSerialDeviceException("unable to create protocol registers by config " + config->ToString() +
+                                     ": specified bit width (" + to_string((int)registerBitWidth) +
+                                     ") and shift (" + to_string((int)config->BitOffset) +
+                                     ") does not fit into specified format (" + RegisterFormatName(config->Format) + ")");
+    }
+
+    uint8_t regIndexStart = config->BitOffset / registerBitWidth;
+    uint8_t regIndexEnd = BitCountToRegCount(formatBitWidth, registerBitWidth);
 
     if (Global::Debug) {
         cerr << "bits: " << (int)bitsToAllocate << endl;
-
-        cerr << "registers: " << regCount << endl;
-
-        cerr << "split " << config->ToString() << " to " << regCount << " " << config->TypeName << " registers" << endl;
+        cerr << "split " << config->ToString() << " to " << (regIndexEnd - regIndexStart) << " " << config->TypeName << " registers" << endl;
     }
 
-    for (auto regIndex = 0u, regIndexEnd = regCount; regIndex != regIndexEnd;) {
+    for (auto regIndex = regIndexStart; regIndex < regIndexEnd; ++regIndex) {
         const auto regReverseIndex = regIndexEnd - regIndex - 1;
         const auto type            = config->Type;
         const auto address         = config->Address + regReverseIndex;
 
-        TProtocolRegisterBindInfo bindInfo {};
-
-        bindInfo.BitStart = 0;
-        bindInfo.BitEnd = min(registerBitWidth, bitsToAllocate);
-
-        auto localBitShift = max(int(config->BitOffset) - int(regIndex * registerBitWidth), 0);
-
-        bindInfo.BitStart = min(uint16_t(localBitShift), uint16_t(bindInfo.BitEnd));
-
-        if (bindInfo.BitStart == bindInfo.BitEnd) {
-            if (bitsToAllocate) {
-                ++regIndexEnd;
-            }
-            continue;
-        }
+        uint8_t startBit = max(int(config->BitOffset) - int(regIndex * registerBitWidth), 0);
+        uint8_t endBit   = min(registerBitWidth, uint8_t(startBit + bitsToAllocate));
 
         auto protocolRegister = device->GetCreateRegister(address, type);
 
+        const auto & insertResult = registersBindInfo.insert({ protocolRegister, { startBit, endBit } });
+        const auto & bindInfo = insertResult.first->second;
         bitsToAllocate -= bindInfo.BitCount();
 
-        registersBindInfo[protocolRegister] = bindInfo;
+        assert(insertResult.second); // emplace occured - no duplicates
+        assert(regIndex != regIndexEnd || bitsToAllocate == 0); // at end of loop all bit should be allocated
 
-        ++regIndex;
+        if (!bitsToAllocate) {
+            break;
+        }
     }
 
     return move(registersBindInfo);

@@ -1030,3 +1030,86 @@ void TModbusExpectations::EnqueueWrongFunctionCodeCoilWriteResponse(uint8_t exce
         exception
     }), __func__);
 }
+
+/*------------ bitmasks ----------------*/
+
+void TModbusExpectations::EnqueueU16Shift8Bits8U32Shift8Bits16HoldingReadResponse(bool afterWrite)
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        70,     //starting address Lo
+        0x00,   //quantity Hi
+        0x02,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x04,   //byte count
+        0x05,   //data Hi                       U16:8:8
+        afterWrite ? 0x15 : 0x30,   //data Lo   U32:8:16
+        afterWrite ? 0xb3 : 0x39,   //data Hi   U32:8:16
+        0x0d,   //data Lo
+    }), __func__);
+}
+
+void TModbusExpectations::EnqueueU8SingleBitsHoldingReadResponse(bool afterWrite)
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        72,     //starting address Lo
+        0x00,   //quantity Hi
+        0x01,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x02,   //byte count
+        0x00,   //data Hi
+        afterWrite ? 0x07 : 0x05,   //data Lo
+    }), __func__);
+}
+
+void TModbusExpectations::EnqueueU8Shift1SingleBitHoldingWriteResponse()
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x06,   //function code
+        0x00,   //starting address Hi
+        72,     //starting address Lo
+        0x00,   //value Hi
+        0x07,   //value Lo
+    }),
+    WrapPDU({
+        0x06,   //function code
+        0x00,   //starting address Hi
+        72,     //starting address Lo
+        0x00,   //value Hi
+        0x07,   //value Lo
+    }), __func__);
+}
+
+void TModbusExpectations::EnqueueU32Shift8HoldingWriteResponse()
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x10,   //function code
+        0x00,   //starting address Hi
+        70,     //starting address Lo
+        0x00,   //quantity Hi
+        0x02,   //quantity Lo
+        0x04,   //byte count
+        0x05,   //data Hi       Cached U16:8:8
+        0x15,   //data Lo       New    U32:8:16
+        0xb3,   //data Hi       New    U32:8:16
+        0x0d,   //data Lo       Cached
+    }),
+    WrapPDU({
+        0x10,   //function code
+        0x00,   //starting address Hi
+        70,     //starting address Lo
+        0x00,   //quantity Hi
+        0x02,   //quantity Lo
+    }), __func__);
+}

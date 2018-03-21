@@ -48,10 +48,12 @@ struct TRegisterConfig
     }
 
     uint8_t GetBitWidth() const;
-    uint8_t ByteWidth() const;
-    uint8_t Width() const;
+    uint8_t GetFormatByteWidth() const;
+    uint8_t GetFormatBitWidth() const;
+    uint8_t GetFormatWordWidth() const;
 
     std::string ToString() const;
+    std::string ToStringWithFormat() const;
 
     int Type;
     int Address;

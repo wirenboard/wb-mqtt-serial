@@ -88,6 +88,15 @@ bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg, const 
             return virtualReg;
         }
 
+        bool Has(const PVirtualRegister & reg) const
+        {
+            return find_if(VirtualRegisters.begin(), VirtualRegisters.end(), [&](const PWVirtualRegister & added){
+                auto lockedAdded = added.lock();
+                assert(lockedAdded);
+                return lockedAdded == reg;
+            }) != VirtualRegisters.end();
+        }
+
         void LinkWithImpl(const PVirtualRegister & reg, const TProtocolRegisterBindInfo & bindInfo)
         {
             VirtualRegisters.insert(reg);
@@ -129,7 +138,23 @@ bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg, const 
             assert(!VirtualRegisters.empty());
             assert(GetDevice() == reg->GetDevice());
             assert(AssociatedVirtualRegister()->Type == reg->Type);
-            assert(VirtualRegisters.count(reg) == 0);
+            assert(!Has(reg));
+
+            auto itOtherReg = VirtualRegisters.lower_bound(reg);
+
+            // check for overlapping after insertion point
+            if (itOtherReg != VirtualRegisters.end()) {
+                if (auto otherReg = itOtherReg->lock())
+                    if (otherReg->AreOverlapping(*reg))
+                        throw TSerialDeviceException("registers " + reg->ToStringWithFormat() + " and " + otherReg->ToStringWithFormat() + " are overlapping");
+            }
+
+            // check for overlapping before insertion point
+            if (itOtherReg != VirtualRegisters.begin()) {
+                if (auto otherReg = (--itOtherReg)->lock())
+                    if (otherReg->AreOverlapping(*reg))
+                        throw TSerialDeviceException("registers " + reg->ToStringWithFormat() + " and " + otherReg->ToStringWithFormat() + " are overlapping");
+            }
 
             LinkWithImpl(reg, bindInfo);
         }

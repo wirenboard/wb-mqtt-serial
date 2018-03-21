@@ -154,7 +154,7 @@ std::map<K, V, C> MapFromSet(const std::set<K, C> & set)
     std::map<K, V, C> map;
 
     for (const auto & key: set) {
-        map.emplace(key, V{});
+        map[key] = V{};
     }
 
     return map;
@@ -237,11 +237,21 @@ struct TPSetView
     }
 };
 
-template<typename Iterator>
+template<typename IteratorOrCollection>
+auto GetDefaultPrinter(const IteratorOrCollection &) -> void (*)(std::ostream &, const typename IteratorOrCollection::value_type &)
+{
+    static auto defaultPrinter = [](std::ostream & s, const typename IteratorOrCollection::value_type & val) {
+        s << val;
+    };
+
+    return { defaultPrinter };
+}
+
+template<typename Iterator, typename Printer>
 std::string PrintRange(
     Iterator pos,
     const Iterator end,
-    std::function<void(std::ostream&, typename Iterator::value_type)> && toStream = [](std::ostream & s, typename Iterator::value_type val){ s << val; },
+    Printer && toStream,
     bool multiline = false,
     const char * delimiter = ", "
 )
@@ -271,10 +281,10 @@ std::string PrintRange(
     return ss.str();
 }
 
-template<typename Collection>
+template<typename Collection, typename Printer>
 std::string PrintCollection(
     const Collection & c,
-    std::function<void(std::ostream&, typename Collection::value_type)> && toStream = [](std::ostream & s, typename Collection::value_type val){ s << val; },
+    Printer && toStream,
     bool multiline = false,
     const char * delimiter = ", "
 )

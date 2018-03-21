@@ -31,6 +31,8 @@ uint8_t RegisterFormatByteWidth(ERegisterFormat format)
         case BCD24:
             return 3;
         case Char8:
+        case U8:
+        case S8:
             return 1;
         default:
             return 2;

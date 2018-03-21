@@ -13,6 +13,7 @@
 #include <cassert>
 #include <cmath>
 #include <tuple>
+#include <bitset>
 
 using namespace std;
 
@@ -85,7 +86,7 @@ namespace // utility
         uint64_t result = 0;
         uint64_t cur_value = value;
 
-        for (int i = 0; i < reg.Width(); ++i) {
+        for (int i = 0; i < reg.GetFormatWordWidth(); ++i) {
             uint16_t last_word = (((uint64_t) cur_value) & 0xFFFF);
             result <<= 16;
             result |= last_word;
@@ -261,12 +262,14 @@ void TVirtualRegister::Initialize()
 
 uint32_t TVirtualRegister::GetBitPosition() const
 {
-    return (uint32_t(Address) * ProtocolRegisters.begin()->first->Width * 8) + BitOffset;
+    return GetBitEnd() - GetBitWidth();
 }
 
-uint8_t TVirtualRegister::GetBitSize() const
+uint32_t TVirtualRegister::GetBitEnd() const
 {
-    return RegisterFormatByteWidth(Format) * 8;
+    assert(GetFormatBitWidth() > BitOffset);
+
+    return (uint32_t(Address) * ProtocolRegisters.begin()->first->Width * 8) + GetFormatBitWidth() - BitOffset;
 }
 
 const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
@@ -348,8 +351,8 @@ bool TVirtualRegister::operator==(const TVirtualRegister & rhs) const noexcept
         return false;
     }
 
-    auto lhsEnd = lhsBegin + GetBitSize();
-    auto rhsEnd = rhsBegin + rhs.GetBitSize();
+    auto lhsEnd = lhsBegin + GetBitWidth();
+    auto rhsEnd = rhsBegin + rhs.GetBitWidth();
     if (lhsEnd != rhsEnd) {
         return false;
     }
@@ -362,7 +365,7 @@ bool TVirtualRegister::operator<(const TVirtualRegister & rhs) const noexcept
 {
     assert(GetDevice() == rhs.GetDevice());     // comparison makes sense only if registers are of same device
 
-    return Type < rhs.Type || (Type == rhs.Type && Address < rhs.Address);
+    return Type < rhs.Type || (Type == rhs.Type && GetBitPosition() < rhs.GetBitPosition());
 }
 
 void TVirtualRegister::SetFlushSignal(PBinarySemaphore flushNeeded)
@@ -486,6 +489,20 @@ std::string TVirtualRegister::ToString() const
     return "<" + GetDevice()->ToString() + ":" + TRegisterConfig::ToString() + ">";
 }
 
+bool TVirtualRegister::AreOverlapping(const TVirtualRegister & other) const
+{
+    if (GetDevice() == other.GetDevice() && Type == other.Type) {
+        const auto start1 = GetBitPosition(),
+                   start2 = other.GetBitPosition(),
+                   end1   = GetBitEnd(),
+                   end2   = other.GetBitEnd();
+
+        return end1 > start2 && end2 > start1;
+    }
+
+    return false;
+}
+
 void TVirtualRegister::AssociateWithSet(const PVirtualRegisterSet & virtualRegisterSet)
 {
     VirtualRegisterSet = virtualRegisterSet;
@@ -602,12 +619,14 @@ uint64_t TVirtualRegister::MapValueFrom(const TPMap<PProtocolRegister, TProtocol
         const auto & protocolRegister = protocolRegisterBindInfo->first;
         const auto & bindInfo = protocolRegisterBindInfo->second;
 
-        auto mask = MersenneNumber(bindInfo.BitCount());
-        value |= ((mask & (protocolRegister->Value >> bindInfo.BitStart)) << bitPosition);
+        auto mask = MersenneNumber(bindInfo.BitCount()) << bitPosition;
+        value |= mask & ((protocolRegister->Value >> bindInfo.BitStart) << bitPosition);
 
-        if (Global::Debug)
+        if (Global::Debug) {
+            cerr << "reg mask: " << bitset<64>(mask) << endl;
             cerr << "reading " << bindInfo.Describe() << " bits of " << protocolRegister->Describe()
                  << " to [" << (int)bitPosition << ", " << int(bitPosition + bindInfo.BitCount() - 1) << "] bits of value" << endl;
+        }
 
         bitPosition += bindInfo.BitCount();
     }
@@ -628,21 +647,19 @@ void TVirtualRegister::MapValueTo(const PIRDeviceValueQuery & query, const TPMap
         const auto & protocolRegister = protocolRegisterBindInfo->first;
         const auto & bindInfo = protocolRegisterBindInfo->second;
 
-        auto valueLocalMask = MersenneNumber(bindInfo.BitCount());
-        auto registerLocalMask = valueLocalMask << bindInfo.BitStart;
+        auto mask = MersenneNumber(bindInfo.BitCount()) << bindInfo.BitStart;
 
-        auto cachedRegisterValue = protocolRegister->Value;
+        const auto & cachedRegisterValue = protocolRegister->GetValue();
+
+        auto registerValue = (~mask & cachedRegisterValue) | (mask & ((value >> bitPosition) << bindInfo.BitStart));
 
         if (Global::Debug) {
-            cerr << "cached reg val: " << cachedRegisterValue << endl;
-            cerr << "reg mask: " << ~registerLocalMask << endl;
-        }
-
-        auto registerValue = (~registerLocalMask & cachedRegisterValue) | (valueLocalMask & (value >> bitPosition)) << bindInfo.BitStart;
-
-        if (Global::Debug)
+            cerr << "cached reg val: " << cachedRegisterValue << " (0x" << hex << cachedRegisterValue << dec << ")" << endl;
+            cerr << "reg mask: " << bitset<64>(mask) << endl;
+            cerr << "reg value: " << registerValue << " (0x" << hex << registerValue << dec << ")" << endl;
             cerr << "writing [" << (int)bitPosition << ", " << int(bitPosition + bindInfo.BitCount() - 1) << "]" << " bits of value "
                  << " to " << bindInfo.Describe() << " bits of " << protocolRegister->Describe() << endl;
+        }
 
         query->SetValue(protocolRegister, registerValue);
 
