@@ -113,6 +113,9 @@ protected:
         } catch ( const TSerialDeviceTransientErrorException& e) {
             this->Port()->SkipNoise();
             throw;
+        } catch ( const TSerialDevicePermanentErrorException& e) {
+            this->Port()->SkipNoise();  // keep old behaviour
+            throw;
         }
     }
 

@@ -48,12 +48,17 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
             throw runtime_error("register address out of range");
         }
 
-        bool blocked = any_of(query.RegView.Begin(), query.RegView.End(), [this](const PProtocolRegister & reg) {
-            return Blockings[reg->Address].first;
-        });
+        for (auto itReg = query.RegView.Begin(); itReg != query.RegView.End(); ++itReg) {
+            auto reg = *itReg;
 
-        if (blocked) {
-            throw TSerialDeviceUnknownErrorException("read blocked");
+            switch(Blockings[reg->Address].BlockRead) {
+                case TRANSIENT:
+                    throw TSerialDeviceTransientErrorException("read blocked (transient)");
+                case PERMANENT:
+                    throw TSerialDevicePermanentErrorException("read blocked (permanent)");
+                default:
+                    break;
+            }
         }
 
         if (query.GetType() != REG_FAKE) {
@@ -102,12 +107,16 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
             throw runtime_error("register address out of range");
         }
 
-        bool blocked = any_of(query.RegView.Begin(), query.RegView.End(), [this](const PProtocolRegister & reg) {
-            return Blockings[reg->Address].second;
-        });
-
-        if (blocked) {
-            throw TSerialDeviceUnknownErrorException("write blocked");
+        for (auto itReg = query.RegView.Begin(); itReg != query.RegView.End(); ++itReg) {
+            auto reg = *itReg;
+            switch(Blockings[reg->Address].BlockWrite) {
+                case TRANSIENT:
+                    throw TSerialDeviceTransientErrorException("write blocked (transient)");
+                case PERMANENT:
+                    throw TSerialDevicePermanentErrorException("write blocked (permanent)");
+                default:
+                    break;
+            }
         }
 
         if (query.GetType() != REG_FAKE) {
@@ -159,16 +168,16 @@ void TFakeSerialDevice::OnCycleEnd(bool ok)
     }
 }
 
-void TFakeSerialDevice::BlockReadFor(int addr, bool block)
+void TFakeSerialDevice::BlockReadFor(int addr, BlockMode block)
 {
-    Blockings[addr].first = block;
+    Blockings[addr].BlockRead = block;
 
     FakePort->GetFixture().Emit() << "fake_serial_device: block address '" << addr << "' for reading";
 }
 
-void TFakeSerialDevice::BlockWriteFor(int addr, bool block)
+void TFakeSerialDevice::BlockWriteFor(int addr, BlockMode block)
 {
-    Blockings[addr].second = block;
+    Blockings[addr].BlockWrite = block;
 
     FakePort->GetFixture().Emit() << "fake_serial_device: block address '" << addr << "' for writing";
 }

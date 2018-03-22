@@ -935,7 +935,7 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
 {
     FilterConfig("OnValueTest");
 
-    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
+    auto observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, Port);
     observer->SetUp();
 
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x90", "fake", Port));
@@ -960,7 +960,7 @@ TEST_F(TSerialClientIntegrationTest, WordSwap)
 {
     FilterConfig("WordsLETest");
 
-    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
+    auto observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, Port);
     observer->SetUp();
 
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x91", "fake", Port));
@@ -987,7 +987,7 @@ TEST_F(TSerialClientIntegrationTest, Round)
 {
     FilterConfig("RoundTest");
 
-    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
+    auto observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, Port);
     observer->SetUp();
 
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x92", "fake", Port));
@@ -1030,7 +1030,7 @@ TEST_F(TSerialClientIntegrationTest, Errors)
 {
     FilterConfig("DDL24");
 
-    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
+    auto observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, Port);
     observer->SetUp();
 
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("23", "fake", Port));
@@ -1109,7 +1109,7 @@ PMQTTSerialObserver TSerialClientIntegrationTest::StartReconnectTest1Device(bool
         Config->PortConfigs[0]->DeviceConfigs[0]->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval = chrono::seconds(100);
     }
 
-    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
+    auto observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, Port);
 
     observer->SetUp();
 
@@ -1202,7 +1202,7 @@ PMQTTSerialObserver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                          TSerialDeviceFactory::GetRegisterTypes);
     Config = parser.Parse();
 
-    PMQTTSerialObserver observer(new TMQTTSerialObserver(MQTTClient, Config, Port));
+    auto observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, Port);
 
     observer->SetUp();
 
@@ -1400,6 +1400,34 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
         EXPECT_EQ(1, Device->Registers[1]);
         EXPECT_EQ(2, Device->Registers[2]);
     }
+}
+
+TEST_F(TSerialClientIntegrationTest, RegisterAutoDisable)
+{
+    FilterConfig("DDL24");
+
+    auto observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, Port);
+    observer->SetUp();
+
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("23", "fake", Port));
+
+    if (!Device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    Device->BlockReadFor(4, TFakeSerialDevice::PERMANENT);
+    Device->BlockWriteFor(4, true);
+    Device->BlockReadFor(7, true);
+    Device->BlockWriteFor(7, TFakeSerialDevice::PERMANENT);
+
+    Note() << "LoopOnce() [read, rw blacklisted]";
+    observer->LoopOnce();
+
+    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/RGB/on", "10;20;30");
+    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/White/on", "42");
+
+    Note() << "LoopOnce() [write, rw blacklisted]";
+    observer->LoopOnce();
 }
 
 TEST_F(TSerialClientIntegrationTest, Bitmasks)

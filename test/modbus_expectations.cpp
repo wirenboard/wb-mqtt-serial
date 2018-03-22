@@ -192,6 +192,47 @@ void TModbusExpectations::EnqueueHoldingPackMax3ReadResponse(uint8_t exception)
     }), __func__);
 }
 
+// read holding registers 4, 5, 6, 7, 8, 9
+void TModbusExpectations::EnqueueHoldingPackDisableReadResponse(int stage)
+{
+    auto expect_with_error = [=](uint8_t addr) {
+        Expector()->Expect(
+        WrapPDU({
+            0x03,   // function code
+            0x00,   // starting address Hi
+            addr,   // starting address Lo
+            0x00,   // quantity Hi
+            0x01,   // quantity Lo
+        }),
+        WrapPDU({
+            0x83,   // function code + 80
+            0x02    // illegal data address
+        }), "TModbusExpectations::EnqueueHoldingPackDisableReadResponse");
+    };
+
+    switch(stage) {
+        case 1:
+            // disable holes first
+            EnqueueHoldingPackHoles10ReadResponse(0x02);
+            break;
+        case 2:
+            // split to individual registers and disable 18-th register
+            EnqueueHoldingPackReadResponse(0x02);
+            break;
+        case 3:
+            // disable registers 4, 5, 6, 7, 8, 9
+            expect_with_error(4);  // 4
+            expect_with_error(5);  // 5
+            expect_with_error(6);  // 6
+            expect_with_error(7);  // 7
+            expect_with_error(8);  // 8
+            expect_with_error(9);  // 9
+            break;
+        default:
+            break;
+    }
+}
+
 // read 1 discrete
 void TModbusExpectations::EnqueueDiscreteReadResponse(uint8_t exception)
 {
