@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.40.3) stable; urgency=medium
+
+  * update MCM16 json template
+
+ -- Attila Door <a.door@wirenboard.ru>  Wed, 28 Mar 2018 15:58:45 +0300
+
 wb-mqtt-serial (1.40.5) stable; urgency=medium
 
   * add mrgbw-d json template
