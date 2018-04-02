@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.40.3) stable; urgency=medium
+
+  * add WBIO-AI-DV12 json templates
+
+ -- Attila Door <a.door@wirenboard.ru>  Mon, 2 Apr 2018 11:13:45 +0300
+
 wb-mqtt-serial (1.40.2) stable; urgency=medium
 
   * TCP port: detect socket close
