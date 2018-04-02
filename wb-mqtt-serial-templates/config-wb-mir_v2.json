@@ -1,8 +1,8 @@
 {
-    "device_type": "WB-MIR2", 
+    "device_type": "WB-MIRv2", 
     "device": {
-        "name": "WB-MIR2", 
-        "id": "wb-mir2", 
+        "name": "WB-MIRv2", 
+        "id": "wb-mir_v2", 
         "max_read_registers": 0, 
         "channels": [
             {
