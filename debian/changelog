@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.40.5) stable; urgency=medium
+
+  * mcm16 json template for mcm fw 1.0.0
+
+ -- Attila Door <a.door@wirenboard.ru>  Mon, 2 Apt 2018 12:20:45 +0300
+
 wb-mqtt-serial (1.40.3) stable; urgency=medium
 
   * update MCM16 json template
