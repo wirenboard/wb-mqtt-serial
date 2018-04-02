@@ -248,7 +248,6 @@
                 "reg_type": "coil", 
                 "address": 100, 
                 "type": "pushbutton", 
-                "poll_interval": 0
             }
         ]
     }
