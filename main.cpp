@@ -10,9 +10,12 @@
 
 using namespace std;
 
+#define LOG(logger) ::logger.Log() << "[serial] "
+
 const auto driverName      = "wb-modbus";
 const auto libwbmqttDbFile = "/var/lib/wb-mqtt-serial/libwbmqtt.db";
 const auto templatesFolder = "/usr/share/wb-mqtt-serial/templates";
+const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(3);
 
 int main(int argc, char *argv[])
 {
@@ -112,7 +115,7 @@ int main(int argc, char *argv[])
                              deviceParser.Parse());
         handlerConfig = parser.Parse();
     } catch (const TConfigParserException& e) {
-        Error.Log() << "[serial] FATAL: " << e.what();
+        LOG(Error) << "FATAL: " << e.what();
         return 1;
     }
 
@@ -138,20 +141,23 @@ int main(int argc, char *argv[])
         auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
 
         if (serialDriver->WriteInitValues()) {
-            Debug.Log() << "[serial] register-based setup performed.";
+            LOG(Debug) << "register-based setup performed.";
         }
 
         serialDriver->Start();
 
         WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ serialDriver->Stop(); });
-
+        WBMQTT::SignalHandling::SetOnTimeout(SERIAL_DRIVER_STOP_TIMEOUT_S, [&]{
+            LOG(Error) << "Driver takes too long to stop. Exiting.";
+            exit(1);
+        });
         WBMQTT::SignalHandling::Start();
         WBMQTT::SignalHandling::Wait();
     } catch (const TSerialDeviceException & e) {
-        Error.Log() << "[serial] FATAL: " << e.what();
+        LOG(Error) << "FATAL: " << e.what();
         return 1;
     } catch (const WBMQTT::TBaseException & e) {
-        Error.Log() << "[serial] FATAL: " << e.what();
+        LOG(Error) << "FATAL: " << e.what();
         return 1;
     }
 
