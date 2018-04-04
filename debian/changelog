@@ -1,4 +1,4 @@
-wb-mqtt-serial (1.29~libwbmqtt1) UNRELEASED; urgency=medium
+wb-mqtt-serial (2.0) UNRELEASED; urgency=medium
 
   * implement using new libwbmqtt
 
