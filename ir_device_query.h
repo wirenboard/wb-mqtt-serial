@@ -5,6 +5,7 @@
 #include "types.h"
 
 #include <list>
+#include <vector>
 #include <cassert>
 
 /**

@@ -3,6 +3,8 @@
 #include "declarations.h"
 #include "utils.h"
 
+#include <vector>
+
 
 class TIRDeviceQueryFactory
 {
