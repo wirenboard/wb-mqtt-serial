@@ -16,6 +16,12 @@ wb-mqtt-serial (1.40.4) stable; urgency=medium
 
  -- Attila Door <a.door@wirenboard.ru>  Mon, 2 Apr 2018 11:58:45 +0300
 
+wb-mqtt-serial (1.40.3) stable; urgency=medium
+
+  * require mosquitto at startup
+
+ -- Attila Door <a.door@wirenboard.ru>  Wed, 18 Apr 2018 11:27:45 +0300
+
 wb-mqtt-serial (1.40.2) stable; urgency=medium
 
   * TCP port: detect socket close
