@@ -55,6 +55,17 @@ TIRDeviceQuery::TIRDeviceQuery(const TPSet<PProtocolRegister> & registerSet, EQu
     , Status(EQueryStatus::NotExecuted)
 {
     AbleToSplit = (VirtualRegisters.size() > 1);
+
+    /*
+        1) если блоки памяти не будут иметь одинаковый размер, мы не сможем понять сколько байт пропустить если есть дырка
+        2) насколько известно ни один протокол не поддерживает чтение блоков с разной длиной. Обычно размер блока зависит от команды.
+        вывод: запретить блоки разной длины в одном запросе. В любом случае, если понадобится можно будет без труда избавиться от ограничения
+        запретить на стадии объединения множеств блоков, а здесь assert
+    */
+
+    if (HasHoles && (*registerSet.begin())->Type.IsVariadicSize()) {
+        auto size = (*registerSet.begin())->Size;
+    }
 }
 
 bool TIRDeviceQuery::operator<(const TIRDeviceQuery & rhs) const noexcept

@@ -75,8 +75,8 @@ namespace {
 }
 
 REGISTER_BASIC_INT_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
-    { TPulsarDevice::REG_DEFAULT, "default", "value", Double, true },
-    { TPulsarDevice::REG_SYSTIME, "systime", "value", U64, true }
+    { TPulsarDevice::REG_DEFAULT, "default", "value", TMemoryBlockType::Variadic, Double, true },
+    { TPulsarDevice::REG_SYSTIME, "systime", "value", 8, U64, true }
 }));
 
 TPulsarDevice::TPulsarDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)

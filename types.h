@@ -28,6 +28,8 @@ enum class EWordOrder {
     LittleEndian
 };
 
+using EByteOrder = EWordOrder;
+
 enum class EQueryStatus {
     NotExecuted,            // query wasn't yet executed in this cycle
     Ok,                     // exec is ok

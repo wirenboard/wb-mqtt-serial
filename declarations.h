@@ -21,6 +21,7 @@ struct TIRDeviceQuery;
 struct TIRDeviceValueQuery;
 struct TProtocolInfo;
 struct TDeviceChannel;
+struct TMemoryBlockType;
 
 using TTimePoint                = std::chrono::steady_clock::time_point;
 using TIntervalMs               = std::chrono::milliseconds;

@@ -171,16 +171,16 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     auto it = device_config->TypeMap->find(reg_type_str);
     if (it == device_config->TypeMap->end())
         throw TConfigParserException("invalid register type: " + reg_type_str + " -- " + device_config->DeviceType);
-    if (!it->second.DefaultControlType.empty())
-        default_type_str = it->second.DefaultControlType;
+    if (!it->second.Defaults.ControlType.empty())
+        default_type_str = it->second.Defaults.ControlType;
 
     ERegisterFormat format = register_data.isMember("format") ?
         RegisterFormatFromName(register_data["format"].asString()) :
-        it->second.DefaultFormat;
+        it->second.Defaults.Format;
 
     EWordOrder word_order = register_data.isMember("word_order") ?
         WordOrderFromName(register_data["word_order"].asString()) :
-        it->second.DefaultWordOrder;
+        it->second.Defaults.WordOrder;
 
     double scale = 1;
     if (register_data.isMember("scale"))
@@ -348,7 +348,7 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
         throw TConfigParserException("no address specified for init item");
 
     int address;
-    uint8_t bitOffset;
+    uint16_t bitOffset;
     uint8_t bitWidth;
 
     tie(address, bitOffset, bitWidth) = ParseRegisterAddress(item_data, "address");
@@ -463,7 +463,7 @@ uint64_t TConfigParser::ToUint64(const Json::Value& v, const string& title)
         "'");
 }
 
-tuple<int, uint8_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Value& obj, const std::string& key)
+tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Value& obj, const std::string& key)
 {
     int address;
     int bitOffset = 0;
@@ -482,7 +482,7 @@ tuple<int, uint8_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Val
             address = stoi(addressStr.substr(0, pos1));
             bitOffset = stoi(addressStr.substr(pos1 + 1, pos2));
 
-            if (bitOffset < 0 || bitOffset > 255) {
+            if (bitOffset < 0 || bitOffset > numeric_limits<uint16_t>::max()) {
                 throw TConfigParserException("error during address parsing: bit shift must be in range [0, 255] (address string: '" + addressStr + "')");
             }
 
@@ -497,7 +497,7 @@ tuple<int, uint8_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Val
         address = TConfigParser::GetInt(obj, key);
     }
 
-    return tuple<int, uint8_t, uint8_t>{address, static_cast<uint8_t>(bitOffset), static_cast<uint8_t>(bitWidth)};
+    return tuple<int, uint16_t, uint8_t>{address, static_cast<uint16_t>(bitOffset), static_cast<uint8_t>(bitWidth)};
 }
 
 int TConfigParser::GetInt(const Json::Value& obj, const string& key)

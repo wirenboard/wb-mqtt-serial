@@ -11,14 +11,14 @@ TPMap<PProtocolRegister, TProtocolRegisterBindInfo> TProtocolRegisterFactory::Ge
 {
     TPMap<PProtocolRegister, TProtocolRegisterBindInfo> registersBindInfo;
 
-    ERegisterFormat regFormat;
+    uint16_t memoryBlockSize;
     try {
-        regFormat = device->Protocol()->GetRegType(config->Type).DefaultFormat;
+        memoryBlockSize = device->Protocol()->GetRegType(config->Type).Size;
     } catch (out_of_range &) {
         throw TSerialDeviceException("unknown type name: '" + config->TypeName + "' of " + device->ToString() + ": " + config->ToString());
     }
 
-    const uint8_t registerBitWidth = RegisterFormatByteWidth(regFormat) * 8;
+    const uint16_t registerBitWidth = memoryBlockSize * 8;
     const auto formatBitWidth = config->GetFormatBitWidth();
     auto bitsToAllocate = config->GetBitWidth();
 

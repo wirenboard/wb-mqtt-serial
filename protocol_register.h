@@ -5,9 +5,10 @@
 #include "declarations.h"
 
 /**
- * Each ProtocolRegister represents single actual register of device protocol.
- * This layer caches values and acts like bridge between VirtualRegister and IR layers.
- * Protocol registers cannot overlap each other.
+ * @brief: Lightweight representation of atomic chunk of memory accessed via device protocol,
+ *   which means that any part of memory block can't be obtained without obtaining whole block.
+ *  This layer caches values and acts like bridge between VirtualRegister and IR layers.
+ *  Different memory blocks cannot simultaneously have same type and address.
  */
 class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
 {
@@ -15,13 +16,12 @@ class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
     friend TVirtualRegister;
     friend TSerialDevice;
 
-    // TODO: (optimization) move value to dedicated device-centric cache and store only shared (VirtualRegisters.size() > 1) protocol registers' values
-    uint64_t Value; //  most recent value of register (from successful writes and reads)
+    uint8_t * Cache; //  most recent value of register (from successful writes and reads)
 
 public:
-    const uint32_t Address;
-    const uint32_t Type;
-    const uint8_t  Width;
+    const uint32_t           Address;
+    const TMemoryBlockType & Type;
+    const uint16_t           Size;
 
 private:
     struct IExternalLinkage
@@ -29,32 +29,41 @@ private:
         virtual ~IExternalLinkage() = default;
         virtual PSerialDevice GetDevice() const = 0;
         virtual TPSet<PVirtualRegister> GetVirtualRegsiters() const = 0;
-        virtual void LinkWith(const PVirtualRegister &, const TProtocolRegisterBindInfo &) = 0;
+        virtual void LinkWith(const PVirtualRegister &) = 0;
         virtual bool IsLinkedWith(const PVirtualRegister &) const = 0;
-        virtual uint8_t GetUsedByteCount() const = 0;
-        virtual const std::string & GetTypeName() const = 0;
+        virtual bool NeedsCaching() const = 0;
     };
 
     std::unique_ptr<IExternalLinkage> ExternalLinkage;
 
     bool InitExternalLinkage(const PSerialDevice &);
-    bool InitExternalLinkage(const PVirtualRegister &, const TProtocolRegisterBindInfo &);
+    bool InitExternalLinkage(const PVirtualRegister &);
 
     /**
      * Create with no external linkage
      */
-    TProtocolRegister(uint32_t address, uint32_t type, uint8_t width);
+    TProtocolRegister(uint32_t address, uint16_t size, const TMemoryBlockType & type);
+
+    /**
+     * Create with no external linkage
+     */
+    TProtocolRegister(uint32_t address, const TMemoryBlockType & type);
 
     /**
      * Create and link to device
      */
-    TProtocolRegister(uint32_t address, uint32_t type, const PSerialDevice &);
+    TProtocolRegister(uint32_t address, uint16_t size, uint32_t typeIndex, const PSerialDevice &);
+
+    /**
+     * Create and link to device
+     */
+    TProtocolRegister(uint32_t address, uint32_t typeIndex, const PSerialDevice &);
 
 public:
     bool operator<(const TProtocolRegister &) const;
     bool operator==(const TProtocolRegister &) const;
 
-    void AssociateWith(const PVirtualRegister &, const TProtocolRegisterBindInfo &);
+    void AssociateWith(const PVirtualRegister &);
     bool IsAssociatedWith(const PVirtualRegister &) const;
     bool IsReady() const;
 
@@ -62,12 +71,6 @@ public:
 
     PSerialDevice GetDevice() const;
     TPSet<PVirtualRegister> GetVirtualRegsiters() const;
-
-    /**
-     * Amount of bytes of protocol register that
-     *  needs to be read to cover all required bits
-     */
-    uint8_t GetUsedByteCount() const;
 
     inline void SetValue(const uint64_t & value)
     {   Value = value; }

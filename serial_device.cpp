@@ -238,6 +238,12 @@ bool TSerialDevice::GetIsDisconnected() const
 	return IsDisconnected;
 }
 
+uint8_t * TSerialDevice::AllocateCacheMemory(uint16_t size)
+{
+    MemoryCache.resize(MemoryCache.size() + size);
+    return &MemoryCache[MemoryCache.size() - size];
+}
+
 void TSerialDevice::InitSetupItems()
 {
 	for (auto& setup_item_config: _DeviceConfig->SetupItemConfigs) {

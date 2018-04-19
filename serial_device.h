@@ -18,7 +18,7 @@
 #include "utils.h"
 
 
-using TRegisterTypes = std::vector<TRegisterType>;
+using TRegisterTypes = std::vector<TMemoryBlockType>;
 
 struct TDeviceSetupItem : public TDeviceSetupItemConfig
 {
@@ -69,6 +69,9 @@ struct TProtocolInfo
     virtual int GetMaxReadBits() const;
     virtual int GetMaxWriteRegisters() const;
     virtual int GetMaxWriteBits() const;
+
+    /*! Transform raw data from device to 64-bit value according to mappings */
+    virtual uint64_t TransformDataFromDevice(const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> &) const;
 };
 
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {
@@ -102,6 +105,8 @@ public:
     virtual void OnCycleEnd(bool ok);
     bool GetIsDisconnected() const;
 
+    uint8_t * AllocateCacheMemory(uint16_t size);
+
     static TPSetView<PProtocolRegister> StaticCreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last);
 
 protected:
@@ -126,6 +131,7 @@ private:
     PProtocol _Protocol;
     std::vector<PDeviceSetupItem> SetupItems;
     TPSet<PProtocolRegister> Registers;
+    std::vector<uint8_t> MemoryCache;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
     int RemainingFailCycles;

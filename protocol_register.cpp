@@ -13,7 +13,6 @@ bool TProtocolRegister::InitExternalLinkage(const PSerialDevice & device)
     {
         PWSerialDevice      Device;
         TProtocolRegister & Register;
-        uint8_t             BitWidth;
 
 
         TSerialDeviceLinkage(const PSerialDevice & device, TProtocolRegister & self)
@@ -34,7 +33,7 @@ bool TProtocolRegister::InitExternalLinkage(const PSerialDevice & device)
             return {};
         }
 
-        void LinkWith(const PVirtualRegister &, const TProtocolRegisterBindInfo &) override
+        void LinkWith(const PVirtualRegister &) override
         {
             assert(false);
         }
@@ -44,14 +43,9 @@ bool TProtocolRegister::InitExternalLinkage(const PSerialDevice & device)
             return false;
         }
 
-        uint8_t GetUsedByteCount() const override
+        bool NeedsCaching() const override
         {
-            return Register.Width;
-        }
-
-        const std::string & GetTypeName() const override
-        {
-            return GetDevice()->Protocol()->GetRegType(Register.Type).Name;
+            return false;
         }
     };
 
@@ -64,18 +58,16 @@ bool TProtocolRegister::InitExternalLinkage(const PSerialDevice & device)
     return true;
 }
 
-bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg, const TProtocolRegisterBindInfo & bindInfo)
+bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg)
 {
     struct TVirtualRegisterLinkage: TProtocolRegister::IExternalLinkage
     {
         TPWSet<PWVirtualRegister> VirtualRegisters;
-        uint8_t                   UsedBitCount;
 
 
-        TVirtualRegisterLinkage(const PVirtualRegister & reg, const TProtocolRegisterBindInfo & bindInfo)
-            : UsedBitCount(0)
+        TVirtualRegisterLinkage(const PVirtualRegister & reg)
         {
-            LinkWithImpl(reg, bindInfo);
+            LinkWithImpl(reg);
         }
 
         PVirtualRegister AssociatedVirtualRegister() const
@@ -97,16 +89,9 @@ bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg, const 
             }) != VirtualRegisters.end();
         }
 
-        void LinkWithImpl(const PVirtualRegister & reg, const TProtocolRegisterBindInfo & bindInfo)
+        void LinkWithImpl(const PVirtualRegister & reg)
         {
             VirtualRegisters.insert(reg);
-
-            /**
-             * Find out how many bytes we have to read to cover all bits required by virtual registers
-             *  thus, if, for instance, there is single virtual register that uses 1 last bit (64th),
-             *  we'll have to read all 8 bytes in order to fill that single bit
-             */
-            UsedBitCount = max(UsedBitCount, bindInfo.BitEnd);
         }
 
         TPSet<PVirtualRegister> GetVirtualRegsiters() const override
@@ -133,7 +118,7 @@ bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg, const 
             return AssociatedVirtualRegister()->GetDevice();
         }
 
-        void LinkWith(const PVirtualRegister & reg, const TProtocolRegisterBindInfo & bindInfo) override
+        void LinkWith(const PVirtualRegister & reg) override
         {
             assert(!VirtualRegisters.empty());
             assert(GetDevice() == reg->GetDevice());
@@ -156,7 +141,7 @@ bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg, const 
                         throw TSerialDeviceException("registers " + reg->ToStringWithFormat() + " and " + otherReg->ToStringWithFormat() + " are overlapping");
             }
 
-            LinkWithImpl(reg, bindInfo);
+            LinkWithImpl(reg);
         }
 
         bool IsLinkedWith(const PVirtualRegister & reg) const override
@@ -166,18 +151,23 @@ bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg, const 
             return VirtualRegisters.count(reg);
         }
 
-        uint8_t GetUsedByteCount() const override
+        /* If single memory block is associated with more than 1 different
+         *  virtual registers, it means that none of those virtual registers
+         *  covers block entierly (because overlapping is forbidden),
+         *  thus if any of associated virtual registers
+         *  is writable then we need to cache its value,
+         *  otherwise it will corrupt non-covered part of memory block at write
+         */
+        bool NeedsCaching() const override
         {
             assert(!VirtualRegisters.empty());
 
-            return BitCountToByteCount(UsedBitCount);
-        }
-
-        const std::string & GetTypeName() const override
-        {
-            assert(!VirtualRegisters.empty());
-
-            return AssociatedVirtualRegister()->TypeName;
+            return (
+                VirtualRegisters.size() > 1 &&
+                any_of(VirtualRegisters.begin(), VirtualRegisters.end(), [](const PWVirtualRegister & reg) {
+                    return !reg.lock()->ReadOnly;
+                })
+            );
         }
     };
 
@@ -185,29 +175,47 @@ bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg, const 
         return false;
     }
 
-    ExternalLinkage = utils::make_unique<TVirtualRegisterLinkage>(reg, bindInfo);
+    ExternalLinkage = utils::make_unique<TVirtualRegisterLinkage>(reg);
     return true;
 }
 
-TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t type, uint8_t width)
-    : Value(0)
+TProtocolRegister::TProtocolRegister(uint32_t address, uint16_t size, const TMemoryBlockType & type)
+    : Cache(nullptr)
     , Address(address)
     , Type(type)
-    , Width(width)
-{}
+    , Size(size)
+{
+    assert(Size < 8192 && "memory block size must be less than 8192 bytes");
+}
 
-TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t type, const PSerialDevice & device)
+TProtocolRegister::TProtocolRegister(uint32_t address, const TMemoryBlockType & type)
+    : TProtocolRegister(address, type.Size, type)
+{
+    assert(!type.IsVariadicSize() && "memory block with variadic size must be created with size specified");
+}
+
+TProtocolRegister::TProtocolRegister(uint32_t address, uint16_t size, uint32_t typeIndex, const PSerialDevice & device)
     : TProtocolRegister(
         address,
-        type,
-        RegisterFormatByteWidth(device->Protocol()->GetRegType(type).DefaultFormat))
+        size,
+        device->Protocol()->GetRegType(typeIndex)
+    )
+{
+    InitExternalLinkage(device);
+}
+
+TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t typeIndex, const PSerialDevice & device)
+    : TProtocolRegister(
+        address,
+        device->Protocol()->GetRegType(typeIndex)
+    )
 {
     InitExternalLinkage(device);
 }
 
 bool TProtocolRegister::operator<(const TProtocolRegister & rhs) const
 {
-    return Type < rhs.Type || (Type == rhs.Type && Address < rhs.Address);
+    return Type.Index < rhs.Type.Index || (Type.Index == rhs.Type.Index && Address < rhs.Address);
 }
 
 bool TProtocolRegister::operator==(const TProtocolRegister & rhs) const
@@ -216,13 +224,17 @@ bool TProtocolRegister::operator==(const TProtocolRegister & rhs) const
         return true;
     }
 
-    return Type == rhs.Type && Address == rhs.Address && GetDevice() == rhs.GetDevice();
+    return Type.Index == rhs.Type.Index && Address == rhs.Address && GetDevice() == rhs.GetDevice();
 }
 
-void TProtocolRegister::AssociateWith(const PVirtualRegister & reg, const TProtocolRegisterBindInfo & bindInfo)
+void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
 {
-    if (!InitExternalLinkage(reg, bindInfo)) {
-        ExternalLinkage->LinkWith(reg, bindInfo);
+    if (!InitExternalLinkage(reg)) {
+        ExternalLinkage->LinkWith(reg);
+    }
+
+    if (ExternalLinkage->NeedsCaching() && !Cache) {
+        Cache = GetDevice()->AllocateCacheMemory(Size);
     }
 }
 
@@ -240,9 +252,7 @@ bool TProtocolRegister::IsReady() const
 
 const string & TProtocolRegister::GetTypeName() const
 {
-    assert(ExternalLinkage);
-
-    return ExternalLinkage->GetTypeName();
+    return Type.Name;
 }
 
 PSerialDevice TProtocolRegister::GetDevice() const
@@ -257,13 +267,6 @@ TPSet<PVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
     assert(ExternalLinkage);
 
     return ExternalLinkage->GetVirtualRegsiters();
-}
-
-uint8_t TProtocolRegister::GetUsedByteCount() const
-{
-    assert(ExternalLinkage);
-
-    return ExternalLinkage->GetUsedByteCount();
 }
 
 std::string TProtocolRegister::Describe() const

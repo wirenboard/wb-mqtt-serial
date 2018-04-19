@@ -21,7 +21,7 @@ namespace {
     const int FrameTimeoutMs = 50;
 }
 
-REGISTER_BASIC_INT_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
+REGISTER_BASIC_INT_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", 4, EByteOrder::LittleEndian, Float, true }}));
 
 
 TIVTMDevice::TIVTMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)

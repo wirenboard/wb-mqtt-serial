@@ -6,7 +6,7 @@
 using namespace std;
 
 
-TProtocolRegisterBindInfo::TProtocolRegisterBindInfo(uint8_t start, uint8_t end)
+TProtocolRegisterBindInfo::TProtocolRegisterBindInfo(uint16_t start, uint16_t end)
     : BitStart(start)
     , BitEnd(end)
 {
@@ -16,6 +16,6 @@ TProtocolRegisterBindInfo::TProtocolRegisterBindInfo(uint8_t start, uint8_t end)
 string TProtocolRegisterBindInfo::Describe() const
 {
     ostringstream ss;
-    ss << "[" << (int)BitStart << ", " << (int)BitEnd - 1 << "]";
+    ss << "[" << BitStart << ", " << BitEnd - 1 << "]";
     return ss.str();
 }

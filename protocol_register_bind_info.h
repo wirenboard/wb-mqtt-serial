@@ -6,13 +6,13 @@
 /* protocol register - local bit interval that contains value for virtual register */
 struct TProtocolRegisterBindInfo
 {
-    const uint8_t   BitStart,
+    const uint16_t  BitStart,
                     BitEnd;
 
-    TProtocolRegisterBindInfo(uint8_t start, uint8_t end);
+    TProtocolRegisterBindInfo(uint16_t start, uint16_t end);
     TProtocolRegisterBindInfo(const TProtocolRegisterBindInfo &) = default;
 
-    inline uint8_t BitCount() const
+    inline uint16_t BitCount() const
     {
         return BitEnd - BitStart;
     }
