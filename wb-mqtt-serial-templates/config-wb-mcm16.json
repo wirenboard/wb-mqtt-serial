@@ -244,7 +244,7 @@
                 "format": "u32"
             }, 
             {
-                "name": "Reset all ROM", 
+                "name": "Reset all counters", 
                 "reg_type": "coil", 
                 "address": 100, 
                 "type": "pushbutton", 
