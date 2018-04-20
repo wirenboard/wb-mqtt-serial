@@ -609,7 +609,7 @@ PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const 
 
     return reg;
 }
-
+// TODO: continue
 uint64_t TVirtualRegister::MapValueFrom(const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & registerMap)
 {
     uint64_t value = 0;

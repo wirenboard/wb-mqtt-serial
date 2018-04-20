@@ -3,6 +3,7 @@
 #include "virtual_register.h"
 
 #include <cassert>
+#include <string.h>
 
 using namespace std;
 
@@ -267,6 +268,13 @@ TPSet<PVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
     assert(ExternalLinkage);
 
     return ExternalLinkage->GetVirtualRegsiters();
+}
+
+void TProtocolRegister::OnDataChange(const uint8_t * data)
+{
+    if (Cache) {
+        memcpy(Cache, data, Size);
+    }
 }
 
 std::string TProtocolRegister::Describe() const

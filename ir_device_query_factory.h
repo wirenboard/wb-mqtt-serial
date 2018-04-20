@@ -35,7 +35,7 @@ public:
     }
 
 private:
-    using TRegisterTypeInfo = std::function<std::pair<uint32_t, uint32_t>(uint32_t)>;
+    using TRegisterTypeInfo = std::function<std::pair<uint32_t, uint32_t>(const TMemoryBlockType &)>;
 
     static void CheckSets(const std::list<TPSet<PProtocolRegister>> & registerSets, const TRegisterTypeInfo &);
     static void MergeSets(std::list<TPSet<PProtocolRegister>> & registerSets, const TRegisterTypeInfo &);

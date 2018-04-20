@@ -45,6 +45,16 @@ namespace
 
         return false;
     }
+
+    bool IsSameTypeAndSize(const TPSet<PProtocolRegister> & memoryBlocks)
+    {
+        auto typeIndex = (*memoryBlocks.begin())->Type.Index;
+        auto size = (*memoryBlocks.begin())->Size;
+
+        return all_of(memoryBlocks.begin(), memoryBlocks.end(), [&](const PProtocolRegister & mb){
+            return mb->Type.Index == typeIndex && mb->Size == size;
+        });
+    }
 }
 
 TIRDeviceQuery::TIRDeviceQuery(const TPSet<PProtocolRegister> & registerSet, EQueryOperation operation)
@@ -56,16 +66,7 @@ TIRDeviceQuery::TIRDeviceQuery(const TPSet<PProtocolRegister> & registerSet, EQu
 {
     AbleToSplit = (VirtualRegisters.size() > 1);
 
-    /*
-        1) если блоки памяти не будут иметь одинаковый размер, мы не сможем понять сколько байт пропустить если есть дырка
-        2) насколько известно ни один протокол не поддерживает чтение блоков с разной длиной. Обычно размер блока зависит от команды.
-        вывод: запретить блоки разной длины в одном запросе. В любом случае, если понадобится можно будет без труда избавиться от ограничения
-        запретить на стадии объединения множеств блоков, а здесь assert
-    */
-
-    if (HasHoles && (*registerSet.begin())->Type.IsVariadicSize()) {
-        auto size = (*registerSet.begin())->Size;
-    }
+    assert(IsSameTypeAndSize(registerSet));
 }
 
 bool TIRDeviceQuery::operator<(const TIRDeviceQuery & rhs) const noexcept
@@ -88,7 +89,7 @@ uint32_t TIRDeviceQuery::GetStart() const
     return RegView.GetFirst()->Address;
 }
 
-uint32_t TIRDeviceQuery::GetType() const
+const TMemoryBlockType & TIRDeviceQuery::GetType() const
 {
     return RegView.GetFirst()->Type;
 }
@@ -185,30 +186,29 @@ string TIRDeviceQuery::DescribeOperation() const
     }
 }
 
-void TIRDeviceQuery::FinalizeReadImpl(const void * mem, size_t size, size_t count) const
+void TIRDeviceQuery::FinalizeReadImpl(const uint8_t * mem, size_t size) const
 {
+    auto memoryBlockSize = (*RegView.Begin())->Size;    // it is guaranteed that all blocks in query have same size
+
     assert(Operation == EQueryOperation::Read);
     assert(GetStatus() == EQueryStatus::NotExecuted);
-    assert(GetCount() == count);
-    assert(size <= sizeof(uint64_t));
-
-    auto bytes = static_cast<const uint8_t*>(mem);
+    assert(GetCount() * memoryBlockSize == size);
 
     auto itProtocolRegister = RegView.First;
 
-    for (size_t i = 0; i < count; ++i) {
+    for (size_t i = 0; i < size; i += memoryBlockSize) {
         const auto & protocolRegister = *itProtocolRegister;
 
-        auto addressShift = protocolRegister->Address - GetStart();
+        auto shift = (protocolRegister->Address - GetStart()) * memoryBlockSize;
 
-        if (addressShift == i) {    // avoid holes values
+        if (shift == i) {    // avoid holes values
             uint64_t value = 0;
-            memcpy(&value, bytes, size);
+            memcpy(&value, mem, size);
             protocolRegister->SetValue(value);
             ++itProtocolRegister;
         }
 
-        bytes += size;
+        mem += size;
     }
 
     assert(itProtocolRegister == RegView.End());

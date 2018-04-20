@@ -54,9 +54,14 @@ namespace // utility
         return GetRegCount(*registerSet.begin(), *registerSet.rbegin());
     }
 
-    inline uint32_t GetType(const TPSet<PProtocolRegister> & registerSet)
+    inline const TMemoryBlockType & GetType(const TPSet<PProtocolRegister> & registerSet)
     {
         return (*registerSet.begin())->Type;
+    }
+
+    inline uint16_t GetSize(const TPSet<PProtocolRegister> & registerSet)
+    {
+        return (*registerSet.begin())->Size;
     }
 
     bool IsReadOperation(EQueryOperation operation)
@@ -204,46 +209,60 @@ void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PProtocolRegister>> 
     if (Global::Debug)
         cerr << "checking sets" << endl;
 
-    for (const auto & registerSet: registerSets) {
-        uint32_t maxHole;
-        uint32_t maxRegs;
+    try {
+        for (const auto & registerSet: registerSets) {
+            uint32_t maxHole;
+            uint32_t maxRegs;
 
-        tie(maxHole, maxRegs) = typeInfo(GetType(registerSet));
+            tie(maxHole, maxRegs) = typeInfo(GetType(registerSet));
 
-        auto hole = GetMaxHoleSize(registerSet);
-        if (hole > maxHole) {
-            throw TSerialDeviceException("unable to create queries for given register configuration: max hole count exceeded (detected: " +
-                to_string(hole) +
-                ", max: " + to_string(maxHole) +
-                ", set: " + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
-                    s << reg->Address;
-                })  + ")"
-            );
-        }
+            auto hole = GetMaxHoleSize(registerSet);
+            if (hole > maxHole) {
+                throw TSerialDeviceException("max hole count exceeded (detected: " +
+                    to_string(hole) +
+                    ", max: " + to_string(maxHole) +
+                    ", set: " + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
+                        s << reg->Address;
+                    })  + ")"
+                );
+            }
 
-        auto regCount = GetRegCount(registerSet);
-        if (regCount > maxRegs) {
-            throw TSerialDeviceException("unable to create queries for given register configuration: max reg count exceeded (detected: " +
-                to_string(regCount) +
-                ", max: " + to_string(maxRegs) +
-                ", set: " + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
-                    s << reg->Address;
-                })  + ")"
-            );
-        }
+            auto regCount = GetRegCount(registerSet);
+            if (regCount > maxRegs) {
+                throw TSerialDeviceException("max reg count exceeded (detected: " +
+                    to_string(regCount) +
+                    ", max: " + to_string(maxRegs) +
+                    ", set: " + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
+                        s << reg->Address;
+                    })  + ")"
+                );
+            }
 
-        {   // check types
-            auto type = (*registerSet.begin())->Type;
-            for (const auto & reg: registerSet) {
-                if (reg->Type != type) {
-                    throw TSerialDeviceException("unable to create queries for given register configuration: different register types in same set (set: "
-                        + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
-                            s << reg->Address << " (type: " << reg->GetTypeName() << ")";
-                        }) + ")"
-                    );
+            {   // check types
+                auto typeIndex = GetType(registerSet).Index;
+                auto size = GetSize(registerSet);
+
+                for (const auto & reg: registerSet) {
+                    if (reg->Type.Index != typeIndex) {
+                        throw TSerialDeviceException("different memory block types in same set (set: "
+                            + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
+                                s << reg->Address << " (type: " << reg->GetTypeName() << ")";
+                            }) + ")"
+                        );
+                    }
+
+                    if (reg->Size != size) {
+                        throw TSerialDeviceException("different memory block sizes in same set (set: "
+                            + PrintCollection(registerSet, [](ostream & s, const PProtocolRegister & reg) {
+                                s << reg->Address << " (size: " << reg->Size << ")";
+                            }) + ")"
+                        );
+                    }
                 }
             }
         }
+    } catch (const TSerialDeviceException & e) {
+        throw TSerialDeviceException("unable to create queries for given register configuration: " + string(e.what()));
     }
 
     if (Global::Debug)
@@ -264,43 +283,35 @@ void TIRDeviceQueryFactory::MergeSets(list<TPSet<PProtocolRegister>> & registerS
     if (Global::Debug)
         cerr << "merging sets" << endl;
 
+    auto condition = [&](const TPSet<PProtocolRegister> & a, const TPSet<PProtocolRegister> & b){
+        auto first = **a.begin() < **b.begin() ? *a.begin() : *b.begin();
+        auto last = **b.rbegin() < **a.rbegin() ? *a.rbegin() : *b.rbegin();
+
+        uint32_t maxHole, maxRegs; tie(maxHole, maxRegs) = typeInfo(GetType(a));
+
+        auto holeAfterMerge = GetMaxHoleSize(first, last);
+        auto regsAfterMerge = last->Address - first->Address + 1;
+
+        // Two sets may merge if:
+        return GetType(a).Index == GetType(b).Index &&  // Their memory blocks are of same type
+               GetSize(a)       == GetSize(b)       &&  // Their memory blocks are of same size
+               holeAfterMerge <= maxHole            &&  // Hole after merge won't exceed limit
+               regsAfterMerge <= maxRegs;               // Memory block count after merge won't exceed limit
+    };
+
     for (auto itRegisterSet = registerSets.begin(); itRegisterSet != registerSets.end(); ++itRegisterSet) {
-        auto & registerSet = *itRegisterSet;
-
-        uint32_t maxHole;
-        uint32_t maxRegs;
-
-        tie(maxHole, maxRegs) = typeInfo(GetType(registerSet));
-
         auto itOtherRegisterSet = itRegisterSet;
         ++itOtherRegisterSet;
 
         for (;itOtherRegisterSet != registerSets.end();) {
             assert(itRegisterSet != itOtherRegisterSet);
 
-            const auto & otherRegisterSet = *itOtherRegisterSet;
-
-            if (GetType(registerSet) != GetType(otherRegisterSet)) {
+            if (!condition(*itRegisterSet, *itOtherRegisterSet)) {
                 ++itOtherRegisterSet;
                 continue;
             }
 
-            auto first = **registerSet.begin() < **otherRegisterSet.begin() ? *registerSet.begin() : *otherRegisterSet.begin();
-            auto last = **otherRegisterSet.rbegin() < **registerSet.rbegin() ? *registerSet.rbegin() : *otherRegisterSet.rbegin();
-
-            auto holeSizeAfterMerge = GetMaxHoleSize(first, last);
-            if (holeSizeAfterMerge > maxHole) {
-                ++itOtherRegisterSet;
-                continue;
-            }
-
-            auto regCountAfterMerge = last->Address - first->Address + 1;
-            if (regCountAfterMerge > maxRegs) {
-                ++itOtherRegisterSet;
-                continue;
-            }
-
-            registerSet.insert(otherRegisterSet.begin(), otherRegisterSet.end());
+            itRegisterSet->insert(itOtherRegisterSet->begin(), itOtherRegisterSet->end());
             itOtherRegisterSet = registerSets.erase(itOtherRegisterSet);
         }
     }

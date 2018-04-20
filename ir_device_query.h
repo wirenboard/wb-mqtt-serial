@@ -31,7 +31,7 @@ protected:
     template <typename T>
     static void CheckTypeSingle()
     {
-        static_assert(std::is_fundamental<T>::value, "only vector of fundamental types is allowed");
+        static_assert(std::is_fundamental<T>::value, "only fundamental types are allowed");
         static_assert(sizeof(T) <= sizeof(uint64_t), "size of type exceeded 64 bits");
     };
 
@@ -50,7 +50,7 @@ public:
     PSerialDevice GetDevice() const;
     uint32_t GetCount() const;
     uint32_t GetStart() const;
-    uint32_t GetType() const;
+    const TMemoryBlockType & GetType() const;
     const std::string & GetTypeName() const;
 
     void SetStatus(EQueryStatus);
@@ -77,41 +77,27 @@ public:
     /**
      * Accept values read from device as current and set status to Ok
      */
-    template <typename T>
-    void FinalizeRead(const void * values) const
+    void FinalizeRead(const vector<uint8_t> & data) const
     {
-        CheckTypeMany<T>();
-
-        FinalizeReadImpl(values, sizeof(T), GetCount());
-    }
-
-    /**
-     * Accept values read from device as current and set status to Ok
-     */
-    template <typename T>
-    void FinalizeRead(const std::vector<T> & values) const
-    {
-        CheckTypeMany<T>();
-
-        FinalizeReadImpl(values.data(), sizeof(T), values.size());
+        FinalizeReadImpl(data.data(), data.size());
     }
 
     /**
      * Accept value read from device as current and set status to Ok (for single read to avoid unnecesary vector creation)
      */
-    template <typename T>
-    void FinalizeRead(T value) const
-    {
-        CheckTypeSingle<T>();
+    // template <typename T>
+    // void FinalizeRead(T value) const
+    // {
+    //     CheckTypeSingle<T>();
 
-        FinalizeReadImpl(&value, sizeof(T), 1);
-    }
+    //     FinalizeReadImpl(&value, sizeof(T), 1);
+    // }
 
     std::string Describe() const;
     std::string DescribeOperation() const;
 
 private:
-    void FinalizeReadImpl(const void * mem, size_t size, size_t count) const;
+    void FinalizeReadImpl(const uint8_t * mem, size_t size) const;
 };
 
 struct TIRDeviceValueQuery: TIRDeviceQuery

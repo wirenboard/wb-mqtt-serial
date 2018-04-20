@@ -16,7 +16,8 @@ class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
     friend TVirtualRegister;
     friend TSerialDevice;
 
-    uint8_t * Cache; //  most recent value of register (from successful writes and reads)
+    uint8_t * TmpValue, // most recent value of register (from successful writes and reads)
+            * Cache;    // on demand cache memory
 
 public:
     const uint32_t           Address;
@@ -72,8 +73,7 @@ public:
     PSerialDevice GetDevice() const;
     TPSet<PVirtualRegister> GetVirtualRegsiters() const;
 
-    inline void SetValue(const uint64_t & value)
-    {   Value = value; }
+    void OnDataChange(const uint8_t * data);
 
     inline const uint64_t & GetValue() const
     {   return Value;   }

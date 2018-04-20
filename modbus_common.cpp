@@ -41,7 +41,7 @@ namespace Modbus    // modbus protocol declarations
 
     struct TModbusProtocolInfo: TProtocolInfo
     {
-        bool IsSingleBitType(int type) const override;
+        bool IsSingleBitType(const TMemoryBlockType & type) const override;
         int GetMaxReadRegisters() const override;
         int GetMaxReadBits() const override;
         int GetMaxWriteRegisters() const override;
@@ -61,20 +61,20 @@ namespace   // general utilities
     // returns true if multi write needs to be done
     inline bool IsPacking(const TIRDeviceQuery & query)
     {
-        return (query.GetType() == Modbus::REG_HOLDING_MULTI) ||
-              ((query.GetType() == Modbus::REG_HOLDING) && (query.GetCount() > 1));
+        return (query.GetType().Index == Modbus::REG_HOLDING_MULTI) ||
+              ((query.GetType().Index == Modbus::REG_HOLDING) && (query.GetCount() > 1));
     }
 
-    inline bool IsSingleBitType(int type)
+    inline bool IsSingleBitType(const TMemoryBlockType & type)
     {
-        return (type == Modbus::REG_COIL) || (type == Modbus::REG_DISCRETE);
+        return (type.Index == Modbus::REG_COIL) || (type.Index == Modbus::REG_DISCRETE);
     }
 }   // general utilities
 
 
 namespace Modbus    // modbus protocol common utilities
 {
-    bool TModbusProtocolInfo::IsSingleBitType(int type) const
+    bool TModbusProtocolInfo::IsSingleBitType(const TMemoryBlockType & type) const
     {
         return ::IsSingleBitType(type);
     }
@@ -133,9 +133,9 @@ namespace Modbus    // modbus protocol common utilities
     }
 
     // choose function code for modbus request
-    uint8_t GetFunctionImpl(uint32_t type, bool isPacking, EQueryOperation op, function<const string &()> && getTypeName)
+    uint8_t GetFunctionImpl(const TMemoryBlockType & type, bool isPacking, EQueryOperation op)
     {
-        switch (type) {
+        switch (type.Index) {
         case REG_HOLDING_SINGLE:
         case REG_HOLDING_MULTI:
         case REG_HOLDING:
@@ -180,10 +180,10 @@ namespace Modbus    // modbus protocol common utilities
 
         switch (op) {
         case EQueryOperation::Read:
-            cerr << "reading of " << getTypeName() << " is not implemented" << endl;
+            cerr << "reading of " << type.Name << " is not implemented" << endl;
             assert(false);
         case EQueryOperation::Write:
-            cerr << "writing to " << getTypeName() << " is not implemented" << endl;
+            cerr << "writing to " << type.Name << " is not implemented" << endl;
             assert(false);
         default:
             cerr << "wrong operation code: " << to_string((int)op) << endl;
@@ -193,12 +193,12 @@ namespace Modbus    // modbus protocol common utilities
 
     uint8_t GetFunction(const TIRDeviceQuery & query)
     {
-        return GetFunctionImpl(query.GetType(), IsPacking(query), query.Operation, [&]{ return query.GetTypeName(); });
+        return GetFunctionImpl(query.GetType(), IsPacking(query), query.Operation);
     }
 
     uint8_t GetFunction(const TProtocolRegister & protocolRegister, EQueryOperation op)
     {
-        return GetFunctionImpl(protocolRegister.Type, false, op, [&]{ return protocolRegister.GetTypeName(); });
+        return GetFunctionImpl(protocolRegister.Type, false, op);
     }
 
     // throws C++ exception on modbus error code
@@ -331,7 +331,7 @@ namespace Modbus    // modbus protocol common utilities
 
     void ComposeSingleWriteRequestPDU(uint8_t* pdu, const TProtocolRegister & protocolRegister, uint16_t value, int shift)
     {
-        if (protocolRegister.Type == REG_COIL) {
+        if (protocolRegister.Type.Index == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8: 0x00;
         }
 

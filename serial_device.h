@@ -64,7 +64,7 @@ struct TProtocolInfo
 {
     virtual ~TProtocolInfo() = default;
 
-    virtual bool IsSingleBitType(int type) const;
+    virtual bool IsSingleBitType(const TMemoryBlockType & type) const;
     virtual int GetMaxReadRegisters() const;
     virtual int GetMaxReadBits() const;
     virtual int GetMaxWriteRegisters() const;
