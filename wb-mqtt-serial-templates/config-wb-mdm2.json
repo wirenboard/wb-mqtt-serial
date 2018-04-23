@@ -4,6 +4,13 @@
     "name": "WB-MDM2",
     "id": "wb-mdm2",
     "channels": [
+    {
+        "name": "Input Voltage", 
+        "reg_type": "input", 
+        "address": 121, 
+        "scale": 0.001, 
+        "type": "voltage"
+    }, 
       {
         "name": "Channel 1",
         "reg_type": "holding",
@@ -18,6 +25,20 @@
         "type": "range",
         "max": 100
       },
+    {
+        "name": "Channel 1 mode", 
+        "reg_type": "holding", 
+        "address": 65, 
+        "type": "range", 
+        "max": 3
+    }, 
+    {
+        "name": "Channel 2 mode", 
+        "reg_type": "holding", 
+        "address": 66, 
+        "type": "range", 
+        "max": 3
+    }, 
       {
         "name": "Button 1",
         "reg_type": "holding",
