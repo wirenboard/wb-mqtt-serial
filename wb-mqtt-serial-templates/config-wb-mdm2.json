@@ -30,14 +30,14 @@
                 "reg_type": "holding", 
                 "address": 65, 
                 "type": "range", 
-                "max": 3
+                "max": 2
             }, 
             {
                 "name": "Channel 2 mode", 
                 "reg_type": "holding", 
                 "address": 66, 
                 "type": "range", 
-                "max": 3
+                "max": 2
             }, 
             {
                 "name": "Button 1", 
