@@ -91,7 +91,9 @@ bool TFileDescriptorPort::Select(const chrono::microseconds& us)
 }
 
 void TFileDescriptorPort::OnReadyEmptyFd()
-{}
+{
+    cerr << "WARNING: unexpected behaviour on port " + Settings->ToString() + ": zero bytes on ready port" << endl;
+}
 
 uint8_t TFileDescriptorPort::ReadByte()
 {

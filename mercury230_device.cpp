@@ -6,13 +6,13 @@
 #include <iostream>
 
 REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
-            { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },
-            { TMercury230Device::REG_VALUE_ARRAY12, "array12", "power_consumption", U32, true },
-            { TMercury230Device::REG_PARAM, "param", "value", U24, true },
-            { TMercury230Device::REG_PARAM_SIGN_ACT, "param_sign_active", "value", S24, true },
-            { TMercury230Device::REG_PARAM_SIGN_REACT, "param_sign_reactive", "value", S24, true },
-            { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore", "value", U24, true },
-            { TMercury230Device::REG_PARAM_BE, "param_be", "value", S24, true }
+            { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", { U32, U32, U32 }, true },
+            { TMercury230Device::REG_VALUE_ARRAY12, "array12", "power_consumption", { U32, U32, U32 }, true },
+            { TMercury230Device::REG_PARAM, "param", "value", { U24 }, true },
+            { TMercury230Device::REG_PARAM_SIGN_ACT, "param_sign_active", "value", { S24 }, true },
+            { TMercury230Device::REG_PARAM_SIGN_REACT, "param_sign_reactive", "value", { S24 }, true },
+            { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore", "value", { U24 }, true },
+            { TMercury230Device::REG_PARAM_BE, "param_be", "value", { S24 }, true }
         }));
 
 TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
@@ -71,38 +71,27 @@ TEMDevice<TMercury230Protocol>::ErrorType TMercury230Device::CheckForException(u
     return TEMDevice<TMercury230Protocol>::OTHER_ERROR;
 }
 
-const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(uint32_t address, int resp_len)
+std::vector<uint8_t> TMercury230Device::ReadValueArray(const PProtocolRegister & mb)
 {
-    int key = (address >> 4) | (SlaveId << 24);
-    auto it = CachedValues.find(key);
-    if (it != CachedValues.end())
-        return it->second;
-
     uint8_t cmdBuf[2];
-    cmdBuf[0] = (uint8_t)((address >> 4) & 0xff); // high nibble = array number, lower nibble = month
-    cmdBuf[1] = (uint8_t)((address >> 12) & 0x0f); // tariff
-    uint8_t buf[MAX_LEN], *p = buf;
-    TValueArray a;
-    Talk(0x05, cmdBuf, 2, -1, buf, resp_len * 4);
-    for (int i = 0; i < resp_len; i++, p += 4) {
-        a.values[i] = ((uint32_t)p[1] << 24) +
-                      ((uint32_t)p[0] << 16) +
-                      ((uint32_t)p[3] << 8 ) +
-                       (uint32_t)p[2];
-    }
+    cmdBuf[0] = (uint8_t)((mb->Address >> 4) & 0xff); // high nibble = array number, lower nibble = month
+    cmdBuf[1] = (uint8_t)((mb->Address >> 12) & 0x0f); // tariff
+    std::vector<uint8_t> buf(mb->Size);
+    Talk(0x05, cmdBuf, 2, -1, buf.data(), buf.size());
 
-    return CachedValues.insert(std::make_pair(key, a)).first->second;
+    return std::move(buf);
 }
 
-uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_len, RegisterType reg_type)
+std::vector<uint8_t> TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_len, RegisterType reg_type)
 {
     uint8_t cmdBuf[2];
     cmdBuf[0] = (address >> 8) & 0xff; // param
     cmdBuf[1] = address & 0xff; // subparam (BWRI)
 
     assert(resp_payload_len <= 3);
-    uint8_t buf[3] = {};
-    Talk( 0x08, cmdBuf, 2, -1, buf, resp_payload_len);
+    std::vector<uint8_t> buf(resp_payload_len);
+    Talk( 0x08, cmdBuf, 2, -1, buf.data(), buf.size());
+    // TODO: continue
 
     if (resp_payload_len == 3) {
         if ((reg_type == REG_PARAM_SIGN_ACT) || (reg_type == REG_PARAM_SIGN_REACT) || (reg_type == REG_PARAM_SIGN_IGNORE)) {
@@ -138,19 +127,19 @@ uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_l
     }
 }
 
-uint64_t TMercury230Device::ReadProtocolRegister(const PProtocolRegister & reg)
+std::vector<uint8_t> TMercury230Device::ReadProtocolRegister(const PProtocolRegister & reg)
 {
-    switch (reg->Type) {
+    switch (reg->Type.Index) {
     case REG_VALUE_ARRAY:
-        return ReadValueArray(reg->Address, 4).values[reg->Address & 0x03];
+        return ReadValueArray(reg->Address, 4);
     case REG_VALUE_ARRAY12:
-        return ReadValueArray(reg->Address, 3).values[reg->Address & 0x03];
+        return ReadValueArray(reg->Address, 3);
     case REG_PARAM:
     case REG_PARAM_SIGN_ACT:
     case REG_PARAM_SIGN_REACT:
     case REG_PARAM_SIGN_IGNORE:
     case REG_PARAM_BE:
-        return ReadParam( reg->Address & 0xffff, reg->GetUsedByteCount(), (RegisterType) reg->Type);
+        return ReadParam( reg->Address & 0xffff, reg->Size, (RegisterType) reg->Type.Index);
     default:
         throw TSerialDeviceException("mercury230: invalid register type");
     }

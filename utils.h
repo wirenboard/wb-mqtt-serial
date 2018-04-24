@@ -160,15 +160,16 @@ std::map<K, V, C> MapFromSet(const std::set<K, C> & set)
     return map;
 }
 
-
-inline uint8_t BitCountToRegCount(uint8_t bitCount, uint8_t width)
+template <typename T>
+inline T BitCountToRegCount(T bitCount, T width)
 {
     return bitCount / width + bool(bitCount % width);
 }
 
-inline uint8_t BitCountToByteCount(uint8_t bitCount)
+template <typename T>
+inline T BitCountToByteCount(T bitCount)
 {
-    return BitCountToRegCount(bitCount, 8);
+    return BitCountToRegCount(bitCount, T(8));
 }
 
 template<typename Pointer>

@@ -188,11 +188,18 @@ string TIRDeviceQuery::DescribeOperation() const
 
 void TIRDeviceQuery::FinalizeReadImpl(const uint8_t * mem, size_t size) const
 {
-    auto memoryBlockSize = (*RegView.Begin())->Size;    // it is guaranteed that all blocks in query have same size
+    auto memoryBlockSize = (*RegView.Begin())->Size;    // it is guaranteed that all blocks in query have same size and type
 
     assert(Operation == EQueryOperation::Read);
     assert(GetStatus() == EQueryStatus::NotExecuted);
-    assert(GetCount() * memoryBlockSize == size);
+
+    {
+        auto expectedSize = GetCount() * memoryBlockSize;
+
+        if (expectedSize != size) {
+            throw TSerialDeviceTransientErrorException("FinalizeRead: unexpected size: " + to_string(size) + " instead of " + to_string(expectedSize));
+        }
+    }
 
     auto itProtocolRegister = RegView.First;
 

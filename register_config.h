@@ -4,6 +4,7 @@
 #include "types.h"
 
 #include <map>
+#include <vector>
 
 // struct TRegisterType {
 //     TRegisterType(int index, const std::string& name, const std::string& defaultControlType,
@@ -22,31 +23,42 @@ struct TMemoryBlockType {
     enum : uint16_t { Variadic = uint16_t(-1) };
 
     TMemoryBlockType(int index, const std::string & name, const std::string & defaultControlType,
-                     uint16_t size, ERegisterFormat defaultFormat = U16, bool readOnly = false,
+                     std::vector<ERegisterFormat> formats = { U16 }, bool readOnly = false,
                      EByteOrder byteOrder = EByteOrder::BigEndian, EWordOrder defaultWordOrder = EWordOrder::BigEndian
     )
         : Index(index)
         , Name(name)
-        , Defaults{defaultControlType, defaultFormat, defaultWordOrder}
-        , Size(size)
+        , Formats(std::move(formats))
+        , Size(0)
         , ByteOrder(byteOrder)
         , ReadOnly(readOnly)
-    {}
+        , Defaults{defaultControlType, defaultWordOrder}
+    {
+        for (auto format: Formats) {
+            Size += RegisterFormatByteWidth(format);
+        }
 
-    int         Index;
-    std::string Name;
-    uint16_t    Size;
-    EByteOrder  ByteOrder;
-    bool        ReadOnly;
+        if (!Size) {
+            Size = Variadic;
+        }
+    }
 
-    bool IsVariadicSize() const
+    int                          Index;
+    std::string                  Name;
+    std::vector<ERegisterFormat> Formats;
+    uint16_t                     Size;
+    EByteOrder                   ByteOrder;
+    bool                         ReadOnly;
+
+    inline bool IsVariadicSize() const
     {
         return Size == Variadic;
     }
 
+    ERegisterFormat GetDefaultFormat(uint16_t bit) const;
+
     struct {
         std::string     ControlType;
-        ERegisterFormat Format;
         EWordOrder      WordOrder;
     } Defaults;
 };

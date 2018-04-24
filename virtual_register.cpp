@@ -609,15 +609,16 @@ PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const 
 
     return reg;
 }
-// TODO: continue
-uint64_t TVirtualRegister::MapValueFrom(const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & registerMap)
+
+uint64_t TVirtualRegister::MapValueFrom(const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & registerMap, EWordOrder wordOrder)
 {
     uint64_t value = 0;
 
     uint8_t bitPosition = 0;
-    for (auto protocolRegisterBindInfo = registerMap.rbegin(); protocolRegisterBindInfo != registerMap.rend(); ++protocolRegisterBindInfo) {
-        const auto & protocolRegister = protocolRegisterBindInfo->first;
-        const auto & bindInfo = protocolRegisterBindInfo->second;
+
+    auto readMemoryBlock = [&](const pair<const PProtocolRegister, TProtocolRegisterBindInfo> & protocolRegisterBindInfo){
+        const auto & protocolRegister = protocolRegisterBindInfo.first;
+        const auto & bindInfo = protocolRegisterBindInfo.second;
 
         auto mask = MersenneNumber(bindInfo.BitCount()) << bitPosition;
         value |= mask & ((protocolRegister->Value >> bindInfo.BitStart) << bitPosition);
@@ -629,6 +630,12 @@ uint64_t TVirtualRegister::MapValueFrom(const TPMap<PProtocolRegister, TProtocol
         }
 
         bitPosition += bindInfo.BitCount();
+    };
+
+    if (wordOrder == EWordOrder::BigEndian) {
+        for_each(registerMap.rbegin(), registerMap.rend(), readMemoryBlock);
+    } else {
+        for_each(registerMap.begin(), registerMap.end(), readMemoryBlock);
     }
 
     if (Global::Debug)

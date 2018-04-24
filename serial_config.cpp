@@ -176,7 +176,7 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
 
     ERegisterFormat format = register_data.isMember("format") ?
         RegisterFormatFromName(register_data["format"].asString()) :
-        it->second.Defaults.Format;
+        it->second.GetDefaultFormat(bitOffset);
 
     EWordOrder word_order = register_data.isMember("word_order") ?
         WordOrderFromName(register_data["word_order"].asString()) :
@@ -688,8 +688,10 @@ void TConfigParser::LoadConfig()
     if (!Root.isMember("ports"))
         throw TConfigParserException("no ports specified");
 
-    if (Root.isMember("debug"))
+    if (Root.isMember("debug")) {
         HandlerConfig->Debug = HandlerConfig->Debug || Root["debug"].asBool();
+        Global::Debug |= Root["debug"].asBool();
+    }
 
     if (Root.isMember("max_unchanged_interval"))
         HandlerConfig->MaxUnchangedInterval = Root["max_unchanged_interval"].asInt();

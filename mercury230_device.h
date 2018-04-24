@@ -27,7 +27,7 @@ public:
     };
 
     TMercury230Device(PDeviceConfig, PPort port, PProtocol protocol);
-    uint64_t ReadProtocolRegister(const PProtocolRegister & reg) override;
+    std::vector<uint8_t> ReadProtocolRegister(const PProtocolRegister & reg) override;
     void EndPollCycle() override;
 
 protected:
@@ -38,8 +38,8 @@ private:
     struct TValueArray {
         uint32_t values[4];
     };
-    const TValueArray& ReadValueArray(uint32_t address, int resp_len = 4);
-    uint32_t ReadParam( uint32_t address, unsigned resp_payload_len, RegisterType reg_type);
+    std::vector<uint8_t> ReadValueArray(uint32_t address, int resp_len = 4);
+    std::vector<uint8_t> ReadParam( uint32_t address, unsigned resp_payload_len, RegisterType reg_type);
 
     std::unordered_map<int, TValueArray> CachedValues;
 };

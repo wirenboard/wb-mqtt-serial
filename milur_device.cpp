@@ -17,12 +17,12 @@ namespace {
 }
 
 REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
-            { TMilurDevice::REG_PARAM, "param", "value", U24, true },
-            { TMilurDevice::REG_POWER, "power", "power", S32, true },
-            { TMilurDevice::REG_ENERGY, "energy", "power_consumption", BCD32, true },
-            { TMilurDevice::REG_FREQ, "freq", "value", U16, true },
-            { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", S16, true }
-                                                        }));
+            { TMilurDevice::REG_PARAM, "param", "value", { U24 }, true },
+            { TMilurDevice::REG_POWER, "power", "power", { S32 }, true },
+            { TMilurDevice::REG_ENERGY, "energy", "power_consumption", { BCD32 }, true },
+            { TMilurDevice::REG_FREQ, "freq", "value", { U16 }, true },
+            { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", { S16 }, true }
+}));
 
 TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TEMDevice<TBasicProtocol<TMilurDevice>>(device_config, port, protocol)
@@ -133,7 +133,7 @@ uint64_t TMilurDevice::ReadProtocolRegister(const PProtocolRegister & reg)
     if (*p != size)
         throw TSerialDeviceTransientErrorException("bad register size in the response");
 
-    switch (reg->Type) {
+    switch (reg->Type.Index) {
     case TMilurDevice::REG_PARAM:
         return BuildIntVal(buf + 2, 3);
     case TMilurDevice::REG_POWER:

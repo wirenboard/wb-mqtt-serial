@@ -1,9 +1,27 @@
 #include "register_config.h"
+#include "serial_exc.h"
 
 #include <sstream>
 
 using namespace std;
 
+
+ERegisterFormat TMemoryBlockType::GetDefaultFormat(uint16_t bit) const
+{
+    if (Formats.empty()) {
+        throw TSerialDeviceException("unable to get default format from memory block type '" + Name + "': none specified");
+    }
+
+    uint16_t pos = 0;
+    for (auto format: Formats) {
+        pos += RegisterFormatByteWidth(format) * 8;
+        if (pos > bit) {
+            return format;
+        }
+    }
+
+    throw TSerialDeviceException("unable to get default format from memory block type '" + Name + "' for bit " + to_string(bit));
+}
 
 const char* RegisterFormatName(ERegisterFormat fmt) {
     switch (fmt) {

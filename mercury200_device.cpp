@@ -15,7 +15,7 @@ namespace
 
 REGISTER_BASIC_INT_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes(
         {
-            { TMercury200Device::REG_PARAM_VALUE16, "param8", "value", U8, true },
+            { TMercury200Device::REG_PARAM_VALUE, "param", "value", U8, true },
             { TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true },
             { TMercury200Device::REG_PARAM_VALUE24, "param24", "value", BCD24, true },
             { TMercury200Device::REG_PARAM_VALUE32, "param32", "value", BCD32, true }

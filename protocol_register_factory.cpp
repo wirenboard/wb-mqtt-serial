@@ -35,8 +35,8 @@ TPMap<PProtocolRegister, TProtocolRegisterBindInfo> TProtocolRegisterFactory::Ge
                                      ") does not fit into specified format (" + RegisterFormatName(config->Format) + ")");
     }
 
-    uint8_t regIndexStart = config->BitOffset / registerBitWidth;
-    uint8_t regIndexEnd = BitCountToRegCount(formatBitWidth, registerBitWidth);
+    uint16_t regIndexStart = config->BitOffset / registerBitWidth;
+    uint16_t regIndexEnd   = BitCountToRegCount(uint16_t(formatBitWidth), registerBitWidth);
 
     if (Global::Debug) {
         cerr << "bits: " << (int)bitsToAllocate << endl;
@@ -46,10 +46,10 @@ TPMap<PProtocolRegister, TProtocolRegisterBindInfo> TProtocolRegisterFactory::Ge
     for (auto regIndex = regIndexStart; regIndex < regIndexEnd; ++regIndex) {
         const auto regReverseIndex = regIndexEnd - regIndex - 1;
         const auto type            = config->Type;
-        const auto address         = config->Address + regReverseIndex;
+        const auto address         = config->Address + (config->WordOrder == EWordOrder::BigEndian ? regReverseIndex : regIndex);
 
-        uint8_t startBit = max(int(config->BitOffset) - int(regIndex * registerBitWidth), 0);
-        uint8_t endBit   = min(registerBitWidth, uint8_t(startBit + bitsToAllocate));
+        uint16_t startBit = max(int(config->BitOffset) - int(regIndex * registerBitWidth), 0);
+        uint16_t endBit   = min(registerBitWidth, uint16_t(startBit + bitsToAllocate));
 
         auto protocolRegister = device->GetCreateRegister(address, type);
 
