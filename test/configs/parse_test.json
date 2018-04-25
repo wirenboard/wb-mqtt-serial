@@ -11,6 +11,7 @@
             "enabled": true,
             "devices" : [
                 {
+                    "id": "msu34tlp_2",
                     "device_type" : "MSU34",
                     "slave_id": 2,
                     "enabled": true,
@@ -90,6 +91,15 @@
                             "error_value" : "0xFFFFFFFFFFFFFFFF"
                         }
                     ]
+                },
+                {
+                    "slave_id": "0x92",
+                    "device_type": "MSU34"
+                },
+                {
+                    "name": "MSU34+TLP 0x92",
+                    "slave_id": "0x93",
+                    "device_type": "MSU34"
                 }
             ]
         },
@@ -184,6 +194,10 @@
                 {
                     "device_type" : "TestDeviceOverride",
                     "slave_id": 6
+                },
+                {
+                    "slave_id": "0x92",
+                    "device_type": "MSU34"
                 }
             ]
         },
