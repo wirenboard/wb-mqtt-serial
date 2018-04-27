@@ -154,15 +154,14 @@ public:
     void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data);
     void LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data);
     void LoadDevice(PPortConfig port_config, const Json::Value& device_data,
-                    unsigned int portIndex, unsigned int deviceIndex);
-    void LoadPort(const Json::Value& port_data, unsigned int portIndex);
+                    const std::string& default_id);
+    void LoadPort(const Json::Value& port_data, const std::string& id_prefix);
     void LoadConfig();
 
 private:
     int GetInt(const Json::Value& obj, const std::string& key);
     int ToInt(const Json::Value& v, const std::string& title);
     uint64_t ToUint64(const Json::Value& v, const std::string& title);
-    void ResolveDeviceCollisions() const;
 
     std::string ConfigFileName;
     PHandlerConfig HandlerConfig;

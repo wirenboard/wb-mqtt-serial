@@ -13,7 +13,6 @@
       "protocol": "other",
       "devices" : [
         {
-          "id": "mercury230ar02_0",
           "slave_id": "0",
           "frame_timeout_ms": 150,
           "device_type": "mercury230"

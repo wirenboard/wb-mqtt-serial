@@ -32,11 +32,6 @@ struct TTcpPortSettings final: TPortSettings
         return ss.str();
     }
 
-    std::string GetNamePostfix() const override
-    {
-        return "(at " + Address + ":" + std::to_string(Port) + ")";
-    }
-
     std::string                 Address;
     uint16_t                    Port;
     std::chrono::milliseconds   ConnectionTimeout;

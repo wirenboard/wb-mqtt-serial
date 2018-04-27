@@ -12,7 +12,6 @@ struct TPortSettings
     virtual ~TPortSettings() = default;
 
     virtual std::string ToString() const = 0;
-    virtual std::string GetNamePostfix() const = 0;
 
     std::chrono::milliseconds ResponseTimeout;
 };

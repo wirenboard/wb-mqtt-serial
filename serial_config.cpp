@@ -469,59 +469,19 @@ PHandlerConfig TConfigParser::Parse()
     LoadConfig();
 
     // check duplicate devices
-    ResolveDeviceCollisions();
+
 
     return HandlerConfig;
 }
 
-void TConfigParser::ResolveDeviceCollisions() const
-{
-    unordered_map<string, pair<PPortConfig, PDeviceConfig>> seenNames;
-    unordered_map<string, map<PPortConfig, set<PDeviceConfig>>> collisionsByName;
-
-    for (auto port_config: HandlerConfig->PortConfigs) {
-        for (auto device_config: port_config->DeviceConfigs) {
-            {
-                auto insRes = seenNames.insert({device_config->Name, {port_config, device_config}});
-
-                if (!insRes.second) {   // collision
-                    auto & collisions = collisionsByName[device_config->Name];
-                    collisions[insRes.first->second.first].insert(insRes.first->second.second);
-                    collisions[port_config].insert(device_config);
-                }
-            }
-        }
-    }
-
-    for (const auto & nameCollisions: collisionsByName) {
-        auto port_count = nameCollisions.second.size();
-
-        for (const auto & portDevice: nameCollisions.second) {
-            const auto & port_config = portDevice.first;
-            auto device_count = portDevice.second.size();
-            int n = 1;
-            for (const auto & device_config: portDevice.second) {
-                if (port_count > 1)
-                    device_config->Name += " " + port_config->ConnSettings->GetNamePostfix();
-
-                if (device_count > 1)
-                    device_config->Name += " " + to_string(n++);
-            }
-        }
-    }
-}
-
 void TConfigParser::LoadDevice(PPortConfig port_config,
                                const Json::Value& device_data,
-                               unsigned int portIndex,
-                               unsigned int deviceIndex)
+                               const string& default_id)
 {
     if (!device_data.isObject())
         throw TConfigParserException("malformed config");
     if (device_data.isMember("enabled") && !device_data["enabled"].asBool())
         return;
-
-    auto default_id = "wb-modbus-" + to_string(portIndex) + "-" + to_string(deviceIndex);   // XXX old default prefix for compat
 
     PTemplate tmpl;
     PDeviceConfig device_config = make_shared<TDeviceConfig>();
@@ -560,7 +520,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
             if (tmpl->DeviceData.isMember("id")) {
                 if (device_config->Id == default_id)
                     device_config->Id = tmpl->DeviceData["id"].asString() + "_" +
-                        device_config->SlaveId + "_" + to_string(portIndex);
+                        device_config->SlaveId;
             }
 
             LoadDeviceTemplatableConfigPart(device_config, tmpl->DeviceData);
@@ -594,7 +554,7 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
 }
 
 void TConfigParser::LoadPort(const Json::Value& port_data,
-                             unsigned int portIndex)
+                             const string& id_prefix)
 {
     if (!port_data.isObject())
         throw TConfigParserException("malformed config");
@@ -663,7 +623,7 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
 
     const Json::Value array = port_data["devices"];
     for(unsigned int index = 0; index < array.size(); ++index)
-        LoadDevice(port_config, array[index], portIndex, index);
+        LoadDevice(port_config, array[index], id_prefix + to_string(index));
 
     HandlerConfig->AddPortConfig(port_config);
 }
@@ -684,7 +644,7 @@ void TConfigParser::LoadConfig()
 
     const Json::Value array = Root["ports"];
     for(unsigned int index = 0; index < array.size(); ++index)
-        LoadPort(array[index], index);
+        LoadPort(array[index], "wb-modbus-" + to_string(index) + "-"); // XXX old default prefix for compat
 
     // check are there any devices defined
     for (const auto& port_config : HandlerConfig->PortConfigs) {
