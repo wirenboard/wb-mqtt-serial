@@ -57,6 +57,7 @@ public:
     void SetFlushSignal(PBinarySemaphore flushNeeded);
     PSerialDevice GetDevice() const;
     TPSet<PProtocolRegister> GetProtocolRegisters() const;
+    const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & GetBoundMemoryBlocks() const;
     EErrorState GetErrorState() const override;
     std::string Describe() const;
     bool NeedToPoll() const;

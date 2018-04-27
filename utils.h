@@ -226,12 +226,12 @@ struct TPSetView
         return *Last;
     }
 
-    Iterator Begin() const
+    Iterator begin() const
     {
         return First;
     }
 
-    Iterator End() const
+    Iterator end() const
     {
         auto end = Last;
         return ++end;

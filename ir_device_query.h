@@ -77,9 +77,9 @@ public:
     /**
      * Accept values read from device as current and set status to Ok
      */
-    void FinalizeRead(const vector<uint8_t> & data) const
+    void FinalizeRead(const TIRDeviceMemoryView & memoryView) const
     {
-        FinalizeReadImpl(data.data(), data.size());
+        FinalizeReadImpl(memoryView);
     }
 
     /**
@@ -97,7 +97,7 @@ public:
     std::string DescribeOperation() const;
 
 private:
-    void FinalizeReadImpl(const uint8_t * mem, size_t size) const;
+    void FinalizeReadImpl(const TIRDeviceMemoryView & memoryView) const;
 };
 
 struct TIRDeviceValueQuery: TIRDeviceQuery

@@ -7,13 +7,13 @@
 #include "ir_device_query.h"
 #include "binary_semaphore.h"
 #include "virtual_register_set.h"
+#include "ir_device_memory_view.h"
 
 #include <wbmqtt/utils.h>
 
 #include <cassert>
 #include <cmath>
 #include <tuple>
-#include <bitset>
 
 using namespace std;
 
@@ -203,11 +203,7 @@ namespace // utility
         }
     }
 
-    inline uint64_t MersenneNumber(uint8_t bitCount)
-    {
-        assert(bitCount <= 64);
-        return (uint64_t(1) << bitCount) - 1;
-    }
+
 
     template <typename T>
     inline size_t Hash(const T & value)
@@ -285,6 +281,8 @@ void TVirtualRegister::WriteValueToQuery()
 uint64_t TVirtualRegister::ComposeValue() const
 {
     assert(ValueIsRead);
+
+    GetDevice()->CreateMemoryView()
 
     return MapValueFrom(ProtocolRegisters);
 }
@@ -383,6 +381,11 @@ TPSet<PProtocolRegister> TVirtualRegister::GetProtocolRegisters() const
     return GetKeysAsSet(ProtocolRegisters);
 }
 
+const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & TVirtualRegister::GetBoundMemoryBlocks() const
+{
+    return ProtocolRegisters;
+}
+
 EErrorState TVirtualRegister::GetErrorState() const
 {
     return ErrorState;
@@ -413,7 +416,7 @@ std::string TVirtualRegister::Describe() const
 
 std::string TVirtualRegister::GetTextValue() const
 {
-    auto textValue = ConvertSlaveValue(*this, InvertWordOrderIfNeeded(*this, GetValue()));
+    auto textValue = ConvertSlaveValue(*this, GetValue());
 
     return OnValue.empty() ? textValue : (textValue == OnValue ? "1" : "0");
 }
@@ -425,7 +428,7 @@ void TVirtualRegister::SetTextValue(const std::string & value)
         return;
     }
 
-    SetValue(InvertWordOrderIfNeeded(*this, ConvertMasterValue(*this, OnValue.empty() ? value : (value == "1" ? OnValue : "0"))));
+    SetValue(ConvertMasterValue(*this, OnValue.empty() ? value : (value == "1" ? OnValue : "0")));
 }
 
 void TVirtualRegister::SetValue(uint64_t value)
@@ -610,66 +613,12 @@ PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const 
     return reg;
 }
 
-uint64_t TVirtualRegister::MapValueFrom(const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & registerMap, EWordOrder wordOrder)
+uint64_t TVirtualRegister::MapValueFrom(, const TIRDeviceMemoryView & deviceMemory)
 {
-    uint64_t value = 0;
 
-    uint8_t bitPosition = 0;
-
-    auto readMemoryBlock = [&](const pair<const PProtocolRegister, TProtocolRegisterBindInfo> & protocolRegisterBindInfo){
-        const auto & protocolRegister = protocolRegisterBindInfo.first;
-        const auto & bindInfo = protocolRegisterBindInfo.second;
-
-        auto mask = MersenneNumber(bindInfo.BitCount()) << bitPosition;
-        value |= mask & ((protocolRegister->Value >> bindInfo.BitStart) << bitPosition);
-
-        if (Global::Debug) {
-            cerr << "reg mask: " << bitset<64>(mask) << endl;
-            cerr << "reading " << bindInfo.Describe() << " bits of " << protocolRegister->Describe()
-                 << " to [" << (int)bitPosition << ", " << int(bitPosition + bindInfo.BitCount() - 1) << "] bits of value" << endl;
-        }
-
-        bitPosition += bindInfo.BitCount();
-    };
-
-    if (wordOrder == EWordOrder::BigEndian) {
-        for_each(registerMap.rbegin(), registerMap.rend(), readMemoryBlock);
-    } else {
-        for_each(registerMap.begin(), registerMap.end(), readMemoryBlock);
-    }
-
-    if (Global::Debug)
-        cerr << "map value from registers: " << value << endl;
-
-    return value;
 }
 
-void TVirtualRegister::MapValueTo(const PIRDeviceValueQuery & query, const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & registerMap, uint64_t value)
+void TVirtualRegister::MapValueTo(const PIRDeviceValueQuery & query, )
 {
-    if (Global::Debug)
-        cerr << "map value to registers: " << value << endl;
 
-    uint8_t bitPosition = 0;
-    for (auto protocolRegisterBindInfo = registerMap.rbegin(); protocolRegisterBindInfo != registerMap.rend(); ++protocolRegisterBindInfo) {
-        const auto & protocolRegister = protocolRegisterBindInfo->first;
-        const auto & bindInfo = protocolRegisterBindInfo->second;
-
-        auto mask = MersenneNumber(bindInfo.BitCount()) << bindInfo.BitStart;
-
-        const auto & cachedRegisterValue = protocolRegister->GetValue();
-
-        auto registerValue = (~mask & cachedRegisterValue) | (mask & ((value >> bitPosition) << bindInfo.BitStart));
-
-        if (Global::Debug) {
-            cerr << "cached reg val: " << cachedRegisterValue << " (0x" << hex << cachedRegisterValue << dec << ")" << endl;
-            cerr << "reg mask: " << bitset<64>(mask) << endl;
-            cerr << "reg value: " << registerValue << " (0x" << hex << registerValue << dec << ")" << endl;
-            cerr << "writing [" << (int)bitPosition << ", " << int(bitPosition + bindInfo.BitCount() - 1) << "]" << " bits of value "
-                 << " to " << bindInfo.Describe() << " bits of " << protocolRegister->Describe() << endl;
-        }
-
-        query->SetValue(protocolRegister, registerValue);
-
-        bitPosition += bindInfo.BitCount();
-    }
 }

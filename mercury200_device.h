@@ -17,7 +17,10 @@ class TMercury200Device : public TBasicProtocolSerialDevice<TBasicProtocol<TMerc
 public:
     enum RegisterType
     {
-        REG_PARAM_VALUE = 0
+        REG_PARAM_VALUE8 = 0,
+        REG_PARAM_VALUE16 = 1,
+        REG_PARAM_VALUE24 = 2,
+        REG_PARAM_VALUE32 = 3,
     };
 
     TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol);

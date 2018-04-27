@@ -4,13 +4,21 @@
 
 struct TIRDeviceMemoryView
 {
-    const uint8_t const *       Memory;
+    const uint8_t * const       RawMemory;
     const uint32_t              Size;
     const TMemoryBlockType &    Type;
     const uint32_t              StartAddress;
     const uint16_t              BlockSize;
 
-    TIRDeviceMemoryView(uint8_t * memory, uint32_t size, const TMemoryBlockType & type, uint32_t startAddress, uint16_t blockSize);
+    //TIRDeviceMemoryView(const uint8_t * memory, uint32_t size, const TMemoryBlockType & type, uint32_t startAddress, uint16_t blockSize);
+    virtual ~TIRDeviceMemoryView() = default;
 
-    uint8_t GetByte(const PProtocolRegister & memoryBlock, uint16_t index) const;
+    virtual uint64_t Get(const TIRDeviceValueDesc &) const;
+    virtual void Set(const TIRDeviceValueDesc &, uint64_t value);
+
+    const uint8_t * GetMemoryBlockData(const PProtocolRegister & memoryBlock) const;
+
+protected:
+    const uint8_t & GetByte(const PProtocolRegister & memoryBlock, uint16_t index) const;
+    uint16_t GetBlockStart(const PProtocolRegister & memoryBlock) const;
 };

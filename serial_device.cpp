@@ -49,6 +49,16 @@ int TProtocolInfo::GetMaxWriteBits() const
     return 1;
 }
 
+uint64_t TProtocolInfo::TransformDataFromDevice(const TMemoryBlockType & type, uint64_t value) const
+{
+
+}
+
+uint64_t TProtocolInfo::TransformDataToDevice(const TMemoryBlockType & type, uint64_t value) const
+{
+
+}
+
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : Delay(config->Delay)
@@ -198,6 +208,11 @@ uint64_t TSerialDevice::ReadProtocolRegister(const PProtocolRegister & reg)
 void TSerialDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
 {
     throw TSerialDeviceException("WriteProtocolRegister is not implemented");
+}
+
+const TIRDeviceMemoryView & TSerialDevice::CreateMemoryView(const std::vector<uint8_t> & memory, const PProtocolRegister & memoryBlock)
+{
+    return TIRDeviceMemoryView{ memory.data(), memory.size(), memoryBlock->Type, memoryBlock->Address, memoryBlock->Size };
 }
 
 void TSerialDevice::EndPollCycle() {}

@@ -16,6 +16,7 @@
 #include "serial_config.h"
 #include "port.h"
 #include "utils.h"
+#include "ir_device_memory_view.h"
 
 
 using TRegisterTypes = std::vector<TMemoryBlockType>;
@@ -69,9 +70,6 @@ struct TProtocolInfo
     virtual int GetMaxReadBits() const;
     virtual int GetMaxWriteRegisters() const;
     virtual int GetMaxWriteBits() const;
-
-    /*! Transform raw data from device to 64-bit value according to mappings */
-    virtual uint64_t TransformDataFromDevice(const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> &) const;
 };
 
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {
@@ -123,6 +121,11 @@ protected:
      */
     virtual uint64_t ReadProtocolRegister(const PProtocolRegister & reg);
     virtual void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value);
+
+    /**
+     * Override this method if device memory has its own format TODO: make more clear annotation
+     */
+    virtual const TIRDeviceMemoryView & CreateMemoryView(const std::vector<uint8_t> & memory, const PProtocolRegister & memoryBlock);
 
 private:
     std::chrono::milliseconds Delay;

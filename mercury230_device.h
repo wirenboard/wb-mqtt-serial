@@ -33,13 +33,14 @@ public:
 protected:
     bool ConnectionSetup();
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
+    const TIRDeviceMemoryView & CreateMemoryView(const std::vector<uint8_t> & memory, const PProtocolRegister & memoryBlock) override;
 
 private:
     struct TValueArray {
         uint32_t values[4];
     };
-    std::vector<uint8_t> ReadValueArray(uint32_t address, int resp_len = 4);
-    std::vector<uint8_t> ReadParam( uint32_t address, unsigned resp_payload_len, RegisterType reg_type);
+    std::vector<uint8_t> ReadValueArray(const PProtocolRegister & mb);
+    std::vector<uint8_t> ReadParam(const PProtocolRegister & mb);
 
     std::unordered_map<int, TValueArray> CachedValues;
 };

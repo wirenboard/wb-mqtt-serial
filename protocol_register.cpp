@@ -270,11 +270,22 @@ TPSet<PVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
     return ExternalLinkage->GetVirtualRegsiters();
 }
 
-void TProtocolRegister::OnDataChange(const uint8_t * data)
+void TProtocolRegister::CacheIfNeeded(const uint8_t * data)
 {
     if (Cache) {
         memcpy(Cache, data, Size);
     }
+}
+
+uint8_t TProtocolRegister::GetCachedByte(uint16_t index) const
+{
+    assert(index < Size);
+
+    if (Cache) {
+        return Cache[Type.ByteOrder == EByteOrder::BigEndian ? index : (Size - index - 1)];
+    }
+
+    return 0x00;
 }
 
 std::string TProtocolRegister::Describe() const

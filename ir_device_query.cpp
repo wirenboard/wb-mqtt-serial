@@ -1,5 +1,6 @@
 #include "ir_device_query.h"
 #include "ir_device_query_factory.h"
+#include "ir_device_memory_view.h"
 #include "protocol_register.h"
 #include "virtual_register.h"
 #include "serial_device.h"
@@ -171,7 +172,7 @@ void TIRDeviceQuery::SetAbleToSplit(bool ableToSplit)
 
 string TIRDeviceQuery::Describe() const
 {
-    return PrintRange(RegView.Begin(), RegView.End(), PrintAddr);
+    return PrintRange(RegView.begin(), RegView.end(), PrintAddr);
 }
 
 string TIRDeviceQuery::DescribeOperation() const
@@ -186,9 +187,9 @@ string TIRDeviceQuery::DescribeOperation() const
     }
 }
 
-void TIRDeviceQuery::FinalizeReadImpl(const uint8_t * mem, size_t size) const
+void TIRDeviceQuery::FinalizeReadImpl(const TIRDeviceMemoryView & memoryView) const
 {
-    auto memoryBlockSize = (*RegView.Begin())->Size;    // it is guaranteed that all blocks in query have same size and type
+    auto memoryBlockSize = (*RegView.begin())->Size;    // it is guaranteed that all blocks in query have same size and type
 
     assert(Operation == EQueryOperation::Read);
     assert(GetStatus() == EQueryStatus::NotExecuted);
@@ -196,29 +197,20 @@ void TIRDeviceQuery::FinalizeReadImpl(const uint8_t * mem, size_t size) const
     {
         auto expectedSize = GetCount() * memoryBlockSize;
 
-        if (expectedSize != size) {
-            throw TSerialDeviceTransientErrorException("FinalizeRead: unexpected size: " + to_string(size) + " instead of " + to_string(expectedSize));
+        if (expectedSize != memoryView.Size) {
+            throw TSerialDeviceTransientErrorException("FinalizeRead: unexpected size: " + to_string(memoryView.Size) + " instead of " + to_string(expectedSize));
         }
     }
 
-    auto itProtocolRegister = RegView.First;
-
-    for (size_t i = 0; i < size; i += memoryBlockSize) {
-        const auto & protocolRegister = *itProtocolRegister;
-
-        auto shift = (protocolRegister->Address - GetStart()) * memoryBlockSize;
-
-        if (shift == i) {    // avoid holes values
-            uint64_t value = 0;
-            memcpy(&value, mem, size);
-            protocolRegister->SetValue(value);
-            ++itProtocolRegister;
-        }
-
-        mem += size;
+    for (const auto & mb: RegView) {
+        mb->CacheIfNeeded(memoryView.GetMemoryBlockData(mb));
     }
 
-    assert(itProtocolRegister == RegView.End());
+    for (const auto & reg: VirtualRegisters) {
+        auto value = memoryView.Get({ reg->GetBoundMemoryBlocks(), reg->WordOrder });
+
+        // TODO: accept value by register
+    }
 
     SetStatus(EQueryStatus::Ok);
 }

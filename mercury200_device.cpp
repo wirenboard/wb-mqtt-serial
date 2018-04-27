@@ -13,13 +13,12 @@ namespace
     const ptrdiff_t HEADER_SZ = 5;
 }
 
-REGISTER_BASIC_INT_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes(
-        {
-            { TMercury200Device::REG_PARAM_VALUE, "param", "value", U8, true },
-            { TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true },
-            { TMercury200Device::REG_PARAM_VALUE24, "param24", "value", BCD24, true },
-            { TMercury200Device::REG_PARAM_VALUE32, "param32", "value", BCD32, true }
-        }));
+REGISTER_BASIC_INT_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes({
+    { TMercury200Device::REG_PARAM_VALUE8, "param8", "value", { U8 }, true },
+    { TMercury200Device::REG_PARAM_VALUE16, "param16", "value", { BCD16 }, true },
+    { TMercury200Device::REG_PARAM_VALUE24, "param24", "value", { BCD24 }, true },
+    { TMercury200Device::REG_PARAM_VALUE32, "param32", "value", { BCD32 }, true }
+}));
 
 TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TMercury200Device>>(config, port, protocol)
@@ -59,7 +58,7 @@ uint64_t TMercury200Device::ReadProtocolRegister(const PProtocolRegister & reg)
     uint8_t offset = (reg->Address & 0xFF);
 
     WordSizes size;
-    switch (reg->Type) {
+    switch (reg->Type.Index) {
     case REG_PARAM_VALUE32:
         size = WordSizes::W32_SZ;
         break;

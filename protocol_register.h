@@ -73,10 +73,8 @@ public:
     PSerialDevice GetDevice() const;
     TPSet<PVirtualRegister> GetVirtualRegsiters() const;
 
-    void OnDataChange(const uint8_t * data);
-
-    inline const uint64_t & GetValue() const
-    {   return Value;   }
+    void CacheIfNeeded(const uint8_t * data);
+    uint8_t GetCachedByte(uint16_t index) const;
 
     std::string Describe() const;
 };

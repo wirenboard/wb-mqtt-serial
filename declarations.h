@@ -19,6 +19,8 @@ struct TRegisterConfig;
 struct TIRDeviceQuerySet;
 struct TIRDeviceQuery;
 struct TIRDeviceValueQuery;
+struct TIRDeviceValueDesc;
+struct TIRDeviceMemoryView;
 struct TProtocolInfo;
 struct TDeviceChannel;
 struct TMemoryBlockType;
