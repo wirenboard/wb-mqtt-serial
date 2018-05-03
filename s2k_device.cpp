@@ -1,5 +1,5 @@
 #include "s2k_device.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 
 #include <errno.h>
 #include <string.h>

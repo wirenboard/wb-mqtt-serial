@@ -3,7 +3,7 @@
 #include "fake_serial_port.h"
 #include "uniel_device.h"
 #include "uniel_expectations.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 
 class TUnielDeviceTest: public TSerialDeviceTest, public TUnielDeviceExpectations {
 protected:

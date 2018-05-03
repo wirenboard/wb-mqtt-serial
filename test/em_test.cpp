@@ -4,7 +4,7 @@
 #include "mercury230_expectations.h"
 #include "milur_device.h"
 #include "mercury230_device.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 #include "virtual_register.h"
 
 namespace

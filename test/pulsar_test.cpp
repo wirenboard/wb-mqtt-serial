@@ -2,7 +2,7 @@
 #include "testlog.h"
 #include "fake_serial_port.h"
 #include "pulsar_device.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 #include "virtual_register.h"
 
 

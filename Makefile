@@ -33,10 +33,10 @@ SERIAL_BIN=wb-mqtt-serial
 SERIAL_LIBS=
 SERIAL_SRCS= \
   poll_plan.cpp \
-  protocol_register.cpp \
-  protocol_register_factory.cpp \
+  memory_block.cpp \
+  memory_block_factory.cpp \
   global_variables.cpp \
-  protocol_register_bind_info.cpp \
+  memory_block_bind_info.cpp \
   virtual_register.cpp \
   virtual_register_set.cpp \
   ir_device_query.cpp \

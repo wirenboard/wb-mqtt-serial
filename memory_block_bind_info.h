@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <string>
 
-/* protocol register - local bit interval that contains value for virtual register */
+/* memory block - local bit interval that contains value for virtual register */
 struct TMemoryBlockBindInfo
 {
     const uint16_t  BitStart,
@@ -31,9 +31,9 @@ struct TMemoryBlockBindInfo
 using TBoundMemoryBlock  = std::pair<PMemoryBlock, TMemoryBlockBindInfo>;
 using TBoundMemoryBlocks = TPMap<PMemoryBlock, TMemoryBlockBindInfo>;
 
-/* Contains information needed by memory view to extract single value */
+/* Contains information needed by value extraction algorithm to extract single value from device memory view */
 struct TIRDeviceValueDesc
 {
-    const TBoundMemoryBlocks & BoundMemoryBlocks;
-    const EWordOrder           WordOrder;
+    const TBoundMemoryBlocks &  BoundMemoryBlocks;
+    const EWordOrder            WordOrder;
 };

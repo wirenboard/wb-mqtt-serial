@@ -16,8 +16,7 @@ class TMemoryBlock: public std::enable_shared_from_this<TMemoryBlock>
     friend TVirtualRegister;
     friend TSerialDevice;
 
-    uint8_t * TmpValue, // most recent value of register (from successful writes and reads)
-            * Cache;    // on demand cache memory
+    uint8_t * Cache;    // on demand cache memory
 
 public:
     const uint32_t           Address;
@@ -73,6 +72,8 @@ public:
     PSerialDevice GetDevice() const;
     TPSet<PVirtualRegister> GetVirtualRegsiters() const;
 
+    bool NeedsCaching() const;
+    void AssignCache(uint8_t *);
     void CacheIfNeeded(const uint8_t * data);
     uint8_t GetCachedByte(uint16_t index) const;
 

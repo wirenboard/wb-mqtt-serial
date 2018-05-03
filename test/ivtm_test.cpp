@@ -2,7 +2,7 @@
 #include "testlog.h"
 #include "fake_serial_port.h"
 #include "ivtm_device.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 
 class TIVTMDeviceTest: public TSerialDeviceTest
 {

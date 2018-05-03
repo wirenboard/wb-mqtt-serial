@@ -2,13 +2,25 @@
 #include "ir_device_query_factory.h"
 #include "ir_device_query.h"
 #include "virtual_register.h"
-#include "protocol_register_factory.h"
-#include "protocol_register.h"
+#include "memory_block_factory.h"
+#include "memory_block.h"
 
 #include <iostream>
 #include <unistd.h>
 #include <cassert>
+#include <bitset>
 
+
+namespace
+{
+    template <typename T = uint64_t>
+    inline T MersenneNumber(uint8_t bitCount)
+    {
+        static_assert(is_unsigned<T>::value, "mersenne number may be only unsigned");
+        assert(bitCount <= sizeof(T));
+        return (T(1) << bitCount) - 1;
+    }
+}
 
 TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
     : TDeviceSetupItemConfig(*config)
@@ -24,7 +36,7 @@ TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig 
     TVirtualRegister::MapValueTo(Query, protocolRegisters, Value);
 }
 
-bool TProtocolInfo::IsSingleBitType(int) const
+bool TProtocolInfo::IsSingleBitType(const TMemoryBlockType & type) const
 {
     return false;
 }
@@ -47,16 +59,6 @@ int TProtocolInfo::GetMaxWriteRegisters() const
 int TProtocolInfo::GetMaxWriteBits() const
 {
     return 1;
-}
-
-uint64_t TProtocolInfo::TransformDataFromDevice(const TMemoryBlockType & type, uint64_t value) const
-{
-
-}
-
-uint64_t TProtocolInfo::TransformDataToDevice(const TMemoryBlockType & type, uint64_t value) const
-{
-
 }
 
 
@@ -128,7 +130,7 @@ PMemoryBlock TSerialDevice::GetCreateRegister(uint32_t address, uint32_t type)
 {
     PMemoryBlock protocolRegister(new TMemoryBlock(address, type, shared_from_this()));
 
-    const auto & insRes = Registers.insert(protocolRegister);
+    const auto & insRes = MemoryBlocks.insert(protocolRegister);
 
     if (insRes.second) {
         if (Global::Debug) {
@@ -143,13 +145,13 @@ PMemoryBlock TSerialDevice::GetCreateRegister(uint32_t address, uint32_t type)
 
 TPSetRange<PMemoryBlock> TSerialDevice::CreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last) const
 {
-    assert(!Registers.empty());
+    assert(!MemoryBlocks.empty());
 
-    auto itFirst = Registers.find(first);
-    auto itLast  = Registers.find(last);
+    auto itFirst = MemoryBlocks.find(first);
+    auto itLast  = MemoryBlocks.find(last);
 
-    assert(itFirst != Registers.end());
-    assert(itLast  != Registers.end());
+    assert(itFirst != MemoryBlocks.end());
+    assert(itLast  != MemoryBlocks.end());
 
     return {itFirst, itLast};
 }
@@ -210,9 +212,88 @@ void TSerialDevice::WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value)
     throw TSerialDeviceException("WriteMemoryBlock is not implemented");
 }
 
-const TIRDeviceMemoryView & TSerialDevice::CreateMemoryView(const std::vector<uint8_t> & memory, const PMemoryBlock & memoryBlock)
+uint64_t TSerialDevice::ReadValue(const TIRDeviceMemoryViewR & memoryView, const TIRDeviceValueDesc & valueDesc) const
 {
-    return TIRDeviceMemoryView{ memory.data(), memory.size(), memoryBlock->Type, memoryBlock->Address, memoryBlock->Size };
+    uint64_t value = 0;
+
+    uint8_t bitPosition = 0;
+
+    auto readMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & boundMemoryBlock) {
+        const auto & memoryBlock = boundMemoryBlock.first;
+        const auto & bindInfo = boundMemoryBlock.second;
+
+        const auto mask = MersenneNumber(bindInfo.BitCount()) << bindInfo.BitStart;
+
+        for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryBlock->Size; ++iByte) {
+            uint16_t begin = std::max(uint16_t(iByte * 8), bindInfo.BitStart);
+            uint16_t end = std::min(uint16_t((iByte + 1) * 8), bindInfo.BitEnd);
+
+            if (begin >= end)
+                continue;
+
+            uint64_t bits = memoryView.GetByte(memoryBlock, iByte) & (mask >> (iByte * 8));
+            value |= bits << bitPosition;
+
+            auto bitCount = end - begin;
+            bitPosition += bitCount;
+        }
+
+        // TODO: check for usefullness
+        if (Global::Debug) {
+            std::cerr << "mb mask: " << std::bitset<64>(mask) << std::endl;
+            std::cerr << "reading " << bindInfo.Describe() << " bits of " << memoryBlock->Describe()
+                 << " to [" << (int)bitPosition << ", " << int(bitPosition + bindInfo.BitCount() - 1) << "] bits of value" << std::endl;
+        }
+    };
+
+    if (valueDesc.WordOrder == EWordOrder::BigEndian) {
+        std::for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), readMemoryBlock);
+    } else {
+        std::for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), readMemoryBlock);
+    }
+
+    if (Global::Debug)
+        std::cerr << "map value from registers: " << value << std::endl;
+
+    return value;
+}
+
+void TSerialDevice::WriteValue(const TIRDeviceMemoryViewRW & memoryView, const TIRDeviceValueDesc & valueDesc, uint64_t value) const
+{
+    if (Global::Debug)
+        std::cerr << "map value to registers: " << value << std::endl;
+
+    uint8_t bitPosition = 0;
+
+    auto readMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & protocolRegisterBindInfo){
+        const auto & memoryBlock = protocolRegisterBindInfo.first;
+        const auto & bindInfo = protocolRegisterBindInfo.second;
+
+        const auto mask = MersenneNumber(bindInfo.BitCount()) << bindInfo.BitStart;
+
+        for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryBlock->Size; ++iByte) {
+            uint16_t begin = std::max(uint16_t(iByte * 8), bindInfo.BitStart);
+            uint16_t end = std::min(uint16_t((iByte + 1) * 8), bindInfo.BitEnd);
+
+            if (begin >= end)
+                continue;
+
+            uint8_t byteMask = mask >> (iByte * 8);
+
+            auto cachedBits = memoryBlock->GetCachedByte(iByte);
+
+            memoryView.GetByte(memoryBlock, iByte) = (~byteMask & cachedBits) | (byteMask & (value >> bitPosition));
+
+            auto bitCount = end - begin;
+            bitPosition += bitCount;
+        }
+    };
+
+    if (valueDesc.WordOrder == EWordOrder::BigEndian) {
+        for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), readMemoryBlock);
+    } else {
+        for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), readMemoryBlock);
+    }
 }
 
 void TSerialDevice::EndPollCycle() {}
@@ -253,10 +334,27 @@ bool TSerialDevice::GetIsDisconnected() const
 	return IsDisconnected;
 }
 
-uint8_t * TSerialDevice::AllocateCacheMemory(uint16_t size)
+void TSerialDevice::InitializeMemoryBlocksCache()
 {
-    MemoryCache.resize(MemoryCache.size() + size);
-    return &MemoryCache[MemoryCache.size() - size];
+    assert(Cache.capacity() == 0);
+
+    auto size = std::accumulate(MemoryBlocks.begin(), MemoryBlocks.end(), size_t(0), [](size_t size, const PMemoryBlock & mb){
+        if (mb->NeedsCaching()) {
+            size += mb->Size;
+        }
+    });
+
+    Cache.reserve(size);
+
+    for (const auto mb: MemoryBlocks) {
+        if (mb->NeedsCaching()) {
+            Cache.resize(Cache.size() + mb->Size);
+            mb->AssignCache(&Cache[Cache.size() - mb->Size]);
+        }
+    }
+
+    assert(Cache.capacity() == size);
+    assert(Cache.size() == size);
 }
 
 void TSerialDevice::InitSetupItems()

@@ -1,4 +1,4 @@
-#include "protocol_register.h"
+#include "memory_block.h"
 #include "serial_device.h"
 #include "virtual_register.h"
 
@@ -233,10 +233,6 @@ void TMemoryBlock::AssociateWith(const PVirtualRegister & reg)
     if (!InitExternalLinkage(reg)) {
         ExternalLinkage->LinkWith(reg);
     }
-
-    if (ExternalLinkage->NeedsCaching() && !Cache) {
-        Cache = GetDevice()->AllocateCacheMemory(Size);
-    }
 }
 
 bool TMemoryBlock::IsAssociatedWith(const PVirtualRegister & reg) const
@@ -270,8 +266,29 @@ TPSet<PVirtualRegister> TMemoryBlock::GetVirtualRegsiters() const
     return ExternalLinkage->GetVirtualRegsiters();
 }
 
+bool TMemoryBlock::NeedsCaching() const
+{
+    assert(ExternalLinkage);
+
+    return ExternalLinkage->NeedsCaching();
+}
+
+void TMemoryBlock::AssignCache(uint8_t * cache)
+{
+    assert(NeedsCaching());
+    assert(!Cache);
+
+    Cache = cache;
+
+    if (Global::Debug) {
+        cerr << "Adding to cache " << Describe() << endl;
+    }
+}
+
 void TMemoryBlock::CacheIfNeeded(const uint8_t * data)
 {
+    assert(NeedsCaching() == bool(Cache));
+
     if (Cache) {
         memcpy(Cache, data, Size);
     }
@@ -290,5 +307,5 @@ uint8_t TMemoryBlock::GetCachedByte(uint16_t index) const
 
 std::string TMemoryBlock::Describe() const
 {
-    return GetTypeName() + " register " + to_string(Address) + " of device " + GetDevice()->ToString();
+    return GetTypeName() + " memory block " + to_string(Address) + " of device " + GetDevice()->ToString();
 }

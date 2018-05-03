@@ -33,7 +33,6 @@ public:
 protected:
     bool ConnectionSetup();
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
-    const TIRDeviceMemoryView & CreateMemoryView(const std::vector<uint8_t> & memory, const PMemoryBlock & memoryBlock) override;
 
 private:
     struct TValueArray {
@@ -41,6 +40,9 @@ private:
     };
     std::vector<uint8_t> ReadValueArray(const PMemoryBlock & mb);
     std::vector<uint8_t> ReadParam(const PMemoryBlock & mb);
+
+    uint64_t ReadValue(const TIRDeviceMemoryViewR &, const TIRDeviceValueDesc &) const override;
+    void WriteValue(const TIRDeviceMemoryViewRW &, const TIRDeviceValueDesc &, uint64_t) const override;
 
     std::unordered_map<int, TValueArray> CachedValues;
 };

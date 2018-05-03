@@ -1,7 +1,7 @@
 #include "fake_serial_device.h"
 #include "fake_serial_port.h"
 #include "ir_device_query.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 #include "virtual_register.h"
 
 using namespace std;

@@ -2,7 +2,7 @@
 #include "fake_serial_port.h"
 #include "mercury200_expectations.h"
 #include "mercury200_device.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 
 
 class TMercury200Test: public TSerialDeviceTest, public TMercury200Expectations

@@ -103,7 +103,13 @@ public:
     virtual void OnCycleEnd(bool ok);
     bool GetIsDisconnected() const;
 
-    uint8_t * AllocateCacheMemory(uint16_t size);
+    /**
+     * Override these methods if device memory has its own format TODO: make more clear annotation
+     */
+    virtual uint64_t ReadValue(const TIRDeviceMemoryViewR &, const TIRDeviceValueDesc &) const;
+    virtual void WriteValue(const TIRDeviceMemoryViewRW &, const TIRDeviceValueDesc &, uint64_t) const;
+
+    void InitializeMemoryBlocksCache();
 
     static TPSetRange<PMemoryBlock> StaticCreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last);
 
@@ -119,13 +125,8 @@ protected:
     /**
      * Implement these methods if protocol supports only single register read / write
      */
-    virtual uint64_t ReadMemoryBlock(const PMemoryBlock & mb);
-    virtual void WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value);
-
-    /**
-     * Override this method if device memory has its own format TODO: make more clear annotation
-     */
-    virtual const TIRDeviceMemoryView & CreateMemoryView(const std::vector<uint8_t> & memory, const PMemoryBlock & memoryBlock);
+    virtual std::vector<uint8_t> ReadMemoryBlock(const PMemoryBlock & mb);
+    virtual void WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> & data);
 
 private:
     std::chrono::milliseconds Delay;
@@ -133,8 +134,8 @@ private:
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
     std::vector<PDeviceSetupItem> SetupItems;
-    TPSet<PMemoryBlock> Registers;
-    std::vector<uint8_t> MemoryCache;
+    TPSet<PMemoryBlock> MemoryBlocks;
+    std::vector<uint8_t> Cache;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
     int RemainingFailCycles;

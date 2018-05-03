@@ -1,6 +1,6 @@
 #include "virtual_register.h"
-#include "protocol_register.h"
-#include "protocol_register_factory.h"
+#include "memory_block.h"
+#include "memory_block_factory.h"
 #include "serial_device.h"
 #include "types.h"
 #include "bcd_utils.h"
@@ -240,8 +240,8 @@ void TVirtualRegister::Initialize()
         const auto & protocolRegister = protocolRegisterBindInfo.first;
         const auto & bindInfo = protocolRegisterBindInfo.second;
 
-        assert(Type == (int)protocolRegister->Type);
-        protocolRegister->AssociateWith(self, bindInfo);
+        assert(Type == protocolRegister->Type.Index);
+        protocolRegister->AssociateWith(self);
     }
 
     if (!ReadOnly) {
@@ -265,7 +265,7 @@ uint32_t TVirtualRegister::GetBitEnd() const
 {
     assert(GetFormatBitWidth() > BitOffset);
 
-    return (uint32_t(Address) * MemoryBlocks.begin()->first->Width * 8) + GetFormatBitWidth() - BitOffset;
+    return (uint32_t(Address) * MemoryBlocks.begin()->first->Size * 8) + GetFormatBitWidth() - BitOffset;
 }
 
 const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
@@ -278,26 +278,11 @@ void TVirtualRegister::WriteValueToQuery()
     MapValueTo(WriteQuery, MemoryBlocks, ValueToWrite);
 }
 
-uint64_t TVirtualRegister::ComposeValue() const
-{
-    assert(ValueIsRead);
-
-    GetDevice()->CreateMemoryView()
-
-    return MapValueFrom(MemoryBlocks);
-}
-
-void TVirtualRegister::AcceptDeviceValue(bool ok)
+void TVirtualRegister::AcceptDeviceValue(uint64_t new_value)
 {
     if (!NeedToPoll()) {
         return;
     }
-
-    if (!ok) {
-        return UpdateReadError(true);
-    }
-
-    auto new_value = ComposeValue();
 
     bool firstPoll = !ValueWasAccepted;
     ValueWasAccepted = true;
@@ -381,9 +366,9 @@ TPSet<PMemoryBlock> TVirtualRegister::GetMemoryBlocks() const
     return GetKeysAsSet(MemoryBlocks);
 }
 
-const TPMap<PMemoryBlock, TMemoryBlockBindInfo> & TVirtualRegister::GetBoundMemoryBlocks() const
+TIRDeviceValueDesc TVirtualRegister::GetValueDesc() const
 {
-    return MemoryBlocks;
+    return { MemoryBlocks, WordOrder };
 }
 
 EErrorState TVirtualRegister::GetErrorState() const
@@ -588,7 +573,9 @@ void TVirtualRegister::NotifyRead(bool ok)
 
     ValueIsRead = ok;
 
-    AcceptDeviceValue(ok);
+    if (!ok) {
+        UpdateReadError(true);
+    }
 }
 
 void TVirtualRegister::NotifyWrite(bool ok)

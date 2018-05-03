@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ir_device_query.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 
 #include <cstring>
 

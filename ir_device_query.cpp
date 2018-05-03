@@ -1,7 +1,7 @@
 #include "ir_device_query.h"
 #include "ir_device_query_factory.h"
 #include "ir_device_memory_view.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 #include "virtual_register.h"
 #include "serial_device.h"
 
@@ -187,29 +187,24 @@ string TIRDeviceQuery::DescribeOperation() const
     }
 }
 
-void TIRDeviceQuery::FinalizeReadImpl(const TIRDeviceMemoryView & memoryView) const
+void TIRDeviceQuery::FinalizeReadImpl(const uint8_t * mem, size_t size) const
 {
     auto memoryBlockSize = (*MemoryBlockRange.begin())->Size;    // it is guaranteed that all blocks in query have same size and type
 
     assert(Operation == EQueryOperation::Read);
     assert(GetStatus() == EQueryStatus::NotExecuted);
+    assert(GetCount() * memoryBlockSize == size);
 
-    {
-        auto expectedSize = GetCount() * memoryBlockSize;
-
-        if (expectedSize != memoryView.Size) {
-            throw TSerialDeviceTransientErrorException("FinalizeRead: unexpected size: " + to_string(memoryView.Size) + " instead of " + to_string(expectedSize));
-        }
-    }
+    TIRDeviceMemoryViewR memoryView{ mem, size, GetType(), GetStart(), memoryBlockSize };
 
     for (const auto & mb: MemoryBlockRange) {
         mb->CacheIfNeeded(memoryView.GetMemoryBlockData(mb));
     }
 
-    for (const auto & reg: VirtualRegisters) {
-        auto value = memoryView.Get({ reg->GetBoundMemoryBlocks(), reg->WordOrder });
+    auto device = GetDevice();
 
-        // TODO: accept value by register
+    for (const auto & reg: VirtualRegisters) {
+        reg->AcceptDeviceValue(device->ReadValue(memoryView, reg->GetValueDesc()));
     }
 
     SetStatus(EQueryStatus::Ok);

@@ -1,5 +1,5 @@
 #include "modbus_common.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 #include "serial_device.h"
 #include "ir_device_query.h"
 #include "crc16.h"

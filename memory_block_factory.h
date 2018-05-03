@@ -2,7 +2,7 @@
 
 #include "utils.h"
 #include "declarations.h"
-#include "protocol_register_bind_info.h"
+#include "memory_block_bind_info.h"
 
 class TMemoryBlockFactory
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "protocol_register_bind_info.h"
+#include "memory_block_bind_info.h"
 #include "abstract_virtual_register.h"
 #include "register_config.h"
 #include "utils.h"
@@ -22,7 +22,7 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
 
     PWVirtualRegisterSet                        VirtualRegisterSet;
     PWSerialDevice                              Device;
-    TPMap<PMemoryBlock, TMemoryBlockBindInfo> MemoryBlocks;
+    TBoundMemoryBlocks                          MemoryBlocks;
     PBinarySemaphore                            FlushNeeded;
     std::atomic<uint64_t>                       ValueToWrite;
     uint64_t                                    CurrentValue;
@@ -57,7 +57,7 @@ public:
     void SetFlushSignal(PBinarySemaphore flushNeeded);
     PSerialDevice GetDevice() const;
     TPSet<PMemoryBlock> GetMemoryBlocks() const;
-    const TPMap<PMemoryBlock, TMemoryBlockBindInfo> & GetBoundMemoryBlocks() const;
+    TIRDeviceValueDesc GetValueDesc() const;
     EErrorState GetErrorState() const override;
     std::string Describe() const;
     bool NeedToPoll() const;
@@ -97,9 +97,7 @@ private:
     TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device);
     void Initialize();
 
-    uint64_t ComposeValue() const;
-
-    void AcceptDeviceValue(bool ok);
+    void AcceptDeviceValue(uint64_t);
 
     uint32_t GetBitPosition() const;
     uint32_t GetBitEnd() const;

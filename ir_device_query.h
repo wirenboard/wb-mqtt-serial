@@ -77,27 +77,46 @@ public:
     /**
      * Accept values read from device as current and set status to Ok
      */
-    void FinalizeRead(const TIRDeviceMemoryView & memoryView) const
+    template <typename T>
+    void FinalizeRead(const void * values) const
     {
-        FinalizeReadImpl(memoryView);
+        CheckTypeMany<T>();
+
+        FinalizeReadImpl(static_cast<uint8_t *>(values), sizeof(T) * GetCount());
+    }
+
+    /**
+     * Accept values read from device as current and set status to Ok
+     */
+    template <typename T>
+    void FinalizeRead(const std::vector<T> & values) const
+    {
+        CheckTypeMany<T>();
+
+        FinalizeReadImpl(values.data(), sizeof(T) * values.size());
     }
 
     /**
      * Accept value read from device as current and set status to Ok (for single read to avoid unnecesary vector creation)
      */
-    // template <typename T>
-    // void FinalizeRead(T value) const
-    // {
-    //     CheckTypeSingle<T>();
+    template <typename T>
+    void FinalizeRead(T value) const
+    {
+        CheckTypeSingle<T>();
 
-    //     FinalizeReadImpl(&value, sizeof(T), 1);
-    // }
+        FinalizeReadImpl(&value, sizeof(T));
+    }
+
+    void FinalizeRead(const uint8_t * mem, size_t size) const
+    {
+        FinalizeReadImpl(mem, size);
+    }
 
     std::string Describe() const;
     std::string DescribeOperation() const;
 
 private:
-    void FinalizeReadImpl(const TIRDeviceMemoryView & memoryView) const;
+    void FinalizeReadImpl(const uint8_t * mem, size_t size) const;
 };
 
 struct TIRDeviceValueQuery: TIRDeviceQuery

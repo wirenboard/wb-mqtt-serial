@@ -1,7 +1,7 @@
 #include "ir_device_query_factory.h"
 #include "ir_device_value_query_impl.h"
 #include "serial_device.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 #include "virtual_register.h"
 
 #include <iostream>

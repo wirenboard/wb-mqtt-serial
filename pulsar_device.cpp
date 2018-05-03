@@ -1,7 +1,7 @@
 /* vim: set ts=4 sw=4: */
 
 #include "pulsar_device.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 
 #include <cstring>
 #include <cstdlib>
@@ -75,8 +75,8 @@ namespace {
 }
 
 REGISTER_BASIC_INT_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
-    { TPulsarDevice::REG_DEFAULT, "default", "value", TMemoryBlockType::Variadic, Double, true },
-    { TPulsarDevice::REG_SYSTIME, "systime", "value", 8, U64, true }
+    { TPulsarDevice::REG_DEFAULT, "default", "value", { TMemoryBlockType::Variadic }, true },
+    { TPulsarDevice::REG_SYSTIME, "systime", "value", { U64 }, true }
 }));
 
 TPulsarDevice::TPulsarDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
@@ -263,16 +263,14 @@ uint64_t TPulsarDevice::ReadDataRegister(const PMemoryBlock & mb)
     // form register mask from address
     uint32_t mask = 1 << mb->Address; // TODO: register range or something like this
 
-    auto byteCount = mb->GetUsedByteCount();
-
     // send data request and receive response
     WriteDataRequest(SlaveId, mask, RequestID);
-    ReadResponse(SlaveId, payload, byteCount, RequestID);
+    ReadResponse(SlaveId, payload, mb->Size, RequestID);
 
     ++RequestID;
 
     // decode little-endian double64_t value
-    return ReadHex(payload, byteCount, false);
+    return ReadHex(payload, mb->Size, false);
 }
 
 uint64_t TPulsarDevice::ReadSysTimeRegister(const PMemoryBlock & mb)

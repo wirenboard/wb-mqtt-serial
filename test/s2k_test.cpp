@@ -3,7 +3,7 @@
 #include "fake_serial_port.h"
 #include "s2k_device.h"
 #include "s2k_expectations.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 
 class TS2KDeviceTest: public TSerialDeviceTest, public TS2KDeviceExpectations {
 protected:

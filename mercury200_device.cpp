@@ -1,5 +1,5 @@
 #include "mercury200_device.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 #include "bcd_utils.h"
 #include "crc16.h"
 

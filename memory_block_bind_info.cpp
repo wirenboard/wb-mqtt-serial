@@ -1,4 +1,4 @@
-#include "protocol_register_bind_info.h"
+#include "memory_block_bind_info.h"
 
 #include <sstream>
 #include <cassert>

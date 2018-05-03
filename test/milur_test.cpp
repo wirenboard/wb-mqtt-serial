@@ -2,7 +2,7 @@
 #include "fake_serial_port.h"
 #include "milur_expectations.h"
 #include "milur_device.h"
-#include "protocol_register.h"
+#include "memory_block.h"
 
 
 class TMilurTest: public TSerialDeviceTest, public TMilurExpectations
