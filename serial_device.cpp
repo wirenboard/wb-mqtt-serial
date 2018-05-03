@@ -13,7 +13,7 @@
 TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
     : TDeviceSetupItemConfig(*config)
 {
-    const auto & protocolRegisters = TProtocolRegisterFactory::GenerateProtocolRegisters(config->RegisterConfig, device);
+    const auto & protocolRegisters = TMemoryBlockFactory::GenerateMemoryBlocks(config->RegisterConfig, device);
 
     auto queries = TIRDeviceQueryFactory::GenerateQueries({ GetKeysAsSet(protocolRegisters) }, EQueryOperation::Write);
     assert(queries.size() == 1);
@@ -124,9 +124,9 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
     assert(query->IsExecuted());
 }
 
-PProtocolRegister TSerialDevice::GetCreateRegister(uint32_t address, uint32_t type)
+PMemoryBlock TSerialDevice::GetCreateRegister(uint32_t address, uint32_t type)
 {
-    PProtocolRegister protocolRegister(new TProtocolRegister(address, type, shared_from_this()));
+    PMemoryBlock protocolRegister(new TMemoryBlock(address, type, shared_from_this()));
 
     const auto & insRes = Registers.insert(protocolRegister);
 
@@ -141,7 +141,7 @@ PProtocolRegister TSerialDevice::GetCreateRegister(uint32_t address, uint32_t ty
     return protocolRegister;
 }
 
-TPSetView<PProtocolRegister> TSerialDevice::CreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last) const
+TPSetRange<PMemoryBlock> TSerialDevice::CreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last) const
 {
     assert(!Registers.empty());
 
@@ -154,13 +154,13 @@ TPSetView<PProtocolRegister> TSerialDevice::CreateRegisterSetView(const PProtoco
     return {itFirst, itLast};
 }
 
-TPSetView<PProtocolRegister> TSerialDevice::StaticCreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last)
+TPSetRange<PMemoryBlock> TSerialDevice::StaticCreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last)
 {
     auto device = first->GetDevice();
 
     assert(device);
 
-    return device->CreateRegisterSetView(first, last);
+    return device->CreateMemoryBlockRange(first, last);
 }
 
 void TSerialDevice::Prepare()
@@ -179,38 +179,38 @@ void TSerialDevice::Read(const TIRDeviceQuery & query)
 {
     assert(query.GetCount() == 1);
 
-    const auto & reg = query.RegView.GetFirst();
+    const auto & mb = query.MemoryBlockRange.GetFirst();
 
     SleepGuardInterval();
 
-    query.FinalizeRead(ReadProtocolRegister(reg));
+    query.FinalizeRead(ReadMemoryBlock(mb));
 }
 
 void TSerialDevice::Write(const TIRDeviceValueQuery & query)
 {
     assert(query.GetCount() == 1);
 
-    const auto & reg = query.RegView.GetFirst();
+    const auto & mb = query.MemoryBlockRange.GetFirst();
     uint64_t value;
     query.GetValues<uint64_t>(&value);
 
     SleepGuardInterval();
 
-    WriteProtocolRegister(reg, value);
+    WriteMemoryBlock(mb, value);
     query.FinalizeWrite();
 }
 
-uint64_t TSerialDevice::ReadProtocolRegister(const PProtocolRegister & reg)
+uint64_t TSerialDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 {
-    throw TSerialDeviceException("ReadProtocolRegister is not implemented");
+    throw TSerialDeviceException("ReadMemoryBlock is not implemented");
 }
 
-void TSerialDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
+void TSerialDevice::WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value)
 {
-    throw TSerialDeviceException("WriteProtocolRegister is not implemented");
+    throw TSerialDeviceException("WriteMemoryBlock is not implemented");
 }
 
-const TIRDeviceMemoryView & TSerialDevice::CreateMemoryView(const std::vector<uint8_t> & memory, const PProtocolRegister & memoryBlock)
+const TIRDeviceMemoryView & TSerialDevice::CreateMemoryView(const std::vector<uint8_t> & memory, const PMemoryBlock & memoryBlock)
 {
     return TIRDeviceMemoryView{ memory.data(), memory.size(), memoryBlock->Type, memoryBlock->Address, memoryBlock->Size };
 }

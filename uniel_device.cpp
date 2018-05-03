@@ -83,30 +83,30 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-uint64_t TUnielDevice::ReadProtocolRegister(const PProtocolRegister & reg)
+uint64_t TUnielDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 {
-    WriteCommand(READ_CMD, SlaveId, 0, uint8_t(reg->Address), 0);
+    WriteCommand(READ_CMD, SlaveId, 0, uint8_t(mb->Address), 0);
     uint8_t response[3];
     ReadResponse(READ_CMD, response);
-    if (response[1] != uint8_t(reg->Address))
+    if (response[1] != uint8_t(mb->Address))
         throw TSerialDeviceTransientErrorException("register index mismatch");
 
-    if (reg->Type == REG_RELAY)
+    if (mb->Type == REG_RELAY)
         return response[0] ? 1 : 0;
     return response[0];
 }
 
-void TUnielDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
+void TUnielDevice::WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value)
 {
     uint8_t cmd, addr;
-    if (reg->Type == REG_BRIGHTNESS) {
+    if (mb->Type == REG_BRIGHTNESS) {
         cmd = SET_BRIGHTNESS_CMD;
-        addr = uint8_t(reg->Address >> 8);
+        addr = uint8_t(mb->Address >> 8);
     } else {
         cmd = WRITE_CMD;
-        addr = uint8_t(reg->Address);
+        addr = uint8_t(mb->Address);
     }
-    if (reg->Type == REG_RELAY && value != 0)
+    if (mb->Type == REG_RELAY && value != 0)
         value = 255;
     WriteCommand(cmd, SlaveId, value, addr, 0);
     uint8_t response[3];

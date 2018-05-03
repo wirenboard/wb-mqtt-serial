@@ -8,15 +8,15 @@
 using namespace std;
 
 
-bool TProtocolRegister::InitExternalLinkage(const PSerialDevice & device)
+bool TMemoryBlock::InitExternalLinkage(const PSerialDevice & device)
 {
-    struct TSerialDeviceLinkage: TProtocolRegister::IExternalLinkage
+    struct TSerialDeviceLinkage: TMemoryBlock::IExternalLinkage
     {
         PWSerialDevice      Device;
-        TProtocolRegister & Register;
+        TMemoryBlock & Register;
 
 
-        TSerialDeviceLinkage(const PSerialDevice & device, TProtocolRegister & self)
+        TSerialDeviceLinkage(const PSerialDevice & device, TMemoryBlock & self)
             : Device(device)
             , Register(self)
         {}
@@ -59,9 +59,9 @@ bool TProtocolRegister::InitExternalLinkage(const PSerialDevice & device)
     return true;
 }
 
-bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg)
+bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
 {
-    struct TVirtualRegisterLinkage: TProtocolRegister::IExternalLinkage
+    struct TVirtualRegisterLinkage: TMemoryBlock::IExternalLinkage
     {
         TPWSet<PWVirtualRegister> VirtualRegisters;
 
@@ -180,7 +180,7 @@ bool TProtocolRegister::InitExternalLinkage(const PVirtualRegister & reg)
     return true;
 }
 
-TProtocolRegister::TProtocolRegister(uint32_t address, uint16_t size, const TMemoryBlockType & type)
+TMemoryBlock::TMemoryBlock(uint32_t address, uint16_t size, const TMemoryBlockType & type)
     : Cache(nullptr)
     , Address(address)
     , Type(type)
@@ -189,14 +189,14 @@ TProtocolRegister::TProtocolRegister(uint32_t address, uint16_t size, const TMem
     assert(Size < 8192 && "memory block size must be less than 8192 bytes");
 }
 
-TProtocolRegister::TProtocolRegister(uint32_t address, const TMemoryBlockType & type)
-    : TProtocolRegister(address, type.Size, type)
+TMemoryBlock::TMemoryBlock(uint32_t address, const TMemoryBlockType & type)
+    : TMemoryBlock(address, type.Size, type)
 {
     assert(!type.IsVariadicSize() && "memory block with variadic size must be created with size specified");
 }
 
-TProtocolRegister::TProtocolRegister(uint32_t address, uint16_t size, uint32_t typeIndex, const PSerialDevice & device)
-    : TProtocolRegister(
+TMemoryBlock::TMemoryBlock(uint32_t address, uint16_t size, uint32_t typeIndex, const PSerialDevice & device)
+    : TMemoryBlock(
         address,
         size,
         device->Protocol()->GetRegType(typeIndex)
@@ -205,8 +205,8 @@ TProtocolRegister::TProtocolRegister(uint32_t address, uint16_t size, uint32_t t
     InitExternalLinkage(device);
 }
 
-TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t typeIndex, const PSerialDevice & device)
-    : TProtocolRegister(
+TMemoryBlock::TMemoryBlock(uint32_t address, uint32_t typeIndex, const PSerialDevice & device)
+    : TMemoryBlock(
         address,
         device->Protocol()->GetRegType(typeIndex)
     )
@@ -214,12 +214,12 @@ TProtocolRegister::TProtocolRegister(uint32_t address, uint32_t typeIndex, const
     InitExternalLinkage(device);
 }
 
-bool TProtocolRegister::operator<(const TProtocolRegister & rhs) const
+bool TMemoryBlock::operator<(const TMemoryBlock & rhs) const
 {
     return Type.Index < rhs.Type.Index || (Type.Index == rhs.Type.Index && Address < rhs.Address);
 }
 
-bool TProtocolRegister::operator==(const TProtocolRegister & rhs) const
+bool TMemoryBlock::operator==(const TMemoryBlock & rhs) const
 {
     if (this == &rhs) {
         return true;
@@ -228,7 +228,7 @@ bool TProtocolRegister::operator==(const TProtocolRegister & rhs) const
     return Type.Index == rhs.Type.Index && Address == rhs.Address && GetDevice() == rhs.GetDevice();
 }
 
-void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
+void TMemoryBlock::AssociateWith(const PVirtualRegister & reg)
 {
     if (!InitExternalLinkage(reg)) {
         ExternalLinkage->LinkWith(reg);
@@ -239,45 +239,45 @@ void TProtocolRegister::AssociateWith(const PVirtualRegister & reg)
     }
 }
 
-bool TProtocolRegister::IsAssociatedWith(const PVirtualRegister & reg) const
+bool TMemoryBlock::IsAssociatedWith(const PVirtualRegister & reg) const
 {
     assert(ExternalLinkage);
 
     return ExternalLinkage->IsLinkedWith(reg);
 }
 
-bool TProtocolRegister::IsReady() const
+bool TMemoryBlock::IsReady() const
 {
     return bool(ExternalLinkage);
 }
 
-const string & TProtocolRegister::GetTypeName() const
+const string & TMemoryBlock::GetTypeName() const
 {
     return Type.Name;
 }
 
-PSerialDevice TProtocolRegister::GetDevice() const
+PSerialDevice TMemoryBlock::GetDevice() const
 {
     assert(ExternalLinkage);
 
     return ExternalLinkage->GetDevice();
 }
 
-TPSet<PVirtualRegister> TProtocolRegister::GetVirtualRegsiters() const
+TPSet<PVirtualRegister> TMemoryBlock::GetVirtualRegsiters() const
 {
     assert(ExternalLinkage);
 
     return ExternalLinkage->GetVirtualRegsiters();
 }
 
-void TProtocolRegister::CacheIfNeeded(const uint8_t * data)
+void TMemoryBlock::CacheIfNeeded(const uint8_t * data)
 {
     if (Cache) {
         memcpy(Cache, data, Size);
     }
 }
 
-uint8_t TProtocolRegister::GetCachedByte(uint16_t index) const
+uint8_t TMemoryBlock::GetCachedByte(uint16_t index) const
 {
     assert(index < Size);
 
@@ -288,7 +288,7 @@ uint8_t TProtocolRegister::GetCachedByte(uint16_t index) const
     return 0x00;
 }
 
-std::string TProtocolRegister::Describe() const
+std::string TMemoryBlock::Describe() const
 {
     return GetTypeName() + " register " + to_string(Address) + " of device " + GetDevice()->ToString();
 }

@@ -16,14 +16,14 @@ protected:
 
     PMercury200Device Mercury200Dev;
 
-    PProtocolRegister Mercury200RET1Reg;
-    PProtocolRegister Mercury200RET2Reg;
-    PProtocolRegister Mercury200RET3Reg;
-    PProtocolRegister Mercury200RET4Reg;
-    PProtocolRegister Mercury200UReg;
-    PProtocolRegister Mercury200IReg;
-    PProtocolRegister Mercury200PReg;
-    PProtocolRegister Mercury200BatReg;
+    PMemoryBlock Mercury200RET1Reg;
+    PMemoryBlock Mercury200RET2Reg;
+    PMemoryBlock Mercury200RET3Reg;
+    PMemoryBlock Mercury200RET4Reg;
+    PMemoryBlock Mercury200UReg;
+    PMemoryBlock Mercury200IReg;
+    PMemoryBlock Mercury200PReg;
+    PMemoryBlock Mercury200BatReg;
 };
 
 PDeviceConfig TMercury200Test::GetDeviceConfig()
@@ -52,19 +52,19 @@ void TMercury200Test::SetUp()
 void TMercury200Test::VerifyEnergyQuery()
 {
     EnqueueMercury200EnergyResponse();
-    ASSERT_EQ(0x62142, Mercury200Dev->ReadProtocolRegister(Mercury200RET1Reg));
-    ASSERT_EQ(0x20834, Mercury200Dev->ReadProtocolRegister(Mercury200RET2Reg));
-    ASSERT_EQ(0x11111, Mercury200Dev->ReadProtocolRegister(Mercury200RET3Reg));
-    ASSERT_EQ(0x22222, Mercury200Dev->ReadProtocolRegister(Mercury200RET4Reg));
+    ASSERT_EQ(0x62142, Mercury200Dev->ReadMemoryBlock(Mercury200RET1Reg));
+    ASSERT_EQ(0x20834, Mercury200Dev->ReadMemoryBlock(Mercury200RET2Reg));
+    ASSERT_EQ(0x11111, Mercury200Dev->ReadMemoryBlock(Mercury200RET3Reg));
+    ASSERT_EQ(0x22222, Mercury200Dev->ReadMemoryBlock(Mercury200RET4Reg));
     Mercury200Dev->EndPollCycle();
 }
 
 void TMercury200Test::VerifyParamQuery()
 {
     EnqueueMercury200ParamResponse();
-    ASSERT_EQ(0x1234, Mercury200Dev->ReadProtocolRegister(Mercury200UReg));
-    ASSERT_EQ(0x5678, Mercury200Dev->ReadProtocolRegister(Mercury200IReg));
-    ASSERT_EQ(0x765432, Mercury200Dev->ReadProtocolRegister(Mercury200PReg));
+    ASSERT_EQ(0x1234, Mercury200Dev->ReadMemoryBlock(Mercury200UReg));
+    ASSERT_EQ(0x5678, Mercury200Dev->ReadMemoryBlock(Mercury200IReg));
+    ASSERT_EQ(0x765432, Mercury200Dev->ReadMemoryBlock(Mercury200PReg));
     Mercury200Dev->EndPollCycle();
 }
 
@@ -94,7 +94,7 @@ TEST_F(TMercury200Test, ParamsQuery)
 TEST_F(TMercury200Test, BatteryVoltageQuery)
 {
     EnqueueMercury200BatteryVoltageResponse();
-    ASSERT_EQ(0x0391, Mercury200Dev->ReadProtocolRegister(Mercury200BatReg));
+    ASSERT_EQ(0x0391, Mercury200Dev->ReadMemoryBlock(Mercury200BatReg));
     Mercury200Dev->EndPollCycle();
     SerialPort->Close();
 }

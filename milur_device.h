@@ -23,7 +23,7 @@ public:
     };
 
     TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
-    uint64_t ReadProtocolRegister(const PProtocolRegister & reg) override;
+    uint64_t ReadMemoryBlock(const PMemoryBlock & mb) override;
     void Prepare();
 
 

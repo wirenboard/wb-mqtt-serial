@@ -15,17 +15,17 @@ struct TIRDeviceQuery
 {
     friend class TIRDeviceQueryFactory;
 
-    const TPSetView<PProtocolRegister> RegView;
-    const TPSet<PVirtualRegister>      VirtualRegisters;    // registers that will be fully read or written after execution of query
-    const bool                         HasHoles;
-    const EQueryOperation              Operation;
+    const TPSetRange<PMemoryBlock>  MemoryBlockRange;
+    const TPSet<PVirtualRegister>   VirtualRegisters;    // registers that will be fully read or written after execution of query
+    const bool                      HasHoles;
+    const EQueryOperation           Operation;
 
 private:
     mutable EQueryStatus Status;
     bool                 AbleToSplit;
 
 protected:
-    explicit TIRDeviceQuery(const TPSet<PProtocolRegister> &, EQueryOperation = EQueryOperation::Read);
+    explicit TIRDeviceQuery(const TPSet<PMemoryBlock> &, EQueryOperation = EQueryOperation::Read);
     void SetStatus(EQueryStatus) const;
 
     template <typename T>
@@ -102,8 +102,8 @@ private:
 
 struct TIRDeviceValueQuery: TIRDeviceQuery
 {
-    virtual void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const = 0;
-    virtual void SetValue(const PProtocolRegister & reg, uint64_t value) const = 0;
+    virtual void IterRegisterValues(std::function<void(TMemoryBlock &, uint64_t)> && accessor) const = 0;
+    virtual void SetValue(const PMemoryBlock & mb, uint64_t value) const = 0;
 
     template <typename T>
     void GetValues(void * values) const
@@ -132,7 +132,7 @@ struct TIRDeviceValueQuery: TIRDeviceQuery
     void FinalizeWrite() const;
 
 protected:
-    TIRDeviceValueQuery(const TPSet<PProtocolRegister> & registerSet, EQueryOperation operation)
+    TIRDeviceValueQuery(const TPSet<PMemoryBlock> & registerSet, EQueryOperation operation)
         : TIRDeviceQuery(registerSet, operation)
     {}
 
@@ -145,7 +145,7 @@ struct TIRDeviceQuerySet
 
     TQueries Queries;
 
-    TIRDeviceQuerySet(std::list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation);
+    TIRDeviceQuerySet(std::list<TPSet<PMemoryBlock>> && registerSets, EQueryOperation);
 
     std::string Describe() const;
     PSerialDevice GetDevice() const;

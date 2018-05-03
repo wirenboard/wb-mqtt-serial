@@ -46,12 +46,12 @@ TEST_F(TPulsarDeviceTest, PulsarHeatMeterFloatQuery)
                 0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x5a, 0xb3, 0xc5, 0x41, 0x00, 0x00, 0x18, 0xdb
             });
 
-    const auto & protocolRegisters = Heat_TempIn->GetProtocolRegisters();
+    const auto & protocolRegisters = Heat_TempIn->GetMemoryBlocks();
     ASSERT_EQ(1, protocolRegisters.size());
 
     const auto & protocolRegister = *protocolRegisters.begin();
 
-    ASSERT_EQ(0x41C5B35A, Dev->ReadProtocolRegister(protocolRegister));
+    ASSERT_EQ(0x41C5B35A, Dev->ReadMemoryBlock(protocolRegister));
 
     SerialPort->Close();
 }

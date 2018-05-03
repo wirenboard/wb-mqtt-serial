@@ -10,9 +10,9 @@ protected:
     void SetUp();
     PIVTMDevice Dev;
 
-    PProtocolRegister Dev1Temp;
-    PProtocolRegister Dev1Humidity;
-    PProtocolRegister Dev2Temp;
+    PMemoryBlock Dev1Temp;
+    PMemoryBlock Dev1Humidity;
+    PMemoryBlock Dev2Temp;
 };
 
 void TIVTMDeviceTest::SetUp()
@@ -51,7 +51,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    ASSERT_EQ(0x41D1D3CE, Dev->ReadProtocolRegister(Dev1Temp)); //big-endian
+    ASSERT_EQ(0x41D1D3CE, Dev->ReadMemoryBlock(Dev1Temp)); //big-endian
 
 	// >> 24 30 30 30 31 52 52 30 30 30 34 30 34 42 31 0d
 	// << 21 30 30 30 31 52 52 33 30 39 41 45 42 34 31 34 46 0D
@@ -71,7 +71,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0D                  // footer
         });
 
-    ASSERT_EQ(0x41EB9A30, Dev->ReadProtocolRegister(Dev1Humidity)); //big-endian
+    ASSERT_EQ(0x41EB9A30, Dev->ReadMemoryBlock(Dev1Humidity)); //big-endian
 
     Dev->EndPollCycle();
 
@@ -95,6 +95,6 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    ASSERT_EQ(0x41C7855E, Dev->ReadProtocolRegister(Dev2Temp)); //big-endian
+    ASSERT_EQ(0x41C7855E, Dev->ReadMemoryBlock(Dev2Temp)); //big-endian
     SerialPort->Close();
 }

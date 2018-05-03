@@ -255,15 +255,15 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, u
     memcpy(payload, response + 6, size);
 }
 
-uint64_t TPulsarDevice::ReadDataRegister(const PProtocolRegister & reg)
+uint64_t TPulsarDevice::ReadDataRegister(const PMemoryBlock & mb)
 {
     // raw payload data
     uint8_t payload[sizeof (uint64_t)];
 
     // form register mask from address
-    uint32_t mask = 1 << reg->Address; // TODO: register range or something like this
+    uint32_t mask = 1 << mb->Address; // TODO: register range or something like this
 
-    auto byteCount = reg->GetUsedByteCount();
+    auto byteCount = mb->GetUsedByteCount();
 
     // send data request and receive response
     WriteDataRequest(SlaveId, mask, RequestID);
@@ -275,7 +275,7 @@ uint64_t TPulsarDevice::ReadDataRegister(const PProtocolRegister & reg)
     return ReadHex(payload, byteCount, false);
 }
 
-uint64_t TPulsarDevice::ReadSysTimeRegister(const PProtocolRegister & reg)
+uint64_t TPulsarDevice::ReadSysTimeRegister(const PMemoryBlock & mb)
 {
     // raw payload data
     uint8_t payload[6];
@@ -290,21 +290,21 @@ uint64_t TPulsarDevice::ReadSysTimeRegister(const PProtocolRegister & reg)
     return ReadHex(payload, sizeof (payload), false);
 }
 
-uint64_t TPulsarDevice::ReadProtocolRegister(const PProtocolRegister & reg)
+uint64_t TPulsarDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 {
     Port()->SkipNoise();
 
-    switch (reg->Type) {
+    switch (mb->Type) {
     case REG_DEFAULT:
-        return ReadDataRegister(reg);
+        return ReadDataRegister(mb);
     case REG_SYSTIME: // TODO: think about return value
-        return ReadSysTimeRegister(reg);
+        return ReadSysTimeRegister(mb);
     default:
         throw TSerialDeviceException("Pulsar protocol: wrong register type");
     }
 }
 
-void TPulsarDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
+void TPulsarDevice::WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value)
 {
     throw TSerialDeviceException("Pulsar protocol: writing to registers is not supported");
 }

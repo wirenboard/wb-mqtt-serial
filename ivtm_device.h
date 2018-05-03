@@ -10,8 +10,8 @@
 class TIVTMDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TIVTMDevice>> {
 public:
     TIVTMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
-    uint64_t ReadProtocolRegister(const PProtocolRegister & reg) override;
-    void WriteProtocolRegister(const PProtocolRegister &, uint64_t) override;
+    uint64_t ReadMemoryBlock(const PMemoryBlock & mb) override;
+    void WriteMemoryBlock(const PMemoryBlock &, uint64_t) override;
 
 private:
     void WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len);

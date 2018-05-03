@@ -129,13 +129,13 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 }
 
 
-uint64_t TIVTMDevice::ReadProtocolRegister(const PProtocolRegister & reg)
+uint64_t TIVTMDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 {
     Port()->SkipNoise();
 
-    auto byteCount = reg->GetUsedByteCount();
+    auto byteCount = mb->GetUsedByteCount();
 
-    WriteCommand(SlaveId, reg->Address, byteCount);
+    WriteCommand(SlaveId, mb->Address, byteCount);
     uint8_t response[4];
     ReadResponse(SlaveId, response, byteCount);
 
@@ -145,7 +145,7 @@ uint64_t TIVTMDevice::ReadProtocolRegister(const PProtocolRegister & reg)
     return (p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0];
 }
 
-void TIVTMDevice::WriteProtocolRegister(const PProtocolRegister &, uint64_t)
+void TIVTMDevice::WriteMemoryBlock(const PMemoryBlock &, uint64_t)
 {
     throw TSerialDeviceException("IVTM protocol: writing register is not supported");
 }
@@ -159,13 +159,13 @@ int main(int, char**)
         int v = bus.ReadRegister(0x01, 0x0a);
         std::cout << "value of mod 0x01 reg 0x0a: " << v << std::endl;
         for (int i = 0; i < 8; ++i) {
-            bus.WriteProtocolRegister(0x01, 0x02 + i, 0x00); // manual control of the channel (low threshold = 0)
+            bus.WriteMemoryBlock(0x01, 0x02 + i, 0x00); // manual control of the channel (low threshold = 0)
             int address = 0x1a + i;
             std::cout << "value of relay " << i << ": " << (int)bus.ReadRegister(0x01, address) << std::endl;
-            bus.WriteProtocolRegister(0x01, address, 0xff);
+            bus.WriteMemoryBlock(0x01, address, 0xff);
             std::cout << "value of relay " << i << " (on): " << (int)bus.ReadRegister(0x01, address) << std::endl;
             sleep(1);
-            bus.WriteProtocolRegister(0x01, address, 0x00);
+            bus.WriteMemoryBlock(0x01, address, 0x00);
             std::cout << "value of relay " << i << " (off): " << (int)bus.ReadRegister(0x01, address) << std::endl;
         }
     } catch (const TIVTMDeviceException& e) {

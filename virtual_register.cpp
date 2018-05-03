@@ -234,9 +234,9 @@ void TVirtualRegister::Initialize()
 
     assert(device);
 
-    ProtocolRegisters = TProtocolRegisterFactory::GenerateProtocolRegisters(self, device);
+    MemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(self, device);
 
-    for (const auto protocolRegisterBindInfo: ProtocolRegisters) {
+    for (const auto protocolRegisterBindInfo: MemoryBlocks) {
         const auto & protocolRegister = protocolRegisterBindInfo.first;
         const auto & bindInfo = protocolRegisterBindInfo.second;
 
@@ -245,7 +245,7 @@ void TVirtualRegister::Initialize()
     }
 
     if (!ReadOnly) {
-        TIRDeviceQuerySet querySet({GetProtocolRegisters()}, EQueryOperation::Write);
+        TIRDeviceQuerySet querySet({GetMemoryBlocks()}, EQueryOperation::Write);
         assert(querySet.Queries.size() == 1);
 
         WriteQuery = dynamic_pointer_cast<TIRDeviceValueQuery>(*querySet.Queries.begin());
@@ -265,7 +265,7 @@ uint32_t TVirtualRegister::GetBitEnd() const
 {
     assert(GetFormatBitWidth() > BitOffset);
 
-    return (uint32_t(Address) * ProtocolRegisters.begin()->first->Width * 8) + GetFormatBitWidth() - BitOffset;
+    return (uint32_t(Address) * MemoryBlocks.begin()->first->Width * 8) + GetFormatBitWidth() - BitOffset;
 }
 
 const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
@@ -275,7 +275,7 @@ const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
 
 void TVirtualRegister::WriteValueToQuery()
 {
-    MapValueTo(WriteQuery, ProtocolRegisters, ValueToWrite);
+    MapValueTo(WriteQuery, MemoryBlocks, ValueToWrite);
 }
 
 uint64_t TVirtualRegister::ComposeValue() const
@@ -284,7 +284,7 @@ uint64_t TVirtualRegister::ComposeValue() const
 
     GetDevice()->CreateMemoryView()
 
-    return MapValueFrom(ProtocolRegisters);
+    return MapValueFrom(MemoryBlocks);
 }
 
 void TVirtualRegister::AcceptDeviceValue(bool ok)
@@ -356,7 +356,7 @@ bool TVirtualRegister::operator==(const TVirtualRegister & rhs) const noexcept
     }
 
     // NOTE: need to check registers and bind info for non-continious virtual registers
-    return true; // ProtocolRegisters == rhs.ProtocolRegisters;
+    return true; // MemoryBlocks == rhs.MemoryBlocks;
 }
 
 bool TVirtualRegister::operator<(const TVirtualRegister & rhs) const noexcept
@@ -376,14 +376,14 @@ PSerialDevice TVirtualRegister::GetDevice() const
     return Device.lock();
 }
 
-TPSet<PProtocolRegister> TVirtualRegister::GetProtocolRegisters() const
+TPSet<PMemoryBlock> TVirtualRegister::GetMemoryBlocks() const
 {
-    return GetKeysAsSet(ProtocolRegisters);
+    return GetKeysAsSet(MemoryBlocks);
 }
 
-const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & TVirtualRegister::GetBoundMemoryBlocks() const
+const TPMap<PMemoryBlock, TMemoryBlockBindInfo> & TVirtualRegister::GetBoundMemoryBlocks() const
 {
-    return ProtocolRegisters;
+    return MemoryBlocks;
 }
 
 EErrorState TVirtualRegister::GetErrorState() const
@@ -402,7 +402,7 @@ std::string TVirtualRegister::Describe() const
 
     ss << "[" << endl;
 
-    for (const auto & protocolRegisterBindInfo: ProtocolRegisters) {
+    for (const auto & protocolRegisterBindInfo: MemoryBlocks) {
         const auto & protocolRegister = protocolRegisterBindInfo.first;
         const auto & bindInfo = protocolRegisterBindInfo.second;
 
@@ -463,7 +463,7 @@ void TVirtualRegister::Flush()
 
         assert(WriteQuery);
 
-        MapValueTo(WriteQuery, ProtocolRegisters, ValueToWrite);
+        MapValueTo(WriteQuery, MemoryBlocks, ValueToWrite);
 
         WriteQuery->ResetStatus();
 

@@ -36,7 +36,7 @@ uint64_t TIRDeviceMemoryView::Get(const TIRDeviceValueDesc & valueDesc) const
 
     uint8_t bitPosition = 0;
 
-    auto readMemoryBlock = [&](const pair<const PProtocolRegister, TProtocolRegisterBindInfo> & boundMemoryBlock){
+    auto readMemoryBlock = [&](const pair<const PMemoryBlock, TMemoryBlockBindInfo> & boundMemoryBlock){
         const auto & memoryBlock = boundMemoryBlock.first;
         const auto & bindInfo = boundMemoryBlock.second;
 
@@ -58,7 +58,7 @@ uint64_t TIRDeviceMemoryView::Get(const TIRDeviceValueDesc & valueDesc) const
 
         // TODO: check for usefullness
         if (Global::Debug) {
-            cerr << "reg mask: " << bitset<64>(mask) << endl;
+            cerr << "mb mask: " << bitset<64>(mask) << endl;
             cerr << "reading " << bindInfo.Describe() << " bits of " << memoryBlock->Describe()
                  << " to [" << (int)bitPosition << ", " << int(bitPosition + bindInfo.BitCount() - 1) << "] bits of value" << endl;
         }
@@ -83,7 +83,7 @@ void TIRDeviceMemoryView::Set(const TIRDeviceValueDesc & valueDesc, uint64_t val
 
     uint8_t bitPosition = 0;
 
-    auto readMemoryBlock = [&](const pair<const PProtocolRegister, TProtocolRegisterBindInfo> & protocolRegisterBindInfo){
+    auto readMemoryBlock = [&](const pair<const PMemoryBlock, TMemoryBlockBindInfo> & protocolRegisterBindInfo){
         const auto & memoryBlock = protocolRegisterBindInfo.first;
         const auto & bindInfo = protocolRegisterBindInfo.second;
 
@@ -124,9 +124,9 @@ void TIRDeviceMemoryView::Set(const TIRDeviceValueDesc & valueDesc, uint64_t val
     //     auto registerValue = (~mask & cachedRegisterValue) | (mask & ((value >> bitPosition) << bindInfo.BitStart));
 
     //     if (Global::Debug) {
-    //         cerr << "cached reg val: " << cachedRegisterValue << " (0x" << hex << cachedRegisterValue << dec << ")" << endl;
-    //         cerr << "reg mask: " << bitset<64>(mask) << endl;
-    //         cerr << "reg value: " << registerValue << " (0x" << hex << registerValue << dec << ")" << endl;
+    //         cerr << "cached mb val: " << cachedRegisterValue << " (0x" << hex << cachedRegisterValue << dec << ")" << endl;
+    //         cerr << "mb mask: " << bitset<64>(mask) << endl;
+    //         cerr << "mb value: " << registerValue << " (0x" << hex << registerValue << dec << ")" << endl;
     //         cerr << "writing [" << (int)bitPosition << ", " << int(bitPosition + bindInfo.BitCount() - 1) << "]" << " bits of value "
     //              << " to " << bindInfo.Describe() << " bits of " << protocolRegister->Describe() << endl;
     //     }
@@ -137,12 +137,12 @@ void TIRDeviceMemoryView::Set(const TIRDeviceValueDesc & valueDesc, uint64_t val
     // }
 }
 
-const uint8_t * TIRDeviceMemoryView::GetMemoryBlockData(const PProtocolRegister & memoryBlock) const
+const uint8_t * TIRDeviceMemoryView::GetMemoryBlockData(const PMemoryBlock & memoryBlock) const
 {
     return RawMemory + GetBlockStart(memoryBlock);
 }
 
-const uint8_t & TIRDeviceMemoryView::GetByte(const PProtocolRegister & memoryBlock, uint16_t index) const
+const uint8_t & TIRDeviceMemoryView::GetByte(const PMemoryBlock & memoryBlock, uint16_t index) const
 {
     assert(&memoryBlock->Type == &Type);
     assert(index < BlockSize);
@@ -156,7 +156,7 @@ const uint8_t & TIRDeviceMemoryView::GetByte(const PProtocolRegister & memoryBlo
     return RawMemory[byteIndex];
 }
 
-uint16_t TIRDeviceMemoryView::GetBlockStart(const PProtocolRegister & memoryBlock) const
+uint16_t TIRDeviceMemoryView::GetBlockStart(const PMemoryBlock & memoryBlock) const
 {
     assert(&memoryBlock->Type == &Type);
     assert(memoryBlock->Address >= StartAddress);

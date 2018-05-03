@@ -48,8 +48,8 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
             throw runtime_error("register address out of range");
         }
 
-        for (const auto & reg: query.RegView) {
-            switch(Blockings[reg->Address].BlockRead) {
+        for (const auto & reg: query.MemoryBlockRange) {
+            switch(Blockings[mb->Address].BlockRead) {
                 case TRANSIENT:
                     throw TSerialDeviceTransientErrorException("read blocked (transient)");
                 case PERMANENT:
@@ -105,8 +105,8 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
             throw runtime_error("register address out of range");
         }
 
-        for (const auto & reg: query.RegView) {
-            switch(Blockings[reg->Address].BlockWrite) {
+        for (const auto & mb: query.MemoryBlockRange) {
+            switch(Blockings[mb->Address].BlockWrite) {
                 case TRANSIENT:
                     throw TSerialDeviceTransientErrorException("write blocked (transient)");
                 case PERMANENT:

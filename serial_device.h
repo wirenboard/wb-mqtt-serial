@@ -79,8 +79,8 @@ public:
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
     virtual const TProtocolInfo & GetProtocolInfo() const;
-    PProtocolRegister GetCreateRegister(uint32_t address, uint32_t type);
-    TPSetView<PProtocolRegister> CreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last) const;
+    PMemoryBlock GetCreateRegister(uint32_t address, uint32_t type);
+    TPSetRange<PMemoryBlock> CreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last) const;
 
     // Prepare to access device (pauses for configured delay by default)
     virtual void Prepare();
@@ -105,7 +105,7 @@ public:
 
     uint8_t * AllocateCacheMemory(uint16_t size);
 
-    static TPSetView<PProtocolRegister> StaticCreateRegisterSetView(const PProtocolRegister & first, const PProtocolRegister & last);
+    static TPSetRange<PMemoryBlock> StaticCreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last);
 
 protected:
     void SleepGuardInterval() const;
@@ -119,13 +119,13 @@ protected:
     /**
      * Implement these methods if protocol supports only single register read / write
      */
-    virtual uint64_t ReadProtocolRegister(const PProtocolRegister & reg);
-    virtual void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value);
+    virtual uint64_t ReadMemoryBlock(const PMemoryBlock & mb);
+    virtual void WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value);
 
     /**
      * Override this method if device memory has its own format TODO: make more clear annotation
      */
-    virtual const TIRDeviceMemoryView & CreateMemoryView(const std::vector<uint8_t> & memory, const PProtocolRegister & memoryBlock);
+    virtual const TIRDeviceMemoryView & CreateMemoryView(const std::vector<uint8_t> & memory, const PMemoryBlock & memoryBlock);
 
 private:
     std::chrono::milliseconds Delay;
@@ -133,7 +133,7 @@ private:
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
     std::vector<PDeviceSetupItem> SetupItems;
-    TPSet<PProtocolRegister> Registers;
+    TPSet<PMemoryBlock> Registers;
     std::vector<uint8_t> MemoryCache;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;

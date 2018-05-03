@@ -10,7 +10,7 @@
  *  This layer caches values and acts like bridge between VirtualRegister and IR layers.
  *  Different memory blocks cannot simultaneously have same type and address.
  */
-class TProtocolRegister: public std::enable_shared_from_this<TProtocolRegister>
+class TMemoryBlock: public std::enable_shared_from_this<TMemoryBlock>
 {
     friend TIRDeviceQuery;
     friend TVirtualRegister;
@@ -43,26 +43,26 @@ private:
     /**
      * Create with no external linkage
      */
-    TProtocolRegister(uint32_t address, uint16_t size, const TMemoryBlockType & type);
+    TMemoryBlock(uint32_t address, uint16_t size, const TMemoryBlockType & type);
 
     /**
      * Create with no external linkage
      */
-    TProtocolRegister(uint32_t address, const TMemoryBlockType & type);
+    TMemoryBlock(uint32_t address, const TMemoryBlockType & type);
 
     /**
      * Create and link to device
      */
-    TProtocolRegister(uint32_t address, uint16_t size, uint32_t typeIndex, const PSerialDevice &);
+    TMemoryBlock(uint32_t address, uint16_t size, uint32_t typeIndex, const PSerialDevice &);
 
     /**
      * Create and link to device
      */
-    TProtocolRegister(uint32_t address, uint32_t typeIndex, const PSerialDevice &);
+    TMemoryBlock(uint32_t address, uint32_t typeIndex, const PSerialDevice &);
 
 public:
-    bool operator<(const TProtocolRegister &) const;
-    bool operator==(const TProtocolRegister &) const;
+    bool operator<(const TMemoryBlock &) const;
+    bool operator==(const TMemoryBlock &) const;
 
     void AssociateWith(const PVirtualRegister &);
     bool IsAssociatedWith(const PVirtualRegister &) const;

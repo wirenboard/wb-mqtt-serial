@@ -7,9 +7,9 @@
 
 using namespace std;
 
-TPMap<PProtocolRegister, TProtocolRegisterBindInfo> TProtocolRegisterFactory::GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device)
+TPMap<PMemoryBlock, TMemoryBlockBindInfo> TMemoryBlockFactory::GenerateMemoryBlocks(const PRegisterConfig & config, const PSerialDevice & device)
 {
-    TPMap<PProtocolRegister, TProtocolRegisterBindInfo> registersBindInfo;
+    TPMap<PMemoryBlock, TMemoryBlockBindInfo> registersBindInfo;
 
     uint16_t memoryBlockSize;
     try {

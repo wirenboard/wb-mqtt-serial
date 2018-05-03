@@ -15,27 +15,27 @@ protected:
 
     PMilurDevice MilurDev;
 
-    PProtocolRegister MilurPhaseAVoltageReg;
-    PProtocolRegister MilurPhaseBVoltageReg;
-    PProtocolRegister MilurPhaseCVoltageReg;
+    PMemoryBlock MilurPhaseAVoltageReg;
+    PMemoryBlock MilurPhaseBVoltageReg;
+    PMemoryBlock MilurPhaseCVoltageReg;
 
-    PProtocolRegister MilurPhaseACurrentReg;
-    PProtocolRegister MilurPhaseBCurrentReg;
-	PProtocolRegister MilurPhaseCCurrentReg;
+    PMemoryBlock MilurPhaseACurrentReg;
+    PMemoryBlock MilurPhaseBCurrentReg;
+	PMemoryBlock MilurPhaseCCurrentReg;
 
-	PProtocolRegister MilurPhaseAActivePowerReg;
-	PProtocolRegister MilurPhaseBActivePowerReg;
-	PProtocolRegister MilurPhaseCActivePowerReg;
-	PProtocolRegister MilurTotalActivePowerReg;
+	PMemoryBlock MilurPhaseAActivePowerReg;
+	PMemoryBlock MilurPhaseBActivePowerReg;
+	PMemoryBlock MilurPhaseCActivePowerReg;
+	PMemoryBlock MilurTotalActivePowerReg;
 
-	PProtocolRegister MilurPhaseAReactivePowerReg;
-	PProtocolRegister MilurPhaseBReactivePowerReg;
-	PProtocolRegister MilurPhaseCReactivePowerReg;
-	PProtocolRegister MilurTotalReactivePowerReg;
+	PMemoryBlock MilurPhaseAReactivePowerReg;
+	PMemoryBlock MilurPhaseBReactivePowerReg;
+	PMemoryBlock MilurPhaseCReactivePowerReg;
+	PMemoryBlock MilurTotalReactivePowerReg;
 
-	PProtocolRegister MilurTotalConsumptionReg;
-	PProtocolRegister MilurTotalReactiveEnergyReg;
-	PProtocolRegister MilurFrequencyReg;
+	PMemoryBlock MilurTotalConsumptionReg;
+	PMemoryBlock MilurTotalReactiveEnergyReg;
+	PMemoryBlock MilurFrequencyReg;
 };
 
 PDeviceConfig TMilurTest::GetDeviceConfig()
@@ -78,17 +78,17 @@ void TMilurTest::SetUp()
 void TMilurTest::VerifyParamQuery()
 {
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadProtocolRegister(MilurPhaseCVoltageReg));
+    ASSERT_EQ(0x03946f, MilurDev->ReadMemoryBlock(MilurPhaseCVoltageReg));
 
     EnqueueMilurPhaseCCurrentResponse();
-    ASSERT_EQ(0xffd8f0, MilurDev->ReadProtocolRegister(MilurPhaseCCurrentReg));
+    ASSERT_EQ(0xffd8f0, MilurDev->ReadMemoryBlock(MilurPhaseCCurrentReg));
 
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
-    ASSERT_EQ(0x11144, MilurDev->ReadProtocolRegister(MilurTotalConsumptionReg));
+    ASSERT_EQ(0x11144, MilurDev->ReadMemoryBlock(MilurTotalConsumptionReg));
 
     EnqueueMilurFrequencyResponse();
-    ASSERT_EQ(50080, MilurDev->ReadProtocolRegister(MilurFrequencyReg));
+    ASSERT_EQ(50080, MilurDev->ReadMemoryBlock(MilurFrequencyReg));
 }
 
 TEST_F(TMilurTest, Query)
@@ -106,7 +106,7 @@ TEST_F(TMilurTest, Reconnect)
     // reconnection
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadProtocolRegister(MilurPhaseCVoltageReg));
+    ASSERT_EQ(0x03946f, MilurDev->ReadMemoryBlock(MilurPhaseCVoltageReg));
 }
 
 TEST_F(TMilurTest, Exception)
@@ -114,7 +114,7 @@ TEST_F(TMilurTest, Exception)
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurExceptionResponse();
     try {
-        MilurDev->ReadProtocolRegister(MilurPhaseCVoltageReg);
+        MilurDev->ReadMemoryBlock(MilurPhaseCVoltageReg);
         FAIL() << "No exception thrown";
     } catch (const TSerialDeviceException& e) {
         ASSERT_STREQ("Serial protocol error: EEPROM access error", e.what());
@@ -244,7 +244,7 @@ protected:
     virtual PDeviceConfig MilurConfig();
     PMilurDevice MilurDev;
 
-    PProtocolRegister MilurTotalConsumptionReg;
+    PMemoryBlock MilurTotalConsumptionReg;
 };
 
 PDeviceConfig TMilur32Test::MilurConfig()
@@ -265,7 +265,7 @@ void TMilur32Test::SetUp()
 void TMilur32Test::VerifyMilurQuery()
 {
     EnqueueMilur32TotalConsumptionResponse();
-    ASSERT_EQ(0x11144, MilurDev->ReadProtocolRegister(MilurTotalConsumptionReg));
+    ASSERT_EQ(0x11144, MilurDev->ReadMemoryBlock(MilurTotalConsumptionReg));
 }
 
 TEST_F(TMilur32Test, MilurQuery)

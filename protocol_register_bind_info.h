@@ -6,20 +6,20 @@
 #include <string>
 
 /* protocol register - local bit interval that contains value for virtual register */
-struct TProtocolRegisterBindInfo
+struct TMemoryBlockBindInfo
 {
     const uint16_t  BitStart,
                     BitEnd;
 
-    TProtocolRegisterBindInfo(uint16_t start, uint16_t end);
-    TProtocolRegisterBindInfo(const TProtocolRegisterBindInfo &) = default;
+    TMemoryBlockBindInfo(uint16_t start, uint16_t end);
+    TMemoryBlockBindInfo(const TMemoryBlockBindInfo &) = default;
 
     inline uint16_t BitCount() const
     {
         return BitEnd - BitStart;
     }
 
-    inline bool operator<(const TProtocolRegisterBindInfo & rhs) const
+    inline bool operator<(const TMemoryBlockBindInfo & rhs) const
     {
         return BitEnd <= rhs.BitStart;
     }
@@ -28,8 +28,8 @@ struct TProtocolRegisterBindInfo
 };
 
 // TODO: move somewhere else
-using TBoundMemoryBlock  = std::pair<PProtocolRegister, TProtocolRegisterBindInfo>;
-using TBoundMemoryBlocks = TPMap<PProtocolRegister, TProtocolRegisterBindInfo>;
+using TBoundMemoryBlock  = std::pair<PMemoryBlock, TMemoryBlockBindInfo>;
+using TBoundMemoryBlocks = TPMap<PMemoryBlock, TMemoryBlockBindInfo>;
 
 /* Contains information needed by memory view to extract single value */
 struct TIRDeviceValueDesc

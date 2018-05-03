@@ -196,7 +196,7 @@ namespace Modbus    // modbus protocol common utilities
         return GetFunctionImpl(query.GetType(), IsPacking(query), query.Operation);
     }
 
-    uint8_t GetFunction(const TProtocolRegister & protocolRegister, EQueryOperation op)
+    uint8_t GetFunction(const TMemoryBlock & protocolRegister, EQueryOperation op)
     {
         return GetFunctionImpl(protocolRegister.Type, false, op);
     }
@@ -329,7 +329,7 @@ namespace Modbus    // modbus protocol common utilities
         }
     }
 
-    void ComposeSingleWriteRequestPDU(uint8_t* pdu, const TProtocolRegister & protocolRegister, uint16_t value, int shift)
+    void ComposeSingleWriteRequestPDU(uint8_t* pdu, const TMemoryBlock & protocolRegister, uint16_t value, int shift)
     {
         if (protocolRegister.Type.Index == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8: 0x00;
@@ -511,7 +511,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         } else {
             const auto & valueQuery = query.As<TIRDeviceValueQuery>();
 
-            valueQuery.IterRegisterValues([&](const TProtocolRegister & protocolRegister, uint64_t value) {
+            valueQuery.IterRegisterValues([&](const TMemoryBlock & protocolRegister, uint64_t value) {
                 requests.emplace_back(InferWriteRequestSize(query));
                 auto & request = requests.back();
 

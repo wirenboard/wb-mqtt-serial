@@ -18,8 +18,8 @@ public:
     };
 
     TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol);
-    uint64_t ReadProtocolRegister(const PProtocolRegister & reg) override;
-    void WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value) override;
+    uint64_t ReadMemoryBlock(const PMemoryBlock & mb) override;
+    void WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value) override;
 
 private:
     void WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3);

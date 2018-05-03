@@ -202,7 +202,7 @@ struct _mutable
 };
 
 template <typename Pointer>
-struct TPSetView
+struct TPSetRange
 {
     using TSet = TPSet<Pointer>;
     using Iterator = typename TSet::iterator;
@@ -210,7 +210,7 @@ struct TPSetView
     const Iterator First, Last;
     const size_t Count;
 
-    TPSetView(const Iterator & first, const Iterator & last)
+    TPSetRange(const Iterator & first, const Iterator & last)
         : First(first)
         , Last(last)
         , Count(std::distance(first, last) + 1)

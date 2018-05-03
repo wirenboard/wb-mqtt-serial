@@ -11,10 +11,10 @@ protected:
     void TearDown();
     PS2KDevice Dev;
 
-    PProtocolRegister RelayReg1;
-    PProtocolRegister RelayReg2;
-    PProtocolRegister RelayReg3;
-    PProtocolRegister RelayReg4;
+    PMemoryBlock RelayReg1;
+    PMemoryBlock RelayReg2;
+    PMemoryBlock RelayReg3;
+    PMemoryBlock RelayReg4;
 };
 
 void TS2KDeviceTest::SetUp()
@@ -44,11 +44,11 @@ void TS2KDeviceTest::TearDown()
 TEST_F(TS2KDeviceTest, TestSetRelayState)
 {
     EnqueueSetRelayOnResponse();
-    Dev->WriteProtocolRegister(RelayReg1, 1);
+    Dev->WriteMemoryBlock(RelayReg1, 1);
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
-    Dev->WriteProtocolRegister(RelayReg1, 0);
+    Dev->WriteMemoryBlock(RelayReg1, 0);
 }
 
 class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDeviceExpectations {

@@ -52,13 +52,13 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
 }
 
 
-uint64_t TMercury200Device::ReadProtocolRegister(const PProtocolRegister & reg)
+uint64_t TMercury200Device::ReadMemoryBlock(const PMemoryBlock & mb)
 {
-    uint8_t cmd = (reg->Address & 0xFF00) >> 8;
-    uint8_t offset = (reg->Address & 0xFF);
+    uint8_t cmd = (mb->Address & 0xFF00) >> 8;
+    uint8_t offset = (mb->Address & 0xFF);
 
     WordSizes size;
-    switch (reg->Type.Index) {
+    switch (mb->Type.Index) {
     case REG_PARAM_VALUE32:
         size = WordSizes::W32_SZ;
         break;
@@ -82,7 +82,7 @@ uint64_t TMercury200Device::ReadProtocolRegister(const PProtocolRegister & reg)
     return PackBytes(result.data() + offset, size);
 }
 
-void TMercury200Device::WriteProtocolRegister(const PProtocolRegister &, uint64_t)
+void TMercury200Device::WriteMemoryBlock(const PMemoryBlock &, uint64_t)
 {
     throw TSerialDeviceException("mercury200: register writing is not supported");
 }

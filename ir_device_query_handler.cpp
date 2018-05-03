@@ -22,9 +22,9 @@ namespace   // utility
 
             cerr << "INFO: [IR device query handler] " << actionName << " on query " << query->Describe() << endl;
 
-            std::list<TPSet<PProtocolRegister>> groupedRegisters;
+            std::list<TPSet<PMemoryBlock>> groupedRegisters;
             for (const auto & virtualRegister: query->VirtualRegisters) {
-                groupedRegisters.push_back(virtualRegister->GetProtocolRegisters());
+                groupedRegisters.push_back(virtualRegister->GetMemoryBlocks());
             }
 
             try {

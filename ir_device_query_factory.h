@@ -26,10 +26,10 @@ public:
      */
     static std::vector<std::pair<TIntervalMs, PIRDeviceQuerySet>> GenerateQuerySets(const std::vector<PVirtualRegister> &, EQueryOperation);
 
-    static TQueries GenerateQueries(std::list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation, EQueryGenerationPolicy = Default);
+    static TQueries GenerateQueries(std::list<TPSet<PMemoryBlock>> && registerSets, EQueryOperation, EQueryGenerationPolicy = Default);
 
     template <class Query>
-    static PIRDeviceQuery CreateQuery(const TPSet<PProtocolRegister> & registerSet)
+    static PIRDeviceQuery CreateQuery(const TPSet<PMemoryBlock> & registerSet)
     {
         return PIRDeviceQuery(new Query(registerSet));
     }
@@ -37,6 +37,6 @@ public:
 private:
     using TRegisterTypeInfo = std::function<std::pair<uint32_t, uint32_t>(const TMemoryBlockType &)>;
 
-    static void CheckSets(const std::list<TPSet<PProtocolRegister>> & registerSets, const TRegisterTypeInfo &);
-    static void MergeSets(std::list<TPSet<PProtocolRegister>> & registerSets, const TRegisterTypeInfo &);
+    static void CheckSets(const std::list<TPSet<PMemoryBlock>> & registerSets, const TRegisterTypeInfo &);
+    static void MergeSets(std::list<TPSet<PMemoryBlock>> & registerSets, const TRegisterTypeInfo &);
 };

@@ -4,9 +4,9 @@
 #include "declarations.h"
 #include "protocol_register_bind_info.h"
 
-class TProtocolRegisterFactory
+class TMemoryBlockFactory
 {
-    TProtocolRegisterFactory() = delete;
+    TMemoryBlockFactory() = delete;
 public:
-    static TPMap<PProtocolRegister, TProtocolRegisterBindInfo> GenerateProtocolRegisters(const PRegisterConfig & config, const PSerialDevice & device);
+    static TPMap<PMemoryBlock, TMemoryBlockBindInfo> GenerateMemoryBlocks(const PRegisterConfig & config, const PSerialDevice & device);
 };

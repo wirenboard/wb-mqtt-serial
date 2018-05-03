@@ -11,19 +11,19 @@ using namespace std;
 
 namespace
 {
-    void PrintAddr(ostream & s, const PProtocolRegister & reg)
+    void PrintAddr(ostream & s, const PMemoryBlock & mb)
     {
-        s << reg->Address;
+        s << mb->Address;
     }
 
-    TPSet<PVirtualRegister> GetVirtualRegisters(const TPSet<PProtocolRegister> & registerSet)
+    TPSet<PVirtualRegister> GetVirtualRegisters(const TPSet<PMemoryBlock> & registerSet)
     {
         TPSet<PVirtualRegister> result;
 
         for (const auto & protocolRegister: registerSet) {
             const auto & localVirtualRegisters = protocolRegister->GetVirtualRegsiters();
             for (const auto & virtualRegister: localVirtualRegisters) {
-                const auto & protocolRegisters = virtualRegister->GetProtocolRegisters();
+                const auto & protocolRegisters = virtualRegister->GetMemoryBlocks();
                 if (IsSubset(registerSet, protocolRegisters)) {
                     result.insert(virtualRegister);
                 }
@@ -33,33 +33,33 @@ namespace
         return move(result);
     }
 
-    bool DetectHoles(const TPSet<PProtocolRegister> & registerSet)
+    bool DetectHoles(const TPSet<PMemoryBlock> & registerSet)
     {
         int prev = -1;
-        for (const auto & reg: registerSet) {
-            if (prev >= 0 && (reg->Address - prev) > 1) {
+        for (const auto & mb: registerSet) {
+            if (prev >= 0 && (mb->Address - prev) > 1) {
                 return true;
             }
 
-            prev = reg->Address;
+            prev = mb->Address;
         }
 
         return false;
     }
 
-    bool IsSameTypeAndSize(const TPSet<PProtocolRegister> & memoryBlocks)
+    bool IsSameTypeAndSize(const TPSet<PMemoryBlock> & memoryBlocks)
     {
         auto typeIndex = (*memoryBlocks.begin())->Type.Index;
         auto size = (*memoryBlocks.begin())->Size;
 
-        return all_of(memoryBlocks.begin(), memoryBlocks.end(), [&](const PProtocolRegister & mb){
+        return all_of(memoryBlocks.begin(), memoryBlocks.end(), [&](const PMemoryBlock & mb){
             return mb->Type.Index == typeIndex && mb->Size == size;
         });
     }
 }
 
-TIRDeviceQuery::TIRDeviceQuery(const TPSet<PProtocolRegister> & registerSet, EQueryOperation operation)
-    : RegView(TSerialDevice::StaticCreateRegisterSetView(*registerSet.begin(), *registerSet.rbegin()))
+TIRDeviceQuery::TIRDeviceQuery(const TPSet<PMemoryBlock> & registerSet, EQueryOperation operation)
+    : MemoryBlockRange(TSerialDevice::StaticCreateMemoryBlockRange(*registerSet.begin(), *registerSet.rbegin()))
     , VirtualRegisters(GetVirtualRegisters(registerSet))
     , HasHoles(DetectHoles(registerSet))
     , Operation(operation)
@@ -72,32 +72,32 @@ TIRDeviceQuery::TIRDeviceQuery(const TPSet<PProtocolRegister> & registerSet, EQu
 
 bool TIRDeviceQuery::operator<(const TIRDeviceQuery & rhs) const noexcept
 {
-    return *RegView.GetLast() < *rhs.RegView.GetFirst();
+    return *MemoryBlockRange.GetLast() < *rhs.MemoryBlockRange.GetFirst();
 }
 
 PSerialDevice TIRDeviceQuery::GetDevice() const
 {
-    return RegView.GetFirst()->GetDevice();
+    return MemoryBlockRange.GetFirst()->GetDevice();
 }
 
 uint32_t TIRDeviceQuery::GetCount() const
 {
-    return (RegView.GetLast()->Address - RegView.GetFirst()->Address) + 1;
+    return (MemoryBlockRange.GetLast()->Address - MemoryBlockRange.GetFirst()->Address) + 1;
 }
 
 uint32_t TIRDeviceQuery::GetStart() const
 {
-    return RegView.GetFirst()->Address;
+    return MemoryBlockRange.GetFirst()->Address;
 }
 
 const TMemoryBlockType & TIRDeviceQuery::GetType() const
 {
-    return RegView.GetFirst()->Type;
+    return MemoryBlockRange.GetFirst()->Type;
 }
 
 const string & TIRDeviceQuery::GetTypeName() const
 {
-    return RegView.GetFirst()->GetTypeName();
+    return MemoryBlockRange.GetFirst()->GetTypeName();
 }
 
 void TIRDeviceQuery::SetStatus(EQueryStatus status) const
@@ -172,7 +172,7 @@ void TIRDeviceQuery::SetAbleToSplit(bool ableToSplit)
 
 string TIRDeviceQuery::Describe() const
 {
-    return PrintRange(RegView.begin(), RegView.end(), PrintAddr);
+    return PrintRange(MemoryBlockRange.begin(), MemoryBlockRange.end(), PrintAddr);
 }
 
 string TIRDeviceQuery::DescribeOperation() const
@@ -189,7 +189,7 @@ string TIRDeviceQuery::DescribeOperation() const
 
 void TIRDeviceQuery::FinalizeReadImpl(const TIRDeviceMemoryView & memoryView) const
 {
-    auto memoryBlockSize = (*RegView.begin())->Size;    // it is guaranteed that all blocks in query have same size and type
+    auto memoryBlockSize = (*MemoryBlockRange.begin())->Size;    // it is guaranteed that all blocks in query have same size and type
 
     assert(Operation == EQueryOperation::Read);
     assert(GetStatus() == EQueryStatus::NotExecuted);
@@ -202,7 +202,7 @@ void TIRDeviceQuery::FinalizeReadImpl(const TIRDeviceMemoryView & memoryView) co
         }
     }
 
-    for (const auto & mb: RegView) {
+    for (const auto & mb: MemoryBlockRange) {
         mb->CacheIfNeeded(memoryView.GetMemoryBlockData(mb));
     }
 
@@ -220,8 +220,8 @@ void TIRDeviceValueQuery::FinalizeWrite() const
     assert(Operation == EQueryOperation::Write);
     assert(GetStatus() == EQueryStatus::NotExecuted);
 
-    IterRegisterValues([this](TProtocolRegister & reg, uint64_t value) {
-        reg.SetValue(value);
+    IterRegisterValues([this](TMemoryBlock & mb, uint64_t value) {
+        mb.SetValue(value);
     });
 
     SetStatus(EQueryStatus::Ok);
@@ -236,7 +236,7 @@ string TIRDeviceQuerySet::Describe() const
     }, true, "");
 }
 
-TIRDeviceQuerySet::TIRDeviceQuerySet(list<TPSet<PProtocolRegister>> && registerSets, EQueryOperation operation)
+TIRDeviceQuerySet::TIRDeviceQuerySet(list<TPSet<PMemoryBlock>> && registerSets, EQueryOperation operation)
 {
     Queries = TIRDeviceQueryFactory::GenerateQueries(move(registerSets), operation);
 

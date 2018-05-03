@@ -122,18 +122,18 @@ TEMDevice<TMilurProtocol>::ErrorType TMilurDevice::CheckForException(uint8_t* fr
     return TEMDevice<TMilurProtocol>::OTHER_ERROR;
 }
 
-uint64_t TMilurDevice::ReadProtocolRegister(const PProtocolRegister & reg)
+uint64_t TMilurDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 {
-    int size = GetExpectedSize(reg->Type);
-    uint8_t addr = static_cast<uint8_t>(reg->Address);
+    int size = GetExpectedSize(mb->Type);
+    uint8_t addr = static_cast<uint8_t>(mb->Address);
     uint8_t buf[MAX_LEN], *p = buf;
     Talk(0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(SlaveIdWidth, size + 5 + SlaveIdWidth));
-    if (*p++ != reg->Address)
+    if (*p++ != mb->Address)
         throw TSerialDeviceTransientErrorException("bad register address in the response");
     if (*p != size)
         throw TSerialDeviceTransientErrorException("bad register size in the response");
 
-    switch (reg->Type.Index) {
+    switch (mb->Type.Index) {
     case TMilurDevice::REG_PARAM:
         return BuildIntVal(buf + 2, 3);
     case TMilurDevice::REG_POWER:

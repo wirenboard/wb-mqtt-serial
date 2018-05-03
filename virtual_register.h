@@ -10,9 +10,9 @@
 /**
  * Virtual register is a formatted top-level device data representation layer.
  * It translates data from user representation to protocol-specific register representation.
- * It can be associated with multiple ProtocolRegisters.
- * ProtocolRegisters don't have to be adjacent by addresses.
- * ProtocolRegisters have to be of same type (debatable)
+ * It can be associated with multiple MemoryBlocks.
+ * MemoryBlocks don't have to be adjacent by addresses.
+ * MemoryBlocks have to be of same type (debatable)
  * VirtualRegisters may share same protocol register
  */
 class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterConfig, public std::enable_shared_from_this<TVirtualRegister>
@@ -22,7 +22,7 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
 
     PWVirtualRegisterSet                        VirtualRegisterSet;
     PWSerialDevice                              Device;
-    TPMap<PProtocolRegister, TProtocolRegisterBindInfo> ProtocolRegisters;
+    TPMap<PMemoryBlock, TMemoryBlockBindInfo> MemoryBlocks;
     PBinarySemaphore                            FlushNeeded;
     std::atomic<uint64_t>                       ValueToWrite;
     uint64_t                                    CurrentValue;
@@ -40,12 +40,12 @@ public:
     /**
      * Build resulting value from protocol registers' values according to binding info
      */
-    static uint64_t MapValueFrom(const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> &);
+    static uint64_t MapValueFrom(const TPMap<PMemoryBlock, TMemoryBlockBindInfo> &);
 
     /**
      * Split given value and set to protocol registers according to binding info
      */
-    static void MapValueTo(const PIRDeviceValueQuery &, const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> &, uint64_t);
+    static void MapValueTo(const PIRDeviceValueQuery &, const TPMap<PMemoryBlock, TMemoryBlockBindInfo> &, uint64_t);
 
     /**
      * Returns hash that can be used by unordered_* containers
@@ -56,8 +56,8 @@ public:
 
     void SetFlushSignal(PBinarySemaphore flushNeeded);
     PSerialDevice GetDevice() const;
-    TPSet<PProtocolRegister> GetProtocolRegisters() const;
-    const TPMap<PProtocolRegister, TProtocolRegisterBindInfo> & GetBoundMemoryBlocks() const;
+    TPSet<PMemoryBlock> GetMemoryBlocks() const;
+    const TPMap<PMemoryBlock, TMemoryBlockBindInfo> & GetBoundMemoryBlocks() const;
     EErrorState GetErrorState() const override;
     std::string Describe() const;
     bool NeedToPoll() const;

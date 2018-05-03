@@ -11,10 +11,10 @@ protected:
     void TearDown();
     PUnielDevice Dev;
 
-    PProtocolRegister InputReg;
-    PProtocolRegister RelayReg;
-    PProtocolRegister ThresholdReg;
-    PProtocolRegister BrightnessReg;
+    PMemoryBlock InputReg;
+    PMemoryBlock RelayReg;
+    PMemoryBlock ThresholdReg;
+    PMemoryBlock BrightnessReg;
 };
 
 void TUnielDeviceTest::SetUp()
@@ -44,50 +44,50 @@ void TUnielDeviceTest::TearDown()
 TEST_F(TUnielDeviceTest, TestQuery)
 {
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(154, Dev->ReadProtocolRegister(InputReg));
+    ASSERT_EQ(154, Dev->ReadMemoryBlock(InputReg));
 
     // TBD: rm (dupe)
     SerialPort->DumpWhatWasRead();
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(154, Dev->ReadProtocolRegister(InputReg));
+    ASSERT_EQ(154, Dev->ReadMemoryBlock(InputReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOffQueryResponse();
-    ASSERT_EQ(0, Dev->ReadProtocolRegister(RelayReg));
+    ASSERT_EQ(0, Dev->ReadMemoryBlock(RelayReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOnQueryResponse();
-    ASSERT_EQ(1, Dev->ReadProtocolRegister(RelayReg));
+    ASSERT_EQ(1, Dev->ReadMemoryBlock(RelayReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueThreshold0QueryResponse();
-    ASSERT_EQ(0x70, Dev->ReadProtocolRegister(ThresholdReg));
+    ASSERT_EQ(0x70, Dev->ReadMemoryBlock(ThresholdReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueBrightnessQueryResponse();
-    ASSERT_EQ(66, Dev->ReadProtocolRegister(BrightnessReg));
+    ASSERT_EQ(66, Dev->ReadMemoryBlock(BrightnessReg));
 }
 
 TEST_F(TUnielDeviceTest, TestSetRelayState)
 {
     EnqueueSetRelayOnResponse();
-    Dev->WriteProtocolRegister(RelayReg, 1);
+    Dev->WriteMemoryBlock(RelayReg, 1);
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
-    Dev->WriteProtocolRegister(RelayReg, 0);
+    Dev->WriteMemoryBlock(RelayReg, 0);
 }
 
 TEST_F(TUnielDeviceTest, TestSetParam)
 {
     EnqueueSetLowThreshold0Response();
-    Dev->WriteProtocolRegister(ThresholdReg, 0x70);
+    Dev->WriteMemoryBlock(ThresholdReg, 0x70);
 }
 
 TEST_F(TUnielDeviceTest, TestSetBrightness)
 {
     EnqueueSetBrightnessResponse();
-    Dev->WriteProtocolRegister(BrightnessReg, 0x42);
+    Dev->WriteMemoryBlock(BrightnessReg, 0x42);
 }
 
 class TUnielIntegrationTest: public TSerialDeviceIntegrationTest, public TUnielDeviceExpectations {

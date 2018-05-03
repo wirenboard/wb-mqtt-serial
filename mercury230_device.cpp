@@ -133,12 +133,12 @@ struct TIRMercury230DeviceMemoryView: TIRDeviceMemoryView
     }
 };
 
-const TIRDeviceMemoryView & TMercury230Device::CreateMemoryView(const std::vector<uint8_t> & memory, const PProtocolRegister & memoryBlock)
+const TIRDeviceMemoryView & TMercury230Device::CreateMemoryView(const std::vector<uint8_t> & memory, const PMemoryBlock & memoryBlock)
 {
     return TIRMercury230DeviceMemoryView{ memory.data(), memory.size(), memoryBlock->Type, memoryBlock->Address, memoryBlock->Size };
 }
 
-std::vector<uint8_t> TMercury230Device::ReadValueArray(const PProtocolRegister & mb)
+std::vector<uint8_t> TMercury230Device::ReadValueArray(const PMemoryBlock & mb)
 {
     uint8_t cmdBuf[2];
     cmdBuf[0] = (uint8_t)((mb->Address >> 4) & 0xff); // high nibble = array number, lower nibble = month
@@ -149,7 +149,7 @@ std::vector<uint8_t> TMercury230Device::ReadValueArray(const PProtocolRegister &
     return buf;
 }
 
-std::vector<uint8_t> TMercury230Device::ReadParam(const PProtocolRegister & mb)
+std::vector<uint8_t> TMercury230Device::ReadParam(const PMemoryBlock & mb)
 {
     uint8_t cmdBuf[2];
     cmdBuf[0] = (mb->Address >> 8) & 0xff; // param
@@ -161,19 +161,19 @@ std::vector<uint8_t> TMercury230Device::ReadParam(const PProtocolRegister & mb)
     return buf;
 }
 
-std::vector<uint8_t> TMercury230Device::ReadProtocolRegister(const PProtocolRegister & reg)
+std::vector<uint8_t> TMercury230Device::ReadMemoryBlock(const PMemoryBlock & mb)
 {
-    switch (reg->Type.Index) {
+    switch (mb->Type.Index) {
     case REG_VALUE_ARRAY:
-        return ReadValueArray(reg);
+        return ReadValueArray(mb);
     case REG_VALUE_ARRAY12:
-        return ReadValueArray(reg);
+        return ReadValueArray(mb);
     case REG_PARAM:
     case REG_PARAM_SIGN_ACT:
     case REG_PARAM_SIGN_REACT:
     case REG_PARAM_SIGN_IGNORE:
     case REG_PARAM_BE:
-        return ReadParam(reg);
+        return ReadParam(mb);
     default:
         throw TSerialDeviceException("mercury230: invalid register type");
     }

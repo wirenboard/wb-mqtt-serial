@@ -14,20 +14,20 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
 
     static_assert(std::is_fundamental<T>::value, "query can store only values of fundamental types");
 
-    const TPMap<PProtocolRegister, _mutable<T>> ProtocolRegisterValues;
+    const TPMap<PMemoryBlock, _mutable<T>> MemoryBlockValues;
 
 
-    void IterRegisterValues(std::function<void(TProtocolRegister &, uint64_t)> && accessor) const override
+    void IterRegisterValues(std::function<void(TMemoryBlock &, uint64_t)> && accessor) const override
     {
-        for (const auto & registerValue: ProtocolRegisterValues) {
+        for (const auto & registerValue: MemoryBlockValues) {
             accessor(*registerValue.first, registerValue.second);
         }
     }
 
-    void SetValue(const PProtocolRegister & reg, uint64_t value) const override
+    void SetValue(const PMemoryBlock & mb, uint64_t value) const override
     {
-        auto itRegisterValue = ProtocolRegisterValues.find(reg);
-        assert(itRegisterValue != ProtocolRegisterValues.end());
+        auto itRegisterValue = MemoryBlockValues.find(mb);
+        assert(itRegisterValue != MemoryBlockValues.end());
 
         itRegisterValue->second = value;
     }
@@ -37,22 +37,22 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
         assert(size <= sizeof(T));
         assert(GetCount() == count);
 
-        auto itProtocolRegister = RegView.First;
-        auto itProtocolRegisterValue = ProtocolRegisterValues.begin();
+        auto itMemoryBlock = MemoryBlockRange.First;
+        auto itMemoryBlockValue = MemoryBlockValues.begin();
         auto bytes = static_cast<uint8_t*>(mem);
 
-        assert(*itProtocolRegister == itProtocolRegisterValue->first);
+        assert(*itMemoryBlock == itMemoryBlockValue->first);
 
         for (uint32_t i = 0; i < count; ++i) {
             const auto requestedRegisterAddress = GetStart() + i;
 
-            assert(itProtocolRegister != RegView.End());
-            assert(itProtocolRegisterValue != ProtocolRegisterValues.end());
+            assert(itMemoryBlock != MemoryBlockRange.End());
+            assert(itMemoryBlockValue != MemoryBlockValues.end());
 
             // try read value from query itself
             {
-                const auto & protocolRegister = itProtocolRegisterValue->first;
-                const auto & value = itProtocolRegisterValue->second;
+                const auto & protocolRegister = itMemoryBlockValue->first;
+                const auto & value = itMemoryBlockValue->second;
 
                 if (protocolRegister->Address == requestedRegisterAddress) {    // this register exists and query has its value - write from query
                     memcpy(bytes, &value, size);
@@ -61,8 +61,8 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
                         std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: read address '" << requestedRegisterAddress << "' from query: '" << value << "'" << std::endl;
                     }
 
-                    ++itProtocolRegister;
-                    ++itProtocolRegisterValue;
+                    ++itMemoryBlock;
+                    ++itMemoryBlockValue;
                     bytes += size;
                     continue;
                 }
@@ -70,7 +70,7 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
 
             // try read value from cache
             {
-                const auto & protocolRegister = *itProtocolRegister;
+                const auto & protocolRegister = *itMemoryBlock;
 
                 if (protocolRegister->Address == requestedRegisterAddress) {    // this register exists but query doesn't have value for it - write cached value
                     memcpy(bytes, &protocolRegister->GetValue(), size);
@@ -78,7 +78,7 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
                     if (Global::Debug) {
                         std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: read address '" << requestedRegisterAddress << "' from cache: '" << protocolRegister->GetValue() << "'" << std::endl;
                     }
-                    ++itProtocolRegister;
+                    ++itMemoryBlock;
                     bytes += size;
                     continue;
                 }
@@ -94,16 +94,16 @@ struct TIRDeviceValueQueryImpl final: TIRDeviceValueQuery
             }
         }
 
-        assert(itProtocolRegister == RegView.End());
-        assert(itProtocolRegisterValue == ProtocolRegisterValues.end());
+        assert(itMemoryBlock == MemoryBlockRange.End());
+        assert(itMemoryBlockValue == MemoryBlockValues.end());
     }
 
 protected:
-    explicit TIRDeviceValueQueryImpl(const TPSet<PProtocolRegister> & registerSet, EQueryOperation operation = EQueryOperation::Write)
+    explicit TIRDeviceValueQueryImpl(const TPSet<PMemoryBlock> & registerSet, EQueryOperation operation = EQueryOperation::Write)
         : TIRDeviceValueQuery(registerSet, operation)
-        , ProtocolRegisterValues(MapFromSet<_mutable<T>>(registerSet))
+        , MemoryBlockValues(MapFromSet<_mutable<T>>(registerSet))
     {
-        assert(!ProtocolRegisterValues.empty());
+        assert(!MemoryBlockValues.empty());
     }
 };
 

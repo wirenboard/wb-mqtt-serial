@@ -16,9 +16,9 @@ struct TIRDeviceMemoryView
     virtual uint64_t Get(const TIRDeviceValueDesc &) const;
     virtual void Set(const TIRDeviceValueDesc &, uint64_t value);
 
-    const uint8_t * GetMemoryBlockData(const PProtocolRegister & memoryBlock) const;
+    const uint8_t * GetMemoryBlockData(const PMemoryBlock & memoryBlock) const;
 
 protected:
-    const uint8_t & GetByte(const PProtocolRegister & memoryBlock, uint16_t index) const;
-    uint16_t GetBlockStart(const PProtocolRegister & memoryBlock) const;
+    const uint8_t & GetByte(const PMemoryBlock & memoryBlock, uint16_t index) const;
+    uint16_t GetBlockStart(const PMemoryBlock & memoryBlock) const;
 };

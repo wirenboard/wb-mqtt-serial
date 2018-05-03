@@ -69,13 +69,13 @@ uint8_t TS2KDevice::CrcS2K(const uint8_t *array, int size)
 
 // TODO: refactor this when more registers are writable, move writing
 // and error handling into separate function
-void TS2KDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t value)
+void TS2KDevice::WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value)
 {
-    if (reg->Type != REG_RELAY) {
+    if (mb->Type != REG_RELAY) {
         throw TSerialDeviceException("S2K protocol: invalid register for writing");
     }
 
-    if (reg->Address < 1 || reg->Address > 4) {
+    if (mb->Address < 1 || mb->Address > 4) {
         throw TSerialDeviceException("S2K protocol: invalid register address");
     }
 
@@ -85,7 +85,7 @@ void TS2KDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t v
         /* Command length = */0x06,
         /* Key = */0x00,
         /* Command = */0x15,/* Relay control */
-        /* Relay No = */(uint8_t)reg->Address,
+        /* Relay No = */(uint8_t)mb->Address,
         /* Relay program = */(uint8_t)(value ? 0x1/* ON */ : 0x2/* OFF */),
         /* CRC placeholder */0x0
     };
@@ -108,15 +108,15 @@ void TS2KDevice::WriteProtocolRegister(const PProtocolRegister & reg, uint64_t v
 
 // TODO: refactor this when more registers are actually readable, move reading
 // and error handling into separate function
-uint64_t TS2KDevice::ReadProtocolRegister(const PProtocolRegister & reg)
+uint64_t TS2KDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 {
     /* We have no way to get current relay state from device. Thats why we save last
        successful write to relay register and return it when regiter is read */
-    switch (reg->Type) {
+    switch (mb->Type) {
     case REG_RELAY:
-        return RelayState[reg->Address] != 0 && RelayState[reg->Address] != 2;
+        return RelayState[mb->Address] != 0 && RelayState[mb->Address] != 2;
     case REG_RELAY_MODE:
-        return RelayState[reg->Address];
+        return RelayState[mb->Address];
     case REG_RELAY_DEFAULT:
     case REG_RELAY_DELAY:
     {
@@ -128,8 +128,8 @@ uint64_t TS2KDevice::ReadProtocolRegister(const PProtocolRegister & reg)
                 /* Command length = */0x06,
                 /* Key = */0x00,
                 /* Command = */0x05,/* Read configutation */
-                /* Config No = */(uint8_t)(reg->Address +
-                                     (reg->Type == REG_RELAY_DELAY ? 4 : 0)),
+                /* Config No = */(uint8_t)(mb->Address +
+                                     (mb->Type == REG_RELAY_DELAY ? 4 : 0)),
                 /* Unused */0x0,
                 /* CRC placeholder */0x0
             };
