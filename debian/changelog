@@ -4,6 +4,12 @@ wb-mqtt-serial (1.41) stable; urgency=medium
 
  -- Evgeny Boger <boger@contactless.ru>  Fri, 04 May 2018 15:22:20 +0300
 
+wb-mqtt-serial (1.40.5) stable; urgency=medium
+
+  * add mrgbw-d json template
+
+ -- Attila Door <a.door@wirenboard.ru>  Tue, 3 Apr 2018 16:58:45 +0300
+
 wb-mqtt-serial (1.40.4) stable; urgency=medium
 
   * add mir2 json template
