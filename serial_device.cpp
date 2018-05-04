@@ -126,9 +126,9 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
     assert(query->IsExecuted());
 }
 
-PMemoryBlock TSerialDevice::GetCreateRegister(uint32_t address, uint32_t type)
+PMemoryBlock TSerialDevice::GetCreateRegister(uint32_t address, uint32_t type, uint16_t size)
 {
-    PMemoryBlock protocolRegister(new TMemoryBlock(address, type, shared_from_this()));
+    PMemoryBlock protocolRegister(new TMemoryBlock(address, size, type, shared_from_this()));
 
     const auto & insRes = MemoryBlocks.insert(protocolRegister);
 
@@ -265,7 +265,7 @@ void TSerialDevice::WriteValue(const TIRDeviceMemoryViewRW & memoryView, const T
 
     uint8_t bitPosition = 0;
 
-    auto readMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & protocolRegisterBindInfo){
+    auto writeMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & protocolRegisterBindInfo){
         const auto & memoryBlock = protocolRegisterBindInfo.first;
         const auto & bindInfo = protocolRegisterBindInfo.second;
 
@@ -290,9 +290,9 @@ void TSerialDevice::WriteValue(const TIRDeviceMemoryViewRW & memoryView, const T
     };
 
     if (valueDesc.WordOrder == EWordOrder::BigEndian) {
-        for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), readMemoryBlock);
+        for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), writeMemoryBlock);
     } else {
-        for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), readMemoryBlock);
+        for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), writeMemoryBlock);
     }
 }
 

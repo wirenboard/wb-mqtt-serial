@@ -599,13 +599,3 @@ PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const 
 
     return reg;
 }
-
-uint64_t TVirtualRegister::MapValueFrom(, const TIRDeviceMemoryView & deviceMemory)
-{
-
-}
-
-void TVirtualRegister::MapValueTo(const PIRDeviceValueQuery & query, )
-{
-
-}

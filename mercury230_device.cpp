@@ -9,11 +9,11 @@
 REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
             { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", { U32, U32, U32 }, true },
             { TMercury230Device::REG_VALUE_ARRAY12, "array12", "power_consumption", { U32, U32, U32 }, true },
-            { TMercury230Device::REG_PARAM, "param", "value", { U24 }, true },
+            { TMercury230Device::REG_PARAM, "param", "value", {}, true, EByteOrder::LittleEndian },
             { TMercury230Device::REG_PARAM_SIGN_ACT, "param_sign_active", "value", { S24 }, true },
             { TMercury230Device::REG_PARAM_SIGN_REACT, "param_sign_reactive", "value", { S24 }, true },
             { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore", "value", { U24 }, true },
-            { TMercury230Device::REG_PARAM_BE, "param_be", "value", { S24 }, true }
+            { TMercury230Device::REG_PARAM_BE, "param_be", "value", {}, true }
         }));
 
 TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)

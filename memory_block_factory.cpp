@@ -1,6 +1,6 @@
-#include "protocol_memoryBlock_factory.h"
-#include "protocol_memoryBlock.h"
-#include "memoryBlock_config.h"
+#include "memory_block_factory.h"
+#include "memory_block.h"
+#include "register_config.h"
 #include "serial_device.h"
 
 #include <cassert>
@@ -13,7 +13,8 @@ TPMap<PMemoryBlock, TMemoryBlockBindInfo> TMemoryBlockFactory::GenerateMemoryBlo
 
     uint16_t memoryBlockSize;
     try {
-        memoryBlockSize = device->Protocol()->GetRegType(config->Type).Size;
+        const auto & type = device->Protocol()->GetRegType(config->Type);
+        memoryBlockSize = type.IsVariadicSize() ? RegisterFormatByteWidth(config->Format) : type.Size;
     } catch (out_of_range &) {
         throw TSerialDeviceException("unknown type name: '" + config->TypeName + "' of " + device->ToString() + ": " + config->ToString());
     }
@@ -51,7 +52,7 @@ TPMap<PMemoryBlock, TMemoryBlockBindInfo> TMemoryBlockFactory::GenerateMemoryBlo
         uint16_t startBit = max(int(config->BitOffset) - int(mbIndex * memoryBlockBitWidth), 0);
         uint16_t endBit   = min(memoryBlockBitWidth, uint16_t(startBit + bitsToAllocate));
 
-        auto protocolRegister = device->GetCreateRegister(address, type);
+        auto protocolRegister = device->GetCreateRegister(address, type, memoryBlockSize);
 
         const auto & insertResult = memoryBlocksBindInfo.insert({ protocolRegister, { startBit, endBit } });
         const auto & bindInfo = insertResult.first->second;

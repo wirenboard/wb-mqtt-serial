@@ -38,16 +38,6 @@ public:
     static PVirtualRegister Create(const PRegisterConfig & config, const PSerialDevice & device);
 
     /**
-     * Build resulting value from protocol registers' values according to binding info
-     */
-    static uint64_t MapValueFrom(const TPMap<PMemoryBlock, TMemoryBlockBindInfo> &);
-
-    /**
-     * Split given value and set to protocol registers according to binding info
-     */
-    static void MapValueTo(const PIRDeviceValueQuery &, const TPMap<PMemoryBlock, TMemoryBlockBindInfo> &, uint64_t);
-
-    /**
      * Returns hash that can be used by unordered_* containers
      */
     size_t GetHash() const noexcept;

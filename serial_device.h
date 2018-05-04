@@ -79,7 +79,7 @@ public:
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
     virtual const TProtocolInfo & GetProtocolInfo() const;
-    PMemoryBlock GetCreateRegister(uint32_t address, uint32_t type);
+    PMemoryBlock GetCreateRegister(uint32_t address, uint32_t type, uint16_t size);
     TPSetRange<PMemoryBlock> CreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last) const;
 
     // Prepare to access device (pauses for configured delay by default)

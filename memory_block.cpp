@@ -184,7 +184,7 @@ TMemoryBlock::TMemoryBlock(uint32_t address, uint16_t size, const TMemoryBlockTy
     : Cache(nullptr)
     , Address(address)
     , Type(type)
-    , Size(size)
+    , Size(type.IsVariadicSize() ? size : type.Size)
 {
     assert(Size < 8192 && "memory block size must be less than 8192 bytes");
 }

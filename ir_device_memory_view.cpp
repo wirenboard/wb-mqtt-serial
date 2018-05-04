@@ -24,7 +24,7 @@ uint16_t TIRDeviceMemoryViewMetadata::GetByteIndex(const PMemoryBlock & memoryBl
     assert(&memoryBlock->Type == &Type);
     assert(index < BlockSize);
 
-    auto memoryBlockByteIndex = (Type.ByteOrder == EByteOrder::BigEndian) ? index : (BlockSize - index - 1);
+    auto memoryBlockByteIndex = (Type.ByteOrder == EByteOrder::BigEndian) ? (BlockSize - index - 1) : index;
 
     auto byteIndex = GetBlockStart(memoryBlock) + memoryBlockByteIndex;
 
