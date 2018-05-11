@@ -22,7 +22,7 @@ namespace {
 }
 
 REGISTER_BASIC_INT_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({
-    { 0, "default", "value", TMemoryBlockType::Variadic, Float, true, EByteOrder::LittleEndian }
+    { 0, "default", "value", { Float }, true, EByteOrder::LittleEndian }
 }));
 
 
@@ -129,23 +129,18 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 }
 
 
-uint64_t TIVTMDevice::ReadMemoryBlock(const PMemoryBlock & mb)
+std::vector<uint8_t> TIVTMDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 {
     Port()->SkipNoise();
 
-    auto byteCount = mb->GetUsedByteCount();
+    WriteCommand(SlaveId, mb->Address, mb->Size);
+    std::vector<uint8_t> response(mb->Size);
+    ReadResponse(SlaveId, response.data(), response.size());
 
-    WriteCommand(SlaveId, mb->Address, byteCount);
-    uint8_t response[4];
-    ReadResponse(SlaveId, response, byteCount);
-
-    uint8_t * p = response;//&response[(address % 2) * 4];
-
-    // the response is little-endian. We inverse the byte order here to make it big-endian.
-    return (p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0];
+    return response;
 }
 
-void TIVTMDevice::WriteMemoryBlock(const PMemoryBlock &, uint64_t)
+void TIVTMDevice::WriteMemoryBlock(const PMemoryBlock &, const std::vector<uint8_t> &)
 {
     throw TSerialDeviceException("IVTM protocol: writing register is not supported");
 }

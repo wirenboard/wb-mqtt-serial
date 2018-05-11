@@ -11,17 +11,6 @@
 #include <bitset>
 
 
-namespace
-{
-    template <typename T = uint64_t>
-    inline T MersenneNumber(uint8_t bitCount)
-    {
-        static_assert(is_unsigned<T>::value, "mersenne number may be only unsigned");
-        assert(bitCount <= sizeof(T));
-        return (T(1) << bitCount) - 1;
-    }
-}
-
 TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
     : TDeviceSetupItemConfig(*config)
 {
@@ -185,7 +174,10 @@ void TSerialDevice::Read(const TIRDeviceQuery & query)
 
     SleepGuardInterval();
 
-    query.FinalizeRead(ReadMemoryBlock(mb));
+    const auto & data = ReadMemoryBlock(mb);
+    assert(data.size() == mb->Size);
+
+    query.FinalizeRead(data);
 }
 
 void TSerialDevice::Write(const TIRDeviceValueQuery & query)
@@ -202,14 +194,60 @@ void TSerialDevice::Write(const TIRDeviceValueQuery & query)
     query.FinalizeWrite();
 }
 
-uint64_t TSerialDevice::ReadMemoryBlock(const PMemoryBlock & mb)
+std::vector<uint8_t> TSerialDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 {
     throw TSerialDeviceException("ReadMemoryBlock is not implemented");
 }
 
-void TSerialDevice::WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value)
+void TSerialDevice::WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> &)
 {
     throw TSerialDeviceException("WriteMemoryBlock is not implemented");
+}
+
+void TSerialDevice::ReadFromMemory(const TIRDeviceMemoryBlockViewR & memoryView, const TMemoryBlockBindInfo & bindInfo, uint8_t offset, uint64_t & value) const
+{
+    const auto mask = bindInfo.GetMask();
+
+    for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryView.MemoryBlock->Size; ++iByte) {
+        auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
+        auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
+
+        if (begin >= end)
+            continue;
+
+        uint64_t bits = (mask >> (iByte * 8)) & (memoryView[iByte] >> begin);
+        value |= bits << offset;
+
+        auto bitCount = end - begin;
+        offset += bitCount;
+    }
+
+    // TODO: check for usefullness
+    if (Global::Debug) {
+        std::cerr << "mb mask: " << std::bitset<64>(mask) << std::endl;
+        std::cerr << "reading " << bindInfo.Describe() << " bits of " << memoryView.MemoryBlock->Describe()
+                << " to [" << (int)offset << ", " << int(offset + bindInfo.BitCount() - 1) << "] bits of value" << std::endl;
+    }
+}
+
+void TSerialDevice::WriteToMemory(const TIRDeviceMemoryBlockViewRW & memoryView, const TMemoryBlockBindInfo & bindInfo, uint8_t offset, const uint64_t & value) const
+{
+    const auto mask = bindInfo.GetMask();
+
+    for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryView.MemoryBlock->Size; ++iByte) {
+        auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
+        auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
+
+        if (begin >= end)
+            continue;
+
+        uint8_t byteMask = mask >> (iByte * 8);
+
+        memoryView[iByte] = (byteMask & ((value >> offset) << begin));
+
+        auto bitCount = end - begin;
+        offset += bitCount;
+    }
 }
 
 uint64_t TSerialDevice::ReadValue(const TIRDeviceMemoryViewR & memoryView, const TIRDeviceValueDesc & valueDesc) const
@@ -222,28 +260,8 @@ uint64_t TSerialDevice::ReadValue(const TIRDeviceMemoryViewR & memoryView, const
         const auto & memoryBlock = boundMemoryBlock.first;
         const auto & bindInfo = boundMemoryBlock.second;
 
-        const auto mask = MersenneNumber(bindInfo.BitCount()) << bindInfo.BitStart;
-
-        for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryBlock->Size; ++iByte) {
-            uint16_t begin = std::max(uint16_t(iByte * 8), bindInfo.BitStart);
-            uint16_t end = std::min(uint16_t((iByte + 1) * 8), bindInfo.BitEnd);
-
-            if (begin >= end)
-                continue;
-
-            uint64_t bits = memoryView.GetByte(memoryBlock, iByte) & (mask >> (iByte * 8));
-            value |= bits << bitPosition;
-
-            auto bitCount = end - begin;
-            bitPosition += bitCount;
-        }
-
-        // TODO: check for usefullness
-        if (Global::Debug) {
-            std::cerr << "mb mask: " << std::bitset<64>(mask) << std::endl;
-            std::cerr << "reading " << bindInfo.Describe() << " bits of " << memoryBlock->Describe()
-                 << " to [" << (int)bitPosition << ", " << int(bitPosition + bindInfo.BitCount() - 1) << "] bits of value" << std::endl;
-        }
+        ReadFromMemory(memoryView[memoryBlock], bindInfo, bitPosition, value);
+        bitPosition += bindInfo.BitCount();
     };
 
     if (valueDesc.WordOrder == EWordOrder::BigEndian) {
@@ -269,23 +287,19 @@ void TSerialDevice::WriteValue(const TIRDeviceMemoryViewRW & memoryView, const T
         const auto & memoryBlock = protocolRegisterBindInfo.first;
         const auto & bindInfo = protocolRegisterBindInfo.second;
 
-        const auto mask = MersenneNumber(bindInfo.BitCount()) << bindInfo.BitStart;
+        const auto & memoryBlockView = memoryView[memoryBlock];
 
-        for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryBlock->Size; ++iByte) {
-            uint16_t begin = std::max(uint16_t(iByte * 8), bindInfo.BitStart);
-            uint16_t end = std::min(uint16_t((iByte + 1) * 8), bindInfo.BitEnd);
+        WriteToMemory(memoryBlockView, bindInfo, bitPosition, value);
+        bitPosition += bindInfo.BitCount();
 
-            if (begin >= end)
-                continue;
+        // apply cache if memory block is cached
+        if (const auto & cache = memoryBlock->GetCache()) {
+            auto mask = bindInfo.GetMask();
 
-            uint8_t byteMask = mask >> (iByte * 8);
-
-            auto cachedBits = memoryBlock->GetCachedByte(iByte);
-
-            memoryView.GetByte(memoryBlock, iByte) = (~byteMask & cachedBits) | (byteMask & (value >> bitPosition));
-
-            auto bitCount = end - begin;
-            bitPosition += bitCount;
+            for (uint16_t iByte = 0; iByte < memoryBlock->Size; ++iByte) {
+                memoryBlockView[iByte] = (~mask & cache[iByte]) | (mask & memoryBlockView[iByte]);
+                mask >>= 8;
+            }
         }
     };
 

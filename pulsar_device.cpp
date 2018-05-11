@@ -2,6 +2,7 @@
 
 #include "pulsar_device.h"
 #include "memory_block.h"
+#include "memory_block_bind_info.h"
 
 #include <cstring>
 #include <cstdlib>
@@ -75,8 +76,8 @@ namespace {
 }
 
 REGISTER_BASIC_INT_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
-    { TPulsarDevice::REG_DEFAULT, "default", "value", { TMemoryBlockType::Variadic }, true },
-    { TPulsarDevice::REG_SYSTIME, "systime", "value", { U64 }, true }
+    { TPulsarDevice::REG_DEFAULT, "default", "value", {}, true, EByteOrder::LittleEndian },
+    { TPulsarDevice::REG_SYSTIME, "systime", "value", { U64 }, true, EByteOrder::LittleEndian }
 }));
 
 TPulsarDevice::TPulsarDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
@@ -205,9 +206,9 @@ void TPulsarDevice::WriteSysTimeRequest(uint32_t addr, uint16_t id)
     Port()->WriteBytes(buf, 10);
 }
 
-void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, uint16_t id)
+void TPulsarDevice::ReadResponse(uint32_t addr, std::vector<uint8_t> & payload, uint16_t id)
 {
-    const int exp_size = size + 10; /* payload size + service bytes */
+    const int exp_size = payload.size() + 10; /* payload size + service bytes */
     uint8_t response[exp_size];
 
     int nread = Port()->ReadFrame(response, exp_size, std::chrono::milliseconds(FrameTimeout),
@@ -252,47 +253,50 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, u
     }
 
     /* copy payload data to external buffer */
-    memcpy(payload, response + 6, size);
+    memcpy(payload.data(), response + 6, payload.size());
 }
 
-uint64_t TPulsarDevice::ReadDataRegister(const PMemoryBlock & mb)
+std::vector<uint8_t> TPulsarDevice::ReadDataRegister(const PMemoryBlock & mb)
 {
     // raw payload data
-    uint8_t payload[sizeof (uint64_t)];
+    std::vector<uint8_t> payload(mb->Size);
 
     // form register mask from address
     uint32_t mask = 1 << mb->Address; // TODO: register range or something like this
 
     // send data request and receive response
     WriteDataRequest(SlaveId, mask, RequestID);
-    ReadResponse(SlaveId, payload, mb->Size, RequestID);
+    ReadResponse(SlaveId, payload, RequestID);
 
     ++RequestID;
 
-    // decode little-endian double64_t value
-    return ReadHex(payload, mb->Size, false);
+    return payload;
 }
 
-uint64_t TPulsarDevice::ReadSysTimeRegister(const PMemoryBlock & mb)
+std::vector<uint8_t> TPulsarDevice::ReadSysTimeRegister(const PMemoryBlock & mb)
 {
     // raw payload data
-    uint8_t payload[6];
+    std::vector<uint8_t> payload;
+
+    payload.reserve(mb->Size);
+    payload.resize(6);
 
     // send system time request and receive response
     WriteSysTimeRequest(SlaveId, RequestID);
-    ReadResponse(SlaveId, payload, sizeof (payload), RequestID);
+    ReadResponse(SlaveId, payload, RequestID);
 
     ++RequestID;
 
-    // decode little-endian double64_t value
-    return ReadHex(payload, sizeof (payload), false);
+    payload.resize(mb->Size);
+
+    return payload;
 }
 
-uint64_t TPulsarDevice::ReadMemoryBlock(const PMemoryBlock & mb)
+std::vector<uint8_t> TPulsarDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 {
     Port()->SkipNoise();
 
-    switch (mb->Type) {
+    switch (mb->Type.Index) {
     case REG_DEFAULT:
         return ReadDataRegister(mb);
     case REG_SYSTIME: // TODO: think about return value
@@ -302,7 +306,7 @@ uint64_t TPulsarDevice::ReadMemoryBlock(const PMemoryBlock & mb)
     }
 }
 
-void TPulsarDevice::WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value)
+void TPulsarDevice::WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> &)
 {
     throw TSerialDeviceException("Pulsar protocol: writing to registers is not supported");
 }

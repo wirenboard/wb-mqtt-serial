@@ -2,6 +2,38 @@
 
 #include "declarations.h"
 
+struct TIRDeviceMemoryBlockViewMetadata
+{
+    const CPMemoryBlock MemoryBlock;
+
+    uint16_t GetByteIndex(uint16_t index) const;
+};
+
+template <typename P>
+struct TIRDeviceMemoryBlockView final: TIRDeviceMemoryBlockViewMetadata
+{
+    using R = std::remove_pointer<P>::type &;
+
+    const P RawMemory;
+
+    TIRDeviceMemoryView(P memory, const CPMemoryBlock & memoryBlock)
+        : TIRDeviceMemoryBlockViewMetadata{ memoryBlock }
+        , RawMemory(memory)
+    {}
+
+    R operator[](uint16_t index) const
+    {
+        assert(RawMemory);
+
+        return RawMemory[GetByteIndex(index)];
+    }
+
+    operator bool() const
+    {
+        return bool(RawMemory);
+    }
+};
+
 struct TIRDeviceMemoryViewMetadata
 {
     const uint32_t              Size;
@@ -9,17 +41,12 @@ struct TIRDeviceMemoryViewMetadata
     const uint32_t              StartAddress;
     const uint16_t              BlockSize;
 
-    uint16_t GetBlockStart(const PMemoryBlock & memoryBlock) const;
-
-protected:
-    uint16_t GetByteIndex(const PMemoryBlock & memoryBlock, uint16_t index) const;
+    uint16_t GetBlockStart(const CPMemoryBlock & memoryBlock) const;
 };
 
 template <typename P>
 struct TIRDeviceMemoryView final: TIRDeviceMemoryViewMetadata
 {
-    using R = std::remove_pointer<P>::type &;
-
     const P RawMemory;
 
     TIRDeviceMemoryView(P memory, uint32_t size, const TMemoryBlockType & type, uint32_t startAddress, uint16_t blockSize)
@@ -27,16 +54,14 @@ struct TIRDeviceMemoryView final: TIRDeviceMemoryViewMetadata
         , RawMemory(memory)
     {}
 
-    P GetMemoryBlockData(const PMemoryBlock & memoryBlock) const
+    TIRDeviceMemoryBlockView<P> operator[](const CPMemoryBlock & memoryBlock) const
     {
-        return RawMemory + GetBlockStart(memoryBlock);
-    }
-
-    R GetByte(const PMemoryBlock & memoryBlock, uint16_t index) const
-    {
-        return RawMemory[GetByteIndex(memoryBlock, index)];
+        return { RawMemory + GetBlockStart(memoryBlock), memoryBlock };
     }
 };
+
+using TIRDeviceMemoryBlockViewR  = TIRDeviceMemoryBlockView<const uint8_t *>;
+using TIRDeviceMemoryBlockViewRW = TIRDeviceMemoryBlockView<uint8_t *>;
 
 using TIRDeviceMemoryViewR  = TIRDeviceMemoryView<const uint8_t *>;
 using TIRDeviceMemoryViewRW = TIRDeviceMemoryView<uint8_t *>;

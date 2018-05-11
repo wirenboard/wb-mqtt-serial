@@ -294,15 +294,9 @@ void TMemoryBlock::CacheIfNeeded(const uint8_t * data)
     }
 }
 
-uint8_t TMemoryBlock::GetCachedByte(uint16_t index) const
+TIRDeviceMemoryBlockViewR TMemoryBlock::GetCache() const
 {
-    assert(index < Size);
-
-    if (Cache) {
-        return Cache[Type.ByteOrder == EByteOrder::BigEndian ? index : (Size - index - 1)];
-    }
-
-    return 0x00;
+    return { Cache, shared_from_this() };
 }
 
 std::string TMemoryBlock::Describe() const

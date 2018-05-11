@@ -41,8 +41,8 @@ private:
     std::vector<uint8_t> ReadValueArray(const PMemoryBlock & mb);
     std::vector<uint8_t> ReadParam(const PMemoryBlock & mb);
 
-    uint64_t ReadValue(const TIRDeviceMemoryViewR &, const TIRDeviceValueDesc &) const override;
-    void WriteValue(const TIRDeviceMemoryViewRW &, const TIRDeviceValueDesc &, uint64_t) const override;
+    void ReadFromMemory(const TIRDeviceMemoryBlockViewR &, const TMemoryBlockBindInfo &, uint8_t offset, uint64_t & value) const override;
+    void WriteToMemory(const TIRDeviceMemoryBlockViewRW &, const TMemoryBlockBindInfo &, uint8_t offset, const uint64_t & value) const override;
 
     std::unordered_map<int, TValueArray> CachedValues;
 };

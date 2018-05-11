@@ -22,11 +22,11 @@ namespace {
 }
 
 REGISTER_BASIC_INT_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
-            { TUnielDevice::REG_RELAY, "relay", "switch", U8 },
-            { TUnielDevice::REG_INPUT, "input", "text", U8, true },
-            { TUnielDevice::REG_PARAM, "param", "value", U8 },
+            { TUnielDevice::REG_RELAY, "relay", "switch", { U8 } },
+            { TUnielDevice::REG_INPUT, "input", "text", { U8 }, true },
+            { TUnielDevice::REG_PARAM, "param", "value", { U8 } },
             // "value", not "range" because 'max' cannot be specified here.
-            { TUnielDevice::REG_BRIGHTNESS, "brightness", "value", U8 }
+            { TUnielDevice::REG_BRIGHTNESS, "brightness", "value", { U8 } }
         }));
 
 TUnielDevice::TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol)
@@ -83,7 +83,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-uint64_t TUnielDevice::ReadMemoryBlock(const PMemoryBlock & mb)
+std::vector<uint8_t> TUnielDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 {
     WriteCommand(READ_CMD, SlaveId, 0, uint8_t(mb->Address), 0);
     uint8_t response[3];
@@ -91,22 +91,25 @@ uint64_t TUnielDevice::ReadMemoryBlock(const PMemoryBlock & mb)
     if (response[1] != uint8_t(mb->Address))
         throw TSerialDeviceTransientErrorException("register index mismatch");
 
-    if (mb->Type == REG_RELAY)
-        return response[0] ? 1 : 0;
-    return response[0];
+    if (mb->Type.Index == REG_RELAY)
+        return { uint8_t(response[0] ? 1 : 0) };
+    return { response[0] };
 }
 
-void TUnielDevice::WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value)
+void TUnielDevice::WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> & memory)
 {
+    assert(memory.size() == 1);
+    auto value = memory.front();
+
     uint8_t cmd, addr;
-    if (mb->Type == REG_BRIGHTNESS) {
+    if (mb->Type.Index == REG_BRIGHTNESS) {
         cmd = SET_BRIGHTNESS_CMD;
         addr = uint8_t(mb->Address >> 8);
     } else {
         cmd = WRITE_CMD;
         addr = uint8_t(mb->Address);
     }
-    if (mb->Type == REG_RELAY && value != 0)
+    if (mb->Type.Index == REG_RELAY && value != 0)
         value = 255;
     WriteCommand(cmd, SlaveId, value, addr, 0);
     uint8_t response[3];

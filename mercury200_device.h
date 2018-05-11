@@ -17,16 +17,15 @@ class TMercury200Device : public TBasicProtocolSerialDevice<TBasicProtocol<TMerc
 public:
     enum RegisterType
     {
-        REG_PARAM_VALUE8 = 0,
-        REG_PARAM_VALUE16 = 1,
-        REG_PARAM_VALUE24 = 2,
-        REG_PARAM_VALUE32 = 3,
+        MEM_TARIFFS = 0,
+        MEM_PARAMS = 1,
+        REG_PARAM_16 = 2,
     };
 
     TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol);
     ~TMercury200Device();
-    uint64_t ReadMemoryBlock(const PMemoryBlock & mb) override;
-    void WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value) override;
+    std::vector<uint8_t> ReadMemoryBlock(const PMemoryBlock & mb) override;
+    void WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> &) override;
     void EndPollCycle() override;
 
 private:
@@ -37,8 +36,6 @@ private:
     bool IsBadHeader(uint32_t slave_expected, uint8_t cmd_expected, uint8_t *response) const;
 
     bool IsCrcValid(uint8_t *buf, int sz) const;
-
-    std::unordered_map<uint8_t, std::vector<uint8_t> > CmdResultCache;
 };
 
 typedef std::shared_ptr<TMercury200Device> PMercury200Device;

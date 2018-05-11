@@ -14,10 +14,9 @@ namespace
 }
 
 REGISTER_BASIC_INT_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes({
-    { TMercury200Device::REG_PARAM_VALUE8, "param8", "value", { U8 }, true },
-    { TMercury200Device::REG_PARAM_VALUE16, "param16", "value", { BCD16 }, true },
-    { TMercury200Device::REG_PARAM_VALUE24, "param24", "value", { BCD24 }, true },
-    { TMercury200Device::REG_PARAM_VALUE32, "param32", "value", { BCD32 }, true }
+    { TMercury200Device::MEM_TARIFFS, "tariffs", "value", { U32, U32, U32, U32 }, true },
+    { TMercury200Device::MEM_PARAMS, "params", "value", { BCD16, BCD16, BCD24 }, true },
+    { TMercury200Device::REG_PARAM_16, "param16", "value", { BCD16 }, true },
 }));
 
 TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol)
@@ -29,11 +28,6 @@ TMercury200Device::~TMercury200Device()
 
 std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
 {
-    auto it = CmdResultCache.find(cmd);
-    if (it != CmdResultCache.end()) {
-        return it->second;
-    }
-
     uint8_t buf[100] = {0x00};
     auto readn = RequestResponse(SlaveId, cmd, buf);
     if (readn < 4) { //fixme 4
@@ -48,49 +42,23 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
     uint8_t* payload = buf + HEADER_SZ;
     std::vector<uint8_t> result = {0};
     result.assign(payload, payload + readn - HEADER_SZ);
-    return CmdResultCache.insert({cmd, result}).first->second;
 }
 
 
-uint64_t TMercury200Device::ReadMemoryBlock(const PMemoryBlock & mb)
+std::vector<uint8_t> TMercury200Device::ReadMemoryBlock(const PMemoryBlock & mb)
 {
-    uint8_t cmd = (mb->Address & 0xFF00) >> 8;
-    uint8_t offset = (mb->Address & 0xFF);
+    uint8_t cmd = (mb->Address & 0xFF);
 
-    WordSizes size;
-    switch (mb->Type.Index) {
-    case REG_PARAM_VALUE32:
-        size = WordSizes::W32_SZ;
-        break;
-    case REG_PARAM_VALUE24:
-        size = WordSizes::W24_SZ;
-        break;
-    case REG_PARAM_VALUE16:
-        size = WordSizes::W16_SZ;
-        break;
-    case REG_PARAM_VALUE8:
-        size = WordSizes::W8_SZ;
-        break;
-    default:
-        throw TSerialDeviceException("mercury200: invalid register type");
-    }
-
-    auto result = ExecCommand(cmd);
-    if (result.size() < offset + static_cast<unsigned>(size))
-        throw TSerialDeviceException("mercury200: register address is out of range");
-
-    return PackBytes(result.data() + offset, size);
+    return ExecCommand(cmd);
 }
 
-void TMercury200Device::WriteMemoryBlock(const PMemoryBlock &, uint64_t)
+void TMercury200Device::WriteMemoryBlock(const PMemoryBlock &, const std::vector<uint8_t> &)
 {
     throw TSerialDeviceException("mercury200: register writing is not supported");
 }
 
 void TMercury200Device::EndPollCycle()
 {
-    CmdResultCache.clear();
-
     TSerialDevice::EndPollCycle();
 }
 

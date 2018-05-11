@@ -3,6 +3,7 @@
 #include "types.h"
 #include "utils.h"
 #include "declarations.h"
+#include "ir_device_memory_view.h"
 
 /**
  * @brief: Lightweight representation of atomic chunk of memory accessed via device protocol,
@@ -75,7 +76,7 @@ public:
     bool NeedsCaching() const;
     void AssignCache(uint8_t *);
     void CacheIfNeeded(const uint8_t * data);
-    uint8_t GetCachedByte(uint16_t index) const;
+    TIRDeviceMemoryBlockViewR GetCache() const;
 
     std::string Describe() const;
 };

@@ -106,8 +106,11 @@ public:
     /**
      * Override these methods if device memory has its own format TODO: make more clear annotation
      */
-    virtual uint64_t ReadValue(const TIRDeviceMemoryViewR &, const TIRDeviceValueDesc &) const;
-    virtual void WriteValue(const TIRDeviceMemoryViewRW &, const TIRDeviceValueDesc &, uint64_t) const;
+    virtual void ReadFromMemory(const TIRDeviceMemoryBlockViewR &, const TMemoryBlockBindInfo &, uint8_t offset, uint64_t & value) const;
+    virtual void WriteToMemory(const TIRDeviceMemoryBlockViewRW &, const TMemoryBlockBindInfo &, uint8_t offset, const uint64_t & value) const;
+
+    uint64_t ReadValue(const TIRDeviceMemoryViewR &, const TIRDeviceValueDesc &) const;
+    void WriteValue(const TIRDeviceMemoryViewRW &, const TIRDeviceValueDesc &, uint64_t) const;
 
     void InitializeMemoryBlocksCache();
 

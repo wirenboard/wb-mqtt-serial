@@ -24,6 +24,7 @@ struct TMemoryBlockBindInfo
         return BitEnd <= rhs.BitStart;
     }
 
+    uint64_t GetMask() const;
     std::string Describe() const;
 };
 
