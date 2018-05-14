@@ -57,6 +57,9 @@ struct TMemoryBlockType {
 
     ERegisterFormat GetDefaultFormat(uint16_t bit) const;
 
+    /* Get how many individual values are in block */
+    uint8_t GetValueCount() const;
+
     struct {
         std::string     ControlType;
         EWordOrder      WordOrder;

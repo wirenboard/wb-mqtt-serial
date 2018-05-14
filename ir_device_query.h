@@ -3,6 +3,7 @@
 #include "declarations.h"
 #include "utils.h"
 #include "types.h"
+#include "ir_device_memory_view.h"
 
 #include <list>
 #include <vector>
@@ -49,7 +50,10 @@ public:
 
     PSerialDevice GetDevice() const;
     uint32_t GetCount() const;
+    uint32_t GetValueCount() const;
     uint32_t GetStart() const;
+    uint32_t GetBlockSize() const;
+    uint32_t GetSize() const;
     const TMemoryBlockType & GetType() const;
     const std::string & GetTypeName() const;
 
@@ -78,11 +82,11 @@ public:
      * Accept values read from device as current and set status to Ok
      */
     template <typename T>
-    void FinalizeRead(const void * values) const
+    void FinalizeRead(const T * values) const
     {
         CheckTypeMany<T>();
 
-        FinalizeReadImpl(static_cast<uint8_t *>(values), sizeof(T) * GetCount());
+        FinalizeRead(values, sizeof(T) * GetCount());
     }
 
     /**
@@ -93,7 +97,7 @@ public:
     {
         CheckTypeMany<T>();
 
-        FinalizeReadImpl(values.data(), sizeof(T) * values.size());
+        FinalizeRead(values.data(), sizeof(T) * values.size());
     }
 
     /**
@@ -104,12 +108,12 @@ public:
     {
         CheckTypeSingle<T>();
 
-        FinalizeReadImpl(&value, sizeof(T));
+        FinalizeRead(&value, sizeof(T));
     }
 
-    void FinalizeRead(const uint8_t * mem, size_t size) const
+    void FinalizeRead(const void * mem, size_t size) const
     {
-        FinalizeReadImpl(mem, size);
+        FinalizeReadImpl(static_cast<const uint8_t *>(mem), size);
     }
 
     std::string Describe() const;
@@ -119,13 +123,22 @@ private:
     void FinalizeReadImpl(const uint8_t * mem, size_t size) const;
 };
 
-struct TIRDeviceValueQuery: TIRDeviceQuery
+struct TIRDeviceValueQuery final: TIRDeviceQuery
 {
-    virtual void IterRegisterValues(std::function<void(TMemoryBlock &, uint64_t)> && accessor) const = 0;
-    virtual void SetValue(const PMemoryBlock & mb, uint64_t value) const = 0;
+    friend class TIRDeviceQueryFactory;
+
+    TPMap<PMemoryBlock, TIRDeviceMemoryBlockViewRW> MemoryBlockValues;
+    TIRDeviceMemoryViewRW   MemoryView;
+    std::vector<uint8_t>    Memory;
+
+
+    TIRDeviceValueQuery(const TPSet<PMemoryBlock> & memoryBlockSet, EQueryOperation operation);
+
+    void IterRegisterValues(std::function<void(TMemoryBlock &, const TIRDeviceMemoryBlockViewRW &)> && accessor) const;
+    void SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value) const;
 
     template <typename T>
-    void GetValues(void * values) const
+    void GetValues(T * values) const
     {
         CheckTypeMany<T>();
 
@@ -151,11 +164,7 @@ struct TIRDeviceValueQuery: TIRDeviceQuery
     void FinalizeWrite() const;
 
 protected:
-    TIRDeviceValueQuery(const TPSet<PMemoryBlock> & registerSet, EQueryOperation operation)
-        : TIRDeviceQuery(registerSet, operation)
-    {}
-
-    virtual void GetValuesImpl(void * mem, size_t size, size_t count) const = 0;
+    void GetValuesImpl(void * mem, size_t size, size_t count) const;
 };
 
 struct TIRDeviceQuerySet
@@ -164,7 +173,7 @@ struct TIRDeviceQuerySet
 
     TQueries Queries;
 
-    TIRDeviceQuerySet(std::list<TPSet<PMemoryBlock>> && registerSets, EQueryOperation);
+    TIRDeviceQuerySet(std::list<TPSet<PMemoryBlock>> && memoryBlockSets, EQueryOperation);
 
     std::string Describe() const;
     PSerialDevice GetDevice() const;

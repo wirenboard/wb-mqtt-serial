@@ -1,5 +1,6 @@
 #include "ivtm_device.h"
 #include "memory_block.h"
+#include "ir_device_query.h"
 
 #include <errno.h>
 #include <string.h>
@@ -129,20 +130,17 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 }
 
 
-std::vector<uint8_t> TIVTMDevice::ReadMemoryBlock(const PMemoryBlock & mb)
+void TIVTMDevice::Read(const TIRDeviceQuery & query)
 {
     Port()->SkipNoise();
 
+    const auto & mb = query.MemoryBlockRange.GetFirst();
+
     WriteCommand(SlaveId, mb->Address, mb->Size);
-    std::vector<uint8_t> response(mb->Size);
-    ReadResponse(SlaveId, response.data(), response.size());
+    uint8_t response[4];
+    ReadResponse(SlaveId, response, mb->Size);
 
-    return response;
-}
-
-void TIVTMDevice::WriteMemoryBlock(const PMemoryBlock &, const std::vector<uint8_t> &)
-{
-    throw TSerialDeviceException("IVTM protocol: writing register is not supported");
+    query.FinalizeRead(response);
 }
 
 #if 0

@@ -1,11 +1,11 @@
 #include "ir_device_query.h"
 #include "ir_device_query_factory.h"
-#include "ir_device_memory_view.h"
 #include "memory_block.h"
 #include "virtual_register.h"
 #include "serial_device.h"
 
 #include <cstring>
+#include <bitset>
 
 using namespace std;
 
@@ -16,15 +16,15 @@ namespace
         s << mb->Address;
     }
 
-    TPSet<PVirtualRegister> GetVirtualRegisters(const TPSet<PMemoryBlock> & registerSet)
+    TPSet<PVirtualRegister> GetVirtualRegisters(const TPSet<PMemoryBlock> & memoryBlockSet)
     {
         TPSet<PVirtualRegister> result;
 
-        for (const auto & protocolRegister: registerSet) {
-            const auto & localVirtualRegisters = protocolRegister->GetVirtualRegsiters();
+        for (const auto & memoryBlock: memoryBlockSet) {
+            const auto & localVirtualRegisters = memoryBlock->GetVirtualRegsiters();
             for (const auto & virtualRegister: localVirtualRegisters) {
-                const auto & protocolRegisters = virtualRegister->GetMemoryBlocks();
-                if (IsSubset(registerSet, protocolRegisters)) {
+                const auto & memoryBlocks = virtualRegister->GetMemoryBlocks();
+                if (IsSubset(memoryBlockSet, memoryBlocks)) {
                     result.insert(virtualRegister);
                 }
             }
@@ -33,10 +33,10 @@ namespace
         return move(result);
     }
 
-    bool DetectHoles(const TPSet<PMemoryBlock> & registerSet)
+    bool DetectHoles(const TPSet<PMemoryBlock> & memoryBlockSet)
     {
         int prev = -1;
-        for (const auto & mb: registerSet) {
+        for (const auto & mb: memoryBlockSet) {
             if (prev >= 0 && (mb->Address - prev) > 1) {
                 return true;
             }
@@ -56,18 +56,124 @@ namespace
             return mb->Type.Index == typeIndex && mb->Size == size;
         });
     }
+
+    inline void ReadFromMemory(const TIRDeviceMemoryBlockViewR & memoryView, const TMemoryBlockBindInfo & bindInfo, uint8_t offset, uint64_t & value)
+    {
+        const auto mask = bindInfo.GetMask();
+
+        for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryView.MemoryBlock->Size; ++iByte) {
+            auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
+            auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
+
+            if (begin >= end)
+                continue;
+
+            uint64_t bits = (mask >> (iByte * 8)) & (memoryView[iByte] >> begin);
+            value |= bits << offset;
+
+            auto bitCount = end - begin;
+            offset += bitCount;
+        }
+
+        // TODO: check for usefullness
+        if (Global::Debug) {
+            std::cerr << "mb mask: " << std::bitset<64>(mask) << std::endl;
+            std::cerr << "reading " << bindInfo.Describe() << " bits of " << memoryView.MemoryBlock->Describe()
+                    << " to [" << (int)offset << ", " << int(offset + bindInfo.BitCount() - 1) << "] bits of value" << std::endl;
+        }
+    }
+
+    inline uint64_t ReadValue(const TIRDeviceMemoryViewR & memoryView, const TIRDeviceValueDesc & valueDesc)
+    {
+        uint64_t value = 0;
+
+        uint8_t bitPosition = 0;
+
+        auto readMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & boundMemoryBlock) {
+            const auto & memoryBlock = boundMemoryBlock.first;
+            const auto & bindInfo = boundMemoryBlock.second;
+
+            ReadFromMemory(memoryView[memoryBlock], bindInfo, bitPosition, value);
+            bitPosition += bindInfo.BitCount();
+        };
+
+        if (valueDesc.WordOrder == EWordOrder::BigEndian) {
+            std::for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), readMemoryBlock);
+        } else {
+            std::for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), readMemoryBlock);
+        }
+
+        if (Global::Debug)
+            std::cerr << "map value from registers: " << value << std::endl;
+
+        return value;
+    }
+
+    inline void WriteToMemory(const TIRDeviceMemoryBlockViewRW & memoryView, const TMemoryBlockBindInfo & bindInfo, uint8_t offset, const uint64_t & value)
+    {
+        const auto mask = bindInfo.GetMask();
+
+        for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryView.MemoryBlock->Size; ++iByte) {
+            auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
+            auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
+
+            if (begin >= end)
+                continue;
+
+            uint8_t byteMask = mask >> (iByte * 8);
+
+            memoryView[iByte] = (byteMask & ((value >> offset) << begin));
+
+            auto bitCount = end - begin;
+            offset += bitCount;
+        }
+    }
+
+    inline void WriteValue(const TIRDeviceMemoryViewRW & memoryView, const TIRDeviceValueDesc & valueDesc, uint64_t value)
+    {
+        if (Global::Debug)
+            std::cerr << "map value to registers: " << value << std::endl;
+
+        uint8_t bitPosition = 0;
+
+        auto writeMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & memoryBlockBindInfo){
+            const auto & memoryBlock = memoryBlockBindInfo.first;
+            const auto & bindInfo = memoryBlockBindInfo.second;
+
+            const auto & memoryBlockView = memoryView[memoryBlock];
+
+            WriteToMemory(memoryBlockView, bindInfo, bitPosition, value);
+            bitPosition += bindInfo.BitCount();
+
+            // apply cache if memory block is cached
+            if (const auto & cache = memoryBlock->GetCache()) {
+                auto mask = bindInfo.GetMask();
+
+                for (uint16_t iByte = 0; iByte < memoryBlock->Size; ++iByte) {
+                    memoryBlockView[iByte] = (~mask & cache[iByte]) | (mask & memoryBlockView[iByte]);
+                    mask >>= 8;
+                }
+            }
+        };
+
+        if (valueDesc.WordOrder == EWordOrder::BigEndian) {
+            for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), writeMemoryBlock);
+        } else {
+            for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), writeMemoryBlock);
+        }
+    }
 }
 
-TIRDeviceQuery::TIRDeviceQuery(const TPSet<PMemoryBlock> & registerSet, EQueryOperation operation)
-    : MemoryBlockRange(TSerialDevice::StaticCreateMemoryBlockRange(*registerSet.begin(), *registerSet.rbegin()))
-    , VirtualRegisters(GetVirtualRegisters(registerSet))
-    , HasHoles(DetectHoles(registerSet))
+TIRDeviceQuery::TIRDeviceQuery(const TPSet<PMemoryBlock> & memoryBlockSet, EQueryOperation operation)
+    : MemoryBlockRange(TSerialDevice::StaticCreateMemoryBlockRange(*memoryBlockSet.begin(), *memoryBlockSet.rbegin()))
+    , VirtualRegisters(GetVirtualRegisters(memoryBlockSet))
+    , HasHoles(DetectHoles(memoryBlockSet))
     , Operation(operation)
     , Status(EQueryStatus::NotExecuted)
 {
     AbleToSplit = (VirtualRegisters.size() > 1);
 
-    assert(IsSameTypeAndSize(registerSet));
+    assert(IsSameTypeAndSize(memoryBlockSet));
 }
 
 bool TIRDeviceQuery::operator<(const TIRDeviceQuery & rhs) const noexcept
@@ -85,9 +191,24 @@ uint32_t TIRDeviceQuery::GetCount() const
     return (MemoryBlockRange.GetLast()->Address - MemoryBlockRange.GetFirst()->Address) + 1;
 }
 
+uint32_t TIRDeviceQuery::GetValueCount() const
+{
+    return GetCount() * GetType().GetValueCount();
+}
+
 uint32_t TIRDeviceQuery::GetStart() const
 {
     return MemoryBlockRange.GetFirst()->Address;
+}
+
+uint32_t TIRDeviceQuery::GetBlockSize() const
+{
+    return (*MemoryBlockRange.begin())->Size;    // it is guaranteed that all blocks in query have same size and type
+}
+
+uint32_t TIRDeviceQuery::GetSize() const
+{
+    return GetBlockSize() * GetCount();
 }
 
 const TMemoryBlockType & TIRDeviceQuery::GetType() const
@@ -189,25 +310,113 @@ string TIRDeviceQuery::DescribeOperation() const
 
 void TIRDeviceQuery::FinalizeReadImpl(const uint8_t * mem, size_t size) const
 {
-    auto memoryBlockSize = (*MemoryBlockRange.begin())->Size;    // it is guaranteed that all blocks in query have same size and type
-
     assert(Operation == EQueryOperation::Read);
     assert(GetStatus() == EQueryStatus::NotExecuted);
-    assert(GetCount() * memoryBlockSize == size);
+    assert(GetSize() == size);
 
-    TIRDeviceMemoryViewR memoryView{ mem, size, GetType(), GetStart(), memoryBlockSize };
+    TIRDeviceMemoryViewR memoryView{ mem, size, GetType(), GetStart(), GetBlockSize() };
 
     for (const auto & mb: MemoryBlockRange) {
-        mb->CacheIfNeeded(memoryView.GetMemoryBlockData(mb));
+        mb->CacheIfNeeded(memoryView[mb]);
     }
 
-    auto device = GetDevice();
-
     for (const auto & reg: VirtualRegisters) {
-        reg->AcceptDeviceValue(device->ReadValue(memoryView, reg->GetValueDesc()));
+        reg->AcceptDeviceValue(ReadValue(memoryView, reg->GetValueDesc()));
     }
 
     SetStatus(EQueryStatus::Ok);
+}
+
+TIRDeviceValueQuery::TIRDeviceValueQuery(const TPSet<PMemoryBlock> & memoryBlockSet, EQueryOperation operation)
+    : TIRDeviceQuery(memoryBlockSet, operation)
+    , MemoryView{ Memory.data(), Memory.size(), GetType(), GetStart(), GetBlockSize() }
+    , Memory(GetSize())
+{
+    for (const auto & mb: memoryBlockSet) {
+        MemoryBlockValues[mb] = MemoryView[mb];
+    }
+
+    assert(!MemoryBlockValues.empty());
+}
+
+void TIRDeviceValueQuery::IterRegisterValues(std::function<void(TMemoryBlock &, const TIRDeviceMemoryBlockViewRW &)> && accessor) const
+{
+    for (const auto & registerValue: MemoryBlockValues) {
+        accessor(*registerValue.first, registerValue.second);
+    }
+}
+
+void TIRDeviceValueQuery::SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value) const
+{
+    WriteValue(MemoryView, valueDesc, value);
+}
+
+void TIRDeviceValueQuery::GetValuesImpl(void * mem, size_t size, size_t count) const
+{
+    assert(GetValueCount() == count);
+    assert(GetSize() <= size * count);
+
+    auto itMemoryBlock = MemoryBlockRange.First;
+    auto itMemoryBlockValue = MemoryBlockValues.begin();
+    auto bytes = static_cast<uint8_t*>(mem);
+
+    assert(*itMemoryBlock == itMemoryBlockValue->first);
+
+    for (uint32_t i = 0; i < count; ++i) {
+        const auto requestedRegisterAddress = GetStart() + i;
+
+        assert(itMemoryBlock != MemoryBlockRange.end());
+        assert(itMemoryBlockValue != MemoryBlockValues.end());
+
+        // try read value from query itself
+        {
+            const auto & memoryBlock = itMemoryBlockValue->first;
+            const auto & value = itMemoryBlockValue->second;
+
+            if (memoryBlock->Address == requestedRegisterAddress) {    // this register exists and query has its value - write from query
+                memcpy(bytes, value, size);
+
+                if (Global::Debug) {
+                    std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: read address '" << requestedRegisterAddress << "' from query: '" << /*value*/ "TODO: output memory" << "'" << std::endl;
+                }
+
+                ++itMemoryBlock;
+                ++itMemoryBlockValue;
+                bytes += size;
+                continue;
+            }
+        }
+
+        // try read value from cache
+        {
+            const auto & memoryBlock = *itMemoryBlock;
+
+            if (memoryBlock->Address == requestedRegisterAddress) {    // this register exists but query doesn't have value for it - write cached value
+                const auto & cache = memoryBlock->GetCache();
+                assert(cache);
+                memcpy(bytes, cache, size);
+
+                if (Global::Debug) {
+                    std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: read address '" << requestedRegisterAddress << "' from cache: '" << /*memoryBlock->GetValue()*/ "TODO: output memory" << "'" << std::endl;
+                }
+                ++itMemoryBlock;
+                bytes += size;
+                continue;
+            }
+        }
+
+        // driver doesn't use this address (hole) - fill with zeroes
+        {
+            if (Global::Debug) {
+                std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: zfill address '" << requestedRegisterAddress << "'" << std::endl;
+            }
+            memset(bytes, 0, size);
+            bytes += size;
+        }
+    }
+
+    assert(itMemoryBlock == MemoryBlockRange.end());
+    assert(itMemoryBlockValue == MemoryBlockValues.end());
 }
 
 void TIRDeviceValueQuery::FinalizeWrite() const
@@ -215,8 +424,8 @@ void TIRDeviceValueQuery::FinalizeWrite() const
     assert(Operation == EQueryOperation::Write);
     assert(GetStatus() == EQueryStatus::NotExecuted);
 
-    IterRegisterValues([this](TMemoryBlock & mb, uint64_t value) {
-        mb.SetValue(value);
+    IterRegisterValues([this](TMemoryBlock & mb, const TIRDeviceMemoryBlockViewRW & memoryView) {
+        mb.CacheIfNeeded(memoryView);
     });
 
     SetStatus(EQueryStatus::Ok);
@@ -231,9 +440,9 @@ string TIRDeviceQuerySet::Describe() const
     }, true, "");
 }
 
-TIRDeviceQuerySet::TIRDeviceQuerySet(list<TPSet<PMemoryBlock>> && registerSets, EQueryOperation operation)
+TIRDeviceQuerySet::TIRDeviceQuerySet(list<TPSet<PMemoryBlock>> && memoryBlockSets, EQueryOperation operation)
 {
-    Queries = TIRDeviceQueryFactory::GenerateQueries(move(registerSets), operation);
+    Queries = TIRDeviceQueryFactory::GenerateQueries(move(memoryBlockSets), operation);
 
     if (Global::Debug) {
         cerr << "Initialized query set: " << Describe() << endl;

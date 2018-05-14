@@ -24,12 +24,10 @@ public:
 
     TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol);
     ~TMercury200Device();
-    std::vector<uint8_t> ReadMemoryBlock(const PMemoryBlock & mb) override;
-    void WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> &) override;
+    void Read(const TIRDeviceQuery &) override;
     void EndPollCycle() override;
 
 private:
-    std::vector<uint8_t> ExecCommand(uint8_t cmd);
     // buf expected to be 7 bytes long
     void FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) const;
     int RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* response) const;

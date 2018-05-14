@@ -65,13 +65,13 @@ void TModbusTest::SetUp()
     SerialPort->Open();
 }
 
-set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> registerSet)
+set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> memoryBlockSet)
 {
     size_t expectedQuerySetCount = 0;
     size_t expectedQueryCount = 0;
 
-    if (registerSet.empty()) {
-        registerSet = {
+    if (memoryBlockSet.empty()) {
+        memoryBlockSet = {
             ModbusCoil0, ModbusCoil1, ModbusDiscrete, ModbusHolding, ModbusInput, ModbusHoldingS64
         };
 
@@ -85,7 +85,7 @@ set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> registerSet)
         expectedQueryCount = 5;
     }
 
-    auto querySetsByPollInterval = TIRDeviceQueryFactory::GenerateQuerySets(registerSet, EQueryOperation::Read);
+    auto querySetsByPollInterval = TIRDeviceQueryFactory::GenerateQuerySets(memoryBlockSet, EQueryOperation::Read);
 
     if (expectedQuerySetCount > 0) {
         if (querySetsByPollInterval.size() != expectedQuerySetCount) {
@@ -125,7 +125,7 @@ set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> registerSet)
         }
     }
 
-    EXPECT_EQ(to_string(registerSet.size()), to_string(readAddresses.size()));
+    EXPECT_EQ(to_string(memoryBlockSet.size()), to_string(readAddresses.size()));
 
     for (auto registerValue: registerValues) {
         auto address = registerValue.first;

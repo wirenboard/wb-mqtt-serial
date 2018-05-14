@@ -24,9 +24,9 @@ void TIVTMDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("ivtm"));
 
-    Dev1Temp = Dev->GetCreateRegister(0, 0);
-    Dev1Humidity = Dev->GetCreateRegister(4, 0);
-    Dev2Temp = Dev->GetCreateRegister(0, 0);
+    Dev1Temp = Dev->GetCreateMemoryBlock(0, 0);
+    Dev1Humidity = Dev->GetCreateMemoryBlock(4, 0);
+    Dev2Temp = Dev->GetCreateMemoryBlock(0, 0);
 
     SerialPort->Open();
 }

@@ -1,5 +1,6 @@
 #include "uniel_device.h"
 #include "memory_block.h"
+#include "ir_device_query.h"
 
 #include <errno.h>
 #include <string.h>
@@ -83,25 +84,27 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-std::vector<uint8_t> TUnielDevice::ReadMemoryBlock(const PMemoryBlock & mb)
+void TUnielDevice::Read(const TIRDeviceQuery & query)
 {
-    WriteCommand(READ_CMD, SlaveId, 0, uint8_t(mb->Address), 0);
+    WriteCommand(READ_CMD, SlaveId, 0, uint8_t(query.GetStart()), 0);
     uint8_t response[3];
     ReadResponse(READ_CMD, response);
-    if (response[1] != uint8_t(mb->Address))
+    if (response[1] != uint8_t(query.GetStart()))
         throw TSerialDeviceTransientErrorException("register index mismatch");
 
-    if (mb->Type.Index == REG_RELAY)
-        return { uint8_t(response[0] ? 1 : 0) };
-    return { response[0] };
+    if (query.GetType().Index == REG_RELAY) {
+        query.FinalizeRead(uint8_t(response[0] ? 1 : 0));
+    } else {
+        query.FinalizeRead(response[0]);
+    }
 }
 
-void TUnielDevice::WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> & memory)
+void TUnielDevice::Write(const TIRDeviceValueQuery & query)
 {
-    assert(memory.size() == 1);
-    auto value = memory.front();
+    uint8_t cmd, addr, value;
+    query.GetValues(&value);
+    const auto & mb = query.MemoryBlockRange.GetFirst();
 
-    uint8_t cmd, addr;
     if (mb->Type.Index == REG_BRIGHTNESS) {
         cmd = SET_BRIGHTNESS_CMD;
         addr = uint8_t(mb->Address >> 8);
@@ -118,4 +121,6 @@ void TUnielDevice::WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<u
         throw TSerialDeviceTransientErrorException("register index mismatch");
     if (response[0] != value)
         throw TSerialDeviceTransientErrorException("written register value mismatch");
+
+    query.FinalizeWrite();
 }

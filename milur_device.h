@@ -23,7 +23,7 @@ public:
     };
 
     TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
-    uint64_t ReadMemoryBlock(const PMemoryBlock & mb) override;
+    void Read(const TIRDeviceQuery &) override;
     void Prepare();
 
 

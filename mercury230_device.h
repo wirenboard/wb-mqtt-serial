@@ -27,7 +27,7 @@ public:
     };
 
     TMercury230Device(PDeviceConfig, PPort port, PProtocol protocol);
-    std::vector<uint8_t> ReadMemoryBlock(const PMemoryBlock & mb) override;
+    void Read(const TIRDeviceQuery &) override;
     void EndPollCycle() override;
 
 protected:
@@ -38,8 +38,8 @@ private:
     struct TValueArray {
         uint32_t values[4];
     };
-    std::vector<uint8_t> ReadValueArray(const PMemoryBlock & mb);
-    std::vector<uint8_t> ReadParam(const PMemoryBlock & mb);
+    void ReadValueArray(const TIRDeviceQuery &);
+    void ReadParam(const TIRDeviceQuery &);
 
     void ReadFromMemory(const TIRDeviceMemoryBlockViewR &, const TMemoryBlockBindInfo &, uint8_t offset, uint64_t & value) const override;
     void WriteToMemory(const TIRDeviceMemoryBlockViewRW &, const TMemoryBlockBindInfo &, uint8_t offset, const uint64_t & value) const override;

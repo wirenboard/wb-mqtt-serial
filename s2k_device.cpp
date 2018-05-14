@@ -1,5 +1,6 @@
 #include "s2k_device.h"
 #include "memory_block.h"
+#include "ir_device_query.h"
 
 #include <errno.h>
 #include <string.h>
@@ -20,12 +21,12 @@ namespace
 }
 
 REGISTER_BASIC_INT_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
-        {
-            { TS2KDevice::REG_RELAY, "relay", "switch", U8 },
-            { TS2KDevice::REG_RELAY_MODE, "relay_mode", "value", U8, true },
-            { TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value", U8, true },
-            { TS2KDevice::REG_RELAY_DELAY, "relay_delay", "value", U8, true }
-        }));
+{
+    { TS2KDevice::REG_RELAY, "relay", "switch", { U8 } },
+    { TS2KDevice::REG_RELAY_MODE, "relay_mode", "value", { U8 }, true },
+    { TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value", { U8 }, true },
+    { TS2KDevice::REG_RELAY_DELAY, "relay_delay", "value", { U8 }, true }
+}));
 
 TS2KDevice::TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TS2KDevice>>(config, port, protocol)
@@ -69,15 +70,20 @@ uint8_t TS2KDevice::CrcS2K(const uint8_t *array, int size)
 
 // TODO: refactor this when more registers are writable, move writing
 // and error handling into separate function
-void TS2KDevice::WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value)
+void TS2KDevice::Write(const TIRDeviceValueQuery & query)
 {
-    if (mb->Type != REG_RELAY) {
+    const auto & mb = query.MemoryBlockRange.GetFirst();
+
+    if (mb->Type.Index != REG_RELAY) {
         throw TSerialDeviceException("S2K protocol: invalid register for writing");
     }
 
     if (mb->Address < 1 || mb->Address > 4) {
         throw TSerialDeviceException("S2K protocol: invalid register address");
     }
+
+    uint8_t value;
+    query.GetValues(&value);
 
     Port()->CheckPortOpen();
     uint8_t command[7] = {
@@ -94,29 +100,34 @@ void TS2KDevice::WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value)
     uint8_t response[256];
     int size = Port()->ReadFrame(response, 256, std::chrono::microseconds(PAUSE_US));
     if (size != 6 ||
-    response[0] != (uint8_t)SlaveId ||
-    response[1] != 5 ||
-    response[2]!= 0x16)
-    {
+        response[0] != (uint8_t)SlaveId ||
+        response[1] != 5 ||
+        response[2]!= 0x16
+    ) {
         throw TSerialDeviceTransientErrorException("incorrect response for 0x15 command");
     }
     if (response[5] != CrcS2K(response, 5)) {
         throw TSerialDeviceTransientErrorException("bad CRC for 0x15 command");
     }
     RelayState[response[3]] = response[4];
+
+    query.FinalizeWrite();
 }
 
 // TODO: refactor this when more registers are actually readable, move reading
 // and error handling into separate function
-uint64_t TS2KDevice::ReadMemoryBlock(const PMemoryBlock & mb)
+void TS2KDevice::Read(const TIRDeviceQuery & query)
 {
+    const auto & mb = query.MemoryBlockRange.GetFirst();
+    uint8_t relayState = 0;
+
     /* We have no way to get current relay state from device. Thats why we save last
        successful write to relay register and return it when regiter is read */
-    switch (mb->Type) {
+    switch (mb->Type.Index) {
     case REG_RELAY:
-        return RelayState[mb->Address] != 0 && RelayState[mb->Address] != 2;
+        relayState = (RelayState[mb->Address] != 0 && RelayState[mb->Address] != 2);
     case REG_RELAY_MODE:
-        return RelayState[mb->Address];
+        relayState = RelayState[mb->Address];
     case REG_RELAY_DEFAULT:
     case REG_RELAY_DELAY:
     {
@@ -129,7 +140,7 @@ uint64_t TS2KDevice::ReadMemoryBlock(const PMemoryBlock & mb)
                 /* Key = */0x00,
                 /* Command = */0x05,/* Read configutation */
                 /* Config No = */(uint8_t)(mb->Address +
-                                     (mb->Type == REG_RELAY_DELAY ? 4 : 0)),
+                                     (mb->Type.Index == REG_RELAY_DELAY ? 4 : 0)),
                 /* Unused */0x0,
                 /* CRC placeholder */0x0
             };
@@ -147,9 +158,11 @@ uint64_t TS2KDevice::ReadMemoryBlock(const PMemoryBlock & mb)
         if (response[5] != CrcS2K(response, 5)){
             throw TSerialDeviceTransientErrorException("bad CRC for 0x5 command");
         }
-        return response[4];
+        relayState = response[4];
     }
     default:
         throw TSerialDeviceException("S2K protocol: invalid register for reading");
     }
+
+    query.FinalizeRead(relayState);
 }

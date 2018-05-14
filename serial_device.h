@@ -79,7 +79,7 @@ public:
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
     virtual const TProtocolInfo & GetProtocolInfo() const;
-    PMemoryBlock GetCreateRegister(uint32_t address, uint32_t type, uint16_t size);
+    PMemoryBlock GetCreateMemoryBlock(uint32_t address, uint32_t type, uint16_t size);
     TPSetRange<PMemoryBlock> CreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last) const;
 
     // Prepare to access device (pauses for configured delay by default)
@@ -103,15 +103,6 @@ public:
     virtual void OnCycleEnd(bool ok);
     bool GetIsDisconnected() const;
 
-    /**
-     * Override these methods if device memory has its own format TODO: make more clear annotation
-     */
-    virtual void ReadFromMemory(const TIRDeviceMemoryBlockViewR &, const TMemoryBlockBindInfo &, uint8_t offset, uint64_t & value) const;
-    virtual void WriteToMemory(const TIRDeviceMemoryBlockViewRW &, const TMemoryBlockBindInfo &, uint8_t offset, const uint64_t & value) const;
-
-    uint64_t ReadValue(const TIRDeviceMemoryViewR &, const TIRDeviceValueDesc &) const;
-    void WriteValue(const TIRDeviceMemoryViewRW &, const TIRDeviceValueDesc &, uint64_t) const;
-
     void InitializeMemoryBlocksCache();
 
     static TPSetRange<PMemoryBlock> StaticCreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last);
@@ -124,12 +115,6 @@ protected:
      */
     virtual void Read(const TIRDeviceQuery &);
     virtual void Write(const TIRDeviceValueQuery &);
-
-    /**
-     * Implement these methods if protocol supports only single register read / write
-     */
-    virtual std::vector<uint8_t> ReadMemoryBlock(const PMemoryBlock & mb);
-    virtual void WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> & data);
 
 private:
     std::chrono::milliseconds Delay;

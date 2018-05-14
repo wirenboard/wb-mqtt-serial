@@ -11,11 +11,11 @@ namespace
 {
     PMemoryBlock GetMemoryBlock(const PVirtualRegister & reg)
     {
-        const auto & protocolRegisters = reg->GetMemoryBlocks();
+        const auto & memoryBlocks = reg->GetMemoryBlocks();
 
-        assert(protocolRegisters.size() == 1);
+        assert(memoryBlocks.size() == 1);
 
-        return *protocolRegisters.begin();
+        return *memoryBlocks.begin();
     }
 }
 

@@ -1,28 +1,26 @@
 #include "serial_device.h"
 #include "ir_device_query_factory.h"
 #include "ir_device_query.h"
-#include "virtual_register.h"
 #include "memory_block_factory.h"
 #include "memory_block.h"
 
 #include <iostream>
 #include <unistd.h>
 #include <cassert>
-#include <bitset>
 
 
 TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
     : TDeviceSetupItemConfig(*config)
 {
-    const auto & protocolRegisters = TMemoryBlockFactory::GenerateMemoryBlocks(config->RegisterConfig, device);
+    const auto & memoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(RegisterConfig, device);
 
-    auto queries = TIRDeviceQueryFactory::GenerateQueries({ GetKeysAsSet(protocolRegisters) }, EQueryOperation::Write);
+    auto queries = TIRDeviceQueryFactory::GenerateQueries({ GetKeysAsSet(memoryBlocks) }, EQueryOperation::Write);
     assert(queries.size() == 1);
 
     Query = std::dynamic_pointer_cast<TIRDeviceValueQuery>(*queries.begin());
     assert(Query);
 
-    TVirtualRegister::MapValueTo(Query, protocolRegisters, Value);
+    Query->SetValue({ memoryBlocks, RegisterConfig->WordOrder }, Value);
 }
 
 bool TProtocolInfo::IsSingleBitType(const TMemoryBlockType & type) const
@@ -85,9 +83,11 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
         try {
             switch(query->Operation) {
                 case EQueryOperation::Read:
+                    assert(query->GetCount() <= (GetProtocolInfo().IsSingleBitType(query->GetType()) ? GetProtocolInfo().GetMaxReadBits() : GetProtocolInfo().GetMaxReadRegisters()));
                     return Read(*query);
 
                 case EQueryOperation::Write:
+                    assert(query->GetCount() <= (GetProtocolInfo().IsSingleBitType(query->GetType()) ? GetProtocolInfo().GetMaxWriteBits() : GetProtocolInfo().GetMaxWriteRegisters()));
                     return Write(query->As<TIRDeviceValueQuery>());
 
                 default:
@@ -115,21 +115,21 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
     assert(query->IsExecuted());
 }
 
-PMemoryBlock TSerialDevice::GetCreateRegister(uint32_t address, uint32_t type, uint16_t size)
+PMemoryBlock TSerialDevice::GetCreateMemoryBlock(uint32_t address, uint32_t type, uint16_t size)
 {
-    PMemoryBlock protocolRegister(new TMemoryBlock(address, size, type, shared_from_this()));
+    PMemoryBlock memoryBlock(new TMemoryBlock(address, size, type, shared_from_this()));
 
-    const auto & insRes = MemoryBlocks.insert(protocolRegister);
+    const auto & insRes = MemoryBlocks.insert(memoryBlock);
 
     if (insRes.second) {
         if (Global::Debug) {
             std::cerr << "device " << ToString() << ": create register at " << address << std::endl;
         }
     } else {
-        protocolRegister = *insRes.first;
+        memoryBlock = *insRes.first;
     }
 
-    return protocolRegister;
+    return memoryBlock;
 }
 
 TPSetRange<PMemoryBlock> TSerialDevice::CreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last) const
@@ -166,148 +166,15 @@ void TSerialDevice::SleepGuardInterval() const
     }
 }
 
-void TSerialDevice::Read(const TIRDeviceQuery & query)
+
+void TSerialDevice::Read(const TIRDeviceQuery &)
 {
-    assert(query.GetCount() == 1);
-
-    const auto & mb = query.MemoryBlockRange.GetFirst();
-
-    SleepGuardInterval();
-
-    const auto & data = ReadMemoryBlock(mb);
-    assert(data.size() == mb->Size);
-
-    query.FinalizeRead(data);
+    throw TSerialDeviceException(Protocol()->GetName() + ": read is not implemented");
 }
 
-void TSerialDevice::Write(const TIRDeviceValueQuery & query)
+void TSerialDevice::Write(const TIRDeviceValueQuery &)
 {
-    assert(query.GetCount() == 1);
-
-    const auto & mb = query.MemoryBlockRange.GetFirst();
-    uint64_t value;
-    query.GetValues<uint64_t>(&value);
-
-    SleepGuardInterval();
-
-    WriteMemoryBlock(mb, value);
-    query.FinalizeWrite();
-}
-
-std::vector<uint8_t> TSerialDevice::ReadMemoryBlock(const PMemoryBlock & mb)
-{
-    throw TSerialDeviceException("ReadMemoryBlock is not implemented");
-}
-
-void TSerialDevice::WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> &)
-{
-    throw TSerialDeviceException("WriteMemoryBlock is not implemented");
-}
-
-void TSerialDevice::ReadFromMemory(const TIRDeviceMemoryBlockViewR & memoryView, const TMemoryBlockBindInfo & bindInfo, uint8_t offset, uint64_t & value) const
-{
-    const auto mask = bindInfo.GetMask();
-
-    for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryView.MemoryBlock->Size; ++iByte) {
-        auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
-        auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
-
-        if (begin >= end)
-            continue;
-
-        uint64_t bits = (mask >> (iByte * 8)) & (memoryView[iByte] >> begin);
-        value |= bits << offset;
-
-        auto bitCount = end - begin;
-        offset += bitCount;
-    }
-
-    // TODO: check for usefullness
-    if (Global::Debug) {
-        std::cerr << "mb mask: " << std::bitset<64>(mask) << std::endl;
-        std::cerr << "reading " << bindInfo.Describe() << " bits of " << memoryView.MemoryBlock->Describe()
-                << " to [" << (int)offset << ", " << int(offset + bindInfo.BitCount() - 1) << "] bits of value" << std::endl;
-    }
-}
-
-void TSerialDevice::WriteToMemory(const TIRDeviceMemoryBlockViewRW & memoryView, const TMemoryBlockBindInfo & bindInfo, uint8_t offset, const uint64_t & value) const
-{
-    const auto mask = bindInfo.GetMask();
-
-    for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryView.MemoryBlock->Size; ++iByte) {
-        auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
-        auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
-
-        if (begin >= end)
-            continue;
-
-        uint8_t byteMask = mask >> (iByte * 8);
-
-        memoryView[iByte] = (byteMask & ((value >> offset) << begin));
-
-        auto bitCount = end - begin;
-        offset += bitCount;
-    }
-}
-
-uint64_t TSerialDevice::ReadValue(const TIRDeviceMemoryViewR & memoryView, const TIRDeviceValueDesc & valueDesc) const
-{
-    uint64_t value = 0;
-
-    uint8_t bitPosition = 0;
-
-    auto readMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & boundMemoryBlock) {
-        const auto & memoryBlock = boundMemoryBlock.first;
-        const auto & bindInfo = boundMemoryBlock.second;
-
-        ReadFromMemory(memoryView[memoryBlock], bindInfo, bitPosition, value);
-        bitPosition += bindInfo.BitCount();
-    };
-
-    if (valueDesc.WordOrder == EWordOrder::BigEndian) {
-        std::for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), readMemoryBlock);
-    } else {
-        std::for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), readMemoryBlock);
-    }
-
-    if (Global::Debug)
-        std::cerr << "map value from registers: " << value << std::endl;
-
-    return value;
-}
-
-void TSerialDevice::WriteValue(const TIRDeviceMemoryViewRW & memoryView, const TIRDeviceValueDesc & valueDesc, uint64_t value) const
-{
-    if (Global::Debug)
-        std::cerr << "map value to registers: " << value << std::endl;
-
-    uint8_t bitPosition = 0;
-
-    auto writeMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & protocolRegisterBindInfo){
-        const auto & memoryBlock = protocolRegisterBindInfo.first;
-        const auto & bindInfo = protocolRegisterBindInfo.second;
-
-        const auto & memoryBlockView = memoryView[memoryBlock];
-
-        WriteToMemory(memoryBlockView, bindInfo, bitPosition, value);
-        bitPosition += bindInfo.BitCount();
-
-        // apply cache if memory block is cached
-        if (const auto & cache = memoryBlock->GetCache()) {
-            auto mask = bindInfo.GetMask();
-
-            for (uint16_t iByte = 0; iByte < memoryBlock->Size; ++iByte) {
-                memoryBlockView[iByte] = (~mask & cache[iByte]) | (mask & memoryBlockView[iByte]);
-                mask >>= 8;
-            }
-        }
-    };
-
-    if (valueDesc.WordOrder == EWordOrder::BigEndian) {
-        for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), writeMemoryBlock);
-    } else {
-        for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), writeMemoryBlock);
-    }
+    throw TSerialDeviceException(Protocol()->GetName() + ": write is not implemented");
 }
 
 void TSerialDevice::EndPollCycle() {}

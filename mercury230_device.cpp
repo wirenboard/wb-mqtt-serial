@@ -1,5 +1,6 @@
 #include "mercury230_device.h"
 #include "memory_block.h"
+#include "ir_device_query.h"
 #include "crc16.h"
 #include "memory_block_bind_info.h"
 
@@ -7,7 +8,7 @@
 #include <iostream>
 
 REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
-            { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", { U32, U32, U32 }, true },
+            { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", { U32, U32, U32, U32 }, true },
             { TMercury230Device::REG_VALUE_ARRAY12, "array12", "power_consumption", { U32, U32, U32 }, true },
             { TMercury230Device::REG_PARAM, "param", "value", {}, true, EByteOrder::LittleEndian },
             { TMercury230Device::REG_PARAM_SIGN_ACT, "param_sign_active", "value", { S24 }, true },
@@ -15,6 +16,8 @@ REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
             { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore", "value", { U24 }, true },
             { TMercury230Device::REG_PARAM_BE, "param_be", "value", {}, true }
         }));
+
+const auto MAX_ARRAY_LEN = 16;   // largest array is REG_VALUE_ARRAY 4 uint32
 
 TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TEMDevice<TBasicProtocol<TMercury230Device>>(device_config, port, protocol)
@@ -72,19 +75,32 @@ TEMDevice<TMercury230Protocol>::ErrorType TMercury230Device::CheckForException(u
     return TEMDevice<TMercury230Protocol>::OTHER_ERROR;
 }
 
-std::vector<uint8_t> TMercury230Device::ReadValueArray(const PMemoryBlock & mb)
+void TMercury230Device::ReadValueArray(const TIRDeviceQuery & query)
 {
+    const auto & mb = query.MemoryBlockRange.GetFirst();
+
     uint8_t cmdBuf[2];
     cmdBuf[0] = (uint8_t)((mb->Address >> 4) & 0xff); // high nibble = array number, lower nibble = month
     cmdBuf[1] = (uint8_t)((mb->Address >> 12) & 0x0f); // tariff
-    std::vector<uint8_t> buf(mb->Size);
-    Talk(0x05, cmdBuf, 2, -1, buf.data(), buf.size());
+    uint8_t buf[MAX_ARRAY_LEN], *p = buf;
+    Talk(0x05, cmdBuf, 2, -1, buf, mb->Size);
 
-    return buf;
+    TValueArray a;
+    for (int i = 0; i < mb->Size / 4; i++, p += 4) {
+        a.values[i] = ((uint32_t)p[1] << 24) +
+                      ((uint32_t)p[0] << 16) +
+                      ((uint32_t)p[3] << 8 ) +
+                       (uint32_t)p[2];
+    }
+
+    query.FinalizeRead(a.values);
 }
 
-std::vector<uint8_t> TMercury230Device::ReadParam(const PMemoryBlock & mb)
+void TMercury230Device::ReadParam(const TIRDeviceQuery & query)
 {
+    const auto & mb = query.MemoryBlockRange.GetFirst();
+    const auto typeIndex = mb->Type.Index;
+
     uint8_t cmdBuf[2];
     cmdBuf[0] = (mb->Address >> 8) & 0xff; // param
     cmdBuf[1] = mb->Address & 0xff; // subparam (BWRI)
@@ -92,91 +108,60 @@ std::vector<uint8_t> TMercury230Device::ReadParam(const PMemoryBlock & mb)
     assert(mb->Size <= 3);
     std::vector<uint8_t> buf(mb->Size);
     Talk( 0x08, cmdBuf, 2, -1, buf.data(), buf.size());
-    return buf;
-}
 
-void TMercury230Device::ReadFromMemory(const TIRDeviceMemoryBlockViewR & memoryView, const TMemoryBlockBindInfo & bindInfo, uint8_t offset, uint64_t & value) const
-{
-    const auto & memoryBlock = memoryView.MemoryBlock;
-    const auto typeIndex = memoryBlock->Type.Index;
+    uint32_t paramValue = 0;
 
-    switch (typeIndex) {
-    case TMercury230Device::REG_VALUE_ARRAY:
-    case TMercury230Device::REG_VALUE_ARRAY12:
-        return TSerialDevice::ReadFromMemory(memoryView, bindInfo, offset, value);
-    case TMercury230Device::REG_PARAM_SIGN_ACT:
-    case TMercury230Device::REG_PARAM_SIGN_REACT:
-    case TMercury230Device::REG_PARAM_SIGN_IGNORE:
-    case TMercury230Device::REG_PARAM:
-    case TMercury230Device::REG_PARAM_BE:
-    {
-        auto buf = memoryView.RawMemory;
+    if (mb->Size == 3) {
+        if ((typeIndex == TMercury230Device::REG_PARAM_SIGN_ACT) ||
+            (typeIndex == TMercury230Device::REG_PARAM_SIGN_REACT) ||
+            (typeIndex == TMercury230Device::REG_PARAM_SIGN_IGNORE)
+        ) {
+            uint32_t magnitude = (((uint32_t)buf[0] & 0x3f) << 16) +
+                                    ((uint32_t)buf[2] << 8) +
+                                    (uint32_t)buf[1];
 
-        uint32_t paramValue = 0;
+            int active_power_sign   = (buf[0] & (1 << 7)) ? -1 : 1;
+            int reactive_power_sign = (buf[0] & (1 << 6)) ? -1 : 1;
 
-        if (memoryBlock->Size == 3) {
-            if ((typeIndex == TMercury230Device::REG_PARAM_SIGN_ACT) ||
-                (typeIndex == TMercury230Device::REG_PARAM_SIGN_REACT) ||
-                (typeIndex == TMercury230Device::REG_PARAM_SIGN_IGNORE)
-            ) {
-                uint32_t magnitude = (((uint32_t)buf[0] & 0x3f) << 16) +
-                                      ((uint32_t)buf[2] << 8) +
-                                       (uint32_t)buf[1];
+            int sign = 1;
 
-                int active_power_sign   = (buf[0] & (1 << 7)) ? -1 : 1;
-                int reactive_power_sign = (buf[0] & (1 << 6)) ? -1 : 1;
-
-                int sign = 1;
-
-                if (typeIndex == TMercury230Device::REG_PARAM_SIGN_ACT)  {
-                    sign = active_power_sign;
-                } else if (typeIndex == TMercury230Device::REG_PARAM_SIGN_REACT) {
-                    sign = reactive_power_sign;
-                }
-
-                paramValue = (uint32_t)(((int32_t) magnitude * sign));
-            } else {
-                paramValue = ((uint32_t)buf[0] << 16) +
-                             ((uint32_t)buf[2] << 8) +
-                              (uint32_t)buf[1];
+            if (typeIndex == TMercury230Device::REG_PARAM_SIGN_ACT)  {
+                sign = active_power_sign;
+            } else if (typeIndex == TMercury230Device::REG_PARAM_SIGN_REACT) {
+                sign = reactive_power_sign;
             }
-        } else  {
-            if (typeIndex == TMercury230Device::REG_PARAM_BE) {
-                paramValue = ((uint32_t)buf[0] << 8) +
-                             ((uint32_t)buf[1]);
-            } else {
-                paramValue = ((uint32_t)buf[1] << 8) +
-                             ((uint32_t)buf[0]);
-            }
+
+            paramValue = (uint32_t)(((int32_t) magnitude * sign));
+        } else {
+            paramValue = ((uint32_t)buf[0] << 16) +
+                            ((uint32_t)buf[2] << 8) +
+                            (uint32_t)buf[1];
         }
-
-        const auto mask = bindInfo.GetMask();
-
-        value |= ((mask & paramValue) >> bindInfo.BitStart) << offset;
+    } else  {
+        if (typeIndex == TMercury230Device::REG_PARAM_BE) {
+            paramValue = ((uint32_t)buf[0] << 8) +
+                            ((uint32_t)buf[1]);
+        } else {
+            paramValue = ((uint32_t)buf[1] << 8) +
+                            ((uint32_t)buf[0]);
+        }
     }
-    default:
-        throw TSerialDeviceException("mercury230 ReadFromMemory: invalid register type");
-    }
+
+    query.FinalizeRead(paramValue);
 }
 
-void TMercury230Device::WriteToMemory(const TIRDeviceMemoryBlockViewRW &, const TMemoryBlockBindInfo &, uint8_t, const uint64_t &) const
+void TMercury230Device::Read(const TIRDeviceQuery & query)
 {
-    throw TSerialDeviceException("mercury230 WriteToMemory: not implemented");
-}
-
-std::vector<uint8_t> TMercury230Device::ReadMemoryBlock(const PMemoryBlock & mb)
-{
-    switch (mb->Type.Index) {
+    switch (query.GetType().Index) {
     case REG_VALUE_ARRAY:
-        return ReadValueArray(mb);
     case REG_VALUE_ARRAY12:
-        return ReadValueArray(mb);
+        return ReadValueArray(query);
     case REG_PARAM:
     case REG_PARAM_SIGN_ACT:
     case REG_PARAM_SIGN_REACT:
     case REG_PARAM_SIGN_IGNORE:
     case REG_PARAM_BE:
-        return ReadParam(mb);
+        return ReadParam(query);
     default:
         throw TSerialDeviceException("mercury230 ReadMemoryBlock: invalid register type");
     }

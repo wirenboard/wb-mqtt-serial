@@ -52,9 +52,9 @@ TPMap<PMemoryBlock, TMemoryBlockBindInfo> TMemoryBlockFactory::GenerateMemoryBlo
         uint16_t startBit = max(int(config->BitOffset) - int(mbIndex * memoryBlockBitWidth), 0);
         uint16_t endBit   = min(memoryBlockBitWidth, uint16_t(startBit + bitsToAllocate));
 
-        auto protocolRegister = device->GetCreateRegister(address, type, memoryBlockSize);
+        auto memoryBlock = device->GetCreateMemoryBlock(address, type, memoryBlockSize);
 
-        const auto & insertResult = memoryBlocksBindInfo.insert({ protocolRegister, { startBit, endBit } });
+        const auto & insertResult = memoryBlocksBindInfo.insert({ memoryBlock, { startBit, endBit } });
         const auto & bindInfo = insertResult.first->second;
         bitsToAllocate -= bindInfo.BitCount();
 

@@ -18,8 +18,8 @@ public:
     };
 
     TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol);
-    std::vector<uint8_t> ReadMemoryBlock(const PMemoryBlock & mb) override;
-    void WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> &) override;
+    void Read(const TIRDeviceQuery &) override;
+    void Write(const TIRDeviceValueQuery &) override;
 
 private:
     void WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3);

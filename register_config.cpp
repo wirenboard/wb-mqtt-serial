@@ -23,6 +23,11 @@ ERegisterFormat TMemoryBlockType::GetDefaultFormat(uint16_t bit) const
     throw TSerialDeviceException("unable to get default format from memory block type '" + Name + "' for bit " + to_string(bit));
 }
 
+uint8_t TMemoryBlockType::GetValueCount() const
+{
+    return Formats.empty() ? 1 : Formats.size();
+}
+
 const char* RegisterFormatName(ERegisterFormat fmt) {
     switch (fmt) {
     case AUTO:

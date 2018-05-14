@@ -236,12 +236,12 @@ void TVirtualRegister::Initialize()
 
     MemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(self, device);
 
-    for (const auto protocolRegisterBindInfo: MemoryBlocks) {
-        const auto & protocolRegister = protocolRegisterBindInfo.first;
-        const auto & bindInfo = protocolRegisterBindInfo.second;
+    for (const auto memoryBlockBindInfo: MemoryBlocks) {
+        const auto & memoryBlock = memoryBlockBindInfo.first;
+        const auto & bindInfo = memoryBlockBindInfo.second;
 
-        assert(Type == protocolRegister->Type.Index);
-        protocolRegister->AssociateWith(self);
+        assert(Type == memoryBlock->Type.Index);
+        memoryBlock->AssociateWith(self);
     }
 
     if (!ReadOnly) {
@@ -387,11 +387,11 @@ std::string TVirtualRegister::Describe() const
 
     ss << "[" << endl;
 
-    for (const auto & protocolRegisterBindInfo: MemoryBlocks) {
-        const auto & protocolRegister = protocolRegisterBindInfo.first;
-        const auto & bindInfo = protocolRegisterBindInfo.second;
+    for (const auto & memoryBlockBindInfo: MemoryBlocks) {
+        const auto & memoryBlock = memoryBlockBindInfo.first;
+        const auto & bindInfo = memoryBlockBindInfo.second;
 
-        ss << "\t" << protocolRegister->Address << ": " << bindInfo.Describe() << endl;
+        ss << "\t" << memoryBlock->Address << ": " << bindInfo.Describe() << endl;
     }
 
     ss << "]";

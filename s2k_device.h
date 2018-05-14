@@ -19,8 +19,8 @@ public:
 
     TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol);
 
-    uint64_t ReadMemoryBlock(const PMemoryBlock & mb) override;
-    void WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value) override;
+    void Read(const TIRDeviceQuery &) override;
+    void Write(const TIRDeviceValueQuery &) override;
 
 private:
     uint8_t CrcS2K(const uint8_t *array, int size);

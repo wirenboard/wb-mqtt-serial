@@ -1,5 +1,6 @@
 #include "mercury200_device.h"
 #include "memory_block.h"
+#include "ir_device_query.h"
 #include "bcd_utils.h"
 #include "crc16.h"
 
@@ -26,10 +27,15 @@ TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol
 TMercury200Device::~TMercury200Device()
 {}
 
-std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
+void TMercury200Device::Read(const TIRDeviceQuery & query)
 {
+    const auto & mb = query.MemoryBlockRange.GetFirst();
+
+    uint8_t cmd = (mb->Address & 0xFF);
+
     uint8_t buf[100] = {0x00};
     auto readn = RequestResponse(SlaveId, cmd, buf);
+
     if (readn < 4) { //fixme 4
         throw TSerialDeviceTransientErrorException("mercury200: read frame too short for command response");
     }
@@ -39,22 +45,10 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
     if (IsCrcValid(buf, readn)) {
         throw TSerialDeviceTransientErrorException("mercury200: bad CRC for command");
     }
+
     uint8_t* payload = buf + HEADER_SZ;
-    std::vector<uint8_t> result = {0};
-    result.assign(payload, payload + readn - HEADER_SZ);
-}
 
-
-std::vector<uint8_t> TMercury200Device::ReadMemoryBlock(const PMemoryBlock & mb)
-{
-    uint8_t cmd = (mb->Address & 0xFF);
-
-    return ExecCommand(cmd);
-}
-
-void TMercury200Device::WriteMemoryBlock(const PMemoryBlock &, const std::vector<uint8_t> &)
-{
-    throw TSerialDeviceException("mercury200: register writing is not supported");
+    query.FinalizeRead(payload);
 }
 
 void TMercury200Device::EndPollCycle()

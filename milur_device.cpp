@@ -1,6 +1,7 @@
 #include "milur_device.h"
 #include "bcd_utils.h"
 #include "memory_block.h"
+#include "ir_device_query.h"
 
 namespace {
 
@@ -122,9 +123,10 @@ TEMDevice<TMilurProtocol>::ErrorType TMilurDevice::CheckForException(uint8_t* fr
     return TEMDevice<TMilurProtocol>::OTHER_ERROR;
 }
 
-uint64_t TMilurDevice::ReadMemoryBlock(const PMemoryBlock & mb)
+void TMilurDevice::Read(const TIRDeviceQuery & query)
 {
-    int size = GetExpectedSize(mb->Type);
+    const auto & mb = query.MemoryBlockRange.GetFirst();
+    int size = GetExpectedSize(mb->Type.Index);
     uint8_t addr = static_cast<uint8_t>(mb->Address);
     uint8_t buf[MAX_LEN], *p = buf;
     Talk(0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(SlaveIdWidth, size + 5 + SlaveIdWidth));
@@ -135,14 +137,15 @@ uint64_t TMilurDevice::ReadMemoryBlock(const PMemoryBlock & mb)
 
     switch (mb->Type.Index) {
     case TMilurDevice::REG_PARAM:
-        return BuildIntVal(buf + 2, 3);
     case TMilurDevice::REG_POWER:
-        return BuildIntVal(buf + 2, 4);
-    case TMilurDevice::REG_ENERGY:
-        return BuildBCB32(buf + 2);
     case TMilurDevice::REG_POWERFACTOR:
     case TMilurDevice::REG_FREQ:
-        return BuildIntVal(buf + 2, 2);
+        query.FinalizeRead(buf + 2);
+        break;
+    case TMilurDevice::REG_ENERGY:
+        auto value = BuildBCB32(buf + 2);
+        query.FinalizeRead(&value, mb->Size);
+        break;
     default:
         throw TSerialDeviceTransientErrorException("bad register type");
     }

@@ -17,8 +17,7 @@ public:
 
     TPulsarDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
 
-    std::vector<uint8_t> ReadMemoryBlock(const PMemoryBlock & mb) override;
-    void WriteMemoryBlock(const PMemoryBlock & mb, const std::vector<uint8_t> &) override;
+    void Read(const TIRDeviceQuery &) override;
 
 private:
     void WriteBCD(uint64_t data, uint8_t *buffer, size_t size, bool big_endian = true);
@@ -32,10 +31,10 @@ private:
     void WriteDataRequest(uint32_t addr, uint32_t mask, uint16_t id);
     void WriteSysTimeRequest(uint32_t addr, uint16_t id);
 
-    void ReadResponse(uint32_t addr, std::vector<uint8_t> & payload, uint16_t id);
+    void ReadResponse(uint32_t addr, uint8_t * payload, size_t size, uint16_t id);
 
-    std::vector<uint8_t> ReadDataRegister(const PMemoryBlock & mb);
-    std::vector<uint8_t> ReadSysTimeRegister(const PMemoryBlock & mb);
+    void ReadDataRegister(const TIRDeviceQuery &);
+    void ReadSysTimeRegister(const TIRDeviceQuery &);
 
     uint16_t RequestID;
 };

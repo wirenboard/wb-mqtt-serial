@@ -16,10 +16,22 @@ struct TIRDeviceMemoryBlockView final: TIRDeviceMemoryBlockViewMetadata
 
     const P RawMemory;
 
-    TIRDeviceMemoryView(P memory, const CPMemoryBlock & memoryBlock)
+    TIRDeviceMemoryBlockView(P memory, const CPMemoryBlock & memoryBlock)
         : TIRDeviceMemoryBlockViewMetadata{ memoryBlock }
         , RawMemory(memory)
     {}
+
+    TIRDeviceMemoryBlockView(const TIRDeviceMemoryBlockView &) = default;
+
+    TIRDeviceMemoryBlockView & operator=(const TIRDeviceMemoryBlockView & other)
+    {
+        if (this != &other) {
+             MemoryBlock = other.MemoryBlock;
+             RawMemory = other.RawMemory;
+        }
+
+        return *this;
+    }
 
     R operator[](uint16_t index) const
     {
@@ -31,6 +43,11 @@ struct TIRDeviceMemoryBlockView final: TIRDeviceMemoryBlockViewMetadata
     operator bool() const
     {
         return bool(RawMemory);
+    }
+
+    operator P() const
+    {
+        return RawMemory;
     }
 };
 
