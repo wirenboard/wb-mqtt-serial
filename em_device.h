@@ -21,11 +21,6 @@ public:
         : TBasicProtocolSerialDevice<Proto>(device_config, port, protocol)
     {}
 
-    void WriteMemoryBlock(const PMemoryBlock & mb, uint64_t value) override
-    {
-        throw TSerialDeviceException("EM protocol: writing to registers not supported");
-    }
-
 protected:
     enum ErrorType {
         NO_ERROR,

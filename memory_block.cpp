@@ -294,7 +294,7 @@ void TMemoryBlock::CacheIfNeeded(const uint8_t * data)
     }
 }
 
-TIRDeviceMemoryBlockViewR TMemoryBlock::GetCache() const
+TIRDeviceMemoryBlockView TMemoryBlock::GetCache() const
 {
     return { Cache, shared_from_this() };
 }

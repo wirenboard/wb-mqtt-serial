@@ -7,7 +7,7 @@
 using namespace std;
 
 REGISTER_BASIC_INT_PROTOCOL("fake", TFakeSerialDevice, TRegisterTypes({
-    { TFakeSerialDevice::REG_FAKE, "fake", "text", U16 },
+    { TFakeSerialDevice::REG_FAKE, "fake", "text", { U16 } },
 }));
 
 struct TFakeProtocolInfo: TProtocolInfo
@@ -37,7 +37,7 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
 void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
 {
     const auto start = query.GetStart();
-    const auto end = start + query.GetCount();
+    const auto end = start + query.GetBlockCount();
 
     try {
         if (!Connected || FakePort->GetDoSimulateDisconnect()) {
@@ -48,7 +48,7 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
             throw runtime_error("register address out of range");
         }
 
-        for (const auto & reg: query.MemoryBlockRange) {
+        for (const auto & mb: query.MemoryBlockRange) {
             switch(Blockings[mb->Address].BlockRead) {
                 case TRANSIENT:
                     throw TSerialDeviceTransientErrorException("read blocked (transient)");
@@ -59,7 +59,7 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
             }
         }
 
-        if (query.GetType() != REG_FAKE) {
+        if (query.GetType().Index != REG_FAKE) {
             throw runtime_error("invalid register type");
         }
 
@@ -70,7 +70,7 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << reg->GetValue() << "'";
             }
         } else {
-            for (uint32_t i = 0; i < query.GetCount(); ++i) {
+            for (uint32_t i = 0; i < query.GetBlockCount(); ++i) {
                 auto addr = query.GetStart() + i;
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read to address '" << addr << "' value '" <<  Registers[addr] << "'";
             }
@@ -81,7 +81,7 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' failed: '" << e.what() << "'";
             }
         } else {
-            for (uint32_t i = 0; i < query.GetCount(); ++i) {
+            for (uint32_t i = 0; i < query.GetBlockCount(); ++i) {
                 auto addr = query.GetStart() + i;
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << addr << "' failed: '" << e.what() << "'";
             }
@@ -94,7 +94,7 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
 void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
 {
     const auto start = query.GetStart();
-    const auto end = start + query.GetCount();
+    const auto end = start + query.GetBlockCount();
 
     try {
         if (!Connected || FakePort->GetDoSimulateDisconnect()) {
@@ -116,7 +116,7 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
             }
         }
 
-        if (query.GetType() != REG_FAKE) {
+        if (query.GetType().Index != REG_FAKE) {
             throw runtime_error("invalid register type");
         }
 
@@ -129,7 +129,7 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << reg->GetValue() << "'";
             }
         } else {
-            for (uint32_t i = 0; i < query.GetCount(); ++i) {
+            for (uint32_t i = 0; i < query.GetBlockCount(); ++i) {
                 auto addr = query.GetStart() + i;
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << addr << "' value '" <<  Registers[addr] << "'";
             }
@@ -140,7 +140,7 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->Address << "' failed: '" << e.what() << "'";
             }
         } else {
-            for (uint32_t i = 0; i < query.GetCount(); ++i) {
+            for (uint32_t i = 0; i < query.GetBlockCount(); ++i) {
                 auto addr = query.GetStart() + i;
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << addr << "' failed: '" << e.what() << "'";
             }

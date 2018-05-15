@@ -20,8 +20,7 @@ namespace
     const int PAUSE_US = 100000;
 }
 
-REGISTER_BASIC_INT_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
-{
+REGISTER_BASIC_INT_PROTOCOL("s2k", TS2KDevice, TRegisterTypes({
     { TS2KDevice::REG_RELAY, "relay", "switch", { U8 } },
     { TS2KDevice::REG_RELAY_MODE, "relay_mode", "value", { U8 }, true },
     { TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value", { U8 }, true },
@@ -164,5 +163,5 @@ void TS2KDevice::Read(const TIRDeviceQuery & query)
         throw TSerialDeviceException("S2K protocol: invalid register for reading");
     }
 
-    query.FinalizeRead(relayState);
+    query.FinalizeRead(&relayState, 1);
 }

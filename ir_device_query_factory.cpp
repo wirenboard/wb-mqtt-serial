@@ -1,5 +1,5 @@
 #include "ir_device_query_factory.h"
-#include "ir_device_value_query_impl.h"
+#include "ir_device_query.h"
 #include "serial_device.h"
 #include "memory_block.h"
 #include "virtual_register.h"
@@ -21,7 +21,7 @@ namespace // utility
         uint32_t hole = 0;
 
         int prev = -1;
-        auto end = memoryBlockSetView.End();
+        auto end = memoryBlockSetView.end();
         for (auto itReg = memoryBlockSetView.First; itReg != end; ++itReg) {
             const auto & mb = *itReg;
 
@@ -152,7 +152,7 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PMemoryBlock>> && mem
     const bool performMerge = (policy == Minify || policy == NoHoles),
                enableHoles  = (policy == Minify);
 
-    TRegisterTypeInfo getMaxHoleAndRegs = [&](uint32_t type) {
+    TRegisterTypeInfo getMaxHoleAndRegs = [&](const TMemoryBlockType & type) {
         const bool singleBitType = protocolInfo.IsSingleBitType(type);
 
         const int maxHole = enableHoles ? (singleBitType ? deviceConfig->MaxBitHole
@@ -176,11 +176,8 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PMemoryBlock>> && mem
     };
 
     auto addQuery = [&](const TPSet<PMemoryBlock> & memoryBlockSet, TQueries & result) {
-        const bool singleBitType = protocolInfo.IsSingleBitType(GetType(memoryBlockSet));
-
         const auto & chosenAddQuery = isRead ? AddQuery<TIRDeviceQuery>
-                                             : singleBitType ? AddQuery<TIRDeviceSingleBitQuery>
-                                                             : AddQuery<TIRDevice64BitQuery>;
+                                             : AddQuery<TIRDeviceValueQuery>;
 
         return chosenAddQuery(memoryBlockSet, result);
     };

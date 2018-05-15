@@ -93,10 +93,10 @@ void TUnielDevice::Read(const TIRDeviceQuery & query)
         throw TSerialDeviceTransientErrorException("register index mismatch");
 
     if (query.GetType().Index == REG_RELAY) {
-        query.FinalizeRead(uint8_t(response[0] ? 1 : 0));
-    } else {
-        query.FinalizeRead(response[0]);
+        response[0] = response[0] ? 1 : 0;
     }
+
+    query.FinalizeRead(response, 1);
 }
 
 void TUnielDevice::Write(const TIRDeviceValueQuery & query)

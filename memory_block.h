@@ -76,7 +76,7 @@ public:
     bool NeedsCaching() const;
     void AssignCache(uint8_t *);
     void CacheIfNeeded(const uint8_t * data);
-    TIRDeviceMemoryBlockViewR GetCache() const;
+    TIRDeviceMemoryBlockView GetCache() const;
 
     std::string Describe() const;
 };

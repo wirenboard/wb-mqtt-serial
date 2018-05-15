@@ -42,6 +42,7 @@ SERIAL_SRCS= \
   ir_device_query.cpp \
   ir_device_query_factory.cpp \
   ir_device_query_handler.cpp \
+  ir_device_memory_view.cpp \
   register_config.cpp \
   types.cpp \
   serial_client.cpp \

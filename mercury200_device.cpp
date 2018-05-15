@@ -48,7 +48,7 @@ void TMercury200Device::Read(const TIRDeviceQuery & query)
 
     uint8_t* payload = buf + HEADER_SZ;
 
-    query.FinalizeRead(payload);
+    query.FinalizeRead(payload, mb->Size);
 }
 
 void TMercury200Device::EndPollCycle()

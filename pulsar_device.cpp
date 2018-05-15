@@ -272,7 +272,7 @@ void TPulsarDevice::ReadDataRegister(const TIRDeviceQuery & query)
 
     ++RequestID;
 
-    query.FinalizeRead(payload);
+    query.FinalizeRead(payload, mb->Size);
 }
 
 void TPulsarDevice::ReadSysTimeRegister(const TIRDeviceQuery & query)
@@ -288,7 +288,7 @@ void TPulsarDevice::ReadSysTimeRegister(const TIRDeviceQuery & query)
 
     ++RequestID;
 
-    query.FinalizeRead(payload);
+    query.FinalizeRead(payload, mb->Size);
 }
 
 void TPulsarDevice::Read(const TIRDeviceQuery & query)

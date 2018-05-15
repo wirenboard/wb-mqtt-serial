@@ -123,7 +123,7 @@ TRegisterConfig::TRegisterConfig(int type, int address,
             double round_to, bool poll, bool readonly,
             const std::string& type_name,
             bool has_error_value, uint64_t error_value,
-            const EWordOrder word_order, uint8_t bit_offset, uint8_t bit_width)
+            const EWordOrder word_order, uint16_t bit_offset, uint8_t bit_width)
     : Type(type), Address(address), Format(format)
     , Scale(scale), Offset(offset), RoundTo(round_to)
     , Poll(poll), ReadOnly(readonly), TypeName(type_name)

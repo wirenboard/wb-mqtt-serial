@@ -8,14 +8,14 @@
 #include <iostream>
 
 REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
-            { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", { U32, U32, U32, U32 }, true },
-            { TMercury230Device::REG_VALUE_ARRAY12, "array12", "power_consumption", { U32, U32, U32 }, true },
-            { TMercury230Device::REG_PARAM, "param", "value", {}, true, EByteOrder::LittleEndian },
-            { TMercury230Device::REG_PARAM_SIGN_ACT, "param_sign_active", "value", { S24 }, true },
-            { TMercury230Device::REG_PARAM_SIGN_REACT, "param_sign_reactive", "value", { S24 }, true },
-            { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore", "value", { U24 }, true },
-            { TMercury230Device::REG_PARAM_BE, "param_be", "value", {}, true }
-        }));
+    { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", { U32, U32, U32, U32 }, true },
+    { TMercury230Device::REG_VALUE_ARRAY12, "array12", "power_consumption", { U32, U32, U32 }, true },
+    { TMercury230Device::REG_PARAM, "param", "value", {}, true, EByteOrder::LittleEndian },
+    { TMercury230Device::REG_PARAM_SIGN_ACT, "param_sign_active", "value", { S24 }, true },
+    { TMercury230Device::REG_PARAM_SIGN_REACT, "param_sign_reactive", "value", { S24 }, true },
+    { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore", "value", { U24 }, true },
+    { TMercury230Device::REG_PARAM_BE, "param_be", "value", {}, true }
+}));
 
 const auto MAX_ARRAY_LEN = 16;   // largest array is REG_VALUE_ARRAY 4 uint32
 
@@ -93,7 +93,7 @@ void TMercury230Device::ReadValueArray(const TIRDeviceQuery & query)
                        (uint32_t)p[2];
     }
 
-    query.FinalizeRead(a.values);
+    query.FinalizeRead(a.values, mb->Size);
 }
 
 void TMercury230Device::ReadParam(const TIRDeviceQuery & query)
@@ -106,12 +106,12 @@ void TMercury230Device::ReadParam(const TIRDeviceQuery & query)
     cmdBuf[1] = mb->Address & 0xff; // subparam (BWRI)
 
     assert(mb->Size <= 3);
-    std::vector<uint8_t> buf(mb->Size);
-    Talk( 0x08, cmdBuf, 2, -1, buf.data(), buf.size());
-
-    uint32_t paramValue = 0;
+    uint8_t buf[3] = {0};
+    Talk( 0x08, cmdBuf, 2, -1, buf, mb->Size);
 
     if (mb->Size == 3) {
+        uint32_t paramValue = 0;
+
         if ((typeIndex == TMercury230Device::REG_PARAM_SIGN_ACT) ||
             (typeIndex == TMercury230Device::REG_PARAM_SIGN_REACT) ||
             (typeIndex == TMercury230Device::REG_PARAM_SIGN_IGNORE)
@@ -137,17 +137,16 @@ void TMercury230Device::ReadParam(const TIRDeviceQuery & query)
                             ((uint32_t)buf[2] << 8) +
                             (uint32_t)buf[1];
         }
-    } else  {
-        if (typeIndex == TMercury230Device::REG_PARAM_BE) {
-            paramValue = ((uint32_t)buf[0] << 8) +
-                            ((uint32_t)buf[1]);
-        } else {
-            paramValue = ((uint32_t)buf[1] << 8) +
-                            ((uint32_t)buf[0]);
-        }
-    }
 
-    query.FinalizeRead(paramValue);
+        const auto & memoryView = query.CreateMemoryView(buf, 3);
+
+        memoryView.Clear();
+        memoryView[mb].SetValue(0, paramValue);
+
+        query.FinalizeRead(memoryView);
+    } else  {
+        query.FinalizeRead(buf, 2);
+    }
 }
 
 void TMercury230Device::Read(const TIRDeviceQuery & query)

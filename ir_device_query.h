@@ -49,10 +49,10 @@ public:
     bool operator<(const TIRDeviceQuery &) const noexcept;
 
     PSerialDevice GetDevice() const;
-    uint32_t GetCount() const;
+    uint32_t GetBlockCount() const;
     uint32_t GetValueCount() const;
     uint32_t GetStart() const;
-    uint32_t GetBlockSize() const;
+    uint16_t GetBlockSize() const;
     uint32_t GetSize() const;
     const TMemoryBlockType & GetType() const;
     const std::string & GetTypeName() const;
@@ -68,6 +68,9 @@ public:
     bool IsAbleToSplit() const;
     void SetAbleToSplit(bool);
 
+    TIRDeviceMemoryView CreateMemoryView(void * mem, size_t size) const;
+    TIRDeviceMemoryView CreateMemoryView(const void * mem, size_t size) const;
+
     template <class T>
     const T & As() const
     {
@@ -79,62 +82,65 @@ public:
     }
 
     /**
-     * Accept values read from device as current and set status to Ok
+     * Accept read memory from device as current and set status to Ok
      */
-    template <typename T>
-    void FinalizeRead(const T * values) const
+    void FinalizeRead(const void * mem, size_t size) const
     {
-        CheckTypeMany<T>();
-
-        FinalizeRead(values, sizeof(T) * GetCount());
+        FinalizeRead(CreateMemoryView(mem, size));
     }
 
     /**
-     * Accept values read from device as current and set status to Ok
+     * Accept read memory from device as current and set status to Ok (dynamic array)
      */
     template <typename T>
-    void FinalizeRead(const std::vector<T> & values) const
+    void FinalizeRead(const std::vector<T> & mem) const
     {
         CheckTypeMany<T>();
 
-        FinalizeRead(values.data(), sizeof(T) * values.size());
+        FinalizeRead(CreateMemoryView(mem.data(), sizeof(T) * mem.size()));
+    }
+
+    /**
+     * Accept read memory from device as current and set status to Ok (static array)
+     */
+    template <typename T, size_t N>
+    void FinalizeRead(const T (& mem)[N]) const
+    {
+        CheckTypeMany<T>();
+
+        FinalizeRead(CreateMemoryView(mem, sizeof(T) * N));
     }
 
     /**
      * Accept value read from device as current and set status to Ok (for single read to avoid unnecesary vector creation)
      */
-    template <typename T>
-    void FinalizeRead(T value) const
-    {
-        CheckTypeSingle<T>();
+    // template <typename T>
+    // void FinalizeRead(T value) const
+    // {
+    //     CheckTypeSingle<T>();
 
-        FinalizeRead(&value, sizeof(T));
-    }
+    //     FinalizeRead(&value, sizeof(T));
+    // }
 
-    void FinalizeRead(const void * mem, size_t size) const
-    {
-        FinalizeReadImpl(static_cast<const uint8_t *>(mem), size);
-    }
+    void FinalizeRead(const TIRDeviceMemoryView &) const;
 
     std::string Describe() const;
     std::string DescribeOperation() const;
-
-private:
-    void FinalizeReadImpl(const uint8_t * mem, size_t size) const;
 };
 
 struct TIRDeviceValueQuery final: TIRDeviceQuery
 {
     friend class TIRDeviceQueryFactory;
 
-    TPMap<PMemoryBlock, TIRDeviceMemoryBlockViewRW> MemoryBlockValues;
-    TIRDeviceMemoryViewRW   MemoryView;
+    TPMap<PMemoryBlock, TIRDeviceMemoryBlockView> MemoryBlockValues;
+    // NOTE: memory will be allocated also for unused memory blocks and holes
+    TIRDeviceMemoryView     MemoryView;
     std::vector<uint8_t>    Memory;
 
 
-    TIRDeviceValueQuery(const TPSet<PMemoryBlock> & memoryBlockSet, EQueryOperation operation);
+    explicit TIRDeviceValueQuery(const TPSet<PMemoryBlock> & memoryBlockSet, EQueryOperation = EQueryOperation::Write);
 
-    void IterRegisterValues(std::function<void(TMemoryBlock &, const TIRDeviceMemoryBlockViewRW &)> && accessor) const;
+    void IterRegisterValues(std::function<void(TMemoryBlock &, const TIRDeviceMemoryBlockView &)> && accessor) const;
     void SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value) const;
 
     template <typename T>
@@ -142,7 +148,7 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
     {
         CheckTypeMany<T>();
 
-        GetValuesImpl(values, sizeof(T), GetCount());
+        GetValuesImpl(values, sizeof(T), GetValueCount());
     }
 
     template <typename T>
@@ -151,7 +157,7 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
         CheckTypeMany<T>();
 
         std::vector<T> values;
-        values.resize(GetCount());
+        values.resize(GetValueCount());
 
         GetValuesImpl(values.data(), sizeof(T), values.size());
 

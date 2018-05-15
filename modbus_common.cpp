@@ -67,7 +67,7 @@ namespace   // general utilities
     inline bool IsPacking(const TIRDeviceQuery & query)
     {
         return (query.GetType().Index == Modbus::REG_HOLDING_MULTI) ||
-              ((query.GetType().Index == Modbus::REG_HOLDING) && (query.GetCount() > 1));
+              ((query.GetType().Index == Modbus::REG_HOLDING) && (query.GetBlockCount() > 1));
     }
 
     inline bool IsSingleBitType(const TMemoryBlockType & type)
@@ -258,9 +258,9 @@ namespace Modbus    // modbus protocol common utilities
     inline size_t GetByteCount(const TIRDeviceQuery & query)
     {
         if (IsSingleBitType(query.GetType())) {
-            return BitCountToByteCount(query.GetCount());    // coil values are packed into bytes as bitset
+            return BitCountToByteCount(query.GetValueCount());    // coil values are packed into bytes as bitset
         } else {
-            return query.GetCount() * 2;   // count is for uint16_t, we need byte count
+            return query.GetValueCount() * 2;   // count is for uint16_t, we need byte count
         }
     }
 
@@ -273,7 +273,7 @@ namespace Modbus    // modbus protocol common utilities
     // returns number of requests needed to write register
     size_t InferWriteRequestsCount(const TIRDeviceQuery & query)
     {
-       return IsPacking(query) ? 1 : query.GetCount();
+       return IsPacking(query) ? 1 : query.GetBlockCount();
     }
 
     // returns number of bytes needed to hold response
@@ -299,7 +299,7 @@ namespace Modbus    // modbus protocol common utilities
     {
         pdu[0] = GetFunction(query);
         WriteAs2Bytes(pdu + 1, query.GetStart() + shift);
-        WriteAs2Bytes(pdu + 3, query.GetCount());
+        WriteAs2Bytes(pdu + 3, query.GetBlockCount());
     }
 
     // fills pdu with write request data according to Modbus specification
@@ -308,14 +308,14 @@ namespace Modbus    // modbus protocol common utilities
         pdu[0] = GetFunction(query);
 
         WriteAs2Bytes(pdu + 1, query.GetStart() + shift);
-        WriteAs2Bytes(pdu + 3, query.GetCount());
+        WriteAs2Bytes(pdu + 3, query.GetBlockCount());
 
         auto byteCount = GetByteCount(query);
 
         pdu[5] = byteCount;
 
         if (IsSingleBitType(query.GetType())) {
-            const auto bitCount = min(query.GetCount(), 8u);
+            const auto bitCount = min(query.GetValueCount(), 8u);
             const auto & coilValues = query.GetValues<uint8_t>(); // it is actually values of individual coils, bool is not used to avoid possible bit specialization of vector
 
             for (uint32_t iByte = 0; iByte < byteCount; ++iByte) {
@@ -510,7 +510,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         } else {
             const auto & valueQuery = query.As<TIRDeviceValueQuery>();
 
-            valueQuery.IterRegisterValues([&](const TMemoryBlock & memoryBlock, const TIRDeviceMemoryBlockViewRW & memoryView) {
+            valueQuery.IterRegisterValues([&](const TMemoryBlock & memoryBlock, const TIRDeviceMemoryBlockView & memoryView) {
                 requests.emplace_back(InferWriteRequestSize(query));
                 auto & request = requests.back();
 

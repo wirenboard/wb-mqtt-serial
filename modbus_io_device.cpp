@@ -6,11 +6,11 @@
 
 
 REGISTER_BASIC_PROTOCOL("modbus_io", TModbusIODevice, TAggregatedSlaveId, TRegisterTypes({
-            { Modbus::REG_COIL, "coil", "switch", U8 },
-            { Modbus::REG_DISCRETE, "discrete", "switch", U8, true },
-            { Modbus::REG_HOLDING, "holding", "text", U16 },
-            { Modbus::REG_INPUT, "input", "text", U16, true }
-        }));
+    { Modbus::REG_COIL, "coil", "switch", { U8 } },
+    { Modbus::REG_DISCRETE, "discrete", "switch", { U8 }, true },
+    { Modbus::REG_HOLDING, "holding", "text", { U16 } },
+    { Modbus::REG_INPUT, "input", "text", { U16 }, true }
+}));
 
 TModbusIODevice::TModbusIODevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TModbusIODevice, TAggregatedSlaveId>>(config, port, protocol)

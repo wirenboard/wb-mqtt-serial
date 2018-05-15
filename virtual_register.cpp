@@ -275,7 +275,7 @@ const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
 
 void TVirtualRegister::WriteValueToQuery()
 {
-    MapValueTo(WriteQuery, MemoryBlocks, ValueToWrite);
+    WriteQuery->SetValue(GetValueDesc(), ValueToWrite);
 }
 
 void TVirtualRegister::AcceptDeviceValue(uint64_t new_value)
@@ -283,6 +283,10 @@ void TVirtualRegister::AcceptDeviceValue(uint64_t new_value)
     if (!NeedToPoll()) {
         return;
     }
+
+    assert(!ValueIsRead);
+
+    ValueIsRead = true;
 
     bool firstPoll = !ValueWasAccepted;
     ValueWasAccepted = true;
@@ -310,6 +314,13 @@ void TVirtualRegister::AcceptDeviceValue(uint64_t new_value)
         Add(ChangedPublishData, EPublishData::Value);
     }
     return UpdateReadError(false);
+}
+
+void TVirtualRegister::AcceptWriteValue()
+{
+    CurrentValue = ValueToWrite;
+
+    return UpdateWriteError(false);
 }
 
 size_t TVirtualRegister::GetHash() const noexcept
@@ -447,9 +458,7 @@ void TVirtualRegister::Flush()
         Dirty.store(false);
 
         assert(WriteQuery);
-
-        MapValueTo(WriteQuery, MemoryBlocks, ValueToWrite);
-
+        WriteValueToQuery();
         WriteQuery->ResetStatus();
 
         GetDevice()->Execute(WriteQuery);
@@ -556,34 +565,6 @@ void TVirtualRegister::UpdateWriteError(bool error)
         if (Global::Debug) {
             cerr << "UpdateWriteError: changed error to " << (int)ErrorState << endl;
         }
-    }
-}
-
-void TVirtualRegister::NotifyRead(bool ok)
-{
-    if (Global::Debug) {
-        cerr << "NotifyRead for: " << ToString() << ": " << (ok ? "OK" : "ERROR") << endl;
-    }
-
-    if (!NeedToPoll()) {
-        return;
-    }
-
-    assert(!ValueIsRead);
-
-    ValueIsRead = ok;
-
-    if (!ok) {
-        UpdateReadError(true);
-    }
-}
-
-void TVirtualRegister::NotifyWrite(bool ok)
-{
-    UpdateWriteError(!ok);
-
-    if (ok) {
-        CurrentValue = ValueToWrite;
     }
 }
 

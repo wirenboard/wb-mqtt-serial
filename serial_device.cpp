@@ -83,11 +83,11 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
         try {
             switch(query->Operation) {
                 case EQueryOperation::Read:
-                    assert(query->GetCount() <= (GetProtocolInfo().IsSingleBitType(query->GetType()) ? GetProtocolInfo().GetMaxReadBits() : GetProtocolInfo().GetMaxReadRegisters()));
+                    assert(query->GetBlockCount() <= (GetProtocolInfo().IsSingleBitType(query->GetType()) ? GetProtocolInfo().GetMaxReadBits() : GetProtocolInfo().GetMaxReadRegisters()));
                     return Read(*query);
 
                 case EQueryOperation::Write:
-                    assert(query->GetCount() <= (GetProtocolInfo().IsSingleBitType(query->GetType()) ? GetProtocolInfo().GetMaxWriteBits() : GetProtocolInfo().GetMaxWriteRegisters()));
+                    assert(query->GetBlockCount() <= (GetProtocolInfo().IsSingleBitType(query->GetType()) ? GetProtocolInfo().GetMaxWriteBits() : GetProtocolInfo().GetMaxWriteRegisters()));
                     return Write(query->As<TIRDeviceValueQuery>());
 
                 default:
@@ -219,11 +219,12 @@ void TSerialDevice::InitializeMemoryBlocksCache()
 {
     assert(Cache.capacity() == 0);
 
-    auto size = std::accumulate(MemoryBlocks.begin(), MemoryBlocks.end(), size_t(0), [](size_t size, const PMemoryBlock & mb){
+    size_t size = 0;
+    for (const auto & mb: MemoryBlocks) {
         if (mb->NeedsCaching()) {
             size += mb->Size;
         }
-    });
+    };
 
     Cache.reserve(size);
 

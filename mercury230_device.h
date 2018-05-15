@@ -41,9 +41,6 @@ private:
     void ReadValueArray(const TIRDeviceQuery &);
     void ReadParam(const TIRDeviceQuery &);
 
-    void ReadFromMemory(const TIRDeviceMemoryBlockViewR &, const TMemoryBlockBindInfo &, uint8_t offset, uint64_t & value) const override;
-    void WriteToMemory(const TIRDeviceMemoryBlockViewRW &, const TMemoryBlockBindInfo &, uint8_t offset, const uint64_t & value) const override;
-
     std::unordered_map<int, TValueArray> CachedValues;
 };
 

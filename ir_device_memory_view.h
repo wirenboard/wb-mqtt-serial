@@ -2,83 +2,54 @@
 
 #include "declarations.h"
 
-struct TIRDeviceMemoryBlockViewMetadata
+#include <cassert>
+
+struct TIRDeviceMemoryBlockView
 {
+    uint8_t * const     RawMemory;
     const CPMemoryBlock MemoryBlock;
-
-    uint16_t GetByteIndex(uint16_t index) const;
-};
-
-template <typename P>
-struct TIRDeviceMemoryBlockView final: TIRDeviceMemoryBlockViewMetadata
-{
-    using R = std::remove_pointer<P>::type &;
-
-    const P RawMemory;
-
-    TIRDeviceMemoryBlockView(P memory, const CPMemoryBlock & memoryBlock)
-        : TIRDeviceMemoryBlockViewMetadata{ memoryBlock }
-        , RawMemory(memory)
-    {}
+    const bool          Readonly;
 
     TIRDeviceMemoryBlockView(const TIRDeviceMemoryBlockView &) = default;
 
-    TIRDeviceMemoryBlockView & operator=(const TIRDeviceMemoryBlockView & other)
-    {
-        if (this != &other) {
-             MemoryBlock = other.MemoryBlock;
-             RawMemory = other.RawMemory;
-        }
-
-        return *this;
-    }
-
-    R operator[](uint16_t index) const
-    {
-        assert(RawMemory);
-
-        return RawMemory[GetByteIndex(index)];
-    }
-
-    operator bool() const
+    inline operator bool() const
     {
         return bool(RawMemory);
     }
 
-    operator P() const
+    inline operator const uint8_t*() const
     {
         return RawMemory;
     }
+
+    uint16_t GetByteIndex(uint16_t index) const;
+    uint16_t GetValueByteIndex(uint16_t index) const;
+    uint16_t GetValueSize(uint16_t index) const;
+
+    uint8_t GetByte(uint16_t index) const;
+    void SetByte(uint16_t index, uint8_t) const;
+    uint64_t GetValue(uint16_t index) const;
+    void SetValue(uint16_t index, uint64_t value) const;
 };
 
-struct TIRDeviceMemoryViewMetadata
+struct TIRDeviceMemoryView
 {
+    uint8_t * const             RawMemory;
     const uint32_t              Size;
     const TMemoryBlockType &    Type;
     const uint32_t              StartAddress;
     const uint16_t              BlockSize;
+    const bool                  Readonly;
+
+    TIRDeviceMemoryView(uint8_t * memory, uint32_t size, const TMemoryBlockType &, uint32_t start, uint16_t blockSize, bool readonly = false);
+    TIRDeviceMemoryView(const uint8_t * memory, uint32_t size, const TMemoryBlockType &, uint32_t start, uint16_t blockSize);
+
+    void Clear() const;
 
     uint16_t GetBlockStart(const CPMemoryBlock & memoryBlock) const;
-};
 
-template <typename P>
-struct TIRDeviceMemoryView final: TIRDeviceMemoryViewMetadata
-{
-    const P RawMemory;
-
-    TIRDeviceMemoryView(P memory, uint32_t size, const TMemoryBlockType & type, uint32_t startAddress, uint16_t blockSize)
-        : TIRDeviceMemoryViewMetadata{ size, type, startAddress, blockSize }
-        , RawMemory(memory)
-    {}
-
-    TIRDeviceMemoryBlockView<P> operator[](const CPMemoryBlock & memoryBlock) const
+    inline TIRDeviceMemoryBlockView operator[](const CPMemoryBlock & memoryBlock) const
     {
-        return { RawMemory + GetBlockStart(memoryBlock), memoryBlock };
+        return { RawMemory + GetBlockStart(memoryBlock), memoryBlock, Readonly };
     }
 };
-
-using TIRDeviceMemoryBlockViewR  = TIRDeviceMemoryBlockView<const uint8_t *>;
-using TIRDeviceMemoryBlockViewRW = TIRDeviceMemoryBlockView<uint8_t *>;
-
-using TIRDeviceMemoryViewR  = TIRDeviceMemoryView<const uint8_t *>;
-using TIRDeviceMemoryViewRW = TIRDeviceMemoryView<uint8_t *>;

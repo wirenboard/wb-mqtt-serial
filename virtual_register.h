@@ -88,6 +88,7 @@ private:
     void Initialize();
 
     void AcceptDeviceValue(uint64_t);
+    void AcceptWriteValue();
 
     uint32_t GetBitPosition() const;
     uint32_t GetBitEnd() const;

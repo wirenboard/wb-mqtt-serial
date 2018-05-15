@@ -18,11 +18,11 @@ namespace {
 }
 
 REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
-            { TMilurDevice::REG_PARAM, "param", "value", { U24 }, true },
-            { TMilurDevice::REG_POWER, "power", "power", { S32 }, true },
-            { TMilurDevice::REG_ENERGY, "energy", "power_consumption", { BCD32 }, true },
-            { TMilurDevice::REG_FREQ, "freq", "value", { U16 }, true },
-            { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", { S16 }, true }
+    { TMilurDevice::REG_PARAM, "param", "value", { U24 }, true },
+    { TMilurDevice::REG_POWER, "power", "power", { S32 }, true },
+    { TMilurDevice::REG_ENERGY, "energy", "power_consumption", { BCD32 }, true },
+    { TMilurDevice::REG_FREQ, "freq", "value", { U16 }, true },
+    { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", { S16 }, true }
 }));
 
 TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
@@ -140,12 +140,19 @@ void TMilurDevice::Read(const TIRDeviceQuery & query)
     case TMilurDevice::REG_POWER:
     case TMilurDevice::REG_POWERFACTOR:
     case TMilurDevice::REG_FREQ:
-        query.FinalizeRead(buf + 2);
+        query.FinalizeRead(buf + 2, mb->Size);
         break;
     case TMilurDevice::REG_ENERGY:
+    {
         auto value = BuildBCB32(buf + 2);
-        query.FinalizeRead(&value, mb->Size);
+        const auto & memoryView = query.CreateMemoryView(buf, mb->Size);
+
+        memoryView.Clear();
+        memoryView[mb].SetValue(0, value);
+
+        query.FinalizeRead(memoryView);
         break;
+    }
     default:
         throw TSerialDeviceTransientErrorException("bad register type");
     }
