@@ -7,7 +7,7 @@
         "channels": [
             {
                 "name": "Power consumption tariff 1",
-                "reg_type": "tariffs",
+                "reg_type": "energy",
                 "address": "0x27:0:32",
                 "format": "bcd32",
                 "type": "power_consumption",
@@ -15,7 +15,7 @@
             },
             {
                 "name": "Power consumption tariff 2",
-                "reg_type": "tariffs",
+                "reg_type": "energy",
                 "address": "0x27:32:32",
                 "format": "bcd32",
                 "type": "power_consumption",
@@ -23,7 +23,7 @@
             },
             {
                 "name": "Power consumption tariff 3",
-                "reg_type": "tariffs",
+                "reg_type": "energy",
                 "address": "0x27:64:32",
                 "format": "bcd32",
                 "type": "power_consumption",
@@ -31,7 +31,7 @@
             },
             {
                 "name": "Power consumption tariff 4",
-                "reg_type": "tariffs",
+                "reg_type": "energy",
                 "address": "0x27:96:32",
                 "format": "bcd32",
                 "type": "power_consumption",

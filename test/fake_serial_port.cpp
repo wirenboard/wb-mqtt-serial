@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <stdexcept>
 #include "fake_serial_port.h"
+#include "memory_block.h"
+#include "ir_device_query_factory.h"
 #include "utils.h"
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
@@ -242,6 +244,62 @@ void TSerialDeviceTest::SetUp()
 PExpector TSerialDeviceTest::Expector() const
 {
     return SerialPort;
+}
+
+std::vector<TIRDeviceStoringValueDesc> TSerialDeviceTest::GetValueDescs(const TPSet<PMemoryBlock> & blocks) const
+{
+    std::vector<TIRDeviceStoringValueDesc> descs;
+    for (const auto & mb: blocks) {
+        uint16_t iBit = 0;
+        for (int i = 0; i < mb->Type.GetValueCount(); ++i) {
+            auto valueWidth = (mb->Type.Formats.empty() ? mb->Size : RegisterFormatByteWidth(mb->Type.Formats[i])) * 8;
+
+            descs.push_back(TIRDeviceStoringValueDesc{
+                {
+                    { mb, { iBit, iBit + valueWidth } }
+                },
+                EWordOrder::BigEndian  // word order doesn't matter here because we read only by 1 memory block per value
+            });
+
+            iBit += valueWidth;
+        }
+    }
+
+    return descs;
+}
+
+PIRDeviceStoringQuery TSerialDeviceTest::GetReadQuery(const TPSet<PMemoryBlock> & blocks) const
+{
+    return PIRDeviceStoringQuery(new TIRDeviceStoringQuery(blocks, GetValueDescs(blocks)));
+}
+
+PIRDeviceValueQuery TSerialDeviceTest::GetWriteQuery(const TPSet<PMemoryBlock> & blocks) const
+{
+    return TIRDeviceQueryFactory::CreateQuery<TIRDeviceValueQuery>(blocks);
+}
+
+std::vector<uint64_t> TSerialDeviceTest::TestRead(const PIRDeviceStoringQuery & query) const
+{
+    query->GetDevice()->Execute(query);
+    assert(EQueryStatus::Ok == query->GetStatus());
+    query->ResetStatus();
+
+    std::vector<uint64_t> res;
+    res.reserve(query->StoredValues.size());
+
+    for (auto & descValue: query->StoredValues) {
+        res.push_back(descValue.second);
+    }
+
+    return res;
+}
+
+void TSerialDeviceTest::TestWrite(const PIRDeviceValueQuery & query, const TIRDeviceValueDesc & valueDesc, uint64_t value) const
+{
+    query->SetValue(valueDesc, value);
+    query->GetDevice()->Execute(query);
+    assert(EQueryStatus::Ok == query->GetStatus());
+    query->ResetStatus();
 }
 
 void TSerialDeviceTest::TearDown()

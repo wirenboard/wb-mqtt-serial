@@ -30,31 +30,30 @@ protected:
 
     PMercury230Device Mercury230Dev;
 
-    PVirtualRegister Mercury230TotalReactiveEnergyReg;
-	PVirtualRegister Mercury230TotalConsumptionReg;
-	PVirtualRegister Mercury230PReg;
-	PVirtualRegister Mercury230P1Reg;
-	PVirtualRegister Mercury230P2Reg;
-	PVirtualRegister Mercury230P3Reg;
-	PVirtualRegister Mercury230QReg;
-	PVirtualRegister Mercury230Q1Reg;
-	PVirtualRegister Mercury230Q2Reg;
-	PVirtualRegister Mercury230Q3Reg;
-	PVirtualRegister Mercury230U1Reg;
-	PVirtualRegister Mercury230U2Reg;
-	PVirtualRegister Mercury230U3Reg;
-	PVirtualRegister Mercury230I1Reg;
-	PVirtualRegister Mercury230I2Reg;
-	PVirtualRegister Mercury230I3Reg;
-	PVirtualRegister Mercury230FrequencyReg;
-	PVirtualRegister Mercury230PFReg;
-	PVirtualRegister Mercury230PF1Reg;
-	PVirtualRegister Mercury230PF2Reg;
-	PVirtualRegister Mercury230PF3Reg;
-	PVirtualRegister Mercury230KU1Reg;
-	PVirtualRegister Mercury230KU2Reg;
-	PVirtualRegister Mercury230KU3Reg;
-	PVirtualRegister Mercury230TempReg;
+    PMemoryBlock Mercury230ValArrayMB;
+	PMemoryBlock Mercury230PReg;
+	PMemoryBlock Mercury230P1Reg;
+	PMemoryBlock Mercury230P2Reg;
+	PMemoryBlock Mercury230P3Reg;
+	PMemoryBlock Mercury230QReg;
+	PMemoryBlock Mercury230Q1Reg;
+	PMemoryBlock Mercury230Q2Reg;
+	PMemoryBlock Mercury230Q3Reg;
+	PMemoryBlock Mercury230U1Reg;
+	PMemoryBlock Mercury230U2Reg;
+	PMemoryBlock Mercury230U3Reg;
+	PMemoryBlock Mercury230I1Reg;
+	PMemoryBlock Mercury230I2Reg;
+	PMemoryBlock Mercury230I3Reg;
+	PMemoryBlock Mercury230FrequencyReg;
+	PMemoryBlock Mercury230PFReg;
+	PMemoryBlock Mercury230PF1Reg;
+	PMemoryBlock Mercury230PF2Reg;
+	PMemoryBlock Mercury230PF3Reg;
+	PMemoryBlock Mercury230KU1Reg;
+	PMemoryBlock Mercury230KU2Reg;
+	PMemoryBlock Mercury230KU3Reg;
+	PMemoryBlock Mercury230TempReg;
 };
 
 PDeviceConfig TMercury230Test::GetDeviceConfig()
@@ -62,47 +61,46 @@ PDeviceConfig TMercury230Test::GetDeviceConfig()
 	return std::make_shared<TDeviceConfig>("mercury230", std::to_string(0x00), "mercury230");
 }
 
+// TODO: remove TVirtualRegister::Create\(TRegisterConfig::Create\((.+), (.+), (.+)\), (.+)\);
+
 void TMercury230Test::SetUp()
 {
 	TSerialDeviceTest::SetUp();
 
 	Mercury230Dev = std::make_shared<TMercury230Device>(GetDeviceConfig(), SerialPort,
 	                            TSerialDeviceFactory::GetProtocol("mercury230"));
-	Mercury230TotalConsumptionReg =
-		TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32), Mercury230Dev);
-	Mercury230TotalReactiveEnergyReg =
-		TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32), Mercury230Dev);
+	Mercury230ValArrayMB = Mercury230Dev->GetCreateMemoryBlock(0x0000, TMercury230Device::REG_VALUE_ARRAY);
 
-	Mercury230PReg  = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24), Mercury230Dev);
-	Mercury230P1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1101, S24), Mercury230Dev);
-	Mercury230P2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1102, S24), Mercury230Dev);
-	Mercury230P3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1103, S24), Mercury230Dev);
+	Mercury230PReg  = Mercury230Dev->GetCreateMemoryBlock(0x1100, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230P1Reg = Mercury230Dev->GetCreateMemoryBlock(0x1101, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230P2Reg = Mercury230Dev->GetCreateMemoryBlock(0x1102, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230P3Reg = Mercury230Dev->GetCreateMemoryBlock(0x1103, TMercury230Device::REG_PARAM_SIGN_ACT);
 
-	Mercury230QReg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1104, S24), Mercury230Dev);
-	Mercury230Q1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1105, S24), Mercury230Dev);
-	Mercury230Q2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1106, S24), Mercury230Dev);
-	Mercury230Q3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1107, S24), Mercury230Dev);
+	Mercury230QReg = Mercury230Dev->GetCreateMemoryBlock(0x1104, TMercury230Device::REG_PARAM_SIGN_REACT);
+	Mercury230Q1Reg = Mercury230Dev->GetCreateMemoryBlock(0x1105, TMercury230Device::REG_PARAM_SIGN_REACT);
+	Mercury230Q2Reg = Mercury230Dev->GetCreateMemoryBlock(0x1106, TMercury230Device::REG_PARAM_SIGN_REACT);
+	Mercury230Q3Reg = Mercury230Dev->GetCreateMemoryBlock(0x1107, TMercury230Device::REG_PARAM_SIGN_REACT);
 
-	Mercury230U1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1111, U24), Mercury230Dev);
-	Mercury230U2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1112, U24), Mercury230Dev);
-	Mercury230U3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1113, U24), Mercury230Dev);
+	Mercury230U1Reg = Mercury230Dev->GetCreateMemoryBlock(0x1111, TMercury230Device::REG_PARAM, 3);
+	Mercury230U2Reg = Mercury230Dev->GetCreateMemoryBlock(0x1112, TMercury230Device::REG_PARAM, 3);
+	Mercury230U3Reg = Mercury230Dev->GetCreateMemoryBlock(0x1113, TMercury230Device::REG_PARAM, 3);
 
-	Mercury230I1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1121, U24), Mercury230Dev);
-	Mercury230I2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1122, U24), Mercury230Dev);
-	Mercury230I3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1123, U24), Mercury230Dev);
+	Mercury230I1Reg = Mercury230Dev->GetCreateMemoryBlock(0x1121, TMercury230Device::REG_PARAM, 3);
+	Mercury230I2Reg = Mercury230Dev->GetCreateMemoryBlock(0x1122, TMercury230Device::REG_PARAM, 3);
+	Mercury230I3Reg = Mercury230Dev->GetCreateMemoryBlock(0x1123, TMercury230Device::REG_PARAM, 3);
 
-	Mercury230FrequencyReg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1140, U24), Mercury230Dev);
+	Mercury230FrequencyReg = Mercury230Dev->GetCreateMemoryBlock(0x1140, TMercury230Device::REG_PARAM, 3);
 
-	Mercury230PFReg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1130, S24), Mercury230Dev);
-	Mercury230PF1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1131, S24), Mercury230Dev);
-	Mercury230PF2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1132, S24), Mercury230Dev);
-	Mercury230PF3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1133, S24), Mercury230Dev);
+	Mercury230PFReg = Mercury230Dev->GetCreateMemoryBlock(0x1130, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230PF1Reg = Mercury230Dev->GetCreateMemoryBlock(0x1131, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230PF2Reg = Mercury230Dev->GetCreateMemoryBlock(0x1132, TMercury230Device::REG_PARAM_SIGN_ACT);
+	Mercury230PF3Reg = Mercury230Dev->GetCreateMemoryBlock(0x1133, TMercury230Device::REG_PARAM_SIGN_ACT);
 
-	Mercury230KU1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1161, U16), Mercury230Dev);
-	Mercury230KU2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1162, U16), Mercury230Dev);
-	Mercury230KU3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1163, U16), Mercury230Dev);
+	Mercury230KU1Reg = Mercury230Dev->GetCreateMemoryBlock(0x1161, TMercury230Device::REG_PARAM, 2);
+	Mercury230KU2Reg = Mercury230Dev->GetCreateMemoryBlock(0x1162, TMercury230Device::REG_PARAM, 2);
+	Mercury230KU3Reg = Mercury230Dev->GetCreateMemoryBlock(0x1163, TMercury230Device::REG_PARAM, 2);
 
-	Mercury230TempReg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_BE, 0x1170, U16), Mercury230Dev);
+	Mercury230TempReg = Mercury230Dev->GetCreateMemoryBlock(0x1170, TMercury230Device::REG_PARAM_BE, 2);
 
 
 	SerialPort->Open();
@@ -110,6 +108,8 @@ void TMercury230Test::SetUp()
 
 TEST_F(TMercury230Test, ReadEnergy)
 {
+    auto Mercury230ValArrayMBQuery = GetReadQuery({ Mercury230ValArrayMB });
+
     EnqueueMercury230SessionSetupResponse();
     EnqueueMercury230EnergyResponse1();
 
@@ -125,51 +125,62 @@ TEST_F(TMercury230Test, ReadEnergy)
 
     // Here we make sure that consecutive requests querying the same array
     // don't cause redundant requests during the single poll cycle.
-    ASSERT_EQ(3196200, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230TotalConsumptionReg)));
-    ASSERT_EQ(300444, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230TotalReactiveEnergyReg)));
-    ASSERT_EQ(3196200, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230TotalConsumptionReg)));
+
+    auto values = TestRead(Mercury230ValArrayMBQuery);
+    ASSERT_EQ(4, values.size());
+    ASSERT_EQ(3196200, values[0]);
+    ASSERT_EQ(300444,  values[2]);
     Mercury230Dev->EndPollCycle();
 
     EnqueueMercury230EnergyResponse2();
-    ASSERT_EQ(3196201, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230TotalConsumptionReg)));
-    ASSERT_EQ(300445, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230TotalReactiveEnergyReg)));
-    ASSERT_EQ(3196201, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230TotalConsumptionReg)));
+    values = TestRead(Mercury230ValArrayMBQuery);
+    ASSERT_EQ(4, values.size());
+    ASSERT_EQ(3196201, values[0]);
+    ASSERT_EQ(300445, values[2]);
     Mercury230Dev->EndPollCycle();
     SerialPort->Close();
 }
 
 void TMercury230Test::VerifyParamQuery()
 {
+    auto Mercury230U1RegQuery = GetReadQuery({ Mercury230U1Reg });
+    auto Mercury230I1RegQuery = GetReadQuery({ Mercury230I1Reg });
+    auto Mercury230I2RegQuery = GetReadQuery({ Mercury230I2Reg });
+    auto Mercury230U2RegQuery = GetReadQuery({ Mercury230U2Reg });
+    auto Mercury230U3RegQuery = GetReadQuery({ Mercury230U3Reg });
+    auto Mercury230PRegQuery = GetReadQuery({ Mercury230PReg });
+    auto Mercury230TempRegQuery = GetReadQuery({ Mercury230TempReg });
+
     EnqueueMercury230U1Response();
     // Register address for params:
     // 0000 0000 CCCC CCCC NNNN NNNN BBBB BBBB
     // C = command (0x08)
     // N = param number (0x11)
     // B = subparam spec (BWRI), 0x11 = voltage, phase 1
-    ASSERT_EQ(24128, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230U1Reg)));
+    ASSERT_EQ(24128, TestRead(Mercury230U1RegQuery)[0]);
 
     EnqueueMercury230I1Response();
     // subparam 0x21 = current (phase 1)
-    ASSERT_EQ(69, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230I1Reg)));
+    ASSERT_EQ(69, TestRead(Mercury230I1RegQuery)[0]);
 
     EnqueueMercury230I2Response();
     // subparam 0x22 = current (phase 2)
-    ASSERT_EQ(96, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230I2Reg)));
+    ASSERT_EQ(96, TestRead(Mercury230I2RegQuery)[0]);
 
     EnqueueMercury230U2Response();
     // subparam 0x12 = voltage (phase 2)
-    ASSERT_EQ(24043, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230U2Reg)));
+    ASSERT_EQ(24043, TestRead(Mercury230U2RegQuery)[0]);
 
     EnqueueMercury230U3Response();
 	// subparam 0x12 = voltage (phase 3)
-	ASSERT_EQ(50405, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230U3Reg)));
+	ASSERT_EQ(50405, TestRead(Mercury230U3RegQuery)[0]);
 
     EnqueueMercury230PResponse();
     // Total power (P)
-    ASSERT_EQ(553095, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230PReg)));
+    ASSERT_EQ(553095, TestRead(Mercury230PRegQuery)[0]);
 
     EnqueueMercury230TempResponse();
-    ASSERT_EQ(24, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230TempReg)));
+    ASSERT_EQ(24, TestRead(Mercury230TempRegQuery)[0]);
 }
 
 TEST_F(TMercury230Test, ReadParams)
@@ -184,6 +195,8 @@ TEST_F(TMercury230Test, ReadParams)
 
 TEST_F(TMercury230Test, Reconnect)
 {
+    auto Mercury230U2RegQuery = GetReadQuery({ Mercury230U2Reg });
+
     EnqueueMercury230SessionSetupResponse();
     EnqueueMercury230NoSessionResponse();
     // re-setup happens here
@@ -191,7 +204,7 @@ TEST_F(TMercury230Test, Reconnect)
     EnqueueMercury230U2Response();
 
     // subparam 0x12 = voltage (phase 2)
-    ASSERT_EQ(24043, Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230U2Reg)));
+    ASSERT_EQ(24043, TestRead(Mercury230U2RegQuery)[0]);
 
     Mercury230Dev->EndPollCycle();
     SerialPort->Close();
@@ -199,10 +212,12 @@ TEST_F(TMercury230Test, Reconnect)
 
 TEST_F(TMercury230Test, Exception)
 {
+    auto Mercury230U2RegQuery = GetReadQuery({ Mercury230U2Reg });
+
     EnqueueMercury230SessionSetupResponse();
     EnqueueMercury230InternalMeterErrorResponse();
     try {
-        Mercury230Dev->ReadMemoryBlock(GetMemoryBlock(Mercury230U2Reg));
+        Mercury230Dev->Read(*Mercury230U2RegQuery);
         FAIL() << "No exception thrown";
     } catch (const TSerialDeviceException& e) {
         ASSERT_STREQ("Serial protocol error: Internal meter error", e.what());

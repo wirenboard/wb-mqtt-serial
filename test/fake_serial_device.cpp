@@ -63,7 +63,7 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
             throw runtime_error("invalid register type");
         }
 
-        query.FinalizeRead(vector<uint16_t>(Registers + start, Registers + end));
+        query.FinalizeRead(Registers + start, query.GetSize());
 
         if (!query.VirtualRegisters.empty()) {
             for (const auto & reg: query.VirtualRegisters) {

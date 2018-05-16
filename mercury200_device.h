@@ -17,7 +17,7 @@ class TMercury200Device : public TBasicProtocolSerialDevice<TBasicProtocol<TMerc
 public:
     enum RegisterType
     {
-        MEM_TARIFFS = 0,
+        MEM_ENERGY = 0,
         MEM_PARAMS = 1,
         REG_PARAM_16 = 2,
     };

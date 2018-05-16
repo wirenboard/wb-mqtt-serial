@@ -29,9 +29,11 @@ public:
     static TQueries GenerateQueries(std::list<TPSet<PMemoryBlock>> && memoryBlockSets, EQueryOperation, EQueryGenerationPolicy = Default);
 
     template <class Query>
-    static PIRDeviceQuery CreateQuery(const TPSet<PMemoryBlock> & memoryBlockSet)
+    static std::shared_ptr<Query> CreateQuery(const TPSet<PMemoryBlock> & memoryBlockSet)
     {
-        return PIRDeviceQuery(new Query(memoryBlockSet));
+        static_assert(std::is_base_of<TIRDeviceQuery, Query>::value, "Query must be derived from TIRDeviceQuery");
+
+        return std::shared_ptr<Query>(new Query(memoryBlockSet));
     }
 
 private:

@@ -33,6 +33,10 @@ void TIVTMDeviceTest::SetUp()
 
 TEST_F(TIVTMDeviceTest, IVTM7MQuery)
 {
+    auto Dev1TempQuery = GetReadQuery({ Dev1Temp });
+    auto Dev1HumidityQuery = GetReadQuery({ Dev1Humidity });
+    auto Dev2TempQuery = GetReadQuery({ Dev2Temp });
+
     // >> 24 30 30 30 31 52 52 30 30 30 30 30 34 41 44 0d
     // << 21 30 30 30 31 52 52 43 45 44 33 44 31 34 31 35 46 0D
     // temperature == 26.228420
@@ -51,7 +55,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    ASSERT_EQ(0x41D1D3CE, Dev->ReadMemoryBlock(Dev1Temp)); //big-endian
+    ASSERT_EQ(0x41D1D3CE, TestRead(Dev1TempQuery)[0]); //big-endian
 
 	// >> 24 30 30 30 31 52 52 30 30 30 34 30 34 42 31 0d
 	// << 21 30 30 30 31 52 52 33 30 39 41 45 42 34 31 34 46 0D
@@ -71,7 +75,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0D                  // footer
         });
 
-    ASSERT_EQ(0x41EB9A30, Dev->ReadMemoryBlock(Dev1Humidity)); //big-endian
+    ASSERT_EQ(0x41EB9A30, TestRead(Dev1HumidityQuery)[0]); //big-endian
 
     Dev->EndPollCycle();
 
@@ -95,6 +99,6 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    ASSERT_EQ(0x41C7855E, Dev->ReadMemoryBlock(Dev2Temp)); //big-endian
+    ASSERT_EQ(0x41C7855E, TestRead(Dev2TempQuery)[0]); //big-endian
     SerialPort->Close();
 }

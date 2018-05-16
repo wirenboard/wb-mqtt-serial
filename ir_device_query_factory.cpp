@@ -280,7 +280,12 @@ void TIRDeviceQueryFactory::MergeSets(list<TPSet<PMemoryBlock>> & memoryBlockSet
     if (Global::Debug)
         cerr << "merging sets" << endl;
 
+    // Two sets may merge if:
     auto condition = [&](const TPSet<PMemoryBlock> & a, const TPSet<PMemoryBlock> & b){
+        if (GetType(a) != GetType(b)) { // Their memory blocks are of same type
+            return false;
+        }
+
         auto first = **a.begin() < **b.begin() ? *a.begin() : *b.begin();
         auto last = **b.rbegin() < **a.rbegin() ? *a.rbegin() : *b.rbegin();
 
@@ -289,11 +294,9 @@ void TIRDeviceQueryFactory::MergeSets(list<TPSet<PMemoryBlock>> & memoryBlockSet
         auto holeAfterMerge = GetMaxHoleSize(first, last);
         auto regsAfterMerge = last->Address - first->Address + 1;
 
-        // Two sets may merge if:
-        return GetType(a).Index == GetType(b).Index &&  // Their memory blocks are of same type
-               GetSize(a)       == GetSize(b)       &&  // Their memory blocks are of same size
-               holeAfterMerge <= maxHole            &&  // Hole after merge won't exceed limit
-               regsAfterMerge <= maxRegs;               // Memory block count after merge won't exceed limit
+        return GetSize(a)     == GetSize(b) && // Their memory blocks are of same size
+               holeAfterMerge <= maxHole    && // Hole after merge won't exceed limit
+               regsAfterMerge <= maxRegs;      // Memory block count after merge won't exceed limit
     };
 
     for (auto itMemoryBlockSet = memoryBlockSets.begin(); itMemoryBlockSet != memoryBlockSets.end(); ++itMemoryBlockSet) {

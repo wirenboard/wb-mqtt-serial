@@ -122,7 +122,7 @@ public:
     //     FinalizeRead(&value, sizeof(T));
     // }
 
-    void FinalizeRead(const TIRDeviceMemoryView &) const;
+    virtual void FinalizeRead(const TIRDeviceMemoryView &) const;
 
     std::string Describe() const;
     std::string DescribeOperation() const;
@@ -134,8 +134,8 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
 
     TPMap<PMemoryBlock, TIRDeviceMemoryBlockView> MemoryBlockValues;
     // NOTE: memory will be allocated also for unused memory blocks and holes
-    TIRDeviceMemoryView     MemoryView;
     std::vector<uint8_t>    Memory;
+    TIRDeviceMemoryView     MemoryView;
 
 
     explicit TIRDeviceValueQuery(const TPSet<PMemoryBlock> & memoryBlockSet, EQueryOperation = EQueryOperation::Write);

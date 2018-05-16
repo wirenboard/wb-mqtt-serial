@@ -5,7 +5,6 @@
 #include "serial_device.h"
 
 #include <cstring>
-#include <bitset>
 
 using namespace std;
 
@@ -55,112 +54,6 @@ namespace
         return all_of(memoryBlocks.begin(), memoryBlocks.end(), [&](const PMemoryBlock & mb){
             return mb->Type.Index == typeIndex && mb->Size == size;
         });
-    }
-
-    inline void ReadFromMemory(const TIRDeviceMemoryBlockView & memoryView, const TMemoryBlockBindInfo & bindInfo, uint8_t offset, uint64_t & value)
-    {
-        const auto mask = bindInfo.GetMask();
-
-        for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryView.MemoryBlock->Size; ++iByte) {
-            auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
-            auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
-
-            if (begin >= end)
-                continue;
-
-            uint64_t bits = (mask >> (iByte * 8)) & (memoryView.GetByte(iByte) >> begin);
-            value |= bits << offset;
-
-            auto bitCount = end - begin;
-            offset += bitCount;
-        }
-
-        // TODO: check for usefullness
-        if (Global::Debug) {
-            std::cerr << "mb mask: " << std::bitset<64>(mask) << std::endl;
-            std::cerr << "reading " << bindInfo.Describe() << " bits of " << memoryView.MemoryBlock->Describe()
-                    << " to [" << (int)offset << ", " << int(offset + bindInfo.BitCount() - 1) << "] bits of value" << std::endl;
-        }
-    }
-
-    inline uint64_t ReadValue(const TIRDeviceMemoryView & memoryView, const TIRDeviceValueDesc & valueDesc)
-    {
-        uint64_t value = 0;
-
-        uint8_t bitPosition = 0;
-
-        auto readMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & boundMemoryBlock) {
-            const auto & memoryBlock = boundMemoryBlock.first;
-            const auto & bindInfo = boundMemoryBlock.second;
-
-            ReadFromMemory(memoryView[memoryBlock], bindInfo, bitPosition, value);
-            bitPosition += bindInfo.BitCount();
-        };
-
-        if (valueDesc.WordOrder == EWordOrder::BigEndian) {
-            std::for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), readMemoryBlock);
-        } else {
-            std::for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), readMemoryBlock);
-        }
-
-        if (Global::Debug)
-            std::cerr << "map value from registers: " << value << std::endl;
-
-        return value;
-    }
-
-    inline void WriteToMemory(const TIRDeviceMemoryBlockView & memoryView, const TMemoryBlockBindInfo & bindInfo, uint8_t offset, const uint64_t & value)
-    {
-        const auto mask = bindInfo.GetMask();
-
-        for (uint16_t iByte = BitCountToByteCount(bindInfo.BitStart) - 1; iByte < memoryView.MemoryBlock->Size; ++iByte) {
-            auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
-            auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
-
-            if (begin >= end)
-                continue;
-
-            uint8_t byteMask = mask >> (iByte * 8);
-
-            memoryView.SetByte(iByte, byteMask & ((value >> offset) << begin));
-
-            auto bitCount = end - begin;
-            offset += bitCount;
-        }
-    }
-
-    inline void WriteValue(const TIRDeviceMemoryView & memoryView, const TIRDeviceValueDesc & valueDesc, uint64_t value)
-    {
-        if (Global::Debug)
-            std::cerr << "map value to registers: " << value << std::endl;
-
-        uint8_t bitPosition = 0;
-
-        auto writeMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & memoryBlockBindInfo){
-            const auto & memoryBlock = memoryBlockBindInfo.first;
-            const auto & bindInfo = memoryBlockBindInfo.second;
-
-            const auto & memoryBlockView = memoryView[memoryBlock];
-
-            WriteToMemory(memoryBlockView, bindInfo, bitPosition, value);
-            bitPosition += bindInfo.BitCount();
-
-            // apply cache if memory block is cached
-            if (const auto & cache = memoryBlock->GetCache()) {
-                auto mask = bindInfo.GetMask();
-
-                for (uint16_t iByte = 0; iByte < memoryBlock->Size; ++iByte) {
-                    memoryBlockView.SetByte(iByte, (~mask & cache[iByte]) | (mask & memoryBlockView.GetByte(iByte)));
-                    mask >>= 8;
-                }
-            }
-        };
-
-        if (valueDesc.WordOrder == EWordOrder::BigEndian) {
-            for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), writeMemoryBlock);
-        } else {
-            for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), writeMemoryBlock);
-        }
     }
 }
 
@@ -333,7 +226,7 @@ void TIRDeviceQuery::FinalizeRead(const TIRDeviceMemoryView & memoryView) const
     }
 
     for (const auto & reg: VirtualRegisters) {
-        reg->AcceptDeviceValue(ReadValue(memoryView, reg->GetValueDesc()));
+        reg->AcceptDeviceValue(memoryView.ReadValue(reg->GetValueDesc()));
     }
 
     SetStatus(EQueryStatus::Ok);
@@ -341,8 +234,8 @@ void TIRDeviceQuery::FinalizeRead(const TIRDeviceMemoryView & memoryView) const
 
 TIRDeviceValueQuery::TIRDeviceValueQuery(const TPSet<PMemoryBlock> & memoryBlockSet, EQueryOperation operation)
     : TIRDeviceQuery(memoryBlockSet, operation)
-    , MemoryView{ Memory.data(), Memory.size(), GetType(), GetStart(), GetBlockSize() }
     , Memory(GetSize())
+    , MemoryView{ Memory.data(), Memory.size(), GetType(), GetStart(), GetBlockSize() }
 {
     for (const auto & mb: memoryBlockSet) {
         MemoryBlockValues.emplace(mb, MemoryView[mb]);
@@ -360,7 +253,7 @@ void TIRDeviceValueQuery::IterRegisterValues(std::function<void(TMemoryBlock &, 
 
 void TIRDeviceValueQuery::SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value) const
 {
-    WriteValue(MemoryView, valueDesc, value);
+    MemoryView.WriteValue(valueDesc, value);
 }
 
 void TIRDeviceValueQuery::FinalizeWrite() const

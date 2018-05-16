@@ -795,6 +795,8 @@ TEST_F(TSerialClientTest, Bitmasks)
     SerialClient->AddRegister(reg73O16W16);
     SerialClient->AddRegister(reg73O32W32);
 
+    Device->InitializeMemoryBlocksCache();
+
     reg70O0W8->SetTextValue("255");
     reg70O0W8->Flush();
 

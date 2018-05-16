@@ -16,13 +16,8 @@ protected:
 
     PMercury200Device Mercury200Dev;
 
-    PMemoryBlock Mercury200RET1Reg;
-    PMemoryBlock Mercury200RET2Reg;
-    PMemoryBlock Mercury200RET3Reg;
-    PMemoryBlock Mercury200RET4Reg;
-    PMemoryBlock Mercury200UReg;
-    PMemoryBlock Mercury200IReg;
-    PMemoryBlock Mercury200PReg;
+    PMemoryBlock Mercury200EnergyMB;
+    PMemoryBlock Mercury200ParamsMB;
     PMemoryBlock Mercury200BatReg;
 };
 
@@ -37,34 +32,39 @@ void TMercury200Test::SetUp()
     Mercury200Dev = std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort,
                             TSerialDeviceFactory::GetProtocol("mercury200"));
 
-    Mercury200RET1Reg = Mercury200Dev->GetCreateMemoryBlock(0x2700, TMercury200Device::REG_PARAM_VALUE32);
-    Mercury200RET2Reg = Mercury200Dev->GetCreateMemoryBlock(0x2704, TMercury200Device::REG_PARAM_VALUE32);
-    Mercury200RET3Reg = Mercury200Dev->GetCreateMemoryBlock(0x2708, TMercury200Device::REG_PARAM_VALUE32);
-    Mercury200RET4Reg = Mercury200Dev->GetCreateMemoryBlock(0x270C, TMercury200Device::REG_PARAM_VALUE32);
-    Mercury200UReg = Mercury200Dev->GetCreateMemoryBlock(0x6300, TMercury200Device::REG_PARAM_VALUE16);
-    Mercury200IReg = Mercury200Dev->GetCreateMemoryBlock(0x6302, TMercury200Device::REG_PARAM_VALUE16);
-    Mercury200PReg = Mercury200Dev->GetCreateMemoryBlock(0x6304, TMercury200Device::REG_PARAM_VALUE24);
-    Mercury200BatReg = Mercury200Dev->GetCreateMemoryBlock(0x2900, TMercury200Device::REG_PARAM_VALUE16);
+    Mercury200EnergyMB = Mercury200Dev->GetCreateMemoryBlock(0x27, TMercury200Device::MEM_ENERGY);
+    Mercury200ParamsMB = Mercury200Dev->GetCreateMemoryBlock(0x6300, TMercury200Device::MEM_PARAMS);
+    Mercury200BatReg = Mercury200Dev->GetCreateMemoryBlock(0x2900, TMercury200Device::REG_PARAM_16);
 
     SerialPort->Open();
 }
 
 void TMercury200Test::VerifyEnergyQuery()
 {
+    auto Mercury200EnergyMBQuery = GetReadQuery({ Mercury200EnergyMB });
+
     EnqueueMercury200EnergyResponse();
-    ASSERT_EQ(0x62142, Mercury200Dev->ReadMemoryBlock(Mercury200RET1Reg));
-    ASSERT_EQ(0x20834, Mercury200Dev->ReadMemoryBlock(Mercury200RET2Reg));
-    ASSERT_EQ(0x11111, Mercury200Dev->ReadMemoryBlock(Mercury200RET3Reg));
-    ASSERT_EQ(0x22222, Mercury200Dev->ReadMemoryBlock(Mercury200RET4Reg));
+    const auto values = TestRead(Mercury200EnergyMBQuery);
+    ASSERT_EQ(4, values.size());
+
+    ASSERT_EQ(0x62142, values[0]);
+    ASSERT_EQ(0x20834, values[1]);
+    ASSERT_EQ(0x11111, values[2]);
+    ASSERT_EQ(0x22222, values[3]);
     Mercury200Dev->EndPollCycle();
 }
 
 void TMercury200Test::VerifyParamQuery()
 {
+    auto Mercury200ParamsQuery = GetReadQuery({ Mercury200ParamsMB });
+
     EnqueueMercury200ParamResponse();
-    ASSERT_EQ(0x1234, Mercury200Dev->ReadMemoryBlock(Mercury200UReg));
-    ASSERT_EQ(0x5678, Mercury200Dev->ReadMemoryBlock(Mercury200IReg));
-    ASSERT_EQ(0x765432, Mercury200Dev->ReadMemoryBlock(Mercury200PReg));
+    const auto values = TestRead(Mercury200ParamsQuery);
+    ASSERT_EQ(3, values.size());
+
+    ASSERT_EQ(0x1234, values[0]);
+    ASSERT_EQ(0x5678, values[1]);
+    ASSERT_EQ(0x765432, values[2]);
     Mercury200Dev->EndPollCycle();
 }
 
@@ -93,8 +93,10 @@ TEST_F(TMercury200Test, ParamsQuery)
 
 TEST_F(TMercury200Test, BatteryVoltageQuery)
 {
+    auto Mercury200BatRegQuery = GetReadQuery({ Mercury200BatReg });
+
     EnqueueMercury200BatteryVoltageResponse();
-    ASSERT_EQ(0x0391, Mercury200Dev->ReadMemoryBlock(Mercury200BatReg));
+    ASSERT_EQ(0x0391, TestRead(Mercury200BatRegQuery)[0]);
     Mercury200Dev->EndPollCycle();
     SerialPort->Close();
 }

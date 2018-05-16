@@ -236,12 +236,18 @@ void TVirtualRegister::Initialize()
 
     MemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(self, device);
 
+    uint width = 0;
     for (const auto memoryBlockBindInfo: MemoryBlocks) {
         const auto & memoryBlock = memoryBlockBindInfo.first;
         const auto & bindInfo = memoryBlockBindInfo.second;
 
         assert(Type == memoryBlock->Type.Index);
+        width += bindInfo.BitCount();
         memoryBlock->AssociateWith(self);
+    }
+
+    if (width > 64) {
+        throw TSerialDeviceException("unable to create virtual register with width " + to_string(width) + ": must be <= 64");
     }
 
     if (!ReadOnly) {

@@ -140,7 +140,6 @@ void TMercury230Device::ReadParam(const TIRDeviceQuery & query)
 
         const auto & memoryView = query.CreateMemoryView(buf, 3);
 
-        memoryView.Clear();
         memoryView[mb].SetValue(0, paramValue);
 
         query.FinalizeRead(memoryView);
@@ -162,7 +161,7 @@ void TMercury230Device::Read(const TIRDeviceQuery & query)
     case REG_PARAM_BE:
         return ReadParam(query);
     default:
-        throw TSerialDeviceException("mercury230 ReadMemoryBlock: invalid register type");
+        throw TSerialDeviceException("mercury230 Read: invalid register type");
     }
 }
 

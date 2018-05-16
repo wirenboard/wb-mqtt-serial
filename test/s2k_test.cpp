@@ -1,9 +1,10 @@
-#include <string>
 #include "testlog.h"
 #include "fake_serial_port.h"
 #include "s2k_device.h"
 #include "s2k_expectations.h"
 #include "memory_block.h"
+
+#include <string>
 
 class TS2KDeviceTest: public TSerialDeviceTest, public TS2KDeviceExpectations {
 protected:
@@ -43,12 +44,17 @@ void TS2KDeviceTest::TearDown()
 
 TEST_F(TS2KDeviceTest, TestSetRelayState)
 {
+    auto query = GetWriteQuery({ RelayReg1 });
+    auto valueDesc = GetValueDescs({ RelayReg1 })[0];
+
     EnqueueSetRelayOnResponse();
-    Dev->WriteMemoryBlock(RelayReg1, 1);
+
+    TestWrite(query, valueDesc, 1);
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
-    Dev->WriteMemoryBlock(RelayReg1, 0);
+
+    TestWrite(query, valueDesc, 0);
 }
 
 class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDeviceExpectations {

@@ -12,7 +12,7 @@ namespace
     inline T MersenneNumber(uint8_t bitCount)
     {
         static_assert(is_unsigned<T>::value, "mersenne number may be only unsigned");
-        assert(bitCount <= sizeof(T));
+        assert(bitCount <= sizeof(T) * 8);
         return (T(1) << bitCount) - 1;
     }
 }

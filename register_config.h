@@ -55,6 +55,16 @@ struct TMemoryBlockType {
         return Size == Variadic;
     }
 
+    inline bool operator==(const TMemoryBlockType & rhs) const
+    {
+        return Index == rhs.Index;
+    }
+
+    inline bool operator!=(const TMemoryBlockType & rhs) const
+    {
+        return !(*this == rhs);
+    }
+
     ERegisterFormat GetDefaultFormat(uint16_t bit) const;
 
     /* Get how many individual values are in block */

@@ -11,8 +11,8 @@ class TPulsarDeviceTest: public TSerialDeviceTest
 protected:
     void SetUp();
     PPulsarDevice Dev;
-    PVirtualRegister Heat_TempIn;
-    PVirtualRegister Heat_TempOut;
+    PMemoryBlock Heat_TempIn;
+    PMemoryBlock Heat_TempOut;
     // TODO: time register
 };
 
@@ -26,14 +26,16 @@ void TPulsarDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("pulsar"));
 
-    Heat_TempIn = TVirtualRegister::Create(TRegisterConfig::Create(TPulsarDevice::REG_DEFAULT, 2, Float), Dev);
-    Heat_TempOut = TVirtualRegister::Create(TRegisterConfig::Create(TPulsarDevice::REG_DEFAULT, 3, Float), Dev);
+    Heat_TempIn = Dev->GetCreateMemoryBlock(2, TPulsarDevice::REG_DEFAULT, 4);
+    Heat_TempOut = Dev->GetCreateMemoryBlock(3, TPulsarDevice::REG_DEFAULT, 4);
 
     SerialPort->Open();
 }
 
 TEST_F(TPulsarDeviceTest, PulsarHeatMeterFloatQuery)
 {
+    auto Heat_TempInQuery = GetReadQuery({ Heat_TempIn });
+
     // >> 00 10 70 80 01 0e 04 00 00 00 00 00 7C A7
     // << 00 10 70 80 01 0E 5A B3 C5 41 00 00 18 DB
     // temperature == 24.71257
@@ -46,12 +48,7 @@ TEST_F(TPulsarDeviceTest, PulsarHeatMeterFloatQuery)
                 0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x5a, 0xb3, 0xc5, 0x41, 0x00, 0x00, 0x18, 0xdb
             });
 
-    const auto & memoryBlocks = Heat_TempIn->GetMemoryBlocks();
-    ASSERT_EQ(1, memoryBlocks.size());
-
-    const auto & memoryBlock = *memoryBlocks.begin();
-
-    ASSERT_EQ(0x41C5B35A, Dev->ReadMemoryBlock(memoryBlock));
+    ASSERT_EQ(0x41C5B35A, TestRead(Heat_TempInQuery)[0]);
 
     SerialPort->Close();
 }

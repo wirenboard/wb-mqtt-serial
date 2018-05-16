@@ -186,7 +186,7 @@ TMemoryBlock::TMemoryBlock(uint32_t address, uint16_t size, const TMemoryBlockTy
     , Type(type)
     , Size(type.IsVariadicSize() ? size : type.Size)
 {
-    assert(Size < 8192 && "memory block size must be less than 8192 bytes");
+    assert(Size > 0 && Size < 8192 && "memory block size must be more than 0 and less than 8192 bytes");
 }
 
 TMemoryBlock::TMemoryBlock(uint32_t address, const TMemoryBlockType & type)
@@ -296,7 +296,7 @@ void TMemoryBlock::CacheIfNeeded(const uint8_t * data)
 
 TIRDeviceMemoryBlockView TMemoryBlock::GetCache() const
 {
-    return { Cache, shared_from_this() };
+    return { Cache, shared_from_this(), true };
 }
 
 std::string TMemoryBlock::Describe() const

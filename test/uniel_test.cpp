@@ -43,51 +43,67 @@ void TUnielDeviceTest::TearDown()
 
 TEST_F(TUnielDeviceTest, TestQuery)
 {
+    auto InputRegQuery      = GetReadQuery({ InputReg });
+    auto RelayRegQuery      = GetReadQuery({ RelayReg });
+    auto ThresholdRegQuery  = GetReadQuery({ ThresholdReg });
+    auto BrightnessRegQuery = GetReadQuery({ BrightnessReg });
+
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(154, Dev->ReadMemoryBlock(InputReg));
+    ASSERT_EQ(154, TestRead(InputRegQuery)[0]);
 
     // TBD: rm (dupe)
     SerialPort->DumpWhatWasRead();
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(154, Dev->ReadMemoryBlock(InputReg));
+    ASSERT_EQ(154, TestRead(InputRegQuery)[0]);
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOffQueryResponse();
-    ASSERT_EQ(0, Dev->ReadMemoryBlock(RelayReg));
+    ASSERT_EQ(0, TestRead(RelayRegQuery)[0]);
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOnQueryResponse();
-    ASSERT_EQ(1, Dev->ReadMemoryBlock(RelayReg));
+    ASSERT_EQ(1, TestRead(RelayRegQuery)[0]);
 
     SerialPort->DumpWhatWasRead();
     EnqueueThreshold0QueryResponse();
-    ASSERT_EQ(0x70, Dev->ReadMemoryBlock(ThresholdReg));
+    ASSERT_EQ(0x70, TestRead(ThresholdRegQuery)[0]);
 
     SerialPort->DumpWhatWasRead();
     EnqueueBrightnessQueryResponse();
-    ASSERT_EQ(66, Dev->ReadMemoryBlock(BrightnessReg));
+    ASSERT_EQ(66, TestRead(BrightnessRegQuery)[0]);
 }
 
 TEST_F(TUnielDeviceTest, TestSetRelayState)
 {
+    auto RelayRegQuery = GetWriteQuery({ RelayReg });
+    const auto & descs = GetValueDescs({ RelayReg });
+
+    assert(descs.size() == 1);
+
     EnqueueSetRelayOnResponse();
-    Dev->WriteMemoryBlock(RelayReg, 1);
+    TestWrite(RelayRegQuery, descs[0], 1);
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
-    Dev->WriteMemoryBlock(RelayReg, 0);
+    TestWrite(RelayRegQuery, descs[0], 0);
 }
 
 TEST_F(TUnielDeviceTest, TestSetParam)
 {
+    auto ThresholdRegQuery = GetWriteQuery({ ThresholdReg });
+    const auto & descs     = GetValueDescs({ ThresholdReg });
+
     EnqueueSetLowThreshold0Response();
-    Dev->WriteMemoryBlock(ThresholdReg, 0x70);
+    TestWrite(ThresholdRegQuery, descs[0], 0x70);
 }
 
 TEST_F(TUnielDeviceTest, TestSetBrightness)
 {
+    auto BrightnessRegQuery = GetWriteQuery({ BrightnessReg });
+    const auto & descs      = GetValueDescs({ BrightnessReg });
+
     EnqueueSetBrightnessResponse();
-    Dev->WriteMemoryBlock(BrightnessReg, 0x42);
+    TestWrite(BrightnessRegQuery, descs[0], 0x42);
 }
 
 class TUnielIntegrationTest: public TSerialDeviceIntegrationTest, public TUnielDeviceExpectations {

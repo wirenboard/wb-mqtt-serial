@@ -77,18 +77,23 @@ void TMilurTest::SetUp()
 
 void TMilurTest::VerifyParamQuery()
 {
+    auto MilurPhaseCVoltageRegQuery = GetReadQuery({ MilurPhaseCVoltageReg });
+    auto MilurPhaseCCurrentRegQuery = GetReadQuery({ MilurPhaseCCurrentReg });
+    auto MilurTotalConsumptionRegQuery = GetReadQuery({ MilurTotalConsumptionReg });
+    auto MilurFrequencyRegQuery = GetReadQuery({ MilurFrequencyReg });
+
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadMemoryBlock(MilurPhaseCVoltageReg));
+    ASSERT_EQ(0x03946f, TestRead(MilurPhaseCVoltageRegQuery)[0]);
 
     EnqueueMilurPhaseCCurrentResponse();
-    ASSERT_EQ(0xffd8f0, MilurDev->ReadMemoryBlock(MilurPhaseCCurrentReg));
+    ASSERT_EQ(0xffd8f0, TestRead(MilurPhaseCCurrentRegQuery)[0]);
 
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
-    ASSERT_EQ(0x11144, MilurDev->ReadMemoryBlock(MilurTotalConsumptionReg));
+    ASSERT_EQ(0x11144, TestRead(MilurTotalConsumptionRegQuery)[0]);
 
     EnqueueMilurFrequencyResponse();
-    ASSERT_EQ(50080, MilurDev->ReadMemoryBlock(MilurFrequencyReg));
+    ASSERT_EQ(50080, TestRead(MilurFrequencyRegQuery)[0]);
 }
 
 TEST_F(TMilurTest, Query)
@@ -101,20 +106,24 @@ TEST_F(TMilurTest, Query)
 
 TEST_F(TMilurTest, Reconnect)
 {
+    auto MilurPhaseCVoltageRegQuery = GetReadQuery({ MilurPhaseCVoltageReg });
+
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurNoSessionResponse();
     // reconnection
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadMemoryBlock(MilurPhaseCVoltageReg));
+    ASSERT_EQ(0x03946f, TestRead(MilurPhaseCVoltageRegQuery)[0]);
 }
 
 TEST_F(TMilurTest, Exception)
 {
+    auto MilurPhaseCVoltageRegQuery = GetReadQuery({ MilurPhaseCVoltageReg });
+
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurExceptionResponse();
     try {
-        MilurDev->ReadMemoryBlock(MilurPhaseCVoltageReg);
+        MilurDev->Read(*MilurPhaseCVoltageRegQuery);
         FAIL() << "No exception thrown";
     } catch (const TSerialDeviceException& e) {
         ASSERT_STREQ("Serial protocol error: EEPROM access error", e.what());
@@ -264,8 +273,10 @@ void TMilur32Test::SetUp()
 
 void TMilur32Test::VerifyMilurQuery()
 {
+    auto MilurTotalConsumptionRegQuery = GetReadQuery({ MilurTotalConsumptionReg });
+
     EnqueueMilur32TotalConsumptionResponse();
-    ASSERT_EQ(0x11144, MilurDev->ReadMemoryBlock(MilurTotalConsumptionReg));
+    ASSERT_EQ(0x11144, TestRead(MilurTotalConsumptionRegQuery)[0]);
 }
 
 TEST_F(TMilur32Test, MilurQuery)

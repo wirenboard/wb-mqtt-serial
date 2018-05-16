@@ -48,6 +48,9 @@ struct TIRDeviceMemoryView
 
     uint16_t GetBlockStart(const CPMemoryBlock & memoryBlock) const;
 
+    uint64_t ReadValue(const TIRDeviceValueDesc &) const;
+    void WriteValue(const TIRDeviceValueDesc &, uint64_t value) const;
+
     inline TIRDeviceMemoryBlockView operator[](const CPMemoryBlock & memoryBlock) const
     {
         return { RawMemory + GetBlockStart(memoryBlock), memoryBlock, Readonly };

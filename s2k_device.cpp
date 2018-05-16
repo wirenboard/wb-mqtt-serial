@@ -125,8 +125,10 @@ void TS2KDevice::Read(const TIRDeviceQuery & query)
     switch (mb->Type.Index) {
     case REG_RELAY:
         relayState = (RelayState[mb->Address] != 0 && RelayState[mb->Address] != 2);
+        break;
     case REG_RELAY_MODE:
         relayState = RelayState[mb->Address];
+        break;
     case REG_RELAY_DEFAULT:
     case REG_RELAY_DELAY:
     {
@@ -158,6 +160,7 @@ void TS2KDevice::Read(const TIRDeviceQuery & query)
             throw TSerialDeviceTransientErrorException("bad CRC for 0x5 command");
         }
         relayState = response[4];
+        break;
     }
     default:
         throw TSerialDeviceException("S2K protocol: invalid register for reading");
