@@ -2,7 +2,6 @@
 #include "fake_serial_port.h"
 #include "s2k_device.h"
 #include "s2k_expectations.h"
-#include "memory_block.h"
 
 #include <string>
 
@@ -12,10 +11,10 @@ protected:
     void TearDown();
     PS2KDevice Dev;
 
-    PMemoryBlock RelayReg1;
-    PMemoryBlock RelayReg2;
-    PMemoryBlock RelayReg3;
-    PMemoryBlock RelayReg4;
+    PVirtualRegister RelayReg1;
+    PVirtualRegister RelayReg2;
+    PVirtualRegister RelayReg3;
+    PVirtualRegister RelayReg4;
 };
 
 void TS2KDeviceTest::SetUp()
@@ -27,10 +26,10 @@ void TS2KDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("s2k"));
 
-    RelayReg1 = Dev->GetCreateMemoryBlock(0x01, TS2KDevice::REG_RELAY);
-    RelayReg2 = Dev->GetCreateMemoryBlock(0x02, TS2KDevice::REG_RELAY);
-    RelayReg3 = Dev->GetCreateMemoryBlock(0x03, TS2KDevice::REG_RELAY);
-    RelayReg4 = Dev->GetCreateMemoryBlock(0x04, TS2KDevice::REG_RELAY);
+    RelayReg1 = Reg(Dev, 0x01, TS2KDevice::REG_RELAY, U8);
+    RelayReg2 = Reg(Dev, 0x02, TS2KDevice::REG_RELAY, U8);
+    RelayReg3 = Reg(Dev, 0x03, TS2KDevice::REG_RELAY, U8);
+    RelayReg4 = Reg(Dev, 0x04, TS2KDevice::REG_RELAY, U8);
 
     SerialPort->Open();
 }
@@ -44,17 +43,18 @@ void TS2KDeviceTest::TearDown()
 
 TEST_F(TS2KDeviceTest, TestSetRelayState)
 {
-    auto query = GetWriteQuery({ RelayReg1 });
-    auto valueDesc = GetValueDescs({ RelayReg1 })[0];
+    auto query = RelayReg1->GetWriteQuery();
 
     EnqueueSetRelayOnResponse();
 
-    TestWrite(query, valueDesc, 1);
+    RelayReg1->SetValue(1);
+    TestWrite(query);
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
 
-    TestWrite(query, valueDesc, 0);
+    RelayReg1->SetValue(0);
+    TestWrite(query);
 }
 
 class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDeviceExpectations {

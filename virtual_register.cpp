@@ -251,7 +251,7 @@ void TVirtualRegister::Initialize()
     }
 
     if (!ReadOnly) {
-        TIRDeviceQuerySet querySet({GetMemoryBlocks()}, EQueryOperation::Write);
+        TIRDeviceQuerySet querySet({ self }, EQueryOperation::Write);
         assert(querySet.Queries.size() == 1);
 
         WriteQuery = dynamic_pointer_cast<TIRDeviceValueQuery>(*querySet.Queries.begin());
@@ -464,7 +464,6 @@ void TVirtualRegister::Flush()
         Dirty.store(false);
 
         assert(WriteQuery);
-        WriteValueToQuery();
         WriteQuery->ResetStatus();
 
         GetDevice()->Execute(WriteQuery);

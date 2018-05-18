@@ -21,16 +21,6 @@
 
 using TRegisterTypes = std::vector<TMemoryBlockType>;
 
-struct TDeviceSetupItem : public TDeviceSetupItemConfig
-{
-    TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config);
-
-    PIRDeviceValueQuery Query;
-};
-
-typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
-
-
 struct TAggregatedSlaveId
 {
     int Primary;

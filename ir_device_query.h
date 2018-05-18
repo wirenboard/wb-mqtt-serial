@@ -17,7 +17,7 @@ struct TIRDeviceQuery
     friend class TIRDeviceQueryFactory;
 
     const TPSetRange<PMemoryBlock>  MemoryBlockRange;
-    const TPSet<PVirtualRegister>   VirtualRegisters;    // registers that will be fully read or written after execution of query
+    const std::vector<PVirtualRegister>   VirtualRegisters;    // registers that will be fully read or written after execution of query
     const bool                      HasHoles;
     const EQueryOperation           Operation;
 
@@ -26,7 +26,7 @@ private:
     bool                 AbleToSplit;
 
 protected:
-    explicit TIRDeviceQuery(const TPSet<PMemoryBlock> &, EQueryOperation = EQueryOperation::Read);
+    explicit TIRDeviceQuery(std::vector<PVirtualRegister> &&, EQueryOperation = EQueryOperation::Read);
     void SetStatus(EQueryStatus) const;
 
     template <typename T>
@@ -132,45 +132,31 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
 {
     friend class TIRDeviceQueryFactory;
 
-    TPMap<PMemoryBlock, TIRDeviceMemoryBlockView> MemoryBlockValues;
-    // NOTE: memory will be allocated also for unused memory blocks and holes
-    std::vector<uint8_t>    Memory;
-    TIRDeviceMemoryView     MemoryView;
+    const TPSet<PMemoryBlock> MemoryBlocks;
 
+    explicit TIRDeviceValueQuery(std::vector<PVirtualRegister> &&, EQueryOperation = EQueryOperation::Write);
 
-    explicit TIRDeviceValueQuery(const TPSet<PMemoryBlock> & memoryBlockSet, EQueryOperation = EQueryOperation::Write);
-
-    void IterRegisterValues(std::function<void(TMemoryBlock &, const TIRDeviceMemoryBlockView &)> && accessor) const;
     void SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value) const;
 
-    template <typename T>
-    void GetValues(T * values) const
+    TIRDeviceMemoryView GetValues(void * mem, size_t size) const
     {
-        CheckTypeMany<T>();
-
-        GetValuesImpl(values, sizeof(T), GetValueCount());
+        return GetValuesImpl(mem, size);
     }
 
-    template <typename T>
-    std::vector<T> GetValues() const
+    TIRDeviceMemoryView GetValues(std::vector<uint8_t> & values) const
     {
-        CheckTypeMany<T>();
+        values.resize(GetSize());
 
-        std::vector<T> values;
-        values.resize(GetValueCount());
-
-        GetValuesImpl(values.data(), sizeof(T), values.size());
-
-        return std::move(values);
+        return GetValuesImpl(values.data(), values.size());
     }
 
     /**
      * Accept written values to device as current and set status to Ok
      */
-    void FinalizeWrite() const;
+    void FinalizeWrite(const TIRDeviceMemoryView &) const;
 
 protected:
-    void GetValuesImpl(void * mem, size_t size, size_t count) const;
+    TIRDeviceMemoryView GetValuesImpl(void * mem, size_t size) const;
 };
 
 struct TIRDeviceQuerySet
@@ -179,7 +165,7 @@ struct TIRDeviceQuerySet
 
     TQueries Queries;
 
-    TIRDeviceQuerySet(std::list<TPSet<PMemoryBlock>> && memoryBlockSets, EQueryOperation);
+    TIRDeviceQuerySet(const std::vector<PVirtualRegister> &, EQueryOperation);
 
     std::string Describe() const;
     PSerialDevice GetDevice() const;

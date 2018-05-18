@@ -78,22 +78,22 @@ namespace // utility
     }
 
     template <class Query>
-    void AddQueryImpl(const TPSet<PMemoryBlock> & memoryBlockSet, TPSet<PIRDeviceQuery> & result)
+    void AddQueryImpl(vector<PVirtualRegister> && virtualRegisters, TPSet<PIRDeviceQuery> & result)
     {
-        bool inserted = result.insert(TIRDeviceQueryFactory::CreateQuery<Query>(memoryBlockSet)).second;
+        bool inserted = result.insert(TIRDeviceQueryFactory::CreateQuery<Query>(move(virtualRegisters))).second;
         assert(inserted);
     }
 
     template <class Query>
-    void AddQueryImpl(const TPSet<PMemoryBlock> & memoryBlockSet, list<PIRDeviceQuery> & result)
+    void AddQueryImpl(vector<PVirtualRegister> && virtualRegisters, list<PIRDeviceQuery> & result)
     {
-        result.push_back(TIRDeviceQueryFactory::CreateQuery<Query>(memoryBlockSet));
+        result.push_back(TIRDeviceQueryFactory::CreateQuery<Query>(move(virtualRegisters)));
     }
 
     template <class Query>
-    void AddQuery(const TPSet<PMemoryBlock> & memoryBlockSet, TQueries & result)
+    void AddQuery(vector<PVirtualRegister> && virtualRegisters, TQueries & result)
     {
-        AddQueryImpl<Query>(memoryBlockSet, result);
+        AddQueryImpl<Query>(move(virtualRegisters), result);
     }
 }
 
@@ -103,30 +103,30 @@ vector<pair<TIntervalMs, PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuer
 {
     vector<pair<TIntervalMs, PIRDeviceQuerySet>> querySetsByPollInterval;
     {
-        map<int64_t, list<TPSet<PMemoryBlock>>> memoryBlocksByTypeAndInterval;
+        map<int64_t, vector<PVirtualRegister>> virtualRegistersByTypeAndInterval;
         vector<int64_t> pollIntervals;  // for order preservation
 
         for (const auto & virtualRegister: virtualRegisters) {
             int64_t pollInterval = virtualRegister->PollInterval.count();
 
-            auto & memoryBlockSets = memoryBlocksByTypeAndInterval[pollInterval];
+            auto & virtualRegisterSets = virtualRegistersByTypeAndInterval[pollInterval];
 
-            if (memoryBlockSets.empty()) {
+            if (virtualRegisterSets.empty()) {
                 pollIntervals.push_back(pollInterval);
             }
 
-            memoryBlockSets.push_back(virtualRegister->GetMemoryBlocks());
+            virtualRegisterSets.push_back(virtualRegister);
         }
 
         for (auto & _pollInterval: pollIntervals) {
             auto pollInterval = TIntervalMs(_pollInterval);
 
-            auto it = memoryBlocksByTypeAndInterval.find(_pollInterval);
-            assert(it != memoryBlocksByTypeAndInterval.end());
+            auto it = virtualRegistersByTypeAndInterval.find(_pollInterval);
+            assert(it != virtualRegistersByTypeAndInterval.end());
 
-            auto & registers = it->second;
+            const auto & registers = it->second;
 
-            const auto & querySet = std::make_shared<TIRDeviceQuerySet>(std::move(registers), operation);
+            const auto & querySet = std::make_shared<TIRDeviceQuerySet>(registers, operation);
             querySetsByPollInterval.push_back({ pollInterval, querySet });
         }
     }
@@ -134,13 +134,23 @@ vector<pair<TIntervalMs, PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuer
     return querySetsByPollInterval;
 }
 
-TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PMemoryBlock>> && memoryBlockSets, EQueryOperation operation, EQueryGenerationPolicy policy)
+TQueries TIRDeviceQueryFactory::GenerateQueries(const vector<PVirtualRegister> & virtualRegisters, EQueryOperation operation, EQueryGenerationPolicy policy)
+{
+    TAssociatedMemoryBlockList groupedMemoryBlocks;
+    for (const auto & virtualRegister: virtualRegisters) {
+        groupedMemoryBlocks.push_back({ virtualRegister->GetMemoryBlocks(), { virtualRegister } });
+    }
+
+    return GenerateQueries(move(groupedMemoryBlocks), operation, policy);
+}
+
+TQueries TIRDeviceQueryFactory::GenerateQueries(TAssociatedMemoryBlockList && memoryBlockSets, EQueryOperation operation, EQueryGenerationPolicy policy)
 {
     assert(!memoryBlockSets.empty());
-    assert(!memoryBlockSets.front().empty());
+    assert(!memoryBlockSets.front().first.empty());
 
     /** gathering data **/
-    auto device = (*memoryBlockSets.front().begin())->GetDevice();
+    auto device = (*memoryBlockSets.front().first.begin())->GetDevice();
 
     assert(device);
 
@@ -175,17 +185,42 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PMemoryBlock>> && mem
         return pair<uint32_t, uint32_t>{ maxHole, maxRegs };
     };
 
-    auto addQuery = [&](const TPSet<PMemoryBlock> & memoryBlockSet, TQueries & result) {
+    auto addQuery = [&](vector<PVirtualRegister> && virtualRegisters, TQueries & result) {
         const auto & chosenAddQuery = isRead ? AddQuery<TIRDeviceQuery>
                                              : AddQuery<TIRDeviceValueQuery>;
 
-        return chosenAddQuery(memoryBlockSet, result);
+        return chosenAddQuery(move(virtualRegisters), result);
     };
 
     /** done gathering data **/
 
     if (performMerge) {
+        cerr << "!!! before merge: " << endl;
+        for (auto & memoryBlockSet: memoryBlockSets) {
+            cerr << "[" << endl;
+            for (auto mb: memoryBlockSet.first) {
+                cerr << mb->Describe() << endl;
+            }
+            cerr << "---------------" << endl;
+            for (auto vreg: memoryBlockSet.second) {
+                cerr << vreg->ToString() << endl;
+            }
+            cerr << "]" << endl;
+        }
         MergeSets(memoryBlockSets, getMaxHoleAndRegs);
+
+        cerr << "!!! after merge: " << endl;
+        for (auto & memoryBlockSet: memoryBlockSets) {
+            cerr << "[" << endl;
+            for (auto mb: memoryBlockSet.first) {
+                cerr << mb->Describe() << endl;
+            }
+            cerr << "---------------" << endl;
+            for (auto vreg: memoryBlockSet.second) {
+                cerr << vreg->ToString() << endl;
+            }
+            cerr << "]" << endl;
+        }
     } else {
         CheckSets(memoryBlockSets, getMaxHoleAndRegs);
     }
@@ -193,7 +228,7 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PMemoryBlock>> && mem
     TQueries result;
 
     for (auto & memoryBlockSet: memoryBlockSets) {
-        addQuery(memoryBlockSet, result);
+        addQuery(move(memoryBlockSet.second), result);
     }
 
     assert(!result.empty());
@@ -201,7 +236,7 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(list<TPSet<PMemoryBlock>> && mem
     return result;
 }
 
-void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PMemoryBlock>> & memoryBlockSets, const TRegisterTypeInfo & typeInfo)
+void TIRDeviceQueryFactory::CheckSets(const TAssociatedMemoryBlockList & memoryBlockSets, const TRegisterTypeInfo & typeInfo)
 {
     if (Global::Debug)
         cerr << "checking sets" << endl;
@@ -211,38 +246,38 @@ void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PMemoryBlock>> & mem
             uint32_t maxHole;
             uint32_t maxRegs;
 
-            tie(maxHole, maxRegs) = typeInfo(GetType(memoryBlockSet));
+            tie(maxHole, maxRegs) = typeInfo(GetType(memoryBlockSet.first));
 
-            auto hole = GetMaxHoleSize(memoryBlockSet);
+            auto hole = GetMaxHoleSize(memoryBlockSet.first);
             if (hole > maxHole) {
                 throw TSerialDeviceException("max hole count exceeded (detected: " +
                     to_string(hole) +
                     ", max: " + to_string(maxHole) +
-                    ", set: " + PrintCollection(memoryBlockSet, [](ostream & s, const PMemoryBlock & mb) {
+                    ", set: " + PrintCollection(memoryBlockSet.first, [](ostream & s, const PMemoryBlock & mb) {
                         s << mb->Address;
                     })  + ")"
                 );
             }
 
-            auto regCount = GetRegCount(memoryBlockSet);
+            auto regCount = GetRegCount(memoryBlockSet.first);
             if (regCount > maxRegs) {
                 throw TSerialDeviceException("max mb count exceeded (detected: " +
                     to_string(regCount) +
                     ", max: " + to_string(maxRegs) +
-                    ", set: " + PrintCollection(memoryBlockSet, [](ostream & s, const PMemoryBlock & mb) {
+                    ", set: " + PrintCollection(memoryBlockSet.first, [](ostream & s, const PMemoryBlock & mb) {
                         s << mb->Address;
                     })  + ")"
                 );
             }
 
             {   // check types
-                auto typeIndex = GetType(memoryBlockSet).Index;
-                auto size = GetSize(memoryBlockSet);
+                auto typeIndex = GetType(memoryBlockSet.first).Index;
+                auto size = GetSize(memoryBlockSet.first);
 
-                for (const auto & mb: memoryBlockSet) {
+                for (const auto & mb: memoryBlockSet.first) {
                     if (mb->Type.Index != typeIndex) {
                         throw TSerialDeviceException("different memory block types in same set (set: "
-                            + PrintCollection(memoryBlockSet, [](ostream & s, const PMemoryBlock & mb) {
+                            + PrintCollection(memoryBlockSet.first, [](ostream & s, const PMemoryBlock & mb) {
                                 s << mb->Address << " (type: " << mb->GetTypeName() << ")";
                             }) + ")"
                         );
@@ -250,7 +285,7 @@ void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PMemoryBlock>> & mem
 
                     if (mb->Size != size) {
                         throw TSerialDeviceException("different memory block sizes in same set (set: "
-                            + PrintCollection(memoryBlockSet, [](ostream & s, const PMemoryBlock & mb) {
+                            + PrintCollection(memoryBlockSet.first, [](ostream & s, const PMemoryBlock & mb) {
                                 s << mb->Address << " (size: " << mb->Size << ")";
                             }) + ")"
                         );
@@ -273,7 +308,7 @@ void TIRDeviceQueryFactory::CheckSets(const std::list<TPSet<PMemoryBlock>> & mem
  *  3) allows same register to appear in different sets if those sets couldn't merge (same register will be read more than once during same cycle)
  *  4) doesn't split initial sets (registers that were in one set will stay in one set)
  */
-void TIRDeviceQueryFactory::MergeSets(list<TPSet<PMemoryBlock>> & memoryBlockSets, const TRegisterTypeInfo & typeInfo)
+void TIRDeviceQueryFactory::MergeSets(TAssociatedMemoryBlockList & memoryBlockSets, const TRegisterTypeInfo & typeInfo)
 {
     CheckSets(memoryBlockSets, typeInfo);
 
@@ -306,12 +341,16 @@ void TIRDeviceQueryFactory::MergeSets(list<TPSet<PMemoryBlock>> & memoryBlockSet
         for (;itOtherMemoryBlockSet != memoryBlockSets.end();) {
             assert(itMemoryBlockSet != itOtherMemoryBlockSet);
 
-            if (!condition(*itMemoryBlockSet, *itOtherMemoryBlockSet)) {
+            if (!condition(itMemoryBlockSet->first, itOtherMemoryBlockSet->first)) {
                 ++itOtherMemoryBlockSet;
                 continue;
             }
 
-            itMemoryBlockSet->insert(itOtherMemoryBlockSet->begin(), itOtherMemoryBlockSet->end());
+            // merge memory blocks
+            itMemoryBlockSet->first.insert(itOtherMemoryBlockSet->first.begin(), itOtherMemoryBlockSet->first.end());
+            // merge virtual registers
+            itMemoryBlockSet->second.insert(itMemoryBlockSet->second.end(), itOtherMemoryBlockSet->second.begin(), itOtherMemoryBlockSet->second.end());
+
             itOtherMemoryBlockSet = memoryBlockSets.erase(itOtherMemoryBlockSet);
         }
     }

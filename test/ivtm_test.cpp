@@ -2,7 +2,6 @@
 #include "testlog.h"
 #include "fake_serial_port.h"
 #include "ivtm_device.h"
-#include "memory_block.h"
 
 class TIVTMDeviceTest: public TSerialDeviceTest
 {
@@ -10,9 +9,9 @@ protected:
     void SetUp();
     PIVTMDevice Dev;
 
-    PMemoryBlock Dev1Temp;
-    PMemoryBlock Dev1Humidity;
-    PMemoryBlock Dev2Temp;
+    PVirtualRegister Dev1Temp;
+    PVirtualRegister Dev1Humidity;
+    PVirtualRegister Dev2Temp;
 };
 
 void TIVTMDeviceTest::SetUp()
@@ -24,9 +23,9 @@ void TIVTMDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("ivtm"));
 
-    Dev1Temp = Dev->GetCreateMemoryBlock(0, 0);
-    Dev1Humidity = Dev->GetCreateMemoryBlock(4, 0);
-    Dev2Temp = Dev->GetCreateMemoryBlock(0, 0);
+    Dev1Temp = Reg(Dev, 0, U32);
+    Dev1Humidity = Reg(Dev, 4, U32);
+    Dev2Temp = Reg(Dev, 0, U32);
 
     SerialPort->Open();
 }
@@ -55,7 +54,8 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    ASSERT_EQ(0x41D1D3CE, TestRead(Dev1TempQuery)[0]); //big-endian
+    TestRead(Dev1TempQuery);
+    ASSERT_EQ(0x41D1D3CE, Dev1Temp->GetValue()); //big-endian
 
 	// >> 24 30 30 30 31 52 52 30 30 30 34 30 34 42 31 0d
 	// << 21 30 30 30 31 52 52 33 30 39 41 45 42 34 31 34 46 0D
@@ -75,7 +75,8 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0D                  // footer
         });
 
-    ASSERT_EQ(0x41EB9A30, TestRead(Dev1HumidityQuery)[0]); //big-endian
+    TestRead(Dev1HumidityQuery);
+    ASSERT_EQ(0x41EB9A30, Dev1Humidity->GetValue()); //big-endian
 
     Dev->EndPollCycle();
 
@@ -99,6 +100,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    ASSERT_EQ(0x41C7855E, TestRead(Dev2TempQuery)[0]); //big-endian
+    TestRead(Dev2TempQuery);
+    ASSERT_EQ(0x41C7855E, Dev2Temp->GetValue()); //big-endian
     SerialPort->Close();
 }

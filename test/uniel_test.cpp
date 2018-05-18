@@ -3,7 +3,6 @@
 #include "fake_serial_port.h"
 #include "uniel_device.h"
 #include "uniel_expectations.h"
-#include "memory_block.h"
 
 class TUnielDeviceTest: public TSerialDeviceTest, public TUnielDeviceExpectations {
 protected:
@@ -11,10 +10,10 @@ protected:
     void TearDown();
     PUnielDevice Dev;
 
-    PMemoryBlock InputReg;
-    PMemoryBlock RelayReg;
-    PMemoryBlock ThresholdReg;
-    PMemoryBlock BrightnessReg;
+    PVirtualRegister InputReg;
+    PVirtualRegister RelayReg;
+    PVirtualRegister ThresholdReg;
+    PVirtualRegister BrightnessReg;
 };
 
 void TUnielDeviceTest::SetUp()
@@ -26,10 +25,10 @@ void TUnielDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("uniel"));
 
-    InputReg = Dev->GetCreateMemoryBlock(0x0a, TUnielDevice::REG_INPUT);
-    RelayReg = Dev->GetCreateMemoryBlock(0x1b, TUnielDevice::REG_RELAY);
-    ThresholdReg = Dev->GetCreateMemoryBlock(0x02, TUnielDevice::REG_PARAM);
-    BrightnessReg = Dev->GetCreateMemoryBlock(0x141, TUnielDevice::REG_BRIGHTNESS);
+    InputReg = Reg(Dev, 0x0a, TUnielDevice::REG_INPUT, U8);
+    RelayReg = Reg(Dev, 0x1b, TUnielDevice::REG_RELAY, U8);
+    ThresholdReg = Reg(Dev, 0x02, TUnielDevice::REG_PARAM, U8);
+    BrightnessReg = Reg(Dev, 0x141, TUnielDevice::REG_BRIGHTNESS, U8);
 
     SerialPort->Open();
 }
@@ -49,61 +48,66 @@ TEST_F(TUnielDeviceTest, TestQuery)
     auto BrightnessRegQuery = GetReadQuery({ BrightnessReg });
 
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(154, TestRead(InputRegQuery)[0]);
+    TestRead(InputRegQuery);
+    ASSERT_EQ(154, InputReg->GetValue());
 
     // TBD: rm (dupe)
     SerialPort->DumpWhatWasRead();
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(154, TestRead(InputRegQuery)[0]);
+    TestRead(InputRegQuery);
+    ASSERT_EQ(154, InputReg->GetValue());
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOffQueryResponse();
-    ASSERT_EQ(0, TestRead(RelayRegQuery)[0]);
+    TestRead(RelayRegQuery);
+    ASSERT_EQ(0, RelayReg->GetValue());
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOnQueryResponse();
-    ASSERT_EQ(1, TestRead(RelayRegQuery)[0]);
+    TestRead(RelayRegQuery);
+    ASSERT_EQ(1, RelayReg->GetValue());
 
     SerialPort->DumpWhatWasRead();
     EnqueueThreshold0QueryResponse();
-    ASSERT_EQ(0x70, TestRead(ThresholdRegQuery)[0]);
+    TestRead(ThresholdRegQuery);
+    ASSERT_EQ(0x70, ThresholdReg->GetValue());
 
     SerialPort->DumpWhatWasRead();
     EnqueueBrightnessQueryResponse();
-    ASSERT_EQ(66, TestRead(BrightnessRegQuery)[0]);
+    TestRead(BrightnessRegQuery);
+    ASSERT_EQ(66, BrightnessReg->GetValue());
 }
 
 TEST_F(TUnielDeviceTest, TestSetRelayState)
 {
-    auto RelayRegQuery = GetWriteQuery({ RelayReg });
-    const auto & descs = GetValueDescs({ RelayReg });
-
-    assert(descs.size() == 1);
+    auto RelayRegQuery = RelayReg->GetWriteQuery();
 
     EnqueueSetRelayOnResponse();
-    TestWrite(RelayRegQuery, descs[0], 1);
+    RelayReg->SetValue(1);
+    TestWrite(RelayRegQuery);
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
-    TestWrite(RelayRegQuery, descs[0], 0);
+    RelayReg->SetValue(0);
+    TestWrite(RelayRegQuery);
 }
 
 TEST_F(TUnielDeviceTest, TestSetParam)
 {
-    auto ThresholdRegQuery = GetWriteQuery({ ThresholdReg });
-    const auto & descs     = GetValueDescs({ ThresholdReg });
+    auto ThresholdRegQuery = ThresholdReg->GetWriteQuery();
 
     EnqueueSetLowThreshold0Response();
-    TestWrite(ThresholdRegQuery, descs[0], 0x70);
+    ThresholdReg->SetValue(0x70);
+    TestWrite(ThresholdRegQuery);
 }
 
 TEST_F(TUnielDeviceTest, TestSetBrightness)
 {
-    auto BrightnessRegQuery = GetWriteQuery({ BrightnessReg });
-    const auto & descs      = GetValueDescs({ BrightnessReg });
+    auto BrightnessRegQuery = BrightnessReg->GetWriteQuery();
 
     EnqueueSetBrightnessResponse();
-    TestWrite(BrightnessRegQuery, descs[0], 0x42);
+    BrightnessReg->SetValue(0x42);
+    TestWrite(BrightnessRegQuery);
 }
 
 class TUnielIntegrationTest: public TSerialDeviceIntegrationTest, public TUnielDeviceExpectations {

@@ -24,13 +24,13 @@ TPMap<PMemoryBlock, TMemoryBlockBindInfo> TMemoryBlockFactory::GenerateMemoryBlo
     auto bitsToAllocate = config->GetBitWidth();
 
     if (formatBitWidth <= config->BitOffset) {
-        throw TSerialDeviceException("unable to create protocol memoryBlocks by config " + config->ToString() +
+        throw TSerialDeviceException("unable to create memoryBlocks by config " + config->ToString() +
                                      ": specified bit shift (" + to_string((int)config->BitOffset) +
                                      ") must be less than specified format's (" + RegisterFormatName(config->Format) + ") bit width");
     }
 
     if (bitsToAllocate > (formatBitWidth - config->BitOffset)) {
-        throw TSerialDeviceException("unable to create protocol memoryBlocks by config " + config->ToString() +
+        throw TSerialDeviceException("unable to create memoryBlocks by config " + config->ToString() +
                                      ": specified bit width (" + to_string((int)memoryBlockBitWidth) +
                                      ") and shift (" + to_string((int)config->BitOffset) +
                                      ") does not fit into specified format (" + RegisterFormatName(config->Format) + ")");

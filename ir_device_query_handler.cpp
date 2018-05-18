@@ -22,13 +22,8 @@ namespace   // utility
 
             cerr << "INFO: [IR device query handler] " << actionName << " on query " << query->Describe() << endl;
 
-            std::list<TPSet<PMemoryBlock>> groupedRegisters;
-            for (const auto & virtualRegister: query->VirtualRegisters) {
-                groupedRegisters.push_back(virtualRegister->GetMemoryBlocks());
-            }
-
             try {
-                const auto & generatedQueries = TIRDeviceQueryFactory::GenerateQueries(move(groupedRegisters), query->Operation, policy);
+                const auto & generatedQueries = TIRDeviceQueryFactory::GenerateQueries(query->VirtualRegisters, query->Operation, policy);
                 itQuery = querySet->Queries.erase(itQuery);
                 querySet->Queries.insert(itQuery, generatedQueries.begin(), generatedQueries.end());
 

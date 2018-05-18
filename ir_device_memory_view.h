@@ -22,6 +22,8 @@ struct TIRDeviceMemoryBlockView
         return RawMemory;
     }
 
+    TIRDeviceMemoryBlockView & operator=(const TIRDeviceMemoryBlockView &);
+
     uint16_t GetByteIndex(uint16_t index) const;
     uint16_t GetValueByteIndex(uint16_t index) const;
     uint16_t GetValueSize(uint16_t index) const;

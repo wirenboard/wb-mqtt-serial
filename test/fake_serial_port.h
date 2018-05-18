@@ -10,7 +10,7 @@
 #include "../serial_device.h"
 #include "../serial_observer.h"
 #include "ir_device_query.h"
-#include "memory_block_bind_info.h"
+#include "virtual_register.h"
 
 class TFakeSerialPort: public TPort, public TExpector {
 public:
@@ -58,62 +58,70 @@ private:
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
 
-/* Value desc that stores memory block bindings instead of just referencing them */
-struct TIRDeviceStoringValueDesc: TIRDeviceValueDesc
-{
-    const TBoundMemoryBlocks StoredBoundMemoryBlocks;
+// /* Value desc that stores memory block bindings instead of just referencing them */
+// struct TIRDeviceStoringValueDesc: TIRDeviceValueDesc
+// {
+//     const TBoundMemoryBlocks StoredBoundMemoryBlocks;
 
-    TIRDeviceStoringValueDesc(const TBoundMemoryBlocks & blocks, EWordOrder wordOrder)
-        : TIRDeviceValueDesc{StoredBoundMemoryBlocks, wordOrder}
-        , StoredBoundMemoryBlocks(blocks)
-    {}
+//     TIRDeviceStoringValueDesc(const TBoundMemoryBlocks & blocks, EWordOrder wordOrder)
+//         : TIRDeviceValueDesc{StoredBoundMemoryBlocks, wordOrder}
+//         , StoredBoundMemoryBlocks(blocks)
+//     {}
 
-    TIRDeviceStoringValueDesc(const TIRDeviceStoringValueDesc & other)
-        : TIRDeviceValueDesc{StoredBoundMemoryBlocks, other.WordOrder}
-        , StoredBoundMemoryBlocks(other.StoredBoundMemoryBlocks)
-    {}
-};
+//     TIRDeviceStoringValueDesc(const TIRDeviceStoringValueDesc & other)
+//         : TIRDeviceValueDesc{StoredBoundMemoryBlocks, other.WordOrder}
+//         , StoredBoundMemoryBlocks(other.StoredBoundMemoryBlocks)
+//     {}
+// };
 
-/* Query that stores read result */
-struct TIRDeviceStoringQuery: TIRDeviceQuery
-{
-    mutable std::vector<std::pair<TIRDeviceStoringValueDesc, uint64_t>> StoredValues;
+// /* Query that stores read result */
+// struct TIRDeviceStoringQuery: TIRDeviceQuery
+// {
+//     mutable std::vector<std::pair<TIRDeviceStoringValueDesc, uint64_t>> StoredValues;
 
-    explicit TIRDeviceStoringQuery(const TPSet<PMemoryBlock> & blocks, const std::vector<TIRDeviceStoringValueDesc> & descs, EQueryOperation op = EQueryOperation::Read)
-        : TIRDeviceQuery(blocks, op)
-    {
-        for (const TIRDeviceStoringValueDesc & desc: descs) {
-            StoredValues.push_back({desc, 0});
-        }
-    }
+//     explicit TIRDeviceStoringQuery(const TPSet<PMemoryBlock> & blocks, const std::vector<TIRDeviceStoringValueDesc> & descs, EQueryOperation op = EQueryOperation::Read)
+//         : TIRDeviceQuery(blocks, op)
+//     {
+//         for (const TIRDeviceStoringValueDesc & desc: descs) {
+//             StoredValues.push_back({desc, 0});
+//         }
+//     }
 
-    uint64_t GetReadValue(size_t index) const
-    {
-        return StoredValues[index].second;
-    }
+//     uint64_t GetReadValue(size_t index) const
+//     {
+//         return StoredValues[index].second;
+//     }
 
-    void FinalizeRead(const TIRDeviceMemoryView & memoryView) const override
-    {
-        for (auto & descValue: StoredValues) {
-            descValue.second = memoryView.ReadValue(descValue.first);
-        }
-        TIRDeviceQuery::FinalizeRead(memoryView);
-    }
-};
+//     void FinalizeRead(const TIRDeviceMemoryView & memoryView) const override
+//     {
+//         for (auto & descValue: StoredValues) {
+//             descValue.second = memoryView.ReadValue(descValue.first);
+//         }
+//         TIRDeviceQuery::FinalizeRead(memoryView);
+//     }
+// };
 
-using PIRDeviceStoringQuery = std::shared_ptr<TIRDeviceStoringQuery>;
+// using PIRDeviceStoringQuery = std::shared_ptr<TIRDeviceStoringQuery>;
 
 class TSerialDeviceTest: public TLoggedFixture, public virtual TExpectorProvider {
 protected:
     void SetUp();
     void TearDown();
     PExpector Expector() const;
-    std::vector<TIRDeviceStoringValueDesc> GetValueDescs(const TPSet<PMemoryBlock> & blocks) const;
-    PIRDeviceStoringQuery GetReadQuery(const TPSet<PMemoryBlock> & blocks) const;
-    PIRDeviceValueQuery GetWriteQuery(const TPSet<PMemoryBlock> & blocks) const;
 
-    std::vector<uint64_t> TestRead(const PIRDeviceStoringQuery &) const;
-    void TestWrite(const PIRDeviceValueQuery &, const TIRDeviceValueDesc &, uint64_t) const;
+    PIRDeviceQuery GetReadQuery(std::vector<PVirtualRegister> &&) const;
+
+    PVirtualRegister Reg(PSerialDevice device, uint32_t type, int addr, ERegisterFormat fmt = U16, double scale = 1,
+        double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian,
+        uint8_t bitOffset = 0, uint8_t bitWidth = 0) {
+        return TVirtualRegister::Create(
+            TRegisterConfig::Create(
+                type, addr, fmt, scale, offset, round_to, true, false,
+                "fake", false, 0, word_order, bitOffset, bitWidth), device);
+    }
+
+    void TestRead(const PIRDeviceQuery &) const;
+    void TestWrite(const PIRDeviceValueQuery &) const;
 
     PFakeSerialPort SerialPort;
 };

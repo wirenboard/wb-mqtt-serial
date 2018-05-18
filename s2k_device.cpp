@@ -82,7 +82,7 @@ void TS2KDevice::Write(const TIRDeviceValueQuery & query)
     }
 
     uint8_t value;
-    query.GetValues(&value);
+    const auto & memoryView = query.GetValues(&value, 1);
 
     Port()->CheckPortOpen();
     uint8_t command[7] = {
@@ -110,7 +110,7 @@ void TS2KDevice::Write(const TIRDeviceValueQuery & query)
     }
     RelayState[response[3]] = response[4];
 
-    query.FinalizeWrite();
+    query.FinalizeWrite(memoryView);
 }
 
 // TODO: refactor this when more registers are actually readable, move reading

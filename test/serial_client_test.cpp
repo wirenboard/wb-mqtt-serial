@@ -4,7 +4,6 @@
 #include "fake_serial_port.h"
 #include "fake_serial_device.h"
 #include "tcp_port_settings.h"
-#include "virtual_register.h"
 
 #include <gtest/gtest.h>
 
@@ -100,10 +99,10 @@ TEST_F(TSerialClientTest, Poll)
     Note() << "Cycle()";
     SerialClient->Cycle();
 
-    Device->Registers[1] = 1;
-    Device->Registers[10] = 1;
-    Device->Registers[22] = 4242;
-    Device->Registers[33] = 42000;
+    Device->SetMemoryBlockValue(1, 1);
+    Device->SetMemoryBlockValue(10, 1);
+    Device->SetMemoryBlockValue(22, 4242);
+    Device->SetMemoryBlockValue(33, 42000);
 
     Note() << "Cycle()";
     SerialClient->Cycle();
@@ -133,9 +132,9 @@ TEST_F(TSerialClientTest, Write)
         SerialClient->Cycle();
 
         EXPECT_EQ(to_string(1), reg1->GetTextValue());
-        EXPECT_EQ(1, Device->Registers[1]);
+        EXPECT_EQ(1, Device->GetMemoryBlockValue(1));
         EXPECT_EQ(to_string(4242), reg20->GetTextValue());
-        EXPECT_EQ(4242, Device->Registers[20]);
+        EXPECT_EQ(4242, Device->GetMemoryBlockValue(20));
     }
 }
 
@@ -147,16 +146,16 @@ TEST_F(TSerialClientTest, S8)
     SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 10, 20";
-    Device->Registers[20] = 10;
-    Device->Registers[30] = 20;
+    Device->SetMemoryBlockValue(20, 10);
+    Device->SetMemoryBlockValue(30, 20);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(10), reg20->GetTextValue());
     EXPECT_EQ(to_string(20), reg30->GetTextValue());
 
     Note() << "server -> client: -2, -3";
-    Device->Registers[20] = 254;
-    Device->Registers[30] = 253;
+    Device->SetMemoryBlockValue(20, 254);
+    Device->SetMemoryBlockValue(30, 253);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), reg20->GetTextValue());
@@ -167,14 +166,14 @@ TEST_F(TSerialClientTest, S8)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(10), reg20->GetTextValue());
-    EXPECT_EQ(10, Device->Registers[20]);
+    EXPECT_EQ(10, Device->GetMemoryBlockValue(20));
 
     Note() << "client -> server: -2";
     reg20->SetTextValue("-2");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), reg20->GetTextValue());
-    EXPECT_EQ(254, Device->Registers[20]);
+    EXPECT_EQ(254, Device->GetMemoryBlockValue(20));
 }
 
 TEST_F(TSerialClientTest, Char8)
@@ -185,8 +184,8 @@ TEST_F(TSerialClientTest, Char8)
     SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 65, 66";
-    Device->Registers[20] = 65;
-    Device->Registers[30] = 66;
+    Device->SetMemoryBlockValue(20, 65);
+    Device->SetMemoryBlockValue(30, 66);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("A", reg20->GetTextValue());
@@ -197,7 +196,7 @@ TEST_F(TSerialClientTest, Char8)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("!", reg20->GetTextValue());
-    EXPECT_EQ(33, Device->Registers[20]);
+    EXPECT_EQ(33, Device->GetMemoryBlockValue(20));
 }
 
 TEST_F(TSerialClientTest, S64)
@@ -208,14 +207,14 @@ TEST_F(TSerialClientTest, S64)
     SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 10, 20";
-    Device->Registers[20] = 0x00AA;
-    Device->Registers[21] = 0x00BB;
-    Device->Registers[22] = 0x00CC;
-    Device->Registers[23] = 0x00DD;
-    Device->Registers[30] = 0xFFFF;
-    Device->Registers[31] = 0xFFFF;
-    Device->Registers[32] = 0xFFFF;
-    Device->Registers[33] = 0xFFFF;
+    Device->SetMemoryBlockValue(20, 0x00AA);
+    Device->SetMemoryBlockValue(21, 0x00BB);
+    Device->SetMemoryBlockValue(22, 0x00CC);
+    Device->SetMemoryBlockValue(23, 0x00DD);
+    Device->SetMemoryBlockValue(30, 0xFFFF);
+    Device->SetMemoryBlockValue(31, 0xFFFF);
+    Device->SetMemoryBlockValue(32, 0xFFFF);
+    Device->SetMemoryBlockValue(33, 0xFFFF);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(0x00AA00BB00CC00DD), reg20->GetTextValue());
@@ -226,20 +225,20 @@ TEST_F(TSerialClientTest, S64)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(10), reg20->GetTextValue());
-    EXPECT_EQ(0, Device->Registers[20]);
-    EXPECT_EQ(0, Device->Registers[21]);
-    EXPECT_EQ(0, Device->Registers[22]);
-    EXPECT_EQ(10, Device->Registers[23]);
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(21));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(22));
+    EXPECT_EQ(10, Device->GetMemoryBlockValue(23));
 
     Note() << "client -> server: -2";
     reg20->SetTextValue("-2");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), reg20->GetTextValue());
-    EXPECT_EQ(0xFFFF, Device->Registers[20]);
-    EXPECT_EQ(0xFFFF, Device->Registers[21]);
-    EXPECT_EQ(0xFFFF, Device->Registers[22]);
-    EXPECT_EQ(0xFFFE, Device->Registers[23]);
+    EXPECT_EQ(0xFFFF, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0xFFFF, Device->GetMemoryBlockValue(21));
+    EXPECT_EQ(0xFFFF, Device->GetMemoryBlockValue(22));
+    EXPECT_EQ(0xFFFE, Device->GetMemoryBlockValue(23));
 }
 
 TEST_F(TSerialClientTest, U64)
@@ -250,14 +249,14 @@ TEST_F(TSerialClientTest, U64)
     SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 10, 20";
-    Device->Registers[20] = 0x00AA;
-    Device->Registers[21] = 0x00BB;
-    Device->Registers[22] = 0x00CC;
-    Device->Registers[23] = 0x00DD;
-    Device->Registers[30] = 0xFFFF;
-    Device->Registers[31] = 0xFFFF;
-    Device->Registers[32] = 0xFFFF;
-    Device->Registers[33] = 0xFFFF;
+    Device->SetMemoryBlockValue(20, 0x00AA);
+    Device->SetMemoryBlockValue(21, 0x00BB);
+    Device->SetMemoryBlockValue(22, 0x00CC);
+    Device->SetMemoryBlockValue(23, 0x00DD);
+    Device->SetMemoryBlockValue(30, 0xFFFF);
+    Device->SetMemoryBlockValue(31, 0xFFFF);
+    Device->SetMemoryBlockValue(32, 0xFFFF);
+    Device->SetMemoryBlockValue(33, 0xFFFF);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(0x00AA00BB00CC00DD), reg20->GetTextValue());
@@ -268,20 +267,20 @@ TEST_F(TSerialClientTest, U64)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(10), reg20->GetTextValue());
-    EXPECT_EQ(0, Device->Registers[20]);
-    EXPECT_EQ(0, Device->Registers[21]);
-    EXPECT_EQ(0, Device->Registers[22]);
-    EXPECT_EQ(10, Device->Registers[23]);
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(21));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(22));
+    EXPECT_EQ(10, Device->GetMemoryBlockValue(23));
 
     Note() << "client -> server: -2";
     reg20->SetTextValue("-2");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("18446744073709551614", reg20->GetTextValue());
-    EXPECT_EQ(0xFFFF, Device->Registers[20]);
-    EXPECT_EQ(0xFFFF, Device->Registers[21]);
-    EXPECT_EQ(0xFFFF, Device->Registers[22]);
-    EXPECT_EQ(0xFFFE, Device->Registers[23]);
+    EXPECT_EQ(0xFFFF, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0xFFFF, Device->GetMemoryBlockValue(21));
+    EXPECT_EQ(0xFFFF, Device->GetMemoryBlockValue(22));
+    EXPECT_EQ(0xFFFE, Device->GetMemoryBlockValue(23));
 }
 
 TEST_F(TSerialClientTest, S32)
@@ -295,10 +294,10 @@ TEST_F(TSerialClientTest, S32)
     SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 10, 20";
-    Device->Registers[20] = 0x00AA;
-    Device->Registers[21] = 0x00BB;
-    Device->Registers[30] = 0xFFFF;
-    Device->Registers[31] = 0xFFFF;
+    Device->SetMemoryBlockValue(20, 0x00AA);
+    Device->SetMemoryBlockValue(21, 0x00BB);
+    Device->SetMemoryBlockValue(30, 0xFFFF);
+    Device->SetMemoryBlockValue(31, 0xFFFF);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(0x00AA00BB), reg20->GetTextValue());
@@ -309,28 +308,28 @@ TEST_F(TSerialClientTest, S32)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(10), reg20->GetTextValue());
-    EXPECT_EQ(0, Device->Registers[20]);
-    EXPECT_EQ(10, Device->Registers[21]);
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(10, Device->GetMemoryBlockValue(21));
 
     Note() << "client -> server: -2";
     reg20->SetTextValue("-2");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), reg20->GetTextValue());
-    EXPECT_EQ(0xFFFF, Device->Registers[20]);
-    EXPECT_EQ(0xFFFE, Device->Registers[21]);
+    EXPECT_EQ(0xFFFF, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0xFFFE, Device->GetMemoryBlockValue(21));
 
     Note() << "client -> server: -0.123 (scaled)";
     reg24->SetTextValue("-0.123");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("-0.123", reg24->GetTextValue());
-    EXPECT_EQ(0xffff, Device->Registers[24]);
-    EXPECT_EQ(0xff85, Device->Registers[25]);
+    EXPECT_EQ(0xffff, Device->GetMemoryBlockValue(24));
+    EXPECT_EQ(0xff85, Device->GetMemoryBlockValue(25));
 
     Note() << "server -> client: 0xffff 0xff85 (scaled)";
-    Device->Registers[24] = 0xffff;
-    Device->Registers[25] = 0xff85;
+    Device->SetMemoryBlockValue(24, 0xffff);
+    Device->SetMemoryBlockValue(25, 0xff85);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("-0.123", reg24->GetTextValue());
@@ -344,8 +343,8 @@ TEST_F(TSerialClientTest, WordSwap)
     SerialClient->AddRegister(reg24);
 
     Note() << "server -> client: 0x00BB, 0x00AA";
-    Device->Registers[20] = 0x00BB;
-    Device->Registers[21] = 0x00AA;
+    Device->SetMemoryBlockValue(20, 0x00BB);
+    Device->SetMemoryBlockValue(21, 0x00AA);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(0x00AA00BB), reg20->GetTextValue());
@@ -355,8 +354,8 @@ TEST_F(TSerialClientTest, WordSwap)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), reg20->GetTextValue());
-    EXPECT_EQ(0xFFFE, Device->Registers[20]);
-    EXPECT_EQ(0xFFFF, Device->Registers[21]);
+    EXPECT_EQ(0xFFFE, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0xFFFF, Device->GetMemoryBlockValue(21));
 
     // U64
     Note() << "client -> server: 10";
@@ -364,10 +363,10 @@ TEST_F(TSerialClientTest, WordSwap)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(0x00AA00BB00CC00DD), reg24->GetTextValue());
-    EXPECT_EQ(0x00DD, Device->Registers[24]);
-    EXPECT_EQ(0x00CC, Device->Registers[25]);
-    EXPECT_EQ(0x00BB, Device->Registers[26]);
-    EXPECT_EQ(0x00AA, Device->Registers[27]);
+    EXPECT_EQ(0x00DD, Device->GetMemoryBlockValue(24));
+    EXPECT_EQ(0x00CC, Device->GetMemoryBlockValue(25));
+    EXPECT_EQ(0x00BB, Device->GetMemoryBlockValue(26));
+    EXPECT_EQ(0x00AA, Device->GetMemoryBlockValue(27));
 }
 
 TEST_F(TSerialClientTest, U32)
@@ -378,10 +377,10 @@ TEST_F(TSerialClientTest, U32)
     SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 10, 20";
-    Device->Registers[20] = 0x00AA;
-    Device->Registers[21] = 0x00BB;
-    Device->Registers[30] = 0xFFFF;
-    Device->Registers[31] = 0xFFFF;
+    Device->SetMemoryBlockValue(20, 0x00AA);
+    Device->SetMemoryBlockValue(21, 0x00BB);
+    Device->SetMemoryBlockValue(30, 0xFFFF);
+    Device->SetMemoryBlockValue(31, 0xFFFF);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(0x00AA00BB), reg20->GetTextValue());
@@ -392,42 +391,42 @@ TEST_F(TSerialClientTest, U32)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(10), reg20->GetTextValue());
-    EXPECT_EQ(0, Device->Registers[20]);
-    EXPECT_EQ(10, Device->Registers[21]);
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(10, Device->GetMemoryBlockValue(21));
 
     Note() << "client -> server: -1 (overflow)";
     reg20->SetTextValue("-1");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(0xFFFFFFFF), reg20->GetTextValue());
-    EXPECT_EQ(0xFFFF, Device->Registers[20]);
-    EXPECT_EQ(0xFFFF, Device->Registers[21]);
+    EXPECT_EQ(0xFFFF, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0xFFFF, Device->GetMemoryBlockValue(21));
 
-    Device->Registers[22] = 123;
-    Device->Registers[23] = 123;
+    Device->SetMemoryBlockValue(22, 123);
+    Device->SetMemoryBlockValue(23, 123);
     Note() << "client -> server: 4294967296 (overflow)";
     reg20->SetTextValue("4294967296");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(0), reg20->GetTextValue());
-    EXPECT_EQ(0, Device->Registers[20]);
-    EXPECT_EQ(0, Device->Registers[21]);
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(21));
 
     //boundaries check
-    EXPECT_EQ(123, Device->Registers[22]);
-    EXPECT_EQ(123, Device->Registers[23]);
+    EXPECT_EQ(123, Device->GetMemoryBlockValue(22));
+    EXPECT_EQ(123, Device->GetMemoryBlockValue(23));
 }
 
 TEST_F(TSerialClientTest, BCD32)
 {
     auto reg20 = Reg(20, BCD32);
     SerialClient->AddRegister(reg20);
-    Device->Registers[22] = 123;
-    Device->Registers[23] = 123;
+    Device->SetMemoryBlockValue(22, 123);
+    Device->SetMemoryBlockValue(23, 123);
 
     Note() << "server -> client: 0x1234 0x5678";
-    Device->Registers[20] = 0x1234;
-    Device->Registers[21] = 0x5678;
+    Device->SetMemoryBlockValue(20, 0x1234);
+    Device->SetMemoryBlockValue(21, 0x5678);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(12345678), reg20->GetTextValue());
@@ -437,32 +436,32 @@ TEST_F(TSerialClientTest, BCD32)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(12345678), reg20->GetTextValue());
-    EXPECT_EQ(0x1234, Device->Registers[20]);
-    EXPECT_EQ(0x5678, Device->Registers[21]);
+    EXPECT_EQ(0x1234, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0x5678, Device->GetMemoryBlockValue(21));
 
     Note() << "client -> server: 567890";
     reg20->SetTextValue("567890");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(567890), reg20->GetTextValue());
-    EXPECT_EQ(0x0056, Device->Registers[20]);
-    EXPECT_EQ(0x7890, Device->Registers[21]);
+    EXPECT_EQ(0x0056, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0x7890, Device->GetMemoryBlockValue(21));
 
     //boundaries check
-    EXPECT_EQ(123, Device->Registers[22]);
-    EXPECT_EQ(123, Device->Registers[23]);
+    EXPECT_EQ(123, Device->GetMemoryBlockValue(22));
+    EXPECT_EQ(123, Device->GetMemoryBlockValue(23));
 }
 
 TEST_F(TSerialClientTest, BCD24)
 {
     auto reg20 = Reg(20, BCD24);
     SerialClient->AddRegister(reg20);
-    Device->Registers[22] = 123;
-    Device->Registers[23] = 123;
+    Device->SetMemoryBlockValue(22, 123);
+    Device->SetMemoryBlockValue(23, 123);
 
     Note() << "server -> client: 0x0034 0x5678";
-    Device->Registers[20] = 0x0034;
-    Device->Registers[21] = 0x5678;
+    Device->SetMemoryBlockValue(20, 0x0034);
+    Device->SetMemoryBlockValue(21, 0x5678);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(345678), reg20->GetTextValue());
@@ -472,22 +471,22 @@ TEST_F(TSerialClientTest, BCD24)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(567890), reg20->GetTextValue());
-    EXPECT_EQ(0x0056, Device->Registers[20]);
-    EXPECT_EQ(0x7890, Device->Registers[21]);
+    EXPECT_EQ(0x0056, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0x7890, Device->GetMemoryBlockValue(21));
 
     //boundaries check
-    EXPECT_EQ(123, Device->Registers[22]);
-    EXPECT_EQ(123, Device->Registers[23]);
+    EXPECT_EQ(123, Device->GetMemoryBlockValue(22));
+    EXPECT_EQ(123, Device->GetMemoryBlockValue(23));
 }
 
 TEST_F(TSerialClientTest, BCD16)
 {
     auto reg20 = Reg(20, BCD16);
     SerialClient->AddRegister(reg20);
-    Device->Registers[21] = 123;
+    Device->SetMemoryBlockValue(21, 123);
 
     Note() << "server -> client: 0x1234";
-    Device->Registers[20] = 0x1234;
+    Device->SetMemoryBlockValue(20, 0x1234);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(1234), reg20->GetTextValue());
@@ -497,20 +496,20 @@ TEST_F(TSerialClientTest, BCD16)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(1234), reg20->GetTextValue());
-    EXPECT_EQ(0x1234, Device->Registers[20]);
+    EXPECT_EQ(0x1234, Device->GetMemoryBlockValue(20));
 
     //boundaries check
-    EXPECT_EQ(123, Device->Registers[21]);
+    EXPECT_EQ(123, Device->GetMemoryBlockValue(21));
 }
 
 TEST_F(TSerialClientTest, BCD8)
 {
     auto reg20 = Reg(20, BCD8);
     SerialClient->AddRegister(reg20);
-    Device->Registers[21] = 123;
+    Device->SetMemoryBlockValue(21, 123);
 
     Note() << "server -> client: 0x12";
-    Device->Registers[20] = 0x12;
+    Device->SetMemoryBlockValue(20, 0x12);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(12), reg20->GetTextValue());
@@ -520,10 +519,10 @@ TEST_F(TSerialClientTest, BCD8)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(12), reg20->GetTextValue());
-    EXPECT_EQ(0x12, Device->Registers[20]);
+    EXPECT_EQ(0x12, Device->GetMemoryBlockValue(20));
 
     //boundaries check
-    EXPECT_EQ(123, Device->Registers[21]);
+    EXPECT_EQ(123, Device->GetMemoryBlockValue(21));
 }
 
 TEST_F(TSerialClientTest, Float32)
@@ -539,10 +538,10 @@ TEST_F(TSerialClientTest, Float32)
     SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 0x45d2 0x0000, 0x449d 0x8000";
-    Device->Registers[20] = 0x45d2;
-    Device->Registers[21] = 0x0000;
-    Device->Registers[30] = 0x449d;
-    Device->Registers[31] = 0x8000;
+    Device->SetMemoryBlockValue(20, 0x45d2);
+    Device->SetMemoryBlockValue(21, 0x0000);
+    Device->SetMemoryBlockValue(30, 0x449d);
+    Device->SetMemoryBlockValue(31, 0x8000);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("6720", reg20->GetTextValue());
@@ -553,28 +552,28 @@ TEST_F(TSerialClientTest, Float32)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("10", reg20->GetTextValue());
-    EXPECT_EQ(0x4120, Device->Registers[20]);
-    EXPECT_EQ(0x0000, Device->Registers[21]);
+    EXPECT_EQ(0x4120, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0x0000, Device->GetMemoryBlockValue(21));
 
     Note() << "client -> server: -0.00123";
     reg20->SetTextValue("-0.00123");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("-0.00123", reg20->GetTextValue());
-    EXPECT_EQ(0xbaa1, Device->Registers[20]);
-    EXPECT_EQ(0x37f4, Device->Registers[21]);
+    EXPECT_EQ(0xbaa1, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0x37f4, Device->GetMemoryBlockValue(21));
 
     Note() << "client -> server: -0.123 (scaled)";
     reg24->SetTextValue("-0.123");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("-0.123", reg24->GetTextValue());
-    EXPECT_EQ(0xbaa1, Device->Registers[24]);
-    EXPECT_EQ(0x37f4, Device->Registers[25]);
+    EXPECT_EQ(0xbaa1, Device->GetMemoryBlockValue(24));
+    EXPECT_EQ(0x37f4, Device->GetMemoryBlockValue(25));
 
     Note() << "server -> client: 0x449d 0x8000 (scaled)";
-    Device->Registers[24] = 0x449d;
-    Device->Registers[25] = 0x8000;
+    Device->SetMemoryBlockValue(24, 0x449d);
+    Device->SetMemoryBlockValue(25, 0x8000);
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("126000", reg24->GetTextValue());
@@ -592,15 +591,15 @@ TEST_F(TSerialClientTest, Double64)
     SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 40ba401f7ced9168 , 4093b148b4395810";
-    Device->Registers[20] = 0x40ba;
-    Device->Registers[21] = 0x401f;
-    Device->Registers[22] = 0x7ced;
-    Device->Registers[23] = 0x9168;
+    Device->SetMemoryBlockValue(20, 0x40ba);
+    Device->SetMemoryBlockValue(21, 0x401f);
+    Device->SetMemoryBlockValue(22, 0x7ced);
+    Device->SetMemoryBlockValue(23, 0x9168);
 
-    Device->Registers[30] = 0x4093;
-    Device->Registers[31] = 0xb148;
-    Device->Registers[32] = 0xb439;
-    Device->Registers[33] = 0x5810;
+    Device->SetMemoryBlockValue(30, 0x4093);
+    Device->SetMemoryBlockValue(31, 0xb148);
+    Device->SetMemoryBlockValue(32, 0xb439);
+    Device->SetMemoryBlockValue(33, 0x5810);
 
     Note() << "Cycle()";
     SerialClient->Cycle();
@@ -612,36 +611,36 @@ TEST_F(TSerialClientTest, Double64)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("10.9999", reg20->GetTextValue());
-    EXPECT_EQ(0x4025, Device->Registers[20]);
-    EXPECT_EQ(0xfff2, Device->Registers[21]);
-    EXPECT_EQ(0xe48e, Device->Registers[22]);
-    EXPECT_EQ(0x8a72, Device->Registers[23]);
+    EXPECT_EQ(0x4025, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0xfff2, Device->GetMemoryBlockValue(21));
+    EXPECT_EQ(0xe48e, Device->GetMemoryBlockValue(22));
+    EXPECT_EQ(0x8a72, Device->GetMemoryBlockValue(23));
 
     Note() << "client -> server: -0.00123";
     reg20->SetTextValue("-0.00123");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("-0.00123", reg20->GetTextValue());
-    EXPECT_EQ(0xbf54, Device->Registers[20]);
-    EXPECT_EQ(0x26fe, Device->Registers[21]);
-    EXPECT_EQ(0x718a, Device->Registers[22]);
-    EXPECT_EQ(0x86d7, Device->Registers[23]);
+    EXPECT_EQ(0xbf54, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0x26fe, Device->GetMemoryBlockValue(21));
+    EXPECT_EQ(0x718a, Device->GetMemoryBlockValue(22));
+    EXPECT_EQ(0x86d7, Device->GetMemoryBlockValue(23));
 
     Note() << "client -> server: -0.123 (scaled)";
     reg24->SetTextValue("-0.123");
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("-0.123", reg24->GetTextValue());
-    EXPECT_EQ(0xbf54, Device->Registers[24]);
-    EXPECT_EQ(0x26fe, Device->Registers[25]);
-    EXPECT_EQ(0x718a, Device->Registers[26]);
-    EXPECT_EQ(0x86d7, Device->Registers[27]);
+    EXPECT_EQ(0xbf54, Device->GetMemoryBlockValue(24));
+    EXPECT_EQ(0x26fe, Device->GetMemoryBlockValue(25));
+    EXPECT_EQ(0x718a, Device->GetMemoryBlockValue(26));
+    EXPECT_EQ(0x86d7, Device->GetMemoryBlockValue(27));
 
     Note() << "server -> client: 4093b00000000000 (scaled)";
-    Device->Registers[24] = 0x4093;
-    Device->Registers[25] = 0xb000;
-    Device->Registers[26] = 0x0000;
-    Device->Registers[27] = 0x0000;
+    Device->SetMemoryBlockValue(24, 0x4093);
+    Device->SetMemoryBlockValue(25, 0xb000);
+    Device->SetMemoryBlockValue(26, 0x0000);
+    Device->SetMemoryBlockValue(27, 0x0000);
 
     Note() << "Cycle()";
     SerialClient->Cycle();
@@ -659,7 +658,7 @@ TEST_F(TSerialClientTest, offset)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("-87", reg24->GetTextValue());
-    EXPECT_EQ(0xffe8, Device->Registers[24]);
+    EXPECT_EQ(0xffe8, Device->GetMemoryBlockValue(24));
 }
 
 TEST_F(TSerialClientTest, Round)
@@ -800,21 +799,21 @@ TEST_F(TSerialClientTest, Bitmasks)
     reg70O0W8->SetTextValue("255");
     reg70O0W8->Flush();
 
-    EXPECT_EQ(0xFF, Device->Registers[70]);
+    EXPECT_EQ(0xFF, Device->GetMemoryBlockValue(70));
 
     cerr << "set val: 63" << endl;
     reg70O8W8->SetTextValue("63");
     reg70O8W8->Flush();
 
-    EXPECT_EQ(0x3FFF, Device->Registers[70]);
+    EXPECT_EQ(0x3FFF, Device->GetMemoryBlockValue(70));
 
     reg72O0W1->SetTextValue("1");
     reg72O0W1->Flush();
-    EXPECT_EQ(0x1, Device->Registers[72]);
+    EXPECT_EQ(0x1, Device->GetMemoryBlockValue(72));
 
     reg72O1W1->SetTextValue("1");
     reg72O1W1->Flush();
-    EXPECT_EQ(0x3, Device->Registers[72]);
+    EXPECT_EQ(0x3, Device->GetMemoryBlockValue(72));
 
     reg72O2W1->SetTextValue("1");
     reg73O0W16->SetTextValue("4321");
@@ -824,19 +823,19 @@ TEST_F(TSerialClientTest, Bitmasks)
     Note() << "Cycle()";
     SerialClient->Cycle();
 
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 70 << "' value '" << Device->Registers[70] << "'";
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 72 << "' value '" << Device->Registers[72] << "'";
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 73 << "' value '" << Device->Registers[73] << "'";
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 74 << "' value '" << Device->Registers[74] << "'";
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 75 << "' value '" << Device->Registers[75] << "'";
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 76 << "' value '" << Device->Registers[76] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 70 << "' value '" << Device->GetMemoryBlockValue(70) << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 72 << "' value '" << Device->GetMemoryBlockValue(72) << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 73 << "' value '" << Device->GetMemoryBlockValue(73) << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 74 << "' value '" << Device->GetMemoryBlockValue(74) << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 75 << "' value '" << Device->GetMemoryBlockValue(75) << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 76 << "' value '" << Device->GetMemoryBlockValue(76) << "'";
 
-    EXPECT_EQ(0x3FFF, Device->Registers[70]);
-    EXPECT_EQ(0x7, Device->Registers[72]);
-    EXPECT_EQ(0x4996, Device->Registers[73]);
-    EXPECT_EQ(0x02D2, Device->Registers[74]);
-    EXPECT_EQ(0x1DE6, Device->Registers[75]);
-    EXPECT_EQ(0x10E1, Device->Registers[76]);
+    EXPECT_EQ(0x3FFF, Device->GetMemoryBlockValue(70));
+    EXPECT_EQ(0x7, Device->GetMemoryBlockValue(72));
+    EXPECT_EQ(0x4996, Device->GetMemoryBlockValue(73));
+    EXPECT_EQ(0x02D2, Device->GetMemoryBlockValue(74));
+    EXPECT_EQ(0x1DE6, Device->GetMemoryBlockValue(75));
+    EXPECT_EQ(0x10E1, Device->GetMemoryBlockValue(76));
 
     EXPECT_EQ("255", reg70O0W8->GetTextValue());
     EXPECT_EQ("63", reg70O8W8->GetTextValue());
@@ -847,7 +846,7 @@ TEST_F(TSerialClientTest, Bitmasks)
     EXPECT_EQ("7654", reg73O16W16->GetTextValue());
     EXPECT_EQ("1234567890", reg73O32W32->GetTextValue());
 
-    Device->Registers[72] = 0x5;     // disable reg72O1W1
+    Device->SetMemoryBlockValue(72, 0x5);     // disable reg72O1W1
 
     Note() << "Cycle()";
     SerialClient->Cycle();
@@ -946,7 +945,7 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
         throw std::runtime_error("device not found or wrong type");
     }
 
-    Device->Registers[0] = 0;
+    Device->SetMemoryBlockValue(0, 0);
     Note() << "LoopOnce()";
     observer->LoopOnce();
 
@@ -954,7 +953,7 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
 
     Note() << "LoopOnce()";
     observer->LoopOnce();
-    ASSERT_EQ(500, Device->Registers[0]);
+    ASSERT_EQ(500, Device->GetMemoryBlockValue(0));
 }
 
 
@@ -971,7 +970,7 @@ TEST_F(TSerialClientIntegrationTest, WordSwap)
         throw std::runtime_error("device not found or wrong type");
     }
 
-    Device->Registers[0] = 0;
+    Device->SetMemoryBlockValue(0, 0);
     Note() << "LoopOnce()";
     observer->LoopOnce();
 
@@ -979,10 +978,10 @@ TEST_F(TSerialClientIntegrationTest, WordSwap)
 
     Note() << "LoopOnce()";
     observer->LoopOnce();
-    ASSERT_EQ(123, Device->Registers[0]);
-    ASSERT_EQ(0, Device->Registers[1]);
-    ASSERT_EQ(0, Device->Registers[2]);
-    ASSERT_EQ(0, Device->Registers[3]);
+    ASSERT_EQ(123, Device->GetMemoryBlockValue(0));
+    ASSERT_EQ(0, Device->GetMemoryBlockValue(1));
+    ASSERT_EQ(0, Device->GetMemoryBlockValue(2));
+    ASSERT_EQ(0, Device->GetMemoryBlockValue(3));
 }
 
 TEST_F(TSerialClientIntegrationTest, Round)
@@ -998,7 +997,7 @@ TEST_F(TSerialClientIntegrationTest, Round)
         throw std::runtime_error("device not found or wrong type");
     }
 
-    Device->Registers[0] = 0;
+    Device->SetMemoryBlockValue(0, 0);
     Note() << "LoopOnce()";
     observer->LoopOnce();
 
@@ -1120,8 +1119,8 @@ PMQTTSerialObserver TSerialClientIntegrationTest::StartReconnectTest1Device(bool
     {   // Test initial WriteInitValues
         observer->WriteInitValues();
 
-        EXPECT_EQ(42, Device->Registers[1]);
-        EXPECT_EQ(24, Device->Registers[2]);
+        EXPECT_EQ(42, Device->GetMemoryBlockValue(1));
+        EXPECT_EQ(24, Device->GetMemoryBlockValue(2));
     }
 
     {   // Test read
@@ -1214,11 +1213,11 @@ PMQTTSerialObserver TSerialClientIntegrationTest::StartReconnectTest2Devices()
     {   // Test initial WriteInitValues
         observer->WriteInitValues();
 
-        EXPECT_EQ(42, dev1->Registers[1]);
-        EXPECT_EQ(24, dev1->Registers[2]);
+        EXPECT_EQ(42, dev1->GetMemoryBlockValue(1));
+        EXPECT_EQ(24, dev1->GetMemoryBlockValue(2));
 
-        EXPECT_EQ(32, dev2->Registers[1]);
-        EXPECT_EQ(64, dev2->Registers[2]);
+        EXPECT_EQ(32, dev2->GetMemoryBlockValue(1));
+        EXPECT_EQ(64, dev2->GetMemoryBlockValue(2));
     }
 
     {   // Test read
@@ -1285,8 +1284,8 @@ void TSerialClientIntegrationTest::ReconnectTest1Device(function<void()> && thun
 {
     auto observer = StartReconnectTest1Device(false, pollIntervalTest);
 
-    Device->Registers[1] = 0;   // reset those to make sure that setup section is wrote again
-    Device->Registers[2] = 0;
+    Device->SetMemoryBlockValue(1, 0);   // reset those to make sure that setup section is wrote again
+    Device->SetMemoryBlockValue(2, 0);
 
     thunk();
 
@@ -1302,8 +1301,8 @@ void TSerialClientIntegrationTest::ReconnectTest1Device(function<void()> && thun
         Note() << "LoopOnce()";
         observer->LoopOnce();
 
-        EXPECT_EQ(42, Device->Registers[1]);
-        EXPECT_EQ(24, Device->Registers[2]);
+        EXPECT_EQ(42, Device->GetMemoryBlockValue(1));
+        EXPECT_EQ(24, Device->GetMemoryBlockValue(2));
     }
 }
 
@@ -1314,11 +1313,11 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()> && thu
     auto dev1 = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("12", "fake", Port));
     auto dev2 = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("13", "fake", Port));
 
-    dev1->Registers[1] = 0;   // reset those to make sure that setup section is wrote again
-    dev1->Registers[2] = 0;
+    dev1->SetMemoryBlockValue(1, 0);   // reset those to make sure that setup section is wrote again
+    dev1->SetMemoryBlockValue(2, 0);
 
-    dev2->Registers[1] = 1;   // set control values to make sure that no setup section is written
-    dev2->Registers[2] = 2;
+    dev2->SetMemoryBlockValue(1, 1);   // set control values to make sure that no setup section is written
+    dev2->SetMemoryBlockValue(2, 2);
 
     thunk();
 
@@ -1334,11 +1333,11 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()> && thu
         Note() << "LoopOnce()";
         observer->LoopOnce();
 
-        EXPECT_EQ(42, dev1->Registers[1]);
-        EXPECT_EQ(24, dev1->Registers[2]);
+        EXPECT_EQ(42, dev1->GetMemoryBlockValue(1));
+        EXPECT_EQ(24, dev1->GetMemoryBlockValue(2));
 
-        EXPECT_EQ(1, dev2->Registers[1]);
-        EXPECT_EQ(2, dev2->Registers[2]);
+        EXPECT_EQ(1, dev2->GetMemoryBlockValue(1));
+        EXPECT_EQ(2, dev2->GetMemoryBlockValue(2));
     }
 }
 
@@ -1389,8 +1388,8 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
 
     auto observer = StartReconnectTest1Device(true);
 
-    Device->Registers[1] = 1;   // set control values to make sure that no setup section is written
-    Device->Registers[2] = 2;
+    Device->SetMemoryBlockValue(1, 1);   // set control values to make sure that no setup section is written
+    Device->SetMemoryBlockValue(2, 2);
 
     {   // Device is connected back before timeout
         Note() << "SimulateDisconnect(false)";
@@ -1399,8 +1398,8 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
         Note() << "LoopOnce()";
         observer->LoopOnce();
 
-        EXPECT_EQ(1, Device->Registers[1]);
-        EXPECT_EQ(2, Device->Registers[2]);
+        EXPECT_EQ(1, Device->GetMemoryBlockValue(1));
+        EXPECT_EQ(2, Device->GetMemoryBlockValue(2));
     }
 }
 
@@ -1453,21 +1452,21 @@ TEST_F(TSerialClientIntegrationTest, Bitmasks)
     Note() << "LoopOnce()";
     observer->LoopOnce();
 
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 70 << "' value '" << Device->Registers[70] << "'";
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 72 << "' value '" << Device->Registers[72] << "'";
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 73 << "' value '" << Device->Registers[73] << "'";
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 74 << "' value '" << Device->Registers[74] << "'";
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 75 << "' value '" << Device->Registers[75] << "'";
-    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 76 << "' value '" << Device->Registers[76] << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 70 << "' value '" << Device->GetMemoryBlockValue(70) << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 72 << "' value '" << Device->GetMemoryBlockValue(72) << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 73 << "' value '" << Device->GetMemoryBlockValue(73) << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 74 << "' value '" << Device->GetMemoryBlockValue(74) << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 75 << "' value '" << Device->GetMemoryBlockValue(75) << "'";
+    Emit() << "fake_serial_device '" << Device->ToString() << "': address '" << 76 << "' value '" << Device->GetMemoryBlockValue(76) << "'";
 
-    EXPECT_EQ(0x3FFF, Device->Registers[70]);
-    EXPECT_EQ(0x7, Device->Registers[72]);
-    EXPECT_EQ(0x4996, Device->Registers[73]);
-    EXPECT_EQ(0x02D2, Device->Registers[74]);
-    EXPECT_EQ(0x1DE6, Device->Registers[75]);
-    EXPECT_EQ(0x10E1, Device->Registers[76]);
+    EXPECT_EQ(0x3FFF, Device->GetMemoryBlockValue(70));
+    EXPECT_EQ(0x7, Device->GetMemoryBlockValue(72));
+    EXPECT_EQ(0x4996, Device->GetMemoryBlockValue(73));
+    EXPECT_EQ(0x02D2, Device->GetMemoryBlockValue(74));
+    EXPECT_EQ(0x1DE6, Device->GetMemoryBlockValue(75));
+    EXPECT_EQ(0x10E1, Device->GetMemoryBlockValue(76));
 
-    Device->Registers[72] = 0x5;     // disable reg72O1W1
+    Device->SetMemoryBlockValue(72, 0x5);     // disable reg72O1W1
 
     Note() << "LoopOnce()";
     observer->LoopOnce();

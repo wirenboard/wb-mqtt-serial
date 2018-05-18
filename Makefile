@@ -49,6 +49,7 @@ SERIAL_SRCS= \
   serial_config.cpp \
   serial_port_driver.cpp \
   serial_observer.cpp \
+  device_setup_item.cpp \
   file_descriptor_port.cpp \
   tcp_port.cpp \
   serial_port.cpp \

@@ -2,7 +2,6 @@
 #include "fake_serial_port.h"
 #include "ir_device_query.h"
 #include "memory_block.h"
-#include "virtual_register.h"
 
 using namespace std;
 
@@ -14,12 +13,12 @@ struct TFakeProtocolInfo: TProtocolInfo
 {
     int GetMaxReadRegisters() const override
     {
-        return FAKE_DEVICE_REG_COUNT;
+        return FAKE_DEVICE_MEM_BLOCK_COUNT;
     }
 
     int GetMaxWriteRegisters() const override
     {
-        return FAKE_DEVICE_REG_COUNT;
+        return FAKE_DEVICE_MEM_BLOCK_COUNT;
     }
 };
 
@@ -34,6 +33,11 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
     }
 }
 
+uint8_t * TFakeSerialDevice::Block(uint32_t address)
+{
+    return Memory + address * FAKE_DEVICE_MEM_BLOCK_SIZE;
+}
+
 void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
 {
     const auto start = query.GetStart();
@@ -44,7 +48,7 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
             throw TSerialDeviceUnknownErrorException("device disconnected");
         }
 
-        if (end > FAKE_DEVICE_REG_COUNT) {
+        if (end > FAKE_DEVICE_MEM_BLOCK_COUNT) {
             throw runtime_error("register address out of range");
         }
 
@@ -63,7 +67,7 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
             throw runtime_error("invalid register type");
         }
 
-        query.FinalizeRead(Registers + start, query.GetSize());
+        query.FinalizeRead(Block(start), query.GetSize());
 
         if (!query.VirtualRegisters.empty()) {
             for (const auto & reg: query.VirtualRegisters) {
@@ -72,7 +76,7 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
         } else {
             for (uint32_t i = 0; i < query.GetBlockCount(); ++i) {
                 auto addr = query.GetStart() + i;
-                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read to address '" << addr << "' value '" <<  Registers[addr] << "'";
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read to address '" << addr << "' value '" <<  GetMemoryBlockValue(addr) << "'";
             }
         }
     } catch (const exception & e) {
@@ -101,7 +105,7 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
             throw TSerialDeviceUnknownErrorException("device disconnected");
         }
 
-        if (end > FAKE_DEVICE_REG_COUNT) {
+        if (end > FAKE_DEVICE_MEM_BLOCK_COUNT) {
             throw runtime_error("register address out of range");
         }
 
@@ -120,9 +124,9 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
             throw runtime_error("invalid register type");
         }
 
-        query.GetValues<typename TFakeSerialDevice::RegisterValueType>(&Registers[query.GetStart()]);
+        const auto & memoryView = query.GetValues(Block(query.GetStart()), query.GetSize());
 
-        query.FinalizeWrite();
+        query.FinalizeWrite(memoryView);
 
         if (!query.VirtualRegisters.empty()) {
             for (const auto & reg: query.VirtualRegisters) {
@@ -131,7 +135,7 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
         } else {
             for (uint32_t i = 0; i < query.GetBlockCount(); ++i) {
                 auto addr = query.GetStart() + i;
-                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << addr << "' value '" <<  Registers[addr] << "'";
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << addr << "' value '" <<  GetMemoryBlockValue(addr) << "'";
             }
         }
     } catch (const exception & e) {
@@ -165,6 +169,32 @@ void TFakeSerialDevice::OnCycleEnd(bool ok)
     }
 }
 
+/* set big endian block value */
+void TFakeSerialDevice::SetMemoryBlockValue(size_t index, TMemoryBlockValueType value)
+{
+    auto startByte = index * FAKE_DEVICE_MEM_BLOCK_SIZE;
+
+    for(auto iByte = startByte + FAKE_DEVICE_MEM_BLOCK_SIZE - 1; iByte > startByte; --iByte) {
+        Memory[iByte] = value;
+        value >>= 8;
+    }
+}
+
+/* read big endian block value */
+TMemoryBlockValueType TFakeSerialDevice::GetMemoryBlockValue(size_t index)
+{
+    TMemoryBlockValueType value;
+
+    auto startByte = index * FAKE_DEVICE_MEM_BLOCK_SIZE;
+
+    for(auto iByte = startByte; iByte < startByte + FAKE_DEVICE_MEM_BLOCK_SIZE; ++iByte) {
+        value <<= 8;
+        value |= Memory[iByte];
+    }
+
+    return value;
+}
+
 void TFakeSerialDevice::BlockReadFor(int addr, BlockMode block)
 {
     Blockings[addr].BlockRead = block;
@@ -181,7 +211,7 @@ void TFakeSerialDevice::BlockWriteFor(int addr, BlockMode block)
 
 uint32_t TFakeSerialDevice::Read2Registers(int addr)
 {
-    return (uint32_t(Registers[addr]) << 16) | Registers[addr + 1];
+    return (uint32_t(GetMemoryBlockValue(addr)) << 16) | GetMemoryBlockValue(addr + 1);
 }
 
 void TFakeSerialDevice::SetIsConnected(bool connected)

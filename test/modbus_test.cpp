@@ -4,7 +4,6 @@
 #include "modbus_common.h"
 #include "ir_device_query_factory.h"
 #include "ir_device_query.h"
-#include "virtual_register.h"
 
 using namespace std;
 

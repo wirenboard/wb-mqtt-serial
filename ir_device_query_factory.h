@@ -25,20 +25,22 @@ public:
      * and return query sets grouped by poll interval
      */
     static std::vector<std::pair<TIntervalMs, PIRDeviceQuerySet>> GenerateQuerySets(const std::vector<PVirtualRegister> &, EQueryOperation);
-
-    static TQueries GenerateQueries(std::list<TPSet<PMemoryBlock>> && memoryBlockSets, EQueryOperation, EQueryGenerationPolicy = Default);
+    static TQueries GenerateQueries(const std::vector<PVirtualRegister> & virtualRegisters, EQueryOperation, EQueryGenerationPolicy = Default);
 
     template <class Query>
-    static std::shared_ptr<Query> CreateQuery(const TPSet<PMemoryBlock> & memoryBlockSet)
+    static std::shared_ptr<Query> CreateQuery(std::vector<PVirtualRegister> && virtualRegisters)
     {
         static_assert(std::is_base_of<TIRDeviceQuery, Query>::value, "Query must be derived from TIRDeviceQuery");
 
-        return std::shared_ptr<Query>(new Query(memoryBlockSet));
+        return std::shared_ptr<Query>(new Query(std::move(virtualRegisters)));
     }
 
 private:
     using TRegisterTypeInfo = std::function<std::pair<uint32_t, uint32_t>(const TMemoryBlockType &)>;
+    using TAssociatedMemoryBlockList = std::list<std::pair<TPSet<PMemoryBlock>, std::vector<PVirtualRegister>>>;
 
-    static void CheckSets(const std::list<TPSet<PMemoryBlock>> & memoryBlockSets, const TRegisterTypeInfo &);
-    static void MergeSets(std::list<TPSet<PMemoryBlock>> & memoryBlockSets, const TRegisterTypeInfo &);
+    static TQueries GenerateQueries(TAssociatedMemoryBlockList && memoryBlockSets, EQueryOperation, EQueryGenerationPolicy);
+
+    static void CheckSets(const TAssociatedMemoryBlockList & memoryBlockSets, const TRegisterTypeInfo &);
+    static void MergeSets(TAssociatedMemoryBlockList & memoryBlockSets, const TRegisterTypeInfo &);
 };

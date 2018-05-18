@@ -3,25 +3,12 @@
 #include "ir_device_query.h"
 #include "memory_block_factory.h"
 #include "memory_block.h"
+#include "device_setup_item.h"
 
 #include <iostream>
 #include <unistd.h>
 #include <cassert>
 
-
-TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
-    : TDeviceSetupItemConfig(*config)
-{
-    const auto & memoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(RegisterConfig, device);
-
-    auto queries = TIRDeviceQueryFactory::GenerateQueries({ GetKeysAsSet(memoryBlocks) }, EQueryOperation::Write);
-    assert(queries.size() == 1);
-
-    Query = std::dynamic_pointer_cast<TIRDeviceValueQuery>(*queries.begin());
-    assert(Query);
-
-    Query->SetValue({ memoryBlocks, RegisterConfig->WordOrder }, Value);
-}
 
 bool TProtocolInfo::IsSingleBitType(const TMemoryBlockType & type) const
 {
@@ -256,19 +243,15 @@ bool TSerialDevice::WriteSetupRegisters(bool tryAll)
     bool did_write = false;
     for (const auto & setupItem : SetupItems) {
         std::cerr << "Init: " << setupItem->Name << ": setup register " <<
-                setupItem->Query->Describe() << " <-- " << setupItem->Value << std::endl;
-        Execute(setupItem->Query);
+                setupItem->ToString() << " <-- " << setupItem->Value << std::endl;
 
-        bool ok = setupItem->Query->GetStatus() == EQueryStatus::Ok;
-
-        setupItem->Query->ResetStatus();
-
-        if (ok) {
+        if (setupItem->Write()) {
             did_write = true;
         } else {
-            std::cerr << "WARNING: device '" << setupItem->Query->GetDevice()->ToString() <<
-                "' registers '" << setupItem->Query->Describe() <<
-                "' setup failed" << std::endl;
+            std::cerr << "WARNING: device '" << setupItem->GetDevice()->ToString()
+                      << "' registers '" << setupItem->Describe()
+                      << "' setup failed" << std::endl;
+
             if (!did_write && !tryAll) {
                 break;
             }

@@ -2,8 +2,6 @@
 #include "testlog.h"
 #include "fake_serial_port.h"
 #include "pulsar_device.h"
-#include "memory_block.h"
-#include "virtual_register.h"
 
 
 class TPulsarDeviceTest: public TSerialDeviceTest
@@ -11,8 +9,8 @@ class TPulsarDeviceTest: public TSerialDeviceTest
 protected:
     void SetUp();
     PPulsarDevice Dev;
-    PMemoryBlock Heat_TempIn;
-    PMemoryBlock Heat_TempOut;
+    PVirtualRegister Heat_TempIn;
+    PVirtualRegister Heat_TempOut;
     // TODO: time register
 };
 
@@ -26,8 +24,8 @@ void TPulsarDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("pulsar"));
 
-    Heat_TempIn = Dev->GetCreateMemoryBlock(2, TPulsarDevice::REG_DEFAULT, 4);
-    Heat_TempOut = Dev->GetCreateMemoryBlock(3, TPulsarDevice::REG_DEFAULT, 4);
+    Heat_TempIn = Reg(Dev, 2, TPulsarDevice::REG_DEFAULT, U32);
+    Heat_TempOut = Reg(Dev, 3, TPulsarDevice::REG_DEFAULT, U32);
 
     SerialPort->Open();
 }
@@ -48,7 +46,8 @@ TEST_F(TPulsarDeviceTest, PulsarHeatMeterFloatQuery)
                 0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x5a, 0xb3, 0xc5, 0x41, 0x00, 0x00, 0x18, 0xdb
             });
 
-    ASSERT_EQ(0x41C5B35A, TestRead(Heat_TempInQuery)[0]);
+    TestRead(Heat_TempInQuery);
+    ASSERT_EQ(0x41C5B35A, Heat_TempIn->GetValue());
 
     SerialPort->Close();
 }

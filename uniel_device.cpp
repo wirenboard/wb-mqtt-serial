@@ -102,7 +102,7 @@ void TUnielDevice::Read(const TIRDeviceQuery & query)
 void TUnielDevice::Write(const TIRDeviceValueQuery & query)
 {
     uint8_t cmd, addr, value;
-    query.GetValues(&value);
+    const auto & memoryView = query.GetValues(&value, 1);
     const auto & mb = query.MemoryBlockRange.GetFirst();
 
     if (mb->Type.Index == REG_BRIGHTNESS) {
@@ -122,5 +122,5 @@ void TUnielDevice::Write(const TIRDeviceValueQuery & query)
     if (response[0] != value)
         throw TSerialDeviceTransientErrorException("written register value mismatch");
 
-    query.FinalizeWrite();
+    query.FinalizeWrite(memoryView);
 }
