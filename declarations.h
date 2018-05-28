@@ -21,6 +21,7 @@ struct TIRDeviceQuerySet;
 struct TIRDeviceQuery;
 struct TIRDeviceValueQuery;
 struct TIRDeviceValueDesc;
+struct TIRDeviceMemoryBlockView;
 struct TProtocolInfo;
 struct TDeviceChannel;
 struct TMemoryBlockType;

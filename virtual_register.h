@@ -35,7 +35,7 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
     bool                                        ValueWasAccepted : 1;
 
 public:
-    static PVirtualRegister Create(const PRegisterConfig & config, const PSerialDevice & device);
+    static PVirtualRegister Create(const PRegisterConfig & config, const PSerialDevice & device); // TODO: decide how to do setup sections
 
     /**
      * Returns hash that can be used by unordered_* containers
@@ -46,7 +46,9 @@ public:
 
     void SetFlushSignal(PBinarySemaphore flushNeeded);
     PSerialDevice GetDevice() const;
+
     TPSet<PMemoryBlock> GetMemoryBlocks() const;
+    const TMemoryBlockBindInfo & GetMemoryBlockBindInfo(const PMemoryBlock &) const;
     TIRDeviceValueDesc GetValueDesc() const;
     EErrorState GetErrorState() const override;
     std::string Describe() const;

@@ -24,6 +24,16 @@ public:
     const TMemoryBlockType & Type;
     const uint16_t           Size;
 
+    /**
+     * Create with no external linkage
+     */
+    TMemoryBlock(uint32_t address, uint16_t size, const TMemoryBlockType & type);
+
+    /**
+     * Create with no external linkage
+     */
+    TMemoryBlock(uint32_t address, const TMemoryBlockType & type);
+
 private:
     struct IExternalLinkage
     {
@@ -39,16 +49,6 @@ private:
 
     bool InitExternalLinkage(const PSerialDevice &);
     bool InitExternalLinkage(const PVirtualRegister &);
-
-    /**
-     * Create with no external linkage
-     */
-    TMemoryBlock(uint32_t address, uint16_t size, const TMemoryBlockType & type);
-
-    /**
-     * Create with no external linkage
-     */
-    TMemoryBlock(uint32_t address, const TMemoryBlockType & type);
 
     /**
      * Create and link to device
@@ -75,7 +75,6 @@ public:
 
     bool NeedsCaching() const;
     void AssignCache(uint8_t *);
-    void CacheIfNeeded(const uint8_t * data);
     TIRDeviceMemoryBlockView GetCache() const;
 
     std::string Describe() const;

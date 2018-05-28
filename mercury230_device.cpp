@@ -140,7 +140,7 @@ void TMercury230Device::ReadParam(const TIRDeviceQuery & query)
 
         const auto & memoryView = query.CreateMemoryView(buf, 3);
 
-        memoryView[mb].SetValue(0, paramValue);
+        memoryView[mb][0] = paramValue;
 
         query.FinalizeRead(memoryView);
     } else  {

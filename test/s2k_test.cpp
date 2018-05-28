@@ -43,18 +43,16 @@ void TS2KDeviceTest::TearDown()
 
 TEST_F(TS2KDeviceTest, TestSetRelayState)
 {
-    auto query = RelayReg1->GetWriteQuery();
-
     EnqueueSetRelayOnResponse();
 
     RelayReg1->SetValue(1);
-    TestWrite(query);
+    RelayReg1->Flush();
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
 
     RelayReg1->SetValue(0);
-    TestWrite(query);
+    RelayReg1->Flush();
 }
 
 class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDeviceExpectations {

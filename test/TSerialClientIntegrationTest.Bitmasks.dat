@@ -46,15 +46,11 @@ Sleep(100000)
 fake_serial_device '153': write to address '70' value '255'
 Publish: /devices/Bitmasks/controls/U16:0:8/meta/error: '' (QoS 0, retained)
 fake_serial_device '153': write to address '70' value '63'
-fake_serial_device '153': write to address '70' value '255'
 Publish: /devices/Bitmasks/controls/U16:8:8/meta/error: '' (QoS 0, retained)
 fake_serial_device '153': write to address '72' value '1'
 Publish: /devices/Bitmasks/controls/U8:0:1/meta/error: '' (QoS 0, retained)
 fake_serial_device '153': write to address '72' value '1'
-fake_serial_device '153': write to address '72' value '1'
 Publish: /devices/Bitmasks/controls/U8:1:1/meta/error: '' (QoS 0, retained)
-fake_serial_device '153': write to address '72' value '1'
-fake_serial_device '153': write to address '72' value '1'
 fake_serial_device '153': write to address '72' value '1'
 Publish: /devices/Bitmasks/controls/U8:2:1/meta/error: '' (QoS 0, retained)
 fake_serial_device '153': write to address '73' value '4321'
@@ -63,20 +59,20 @@ fake_serial_device '153': write to address '73' value '7654'
 Publish: /devices/Bitmasks/controls/U64:16:16/meta/error: '' (QoS 0, retained)
 fake_serial_device '153': write to address '73' value '1234567890'
 Publish: /devices/Bitmasks/controls/U64:32:32/meta/error: '' (QoS 0, retained)
-fake_serial_device '153': read address '70' value '63'
 fake_serial_device '153': read address '70' value '255'
-Publish: /devices/Bitmasks/controls/U16:8:8: '63' (QoS 0, retained)
+fake_serial_device '153': read address '70' value '63'
 Publish: /devices/Bitmasks/controls/U16:0:8: '255' (QoS 0, retained)
+Publish: /devices/Bitmasks/controls/U16:8:8: '63' (QoS 0, retained)
 fake_serial_device '153': read address '72' value '1'
 fake_serial_device '153': read address '72' value '1'
 fake_serial_device '153': read address '72' value '1'
-fake_serial_device '153': read address '73' value '1234567890'
 fake_serial_device '153': read address '73' value '7654'
-Publish: /devices/Bitmasks/controls/U8:2:1: '1' (QoS 0, retained)
-Publish: /devices/Bitmasks/controls/U8:1:1: '1' (QoS 0, retained)
+fake_serial_device '153': read address '73' value '1234567890'
 Publish: /devices/Bitmasks/controls/U8:0:1: '1' (QoS 0, retained)
-Publish: /devices/Bitmasks/controls/U64:32:32: '1234567890' (QoS 0, retained)
+Publish: /devices/Bitmasks/controls/U8:1:1: '1' (QoS 0, retained)
+Publish: /devices/Bitmasks/controls/U8:2:1: '1' (QoS 0, retained)
 Publish: /devices/Bitmasks/controls/U64:16:16: '7654' (QoS 0, retained)
+Publish: /devices/Bitmasks/controls/U64:32:32: '1234567890' (QoS 0, retained)
 fake_serial_device '153': read address '73' value '4321'
 Publish: /devices/Bitmasks/controls/U64:0:16: '4321' (QoS 0, retained)
 fake_serial_device '153': Device cycle OK
@@ -88,13 +84,13 @@ fake_serial_device 'fake:153': address '74' value '722'
 fake_serial_device 'fake:153': address '75' value '7654'
 fake_serial_device 'fake:153': address '76' value '4321'
 >>> LoopOnce()
-fake_serial_device '153': read address '70' value '63'
 fake_serial_device '153': read address '70' value '255'
+fake_serial_device '153': read address '70' value '63'
 fake_serial_device '153': read address '72' value '1'
 fake_serial_device '153': read address '72' value '0'
 fake_serial_device '153': read address '72' value '1'
-fake_serial_device '153': read address '73' value '1234567890'
 fake_serial_device '153': read address '73' value '7654'
+fake_serial_device '153': read address '73' value '1234567890'
 Publish: /devices/Bitmasks/controls/U8:1:1: '0' (QoS 0, retained)
 fake_serial_device '153': read address '73' value '4321'
 fake_serial_device '153': Device cycle OK

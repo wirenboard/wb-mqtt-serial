@@ -21,15 +21,16 @@ TPMap<PMemoryBlock, TMemoryBlockBindInfo> TMemoryBlockFactory::GenerateMemoryBlo
 
     const uint16_t memoryBlockBitWidth = memoryBlockSize * 8;
     const auto formatBitWidth = config->GetFormatBitWidth();
+    const auto availableWidth = max(memoryBlockBitWidth, uint16_t(formatBitWidth));
     auto bitsToAllocate = config->GetBitWidth();
 
-    if (formatBitWidth <= config->BitOffset) {
+    if (availableWidth <= config->BitOffset) {
         throw TSerialDeviceException("unable to create memoryBlocks by config " + config->ToString() +
                                      ": specified bit shift (" + to_string((int)config->BitOffset) +
                                      ") must be less than specified format's (" + RegisterFormatName(config->Format) + ") bit width");
     }
 
-    if (bitsToAllocate > (formatBitWidth - config->BitOffset)) {
+    if (bitsToAllocate > (availableWidth - config->BitOffset)) {
         throw TSerialDeviceException("unable to create memoryBlocks by config " + config->ToString() +
                                      ": specified bit width (" + to_string((int)memoryBlockBitWidth) +
                                      ") and shift (" + to_string((int)config->BitOffset) +

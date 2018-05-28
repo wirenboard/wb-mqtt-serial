@@ -292,3 +292,10 @@ std::string PrintCollection(
 {
     return PrintRange(c.begin(), c.end(), std::move(toStream), multiline, delimiter);
 }
+
+constexpr bool IsLittleEndian()
+{
+    using TBytes = struct { char a; };
+    using TOverlay = union { int i; TBytes b; };
+    return TOverlay{ 1 }.b.a;
+}

@@ -260,7 +260,7 @@ TEST_F(TSerialClientTest, U64)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(0x00AA00BB00CC00DD), reg20->GetTextValue());
-    EXPECT_EQ("18446744073709551615", reg30->GetTextValue());
+    EXPECT_EQ(to_string(0xFFFFFFFFFFFFFFFF), reg30->GetTextValue());
 
     Note() << "client -> server: 10";
     reg20->SetTextValue("10");
@@ -581,13 +581,12 @@ TEST_F(TSerialClientTest, Float32)
 
 TEST_F(TSerialClientTest, Double64)
 {
+    auto reg20 = Reg(20, Double);
 	// create scaled register
     auto reg24 = Reg(24, Double, 100);
-    SerialClient->AddRegister(reg24);
-
-    auto reg20 = Reg(20, Double);
     auto reg30 = Reg(30, Double);
     SerialClient->AddRegister(reg20);
+    SerialClient->AddRegister(reg24);
     SerialClient->AddRegister(reg30);
 
     Note() << "server -> client: 40ba401f7ced9168 , 4093b148b4395810";
@@ -794,7 +793,7 @@ TEST_F(TSerialClientTest, Bitmasks)
     SerialClient->AddRegister(reg73O16W16);
     SerialClient->AddRegister(reg73O32W32);
 
-    Device->InitializeMemoryBlocksCache();
+    SerialClient->Connect();    // init cache
 
     reg70O0W8->SetTextValue("255");
     reg70O0W8->Flush();

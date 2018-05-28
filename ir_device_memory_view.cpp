@@ -11,56 +11,33 @@
 
 using namespace std;
 
-namespace
+
+void TIRDeviceMemoryBlockValue::GetValueImpl(uint8_t * pValue, uint8_t size) const
 {
-    inline void ReadFromMemory(const TIRDeviceMemoryBlockView & memoryView, const TMemoryBlockBindInfo & bindInfo, uint64_t & value)
-    {
-        const auto mask = bindInfo.GetMask();
+    assert(size >= (EndByteIndex - StartByteIndex)); // make sure all memory is used
 
-        for (int iByte = (bindInfo.BitEnd - 1) / 8; iByte >= (bindInfo.BitStart / 8); --iByte) {
-            auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
-            auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
-
-            if (begin >= end)
-                break;
-
-            value <<= (end - begin);
-            value |= ((mask >> (iByte * 8)) & memoryView.GetByte(iByte)) >> begin;
-        }
-
-        // TODO: check for usefullness
-        if (Global::Debug) {
-            std::cerr << "mb mask: " << std::bitset<64>(mask) << std::endl;
-            // std::cerr << "reading " << bindInfo.Describe() << " bits of " << memoryView.MemoryBlock->Describe()
-            //         << " to [" << (int)offset << ", " << int(offset + bindInfo.BitCount() - 1) << "] bits of value" << std::endl;
-        }
-    }
-
-
-
-    inline void WriteToMemory(const TIRDeviceMemoryBlockView & memoryView, const TMemoryBlockBindInfo & bindInfo, uint64_t & value)
-    {
-        const auto mask = bindInfo.GetMask();
-
-        for (uint16_t iByte = bindInfo.BitStart / 8; iByte < memoryView.MemoryBlock->Size; ++iByte) {
-            auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
-            auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
-
-            if (begin >= end)
-                break;
-
-            memoryView.SetByte(iByte, (mask >> (iByte * 8)) & (value << begin));
-            value >>= (end - begin);
-        }
+    for (auto i = StartByteIndex; i < EndByteIndex; ++i) {
+        // we need to get byte by view, because we define byte order by view
+        (*pValue++) = View.GetByte(IsLittleEndian() ? i : (i - StartByteIndex));
     }
 }
 
-TIRDeviceMemoryBlockView & TIRDeviceMemoryBlockView::operator=(const TIRDeviceMemoryBlockView & rhs)
+void TIRDeviceMemoryBlockValue::SetValueImpl(const uint8_t * pValue, uint8_t size)
 {
-    assert(*MemoryBlock == *rhs.MemoryBlock);
+    assert(size >= (EndByteIndex - StartByteIndex)); // make sure all memory is used
 
-    if (rhs.RawMemory) {
-        memcpy(RawMemory, rhs.RawMemory, MemoryBlock->Size);
+    for (auto i = StartByteIndex; i < EndByteIndex; ++i) {
+        // we need to set byte by view, because we define byte order by view
+        View.SetByte(IsLittleEndian() ? i : (i - StartByteIndex), (*pValue++));
+    }
+}
+
+TIRDeviceMemoryBlockMemory & TIRDeviceMemoryBlockMemory::operator=(const TIRDeviceMemoryBlockMemory & rhs)
+{
+    assert(*View.MemoryBlock == *rhs.View.MemoryBlock);
+
+    if (View.RawMemory && rhs.View.RawMemory) {
+        memcpy(View.RawMemory, rhs.View.RawMemory, View.MemoryBlock->Size);
     }
 
     return *this;
@@ -110,29 +87,7 @@ void TIRDeviceMemoryBlockView::SetByte(uint16_t index, uint8_t value) const
     RawMemory[GetByteIndex(index)] = value;
 }
 
-uint64_t TIRDeviceMemoryBlockView::GetValue(uint16_t index) const
-{
-    uint64_t value = 0;
 
-    auto start = GetValueByteIndex(index);
-    auto end = start + GetValueSize(index);
-
-    for (uint16_t i = start; i < end; ++i) {
-        value |= uint64_t(GetByte(i)) << ((i - start) * 8);
-    }
-
-    return value;
-}
-
-void TIRDeviceMemoryBlockView::SetValue(uint16_t index, uint64_t value) const
-{
-    auto start = GetValueByteIndex(index);
-    auto end = start + GetValueSize(index);
-
-    for (uint16_t i = start; i < end; ++i) {
-        SetByte(i, value >> ((i - start) * 8));
-    }
-}
 
 TIRDeviceMemoryView::TIRDeviceMemoryView(uint8_t * memory, uint32_t size, const TMemoryBlockType & type, uint32_t start, uint16_t blockSize, bool readonly)
     : RawMemory(memory)
@@ -162,7 +117,7 @@ void TIRDeviceMemoryView::Clear() const
     memset(RawMemory, 0, Size);
 }
 
-uint16_t TIRDeviceMemoryView::GetBlockStart(const CPMemoryBlock & memoryBlock) const
+TIRDeviceMemoryBlockView TIRDeviceMemoryView::operator[](const CPMemoryBlock & memoryBlock) const
 {
     assert(&memoryBlock->Type == &Type);
     assert(memoryBlock->Address >= StartAddress);
@@ -171,7 +126,7 @@ uint16_t TIRDeviceMemoryView::GetBlockStart(const CPMemoryBlock & memoryBlock) c
 
     assert(byteIndex < Size);
 
-    return byteIndex;
+    return { RawMemory + byteIndex, memoryBlock, Readonly };
 }
 
 uint64_t TIRDeviceMemoryView::ReadValue(const TIRDeviceValueDesc & valueDesc) const
@@ -183,7 +138,26 @@ uint64_t TIRDeviceMemoryView::ReadValue(const TIRDeviceValueDesc & valueDesc) co
         const auto & memoryBlock = boundMemoryBlock.first;
         const auto & bindInfo = boundMemoryBlock.second;
 
-        ReadFromMemory(self[memoryBlock], bindInfo, value);
+        const auto mask = bindInfo.GetMask();
+        const auto & memoryBlockView = self[memoryBlock];
+
+        for (int iByte = (bindInfo.BitEnd - 1) / 8; iByte >= int(bindInfo.BitStart / 8); --iByte) {
+            auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
+            auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
+
+            if (begin >= end)
+                break;
+
+            value <<= (end - begin);
+            value |= ((mask >> (iByte * 8)) & memoryBlockView.GetByte(iByte)) >> begin;
+        }
+
+        // TODO: check for usefullness
+        if (Global::Debug) {
+            std::cerr << "mb mask: " << std::bitset<64>(mask) << std::endl;
+            // std::cerr << "reading " << bindInfo.Describe() << " bits of " << memoryView.MemoryBlock->Describe()
+            //         << " to [" << (int)offset << ", " << int(offset + bindInfo.BitCount() - 1) << "] bits of value" << std::endl;
+        }
     };
 
     if (valueDesc.WordOrder == EWordOrder::BigEndian) {
@@ -200,27 +174,42 @@ uint64_t TIRDeviceMemoryView::ReadValue(const TIRDeviceValueDesc & valueDesc) co
 
 void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueDesc & valueDesc, uint64_t value) const
 {
+    WriteValue(valueDesc, value, [this](const CPMemoryBlock & mb) {
+        return (*this)[mb];
+    });
+}
+
+void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueDesc & valueDesc, uint64_t value, TMemoryBlockViewProvider getView)
+{
     if (Global::Debug)
         std::cerr << "map value to registers: " << value << std::endl;
-
-    auto & self = *this;
 
     auto writeMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & memoryBlockBindInfo){
         const auto & memoryBlock = memoryBlockBindInfo.first;
         const auto & bindInfo = memoryBlockBindInfo.second;
 
-        const auto & memoryBlockView = self[memoryBlock];
+        const auto & memoryBlockView = getView(memoryBlock);
 
-        WriteToMemory(memoryBlockView, bindInfo, value);
+        if (!memoryBlockView) {
+            value >>= bindInfo.BitCount();
+            return;
+        }
 
-        // apply cache if memory block is cached
-        if (const auto & cache = memoryBlock->GetCache()) {
-            auto mask = bindInfo.GetMask();
+        const auto mask = bindInfo.GetMask();
+        const auto & cache = memoryBlock->GetCache();
 
-            for (uint16_t iByte = 0; iByte < memoryBlock->Size; ++iByte) {
-                memoryBlockView.SetByte(iByte, (~mask & cache.GetByte(iByte)) | (mask & memoryBlockView.GetByte(iByte)));
-                mask >>= 8;
-            }
+        for (uint16_t iByte = bindInfo.BitStart / 8; iByte < memoryBlock->Size; ++iByte) {
+            auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
+            auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
+
+            if (begin >= end)
+                break;
+
+            const auto byteMask = mask >> (iByte * 8);
+            const auto cachedByte = cache ? cache.GetByte(iByte) : uint8_t(0);
+
+            memoryBlockView.SetByte(iByte, (~byteMask & cachedByte) | (byteMask & (value << begin)));
+            value >>= (end - begin);
         }
     };
 

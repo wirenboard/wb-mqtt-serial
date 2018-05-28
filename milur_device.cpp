@@ -18,11 +18,11 @@ namespace {
 }
 
 REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
-    { TMilurDevice::REG_PARAM, "param", "value", { U24 }, true },
-    { TMilurDevice::REG_POWER, "power", "power", { S32 }, true },
+    { TMilurDevice::REG_PARAM, "param", "value", { U24 }, true, EByteOrder::LittleEndian },
+    { TMilurDevice::REG_POWER, "power", "power", { S32 }, true, EByteOrder::LittleEndian },
     { TMilurDevice::REG_ENERGY, "energy", "power_consumption", { BCD32 }, true },
-    { TMilurDevice::REG_FREQ, "freq", "value", { U16 }, true },
-    { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", { S16 }, true }
+    { TMilurDevice::REG_FREQ, "freq", "value", { U16 }, true, EByteOrder::LittleEndian },
+    { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", { S16 }, true, EByteOrder::LittleEndian }
 }));
 
 TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
@@ -148,7 +148,7 @@ void TMilurDevice::Read(const TIRDeviceQuery & query)
         const auto & memoryView = query.CreateMemoryView(buf, mb->Size);
 
         memoryView.Clear();
-        memoryView[mb].SetValue(0, value);
+        memoryView[mb][0] = value;
 
         query.FinalizeRead(memoryView);
         break;
@@ -169,15 +169,6 @@ void TMilurDevice::Prepare()
     Port()->WriteBytes(buf, sizeof(buf) / sizeof(buf[0]));
     TSerialDevice::Prepare();
     Port()->SkipNoise();
-}
-
-uint64_t TMilurDevice::BuildIntVal(uint8_t *p, int sz) const
-{
-    uint64_t r = 0;
-    for (int i = 0; i < sz; ++i) {
-        r += p[i] << (i * 8);
-    }
-    return r;
 }
 
 // We transfer BCD byte arrays as unsigned little endian integers with swapped nibbles.

@@ -34,7 +34,7 @@ public:
     bool WriteSetupRegisters(PSerialDevice dev);
 
 private:
-    void PrepareRegisterRanges();
+    void InitializeMemoryBlocksCache();
     void GenerateReadQueries();
     void DoFlush();
     void WaitForPollAndFlush();

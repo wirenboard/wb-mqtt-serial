@@ -23,9 +23,9 @@ void TIVTMDeviceTest::SetUp()
         SerialPort,
         TSerialDeviceFactory::GetProtocol("ivtm"));
 
-    Dev1Temp = Reg(Dev, 0, U32);
-    Dev1Humidity = Reg(Dev, 4, U32);
-    Dev2Temp = Reg(Dev, 0, U32);
+    Dev1Temp = Reg(Dev, 0, 0, U32);
+    Dev1Humidity = Reg(Dev, 4, 0, U32);
+    Dev2Temp = Reg(Dev, 0, 0, U32);
 
     SerialPort->Open();
 }

@@ -26,7 +26,23 @@ private:
     bool                 AbleToSplit;
 
 protected:
+    /**
+     * @brief: create query with binding to virtual registers.
+     *  It'll update virtual registers values on finalize and maintain memory blocks cache in correct state as side effect.
+     */
     explicit TIRDeviceQuery(std::vector<PVirtualRegister> &&, EQueryOperation = EQueryOperation::Read);
+
+    /**
+     * @brief: create query without binding to virtual registers.
+     *  It'll only maintain memory blocks cache in correct state as side effect.
+     *
+     * @note: needed for setup sections. Setup sections should not interfere with
+     *  main polling objects (TSerialClient) by creating it's own virtual register,
+     *  thus we provide here option which doesn't require virtual register existence.
+     */
+    explicit TIRDeviceQuery(const TPSet<PMemoryBlock> &, EQueryOperation = EQueryOperation::Read);
+
+
     void SetStatus(EQueryStatus) const;
 
     template <typename T>
@@ -125,6 +141,7 @@ public:
     virtual void FinalizeRead(const TIRDeviceMemoryView &) const;
 
     std::string Describe() const;
+    std::string DescribeVerbose() const;
     std::string DescribeOperation() const;
 };
 
@@ -133,10 +150,12 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
     friend class TIRDeviceQueryFactory;
 
     const TPSet<PMemoryBlock> MemoryBlocks;
+    std::map<TIRDeviceValueDesc, uint64_t> Values;
 
     explicit TIRDeviceValueQuery(std::vector<PVirtualRegister> &&, EQueryOperation = EQueryOperation::Write);
+    explicit TIRDeviceValueQuery(TPSet<PMemoryBlock> &&, EQueryOperation = EQueryOperation::Write);
 
-    void SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value) const;
+    void SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value);
 
     TIRDeviceMemoryView GetValues(void * mem, size_t size) const
     {
@@ -151,11 +170,11 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
     }
 
     /**
-     * Accept written values to device as current and set status to Ok
+     * @brief: Accept written values to device, update cache and set status to Ok
      */
-    void FinalizeWrite(const TIRDeviceMemoryView &) const;
+    void FinalizeWrite() const;
 
-protected:
+private:
     TIRDeviceMemoryView GetValuesImpl(void * mem, size_t size) const;
 };
 

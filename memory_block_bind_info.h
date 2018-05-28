@@ -20,6 +20,16 @@ struct TMemoryBlockBindInfo
         return BitEnd - BitStart;
     }
 
+    inline bool operator==(const TMemoryBlockBindInfo & rhs) const
+    {
+        return BitStart == rhs.BitStart && BitEnd == rhs.BitEnd;
+    }
+
+    inline bool operator!=(const TMemoryBlockBindInfo & rhs) const
+    {
+        return !((*this) == rhs);
+    }
+
     inline bool operator<(const TMemoryBlockBindInfo & rhs) const
     {
         return BitEnd <= rhs.BitStart;
@@ -38,4 +48,10 @@ struct TIRDeviceValueDesc
 {
     const TBoundMemoryBlocks &  BoundMemoryBlocks;
     const EWordOrder            WordOrder;
+
+    // there's no semantic way to sort these objects and we don't need to. We only need to determine uniqueness
+    inline bool operator<(const TIRDeviceValueDesc & rhs) const
+    {
+        return &BoundMemoryBlocks < &rhs.BoundMemoryBlocks;
+    }
 };

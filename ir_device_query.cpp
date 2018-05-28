@@ -15,6 +15,11 @@ namespace
         s << mb->Address;
     }
 
+    void PrintVerbose(ostream & s, const PMemoryBlock & mb)
+    {
+        s << mb->Describe();
+    }
+
     // TPSet<PVirtualRegister> GetVirtualRegisters(const TPSet<PMemoryBlock> & memoryBlockSet)
     // {
     //     TPSet<PVirtualRegister> result;
@@ -37,8 +42,8 @@ namespace
         TPSet<PMemoryBlock> memoryBlocks;
 
         for (const auto & reg: virtualRegisters) {
-            auto memoryBlocks = reg->GetMemoryBlocks();
-            memoryBlocks.insert(memoryBlocks.begin(), memoryBlocks.end());
+            const auto & regMemoryBlocks = reg->GetMemoryBlocks();
+            memoryBlocks.insert(regMemoryBlocks.begin(), regMemoryBlocks.end());
         }
 
         return memoryBlocks;
@@ -52,6 +57,11 @@ namespace
         auto last = *(*sortedRegs.rbegin())->GetMemoryBlocks().rbegin();
 
         return TSerialDevice::StaticCreateMemoryBlockRange(first, last);
+    }
+
+    TPSetRange<PMemoryBlock> GetMemoryBlockRange(const TPSet<PMemoryBlock> & memoryBlocks)
+    {
+        return TSerialDevice::StaticCreateMemoryBlockRange(*memoryBlocks.begin(), *memoryBlocks.rbegin());
     }
 
     bool DetectHoles(const TPSetRange<PMemoryBlock> & memoryBlockRange)
@@ -88,6 +98,17 @@ TIRDeviceQuery::TIRDeviceQuery(vector<PVirtualRegister> && virtualRegisters, EQu
 {
     AbleToSplit = (VirtualRegisters.size() > 1);
 
+    assert(IsSameTypeAndSize(MemoryBlockRange));
+}
+
+TIRDeviceQuery::TIRDeviceQuery(const TPSet<PMemoryBlock> & memoryBlocks, EQueryOperation operation)
+    : MemoryBlockRange(GetMemoryBlockRange(memoryBlocks))
+    , VirtualRegisters()
+    , HasHoles(DetectHoles(MemoryBlockRange))
+    , Operation(operation)
+    , Status(EQueryStatus::NotExecuted)
+    , AbleToSplit(false)
+{
     assert(IsSameTypeAndSize(MemoryBlockRange));
 }
 
@@ -211,6 +232,11 @@ string TIRDeviceQuery::Describe() const
     return PrintRange(MemoryBlockRange.begin(), MemoryBlockRange.end(), PrintAddr);
 }
 
+string TIRDeviceQuery::DescribeVerbose() const
+{
+    return DescribeOperation() + " " + PrintRange(MemoryBlockRange.begin(), MemoryBlockRange.end(), PrintVerbose);
+}
+
 string TIRDeviceQuery::DescribeOperation() const
 {
     switch(Operation) {
@@ -244,7 +270,7 @@ void TIRDeviceQuery::FinalizeRead(const TIRDeviceMemoryView & memoryView) const
     assert(GetSize() == memoryView.Size);
 
     for (const auto & mb: MemoryBlockRange) {
-        mb->CacheIfNeeded(memoryView[mb]);
+        *mb->GetCache() = *memoryView[mb];
     }
 
     for (const auto & reg: VirtualRegisters) {
@@ -261,18 +287,28 @@ TIRDeviceValueQuery::TIRDeviceValueQuery(vector<PVirtualRegister> && virtualRegi
     assert(!MemoryBlocks.empty());
 }
 
-void TIRDeviceValueQuery::SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value) const
+TIRDeviceValueQuery::TIRDeviceValueQuery(TPSet<PMemoryBlock> && memoryBlocks, EQueryOperation operation)
+    : TIRDeviceQuery(memoryBlocks, operation)
+    , MemoryBlocks(move(memoryBlocks))
 {
-    //MemoryView.WriteValue(valueDesc, value);
+    assert(!MemoryBlocks.empty());
 }
 
-void TIRDeviceValueQuery::FinalizeWrite(const TIRDeviceMemoryView & memoryView) const
+void TIRDeviceValueQuery::SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value)
+{
+    Values[valueDesc] = value;
+}
+
+void TIRDeviceValueQuery::FinalizeWrite() const
 {
     assert(Operation == EQueryOperation::Write);
     assert(GetStatus() == EQueryStatus::NotExecuted);
 
-    for (const auto & mb: MemoryBlockRange) {
-        mb->CacheIfNeeded(memoryView[mb]);
+    // write value to cache
+    for (const auto & valueDescValue: Values) {
+        TIRDeviceMemoryView::WriteValue(valueDescValue.first, valueDescValue.second, [](const CPMemoryBlock & mb){
+            return mb->GetCache();
+        });
     }
 
     for (const auto & reg: VirtualRegisters) {
@@ -286,6 +322,8 @@ TIRDeviceMemoryView TIRDeviceValueQuery::GetValuesImpl(void * mem, size_t size) 
 {
     assert(GetSize() == size);
 
+    cerr << "!!! " << DescribeVerbose() << ": size " << size << endl;
+
     // auto itMemoryBlock = MemoryBlockRange.First;
     // auto itMemoryBlockValue = MemoryBlockValues.begin();
     // auto bytes = static_cast<uint8_t*>(mem);
@@ -294,11 +332,11 @@ TIRDeviceMemoryView TIRDeviceValueQuery::GetValuesImpl(void * mem, size_t size) 
     memoryView.Clear();
 
     for (const auto & mb: MemoryBlockRange) {
-        memoryView[mb] = mb->GetCache();
+        *memoryView[mb] = *mb->GetCache();
     }
 
-    for (const auto & reg: VirtualRegisters) {
-        memoryView.WriteValue(reg->GetValueDesc(), reg->ValueToWrite);
+    for (const auto & valueDescValue: Values) {
+        memoryView.WriteValue(valueDescValue.first, valueDescValue.second);
     }
 
     return memoryView;

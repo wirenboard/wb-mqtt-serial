@@ -124,9 +124,9 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
             throw runtime_error("invalid register type");
         }
 
-        const auto & memoryView = query.GetValues(Block(query.GetStart()), query.GetSize());
+        query.GetValues(Block(query.GetStart()), query.GetSize());
 
-        query.FinalizeWrite(memoryView);
+        query.FinalizeWrite();
 
         if (!query.VirtualRegisters.empty()) {
             for (const auto & reg: query.VirtualRegisters) {
@@ -172,9 +172,9 @@ void TFakeSerialDevice::OnCycleEnd(bool ok)
 /* set big endian block value */
 void TFakeSerialDevice::SetMemoryBlockValue(size_t index, TMemoryBlockValueType value)
 {
-    auto startByte = index * FAKE_DEVICE_MEM_BLOCK_SIZE;
+    int startByte = index * FAKE_DEVICE_MEM_BLOCK_SIZE;
 
-    for(auto iByte = startByte + FAKE_DEVICE_MEM_BLOCK_SIZE - 1; iByte > startByte; --iByte) {
+    for(int iByte = startByte + FAKE_DEVICE_MEM_BLOCK_SIZE - 1; iByte >= startByte; --iByte) {
         Memory[iByte] = value;
         value >>= 8;
     }

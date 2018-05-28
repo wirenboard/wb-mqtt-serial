@@ -80,34 +80,28 @@ TEST_F(TUnielDeviceTest, TestQuery)
 
 TEST_F(TUnielDeviceTest, TestSetRelayState)
 {
-    auto RelayRegQuery = RelayReg->GetWriteQuery();
-
     EnqueueSetRelayOnResponse();
     RelayReg->SetValue(1);
-    TestWrite(RelayRegQuery);
+    RelayReg->Flush();
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
     RelayReg->SetValue(0);
-    TestWrite(RelayRegQuery);
+    RelayReg->Flush();
 }
 
 TEST_F(TUnielDeviceTest, TestSetParam)
 {
-    auto ThresholdRegQuery = ThresholdReg->GetWriteQuery();
-
     EnqueueSetLowThreshold0Response();
     ThresholdReg->SetValue(0x70);
-    TestWrite(ThresholdRegQuery);
+    ThresholdReg->Flush();
 }
 
 TEST_F(TUnielDeviceTest, TestSetBrightness)
 {
-    auto BrightnessRegQuery = BrightnessReg->GetWriteQuery();
-
     EnqueueSetBrightnessResponse();
     BrightnessReg->SetValue(0x42);
-    TestWrite(BrightnessRegQuery);
+    BrightnessReg->Flush();
 }
 
 class TUnielIntegrationTest: public TSerialDeviceIntegrationTest, public TUnielDeviceExpectations {

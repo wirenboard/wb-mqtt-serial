@@ -36,14 +36,14 @@ void TMercury200Test::SetUp()
     Mercury200Dev = std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort,
                             TSerialDeviceFactory::GetProtocol("mercury200"));
 
-    Mercury200RET1Reg = Reg(Mercury200Dev, TMercury200Device::MEM_ENERGY, 0x27, U32, 1, 0, 0, EWordOrder::BigEndian, 0, 32);
-    Mercury200RET2Reg = Reg(Mercury200Dev, TMercury200Device::MEM_ENERGY, 0x27, U32, 1, 0, 0, EWordOrder::BigEndian, 32, 32);
-    Mercury200RET3Reg = Reg(Mercury200Dev, TMercury200Device::MEM_ENERGY, 0x27, U32, 1, 0, 0, EWordOrder::BigEndian, 64, 32);
-    Mercury200RET4Reg = Reg(Mercury200Dev, TMercury200Device::MEM_ENERGY, 0x27, U32, 1, 0, 0, EWordOrder::BigEndian, 96, 32);
-    Mercury200UReg = Reg(Mercury200Dev, TMercury200Device::MEM_PARAMS, 0x63, U16, 1, 0, 0, EWordOrder::BigEndian, 0, 16);
-    Mercury200IReg = Reg(Mercury200Dev, TMercury200Device::MEM_PARAMS, 0x63, U16, 1, 0, 0, EWordOrder::BigEndian, 16, 16);
-    Mercury200PReg = Reg(Mercury200Dev, TMercury200Device::MEM_PARAMS, 0x63, U24, 1, 0, 0, EWordOrder::BigEndian, 32, 24);
-    Mercury200BatReg = Reg(Mercury200Dev, TMercury200Device::REG_PARAM_16, 0x29);
+    Mercury200RET4Reg = Reg(Mercury200Dev, 0x27, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian, 0, 32);
+    Mercury200RET3Reg = Reg(Mercury200Dev, 0x27, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian, 32, 32);
+    Mercury200RET2Reg = Reg(Mercury200Dev, 0x27, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian, 64, 32);
+    Mercury200RET1Reg = Reg(Mercury200Dev, 0x27, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian, 96, 32);
+    Mercury200PReg = Reg(Mercury200Dev, 0x63, TMercury200Device::MEM_PARAMS, U24, 1, 0, 0, EWordOrder::BigEndian, 0, 24);
+    Mercury200IReg = Reg(Mercury200Dev, 0x63, TMercury200Device::MEM_PARAMS, U16, 1, 0, 0, EWordOrder::BigEndian, 24, 16);
+    Mercury200UReg = Reg(Mercury200Dev, 0x63, TMercury200Device::MEM_PARAMS, U16, 1, 0, 0, EWordOrder::BigEndian, 40, 16);
+    Mercury200BatReg = Reg(Mercury200Dev, 0x29, TMercury200Device::REG_PARAM_16);
 
     SerialPort->Open();
 }

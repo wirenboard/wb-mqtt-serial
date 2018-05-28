@@ -206,7 +206,7 @@ void TSerialDevice::InitializeMemoryBlocksCache()
 {
     assert(Cache.capacity() == 0);
 
-    size_t size = 0;
+    std::size_t size = 0;
     for (const auto & mb: MemoryBlocks) {
         if (mb->NeedsCaching()) {
             size += mb->Size;
@@ -245,7 +245,10 @@ bool TSerialDevice::WriteSetupRegisters(bool tryAll)
         std::cerr << "Init: " << setupItem->Name << ": setup register " <<
                 setupItem->ToString() << " <-- " << setupItem->Value << std::endl;
 
-        if (setupItem->Write()) {
+        setupItem->Query->ResetStatus();
+        Execute(setupItem->Query);
+
+        if (setupItem->Query->GetStatus() == EQueryStatus::Ok) {
             did_write = true;
         } else {
             std::cerr << "WARNING: device '" << setupItem->GetDevice()->ToString()

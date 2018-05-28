@@ -1,33 +1,34 @@
 #include "device_setup_item.h"
-#include "virtual_register.h"
+#include "memory_block_factory.h"
+#include "memory_block.h"
+#include "ir_device_query_factory.h"
+#include "ir_device_query.h"
 
+#include <cassert>
 
 using namespace std;
 
 TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
     : TDeviceSetupItemConfig(*config)
 {
-    Register = TVirtualRegister::Create(RegisterConfig, device);
-}
+    assert(!RegisterConfig->ReadOnly);  // there's no point in readonly setup item
 
-bool TDeviceSetupItem::Write() const
-{
-    Register->SetValue(Value);
-    Register->Flush();
-    return !Has(Register->GetErrorState(), EErrorState::WriteError);
+    BoundMemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(RegisterConfig, device);
+    Query = TIRDeviceQueryFactory::CreateQuery<TIRDeviceValueQuery>(GetKeysAsSet(BoundMemoryBlocks));
+    Query->SetValue({ BoundMemoryBlocks, RegisterConfig->WordOrder }, config->Value);
 }
 
 string TDeviceSetupItem::ToString() const
 {
-    return Register->ToString();
+    return RegisterConfig->ToString();
 }
 
 string TDeviceSetupItem::Describe() const
 {
-    return Register->Describe();
+    return Query->Describe();
 }
 
 PSerialDevice TDeviceSetupItem::GetDevice() const
 {
-    return Register->GetDevice();
+    return Query->GetDevice();
 }

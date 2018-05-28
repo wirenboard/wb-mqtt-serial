@@ -278,13 +278,7 @@ void TSerialDeviceTest::TestRead(const PIRDeviceQuery & query) const
     query->GetDevice()->Execute(query);
     assert(EQueryStatus::Ok == query->GetStatus());
     query->ResetStatus();
-}
-
-void TSerialDeviceTest::TestWrite(const PIRDeviceValueQuery & query) const
-{
-    query->GetDevice()->Execute(query);
-    assert(EQueryStatus::Ok == query->GetStatus());
-    query->ResetStatus();
+    query->InvalidateReadValues();
 }
 
 void TSerialDeviceTest::TearDown()

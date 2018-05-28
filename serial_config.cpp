@@ -366,7 +366,7 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
     if (item_data.isMember("format"))
         format = RegisterFormatFromName(item_data["format"].asString());
     PRegisterConfig reg = TRegisterConfig::Create(
-        type, address, format, 1, 0, 0, true, true, reg_type_str, false, 0, EWordOrder::BigEndian, bitOffset, bitWidth);
+        type, address, format, 1, 0, 0, true, false, reg_type_str, false, 0, EWordOrder::BigEndian, bitOffset, bitWidth);
 
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");

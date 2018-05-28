@@ -3,12 +3,12 @@ Serial protocol error: registers fake: 76 (U16) and fake: 73:0:16 (U64) are over
 Serial protocol error: registers fake: 76:0:1 (U16) and fake: 73:0:16 (U64) are overlapping
 Serial protocol error: registers fake: 76:15:1 (U16) and fake: 73:0:16 (U64) are overlapping
 Serial protocol error: unable to create memoryBlocks by config fake: 76:16:1: specified bit shift (16) must be less than specified format's (U16) bit width
+Open()
 fake_serial_device '1': write to address '70' value '255'
 fake_serial_device '1': write to address '70' value '63'
 fake_serial_device '1': write to address '72' value '1'
 fake_serial_device '1': write to address '72' value '1'
 >>> Cycle()
-Open()
 Sleep(100000)
 fake_serial_device '1': write to address '72' value '1'
 Error Callback: <fake:1:fake: 72:2:1>: no error

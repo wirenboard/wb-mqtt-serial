@@ -3,7 +3,6 @@
 #include "virtual_register.h"
 
 #include <cassert>
-#include <string.h>
 
 using namespace std;
 
@@ -63,10 +62,13 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
 {
     struct TVirtualRegisterLinkage: TMemoryBlock::IExternalLinkage
     {
+        using PWMemoryBlock = weak_ptr<TMemoryBlock>;
+
+        PWMemoryBlock             MemoryBlock;      // linkage gets destroyed with memory block - no need in shared_ptr
         TPWSet<PWVirtualRegister> VirtualRegisters;
 
-
-        TVirtualRegisterLinkage(const PVirtualRegister & reg)
+        TVirtualRegisterLinkage(const PWMemoryBlock & memoryBlock, const PVirtualRegister & reg)
+            : MemoryBlock(memoryBlock)
         {
             LinkWithImpl(reg);
         }
@@ -152,23 +154,26 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
             return VirtualRegisters.count(reg);
         }
 
-        /* If single memory block is associated with more than 1 different
-         *  virtual registers, it means that none of those virtual registers
-         *  covers block entierly (because overlapping is forbidden),
-         *  thus if any of associated virtual registers
-         *  is writable then we need to cache its value,
-         *  otherwise it will corrupt non-covered part of memory block at write
+        /**
+         * @note: If any of virtual registers is not covering block entierly and is writable,
+         *  it means that there can be partial write of the memory block,
+         *  so we need cache to avoid corruption of non-covered part of memory block at write.
          */
         bool NeedsCaching() const override
         {
             assert(!VirtualRegisters.empty());
+            auto memoryBlock = MemoryBlock.lock();
+            assert(memoryBlock);
+            const TMemoryBlockBindInfo fullCoverage{ 0, memoryBlock->Size * 8 };
 
-            return (
-                VirtualRegisters.size() > 1 &&
-                any_of(VirtualRegisters.begin(), VirtualRegisters.end(), [](const PWVirtualRegister & reg) {
-                    return !reg.lock()->ReadOnly;
-                })
-            );
+            return any_of(VirtualRegisters.begin(), VirtualRegisters.end(), [&](const PWVirtualRegister & reg) {
+                auto virtualRegister = reg.lock();
+
+                auto writable = !memoryBlock->Type.ReadOnly && !virtualRegister->ReadOnly;
+                auto notFullCoverage = virtualRegister->GetMemoryBlockBindInfo(memoryBlock) != fullCoverage;
+
+                return writable && notFullCoverage;
+            });
         }
     };
 
@@ -176,7 +181,7 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
         return false;
     }
 
-    ExternalLinkage = utils::make_unique<TVirtualRegisterLinkage>(reg);
+    ExternalLinkage = utils::make_unique<TVirtualRegisterLinkage>(shared_from_this(), reg);
     return true;
 }
 
@@ -285,18 +290,11 @@ void TMemoryBlock::AssignCache(uint8_t * cache)
     }
 }
 
-void TMemoryBlock::CacheIfNeeded(const uint8_t * data)
+TIRDeviceMemoryBlockView TMemoryBlock::GetCache() const
 {
     assert(NeedsCaching() == bool(Cache));
 
-    if (Cache) {
-        memcpy(Cache, data, Size);
-    }
-}
-
-TIRDeviceMemoryBlockView TMemoryBlock::GetCache() const
-{
-    return { Cache, shared_from_this(), true };
+    return { Cache, shared_from_this(), false };
 }
 
 std::string TMemoryBlock::Describe() const

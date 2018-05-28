@@ -86,6 +86,7 @@ void TSerialClient::Connect()
         throw TSerialDeviceException("no registers defined");
     if (!Port->IsOpen())
         Port->Open();
+    InitializeMemoryBlocksCache();
     GenerateReadQueries();
     Active = true;
 }
@@ -95,6 +96,13 @@ void TSerialClient::Disconnect()
     if (Port->IsOpen())
         Port->Close();
     Active = false;
+}
+
+void TSerialClient::InitializeMemoryBlocksCache()
+{
+    for (const auto & device: DevicesList) {
+        device->InitializeMemoryBlocksCache();
+    }
 }
 
 void TSerialClient::GenerateReadQueries()

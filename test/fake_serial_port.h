@@ -111,7 +111,7 @@ protected:
 
     PIRDeviceQuery GetReadQuery(std::vector<PVirtualRegister> &&) const;
 
-    PVirtualRegister Reg(PSerialDevice device, uint32_t type, int addr, ERegisterFormat fmt = U16, double scale = 1,
+    PVirtualRegister Reg(PSerialDevice device, int addr, uint32_t type, ERegisterFormat fmt = U16, double scale = 1,
         double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian,
         uint8_t bitOffset = 0, uint8_t bitWidth = 0) {
         return TVirtualRegister::Create(
@@ -121,7 +121,6 @@ protected:
     }
 
     void TestRead(const PIRDeviceQuery &) const;
-    void TestWrite(const PIRDeviceValueQuery &) const;
 
     PFakeSerialPort SerialPort;
 };

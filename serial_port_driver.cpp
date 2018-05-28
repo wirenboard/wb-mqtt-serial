@@ -76,8 +76,6 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
                 SerialClient->AddRegister(reg);
             }
         }
-
-        device->InitializeMemoryBlocksCache();
     }
 }
 

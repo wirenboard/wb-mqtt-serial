@@ -27,12 +27,12 @@ Publish: /devices/modbus-sample/controls/U32:8:16: '12345' (QoS 0, retained)
 << 01 03 04 05 30 39 0D 29 65
 EnqueueU8SingleBitsHoldingReadResponse()
 >> 01 03 00 48 00 01 04 1C
-Publish: /devices/modbus-sample/controls/U8:2:1/meta/error: '' (QoS 0, retained)
-Publish: /devices/modbus-sample/controls/U8:2:1: '1' (QoS 0, retained)
-Publish: /devices/modbus-sample/controls/U8:1:1/meta/error: '' (QoS 0, retained)
-Publish: /devices/modbus-sample/controls/U8:1:1: '0' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/U8:0:1/meta/error: '' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/U8:0:1: '1' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/U8:1:1/meta/error: '' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/U8:1:1: '0' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/U8:2:1/meta/error: '' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/U8:2:1: '1' (QoS 0, retained)
 Port cycle OK
 Publish: /devices/modbus-sample/controls/U32:8:16/on: '5555' (QoS 0)
 Publish: /devices/modbus-sample/controls/U32:8:16: '5555' (QoS 0, retained)
@@ -43,7 +43,6 @@ EnqueueU32Shift8HoldingWriteResponse()
 << 01 10 00 46 00 02 A0 1D
 EnqueueU16Shift8Bits8U32Shift8Bits16HoldingReadResponse()
 >> 01 03 00 46 00 02 25 DE
-Publish: /devices/modbus-sample/controls/U16:8:8: '5' (QoS 0, retained)
 << 01 03 04 05 15 B3 0D 5F CE
 EnqueueU8SingleBitsHoldingReadResponse()
 >> 01 03 00 48 00 01 04 1C

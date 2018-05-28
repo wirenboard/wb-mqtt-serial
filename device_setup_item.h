@@ -1,16 +1,16 @@
 #pragma once
 
 #include "serial_config.h"
-#include "declarations.h"
+#include "memory_block_bind_info.h"
 
 
 struct TDeviceSetupItem : public TDeviceSetupItemConfig
 {
-    PVirtualRegister Register;
+    TBoundMemoryBlocks  BoundMemoryBlocks;
+    PIRDeviceValueQuery Query;
 
     TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config);
 
-    bool Write() const;
     std::string ToString() const;
     std::string Describe() const;
     PSerialDevice GetDevice() const;

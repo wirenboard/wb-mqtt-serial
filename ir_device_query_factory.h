@@ -35,6 +35,14 @@ public:
         return std::shared_ptr<Query>(new Query(std::move(virtualRegisters)));
     }
 
+    template <class Query>
+    static std::shared_ptr<Query> CreateQuery(TPSet<PMemoryBlock> && memoryBlocks)
+    {
+        static_assert(std::is_base_of<TIRDeviceQuery, Query>::value, "Query must be derived from TIRDeviceQuery");
+
+        return std::shared_ptr<Query>(new Query(std::move(memoryBlocks)));
+    }
+
 private:
     using TRegisterTypeInfo = std::function<std::pair<uint32_t, uint32_t>(const TMemoryBlockType &)>;
     using TAssociatedMemoryBlockList = std::list<std::pair<TPSet<PMemoryBlock>, std::vector<PVirtualRegister>>>;

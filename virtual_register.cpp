@@ -269,9 +269,12 @@ uint32_t TVirtualRegister::GetBitPosition() const
 
 uint32_t TVirtualRegister::GetBitEnd() const
 {
-    assert(GetFormatBitWidth() > BitOffset);
+    // TODO: make sure that this is correct
+    auto availableWidth = max(uint16_t(GetFormatBitWidth()), uint16_t(MemoryBlocks.begin()->first->Size * 8));
 
-    return (uint32_t(Address) * MemoryBlocks.begin()->first->Size * 8) + GetFormatBitWidth() - BitOffset;
+    assert(availableWidth > BitOffset);
+
+    return (uint32_t(Address) * MemoryBlocks.begin()->first->Size * 8) + availableWidth - BitOffset;
 }
 
 const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
@@ -383,6 +386,15 @@ TPSet<PMemoryBlock> TVirtualRegister::GetMemoryBlocks() const
     return GetKeysAsSet(MemoryBlocks);
 }
 
+const TMemoryBlockBindInfo & TVirtualRegister::GetMemoryBlockBindInfo(const PMemoryBlock & memoryBlock) const
+{
+    auto it = MemoryBlocks.find(memoryBlock);
+
+    assert(it != MemoryBlocks.end());
+
+    return it->second;
+}
+
 TIRDeviceValueDesc TVirtualRegister::GetValueDesc() const
 {
     return { MemoryBlocks, WordOrder };
@@ -465,6 +477,8 @@ void TVirtualRegister::Flush()
 
         assert(WriteQuery);
         WriteQuery->ResetStatus();
+
+        WriteQuery->SetValue(GetValueDesc(), ValueToWrite);
 
         GetDevice()->Execute(WriteQuery);
 
