@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.41.1) stable; urgency=medium
+
+  * require mosquitto at startup
+
+ -- Attila Door <a.door@wirenboard.ru>  Thu, 10 May 2018 16:27:45 +0300
+
 wb-mqtt-serial (1.41) stable; urgency=medium
 
   * Fixes WB-MAP6S template
