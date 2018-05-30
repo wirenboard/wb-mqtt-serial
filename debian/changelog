@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.41.2) stable; urgency=medium
+
+  * mcm16 json template for mcm fw 1.0.0
+
+ -- Attila Door <a.door@wirenboard.ru>  Mon, 2 Apr 2018 12:20:45 +0300
+ 
 wb-mqtt-serial (1.41.1) stable; urgency=medium
 
   * require mosquitto at startup
