@@ -8,7 +8,7 @@
             {
                 "name": "Total consumption",
                 "reg_type": "array",
-                "address": "0x0000",
+                "address": "0x00[0]",
                 "format": "u32",
                 "type": "power_consumption",
                 "scale": 0.001
@@ -16,7 +16,7 @@
             {
                 "name": "Total reactive energy",
                 "reg_type": "array",
-                "address": "0x0002",
+                "address": "0x00[2]",
                 "format": "u32",
                 "type": "power_consumption",
                 "scale": 0.001
@@ -24,7 +24,7 @@
             {
                 "name": "AP1",
                 "reg_type": "array12",
-                "address": "0x0600",
+                "address": "0x60[0]",
                 "format": "u32",
                 "type": "power_consumption",
                 "scale": 0.001
@@ -32,7 +32,7 @@
             {
                 "name": "AP2",
                 "reg_type": "array12",
-                "address": "0x0601",
+                "address": "0x60[1]",
                 "format": "u32",
                 "type": "power_consumption",
                 "scale": 0.001
@@ -40,7 +40,7 @@
             {
                 "name": "AP3",
                 "reg_type": "array12",
-                "address": "0x0602",
+                "address": "0x60[2]",
                 "format": "u32",
                 "type": "power_consumption",
                 "scale": 0.001

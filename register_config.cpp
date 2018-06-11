@@ -2,18 +2,19 @@
 #include "serial_exc.h"
 
 #include <sstream>
+#include <cassert>
 
 using namespace std;
 
 
 ERegisterFormat TMemoryBlockType::GetDefaultFormat(uint16_t bit) const
 {
-    if (Formats.empty()) {
+    if (Layout.empty()) {
         throw TSerialDeviceException("unable to get default format from memory block type '" + Name + "': none specified");
     }
 
     uint16_t pos = 0;
-    for (auto format: Formats) {
+    for (auto format: Layout) {
         pos += RegisterFormatByteWidth(format) * 8;
         if (pos > bit) {
             return format;
@@ -23,9 +24,47 @@ ERegisterFormat TMemoryBlockType::GetDefaultFormat(uint16_t bit) const
     throw TSerialDeviceException("unable to get default format from memory block type '" + Name + "' for bit " + to_string(bit));
 }
 
-uint8_t TMemoryBlockType::GetValueCount() const
+uint16_t TMemoryBlockType::GetValueCount() const
 {
-    return Formats.empty() ? 1 : Formats.size();
+    return Layout.empty() ? 1 : Layout.size();
+}
+
+uint16_t TMemoryBlockType::GetValueByteIndex(uint16_t iValue) const
+{
+    uint16_t iByte = 0;
+    for (uint16_t i = 0; i < NormalizeValueIndex(iValue); ++i) {
+        iByte += GetValueSize(NormalizeValueIndex(i));
+    }
+
+    return iByte;
+}
+
+uint8_t TMemoryBlockType::GetValueSize(uint16_t iValue) const
+{
+    assert(!Layout.empty());
+    return RegisterFormatByteWidth(Layout[iValue]);
+}
+
+std::pair<uint16_t, uint8_t> TMemoryBlockType::ToMaskParameters(uint16_t iValue) const
+{
+    auto iByte = GetValueByteIndex(iValue);
+    auto valueSize = GetValueSize(iValue);
+
+    // mask treats shifts opposite to value bytes
+    iByte = Size - iByte - valueSize;
+
+    std::pair<uint16_t, uint8_t> res { iByte * 8, valueSize * 8 };
+
+    return res;
+}
+
+uint16_t TMemoryBlockType::NormalizeValueIndex(uint16_t iValue) const
+{
+    auto valueCount = GetValueCount();
+    assert(iValue < valueCount);
+    iValue = ByteOrder == EByteOrder::BigEndian ? iValue : valueCount - iValue - 1;
+    assert(iValue < valueCount);
+    return iValue;
 }
 
 const char* RegisterFormatName(ERegisterFormat fmt) {

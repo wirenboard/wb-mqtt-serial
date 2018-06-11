@@ -322,82 +322,20 @@ TIRDeviceMemoryView TIRDeviceValueQuery::GetValuesImpl(void * mem, size_t size) 
 {
     assert(GetSize() == size);
 
-    cerr << "!!! " << DescribeVerbose() << ": size " << size << endl;
-
-    // auto itMemoryBlock = MemoryBlockRange.First;
-    // auto itMemoryBlockValue = MemoryBlockValues.begin();
-    // auto bytes = static_cast<uint8_t*>(mem);
-
     const auto & memoryView = CreateMemoryView(mem, size);
     memoryView.Clear();
 
+    // write cached values first
     for (const auto & mb: MemoryBlockRange) {
         *memoryView[mb] = *mb->GetCache();
     }
 
+    // write payload values on top of cached ones
     for (const auto & valueDescValue: Values) {
         memoryView.WriteValue(valueDescValue.first, valueDescValue.second);
     }
 
     return memoryView;
-
-    // assert(*itMemoryBlock == itMemoryBlockValue->first);
-
-    // for (uint32_t i = 0; i < count; ++i) {
-    //     const auto requestedRegisterAddress = GetStart() + i;
-
-    //     assert(itMemoryBlock != MemoryBlockRange.end());
-    //     assert(itMemoryBlockValue != MemoryBlockValues.end());
-
-    //     // try read value from query itself
-    //     {
-    //         const auto & memoryBlock = itMemoryBlockValue->first;
-    //         const auto & value = itMemoryBlockValue->second;
-
-    //         if (memoryBlock->Address == requestedRegisterAddress) {    // this register exists and query has its value - write from query
-    //             memcpy(bytes, value, size);
-
-    //             if (Global::Debug) {
-    //                 std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: read address '" << requestedRegisterAddress << "' from query: '" << /*value*/ "TODO: output memory" << "'" << std::endl;
-    //             }
-
-    //             ++itMemoryBlock;
-    //             ++itMemoryBlockValue;
-    //             bytes += size;
-    //             continue;
-    //         }
-    //     }
-
-    //     // try read value from cache
-    //     {
-    //         const auto & memoryBlock = *itMemoryBlock;
-
-    //         if (memoryBlock->Address == requestedRegisterAddress) {    // this register exists but query doesn't have value for it - write cached value
-    //             const auto & cache = memoryBlock->GetCache();
-    //             assert(cache);
-    //             memcpy(bytes, cache, size);
-
-    //             if (Global::Debug) {
-    //                 std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: read address '" << requestedRegisterAddress << "' from cache: '" << /*memoryBlock->GetValue()*/ "TODO: output memory" << "'" << std::endl;
-    //             }
-    //             ++itMemoryBlock;
-    //             bytes += size;
-    //             continue;
-    //         }
-    //     }
-
-    //     // driver doesn't use this address (hole) - fill with zeroes
-    //     {
-    //         if (Global::Debug) {
-    //             std::cerr << "TIRDeviceValueQueryImpl::GetValuesImpl: zfill address '" << requestedRegisterAddress << "'" << std::endl;
-    //         }
-    //         memset(bytes, 0, size);
-    //         bytes += size;
-    //     }
-    // }
-
-    // assert(itMemoryBlock == MemoryBlockRange.end());
-    // assert(itMemoryBlockValue == MemoryBlockValues.end());
 }
 
 string TIRDeviceQuerySet::Describe() const

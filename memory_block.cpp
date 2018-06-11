@@ -164,7 +164,7 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
             assert(!VirtualRegisters.empty());
             auto memoryBlock = MemoryBlock.lock();
             assert(memoryBlock);
-            const TMemoryBlockBindInfo fullCoverage{ 0, memoryBlock->Size * 8 };
+            const TIRBindInfo fullCoverage{ 0, memoryBlock->Size * 8 };
 
             return any_of(VirtualRegisters.begin(), VirtualRegisters.end(), [&](const PWVirtualRegister & reg) {
                 auto virtualRegister = reg.lock();

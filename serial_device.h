@@ -140,7 +140,7 @@ public:
     virtual const TRegisterType & GetRegType(const std::string & name) const = 0;
 
     /*! Get register type by index */
-    virtual const TRegisterType & GetRegType(size_t index) const = 0;
+    virtual const TRegisterType & GetRegType(int index) const = 0;
 
     /*! Create new device of given type */
     virtual PSerialDevice CreateDevice(PDeviceConfig config, PPort port) = 0;
@@ -221,9 +221,9 @@ public:
             throw TSerialDeviceException("unknown register type: '" + name + "'");
         }
     }
-    const TRegisterType & GetRegType(size_t index) const override
+    const TRegisterType & GetRegType(int index) const override
     {
-        assert(index < _RegTypeNameByIndex.size());
+        assert(index < static_cast<int>(_RegTypeNameByIndex.size()));
 
         return GetRegType(_RegTypeNameByIndex[index]);
     }

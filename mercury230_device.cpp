@@ -2,7 +2,7 @@
 #include "memory_block.h"
 #include "ir_device_query.h"
 #include "crc16.h"
-#include "memory_block_bind_info.h"
+#include "ir_bind_info.h"
 
 #include <cassert>
 #include <iostream>
@@ -80,20 +80,22 @@ void TMercury230Device::ReadValueArray(const TIRDeviceQuery & query)
     const auto & mb = query.MemoryBlockRange.GetFirst();
 
     uint8_t cmdBuf[2];
-    cmdBuf[0] = (uint8_t)((mb->Address >> 4) & 0xff); // high nibble = array number, lower nibble = month
-    cmdBuf[1] = (uint8_t)((mb->Address >> 12) & 0x0f); // tariff
+    cmdBuf[0] = (uint8_t)((mb->Address) & 0xff); // high nibble = array number, lower nibble = month
+    cmdBuf[1] = (uint8_t)((mb->Address >> 8) & 0x0f); // tariff
     uint8_t buf[MAX_ARRAY_LEN], *p = buf;
     Talk(0x05, cmdBuf, 2, -1, buf, mb->Size);
 
-    TValueArray a;
+    const auto & memoryView = query.CreateMemoryView(buf, mb->Size);
+    const auto & memoryBlockView = memoryView[mb];
+
     for (int i = 0; i < mb->Size / 4; i++, p += 4) {
-        a.values[i] = ((uint32_t)p[1] << 24) +
-                      ((uint32_t)p[0] << 16) +
-                      ((uint32_t)p[3] << 8 ) +
-                       (uint32_t)p[2];
+        memoryBlockView[i] = ((uint32_t)p[1] << 24) +
+                             ((uint32_t)p[0] << 16) +
+                             ((uint32_t)p[3] << 8 ) +
+                              (uint32_t)p[2];
     }
 
-    query.FinalizeRead(a.values, mb->Size);
+    query.FinalizeRead(memoryView);
 }
 
 void TMercury230Device::ReadParam(const TIRDeviceQuery & query)

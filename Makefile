@@ -36,7 +36,7 @@ SERIAL_SRCS= \
   memory_block.cpp \
   memory_block_factory.cpp \
   global_variables.cpp \
-  memory_block_bind_info.cpp \
+  ir_bind_info.cpp \
   virtual_register.cpp \
   virtual_register_set.cpp \
   ir_device_query.cpp \

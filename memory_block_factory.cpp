@@ -7,9 +7,9 @@
 
 using namespace std;
 
-TPMap<PMemoryBlock, TMemoryBlockBindInfo> TMemoryBlockFactory::GenerateMemoryBlocks(const PRegisterConfig & config, const PSerialDevice & device)
+TPMap<PMemoryBlock, TIRBindInfo> TMemoryBlockFactory::GenerateMemoryBlocks(const PRegisterConfig & config, const PSerialDevice & device)
 {
-    TPMap<PMemoryBlock, TMemoryBlockBindInfo> memoryBlocksBindInfo;
+    TPMap<PMemoryBlock, TIRBindInfo> memoryBlocksBindInfo;
 
     uint16_t memoryBlockSize;
     try {

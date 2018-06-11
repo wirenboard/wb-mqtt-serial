@@ -36,13 +36,13 @@ void TMercury200Test::SetUp()
     Mercury200Dev = std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort,
                             TSerialDeviceFactory::GetProtocol("mercury200"));
 
-    Mercury200RET4Reg = Reg(Mercury200Dev, 0x27, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian, 0, 32);
-    Mercury200RET3Reg = Reg(Mercury200Dev, 0x27, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian, 32, 32);
-    Mercury200RET2Reg = Reg(Mercury200Dev, 0x27, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian, 64, 32);
-    Mercury200RET1Reg = Reg(Mercury200Dev, 0x27, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian, 96, 32);
-    Mercury200PReg = Reg(Mercury200Dev, 0x63, TMercury200Device::MEM_PARAMS, U24, 1, 0, 0, EWordOrder::BigEndian, 0, 24);
-    Mercury200IReg = Reg(Mercury200Dev, 0x63, TMercury200Device::MEM_PARAMS, U16, 1, 0, 0, EWordOrder::BigEndian, 24, 16);
-    Mercury200UReg = Reg(Mercury200Dev, 0x63, TMercury200Device::MEM_PARAMS, U16, 1, 0, 0, EWordOrder::BigEndian, 40, 16);
+    Mercury200RET1Reg = RegValue(Mercury200Dev, 0x27, 0, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian);
+    Mercury200RET2Reg = RegValue(Mercury200Dev, 0x27, 1, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian);
+    Mercury200RET3Reg = RegValue(Mercury200Dev, 0x27, 2, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian);
+    Mercury200RET4Reg = RegValue(Mercury200Dev, 0x27, 3, TMercury200Device::MEM_ENERGY, U32, 1, 0, 0, EWordOrder::BigEndian);
+    Mercury200UReg = RegValue(Mercury200Dev, 0x63, 0, TMercury200Device::MEM_PARAMS, U16, 1, 0, 0, EWordOrder::BigEndian);
+    Mercury200IReg = RegValue(Mercury200Dev, 0x63, 1, TMercury200Device::MEM_PARAMS, U16, 1, 0, 0, EWordOrder::BigEndian);
+    Mercury200PReg = RegValue(Mercury200Dev, 0x63, 2, TMercury200Device::MEM_PARAMS, U24, 1, 0, 0, EWordOrder::BigEndian);
     Mercury200BatReg = Reg(Mercury200Dev, 0x29, TMercury200Device::REG_PARAM_16);
 
     SerialPort->Open();

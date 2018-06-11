@@ -1,6 +1,6 @@
 #pragma once
 
-#include "memory_block_bind_info.h"
+#include "ir_bind_info.h"
 #include "abstract_virtual_register.h"
 #include "register_config.h"
 #include "utils.h"
@@ -48,7 +48,7 @@ public:
     PSerialDevice GetDevice() const;
 
     TPSet<PMemoryBlock> GetMemoryBlocks() const;
-    const TMemoryBlockBindInfo & GetMemoryBlockBindInfo(const PMemoryBlock &) const;
+    const TIRBindInfo & GetMemoryBlockBindInfo(const PMemoryBlock &) const;
     TIRDeviceValueDesc GetValueDesc() const;
     EErrorState GetErrorState() const override;
     std::string Describe() const;

@@ -1,7 +1,7 @@
 #include "ir_device_memory_view.h"
 #include "memory_block.h"
 #include "register_config.h"
-#include "memory_block_bind_info.h"
+#include "ir_bind_info.h"
 
 #include <cassert>
 #include <iostream>
@@ -12,24 +12,54 @@
 using namespace std;
 
 
-void TIRDeviceMemoryBlockValue::GetValueImpl(uint8_t * pValue, uint8_t size) const
+TIRDeviceMemoryBlockValueBase::TIRDeviceMemoryBlockValueBase(uint8_t * raw, uint8_t size, bool readonly, bool isLE)
+    : RawMemory(raw)
+    , Size(size)
+    , Readonly(readonly)
+    , IsLE(isLE)
 {
-    assert(size >= (EndByteIndex - StartByteIndex)); // make sure all memory is used
+    assert(Size <= 8 && "fundamental value cannot be more than 8 bytes (64 bits)");
+}
 
-    for (auto i = StartByteIndex; i < EndByteIndex; ++i) {
+void TIRDeviceMemoryBlockValueBase::GetValueImpl(uint8_t * pValue) const
+{
+    for (uint8_t iByte = 0; iByte < Size; ++iByte) {
         // we need to get byte by view, because we define byte order by view
-        (*pValue++) = View.GetByte(IsLittleEndian() ? i : (i - StartByteIndex));
+        (*pValue++) = GetByte(iByte);
     }
 }
 
-void TIRDeviceMemoryBlockValue::SetValueImpl(const uint8_t * pValue, uint8_t size)
+void TIRDeviceMemoryBlockValueBase::SetValueImpl(const uint8_t * pValue) const
 {
-    assert(size >= (EndByteIndex - StartByteIndex)); // make sure all memory is used
-
-    for (auto i = StartByteIndex; i < EndByteIndex; ++i) {
+    for (uint8_t iByte = 0; iByte < Size; ++iByte) {
         // we need to set byte by view, because we define byte order by view
-        View.SetByte(IsLittleEndian() ? i : (i - StartByteIndex), (*pValue++));
+        SetByte(iByte, (*pValue++));
     }
+}
+
+uint8_t TIRDeviceMemoryBlockValueBase::PlatformEndiannesAware(uint8_t iByte) const
+{
+    return IsLittleEndian() ? iByte : Size - iByte - 1;
+}
+
+uint8_t TIRDeviceMemoryBlockValueBase::MemoryBlockEndiannesAware(uint8_t iByte) const
+{
+    return IsLE ? iByte : Size - iByte - 1;
+}
+
+uint8_t TIRDeviceMemoryBlockValueBase::GetByte(uint8_t iByte) const
+{
+    assert(RawMemory);
+
+    return RawMemory[MemoryBlockEndiannesAware(PlatformEndiannesAware(iByte))];
+}
+
+void TIRDeviceMemoryBlockValueBase::SetByte(uint8_t iByte, uint8_t value) const
+{
+    assert(RawMemory);
+    assert(!Readonly);
+
+    RawMemory[MemoryBlockEndiannesAware(PlatformEndiannesAware(iByte))] = value;
 }
 
 TIRDeviceMemoryBlockMemory & TIRDeviceMemoryBlockMemory::operator=(const TIRDeviceMemoryBlockMemory & rhs)
@@ -43,43 +73,51 @@ TIRDeviceMemoryBlockMemory & TIRDeviceMemoryBlockMemory::operator=(const TIRDevi
     return *this;
 }
 
-uint16_t TIRDeviceMemoryBlockView::GetByteIndex(uint16_t index) const
+TIRDeviceMemoryBlockValue TIRDeviceMemoryBlockViewBase::operator[](uint16_t index) const
 {
-    assert(index < MemoryBlock->Size);
+    // auto valueCount = MemoryBlock->Type.GetValueCount();
+    // assert(index < valueCount);
+    // index = MemoryBlock->Type.ByteOrder == EByteOrder::BigEndian ? index : valueCount - index - 1;
 
+    return {
+        RawMemory + MemoryBlock->Type.GetValueByteIndex(index),
+        GetValueSize(index),
+        Readonly,
+        MemoryBlock->Type.ByteOrder == EByteOrder::LittleEndian
+    };
+}
+
+uint16_t TIRDeviceMemoryBlockViewBase::GetByteIndex(uint16_t index) const
+{
+    CheckByteIndex(index);
     auto byteIndex = (MemoryBlock->Type.ByteOrder == EByteOrder::BigEndian) ? (MemoryBlock->Size - index - 1) : index;
-
-    assert(byteIndex < MemoryBlock->Size);
-
+    CheckByteIndex(byteIndex);
     return byteIndex;
 }
 
-uint16_t TIRDeviceMemoryBlockView::GetValueByteIndex(uint16_t index) const
+uint8_t TIRDeviceMemoryBlockViewBase::GetValueSize(uint16_t index) const
 {
-    assert(index < MemoryBlock->Type.GetValueCount());
-
-    uint16_t shift = 0;
-    for (uint16_t i = 0; i < index; ++i) {
-        shift += RegisterFormatByteWidth(MemoryBlock->Type.Formats[i]);
+    if (MemoryBlock->Type.IsVariadicSize()) {
+        assert(MemoryBlock->Size <= 8);
+        return static_cast<uint8_t>(MemoryBlock->Size);
+    } else {
+        return MemoryBlock->Type.GetValueSize(index);
     }
-    return shift;
 }
 
-uint16_t TIRDeviceMemoryBlockView::GetValueSize(uint16_t index) const
+uint16_t TIRDeviceMemoryBlockViewBase::GetSize() const
 {
-    assert(index < MemoryBlock->Type.GetValueCount());
-
-    return MemoryBlock->Type.IsVariadicSize() ? MemoryBlock->Size : RegisterFormatByteWidth(MemoryBlock->Type.Formats[index]);
+    return MemoryBlock->Size;
 }
 
-uint8_t TIRDeviceMemoryBlockView::GetByte(uint16_t index) const
+uint8_t TIRDeviceMemoryBlockViewBase::GetByte(uint16_t index) const
 {
     assert(RawMemory);
 
     return RawMemory[GetByteIndex(index)];
 }
 
-void TIRDeviceMemoryBlockView::SetByte(uint16_t index, uint8_t value) const
+void TIRDeviceMemoryBlockViewBase::SetByte(uint16_t index, uint8_t value) const
 {
     assert(RawMemory);
     assert(!Readonly);
@@ -87,6 +125,30 @@ void TIRDeviceMemoryBlockView::SetByte(uint16_t index, uint8_t value) const
     RawMemory[GetByteIndex(index)] = value;
 }
 
+void TIRDeviceMemoryBlockViewBase::CheckByteIndex(uint16_t index) const
+{
+    assert(index < GetSize());
+}
+
+void TIRDeviceMemoryBlockViewBase::GetValueImpl(uint8_t * pValue) const
+{
+    auto valueCount = MemoryBlock->Type.GetValueCount();
+    for (uint16_t iValue = 0; iValue < valueCount; ++iValue) {
+        const auto & valueView = (*this)[iValue];
+        valueView.GetValueImpl(pValue);
+        pValue += valueView.Size;
+    }
+}
+
+void TIRDeviceMemoryBlockViewBase::SetValueImpl(const uint8_t * pValue) const
+{
+    auto valueCount = MemoryBlock->Type.GetValueCount();
+    for (uint16_t iValue = 0; iValue < valueCount; ++iValue) {
+        const auto & valueView = (*this)[iValue];
+        valueView.SetValueImpl(pValue);
+        pValue += valueView.Size;
+    }
+}
 
 
 TIRDeviceMemoryView::TIRDeviceMemoryView(uint8_t * memory, uint32_t size, const TMemoryBlockType & type, uint32_t start, uint16_t blockSize, bool readonly)
@@ -134,7 +196,7 @@ uint64_t TIRDeviceMemoryView::ReadValue(const TIRDeviceValueDesc & valueDesc) co
     auto & self = *this;
     uint64_t value = 0;
 
-    auto readMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & boundMemoryBlock) {
+    auto readMemoryBlock = [&](const std::pair<const PMemoryBlock, TIRBindInfo> & boundMemoryBlock) {
         const auto & memoryBlock = boundMemoryBlock.first;
         const auto & bindInfo = boundMemoryBlock.second;
 
@@ -148,8 +210,11 @@ uint64_t TIRDeviceMemoryView::ReadValue(const TIRDeviceValueDesc & valueDesc) co
             if (begin >= end)
                 break;
 
+            auto shift = bindInfo.BitStart - iByte * 8;
+            uint8_t byteMask = shift > 0 ? (mask << shift) : (mask >> -shift);
+
             value <<= (end - begin);
-            value |= ((mask >> (iByte * 8)) & memoryBlockView.GetByte(iByte)) >> begin;
+            value |= (byteMask & memoryBlockView.GetByte(iByte)) >> begin;
         }
 
         // TODO: check for usefullness
@@ -184,7 +249,7 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueDesc & valueDesc, uint6
     if (Global::Debug)
         std::cerr << "map value to registers: " << value << std::endl;
 
-    auto writeMemoryBlock = [&](const std::pair<const PMemoryBlock, TMemoryBlockBindInfo> & memoryBlockBindInfo){
+    auto writeMemoryBlock = [&](const std::pair<const PMemoryBlock, TIRBindInfo> & memoryBlockBindInfo){
         const auto & memoryBlock = memoryBlockBindInfo.first;
         const auto & bindInfo = memoryBlockBindInfo.second;
 
@@ -205,7 +270,9 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueDesc & valueDesc, uint6
             if (begin >= end)
                 break;
 
-            const auto byteMask = mask >> (iByte * 8);
+            auto shift = bindInfo.BitStart - iByte * 8;
+            uint8_t byteMask = shift > 0 ? (mask << shift) : (mask >> -shift);
+
             const auto cachedByte = cache ? cache.GetByte(iByte) : uint8_t(0);
 
             memoryBlockView.SetByte(iByte, (~byteMask & cachedByte) | (byteMask & (value << begin)));

@@ -1,6 +1,6 @@
 {
   "debug": true,
-  "max_unchanged_interval": 100,  
+  "max_unchanged_interval": 100,
   "ports": [
     {
       "path" : "/dev/ttyNSC0",
@@ -59,7 +59,7 @@
             {
               "name": "Total consumption",
               "reg_type": "array",
-              "address": "0x0000",
+              "address": "0x00[0]",
               "format": "u32",
               "type": "power_consumption",
               "scale": 0.001
@@ -67,7 +67,7 @@
             {
               "name": "Total reactive energy",
               "reg_type": "array",
-              "address": "0x0002",
+              "address": "0x00[2]",
               "format": "u32",
               "type": "power_consumption",
               "scale": 0.001
@@ -139,7 +139,7 @@
             {
               "name": "AP2",
               "reg_type": "array12",
-              "address": "0x0601",
+              "address": "0x60[1]",
               "format": "u32",
               "type": "power_consumption",
               "scale": 0.001

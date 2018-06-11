@@ -1,4 +1,4 @@
-#include "memory_block_bind_info.h"
+#include "ir_bind_info.h"
 
 #include <sstream>
 #include <cassert>
@@ -17,19 +17,19 @@ namespace
     }
 }
 
-TMemoryBlockBindInfo::TMemoryBlockBindInfo(uint16_t start, uint16_t end)
+TIRBindInfo::TIRBindInfo(uint16_t start, uint16_t end)
     : BitStart(start)
     , BitEnd(end)
 {
     assert(BitStart < BitEnd);
 }
 
-uint64_t TMemoryBlockBindInfo::GetMask() const
+uint64_t TIRBindInfo::GetMask() const
 {
-    return MersenneNumber(BitCount()) << BitStart;
+    return MersenneNumber(BitCount());
 }
 
-string TMemoryBlockBindInfo::Describe() const
+string TIRBindInfo::Describe() const
 {
     ostringstream ss;
     ss << "[" << BitStart << ", " << BitEnd - 1 << "]";

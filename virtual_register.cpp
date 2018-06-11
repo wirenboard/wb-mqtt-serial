@@ -386,7 +386,7 @@ TPSet<PMemoryBlock> TVirtualRegister::GetMemoryBlocks() const
     return GetKeysAsSet(MemoryBlocks);
 }
 
-const TMemoryBlockBindInfo & TVirtualRegister::GetMemoryBlockBindInfo(const PMemoryBlock & memoryBlock) const
+const TIRBindInfo & TVirtualRegister::GetMemoryBlockBindInfo(const PMemoryBlock & memoryBlock) const
 {
     auto it = MemoryBlocks.find(memoryBlock);
 

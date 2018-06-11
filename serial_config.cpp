@@ -137,11 +137,9 @@ void TConfigTemplateParser::LoadDeviceTemplate(const Json::Value& root, const st
 }
 
 TConfigParser::TConfigParser(const string& config_fname, bool force_debug,
-                             TGetRegisterTypeMap get_register_type_map,
                              PTemplateMap templates)
     : ConfigFileName(config_fname),
       HandlerConfig(new THandlerConfig),
-      GetRegisterTypeMap(get_register_type_map),
       Templates(templates)
 {
     HandlerConfig->Debug = force_debug;
@@ -155,7 +153,9 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     uint8_t bitOffset;
     uint8_t bitWidth;
 
-    tie(address, bitOffset, bitWidth) = ParseRegisterAddress(register_data, "address");
+    const auto & reg_type_str = register_data["reg_type"].asString();
+    const auto & type = TMemoryBlockTypeMapper::Get(device_config, reg_type_str);
+    tie(address, bitOffset, bitWidth) = ParseRegisterAddress(register_data, "address", type);
 
     cout << "address: " << address << endl;
     if (bitOffset) {
@@ -166,21 +166,18 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
         cout << "bit width: " << (int)bitWidth << endl;
     }
 
-    string reg_type_str = register_data["reg_type"].asString();
     default_type_str = "text";
-    auto it = device_config->TypeMap->find(reg_type_str);
-    if (it == device_config->TypeMap->end())
-        throw TConfigParserException("invalid register type: " + reg_type_str + " -- " + device_config->DeviceType);
-    if (!it->second.Defaults.ControlType.empty())
-        default_type_str = it->second.Defaults.ControlType;
+
+    if (!type.Defaults.ControlType.empty())
+        default_type_str = type.Defaults.ControlType;
 
     ERegisterFormat format = register_data.isMember("format") ?
         RegisterFormatFromName(register_data["format"].asString()) :
-        it->second.GetDefaultFormat(bitOffset);
+        type.GetDefaultFormat(bitOffset);
 
     EWordOrder word_order = register_data.isMember("word_order") ?
         WordOrderFromName(register_data["word_order"].asString()) :
-        it->second.Defaults.WordOrder;
+        type.Defaults.WordOrder;
 
     double scale = 1;
     if (register_data.isMember("scale"))
@@ -211,9 +208,9 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     }
 
     PRegisterConfig reg = TRegisterConfig::Create(
-        it->second.Index,
-        address, format, scale, offset, round_to, true, force_readonly || it->second.ReadOnly,
-        it->second.Name, has_error_value, error_value, word_order, bitOffset, bitWidth);
+        type.Index,
+        address, format, scale, offset, round_to, true, type.ReadOnly || force_readonly,
+        type.Name, has_error_value, error_value, word_order, bitOffset, bitWidth);
     if (register_data.isMember("poll_interval"))
         reg->PollInterval = chrono::milliseconds(GetInt(register_data, "poll_interval"));
     return reg;
@@ -351,22 +348,17 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
     uint16_t bitOffset;
     uint8_t bitWidth;
 
-    tie(address, bitOffset, bitWidth) = ParseRegisterAddress(item_data, "address");
-
     string reg_type_str = item_data["reg_type"].asString();
-    int type = 0;
-    if (!reg_type_str.empty()) {
-        auto it = device_config->TypeMap->find(reg_type_str);
-        if (it == device_config->TypeMap->end())
-            throw TConfigParserException("invalid setup register type: " +
-                                         reg_type_str + " -- " + device_config->DeviceType);
-        type = it->second.Index;
-    }
+
+    const auto & type = reg_type_str.empty() ? TMemoryBlockTypeMapper::Get(device_config, 0)
+                                             : TMemoryBlockTypeMapper::Get(device_config, reg_type_str);
+    tie(address, bitOffset, bitWidth) = ParseRegisterAddress(item_data, "address", type);
+
     ERegisterFormat format = U16;
     if (item_data.isMember("format"))
         format = RegisterFormatFromName(item_data["format"].asString());
     PRegisterConfig reg = TRegisterConfig::Create(
-        type, address, format, 1, 0, 0, true, false, reg_type_str, false, 0, EWordOrder::BigEndian, bitOffset, bitWidth);
+        type.Index, address, format, 1, 0, 0, true, false, reg_type_str, false, 0, EWordOrder::BigEndian, bitOffset, bitWidth);
 
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");
@@ -380,7 +372,6 @@ void TConfigParser::LoadDeviceTemplatableConfigPart(PDeviceConfig device_config,
         device_config->Protocol = device_data["protocol"].asString();
     else if (device_config->Protocol.empty())
         device_config->Protocol = DefaultProtocol;
-    device_config->TypeMap = GetRegisterTypeMap(device_config);
 
     if (device_data.isMember("setup")) {
         const Json::Value array = device_data["setup"];
@@ -425,14 +416,17 @@ int TConfigParser::ToInt(const Json::Value& v, const string& title)
     if (v.isInt())
         return v.asInt();
 
-    if (v.isString()) {
-        try {
-            return stoi(v.asString(), /*pos= */ 0, /*base= */ 0);
-        } catch (const logic_error& e) {}
-    }
+    return ToInt(v.asString(), title);
+}
+
+int TConfigParser::ToInt(const std::string& v, const string& title)
+{
+    try {
+        return stoi(v, /*pos= */ 0, /*base= */ 0);
+    } catch (const logic_error& e) {}
 
     throw TConfigParserException(
-        title + ": plain integer or '0x..' hex string expected instead of '" + v.asString() +
+        title + ": plain integer or '0x..' hex string expected instead of '" + v +
         "'");
     // v.asString() should give a bit more information what config this exception came from
 }
@@ -463,7 +457,7 @@ uint64_t TConfigParser::ToUint64(const Json::Value& v, const string& title)
         "'");
 }
 
-tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Value& obj, const std::string& key)
+tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Value& obj, const std::string& key, const TMemoryBlockType & type)
 {
     int address;
     int bitOffset = 0;
@@ -475,21 +469,44 @@ tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Va
         const auto & addressStr = value.asString();
         auto pos1 = addressStr.find(':');
         if (pos1 == string::npos) {
-            address = GetInt(obj, key);
+            pos1 = addressStr.find('[');
+            if (pos1 == string::npos) {
+                address = GetInt(obj, key);
+            } else {
+                auto pos2 = addressStr.find(']', pos1 + 1);
+
+                if (pos2 == string::npos) {
+                     throw TConfigParserException("error during address parsing: no closing bracket found (address string: '" + addressStr + "')");
+                }
+
+                if (type.IsVariadicSize()) {
+                    throw TConfigParserException("specifying value index for memory block with variadic size (" + type.Name + ") is forbidden");
+                }
+
+                address = ToInt(addressStr.substr(0, pos1), key);
+
+                auto iValue = stoi(addressStr.substr(pos1 + 1, pos2));
+
+                if (iValue < 0 || iValue >= 8192) { // TODO: move all value constraints to separate place as constants
+                    throw TConfigParserException("error during address parsing: value index must be in range [0, 8192) (address string: '" + addressStr + "')");
+                }
+
+                tie(bitOffset, bitWidth) = type.ToMaskParameters(iValue);
+            }
         } else {
             auto pos2 = addressStr.find(':', pos1 + 1);
 
-            address = stoi(addressStr.substr(0, pos1));
+            address = ToInt(addressStr.substr(0, pos1), key);
             bitOffset = stoi(addressStr.substr(pos1 + 1, pos2));
 
-            if (bitOffset < 0 || bitOffset > numeric_limits<uint16_t>::max()) {
-                throw TConfigParserException("error during address parsing: bit shift must be in range [0, 255] (address string: '" + addressStr + "')");
+            if (bitOffset < 0 || bitOffset >= numeric_limits<uint16_t>::max()) {
+                throw TConfigParserException("error during address parsing: bit shift must be in range [0, 65535) (address string: '" + addressStr + "')");
             }
 
             if (pos2 != string::npos) {
                 bitWidth = stoi(addressStr.substr(pos2 + 1));
-                if (bitWidth < 0 || bitWidth > 64) {
-                    throw TConfigParserException("error during address parsing: bit count must be in range [0, 64] (address string: '" + addressStr + "')");
+                if (bitWidth <= 0 || bitWidth > 64) {
+                    throw TConfigParserException("error during address parsing: bit count must be in range (0, 64] (address string: '" + addressStr + "')");
                 }
             }
         }

@@ -297,7 +297,7 @@ void TSerialDeviceIntegrationTest::SetUp()
         TConfigTemplateParser templateParser(GetDataFilePath(GetTemplatePath()), false);
         templateMap = templateParser.Parse();
     }
-    TConfigParser parser(GetDataFilePath(ConfigPath()), false, TSerialDeviceFactory::GetRegisterTypes, templateMap);
+    TConfigParser parser(GetDataFilePath(ConfigPath()), false, templateMap);
 
 
     Config = parser.Parse();

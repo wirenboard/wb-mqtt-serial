@@ -82,7 +82,6 @@ struct TDeviceConfig {
     int MaxRegHole = 0, MaxBitHole = 0;
     int MaxReadRegisters = 1;
     int Stride = 0, Shift = 0;
-    PRegisterTypeMap TypeMap = 0;
     std::chrono::microseconds GuardInterval = std::chrono::microseconds(0);
     std::chrono::milliseconds DeviceTimeout = std::chrono::milliseconds(DEFAULT_DEVICE_TIMEOUT_MS);
     int DeviceMaxFailCycles = DEFAULT_DEVICE_FAIL_CYCLES;
@@ -138,12 +137,20 @@ private:
     PTemplateMap Templates;
 };
 
-typedef std::function<PRegisterTypeMap(PDeviceConfig device_config)> TGetRegisterTypeMap;
+/**
+ * @brief: static interface to access memory block types by name and index
+ *
+ * @note: implemented in serial_device.cpp
+*/
+struct TMemoryBlockTypeMapper
+{
+    static const TMemoryBlockType & Get(PDeviceConfig device_config, const std::string & typeName);
+    static const TMemoryBlockType & Get(PDeviceConfig device_config, int typeIndex);
+};
 
 class TConfigParser {
 public:
     TConfigParser(const std::string& config_fname, bool force_debug,
-                  TGetRegisterTypeMap get_register_type_map,
                   PTemplateMap templates = std::make_shared<TTemplateMap>());
     PHandlerConfig Parse();
     PRegisterConfig LoadRegisterConfig(PDeviceConfig device_config, const Json::Value& register_data,
@@ -160,12 +167,12 @@ public:
 private:
     static int GetInt(const Json::Value& obj, const std::string& key);
     static int ToInt(const Json::Value& v, const std::string& title);
+    static int ToInt(const std::string& v, const std::string& title);
     static uint64_t ToUint64(const Json::Value& v, const std::string& title);
-    static std::tuple<int, uint16_t, uint8_t> ParseRegisterAddress(const Json::Value& obj, const std::string& key);
+    static std::tuple<int, uint16_t, uint8_t> ParseRegisterAddress(const Json::Value& obj, const std::string& key, const TMemoryBlockType & type);
 
     std::string ConfigFileName;
     PHandlerConfig HandlerConfig;
-    TGetRegisterTypeMap GetRegisterTypeMap;
     PTemplateMap Templates;
     Json::Value Root;
 };

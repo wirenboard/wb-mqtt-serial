@@ -120,6 +120,20 @@ protected:
                 "fake", false, 0, word_order, bitOffset, bitWidth), device);
     }
 
+    PVirtualRegister RegValue(PSerialDevice device, int addr, uint16_t valueIndex, uint32_t typeIndex,
+        ERegisterFormat fmt = U16, double scale = 1,
+        double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian) {
+        const auto & type = device->Protocol()->GetRegType(typeIndex);
+
+        const auto & shiftWidth = type.ToMaskParameters(valueIndex);
+
+        return Reg(
+            device, addr, typeIndex, fmt, scale,
+            offset, round_to, word_order,
+            shiftWidth.first, shiftWidth.second
+        );
+    }
+
     void TestRead(const PIRDeviceQuery &) const;
 
     PFakeSerialPort SerialPort;

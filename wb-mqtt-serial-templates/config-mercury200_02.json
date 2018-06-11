@@ -8,7 +8,7 @@
             {
                 "name": "Power consumption tariff 1",
                 "reg_type": "energy",
-                "address": "0x27:0:32",
+                "address": "0x27[0]",
                 "format": "bcd32",
                 "type": "power_consumption",
                 "scale": 0.001
@@ -16,7 +16,7 @@
             {
                 "name": "Power consumption tariff 2",
                 "reg_type": "energy",
-                "address": "0x27:32:32",
+                "address": "0x27[1]",
                 "format": "bcd32",
                 "type": "power_consumption",
                 "scale": 0.001
@@ -24,7 +24,7 @@
             {
                 "name": "Power consumption tariff 3",
                 "reg_type": "energy",
-                "address": "0x27:64:32",
+                "address": "0x27[2]",
                 "format": "bcd32",
                 "type": "power_consumption",
                 "scale": 0.001
@@ -32,7 +32,7 @@
             {
                 "name": "Power consumption tariff 4",
                 "reg_type": "energy",
-                "address": "0x27:96:32",
+                "address": "0x27[3]",
                 "format": "bcd32",
                 "type": "power_consumption",
                 "scale": 0.001
@@ -40,7 +40,7 @@
             {
                 "name": "Voltage",
                 "reg_type": "params",
-                "address": "0x63:0:16",
+                "address": "0x63[0]",
                 "format": "bcd16",
                 "type": "value",
                 "scale": 0.1
@@ -48,7 +48,7 @@
             {
                 "name": "Current",
                 "reg_type": "params",
-                "address": "0x63:16:16",
+                "address": "0x63[1]",
                 "format": "bcd16",
                 "type": "value",
                 "scale": 0.01
@@ -56,7 +56,7 @@
             {
                 "name": "Power",
                 "reg_type": "params",
-                "address": "0x63:32:24",
+                "address": "0x63[2]",
                 "format": "bcd24",
                 "type": "power",
                 "scale": 1.0

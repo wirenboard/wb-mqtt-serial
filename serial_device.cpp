@@ -312,6 +312,18 @@ PRegisterTypeMap TSerialDeviceFactory::GetRegisterTypes(PDeviceConfig device_con
     return GetProtocolEntry(device_config)->GetRegTypes();
 }
 
+/* mapper static interface implementation start */
+const TMemoryBlockType & TMemoryBlockTypeMapper::Get(PDeviceConfig device_config, const std::string & typeName)
+{
+    return TSerialDeviceFactory::GetProtocol(device_config->Protocol)->GetRegType(typeName);
+}
+
+const TMemoryBlockType & TMemoryBlockTypeMapper::Get(PDeviceConfig device_config, int typeIndex)
+{
+    return TSerialDeviceFactory::GetProtocol(device_config->Protocol)->GetRegType(typeIndex);
+}
+/* mapper static interface implementation end */
+
 template<>
 int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s) const
 {

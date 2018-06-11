@@ -2,7 +2,7 @@
 
 #include "pulsar_device.h"
 #include "memory_block.h"
-#include "memory_block_bind_info.h"
+#include "ir_bind_info.h"
 #include "ir_device_query.h"
 
 #include <cstring>

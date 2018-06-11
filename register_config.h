@@ -5,6 +5,7 @@
 
 #include <map>
 #include <vector>
+#include <iostream>
 
 // struct TRegisterType {
 //     TRegisterType(int index, const std::string& name, const std::string& defaultControlType,
@@ -23,18 +24,18 @@ struct TMemoryBlockType {
     enum : uint16_t { Variadic = uint16_t(-1) };
 
     TMemoryBlockType(int index, const std::string & name, const std::string & defaultControlType,
-                     std::vector<ERegisterFormat> formats = { U16 }, bool readOnly = false,
+                     std::vector<ERegisterFormat> layout = { U16 }, bool readOnly = false,
                      EByteOrder byteOrder = EByteOrder::BigEndian, EWordOrder defaultWordOrder = EWordOrder::BigEndian
     )
         : Index(index)
         , Name(name)
-        , Formats(std::move(formats))
+        , Layout(std::move(layout))
         , Size(0)
         , ByteOrder(byteOrder)
         , ReadOnly(readOnly)
         , Defaults{defaultControlType, defaultWordOrder}
     {
-        for (auto format: Formats) {
+        for (auto format: Layout) {
             Size += RegisterFormatByteWidth(format);
         }
 
@@ -45,7 +46,7 @@ struct TMemoryBlockType {
 
     int                          Index;
     std::string                  Name;
-    std::vector<ERegisterFormat> Formats;
+    std::vector<ERegisterFormat> Layout;
     uint16_t                     Size;
     EByteOrder                   ByteOrder;
     bool                         ReadOnly;
@@ -68,12 +69,25 @@ struct TMemoryBlockType {
     ERegisterFormat GetDefaultFormat(uint16_t bit) const;
 
     /* Get how many individual values are in block */
-    uint8_t GetValueCount() const;
+    uint16_t GetValueCount() const;
+    /* Get value beginning according to layout */
+    uint16_t GetValueByteIndex(uint16_t iValue) const;
+    /* Get value size according to layout */
+    uint8_t GetValueSize(uint16_t iValue) const;
+    /* Get mask parameters equvalent to given value index */
+    std::pair<uint16_t, uint8_t> ToMaskParameters(uint16_t iValue) const;
 
     struct {
         std::string     ControlType;
         EWordOrder      WordOrder;
     } Defaults;
+
+private:
+    /**
+     * @brief: Invert value index based on byte order
+     *  in such way that it will match layout
+     */
+    uint16_t NormalizeValueIndex(uint16_t iValue) const;
 };
 
 using TRegisterType = TMemoryBlockType;

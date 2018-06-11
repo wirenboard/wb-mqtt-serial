@@ -11,7 +11,6 @@ protected:
 
     PVirtualRegister Dev1Temp;
     PVirtualRegister Dev1Humidity;
-    PVirtualRegister Dev2Temp;
 };
 
 void TIVTMDeviceTest::SetUp()
@@ -25,7 +24,6 @@ void TIVTMDeviceTest::SetUp()
 
     Dev1Temp = Reg(Dev, 0, 0, U32);
     Dev1Humidity = Reg(Dev, 4, 0, U32);
-    Dev2Temp = Reg(Dev, 0, 0, U32);
 
     SerialPort->Open();
 }
@@ -34,7 +32,6 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
 {
     auto Dev1TempQuery = GetReadQuery({ Dev1Temp });
     auto Dev1HumidityQuery = GetReadQuery({ Dev1Humidity });
-    auto Dev2TempQuery = GetReadQuery({ Dev2Temp });
 
     // >> 24 30 30 30 31 52 52 30 30 30 30 30 34 41 44 0d
     // << 21 30 30 30 31 52 52 43 45 44 33 44 31 34 31 35 46 0D
@@ -100,7 +97,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
             0x0d                  // footer
         });
 
-    TestRead(Dev2TempQuery);
-    ASSERT_EQ(0x41C7855E, Dev2Temp->GetValue()); //big-endian
+    TestRead(Dev1TempQuery);
+    ASSERT_EQ(0x41C7855E, Dev1Temp->GetValue()); //big-endian
     SerialPort->Close();
 }

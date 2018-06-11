@@ -23,7 +23,7 @@ protected:
     void TearDown();
     PVirtualRegister Reg(int addr, ERegisterFormat fmt = U16, double scale = 1,
         double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian,
-        uint8_t bitOffset = 0, uint8_t bitWidth = 0) {
+        uint16_t bitOffset = 0, uint8_t bitWidth = 0) {
         return TVirtualRegister::Create(
             TRegisterConfig::Create(
                 TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
@@ -886,8 +886,7 @@ void TSerialClientIntegrationTest::SetUp()
 {
     TSerialClientTest::SetUp();
     MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("serial-client-integration-test", *this));
-    TConfigParser parser(GetDataFilePath("configs/config-test.json"), false,
-                         TSerialDeviceFactory::GetRegisterTypes);
+    TConfigParser parser(GetDataFilePath("configs/config-test.json"), false);
     Config = parser.Parse();
 }
 
@@ -1074,13 +1073,13 @@ TEST_F(TSerialClientIntegrationTest, Errors)
 TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     {
-        TConfigParser parser(GetDataFilePath("configs/config-collision-test.json"), false, TSerialDeviceFactory::GetRegisterTypes);
+        TConfigParser parser(GetDataFilePath("configs/config-collision-test.json"), false);
         Config = parser.Parse();
         EXPECT_THROW(make_shared<TMQTTSerialObserver>(MQTTClient, Config), TSerialDeviceException);
     }
 
     {
-        TConfigParser parser(GetDataFilePath("configs/config-no-collision-test.json"), false, TSerialDeviceFactory::GetRegisterTypes);
+        TConfigParser parser(GetDataFilePath("configs/config-no-collision-test.json"), false);
         Config = parser.Parse();
         EXPECT_NO_THROW(make_shared<TMQTTSerialObserver>(MQTTClient, Config));
     }
@@ -1101,8 +1100,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 
 PMQTTSerialObserver TSerialClientIntegrationTest::StartReconnectTest1Device(bool miss, bool pollIntervalTest)
 {
-    TConfigParser parser(GetDataFilePath("configs/reconnect_test_1_device.json"), false,
-                         TSerialDeviceFactory::GetRegisterTypes);
+    TConfigParser parser(GetDataFilePath("configs/reconnect_test_1_device.json"), false);
     Config = parser.Parse();
 
     if (pollIntervalTest) {
@@ -1198,8 +1196,7 @@ PMQTTSerialObserver TSerialClientIntegrationTest::StartReconnectTest1Device(bool
 
 PMQTTSerialObserver TSerialClientIntegrationTest::StartReconnectTest2Devices()
 {
-    TConfigParser parser(GetDataFilePath("configs/reconnect_test_2_devices.json"), false,
-                         TSerialDeviceFactory::GetRegisterTypes);
+    TConfigParser parser(GetDataFilePath("configs/reconnect_test_2_devices.json"), false);
     Config = parser.Parse();
 
     auto observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, Port);
@@ -1477,8 +1474,7 @@ class TConfigParserTest: public TLoggedFixture {};
 TEST_F(TConfigParserTest, Parse)
 {
     TConfigTemplateParser device_parser(GetDataFilePath("device-templates/"), false);
-    TConfigParser parser(GetDataFilePath("configs/parse_test.json"), false,
-                         TSerialDeviceFactory::GetRegisterTypes, device_parser.Parse());
+    TConfigParser parser(GetDataFilePath("configs/parse_test.json"), false, device_parser.Parse());
     PHandlerConfig config = parser.Parse();
     Emit() << "Debug: " << config->Debug;
     Emit() << "Ports:";
@@ -1565,8 +1561,7 @@ TEST_F(TConfigParserTest, Parse)
 
 TEST_F(TConfigParserTest, ForceDebug)
 {
-    TConfigParser parser(GetDataFilePath("configs/config-test.json"), true,
-                         TSerialDeviceFactory::GetRegisterTypes);
+    TConfigParser parser(GetDataFilePath("configs/config-test.json"), true);
     PHandlerConfig config = parser.Parse();
     ASSERT_TRUE(config->Debug);
 }
@@ -1576,8 +1571,7 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
     for (size_t i = 0; i < 4; ++i) {
         auto fname = std::string("configs/unsuccessful/unsuccessful-") + to_string(i) +  ".json";
         Emit() << "Parsing config " << fname;
-        TConfigParser parser(GetDataFilePath(fname), true,
-                            TSerialDeviceFactory::GetRegisterTypes);
+        TConfigParser parser(GetDataFilePath(fname), true);
         try {
             PHandlerConfig config = parser.Parse();
         } catch (const std::exception& e) {

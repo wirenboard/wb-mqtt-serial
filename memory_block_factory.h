@@ -2,11 +2,11 @@
 
 #include "utils.h"
 #include "declarations.h"
-#include "memory_block_bind_info.h"
+#include "ir_bind_info.h"
 
 class TMemoryBlockFactory
 {
     TMemoryBlockFactory() = delete;
 public:
-    static TPMap<PMemoryBlock, TMemoryBlockBindInfo> GenerateMemoryBlocks(const PRegisterConfig & config, const PSerialDevice & device);
+    static TPMap<PMemoryBlock, TIRBindInfo> GenerateMemoryBlocks(const PRegisterConfig & config, const PSerialDevice & device);
 };

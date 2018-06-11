@@ -195,32 +195,7 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(TAssociatedMemoryBlockList && me
     /** done gathering data **/
 
     if (performMerge) {
-        cerr << "!!! before merge: " << endl;
-        for (auto & memoryBlockSet: memoryBlockSets) {
-            cerr << "[" << endl;
-            for (auto mb: memoryBlockSet.first) {
-                cerr << mb->Describe() << endl;
-            }
-            cerr << "---------------" << endl;
-            for (auto vreg: memoryBlockSet.second) {
-                cerr << vreg->ToString() << endl;
-            }
-            cerr << "]" << endl;
-        }
         MergeSets(memoryBlockSets, getMaxHoleAndRegs);
-
-        cerr << "!!! after merge: " << endl;
-        for (auto & memoryBlockSet: memoryBlockSets) {
-            cerr << "[" << endl;
-            for (auto mb: memoryBlockSet.first) {
-                cerr << mb->Describe() << endl;
-            }
-            cerr << "---------------" << endl;
-            for (auto vreg: memoryBlockSet.second) {
-                cerr << vreg->ToString() << endl;
-            }
-            cerr << "]" << endl;
-        }
     } else {
         CheckSets(memoryBlockSets, getMaxHoleAndRegs);
     }

@@ -56,10 +56,8 @@ void TMercury230Test::SetUp()
 
 	Mercury230Dev = std::make_shared<TMercury230Device>(GetDeviceConfig(), SerialPort,
 	                            TSerialDeviceFactory::GetProtocol("mercury230"));
-	Mercury230TotalConsumptionReg =
-		TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32), Mercury230Dev);
-	Mercury230TotalReactiveEnergyReg =
-		TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32), Mercury230Dev);
+	Mercury230TotalConsumptionReg = RegValue(Mercury230Dev, 0x00, 0, TMercury230Device::REG_VALUE_ARRAY, U32);
+	Mercury230TotalReactiveEnergyReg = RegValue(Mercury230Dev, 0x00, 2, TMercury230Device::REG_VALUE_ARRAY, U32);
 
 	Mercury230PReg  = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24), Mercury230Dev);
 	Mercury230P1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1101, S24), Mercury230Dev);

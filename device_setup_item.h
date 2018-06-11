@@ -1,7 +1,7 @@
 #pragma once
 
 #include "serial_config.h"
-#include "memory_block_bind_info.h"
+#include "ir_bind_info.h"
 
 
 struct TDeviceSetupItem : public TDeviceSetupItemConfig

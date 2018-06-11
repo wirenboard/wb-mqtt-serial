@@ -7,30 +7,30 @@
 #include <string>
 
 /* memory block - local bit interval that contains value for virtual register */
-struct TMemoryBlockBindInfo
+struct TIRBindInfo
 {
     const uint16_t  BitStart,
                     BitEnd;
 
-    TMemoryBlockBindInfo(uint16_t start, uint16_t end);
-    TMemoryBlockBindInfo(const TMemoryBlockBindInfo &) = default;
+    TIRBindInfo(uint16_t start, uint16_t end);
+    TIRBindInfo(const TIRBindInfo &) = default;
 
     inline uint16_t BitCount() const
     {
         return BitEnd - BitStart;
     }
 
-    inline bool operator==(const TMemoryBlockBindInfo & rhs) const
+    inline bool operator==(const TIRBindInfo & rhs) const
     {
         return BitStart == rhs.BitStart && BitEnd == rhs.BitEnd;
     }
 
-    inline bool operator!=(const TMemoryBlockBindInfo & rhs) const
+    inline bool operator!=(const TIRBindInfo & rhs) const
     {
         return !((*this) == rhs);
     }
 
-    inline bool operator<(const TMemoryBlockBindInfo & rhs) const
+    inline bool operator<(const TIRBindInfo & rhs) const
     {
         return BitEnd <= rhs.BitStart;
     }
@@ -40,8 +40,8 @@ struct TMemoryBlockBindInfo
 };
 
 // TODO: move somewhere else
-using TBoundMemoryBlock  = std::pair<PMemoryBlock, TMemoryBlockBindInfo>;
-using TBoundMemoryBlocks = TPMap<PMemoryBlock, TMemoryBlockBindInfo>;
+using TBoundMemoryBlock  = std::pair<PMemoryBlock, TIRBindInfo>;
+using TBoundMemoryBlocks = TPMap<PMemoryBlock, TIRBindInfo>;
 
 /* Contains information needed to access single value from device memory view */
 struct TIRDeviceValueDesc

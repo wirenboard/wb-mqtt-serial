@@ -413,7 +413,7 @@ void TModbusIntegrationTest::ChooseConfig(const char * path)
         TConfigTemplateParser templateParser(GetDataFilePath(GetTemplatePath()), false);
         templateMap = templateParser.Parse();
     }
-    TConfigParser parser(GetDataFilePath(path), false, TSerialDeviceFactory::GetRegisterTypes, templateMap);
+    TConfigParser parser(GetDataFilePath(path), false, templateMap);
     Config = parser.Parse();
 
     InvalidateConfig();
