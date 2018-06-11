@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.41.4) stable; urgency=medium
+
+  * add wbio-ai-dv-12(50V) template 
+
+ -- Attila Door <a.door@wirenboard.ru>  Mon, 11 Jun 2018 16:20:45 +0300
+
 wb-mqtt-serial (1.41.3) stable; urgency=medium
 
   * update mdm2 json template
