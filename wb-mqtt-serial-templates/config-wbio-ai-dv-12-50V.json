@@ -1,0 +1,99 @@
+{
+    "device_type": "WBIO-AI-DV-12-50V", 
+    "device": {
+        "name": "WBIO-AI-DV-12-50V", 
+        "id": "wbio-ai-dv-12-50v", 
+        "protocol": "modbus_io", 
+        "stride": 1000, 
+        "max_read_registers": 0, 
+        "setup": [
+            {
+                "title": "CONF_A1_A2", 
+                "address": 19504, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A3_A4", 
+                "address": 19505, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A5_A6", 
+                "address": 19510, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A7_A8", 
+                "address": 19511, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A9_A10", 
+                "address": 19516, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A11_A12", 
+                "address": 19517, 
+                "value": "0x0"
+            }
+        ], 
+        "channels": [
+            {
+                "name": "A1_A2", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19004, 
+                "format": "s16", 
+                "scale": 0.2126, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A3_A4", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19005, 
+                "format": "s16", 
+                "scale": 0.2126, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A5_A6", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19010, 
+                "format": "s16", 
+                "scale": 0.2126, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A7_A8", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19011, 
+                "format": "s16", 
+                "scale": 0.2126, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A9_A10", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19016, 
+                "format": "s16", 
+                "scale": 0.2126, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A11_A12", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19017, 
+                "format": "s16", 
+                "scale": 0.2126, 
+                "type": "voltage"
+            }
+        ]
+    }
+}
+
