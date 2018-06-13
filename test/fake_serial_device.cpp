@@ -11,12 +11,12 @@ REGISTER_BASIC_INT_PROTOCOL("fake", TFakeSerialDevice, TRegisterTypes({
 
 struct TFakeProtocolInfo: TProtocolInfo
 {
-    int GetMaxReadRegisters() const override
+    uint32_t GetMaxReadRegisters() const override
     {
         return FAKE_DEVICE_MEM_BLOCK_COUNT;
     }
 
-    int GetMaxWriteRegisters() const override
+    uint32_t GetMaxWriteRegisters() const override
     {
         return FAKE_DEVICE_MEM_BLOCK_COUNT;
     }
@@ -183,7 +183,7 @@ void TFakeSerialDevice::SetMemoryBlockValue(size_t index, TMemoryBlockValueType 
 /* read big endian block value */
 TMemoryBlockValueType TFakeSerialDevice::GetMemoryBlockValue(size_t index)
 {
-    TMemoryBlockValueType value;
+    TMemoryBlockValueType value = 0;
 
     auto startByte = index * FAKE_DEVICE_MEM_BLOCK_SIZE;
 

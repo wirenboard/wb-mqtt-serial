@@ -15,22 +15,22 @@ bool TProtocolInfo::IsSingleBitType(const TMemoryBlockType & type) const
     return false;
 }
 
-int TProtocolInfo::GetMaxReadRegisters() const
+uint32_t TProtocolInfo::GetMaxReadRegisters() const
 {
     return 1;
 }
 
-int TProtocolInfo::GetMaxReadBits() const
+uint32_t TProtocolInfo::GetMaxReadBits() const
 {
     return 1;
 }
 
-int TProtocolInfo::GetMaxWriteRegisters() const
+uint32_t TProtocolInfo::GetMaxWriteRegisters() const
 {
     return 1;
 }
 
-int TProtocolInfo::GetMaxWriteBits() const
+uint32_t TProtocolInfo::GetMaxWriteBits() const
 {
     return 1;
 }
@@ -70,7 +70,10 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
         try {
             switch(query->Operation) {
                 case EQueryOperation::Read:
-                    assert(query->GetBlockCount() <= (GetProtocolInfo().IsSingleBitType(query->GetType()) ? GetProtocolInfo().GetMaxReadBits() : GetProtocolInfo().GetMaxReadRegisters()));
+                    assert(
+                        query->GetBlockCount() <=
+                        (GetProtocolInfo().IsSingleBitType(query->GetType()) ? GetProtocolInfo().GetMaxReadBits()
+                                                                             : GetProtocolInfo().GetMaxReadRegisters()));
                     return Read(*query);
 
                 case EQueryOperation::Write:

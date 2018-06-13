@@ -93,18 +93,6 @@ private:
 
 using TIRDeviceMemoryBlockValue = TIRDeviceMemoryConvertible<TIRDeviceMemoryBlockValueBase>;
 
-template <typename T>
-inline bool operator==(const T & lhs, const TIRDeviceMemoryBlockValue & rhs)
-{
-    return lhs == static_cast<T>(rhs);
-}
-
-template <typename T>
-inline bool operator==(const TIRDeviceMemoryBlockValue & lhs, const T & rhs)
-{
-    return static_cast<T>(lhs) == rhs;
-}
-
 /**
  * @brief: If we need to modify memory pointed by View but not view itself,
  *  we should express that in code by dereferencing View, which will give

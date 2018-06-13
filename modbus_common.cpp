@@ -42,10 +42,10 @@ namespace Modbus    // modbus protocol declarations
     struct TModbusProtocolInfo: TProtocolInfo
     {
         bool IsSingleBitType(const TMemoryBlockType & type) const override;
-        int GetMaxReadRegisters() const override;
-        int GetMaxReadBits() const override;
-        int GetMaxWriteRegisters() const override;
-        int GetMaxWriteBits() const override;
+        uint32_t GetMaxReadRegisters() const override;
+        uint32_t GetMaxReadBits() const override;
+        uint32_t GetMaxWriteRegisters() const override;
+        uint32_t GetMaxWriteBits() const override;
     };
 }
 
@@ -84,22 +84,22 @@ namespace Modbus    // modbus protocol common utilities
         return ::IsSingleBitType(type);
     }
 
-    int TModbusProtocolInfo::GetMaxReadRegisters() const
+    uint32_t TModbusProtocolInfo::GetMaxReadRegisters() const
     {
         return MAX_READ_REGISTERS;
     }
 
-    int TModbusProtocolInfo::GetMaxReadBits() const
+    uint32_t TModbusProtocolInfo::GetMaxReadBits() const
     {
         return MAX_READ_BITS;
     }
 
-    int TModbusProtocolInfo::GetMaxWriteRegisters() const
+    uint32_t TModbusProtocolInfo::GetMaxWriteRegisters() const
     {
         return MAX_WRITE_REGISTERS;
     }
 
-    int TModbusProtocolInfo::GetMaxWriteBits() const
+    uint32_t TModbusProtocolInfo::GetMaxWriteBits() const
     {
         return MAX_WRITE_BITS;
     }

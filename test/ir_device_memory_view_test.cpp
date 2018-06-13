@@ -30,7 +30,7 @@ TEST_F(TIRDeviceMemoryBlockValueTest, IntegralValueBE)
     auto memoryBlock = make_shared<TMemoryBlock>(0, TypeU32BE);
     TIRDeviceMemoryBlockView memoryView { raw, memoryBlock, true };
 
-    EXPECT_EQ(29384756u, memoryView[0]);
+    EXPECT_EQ(29384756u, (uint32_t)memoryView[0]);
 }
 
 TEST_F(TIRDeviceMemoryBlockValueTest, FloatingPointValueBE)
@@ -40,7 +40,7 @@ TEST_F(TIRDeviceMemoryBlockValueTest, FloatingPointValueBE)
     auto memoryBlock = make_shared<TMemoryBlock>(0, TypeFloatBE);
     TIRDeviceMemoryBlockView memoryView { raw, memoryBlock, true };
 
-    EXPECT_EQ(4.87f, memoryView[0]);
+    EXPECT_EQ(4.87f, (float)memoryView[0]);
 }
 
 TEST_F(TIRDeviceMemoryBlockValueTest, UserTypeBE)
@@ -63,36 +63,56 @@ TEST_F(TIRDeviceMemoryBlockValueTest, UserTypeBE)
     };
 
     auto memoryBlock = make_shared<TMemoryBlock>(0, TypeComplexBE);
-    TIRDeviceMemoryBlockView memoryView { raw, memoryBlock, true };
+    TUserType val;
+    {
+        TIRDeviceMemoryBlockView memoryView { raw, memoryBlock, true };
 
-    TUserType val = memoryView;
+        val = memoryView;
 
-    EXPECT_EQ(0x0a, val.v1);
-    EXPECT_EQ(4241403938, val.v2);
-    EXPECT_EQ(4.87f, val.v3);
-    EXPECT_EQ(43421, val.v4);
-    EXPECT_EQ(1.234567890098765432, val.v5);
+        EXPECT_EQ(0x0a, val.v1);
+        EXPECT_EQ(4241403938, val.v2);
+        EXPECT_EQ(4.87f, val.v3);
+        EXPECT_EQ(43421, val.v4);
+        EXPECT_EQ(1.234567890098765432, val.v5);
 
-    EXPECT_EQ(val.v1, memoryView[0]);
-    EXPECT_EQ(val.v2, memoryView[1]);
-    EXPECT_EQ(val.v3, memoryView[2]);
-    EXPECT_EQ(val.v4, memoryView[3]);
-    EXPECT_EQ(val.v5, memoryView[4]);
+        EXPECT_EQ(val.v1, (uint8_t)memoryView[0]);
+        EXPECT_EQ(val.v2, (uint32_t)memoryView[1]);
+        EXPECT_EQ(val.v3, (float)memoryView[2]);
+        EXPECT_EQ(val.v4, (uint16_t)memoryView[3]);
+        EXPECT_EQ(val.v5, (double)memoryView[4]);
+    }
 
     uint8_t iraw[sizeof(TUserType)] = {0};
 
-    TIRDeviceMemoryBlockView imemoryView { iraw, memoryBlock, false };
-    imemoryView[0] = val.v1;
-    imemoryView[1] = val.v2;
-    imemoryView[2] = val.v3;
-    imemoryView[3] = val.v4;
-    imemoryView[4] = val.v5;
+    {
+        TIRDeviceMemoryBlockView memoryView { iraw, memoryBlock, false };
+        memoryView[0] = val.v1;
+        memoryView[1] = val.v2;
+        memoryView[2] = val.v3;
+        memoryView[3] = val.v4;
+        memoryView[4] = val.v5;
 
-    EXPECT_EQ(val.v1, imemoryView[0]);
-    EXPECT_EQ(val.v2, imemoryView[1]);
-    EXPECT_EQ(val.v3, imemoryView[2]);
-    EXPECT_EQ(val.v4, imemoryView[3]);
-    EXPECT_EQ(val.v5, imemoryView[4]);
+        EXPECT_EQ(val.v1, (uint8_t)memoryView[0]);
+        EXPECT_EQ(val.v2, (uint32_t)memoryView[1]);
+        EXPECT_EQ(val.v3, (float)memoryView[2]);
+        EXPECT_EQ(val.v4, (uint16_t)memoryView[3]);
+        EXPECT_EQ(val.v5, (double)memoryView[4]);
+
+        EXPECT_EQ(0, memcmp(iraw, raw, sizeof(iraw)));
+    }
+
+    memset(iraw, 0, sizeof iraw);
+
+    {
+        TIRDeviceMemoryBlockView memoryView { iraw, memoryBlock, false };
+        memoryView = val;
+
+        EXPECT_EQ(val.v1, (uint8_t)memoryView[0]);
+        EXPECT_EQ(val.v2, (uint32_t)memoryView[1]);
+        EXPECT_EQ(val.v3, (float)memoryView[2]);
+        EXPECT_EQ(val.v4, (uint16_t)memoryView[3]);
+        EXPECT_EQ(val.v5, (double)memoryView[4]);
+    }
 
     EXPECT_EQ(0, memcmp(iraw, raw, sizeof(iraw)));
 }
@@ -105,7 +125,7 @@ TEST_F(TIRDeviceMemoryBlockValueTest, IntegralValueLE)
     auto memoryBlock = make_shared<TMemoryBlock>(0, TypeU32LE);
     TIRDeviceMemoryBlockView memoryView { raw, memoryBlock, true };
 
-    EXPECT_EQ(29384756u, memoryView[0]);
+    EXPECT_EQ(29384756u, (uint32_t)memoryView[0]);
 }
 
 TEST_F(TIRDeviceMemoryBlockValueTest, FloatingPointValueLE)
@@ -115,7 +135,7 @@ TEST_F(TIRDeviceMemoryBlockValueTest, FloatingPointValueLE)
     auto memoryBlock = make_shared<TMemoryBlock>(0, TypeFloatLE);
     TIRDeviceMemoryBlockView memoryView { raw, memoryBlock, true };
 
-    EXPECT_EQ(4.87f, memoryView[0]);
+    EXPECT_EQ(4.87f, (float)memoryView[0]);
 }
 
 
@@ -141,36 +161,41 @@ TEST_F(TIRDeviceMemoryBlockValueTest, UserTypeLE)
     std::reverse(raw, raw + sizeof(raw));
 
     auto memoryBlock = make_shared<TMemoryBlock>(0, TypeComplexLE);
-    TIRDeviceMemoryBlockView memoryView { raw, memoryBlock, true };
+    TUserType val;
+    {
+        TIRDeviceMemoryBlockView memoryView { raw, memoryBlock, true };
 
-    TUserType val = memoryView;
+        val = memoryView;
 
-    EXPECT_EQ(0x0a, val.v1);
-    EXPECT_EQ(4241403938, val.v2);
-    EXPECT_EQ(4.87f, val.v3);
-    EXPECT_EQ(43421, val.v4);
-    EXPECT_EQ(1.234567890098765432, val.v5);
+        EXPECT_EQ(0x0a, val.v1);
+        EXPECT_EQ(4241403938, val.v2);
+        EXPECT_EQ(4.87f, val.v3);
+        EXPECT_EQ(43421, val.v4);
+        EXPECT_EQ(1.234567890098765432, val.v5);
 
-    EXPECT_EQ(val.v1, memoryView[0]);
-    EXPECT_EQ(val.v2, memoryView[1]);
-    EXPECT_EQ(val.v3, memoryView[2]);
-    EXPECT_EQ(val.v4, memoryView[3]);
-    EXPECT_EQ(val.v5, memoryView[4]);
+        EXPECT_EQ(val.v1, (uint8_t)memoryView[0]);
+        EXPECT_EQ(val.v2, (uint32_t)memoryView[1]);
+        EXPECT_EQ(val.v3, (float)memoryView[2]);
+        EXPECT_EQ(val.v4, (uint16_t)memoryView[3]);
+        EXPECT_EQ(val.v5, (double)memoryView[4]);
+    }
 
     uint8_t iraw[sizeof(TUserType)] = {0};
 
-    TIRDeviceMemoryBlockView imemoryView { iraw, memoryBlock, false };
-    imemoryView[0] = val.v1;
-    imemoryView[1] = val.v2;
-    imemoryView[2] = val.v3;
-    imemoryView[3] = val.v4;
-    imemoryView[4] = val.v5;
+    {
+        TIRDeviceMemoryBlockView memoryView { iraw, memoryBlock, false };
+        memoryView[0] = val.v1;
+        memoryView[1] = val.v2;
+        memoryView[2] = val.v3;
+        memoryView[3] = val.v4;
+        memoryView[4] = val.v5;
 
-    EXPECT_EQ(val.v1, imemoryView[0]);
-    EXPECT_EQ(val.v2, imemoryView[1]);
-    EXPECT_EQ(val.v3, imemoryView[2]);
-    EXPECT_EQ(val.v4, imemoryView[3]);
-    EXPECT_EQ(val.v5, imemoryView[4]);
+        EXPECT_EQ(val.v1, (uint8_t)memoryView[0]);
+        EXPECT_EQ(val.v2, (uint32_t)memoryView[1]);
+        EXPECT_EQ(val.v3, (float)memoryView[2]);
+        EXPECT_EQ(val.v4, (uint16_t)memoryView[3]);
+        EXPECT_EQ(val.v5, (double)memoryView[4]);
+    }
 
     EXPECT_EQ(0, memcmp(iraw, raw, sizeof(iraw)));
 }

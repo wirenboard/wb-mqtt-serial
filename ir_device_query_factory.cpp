@@ -174,7 +174,7 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(TAssociatedMemoryBlockList && me
             const auto protocolMaximum = singleBitType ? protocolInfo.GetMaxReadBits() : protocolInfo.GetMaxReadRegisters();
 
             if (deviceConfig->MaxReadRegisters > 0) {
-                maxRegs = min(deviceConfig->MaxReadRegisters, protocolMaximum);
+                maxRegs = min((uint32_t)deviceConfig->MaxReadRegisters, protocolMaximum);
             } else {
                 maxRegs = protocolMaximum;
             }

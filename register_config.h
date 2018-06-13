@@ -53,7 +53,7 @@ struct TMemoryBlockType {
 
     inline bool IsVariadicSize() const
     {
-        return Size == Variadic;
+        return Size == static_cast<uint16_t>(Variadic);
     }
 
     inline bool operator==(const TMemoryBlockType & rhs) const

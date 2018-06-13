@@ -56,10 +56,10 @@ struct TProtocolInfo
     virtual ~TProtocolInfo() = default;
 
     virtual bool IsSingleBitType(const TMemoryBlockType & type) const;
-    virtual int GetMaxReadRegisters() const;
-    virtual int GetMaxReadBits() const;
-    virtual int GetMaxWriteRegisters() const;
-    virtual int GetMaxWriteBits() const;
+    virtual uint32_t GetMaxReadRegisters() const;
+    virtual uint32_t GetMaxReadBits() const;
+    virtual uint32_t GetMaxWriteRegisters() const;
+    virtual uint32_t GetMaxWriteBits() const;
 };
 
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice> {

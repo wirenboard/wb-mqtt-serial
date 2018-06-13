@@ -77,24 +77,6 @@ namespace // utility
         return (RoundValue(stod(str), reg.RoundTo) - reg.Offset) / reg.Scale;
     }
 
-    uint64_t InvertWordOrderIfNeeded(const TVirtualRegister & reg, const uint64_t value)
-    {
-        if (reg.WordOrder == EWordOrder::BigEndian) {
-            return value;
-        }
-
-        uint64_t result = 0;
-        uint64_t cur_value = value;
-
-        for (int i = 0; i < reg.GetFormatWordWidth(); ++i) {
-            uint16_t last_word = (((uint64_t) cur_value) & 0xFFFF);
-            result <<= 16;
-            result |= last_word;
-            cur_value >>= 16;
-        }
-        return result;
-    }
-
     string ConvertSlaveValue(const TVirtualRegister & reg, uint64_t value)
     {
         switch (reg.Format) {

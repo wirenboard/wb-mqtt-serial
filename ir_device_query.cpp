@@ -253,14 +253,22 @@ TIRDeviceMemoryView TIRDeviceQuery::CreateMemoryView(void * mem, size_t size) co
 {
     assert(GetSize() == size);
 
-    return { static_cast<uint8_t *>(mem), size, GetType(), GetStart(), GetBlockSize() };
+    return {
+        static_cast<uint8_t*>(mem),
+        static_cast<uint32_t>(size),
+        GetType(), GetStart(), GetBlockSize()
+    };
 }
 
 TIRDeviceMemoryView TIRDeviceQuery::CreateMemoryView(const void * mem, size_t size) const
 {
     assert(GetSize() == size);
 
-    return { static_cast<const uint8_t *>(mem), size, GetType(), GetStart(), GetBlockSize() };
+    return {
+        static_cast<const uint8_t *>(mem),
+        static_cast<uint32_t>(size),
+        GetType(), GetStart(), GetBlockSize()
+    };
 }
 
 void TIRDeviceQuery::FinalizeRead(const TIRDeviceMemoryView & memoryView) const
