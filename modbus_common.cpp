@@ -516,7 +516,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
                 request[0] = slaveId;
 
-                Modbus::ComposeSingleWriteRequestPDU(PDU(request), *memoryBlock, memoryView[memoryBlock][0], shift);
+                Modbus::ComposeSingleWriteRequestPDU(PDU(request), *memoryBlock, memoryView[memoryBlock], shift);
                 SignCRC16(request);
             }
         }

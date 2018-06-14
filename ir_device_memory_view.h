@@ -4,11 +4,19 @@
 
 #include <cassert>
 
+/**
+ * @brief: template that adds conversion
+ *  and assignment operators to seemlessly
+ *  interoperate with C++ data types.
+ *
+ * @note: Helds no logic. Basically a syntactic
+ *  sugar.
+ */
 template <class View>
-struct TIRDeviceMemoryConvertible: public View
+struct TIRImplicitValue: public View
 {
     template <typename ... Args>
-    TIRDeviceMemoryConvertible(Args && ... args)
+    TIRImplicitValue(Args && ... args)
         : View(std::forward<Args>(args)...)
     {}
 
@@ -24,7 +32,7 @@ struct TIRDeviceMemoryConvertible: public View
     }
 
     template <typename T>
-    TIRDeviceMemoryConvertible & operator=(const T & value)
+    TIRImplicitValue & operator=(const T & value)
     {
         View::template CheckType<T>();
 
@@ -34,8 +42,8 @@ struct TIRDeviceMemoryConvertible: public View
     }
 };
 
-struct TIRDeviceMemoryBlockViewBase;
-using TIRDeviceMemoryBlockView = TIRDeviceMemoryConvertible<TIRDeviceMemoryBlockViewBase>;
+struct TIRDeviceMemoryBlockViewImpl;
+using TIRDeviceMemoryBlockView = TIRImplicitValue<TIRDeviceMemoryBlockViewImpl>;
 
 /**
  * @brief: Provides value - level access to memory
@@ -45,23 +53,23 @@ using TIRDeviceMemoryBlockView = TIRDeviceMemoryConvertible<TIRDeviceMemoryBlock
  * @note: it is not meant to give final values for publishing,
  *  but some intermediate separate raw values held by memory block
  *  (ex. mercury230's array memory block may be represented as
- *   4 TIRDeviceMemoryBlockValue objects, each returning U32 value)
+ *   4 TIRDeviceValueView objects, each returning U32 value)
  *  It's use is limited for now to few cases because virtual registers
  *  that produce final values are associated with memory blocks and
  *  not with values, that are stored inside them.
  */
-struct TIRDeviceMemoryBlockValueBase
+struct TIRDeviceValueViewImpl
 {
-    friend TIRDeviceMemoryBlockViewBase;
+    friend TIRDeviceMemoryBlockViewImpl;
 
     uint8_t * const RawMemory;
     const uint8_t   Size;
     const bool      Readonly : 1;
     const bool      IsLE : 1;
 
-    TIRDeviceMemoryBlockValueBase(uint8_t * raw, uint8_t size, bool readonly, bool isLE);
-    TIRDeviceMemoryBlockValueBase(const TIRDeviceMemoryBlockValueBase &) = delete;
-    TIRDeviceMemoryBlockValueBase(TIRDeviceMemoryBlockValueBase &&) = delete;
+    TIRDeviceValueViewImpl(uint8_t * raw, uint8_t size, bool readonly, bool isLE);
+    TIRDeviceValueViewImpl(const TIRDeviceValueViewImpl &) = delete;
+    TIRDeviceValueViewImpl(TIRDeviceValueViewImpl &&) = delete;
 
 protected:
     template <typename T>
@@ -85,26 +93,33 @@ private:
      *  @brief: inverts byte index if platform is big-endian
      */
     uint8_t PlatformEndiannesAware(uint8_t iByte) const;
+    /**
+     *  @brief: inverts byte index if memory block is big-endian
+     */
     uint8_t MemoryBlockEndiannesAware(uint8_t iByte) const;
 
     uint8_t GetByte(uint8_t index) const;
     void SetByte(uint8_t index, uint8_t) const;
 };
 
-using TIRDeviceMemoryBlockValue = TIRDeviceMemoryConvertible<TIRDeviceMemoryBlockValueBase>;
+using TIRDeviceValueView = TIRImplicitValue<TIRDeviceValueViewImpl>;
 
 /**
  * @brief: If we need to modify memory pointed by View but not view itself,
  *  we should express that in code by dereferencing View, which will give
  *  object of this class, operations on which will result in modification
  *  of values stored in memory
+ *
+ * @note: You may think about this class as some sort of
+ *  behaviour modifier. This in particular, modifies
+ *  behaviour of an assignment operator.
  */
 struct TIRDeviceMemoryBlockMemory
 {
-    const TIRDeviceMemoryBlockViewBase & View;
+    const TIRDeviceMemoryBlockViewImpl & View;
 
     /* explicit constructor for stupid g++4.7 */
-    TIRDeviceMemoryBlockMemory(const TIRDeviceMemoryBlockViewBase & view)
+    TIRDeviceMemoryBlockMemory(const TIRDeviceMemoryBlockViewImpl & view)
         : View(view)
     {}
     TIRDeviceMemoryBlockMemory(const TIRDeviceMemoryBlockMemory &) = delete;
@@ -120,37 +135,38 @@ struct TIRDeviceMemoryBlockMemory
  *  represented as some object of fundamental type (int, float, etc.).
  *  Separate values of memory block are accessed via index operator
  *  according to layout that was specified at protocol's daclaration.
- *  Memory block view can convert entire block memory into
+ *
+ * @note: Memory block view can convert entire block memory into
  *  any POD type of same as block size, thus allowing to
  *  convert raw memory even to user structs.
  *  When convering entire memory block,
- *  memory block's layout is ignored.
+ *  memory block's layout is also taken into account.
  */
-struct TIRDeviceMemoryBlockViewBase
+struct TIRDeviceMemoryBlockViewImpl
 {
     uint8_t * const     RawMemory;
     const CPMemoryBlock MemoryBlock;
     const bool          Readonly;
 
     /* redundant constructor for stupid g++4.7 */
-    TIRDeviceMemoryBlockViewBase(uint8_t * rawMemory, const CPMemoryBlock & mb, bool readonly)
+    TIRDeviceMemoryBlockViewImpl(uint8_t * rawMemory, const CPMemoryBlock & mb, bool readonly)
         : RawMemory(rawMemory)
         , MemoryBlock(mb)
         , Readonly(readonly)
     {}
-    TIRDeviceMemoryBlockViewBase(const TIRDeviceMemoryBlockViewBase &) = default;
+    TIRDeviceMemoryBlockViewImpl(const TIRDeviceMemoryBlockViewImpl &) = default;
 
     inline operator bool() const
     {
         return bool(RawMemory);
     }
 
-    inline bool operator==(const TIRDeviceMemoryBlockViewBase & other) const
+    inline bool operator==(const TIRDeviceMemoryBlockViewImpl & other) const
     {
         return RawMemory == other.RawMemory;
     }
 
-    inline bool operator!=(const TIRDeviceMemoryBlockViewBase & other) const
+    inline bool operator!=(const TIRDeviceMemoryBlockViewImpl & other) const
     {
         return !((*this) == other);
     }
@@ -160,9 +176,25 @@ struct TIRDeviceMemoryBlockViewBase
         return { *this };
     }
 
-    TIRDeviceMemoryBlockValue operator[](uint16_t index) const;
+    /**
+     * @brief: takes value index and returns value view
+     */
+    TIRDeviceValueView operator[](uint16_t index) const;
 
+    /**
+     * @brief: takes little-endian byte index
+     *  and returns real one based on memory
+     *  block byte order.
+     *  By other words: inverts index if
+     *  memory block is big-endian.
+     */
     uint16_t GetByteIndex(uint16_t index) const;
+
+    /**
+     * @brief: takes value index and returns
+     *  its size in bytes. Max size is 8 thus
+     *  64-bit value is largest possible.
+     */
     uint8_t  GetValueSize(uint16_t index) const;
     uint16_t GetSize() const;
 
@@ -184,6 +216,7 @@ protected:
 
     /**
      * @brief: platform endiannes - aware raw memory access interface
+     *
      * @note: we don't need size here as we rely on CheckType to ensure
      *  that too small types won't make it through.
      */
@@ -191,6 +224,12 @@ protected:
     void SetValueImpl(const uint8_t * pValue) const;
 };
 
+/**
+ * @brief: References (not owns) memory of one or
+ *  more memory blocks. Allows to access memory of
+ *  individual memory blocks. Used for device request
+ *  and response data section interpretation.
+ */
 struct TIRDeviceMemoryView
 {
     uint8_t * const             RawMemory;

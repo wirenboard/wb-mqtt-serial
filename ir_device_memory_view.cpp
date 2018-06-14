@@ -12,7 +12,7 @@
 using namespace std;
 
 
-TIRDeviceMemoryBlockValueBase::TIRDeviceMemoryBlockValueBase(uint8_t * raw, uint8_t size, bool readonly, bool isLE)
+TIRDeviceValueViewImpl::TIRDeviceValueViewImpl(uint8_t * raw, uint8_t size, bool readonly, bool isLE)
     : RawMemory(raw)
     , Size(size)
     , Readonly(readonly)
@@ -21,7 +21,7 @@ TIRDeviceMemoryBlockValueBase::TIRDeviceMemoryBlockValueBase(uint8_t * raw, uint
     assert(Size <= 8 && "fundamental value cannot be more than 8 bytes (64 bits)");
 }
 
-void TIRDeviceMemoryBlockValueBase::GetValueImpl(uint8_t * pValue) const
+void TIRDeviceValueViewImpl::GetValueImpl(uint8_t * pValue) const
 {
     for (uint8_t iByte = 0; iByte < Size; ++iByte) {
         // we need to get byte by view, because we define byte order by view
@@ -29,7 +29,7 @@ void TIRDeviceMemoryBlockValueBase::GetValueImpl(uint8_t * pValue) const
     }
 }
 
-void TIRDeviceMemoryBlockValueBase::SetValueImpl(const uint8_t * pValue) const
+void TIRDeviceValueViewImpl::SetValueImpl(const uint8_t * pValue) const
 {
     for (uint8_t iByte = 0; iByte < Size; ++iByte) {
         // we need to set byte by view, because we define byte order by view
@@ -37,24 +37,24 @@ void TIRDeviceMemoryBlockValueBase::SetValueImpl(const uint8_t * pValue) const
     }
 }
 
-uint8_t TIRDeviceMemoryBlockValueBase::PlatformEndiannesAware(uint8_t iByte) const
+uint8_t TIRDeviceValueViewImpl::PlatformEndiannesAware(uint8_t iByte) const
 {
     return IsLittleEndian() ? iByte : Size - iByte - 1;
 }
 
-uint8_t TIRDeviceMemoryBlockValueBase::MemoryBlockEndiannesAware(uint8_t iByte) const
+uint8_t TIRDeviceValueViewImpl::MemoryBlockEndiannesAware(uint8_t iByte) const
 {
     return IsLE ? iByte : Size - iByte - 1;
 }
 
-uint8_t TIRDeviceMemoryBlockValueBase::GetByte(uint8_t iByte) const
+uint8_t TIRDeviceValueViewImpl::GetByte(uint8_t iByte) const
 {
     assert(RawMemory);
 
     return RawMemory[MemoryBlockEndiannesAware(PlatformEndiannesAware(iByte))];
 }
 
-void TIRDeviceMemoryBlockValueBase::SetByte(uint8_t iByte, uint8_t value) const
+void TIRDeviceValueViewImpl::SetByte(uint8_t iByte, uint8_t value) const
 {
     assert(RawMemory);
     assert(!Readonly);
@@ -73,7 +73,7 @@ TIRDeviceMemoryBlockMemory & TIRDeviceMemoryBlockMemory::operator=(const TIRDevi
     return *this;
 }
 
-TIRDeviceMemoryBlockValue TIRDeviceMemoryBlockViewBase::operator[](uint16_t index) const
+TIRDeviceValueView TIRDeviceMemoryBlockViewImpl::operator[](uint16_t index) const
 {
     // auto valueCount = MemoryBlock->Type.GetValueCount();
     // assert(index < valueCount);
@@ -87,7 +87,7 @@ TIRDeviceMemoryBlockValue TIRDeviceMemoryBlockViewBase::operator[](uint16_t inde
     };
 }
 
-uint16_t TIRDeviceMemoryBlockViewBase::GetByteIndex(uint16_t index) const
+uint16_t TIRDeviceMemoryBlockViewImpl::GetByteIndex(uint16_t index) const
 {
     CheckByteIndex(index);
     auto byteIndex = (MemoryBlock->Type.ByteOrder == EByteOrder::BigEndian) ? (MemoryBlock->Size - index - 1) : index;
@@ -95,7 +95,7 @@ uint16_t TIRDeviceMemoryBlockViewBase::GetByteIndex(uint16_t index) const
     return byteIndex;
 }
 
-uint8_t TIRDeviceMemoryBlockViewBase::GetValueSize(uint16_t index) const
+uint8_t TIRDeviceMemoryBlockViewImpl::GetValueSize(uint16_t index) const
 {
     if (MemoryBlock->Type.IsVariadicSize()) {
         assert(MemoryBlock->Size <= 8);
@@ -105,19 +105,19 @@ uint8_t TIRDeviceMemoryBlockViewBase::GetValueSize(uint16_t index) const
     }
 }
 
-uint16_t TIRDeviceMemoryBlockViewBase::GetSize() const
+uint16_t TIRDeviceMemoryBlockViewImpl::GetSize() const
 {
     return MemoryBlock->Size;
 }
 
-uint8_t TIRDeviceMemoryBlockViewBase::GetByte(uint16_t index) const
+uint8_t TIRDeviceMemoryBlockViewImpl::GetByte(uint16_t index) const
 {
     assert(RawMemory);
 
     return RawMemory[GetByteIndex(index)];
 }
 
-void TIRDeviceMemoryBlockViewBase::SetByte(uint16_t index, uint8_t value) const
+void TIRDeviceMemoryBlockViewImpl::SetByte(uint16_t index, uint8_t value) const
 {
     assert(RawMemory);
     assert(!Readonly);
@@ -125,12 +125,12 @@ void TIRDeviceMemoryBlockViewBase::SetByte(uint16_t index, uint8_t value) const
     RawMemory[GetByteIndex(index)] = value;
 }
 
-void TIRDeviceMemoryBlockViewBase::CheckByteIndex(uint16_t index) const
+void TIRDeviceMemoryBlockViewImpl::CheckByteIndex(uint16_t index) const
 {
     assert(index < GetSize());
 }
 
-void TIRDeviceMemoryBlockViewBase::GetValueImpl(uint8_t * pValue) const
+void TIRDeviceMemoryBlockViewImpl::GetValueImpl(uint8_t * pValue) const
 {
     auto valueCount = MemoryBlock->Type.GetValueCount();
     for (uint16_t iValue = 0; iValue < valueCount; ++iValue) {
@@ -140,7 +140,7 @@ void TIRDeviceMemoryBlockViewBase::GetValueImpl(uint8_t * pValue) const
     }
 }
 
-void TIRDeviceMemoryBlockViewBase::SetValueImpl(const uint8_t * pValue) const
+void TIRDeviceMemoryBlockViewImpl::SetValueImpl(const uint8_t * pValue) const
 {
     auto valueCount = MemoryBlock->Type.GetValueCount();
     for (uint16_t iValue = 0; iValue < valueCount; ++iValue) {
@@ -203,6 +203,7 @@ uint64_t TIRDeviceMemoryView::ReadValue(const TIRDeviceValueDesc & valueDesc) co
         const auto mask = bindInfo.GetMask();
         const auto & memoryBlockView = self[memoryBlock];
 
+        // iByte is always little-endian (lower value signifies lower byte)
         for (int iByte = (bindInfo.BitEnd - 1) / 8; iByte >= int(bindInfo.BitStart / 8); --iByte) {
             auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
             auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
@@ -215,13 +216,6 @@ uint64_t TIRDeviceMemoryView::ReadValue(const TIRDeviceValueDesc & valueDesc) co
 
             value <<= (end - begin);
             value |= (byteMask & memoryBlockView.GetByte(iByte)) >> begin;
-        }
-
-        // TODO: check for usefullness
-        if (Global::Debug) {
-            std::cerr << "mb mask: " << std::bitset<64>(mask) << std::endl;
-            // std::cerr << "reading " << bindInfo.Describe() << " bits of " << memoryView.MemoryBlock->Describe()
-            //         << " to [" << (int)offset << ", " << int(offset + bindInfo.BitCount() - 1) << "] bits of value" << std::endl;
         }
     };
 

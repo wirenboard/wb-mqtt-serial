@@ -28,7 +28,8 @@ private:
 protected:
     /**
      * @brief: create query with binding to virtual registers.
-     *  It'll update virtual registers values on finalize and maintain memory blocks cache in correct state as side effect.
+     *  It'll update virtual registers values on finalize and
+     *  maintain memory blocks cache in correct state as side effect.
      */
     explicit TIRDeviceQuery(std::vector<PVirtualRegister> &&, EQueryOperation = EQueryOperation::Read);
 
@@ -41,7 +42,6 @@ protected:
      *  thus we provide here option which doesn't require virtual register existence.
      */
     explicit TIRDeviceQuery(const TPSet<PMemoryBlock> &, EQueryOperation = EQueryOperation::Read);
-
 
     void SetStatus(EQueryStatus) const;
 
@@ -73,17 +73,49 @@ public:
     const TMemoryBlockType & GetType() const;
     const std::string & GetTypeName() const;
 
+    /**
+     * @brief: set status of query execution
+     *
+     * @note: this is set by device after execution
+     *  of query and on exceptions during query execution.
+     */
     void SetStatus(EQueryStatus);
     EQueryStatus GetStatus() const;
     void ResetStatus();
     void InvalidateReadValues();
 
+    /**
+     * @brief: used to set enabled all affected virtual registers
+     */
     void SetEnabledWithRegisters(bool);
+    /**
+     * @brief: returns true if there's any enabled virtual register
+     *  affected by this query
+     */
     bool IsEnabled() const;
+    /**
+     * @brief: returns true if query was executed by device,
+     *  successfully or not
+     */
     bool IsExecuted() const;
+    /**
+     * @brief: indicates ability of this query to split into
+     *  multiple lesser queries
+     */
     bool IsAbleToSplit() const;
+    /**
+     * @brief: used to set ability to split externally
+     *
+     * @note: we cannot say for sure wether or not we able to split
+     *  query because split for some reasons might end up with error
+     *  or with only one query, so in that case we manually mark that
+     *  query as not able to split.
+     */
     void SetAbleToSplit(bool);
 
+    /**
+     * @brief: create view to passed memory according to query's data layout
+     */
     TIRDeviceMemoryView CreateMemoryView(void * mem, size_t size) const;
     TIRDeviceMemoryView CreateMemoryView(const void * mem, size_t size) const;
 
@@ -127,17 +159,6 @@ public:
         FinalizeRead(CreateMemoryView(mem, sizeof(T) * N));
     }
 
-    /**
-     * Accept value read from device as current and set status to Ok (for single read to avoid unnecesary vector creation)
-     */
-    // template <typename T>
-    // void FinalizeRead(T value) const
-    // {
-    //     CheckTypeSingle<T>();
-
-    //     FinalizeRead(&value, sizeof(T));
-    // }
-
     virtual void FinalizeRead(const TIRDeviceMemoryView &) const;
 
     std::string Describe() const;
@@ -145,11 +166,15 @@ public:
     std::string DescribeOperation() const;
 };
 
+/**
+ * @brief: device query that holds values.
+ *  Used to write values to devices.
+ */
 struct TIRDeviceValueQuery final: TIRDeviceQuery
 {
     friend class TIRDeviceQueryFactory;
 
-    const TPSet<PMemoryBlock> MemoryBlocks;
+    const TPSet<PMemoryBlock>              MemoryBlocks;
     std::map<TIRDeviceValueDesc, uint64_t> Values;
 
     explicit TIRDeviceValueQuery(std::vector<PVirtualRegister> &&, EQueryOperation = EQueryOperation::Write);
@@ -178,6 +203,13 @@ private:
     TIRDeviceMemoryView GetValuesImpl(void * mem, size_t size) const;
 };
 
+/**
+ * @brief: set of device queries.
+ *
+ * @note: when creating set for each poll interval,
+ *  eases dynamic query subdivision on errors,
+ *  by allowing to modify query set instead of polling plan
+ */
 struct TIRDeviceQuerySet
 {
     friend class TIRDeviceQuerySetHandler;

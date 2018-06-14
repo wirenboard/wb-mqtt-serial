@@ -15,7 +15,10 @@ TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig 
 
     BoundMemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(RegisterConfig, device);
     Query = TIRDeviceQueryFactory::CreateQuery<TIRDeviceValueQuery>(GetKeysAsSet(BoundMemoryBlocks));
-    Query->SetValue({ BoundMemoryBlocks, RegisterConfig->WordOrder }, config->Value);
+    Query->SetValue(
+        { BoundMemoryBlocks, RegisterConfig->WordOrder }, // valueDesc
+        config->Value
+    );
 }
 
 string TDeviceSetupItem::ToString() const
