@@ -505,8 +505,6 @@ namespace ModbusRTU // modbus rtu protocol utilities
             Modbus::ComposeMultipleWriteRequestPDU(PDU(request), query, shift);
             SignCRC16(request);
         } else {
-            const auto & valueQuery = query.As<TIRDeviceValueQuery>();
-
             vector<uint8_t> values;
             const auto & memoryView = query.GetValues(values);
 
