@@ -15,7 +15,6 @@ namespace
 }
 
 REGISTER_BASIC_INT_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes({
-                                                        // TODO: assign index here or something
     { TMercury200Device::MEM_ENERGY, "energy", "value", { U32, U32, U32, U32 }, true },
     { TMercury200Device::MEM_PARAMS, "params", "value", { BCD16, BCD16, BCD24 }, true },
     { TMercury200Device::REG_PARAM_16, "param16", "value", { BCD16 }, true },

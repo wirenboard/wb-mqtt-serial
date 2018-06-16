@@ -13,6 +13,7 @@
 #include "serial_config.h"
 #include "serial_port_settings.h"
 #include "tcp_port_settings.h"
+#include "constraints.h"
 
 using namespace std;
 
@@ -151,19 +152,19 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
 {
     int address;
     uint8_t bitOffset;
-    uint8_t bitWidth;
+    uint8_t width;
 
     const auto & reg_type_str = register_data["reg_type"].asString();
     const auto & type = TMemoryBlockTypeMapper::Get(device_config, reg_type_str);
-    tie(address, bitOffset, bitWidth) = ParseRegisterAddress(register_data, "address", type);
+    tie(address, bitOffset, width) = ParseRegisterAddress(register_data, "address", type);
 
     cout << "address: " << address << endl;
     if (bitOffset) {
         cout << "bit offset: " << (int)bitOffset << endl;
     }
 
-    if (bitWidth) {
-        cout << "bit width: " << (int)bitWidth << endl;
+    if (width) {
+        cout << "bit width: " << (int)width << endl;
     }
 
     default_type_str = "text";
@@ -210,7 +211,7 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
     PRegisterConfig reg = TRegisterConfig::Create(
         type.Index,
         address, format, scale, offset, round_to, true, type.ReadOnly || force_readonly,
-        type.Name, has_error_value, error_value, word_order, bitOffset, bitWidth);
+        type.Name, has_error_value, error_value, word_order, bitOffset, width);
     if (register_data.isMember("poll_interval"))
         reg->PollInterval = chrono::milliseconds(GetInt(register_data, "poll_interval"));
     return reg;
@@ -346,19 +347,19 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
 
     int address;
     uint16_t bitOffset;
-    uint8_t bitWidth;
+    uint8_t width;
 
     string reg_type_str = item_data["reg_type"].asString();
 
     const auto & type = reg_type_str.empty() ? TMemoryBlockTypeMapper::Get(device_config, 0)
                                              : TMemoryBlockTypeMapper::Get(device_config, reg_type_str);
-    tie(address, bitOffset, bitWidth) = ParseRegisterAddress(item_data, "address", type);
+    tie(address, bitOffset, width) = ParseRegisterAddress(item_data, "address", type);
 
     ERegisterFormat format = U16;
     if (item_data.isMember("format"))
         format = RegisterFormatFromName(item_data["format"].asString());
     PRegisterConfig reg = TRegisterConfig::Create(
-        type.Index, address, format, 1, 0, 0, true, false, reg_type_str, false, 0, EWordOrder::BigEndian, bitOffset, bitWidth);
+        type.Index, address, format, 1, 0, 0, true, false, reg_type_str, false, 0, EWordOrder::BigEndian, bitOffset, width);
 
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");
@@ -453,15 +454,16 @@ uint64_t TConfigParser::ToUint64(const Json::Value& v, const string& title)
     }
 
     throw TConfigParserException(
-        title + ": 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of '" + v.asString() +
-        "'");
+        title + ": 32 bit plain unsigned integer (64 bit when quoted) "
+        "or '0x..' hex string expected instead of '" + v.asString() + "'"
+    );
 }
 
 tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Value& obj, const std::string& key, const TMemoryBlockType & type)
 {
     int address;
     int bitOffset = 0;
-    int bitWidth = 0;
+    int width = 0;
 
     const auto & value = obj[key];
 
@@ -476,22 +478,32 @@ tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Va
                 auto pos2 = addressStr.find(']', pos1 + 1);
 
                 if (pos2 == string::npos) {
-                     throw TConfigParserException("error during address parsing: no closing bracket found (address string: '" + addressStr + "')");
+                    throw TConfigParserException(
+                        "error during address parsing: no closing bracket found (address string: '"
+                        + addressStr + "')"
+                    );
                 }
 
                 if (type.IsVariadicSize()) {
-                    throw TConfigParserException("specifying value index for memory block with variadic size (" + type.Name + ") is forbidden");
+                    throw TConfigParserException(
+                        "specifying value index for memory block with variadic size ("
+                        + type.Name + ") is forbidden"
+                    );
                 }
 
                 address = ToInt(addressStr.substr(0, pos1), key);
 
                 auto iValue = stoi(addressStr.substr(pos1 + 1, pos2));
 
-                if (iValue < 0 || iValue >= 8192) { // TODO: move all value constraints to separate place as constants
-                    throw TConfigParserException("error during address parsing: value index must be in range [0, 8192) (address string: '" + addressStr + "')");
+                if (iValue < 0 || uint64_t(iValue) > MAX_MEMORY_BLOCK_VALUE_INDEX) {
+                    throw TConfigParserException(
+                        "error during address parsing: value index must be in range [0, " +
+                        std::to_string(MAX_MEMORY_BLOCK_VALUE_INDEX) + "] "
+                        "(address string: '" + addressStr + "')"
+                    );
                 }
 
-                tie(bitOffset, bitWidth) = type.ToMaskParameters(iValue);
+                tie(bitOffset, width) = type.ToMaskParameters(iValue);
             }
         } else {
             auto pos2 = addressStr.find(':', pos1 + 1);
@@ -499,14 +511,22 @@ tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Va
             address = ToInt(addressStr.substr(0, pos1), key);
             bitOffset = stoi(addressStr.substr(pos1 + 1, pos2));
 
-            if (bitOffset < 0 || bitOffset >= numeric_limits<uint16_t>::max()) {
-                throw TConfigParserException("error during address parsing: bit shift must be in range [0, 65535) (address string: '" + addressStr + "')");
+            if (bitOffset < 0 || uint64_t(bitOffset) > MAX_MEMORY_BLOCK_BIT_INDEX) {
+                throw TConfigParserException(
+                    "error during address parsing: bit shift must be in range [0, " +
+                    std::to_string(MAX_MEMORY_BLOCK_BIT_INDEX) + "] "
+                    "(address string: '" + addressStr + "')"
+                );
             }
 
             if (pos2 != string::npos) {
-                bitWidth = stoi(addressStr.substr(pos2 + 1));
-                if (bitWidth <= 0 || bitWidth > 64) {
-                    throw TConfigParserException("error during address parsing: bit count must be in range (0, 64] (address string: '" + addressStr + "')");
+                width = stoi(addressStr.substr(pos2 + 1));
+                if (width <= 0 || uint64_t(width) > MAX_VALUE_WIDTH) {
+                    throw TConfigParserException(
+                        "error during address parsing: bit count must be in range (0, " +
+                        std::to_string(MAX_VALUE_WIDTH) + "] "
+                        "(address string: '" + addressStr + "')"
+                    );
                 }
             }
         }
@@ -514,7 +534,7 @@ tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Va
         address = TConfigParser::GetInt(obj, key);
     }
 
-    return tuple<int, uint16_t, uint8_t>{address, static_cast<uint16_t>(bitOffset), static_cast<uint8_t>(bitWidth)};
+    return std::make_tuple(address, static_cast<uint16_t>(bitOffset), static_cast<uint8_t>(width));
 }
 
 int TConfigParser::GetInt(const Json::Value& obj, const string& key)

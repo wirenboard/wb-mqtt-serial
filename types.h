@@ -84,4 +84,4 @@ void Remove(T & a, T b)
 
 std::ostream& operator<<(::std::ostream& os, EWordOrder val);
 
-uint8_t RegisterFormatByteWidth(ERegisterFormat format);
+uint8_t RegisterFormatSize(ERegisterFormat format);

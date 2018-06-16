@@ -23,11 +23,11 @@ protected:
     void TearDown();
     PVirtualRegister Reg(int addr, ERegisterFormat fmt = U16, double scale = 1,
         double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian,
-        uint16_t bitOffset = 0, uint8_t bitWidth = 0) {
+        uint16_t bitOffset = 0, uint8_t width = 0) {
         return TVirtualRegister::Create(
             TRegisterConfig::Create(
                 TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
-                "fake", false, 0, word_order, bitOffset, bitWidth), Device);
+                "fake", false, 0, word_order, bitOffset, width), Device);
     }
     PFakeSerialPort Port;
     PSerialClient SerialClient;
@@ -763,9 +763,9 @@ TEST_F(TSerialClientTest, Bitmasks)
     auto reg72O1W1 = Reg(72, U8, 1, 0, 0, EWordOrder::BigEndian, 1, 1);     // Reg72 bit-1
     auto reg72O2W1 = Reg(72, U8, 1, 0, 0, EWordOrder::BigEndian, 2, 1);     // Reg72 bit-2
 
-    auto reg73O0W16  = Reg(73, U64, 1.0, 0, 0, EWordOrder::BigEndian, 0, 16);   // Reg76 16-bit
-    auto reg73O16W16 = Reg(73, U64, 1.0, 0, 0, EWordOrder::BigEndian, 16, 16);  // Reg75 16-bit
-    auto reg73O32W32 = Reg(73, U64, 1.0, 0, 0, EWordOrder::BigEndian, 32, 32);  // Reg73 16-bit and Reg74 16-bit
+    auto reg76O0W16  = Reg(76, U16, 1.0, 0, 0, EWordOrder::BigEndian, 0, 16);  // Reg76 16-bit
+    auto reg75O0W16 = Reg(75, U16, 1.0, 0, 0, EWordOrder::BigEndian, 0, 16);  // Reg75 16-bit
+    auto reg73O0W32 = Reg(73, U32, 1.0, 0, 0, EWordOrder::BigEndian, 0, 32);  // Reg73 16-bit and Reg74 16-bit
 
     //------------------------------------Errors-------------------------------------------
     #define EXPECT_THROW_EMIT(...) try {         \
@@ -775,10 +775,10 @@ TEST_F(TSerialClientTest, Bitmasks)
         Emit() << e.what();                      \
     }
 
-    EXPECT_THROW_EMIT(Reg(73, U32, 1.0, 0, 0, EWordOrder::BigEndian, 16, 16))   // overlapping with reg73O32W32
-    EXPECT_THROW_EMIT(Reg(76, U16))                                             // overlapping with reg73O0W16
-    EXPECT_THROW_EMIT(Reg(76, U16, 1.0, 0, 0, EWordOrder::BigEndian, 0, 1))     // overlapping with reg73O0W16
-    EXPECT_THROW_EMIT(Reg(76, U16, 1.0, 0, 0, EWordOrder::BigEndian, 15, 1))    // overlapping with reg73O0W16
+    EXPECT_THROW_EMIT(Reg(73, U32, 1.0, 0, 0, EWordOrder::BigEndian, 15, 16))   // overlapping with reg73O0W32
+    EXPECT_THROW_EMIT(Reg(76, U16))                                             // overlapping with reg76O0W16
+    EXPECT_THROW_EMIT(Reg(76, U16, 1.0, 0, 0, EWordOrder::BigEndian, 0, 1))     // overlapping with reg76O0W16
+    EXPECT_THROW_EMIT(Reg(76, U16, 1.0, 0, 0, EWordOrder::BigEndian, 15, 1))    // overlapping with reg76O0W16
     EXPECT_THROW_EMIT(Reg(76, U16, 1.0, 0, 0, EWordOrder::BigEndian, 16, 1))    // too large shift
 
     #undef EXPECT_THROW_EMIT
@@ -789,9 +789,9 @@ TEST_F(TSerialClientTest, Bitmasks)
     SerialClient->AddRegister(reg72O0W1);
     SerialClient->AddRegister(reg72O1W1);
     SerialClient->AddRegister(reg72O2W1);
-    SerialClient->AddRegister(reg73O0W16);
-    SerialClient->AddRegister(reg73O16W16);
-    SerialClient->AddRegister(reg73O32W32);
+    SerialClient->AddRegister(reg76O0W16);
+    SerialClient->AddRegister(reg75O0W16);
+    SerialClient->AddRegister(reg73O0W32);
 
     SerialClient->Connect();    // init cache
 
@@ -815,9 +815,9 @@ TEST_F(TSerialClientTest, Bitmasks)
     EXPECT_EQ(0x3, Device->GetMemoryBlockValue(72));
 
     reg72O2W1->SetTextValue("1");
-    reg73O0W16->SetTextValue("4321");
-    reg73O16W16->SetTextValue("7654");
-    reg73O32W32->SetTextValue("1234567890");
+    reg76O0W16->SetTextValue("4321");
+    reg75O0W16->SetTextValue("7654");
+    reg73O0W32->SetTextValue("1234567890");
 
     Note() << "Cycle()";
     SerialClient->Cycle();
@@ -841,9 +841,9 @@ TEST_F(TSerialClientTest, Bitmasks)
     EXPECT_EQ("1", reg72O0W1->GetTextValue());
     EXPECT_EQ("1", reg72O1W1->GetTextValue());
     EXPECT_EQ("1", reg72O2W1->GetTextValue());
-    EXPECT_EQ("4321", reg73O0W16->GetTextValue());
-    EXPECT_EQ("7654", reg73O16W16->GetTextValue());
-    EXPECT_EQ("1234567890", reg73O32W32->GetTextValue());
+    EXPECT_EQ("4321", reg76O0W16->GetTextValue());
+    EXPECT_EQ("7654", reg75O0W16->GetTextValue());
+    EXPECT_EQ("1234567890", reg73O0W32->GetTextValue());
 
     Device->SetMemoryBlockValue(72, 0x5);     // disable reg72O1W1
 
@@ -855,9 +855,9 @@ TEST_F(TSerialClientTest, Bitmasks)
     EXPECT_EQ("1", reg72O0W1->GetTextValue());
     EXPECT_EQ("0", reg72O1W1->GetTextValue());
     EXPECT_EQ("1", reg72O2W1->GetTextValue());
-    EXPECT_EQ("4321", reg73O0W16->GetTextValue());
-    EXPECT_EQ("7654", reg73O16W16->GetTextValue());
-    EXPECT_EQ("1234567890", reg73O32W32->GetTextValue());
+    EXPECT_EQ("4321", reg76O0W16->GetTextValue());
+    EXPECT_EQ("7654", reg75O0W16->GetTextValue());
+    EXPECT_EQ("1234567890", reg73O0W32->GetTextValue());
 }
 
 
@@ -1441,9 +1441,10 @@ TEST_F(TSerialClientIntegrationTest, Bitmasks)
     MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U8:0:1/on", "1");
     MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U8:1:1/on", "1");
     MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U8:2:1/on", "1");
-    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U64:0:16/on", "4321");
-    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U64:16:16/on", "7654");
-    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U64:32:32/on", "1234567890");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U16:0/on", "4321");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U64:0:16/on", "7654");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U64:0:32/on", "1234567890");
+    MQTTClient->DoPublish(true, 0, "/devices/Bitmasks/controls/U64:8/on", "12345678900987654321");
 
     Note() << "LoopOnce()";
     observer->LoopOnce();
@@ -1457,10 +1458,22 @@ TEST_F(TSerialClientIntegrationTest, Bitmasks)
 
     EXPECT_EQ(0x3FFF, Device->GetMemoryBlockValue(70));
     EXPECT_EQ(0x7, Device->GetMemoryBlockValue(72));
+    // U64:0:32
     EXPECT_EQ(0x4996, Device->GetMemoryBlockValue(73));
     EXPECT_EQ(0x02D2, Device->GetMemoryBlockValue(74));
+
+    // U64:0:16
     EXPECT_EQ(0x1DE6, Device->GetMemoryBlockValue(75));
+
+    // U16:0
     EXPECT_EQ(0x10E1, Device->GetMemoryBlockValue(76));
+
+    // U64:8
+    EXPECT_EQ(0x00AB, Device->GetMemoryBlockValue(77));
+    EXPECT_EQ(0x54A9, Device->GetMemoryBlockValue(78));
+    EXPECT_EQ(0x8CDC, Device->GetMemoryBlockValue(79));
+    EXPECT_EQ(0x6770, Device->GetMemoryBlockValue(80));
+    EXPECT_EQ(0xB100, Device->GetMemoryBlockValue(81));
 
     Device->SetMemoryBlockValue(72, 0x5);     // disable reg72O1W1
 

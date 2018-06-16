@@ -1,10 +1,12 @@
 #pragma once
 
 #include "global_variables.h"
+#include "utils.h"
 #include "types.h"
 
 #include <chrono>
 #include <memory>
+#include <vector>
 #include <list>
 
 class IProtocol;
@@ -45,3 +47,4 @@ using PIRDeviceQuery            = std::shared_ptr<TIRDeviceQuery>;
 using PIRDeviceValueQuery       = std::shared_ptr<TIRDeviceValueQuery>;
 using TQueries                  = std::list<PIRDeviceQuery>;   // allow queries in set have common registers
 using PDeviceChannel            = std::shared_ptr<TDeviceChannel>;
+using TAssociatedMemoryBlockSet = std::pair<TPSet<PMemoryBlock>, std::vector<PVirtualRegister>>;

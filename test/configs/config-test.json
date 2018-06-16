@@ -146,7 +146,7 @@
                     "id": "Bitmasks",
                     "slave_id": "0x99",
                     "protocol": "fake",
-                    "max_read_registers": 4,
+                    "max_read_registers": 5,
                     "channels": [
                         {
                             "name" : "U16:0:8",
@@ -184,23 +184,30 @@
                             "format": "u8"
                         },
                         {
+                            "name" : "U16:0",
+                            "reg_type" : "fake",
+                            "address" : "76:0",
+                            "type": "value",
+                            "format": "u16"
+                        },
+                        {
                             "name" : "U64:0:16",
                             "reg_type" : "fake",
-                            "address" : "73:0:16",
+                            "address" : "75:0:16",
                             "type": "value",
                             "format": "u64"
                         },
                         {
-                            "name" : "U64:16:16",
+                            "name" : "U64:0:32",
                             "reg_type" : "fake",
-                            "address" : "73:16:16",
+                            "address" : "73:0:32",
                             "type": "value",
                             "format": "u64"
                         },
                         {
-                            "name" : "U64:32:32",
+                            "name" : "U64:8",
                             "reg_type" : "fake",
-                            "address" : "73:32:32",
+                            "address" : "77:8",
                             "type": "value",
                             "format": "u64"
                         }

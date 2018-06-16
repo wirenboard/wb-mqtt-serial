@@ -246,31 +246,19 @@ PExpector TSerialDeviceTest::Expector() const
     return SerialPort;
 }
 
-// std::vector<TIRDeviceStoringValueDesc> TSerialDeviceTest::GetValueDescs(const TPSet<PMemoryBlock> & blocks) const
-// {
-//     std::vector<TIRDeviceStoringValueDesc> descs;
-//     for (const auto & mb: blocks) {
-//         uint16_t iBit = 0;
-//         for (int i = 0; i < mb->Type.GetValueCount(); ++i) {
-//             auto valueWidth = (mb->Type.Formats.empty() ? mb->Size : RegisterFormatByteWidth(mb->Type.Formats[i])) * 8;
-
-//             descs.push_back(TIRDeviceStoringValueDesc{
-//                 {
-//                     { mb, { iBit, iBit + valueWidth } }
-//                 },
-//                 EWordOrder::BigEndian  // word order doesn't matter here because we read only by 1 memory block per value
-//             });
-
-//             iBit += valueWidth;
-//         }
-//     }
-
-//     return descs;
-// }
-
 PIRDeviceQuery TSerialDeviceTest::GetReadQuery(std::vector<PVirtualRegister> && vRegs) const
 {
-    return TIRDeviceQueryFactory::CreateQuery<TIRDeviceQuery>(std::move(vRegs));
+    TPSet<PMemoryBlock> mbs;
+
+    for (const auto & vreg: vRegs) {
+        const auto & regMbs = vreg->GetMemoryBlocks();
+        mbs.insert(regMbs.begin(), regMbs.end());
+    }
+
+    return TIRDeviceQueryFactory::CreateQuery<TIRDeviceQuery>({
+        std::move(mbs),
+        std::move(vRegs)
+    });
 }
 
 void TSerialDeviceTest::TestRead(const PIRDeviceQuery & query) const

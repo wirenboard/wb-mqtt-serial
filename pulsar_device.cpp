@@ -298,7 +298,7 @@ void TPulsarDevice::Read(const TIRDeviceQuery & query)
     switch (query.GetType().Index) {
     case REG_DEFAULT:
         return ReadDataRegister(query);
-    case REG_SYSTIME: // TODO: think about return value
+    case REG_SYSTIME:
         return ReadSysTimeRegister(query);
     default:
         throw TSerialDeviceException("Pulsar protocol: wrong register type");

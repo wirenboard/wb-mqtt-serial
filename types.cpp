@@ -14,7 +14,7 @@ ostream& operator<<(ostream& os, EWordOrder val)
     return os;
 }
 
-uint8_t RegisterFormatByteWidth(ERegisterFormat format)
+uint8_t RegisterFormatSize(ERegisterFormat format)
 {
     switch (format) {
         case S64:

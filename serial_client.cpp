@@ -277,9 +277,9 @@ void TSerialClient::Cycle()
 
     // Port status
     {
-        bool cycleFailed = std::all_of(DevicesList.begin(), DevicesList.end(),
-            [](const PSerialDevice & device){ return device->GetIsDisconnected(); }
-        );
+        bool cycleFailed = AllOf(DevicesList, [](const PSerialDevice & device){
+            return device->GetIsDisconnected();
+        });
 
         Port->CycleEnd(!cycleFailed);
     }

@@ -76,14 +76,14 @@ EErrorState TVirtualRegisterSet::GetErrorState() const
 
 bool TVirtualRegisterSet::GetValueIsRead() const
 {
-    return all_of(VirtualRegisters.begin(), VirtualRegisters.end(), [](const PVirtualRegister & virtualRegister){
+    return AllOf(VirtualRegisters, [](const PVirtualRegister & virtualRegister){
         return virtualRegister->GetValueIsRead();
     });
 }
 
 bool TVirtualRegisterSet::IsChanged(EPublishData data) const
 {
-    return any_of(VirtualRegisters.begin(), VirtualRegisters.end(), [data](const PVirtualRegister & virtualRegister){
+    return AnyOf(VirtualRegisters, [data](const PVirtualRegister & virtualRegister){
         return virtualRegister->IsChanged(data);
     });
 }

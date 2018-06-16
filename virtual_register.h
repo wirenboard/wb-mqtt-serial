@@ -35,7 +35,7 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
     bool                                        ValueWasAccepted : 1;
 
 public:
-    static PVirtualRegister Create(const PRegisterConfig & config, const PSerialDevice & device); // TODO: decide how to do setup sections
+    static PVirtualRegister Create(const PRegisterConfig & config, const PSerialDevice & device);
 
     /**
      * Returns hash that can be used by unordered_* containers
@@ -92,8 +92,7 @@ private:
     void AcceptDeviceValue(uint64_t);
     void AcceptWriteValue();
 
-    uint32_t GetBitPosition() const;
-    uint32_t GetBitEnd() const;
+    uint64_t GetBitPosition() const;
 
     void UpdateReadError(bool error);
     void UpdateWriteError(bool error);

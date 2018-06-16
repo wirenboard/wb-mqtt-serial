@@ -1,4 +1,5 @@
 #include "ir_bind_info.h"
+#include "memory_block.h"
 
 #include <sstream>
 #include <cassert>
@@ -34,4 +35,29 @@ string TIRBindInfo::Describe() const
     ostringstream ss;
     ss << "[" << BitStart << ", " << BitEnd - 1 << "]";
     return ss.str();
+}
+
+bool TIRDeviceValueDesc::operator<(const TIRDeviceValueDesc & rhs) const
+{
+    for (const auto & boundMemoryBlock: rhs.BoundMemoryBlocks) {
+        const auto & memoryBlock = boundMemoryBlock.first;
+        const auto & otherBindInfo = boundMemoryBlock.second;
+
+        const auto & itBindInfo = BoundMemoryBlocks.find(memoryBlock);
+        if (itBindInfo != BoundMemoryBlocks.end()) {
+            const auto & bindInfo = itBindInfo->second;
+            if (bindInfo.BitStart >= otherBindInfo.BitEnd) {
+                return false;
+            } else if(otherBindInfo.BitStart >= bindInfo.BitEnd) {
+                return true;
+            } else {
+                return false;   // collision
+            }
+        }
+    }
+
+    const auto & lhsFirst = *BoundMemoryBlocks.begin()->first;
+    const auto & rhsFirst = *rhs.BoundMemoryBlocks.begin()->first;
+
+    return lhsFirst < rhsFirst;
 }

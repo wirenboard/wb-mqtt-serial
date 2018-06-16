@@ -48,8 +48,6 @@ PDeviceConfig TMercury230Test::GetDeviceConfig()
 	return std::make_shared<TDeviceConfig>("mercury230", std::to_string(0x00), "mercury230");
 }
 
-// TODO: remove TVirtualRegister::Create\(TRegisterConfig::Create\((.+), (.+), (.+)\), (.+)\);
-
 void TMercury230Test::SetUp()
 {
 	TSerialDeviceTest::SetUp();
@@ -59,36 +57,36 @@ void TMercury230Test::SetUp()
 	Mercury230TotalConsumptionReg = RegValue(Mercury230Dev, 0x00, 0, TMercury230Device::REG_VALUE_ARRAY, U32);
 	Mercury230TotalReactiveEnergyReg = RegValue(Mercury230Dev, 0x00, 2, TMercury230Device::REG_VALUE_ARRAY, U32);
 
-	Mercury230PReg  = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24), Mercury230Dev);
-	Mercury230P1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1101, S24), Mercury230Dev);
-	Mercury230P2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1102, S24), Mercury230Dev);
-	Mercury230P3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1103, S24), Mercury230Dev);
+	Mercury230PReg  = Reg(Mercury230Dev, 0x1100, TMercury230Device::REG_PARAM_SIGN_ACT, S24);
+	Mercury230P1Reg = Reg(Mercury230Dev, 0x1101, TMercury230Device::REG_PARAM_SIGN_ACT, S24);
+	Mercury230P2Reg = Reg(Mercury230Dev, 0x1102, TMercury230Device::REG_PARAM_SIGN_ACT, S24);
+	Mercury230P3Reg = Reg(Mercury230Dev, 0x1103, TMercury230Device::REG_PARAM_SIGN_ACT, S24);
 
-	Mercury230QReg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1104, S24), Mercury230Dev);
-	Mercury230Q1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1105, S24), Mercury230Dev);
-	Mercury230Q2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1106, S24), Mercury230Dev);
-	Mercury230Q3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_REACT, 0x1107, S24), Mercury230Dev);
+	Mercury230QReg = Reg(Mercury230Dev, 0x1104, TMercury230Device::REG_PARAM_SIGN_REACT, S24);
+	Mercury230Q1Reg = Reg(Mercury230Dev, 0x1105, TMercury230Device::REG_PARAM_SIGN_REACT, S24);
+	Mercury230Q2Reg = Reg(Mercury230Dev, 0x1106, TMercury230Device::REG_PARAM_SIGN_REACT, S24);
+	Mercury230Q3Reg = Reg(Mercury230Dev, 0x1107, TMercury230Device::REG_PARAM_SIGN_REACT, S24);
 
-	Mercury230U1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1111, U24), Mercury230Dev);
-	Mercury230U2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1112, U24), Mercury230Dev);
-	Mercury230U3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1113, U24), Mercury230Dev);
+	Mercury230U1Reg = Reg(Mercury230Dev, 0x1111, TMercury230Device::REG_PARAM, U24);
+	Mercury230U2Reg = Reg(Mercury230Dev, 0x1112, TMercury230Device::REG_PARAM, U24);
+	Mercury230U3Reg = Reg(Mercury230Dev, 0x1113, TMercury230Device::REG_PARAM, U24);
 
-	Mercury230I1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1121, U24), Mercury230Dev);
-	Mercury230I2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1122, U24), Mercury230Dev);
-	Mercury230I3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1123, U24), Mercury230Dev);
+	Mercury230I1Reg = Reg(Mercury230Dev, 0x1121, TMercury230Device::REG_PARAM, U24);
+	Mercury230I2Reg = Reg(Mercury230Dev, 0x1122, TMercury230Device::REG_PARAM, U24);
+	Mercury230I3Reg = Reg(Mercury230Dev, 0x1123, TMercury230Device::REG_PARAM, U24);
 
-	Mercury230FrequencyReg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1140, U24), Mercury230Dev);
+	Mercury230FrequencyReg = Reg(Mercury230Dev, 0x1140, TMercury230Device::REG_PARAM, U24);
 
-	Mercury230PFReg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1130, S24), Mercury230Dev);
-	Mercury230PF1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1131, S24), Mercury230Dev);
-	Mercury230PF2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1132, S24), Mercury230Dev);
-	Mercury230PF3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1133, S24), Mercury230Dev);
+	Mercury230PFReg = Reg(Mercury230Dev, 0x1130, TMercury230Device::REG_PARAM_SIGN_ACT, S24);
+	Mercury230PF1Reg = Reg(Mercury230Dev, 0x1131, TMercury230Device::REG_PARAM_SIGN_ACT, S24);
+	Mercury230PF2Reg = Reg(Mercury230Dev, 0x1132, TMercury230Device::REG_PARAM_SIGN_ACT, S24);
+	Mercury230PF3Reg = Reg(Mercury230Dev, 0x1133, TMercury230Device::REG_PARAM_SIGN_ACT, S24);
 
-	Mercury230KU1Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1161, U16), Mercury230Dev);
-	Mercury230KU2Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1162, U16), Mercury230Dev);
-	Mercury230KU3Reg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1163, U16), Mercury230Dev);
+	Mercury230KU1Reg = Reg(Mercury230Dev, 0x1161, TMercury230Device::REG_PARAM, U16);
+	Mercury230KU2Reg = Reg(Mercury230Dev, 0x1162, TMercury230Device::REG_PARAM, U16);
+	Mercury230KU3Reg = Reg(Mercury230Dev, 0x1163, TMercury230Device::REG_PARAM, U16);
 
-	Mercury230TempReg = TVirtualRegister::Create(TRegisterConfig::Create(TMercury230Device::REG_PARAM_BE, 0x1170, U16), Mercury230Dev);
+	Mercury230TempReg = Reg(Mercury230Dev, 0x1170, TMercury230Device::REG_PARAM_BE, U16);
 
 
 	SerialPort->Open();

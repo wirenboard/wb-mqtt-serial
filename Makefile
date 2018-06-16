@@ -24,7 +24,7 @@ ifneq ($(CC_PATH),)
 endif
 
 #CFLAGS=
-DEBUG_CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
+DEBUG_CFLAGS=-Wall -ggdb -std=c++0x -O0 -I. -DWB_MQTT_SERIAL_VERBOSE_OUTPUT
 NORMAL_CFLAGS=-Wall -std=c++0x -Os -I.
 CFLAGS=$(if $(or $(DEBUG),$(filter test, $(MAKECMDGOALS))), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
 LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt

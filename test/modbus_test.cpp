@@ -49,17 +49,17 @@ void TModbusTest::SetUp()
     ModbusDev = make_shared<TModbusDevice>(GetDeviceConfig(), SerialPort,
                                 TSerialDeviceFactory::GetProtocol("modbus"));
 
-    ModbusCoil0 = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_COIL, 0, U8), ModbusDev);
-    ModbusCoil1 = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_COIL, 1, U8), ModbusDev);
-    ModbusDiscrete = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_DISCRETE, 20, U8), ModbusDev);
-    ModbusHolding = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING, 70, U16), ModbusDev);
-    ModbusInput = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_INPUT, 40, U16), ModbusDev);
-    ModbusHoldingS64 = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING, 30, S64), ModbusDev);
+    ModbusCoil0 = Reg(ModbusDev, 0, Modbus::REG_COIL, U8);
+    ModbusCoil1 = Reg(ModbusDev, 1, Modbus::REG_COIL, U8);
+    ModbusDiscrete = Reg(ModbusDev, 20, Modbus::REG_DISCRETE, U8);
+    ModbusHolding = Reg(ModbusDev, 70, Modbus::REG_HOLDING, U16);
+    ModbusInput = Reg(ModbusDev, 40, Modbus::REG_INPUT, U16);
+    ModbusHoldingS64 = Reg(ModbusDev, 30, Modbus::REG_HOLDING, S64);
 
-    ModbusHoldingU64Single = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 90, U64), ModbusDev);
-    ModbusHoldingU16Single = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 94, U16), ModbusDev);
-    ModbusHoldingU64Multi = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64), ModbusDev);
-    ModbusHoldingU16Multi = TVirtualRegister::Create(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16), ModbusDev);
+    ModbusHoldingU64Single = Reg(ModbusDev, 90, Modbus::REG_HOLDING_SINGLE, U64);
+    ModbusHoldingU16Single = Reg(ModbusDev, 94, Modbus::REG_HOLDING_SINGLE, U16);
+    ModbusHoldingU64Multi = Reg(ModbusDev, 95, Modbus::REG_HOLDING_MULTI, U64);
+    ModbusHoldingU16Multi = Reg(ModbusDev, 99, Modbus::REG_HOLDING_MULTI, U16);
 
     SerialPort->Open();
 }

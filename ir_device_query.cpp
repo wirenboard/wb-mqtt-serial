@@ -20,45 +20,6 @@ namespace
         s << mb->Describe();
     }
 
-    // TPSet<PVirtualRegister> GetVirtualRegisters(const TPSet<PMemoryBlock> & memoryBlockSet)
-    // {
-    //     TPSet<PVirtualRegister> result;
-
-    //     for (const auto & memoryBlock: memoryBlockSet) {
-    //         const auto & localVirtualRegisters = memoryBlock->GetVirtualRegsiters();
-    //         for (const auto & virtualRegister: localVirtualRegisters) {
-    //             const auto & memoryBlocks = virtualRegister->GetMemoryBlocks();
-    //             if (IsSubset(memoryBlockSet, memoryBlocks)) {
-    //                 result.insert(virtualRegister);
-    //             }
-    //         }
-    //     }
-
-    //     return move(result);
-    // }
-
-    TPSet<PMemoryBlock> GetMemoryBlockSet(const vector<PVirtualRegister> & virtualRegisters)
-    {
-        TPSet<PMemoryBlock> memoryBlocks;
-
-        for (const auto & reg: virtualRegisters) {
-            const auto & regMemoryBlocks = reg->GetMemoryBlocks();
-            memoryBlocks.insert(regMemoryBlocks.begin(), regMemoryBlocks.end());
-        }
-
-        return memoryBlocks;
-    }
-
-    TPSetRange<PMemoryBlock> GetMemoryBlockRange(const vector<PVirtualRegister> & virtualRegisters)
-    {
-        TPSet<PVirtualRegister> sortedRegs { virtualRegisters.begin(), virtualRegisters.end() };
-
-        auto first = *(*sortedRegs.begin())->GetMemoryBlocks().begin();
-        auto last = *(*sortedRegs.rbegin())->GetMemoryBlocks().rbegin();
-
-        return TSerialDevice::StaticCreateMemoryBlockRange(first, last);
-    }
-
     TPSetRange<PMemoryBlock> GetMemoryBlockRange(const TPSet<PMemoryBlock> & memoryBlocks)
     {
         return TSerialDevice::StaticCreateMemoryBlockRange(*memoryBlocks.begin(), *memoryBlocks.rbegin());
@@ -83,15 +44,15 @@ namespace
         auto typeIndex = (*memoryBlockRange.begin())->Type.Index;
         auto size = (*memoryBlockRange.begin())->Size;
 
-        return all_of(memoryBlockRange.begin(), memoryBlockRange.end(), [&](const PMemoryBlock & mb){
+        return AllOf(memoryBlockRange, [&](const PMemoryBlock & mb){
             return mb->Type.Index == typeIndex && mb->Size == size;
         });
     }
 }
 
-TIRDeviceQuery::TIRDeviceQuery(vector<PVirtualRegister> && virtualRegisters, EQueryOperation operation)
-    : MemoryBlockRange(GetMemoryBlockRange(virtualRegisters))
-    , VirtualRegisters(move(virtualRegisters))
+TIRDeviceQuery::TIRDeviceQuery(TAssociatedMemoryBlockSet && memoryBlocks, EQueryOperation operation)
+    : MemoryBlockRange(GetMemoryBlockRange(memoryBlocks.first))
+    , VirtualRegisters(move(memoryBlocks.second))
     , HasHoles(DetectHoles(MemoryBlockRange))
     , Operation(operation)
     , Status(EQueryStatus::NotExecuted)
@@ -207,7 +168,7 @@ void TIRDeviceQuery::SetEnabledWithRegisters(bool enabled)
 
 bool TIRDeviceQuery::IsEnabled() const
 {
-    return any_of(VirtualRegisters.begin(), VirtualRegisters.end(), [](const PVirtualRegister & reg){
+    return AnyOf(VirtualRegisters, [](const PVirtualRegister & reg){
         return reg->IsEnabled();
     });
 }
@@ -282,15 +243,18 @@ void TIRDeviceQuery::FinalizeRead(const TIRDeviceMemoryView & memoryView) const
     }
 
     for (const auto & reg: VirtualRegisters) {
+#ifdef WB_MQTT_SERIAL_VERBOSE_OUTPUT
+        cout << "READING: " << reg->ToString() << ": " << reg->Describe() << endl;
+#endif
         reg->AcceptDeviceValue(memoryView.ReadValue(reg->GetValueDesc()));
     }
 
     SetStatus(EQueryStatus::Ok);
 }
 
-TIRDeviceValueQuery::TIRDeviceValueQuery(vector<PVirtualRegister> && virtualRegisters, EQueryOperation operation)
-    : TIRDeviceQuery(move(virtualRegisters), operation)
-    , MemoryBlocks(GetMemoryBlockSet(VirtualRegisters))
+TIRDeviceValueQuery::TIRDeviceValueQuery(TAssociatedMemoryBlockSet && memoryBlocks, EQueryOperation operation)
+    : TIRDeviceQuery(move(memoryBlocks), operation)
+    , MemoryBlocks(move(memoryBlocks.first))
 {
     assert(!MemoryBlocks.empty());
 }

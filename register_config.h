@@ -36,7 +36,7 @@ struct TMemoryBlockType {
         , Defaults{defaultControlType, defaultWordOrder}
     {
         for (auto format: Layout) {
-            Size += RegisterFormatByteWidth(format);
+            Size += RegisterFormatSize(format);
         }
 
         if (!Size) {
@@ -106,7 +106,7 @@ struct TRegisterConfig
                     double round_to, bool poll, bool readonly,
                     const std::string& type_name,
                     bool has_error_value, uint64_t error_value,
-                    const EWordOrder word_order, uint16_t bit_offset, uint8_t bit_width);
+                    const EWordOrder word_order, uint16_t bit_offset, uint8_t width);
 
     static PRegisterConfig Create(int type = 0, int address = 0,
                                   ERegisterFormat format = U16, double scale = 1, double offset = 0,
@@ -115,15 +115,15 @@ struct TRegisterConfig
                                   bool has_error_value = false,
                                   uint64_t error_value = 0,
                                   const EWordOrder word_order = EWordOrder::BigEndian,
-                                  uint16_t bit_offset = 0, uint8_t bit_width = 0)
+                                  uint16_t bit_offset = 0, uint8_t width = 0)
     {
         return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
-                                            type_name, has_error_value, error_value, word_order, bit_offset, bit_width);
+                                            type_name, has_error_value, error_value, word_order, bit_offset, width);
     }
 
-    uint8_t GetBitWidth() const;
+    uint8_t GetWidth() const;
     uint8_t GetFormatByteWidth() const;
-    uint8_t GetFormatBitWidth() const;
+    uint8_t GetFormatWidth() const;
     uint8_t GetFormatWordWidth() const;
 
     std::string ToString() const;
@@ -145,7 +145,7 @@ struct TRegisterConfig
     uint64_t    ErrorValue;
     EWordOrder  WordOrder;
     uint16_t    BitOffset;
-    uint8_t     BitWidth;
+    uint8_t     Width;
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, PRegisterConfig reg) {

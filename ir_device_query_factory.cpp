@@ -78,22 +78,22 @@ namespace // utility
     }
 
     template <class Query>
-    void AddQueryImpl(vector<PVirtualRegister> && virtualRegisters, TPSet<PIRDeviceQuery> & result)
+    void AddQueryImpl(TAssociatedMemoryBlockSet && memoryBlocks, TPSet<PIRDeviceQuery> & result)
     {
-        bool inserted = result.insert(TIRDeviceQueryFactory::CreateQuery<Query>(move(virtualRegisters))).second;
+        bool inserted = result.insert(TIRDeviceQueryFactory::CreateQuery<Query>(move(memoryBlocks))).second;
         assert(inserted);
     }
 
     template <class Query>
-    void AddQueryImpl(vector<PVirtualRegister> && virtualRegisters, list<PIRDeviceQuery> & result)
+    void AddQueryImpl(TAssociatedMemoryBlockSet && memoryBlocks, list<PIRDeviceQuery> & result)
     {
-        result.push_back(TIRDeviceQueryFactory::CreateQuery<Query>(move(virtualRegisters)));
+        result.push_back(TIRDeviceQueryFactory::CreateQuery<Query>(move(memoryBlocks)));
     }
 
     template <class Query>
-    void AddQuery(vector<PVirtualRegister> && virtualRegisters, TQueries & result)
+    void AddQuery(TAssociatedMemoryBlockSet && memoryBlocks, TQueries & result)
     {
-        AddQueryImpl<Query>(move(virtualRegisters), result);
+        AddQueryImpl<Query>(move(memoryBlocks), result);
     }
 }
 
@@ -185,17 +185,39 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(TAssociatedMemoryBlockList && me
         return pair<uint32_t, uint32_t>{ maxHole, maxRegs };
     };
 
-    auto addQuery = [&](vector<PVirtualRegister> && virtualRegisters, TQueries & result) {
+    auto addQuery = [&](TAssociatedMemoryBlockSet && memoryBlocks, TQueries & result) {
         const auto & chosenAddQuery = isRead ? AddQuery<TIRDeviceQuery>
                                              : AddQuery<TIRDeviceValueQuery>;
 
-        return chosenAddQuery(move(virtualRegisters), result);
+        return chosenAddQuery(move(memoryBlocks), result);
     };
 
     /** done gathering data **/
 
     if (performMerge) {
+#ifdef WB_MQTT_SERIAL_VERBOSE_OUTPUT
+        cout << "BEFORE MERGE:\n" << PrintCollection(memoryBlockSets, [](ostream & s, const TAssociatedMemoryBlockList::value_type & mbs){
+            s << "MEMORY BLOCKS: " << PrintCollection(mbs.first, [](ostream & s, const PMemoryBlock & mb) {
+                s << mb->Address;
+            });
+            s << endl;
+            s << "VREGS: " << PrintCollection(mbs.second, [](ostream & s, const PVirtualRegister & vreg) {
+                s << vreg->Describe();
+            });
+        }, true, "\n---------------") << endl;
+#endif
         MergeSets(memoryBlockSets, getMaxHoleAndRegs);
+#ifdef WB_MQTT_SERIAL_VERBOSE_OUTPUT
+        cout << "AFTER MERGE:\n" << PrintCollection(memoryBlockSets, [](ostream & s, const TAssociatedMemoryBlockList::value_type & mbs){
+            s << "MEMORY BLOCKS: " << PrintCollection(mbs.first, [](ostream & s, const PMemoryBlock & mb) {
+                s << mb->Address;
+            });
+            s << endl;
+            s << "VREGS: " << PrintCollection(mbs.second, [](ostream & s, const PVirtualRegister & vreg) {
+                s << vreg->Describe();
+            });
+        }, true, "\n---------------") << endl;
+#endif
     } else {
         CheckSets(memoryBlockSets, getMaxHoleAndRegs);
     }
@@ -203,7 +225,7 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(TAssociatedMemoryBlockList && me
     TQueries result;
 
     for (auto & memoryBlockSet: memoryBlockSets) {
-        addQuery(move(memoryBlockSet.second), result);
+        addQuery(move(memoryBlockSet), result);
     }
 
     assert(!result.empty());

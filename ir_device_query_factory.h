@@ -1,7 +1,6 @@
 #pragma once
 
 #include "declarations.h"
-#include "utils.h"
 
 #include <vector>
 
@@ -28,11 +27,11 @@ public:
     static TQueries GenerateQueries(const std::vector<PVirtualRegister> & virtualRegisters, EQueryOperation, EQueryGenerationPolicy = Default);
 
     template <class Query>
-    static std::shared_ptr<Query> CreateQuery(std::vector<PVirtualRegister> && virtualRegisters)
+    static std::shared_ptr<Query> CreateQuery(TAssociatedMemoryBlockSet && memoryBlocks)
     {
         static_assert(std::is_base_of<TIRDeviceQuery, Query>::value, "Query must be derived from TIRDeviceQuery");
 
-        return std::shared_ptr<Query>(new Query(std::move(virtualRegisters)));
+        return std::shared_ptr<Query>(new Query(std::move(memoryBlocks)));
     }
 
     template <class Query>
@@ -45,7 +44,7 @@ public:
 
 private:
     using TRegisterTypeInfo = std::function<std::pair<uint32_t, uint32_t>(const TMemoryBlockType &)>;
-    using TAssociatedMemoryBlockList = std::list<std::pair<TPSet<PMemoryBlock>, std::vector<PVirtualRegister>>>;
+    using TAssociatedMemoryBlockList = std::list<TAssociatedMemoryBlockSet>;
 
     static TQueries GenerateQueries(TAssociatedMemoryBlockList && memoryBlockSets, EQueryOperation, EQueryGenerationPolicy);
 

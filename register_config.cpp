@@ -15,7 +15,7 @@ ERegisterFormat TMemoryBlockType::GetDefaultFormat(uint16_t bit) const
 
     uint16_t pos = 0;
     for (auto format: Layout) {
-        pos += RegisterFormatByteWidth(format) * 8;
+        pos += RegisterFormatSize(format) * 8;
         if (pos > bit) {
             return format;
         }
@@ -42,7 +42,7 @@ uint16_t TMemoryBlockType::GetValueByteIndex(uint16_t iValue) const
 uint8_t TMemoryBlockType::GetValueSize(uint16_t iValue) const
 {
     assert(!Layout.empty());
-    return RegisterFormatByteWidth(Layout[iValue]);
+    return RegisterFormatSize(Layout[iValue]);
 }
 
 std::pair<uint16_t, uint8_t> TMemoryBlockType::ToMaskParameters(uint16_t iValue) const
@@ -162,30 +162,30 @@ TRegisterConfig::TRegisterConfig(int type, int address,
             double round_to, bool poll, bool readonly,
             const std::string& type_name,
             bool has_error_value, uint64_t error_value,
-            const EWordOrder word_order, uint16_t bit_offset, uint8_t bit_width)
+            const EWordOrder word_order, uint16_t bit_offset, uint8_t width)
     : Type(type), Address(address), Format(format)
     , Scale(scale), Offset(offset), RoundTo(round_to)
     , Poll(poll), ReadOnly(readonly), TypeName(type_name)
     , HasErrorValue(has_error_value), ErrorValue(error_value)
-    , WordOrder(word_order), BitOffset(bit_offset), BitWidth(bit_width)
+    , WordOrder(word_order), BitOffset(bit_offset), Width(width)
 {
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
 }
 
-uint8_t TRegisterConfig::GetBitWidth() const {
-    if (BitWidth) {
-        return BitWidth;
+uint8_t TRegisterConfig::GetWidth() const {
+    if (Width) {
+        return Width;
     }
 
-    return GetFormatBitWidth() - BitOffset;
+    return GetFormatWidth();
 }
 
 uint8_t TRegisterConfig::GetFormatByteWidth() const {
-    return RegisterFormatByteWidth(Format);
+    return RegisterFormatSize(Format);
 }
 
-uint8_t TRegisterConfig::GetFormatBitWidth() const {
+uint8_t TRegisterConfig::GetFormatWidth() const {
     return GetFormatByteWidth() * 8;
 }
 
@@ -197,8 +197,8 @@ string TRegisterConfig::ToString() const
 {
     stringstream s;
     s << TypeName << ": " << Address;
-    if (BitOffset || BitWidth) {
-        s << ":" << (int)BitOffset << ":" << (int)BitWidth;
+    if (BitOffset || Width) {
+        s << ":" << (int)BitOffset << ":" << (int)Width;
     }
 
     return s.str();

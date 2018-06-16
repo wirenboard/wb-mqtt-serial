@@ -1,6 +1,7 @@
 #include "memory_block.h"
 #include "serial_device.h"
 #include "virtual_register.h"
+#include "constraints.h"
 
 #include <cassert>
 
@@ -128,21 +129,26 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
             assert(AssociatedVirtualRegister()->Type == reg->Type);
             assert(!Has(reg));
 
-            auto itOtherReg = VirtualRegisters.lower_bound(reg);
+            auto itOtherReg = VirtualRegisters.find(reg);
 
             // check for overlapping after insertion point
             if (itOtherReg != VirtualRegisters.end()) {
-                if (auto otherReg = itOtherReg->lock())
-                    if (otherReg->AreOverlapping(*reg))
-                        throw TSerialDeviceException("registers " + reg->ToStringWithFormat() + " and " + otherReg->ToStringWithFormat() + " are overlapping");
+                auto otherReg = itOtherReg->lock();
+                throw TSerialDeviceException(
+                    "registers " + reg->ToStringWithFormat() +
+                    " and " + otherReg->ToStringWithFormat() + " are overlapping"
+                );
             }
 
             // check for overlapping before insertion point
-            if (itOtherReg != VirtualRegisters.begin()) {
-                if (auto otherReg = (--itOtherReg)->lock())
-                    if (otherReg->AreOverlapping(*reg))
-                        throw TSerialDeviceException("registers " + reg->ToStringWithFormat() + " and " + otherReg->ToStringWithFormat() + " are overlapping");
-            }
+            // if (itOtherReg != VirtualRegisters.begin()) {
+            //     if (auto otherReg = (--itOtherReg)->lock())
+            //         if (otherReg->AreOverlapping(*reg)) {
+            //             throw TSerialDeviceException(
+            //                 "registers " + reg->ToStringWithFormat() +
+            //                 " and " + otherReg->ToStringWithFormat() + " are overlapping");
+            //         }
+            // }
 
             LinkWithImpl(reg);
         }
@@ -168,7 +174,7 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
                 0, static_cast<uint16_t>(memoryBlock->Size * 8)
             };
 
-            return any_of(VirtualRegisters.begin(), VirtualRegisters.end(), [&](const PWVirtualRegister & reg) {
+            return AnyOf(VirtualRegisters, [&](const PWVirtualRegister & reg) {
                 auto virtualRegister = reg.lock();
 
                 auto writable = !memoryBlock->Type.ReadOnly && !virtualRegister->ReadOnly;
@@ -193,7 +199,7 @@ TMemoryBlock::TMemoryBlock(uint32_t address, uint16_t size, const TMemoryBlockTy
     , Type(type)
     , Size(type.IsVariadicSize() ? size : type.Size)
 {
-    assert(Size > 0 && Size < 8192 && "memory block size must be more than 0 and less than 8192 bytes");
+    assert(Size < MAX_MEMORY_BLOCK_SIZE && "memory block size doesn't fit constraints");
 }
 
 TMemoryBlock::TMemoryBlock(uint32_t address, const TMemoryBlockType & type)

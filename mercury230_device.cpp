@@ -89,6 +89,7 @@ void TMercury230Device::ReadValueArray(const TIRDeviceQuery & query)
     const auto & memoryBlockView = memoryView[mb];
 
     for (int i = 0; i < mb->Size / 4; i++, p += 4) {
+        // assign normalized value
         memoryBlockView[i] = ((uint32_t)p[1] << 24) +
                              ((uint32_t)p[0] << 16) +
                              ((uint32_t)p[3] << 8 ) +
@@ -112,15 +113,15 @@ void TMercury230Device::ReadParam(const TIRDeviceQuery & query)
     Talk( 0x08, cmdBuf, 2, -1, buf, mb->Size);
 
     if (mb->Size == 3) {
-        uint32_t paramValue = 0;
+        const auto & memoryView = query.CreateMemoryView(buf, 3);
 
         if ((typeIndex == TMercury230Device::REG_PARAM_SIGN_ACT) ||
             (typeIndex == TMercury230Device::REG_PARAM_SIGN_REACT) ||
             (typeIndex == TMercury230Device::REG_PARAM_SIGN_IGNORE)
         ) {
             uint32_t magnitude = (((uint32_t)buf[0] & 0x3f) << 16) +
-                                    ((uint32_t)buf[2] << 8) +
-                                    (uint32_t)buf[1];
+                                  ((uint32_t)buf[2] << 8) +
+                                   (uint32_t)buf[1];
 
             int active_power_sign   = (buf[0] & (1 << 7)) ? -1 : 1;
             int reactive_power_sign = (buf[0] & (1 << 6)) ? -1 : 1;
@@ -133,16 +134,14 @@ void TMercury230Device::ReadParam(const TIRDeviceQuery & query)
                 sign = reactive_power_sign;
             }
 
-            paramValue = (uint32_t)(((int32_t) magnitude * sign));
+            // assign normalized value
+            memoryView[mb] = (uint32_t)(((int32_t) magnitude * sign));
         } else {
-            paramValue = ((uint32_t)buf[0] << 16) +
-                            ((uint32_t)buf[2] << 8) +
-                            (uint32_t)buf[1];
+            // assign normalized value
+            memoryView[mb] = ((uint32_t)buf[0] << 16) +
+                             ((uint32_t)buf[2] << 8) +
+                              (uint32_t)buf[1];
         }
-
-        const auto & memoryView = query.CreateMemoryView(buf, 3);
-
-        memoryView[mb][0] = paramValue;
 
         query.FinalizeRead(memoryView);
     } else  {
@@ -165,13 +164,6 @@ void TMercury230Device::Read(const TIRDeviceQuery & query)
     default:
         throw TSerialDeviceException("mercury230 Read: invalid register type");
     }
-}
-
-void TMercury230Device::EndPollCycle()
-{
-    CachedValues.clear();
-
-    TSerialDevice::EndPollCycle();
 }
 
 // TBD: custom password?

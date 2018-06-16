@@ -28,20 +28,14 @@ public:
 
     TMercury230Device(PDeviceConfig, PPort port, PProtocol protocol);
     void Read(const TIRDeviceQuery &) override;
-    void EndPollCycle() override;
 
 protected:
     bool ConnectionSetup();
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
 
 private:
-    struct TValueArray {
-        uint32_t values[4];
-    };
     void ReadValueArray(const TIRDeviceQuery &);
     void ReadParam(const TIRDeviceQuery &);
-
-    std::unordered_map<int, TValueArray> CachedValues;
 };
 
 typedef std::shared_ptr<TMercury230Device> PMercury230Device;

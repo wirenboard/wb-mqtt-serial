@@ -290,7 +290,11 @@ std::string PrintCollection(
     const char * delimiter = ", "
 )
 {
-    return PrintRange(c.begin(), c.end(), std::move(toStream), multiline, delimiter);
+    return PrintRange(
+        c.begin(), c.end(),
+        std::move(toStream),
+        multiline, delimiter
+    );
 }
 
 inline bool IsLittleEndian()
@@ -299,4 +303,25 @@ inline bool IsLittleEndian()
     using TOverlay = union { int i; TBytes b; };
     static TOverlay overlayed{ 1 };
     return overlayed.b.a;
+}
+
+/**
+ * @brief: wrappers for shorter code
+ */
+template <class T, typename Pred>
+bool AnyOf(const T & collection, Pred && predicate)
+{
+    return std::any_of(
+        collection.begin(), collection.end(),
+        std::forward<Pred>(predicate)
+    );
+}
+
+template <class T, typename Pred>
+bool AllOf(const T & collection, Pred && predicate)
+{
+    return std::all_of(
+        collection.begin(), collection.end(),
+        std::forward<Pred>(predicate)
+    );
 }

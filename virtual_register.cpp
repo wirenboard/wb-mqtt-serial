@@ -244,19 +244,9 @@ void TVirtualRegister::Initialize()
         cerr << "New virtual register: " << Describe() << endl;
 }
 
-uint32_t TVirtualRegister::GetBitPosition() const
+uint64_t TVirtualRegister::GetBitPosition() const
 {
-    return GetBitEnd() - GetBitWidth();
-}
-
-uint32_t TVirtualRegister::GetBitEnd() const
-{
-    // TODO: make sure that this is correct
-    auto availableWidth = max(uint16_t(GetFormatBitWidth()), uint16_t(MemoryBlocks.begin()->first->Size * 8));
-
-    assert(availableWidth > BitOffset);
-
-    return (uint32_t(Address) * MemoryBlocks.begin()->first->Size * 8) + availableWidth - BitOffset;
+    return (uint64_t(Address) * MemoryBlocks.begin()->first->Size * 8) + GetWidth() - BitOffset;
 }
 
 const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
@@ -316,8 +306,7 @@ void TVirtualRegister::AcceptWriteValue()
 
 size_t TVirtualRegister::GetHash() const noexcept
 {
-    // NOTE: non-continious virtual registers are not supported yet by config, when they will, this must change as well
-    return Hash(GetDevice()) ^ Hash(Address) ^ Hash(BitOffset) ^ Hash(BitWidth);
+    return Hash(GetDevice()) ^ Hash(GetBitPosition());
 }
 
 bool TVirtualRegister::operator==(const TVirtualRegister & rhs) const noexcept
@@ -330,27 +319,15 @@ bool TVirtualRegister::operator==(const TVirtualRegister & rhs) const noexcept
         return false;
     }
 
-    auto lhsBegin = GetBitPosition();
-    auto rhsBegin = rhs.GetBitPosition();
-    if (lhsBegin != rhsBegin) {
-        return false;
-    }
-
-    auto lhsEnd = lhsBegin + GetBitWidth();
-    auto rhsEnd = rhsBegin + rhs.GetBitWidth();
-    if (lhsEnd != rhsEnd) {
-        return false;
-    }
-
-    // NOTE: need to check registers and bind info for non-continious virtual registers
-    return true; // MemoryBlocks == rhs.MemoryBlocks;
+    return GetBitPosition() == rhs.GetBitPosition();
 }
 
 bool TVirtualRegister::operator<(const TVirtualRegister & rhs) const noexcept
 {
-    assert(GetDevice() == rhs.GetDevice());     // comparison makes sense only if registers are of same device
+    // comparison makes sense only if registers are of same device
+    assert(GetDevice() == rhs.GetDevice());
 
-    return Type < rhs.Type || (Type == rhs.Type && GetBitPosition() < rhs.GetBitPosition());
+    return Type < rhs.Type || (Type == rhs.Type && GetValueDesc() < rhs.GetValueDesc());
 }
 
 void TVirtualRegister::SetFlushSignal(PBinarySemaphore flushNeeded)
@@ -396,7 +373,7 @@ std::string TVirtualRegister::Describe() const
 {
     ostringstream ss;
 
-    ss << "[" << endl;
+    ss << "bit pos: (" << GetBitPosition() << ") [" << endl;
 
     for (const auto & memoryBlockBindInfo: MemoryBlocks) {
         const auto & memoryBlock = memoryBlockBindInfo.first;
@@ -490,12 +467,11 @@ std::string TVirtualRegister::ToString() const
 bool TVirtualRegister::AreOverlapping(const TVirtualRegister & other) const
 {
     if (GetDevice() == other.GetDevice() && Type == other.Type) {
-        const auto start1 = GetBitPosition(),
-                   start2 = other.GetBitPosition(),
-                   end1   = GetBitEnd(),
-                   end2   = other.GetBitEnd();
+        const auto & thisValueDesc = GetValueDesc();
+        const auto & otherValueDesc = other.GetValueDesc();
 
-        return end1 > start2 && end2 > start1;
+        return !(thisValueDesc < otherValueDesc) &&
+               !(otherValueDesc < thisValueDesc);
     }
 
     return false;

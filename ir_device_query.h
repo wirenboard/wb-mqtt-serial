@@ -31,7 +31,7 @@ protected:
      *  It'll update virtual registers values on finalize and
      *  maintain memory blocks cache in correct state as side effect.
      */
-    explicit TIRDeviceQuery(std::vector<PVirtualRegister> &&, EQueryOperation = EQueryOperation::Read);
+    explicit TIRDeviceQuery(TAssociatedMemoryBlockSet &&, EQueryOperation = EQueryOperation::Read);
 
     /**
      * @brief: create query without binding to virtual registers.
@@ -177,7 +177,7 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
     const TPSet<PMemoryBlock>              MemoryBlocks;
     std::map<TIRDeviceValueDesc, uint64_t> Values;
 
-    explicit TIRDeviceValueQuery(std::vector<PVirtualRegister> &&, EQueryOperation = EQueryOperation::Write);
+    explicit TIRDeviceValueQuery(TAssociatedMemoryBlockSet &&, EQueryOperation = EQueryOperation::Write);
     explicit TIRDeviceValueQuery(TPSet<PMemoryBlock> &&, EQueryOperation = EQueryOperation::Write);
 
     void SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value);

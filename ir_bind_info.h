@@ -49,9 +49,5 @@ struct TIRDeviceValueDesc
     const TBoundMemoryBlocks &  BoundMemoryBlocks;
     const EWordOrder            WordOrder;
 
-    // there's no semantic way to sort these objects and we don't need to. We only need to determine uniqueness
-    inline bool operator<(const TIRDeviceValueDesc & rhs) const
-    {
-        return &BoundMemoryBlocks < &rhs.BoundMemoryBlocks;
-    }
+    bool operator<(const TIRDeviceValueDesc & rhs) const;
 };
