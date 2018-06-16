@@ -1,8 +1,8 @@
 Parsing config configs/unsuccessful/unsuccessful-0.json
-Error parsing config file: error_value: 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of '-4'
+Error parsing config file: error_value: 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of -4
 Parsing config configs/unsuccessful/unsuccessful-1.json
-Error parsing config file: error_value: 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of '-4'
+Error parsing config file: error_value: 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of "-4"
 Parsing config configs/unsuccessful/unsuccessful-2.json
-Error parsing config file: error_value: 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of 'blah'
+Error parsing config file: error_value: 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of "blah"
 Parsing config configs/unsuccessful/unsuccessful-3.json
-unsigned integer out of UInt range
+Error parsing config file: error_value: 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of 4294967296

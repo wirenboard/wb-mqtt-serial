@@ -414,48 +414,72 @@ void TConfigParser::LoadDeviceTemplatableConfigPart(PDeviceConfig device_config,
 
 int TConfigParser::ToInt(const Json::Value& v, const string& title)
 {
-    if (v.isInt())
-        return v.asInt();
+    try {
+        if (v.isInt())
+            return v.asInt();
 
-    return ToInt(v.asString(), title);
+        return stoi(v.asString(), /*pos= */ 0, /*base= */ 0);
+    } catch (const exception &) {
+        // pass
+    }
+
+    auto v_str = Json::FastWriter().write(v);
+
+    if (v_str.back() == '\n') {
+        v_str.pop_back();
+    }
+
+    throw TConfigParserException(
+        title + ": plain integer or '0x..' hex string expected instead of " + v_str
+    );
 }
 
 int TConfigParser::ToInt(const std::string& v, const string& title)
 {
     try {
         return stoi(v, /*pos= */ 0, /*base= */ 0);
-    } catch (const logic_error& e) {}
+    } catch (const logic_error &) {}
 
     throw TConfigParserException(
-        title + ": plain integer or '0x..' hex string expected instead of '" + v +
-        "'");
+        title + ": plain integer or '0x..' hex string expected instead of '" + v + "'"
+    );
     // v.asString() should give a bit more information what config this exception came from
 }
 
 uint64_t TConfigParser::ToUint64(const Json::Value& v, const string& title)
 {
-    if (v.isUInt())
-        return v.asUInt();
-    if (v.isInt()) {
-        int val = v.asInt();
-        if (val >= 0) {
-            return val;
+    try {
+        if (v.isUInt())
+            return v.asUInt();
+        if (v.isInt()) {
+            int val = v.asInt();
+            if (val >= 0) {
+                return val;
+            }
         }
+
+        if (v.isString()) {
+            auto val = v.asString();
+            if (val.find("-") == std::string::npos) {
+                // don't try to parse strings containing munus sign
+                try {
+                    return stoull(val, /*pos= */ 0, /*base= */ 0);
+                } catch (const logic_error& e) {}
+            }
+        }
+    } catch (const exception &) {
+        // pass
     }
 
-    if (v.isString()) {
-        auto val = v.asString();
-        if (val.find("-") == std::string::npos) {
-            // don't try to parse strings containing munus sign
-            try {
-                return stoull(val, /*pos= */ 0, /*base= */ 0);
-            } catch (const logic_error& e) {}
-        }
+    auto v_str = Json::FastWriter().write(v);
+
+    if (v_str.back() == '\n') {
+        v_str.pop_back();
     }
 
     throw TConfigParserException(
         title + ": 32 bit plain unsigned integer (64 bit when quoted) "
-        "or '0x..' hex string expected instead of '" + v.asString() + "'"
+        "or '0x..' hex string expected instead of " + v_str
     );
 }
 
