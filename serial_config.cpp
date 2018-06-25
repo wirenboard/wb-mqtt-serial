@@ -156,7 +156,13 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
 
     const auto & reg_type_str = register_data["reg_type"].asString();
     const auto & type = TMemoryBlockTypeMapper::Get(device_config, reg_type_str);
-    tie(address, bitOffset, width) = ParseRegisterAddress(register_data, "address", type);
+
+    ERegisterFormat format = register_data.isMember("format") ?
+        RegisterFormatFromName(register_data["format"].asString()) :
+        type.GetDefaultFormat(bitOffset);
+
+    tie(address, bitOffset, width) = ParseRegisterAddress(
+        register_data, "address", type, RegisterFormatMaxWidth(format));
 
     cout << "address: " << address << endl;
     if (bitOffset) {
@@ -171,10 +177,6 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
 
     if (!type.Defaults.ControlType.empty())
         default_type_str = type.Defaults.ControlType;
-
-    ERegisterFormat format = register_data.isMember("format") ?
-        RegisterFormatFromName(register_data["format"].asString()) :
-        type.GetDefaultFormat(bitOffset);
 
     EWordOrder word_order = register_data.isMember("word_order") ?
         WordOrderFromName(register_data["word_order"].asString()) :
@@ -353,11 +355,14 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
 
     const auto & type = reg_type_str.empty() ? TMemoryBlockTypeMapper::Get(device_config, 0)
                                              : TMemoryBlockTypeMapper::Get(device_config, reg_type_str);
-    tie(address, bitOffset, width) = ParseRegisterAddress(item_data, "address", type);
 
     ERegisterFormat format = U16;
     if (item_data.isMember("format"))
         format = RegisterFormatFromName(item_data["format"].asString());
+
+    tie(address, bitOffset, width) = ParseRegisterAddress(
+        item_data, "address", type, RegisterFormatMaxWidth(format));
+
     PRegisterConfig reg = TRegisterConfig::Create(
         type.Index, address, format, 1, 0, 0, true, false, reg_type_str, false, 0, EWordOrder::BigEndian, bitOffset, width);
 
@@ -483,11 +488,15 @@ uint64_t TConfigParser::ToUint64(const Json::Value& v, const string& title)
     );
 }
 
-tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Value& obj, const std::string& key, const TMemoryBlockType & type)
+TConfigParser::TRegisterAddress TConfigParser::ParseRegisterAddress(
+    const Json::Value& obj,
+    const std::string& key,
+    const TMemoryBlockType & type,
+    TValueSize maxWidth)
 {
     int address;
-    int bitOffset = 0;
-    int width = 0;
+    int64_t bitOffset = 0;
+    int64_t width = 0;
 
     const auto & value = obj[key];
 
@@ -519,7 +528,7 @@ tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Va
 
                 auto iValue = stoi(addressStr.substr(pos1 + 1, pos2));
 
-                if (iValue < 0 || uint64_t(iValue) > MAX_MEMORY_BLOCK_VALUE_INDEX) {
+                if (iValue < 0 || uint64_t{iValue} > MAX_MEMORY_BLOCK_VALUE_INDEX) {
                     throw TConfigParserException(
                         "error during address parsing: value index must be in range [0, " +
                         std::to_string(MAX_MEMORY_BLOCK_VALUE_INDEX) + "] "
@@ -533,9 +542,9 @@ tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Va
             auto pos2 = addressStr.find(':', pos1 + 1);
 
             address = ToInt(addressStr.substr(0, pos1), key);
-            bitOffset = stoi(addressStr.substr(pos1 + 1, pos2));
+            bitOffset = stoll(addressStr.substr(pos1 + 1, pos2));
 
-            if (bitOffset < 0 || uint64_t(bitOffset) > MAX_MEMORY_BLOCK_BIT_INDEX) {
+            if (bitOffset < 0 || uint64_t{bitOffset} > MAX_MEMORY_BLOCK_BIT_INDEX) {
                 throw TConfigParserException(
                     "error during address parsing: bit shift must be in range [0, " +
                     std::to_string(MAX_MEMORY_BLOCK_BIT_INDEX) + "] "
@@ -544,11 +553,28 @@ tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Va
             }
 
             if (pos2 != string::npos) {
-                width = stoi(addressStr.substr(pos2 + 1));
-                if (width <= 0 || uint64_t(width) > MAX_VALUE_WIDTH) {
+                auto pos3 = string::npos;
+                bool bytes = false;
+
+                auto found = std::find_if(addressStr.begin() + pos2 + 1, addressStr.end(), [](char c){
+                    return !std::isdigit(c);
+                });
+
+                if (found != addressStr.end()) {
+                    pos3 = found - addressStr.begin();
+                    bytes = *found == 'B';
+                }
+
+                width = stoll(addressStr.substr(pos2 + 1, pos3));
+
+                if (bytes) {
+                    width *= 8;
+                }
+
+                if (width <= 0 || uint64_t{width} > maxWidth) {
                     throw TConfigParserException(
                         "error during address parsing: bit count must be in range (0, " +
-                        std::to_string(MAX_VALUE_WIDTH) + "] "
+                        std::to_string(maxWidth) + "] "
                         "(address string: '" + addressStr + "')"
                     );
                 }
@@ -558,7 +584,11 @@ tuple<int, uint16_t, uint8_t> TConfigParser::ParseRegisterAddress(const Json::Va
         address = TConfigParser::GetInt(obj, key);
     }
 
-    return std::make_tuple(address, static_cast<uint16_t>(bitOffset), static_cast<uint8_t>(width));
+    return std::make_tuple(
+        address,
+        TMemoryBlockBitIndex{bitOffset},
+        TValueSize{width}
+    );
 }
 
 int TConfigParser::GetInt(const Json::Value& obj, const string& key)

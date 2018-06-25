@@ -8,6 +8,7 @@
 #include "binary_semaphore.h"
 #include "virtual_register_set.h"
 #include "ir_device_memory_view.h"
+#include "ir_value_formatter.h"
 
 #include <wbmqtt/utils.h>
 
@@ -198,8 +199,8 @@ TVirtualRegister::TVirtualRegister(const PRegisterConfig & config, const PSerial
     : TRegisterConfig(*config)
     , Device(device)
     , FlushNeeded(nullptr)
-    , ValueToWrite(0)
-    , CurrentValue(0)
+    , ValueToWrite(config->ReadOnly ? nullptr : TIRValueFormatter::Make(*config))
+    , CurrentValue(TIRValueFormatter::Make(*config))
     , WriteQuery(nullptr)
     , ErrorState(EErrorState::UnknownErrorState)
     , ChangedPublishData(EPublishData::None)
@@ -256,7 +257,7 @@ const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
 
 void TVirtualRegister::WriteValueToQuery()
 {
-    WriteQuery->SetValue(GetValueDesc(), ValueToWrite);
+    //WriteQuery->SetValue(GetValueContext(), ValueToWrite);
 }
 
 void TVirtualRegister::AcceptDeviceValue(uint64_t new_value)
@@ -327,7 +328,7 @@ bool TVirtualRegister::operator<(const TVirtualRegister & rhs) const noexcept
     // comparison makes sense only if registers are of same device
     assert(GetDevice() == rhs.GetDevice());
 
-    return Type < rhs.Type || (Type == rhs.Type && GetValueDesc() < rhs.GetValueDesc());
+    return Type < rhs.Type || (Type == rhs.Type && GetValueContext() < rhs.GetValueContext());
 }
 
 void TVirtualRegister::SetFlushSignal(PBinarySemaphore flushNeeded)
@@ -354,19 +355,9 @@ const TIRBindInfo & TVirtualRegister::GetMemoryBlockBindInfo(const PMemoryBlock 
     return it->second;
 }
 
-TIRDeviceValueDesc TVirtualRegister::GetValueDesc() const
-{
-    return { MemoryBlocks, WordOrder };
-}
-
 EErrorState TVirtualRegister::GetErrorState() const
 {
     return ErrorState;
-}
-
-uint64_t TVirtualRegister::GetValue() const
-{
-    return CurrentValue;
 }
 
 std::string TVirtualRegister::Describe() const
@@ -389,7 +380,7 @@ std::string TVirtualRegister::Describe() const
 
 std::string TVirtualRegister::GetTextValue() const
 {
-    auto textValue = ConvertSlaveValue(*this, GetValue());
+    auto textValue = CurrentValue->GetTextValue();
 
     return OnValue.empty() ? textValue : (textValue == OnValue ? "1" : "0");
 }
@@ -401,13 +392,8 @@ void TVirtualRegister::SetTextValue(const std::string & value)
         return;
     }
 
-    SetValue(ConvertMasterValue(*this, OnValue.empty() ? value : (value == "1" ? OnValue : "0")));
-}
-
-void TVirtualRegister::SetValue(uint64_t value)
-{
     Dirty.store(true);
-    ValueToWrite = value;
+    ValueToWrite->SetTextValue(OnValue.empty() ? value : (value == "1" ? OnValue : "0"));
 
     if (FlushNeeded) {
         FlushNeeded->Signal();
@@ -437,7 +423,7 @@ void TVirtualRegister::Flush()
         assert(WriteQuery);
         WriteQuery->ResetStatus();
 
-        WriteQuery->SetValue(GetValueDesc(), ValueToWrite);
+        WriteQuery->SetValue(GetValueContext());
 
         GetDevice()->Execute(WriteQuery);
 
@@ -467,8 +453,8 @@ std::string TVirtualRegister::ToString() const
 bool TVirtualRegister::AreOverlapping(const TVirtualRegister & other) const
 {
     if (GetDevice() == other.GetDevice() && Type == other.Type) {
-        const auto & thisValueDesc = GetValueDesc();
-        const auto & otherValueDesc = other.GetValueDesc();
+        const auto & thisValueDesc = GetValueContext();
+        const auto & otherValueDesc = other.GetValueContext();
 
         return !(thisValueDesc < otherValueDesc) &&
                !(otherValueDesc < thisValueDesc);
@@ -499,6 +485,17 @@ void TVirtualRegister::ResetChanged(EPublishData state)
 bool TVirtualRegister::GetValueIsRead() const
 {
     return ValueIsRead;
+}
+
+TIRDeviceValueContext TVirtualRegister::GetValueContext() const
+{
+    return { MemoryBlocks, WordOrder, *CurrentValue };
+}
+
+TIRDeviceValueContext TVirtualRegister::GetValueToWriteContext() const
+{
+    assert(ValueToWrite);
+    return { MemoryBlocks, WordOrder, *ValueToWrite };
 }
 
 void TVirtualRegister::UpdateReadError(bool error)

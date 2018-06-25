@@ -51,3 +51,13 @@ struct TIRDeviceValueDesc
 
     bool operator<(const TIRDeviceValueDesc & rhs) const;
 };
+
+struct TIRDeviceValueContext final: TIRDeviceValueDesc
+{
+    TIRValueFormatter & Value;
+
+    TIRDeviceValueContext(const TBoundMemoryBlocks & b, const EWordOrder w, TIRValueFormatter & v)
+        : TIRDeviceValueDesc{ b, w }
+        , Value(v)
+    {}
+};

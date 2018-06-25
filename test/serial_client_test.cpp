@@ -766,6 +766,8 @@ TEST_F(TSerialClientTest, Bitmasks)
     auto reg76O0W16  = Reg(76, U16, 1.0, 0, 0, EWordOrder::BigEndian, 0, 16);  // Reg76 16-bit
     auto reg75O0W16 = Reg(75, U16, 1.0, 0, 0, EWordOrder::BigEndian, 0, 16);  // Reg75 16-bit
     auto reg73O0W32 = Reg(73, U32, 1.0, 0, 0, EWordOrder::BigEndian, 0, 32);  // Reg73 16-bit and Reg74 16-bit
+    auto reg77O0W13  = Reg(77, U16, 1.0, 0, 0, EWordOrder::BigEndian, 0, 13);  // Reg77 13-bit
+    auto reg78O3W13  = Reg(78, U16, 1.0, 0, 0, EWordOrder::BigEndian, 3, 13);  // Reg78 13-bit
 
     //------------------------------------Errors-------------------------------------------
     #define EXPECT_THROW_EMIT(...) try {         \
@@ -792,6 +794,8 @@ TEST_F(TSerialClientTest, Bitmasks)
     SerialClient->AddRegister(reg76O0W16);
     SerialClient->AddRegister(reg75O0W16);
     SerialClient->AddRegister(reg73O0W32);
+    SerialClient->AddRegister(reg77O0W13);
+    SerialClient->AddRegister(reg78O3W13);
 
     SerialClient->Connect();    // init cache
 
@@ -818,6 +822,9 @@ TEST_F(TSerialClientTest, Bitmasks)
     reg76O0W16->SetTextValue("4321");
     reg75O0W16->SetTextValue("7654");
     reg73O0W32->SetTextValue("1234567890");
+
+    Device->SetMemoryBlockValue(77, 8086);
+    Device->SetMemoryBlockValue(78, 8086 << 3);
 
     Note() << "Cycle()";
     SerialClient->Cycle();

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "constraints.h"
+
 #include <ostream>
 
 enum ERegisterFormat {
@@ -20,7 +22,8 @@ enum ERegisterFormat {
     BCD32,
     Float,
     Double,
-    Char8
+    Char8,
+    String
 };
 
 enum class EWordOrder {
@@ -84,4 +87,5 @@ void Remove(T & a, T b)
 
 std::ostream& operator<<(::std::ostream& os, EWordOrder val);
 
-uint8_t RegisterFormatSize(ERegisterFormat format);
+TValueSize RegisterFormatMaxSize(ERegisterFormat format);
+TValueSize RegisterFormatMaxWidth(ERegisterFormat format);

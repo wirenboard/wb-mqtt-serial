@@ -248,8 +248,8 @@ struct TIRDeviceMemoryView
 
     using TMemoryBlockViewProvider = std::function<TIRDeviceMemoryBlockView(const CPMemoryBlock &)>;
 
-    uint64_t ReadValue(const TIRDeviceValueDesc &) const;
-    void WriteValue(const TIRDeviceValueDesc &, uint64_t value) const;
+    void ReadValue(const TIRDeviceValueContext &) const;
+    void WriteValue(const TIRDeviceValueContext &) const;
 
-    static void WriteValue(const TIRDeviceValueDesc &, uint64_t value, TMemoryBlockViewProvider);
+    static void WriteValue(const TIRDeviceValueContext &, TMemoryBlockViewProvider);
 };

@@ -174,13 +174,10 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
 {
     friend class TIRDeviceQueryFactory;
 
-    const TPSet<PMemoryBlock>              MemoryBlocks;
-    std::map<TIRDeviceValueDesc, uint64_t> Values;
+    const TPSet<PMemoryBlock> MemoryBlocks;
 
     explicit TIRDeviceValueQuery(TAssociatedMemoryBlockSet &&, EQueryOperation = EQueryOperation::Write);
     explicit TIRDeviceValueQuery(TPSet<PMemoryBlock> &&, EQueryOperation = EQueryOperation::Write);
-
-    void SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value);
 
     TIRDeviceMemoryView GetValues(void * mem, size_t size) const
     {

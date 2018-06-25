@@ -2,6 +2,7 @@
 #include "memory_block.h"
 #include "register_config.h"
 #include "ir_bind_info.h"
+#include "ir_value_formatter.h"
 
 #include <cassert>
 #include <iostream>
@@ -191,10 +192,34 @@ TIRDeviceMemoryBlockView TIRDeviceMemoryView::operator[](const CPMemoryBlock & m
     return { RawMemory + byteIndex, memoryBlock, Readonly };
 }
 
-uint64_t TIRDeviceMemoryView::ReadValue(const TIRDeviceValueDesc & valueDesc) const
+void TIRDeviceMemoryView::ReadValue(const TIRDeviceValueContext & context) const
 {
     auto & self = *this;
-    uint64_t value = 0;
+
+    uint8_t byte {0};
+    uint8_t bitsNeeded {0};
+    bool first = true;
+
+    auto byte_is_ready = [&]{
+        return bitsNeeded == 0;
+    };
+
+    auto push_bits = [&](uint8_t bits, uint8_t count) {
+        assert(!byte_is_ready());
+        auto bitsToTake = min(bitsNeeded, count);
+        byte <<= bitsToTake;
+        byte |= bits >> (count - bitsToTake);
+        bitsNeeded -= bitsToTake;
+        return bitsToTake;
+    };
+
+    auto get_byte = [&]{
+        assert(byte_is_ready());
+        bitsNeeded = 8;
+        return byte;
+    };
+
+    TBitBuffer bitBuffer;
 
     auto readMemoryBlock = [&](const std::pair<const PMemoryBlock, TIRBindInfo> & boundMemoryBlock) {
         const auto & memoryBlock = boundMemoryBlock.first;
@@ -202,6 +227,12 @@ uint64_t TIRDeviceMemoryView::ReadValue(const TIRDeviceValueDesc & valueDesc) co
 
         const auto mask = bindInfo.GetMask();
         const auto & memoryBlockView = self[memoryBlock];
+
+        if (first) {
+            auto cnt = bindInfo.BitCount();
+            bitBuffer.Capacity = cnt % 8 ? cnt - (cnt / 8) * 8 : 8;
+            first = false;
+        }
 
         // iByte is always little-endian (lower value signifies lower byte)
         for (int iByte = (bindInfo.BitEnd - 1) / 8; iByte >= int(bindInfo.BitStart / 8); --iByte) {
@@ -214,34 +245,48 @@ uint64_t TIRDeviceMemoryView::ReadValue(const TIRDeviceValueDesc & valueDesc) co
             auto shift = bindInfo.BitStart - iByte * 8;
             uint8_t byteMask = shift > 0 ? (mask << shift) : (mask >> -shift);
 
-            value <<= (end - begin);
-            value |= (byteMask & memoryBlockView.GetByte(iByte)) >> begin;
+            auto count = end - begin;
+
+            TBitBuffer in{
+                (byteMask & memoryBlockView.GetByte(iByte)) >> begin,
+                count,
+                count
+            };
+
+            bitBuffer << in;
+            if (bitBuffer.IsFull()) {
+                context.Value << bitBuffer;
+                bitBuffer.Reset();
+            }
+
+            if (in) {
+                bitBuffer << in;
+            }
+
+            assert(!in);
         }
     };
 
-    if (valueDesc.WordOrder == EWordOrder::BigEndian) {
-        std::for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), readMemoryBlock);
+    if (context.WordOrder == EWordOrder::BigEndian) {
+        ForEach(context.BoundMemoryBlocks, readMemoryBlock);
     } else {
-        std::for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), readMemoryBlock);
+        ForEachReverse(context.BoundMemoryBlocks, readMemoryBlock);
     }
 
-    if (Global::Debug)
-        std::cerr << "map value from registers: " << value << std::endl;
-
-    return value;
+    assert(!bitBuffer);
 }
 
-void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueDesc & valueDesc, uint64_t value) const
+void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context) const
 {
-    WriteValue(valueDesc, value, [this](const CPMemoryBlock & mb) {
+    WriteValue(context, [this](const CPMemoryBlock & mb) {
         return (*this)[mb];
     });
 }
 
-void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueDesc & valueDesc, uint64_t value, TMemoryBlockViewProvider getView)
+void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context, TMemoryBlockViewProvider getView)
 {
-    if (Global::Debug)
-        std::cerr << "map value to registers: " << value << std::endl;
+    uint8_t bitsToSkip = 0;
+    TBitBuffer bitBuffer;
 
     auto writeMemoryBlock = [&](const std::pair<const PMemoryBlock, TIRBindInfo> & memoryBlockBindInfo){
         const auto & memoryBlock = memoryBlockBindInfo.first;
@@ -250,7 +295,10 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueDesc & valueDesc, uint6
         const auto & memoryBlockView = getView(memoryBlock);
 
         if (!memoryBlockView) {
-            value >>= bindInfo.BitCount();
+            bitsToSkip += bindInfo.BitCount();
+            auto bytesToSkip = bitsToSkip / 8;
+            bitsToSkip -= bytesToSkip * 8;
+            context.Value.SkipBytes(bytesToSkip);
             return;
         }
 
@@ -269,14 +317,29 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueDesc & valueDesc, uint6
 
             const auto cachedByte = cache ? cache.GetByte(iByte) : uint8_t(0);
 
-            memoryBlockView.SetByte(iByte, (~byteMask & cachedByte) | (byteMask & (value << begin)));
-            value >>= (end - begin);
+            TBitBuffer out { 0, end - begin, end - begin };
+            TBitBuffer in { 0, 8 - bitsToSkip, 8 - bitsToSkip };
+
+            out << bitBuffer;
+
+            while(!out.IsFull()) {
+                context.Value >> in.Buffer;
+                in.Buffer >>= bitsToSkip;
+                bitsToSkip = 0;
+                out << in;
+            }
+
+            bitBuffer << in;
+
+            if (out.IsFull()) {
+                memoryBlockView.SetByte(iByte, (~byteMask & cachedByte) | (byteMask & (out.Buffer << begin)));
+            }
         }
     };
 
-    if (valueDesc.WordOrder == EWordOrder::BigEndian) {
-        for_each(valueDesc.BoundMemoryBlocks.rbegin(), valueDesc.BoundMemoryBlocks.rend(), writeMemoryBlock);
+    if (context.WordOrder == EWordOrder::BigEndian) {
+        ForEachReverse(context.BoundMemoryBlocks, writeMemoryBlock);
     } else {
-        for_each(valueDesc.BoundMemoryBlocks.begin(), valueDesc.BoundMemoryBlocks.end(), writeMemoryBlock);
+        ForEach(context.BoundMemoryBlocks, writeMemoryBlock);
     }
 }

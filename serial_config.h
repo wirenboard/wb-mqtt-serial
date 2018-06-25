@@ -165,11 +165,17 @@ public:
     void LoadConfig();
 
 private:
+    using TRegisterAddress = std::tuple<int, TMemoryBlockBitIndex, TValueSize>;
+
     static int GetInt(const Json::Value& obj, const std::string& key);
     static int ToInt(const Json::Value& v, const std::string& title);
     static int ToInt(const std::string& v, const std::string& title);
     static uint64_t ToUint64(const Json::Value& v, const std::string& title);
-    static std::tuple<int, uint16_t, uint8_t> ParseRegisterAddress(const Json::Value& obj, const std::string& key, const TMemoryBlockType & type);
+    static TRegisterAddress ParseRegisterAddress(
+        const Json::Value& obj,
+        const std::string& key,
+        const TMemoryBlockType & type,
+        TValueSize maxWidth);
 
     std::string ConfigFileName;
     PHandlerConfig HandlerConfig;

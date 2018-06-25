@@ -246,7 +246,8 @@ void TIRDeviceQuery::FinalizeRead(const TIRDeviceMemoryView & memoryView) const
 #ifdef WB_MQTT_SERIAL_VERBOSE_OUTPUT
         cout << "READING: " << reg->ToString() << ": " << reg->Describe() << endl;
 #endif
-        reg->AcceptDeviceValue(memoryView.ReadValue(reg->GetValueDesc()));
+        memoryView.ReadValue(reg->GetValueContext());
+        //reg->AcceptDeviceValue();
     }
 
     SetStatus(EQueryStatus::Ok);
@@ -266,19 +267,14 @@ TIRDeviceValueQuery::TIRDeviceValueQuery(TPSet<PMemoryBlock> && memoryBlocks, EQ
     assert(!MemoryBlocks.empty());
 }
 
-void TIRDeviceValueQuery::SetValue(const TIRDeviceValueDesc & valueDesc, uint64_t value)
-{
-    Values[valueDesc] = value;
-}
-
 void TIRDeviceValueQuery::FinalizeWrite() const
 {
     assert(Operation == EQueryOperation::Write);
     assert(GetStatus() == EQueryStatus::NotExecuted);
 
     // write value to cache
-    for (const auto & valueDescValue: Values) {
-        TIRDeviceMemoryView::WriteValue(valueDescValue.first, valueDescValue.second, [](const CPMemoryBlock & mb){
+    for (const auto & vreg: VirtualRegisters) {
+        TIRDeviceMemoryView::WriteValue(vreg->GetValueToWriteContext(), [](const CPMemoryBlock & mb){
             return mb->GetCache();
         });
     }
@@ -303,8 +299,8 @@ TIRDeviceMemoryView TIRDeviceValueQuery::GetValuesImpl(void * mem, size_t size) 
     }
 
     // write payload values on top of cached ones
-    for (const auto & valueDescValue: Values) {
-        memoryView.WriteValue(valueDescValue.first, valueDescValue.second);
+    for (const auto & vreg: VirtualRegisters) {
+        memoryView.WriteValue(vreg->GetValueToWriteContext());
     }
 
     return memoryView;

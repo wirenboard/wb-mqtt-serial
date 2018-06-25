@@ -36,7 +36,7 @@ struct TMemoryBlockType {
         , Defaults{defaultControlType, defaultWordOrder}
     {
         for (auto format: Layout) {
-            Size += RegisterFormatSize(format);
+            Size += RegisterFormatMaxSize(format);
         }
 
         if (!Size) {
@@ -121,10 +121,10 @@ struct TRegisterConfig
                                             type_name, has_error_value, error_value, word_order, bit_offset, width);
     }
 
-    uint8_t GetWidth() const;
-    uint8_t GetFormatByteWidth() const;
-    uint8_t GetFormatWidth() const;
-    uint8_t GetFormatWordWidth() const;
+    uint16_t GetSize() const;
+    uint16_t GetWidth() const;
+    uint16_t GetFormatMaxSize() const;
+    uint16_t GetFormatMaxWidth() const;
 
     std::string ToString() const;
     std::string ToStringWithFormat() const;
@@ -145,7 +145,7 @@ struct TRegisterConfig
     uint64_t    ErrorValue;
     EWordOrder  WordOrder;
     uint16_t    BitOffset;
-    uint8_t     Width;
+    uint16_t    Width;
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, PRegisterConfig reg) {

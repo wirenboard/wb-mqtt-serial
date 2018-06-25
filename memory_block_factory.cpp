@@ -15,7 +15,7 @@ TPMap<PMemoryBlock, TIRBindInfo> TMemoryBlockFactory::GenerateMemoryBlocks(
     uint16_t memoryBlockSize;
     try {
         const auto & type = device->Protocol()->GetRegType(config->Type);
-        memoryBlockSize = type.IsVariadicSize() ? RegisterFormatSize(config->Format) : type.Size;
+        memoryBlockSize = type.IsVariadicSize() ? RegisterFormatMaxSize(config->Format) : type.Size;
     } catch (out_of_range &) {
         throw TSerialDeviceException(
             "unknown type name: '" + config->TypeName +

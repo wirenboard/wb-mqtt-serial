@@ -24,8 +24,8 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
     PWSerialDevice                              Device;
     TBoundMemoryBlocks                          MemoryBlocks;
     PBinarySemaphore                            FlushNeeded;
-    std::atomic<uint64_t>                       ValueToWrite;
-    uint64_t                                    CurrentValue;
+    PIRValueFormatter                           ValueToWrite;   // WAS ATOMIC
+    PIRValueFormatter                           CurrentValue;
     PIRDeviceValueQuery                         WriteQuery;
     EErrorState                                 ErrorState;
     EPublishData                                ChangedPublishData;
@@ -49,7 +49,6 @@ public:
 
     TPSet<PMemoryBlock> GetMemoryBlocks() const;
     const TIRBindInfo & GetMemoryBlockBindInfo(const PMemoryBlock &) const;
-    TIRDeviceValueDesc GetValueDesc() const;
     EErrorState GetErrorState() const override;
     std::string Describe() const;
     bool NeedToPoll() const;
@@ -68,10 +67,7 @@ public:
     void ResetChanged(EPublishData) override;
 
     std::string GetTextValue() const override;
-    uint64_t GetValue() const;
-
     void SetTextValue(const std::string & value) override;
-    void SetValue(uint64_t value);
 
     bool IsEnabled() const;
     void SetEnabled(bool);
@@ -93,6 +89,9 @@ private:
     void AcceptWriteValue();
 
     uint64_t GetBitPosition() const;
+
+    TIRDeviceValueContext GetValueContext() const;
+    TIRDeviceValueContext GetValueToWriteContext() const;
 
     void UpdateReadError(bool error);
     void UpdateWriteError(bool error);

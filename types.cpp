@@ -14,9 +14,11 @@ ostream& operator<<(ostream& os, EWordOrder val)
     return os;
 }
 
-uint8_t RegisterFormatSize(ERegisterFormat format)
+TValueSize RegisterFormatMaxSize(ERegisterFormat format)
 {
     switch (format) {
+        case String:
+            return MAX_STRING_VALUE_SIZE;
         case S64:
         case U64:
         case Double:
@@ -37,4 +39,9 @@ uint8_t RegisterFormatSize(ERegisterFormat format)
         default:
             return 2;
     }
+}
+
+TValueSize RegisterFormatMaxWidth(ERegisterFormat format)
+{
+    return RegisterFormatMaxSize(format) * 8;
 }

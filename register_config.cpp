@@ -15,7 +15,7 @@ ERegisterFormat TMemoryBlockType::GetDefaultFormat(uint16_t bit) const
 
     uint16_t pos = 0;
     for (auto format: Layout) {
-        pos += RegisterFormatSize(format) * 8;
+        pos += RegisterFormatMaxSize(format) * 8;
         if (pos > bit) {
             return format;
         }
@@ -42,7 +42,7 @@ uint16_t TMemoryBlockType::GetValueByteIndex(uint16_t iValue) const
 uint8_t TMemoryBlockType::GetValueSize(uint16_t iValue) const
 {
     assert(!Layout.empty());
-    return RegisterFormatSize(Layout[iValue]);
+    return RegisterFormatMaxSize(Layout[iValue]);
 }
 
 std::pair<uint16_t, uint8_t> TMemoryBlockType::ToMaskParameters(uint16_t iValue) const
@@ -173,24 +173,20 @@ TRegisterConfig::TRegisterConfig(int type, int address,
         TypeName = "(type " + std::to_string(Type) + ")";
 }
 
-uint8_t TRegisterConfig::GetWidth() const {
+TValueSize TRegisterConfig::GetWidth() const {
     if (Width) {
         return Width;
     }
 
-    return GetFormatWidth();
+    return GetFormatMaxWidth();
 }
 
-uint8_t TRegisterConfig::GetFormatByteWidth() const {
-    return RegisterFormatSize(Format);
+TValueSize TRegisterConfig::GetFormatMaxSize() const {
+    return RegisterFormatMaxSize(Format);
 }
 
-uint8_t TRegisterConfig::GetFormatWidth() const {
-    return GetFormatByteWidth() * 8;
-}
-
-uint8_t TRegisterConfig::GetFormatWordWidth() const {
-    return (GetFormatByteWidth() + 1) / 2;
+TValueSize TRegisterConfig::GetFormatMaxWidth() const {
+    return GetFormatMaxSize() * 8;
 }
 
 string TRegisterConfig::ToString() const

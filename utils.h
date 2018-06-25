@@ -325,3 +325,27 @@ bool AllOf(const T & collection, Pred && predicate)
         std::forward<Pred>(predicate)
     );
 }
+
+template <class T, typename F>
+void ForEach(T & collection, F && fn)
+{
+    std::for_each(
+        collection.begin(), collection.end(),
+        std::forward<F>(fn)
+    );
+}
+
+template <class T, typename F>
+void ForEachReverse(T & collection, F && fn)
+{
+    std::for_each(
+        collection.rbegin(), collection.rend(),
+        std::forward<F>(fn)
+    );
+}
+
+template <typename T, typename ... Args>
+std::unique_ptr<T> MakeUnique(Args && ... args)
+{
+    return { new T(std::forward<Args>(args)...) };
+}
