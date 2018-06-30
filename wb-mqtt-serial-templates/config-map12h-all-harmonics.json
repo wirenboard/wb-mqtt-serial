@@ -1914,6 +1914,15 @@
     "round_to": 0.01
    }, 
    {
+    "name": "Ch 1 Total PF", 
+    "reg_type": "input", 
+    "address": "0x10bc", 
+    "type": "value", 
+    "format": "s16", 
+    "scale": 0.001, 
+    "round_to": 0.01
+   }, 
+   {
     "name": "Ch 1 Total SV", 
     "reg_type": "input", 
     "address": "0x1098", 
@@ -3808,6 +3817,15 @@
     "type": "value", 
     "format": "s32", 
     "scale": 6.10352e-05, 
+    "round_to": 0.01
+   }, 
+   {
+    "name": "Ch 2 Total PF", 
+    "reg_type": "input", 
+    "address": "0x20bc", 
+    "type": "value", 
+    "format": "s16", 
+    "scale": 0.001, 
     "round_to": 0.01
    }, 
    {
@@ -5708,6 +5726,15 @@
     "round_to": 0.01
    }, 
    {
+    "name": "Ch 3 Total PF", 
+    "reg_type": "input", 
+    "address": "0x30bc", 
+    "type": "value", 
+    "format": "s16", 
+    "scale": 0.001, 
+    "round_to": 0.01
+   }, 
+   {
     "name": "Ch 3 Total SV", 
     "reg_type": "input", 
     "address": "0x3098", 
@@ -7602,6 +7629,15 @@
     "type": "value", 
     "format": "s32", 
     "scale": 6.10352e-05, 
+    "round_to": 0.01
+   }, 
+   {
+    "name": "Ch 4 Total PF", 
+    "reg_type": "input", 
+    "address": "0x40bc", 
+    "type": "value", 
+    "format": "s16", 
+    "scale": 0.001, 
     "round_to": 0.01
    }, 
    {
