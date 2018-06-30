@@ -1,15 +1,45 @@
-wb-mqtt-serial (1.40.6) stable; urgency=medium
+wb-mqtt-serial (1.42.1) stable; urgency=medium
 
   * fix MQTT topic and device name collision across different ports
 
  -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 25 Apr 2018 17:12:41 +0300
+
+wb-mqtt-serial (1.42) stable; urgency=medium
+
+  * add templates for WB-MAP3H 
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 07 Jun 2018 13:08:37 +0300
+
+wb-mqtt-serial (1.41.3) stable; urgency=medium
+
+  * update mdm2 json template
+
+ -- Attila Door <a.door@wirenboard.ru>  Mon, 23 Apr 2018 17:20:45 +0300
+
+wb-mqtt-serial (1.41.2) stable; urgency=medium
+
+  * mcm16 json template for mcm fw 1.0.0
+
+ -- Attila Door <a.door@wirenboard.ru>  Mon, 2 Apr 2018 12:20:45 +0300
+ 
+wb-mqtt-serial (1.41.1) stable; urgency=medium
+
+  * require mosquitto at startup
+
+ -- Attila Door <a.door@wirenboard.ru>  Thu, 10 May 2018 16:27:45 +0300
+
+wb-mqtt-serial (1.41) stable; urgency=medium
+
+  * Fixes WB-MAP6S template
+
+ -- Evgeny Boger <boger@contactless.ru>  Fri, 04 May 2018 15:22:20 +0300
 
 wb-mqtt-serial (1.40.5) stable; urgency=medium
 
   * add mrgbw-d json template
 
  -- Attila Door <a.door@wirenboard.ru>  Tue, 3 Apr 2018 16:58:45 +0300
- 
+
 wb-mqtt-serial (1.40.4) stable; urgency=medium
 
   * add mir2 json template
