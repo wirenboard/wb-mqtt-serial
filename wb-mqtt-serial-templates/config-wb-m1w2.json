@@ -61,14 +61,14 @@
                 "name": "Counter 1",
                 "type": "value",
                 "reg_type": "input",
-                "address": 248,
+                "address": 277,
                 "format": "u16"
             },
             {		
                 "name": "Counter 2",
                 "type": "value",
                 "reg_type": "input",
-                "address": 249,
+                "address": 278,
                 "format": "u16"
             }
         ]
