@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ir_value_numeric_to_string.inl"
 #include "ir_value_numeric_from_string.inl"
 

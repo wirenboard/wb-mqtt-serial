@@ -18,6 +18,7 @@
  */
 
 #pragma once
+
 #include <wbmqtt/utils.h>
 
 #include <string>

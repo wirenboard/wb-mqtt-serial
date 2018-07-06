@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ir_value_array_assembler.inl"
 
 #include <string>

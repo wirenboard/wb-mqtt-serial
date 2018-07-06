@@ -1,4 +1,5 @@
 #pragma once
+
 #include "expector.h"
 
 class TMercury230Expectations: public virtual TExpectorProvider

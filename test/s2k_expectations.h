@@ -1,4 +1,5 @@
 #pragma once
+
 #include "expector.h"
 
 class TS2KDeviceExpectations: public virtual TExpectorProvider

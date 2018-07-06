@@ -1,4 +1,5 @@
 #pragma once
+
 #include "expector.h"
 
 class TUnielDeviceExpectations: public virtual TExpectorProvider

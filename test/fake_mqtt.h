@@ -1,8 +1,12 @@
 #pragma once
+
+#include "testlog.h"
+
+#include <wbmqtt/mqtt_wrapper.h>
+
 #include <set>
 #include <list>
-#include <wbmqtt/mqtt_wrapper.h>
-#include "testlog.h"
+
 
 class TFakeMQTTClient: public TMQTTClientBase
 {
