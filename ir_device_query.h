@@ -27,17 +27,17 @@ private:
 
 protected:
     /**
-     * @brief: create query with binding to virtual registers.
+     * @brief create query with binding to virtual registers.
      *  It'll update virtual registers values on finalize and
      *  maintain memory blocks cache in correct state as side effect.
      */
     explicit TIRDeviceQuery(TAssociatedMemoryBlockSet &&, EQueryOperation = EQueryOperation::Read);
 
     /**
-     * @brief: create query without binding to virtual registers.
+     * @brief create query without binding to virtual registers.
      *  It'll only maintain memory blocks cache in correct state as side effect.
      *
-     * @note: needed for setup sections. Setup sections should not interfere with
+     * @note needed for setup sections. Setup sections should not interfere with
      *  main polling objects (TSerialClient) by creating it's own virtual register,
      *  thus we provide here option which doesn't require virtual register existence.
      */
@@ -74,9 +74,9 @@ public:
     const std::string & GetTypeName() const;
 
     /**
-     * @brief: set status of query execution
+     * @brief set status of query execution
      *
-     * @note: this is set by device after execution
+     * @note this is set by device after execution
      *  of query and on exceptions during query execution.
      */
     void SetStatus(EQueryStatus);
@@ -85,28 +85,28 @@ public:
     void InvalidateReadValues();
 
     /**
-     * @brief: used to set enabled all affected virtual registers
+     * @brief used to set enabled all affected virtual registers
      */
     void SetEnabledWithRegisters(bool);
     /**
-     * @brief: returns true if there's any enabled virtual register
+     * @brief returns true if there's any enabled virtual register
      *  affected by this query
      */
     bool IsEnabled() const;
     /**
-     * @brief: returns true if query was executed by device,
+     * @brief returns true if query was executed by device,
      *  successfully or not
      */
     bool IsExecuted() const;
     /**
-     * @brief: indicates ability of this query to split into
+     * @brief indicates ability of this query to split into
      *  multiple lesser queries
      */
     bool IsAbleToSplit() const;
     /**
-     * @brief: used to set ability to split externally
+     * @brief used to set ability to split externally
      *
-     * @note: we cannot say for sure wether or not we able to split
+     * @note we cannot say for sure wether or not we able to split
      *  query because split for some reasons might end up with error
      *  or with only one query, so in that case we manually mark that
      *  query as not able to split.
@@ -114,7 +114,7 @@ public:
     void SetAbleToSplit(bool);
 
     /**
-     * @brief: create view to passed memory according to query's data layout
+     * @brief create view to passed memory according to query's data layout
      */
     TIRDeviceMemoryView CreateMemoryView(void * mem, size_t size) const;
     TIRDeviceMemoryView CreateMemoryView(const void * mem, size_t size) const;
@@ -167,7 +167,7 @@ public:
 };
 
 /**
- * @brief: device query that holds values.
+ * @brief device query that holds values.
  *  Used to write values to devices.
  */
 struct TIRDeviceValueQuery final: TIRDeviceQuery
@@ -175,9 +175,12 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
     friend class TIRDeviceQueryFactory;
 
     const TPSet<PMemoryBlock> MemoryBlocks;
+    std::vector<TIRDeviceValueContext> ValueContexts;
 
     explicit TIRDeviceValueQuery(TAssociatedMemoryBlockSet &&, EQueryOperation = EQueryOperation::Write);
     explicit TIRDeviceValueQuery(TPSet<PMemoryBlock> &&, EQueryOperation = EQueryOperation::Write);
+
+    void AddValueContext(const TIRDeviceValueContext &);
 
     TIRDeviceMemoryView GetValues(void * mem, size_t size) const
     {
@@ -192,7 +195,7 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
     }
 
     /**
-     * @brief: Accept written values to device, update cache and set status to Ok
+     * @brief Accept written values to device, update cache and set status to Ok
      */
     void FinalizeWrite() const;
 
@@ -201,9 +204,9 @@ private:
 };
 
 /**
- * @brief: set of device queries.
+ * @brief set of device queries.
  *
- * @note: when creating set for each poll interval,
+ * @note when creating set for each poll interval,
  *  eases dynamic query subdivision on errors,
  *  by allowing to modify query set instead of polling plan
  */

@@ -161,7 +161,7 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
         }
 
         /**
-         * @note: If any of virtual registers is not covering block entierly and is writable,
+         * @note If any of virtual registers is not covering block entierly and is writable,
          *  it means that there can be partial write of the memory block,
          *  so we need cache to avoid corruption of non-covered part of memory block at write.
          */

@@ -4,26 +4,36 @@
 
 #include <ostream>
 
+#define REGISTER_FORMATS \
+    XX(AUTO, "auto", 0) \
+    XX(U8, "u8", 1) \
+    XX(S8, "s8", 1) \
+    XX(U16, "u16", 2) \
+    XX(S16, "s16", 2) \
+    XX(S24, "s24", 3) \
+    XX(U24, "u24", 3) \
+    XX(U32, "u32", 4) \
+    XX(S32, "s32", 4) \
+    XX(S64, "s64", 8) \
+    XX(U64, "u64", 8) \
+    XX(BCD8, "bcd8", 1) \
+    XX(RBCD8, "rbcd8", 1) \
+    XX(BCD16, "bcd16", 2) \
+    XX(RBCD16, "rbcd16", 2) \
+    XX(BCD24, "bcd24", 3) \
+    XX(RBCD24, "rbcd24", 3) \
+    XX(BCD32, "bcd32", 4) \
+    XX(RBCD32, "rbcd32", 4) \
+    XX(Float, "float", 4) \
+    XX(Double, "double", 8) \
+    XX(Char8, "char8", 1) \
+    XX(String, "string", MAX_STRING_VALUE_SIZE) \
+    XX(WString, "wstring", MAX_STRING_VALUE_SIZE)
+
 enum ERegisterFormat {
-    AUTO,
-    U8,
-    S8,
-    U16,
-    S16,
-    S24,
-    U24,
-    U32,
-    S32,
-    S64,
-    U64,
-    BCD8,
-    BCD16,
-    BCD24,
-    BCD32,
-    Float,
-    Double,
-    Char8,
-    String
+    #define XX(name, alias, size) name,
+    REGISTER_FORMATS
+    #undef XX
 };
 
 enum class EWordOrder {

@@ -45,13 +45,13 @@ TEST_F(TS2KDeviceTest, TestSetRelayState)
 {
     EnqueueSetRelayOnResponse();
 
-    RelayReg1->SetValue(1);
+    RelayReg1->SetTextValue("1");
     RelayReg1->Flush();
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
 
-    RelayReg1->SetValue(0);
+    RelayReg1->SetTextValue("0");
     RelayReg1->Flush();
 }
 

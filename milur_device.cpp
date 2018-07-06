@@ -1,5 +1,4 @@
 #include "milur_device.h"
-#include "bcd_utils.h"
 #include "memory_block.h"
 #include "ir_device_query.h"
 
@@ -20,7 +19,7 @@ namespace {
 REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
     { TMilurDevice::REG_PARAM, "param", "value", { U24 }, true, EByteOrder::LittleEndian },
     { TMilurDevice::REG_POWER, "power", "power", { S32 }, true, EByteOrder::LittleEndian },
-    { TMilurDevice::REG_ENERGY, "energy", "power_consumption", { BCD32 }, true },
+    { TMilurDevice::REG_ENERGY, "energy", "power_consumption", { RBCD32 }, true, EByteOrder::LittleEndian },
     { TMilurDevice::REG_FREQ, "freq", "value", { U16 }, true, EByteOrder::LittleEndian },
     { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", { S16 }, true, EByteOrder::LittleEndian }
 }));
@@ -135,27 +134,7 @@ void TMilurDevice::Read(const TIRDeviceQuery & query)
     if (*p != size)
         throw TSerialDeviceTransientErrorException("bad register size in the response");
 
-    switch (mb->Type.Index) {
-    case TMilurDevice::REG_PARAM:
-    case TMilurDevice::REG_POWER:
-    case TMilurDevice::REG_POWERFACTOR:
-    case TMilurDevice::REG_FREQ:
-        query.FinalizeRead(buf + 2, mb->Size);
-        break;
-    case TMilurDevice::REG_ENERGY:
-    {
-        auto value = BuildBCB32(buf + 2);
-        const auto & memoryView = query.CreateMemoryView(buf, mb->Size);
-
-        memoryView.Clear();
-        memoryView[mb][0] = value;
-
-        query.FinalizeRead(memoryView);
-        break;
-    }
-    default:
-        throw TSerialDeviceTransientErrorException("bad register type");
-    }
+    query.FinalizeRead(buf + 2, mb->Size);
 }
 
 void TMilurDevice::Prepare()
@@ -169,21 +148,6 @@ void TMilurDevice::Prepare()
     Port()->WriteBytes(buf, sizeof(buf) / sizeof(buf[0]));
     TSerialDevice::Prepare();
     Port()->SkipNoise();
-}
-
-// We transfer BCD byte arrays as unsigned little endian integers with swapped nibbles.
-// To convert it to our standard transport BCD representation (ie. integer with hexadecimal
-// that reads exactly as original BCD if printed) we just have to swap nibbles of each byte
-// that is decimal value 87654321 comes as {0x12, 0x34, 0x56, 0x78} and becomes {0x21, 0x43, 0x65, 0x87}.
-uint64_t TMilurDevice::BuildBCB32(uint8_t *psrc) const
-{
-    uint32_t r = 0;
-    uint8_t *pdst = reinterpret_cast<uint8_t *>(&r);
-    for (int i = 0; i < 4; ++i) {
-        auto t = psrc[i];
-        pdst[i] = (t >> 4) | (t << 4);
-    }
-    return r;
 }
 
 int TMilurDevice::GetExpectedSize(int type) const

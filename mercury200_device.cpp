@@ -1,7 +1,6 @@
 #include "mercury200_device.h"
 #include "memory_block.h"
 #include "ir_device_query.h"
-#include "bcd_utils.h"
 #include "crc16.h"
 
 #include <cstdint>

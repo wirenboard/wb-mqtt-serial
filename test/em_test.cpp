@@ -49,7 +49,7 @@ void TEMDeviceTest::SetUp()
 
     MilurPhaseCVoltageReg = Reg(MilurDev, 102, TMilurDevice::REG_PARAM, U24);
     MilurPhaseCCurrentReg = Reg(MilurDev, 105, TMilurDevice::REG_PARAM, U24);
-    MilurTotalConsumptionReg = Reg(MilurDev, 118, TMilurDevice::REG_ENERGY, BCD32);
+    MilurTotalConsumptionReg = Reg(MilurDev, 118, TMilurDevice::REG_ENERGY, RBCD32);
     MilurFrequencyReg = Reg(MilurDev, 9, TMilurDevice::REG_FREQ, U16);
     Mercury230TotalConsumptionReg =
         Reg(Mercury230Dev, 0x0000, TMercury230Device::REG_VALUE_ARRAY, U32);
@@ -73,20 +73,20 @@ void TEMDeviceTest::VerifyMilurQuery()
 
     EnqueueMilurPhaseCVoltageResponse();
     TestRead(MilurPhaseCVoltageRegQuery);
-    ASSERT_EQ(0x03946f, MilurPhaseCVoltageReg->GetValue());
+    ASSERT_EQ(std::to_string(0x03946f), MilurPhaseCVoltageReg->GetTextValue());
 
     EnqueueMilurPhaseCCurrentResponse();
     TestRead(MilurPhaseCCurrentRegQuery);
-    ASSERT_EQ(0xffd8f0, MilurPhaseCCurrentReg->GetValue());
+    ASSERT_EQ(std::to_string(0xffd8f0), MilurPhaseCCurrentReg->GetTextValue());
 
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
     TestRead(MilurTotalConsumptionRegQuery);
-    ASSERT_EQ(0x11144, MilurTotalConsumptionReg->GetValue());
+    ASSERT_EQ(std::to_string(11144), MilurTotalConsumptionReg->GetTextValue());
 
     EnqueueMilurFrequencyResponse();
     TestRead(MilurFrequencyRegQuery);
-    ASSERT_EQ(50080, MilurFrequencyReg->GetValue());
+    ASSERT_EQ(std::to_string(50080), MilurFrequencyReg->GetTextValue());
 }
 
 void TEMDeviceTest::VerifyMercuryParamQuery()
@@ -104,26 +104,26 @@ void TEMDeviceTest::VerifyMercuryParamQuery()
     // N = param number (0x11)
     // B = subparam spec (BWRI), 0x11 = voltage, phase 1
     TestRead(Mercury230U1RegQuery);
-    ASSERT_EQ(24128, Mercury230U1Reg->GetValue());
+    ASSERT_EQ(std::to_string(24128), Mercury230U1Reg->GetTextValue());
 
     EnqueueMercury230I1Response();
     // subparam 0x21 = current (phase 1)
     TestRead(Mercury230I1RegQuery);
-    ASSERT_EQ(69, Mercury230I1Reg->GetValue());
+    ASSERT_EQ(std::to_string(69), Mercury230I1Reg->GetTextValue());
 
     EnqueueMercury230U2Response();
     // subparam 0x12 = voltage (phase 2)
     TestRead(Mercury230U2RegQuery);
-    ASSERT_EQ(24043, Mercury230U2Reg->GetValue());
+    ASSERT_EQ(std::to_string(24043), Mercury230U2Reg->GetTextValue());
 
     EnqueueMercury230PResponse();
     // Total power (P)
     TestRead(Mercury230PRegQuery);
-    ASSERT_EQ(553095, Mercury230PReg->GetValue());
+    ASSERT_EQ(std::to_string(553095), Mercury230PReg->GetTextValue());
 
     EnqueueMercury230TempResponse();
     TestRead(Mercury230TempRegQuery);
-    ASSERT_EQ(24, Mercury230TempReg->GetValue());
+    ASSERT_EQ(std::to_string(24), Mercury230TempReg->GetTextValue());
 }
 
 TEST_F(TEMDeviceTest, Combined)

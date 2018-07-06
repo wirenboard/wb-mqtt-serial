@@ -54,9 +54,9 @@ struct TIRDeviceValueDesc
 
 struct TIRDeviceValueContext final: TIRDeviceValueDesc
 {
-    TIRValueFormatter & Value;
+    TIRValue & Value;
 
-    TIRDeviceValueContext(const TBoundMemoryBlocks & b, const EWordOrder w, TIRValueFormatter & v)
+    TIRDeviceValueContext(const TBoundMemoryBlocks & b, const EWordOrder w, TIRValue & v)
         : TIRDeviceValueDesc{ b, w }
         , Value(v)
     {}

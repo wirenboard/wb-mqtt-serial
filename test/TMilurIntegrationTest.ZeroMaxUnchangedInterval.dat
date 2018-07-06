@@ -156,8 +156,8 @@ Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 0, reta
 EnqueueMilurTotalReactiveEnergyResponse()
 >> FF 01 7F 01 80
 Publish: /devices/milur305_255/controls/Total reactive energy/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 0, retained)
-<< FF 01 7F 04 F0 D8 FF FF 57 4B
+Publish: /devices/milur305_255/controls/Total reactive energy: '123456.78' (QoS 0, retained)
+<< FF 01 7F 04 87 65 43 21 2C 43
 EnqueueMilurFrequencyResponse()
 >> FF 01 09 80 66
 Publish: /devices/milur305_255/controls/Frequency/meta/error: '' (QoS 0, retained)
@@ -227,8 +227,8 @@ Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 0, reta
 << FF 01 76 04 44 11 10 00 AC 6C
 EnqueueMilurTotalReactiveEnergyResponse()
 >> FF 01 7F 01 80
-Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 0, retained)
-<< FF 01 7F 04 F0 D8 FF FF 57 4B
+Publish: /devices/milur305_255/controls/Total reactive energy: '123456.78' (QoS 0, retained)
+<< FF 01 7F 04 87 65 43 21 2C 43
 EnqueueMilurFrequencyResponse()
 >> FF 01 09 80 66
 Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 0, retained)
@@ -297,8 +297,8 @@ Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 0, reta
 << FF 01 76 04 44 11 10 00 AC 6C
 EnqueueMilurTotalReactiveEnergyResponse()
 >> FF 01 7F 01 80
-Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 0, retained)
-<< FF 01 7F 04 F0 D8 FF FF 57 4B
+Publish: /devices/milur305_255/controls/Total reactive energy: '123456.78' (QoS 0, retained)
+<< FF 01 7F 04 87 65 43 21 2C 43
 EnqueueMilurFrequencyResponse()
 >> FF 01 09 80 66
 Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 0, retained)

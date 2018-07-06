@@ -306,7 +306,7 @@ inline bool IsLittleEndian()
 }
 
 /**
- * @brief: wrappers for shorter code
+ * @brief wrappers for shorter code
  */
 template <class T, typename Pred>
 bool AnyOf(const T & collection, Pred && predicate)
@@ -347,5 +347,5 @@ void ForEachReverse(T & collection, F && fn)
 template <typename T, typename ... Args>
 std::unique_ptr<T> MakeUnique(Args && ... args)
 {
-    return { new T(std::forward<Args>(args)...) };
+    return std::unique_ptr<T>{ new T(std::forward<Args>(args)...) };
 }

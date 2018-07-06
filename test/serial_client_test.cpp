@@ -23,7 +23,7 @@ protected:
     void TearDown();
     PVirtualRegister Reg(int addr, ERegisterFormat fmt = U16, double scale = 1,
         double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian,
-        uint16_t bitOffset = 0, uint8_t width = 0) {
+        TBitIndex bitOffset = 0, TValueSize width = 0) {
         return TVirtualRegister::Create(
             TRegisterConfig::Create(
                 TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
@@ -431,6 +431,13 @@ TEST_F(TSerialClientTest, BCD32)
     SerialClient->Cycle();
     EXPECT_EQ(to_string(12345678), reg20->GetTextValue());
 
+    Note() << "server -> client: 0x3456 0x7890";
+    Device->SetMemoryBlockValue(20, 0x3456);
+    Device->SetMemoryBlockValue(21, 0x7890);
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(34567890), reg20->GetTextValue());
+
     Note() << "client -> server: 12345678";
     reg20->SetTextValue("12345678");
     Note() << "Cycle()";
@@ -446,6 +453,48 @@ TEST_F(TSerialClientTest, BCD32)
     EXPECT_EQ(to_string(567890), reg20->GetTextValue());
     EXPECT_EQ(0x0056, Device->GetMemoryBlockValue(20));
     EXPECT_EQ(0x7890, Device->GetMemoryBlockValue(21));
+
+    //boundaries check
+    EXPECT_EQ(123, Device->GetMemoryBlockValue(22));
+    EXPECT_EQ(123, Device->GetMemoryBlockValue(23));
+}
+
+TEST_F(TSerialClientTest, RBCD32)
+{
+    auto reg20 = Reg(20, RBCD32);
+    SerialClient->AddRegister(reg20);
+    Device->SetMemoryBlockValue(22, 123);
+    Device->SetMemoryBlockValue(23, 123);
+
+    Note() << "server -> client: 0x2143 0x6587";
+    Device->SetMemoryBlockValue(20, 0x2143);
+    Device->SetMemoryBlockValue(21, 0x6587);
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(12345678), reg20->GetTextValue());
+
+    Note() << "server -> client: 0x4365 0x8709";
+    Device->SetMemoryBlockValue(20, 0x4365);
+    Device->SetMemoryBlockValue(21, 0x8709);
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(34567890), reg20->GetTextValue());
+
+    Note() << "client -> server: 12345678";
+    reg20->SetTextValue("12345678");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(12345678), reg20->GetTextValue());
+    EXPECT_EQ(0x2143, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0x6587, Device->GetMemoryBlockValue(21));
+
+    Note() << "client -> server: 567890";
+    reg20->SetTextValue("567890");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(567890), reg20->GetTextValue());
+    EXPECT_EQ(0x0065, Device->GetMemoryBlockValue(20));
+    EXPECT_EQ(0x8709, Device->GetMemoryBlockValue(21));
 
     //boundaries check
     EXPECT_EQ(123, Device->GetMemoryBlockValue(22));
@@ -644,6 +693,110 @@ TEST_F(TSerialClientTest, Double64)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("126000", reg24->GetTextValue());
+}
+
+TEST_F(TSerialClientTest, String)
+{
+    auto regStr = Reg(0, String, 1, 0, 0, EWordOrder::BigEndian, 0, 12 * 8);
+    SerialClient->AddRegister(regStr);
+
+    Device->SetMemoryBlockValue(0, 'H' << 8 | 'e');
+    Device->SetMemoryBlockValue(1, 'l' << 8 | 'l');
+    Device->SetMemoryBlockValue(2, 'o' << 8 | ' ');
+    Device->SetMemoryBlockValue(3, 'W' << 8 | 'o');
+    Device->SetMemoryBlockValue(4, 'r' << 8 | 'l');
+    Device->SetMemoryBlockValue(5, 'd' << 8 | '!');
+
+    SerialClient->Cycle();
+
+    EXPECT_EQ("Hello World!", regStr->GetTextValue());
+
+    regStr->SetTextValue("Hello");
+
+    SerialClient->Cycle();
+
+    EXPECT_EQ('H' << 8 | 'e', Device->GetMemoryBlockValue(0));
+    EXPECT_EQ('l' << 8 | 'l', Device->GetMemoryBlockValue(1));
+    EXPECT_EQ('o' << 8, Device->GetMemoryBlockValue(2));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(3));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(4));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(5));
+
+    EXPECT_EQ("Hello", regStr->GetTextValue());
+
+    regStr->SetTextValue("Wirenboard!");
+
+    SerialClient->Cycle();
+
+    EXPECT_EQ('W' << 8 | 'i', Device->GetMemoryBlockValue(0));
+    EXPECT_EQ('r' << 8 | 'e', Device->GetMemoryBlockValue(1));
+    EXPECT_EQ('n' << 8 | 'b', Device->GetMemoryBlockValue(2));
+    EXPECT_EQ('o' << 8 | 'a', Device->GetMemoryBlockValue(3));
+    EXPECT_EQ('r' << 8 | 'd', Device->GetMemoryBlockValue(4));
+    EXPECT_EQ('!' << 8, Device->GetMemoryBlockValue(5));
+
+    EXPECT_EQ("Wirenboard!", regStr->GetTextValue());
+}
+
+TEST_F(TSerialClientTest, WString)
+{
+    auto regStr = Reg(0, WString, 1, 0, 0, EWordOrder::BigEndian, 0, 12 * 16);
+    SerialClient->AddRegister(regStr);
+
+    Device->SetMemoryBlockValue(0, 'H');
+    Device->SetMemoryBlockValue(1, 'e');
+    Device->SetMemoryBlockValue(2, 'l');
+    Device->SetMemoryBlockValue(3, 'l');
+    Device->SetMemoryBlockValue(4, 'o');
+    Device->SetMemoryBlockValue(5, ' ');
+    Device->SetMemoryBlockValue(6, 'W');
+    Device->SetMemoryBlockValue(7, 'o');
+    Device->SetMemoryBlockValue(8, 'r');
+    Device->SetMemoryBlockValue(9, 'l');
+    Device->SetMemoryBlockValue(10, 'd');
+    Device->SetMemoryBlockValue(11, '!');
+
+    SerialClient->Cycle();
+
+    EXPECT_EQ("Hello World!", regStr->GetTextValue());
+
+    regStr->SetTextValue("Hello");
+
+    SerialClient->Cycle();
+
+    EXPECT_EQ('H', Device->GetMemoryBlockValue(0));
+    EXPECT_EQ('e', Device->GetMemoryBlockValue(1));
+    EXPECT_EQ('l', Device->GetMemoryBlockValue(2));
+    EXPECT_EQ('l', Device->GetMemoryBlockValue(3));
+    EXPECT_EQ('o', Device->GetMemoryBlockValue(4));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(5));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(6));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(7));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(8));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(9));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(10));
+    EXPECT_EQ(0, Device->GetMemoryBlockValue(11));
+
+    EXPECT_EQ("Hello", regStr->GetTextValue());
+
+    regStr->SetTextValue("Wirenboard!");
+
+    SerialClient->Cycle();
+
+    EXPECT_EQ('W', Device->GetMemoryBlockValue(0));
+    EXPECT_EQ('i', Device->GetMemoryBlockValue(1));
+    EXPECT_EQ('r', Device->GetMemoryBlockValue(2));
+    EXPECT_EQ('e', Device->GetMemoryBlockValue(3));
+    EXPECT_EQ('n', Device->GetMemoryBlockValue(4));
+    EXPECT_EQ('b', Device->GetMemoryBlockValue(5));
+    EXPECT_EQ('o', Device->GetMemoryBlockValue(6));
+    EXPECT_EQ('a', Device->GetMemoryBlockValue(7));
+    EXPECT_EQ('r', Device->GetMemoryBlockValue(8));
+    EXPECT_EQ('d', Device->GetMemoryBlockValue(9));
+    EXPECT_EQ('!', Device->GetMemoryBlockValue(10));
+    EXPECT_EQ(0  , Device->GetMemoryBlockValue(11));
+
+    EXPECT_EQ("Wirenboard!", regStr->GetTextValue());
 }
 
 TEST_F(TSerialClientTest, offset)
@@ -851,8 +1004,12 @@ TEST_F(TSerialClientTest, Bitmasks)
     EXPECT_EQ("4321", reg76O0W16->GetTextValue());
     EXPECT_EQ("7654", reg75O0W16->GetTextValue());
     EXPECT_EQ("1234567890", reg73O0W32->GetTextValue());
+    EXPECT_EQ("8086", reg77O0W13->GetTextValue());
+    EXPECT_EQ("8086", reg78O3W13->GetTextValue());
 
     Device->SetMemoryBlockValue(72, 0x5);     // disable reg72O1W1
+    reg77O0W13->SetTextValue("7386");
+    reg78O3W13->SetTextValue("7386");
 
     Note() << "Cycle()";
     SerialClient->Cycle();
@@ -865,6 +1022,11 @@ TEST_F(TSerialClientTest, Bitmasks)
     EXPECT_EQ("4321", reg76O0W16->GetTextValue());
     EXPECT_EQ("7654", reg75O0W16->GetTextValue());
     EXPECT_EQ("1234567890", reg73O0W32->GetTextValue());
+    EXPECT_EQ("7386", reg77O0W13->GetTextValue());
+    EXPECT_EQ("7386", reg78O3W13->GetTextValue());
+
+    EXPECT_EQ(7386, Device->GetMemoryBlockValue(77));
+    EXPECT_EQ(7386 << 3, Device->GetMemoryBlockValue(78));
 }
 
 
@@ -1544,6 +1706,9 @@ TEST_F(TConfigParserTest, Parse)
                         TTestLogIndent indent(*this);
                         Emit() << "------";
                         Emit() << "Type and Address: " << reg;
+                        Emit() << "Address: " << reg->Address;
+                        Emit() << "BitOffset: " << reg->BitOffset;
+                        Emit() << "Width: " << reg->Width;
                         Emit() << "Format: " << RegisterFormatName(reg->Format);
                         Emit() << "Scale: " << reg->Scale;
                         Emit() << "Offset: " << reg->Offset;

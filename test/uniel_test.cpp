@@ -49,58 +49,58 @@ TEST_F(TUnielDeviceTest, TestQuery)
 
     EnqueueVoltageQueryResponse();
     TestRead(InputRegQuery);
-    ASSERT_EQ(154, InputReg->GetValue());
+    ASSERT_EQ("154", InputReg->GetTextValue());
 
     // TBD: rm (dupe)
     SerialPort->DumpWhatWasRead();
     EnqueueVoltageQueryResponse();
     TestRead(InputRegQuery);
-    ASSERT_EQ(154, InputReg->GetValue());
+    ASSERT_EQ("154", InputReg->GetTextValue());
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOffQueryResponse();
     TestRead(RelayRegQuery);
-    ASSERT_EQ(0, RelayReg->GetValue());
+    ASSERT_EQ("0", RelayReg->GetTextValue());
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOnQueryResponse();
     TestRead(RelayRegQuery);
-    ASSERT_EQ(1, RelayReg->GetValue());
+    ASSERT_EQ("1", RelayReg->GetTextValue());
 
     SerialPort->DumpWhatWasRead();
     EnqueueThreshold0QueryResponse();
     TestRead(ThresholdRegQuery);
-    ASSERT_EQ(0x70, ThresholdReg->GetValue());
+    ASSERT_EQ(std::to_string(0x70), ThresholdReg->GetTextValue());
 
     SerialPort->DumpWhatWasRead();
     EnqueueBrightnessQueryResponse();
     TestRead(BrightnessRegQuery);
-    ASSERT_EQ(66, BrightnessReg->GetValue());
+    ASSERT_EQ(std::to_string(66), BrightnessReg->GetTextValue());
 }
 
 TEST_F(TUnielDeviceTest, TestSetRelayState)
 {
     EnqueueSetRelayOnResponse();
-    RelayReg->SetValue(1);
+    RelayReg->SetTextValue("1");
     RelayReg->Flush();
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
-    RelayReg->SetValue(0);
+    RelayReg->SetTextValue("0");
     RelayReg->Flush();
 }
 
 TEST_F(TUnielDeviceTest, TestSetParam)
 {
     EnqueueSetLowThreshold0Response();
-    ThresholdReg->SetValue(0x70);
+    ThresholdReg->SetTextValue(std::to_string(0x70));
     ThresholdReg->Flush();
 }
 
 TEST_F(TUnielDeviceTest, TestSetBrightness)
 {
     EnqueueSetBrightnessResponse();
-    BrightnessReg->SetValue(0x42);
+    BrightnessReg->SetTextValue(std::to_string(0x42));
     BrightnessReg->Flush();
 }
 

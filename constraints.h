@@ -3,11 +3,12 @@
 #include <limits>
 #include <stdint.h>
 
-using TMemoryBlockBitIndex = uint16_t;
+using TBitIndex = uint16_t;
+using TByteIndex = uint16_t;
 using TValueSize = uint16_t;
 using TValue = uint64_t;
 
-constexpr uint64_t MAX_MEMORY_BLOCK_WIDTH       = std::numeric_limits<TMemoryBlockBitIndex>::max();
+constexpr uint64_t MAX_MEMORY_BLOCK_WIDTH       = std::numeric_limits<TBitIndex>::max();
 constexpr uint64_t MAX_MEMORY_BLOCK_BIT_INDEX   = MAX_MEMORY_BLOCK_WIDTH - 1;
 constexpr uint64_t MAX_MEMORY_BLOCK_SIZE        = MAX_MEMORY_BLOCK_WIDTH / 8;
 constexpr uint64_t MAX_MEMORY_BLOCK_BYTE_INDEX  = MAX_MEMORY_BLOCK_SIZE - 1;

@@ -38,13 +38,13 @@ Publish: /devices/RoundTest/controls/Float_10: '12.345' (QoS 0, retained)
 >>> Publish: /devices/RoundTest/controls/Float_0_2/on: '12.345' (QoS 0)
 Publish: /devices/RoundTest/controls/Float_0_2: '12.345' (QoS 0, retained)
 >>> LoopOnce()
-fake_serial_device '146': write to address '0' value '1095080346'
-fake_serial_device '146': write to address '2' value '1094713344'
-fake_serial_device '146': write to address '4' value '1092616192'
-fake_serial_device '146': write to address '6' value '1095132774'
-fake_serial_device '146': read address '0' value '1095080346'
-fake_serial_device '146': read address '2' value '1094713344'
-fake_serial_device '146': read address '4' value '1092616192'
-fake_serial_device '146': read address '6' value '1095132774'
+fake_serial_device '146': write to address '0' value '12.35'
+fake_serial_device '146': write to address '2' value '12'
+fake_serial_device '146': write to address '4' value '10'
+fake_serial_device '146': write to address '6' value '12.4'
+fake_serial_device '146': read address '0' value '12.35'
+fake_serial_device '146': read address '2' value '12'
+fake_serial_device '146': read address '4' value '10'
+fake_serial_device '146': read address '6' value '12.4'
 fake_serial_device '146': Device cycle OK
 Port cycle OK

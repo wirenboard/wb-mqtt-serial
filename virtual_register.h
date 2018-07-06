@@ -24,8 +24,8 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
     PWSerialDevice                              Device;
     TBoundMemoryBlocks                          MemoryBlocks;
     PBinarySemaphore                            FlushNeeded;
-    PIRValueFormatter                           ValueToWrite;   // WAS ATOMIC
-    PIRValueFormatter                           CurrentValue;
+    PIRValue                                    ValueToWrite;   // WAS ATOMIC
+    PIRValue                                    CurrentValue;
     PIRDeviceValueQuery                         WriteQuery;
     EErrorState                                 ErrorState;
     EPublishData                                ChangedPublishData;
@@ -36,6 +36,7 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
 
 public:
     static PVirtualRegister Create(const PRegisterConfig & config, const PSerialDevice & device);
+    ~TVirtualRegister();
 
     /**
      * Returns hash that can be used by unordered_* containers
@@ -85,7 +86,7 @@ private:
     TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device);
     void Initialize();
 
-    void AcceptDeviceValue(uint64_t);
+    void AcceptDeviceValue();
     void AcceptWriteValue();
 
     uint64_t GetBitPosition() const;

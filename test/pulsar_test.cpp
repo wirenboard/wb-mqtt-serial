@@ -47,7 +47,7 @@ TEST_F(TPulsarDeviceTest, PulsarHeatMeterFloatQuery)
             });
 
     TestRead(Heat_TempInQuery);
-    ASSERT_EQ(0x41C5B35A, Heat_TempIn->GetValue());
+    ASSERT_EQ(std::to_string(0x41C5B35A), Heat_TempIn->GetTextValue());
 
     SerialPort->Close();
 }

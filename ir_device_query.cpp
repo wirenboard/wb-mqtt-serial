@@ -247,7 +247,7 @@ void TIRDeviceQuery::FinalizeRead(const TIRDeviceMemoryView & memoryView) const
         cout << "READING: " << reg->ToString() << ": " << reg->Describe() << endl;
 #endif
         memoryView.ReadValue(reg->GetValueContext());
-        //reg->AcceptDeviceValue();
+        reg->AcceptDeviceValue();
     }
 
     SetStatus(EQueryStatus::Ok);
@@ -258,6 +258,10 @@ TIRDeviceValueQuery::TIRDeviceValueQuery(TAssociatedMemoryBlockSet && memoryBloc
     , MemoryBlocks(move(memoryBlocks.first))
 {
     assert(!MemoryBlocks.empty());
+
+    for (const auto & vreg: VirtualRegisters) {
+        AddValueContext(vreg->GetValueToWriteContext());
+    }
 }
 
 TIRDeviceValueQuery::TIRDeviceValueQuery(TPSet<PMemoryBlock> && memoryBlocks, EQueryOperation operation)
@@ -267,14 +271,19 @@ TIRDeviceValueQuery::TIRDeviceValueQuery(TPSet<PMemoryBlock> && memoryBlocks, EQ
     assert(!MemoryBlocks.empty());
 }
 
+void TIRDeviceValueQuery::AddValueContext(const TIRDeviceValueContext & context)
+{
+    ValueContexts.push_back(context);
+}
+
 void TIRDeviceValueQuery::FinalizeWrite() const
 {
     assert(Operation == EQueryOperation::Write);
     assert(GetStatus() == EQueryStatus::NotExecuted);
 
     // write value to cache
-    for (const auto & vreg: VirtualRegisters) {
-        TIRDeviceMemoryView::WriteValue(vreg->GetValueToWriteContext(), [](const CPMemoryBlock & mb){
+    for (const auto & context: ValueContexts) {
+        TIRDeviceMemoryView::WriteValue(context, [](const CPMemoryBlock & mb){
             return mb->GetCache();
         });
     }
@@ -299,8 +308,8 @@ TIRDeviceMemoryView TIRDeviceValueQuery::GetValuesImpl(void * mem, size_t size) 
     }
 
     // write payload values on top of cached ones
-    for (const auto & vreg: VirtualRegisters) {
-        memoryView.WriteValue(vreg->GetValueToWriteContext());
+    for (const auto & context: ValueContexts) {
+        memoryView.WriteValue(context);
     }
 
     return memoryView;

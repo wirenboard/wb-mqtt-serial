@@ -52,7 +52,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
         });
 
     TestRead(Dev1TempQuery);
-    ASSERT_EQ(0x41D1D3CE, Dev1Temp->GetValue()); //big-endian
+    ASSERT_EQ(std::to_string(0x41D1D3CE), Dev1Temp->GetTextValue()); //big-endian
 
 	// >> 24 30 30 30 31 52 52 30 30 30 34 30 34 42 31 0d
 	// << 21 30 30 30 31 52 52 33 30 39 41 45 42 34 31 34 46 0D
@@ -73,7 +73,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
         });
 
     TestRead(Dev1HumidityQuery);
-    ASSERT_EQ(0x41EB9A30, Dev1Humidity->GetValue()); //big-endian
+    ASSERT_EQ(std::to_string(0x41EB9A30), Dev1Humidity->GetTextValue()); //big-endian
 
     Dev->EndPollCycle();
 
@@ -98,6 +98,6 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
         });
 
     TestRead(Dev1TempQuery);
-    ASSERT_EQ(0x41C7855E, Dev1Temp->GetValue()); //big-endian
+    ASSERT_EQ(std::to_string(0x41C7855E), Dev1Temp->GetTextValue()); //big-endian
     SerialPort->Close();
 }

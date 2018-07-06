@@ -123,7 +123,7 @@
                 "name": "Total consumption",
                 "reg_type": "energy",
                 "address": 118,
-                "format": "bcd32",
+                "format": "rbcd32",
                 "type": "power_consumption",
                 "scale": 0.01
             },
@@ -131,7 +131,7 @@
                 "name": "Total reactive energy",
                 "reg_type": "energy",
                 "address": 127,
-                "format": "bcd32",
+                "format": "rbcd32",
                 "type": "power_consumption",
                 "scale": 0.01
             },

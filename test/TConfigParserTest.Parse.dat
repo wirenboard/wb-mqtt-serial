@@ -24,7 +24,10 @@ Ports:
             ReadOnly: 1
             Registers:
                 ------
-                Type and Address: input: 0
+                Type and Address: input: 0:0:8
+                Address: 0
+                BitOffset: 0
+                Width: 8
                 Format: S8
                 Scale: 1
                 Offset: 0
@@ -45,7 +48,10 @@ Ports:
             ReadOnly: 1
             Registers:
                 ------
-                Type and Address: input: 1
+                Type and Address: input: 1:0:16
+                Address: 1
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -66,7 +72,10 @@ Ports:
             ReadOnly: 1
             Registers:
                 ------
-                Type and Address: input: 2
+                Type and Address: input: 2:0:16
+                Address: 2
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 0.075
                 Offset: 0
@@ -87,7 +96,10 @@ Ports:
             ReadOnly: 1
             Registers:
                 ------
-                Type and Address: input: 3
+                Type and Address: input: 3:0:8
+                Address: 3
+                BitOffset: 0
+                Width: 8
                 Format: S8
                 Scale: 1
                 Offset: 0
@@ -118,7 +130,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: holding: 0
+                Type and Address: holding: 0:0:16
+                Address: 0
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -149,7 +164,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: holding: 0
+                Type and Address: holding: 0:0:16
+                Address: 0
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -170,7 +188,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: holding: 1
+                Type and Address: holding: 1:0:16
+                Address: 1
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -191,7 +212,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: holding: 2
+                Type and Address: holding: 2:0:16
+                Address: 2
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -212,7 +236,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: holding: 3
+                Type and Address: holding: 3:0:16
+                Address: 3
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -233,7 +260,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: holding: 4
+                Type and Address: holding: 4:0:16
+                Address: 4
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -254,7 +284,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: holding: 5
+                Type and Address: holding: 5:0:16
+                Address: 5
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -290,7 +323,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: coil: 0
+                Type and Address: coil: 0:0:8
+                Address: 0
+                BitOffset: 0
+                Width: 8
                 Format: U8
                 Scale: 1
                 Offset: 0
@@ -311,7 +347,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: coil: 1
+                Type and Address: coil: 1:0:8
+                Address: 1
+                BitOffset: 0
+                Width: 8
                 Format: U8
                 Scale: 1
                 Offset: 0
@@ -332,7 +371,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: coil: 2
+                Type and Address: coil: 2:0:8
+                Address: 2
+                BitOffset: 0
+                Width: 8
                 Format: U8
                 Scale: 1
                 Offset: 0
@@ -353,7 +395,10 @@ Ports:
             ReadOnly: 1
             Registers:
                 ------
-                Type and Address: discrete: 0
+                Type and Address: discrete: 0:0:8
+                Address: 0
+                BitOffset: 0
+                Width: 8
                 Format: U8
                 Scale: 1
                 Offset: 0
@@ -384,7 +429,10 @@ Ports:
             ReadOnly: 0
             Registers:
                 ------
-                Type and Address: holding: 1
+                Type and Address: holding: 1:0:16
+                Address: 1
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -397,7 +445,10 @@ Ports:
                 ErrorValue: not set
                 WordOrder: BigEndian
                 ------
-                Type and Address: holding: 0
+                Type and Address: holding: 0:0:16
+                Address: 0
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -410,7 +461,10 @@ Ports:
                 ErrorValue: not set
                 WordOrder: BigEndian
                 ------
-                Type and Address: holding: 2
+                Type and Address: holding: 2:0:16
+                Address: 2
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -431,7 +485,10 @@ Ports:
             ReadOnly: 1
             Registers:
                 ------
-                Type and Address: holding: 32
+                Type and Address: holding: 32:0:16
+                Address: 32
+                BitOffset: 0
+                Width: 16
                 Format: U16
                 Scale: 1
                 Offset: 0
@@ -462,7 +519,10 @@ Ports:
             ReadOnly: 1
             Registers:
                 ------
-                Type and Address: input: 0
+                Type and Address: input: 0:0:8
+                Address: 0
+                BitOffset: 0
+                Width: 8
                 Format: S8
                 Scale: 1
                 Offset: 0
@@ -493,7 +553,10 @@ Ports:
             ReadOnly: 1
             Registers:
                 ------
-                Type and Address: input: 0
+                Type and Address: input: 0:0:8
+                Address: 0
+                BitOffset: 0
+                Width: 8
                 Format: S8
                 Scale: 1
                 Offset: 0
@@ -502,6 +565,88 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+        ------
+        Id: TestDeviceRegAddresses
+        Name: TestDeviceRegAddresses
+        SlaveId: 7
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 105
+        DeviceTimeout: 3000
+        DeviceChannels:
+            ------
+            Name: Offset
+            Type: value
+            DeviceId: TestDeviceRegAddresses
+            Order: 1
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: param16: 32:8:16
+                Address: 32
+                BitOffset: 8
+                Width: 16
+                Format: BCD16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                OnValue: 
+                Poll: 1
+                ReadOnly: 1
+                TypeName: param16
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: OffsetWidth
+            Type: value
+            DeviceId: TestDeviceRegAddresses
+            Order: 2
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: param16: 34:8:12
+                Address: 34
+                BitOffset: 8
+                Width: 12
+                Format: BCD16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                OnValue: 
+                Poll: 1
+                ReadOnly: 1
+                TypeName: param16
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: ValueIndex
+            Type: value
+            DeviceId: TestDeviceRegAddresses
+            Order: 3
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: params: 36:24:16
+                Address: 36
+                BitOffset: 24
+                Width: 16
+                Format: BCD16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                OnValue: 
+                Poll: 1
+                ReadOnly: 1
+                TypeName: params
                 PollInterval: 100
                 ErrorValue: not set
                 WordOrder: BigEndian

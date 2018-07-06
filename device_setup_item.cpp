@@ -3,6 +3,7 @@
 #include "memory_block.h"
 #include "ir_device_query_factory.h"
 #include "ir_device_query.h"
+#include "ir_value.h"
 
 #include <cassert>
 
@@ -14,12 +15,16 @@ TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig 
     assert(!RegisterConfig->ReadOnly);  // there's no point in readonly setup item
 
     BoundMemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(RegisterConfig, device);
+    ManagedValue = TIRValue::Make(*RegisterConfig);
+    ManagedValue->SetTextValue(*RegisterConfig, to_string(Value));
     Query = TIRDeviceQueryFactory::CreateQuery<TIRDeviceValueQuery>(GetKeysAsSet(BoundMemoryBlocks));
-    Query->SetValue(
-        { BoundMemoryBlocks, RegisterConfig->WordOrder }, // valueDesc
-        config->Value
+    Query->AddValueContext(
+        { BoundMemoryBlocks, RegisterConfig->WordOrder, *ManagedValue }    // value context
     );
 }
+
+TDeviceSetupItem::~TDeviceSetupItem()
+{}
 
 string TDeviceSetupItem::ToString() const
 {

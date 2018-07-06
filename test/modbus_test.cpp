@@ -104,7 +104,7 @@ set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> memoryBlockSet)
 
     set<int> readAddresses;
     set<int> errorRegisters;
-    map<int, uint64_t> registerValues;
+    map<int, string> registerValues;
 
     for (const auto & pollIntervalQuerySet: querySetsByPollInterval) {
         const auto & querySet = pollIntervalQuerySet.second;
@@ -114,7 +114,7 @@ set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> memoryBlockSet)
 
             for (const auto & virtualRegister: query->VirtualRegisters) {
                 if (query->GetStatus() == EQueryStatus::Ok) {
-                    registerValues[virtualRegister->Address] = virtualRegister->GetValue();
+                    registerValues[virtualRegister->Address] = virtualRegister->GetTextValue();
                 } else {
                     errorRegisters.insert(virtualRegister->Address);
                 }
@@ -128,7 +128,7 @@ set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> memoryBlockSet)
 
     for (auto registerValue: registerValues) {
         auto address = registerValue.first;
-        auto value = to_string(registerValue.second);
+        auto value = registerValue.second;
 
         switch (address) {
         case 0:
@@ -180,16 +180,16 @@ TEST_F(TModbusTest, HoldingSingleMulti)
     EnqueueHoldingMultiWriteU16Response();
     EnqueueHoldingMultiWriteU64Response();
 
-    ModbusHoldingU16Single->SetValue(0x0f41);
+    ModbusHoldingU16Single->SetTextValue(to_string(0x0f41));
     ModbusHoldingU16Single->Flush();
 
-    ModbusHoldingU64Single->SetValue(0x01020304050607);
+    ModbusHoldingU64Single->SetTextValue(to_string(0x01020304050607));
     ModbusHoldingU64Single->Flush();
 
-    ModbusHoldingU16Multi->SetValue(0x0123);
+    ModbusHoldingU16Multi->SetTextValue(to_string(0x0123));
     ModbusHoldingU16Multi->Flush();
 
-    ModbusHoldingU64Multi->SetValue(0x0123456789ABCDEF);
+    ModbusHoldingU64Multi->SetTextValue(to_string(0x0123456789ABCDEF));
     ModbusHoldingU64Multi->Flush();
 
     SerialPort->Close();
@@ -223,8 +223,7 @@ TEST_F(TModbusTest, Errors)
 
 #define WRITE_COIL_0_EMIT_TRANSIENT_ERROR \
     try {                                                       \
-        ModbusCoil0->SetValue(0xFF);                            \
-        ModbusCoil0->WriteValueToQuery();                       \
+        ModbusCoil0->SetTextValue(to_string(0xFF));             \
         auto query = ModbusCoil0->GetWriteQuery();              \
         query->ResetStatus();                                   \
         ModbusDev->Write(*query);                               \

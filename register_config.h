@@ -84,7 +84,7 @@ struct TMemoryBlockType {
 
 private:
     /**
-     * @brief: Invert value index based on byte order
+     * @brief Invert value index based on byte order
      *  in such way that it will match layout
      */
     uint16_t NormalizeValueIndex(uint16_t iValue) const;
@@ -96,7 +96,7 @@ using TRegisterTypeMap  = std::map<std::string, TMemoryBlockType>;
 using PRegisterTypeMap  = std::shared_ptr<TRegisterTypeMap>;
 
 const char* RegisterFormatName(ERegisterFormat fmt);
-ERegisterFormat RegisterFormatFromName(const std::string& name);
+ERegisterFormat RegisterFormatFromAlias(const std::string& name);
 EWordOrder WordOrderFromName(const std::string& name);
 
 struct TRegisterConfig
@@ -104,9 +104,9 @@ struct TRegisterConfig
     TRegisterConfig(int type, int address,
                     ERegisterFormat format, double scale, double offset,
                     double round_to, bool poll, bool readonly,
-                    const std::string& type_name,
-                    bool has_error_value, uint64_t error_value,
-                    const EWordOrder word_order, uint16_t bit_offset, uint8_t width);
+                    const std::string& type_name, bool has_error_value,
+                    uint64_t error_value, const EWordOrder word_order,
+                    TBitIndex bit_offset, TValueSize width);
 
     static PRegisterConfig Create(int type = 0, int address = 0,
                                   ERegisterFormat format = U16, double scale = 1, double offset = 0,
@@ -115,16 +115,16 @@ struct TRegisterConfig
                                   bool has_error_value = false,
                                   uint64_t error_value = 0,
                                   const EWordOrder word_order = EWordOrder::BigEndian,
-                                  uint16_t bit_offset = 0, uint8_t width = 0)
+                                  TBitIndex bit_offset = 0, TValueSize width = 0)
     {
         return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
                                             type_name, has_error_value, error_value, word_order, bit_offset, width);
     }
 
-    uint16_t GetSize() const;
-    uint16_t GetWidth() const;
-    uint16_t GetFormatMaxSize() const;
-    uint16_t GetFormatMaxWidth() const;
+    TValueSize GetSize() const;
+    TValueSize GetWidth() const;
+    TValueSize GetFormatMaxSize() const;
+    TValueSize GetFormatMaxWidth() const;
 
     std::string ToString() const;
     std::string ToStringWithFormat() const;
@@ -144,8 +144,8 @@ struct TRegisterConfig
     bool        HasErrorValue;
     uint64_t    ErrorValue;
     EWordOrder  WordOrder;
-    uint16_t    BitOffset;
-    uint16_t    Width;
+    TBitIndex   BitOffset;
+    TValueSize  Width;
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, PRegisterConfig reg) {

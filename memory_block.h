@@ -6,7 +6,7 @@
 #include "ir_device_memory_view.h"
 
 /**
- * @brief: Lightweight representation of atomic chunk of memory accessed via device protocol,
+ * @brief Lightweight representation of atomic chunk of memory accessed via device protocol,
  *   which means that any part of memory block can't be obtained without obtaining whole block.
  *  This layer caches values and acts like bridge between VirtualRegister and IR layers.
  *  Different memory blocks cannot simultaneously have same type and address.

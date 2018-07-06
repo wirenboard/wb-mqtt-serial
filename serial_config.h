@@ -138,9 +138,9 @@ private:
 };
 
 /**
- * @brief: static interface to access memory block types by name and index
+ * @brief static interface to access memory block types by name and index
  *
- * @note: implemented in serial_device.cpp
+ * @note implemented in serial_device.cpp
 */
 struct TMemoryBlockTypeMapper
 {
@@ -153,28 +153,57 @@ public:
     TConfigParser(const std::string& config_fname, bool force_debug,
                   PTemplateMap templates = std::make_shared<TTemplateMap>());
     PHandlerConfig Parse();
-    PRegisterConfig LoadRegisterConfig(PDeviceConfig device_config, const Json::Value& register_data,
-                           std::string& default_type_str);
-    void MergeAndLoadChannels(PDeviceConfig device_config, const Json::Value& device_data, PTemplate tmpl);
+    PRegisterConfig LoadRegisterConfig(
+        PDeviceConfig device_config,
+        const Json::Value& register_data,
+        std::string& default_type_str);
+
+    void MergeAndLoadChannels(
+        PDeviceConfig device_config,
+        const Json::Value& device_data,
+        PTemplate tmpl);
+
     void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data);
     void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data);
-    void LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data);
-    void LoadDevice(PPortConfig port_config, const Json::Value& device_data,
-                    const std::string& default_id);
+    void LoadDeviceTemplatableConfigPart(
+        PDeviceConfig device_config,
+        const Json::Value& device_data);
+
+    void LoadDevice(
+        PPortConfig port_config,
+        const Json::Value& device_data,
+        const std::string& default_id);
+
     void LoadPort(const Json::Value& port_data, const std::string& id_prefix);
     void LoadConfig();
 
 private:
-    using TRegisterAddress = std::tuple<int, TMemoryBlockBitIndex, TValueSize>;
+    using TRegisterAddress = std::tuple<int, TBitIndex, TValueSize>;
+    struct TParsedRegisterAddress
+    {
+        int  Address,
+             BitOffset = 0,
+             Width = 0;
+        bool HasBitOffset = false,
+             HasWidth = false;
+    };
 
     static int GetInt(const Json::Value& obj, const std::string& key);
     static int ToInt(const Json::Value& v, const std::string& title);
     static int ToInt(const std::string& v, const std::string& title);
     static uint64_t ToUint64(const Json::Value& v, const std::string& title);
-    static TRegisterAddress ParseRegisterAddress(
+    static TParsedRegisterAddress ParseRegisterAddress(
         const Json::Value& obj,
         const std::string& key,
-        const TMemoryBlockType & type,
+        const TMemoryBlockType & type);
+
+    static TBitIndex GetValidatedRegisterAddressOffset(
+        const TParsedRegisterAddress & address,
+        const Json::Value& addressObj);
+
+    static TValueSize GetValidatedRegisterAddressWidth(
+        const TParsedRegisterAddress & address,
+        const Json::Value& addressObj,
         TValueSize maxWidth);
 
     std::string ConfigFileName;

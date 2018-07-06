@@ -1,5 +1,5 @@
 Serial protocol error: registers fake: 73:15:16 (U32) and fake: 73:0:32 (U32) are overlapping
-Serial protocol error: registers fake: 76 (U16) and fake: 76:0:16 (U16) are overlapping
+Serial protocol error: registers fake: 76:0:16 (U16) and fake: 76:0:16 (U16) are overlapping
 Serial protocol error: registers fake: 76:0:1 (U16) and fake: 76:0:16 (U16) are overlapping
 Serial protocol error: registers fake: 76:15:1 (U16) and fake: 76:0:16 (U16) are overlapping
 Serial protocol error: unable to create memoryBlocks by config fake: 76:16:1: specified bit shift (16) must be less than device memory block width (16)
@@ -30,6 +30,8 @@ fake_serial_device '1': read address '72' value '1'
 fake_serial_device '1': read address '76' value '4321'
 fake_serial_device '1': read address '75' value '7654'
 fake_serial_device '1': read address '73' value '1234567890'
+fake_serial_device '1': read address '77' value '8086'
+fake_serial_device '1': read address '78' value '8086'
 Error Callback: <fake:1:fake: 72:0:1>: no error
 Read Callback: <fake:1:fake: 72:0:1> becomes 1
 Error Callback: <fake:1:fake: 72:1:1>: no error
@@ -38,6 +40,10 @@ Read Callback: <fake:1:fake: 72:2:1> becomes 1
 Read Callback: <fake:1:fake: 76:0:16> becomes 4321
 Read Callback: <fake:1:fake: 75:0:16> becomes 7654
 Read Callback: <fake:1:fake: 73:0:32> becomes 1234567890
+Error Callback: <fake:1:fake: 77:0:13>: no error
+Read Callback: <fake:1:fake: 77:0:13> becomes 8086
+Error Callback: <fake:1:fake: 78:3:13>: no error
+Read Callback: <fake:1:fake: 78:3:13> becomes 8086
 fake_serial_device '1': Device cycle OK
 Port cycle OK
 fake_serial_device 'fake:1': address '70' value '16383'
@@ -47,6 +53,8 @@ fake_serial_device 'fake:1': address '74' value '722'
 fake_serial_device 'fake:1': address '75' value '7654'
 fake_serial_device 'fake:1': address '76' value '4321'
 >>> Cycle()
+fake_serial_device '1': write to address '77' value '7386'
+fake_serial_device '1': write to address '78' value '7386'
 fake_serial_device '1': read address '70' value '255'
 fake_serial_device '1': read address '70' value '63'
 Read Callback: <fake:1:fake: 70:0:8> becomes 255 [unchanged]
@@ -57,12 +65,16 @@ fake_serial_device '1': read address '72' value '1'
 fake_serial_device '1': read address '76' value '4321'
 fake_serial_device '1': read address '75' value '7654'
 fake_serial_device '1': read address '73' value '1234567890'
+fake_serial_device '1': read address '77' value '7386'
+fake_serial_device '1': read address '78' value '7386'
 Read Callback: <fake:1:fake: 72:0:1> becomes 1 [unchanged]
 Read Callback: <fake:1:fake: 72:1:1> becomes 0
 Read Callback: <fake:1:fake: 72:2:1> becomes 1 [unchanged]
 Read Callback: <fake:1:fake: 76:0:16> becomes 4321 [unchanged]
 Read Callback: <fake:1:fake: 75:0:16> becomes 7654 [unchanged]
 Read Callback: <fake:1:fake: 73:0:32> becomes 1234567890 [unchanged]
+Read Callback: <fake:1:fake: 77:0:13> becomes 7386 [unchanged]
+Read Callback: <fake:1:fake: 78:3:13> becomes 7386 [unchanged]
 fake_serial_device '1': Device cycle OK
 Port cycle OK
 Close()

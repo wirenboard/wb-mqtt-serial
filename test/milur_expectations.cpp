@@ -459,12 +459,12 @@ void TMilurExpectations::EnqueueMilurTotalReactiveEnergyResponse()
             0x01, // op
             127, // register
             0x04, // len
-            0xf0, // data 1
-            0xd8, // data 2
-            0xff, // data 3
-			0xff, // data 4
-            0x57, // crc
-            0x4b  // crc
+            0x87, // data 1
+            0x65, // data 2
+            0x43, // data 3
+			0x21, // data 4
+            0x2c, // crc
+            0x43  // crc
         }, __func__);
 }
 

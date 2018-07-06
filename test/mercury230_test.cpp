@@ -115,14 +115,14 @@ TEST_F(TMercury230Test, ReadEnergy)
     // don't cause redundant requests during the single poll cycle.
 
     TestRead(Mercury230ValArrayMBQuery);
-    ASSERT_EQ(3196200, Mercury230TotalConsumptionReg->GetValue());
-    ASSERT_EQ(300444,  Mercury230TotalReactiveEnergyReg->GetValue());
+    ASSERT_EQ(std::to_string(3196200), Mercury230TotalConsumptionReg->GetTextValue());
+    ASSERT_EQ(std::to_string(300444),  Mercury230TotalReactiveEnergyReg->GetTextValue());
     Mercury230Dev->EndPollCycle();
 
     EnqueueMercury230EnergyResponse2();
     TestRead(Mercury230ValArrayMBQuery);
-    ASSERT_EQ(3196201, Mercury230TotalConsumptionReg->GetValue());
-    ASSERT_EQ(300445,  Mercury230TotalReactiveEnergyReg->GetValue());
+    ASSERT_EQ(std::to_string(3196201), Mercury230TotalConsumptionReg->GetTextValue());
+    ASSERT_EQ(std::to_string(300445),  Mercury230TotalReactiveEnergyReg->GetTextValue());
     Mercury230Dev->EndPollCycle();
     SerialPort->Close();
 }
@@ -144,36 +144,36 @@ void TMercury230Test::VerifyParamQuery()
     // N = param number (0x11)
     // B = subparam spec (BWRI), 0x11 = voltage, phase 1
     TestRead(Mercury230U1RegQuery);
-    ASSERT_EQ(24128, Mercury230U1Reg->GetValue());
+    ASSERT_EQ(std::to_string(24128), Mercury230U1Reg->GetTextValue());
 
     EnqueueMercury230I1Response();
     // subparam 0x21 = current (phase 1)
     TestRead(Mercury230I1RegQuery);
-    ASSERT_EQ(69, Mercury230I1Reg->GetValue());
+    ASSERT_EQ(std::to_string(69), Mercury230I1Reg->GetTextValue());
 
     EnqueueMercury230I2Response();
     // subparam 0x22 = current (phase 2)
     TestRead(Mercury230I2RegQuery);
-    ASSERT_EQ(96, Mercury230I2Reg->GetValue());
+    ASSERT_EQ(std::to_string(96), Mercury230I2Reg->GetTextValue());
 
     EnqueueMercury230U2Response();
     // subparam 0x12 = voltage (phase 2)
     TestRead(Mercury230U2RegQuery);
-    ASSERT_EQ(24043, Mercury230U2Reg->GetValue());
+    ASSERT_EQ(std::to_string(24043), Mercury230U2Reg->GetTextValue());
 
     EnqueueMercury230U3Response();
 	// subparam 0x12 = voltage (phase 3)
     TestRead(Mercury230U3RegQuery);
-	ASSERT_EQ(50405, Mercury230U3Reg->GetValue());
+	ASSERT_EQ(std::to_string(50405), Mercury230U3Reg->GetTextValue());
 
     EnqueueMercury230PResponse();
     // Total power (P)
     TestRead(Mercury230PRegQuery);
-    ASSERT_EQ(553095, Mercury230PReg->GetValue());
+    ASSERT_EQ(std::to_string(553095), Mercury230PReg->GetTextValue());
 
     EnqueueMercury230TempResponse();
     TestRead(Mercury230TempRegQuery);
-    ASSERT_EQ(24, Mercury230TempReg->GetValue());
+    ASSERT_EQ("24", Mercury230TempReg->GetTextValue());
 }
 
 TEST_F(TMercury230Test, ReadParams)
@@ -198,7 +198,7 @@ TEST_F(TMercury230Test, Reconnect)
 
     // subparam 0x12 = voltage (phase 2)
     TestRead(Mercury230U2RegQuery);
-    ASSERT_EQ(24043, Mercury230U2Reg->GetValue());
+    ASSERT_EQ(std::to_string(24043), Mercury230U2Reg->GetTextValue());
 
     Mercury230Dev->EndPollCycle();
     SerialPort->Close();

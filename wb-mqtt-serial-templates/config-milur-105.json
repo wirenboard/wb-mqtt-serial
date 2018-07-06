@@ -51,7 +51,7 @@
                 "name": "Total active energy",
                 "reg_type": "energy",
                 "address": 4,
-                "format": "bcd32",
+                "format": "rbcd32",
                 "type": "power_consumption",
                 "scale": 0.01
             },
@@ -59,7 +59,7 @@
                 "name": "Active energy 1",
                 "reg_type": "energy",
                 "address": 5,
-                "format": "bcd32",
+                "format": "rbcd32",
                 "type": "power_consumption",
                 "scale": 0.01
             },
@@ -67,7 +67,7 @@
                 "name": "Active energy 2",
                 "reg_type": "energy",
                 "address": 6,
-                "format": "bcd32",
+                "format": "rbcd32",
                 "type": "power_consumption",
                 "scale": 0.01
             },
@@ -75,7 +75,7 @@
                 "name": "Active energy 3",
                 "reg_type": "energy",
                 "address": 7,
-                "format": "bcd32",
+                "format": "rbcd32",
                 "type": "power_consumption",
                 "scale": 0.01
             },
@@ -83,7 +83,7 @@
                 "name": "Active energy 4",
                 "reg_type": "energy",
                 "address": 8,
-                "format": "bcd32",
+                "format": "rbcd32",
                 "type": "power_consumption",
                 "scale": 0.01
             },
@@ -91,7 +91,7 @@
                 "name": "Total reactive energy",
                 "reg_type": "energy",
                 "address": 72,
-                "format": "bcd32",
+                "format": "rbcd32",
                 "type": "power_consumption",
                 "scale": 0.01
             },

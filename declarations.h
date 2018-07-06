@@ -23,7 +23,8 @@ struct TIRDeviceQuerySet;
 struct TIRDeviceQuery;
 struct TIRDeviceValueQuery;
 struct TIRDeviceValueDesc;
-struct TIRValueFormatter;
+struct TIRValue;
+struct TIRDeviceValueContext;
 struct TProtocolInfo;
 struct TDeviceChannel;
 struct TMemoryBlockType;
@@ -46,7 +47,7 @@ using PDeviceSetupItem          = std::shared_ptr<TDeviceSetupItem>;
 using PIRDeviceQuerySet         = std::shared_ptr<TIRDeviceQuerySet>;
 using PIRDeviceQuery            = std::shared_ptr<TIRDeviceQuery>;
 using PIRDeviceValueQuery       = std::shared_ptr<TIRDeviceValueQuery>;
-using PIRValueFormatter         = std::unique_ptr<TIRValueFormatter>;
+using PIRValue                  = std::unique_ptr<TIRValue>;
 using TQueries                  = std::list<PIRDeviceQuery>;   // allow queries in set have common registers
 using PDeviceChannel            = std::shared_ptr<TDeviceChannel>;
 using TAssociatedMemoryBlockSet = std::pair<TPSet<PMemoryBlock>, std::vector<PVirtualRegister>>;

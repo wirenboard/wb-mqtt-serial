@@ -71,7 +71,7 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
 
         if (!query.VirtualRegisters.empty()) {
             for (const auto & reg: query.VirtualRegisters) {
-                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << reg->GetValue() << "'";
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << reg->GetTextValue() << "'";
             }
         } else {
             for (uint32_t i = 0; i < query.GetBlockCount(); ++i) {
@@ -130,7 +130,7 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
 
         if (!query.VirtualRegisters.empty()) {
             for (const auto & reg: query.VirtualRegisters) {
-                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << reg->GetValue() << "'";
+                FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << reg->GetTextValue() << "'";
             }
         } else {
             for (uint32_t i = 0; i < query.GetBlockCount(); ++i) {

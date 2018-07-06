@@ -17,27 +17,10 @@ ostream& operator<<(ostream& os, EWordOrder val)
 TValueSize RegisterFormatMaxSize(ERegisterFormat format)
 {
     switch (format) {
-        case String:
-            return MAX_STRING_VALUE_SIZE;
-        case S64:
-        case U64:
-        case Double:
-            return 8;
-        case U32:
-        case S32:
-        case BCD32:
-        case Float:
-            return 4;
-        case U24:
-        case S24:
-        case BCD24:
-            return 3;
-        case Char8:
-        case U8:
-        case S8:
-            return 1;
-        default:
-            return 2;
+        #define XX(name, alias, size) case name: return size;
+        REGISTER_FORMATS
+        #undef XX
+        default: return 2;
     }
 }
 

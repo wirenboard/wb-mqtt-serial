@@ -43,6 +43,7 @@ SERIAL_SRCS= \
   ir_device_query_factory.cpp \
   ir_device_query_handler.cpp \
   ir_device_memory_view.cpp \
+  ir_value.cpp \
   register_config.cpp \
   types.cpp \
   serial_client.cpp \
@@ -61,12 +62,10 @@ SERIAL_SRCS= \
   modbus_common.cpp \
   modbus_device.cpp \
   modbus_io_device.cpp \
-  em_device.cpp \
   milur_device.cpp \
   mercury230_device.cpp \
   mercury200_device.cpp \
-  pulsar_device.cpp \
-  bcd_utils.cpp
+  pulsar_device.cpp
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 TEST_SRCS= \
   $(TEST_DIR)/testlog.o \

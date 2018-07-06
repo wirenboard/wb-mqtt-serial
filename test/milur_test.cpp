@@ -67,7 +67,7 @@ void TMilurTest::SetUp()
 	MilurPhaseCReactivePowerReg = Reg(MilurDev, 112, TMilurDevice::REG_POWER, S32);
 	MilurTotalReactivePowerReg = Reg(MilurDev, 113, TMilurDevice::REG_POWER, S32);
 
-	MilurTotalConsumptionReg = Reg(MilurDev, 118, TMilurDevice::REG_ENERGY, U32);
+	MilurTotalConsumptionReg = Reg(MilurDev, 118, TMilurDevice::REG_ENERGY, RBCD32);
 	MilurTotalReactiveEnergyReg = Reg(MilurDev, 127, TMilurDevice::REG_ENERGY, U32);
 	MilurFrequencyReg = Reg(MilurDev, 9, TMilurDevice::REG_FREQ, U16);
 
@@ -83,20 +83,20 @@ void TMilurTest::VerifyParamQuery()
 
     EnqueueMilurPhaseCVoltageResponse();
     TestRead(MilurPhaseCVoltageRegQuery);
-    ASSERT_EQ(0x03946f, MilurPhaseCVoltageReg->GetValue());
+    ASSERT_EQ(std::to_string(0x03946f), MilurPhaseCVoltageReg->GetTextValue());
 
     EnqueueMilurPhaseCCurrentResponse();
     TestRead(MilurPhaseCCurrentRegQuery);
-    ASSERT_EQ(0xffd8f0, MilurPhaseCCurrentReg->GetValue());
+    ASSERT_EQ(std::to_string(0xffd8f0), MilurPhaseCCurrentReg->GetTextValue());
 
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
     TestRead(MilurTotalConsumptionRegQuery);
-    ASSERT_EQ(0x11144, MilurTotalConsumptionReg->GetValue());
+    ASSERT_EQ(std::to_string(11144), MilurTotalConsumptionReg->GetTextValue());
 
     EnqueueMilurFrequencyResponse();
     TestRead(MilurFrequencyRegQuery);
-    ASSERT_EQ(50080, MilurFrequencyReg->GetValue());
+    ASSERT_EQ(std::to_string(50080), MilurFrequencyReg->GetTextValue());
 }
 
 TEST_F(TMilurTest, Query)
@@ -117,7 +117,7 @@ TEST_F(TMilurTest, Reconnect)
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurPhaseCVoltageResponse();
     TestRead(MilurPhaseCVoltageRegQuery);
-    ASSERT_EQ(0x03946f, MilurPhaseCVoltageReg->GetValue());
+    ASSERT_EQ(std::to_string(0x03946f), MilurPhaseCVoltageReg->GetTextValue());
 }
 
 TEST_F(TMilurTest, Exception)
@@ -270,7 +270,7 @@ void TMilur32Test::SetUp()
     TSerialDeviceTest::SetUp();
     MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort,
                             TSerialDeviceFactory::GetProtocol("milur"));
-    MilurTotalConsumptionReg = Reg(MilurDev, 118, TMilurDevice::REG_ENERGY, U32);
+    MilurTotalConsumptionReg = Reg(MilurDev, 118, TMilurDevice::REG_ENERGY, RBCD32);
 
     SerialPort->Open();
 }
@@ -281,7 +281,7 @@ void TMilur32Test::VerifyMilurQuery()
 
     EnqueueMilur32TotalConsumptionResponse();
     TestRead(MilurTotalConsumptionRegQuery);
-    ASSERT_EQ(0x11144, MilurTotalConsumptionReg->GetValue());
+    ASSERT_EQ(std::to_string(11144), MilurTotalConsumptionReg->GetTextValue());
 }
 
 TEST_F(TMilur32Test, MilurQuery)

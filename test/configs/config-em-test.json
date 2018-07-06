@@ -40,7 +40,7 @@
               "name": "Total consumption",
               "reg_type": "energy",
               "address": 118,
-              "format": "bcd32",
+              "format": "rbcd32",
               "type": "power_consumption",
               "scale": 0.01
             }

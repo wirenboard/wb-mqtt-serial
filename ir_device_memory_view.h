@@ -5,11 +5,11 @@
 #include <cassert>
 
 /**
- * @brief: template that adds conversion
+ * @brief template that adds conversion
  *  and assignment operators to seemlessly
  *  interoperate with C++ data types.
  *
- * @note: Helds no logic. Basically a syntactic
+ * @note Helds no logic. Basically a syntactic
  *  sugar.
  */
 template <class View>
@@ -46,11 +46,11 @@ struct TIRDeviceMemoryBlockViewImpl;
 using TIRDeviceMemoryBlockView = TIRImplicitValue<TIRDeviceMemoryBlockViewImpl>;
 
 /**
- * @brief: Provides value - level access to memory
+ * @brief Provides value - level access to memory
  *  Instead of accessing individual bytes, it allows
  *  to read and write values in memory block.
  *
- * @note: it is not meant to give final values for publishing,
+ * @note it is not meant to give final values for publishing,
  *  but some intermediate separate raw values held by memory block
  *  (ex. mercury230's array memory block may be represented as
  *   4 TIRDeviceValueView objects, each returning U32 value)
@@ -83,18 +83,18 @@ protected:
     }
 
     /**
-     *  @brief: platform endiannes - aware raw memory access interface
+     *  @brief platform endiannes - aware raw memory access interface
      */
     void GetValueImpl(uint8_t * pValue) const;
     void SetValueImpl(const uint8_t * pValue) const;
 
 private:
     /**
-     *  @brief: inverts byte index if platform is big-endian
+     *  @brief inverts byte index if platform is big-endian
      */
     uint8_t PlatformEndiannesAware(uint8_t iByte) const;
     /**
-     *  @brief: inverts byte index if memory block is big-endian
+     *  @brief inverts byte index if memory block is big-endian
      */
     uint8_t MemoryBlockEndiannesAware(uint8_t iByte) const;
 
@@ -105,12 +105,12 @@ private:
 using TIRDeviceValueView = TIRImplicitValue<TIRDeviceValueViewImpl>;
 
 /**
- * @brief: If we need to modify memory pointed by View but not view itself,
+ * @brief If we need to modify memory pointed by View but not view itself,
  *  we should express that in code by dereferencing View, which will give
  *  object of this class, operations on which will result in modification
  *  of values stored in memory
  *
- * @note: You may think about this class as some sort of
+ * @note You may think about this class as some sort of
  *  behaviour modifier. This in particular, modifies
  *  behaviour of an assignment operator.
  */
@@ -129,14 +129,14 @@ struct TIRDeviceMemoryBlockMemory
 };
 
 /**
- * @brief: Implements managed access to block's memory.
+ * @brief Implements managed access to block's memory.
  *  In memory block one or more values may be stored.
  *  Value is meaningful chunk of memory that can be
  *  represented as some object of fundamental type (int, float, etc.).
  *  Separate values of memory block are accessed via index operator
  *  according to layout that was specified at protocol's daclaration.
  *
- * @note: Memory block view can convert entire block memory into
+ * @note Memory block view can convert entire block memory into
  *  any POD type of same as block size, thus allowing to
  *  convert raw memory even to user structs.
  *  When convering entire memory block,
@@ -177,12 +177,12 @@ struct TIRDeviceMemoryBlockViewImpl
     }
 
     /**
-     * @brief: takes value index and returns value view
+     * @brief takes value index and returns value view
      */
     TIRDeviceValueView operator[](uint16_t index) const;
 
     /**
-     * @brief: takes little-endian byte index
+     * @brief takes little-endian byte index
      *  and returns real one based on memory
      *  block byte order.
      *  By other words: inverts index if
@@ -191,7 +191,7 @@ struct TIRDeviceMemoryBlockViewImpl
     uint16_t GetByteIndex(uint16_t index) const;
 
     /**
-     * @brief: takes value index and returns
+     * @brief takes value index and returns
      *  its size in bytes. Max size is 8 thus
      *  64-bit value is largest possible.
      */
@@ -215,9 +215,9 @@ protected:
     void CheckByteIndex(uint16_t) const;
 
     /**
-     * @brief: platform endiannes - aware raw memory access interface
+     * @brief platform endiannes - aware raw memory access interface
      *
-     * @note: we don't need size here as we rely on CheckType to ensure
+     * @note we don't need size here as we rely on CheckType to ensure
      *  that too small types won't make it through.
      */
     void GetValueImpl(uint8_t * pValue) const;
@@ -225,7 +225,7 @@ protected:
 };
 
 /**
- * @brief: References (not owns) memory of one or
+ * @brief References (not owns) memory of one or
  *  more memory blocks. Allows to access memory of
  *  individual memory blocks. Used for device request
  *  and response data section interpretation.

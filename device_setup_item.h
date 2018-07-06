@@ -8,8 +8,10 @@ struct TDeviceSetupItem : public TDeviceSetupItemConfig
 {
     TBoundMemoryBlocks  BoundMemoryBlocks;
     PIRDeviceValueQuery Query;
+    PIRValue            ManagedValue;
 
     TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config);
+    ~TDeviceSetupItem();
 
     std::string ToString() const;
     std::string Describe() const;

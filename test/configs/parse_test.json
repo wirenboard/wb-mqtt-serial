@@ -184,6 +184,29 @@
                 {
                     "device_type" : "TestDeviceOverride",
                     "slave_id": 6
+                },
+                {
+                    "name" : "TestDeviceRegAddresses",
+                    "id" : "TestDeviceRegAddresses",
+                    "protocol": "mercury200",
+                    "slave_id": 7,
+                    "channels" : [
+                        {
+                            "name" : "Offset",
+                            "reg_type" : "param16",
+                            "address" : "32:8"
+                        },
+                        {
+                            "name" : "OffsetWidth",
+                            "reg_type" : "param16",
+                            "address" : "34:8:12"
+                        },
+                        {
+                            "name" : "ValueIndex",
+                            "reg_type" : "params",
+                            "address" : "36[1]"
+                        }
+                    ]
                 }
             ]
         },

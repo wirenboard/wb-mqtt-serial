@@ -2,7 +2,8 @@
 #include "memory_block.h"
 #include "register_config.h"
 #include "ir_bind_info.h"
-#include "ir_value_formatter.h"
+#include "ir_value.h"
+#include "ir_value_bit_buffer.inl"
 
 #include <cassert>
 #include <iostream>
@@ -195,29 +196,7 @@ TIRDeviceMemoryBlockView TIRDeviceMemoryView::operator[](const CPMemoryBlock & m
 void TIRDeviceMemoryView::ReadValue(const TIRDeviceValueContext & context) const
 {
     auto & self = *this;
-
-    uint8_t byte {0};
-    uint8_t bitsNeeded {0};
-    bool first = true;
-
-    auto byte_is_ready = [&]{
-        return bitsNeeded == 0;
-    };
-
-    auto push_bits = [&](uint8_t bits, uint8_t count) {
-        assert(!byte_is_ready());
-        auto bitsToTake = min(bitsNeeded, count);
-        byte <<= bitsToTake;
-        byte |= bits >> (count - bitsToTake);
-        bitsNeeded -= bitsToTake;
-        return bitsToTake;
-    };
-
-    auto get_byte = [&]{
-        assert(byte_is_ready());
-        bitsNeeded = 8;
-        return byte;
-    };
+    uint8_t iValueByte = 0;
 
     TBitBuffer bitBuffer;
 
@@ -228,49 +207,47 @@ void TIRDeviceMemoryView::ReadValue(const TIRDeviceValueContext & context) const
         const auto mask = bindInfo.GetMask();
         const auto & memoryBlockView = self[memoryBlock];
 
-        if (first) {
-            auto cnt = bindInfo.BitCount();
-            bitBuffer.Capacity = cnt % 8 ? cnt - (cnt / 8) * 8 : 8;
-            first = false;
-        }
+        auto bitsToRead = bindInfo.BitCount();
 
         // iByte is always little-endian (lower value signifies lower byte)
-        for (int iByte = (bindInfo.BitEnd - 1) / 8; iByte >= int(bindInfo.BitStart / 8); --iByte) {
-            auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
-            auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
+        for (uint16_t iByte = bindInfo.BitStart / 8; iByte < BitCountToByteCount(bindInfo.BitEnd); ++iByte) {
+            auto iBit = iByte * 8;
+            auto begin = std::max(0, bindInfo.BitStart - iBit);
+            auto end = std::min(8, bindInfo.BitEnd - iBit);
 
-            if (begin >= end)
-                break;
+            assert(begin < end);
 
-            auto shift = bindInfo.BitStart - iByte * 8;
-            uint8_t byteMask = shift > 0 ? (mask << shift) : (mask >> -shift);
+            TBitBuffer in;
+            {
+                auto shift = bindInfo.BitStart - iBit;
+                uint8_t byteMask = shift > 0 ? (mask << shift) : (mask >> -shift);
 
-            auto count = end - begin;
-
-            TBitBuffer in{
-                (byteMask & memoryBlockView.GetByte(iByte)) >> begin,
-                count,
-                count
-            };
-
-            bitBuffer << in;
-            if (bitBuffer.IsFull()) {
-                context.Value << bitBuffer;
-                bitBuffer.Reset();
+                in.Buffer = static_cast<uint8_t>(
+                    (byteMask & memoryBlockView.GetByte(iByte)) >> begin
+                );
+                in.Capacity = end - begin;
+                in.Size = in.Capacity;
             }
 
-            if (in) {
-                bitBuffer << in;
-            }
+            while (in) {
+                bitBuffer.Capacity = min<uint16_t>(8, bitsToRead);
 
-            assert(!in);
+                in >> bitBuffer;
+                if (bitBuffer.IsFull()) {
+                    context.Value.SetByte(bitBuffer, iValueByte++);
+                    bitsToRead -= bitBuffer.Size;
+                    bitBuffer.Reset();
+                }
+            }
         }
+
+        assert(bitsToRead == 0);
     };
 
     if (context.WordOrder == EWordOrder::BigEndian) {
-        ForEach(context.BoundMemoryBlocks, readMemoryBlock);
-    } else {
         ForEachReverse(context.BoundMemoryBlocks, readMemoryBlock);
+    } else {
+        ForEach(context.BoundMemoryBlocks, readMemoryBlock);
     }
 
     assert(!bitBuffer);
@@ -286,6 +263,7 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context) cons
 void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context, TMemoryBlockViewProvider getView)
 {
     uint8_t bitsToSkip = 0;
+    uint8_t iValueByte = 0;
     TBitBuffer bitBuffer;
 
     auto writeMemoryBlock = [&](const std::pair<const PMemoryBlock, TIRBindInfo> & memoryBlockBindInfo){
@@ -293,48 +271,51 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context, TMem
         const auto & bindInfo = memoryBlockBindInfo.second;
 
         const auto & memoryBlockView = getView(memoryBlock);
+        auto bitsToWrite = bindInfo.BitCount();
 
         if (!memoryBlockView) {
             bitsToSkip += bindInfo.BitCount();
             auto bytesToSkip = bitsToSkip / 8;
             bitsToSkip -= bytesToSkip * 8;
-            context.Value.SkipBytes(bytesToSkip);
+            iValueByte += bytesToSkip;
             return;
         }
 
         const auto mask = bindInfo.GetMask();
         const auto & cache = memoryBlock->GetCache();
 
-        for (uint16_t iByte = bindInfo.BitStart / 8; iByte < memoryBlock->Size; ++iByte) {
-            auto begin = std::max(0, bindInfo.BitStart - iByte * 8);
-            auto end = std::min(8, bindInfo.BitEnd - iByte * 8);
+        for (uint16_t iByte = bindInfo.BitStart / 8; iByte < BitCountToByteCount(bindInfo.BitEnd); ++iByte) {
+            auto iBit = iByte * 8;
+            auto begin = std::max(0, bindInfo.BitStart - iBit);
+            auto end = std::min(8, bindInfo.BitEnd - iBit);
 
-            if (begin >= end)
-                break;
+            assert(begin < end);
 
-            auto shift = bindInfo.BitStart - iByte * 8;
+            auto shift = bindInfo.BitStart - iBit;
             uint8_t byteMask = shift > 0 ? (mask << shift) : (mask >> -shift);
 
             const auto cachedByte = cache ? cache.GetByte(iByte) : uint8_t(0);
 
-            TBitBuffer out { 0, end - begin, end - begin };
-            TBitBuffer in { 0, 8 - bitsToSkip, 8 - bitsToSkip };
+            TBitBuffer out { 0, static_cast<uint8_t>(end - begin) };
+            TBitBuffer in {};
 
-            out << bitBuffer;
+            bitBuffer >> out;
 
             while(!out.IsFull()) {
-                context.Value >> in.Buffer;
+                in.Buffer = context.Value.GetByte(iValueByte++);
                 in.Buffer >>= bitsToSkip;
+                in.Size = in.Capacity = min<uint16_t>(8 - bitsToSkip, bitsToWrite - out.Size);
                 bitsToSkip = 0;
-                out << in;
+                in >> out;
             }
 
-            bitBuffer << in;
+            in >> bitBuffer;
 
-            if (out.IsFull()) {
-                memoryBlockView.SetByte(iByte, (~byteMask & cachedByte) | (byteMask & (out.Buffer << begin)));
-            }
+            memoryBlockView.SetByte(iByte, (~byteMask & cachedByte) | (byteMask & (out.Buffer << begin)));
+            bitsToWrite -= out.Size;
         }
+
+        assert(bitsToWrite == 0);
     };
 
     if (context.WordOrder == EWordOrder::BigEndian) {
@@ -342,4 +323,6 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context, TMem
     } else {
         ForEach(context.BoundMemoryBlocks, writeMemoryBlock);
     }
+
+    assert(!bitBuffer);
 }

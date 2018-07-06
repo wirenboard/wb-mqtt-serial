@@ -60,10 +60,10 @@ void TMercury200Test::VerifyEnergyQuery()
     EnqueueMercury200EnergyResponse();
     TestRead(Mercury200EnergyMBQuery);
 
-    ASSERT_EQ(0x62142, Mercury200RET1Reg->GetValue());
-    ASSERT_EQ(0x20834, Mercury200RET2Reg->GetValue());
-    ASSERT_EQ(0x11111, Mercury200RET3Reg->GetValue());
-    ASSERT_EQ(0x22222, Mercury200RET4Reg->GetValue());
+    ASSERT_EQ(std::to_string(0x62142), Mercury200RET1Reg->GetTextValue());
+    ASSERT_EQ(std::to_string(0x20834), Mercury200RET2Reg->GetTextValue());
+    ASSERT_EQ(std::to_string(0x11111), Mercury200RET3Reg->GetTextValue());
+    ASSERT_EQ(std::to_string(0x22222), Mercury200RET4Reg->GetTextValue());
     Mercury200Dev->EndPollCycle();
 }
 
@@ -79,9 +79,9 @@ void TMercury200Test::VerifyParamQuery()
     EnqueueMercury200ParamResponse();
     TestRead(Mercury200ParamsQuery);
 
-    ASSERT_EQ(0x1234, Mercury200UReg->GetValue());
-    ASSERT_EQ(0x5678, Mercury200IReg->GetValue());
-    ASSERT_EQ(0x765432, Mercury200PReg->GetValue());
+    ASSERT_EQ(std::to_string(0x1234), Mercury200UReg->GetTextValue());
+    ASSERT_EQ(std::to_string(0x5678), Mercury200IReg->GetTextValue());
+    ASSERT_EQ(std::to_string(0x765432), Mercury200PReg->GetTextValue());
     Mercury200Dev->EndPollCycle();
 }
 
@@ -114,7 +114,7 @@ TEST_F(TMercury200Test, BatteryVoltageQuery)
 
     EnqueueMercury200BatteryVoltageResponse();
     TestRead(Mercury200BatRegQuery);
-    ASSERT_EQ(0x0391, Mercury200BatReg->GetValue());
+    ASSERT_EQ(std::to_string(0x0391), Mercury200BatReg->GetTextValue());
     Mercury200Dev->EndPollCycle();
     SerialPort->Close();
 }

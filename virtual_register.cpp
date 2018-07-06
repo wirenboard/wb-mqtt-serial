@@ -3,12 +3,11 @@
 #include "memory_block_factory.h"
 #include "serial_device.h"
 #include "types.h"
-#include "bcd_utils.h"
 #include "ir_device_query.h"
 #include "binary_semaphore.h"
 #include "virtual_register_set.h"
 #include "ir_device_memory_view.h"
-#include "ir_value_formatter.h"
+#include "ir_value.h"
 
 #include <wbmqtt/utils.h>
 
@@ -20,174 +19,6 @@ using namespace std;
 
 namespace // utility
 {
-    template<typename T>
-    inline T RoundValue(T val, double round_to)
-    {
-        static_assert(std::is_floating_point<T>::value, "TRegisterHandler::RoundValue accepts only floating point types");
-        return round_to > 0 ? std::round(val / round_to) * round_to : val;
-    }
-
-    template<typename A>
-    inline std::string ToScaledTextValue(const TVirtualRegister & reg, A val)
-    {
-        if (reg.Scale == 1 && reg.Offset == 0 && reg.RoundTo == 0) {
-            return std::to_string(val);
-        } else {
-            return StringFormat("%.15g", RoundValue(reg.Scale * val + reg.Offset, reg.RoundTo));
-        }
-    }
-
-    template<>
-    inline std::string ToScaledTextValue(const TVirtualRegister & reg, float val)
-    {
-        return StringFormat("%.7g", RoundValue(reg.Scale * val + reg.Offset, reg.RoundTo));
-    }
-
-    template<>
-    inline std::string ToScaledTextValue(const TVirtualRegister & reg, double val)
-    {
-        return StringFormat("%.15g", RoundValue(reg.Scale * val + reg.Offset, reg.RoundTo));
-    }
-
-    template<typename T>
-    T FromScaledTextValue(const TVirtualRegister & reg, const std::string& str);
-
-    template<>
-    inline uint64_t FromScaledTextValue(const TVirtualRegister & reg, const std::string& str)
-    {
-        if (reg.Scale == 1 && reg.Offset == 0) {
-            return std::stoull(str);
-        } else {
-            return round((RoundValue(stod(str), reg.RoundTo) - reg.Offset) / reg.Scale);
-        }
-    }
-
-    template<>
-    inline int64_t FromScaledTextValue(const TVirtualRegister & reg, const std::string& str)
-    {
-        if (reg.Scale == 1 && reg.Offset == 0) {
-            return std::stoll(str);
-        } else {
-            return round((RoundValue(stod(str), reg.RoundTo) - reg.Offset) / reg.Scale);
-        }
-    }
-
-    template<>
-    inline double FromScaledTextValue(const TVirtualRegister & reg, const std::string& str)
-    {
-        return (RoundValue(stod(str), reg.RoundTo) - reg.Offset) / reg.Scale;
-    }
-
-    string ConvertSlaveValue(const TVirtualRegister & reg, uint64_t value)
-    {
-        switch (reg.Format) {
-        case S8:
-            return ToScaledTextValue(reg, int8_t(value & 0xff));
-        case S16:
-            return ToScaledTextValue(reg, int16_t(value & 0xffff));
-        case S24:
-            {
-                uint32_t v = value & 0xffffff;
-                if (v & 0x800000) // fix sign (TBD: test)
-                    v |= 0xff000000;
-                return ToScaledTextValue(reg, int32_t(v));
-            }
-        case S32:
-            return ToScaledTextValue(reg, int32_t(value & 0xffffffff));
-        case S64:
-            return ToScaledTextValue(reg, int64_t(value));
-        case BCD8:
-            return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W8_SZ));
-        case BCD16:
-            return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W16_SZ));
-        case BCD24:
-            return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W24_SZ));
-        case BCD32:
-            return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W32_SZ));
-        case Float:
-            {
-                union {
-                    uint32_t raw;
-                    float v;
-                } tmp;
-                tmp.raw = value;
-                return ToScaledTextValue(reg, tmp.v);
-            }
-        case Double:
-            {
-                union {
-                    uint64_t raw;
-                    double v;
-                } tmp;
-                tmp.raw = value;
-                return ToScaledTextValue(reg, tmp.v);
-            }
-        case Char8:
-            return std::string(1, value & 0xff);
-        default:
-            return ToScaledTextValue(reg, value);
-        }
-    }
-
-    uint64_t ConvertMasterValue(const TVirtualRegister & reg, const std::string& str)
-    {
-        switch (reg.Format) {
-        case S8:
-            return FromScaledTextValue<int64_t>(reg, str) & 0xff;
-        case S16:
-            return FromScaledTextValue<int64_t>(reg, str) & 0xffff;
-        case S24:
-            return FromScaledTextValue<int64_t>(reg, str) & 0xffffff;
-        case S32:
-            return FromScaledTextValue<int64_t>(reg, str) & 0xffffffff;
-        case S64:
-            return FromScaledTextValue<int64_t>(reg, str);
-        case U8:
-            return FromScaledTextValue<uint64_t>(reg, str) & 0xff;
-        case U16:
-            return FromScaledTextValue<uint64_t>(reg, str) & 0xffff;
-        case U24:
-            return FromScaledTextValue<uint64_t>(reg, str) & 0xffffff;
-        case U32:
-            return FromScaledTextValue<uint64_t>(reg, str) & 0xffffffff;
-        case U64:
-            return FromScaledTextValue<uint64_t>(reg, str);
-        case Float:
-            {
-                union {
-                    uint32_t raw;
-                    float v;
-                } tmp;
-
-                tmp.v = FromScaledTextValue<double>(reg, str);
-                return tmp.raw;
-            }
-        case Double:
-            {
-                union {
-                    uint64_t raw;
-                    double v;
-                } tmp;
-                tmp.v = FromScaledTextValue<double>(reg, str);
-                return tmp.raw;
-            }
-        case Char8:
-            return str.empty() ? 0 : uint8_t(str[0]);
-        case BCD8:
-            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFF, WordSizes::W8_SZ);
-        case BCD16:
-            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFF, WordSizes::W16_SZ);
-        case BCD24:
-            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFF, WordSizes::W24_SZ);
-        case BCD32:
-            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ);
-        default:
-            return FromScaledTextValue<uint64_t>(reg, str);
-        }
-    }
-
-
-
     template <typename T>
     inline size_t Hash(const T & value)
     {
@@ -199,8 +30,8 @@ TVirtualRegister::TVirtualRegister(const PRegisterConfig & config, const PSerial
     : TRegisterConfig(*config)
     , Device(device)
     , FlushNeeded(nullptr)
-    , ValueToWrite(config->ReadOnly ? nullptr : TIRValueFormatter::Make(*config))
-    , CurrentValue(TIRValueFormatter::Make(*config))
+    , ValueToWrite(config->ReadOnly ? nullptr : TIRValue::Make(*this))
+    , CurrentValue(TIRValue::Make(*this))
     , WriteQuery(nullptr)
     , ErrorState(EErrorState::UnknownErrorState)
     , ChangedPublishData(EPublishData::None)
@@ -219,7 +50,7 @@ void TVirtualRegister::Initialize()
 
     MemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(self, device);
 
-    uint width = 0;
+    uint64_t width = 0;
     for (const auto memoryBlockBindInfo: MemoryBlocks) {
         const auto & memoryBlock = memoryBlockBindInfo.first;
         const auto & bindInfo = memoryBlockBindInfo.second;
@@ -229,7 +60,7 @@ void TVirtualRegister::Initialize()
         memoryBlock->AssociateWith(self);
     }
 
-    if (width > 64) {
+    if (width > RegisterFormatMaxWidth(Format)) {
         throw TSerialDeviceException("unable to create virtual register with width " + to_string(width) + ": must be <= 64");
     }
 
@@ -260,7 +91,7 @@ void TVirtualRegister::WriteValueToQuery()
     //WriteQuery->SetValue(GetValueContext(), ValueToWrite);
 }
 
-void TVirtualRegister::AcceptDeviceValue(uint64_t new_value)
+void TVirtualRegister::AcceptDeviceValue()
 {
     if (!NeedToPoll()) {
         return;
@@ -273,19 +104,19 @@ void TVirtualRegister::AcceptDeviceValue(uint64_t new_value)
     bool firstPoll = !ValueWasAccepted;
     ValueWasAccepted = true;
 
-    if (HasErrorValue && ErrorValue == new_value) {
+    if (HasErrorValue && to_string(ErrorValue) == CurrentValue->GetTextValue(*this)) {
         if (Global::Debug) {
             std::cerr << "register " << ToString() << " contains error value" << std::endl;
         }
         return UpdateReadError(true);
     }
 
-    if (CurrentValue != new_value) {
-        CurrentValue = new_value;
+    if (CurrentValue->IsChanged()) {
+        CurrentValue->ResetChanged();
 
         if (Global::Debug) {
             std::ios::fmtflags f(std::cerr.flags());
-            std::cerr << "new val for " << ToString() << ": " << std::hex << new_value << std::endl;
+            //std::cerr << "new val for " << ToString() << ": " << CurrentValue->DescribeShort() << std::endl;
             std::cerr.flags(f);
         }
         Add(ChangedPublishData, EPublishData::Value);
@@ -300,7 +131,7 @@ void TVirtualRegister::AcceptDeviceValue(uint64_t new_value)
 
 void TVirtualRegister::AcceptWriteValue()
 {
-    CurrentValue = ValueToWrite;
+    CurrentValue->Assign(*ValueToWrite);
 
     return UpdateWriteError(false);
 }
@@ -380,7 +211,7 @@ std::string TVirtualRegister::Describe() const
 
 std::string TVirtualRegister::GetTextValue() const
 {
-    auto textValue = CurrentValue->GetTextValue();
+    auto textValue = CurrentValue->GetTextValue(*this);
 
     return OnValue.empty() ? textValue : (textValue == OnValue ? "1" : "0");
 }
@@ -393,7 +224,7 @@ void TVirtualRegister::SetTextValue(const std::string & value)
     }
 
     Dirty.store(true);
-    ValueToWrite->SetTextValue(OnValue.empty() ? value : (value == "1" ? OnValue : "0"));
+    ValueToWrite->SetTextValue(*this, OnValue.empty() ? value : (value == "1" ? OnValue : "0"));
 
     if (FlushNeeded) {
         FlushNeeded->Signal();
@@ -423,7 +254,7 @@ void TVirtualRegister::Flush()
         assert(WriteQuery);
         WriteQuery->ResetStatus();
 
-        WriteQuery->SetValue(GetValueContext());
+        //WriteQuery->SetValue(GetValueContext());
 
         GetDevice()->Execute(WriteQuery);
 
@@ -554,3 +385,6 @@ PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const 
 
     return reg;
 }
+
+TVirtualRegister::~TVirtualRegister()
+{}
