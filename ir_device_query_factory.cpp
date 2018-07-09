@@ -144,7 +144,10 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(const vector<PVirtualRegister> &
     return GenerateQueries(move(groupedMemoryBlocks), operation, policy);
 }
 
-TQueries TIRDeviceQueryFactory::GenerateQueries(TAssociatedMemoryBlockList && memoryBlockSets, EQueryOperation operation, EQueryGenerationPolicy policy)
+TQueries TIRDeviceQueryFactory::GenerateQueries(
+    TAssociatedMemoryBlockList && memoryBlockSets,
+    EQueryOperation operation,
+    EQueryGenerationPolicy policy)
 {
     assert(!memoryBlockSets.empty());
     assert(!memoryBlockSets.front().first.empty());
@@ -159,8 +162,7 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(TAssociatedMemoryBlockList && me
 
     const bool isRead = IsReadOperation(operation);
 
-    const bool performMerge = (policy == Minify || policy == NoHoles),
-               enableHoles  = (policy == Minify);
+    const bool enableHoles = (policy == Minify);
 
     TRegisterTypeInfo getMaxHoleAndRegs = [&](const TMemoryBlockType & type) {
         const bool singleBitType = protocolInfo.IsSingleBitType(type);
@@ -194,9 +196,9 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(TAssociatedMemoryBlockList && me
 
     /** done gathering data **/
 
-    if (performMerge) {
 #ifdef WB_MQTT_SERIAL_VERBOSE_OUTPUT
-        cout << "BEFORE MERGE:\n" << PrintCollection(memoryBlockSets, [](ostream & s, const TAssociatedMemoryBlockList::value_type & mbs){
+    auto printSets = [&](const char * prefix){
+        cout << prefix << ":\n" << PrintCollection(memoryBlockSets, [](ostream & s, const TAssociatedMemoryBlockList::value_type & mbs){
             s << "MEMORY BLOCKS: " << PrintCollection(mbs.first, [](ostream & s, const PMemoryBlock & mb) {
                 s << mb->Address;
             });
@@ -205,22 +207,14 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(TAssociatedMemoryBlockList && me
                 s << vreg->Describe();
             });
         }, true, "\n---------------") << endl;
+    };
+#else
+    #define printSets(...)
 #endif
-        MergeSets(memoryBlockSets, getMaxHoleAndRegs);
-#ifdef WB_MQTT_SERIAL_VERBOSE_OUTPUT
-        cout << "AFTER MERGE:\n" << PrintCollection(memoryBlockSets, [](ostream & s, const TAssociatedMemoryBlockList::value_type & mbs){
-            s << "MEMORY BLOCKS: " << PrintCollection(mbs.first, [](ostream & s, const PMemoryBlock & mb) {
-                s << mb->Address;
-            });
-            s << endl;
-            s << "VREGS: " << PrintCollection(mbs.second, [](ostream & s, const PVirtualRegister & vreg) {
-                s << vreg->Describe();
-            });
-        }, true, "\n---------------") << endl;
-#endif
-    } else {
-        CheckSets(memoryBlockSets, getMaxHoleAndRegs);
-    }
+
+    printSets("BEFORE MERGE");
+    MergeSets(memoryBlockSets, getMaxHoleAndRegs, policy);
+    printSets("AFTER MERGE");
 
     TQueries result;
 
@@ -302,18 +296,26 @@ void TIRDeviceQueryFactory::CheckSets(const TAssociatedMemoryBlockList & memoryB
  * Following algorihm:
  *  1) tries to reduce number of sets in passed list
  *  2) ensures that maxHole and maxRegs are not exceeded
- *  3) allows same register to appear in different sets if those sets couldn't merge (same register will be read more than once during same cycle)
+ *  3) allows same memory block to appear in different sets if those sets couldn't merge
+ *     (same register will be read more than once during same cycle)
  *  4) doesn't split initial sets (registers that were in one set will stay in one set)
  */
-void TIRDeviceQueryFactory::MergeSets(TAssociatedMemoryBlockList & memoryBlockSets, const TRegisterTypeInfo & typeInfo)
+void TIRDeviceQueryFactory::MergeSets(
+    TAssociatedMemoryBlockList & memoryBlockSets,
+    const TRegisterTypeInfo & typeInfo,
+    EQueryGenerationPolicy policy)
 {
     CheckSets(memoryBlockSets, typeInfo);
 
     if (Global::Debug)
         cerr << "merging sets" << endl;
 
-    // Two sets may merge if:
-    auto condition = [&](const TPSet<PMemoryBlock> & a, const TPSet<PMemoryBlock> & b){
+    // In case of minification, two sets may merge if:
+    auto mergeCondition = [](
+        const TPSet<PMemoryBlock> & a,
+        const TPSet<PMemoryBlock> & b,
+        const TRegisterTypeInfo & typeInfo)
+    {
         if (GetType(a) != GetType(b)) { // Their memory blocks are of same type
             return false;
         }
@@ -331,6 +333,17 @@ void TIRDeviceQueryFactory::MergeSets(TAssociatedMemoryBlockList & memoryBlockSe
                regsAfterMerge <= maxRegs;      // Memory block count after merge won't exceed limit
     };
 
+    // In case of memory block sets preservation, two sets may merge if:
+    auto noDuplicatesCondition = [](
+        const TPSet<PMemoryBlock> & a,
+        const TPSet<PMemoryBlock> & b,
+        const TRegisterTypeInfo & typeInfo)
+    {
+        return a == b;  // They are the same
+    };
+
+    auto condition = (policy == NoDuplicates) ? noDuplicatesCondition : mergeCondition;
+
     for (auto itMemoryBlockSet = memoryBlockSets.begin(); itMemoryBlockSet != memoryBlockSets.end(); ++itMemoryBlockSet) {
         auto itOtherMemoryBlockSet = itMemoryBlockSet;
         ++itOtherMemoryBlockSet;
@@ -338,7 +351,7 @@ void TIRDeviceQueryFactory::MergeSets(TAssociatedMemoryBlockList & memoryBlockSe
         for (;itOtherMemoryBlockSet != memoryBlockSets.end();) {
             assert(itMemoryBlockSet != itOtherMemoryBlockSet);
 
-            if (!condition(itMemoryBlockSet->first, itOtherMemoryBlockSet->first)) {
+            if (!condition(itMemoryBlockSet->first, itOtherMemoryBlockSet->first, typeInfo)) {
                 ++itOtherMemoryBlockSet;
                 continue;
             }

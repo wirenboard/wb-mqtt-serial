@@ -190,7 +190,7 @@ void TIRDeviceQuery::SetAbleToSplit(bool ableToSplit)
 
 string TIRDeviceQuery::Describe() const
 {
-    return PrintRange(MemoryBlockRange.begin(), MemoryBlockRange.end(), PrintAddr);
+    return DescribeOperation() + " " + PrintRange(MemoryBlockRange.begin(), MemoryBlockRange.end(), PrintAddr);
 }
 
 string TIRDeviceQuery::DescribeVerbose() const

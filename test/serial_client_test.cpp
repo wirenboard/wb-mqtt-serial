@@ -1568,31 +1568,36 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
     }
 }
 
-TEST_F(TSerialClientIntegrationTest, RegisterAutoDisable)
+TEST_F(TSerialClientIntegrationTest, FunctionalDegradation)
 {
-    FilterConfig("DDL24");
+    FilterConfig("Functional Degradation");
 
     auto observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, Port);
     observer->SetUp();
 
-    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("23", "fake", Port));
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("24", "fake", Port));
 
     if (!Device) {
         throw std::runtime_error("device not found or wrong type");
     }
 
-    Device->BlockReadFor(4, TFakeSerialDevice::PERMANENT);
-    Device->BlockWriteFor(4, true);
-    Device->BlockReadFor(7, true);
-    Device->BlockWriteFor(7, TFakeSerialDevice::PERMANENT);
+    Device->SetLogQueries(true);
 
-    Note() << "LoopOnce() [read, rw blacklisted]";
+    Device->BlockReadFor(4, TFakeSerialDevice::PERMANENT);
+    Device->BlockReadFor(9, TFakeSerialDevice::PERMANENT);
+
+    Note() << "LoopOnce() [read, r blacklisted]";
     observer->LoopOnce();
 
-    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/RGB/on", "10;20;30");
-    MQTTClient->DoPublish(true, 0, "/devices/ddl24/controls/White/on", "42");
+    Note() << "LoopOnce() [read, r blacklisted]";
+    observer->LoopOnce();
 
-    Note() << "LoopOnce() [write, rw blacklisted]";
+    Device->BlockReadFor(10, TFakeSerialDevice::PERMANENT);
+
+    Note() << "LoopOnce() [read, r blacklisted]";
+    observer->LoopOnce();
+
+    Note() << "LoopOnce() [read, r blacklisted]";
     observer->LoopOnce();
 }
 

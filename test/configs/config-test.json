@@ -212,6 +212,74 @@
                             "format": "u64"
                         }
                     ]
+                },
+                {
+                    "name": "Functional Degradation",
+                    "slave_id": 24,
+                    "id": "fd",
+                    "enabled": true,
+                    "max_read_registers": 256,
+                    "max_reg_hole": 0,
+                    "protocol": "fake",
+                    "channels": [
+                    {
+                        "name" : "Compound",
+                        "consists_of": [
+                        {
+                            "reg_type" : "fake",
+                            "address" : 4
+                        },
+                        {
+                            "reg_type" : "fake",
+                            "address" : 5
+                        },
+                        {
+                            "reg_type" : "fake",
+                            "address" : 6
+                        }
+                        ]
+                    },
+                    {
+                        "name" : "Reg8",
+                        "reg_type" : "fake",
+                        "address" : 8,
+                        "type": "value"
+                    },
+                    {
+                        "name" : "Reg9",
+                        "reg_type" : "fake",
+                        "address" : 9,
+                        "type": "value"
+                    },
+                    {
+                        "name" : "Bit0",
+                        "reg_type" : "fake",
+                        "address" : "10:0:1",
+                        "format": "u8",
+                        "type": "value"
+                    },
+                    {
+                        "name" : "Bit1",
+                        "reg_type" : "fake",
+                        "address" : "10:1:1",
+                        "format": "u8",
+                        "type": "value"
+                    },
+                    {
+                        "name" : "Bit2",
+                        "reg_type" : "fake",
+                        "address" : "10:2:1",
+                        "format": "u8",
+                        "type": "value"
+                    },
+                    {
+                        "name" : "Bit3",
+                        "reg_type" : "fake",
+                        "address" : "10:3:1",
+                        "format": "u8",
+                        "type": "value"
+                    }
+                    ]
                 }
             ]
         }

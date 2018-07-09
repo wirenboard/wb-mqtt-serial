@@ -34,6 +34,7 @@ public:
     void BlockWriteFor(int addr, bool block) { BlockWriteFor(addr, block ? TRANSIENT: NONE); }
     uint32_t Read2Registers(int addr);
     void SetIsConnected(bool);
+    void SetLogQueries(bool);
     const TProtocolInfo & GetProtocolInfo() const override;
 
     ~TFakeSerialDevice();
@@ -51,6 +52,7 @@ private:
     std::map<int, TBlockInfo> Blockings;
     PFakeSerialPort           FakePort;
     bool                      Connected;
+    bool                      LogQueries;
 };
 
 typedef std::shared_ptr<TFakeSerialDevice> PFakeSerialDevice;

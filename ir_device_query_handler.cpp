@@ -11,7 +11,11 @@ using namespace std;
 namespace   // utility
 {
     template <typename TCondition>
-    void RecreateQueries(const PIRDeviceQuerySet & querySet, const TCondition & condition, TIRDeviceQueryFactory::EQueryGenerationPolicy policy, const char * actionName)
+    void RecreateQueries(
+        const PIRDeviceQuerySet & querySet,
+        const TCondition & condition,
+        TIRDeviceQueryFactory::EQueryGenerationPolicy policy,
+        const char * actionName)
     {
         for (auto itQuery = querySet->Queries.begin(); itQuery != querySet->Queries.end();) {
             auto query = *itQuery;
@@ -20,16 +24,25 @@ namespace   // utility
                 ++itQuery; continue;
             }
 
-            cerr << "INFO: [IR device query handler] " << actionName << " on query " << query->Describe() << endl;
+            cerr << "INFO: [IR device query handler] " << actionName
+                 << " on query " << query->Describe() << endl;
 
             try {
-                const auto & generatedQueries = TIRDeviceQueryFactory::GenerateQueries(query->VirtualRegisters, query->Operation, policy);
+                const auto & generatedQueries = TIRDeviceQueryFactory::GenerateQueries(
+                    query->VirtualRegisters, query->Operation, policy
+                );
+
+                if (generatedQueries.size() == 1) {
+                    throw TSerialDeviceException("query is atomic");
+                }
+
                 itQuery = querySet->Queries.erase(itQuery);
                 querySet->Queries.insert(itQuery, generatedQueries.begin(), generatedQueries.end());
 
-                cerr << "INFO: [IR device query handler] recreated query " << query->Describe() << " as " << PrintCollection(generatedQueries, [](ostream & s, const PIRDeviceQuery & query){
-                    s << "\t" << query->Describe();
-                }, true, "") << endl;
+                cerr << "INFO: [IR device query handler] recreated query " << query->Describe()
+                     << " as " << PrintCollection(generatedQueries, [](ostream & s, const PIRDeviceQuery & query){
+                         s << "\t" << query->Describe();
+                     }, true, "") << endl;
 
             } catch (const TSerialDeviceException & e) {
                 query->SetAbleToSplit(false);
@@ -72,7 +85,7 @@ void TIRDeviceQuerySetHandler::SplitByRegisterIfNeeded(const PIRDeviceQuerySet &
             && !query->HasHoles;
     };
 
-    RecreateQueries(querySet, condition, TIRDeviceQueryFactory::AsIs, "split by register");
+    RecreateQueries(querySet, condition, TIRDeviceQueryFactory::NoDuplicates, "split by register");
 }
 
 void TIRDeviceQuerySetHandler::DisableRegistersIfNeeded(const PIRDeviceQuerySet & querySet)

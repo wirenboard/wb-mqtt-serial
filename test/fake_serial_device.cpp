@@ -26,6 +26,7 @@ struct TFakeProtocolInfo: TProtocolInfo
 TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TFakeSerialDevice>>(config, port, protocol)
     , Connected(true)
+    , LogQueries(false)
 {
     FakePort = dynamic_pointer_cast<TFakeSerialPort>(port);
     if (!FakePort) {
@@ -69,7 +70,9 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
 
         query.FinalizeRead(Block(start), query.GetSize());
 
-        if (!query.VirtualRegisters.empty()) {
+        if (LogQueries) {
+            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': " << query.Describe();
+        } else if (!query.VirtualRegisters.empty()) {
             for (const auto & reg: query.VirtualRegisters) {
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << reg->GetTextValue() << "'";
             }
@@ -80,7 +83,9 @@ void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
             }
         }
     } catch (const exception & e) {
-        if (!query.VirtualRegisters.empty()) {
+        if (LogQueries) {
+            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': " << query.Describe() << " failed: '" << e.what() << "'";
+        } else if (!query.VirtualRegisters.empty()) {
             for (const auto & reg: query.VirtualRegisters) {
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' failed: '" << e.what() << "'";
             }
@@ -128,7 +133,9 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
 
         query.FinalizeWrite();
 
-        if (!query.VirtualRegisters.empty()) {
+        if (LogQueries) {
+            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': " << query.Describe();
+        } else if (!query.VirtualRegisters.empty()) {
             for (const auto & reg: query.VirtualRegisters) {
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << reg->GetTextValue() << "'";
             }
@@ -139,7 +146,9 @@ void TFakeSerialDevice::Write(const TIRDeviceValueQuery & query)
             }
         }
     } catch (const exception & e) {
-        if (!query.VirtualRegisters.empty()) {
+        if (LogQueries) {
+            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': " << query.Describe() << " failed: '" << e.what() << "'";
+        } else if (!query.VirtualRegisters.empty()) {
             for (const auto & reg: query.VirtualRegisters) {
                 FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->Address << "' failed: '" << e.what() << "'";
             }
@@ -217,6 +226,11 @@ uint32_t TFakeSerialDevice::Read2Registers(int addr)
 void TFakeSerialDevice::SetIsConnected(bool connected)
 {
     Connected = connected;
+}
+
+void TFakeSerialDevice::SetLogQueries(bool logQueries)
+{
+    LogQueries = logQueries;
 }
 
 const TProtocolInfo & TFakeSerialDevice::GetProtocolInfo() const

@@ -12,9 +12,9 @@ class TIRDeviceQueryFactory
 public:
     enum EQueryGenerationPolicy: uint8_t
     {
-        Minify,     // produce as little queries as possible by merging sets with allowed holes (initial behaviour)
-        NoHoles,    // produce as little queries as possible by merging sets but without holes
-        AsIs        // do not modify sets, <number of queries> == <number of sets>
+        Minify,         // produce as little queries as possible by merging sets with allowed holes (initial behaviour)
+        NoHoles,        // produce as little queries as possible by merging sets but without holes
+        NoDuplicates    // do not modify sets, <number of queries> == <number of sets>
     };
 
     static const EQueryGenerationPolicy Default;
@@ -46,8 +46,14 @@ private:
     using TRegisterTypeInfo = std::function<std::pair<uint32_t, uint32_t>(const TMemoryBlockType &)>;
     using TAssociatedMemoryBlockList = std::list<TAssociatedMemoryBlockSet>;
 
-    static TQueries GenerateQueries(TAssociatedMemoryBlockList && memoryBlockSets, EQueryOperation, EQueryGenerationPolicy);
+    static TQueries GenerateQueries(
+        TAssociatedMemoryBlockList &&,
+        EQueryOperation,
+        EQueryGenerationPolicy);
 
-    static void CheckSets(const TAssociatedMemoryBlockList & memoryBlockSets, const TRegisterTypeInfo &);
-    static void MergeSets(TAssociatedMemoryBlockList & memoryBlockSets, const TRegisterTypeInfo &);
+    static void CheckSets(const TAssociatedMemoryBlockList &, const TRegisterTypeInfo &);
+    static void MergeSets(
+        TAssociatedMemoryBlockList &,
+        const TRegisterTypeInfo &,
+        EQueryGenerationPolicy);
 };
