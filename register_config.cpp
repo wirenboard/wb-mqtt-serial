@@ -102,20 +102,33 @@ EWordOrder WordOrderFromName(const std::string& name) {
 }
 
 
-TRegisterConfig::TRegisterConfig(int type, int address,
-            ERegisterFormat format, double scale, double offset,
-            double round_to, bool poll, bool readonly,
-            const std::string& type_name, bool has_error_value,
-            uint64_t error_value, const EWordOrder word_order,
-            TBitIndex bit_offset, TValueSize width)
-    : Type(type), Address(address), Format(format)
-    , Scale(scale), Offset(offset), RoundTo(round_to)
-    , Poll(poll), ReadOnly(readonly), TypeName(type_name)
-    , HasErrorValue(has_error_value), ErrorValue(error_value)
-    , WordOrder(word_order), BitOffset(bit_offset), Width(width)
+TRegisterConfig::TRegisterConfig(
+    int type, int address,
+    ERegisterFormat format, double scale, double offset,
+    double round_to, bool poll, bool readonly, bool write_retry,
+    const std::string& type_name, bool has_error_value,
+    uint64_t error_value, const EWordOrder word_order,
+    TBitIndex bit_offset, TValueSize width
+)
+    : Type(type)
+    , Address(address)
+    , Format(format)
+    , Scale(scale)
+    , Offset(offset)
+    , RoundTo(round_to)
+    , Poll(poll)
+    , ReadOnly(readonly)
+    , WriteRetry(write_retry)
+    , TypeName(type_name)
+    , HasErrorValue(has_error_value)
+    , ErrorValue(error_value)
+    , WordOrder(word_order)
+    , BitOffset(bit_offset)
+    , Width(width)
 {
-    if (TypeName.empty())
+    if (TypeName.empty()) {
         TypeName = "(type " + std::to_string(Type) + ")";
+    }
 
     if (!Width) {
         Width = RegisterFormatMaxWidth(Format);

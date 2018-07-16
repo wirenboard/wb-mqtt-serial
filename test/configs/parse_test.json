@@ -9,11 +9,13 @@
             "stop_bits": 2,
             "poll_interval": 10,
             "enabled": true,
+            "write_retry": false,
             "devices" : [
                 {
                     "device_type" : "MSU34",
                     "slave_id": 2,
                     "enabled": true,
+                    "write_retry": true,
                     "channels": [
                         {
                             "name" : "Illuminance",
@@ -59,6 +61,7 @@
                             "reg_type" : "holding",
                             "address" : "0x01",
                             "type": "switch",
+                            "write_retry": true,
                             "error_value" : 4294967295
                         },
                         {
@@ -110,6 +113,7 @@
                     "slave_id": "0x04",
                     "guard_interval_us": 1000,
                     "device_timeout_ms": 2000,
+                    "write_retry": false,
                     "channels": [
                         {
                             "name" : "Relay 1",
@@ -204,6 +208,7 @@
                         {
                             "name" : "ValueIndex",
                             "reg_type" : "params",
+                            "write_retry" : false,
                             "address" : "36[1]"
                         }
                     ]

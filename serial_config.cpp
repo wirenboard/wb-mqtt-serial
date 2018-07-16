@@ -218,6 +218,10 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(
     if (register_data.isMember("readonly"))
         force_readonly = register_data["readonly"].asBool();
 
+    bool write_retry = device_config->WriteRetry.GetOr(true);
+    if (register_data.isMember("write_retry"))
+        write_retry = register_data["write_retry"].asBool();
+
     bool has_error_value = false;
     uint64_t error_value = 0;
     if (register_data.isMember("error_value")) {
@@ -228,7 +232,7 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(
     PRegisterConfig reg = TRegisterConfig::Create(
         type.Index,
         address, format, scale, offset, round_to, true, type.ReadOnly || force_readonly,
-        type.Name, has_error_value, error_value, wordOrder, bitOffset, width);
+        write_retry, type.Name, has_error_value, error_value, wordOrder, bitOffset, width);
     if (register_data.isMember("poll_interval"))
         reg->PollInterval = chrono::milliseconds(GetInt(register_data, "poll_interval"));
     return reg;
@@ -388,9 +392,10 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
         width = GetValidatedRegisterAddressWidth(parsed, addressObj, maxWidth);
     }
 
-
     PRegisterConfig reg = TRegisterConfig::Create(
-        typeIndex, address, format, 1, 0, 0, true, false, regTypeStr, false, 0, EWordOrder::BigEndian, bitOffset, width);
+        typeIndex, address, format, 1, 0, 0, true, false, device_config->WriteRetry.GetOr(true),
+        regTypeStr, false, 0, EWordOrder::BigEndian, bitOffset, width
+    );
 
     if (!item_data.isMember("value"))
         throw TConfigParserException("no reg specified for init item");
@@ -717,6 +722,12 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
                 "Can't find the template for '" + device_config->DeviceType + "' device type.");
     }
 
+    device_config->WriteRetry = port_config->WriteRetry;
+
+    if (device_data.isMember("write_retry")) {
+        device_config->WriteRetry = device_data["write_retry"].asBool();
+    }
+
     LoadDeviceTemplatableConfigPart(device_config, device_data);
     MergeAndLoadChannels(device_config, device_data, tmpl);
 
@@ -808,6 +819,9 @@ void TConfigParser::LoadPort(const Json::Value& port_data,
 
     if (port_data.isMember("guard_interval_us"))
         port_config->GuardInterval = chrono::microseconds(GetInt(port_data, "guard_interval_us"));
+
+    if (port_data.isMember("write_retry"))
+        port_config->WriteRetry = port_data["write_retry"].asBool();
 
     const Json::Value array = port_data["devices"];
     for(unsigned int index = 0; index < array.size(); ++index)

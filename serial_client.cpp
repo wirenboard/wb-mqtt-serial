@@ -140,8 +140,10 @@ void TSerialClient::MaybeUpdateErrorState(PVirtualRegister reg)
     }
 }
 
-void TSerialClient::DoFlush()
+bool TSerialClient::DoFlush()
 {
+    bool needFlush = false;
+
     for (const auto & device: DevicesList) {
         auto itVirtualRegisters = VirtualRegisters.find(device);
         if (itVirtualRegisters == VirtualRegisters.end()) {
@@ -155,38 +157,43 @@ void TSerialClient::DoFlush()
                 continue;
             PrepareToAccessDevice(device);
             reg->Flush();
+            needFlush |= reg->NeedToFlush();
             if (reg->IsChanged(EPublishData::Error)) {
                 MaybeUpdateErrorState(reg);
             }
         }
     }
+
+    return needFlush;
 }
 
-void TSerialClient::WaitForPollAndFlush()
+bool TSerialClient::WaitForPollAndFlush()
 {
+    bool needFlush = false;
     // When it's time for a next poll, take measures
     // to avoid poll starvation
     if (Plan->PollIsDue()) {
-        MaybeFlushAvoidingPollStarvationButDontWait();
-        return;
+        MaybeFlushAvoidingPollStarvationButDontWait(needFlush);
+        return needFlush;
     }
     auto wait_until = Plan->GetNextPollTimePoint();
     while (Port->Wait(FlushNeeded, wait_until)) {
         // Don't hold the lock while flushing
-        DoFlush();
+        needFlush = DoFlush();
         if (Plan->PollIsDue()) {
-            MaybeFlushAvoidingPollStarvationButDontWait();
-            return;
+            MaybeFlushAvoidingPollStarvationButDontWait(needFlush);
+            return needFlush;
         }
     }
+    return needFlush;
 }
 
-void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
+void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait(bool & needFlush)
 {
     // avoid poll starvation
     int flush_count_remaining = MAX_FLUSHES_WHEN_POLL_IS_DUE;
     while (flush_count_remaining-- && FlushNeeded->TryWait())
-        DoFlush();
+        needFlush = DoFlush();
 }
 
 void TSerialClient::Cycle()
@@ -195,7 +202,7 @@ void TSerialClient::Cycle()
 
     Port->CycleBegin();
 
-    WaitForPollAndFlush();
+    bool stillNeedFlush = WaitForPollAndFlush();
 
     // devices whose registers were polled during this cycle and statues
     std::map<PSerialDevice, std::set<EQueryStatus>> devicesRangesStatuses;
@@ -247,7 +254,7 @@ void TSerialClient::Cycle()
 
         TIRDeviceQuerySetHandler::HandleQuerySetPostExecution(querySet);
 
-        MaybeFlushAvoidingPollStarvationButDontWait();
+        MaybeFlushAvoidingPollStarvationButDontWait(stillNeedFlush);
     });
 
     for (const auto & device: DevicesList) {
@@ -273,6 +280,10 @@ void TSerialClient::Cycle()
 
     for (const auto& p: DevicesList) {
         p->EndPollCycle();
+    }
+
+    if (stillNeedFlush) {
+        NotifyFlushNeeded();
     }
 
     // Port status

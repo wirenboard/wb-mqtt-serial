@@ -39,6 +39,20 @@ uint8_t * TFakeSerialDevice::Block(uint32_t address)
     return Memory + address * FAKE_DEVICE_MEM_BLOCK_SIZE;
 }
 
+ const char * TFakeSerialDevice::DescBlockMode(TFakeSerialDevice::BlockMode mode)
+ {
+    switch(mode) {
+    case TRANSIENT:
+        return "block transient";
+    case PERMANENT:
+        return "block permanent";
+    case NONE:
+        return "unblock";
+    default:
+        throw runtime_error(string("unknown block mode in ") + __func__);
+    }
+ }
+
 void TFakeSerialDevice::Read(const TIRDeviceQuery & query)
 {
     const auto start = query.GetStart();
@@ -208,14 +222,16 @@ void TFakeSerialDevice::BlockReadFor(int addr, BlockMode block)
 {
     Blockings[addr].BlockRead = block;
 
-    FakePort->GetFixture().Emit() << "fake_serial_device: block address '" << addr << "' for reading";
+    FakePort->GetFixture().Emit() << "fake_serial_device: " << DescBlockMode(block)
+                                  << " address '" << addr << "' for reading";
 }
 
 void TFakeSerialDevice::BlockWriteFor(int addr, BlockMode block)
 {
     Blockings[addr].BlockWrite = block;
 
-    FakePort->GetFixture().Emit() << "fake_serial_device: block address '" << addr << "' for writing";
+    FakePort->GetFixture().Emit() << "fake_serial_device: " << DescBlockMode(block)
+                                  << " address '" << addr << "' for writing";
 }
 
 uint32_t TFakeSerialDevice::Read2Registers(int addr)

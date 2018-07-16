@@ -21,8 +21,8 @@ Subscribe: /devices/fd/controls/Bit2/on (QoS 0)
 Publish: /devices/fd/controls/Bit3/meta/type: 'value' (QoS 0, retained)
 Publish: /devices/fd/controls/Bit3/meta/order: '7' (QoS 0, retained)
 Subscribe: /devices/fd/controls/Bit3/on (QoS 0)
-fake_serial_device: block address '4' for reading
-fake_serial_device: block address '9' for reading
+fake_serial_device: block permanent address '4' for reading
+fake_serial_device: block permanent address '9' for reading
 >>> LoopOnce() [read, r blacklisted]
 Open()
 Sleep(100000)
@@ -56,7 +56,7 @@ Publish: /devices/fd/controls/Bit3/meta/error: '' (QoS 0, retained)
 Publish: /devices/fd/controls/Bit3: '0' (QoS 0, retained)
 fake_serial_device '24': Device cycle OK
 Port cycle OK
-fake_serial_device: block address '10' for reading
+fake_serial_device: block permanent address '10' for reading
 >>> LoopOnce() [read, r blacklisted]
 fake_serial_device '24': read [5]
 fake_serial_device '24': read [6]

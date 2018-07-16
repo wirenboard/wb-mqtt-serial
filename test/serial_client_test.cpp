@@ -23,11 +23,11 @@ protected:
     void TearDown();
     PVirtualRegister Reg(int addr, ERegisterFormat fmt = U16, double scale = 1,
         double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian,
-        TBitIndex bitOffset = 0, TValueSize width = 0) {
+        TBitIndex bitOffset = 0, TValueSize width = 0, bool writeRetry = true) {
         return TVirtualRegister::Create(
             TRegisterConfig::Create(
                 TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
-                "fake", false, 0, word_order, bitOffset, width), Device);
+                writeRetry, "fake", false, 0, word_order, bitOffset, width), Device);
     }
     PFakeSerialPort Port;
     PSerialClient SerialClient;
@@ -879,7 +879,6 @@ TEST_F(TSerialClientTest, Errors)
     SerialClient->Cycle();
 
     Device->BlockWriteFor(20, false);
-    reg20->SetTextValue("42");
     Note() << "Cycle() [write, r blacklisted]";
     SerialClient->Cycle();
 
@@ -904,6 +903,38 @@ TEST_F(TSerialClientTest, Errors)
     SerialClient->Cycle();
     reg20->GetTextValue();
 
+    SerialClient->Cycle();
+}
+
+TEST_F(TSerialClientTest, WriteRetry)
+{
+    auto reg = Reg(0);
+    SerialClient->AddRegister(reg);
+
+    reg->SetTextValue("11");
+    Device->BlockWriteFor(0, TFakeSerialDevice::TRANSIENT);
+
+    int cycleCount = 5;
+    while(cycleCount--) {
+        Note() << "Cycle() [write, w blacklisted (transient)]";
+        SerialClient->Cycle();
+    }
+
+    Device->BlockWriteFor(0, false);
+    Note() << "Cycle() [read, nothing blacklisted]";
+    SerialClient->Cycle();
+
+    reg->SetTextValue("22");
+    Device->BlockWriteFor(0, TFakeSerialDevice::PERMANENT);
+    Note() << "Cycle() [write, w blacklisted (permanent)]";
+    SerialClient->Cycle();
+    Note() << "Cycle() [read, w blacklisted (permanent)]";
+    SerialClient->Cycle();
+
+    Device->BlockWriteFor(0, false);
+    Note() << "Cycle() [read, nothing blacklisted]";
+    SerialClient->Cycle();
+    Note() << "Cycle() [read, nothing blacklisted]";
     SerialClient->Cycle();
 }
 
@@ -1236,6 +1267,52 @@ TEST_F(TSerialClientIntegrationTest, Errors)
     observer->LoopOnce();
 
     Note() << "LoopOnce() [read, nothing blacklisted] (2)";
+    observer->LoopOnce();
+}
+
+TEST_F(TSerialClientIntegrationTest, WriteRetry)
+{
+    FilterConfig("WriteRetry");
+
+    auto observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, Port);
+    observer->SetUp();
+
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x9a", "fake", Port));
+
+    if (!Device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    MQTTClient->DoPublish(true, 0, "/devices/WriteRetry/controls/Reg0/on", "11");
+    MQTTClient->DoPublish(true, 0, "/devices/WriteRetry/controls/Reg1/on", "22");
+    Device->BlockWriteFor(0, TFakeSerialDevice::TRANSIENT);
+    Device->BlockWriteFor(1, TFakeSerialDevice::TRANSIENT);
+
+    int cycleCount = 5;
+    while(cycleCount--) {
+        Note() << "LoopOnce() [write, w blacklisted (transient)]";
+        observer->LoopOnce();
+    }
+
+    Device->BlockWriteFor(0, false);
+    Device->BlockWriteFor(1, false);
+    Note() << "LoopOnce() [read, nothing blacklisted]";
+    observer->LoopOnce();
+
+    MQTTClient->DoPublish(true, 0, "/devices/WriteRetry/controls/Reg0/on", "33");
+    MQTTClient->DoPublish(true, 0, "/devices/WriteRetry/controls/Reg1/on", "44");
+    Device->BlockWriteFor(0, TFakeSerialDevice::PERMANENT);
+    Device->BlockWriteFor(1, TFakeSerialDevice::PERMANENT);
+    Note() << "LoopOnce() [write, w blacklisted (permanent)]";
+    observer->LoopOnce();
+    Note() << "LoopOnce() [read, w blacklisted (permanent)]";
+    observer->LoopOnce();
+
+    Device->BlockWriteFor(0, false);
+    Device->BlockWriteFor(1, false);
+    Note() << "LoopOnce() [read, nothing blacklisted]";
+    observer->LoopOnce();
+    Note() << "LoopOnce() [read, nothing blacklisted]";
     observer->LoopOnce();
 }
 
@@ -1656,7 +1733,19 @@ TEST_F(TSerialClientIntegrationTest, Bitmasks)
 }
 
 
-class TConfigParserTest: public TLoggedFixture {};
+class TConfigParserTest: public TLoggedFixture
+{
+protected:
+    template <typename T>
+    void EmitOptional(const char * prefix, const optional<T> & opt)
+    {
+        if (opt) {
+            Emit() << prefix << *opt;
+        } else {
+            Emit() << prefix << "none";
+        }
+    }
+};
 
 TEST_F(TConfigParserTest, Parse)
 {
@@ -1681,6 +1770,7 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "No device configs.";
             continue;
         }
+        EmitOptional("WriteRetry: ", port_config->WriteRetry);
         Emit() << "DeviceConfigs:";
         for (auto device_config: port_config->DeviceConfigs) {
             TTestLogIndent indent(*this);
@@ -1693,6 +1783,7 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "MaxReadRegisters: " << device_config->MaxReadRegisters;
             Emit() << "GuardInterval: " << device_config->GuardInterval.count();
             Emit() << "DeviceTimeout: " << device_config->DeviceTimeout.count();
+            EmitOptional("WriteRetry: ", device_config->WriteRetry);
             if (!device_config->DeviceChannelConfigs.empty()) {
                 Emit() << "DeviceChannels:";
                 for (auto device_channel: device_config->DeviceChannelConfigs) {
@@ -1721,6 +1812,7 @@ TEST_F(TConfigParserTest, Parse)
                         Emit() << "OnValue: " << reg->OnValue;
                         Emit() << "Poll: " << reg->Poll;
                         Emit() << "ReadOnly: " << reg->ReadOnly;
+                        Emit() << "WriteRetry: " << reg->WriteRetry;
                         Emit() << "TypeName: " << reg->TypeName;
                         Emit() << "PollInterval: " << reg->PollInterval.count();
                         if (reg->HasErrorValue) {

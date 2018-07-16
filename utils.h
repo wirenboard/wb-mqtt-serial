@@ -305,6 +305,45 @@ inline bool IsLittleEndian()
     return overlayed.b.a;
 }
 
+template <typename T>
+class optional
+{
+    T    Value;
+    bool IsPresent;
+
+public:
+    optional(T value)
+        : Value(value)
+        , IsPresent(true)
+    {}
+
+    optional()
+        : Value()
+        , IsPresent(false)
+    {}
+
+    optional & operator=(T value)
+    {
+        IsPresent = true;
+        Value = value;
+    }
+
+    operator bool() const
+    {
+        return IsPresent;
+    }
+
+    const T & operator*() const
+    {
+        return Value;
+    }
+
+    T GetOr(T def = T())
+    {
+        return IsPresent ? Value : def;
+    }
+};
+
 /**
  * @brief wrappers for shorter code
  */

@@ -101,24 +101,30 @@ EWordOrder WordOrderFromName(const std::string& name);
 
 struct TRegisterConfig
 {
-    TRegisterConfig(int type, int address,
-                    ERegisterFormat format, double scale, double offset,
-                    double round_to, bool poll, bool readonly,
-                    const std::string& type_name, bool has_error_value,
-                    uint64_t error_value, const EWordOrder word_order,
-                    TBitIndex bit_offset, TValueSize width);
+    TRegisterConfig(
+        int type, int address,
+        ERegisterFormat format, double scale, double offset,
+        double round_to, bool poll, bool readonly, bool write_retry,
+        const std::string& type_name, bool has_error_value,
+        uint64_t error_value, const EWordOrder word_order,
+        TBitIndex bit_offset, TValueSize width
+    );
 
-    static PRegisterConfig Create(int type = 0, int address = 0,
-                                  ERegisterFormat format = U16, double scale = 1, double offset = 0,
-                                  double round_to = 0, bool poll = true, bool readonly = false,
-                                  const std::string& type_name = "",
-                                  bool has_error_value = false,
-                                  uint64_t error_value = 0,
-                                  const EWordOrder word_order = EWordOrder::BigEndian,
-                                  TBitIndex bit_offset = 0, TValueSize width = 0)
+    static PRegisterConfig Create(
+        int type = 0, int address = 0,
+        ERegisterFormat format = U16, double scale = 1, double offset = 0,
+        double round_to = 0, bool poll = true, bool readonly = false,
+        bool write_retry = true, const std::string& type_name = "",
+        bool has_error_value = false,
+        uint64_t error_value = 0,
+        const EWordOrder word_order = EWordOrder::BigEndian,
+        TBitIndex bit_offset = 0, TValueSize width = 0)
     {
-        return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
-                                            type_name, has_error_value, error_value, word_order, bit_offset, width);
+        return std::make_shared<TRegisterConfig>(
+            type, address, format, scale, offset, round_to,
+            poll, readonly, write_retry, type_name, has_error_value,
+            error_value, word_order, bit_offset, width
+        );
     }
 
     TValueSize GetSize() const;
@@ -137,6 +143,7 @@ struct TRegisterConfig
     double RoundTo;
     bool Poll;
     bool ReadOnly;
+    bool WriteRetry;
     std::string OnValue;
     std::string TypeName;
     std::chrono::milliseconds PollInterval = std::chrono::milliseconds(-1);

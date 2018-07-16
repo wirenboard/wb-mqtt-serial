@@ -43,6 +43,8 @@ public:
 private:
     uint8_t * Block(uint32_t address);
 
+    static const char * DescBlockMode(BlockMode);
+
     struct TBlockInfo
     {
         BlockMode BlockRead,

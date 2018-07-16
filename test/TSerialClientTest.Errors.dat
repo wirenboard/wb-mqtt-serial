@@ -1,5 +1,5 @@
-fake_serial_device: block address '20' for reading
-fake_serial_device: block address '20' for writing
+fake_serial_device: block transient address '20' for reading
+fake_serial_device: block transient address '20' for writing
 >>> Cycle() [read, rw blacklisted]
 Open()
 Sleep(100000)
@@ -21,28 +21,29 @@ Error Callback: <fake:1:fake: 20:0:16>: read+write error
 fake_serial_device '1': read address '20' failed: 'Serial protocol error: read blocked (transient)'
 fake_serial_device '1': Device cycle OK
 Port cycle OK
-fake_serial_device: block address '20' for writing
+fake_serial_device: unblock address '20' for writing
 >>> Cycle() [write, r blacklisted]
 fake_serial_device '1': write to address '20' value '42'
 Error Callback: <fake:1:fake: 20:0:16>: read error
 fake_serial_device '1': read address '20' failed: 'Serial protocol error: read blocked (transient)'
 fake_serial_device '1': Device cycle OK
 Port cycle OK
-fake_serial_device: block address '20' for writing
+fake_serial_device: block transient address '20' for writing
 >>> Cycle() [write, rw blacklisted]
 fake_serial_device '1': write address '20' failed: 'Serial protocol error: write blocked (transient)'
 Error Callback: <fake:1:fake: 20:0:16>: read+write error
 fake_serial_device '1': read address '20' failed: 'Serial protocol error: read blocked (transient)'
 fake_serial_device '1': Device cycle OK
 Port cycle OK
-fake_serial_device: block address '20' for reading
+fake_serial_device: unblock address '20' for reading
 >>> Cycle() [write, w blacklisted]
+fake_serial_device '1': write address '20' failed: 'Serial protocol error: write blocked (transient)'
 fake_serial_device '1': read address '20' value '42'
 Error Callback: <fake:1:fake: 20:0:16>: write error
 Read Callback: <fake:1:fake: 20:0:16> becomes 42
 fake_serial_device '1': Device cycle OK
 Port cycle OK
-fake_serial_device: block address '20' for writing
+fake_serial_device: unblock address '20' for writing
 >>> Cycle() [write, nothing blacklisted]
 fake_serial_device '1': write to address '20' value '42'
 Error Callback: <fake:1:fake: 20:0:16>: no error

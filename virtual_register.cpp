@@ -233,7 +233,8 @@ void TVirtualRegister::SetTextValue(const std::string & value)
 
 bool TVirtualRegister::NeedToPoll() const
 {
-    return Poll && !Dirty;
+    // if write retry is disabled: return to old behaviour (poll if not dirty)
+    return WriteRetry ? Poll : Poll && !Dirty;
 }
 
 bool TVirtualRegister::IsChanged(EPublishData state) const
@@ -249,16 +250,15 @@ bool TVirtualRegister::NeedToFlush() const
 void TVirtualRegister::Flush()
 {
     if (Dirty.load()) {
-        Dirty.store(false);
-
         assert(WriteQuery);
         WriteQuery->ResetStatus();
 
-        //WriteQuery->SetValue(GetValueContext());
-
         GetDevice()->Execute(WriteQuery);
-
         UpdateWriteError(WriteQuery->GetStatus() != EQueryStatus::Ok);
+        bool isTransientError = WriteQuery->GetStatus() == EQueryStatus::DeviceTransientError;
+
+        // retry write on transient error
+        Dirty.store(WriteRetry && isTransientError);
     }
 }
 

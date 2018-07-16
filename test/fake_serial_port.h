@@ -113,10 +113,10 @@ protected:
 
     PVirtualRegister Reg(PSerialDevice device, int addr, uint32_t type, ERegisterFormat fmt = U16, double scale = 1,
         double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian,
-        uint8_t bitOffset = 0, uint8_t width = 0) {
+        TBitIndex bitOffset = 0, TValueSize width = 0, bool writeRetry = true) {
         return TVirtualRegister::Create(
             TRegisterConfig::Create(
-                type, addr, fmt, scale, offset, round_to, true, false,
+                type, addr, fmt, scale, offset, round_to, true, false, writeRetry,
                 "fake", false, 0, word_order, bitOffset, width), device);
     }
 

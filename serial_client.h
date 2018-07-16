@@ -36,9 +36,9 @@ public:
 private:
     void InitializeMemoryBlocksCache();
     void GenerateReadQueries();
-    void DoFlush();
-    void WaitForPollAndFlush();
-    void MaybeFlushAvoidingPollStarvationButDontWait();
+    bool DoFlush();
+    bool WaitForPollAndFlush();
+    void MaybeFlushAvoidingPollStarvationButDontWait(bool & needFlush);
     void MaybeUpdateErrorState(PVirtualRegister reg);
     void PrepareToAccessDevice(PSerialDevice dev);
     void OnDeviceReconnect(PSerialDevice dev);

@@ -85,6 +85,7 @@ struct TDeviceConfig {
     std::chrono::microseconds GuardInterval = std::chrono::microseconds(0);
     std::chrono::milliseconds DeviceTimeout = std::chrono::milliseconds(DEFAULT_DEVICE_TIMEOUT_MS);
     int DeviceMaxFailCycles = DEFAULT_DEVICE_FAIL_CYCLES;
+    optional<bool> WriteRetry;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
@@ -97,6 +98,7 @@ struct TPortConfig {
     bool Debug = false;
     int MaxUnchangedInterval;
     std::vector<PDeviceConfig> DeviceConfigs;
+    optional<bool> WriteRetry;
 };
 
 typedef std::shared_ptr<TPortConfig> PPortConfig;

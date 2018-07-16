@@ -4,6 +4,7 @@ Ports:
     ConnSettings: </dev/ttyNSC0 9600 8 N2 timeout 500>
     PollInterval: 10
     GuardInterval: 0
+    WriteRetry: 0
     DeviceConfigs:
         ------
         Id: msu34tlp_2
@@ -14,6 +15,7 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
+        WriteRetry: 1
         DeviceChannels:
             ------
             Name: Temp 1
@@ -35,6 +37,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 1
                 TypeName: input
                 PollInterval: 10
                 ErrorValue: not set
@@ -59,6 +62,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 1
                 TypeName: input
                 PollInterval: 300
                 ErrorValue: not set
@@ -83,6 +87,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 1
                 TypeName: input
                 PollInterval: 10000
                 ErrorValue: not set
@@ -107,6 +112,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 1
                 TypeName: input
                 PollInterval: 10
                 ErrorValue: not set
@@ -120,6 +126,7 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
+        WriteRetry: 0
         DeviceChannels:
             ------
             Name: Relay 1
@@ -141,6 +148,7 @@ Ports:
                 OnValue: 500
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 0
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: not set
@@ -154,6 +162,7 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
+        WriteRetry: 0
         DeviceChannels:
             ------
             Name: uint16
@@ -175,6 +184,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 0
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 65535
@@ -199,6 +209,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 1
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 4294967295
@@ -223,6 +234,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 0
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 4294967295
@@ -247,6 +259,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 0
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 4294967295
@@ -271,6 +284,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 0
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 18446744073709551615
@@ -295,6 +309,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 0
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 18446744073709551615
@@ -303,6 +318,7 @@ Ports:
     ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 500>
     PollInterval: 100
     GuardInterval: 105
+    WriteRetry: none
     DeviceConfigs:
         ------
         Id: lc103
@@ -313,6 +329,7 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 1000
         DeviceTimeout: 2000
+        WriteRetry: 0
         DeviceChannels:
             ------
             Name: Relay 1
@@ -334,6 +351,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 0
                 TypeName: coil
                 PollInterval: 100
                 ErrorValue: not set
@@ -358,6 +376,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 0
                 TypeName: coil
                 PollInterval: 100
                 ErrorValue: not set
@@ -382,6 +401,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 0
                 TypeName: coil
                 PollInterval: 100
                 ErrorValue: not set
@@ -406,6 +426,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 0
                 TypeName: discrete
                 PollInterval: 100
                 ErrorValue: not set
@@ -419,6 +440,7 @@ Ports:
         MaxReadRegisters: 0
         GuardInterval: 105
         DeviceTimeout: 3000
+        WriteRetry: none
         DeviceChannels:
             ------
             Name: RGB
@@ -440,6 +462,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 1
                 TypeName: holding
                 PollInterval: 103
                 ErrorValue: not set
@@ -456,6 +479,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 1
                 TypeName: holding
                 PollInterval: 102
                 ErrorValue: not set
@@ -472,6 +496,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 0
+                WriteRetry: 1
                 TypeName: holding
                 PollInterval: 102
                 ErrorValue: not set
@@ -496,6 +521,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 1
                 TypeName: holding
                 PollInterval: 101
                 ErrorValue: not set
@@ -509,6 +535,7 @@ Ports:
         MaxReadRegisters: 42
         GuardInterval: 105
         DeviceTimeout: 3000
+        WriteRetry: none
         DeviceChannels:
             ------
             Name: Chan 1
@@ -530,6 +557,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 1
                 TypeName: input
                 PollInterval: 100
                 ErrorValue: not set
@@ -543,6 +571,7 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
+        WriteRetry: none
         DeviceChannels:
             ------
             Name: Chan 1
@@ -564,6 +593,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 1
                 TypeName: input
                 PollInterval: 100
                 ErrorValue: not set
@@ -577,6 +607,7 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
+        WriteRetry: none
         DeviceChannels:
             ------
             Name: Offset
@@ -598,6 +629,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 1
                 TypeName: param16
                 PollInterval: 100
                 ErrorValue: not set
@@ -622,6 +654,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 1
                 TypeName: param16
                 PollInterval: 100
                 ErrorValue: not set
@@ -646,6 +679,7 @@ Ports:
                 OnValue: 
                 Poll: 1
                 ReadOnly: 1
+                WriteRetry: 0
                 TypeName: params
                 PollInterval: 100
                 ErrorValue: not set

@@ -280,6 +280,29 @@
                         "type": "value"
                     }
                     ]
+                },
+                {
+                    "name": "WriteRetry",
+                    "id": "WriteRetry",
+                    "slave_id": "0x9a",
+                    "protocol": "fake",
+                    "max_read_registers": 1,
+                    "channels": [
+                        {
+                            "name" : "Reg0",
+                            "reg_type" : "fake",
+                            "address" : "0",
+                            "type": "value",
+                            "write_retry": true
+                        },
+                        {
+                            "name" : "Reg1",
+                            "reg_type" : "fake",
+                            "address" : "1",
+                            "type": "value",
+                            "write_retry": false
+                        }
+                    ]
                 }
             ]
         }
