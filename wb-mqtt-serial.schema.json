@@ -56,33 +56,40 @@
           "_format": "checkbox",
           "propertyOrder": 2
         },
+        "write_retry": {
+          "type": "boolean",
+          "title": "Enable write retry",
+          "default": true,
+          "_format": "checkbox",
+          "propertyOrder": 3
+        },
         "baud_rate": {
           "type": "integer",
           "title": "Baud rate",
           "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200],
           "default": 9600,
-          "propertyOrder": 3
+          "propertyOrder": 4
         },
         "parity": {
           "type": "string",
           "title": "Parity",
           "enum": ["N", "E", "O"],
           "default": "N",
-          "propertyOrder": 4
+          "propertyOrder": 5
         },
         "data_bits": {
           "type": "integer",
           "title": "Data bits",
           "enum": [5, 6, 7, 8],
           "default": 8,
-          "propertyOrder": 5
+          "propertyOrder": 6
         },
         "stop_bits": {
           "type": "integer",
           "title": "Stop bits",
           "enum": [1, 2],
           "default": 1,
-          "propertyOrder": 5
+          "propertyOrder": 7
         },
         "response_timeout_ms": {
           "type": "integer",
@@ -90,7 +97,7 @@
           "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 6
+          "propertyOrder": 8
         },
         "guard_interval_us": {
           "type": "integer",
@@ -98,7 +105,7 @@
           "description": "Specifies the delay in microseconds between reads / writes to port",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 7
+          "propertyOrder": 9
         },
         "poll_interval": {
           "type": "integer",
@@ -106,14 +113,14 @@
           "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 8
+          "propertyOrder": 10
         },
         "devices": {
           "type": "array",
           "title": "List of devices",
           "description": "Lists devices attached to the port",
           "items": { "$ref": "#/definitions/device" },
-          "propertyOrder": 9
+          "propertyOrder": 11
         }
       },
       "required": ["path"],
@@ -173,13 +180,20 @@
           "_format": "checkbox",
           "propertyOrder": 4
         },
+        "write_retry": {
+          "type": "boolean",
+          "title": "Enable write retry",
+          "default": true,
+          "_format": "checkbox",
+          "propertyOrder": 5
+        },
         "response_timeout_ms": {
           "type": "integer",
           "title": "Response timeout (ms)",
           "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 5
+          "propertyOrder": 6
         },
         "guard_interval_us": {
           "type": "integer",
@@ -187,7 +201,7 @@
           "description": "Specifies the delay in microseconds between reads / writes to port",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 6
+          "propertyOrder": 7
         },
         "connection_timeout_ms": {
           "type": "integer",
@@ -195,7 +209,7 @@
           "description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
           "minimum": -1,
           "default": 5000,
-          "propertyOrder": 7
+          "propertyOrder": 8
         },
         "connection_max_fail_cycles": {
           "type": "integer",
@@ -203,7 +217,7 @@
           "description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
           "minimum": -1,
           "default": 2,
-          "propertyOrder": 8
+          "propertyOrder": 9
         },
         "poll_interval": {
           "type": "integer",
@@ -211,14 +225,14 @@
           "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 9
+          "propertyOrder": 10
         },
         "devices": {
           "type": "array",
           "title": "List of devices",
           "description": "Lists devices attached to the port",
           "items": { "$ref": "#/definitions/device" },
-          "propertyOrder": 10
+          "propertyOrder": 11
         }
       },
       "required": ["address", "port"],
@@ -265,9 +279,16 @@
           "_format": "checkbox",
           "propertyOrder": 4
         },
+        "write_retry": {
+          "type": "boolean",
+          "title": "Enable write retry",
+          "default": true,
+          "_format": "checkbox",
+          "propertyOrder": 5
+        },
         "protocol": {
           "$ref": "#/definitions/deviceProtocol",
-          "propertyOrder": 5
+          "propertyOrder": 6
         },
         "device_type": {
           "type": "string",
@@ -278,7 +299,7 @@
             "pointer": "/device_type",
             "pattern": "^.*\\.json$"
           },
-          "propertyOrder": 6
+          "propertyOrder": 7
         },
         "poll_interval": {
           "type": "integer",
@@ -286,7 +307,7 @@
           "description" : "This option specifies the desired interval between two consecutive polls of the channel",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 7
+          "propertyOrder": 8
         },
         "setup": {
           "type": "array",
@@ -294,14 +315,14 @@
           "description": "Lists holding register values that must be written during initialization",
           "items": { "$ref": "#/definitions/setup_cmd" },
           "_format": "table",
-          "propertyOrder": 8
+          "propertyOrder": 9
         },
         "channels": {
           "type": "array",
           "title": "List of channels",
           "description": "Lists device registers and their corresponding controls",
           "items": { "$ref": "#/definitions/channel" },
-          "propertyOrder": 9
+          "propertyOrder": 10
         },
         "password": {
           "type": "array",
@@ -309,7 +330,7 @@
           "description": "Contains password for devices that support it",
           "items": { "$ref": "#/definitions/serial_int" },
           "_format": "table",
-          "propertyOrder": 10
+          "propertyOrder": 11
         },
         "access_level": {
           "type": "integer",
@@ -318,28 +339,28 @@
           "minimum": 0,
           "maximum": 2,
           "default": 1,
-          "propertyOrder": 11
+          "propertyOrder": 12
         },
         "delay_ms": {
           "type": "integer",
           "title": "Delay before accessing the device (ms)",
           "minimum": 0,
           "default": 100,
-          "propertyOrder": 12
+          "propertyOrder": 13
         },
         "max_reg_hole": {
           "type": "integer",
           "title": "Max dummy read register count",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 13
+          "propertyOrder": 14
         },
         "max_bit_hole": {
           "type": "integer",
           "title": "Max dummy read bit count",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 14
+          "propertyOrder": 15
         },
         "max_read_registers": {
           "type": "integer",
@@ -347,7 +368,7 @@
           "description" : " Maximum number of registers in a single bulk read request",
           "minimum": 0,
           "default": 1,
-          "propertyOrder": 15
+          "propertyOrder": 16
         },
         "guard_interval_us": {
           "type": "integer",
@@ -355,7 +376,7 @@
           "description" : "Specifies the delay in microseconds between reads of consecutive registers in polling process",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 16
+          "propertyOrder": 17
         },
         "frame_timeout_ms": {
           "type": "integer",
@@ -363,7 +384,7 @@
           "description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
           "minimum": -1,
           "default": -1,
-          "propertyOrder": 17
+          "propertyOrder": 18
         },
         "device_timeout_ms": {
           "type": "integer",
@@ -371,7 +392,7 @@
           "description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
           "minimum": -1,
           "default": 3000,
-          "propertyOrder": 17
+          "propertyOrder": 19
         },
         "device_max_fail_cycles": {
           "type": "integer",
@@ -379,7 +400,7 @@
           "description": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
           "minimum": -1,
           "default": 2,
-          "propertyOrder": 18
+          "propertyOrder": 20
         }
       },
       "required": ["slave_id"],
@@ -494,6 +515,13 @@
               "$ref": "#/definitions/word_order",
               "propertyOrder": 13
             },
+            "write_retry": {
+              "type": "boolean",
+              "title": "Enable write retry",
+              "default": true,
+              "_format": "checkbox",
+              "propertyOrder": 14
+            }
           },
           // FIXME: require "reg_type" and "address" for non-templated devices
           "required": ["name"],

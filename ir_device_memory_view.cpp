@@ -196,7 +196,9 @@ TIRDeviceMemoryBlockView TIRDeviceMemoryView::operator[](const CPMemoryBlock & m
 void TIRDeviceMemoryView::ReadValue(const TIRDeviceValueContext & context) const
 {
     auto & self = *this;
-    uint8_t iValueByte = 0;
+    TByteIndex iValueByte = 0;
+    TMBIndex iMemoryBlock = 0,
+             iMemoryBlockLast = context.BoundMemoryBlocks.size() - 1;
 
     TBitBuffer bitBuffer;
 
@@ -210,7 +212,7 @@ void TIRDeviceMemoryView::ReadValue(const TIRDeviceValueContext & context) const
         auto bitsToRead = bindInfo.BitCount();
 
         // iByte is always little-endian (lower value signifies lower byte)
-        for (uint16_t iByte = bindInfo.BitStart / 8; iByte < BitCountToByteCount(bindInfo.BitEnd); ++iByte) {
+        for (TByteIndex iByte = bindInfo.BitStart / 8; iByte < BitCountToByteCount(bindInfo.BitEnd); ++iByte) {
             auto iBit = iByte * 8;
             auto begin = std::max(0, bindInfo.BitStart - iBit);
             auto end = std::min(8, bindInfo.BitEnd - iBit);
@@ -230,16 +232,22 @@ void TIRDeviceMemoryView::ReadValue(const TIRDeviceValueContext & context) const
             }
 
             while (in) {
-                bitBuffer.Capacity = min<uint16_t>(8, bitsToRead);
+                if (iMemoryBlock == iMemoryBlockLast) {
+                    bitBuffer.Capacity = min<uint_fast16_t>(8, bitBuffer.Size + bitsToRead);
+                } else {
+                    bitBuffer.Capacity = 8;
+                }
 
-                in >> bitBuffer;
+                // consider bits moved to bitBuffer as read
+                // and decrease bitsToRead on moved bits count
+                bitsToRead -= (in >> bitBuffer);
                 if (bitBuffer.IsFull()) {
                     context.Value.SetByte(bitBuffer, iValueByte++);
-                    bitsToRead -= bitBuffer.Size;
                     bitBuffer.Reset();
                 }
             }
         }
+        ++iMemoryBlock;
 
         assert(bitsToRead == 0);
     };
@@ -260,10 +268,28 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context) cons
     });
 }
 
+/**
+ * @brief write ir value to memory managed by view
+ *
+ * @note !IMPORTANT! current implementations has folowing limitations and properties:
+ *  1) Does NOT guarantee that all bits of ir value will be written
+ *  2) Does guarantee that all bits of bound memory blocks that were covered by
+ *     their bind info intervals will be written
+ *  3) Write of multiple ir values that share same byte is NOT allowed because
+ *     bytes of memory will be overwritten without any preservation of their
+ *     current value.
+ *     It is not supported because we don't write multiple ir values at once and
+ *     adding this functionality would impose additional overhead.
+ *     To support this case we need to keep somewhere track of bits that were written
+ *     by saving mask of each byte and then, re-use it to preserve written bits.
+ *     Resulting byte will be formed from 3 sources: ir value, current byte value, cache.
+ *     Now it's only ir value and cache.
+ */
 void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context, TMemoryBlockViewProvider getView)
 {
-    uint8_t bitsToSkip = 0;
-    uint8_t iValueByte = 0;
+    TValueSize bitsToSkip = 0;
+    TByteIndex iValueByte = 0;
+    // buffer that preserves bits across memory blocks and their bytes in case of shifting
     TBitBuffer bitBuffer;
 
     auto writeMemoryBlock = [&](const std::pair<const PMemoryBlock, TIRBindInfo> & memoryBlockBindInfo){
@@ -284,7 +310,7 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context, TMem
         const auto mask = bindInfo.GetMask();
         const auto & cache = memoryBlock->GetCache();
 
-        for (uint16_t iByte = bindInfo.BitStart / 8; iByte < BitCountToByteCount(bindInfo.BitEnd); ++iByte) {
+        for (TByteIndex iByte = bindInfo.BitStart / 8; iByte < BitCountToByteCount(bindInfo.BitEnd); ++iByte) {
             auto iBit = iByte * 8;
             auto begin = std::max(0, bindInfo.BitStart - iBit);
             auto end = std::min(8, bindInfo.BitEnd - iBit);
@@ -296,15 +322,17 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context, TMem
 
             const auto cachedByte = cache ? cache.GetByte(iByte) : uint8_t(0);
 
-            TBitBuffer out { 0, static_cast<uint8_t>(end - begin) };
+            // what we get from ir value
             TBitBuffer in {};
+            // what will go to memory block
+            TBitBuffer out { 0, static_cast<uint8_t>(end - begin) };
 
             bitBuffer >> out;
 
             while(!out.IsFull()) {
                 in.Buffer = context.Value.GetByte(iValueByte++);
                 in.Buffer >>= bitsToSkip;
-                in.Size = in.Capacity = min<uint16_t>(8 - bitsToSkip, bitsToWrite - out.Size);
+                in.Size = in.Capacity = (8 - bitsToSkip);
                 bitsToSkip = 0;
                 in >> out;
             }
@@ -324,5 +352,16 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context, TMem
         ForEach(context.BoundMemoryBlocks, writeMemoryBlock);
     }
 
-    assert(!bitBuffer);
+    // there is no "assert(!bitBuffer)" because value is read by bytes
+    // and therefore we assume that we always get 8 bits in our disposal
+    // but if it is actually < 8, bitBuffer.Size at this point will be > 0
+    // which means that we think that we have more bits to write than we can,
+    // instead we could check that there's no any significant bit left
+    // bitBuffer.Buffer != 0 means that not all bits of input value
+    // were written, but this check doesn't protect us from false negative cases
+    // (input value dependent)
+
+    // is summary: since we already allow to skip entire memory blocks here,
+    // we will not violate behaviour consistency if we also allow bit skipping,
+    // note that we still ensure that all memory block's bits are written
 }

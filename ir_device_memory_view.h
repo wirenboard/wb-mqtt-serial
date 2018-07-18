@@ -9,8 +9,7 @@
  *  and assignment operators to seemlessly
  *  interoperate with C++ data types.
  *
- * @note Helds no logic. Basically a syntactic
- *  sugar.
+ * @note Helds no logic. Basically a syntactic sugar.
  */
 template <class View>
 struct TIRImplicitValue: public View

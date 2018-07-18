@@ -326,6 +326,7 @@ public:
     {
         IsPresent = true;
         Value = value;
+        return *this;
     }
 
     operator bool() const

@@ -48,6 +48,10 @@ namespace
             return mb->Type.Index == typeIndex && mb->Size == size;
         });
     }
+
+    TIRDeviceMemoryBlockView BlockCache(const CPMemoryBlock & mb){
+        return mb->GetCache();
+    }
 }
 
 TIRDeviceQuery::TIRDeviceQuery(TAssociatedMemoryBlockSet && memoryBlocks, EQueryOperation operation)
@@ -283,9 +287,7 @@ void TIRDeviceValueQuery::FinalizeWrite() const
 
     // write value to cache
     for (const auto & context: ValueContexts) {
-        TIRDeviceMemoryView::WriteValue(context, [](const CPMemoryBlock & mb){
-            return mb->GetCache();
-        });
+        TIRDeviceMemoryView::WriteValue(context, BlockCache);
     }
 
     for (const auto & reg: VirtualRegisters) {

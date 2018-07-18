@@ -86,11 +86,6 @@ const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
     return WriteQuery;
 }
 
-void TVirtualRegister::WriteValueToQuery()
-{
-    //WriteQuery->SetValue(GetValueContext(), ValueToWrite);
-}
-
 void TVirtualRegister::AcceptDeviceValue()
 {
     if (!NeedToPoll()) {
@@ -116,7 +111,7 @@ void TVirtualRegister::AcceptDeviceValue()
 
         if (Global::Debug) {
             std::ios::fmtflags f(std::cerr.flags());
-            //std::cerr << "new val for " << ToString() << ": " << CurrentValue->DescribeShort() << std::endl;
+            std::cerr << "new val for " << ToString() << ": " << CurrentValue->DescribeShort() << std::endl;
             std::cerr.flags(f);
         }
         Add(ChangedPublishData, EPublishData::Value);

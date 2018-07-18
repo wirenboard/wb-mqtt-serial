@@ -52,14 +52,18 @@ struct TBitBuffer
  *  before: lhs: [--][--][x5][x4][x3][x2][x1][x0] rhs: [--][--][--][--][y3][y2][y1][y0]
  *  after:  lhs: [--][--][--][--][--][--][x5][x4] rhs: [x3][x2][x1][x0][y3][y2][y1][y0]
  * @param rhs receiver of bits
- * @return TBitBuffer&
+ * @return uint8_t number of moved bits
  */
-inline TBitBuffer & operator>>(TBitBuffer & lhs, TBitBuffer & rhs)
+inline uint8_t operator>>(TBitBuffer & lhs, TBitBuffer & rhs)
 {
     auto bitsToTake = std::min(uint8_t(rhs.Capacity - rhs.Size), lhs.Size);
+    if (!bitsToTake) {
+        return bitsToTake;
+    }
     rhs.Buffer |= lhs.Buffer << rhs.Size;
     lhs.Buffer >>= bitsToTake;
     rhs.Size += bitsToTake;
     lhs.Size -= bitsToTake;
-    return lhs;
+
+    return bitsToTake;
 }

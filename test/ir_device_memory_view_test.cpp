@@ -1,15 +1,13 @@
 #include "ir_device_memory_view.h"
+#include "ir_value.h"
+#include "ir_bind_info.h"
 #include "memory_block.h"
 #include "register_config.h"
 
 
 #include <gtest/gtest.h>
 
-
 using namespace std;
-
-class TIRDeviceMemoryViewTest: public ::testing::Test
-{};
 
 class TIRDeviceMemoryBlockValueTest: public ::testing::Test
 {
@@ -199,3 +197,344 @@ TEST_F(TIRDeviceMemoryBlockValueTest, UserTypeLE)
 
     EXPECT_EQ(0, memcmp(iraw, raw, sizeof(iraw)));
 }
+
+
+class TIRDeviceMemoryViewTest: public TIRDeviceMemoryBlockValueTest
+{};
+
+TEST_F(TIRDeviceMemoryViewTest, ReadSimple)
+{
+    uint8_t raw[]{
+        0x49, 0x96, 0x02, 0xd2, // 1234567890 addr 0
+        0x8b, 0xd0, 0x38, 0x35, // 2345678901 addr 1
+        0xce, 0x0a, 0x6a, 0x14, // 3456789012 addr 2
+        0xfe, 0x62, 0xd5, 0xcb, // 4267890123 addr 3
+    };
+
+    auto regConfig = TRegisterConfig::Create(0, 0, U32);
+    auto value = TIRValue::Make(*regConfig);
+
+    TIRDeviceMemoryView memView{raw, sizeof raw, TypeU32BE, 0, 4};
+
+    auto memoryBlock0 = make_shared<TMemoryBlock>(0, TypeU32BE);
+    auto memoryBlock1 = make_shared<TMemoryBlock>(1, TypeU32BE);
+    auto memoryBlock2 = make_shared<TMemoryBlock>(2, TypeU32BE);
+    auto memoryBlock3 = make_shared<TMemoryBlock>(3, TypeU32BE);
+
+    memView.ReadValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock0, {0, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ("1234567890", value->GetTextValue(*regConfig));
+
+    memView.ReadValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock1, {0, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ("2345678901", value->GetTextValue(*regConfig));
+
+    memView.ReadValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock2, {0, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ("3456789012", value->GetTextValue(*regConfig));
+
+    memView.ReadValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock3, {0, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ("4267890123", value->GetTextValue(*regConfig));
+}
+
+TEST_F(TIRDeviceMemoryViewTest, ReadSingleShiftedPartialByte)
+{
+    uint8_t raw[]{
+        0x01, 0xbb, 0xe5, 0x00 // 454548 << 6 addr 0
+    };
+
+    auto regConfig = TRegisterConfig::Create(0, 0, U32);
+    auto value = TIRValue::Make(*regConfig);
+
+    TIRDeviceMemoryView memView{raw, sizeof raw, TypeU32BE, 0, 4};
+
+    auto memoryBlock = make_shared<TMemoryBlock>(0, TypeU32BE);
+
+    memView.ReadValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock, {6, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ("454548", value->GetTextValue(*regConfig));
+}
+
+TEST_F(TIRDeviceMemoryViewTest, ReadMultiShifted)
+{
+    uint8_t raw[]{
+        0x00, 0x00, 0x03, 0xf9, // 4267890123 << 10 addr 0, 1
+        0x8b, 0x57, 0x2c, 0x00,
+    };
+
+    auto regConfig = TRegisterConfig::Create(0, 0, U32);
+    auto value = TIRValue::Make(*regConfig);
+
+    TIRDeviceMemoryView memView{raw, sizeof raw, TypeU32BE, 0, 4};
+
+    auto memoryBlock0 = make_shared<TMemoryBlock>(0, TypeU32BE);
+    auto memoryBlock1 = make_shared<TMemoryBlock>(1, TypeU32BE);
+
+    memView.ReadValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock0, {0, 10} /*TIRBindInfo*/},
+            {memoryBlock1, {10, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ("4267890123", value->GetTextValue(*regConfig));
+}
+
+TEST_F(TIRDeviceMemoryViewTest, ReadMultiShiftedPartialByte)
+{
+    uint8_t raw[]{
+        0x00, 0x00, 0x00, 0x0c, // 12890123 << 12 addr 0, 1
+        0x4b, 0x00, 0xb0, 0x00,
+    };
+
+    auto regConfig = TRegisterConfig::Create(0, 0, U32);
+    auto value = TIRValue::Make(*regConfig);
+
+    TIRDeviceMemoryView memView{raw, sizeof raw, TypeU32BE, 0, 4};
+
+    auto memoryBlock0 = make_shared<TMemoryBlock>(0, TypeU32BE);
+    auto memoryBlock1 = make_shared<TMemoryBlock>(1, TypeU32BE);
+
+    memView.ReadValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock0, {0, 5} /*TIRBindInfo*/},
+            {memoryBlock1, {12, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ("12890123", value->GetTextValue(*regConfig));
+}
+
+TEST_F(TIRDeviceMemoryViewTest, WriteSimple)
+{
+    const uint8_t expectedRaw[]{
+        0x49, 0x96, 0x02, 0xd2, // 1234567890 addr 0
+        0x8b, 0xd0, 0x38, 0x35, // 2345678901 addr 1
+        0xce, 0x0a, 0x6a, 0x14, // 3456789012 addr 2
+        0xfe, 0x62, 0xd5, 0xcb, // 4267890123 addr 3
+    };
+
+    uint8_t raw[sizeof expectedRaw] {0};
+
+    auto regConfig = TRegisterConfig::Create(0, 0, U32);
+    auto value = TIRValue::Make(*regConfig);
+
+    TIRDeviceMemoryView memView{raw, sizeof raw, TypeU32BE, 0, 4};
+
+    auto memoryBlock0 = make_shared<TMemoryBlock>(0, TypeU32BE);
+    auto memoryBlock1 = make_shared<TMemoryBlock>(1, TypeU32BE);
+    auto memoryBlock2 = make_shared<TMemoryBlock>(2, TypeU32BE);
+    auto memoryBlock3 = make_shared<TMemoryBlock>(3, TypeU32BE);
+
+    value->SetTextValue(*regConfig, "1234567890");
+
+    memView.WriteValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock0, {0, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    value->SetTextValue(*regConfig, "2345678901");
+
+    memView.WriteValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock1, {0, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    value->SetTextValue(*regConfig, "3456789012");
+
+    memView.WriteValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock2, {0, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    value->SetTextValue(*regConfig, "4267890123");
+
+    memView.WriteValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock3, {0, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ(0, memcmp(raw, expectedRaw, sizeof(raw)));
+}
+
+TEST_F(TIRDeviceMemoryViewTest, WriteSingleShiftedPartialByte)
+{
+    const uint8_t expectedRaw[]{
+        0x01, 0xbb, 0xe5, 0x00 // 454548 << 6 addr 0
+    };
+
+    uint8_t raw[sizeof expectedRaw] {0};
+
+    auto regConfig = TRegisterConfig::Create(0, 0, U32);
+    auto value = TIRValue::Make(*regConfig);
+
+    TIRDeviceMemoryView memView{raw, sizeof raw, TypeU32BE, 0, 4};
+
+    auto memoryBlock = make_shared<TMemoryBlock>(0, TypeU32BE);
+
+    value->SetTextValue(*regConfig, "454548");
+
+    memView.WriteValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock, {6, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ(0, memcmp(raw, expectedRaw, sizeof(raw)));
+}
+
+TEST_F(TIRDeviceMemoryViewTest, WriteMultiShifted)
+{
+    const uint8_t expectedRaw[]{
+        0x00, 0x00, 0x03, 0xf9, // 4267890123 << 10 addr 0, 1
+        0x8b, 0x57, 0x2c, 0x00,
+    };
+
+    uint8_t raw[sizeof expectedRaw] {0};
+
+    auto regConfig = TRegisterConfig::Create(0, 0, U32);
+    auto value = TIRValue::Make(*regConfig);
+
+    TIRDeviceMemoryView memView{raw, sizeof raw, TypeU32BE, 0, 4};
+
+    auto memoryBlock0 = make_shared<TMemoryBlock>(0, TypeU32BE);
+    auto memoryBlock1 = make_shared<TMemoryBlock>(1, TypeU32BE);
+
+    value->SetTextValue(*regConfig, "4267890123");
+
+    memView.WriteValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock0, {0, 10} /*TIRBindInfo*/},
+            {memoryBlock1, {10, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ(0, memcmp(raw, expectedRaw, sizeof(raw)));
+}
+
+TEST_F(TIRDeviceMemoryViewTest, WriteMultiShiftedPartialByte)
+{
+    const uint8_t expectedRaw[]{
+        0x00, 0x00, 0x00, 0x0c, // 12890123 << 12 addr 0, 1
+        0x4b, 0x00, 0xb0, 0x00,
+    };
+
+    uint8_t raw[sizeof expectedRaw] {0};
+
+    auto regConfig = TRegisterConfig::Create(0, 0, U32);
+    auto value = TIRValue::Make(*regConfig);
+
+    TIRDeviceMemoryView memView{raw, sizeof raw, TypeU32BE, 0, 4};
+
+    auto memoryBlock0 = make_shared<TMemoryBlock>(0, TypeU32BE);
+    auto memoryBlock1 = make_shared<TMemoryBlock>(1, TypeU32BE);
+
+    value->SetTextValue(*regConfig, "12890123");
+
+    memView.WriteValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock0, {0, 5} /*TIRBindInfo*/},
+            {memoryBlock1, {12, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ(0, memcmp(raw, expectedRaw, sizeof(raw)));
+}
+
+// unsupported case: write many overlapping (common byte) ir values -
+// not needed because we write only one ir value before flush
+#if 0
+TEST_F(TIRDeviceMemoryViewTest, WriteMultiShiftedPartialByteMany)
+{
+    const uint8_t expectedRaw[]{
+        0x00, 0xdf, 0x18, 0xec, // 456903 << 5 addr 0, 12890123 << 12 addr 0, 1
+        0x4b, 0x00, 0xb0, 0x00,
+    };
+
+    uint8_t raw[sizeof expectedRaw] {0};
+
+    auto regConfig = TRegisterConfig::Create(0, 0, U32);
+    auto value = TIRValue::Make(*regConfig);
+
+    TIRDeviceMemoryView memView{raw, sizeof raw, TypeU32BE, 0, 4};
+
+    auto memoryBlock0 = make_shared<TMemoryBlock>(0, TypeU32BE);
+    auto memoryBlock1 = make_shared<TMemoryBlock>(1, TypeU32BE);
+
+    value->SetTextValue(*regConfig, "12890123");
+
+    memView.WriteValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock0, {0, 5} /*TIRBindInfo*/},
+            {memoryBlock1, {12, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    value->SetTextValue(*regConfig, "456903");
+
+    memView.WriteValue({ /*TIRDeviceValueContext*/
+        { /*TBoundMemoryBlocks*/
+            {memoryBlock0, {5, 32} /*TIRBindInfo*/}
+        },
+        EWordOrder::BigEndian,
+        *value
+    });
+
+    EXPECT_EQ(0, memcmp(raw, expectedRaw, sizeof(raw)));
+}
+#endif

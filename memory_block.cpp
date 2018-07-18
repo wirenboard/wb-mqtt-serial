@@ -281,9 +281,7 @@ TPSet<PVirtualRegister> TMemoryBlock::GetVirtualRegsiters() const
 
 bool TMemoryBlock::NeedsCaching() const
 {
-    assert(ExternalLinkage);
-
-    return ExternalLinkage->NeedsCaching();
+    return ExternalLinkage && ExternalLinkage->NeedsCaching();
 }
 
 void TMemoryBlock::AssignCache(uint8_t * cache)

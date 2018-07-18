@@ -80,7 +80,6 @@ public:
      * Only for testing purposes
      */
     const PIRDeviceValueQuery & GetWriteQuery() const;
-    void WriteValueToQuery();
 
 private:
     TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device);

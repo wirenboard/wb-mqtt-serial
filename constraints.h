@@ -5,6 +5,7 @@
 
 using TBitIndex = uint16_t;
 using TByteIndex = uint16_t;
+using TMBIndex = uint16_t;
 using TValueSize = uint16_t;
 using TValue = uint64_t;
 

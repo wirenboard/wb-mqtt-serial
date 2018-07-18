@@ -6,6 +6,7 @@ wb-mqtt-serial (1.41) stable; urgency=medium
   * unsupported register handling on client level
   * unsupported register detection for modbus, milur and pulsar protocols
   * connection fail on timeouts only
+  * write retry
 
  -- Islam Boziev <i.boziev@wirenboard.ru>  Wed, 21 Mar 2018 21:50:24 +0300
 
