@@ -44,12 +44,12 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
 
         // init channels' registers
         for (auto& channel_config: device_config->DeviceChannelConfigs) {
-            
+
             auto channel = std::make_shared<TDeviceChannel>(device, channel_config);
             NameToChannelMap[device_config->Id + "/" + channel->Name] = channel;
-            
+
             ChannelRegistersMap[channel] = std::vector<PRegister>();
-            
+
             for (auto& reg: channel->Registers) {
                 RegisterToChannelMap[reg] = channel;
                 SerialClient->AddRegister(reg);
@@ -193,6 +193,8 @@ bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
 
 void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
         std::cerr << "warning: got unexpected register from serial client" << std::endl;
@@ -248,6 +250,8 @@ TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)
 
 void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState)
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     auto it = RegisterToChannelMap.find(reg);
     if (it == RegisterToChannelMap.end()) {
         std::cerr << "warning: got unexpected register from serial client" << std::endl;

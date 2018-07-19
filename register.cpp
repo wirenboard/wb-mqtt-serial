@@ -44,6 +44,8 @@ void TSimpleRegisterRange::SetError(PRegister reg)
 
 void TSimpleRegisterRange::MapRange(TValueCallback value_callback, TErrorCallback error_callback)
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     for (auto reg: RegisterList()) {
         if (Errors.find(reg) == Errors.end())
             value_callback(reg, Values[reg]);

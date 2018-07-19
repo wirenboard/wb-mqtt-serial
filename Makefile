@@ -26,7 +26,7 @@ endif
 #CFLAGS=
 DEBUG_CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
 NORMAL_CFLAGS=-Wall -std=c++0x -Os -I.
-CFLAGS=$(if $(or $(DEBUG),$(filter test, $(MAKECMDGOALS))), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
+CFLAGS=$(if $(or $(DEBUG),$(filter test, $(MAKECMDGOALS))), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS)) -DWB_MEASURE_PERFORMANCE
 LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
 
 SERIAL_BIN=wb-mqtt-serial

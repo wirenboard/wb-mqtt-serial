@@ -40,6 +40,8 @@ void TSerialDevice::EndPollCycle() {}
 
 void TSerialDevice::ReadRegisterRange(PRegisterRange range)
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
     if (!simple_range)
         throw std::runtime_error("simple range expected");

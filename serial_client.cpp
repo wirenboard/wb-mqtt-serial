@@ -202,6 +202,8 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 
 void TSerialClient::PollRange(PRegisterRange range)
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
     dev->ReadRegisterRange(range);
@@ -230,6 +232,8 @@ void TSerialClient::PollRange(PRegisterRange range)
 
 void TSerialClient::Cycle()
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     Connect();
 
     Port->CycleBegin();

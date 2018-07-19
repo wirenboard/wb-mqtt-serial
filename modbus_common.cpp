@@ -116,6 +116,8 @@ namespace Modbus    // modbus protocol common utilities
 
     void TModbusRegisterRange::MapRange(TValueCallback value_callback, TErrorCallback error_callback)
     {
+        PERF_LOG_SCOPE_DURATION_US
+
         if (Error) {
             for (auto reg: RegisterList())
                 error_callback(reg);
@@ -744,6 +746,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
     void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift)
     {
+        PERF_LOG_SCOPE_DURATION_US
+
         auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
         if (!modbus_range) {
             throw std::runtime_error("modbus range expected");
