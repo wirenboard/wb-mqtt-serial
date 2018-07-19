@@ -66,6 +66,8 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
 {
     assert(query);
 
+    PERF_LOG_SCOPE_DURATION_US
+
     try {
         try {
             switch(query->Operation) {

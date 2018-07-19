@@ -8,8 +8,9 @@ wb-mqtt-serial (1.43) stable; urgency=medium
   * unsupported register detection for modbus, milur and pulsar protocols
   * connection fail on timeouts only
   * write retry
+  * performance measurement
 
- -- Islam Boziev <i.boziev@wirenboard.ru>  Thu, 19 Jul 2018 02:54:50 +0300
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Fri, 20 Jul 2018 00:22:10 +0300
 
 wb-mqtt-serial (1.42) stable; urgency=medium
 

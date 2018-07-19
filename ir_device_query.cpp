@@ -238,6 +238,8 @@ TIRDeviceMemoryView TIRDeviceQuery::CreateMemoryView(const void * mem, size_t si
 
 void TIRDeviceQuery::FinalizeRead(const TIRDeviceMemoryView & memoryView) const
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     assert(Operation == EQueryOperation::Read);
     assert(GetStatus() == EQueryStatus::NotExecuted);
     assert(GetSize() == memoryView.Size);
@@ -282,6 +284,8 @@ void TIRDeviceValueQuery::AddValueContext(const TIRDeviceValueContext & context)
 
 void TIRDeviceValueQuery::FinalizeWrite() const
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     assert(Operation == EQueryOperation::Write);
     assert(GetStatus() == EQueryStatus::NotExecuted);
 
@@ -299,6 +303,8 @@ void TIRDeviceValueQuery::FinalizeWrite() const
 
 TIRDeviceMemoryView TIRDeviceValueQuery::GetValuesImpl(void * mem, size_t size) const
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     assert(GetSize() == size);
 
     const auto & memoryView = CreateMemoryView(mem, size);

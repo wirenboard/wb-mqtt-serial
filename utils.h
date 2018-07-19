@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils_performance.h"
+
 #include <set>
 #include <map>
 #include <unordered_set>

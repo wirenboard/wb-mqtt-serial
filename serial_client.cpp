@@ -198,6 +198,8 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait(bool & needFlush
 
 void TSerialClient::Cycle()
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     Connect();
 
     Port->CycleBegin();

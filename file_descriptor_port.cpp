@@ -48,6 +48,8 @@ void TFileDescriptorPort::CheckPortOpen() const
 }
 
 void TFileDescriptorPort::WriteBytes(const uint8_t * buf, int count) {
+    PERF_LOG_SCOPE_DURATION_US
+
     if (write(Fd, buf, count) < count) {
         throw TSerialDeviceException("serial write failed");
     }
@@ -65,6 +67,8 @@ void TFileDescriptorPort::WriteBytes(const uint8_t * buf, int count) {
 
 bool TFileDescriptorPort::Select(const chrono::microseconds& us)
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     fd_set rfds;
     struct timeval tv, *tvp = 0;
 
@@ -97,6 +101,8 @@ void TFileDescriptorPort::OnReadyEmptyFd()
 
 uint8_t TFileDescriptorPort::ReadByte()
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     CheckPortOpen();
 
     if (!Select(Settings->ResponseTimeout)) {
@@ -122,6 +128,8 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
                            const chrono::microseconds& timeout,
                            TFrameCompletePred frame_complete)
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     CheckPortOpen();
     int nread = 0;
     while (nread < size) {
@@ -198,6 +206,8 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
 
 void TFileDescriptorPort::SkipNoise()
 {
+    PERF_LOG_SCOPE_DURATION_US
+
     uint8_t b;
     while (Select(NoiseTimeout)) {
         if (read(Fd, &b, 1) < 1) {
