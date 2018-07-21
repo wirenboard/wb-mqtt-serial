@@ -173,7 +173,8 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(
         int maxRegs;
 
         if (isRead) {
-            const auto protocolMaximum = singleBitType ? protocolInfo.GetMaxReadBits() : protocolInfo.GetMaxReadRegisters();
+            const auto protocolMaximum = singleBitType ? protocolInfo.GetMaxReadBits()
+                                                       : protocolInfo.GetMaxReadRegisters();
 
             if (deviceConfig->MaxReadRegisters > 0) {
                 maxRegs = min((uint32_t)deviceConfig->MaxReadRegisters, protocolMaximum);
@@ -181,7 +182,8 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(
                 maxRegs = protocolMaximum;
             }
         } else {
-            maxRegs = singleBitType ? protocolInfo.GetMaxWriteBits() : protocolInfo.GetMaxWriteRegisters();
+            maxRegs = singleBitType ? protocolInfo.GetMaxWriteBits()
+                                    : protocolInfo.GetMaxWriteRegisters();
         }
 
         return pair<uint32_t, uint32_t>{ maxHole, maxRegs };
