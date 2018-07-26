@@ -33,5 +33,3 @@ private:
     std::mutex Mutex;
     std::condition_variable Cond;
 };
-
-typedef std::shared_ptr<TBinarySemaphore> PBinarySemaphore;

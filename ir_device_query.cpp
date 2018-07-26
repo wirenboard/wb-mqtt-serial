@@ -39,6 +39,11 @@ namespace
         return false;
     }
 
+    bool DetectVirtualRegisters(const vector<PVirtualValue> & values)
+    {
+        return !values.empty() && dynamic_pointer_cast<TVirtualRegister>(values[0]);
+    }
+
     bool IsSameTypeAndSize(const TPSetRange<PMemoryBlock> & memoryBlockRange)
     {
         auto typeIndex = (*memoryBlockRange.begin())->Type.Index;
@@ -58,22 +63,13 @@ TIRDeviceQuery::TIRDeviceQuery(TAssociatedMemoryBlockSet && memoryBlocks, EQuery
     : MemoryBlockRange(GetMemoryBlockRange(memoryBlocks.first))
     , VirtualRegisters(move(memoryBlocks.second))
     , HasHoles(DetectHoles(MemoryBlockRange))
+    , HasVirtualRegisters(DetectVirtualRegisters(VirtualRegisters))
     , Operation(operation)
     , Status(EQueryStatus::NotExecuted)
+    , Enabled(true)
 {
     AbleToSplit = (VirtualRegisters.size() > 1);
 
-    assert(IsSameTypeAndSize(MemoryBlockRange));
-}
-
-TIRDeviceQuery::TIRDeviceQuery(const TPSet<PMemoryBlock> & memoryBlocks, EQueryOperation operation)
-    : MemoryBlockRange(GetMemoryBlockRange(memoryBlocks))
-    , VirtualRegisters()
-    , HasHoles(DetectHoles(MemoryBlockRange))
-    , Operation(operation)
-    , Status(EQueryStatus::NotExecuted)
-    , AbleToSplit(false)
-{
     assert(IsSameTypeAndSize(MemoryBlockRange));
 }
 
@@ -102,7 +98,7 @@ uint32_t TIRDeviceQuery::GetStart() const
     return MemoryBlockRange.GetFirst()->Address;
 }
 
-uint16_t TIRDeviceQuery::GetBlockSize() const
+TValueSize TIRDeviceQuery::GetBlockSize() const
 {
     return (*MemoryBlockRange.begin())->Size;    // it is guaranteed that all blocks in query have same size and type
 }
@@ -125,18 +121,6 @@ const string & TIRDeviceQuery::GetTypeName() const
 void TIRDeviceQuery::SetStatus(EQueryStatus status) const
 {
     Status = status;
-
-    if (Status != EQueryStatus::NotExecuted && Status != EQueryStatus::Ok) {
-        if (Operation == EQueryOperation::Read) {
-            for (const auto & virtualRegister: VirtualRegisters) {
-                virtualRegister->UpdateReadError(true);
-            }
-        } else if (Operation == EQueryOperation::Write) {
-            for (const auto & virtualRegister: VirtualRegisters) {
-                virtualRegister->UpdateWriteError(true);
-            }
-        }
-    }
 }
 
 void TIRDeviceQuery::SetStatus(EQueryStatus status)
@@ -163,18 +147,18 @@ void TIRDeviceQuery::InvalidateReadValues()
     }
 }
 
-void TIRDeviceQuery::SetEnabledWithRegisters(bool enabled)
+void TIRDeviceQuery::SetEnabled(bool enabled)
 {
-    for (const auto & reg: VirtualRegisters) {
-        reg->SetEnabled(enabled);
+    Enabled = enabled;
+
+    if (Global::Debug) {
+        cerr << (Enabled ? "re-enabled" : "disabled") << " query: " << Describe() << endl;
     }
 }
 
 bool TIRDeviceQuery::IsEnabled() const
 {
-    return AnyOf(VirtualRegisters, [](const PVirtualRegister & reg){
-        return reg->IsEnabled();
-    });
+    return Enabled;
 }
 
 bool TIRDeviceQuery::IsExecuted() const
@@ -194,12 +178,12 @@ void TIRDeviceQuery::SetAbleToSplit(bool ableToSplit)
 
 string TIRDeviceQuery::Describe() const
 {
-    return DescribeOperation() + " " + PrintRange(MemoryBlockRange.begin(), MemoryBlockRange.end(), PrintAddr);
+    return DescribeOperation() + " " + PrintCollection(MemoryBlockRange, PrintAddr);
 }
 
 string TIRDeviceQuery::DescribeVerbose() const
 {
-    return DescribeOperation() + " " + PrintRange(MemoryBlockRange.begin(), MemoryBlockRange.end(), PrintVerbose);
+    return DescribeOperation() + " " + PrintCollection(MemoryBlockRange, PrintVerbose);
 }
 
 string TIRDeviceQuery::DescribeOperation() const
@@ -248,12 +232,12 @@ void TIRDeviceQuery::FinalizeRead(const TIRDeviceMemoryView & memoryView) const
         *mb->GetCache() = *memoryView[mb];
     }
 
-    for (const auto & reg: VirtualRegisters) {
+    for (const auto & val: VirtualRegisters) {
 #ifdef WB_MQTT_SERIAL_VERBOSE_OUTPUT
+        const auto & reg = dynamic_pointer_cast<TVirtualRegister>(val);
         cout << "READING: " << reg->ToString() << ": " << reg->Describe() << endl;
 #endif
-        memoryView.ReadValue(reg->GetValueContext());
-        reg->AcceptDeviceValue();
+        memoryView.ReadValue(val->GetReadContext());
     }
 
     SetStatus(EQueryStatus::Ok);
@@ -264,22 +248,6 @@ TIRDeviceValueQuery::TIRDeviceValueQuery(TAssociatedMemoryBlockSet && memoryBloc
     , MemoryBlocks(move(memoryBlocks.first))
 {
     assert(!MemoryBlocks.empty());
-
-    for (const auto & vreg: VirtualRegisters) {
-        AddValueContext(vreg->GetValueToWriteContext());
-    }
-}
-
-TIRDeviceValueQuery::TIRDeviceValueQuery(TPSet<PMemoryBlock> && memoryBlocks, EQueryOperation operation)
-    : TIRDeviceQuery(memoryBlocks, operation)
-    , MemoryBlocks(move(memoryBlocks))
-{
-    assert(!MemoryBlocks.empty());
-}
-
-void TIRDeviceValueQuery::AddValueContext(const TIRDeviceValueContext & context)
-{
-    ValueContexts.push_back(context);
 }
 
 void TIRDeviceValueQuery::FinalizeWrite() const
@@ -290,12 +258,8 @@ void TIRDeviceValueQuery::FinalizeWrite() const
     assert(GetStatus() == EQueryStatus::NotExecuted);
 
     // write value to cache
-    for (const auto & context: ValueContexts) {
-        TIRDeviceMemoryView::WriteValue(context, BlockCache);
-    }
-
-    for (const auto & reg: VirtualRegisters) {
-        reg->AcceptWriteValue();
+    for (const auto & vreg: VirtualRegisters) {
+        TIRDeviceMemoryView::WriteValue(vreg->GetWriteContext(), BlockCache);
     }
 
     SetStatus(EQueryStatus::Ok);
@@ -316,8 +280,8 @@ TIRDeviceMemoryView TIRDeviceValueQuery::GetValuesImpl(void * mem, size_t size) 
     }
 
     // write payload values on top of cached ones
-    for (const auto & context: ValueContexts) {
-        memoryView.WriteValue(context);
+    for (const auto & vreg: VirtualRegisters) {
+        memoryView.WriteValue(vreg->GetWriteContext());
     }
 
     return memoryView;

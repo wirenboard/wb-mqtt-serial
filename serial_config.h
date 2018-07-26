@@ -88,8 +88,6 @@ struct TDeviceConfig {
     optional<bool> WriteRetry;
 };
 
-typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
-
 struct TPortConfig {
     void AddDeviceConfig(PDeviceConfig device_config);
     PPortSettings ConnSettings;

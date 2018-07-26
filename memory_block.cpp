@@ -12,7 +12,7 @@ bool TMemoryBlock::InitExternalLinkage(const PSerialDevice & device)
 {
     struct TSerialDeviceLinkage: TMemoryBlock::IExternalLinkage
     {
-        PWSerialDevice      Device;
+        PWSerialDevice Device;
         TMemoryBlock & Register;
 
 
@@ -129,26 +129,17 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
             assert(AssociatedVirtualRegister()->Type == reg->Type);
             assert(!Has(reg));
 
-            auto itOtherReg = VirtualRegisters.find(reg);
+            {   // check for overlapping
+                auto itOtherReg = VirtualRegisters.find(reg);
 
-            // check for overlapping after insertion point
-            if (itOtherReg != VirtualRegisters.end()) {
-                auto otherReg = itOtherReg->lock();
-                throw TSerialDeviceException(
-                    "registers " + reg->ToStringWithFormat() +
-                    " and " + otherReg->ToStringWithFormat() + " are overlapping"
-                );
+                if (itOtherReg != VirtualRegisters.end()) {
+                    auto otherReg = itOtherReg->lock();
+                    throw TSerialDeviceException(
+                        "registers " + reg->ToStringWithFormat() +
+                        " and " + otherReg->ToStringWithFormat() + " are overlapping"
+                    );
+                }
             }
-
-            // check for overlapping before insertion point
-            // if (itOtherReg != VirtualRegisters.begin()) {
-            //     if (auto otherReg = (--itOtherReg)->lock())
-            //         if (otherReg->AreOverlapping(*reg)) {
-            //             throw TSerialDeviceException(
-            //                 "registers " + reg->ToStringWithFormat() +
-            //                 " and " + otherReg->ToStringWithFormat() + " are overlapping");
-            //         }
-            // }
 
             LinkWithImpl(reg);
         }

@@ -29,6 +29,7 @@ namespace // utility
 TVirtualRegister::TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device)
     : TRegisterConfig(*config)
     , Device(device)
+    , ValueDesc{{}, config->WordOrder}
     , FlushNeeded(nullptr)
     , ValueToWrite(config->ReadOnly ? nullptr : TIRValue::Make(*this))
     , CurrentValue(TIRValue::Make(*this))
@@ -36,7 +37,6 @@ TVirtualRegister::TVirtualRegister(const PRegisterConfig & config, const PSerial
     , ErrorState(EErrorState::UnknownErrorState)
     , ChangedPublishData(EPublishData::None)
     , Dirty(false)
-    , Enabled(true)
     , ValueIsRead(false)
     , ValueWasAccepted(false)
 {}
@@ -48,10 +48,10 @@ void TVirtualRegister::Initialize()
 
     assert(device);
 
-    MemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(self, device);
+    ValueDesc.MemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(self, device);
 
     uint64_t width = 0;
-    for (const auto memoryBlockBindInfo: MemoryBlocks) {
+    for (const auto memoryBlockBindInfo: ValueDesc.MemoryBlocks) {
         const auto & memoryBlock = memoryBlockBindInfo.first;
         const auto & bindInfo = memoryBlockBindInfo.second;
 
@@ -60,8 +60,13 @@ void TVirtualRegister::Initialize()
         memoryBlock->AssociateWith(self);
     }
 
-    if (width > RegisterFormatMaxWidth(Format)) {
-        throw TSerialDeviceException("unable to create virtual register with width " + to_string(width) + ": must be <= 64");
+    {   // check width
+        auto maxWidth = RegisterFormatMaxWidth(Format);
+        if (width > maxWidth) {
+            throw TSerialDeviceException(
+                "unable to create virtual register with width " + to_string(width) +
+                ": must be <= " + to_string(maxWidth));
+        }
     }
 
     if (!ReadOnly) {
@@ -78,7 +83,7 @@ void TVirtualRegister::Initialize()
 
 uint64_t TVirtualRegister::GetBitPosition() const
 {
-    return (uint64_t(Address) * MemoryBlocks.begin()->first->Size * 8) + GetWidth() - BitOffset;
+    return (uint64_t(Address) * ValueDesc.MemoryBlocks.begin()->first->Size * 8) + GetWidth() - BitOffset;
 }
 
 const PIRDeviceValueQuery & TVirtualRegister::GetWriteQuery() const
@@ -154,7 +159,7 @@ bool TVirtualRegister::operator<(const TVirtualRegister & rhs) const noexcept
     // comparison makes sense only if registers are of same device
     assert(GetDevice() == rhs.GetDevice());
 
-    return Type < rhs.Type || (Type == rhs.Type && GetValueContext() < rhs.GetValueContext());
+    return Type < rhs.Type || (Type == rhs.Type && ValueDesc < rhs.ValueDesc);
 }
 
 void TVirtualRegister::SetFlushSignal(PBinarySemaphore flushNeeded)
@@ -169,15 +174,13 @@ PSerialDevice TVirtualRegister::GetDevice() const
 
 TPSet<PMemoryBlock> TVirtualRegister::GetMemoryBlocks() const
 {
-    return GetKeysAsSet(MemoryBlocks);
+    return GetKeysAsSet(ValueDesc.MemoryBlocks);
 }
 
 const TIRBindInfo & TVirtualRegister::GetMemoryBlockBindInfo(const PMemoryBlock & memoryBlock) const
 {
-    auto it = MemoryBlocks.find(memoryBlock);
-
-    assert(it != MemoryBlocks.end());
-
+    auto it = ValueDesc.MemoryBlocks.find(memoryBlock);
+    assert(it != ValueDesc.MemoryBlocks.end());
     return it->second;
 }
 
@@ -192,7 +195,7 @@ std::string TVirtualRegister::Describe() const
 
     ss << "bit pos: (" << GetBitPosition() << ") [" << endl;
 
-    for (const auto & memoryBlockBindInfo: MemoryBlocks) {
+    for (const auto & memoryBlockBindInfo: ValueDesc.MemoryBlocks) {
         const auto & memoryBlock = memoryBlockBindInfo.first;
         const auto & bindInfo = memoryBlockBindInfo.second;
 
@@ -226,6 +229,14 @@ void TVirtualRegister::SetTextValue(const std::string & value)
     }
 }
 
+string TVirtualRegister::GetTextValueToWrite() const
+{
+    assert(ValueToWrite);
+    auto textValue = ValueToWrite->GetTextValue(*this);
+
+    return OnValue.empty() ? textValue : (textValue == OnValue ? "1" : "0");
+}
+
 bool TVirtualRegister::NeedToPoll() const
 {
     // if write retry is disabled: return to old behaviour (poll if not dirty)
@@ -249,25 +260,17 @@ void TVirtualRegister::Flush()
         WriteQuery->ResetStatus();
 
         GetDevice()->Execute(WriteQuery);
-        UpdateWriteError(WriteQuery->GetStatus() != EQueryStatus::Ok);
+
+        if (WriteQuery->GetStatus() == EQueryStatus::Ok) {
+            AcceptWriteValue();
+        } else {
+            UpdateWriteError(true);
+        }
+
         bool isTransientError = WriteQuery->GetStatus() == EQueryStatus::DeviceTransientError;
 
         // retry write on transient error
         Dirty.store(WriteRetry && isTransientError);
-    }
-}
-
-bool TVirtualRegister::IsEnabled() const
-{
-    return Enabled;
-}
-
-void TVirtualRegister::SetEnabled(bool enabled)
-{
-    Enabled = enabled;
-
-    if (Global::Debug) {
-        cerr << (Enabled ? "re-enabled" : "disabled") << " register: " << ToString() << endl;
     }
 }
 
@@ -279,11 +282,8 @@ std::string TVirtualRegister::ToString() const
 bool TVirtualRegister::AreOverlapping(const TVirtualRegister & other) const
 {
     if (GetDevice() == other.GetDevice() && Type == other.Type) {
-        const auto & thisValueDesc = GetValueContext();
-        const auto & otherValueDesc = other.GetValueContext();
-
-        return !(thisValueDesc < otherValueDesc) &&
-               !(otherValueDesc < thisValueDesc);
+        return !(ValueDesc < other.ValueDesc) &&
+               !(other.ValueDesc < ValueDesc);
     }
 
     return false;
@@ -313,15 +313,15 @@ bool TVirtualRegister::GetValueIsRead() const
     return ValueIsRead;
 }
 
-TIRDeviceValueContext TVirtualRegister::GetValueContext() const
+TIRDeviceValueContext TVirtualRegister::GetReadContext() const
 {
-    return { MemoryBlocks, WordOrder, *CurrentValue };
+    return { ValueDesc, *CurrentValue };
 }
 
-TIRDeviceValueContext TVirtualRegister::GetValueToWriteContext() const
+TIRDeviceValueContext TVirtualRegister::GetWriteContext() const
 {
     assert(ValueToWrite);
-    return { MemoryBlocks, WordOrder, *ValueToWrite };
+    return { ValueDesc, *ValueToWrite };
 }
 
 void TVirtualRegister::UpdateReadError(bool error)

@@ -1,11 +1,13 @@
 #pragma once
 
 #include "ir_bind_info.h"
+#include "virtual_value.h"
 #include "abstract_virtual_register.h"
 #include "register_config.h"
 #include "utils.h"
 
 #include <atomic>
+
 
 /**
  * Virtual register is a formatted top-level device data representation layer.
@@ -15,14 +17,11 @@
  * MemoryBlocks have to be of same type (debatable)
  * VirtualRegisters may share same protocol register
  */
-class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterConfig, public std::enable_shared_from_this<TVirtualRegister>
+class TVirtualRegister final: public IVirtualValue, public TAbstractVirtualRegister, public TRegisterConfig, public std::enable_shared_from_this<TVirtualRegister>
 {
-    friend TIRDeviceQuery;
-    friend TIRDeviceValueQuery;
-
     PWVirtualRegisterSet                        VirtualRegisterSet;
     PWSerialDevice                              Device;
-    TBoundMemoryBlocks                          MemoryBlocks;
+    TIRDeviceValueDesc                          ValueDesc;
     PBinarySemaphore                            FlushNeeded;
     PIRValue                                    ValueToWrite;   // WAS ATOMIC
     PIRValue                                    CurrentValue;
@@ -30,9 +29,11 @@ class TVirtualRegister final: public TAbstractVirtualRegister, public TRegisterC
     EErrorState                                 ErrorState;
     EPublishData                                ChangedPublishData;
     std::atomic_bool                            Dirty;
-    bool                                        Enabled : 1;
-    bool                                        ValueIsRead : 1;
-    bool                                        ValueWasAccepted : 1;
+    bool                                        ValueIsRead;
+    bool                                        ValueWasAccepted;
+
+    TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device);
+    void Initialize();
 
 public:
     static PVirtualRegister Create(const PRegisterConfig & config, const PSerialDevice & device);
@@ -70,8 +71,7 @@ public:
     std::string GetTextValue() const override;
     void SetTextValue(const std::string & value) override;
 
-    bool IsEnabled() const;
-    void SetEnabled(bool);
+    std::string GetTextValueToWrite() const;
 
     std::string ToString() const;
 
@@ -81,23 +81,17 @@ public:
      */
     const PIRDeviceValueQuery & GetWriteQuery() const;
 
-private:
-    TVirtualRegister(const PRegisterConfig & config, const PSerialDevice & device);
-    void Initialize();
-
     void AcceptDeviceValue();
-    void AcceptWriteValue();
-
-    uint64_t GetBitPosition() const;
-
-    TIRDeviceValueContext GetValueContext() const;
-    TIRDeviceValueContext GetValueToWriteContext() const;
-
     void UpdateReadError(bool error);
+
+private:
+    void AcceptWriteValue();
     void UpdateWriteError(bool error);
 
-    void NotifyRead(bool ok);
-    void NotifyWrite(bool ok);
+    TIRDeviceValueContext GetReadContext() const override;
+    TIRDeviceValueContext GetWriteContext() const override;
 
-    void InvalidateReadValues();
+    void InvalidateReadValues() override;
+
+    uint64_t GetBitPosition() const;
 };

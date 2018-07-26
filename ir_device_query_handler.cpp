@@ -57,6 +57,17 @@ namespace   // utility
     }
 }
 
+TIRDeviceQuerySetHandler::TQueryDisableGuard::TQueryDisableGuard(PIRDeviceQuery query)
+    : Query(move(query))
+{
+    if (Query) Query->SetEnabled(false);
+}
+
+TIRDeviceQuerySetHandler::TQueryDisableGuard::~TQueryDisableGuard()
+{
+    if (Query) Query->SetEnabled(true);
+}
+
 void TIRDeviceQuerySetHandler::HandleQuerySetPostExecution(const PIRDeviceQuerySet & querySet)
 {
     DisableHolesIfNeeded(querySet);
@@ -64,6 +75,11 @@ void TIRDeviceQuerySetHandler::HandleQuerySetPostExecution(const PIRDeviceQueryS
     DisableRegistersIfNeeded(querySet);
     ResetQueriesStatuses(querySet);
     InvalidateReadValues(querySet);
+}
+
+void TIRDeviceQuerySetHandler::ResetDisabledQueries(const PSerialDevice & device)
+{
+    DisabledQueries.erase(device);
 }
 
 void TIRDeviceQuerySetHandler::DisableHolesIfNeeded(const PIRDeviceQuerySet & querySet)
@@ -102,7 +118,7 @@ void TIRDeviceQuerySetHandler::DisableRegistersIfNeeded(const PIRDeviceQuerySet 
 
         cerr << "INFO: [IR device query handler] disable query " << query->Describe() << endl;
 
-        query->SetEnabledWithRegisters(false);
+        DisabledQueries[query->GetDevice()].emplace_back(query);
     }
 }
 

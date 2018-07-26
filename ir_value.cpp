@@ -35,8 +35,8 @@ using TIRRBCD32Value = TIRNumericValue<TIRBCDValueAssembler<uint32_t, true>>;
 using TIRFloatValue  = TIRNumericValue<TIRFloatValueAssembler>;
 using TIRDoubleValue = TIRNumericValue<TIRDoubleValueAssembler>;
 
-using TIRStringValue  = TIRGenericStringValue<char>;
-using TIRWStringValue = TIRGenericStringValue<char16_t>;
+using TIRStringValue  = TIRGenericByteStringValue<char>;
+using TIRWStringValue = TIRGenericByteStringValue<char16_t>;
 
 void TIRValue::ResetChanged()
 {

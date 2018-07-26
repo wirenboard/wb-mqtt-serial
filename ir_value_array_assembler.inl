@@ -47,7 +47,7 @@ namespace
             assert(rhsValue.size() == Value.size());
 
             auto itThisValue = Value.begin();
-            auto itRhsValue = Value.begin();
+            auto itRhsValue = rhsValue.begin();
 
             while(itThisValue != Value.end() && itRhsValue != rhsValue.end()) {
                 itThisValue->Assign(*itRhsValue);

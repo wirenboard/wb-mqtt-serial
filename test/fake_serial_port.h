@@ -109,7 +109,7 @@ protected:
     void TearDown();
     PExpector Expector() const;
 
-    PIRDeviceQuery GetReadQuery(std::vector<PVirtualRegister> &&) const;
+    PIRDeviceQuery GetReadQuery(std::vector<PVirtualValue> &&) const;
 
     PVirtualRegister Reg(PSerialDevice device, int addr, uint32_t type, ERegisterFormat fmt = U16, double scale = 1,
         double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian,

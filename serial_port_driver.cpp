@@ -3,6 +3,7 @@
 #include "tcp_port.h"
 #include "virtual_register.h"
 #include "virtual_register_set.h"
+#include "serial_exc.h"
 
 #include <wbmqtt/utils.h>
 

@@ -112,7 +112,9 @@ set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> memoryBlockSet)
         for (const auto & query: querySet->Queries) {
             ModbusDev->Execute(query);
 
-            for (const auto & virtualRegister: query->VirtualRegisters) {
+            for (const auto & virtualValue: query->VirtualRegisters) {
+                const auto & virtualRegister = dynamic_pointer_cast<TVirtualRegister>(virtualValue);
+
                 if (query->GetStatus() == EQueryStatus::Ok) {
                     registerValues[virtualRegister->Address] = virtualRegister->GetTextValue();
                 } else {

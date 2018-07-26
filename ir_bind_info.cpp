@@ -39,12 +39,12 @@ string TIRBindInfo::Describe() const
 
 bool TIRDeviceValueDesc::operator<(const TIRDeviceValueDesc & rhs) const
 {
-    for (const auto & boundMemoryBlock: rhs.BoundMemoryBlocks) {
+    for (const auto & boundMemoryBlock: rhs.MemoryBlocks) {
         const auto & memoryBlock = boundMemoryBlock.first;
         const auto & otherBindInfo = boundMemoryBlock.second;
 
-        const auto & itBindInfo = BoundMemoryBlocks.find(memoryBlock);
-        if (itBindInfo != BoundMemoryBlocks.end()) {
+        const auto & itBindInfo = MemoryBlocks.find(memoryBlock);
+        if (itBindInfo != MemoryBlocks.end()) {
             const auto & bindInfo = itBindInfo->second;
             if (bindInfo.BitStart >= otherBindInfo.BitEnd) {
                 return false;
@@ -56,8 +56,8 @@ bool TIRDeviceValueDesc::operator<(const TIRDeviceValueDesc & rhs) const
         }
     }
 
-    const auto & lhsFirst = *BoundMemoryBlocks.begin()->first;
-    const auto & rhsFirst = *rhs.BoundMemoryBlocks.begin()->first;
+    const auto & lhsFirst = *MemoryBlocks.begin()->first;
+    const auto & rhsFirst = *rhs.MemoryBlocks.begin()->first;
 
     return lhsFirst < rhsFirst;
 }

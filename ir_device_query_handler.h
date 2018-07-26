@@ -4,38 +4,59 @@
 
 class TIRDeviceQuerySetHandler
 {
-    TIRDeviceQuerySetHandler() = delete;
+    /**
+     * @brief helper class to enable and disable query
+     *  in RAII style
+     */
+    class TQueryDisableGuard
+    {
+        PIRDeviceQuery Query;
+
+    public:
+        TQueryDisableGuard(PIRDeviceQuery);
+        TQueryDisableGuard(const TQueryDisableGuard &) = delete;
+        TQueryDisableGuard(TQueryDisableGuard &&) = default;
+        ~TQueryDisableGuard();
+    };
+
+    std::unordered_map<PSerialDevice, std::vector<TQueryDisableGuard>> DisabledQueries;
+
 public:
     /**
-     * perform needed operations on query set after all queries of set were executed
+     * @brief perform needed operations on query set after all queries of set were executed
      */
-    static void HandleQuerySetPostExecution(const PIRDeviceQuerySet &);
+    void HandleQuerySetPostExecution(const PIRDeviceQuerySet &);
+
+    /**
+     * @brief enable all disabled queries of given device
+     */
+    void ResetDisabledQueries(const PSerialDevice &);
 
 private:
     /**
-     * if query has permanent error and holes - disable holes
+     * @brief if query has permanent error and holes - disable holes
      */
-    static void DisableHolesIfNeeded(const PIRDeviceQuerySet &);
+    void DisableHolesIfNeeded(const PIRDeviceQuerySet &);
 
     /**
-     * if query has permanent error but without holes split by virtual registers
+     * @brief if query has permanent error but without holes split by virtual registers
      */
-    static void SplitByRegisterIfNeeded(const PIRDeviceQuerySet &);
+    void SplitByRegisterIfNeeded(const PIRDeviceQuerySet &);
 
     /**
-     * if query has permanent error and associated with only one virtual register - disable it
+     * @brief if query has permanent error and associated with only one virtual register - disable it
      */
-    static void DisableRegistersIfNeeded(const PIRDeviceQuerySet &);
+    void DisableRegistersIfNeeded(const PIRDeviceQuerySet &);
 
     /**
-     * reset statuses of queries (must run last)
+     * @brief reset statuses of queries (must run last)
      */
-    static void ResetQueriesStatuses(const PIRDeviceQuerySet &);
+    void ResetQueriesStatuses(const PIRDeviceQuerySet &);
 
     /**
-     * invalidate protocol registers values for all affected virtual registers
+     * @brief invalidate protocol registers values for all affected virtual registers
      *
-     * EXPL: A protocol register value that was read inside cycle expires at end of that cycle
+     * @note A protocol register value that was read inside cycle expires at end of that cycle
      */
-    static void InvalidateReadValues(const PIRDeviceQuerySet &);
+    void InvalidateReadValues(const PIRDeviceQuerySet &);
 };

@@ -234,7 +234,7 @@ void TSerialDevice::InitializeMemoryBlocksCache()
 void TSerialDevice::InitSetupItems()
 {
 	for (auto& setup_item_config: _DeviceConfig->SetupItemConfigs) {
-		SetupItems.push_back(std::make_shared<TDeviceSetupItem>(shared_from_this(), setup_item_config));
+		SetupItems.push_back(TDeviceSetupItem::Create(shared_from_this(), setup_item_config));
 	}
 }
 

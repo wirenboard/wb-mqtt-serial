@@ -5,14 +5,14 @@ Error Callback: <fake:1:fake: 0:0:96>: no error
 Read Callback: <fake:1:fake: 0:0:96> becomes Hello World!
 fake_serial_device '1': Device cycle OK
 Port cycle OK
-fake_serial_device '1': write to address '0' value 'Hello World!'
+fake_serial_device '1': write to address '0' value 'Hello'
 fake_serial_device '1': read address '0' value 'Hello'
-Read Callback: <fake:1:fake: 0:0:96> becomes Hello
+Read Callback: <fake:1:fake: 0:0:96> becomes Hello [unchanged]
 fake_serial_device '1': Device cycle OK
 Port cycle OK
-fake_serial_device '1': write to address '0' value 'Hello'
+fake_serial_device '1': write to address '0' value 'Wirenboard!'
 fake_serial_device '1': read address '0' value 'Wirenboard!'
-Read Callback: <fake:1:fake: 0:0:96> becomes Wirenboard!
+Read Callback: <fake:1:fake: 0:0:96> becomes Wirenboard! [unchanged]
 fake_serial_device '1': Device cycle OK
 Port cycle OK
 Close()

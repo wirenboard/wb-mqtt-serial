@@ -144,6 +144,19 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(const vector<PVirtualRegister> &
     return GenerateQueries(move(groupedMemoryBlocks), operation, policy);
 }
 
+TQueries TIRDeviceQueryFactory::GenerateQueries(const vector<PVirtualValue> & virtualValues, EQueryOperation operation, EQueryGenerationPolicy policy)
+{
+    TAssociatedMemoryBlockList groupedMemoryBlocks;
+    for (const auto & virtualValue: virtualValues) {
+        auto virtualRegister = dynamic_pointer_cast<TVirtualRegister>(virtualValue);
+        assert(virtualRegister);
+
+        groupedMemoryBlocks.push_back({ virtualRegister->GetMemoryBlocks(), { virtualRegister } });
+    }
+
+    return GenerateQueries(move(groupedMemoryBlocks), operation, policy);
+}
+
 TQueries TIRDeviceQueryFactory::GenerateQueries(
     TAssociatedMemoryBlockList && memoryBlockSets,
     EQueryOperation operation,
@@ -205,8 +218,8 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(
                 s << mb->Address;
             });
             s << endl;
-            s << "VREGS: " << PrintCollection(mbs.second, [](ostream & s, const PVirtualRegister & vreg) {
-                s << vreg->Describe();
+            s << "VREGS: " << PrintCollection(mbs.second, [](ostream & s, const PVirtualValue & val) {
+                s << dynamic_pointer_cast<TVirtualRegister>(val)->Describe();
             });
         }, true, "\n---------------") << endl;
     };

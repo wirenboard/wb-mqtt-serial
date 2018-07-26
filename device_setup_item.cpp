@@ -11,20 +11,50 @@ using namespace std;
 
 TDeviceSetupItem::TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
     : TDeviceSetupItemConfig(*config)
+    , ValueDesc{{}, RegisterConfig->WordOrder}
 {
     assert(!RegisterConfig->ReadOnly);  // there's no point in readonly setup item
 
-    BoundMemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(RegisterConfig, device);
+    ValueDesc.MemoryBlocks = TMemoryBlockFactory::GenerateMemoryBlocks(RegisterConfig, device);
     ManagedValue = TIRValue::Make(*RegisterConfig);
     ManagedValue->SetTextValue(*RegisterConfig, to_string(Value));
-    Query = TIRDeviceQueryFactory::CreateQuery<TIRDeviceValueQuery>(GetKeysAsSet(BoundMemoryBlocks));
-    Query->AddValueContext(
-        { BoundMemoryBlocks, RegisterConfig->WordOrder, *ManagedValue }    // value context
+}
+
+void TDeviceSetupItem::Initialize()
+{
+    Query = TIRDeviceQueryFactory::CreateQuery<TIRDeviceValueQuery>(
+        {
+            GetKeysAsSet(ValueDesc.MemoryBlocks),
+            { shared_from_this() }
+        }
     );
+}
+
+PDeviceSetupItem TDeviceSetupItem::Create(PSerialDevice device, PDeviceSetupItemConfig config)
+{
+    PDeviceSetupItem instance(new TDeviceSetupItem(device, config));
+    instance->Initialize();
+    return instance;
 }
 
 TDeviceSetupItem::~TDeviceSetupItem()
 {}
+
+TIRDeviceValueContext TDeviceSetupItem::GetReadContext() const
+{
+    assert(false && "Setup item has no read context");
+    return GetWriteContext();
+}
+
+TIRDeviceValueContext TDeviceSetupItem::GetWriteContext() const
+{
+    return { ValueDesc, *ManagedValue };
+}
+
+void TDeviceSetupItem::InvalidateReadValues()
+{
+    assert(false && "Read operation on setup item!");
+}
 
 string TDeviceSetupItem::ToString() const
 {

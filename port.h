@@ -35,5 +35,3 @@ public:
     virtual bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) = 0;
     virtual TTimePoint CurrentTime() const = 0;
 };
-
-using PPort = std::shared_ptr<TPort>;

@@ -273,7 +273,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             //     (занимает 4 регистра, начиная с указанного)
                             // "char8" - однобайтовый символ в кодировке ASCII
                             // "string" - строка из символов в кодировке ASCII
-                            // "wstring" - строка из символов в кодировке ASCII (16 бит)
+                            // "wstring" - строка из символов в кодировке ASCII (16 бит. 8 старших бит игнорируются)
 
                             "format": "s8",
 

@@ -1,10 +1,14 @@
-#include <cassert>
-#include <algorithm>
-#include <stdexcept>
 #include "fake_serial_port.h"
 #include "memory_block.h"
 #include "ir_device_query_factory.h"
 #include "utils.h"
+#include "binary_semaphore.h"
+
+#include <cassert>
+#include <algorithm>
+#include <stdexcept>
+
+using namespace std;
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
@@ -19,7 +23,7 @@ bool TFakeSerialPort::Debug() const
     return false;
 }
 
-void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
+void TFakeSerialPort::SetExpectedFrameTimeout(const chrono::microseconds& timeout)
 {
     ExpectedFrameTimeout = timeout;
 }
@@ -46,9 +50,9 @@ void TFakeSerialPort::Close()
     Fixture.Emit() << "Close()";
     IsPortOpen = false;
     if (ReqPos < Req.size())
-        throw std::runtime_error("not all of expected requests received");
+        throw runtime_error("not all of expected requests received");
     if (RespPos < Resp.size())
-        throw std::runtime_error("not all bytes in the response consumed");
+        throw runtime_error("not all bytes in the response consumed");
 }
 
 TLoggedFixture & TFakeSerialPort::GetFixture()
@@ -72,31 +76,31 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
         Fixture.Emit() << PendingFuncs.front() << "()";
         PendingFuncs.pop_front();
     }
-    Fixture.Emit() << ">> " << std::vector<uint8_t>(buf, buf + count);
+    Fixture.Emit() << ">> " << vector<uint8_t>(buf, buf + count);
     auto start = Req.begin() + ReqPos;
     try {
         if (Req.size() - ReqPos < size_t(count) + 1 || Req[ReqPos + count] != FRAME_BOUNDARY)
-            throw std::runtime_error("Request mismatch");
+            throw runtime_error("Request mismatch");
 
         const uint8_t* p = buf;
         for (auto it = start; p < buf + count; ++p, ++it) {
             if (*it != int(*p))
-                throw std::runtime_error(std::string("Request mismatch: ") +
-                        HexDump(std::vector<uint8_t>(buf, buf + count)) +
+                throw runtime_error(string("Request mismatch: ") +
+                        HexDump(vector<uint8_t>(buf, buf + count)) +
                         ", expected: " +
-                        HexDump(std::vector<uint8_t>(start, start + count))
+                        HexDump(vector<uint8_t>(start, start + count))
                     );
         }
 
 
         if (Req[ReqPos + count] != FRAME_BOUNDARY)
-            throw std::runtime_error("Unexpectedly short request");
+            throw runtime_error("Unexpectedly short request");
 
         ReqPos += count + 1;
-    } catch (const std::runtime_error& e) {
-        auto stop = std::find(start, Req.end(), FRAME_BOUNDARY);
+    } catch (const runtime_error& e) {
+        auto stop = find(start, Req.end(), FRAME_BOUNDARY);
         if (start != stop)
-            Fixture.Emit() << "*> " << std::vector<uint8_t>(start, stop);
+            Fixture.Emit() << "*> " << vector<uint8_t>(start, stop);
         else
             Fixture.Emit() << "*> req empty";
         throw;
@@ -114,22 +118,22 @@ uint8_t TFakeSerialPort::ReadByte()
         RespPos++;
 
     if (RespPos == Resp.size())
-        throw std::runtime_error("response buffer underflow");
+        throw runtime_error("response buffer underflow");
 
     return Resp[RespPos++];
 }
 
 int TFakeSerialPort::ReadFrame(uint8_t* buf, int count,
-                               const std::chrono::microseconds& timeout,
+                               const chrono::microseconds& timeout,
                                TFrameCompletePred frame_complete)
 {
     if (DoSimulateDisconnect) {
         return 0;
     }
     if (ExpectedFrameTimeout.count() >= 0 && timeout != ExpectedFrameTimeout)
-        throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
-                                 std::to_string(timeout.count()) + " instead of " +
-                                 std::to_string(ExpectedFrameTimeout.count()));
+        throw runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
+                                 to_string(timeout.count()) + " instead of " +
+                                 to_string(ExpectedFrameTimeout.count()));
     int nread = 0;
     uint8_t* p = buf;
     for (; nread < count; ++nread) {
@@ -144,7 +148,7 @@ int TFakeSerialPort::ReadFrame(uint8_t* buf, int count,
         *p++ = (uint8_t)b;
     }
     if (frame_complete && !frame_complete(buf, nread))
-        throw std::runtime_error("incomplete frame read");
+        throw runtime_error("incomplete frame read");
     return nread;
 }
 
@@ -156,7 +160,7 @@ void TFakeSerialPort::SkipNoise()
     Fixture.Emit() << "SkipNoise()";
 }
 
-void TFakeSerialPort::Sleep(const std::chrono::microseconds& us)
+void TFakeSerialPort::Sleep(const chrono::microseconds& us)
 {
     SkipFrameBoundary();
     DumpWhatWasRead();
@@ -168,7 +172,7 @@ bool TFakeSerialPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint 
     if (semaphore->TryWait())
         return true;
     if (until < Time)
-        throw std::runtime_error("TFakeSerialPort::Wait(): going back in time");
+        throw runtime_error("TFakeSerialPort::Wait(): going back in time");
     Time = until;
     return false;
 }
@@ -189,7 +193,7 @@ void TFakeSerialPort::DumpWhatWasRead()
     if (DumpPos == RespPos)
         return;
 
-    std::vector<uint8_t> slice;
+    vector<uint8_t> slice;
     for (; DumpPos < RespPos; ++DumpPos) {
         if (Resp[DumpPos] == FRAME_BOUNDARY) {
             if (slice.size() > 0)
@@ -205,7 +209,7 @@ void TFakeSerialPort::DumpWhatWasRead()
     DumpPos = RespPos;
 }
 
-void TFakeSerialPort::Elapse(const std::chrono::milliseconds& ms)
+void TFakeSerialPort::Elapse(const chrono::milliseconds& ms)
 {
     Time += ms;
 }
@@ -220,7 +224,7 @@ bool TFakeSerialPort::GetDoSimulateDisconnect() const
     return DoSimulateDisconnect;
 }
 
-void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func)
+void TFakeSerialPort::Expect(const vector<int>& request, const vector<int>& response, const char* func)
 {
     if (func)
         PendingFuncs.push_back(func);
@@ -246,18 +250,19 @@ PExpector TSerialDeviceTest::Expector() const
     return SerialPort;
 }
 
-PIRDeviceQuery TSerialDeviceTest::GetReadQuery(std::vector<PVirtualRegister> && vRegs) const
+PIRDeviceQuery TSerialDeviceTest::GetReadQuery(vector<PVirtualValue> && vRegs) const
 {
     TPSet<PMemoryBlock> mbs;
 
-    for (const auto & vreg: vRegs) {
+    for (const auto & val: vRegs) {
+        const auto & vreg = dynamic_pointer_cast<TVirtualRegister>(val);
         const auto & regMbs = vreg->GetMemoryBlocks();
         mbs.insert(regMbs.begin(), regMbs.end());
     }
 
     return TIRDeviceQueryFactory::CreateQuery<TIRDeviceQuery>({
-        std::move(mbs),
-        std::move(vRegs)
+        move(mbs),
+        move(vRegs)
     });
 }
 
@@ -280,7 +285,7 @@ void TSerialDeviceIntegrationTest::SetUp()
     TSerialDeviceTest::SetUp();
     PortMakerCalled = false;
 
-    PTemplateMap templateMap = std::make_shared<TTemplateMap>();
+    PTemplateMap templateMap = make_shared<TTemplateMap>();
     if (GetTemplatePath()) {
         TConfigTemplateParser templateParser(GetDataFilePath(GetTemplatePath()), false);
         templateMap = templateParser.Parse();

@@ -46,18 +46,8 @@ using TBoundMemoryBlocks = TPMap<PMemoryBlock, TIRBindInfo>;
 /* Contains information needed to access single value from device memory view */
 struct TIRDeviceValueDesc
 {
-    const TBoundMemoryBlocks &  BoundMemoryBlocks;
-    const EWordOrder            WordOrder;
+    TBoundMemoryBlocks MemoryBlocks;
+    const EWordOrder   WordOrder;
 
     bool operator<(const TIRDeviceValueDesc & rhs) const;
-};
-
-struct TIRDeviceValueContext final: TIRDeviceValueDesc
-{
-    TIRValue & Value;
-
-    TIRDeviceValueContext(const TBoundMemoryBlocks & b, const EWordOrder w, TIRValue & v)
-        : TIRDeviceValueDesc{ b, w }
-        , Value(v)
-    {}
 };

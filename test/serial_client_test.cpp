@@ -712,6 +712,9 @@ TEST_F(TSerialClientTest, String)
     EXPECT_EQ("Hello World!", regStr->GetTextValue());
 
     regStr->SetTextValue("Hello");
+    regStr->Flush();
+    // make sure that written value is accepted (was bug in array assembler assign)
+    EXPECT_EQ("Hello", regStr->GetTextValue());
 
     SerialClient->Cycle();
 
@@ -761,6 +764,9 @@ TEST_F(TSerialClientTest, WString)
     EXPECT_EQ("Hello World!", regStr->GetTextValue());
 
     regStr->SetTextValue("Hello");
+    regStr->Flush();
+    // make sure that written value is accepted (was bug in array assembler assign)
+    EXPECT_EQ("Hello", regStr->GetTextValue());
 
     SerialClient->Cycle();
 

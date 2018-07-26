@@ -17,31 +17,23 @@ struct TIRDeviceQuery
     friend class TIRDeviceQueryFactory;
 
     const TPSetRange<PMemoryBlock>  MemoryBlockRange;
-    const std::vector<PVirtualRegister>   VirtualRegisters;    // registers that will be fully read or written after execution of query
+    const std::vector<PVirtualValue>   VirtualRegisters;    // registers that will be fully read or written after execution of query
     const bool                      HasHoles;
+    const bool                      HasVirtualRegisters;
     const EQueryOperation           Operation;
 
 private:
     mutable EQueryStatus Status;
     bool                 AbleToSplit;
+    bool                 Enabled;
 
 protected:
     /**
-     * @brief create query with binding to virtual registers.
+     * @brief create query with binding to virtual values.
      *  It'll update virtual registers values on finalize and
      *  maintain memory blocks cache in correct state as side effect.
      */
     explicit TIRDeviceQuery(TAssociatedMemoryBlockSet &&, EQueryOperation = EQueryOperation::Read);
-
-    /**
-     * @brief create query without binding to virtual registers.
-     *  It'll only maintain memory blocks cache in correct state as side effect.
-     *
-     * @note needed for setup sections. Setup sections should not interfere with
-     *  main polling objects (TSerialClient) by creating it's own virtual register,
-     *  thus we provide here option which doesn't require virtual register existence.
-     */
-    explicit TIRDeviceQuery(const TPSet<PMemoryBlock> &, EQueryOperation = EQueryOperation::Read);
 
     void SetStatus(EQueryStatus) const;
 
@@ -68,7 +60,7 @@ public:
     uint32_t GetBlockCount() const;
     uint32_t GetValueCount() const;
     uint32_t GetStart() const;
-    uint16_t GetBlockSize() const;
+    TValueSize GetBlockSize() const;
     uint32_t GetSize() const;
     const TMemoryBlockType & GetType() const;
     const std::string & GetTypeName() const;
@@ -87,7 +79,7 @@ public:
     /**
      * @brief used to set enabled all affected virtual registers
      */
-    void SetEnabledWithRegisters(bool);
+    void SetEnabled(bool);
     /**
      * @brief returns true if there's any enabled virtual register
      *  affected by this query
@@ -107,9 +99,9 @@ public:
      * @brief used to set ability to split externally
      *
      * @note we cannot say for sure wether or not we able to split
-     *  query because split for some reasons might end up with error
-     *  or with only one query, so in that case we manually mark that
-     *  query as not able to split.
+     *  query because query distribution logic is located at TIRDeviceQueryFactory
+     *  so in case of redistribution attempt failure, we manually mark that
+     *  query as not able to split to avoid pointless retries.
      */
     void SetAbleToSplit(bool);
 
@@ -174,13 +166,9 @@ struct TIRDeviceValueQuery final: TIRDeviceQuery
 {
     friend class TIRDeviceQueryFactory;
 
-    const TPSet<PMemoryBlock> MemoryBlocks;
-    std::vector<TIRDeviceValueContext> ValueContexts;
+    const TPSet<PMemoryBlock> MemoryBlocks; // needed only for mobdus write single multi funcionality
 
     explicit TIRDeviceValueQuery(TAssociatedMemoryBlockSet &&, EQueryOperation = EQueryOperation::Write);
-    explicit TIRDeviceValueQuery(TPSet<PMemoryBlock> &&, EQueryOperation = EQueryOperation::Write);
-
-    void AddValueContext(const TIRDeviceValueContext &);
 
     TIRDeviceMemoryView GetValues(void * mem, size_t size) const
     {

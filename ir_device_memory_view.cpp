@@ -3,7 +3,9 @@
 #include "register_config.h"
 #include "ir_bind_info.h"
 #include "ir_value.h"
-#include "ir_value_bit_buffer.inl"
+#include "virtual_value.h"
+
+#include "bit_buffer.inl"
 
 #include <cassert>
 #include <iostream>
@@ -198,7 +200,7 @@ void TIRDeviceMemoryView::ReadValue(const TIRDeviceValueContext & context) const
     auto & self = *this;
     TByteIndex iValueByte = 0;
     TMBIndex iMemoryBlock = 0,
-             iMemoryBlockLast = context.BoundMemoryBlocks.size() - 1;
+             iMemoryBlockLast = context.Desc.MemoryBlocks.size() - 1;
 
     TBitBuffer bitBuffer;
 
@@ -252,10 +254,10 @@ void TIRDeviceMemoryView::ReadValue(const TIRDeviceValueContext & context) const
         assert(bitsToRead == 0);
     };
 
-    if (context.WordOrder == EWordOrder::BigEndian) {
-        ForEachReverse(context.BoundMemoryBlocks, readMemoryBlock);
+    if (context.Desc.WordOrder == EWordOrder::BigEndian) {
+        ForEachReverse(context.Desc.MemoryBlocks, readMemoryBlock);
     } else {
-        ForEach(context.BoundMemoryBlocks, readMemoryBlock);
+        ForEach(context.Desc.MemoryBlocks, readMemoryBlock);
     }
 
     assert(!bitBuffer);
@@ -346,10 +348,10 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context, TMem
         assert(bitsToWrite == 0);
     };
 
-    if (context.WordOrder == EWordOrder::BigEndian) {
-        ForEachReverse(context.BoundMemoryBlocks, writeMemoryBlock);
+    if (context.Desc.WordOrder == EWordOrder::BigEndian) {
+        ForEachReverse(context.Desc.MemoryBlocks, writeMemoryBlock);
     } else {
-        ForEach(context.BoundMemoryBlocks, writeMemoryBlock);
+        ForEach(context.Desc.MemoryBlocks, writeMemoryBlock);
     }
 
     // there is no "assert(!bitBuffer)" because value is read by bytes

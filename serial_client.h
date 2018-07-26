@@ -1,20 +1,14 @@
 #pragma once
 
-#include <list>
-#include <memory>
-#include <functional>
-#include <unordered_map>
-
 #include "poll_plan.h"
-#include "serial_device.h"
-#include "binary_semaphore.h"
+#include "ir_device_query_handler.h"
 #include "utils.h"
+
 
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
-    typedef std::function<void(PVirtualRegister reg)> TReadCallback;
-    typedef std::function<void(PVirtualRegister reg)> TErrorCallback;
+    using TRegisterCallback = std::function<void(const PVirtualRegister &)>;
 
     TSerialClient(PPort port);
     TSerialClient(const TSerialClient& client) = delete;
@@ -26,8 +20,8 @@ public:
     void Connect();
     void Disconnect();
     void Cycle();
-    void SetReadCallback(const TReadCallback& callback);
-    void SetErrorCallback(const TErrorCallback& callback);
+    void SetReadCallback(TRegisterCallback callback);
+    void SetErrorCallback(TRegisterCallback callback);
     void SetDebug(bool debug);
     bool DebugEnabled() const;
     void NotifyFlushNeeded();
@@ -43,21 +37,18 @@ private:
     void PrepareToAccessDevice(PSerialDevice dev);
     void OnDeviceReconnect(PSerialDevice dev);
 
-    PPort Port;
-    std::unordered_map<PSerialDevice, std::vector<PVirtualRegister>> VirtualRegisters;
+    using TVirtualRegisterMap = std::unordered_map<PSerialDevice, std::vector<PVirtualRegister>>;
+
+    TVirtualRegisterMap      VirtualRegisters;
     std::list<PSerialDevice> DevicesList; /* for EndPollCycle */
-
-    bool Active;
-    int PollInterval;
-    TReadCallback ReadCallback;
-    TErrorCallback ErrorCallback;
-    bool Debug = false;
-    PSerialDevice LastAccessedDevice = 0;
-    PBinarySemaphore FlushNeeded;
-    PPollPlan Plan;
-
-    const int MAX_REGS = 65536;
-    const int MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
+    TIRDeviceQuerySetHandler QuerySetHandler;
+    TRegisterCallback        ReadCallback;
+    TRegisterCallback        ErrorCallback;
+    PPort                    Port;
+    PSerialDevice            LastAccessedDevice;
+    PBinarySemaphore         FlushNeeded;
+    PPollPlan                Plan;
+    int                      PollInterval;
+    bool                     Debug;
+    bool                     Active;
 };
-
-typedef std::shared_ptr<TSerialClient> PSerialClient;

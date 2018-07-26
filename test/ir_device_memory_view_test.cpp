@@ -3,6 +3,7 @@
 #include "ir_bind_info.h"
 #include "memory_block.h"
 #include "register_config.h"
+#include "virtual_value.h"
 
 
 #include <gtest/gtest.h>
@@ -222,40 +223,48 @@ TEST_F(TIRDeviceMemoryViewTest, ReadSimple)
     auto memoryBlock3 = make_shared<TMemoryBlock>(3, TypeU32BE);
 
     memView.ReadValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock0, {0, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock0, {0, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
     EXPECT_EQ("1234567890", value->GetTextValue(*regConfig));
 
     memView.ReadValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock1, {0, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock1, {0, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
     EXPECT_EQ("2345678901", value->GetTextValue(*regConfig));
 
     memView.ReadValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock2, {0, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock2, {0, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
     EXPECT_EQ("3456789012", value->GetTextValue(*regConfig));
 
     memView.ReadValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock3, {0, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock3, {0, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
@@ -276,10 +285,12 @@ TEST_F(TIRDeviceMemoryViewTest, ReadSingleShiftedPartialByte)
     auto memoryBlock = make_shared<TMemoryBlock>(0, TypeU32BE);
 
     memView.ReadValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock, {6, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock, {6, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
@@ -302,11 +313,13 @@ TEST_F(TIRDeviceMemoryViewTest, ReadMultiShifted)
     auto memoryBlock1 = make_shared<TMemoryBlock>(1, TypeU32BE);
 
     memView.ReadValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock0, {0, 10} /*TIRBindInfo*/},
-            {memoryBlock1, {10, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock0, {0, 10} /*TIRBindInfo*/},
+                {memoryBlock1, {10, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
@@ -329,11 +342,13 @@ TEST_F(TIRDeviceMemoryViewTest, ReadMultiShiftedPartialByte)
     auto memoryBlock1 = make_shared<TMemoryBlock>(1, TypeU32BE);
 
     memView.ReadValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock0, {0, 5} /*TIRBindInfo*/},
-            {memoryBlock1, {12, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock0, {0, 5} /*TIRBindInfo*/},
+                {memoryBlock1, {12, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
@@ -364,40 +379,48 @@ TEST_F(TIRDeviceMemoryViewTest, WriteSimple)
     value->SetTextValue(*regConfig, "1234567890");
 
     memView.WriteValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock0, {0, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock0, {0, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
     value->SetTextValue(*regConfig, "2345678901");
 
     memView.WriteValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock1, {0, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock1, {0, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
     value->SetTextValue(*regConfig, "3456789012");
 
     memView.WriteValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock2, {0, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock2, {0, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
     value->SetTextValue(*regConfig, "4267890123");
 
     memView.WriteValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock3, {0, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock3, {0, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
@@ -422,10 +445,12 @@ TEST_F(TIRDeviceMemoryViewTest, WriteSingleShiftedPartialByte)
     value->SetTextValue(*regConfig, "454548");
 
     memView.WriteValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock, {6, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock, {6, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
@@ -452,11 +477,13 @@ TEST_F(TIRDeviceMemoryViewTest, WriteMultiShifted)
     value->SetTextValue(*regConfig, "4267890123");
 
     memView.WriteValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock0, {0, 10} /*TIRBindInfo*/},
-            {memoryBlock1, {10, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock0, {0, 10} /*TIRBindInfo*/},
+                {memoryBlock1, {10, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 
@@ -483,11 +510,13 @@ TEST_F(TIRDeviceMemoryViewTest, WriteMultiShiftedPartialByte)
     value->SetTextValue(*regConfig, "12890123");
 
     memView.WriteValue({ /*TIRDeviceValueContext*/
-        { /*TBoundMemoryBlocks*/
-            {memoryBlock0, {0, 5} /*TIRBindInfo*/},
-            {memoryBlock1, {12, 32} /*TIRBindInfo*/}
+        {
+            { /*TBoundMemoryBlocks*/
+                {memoryBlock0, {0, 5} /*TIRBindInfo*/},
+                {memoryBlock1, {12, 32} /*TIRBindInfo*/}
+            },
+            EWordOrder::BigEndian
         },
-        EWordOrder::BigEndian,
         *value
     });
 

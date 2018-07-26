@@ -24,7 +24,8 @@ public:
      * and return query sets grouped by poll interval
      */
     static std::vector<std::pair<TIntervalMs, PIRDeviceQuerySet>> GenerateQuerySets(const std::vector<PVirtualRegister> &, EQueryOperation);
-    static TQueries GenerateQueries(const std::vector<PVirtualRegister> & virtualRegisters, EQueryOperation, EQueryGenerationPolicy = Default);
+    static TQueries GenerateQueries(const std::vector<PVirtualRegister> &, EQueryOperation, EQueryGenerationPolicy = Default);
+    static TQueries GenerateQueries(const std::vector<PVirtualValue> &, EQueryOperation, EQueryGenerationPolicy = Default);
 
     template <class Query>
     static std::shared_ptr<Query> CreateQuery(TAssociatedMemoryBlockSet && memoryBlocks)
