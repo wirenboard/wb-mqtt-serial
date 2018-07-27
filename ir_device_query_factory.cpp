@@ -106,8 +106,8 @@ vector<pair<TIntervalMs, PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuer
         map<int64_t, vector<PVirtualRegister>> virtualRegistersByTypeAndInterval;
         vector<int64_t> pollIntervals;  // for order preservation
 
-        for (const auto & virtualRegister: virtualRegisters) {
-            int64_t pollInterval = virtualRegister->PollInterval.count();
+        for (const auto & vreg: virtualRegisters) {
+            int64_t pollInterval = vreg->PollInterval.count();
 
             auto & virtualRegisterSets = virtualRegistersByTypeAndInterval[pollInterval];
 
@@ -115,7 +115,7 @@ vector<pair<TIntervalMs, PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuer
                 pollIntervals.push_back(pollInterval);
             }
 
-            virtualRegisterSets.push_back(virtualRegister);
+            virtualRegisterSets.push_back(vreg);
         }
 
         for (auto & _pollInterval: pollIntervals) {
@@ -137,8 +137,8 @@ vector<pair<TIntervalMs, PIRDeviceQuerySet>> TIRDeviceQueryFactory::GenerateQuer
 TQueries TIRDeviceQueryFactory::GenerateQueries(const vector<PVirtualRegister> & virtualRegisters, EQueryOperation operation, EQueryGenerationPolicy policy)
 {
     TAssociatedMemoryBlockList groupedMemoryBlocks;
-    for (const auto & virtualRegister: virtualRegisters) {
-        groupedMemoryBlocks.push_back({ virtualRegister->GetMemoryBlocks(), { virtualRegister } });
+    for (const auto & vreg: virtualRegisters) {
+        groupedMemoryBlocks.push_back({ vreg->GetMemoryBlocks(), { vreg } });
     }
 
     return GenerateQueries(move(groupedMemoryBlocks), operation, policy);
@@ -148,10 +148,10 @@ TQueries TIRDeviceQueryFactory::GenerateQueries(const vector<PVirtualValue> & vi
 {
     TAssociatedMemoryBlockList groupedMemoryBlocks;
     for (const auto & virtualValue: virtualValues) {
-        auto virtualRegister = dynamic_pointer_cast<TVirtualRegister>(virtualValue);
-        assert(virtualRegister);
+        auto vreg = dynamic_pointer_cast<TVirtualRegister>(virtualValue);
+        assert(vreg);
 
-        groupedMemoryBlocks.push_back({ virtualRegister->GetMemoryBlocks(), { virtualRegister } });
+        groupedMemoryBlocks.push_back({ vreg->GetMemoryBlocks(), { vreg } });
     }
 
     return GenerateQueries(move(groupedMemoryBlocks), operation, policy);

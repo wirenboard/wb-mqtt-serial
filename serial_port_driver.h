@@ -12,10 +12,10 @@
 
 struct TDeviceChannel : public TDeviceChannelConfig
 {
-    TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config, PAbstractVirtualRegister reg)
+    TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config, PAbstractVirtualRegister vreg)
         : TDeviceChannelConfig(*config)
         , Device(device)
-        , Register(reg)
+        , Register(vreg)
     {}
 
     PSerialDevice Device;
@@ -37,9 +37,9 @@ public:
     bool WriteInitValues();
 
 private:
-    bool NeedToPublish(const PAbstractVirtualRegister & reg);
-    void OnValueRead(const PVirtualRegister & reg);
-    void UpdateError(const PVirtualRegister & reg);
+    bool NeedToPublish(const PAbstractVirtualRegister & vreg);
+    void OnValueRead(const PVirtualRegister & vreg);
+    void UpdateError(const PVirtualRegister & vreg);
 
     PMQTTClientBase MQTTClient;
     PPortConfig Config;

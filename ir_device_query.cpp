@@ -61,14 +61,14 @@ namespace
 
 TIRDeviceQuery::TIRDeviceQuery(TAssociatedMemoryBlockSet && memoryBlocks, EQueryOperation operation)
     : MemoryBlockRange(GetMemoryBlockRange(memoryBlocks.first))
-    , VirtualRegisters(move(memoryBlocks.second))
+    , VirtualValues(move(memoryBlocks.second))
     , HasHoles(DetectHoles(MemoryBlockRange))
-    , HasVirtualRegisters(DetectVirtualRegisters(VirtualRegisters))
+    , HasVirtualRegisters(DetectVirtualRegisters(VirtualValues))
     , Operation(operation)
     , Status(EQueryStatus::NotExecuted)
     , Enabled(true)
 {
-    AbleToSplit = (VirtualRegisters.size() > 1);
+    AbleToSplit = (VirtualValues.size() > 1);
 
     assert(IsSameTypeAndSize(MemoryBlockRange));
 }
@@ -142,8 +142,8 @@ void TIRDeviceQuery::InvalidateReadValues()
 {
     assert(Operation == EQueryOperation::Read);
 
-    for (const auto & reg: VirtualRegisters) {
-        reg->InvalidateReadValues();
+    for (const auto & val: VirtualValues) {
+        val->InvalidateReadValues();
     }
 }
 
@@ -232,10 +232,10 @@ void TIRDeviceQuery::FinalizeRead(const TIRDeviceMemoryView & memoryView) const
         *mb->GetCache() = *memoryView[mb];
     }
 
-    for (const auto & val: VirtualRegisters) {
+    for (const auto & val: VirtualValues) {
 #ifdef WB_MQTT_SERIAL_VERBOSE_OUTPUT
-        const auto & reg = dynamic_pointer_cast<TVirtualRegister>(val);
-        cout << "READING: " << reg->ToString() << ": " << reg->Describe() << endl;
+        const auto & vreg = dynamic_pointer_cast<TVirtualRegister>(val);
+        cout << "READING: " << vreg->ToString() << ": " << vreg->Describe() << endl;
 #endif
         memoryView.ReadValue(val->GetReadContext());
     }
@@ -258,8 +258,8 @@ void TIRDeviceValueQuery::FinalizeWrite() const
     assert(GetStatus() == EQueryStatus::NotExecuted);
 
     // write value to cache
-    for (const auto & vreg: VirtualRegisters) {
-        TIRDeviceMemoryView::WriteValue(vreg->GetWriteContext(), BlockCache);
+    for (const auto & val: VirtualValues) {
+        TIRDeviceMemoryView::WriteValue(val->GetWriteContext(), BlockCache);
     }
 
     SetStatus(EQueryStatus::Ok);
@@ -280,8 +280,8 @@ TIRDeviceMemoryView TIRDeviceValueQuery::GetValuesImpl(void * mem, size_t size) 
     }
 
     // write payload values on top of cached ones
-    for (const auto & vreg: VirtualRegisters) {
-        memoryView.WriteValue(vreg->GetWriteContext());
+    for (const auto & val: VirtualValues) {
+        memoryView.WriteValue(val->GetWriteContext());
     }
 
     return memoryView;

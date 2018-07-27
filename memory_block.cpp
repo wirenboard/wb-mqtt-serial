@@ -59,7 +59,7 @@ bool TMemoryBlock::InitExternalLinkage(const PSerialDevice & device)
     return true;
 }
 
-bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
+bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & vreg)
 {
     struct TVirtualRegisterLinkage: TMemoryBlock::IExternalLinkage
     {
@@ -68,10 +68,10 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
         PWMemoryBlock             MemoryBlock;      // linkage gets destroyed with memory block - no need in shared_ptr
         TPWSet<PWVirtualRegister> VirtualRegisters;
 
-        TVirtualRegisterLinkage(const PWMemoryBlock & memoryBlock, const PVirtualRegister & reg)
+        TVirtualRegisterLinkage(const PWMemoryBlock & memoryBlock, const PVirtualRegister & vreg)
             : MemoryBlock(memoryBlock)
         {
-            LinkWithImpl(reg);
+            LinkWithImpl(vreg);
         }
 
         PVirtualRegister AssociatedVirtualRegister() const
@@ -84,18 +84,18 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
             return virtualReg;
         }
 
-        bool Has(const PVirtualRegister & reg) const
+        bool Has(const PVirtualRegister & vreg) const
         {
             return find_if(VirtualRegisters.begin(), VirtualRegisters.end(), [&](const PWVirtualRegister & added){
                 auto lockedAdded = added.lock();
                 assert(lockedAdded);
-                return lockedAdded == reg;
+                return lockedAdded == vreg;
             }) != VirtualRegisters.end();
         }
 
-        void LinkWithImpl(const PVirtualRegister & reg)
+        void LinkWithImpl(const PVirtualRegister & vreg)
         {
-            VirtualRegisters.insert(reg);
+            VirtualRegisters.insert(vreg);
         }
 
         TPSet<PVirtualRegister> GetVirtualRegsiters() const override
@@ -104,8 +104,8 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
 
             TPSet<PVirtualRegister> result;
 
-            for (const auto & virtualRegister: VirtualRegisters) {
-                const auto & locked = virtualRegister.lock();
+            for (const auto & vreg: VirtualRegisters) {
+                const auto & locked = vreg.lock();
                 assert(locked);
 
                 bool inserted = result.insert(locked).second;
@@ -122,33 +122,33 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
             return AssociatedVirtualRegister()->GetDevice();
         }
 
-        void LinkWith(const PVirtualRegister & reg) override
+        void LinkWith(const PVirtualRegister & vreg) override
         {
             assert(!VirtualRegisters.empty());
-            assert(GetDevice() == reg->GetDevice());
-            assert(AssociatedVirtualRegister()->Type == reg->Type);
-            assert(!Has(reg));
+            assert(GetDevice() == vreg->GetDevice());
+            assert(AssociatedVirtualRegister()->Type == vreg->Type);
+            assert(!Has(vreg));
 
             {   // check for overlapping
-                auto itOtherReg = VirtualRegisters.find(reg);
+                auto itOtherReg = VirtualRegisters.find(vreg);
 
                 if (itOtherReg != VirtualRegisters.end()) {
                     auto otherReg = itOtherReg->lock();
                     throw TSerialDeviceException(
-                        "registers " + reg->ToStringWithFormat() +
+                        "registers " + vreg->ToStringWithFormat() +
                         " and " + otherReg->ToStringWithFormat() + " are overlapping"
                     );
                 }
             }
 
-            LinkWithImpl(reg);
+            LinkWithImpl(vreg);
         }
 
-        bool IsLinkedWith(const PVirtualRegister & reg) const override
+        bool IsLinkedWith(const PVirtualRegister & vreg) const override
         {
             assert(!VirtualRegisters.empty());
 
-            return VirtualRegisters.count(reg);
+            return VirtualRegisters.count(vreg);
         }
 
         /**
@@ -165,11 +165,11 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
                 0, static_cast<uint16_t>(memoryBlock->Size * 8)
             };
 
-            return AnyOf(VirtualRegisters, [&](const PWVirtualRegister & reg) {
-                auto virtualRegister = reg.lock();
+            return AnyOf(VirtualRegisters, [&](const PWVirtualRegister & wvreg) {
+                auto vreg = wvreg.lock();
 
-                auto writable = !memoryBlock->Type.ReadOnly && !virtualRegister->ReadOnly;
-                auto notFullCoverage = virtualRegister->GetMemoryBlockBindInfo(memoryBlock) != fullCoverage;
+                auto writable = !memoryBlock->Type.ReadOnly && !vreg->ReadOnly;
+                auto notFullCoverage = vreg->GetMemoryBlockBindInfo(memoryBlock) != fullCoverage;
 
                 return writable && notFullCoverage;
             });
@@ -180,7 +180,7 @@ bool TMemoryBlock::InitExternalLinkage(const PVirtualRegister & reg)
         return false;
     }
 
-    ExternalLinkage = utils::make_unique<TVirtualRegisterLinkage>(shared_from_this(), reg);
+    ExternalLinkage = utils::make_unique<TVirtualRegisterLinkage>(shared_from_this(), vreg);
     return true;
 }
 
@@ -232,18 +232,18 @@ bool TMemoryBlock::operator==(const TMemoryBlock & rhs) const
     return Type.Index == rhs.Type.Index && Address == rhs.Address && GetDevice() == rhs.GetDevice();
 }
 
-void TMemoryBlock::AssociateWith(const PVirtualRegister & reg)
+void TMemoryBlock::AssociateWith(const PVirtualRegister & vreg)
 {
-    if (!InitExternalLinkage(reg)) {
-        ExternalLinkage->LinkWith(reg);
+    if (!InitExternalLinkage(vreg)) {
+        ExternalLinkage->LinkWith(vreg);
     }
 }
 
-bool TMemoryBlock::IsAssociatedWith(const PVirtualRegister & reg) const
+bool TMemoryBlock::IsAssociatedWith(const PVirtualRegister & vreg) const
 {
     assert(ExternalLinkage);
 
-    return ExternalLinkage->IsLinkedWith(reg);
+    return ExternalLinkage->IsLinkedWith(vreg);
 }
 
 bool TMemoryBlock::IsReady() const

@@ -17,7 +17,7 @@ struct TIRDeviceQuery
     friend class TIRDeviceQueryFactory;
 
     const TPSetRange<PMemoryBlock>  MemoryBlockRange;
-    const std::vector<PVirtualValue>   VirtualRegisters;    // registers that will be fully read or written after execution of query
+    const std::vector<PVirtualValue>   VirtualValues;    // registers that will be fully read or written after execution of query
     const bool                      HasHoles;
     const bool                      HasVirtualRegisters;
     const EQueryOperation           Operation;

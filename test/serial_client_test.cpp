@@ -47,16 +47,16 @@ void TSerialClientTest::SetUp()
         config->MaxReadRegisters = 0;
         Device = std::dynamic_pointer_cast<TFakeSerialDevice>(SerialClient->CreateDevice(config));
     } catch (const TSerialDeviceException &e) {}
-    SerialClient->SetReadCallback([this](const PVirtualRegister & reg) {
-            Emit() << "Read Callback: " << reg->ToString() << " becomes " <<
-                reg->GetTextValue() << (reg->IsChanged(EPublishData::Value) ? "" : " [unchanged]");
+    SerialClient->SetReadCallback([this](const PVirtualRegister & vreg) {
+            Emit() << "Read Callback: " << vreg->ToString() << " becomes " <<
+                vreg->GetTextValue() << (vreg->IsChanged(EPublishData::Value) ? "" : " [unchanged]");
 
-            reg->ResetChanged(EPublishData::Value);
+            vreg->ResetChanged(EPublishData::Value);
         });
     SerialClient->SetErrorCallback(
-        [this](const PVirtualRegister & reg) {
+        [this](const PVirtualRegister & vreg) {
             const char* what;
-            switch (reg->GetErrorState()) {
+            switch (vreg->GetErrorState()) {
             case EErrorState::WriteError:
                 what = "write error";
                 break;
@@ -69,9 +69,9 @@ void TSerialClientTest::SetUp()
             default:
                 what = "no error";
             }
-            Emit() << "Error Callback: " << reg->ToString() << ": " << what;
+            Emit() << "Error Callback: " << vreg->ToString() << ": " << what;
 
-            reg->ResetChanged(EPublishData::Error);
+            vreg->ResetChanged(EPublishData::Error);
         });
 }
 
@@ -914,10 +914,10 @@ TEST_F(TSerialClientTest, Errors)
 
 TEST_F(TSerialClientTest, WriteRetry)
 {
-    auto reg = Reg(0);
-    SerialClient->AddRegister(reg);
+    auto vreg = Reg(0);
+    SerialClient->AddRegister(vreg);
 
-    reg->SetTextValue("11");
+    vreg->SetTextValue("11");
     Device->BlockWriteFor(0, TFakeSerialDevice::TRANSIENT);
 
     int cycleCount = 5;
@@ -930,7 +930,7 @@ TEST_F(TSerialClientTest, WriteRetry)
     Note() << "Cycle() [read, nothing blacklisted]";
     SerialClient->Cycle();
 
-    reg->SetTextValue("22");
+    vreg->SetTextValue("22");
     Device->BlockWriteFor(0, TFakeSerialDevice::PERMANENT);
     Note() << "Cycle() [write, w blacklisted (permanent)]";
     SerialClient->Cycle();
@@ -1804,29 +1804,29 @@ TEST_F(TConfigParserTest, Parse)
                     if (!device_channel->RegisterConfigs.empty()) {
                         Emit() << "Registers:";
                     }
-                    for (auto reg: device_channel->RegisterConfigs) {
+                    for (auto vreg: device_channel->RegisterConfigs) {
                         TTestLogIndent indent(*this);
                         Emit() << "------";
-                        Emit() << "Type and Address: " << reg;
-                        Emit() << "Address: " << reg->Address;
-                        Emit() << "BitOffset: " << reg->BitOffset;
-                        Emit() << "Width: " << reg->Width;
-                        Emit() << "Format: " << RegisterFormatName(reg->Format);
-                        Emit() << "Scale: " << reg->Scale;
-                        Emit() << "Offset: " << reg->Offset;
-                        Emit() << "RoundTo: " << reg->RoundTo;
-                        Emit() << "OnValue: " << reg->OnValue;
-                        Emit() << "Poll: " << reg->Poll;
-                        Emit() << "ReadOnly: " << reg->ReadOnly;
-                        Emit() << "WriteRetry: " << reg->WriteRetry;
-                        Emit() << "TypeName: " << reg->TypeName;
-                        Emit() << "PollInterval: " << reg->PollInterval.count();
-                        if (reg->HasErrorValue) {
-                            Emit() << "ErrorValue: " << reg->ErrorValue;
+                        Emit() << "Type and Address: " << vreg;
+                        Emit() << "Address: " << vreg->Address;
+                        Emit() << "BitOffset: " << vreg->BitOffset;
+                        Emit() << "Width: " << vreg->Width;
+                        Emit() << "Format: " << RegisterFormatName(vreg->Format);
+                        Emit() << "Scale: " << vreg->Scale;
+                        Emit() << "Offset: " << vreg->Offset;
+                        Emit() << "RoundTo: " << vreg->RoundTo;
+                        Emit() << "OnValue: " << vreg->OnValue;
+                        Emit() << "Poll: " << vreg->Poll;
+                        Emit() << "ReadOnly: " << vreg->ReadOnly;
+                        Emit() << "WriteRetry: " << vreg->WriteRetry;
+                        Emit() << "TypeName: " << vreg->TypeName;
+                        Emit() << "PollInterval: " << vreg->PollInterval.count();
+                        if (vreg->HasErrorValue) {
+                            Emit() << "ErrorValue: " << vreg->ErrorValue;
                         } else {
                             Emit() << "ErrorValue: not set";
                         }
-                        Emit() << "WordOrder: " << reg->WordOrder;
+                        Emit() << "WordOrder: " << vreg->WordOrder;
                     }
                 }
 

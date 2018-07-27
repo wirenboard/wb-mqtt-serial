@@ -16,7 +16,7 @@ public:
     ~TSerialClient();
 
     PSerialDevice CreateDevice(PDeviceConfig device_config);
-    void AddRegister(PVirtualRegister reg);
+    void AddRegister(PVirtualRegister vreg);
     void Connect();
     void Disconnect();
     void Cycle();
@@ -33,7 +33,7 @@ private:
     bool DoFlush();
     bool WaitForPollAndFlush();
     void MaybeFlushAvoidingPollStarvationButDontWait(bool & needFlush);
-    void MaybeUpdateErrorState(PVirtualRegister reg);
+    void MaybeUpdateErrorState(PVirtualRegister vreg);
     void PrepareToAccessDevice(PSerialDevice dev);
     void OnDeviceReconnect(PSerialDevice dev);
 

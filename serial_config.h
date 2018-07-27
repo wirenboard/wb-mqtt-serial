@@ -47,8 +47,8 @@ struct TDeviceChannelConfig {
 typedef std::shared_ptr<TDeviceChannelConfig> PDeviceChannelConfig;
 
 struct TDeviceSetupItemConfig {
-    TDeviceSetupItemConfig(std::string name, PRegisterConfig reg, int value)
-        : Name(name), RegisterConfig(reg), Value(value) {}
+    TDeviceSetupItemConfig(std::string name, PRegisterConfig vreg, int value)
+        : Name(name), RegisterConfig(vreg), Value(value) {}
     std::string Name;
     PRegisterConfig RegisterConfig;
     int Value;

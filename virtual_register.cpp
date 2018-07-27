@@ -375,10 +375,10 @@ void TVirtualRegister::InvalidateReadValues()
 
 PVirtualRegister TVirtualRegister::Create(const PRegisterConfig & config, const PSerialDevice & device)
 {
-    auto reg = PVirtualRegister(new TVirtualRegister(config, device));
-    reg->Initialize();
+    auto vreg = PVirtualRegister(new TVirtualRegister(config, device));
+    vreg->Initialize();
 
-    return reg;
+    return vreg;
 }
 
 TVirtualRegister::~TVirtualRegister()

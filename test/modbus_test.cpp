@@ -14,7 +14,7 @@ class TModbusTest: public TSerialDeviceTest, public TModbusExpectations
 protected:
     void SetUp();
     set<int> VerifyQuery(vector<PVirtualRegister> registerList = {});
-    PIRDeviceQuery GenerateReadQueryForVirtualRegister(const PVirtualRegister & virtualRegister);
+    PIRDeviceQuery GenerateReadQueryForVirtualRegister(const PVirtualRegister & vreg);
 
     virtual PDeviceConfig GetDeviceConfig();
 
@@ -112,16 +112,16 @@ set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> memoryBlockSet)
         for (const auto & query: querySet->Queries) {
             ModbusDev->Execute(query);
 
-            for (const auto & virtualValue: query->VirtualRegisters) {
-                const auto & virtualRegister = dynamic_pointer_cast<TVirtualRegister>(virtualValue);
+            for (const auto & val: query->VirtualValues) {
+                const auto & vreg = dynamic_pointer_cast<TVirtualRegister>(val);
 
                 if (query->GetStatus() == EQueryStatus::Ok) {
-                    registerValues[virtualRegister->Address] = virtualRegister->GetTextValue();
+                    registerValues[vreg->Address] = vreg->GetTextValue();
                 } else {
-                    errorRegisters.insert(virtualRegister->Address);
+                    errorRegisters.insert(vreg->Address);
                 }
 
-                readAddresses.insert(virtualRegister->Address);
+                readAddresses.insert(vreg->Address);
             }
         }
     }
@@ -159,9 +159,9 @@ set<int> TModbusTest::VerifyQuery(vector<PVirtualRegister> memoryBlockSet)
     return errorRegisters;
 }
 
-PIRDeviceQuery TModbusTest::GenerateReadQueryForVirtualRegister(const PVirtualRegister & virtualRegister)
+PIRDeviceQuery TModbusTest::GenerateReadQueryForVirtualRegister(const PVirtualRegister & vreg)
 {
-    auto querySetsByPollInterval = TIRDeviceQueryFactory::GenerateQuerySets({ virtualRegister }, EQueryOperation::Read);
+    auto querySetsByPollInterval = TIRDeviceQueryFactory::GenerateQuerySets({ vreg }, EQueryOperation::Read);
 
     EXPECT_EQ(1, querySetsByPollInterval.size());
     EXPECT_EQ(1, querySetsByPollInterval.begin()->second->Queries.size());

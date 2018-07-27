@@ -155,10 +155,10 @@ struct TRegisterConfig
     TValueSize  Width;
 };
 
-inline ::std::ostream& operator<<(::std::ostream& os, PRegisterConfig reg) {
-    return os << reg->ToString();
+inline ::std::ostream& operator<<(::std::ostream& os, PRegisterConfig vreg) {
+    return os << vreg->ToString();
 }
 
-inline ::std::ostream& operator<<(::std::ostream& os, const TRegisterConfig& reg) {
-    return os << reg.ToString();
+inline ::std::ostream& operator<<(::std::ostream& os, const TRegisterConfig& vreg) {
+    return os << vreg.ToString();
 }

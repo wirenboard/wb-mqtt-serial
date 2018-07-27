@@ -31,11 +31,11 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
     SerialClient = std::make_shared<TSerialClient>(Port);
 
     SerialClient->SetDebug(Config->Debug);
-    SerialClient->SetReadCallback([this](const PVirtualRegister & reg) {
-        OnValueRead(reg);
+    SerialClient->SetReadCallback([this](const PVirtualRegister & vreg) {
+        OnValueRead(vreg);
     });
-    SerialClient->SetErrorCallback([this](const PVirtualRegister & reg) {
-        UpdateError(reg);
+    SerialClient->SetErrorCallback([this](const PVirtualRegister & vreg) {
+        UpdateError(vreg);
     });
 
     if (Config->Debug)
@@ -60,8 +60,8 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
             } else {
                 auto virtualRegisterSet = std::make_shared<TVirtualRegisterSet>(registers);
 
-                for (auto& reg: registers) {
-                    reg->AssociateWithSet(virtualRegisterSet);
+                for (auto& vreg: registers) {
+                    vreg->AssociateWithSet(virtualRegisterSet);
                 }
 
                 abstractRegister = virtualRegisterSet;
@@ -73,8 +73,8 @@ TSerialPortDriver::TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig po
             ChannelRegisterMap[channel] = abstractRegister;
             RegisterToChannelMap[abstractRegister] = channel;
 
-            for (auto& reg: registers) {
-                SerialClient->AddRegister(reg);
+            for (auto& vreg: registers) {
+                SerialClient->AddRegister(vreg);
             }
         }
     }
@@ -136,10 +136,10 @@ bool TSerialPortDriver::HandleMessage(const std::string& topic, const std::strin
     if (it == NameToChannelMap.end())
         return false;
 
-    const auto& reg = ChannelRegisterMap[it->second];
+    const auto& vreg = ChannelRegisterMap[it->second];
 
     try {
-        reg->SetTextValue(payload);
+        vreg->SetTextValue(payload);
     } catch (std::exception& err) {
         std::cerr << "warning: invalid payload for topic '" << topic <<
             "': '" << payload << "' : " << err.what()  << std::endl;
@@ -157,13 +157,13 @@ std::string TSerialPortDriver::GetChannelTopic(const TDeviceChannelConfig& chann
     return (controls_prefix + channel.Name);
 }
 
-bool TSerialPortDriver::NeedToPublish(const PAbstractVirtualRegister & reg)
+bool TSerialPortDriver::NeedToPublish(const PAbstractVirtualRegister & vreg)
 {
     // max_unchanged_interval = 0: always update, don't track last change time
     if (!Config->MaxUnchangedInterval)
         return true;
 
-    bool valueChanged = reg->IsChanged(EPublishData::Value);
+    bool valueChanged = vreg->IsChanged(EPublishData::Value);
 
     // max_unchanged_interval < 0: update if changed, don't track last change time
     if (Config->MaxUnchangedInterval < 0)
@@ -172,14 +172,14 @@ bool TSerialPortDriver::NeedToPublish(const PAbstractVirtualRegister & reg)
     // max_unchanged_interval > 0: update if changed or the time interval is exceeded
     auto now = Port->CurrentTime();
     if (valueChanged) {
-        RegLastPublishTimeMap[reg] = now;
+        RegLastPublishTimeMap[vreg] = now;
         return true;
     }
 
-    auto it = RegLastPublishTimeMap.find(reg);
+    auto it = RegLastPublishTimeMap.find(vreg);
     if (it == RegLastPublishTimeMap.end()) {
         // too strange - unchanged, but not tracked yet, but ok, let's publish it
-        RegLastPublishTimeMap[reg] = now;
+        RegLastPublishTimeMap[vreg] = now;
         return true;
     }
 
@@ -192,9 +192,9 @@ bool TSerialPortDriver::NeedToPublish(const PAbstractVirtualRegister & reg)
     return true;
 }
 
-void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
+void TSerialPortDriver::OnValueRead(const PVirtualRegister & vreg)
 {
-    const auto & abstractRegister = reg->GetTopLevel();
+    const auto & abstractRegister = vreg->GetTopLevel();
 
     auto it = RegisterToChannelMap.find(abstractRegister);
     if (it == RegisterToChannelMap.end()) {
@@ -210,8 +210,8 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
     }
 
     if (Config->Debug && valueChanged)
-        std::cerr << "register value change: " << reg->ToString() << " <- " <<
-            reg->GetTextValue() << std::endl;
+        std::cerr << "register value change: " << vreg->ToString() << " <- " <<
+            vreg->GetTextValue() << std::endl;
 
     if (!NeedToPublish(abstractRegister)) {
         return;
@@ -219,8 +219,8 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
 
     const auto & payload = abstractRegister->GetTextValue();
 
-    if (Config->Debug && !reg->OnValue.empty())
-        std::cerr << "OnValue: " << reg->OnValue << "; payload: " << payload << std::endl;
+    if (Config->Debug && !vreg->OnValue.empty())
+        std::cerr << "OnValue: " << vreg->OnValue << "; payload: " << payload << std::endl;
 
     // Publish current value (make retained)
     if (Config->Debug)
@@ -232,9 +232,9 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & reg)
     abstractRegister->ResetChanged(EPublishData::Value);
 }
 
-void TSerialPortDriver::UpdateError(const PVirtualRegister & reg)
+void TSerialPortDriver::UpdateError(const PVirtualRegister & vreg)
 {
-    const auto & abstractRegister = reg->GetTopLevel();
+    const auto & abstractRegister = vreg->GetTopLevel();
 
     auto it = RegisterToChannelMap.find(abstractRegister);
     if (it == RegisterToChannelMap.end()) {

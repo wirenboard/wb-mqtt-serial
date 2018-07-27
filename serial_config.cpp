@@ -229,13 +229,13 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(
         error_value = ToUint64(register_data["error_value"], "error_value");
     }
 
-    PRegisterConfig reg = TRegisterConfig::Create(
+    PRegisterConfig vreg = TRegisterConfig::Create(
         type.Index,
         address, format, scale, offset, round_to, true, type.ReadOnly || force_readonly,
         write_retry, type.Name, has_error_value, error_value, wordOrder, bitOffset, width);
     if (register_data.isMember("poll_interval"))
-        reg->PollInterval = chrono::milliseconds(GetInt(register_data, "poll_interval"));
-    return reg;
+        vreg->PollInterval = chrono::milliseconds(GetInt(register_data, "poll_interval"));
+    return vreg;
 }
 
 void TConfigParser::MergeAndLoadChannels(PDeviceConfig device_config, const Json::Value& device_data, PTemplate tmpl)
@@ -314,11 +314,11 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
             poll_interval = chrono::milliseconds(GetInt(channel_data, "poll_interval"));
         for(Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
             string def_type;
-            auto reg = LoadRegisterConfig(device_config, reg_data[i], def_type);
+            auto vreg = LoadRegisterConfig(device_config, reg_data[i], def_type);
             /* the poll_interval specified for the specific register has a precedence over the one specified for the compound channel */
-            if ((reg->PollInterval.count() < 0) && (poll_interval.count() >= 0))
-                reg->PollInterval = poll_interval;
-            registers.push_back(reg);
+            if ((vreg->PollInterval.count() < 0) && (poll_interval.count() >= 0))
+                vreg->PollInterval = poll_interval;
+            registers.push_back(vreg);
             if (!i)
                 defaultTypeStr = def_type;
             else if (registers[i]->ReadOnly != registers[0]->ReadOnly)
@@ -335,8 +335,8 @@ void TConfigParser::LoadChannel(PDeviceConfig device_config, const Json::Value& 
         type_str = defaultTypeStr;
     if (type_str == "wo-switch") {
         type_str = "switch";
-        for (auto& reg: registers)
-            reg->Poll = false;
+        for (auto& vreg: registers)
+            vreg->Poll = false;
     }
 
     if (channel_data.isMember("on_value")) {
@@ -392,15 +392,15 @@ void TConfigParser::LoadSetupItem(PDeviceConfig device_config, const Json::Value
         width = GetValidatedRegisterAddressWidth(parsed, addressObj, maxWidth);
     }
 
-    PRegisterConfig reg = TRegisterConfig::Create(
+    PRegisterConfig vreg = TRegisterConfig::Create(
         typeIndex, address, format, 1, 0, 0, true, false, device_config->WriteRetry.GetOr(true),
         regTypeStr, false, 0, EWordOrder::BigEndian, bitOffset, width
     );
 
     if (!item_data.isMember("value"))
-        throw TConfigParserException("no reg specified for init item");
+        throw TConfigParserException("no vreg specified for init item");
     int value = GetInt(item_data, "value");
-    device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg, value)));
+    device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, vreg, value)));
 }
 
 void TConfigParser::LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data)
@@ -740,12 +740,12 @@ void TConfigParser::LoadDevice(PPortConfig port_config,
 
     port_config->AddDeviceConfig(device_config);
     for (auto channel: device_config->DeviceChannelConfigs) {
-        for (auto reg: channel->RegisterConfigs) {
-            if (reg->PollInterval.count() < 0) {
+        for (auto vreg: channel->RegisterConfigs) {
+            if (vreg->PollInterval.count() < 0) {
                 if (device_poll_interval.count() >= 0) {
-                    reg->PollInterval = device_poll_interval;
+                    vreg->PollInterval = device_poll_interval;
                 } else {
-                    reg->PollInterval = port_config->PollInterval;
+                    vreg->PollInterval = port_config->PollInterval;
                 }
             }
         }

@@ -15,8 +15,8 @@ TVirtualRegisterSet::TVirtualRegisterSet(const vector<PVirtualRegister> & virtua
 {
     VirtualRegisters.reserve(virtualRegisters.size());
 
-    for (const auto & virtualRegister: virtualRegisters) {
-        VirtualRegisters.push_back(virtualRegister);
+    for (const auto & vreg: virtualRegisters) {
+        VirtualRegisters.push_back(vreg);
     }
 }
 
@@ -25,12 +25,12 @@ string TVirtualRegisterSet::GetTextValue() const
     ostringstream ss;
     bool first = true;
 
-    for (const auto & virtualRegister: VirtualRegisters) {
+    for (const auto & vreg: VirtualRegisters) {
         if (!first) {
             ss << ";";
         }
 
-        ss << virtualRegister->GetTextValue();
+        ss << vreg->GetTextValue();
         first = false;
     }
 
@@ -52,14 +52,14 @@ void TVirtualRegisterSet::SetTextValue(const string & value)
     }
 
     for (size_t i = 0; i < valueCount; ++i) {
-        const auto & virtualRegister = VirtualRegisters[i];
+        const auto & vreg = VirtualRegisters[i];
 
         if (Global::Debug) {
-            std::cerr << "setting device register: " << virtualRegister->ToString() << " <- " <<
+            std::cerr << "setting device register: " << vreg->ToString() << " <- " <<
                 textValues[i] << std::endl;
         }
 
-        virtualRegister->SetTextValue(textValues[i]);
+        vreg->SetTextValue(textValues[i]);
     }
 }
 
@@ -67,8 +67,8 @@ EErrorState TVirtualRegisterSet::GetErrorState() const
 {
     EErrorState result = EErrorState::NoError;
 
-    for (const auto & virtualRegister: VirtualRegisters) {
-        Add(result, virtualRegister->GetErrorState());
+    for (const auto & vreg: VirtualRegisters) {
+        Add(result, vreg->GetErrorState());
     }
 
     return result;
@@ -76,21 +76,21 @@ EErrorState TVirtualRegisterSet::GetErrorState() const
 
 bool TVirtualRegisterSet::GetValueIsRead() const
 {
-    return AllOf(VirtualRegisters, [](const PVirtualRegister & virtualRegister){
-        return virtualRegister->GetValueIsRead();
+    return AllOf(VirtualRegisters, [](const PVirtualRegister & vreg){
+        return vreg->GetValueIsRead();
     });
 }
 
 bool TVirtualRegisterSet::IsChanged(EPublishData data) const
 {
-    return AnyOf(VirtualRegisters, [data](const PVirtualRegister & virtualRegister){
-        return virtualRegister->IsChanged(data);
+    return AnyOf(VirtualRegisters, [data](const PVirtualRegister & vreg){
+        return vreg->IsChanged(data);
     });
 }
 
 void TVirtualRegisterSet::ResetChanged(EPublishData data)
 {
-    for (const auto & virtualRegister: VirtualRegisters) {
-        virtualRegister->ResetChanged(data);
+    for (const auto & vreg: VirtualRegisters) {
+        vreg->ResetChanged(data);
     }
 }

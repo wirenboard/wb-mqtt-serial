@@ -76,17 +76,17 @@ PSerialDevice TSerialClient::CreateDevice(PDeviceConfig device_config)
     }
 }
 
-void TSerialClient::AddRegister(PVirtualRegister reg)
+void TSerialClient::AddRegister(PVirtualRegister vreg)
 {
     if (Active)
         throw TSerialDeviceException("can't add registers to the active client");
 
-    VirtualRegisters[reg->GetDevice()].push_back(reg);
+    VirtualRegisters[vreg->GetDevice()].push_back(vreg);
 
-    reg->SetFlushSignal(FlushNeeded);
+    vreg->SetFlushSignal(FlushNeeded);
 
     if (Debug)
-        cerr << "AddRegister: " << reg << endl;
+        cerr << "AddRegister: " << vreg << endl;
 }
 
 void TSerialClient::Connect()
@@ -144,10 +144,10 @@ void TSerialClient::GenerateReadQueries()
     cerr << queryCount <<  " queries generated" << endl;
 }
 
-void TSerialClient::MaybeUpdateErrorState(PVirtualRegister reg)
+void TSerialClient::MaybeUpdateErrorState(PVirtualRegister vreg)
 {
-    if (reg->GetErrorState() != EErrorState::UnknownErrorState) {
-        ErrorCallback(reg);
+    if (vreg->GetErrorState() != EErrorState::UnknownErrorState) {
+        ErrorCallback(vreg);
     }
 }
 
@@ -163,14 +163,14 @@ bool TSerialClient::DoFlush()
 
         const auto & virtualRegisters = itVirtualRegisters->second;
 
-        for (const auto & reg: virtualRegisters) {
-            if (!reg->NeedToFlush())
+        for (const auto & vreg: virtualRegisters) {
+            if (!vreg->NeedToFlush())
                 continue;
             PrepareToAccessDevice(device);
-            reg->Flush();
-            needFlush |= reg->NeedToFlush();
-            if (reg->IsChanged(EPublishData::Error)) {
-                MaybeUpdateErrorState(reg);
+            vreg->Flush();
+            needFlush |= vreg->NeedToFlush();
+            if (vreg->IsChanged(EPublishData::Error)) {
+                MaybeUpdateErrorState(vreg);
             }
         }
     }
@@ -253,22 +253,22 @@ void TSerialClient::Cycle()
             PrepareToAccessDevice(device);
             device->Execute(query);
 
-            for (const auto & virtualValue: query->VirtualRegisters) {
-                auto virtualRegister = dynamic_pointer_cast<TVirtualRegister>(virtualValue);
-                assert(virtualRegister);
+            for (const auto & virtualValue: query->VirtualValues) {
+                auto vreg = dynamic_pointer_cast<TVirtualRegister>(virtualValue);
+                assert(vreg);
 
                 if (query->GetStatus() == EQueryStatus::Ok) {
-                    virtualRegister->AcceptDeviceValue();
+                    vreg->AcceptDeviceValue();
                 } else {
-                    virtualRegister->UpdateReadError(true);
+                    vreg->UpdateReadError(true);
                 }
 
-                if (virtualRegister->IsChanged(EPublishData::Error)) {
-                    MaybeUpdateErrorState(virtualRegister);
+                if (vreg->IsChanged(EPublishData::Error)) {
+                    MaybeUpdateErrorState(vreg);
                 }
 
-                if (!Has(virtualRegister->GetErrorState(), EErrorState::ReadError)) {
-                    ReadCallback(virtualRegister);
+                if (!Has(vreg->GetErrorState(), EErrorState::ReadError)) {
+                    ReadCallback(vreg);
                 }
             }
             statuses.insert(query->GetStatus());

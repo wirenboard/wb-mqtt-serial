@@ -29,7 +29,7 @@ namespace   // utility
 
             try {
                 const auto & generatedQueries = TIRDeviceQueryFactory::GenerateQueries(
-                    query->VirtualRegisters, query->Operation, policy
+                    query->VirtualValues, query->Operation, policy
                 );
 
                 if (generatedQueries.size() == 1) {
