@@ -123,11 +123,6 @@ void TIRDeviceQuery::SetStatus(EQueryStatus status) const
     Status = status;
 }
 
-void TIRDeviceQuery::SetStatus(EQueryStatus status)
-{
-    static_cast<const TIRDeviceQuery *>(this)->SetStatus(status);
-}
-
 EQueryStatus TIRDeviceQuery::GetStatus() const
 {
     return Status;

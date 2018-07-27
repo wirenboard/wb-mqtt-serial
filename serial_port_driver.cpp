@@ -194,7 +194,7 @@ bool TSerialPortDriver::NeedToPublish(const PAbstractVirtualRegister & vreg)
 
 void TSerialPortDriver::OnValueRead(const PVirtualRegister & vreg)
 {
-    const auto & abstractRegister = vreg->GetTopLevel();
+    const auto & abstractRegister = vreg->GetRoot();
 
     auto it = RegisterToChannelMap.find(abstractRegister);
     if (it == RegisterToChannelMap.end()) {
@@ -234,7 +234,7 @@ void TSerialPortDriver::OnValueRead(const PVirtualRegister & vreg)
 
 void TSerialPortDriver::UpdateError(const PVirtualRegister & vreg)
 {
-    const auto & abstractRegister = vreg->GetTopLevel();
+    const auto & abstractRegister = vreg->GetRoot();
 
     auto it = RegisterToChannelMap.find(abstractRegister);
     if (it == RegisterToChannelMap.end()) {

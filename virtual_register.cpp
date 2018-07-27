@@ -294,7 +294,7 @@ void TVirtualRegister::AssociateWithSet(const PVirtualRegisterSet & virtualRegis
     VirtualRegisterSet = virtualRegisterSet;
 }
 
-PAbstractVirtualRegister TVirtualRegister::GetTopLevel()
+PAbstractVirtualRegister TVirtualRegister::GetRoot()
 {
     if (const auto & virtualRegisterSet = VirtualRegisterSet.lock()) {
         return virtualRegisterSet;

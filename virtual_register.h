@@ -64,7 +64,7 @@ public:
     /**
      * Returns this if not associated with register set, otherwise returns associated register set
      */
-    PAbstractVirtualRegister GetTopLevel();
+    PAbstractVirtualRegister GetRoot();
 
     void ResetChanged(EPublishData) override;
 

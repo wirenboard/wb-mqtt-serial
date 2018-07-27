@@ -10,17 +10,18 @@
 #include <cassert>
 
 /**
- * Intermediate, protocol-agnostic device query representation format data structures
+ * @brief intermediate, protocol-agnostic device query object
  */
 struct TIRDeviceQuery
 {
     friend class TIRDeviceQueryFactory;
 
-    const TPSetRange<PMemoryBlock>  MemoryBlockRange;
-    const std::vector<PVirtualValue>   VirtualValues;    // registers that will be fully read or written after execution of query
-    const bool                      HasHoles;
-    const bool                      HasVirtualRegisters;
-    const EQueryOperation           Operation;
+    const TPSetRange<PMemoryBlock>   MemoryBlockRange;
+    // registers or setup items that will be fully read or written after execution of query
+    const std::vector<PVirtualValue> VirtualValues;
+    const bool                       HasHoles;
+    const bool                       HasVirtualRegisters;
+    const EQueryOperation            Operation;
 
 private:
     mutable EQueryStatus Status;
@@ -34,8 +35,6 @@ protected:
      *  maintain memory blocks cache in correct state as side effect.
      */
     explicit TIRDeviceQuery(TAssociatedMemoryBlockSet &&, EQueryOperation = EQueryOperation::Read);
-
-    void SetStatus(EQueryStatus) const;
 
     template <typename T>
     static void CheckTypeSingle()
@@ -55,11 +54,37 @@ public:
     virtual ~TIRDeviceQuery() = default;
 
     bool operator<(const TIRDeviceQuery &) const noexcept;
-
+    /**
+     * @brief get device to which this query belongs
+     *
+     * @return PSerialDevice
+     */
     PSerialDevice GetDevice() const;
+    /**
+     * @brief get number of memory blocks (including holes
+     *  and unused memory blocks)
+     *
+     * @return uint32_t
+     */
     uint32_t GetBlockCount() const;
+    /**
+     * @brief get number of protocol values that is
+     *  expected to be acquired as response to this query.
+     *
+     * @return uint32_t
+     */
     uint32_t GetValueCount() const;
+    /**
+     * @brief Starting address at range of addresses
+     *
+     * @return uint32_t
+     */
     uint32_t GetStart() const;
+    /**
+     * @brief size of blocks
+     *
+     * @return TValueSize
+     */
     TValueSize GetBlockSize() const;
     uint32_t GetSize() const;
     const TMemoryBlockType & GetType() const;
@@ -68,12 +93,26 @@ public:
     /**
      * @brief set status of query execution
      *
-     * @note this is set by device after execution
-     *  of query and on exceptions during query execution.
+     * @note this is set by device automatically on finalization
+     *  of query or on exceptions during query execution.
      */
-    void SetStatus(EQueryStatus);
+    void SetStatus(EQueryStatus) const;
+    /**
+     * @brief get status of query
+     *
+     * @return EQueryStatus
+     */
     EQueryStatus GetStatus() const;
+    /**
+     * @brief set status of query to NotExecuted
+     */
     void ResetStatus();
+    /**
+     * @brief invalidate read values of all
+     *  virtual values affected by this query
+     *
+     * @note called at end of cycle
+     */
     void InvalidateReadValues();
 
     /**

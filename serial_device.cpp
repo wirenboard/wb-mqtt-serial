@@ -72,15 +72,10 @@ void TSerialDevice::Execute(const PIRDeviceQuery & query)
         try {
             switch(query->Operation) {
                 case EQueryOperation::Read:
-                    assert(
-                        query->GetBlockCount() <=
-                        (GetProtocolInfo().IsSingleBitType(query->GetType()) ? GetProtocolInfo().GetMaxReadBits()
-                                                                             : GetProtocolInfo().GetMaxReadRegisters()));
                     return Read(*query);
 
                 case EQueryOperation::Write:
-                    assert(query->GetBlockCount() <= (GetProtocolInfo().IsSingleBitType(query->GetType()) ? GetProtocolInfo().GetMaxWriteBits() : GetProtocolInfo().GetMaxWriteRegisters()));
-                    return Write(query->As<TIRDeviceValueQuery>());
+                    return Write(dynamic_cast<const TIRDeviceValueQuery &>(*query));
 
                 default:
                     throw TSerialDeviceException("unsupported query operation");
@@ -140,9 +135,7 @@ TPSetRange<PMemoryBlock> TSerialDevice::CreateMemoryBlockRange(const PMemoryBloc
 TPSetRange<PMemoryBlock> TSerialDevice::StaticCreateMemoryBlockRange(const PMemoryBlock & first, const PMemoryBlock & last)
 {
     auto device = first->GetDevice();
-
     assert(device);
-
     return device->CreateMemoryBlockRange(first, last);
 }
 
