@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.43) stable; urgency=medium
+
+  * Add template for WB-MAP3E
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 05 Jul 2018 11:29:15 +0300
+
 wb-mqtt-serial (1.42) stable; urgency=medium
 
   * add templates for WB-MAP3H 
