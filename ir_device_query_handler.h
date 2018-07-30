@@ -2,26 +2,21 @@
 
 #include "declarations.h"
 
+class TQueryDisableGuard;
+
 class TIRDeviceQuerySetHandler
 {
-    /**
-     * @brief helper class to enable and disable query
-     *  in RAII style
-     */
-    class TQueryDisableGuard
-    {
-        PIRDeviceQuery Query;
-
-    public:
-        TQueryDisableGuard(PIRDeviceQuery);
-        TQueryDisableGuard(const TQueryDisableGuard &) = delete;
-        TQueryDisableGuard(TQueryDisableGuard &&) = default;
-        ~TQueryDisableGuard();
-    };
-
     std::unordered_map<PSerialDevice, std::vector<TQueryDisableGuard>> DisabledQueries;
 
 public:
+    /**
+     * @note this constructor and destructor declarations are only needed to be able
+     *  to declare DisabledQueries with incomplete TQueryDisableGuard type
+     *  by moving their definitions to same translation unit where TQueryDisableGuard is defined
+     */
+    TIRDeviceQuerySetHandler();
+    ~TIRDeviceQuerySetHandler();
+
     /**
      * @brief perform needed operations on query set after all queries of set were executed
      */
@@ -39,12 +34,14 @@ private:
     void DisableHolesIfNeeded(const PIRDeviceQuerySet &);
 
     /**
-     * @brief if query has permanent error but without holes split by virtual registers
+     * @brief if query has permanent error but without holes
+     *  split by virtual registers
      */
     void SplitByRegisterIfNeeded(const PIRDeviceQuerySet &);
 
     /**
-     * @brief if query has permanent error and associated with only one virtual register - disable it
+     * @brief if query has permanent error and associated with
+     *  only one virtual register - disable it
      */
     void DisableRegistersIfNeeded(const PIRDeviceQuerySet &);
 
@@ -56,7 +53,7 @@ private:
     /**
      * @brief invalidate protocol registers values for all affected virtual registers
      *
-     * @note A protocol register value that was read inside cycle expires at end of that cycle
+     * @note A protocol value that was read inside cycle expires at end of that cycle
      */
     void InvalidateReadValues(const PIRDeviceQuerySet &);
 };

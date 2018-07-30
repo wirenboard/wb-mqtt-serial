@@ -57,16 +57,32 @@ namespace   // utility
     }
 }
 
-TIRDeviceQuerySetHandler::TQueryDisableGuard::TQueryDisableGuard(PIRDeviceQuery query)
-    : Query(move(query))
+/**
+ * @brief helper class to enable and disable query
+ *  in RAII style
+ */
+class TQueryDisableGuard
 {
-    if (Query) Query->SetEnabled(false);
-}
+    PIRDeviceQuery Query;
 
-TIRDeviceQuerySetHandler::TQueryDisableGuard::~TQueryDisableGuard()
-{
-    if (Query) Query->SetEnabled(true);
-}
+public:
+    TQueryDisableGuard(const TQueryDisableGuard &) = delete;
+    TQueryDisableGuard(TQueryDisableGuard &&) = default;
+
+    TQueryDisableGuard(PIRDeviceQuery query)
+        : Query(move(query))
+    {
+        if (Query) Query->SetEnabled(false);
+    }
+
+    ~TQueryDisableGuard()
+    {
+        if (Query) Query->SetEnabled(true);
+    }
+};
+
+TIRDeviceQuerySetHandler::TIRDeviceQuerySetHandler() {}
+TIRDeviceQuerySetHandler::~TIRDeviceQuerySetHandler() {}
 
 void TIRDeviceQuerySetHandler::HandleQuerySetPostExecution(const PIRDeviceQuerySet & querySet)
 {

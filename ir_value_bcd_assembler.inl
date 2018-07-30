@@ -102,10 +102,10 @@ namespace
         }
         /* assembler implementation */
 
-        /* static numeric interface */
+       /* numeric value assembler interface */
         T GetValue() const { return Value; }
 
         void SetValue(T value) { Value = value; }
-        /* static numeric interface */
+        /* numeric value assembler interface */
     };
 }

@@ -41,7 +41,7 @@ namespace
             return ss.str();
         }
 
-        /* static interface */
+        /* numeric value assembler interface */
         T GetValue() const
         {
             return Value;
@@ -51,7 +51,7 @@ namespace
         {
             Value = value;
         }
-        /* static interface */
+        /* numeric value assembler interface */
     };
 
     struct TIRS24ValueAssembler: TIRIntegerValueAssembler<int32_t, 3>

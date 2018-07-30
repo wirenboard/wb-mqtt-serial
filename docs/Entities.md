@@ -3,10 +3,15 @@ Atomic chunk of memory accessed via device protocol, which means that any part o
 can't be obtained without obtaining whole block.
 
 #### IR Value Layer [TIRValue and its subclasses]
-A hierarchy of classes that hold (byte sequence) <-> (value) conversion logic.
+A hierarchy of classes that holds (byte sequence) <-> (value) conversion logic.
 Produces top level value by turning byte sequence into meaningful value and vice versa.
-May represent numeric value as well as string.
-Formatting is done here. For strings formatting configs are ignored.
+May represent numeric and textual value.
+Formatting is done here. For text formatting is not performed.
+
+#### IR Value Assembler [TIR*ValueAssembler]
+A subset of IR Value Layer that encapsulate (byte sequence) <-> (typed value) conversion logic </br>
+Assembled typed value (i.e. int, double, vector) is used to store value that later will be converted
+to string by IR*Value class that inherited from the assembler class.
 
 #### Virtual Register [TVirtualRegister]
 A formatted top level device data representation layer. Holds IR Value.

@@ -79,10 +79,6 @@ TIRDeviceMemoryBlockMemory & TIRDeviceMemoryBlockMemory::operator=(const TIRDevi
 
 TIRDeviceValueView TIRDeviceMemoryBlockViewImpl::operator[](uint16_t index) const
 {
-    // auto valueCount = MemoryBlock->Type.GetValueCount();
-    // assert(index < valueCount);
-    // index = MemoryBlock->Type.ByteOrder == EByteOrder::BigEndian ? index : valueCount - index - 1;
-
     return {
         RawMemory + MemoryBlock->Type.GetValueByteIndex(index),
         GetValueSize(index),
@@ -155,7 +151,14 @@ void TIRDeviceMemoryBlockViewImpl::SetValueImpl(const uint8_t * pValue) const
 }
 
 
-TIRDeviceMemoryView::TIRDeviceMemoryView(uint8_t * memory, uint32_t size, const TMemoryBlockType & type, uint32_t start, uint16_t blockSize, bool readonly)
+TIRDeviceMemoryView::TIRDeviceMemoryView(
+    uint8_t * memory,
+    uint32_t size,
+    const TMemoryBlockType & type,
+    uint32_t start,
+    uint16_t blockSize,
+    bool readonly
+)
     : RawMemory(memory)
     , Size(size)
     , Type(type)
@@ -164,7 +167,13 @@ TIRDeviceMemoryView::TIRDeviceMemoryView(uint8_t * memory, uint32_t size, const 
     , Readonly(readonly)
 {}
 
-TIRDeviceMemoryView::TIRDeviceMemoryView(const uint8_t * memory, uint32_t size, const TMemoryBlockType & type, uint32_t start, uint16_t blockSize)
+TIRDeviceMemoryView::TIRDeviceMemoryView(
+    const uint8_t * memory,
+    uint32_t size,
+    const TMemoryBlockType & type,
+    uint32_t start,
+    uint16_t blockSize
+)
     : TIRDeviceMemoryView(
         const_cast<uint8_t *>(memory),
         size,
@@ -273,13 +282,13 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context) cons
 /**
  * @brief write ir value to memory managed by view
  *
- * @note !IMPORTANT! current implementations has folowing limitations and properties:
+ * @note !IMPORTANT! current implementation has folowing limitations and properties:
  *  1) Does NOT guarantee that all bits of ir value will be written
  *  2) Does guarantee that all bits of bound memory blocks that were covered by
  *     their bind info intervals will be written
  *  3) Write of multiple ir values that share same byte is NOT allowed because
  *     bytes of memory will be overwritten without any preservation of their
- *     current value.
+ *     previous value.
  *     It is not supported because we don't write multiple ir values at once and
  *     adding this functionality would impose additional overhead.
  *     To support this case we need to keep somewhere track of bits that were written
@@ -363,7 +372,7 @@ void TIRDeviceMemoryView::WriteValue(const TIRDeviceValueContext & context, TMem
     // were written, but this check doesn't protect us from false negative cases
     // (input value dependent)
 
-    // is summary: since we already allow to skip entire memory blocks here,
+    // in summary: since we already allow to skip entire memory blocks here,
     // we will not violate behaviour consistency if we also allow bit skipping,
     // note that we still ensure that all memory block's bits are written
 }
