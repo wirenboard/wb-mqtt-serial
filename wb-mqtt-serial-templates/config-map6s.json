@@ -35,7 +35,7 @@
    {
     "name": "Irms 1",
     "reg_type": "input", 
-    "address": "0x10df", 
+    "address": "0x10dd", 
     "type": "value", 
     "format": "u16", 
     "scale": 0.001, 
@@ -44,7 +44,7 @@
    {
     "name": "THDN I 1",
     "reg_type": "input", 
-    "address": "0x10f7", 
+    "address": "0x10f5", 
     "type": "value", 
     "format": "u16", 
     "scale": 0.01, 
@@ -53,7 +53,7 @@
    {
     "name": "P 1",
     "reg_type": "input", 
-    "address": "0x1306", 
+    "address": "0x1302", 
     "type": "power", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -62,7 +62,7 @@
    {
     "name": "Q 1",
     "reg_type": "input", 
-    "address": "0x130e", 
+    "address": "0x130a", 
     "type": "value", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -71,7 +71,7 @@
    {
     "name": "S 1",
     "reg_type": "input", 
-    "address": "0x1316", 
+    "address": "0x1312", 
     "type": "value", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -80,7 +80,7 @@
    {
     "name": "PF 1",
     "reg_type": "input", 
-    "address": "0x10bf", 
+    "address": "0x10bd", 
     "type": "value", 
     "format": "s16", 
     "scale": 0.001, 
@@ -89,7 +89,7 @@
    {
     "name": "AP energy 1",
     "reg_type": "input", 
-    "address": "0x120c", 
+    "address": "0x1204", 
     "type": "power_consumption", 
     "format": "u64", 
     "scale": 3.125e-05, 
@@ -99,7 +99,7 @@
    {
     "name": "RP energy 1",
     "reg_type": "input", 
-    "address": "0x122c", 
+    "address": "0x1224", 
     "type": "value", 
     "format": "u64", 
     "scale": 3.125e-05, 
@@ -109,7 +109,7 @@
    {
     "name": "Phase angle 1", 
     "reg_type": "input", 
-    "address": "0x10fb", 
+    "address": "0x10f9", 
     "type": "value", 
     "format": "s16", 
     "scale": 0.1, 
@@ -201,7 +201,7 @@
    {
     "name": "Irms 3",
     "reg_type": "input", 
-    "address": "0x10dd", 
+    "address": "0x10df", 
     "type": "value", 
     "format": "u16", 
     "scale": 0.001, 
@@ -210,7 +210,7 @@
    {
     "name": "THDN I 3",
     "reg_type": "input", 
-    "address": "0x10f5", 
+    "address": "0x10f7", 
     "type": "value", 
     "format": "u16", 
     "scale": 0.01, 
@@ -219,7 +219,7 @@
    {
     "name": "P 3",
     "reg_type": "input", 
-    "address": "0x1302", 
+    "address": "0x1306", 
     "type": "power", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -228,7 +228,7 @@
    {
     "name": "Q 3",
     "reg_type": "input", 
-    "address": "0x130a", 
+    "address": "0x130e", 
     "type": "value", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -237,7 +237,7 @@
    {
     "name": "S 3",
     "reg_type": "input", 
-    "address": "0x1312", 
+    "address": "0x1316", 
     "type": "value", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -246,7 +246,7 @@
    {
     "name": "PF 3",
     "reg_type": "input", 
-    "address": "0x10bd", 
+    "address": "0x10bf", 
     "type": "value", 
     "format": "s16", 
     "scale": 0.001, 
@@ -255,7 +255,7 @@
    {
     "name": "AP energy 3",
     "reg_type": "input", 
-    "address": "0x1204", 
+    "address": "0x120c", 
     "type": "power_consumption", 
     "format": "u64", 
     "scale": 3.125e-05, 
@@ -265,7 +265,7 @@
    {
     "name": "RP energy 3",
     "reg_type": "input", 
-    "address": "0x1224", 
+    "address": "0x122c", 
     "type": "value", 
     "format": "u64", 
     "scale": 3.125e-05, 
@@ -275,7 +275,7 @@
    {
     "name": "Phase angle 3", 
     "reg_type": "input", 
-    "address": "0x10f9", 
+    "address": "0x10fb", 
     "type": "value", 
     "format": "s16", 
     "scale": 0.1, 
@@ -284,7 +284,7 @@
    {
     "name": "Irms 4",
     "reg_type": "input", 
-    "address": "0x20df", 
+    "address": "0x20dd", 
     "type": "value", 
     "format": "u16", 
     "scale": 0.001, 
@@ -293,7 +293,7 @@
    {
     "name": "THDN I 4",
     "reg_type": "input", 
-    "address": "0x20f7", 
+    "address": "0x20f5", 
     "type": "value", 
     "format": "u16", 
     "scale": 0.01, 
@@ -302,7 +302,7 @@
    {
     "name": "P 4",
     "reg_type": "input", 
-    "address": "0x2306", 
+    "address": "0x2302", 
     "type": "power", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -311,7 +311,7 @@
    {
     "name": "Q 4",
     "reg_type": "input", 
-    "address": "0x230e", 
+    "address": "0x230a", 
     "type": "value", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -320,7 +320,7 @@
    {
     "name": "S 4",
     "reg_type": "input", 
-    "address": "0x2316", 
+    "address": "0x2312", 
     "type": "value", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -329,7 +329,7 @@
    {
     "name": "PF 4",
     "reg_type": "input", 
-    "address": "0x20bf", 
+    "address": "0x20bd", 
     "type": "value", 
     "format": "s16", 
     "scale": 0.001, 
@@ -338,7 +338,7 @@
    {
     "name": "AP energy 4",
     "reg_type": "input", 
-    "address": "0x220c", 
+    "address": "0x2204", 
     "type": "power_consumption", 
     "format": "u64", 
     "scale": 3.125e-05, 
@@ -348,7 +348,7 @@
    {
     "name": "RP energy 4",
     "reg_type": "input", 
-    "address": "0x222c", 
+    "address": "0x2224", 
     "type": "value", 
     "format": "u64", 
     "scale": 3.125e-05, 
@@ -358,7 +358,7 @@
    {
     "name": "Phase angle 4", 
     "reg_type": "input", 
-    "address": "0x20fb", 
+    "address": "0x20f9", 
     "type": "value", 
     "format": "s16", 
     "scale": 0.1, 
@@ -450,7 +450,7 @@
    {
     "name": "Irms 6",
     "reg_type": "input", 
-    "address": "0x20dd", 
+    "address": "0x20df", 
     "type": "value", 
     "format": "u16", 
     "scale": 0.001, 
@@ -459,7 +459,7 @@
    {
     "name": "THDN I 6",
     "reg_type": "input", 
-    "address": "0x20f5", 
+    "address": "0x20f7", 
     "type": "value", 
     "format": "u16", 
     "scale": 0.01, 
@@ -468,7 +468,7 @@
    {
     "name": "P 6",
     "reg_type": "input", 
-    "address": "0x2302", 
+    "address": "0x2306", 
     "type": "power", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -477,7 +477,7 @@
    {
     "name": "Q 6",
     "reg_type": "input", 
-    "address": "0x230a", 
+    "address": "0x230e", 
     "type": "value", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -486,7 +486,7 @@
    {
     "name": "S 6",
     "reg_type": "input", 
-    "address": "0x2312", 
+    "address": "0x2316", 
     "type": "value", 
     "format": "s32", 
     "scale": 1.52588e-05, 
@@ -495,7 +495,7 @@
    {
     "name": "PF 6",
     "reg_type": "input", 
-    "address": "0x20bd", 
+    "address": "0x20bf", 
     "type": "value", 
     "format": "s16", 
     "scale": 0.001, 
@@ -504,7 +504,7 @@
    {
     "name": "AP energy 6",
     "reg_type": "input", 
-    "address": "0x2204", 
+    "address": "0x220c", 
     "type": "power_consumption", 
     "format": "u64", 
     "scale": 3.125e-05, 
@@ -514,7 +514,7 @@
    {
     "name": "RP energy 6",
     "reg_type": "input", 
-    "address": "0x2224", 
+    "address": "0x222c", 
     "type": "value", 
     "format": "u64", 
     "scale": 3.125e-05, 
@@ -524,7 +524,7 @@
    {
     "name": "Phase angle 6", 
     "reg_type": "input", 
-    "address": "0x20f9", 
+    "address": "0x20fb", 
     "type": "value", 
     "format": "s16", 
     "scale": 0.1, 
