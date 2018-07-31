@@ -1,3 +1,10 @@
+wb-mqtt-serial (1.44) stable; urgency=medium
+
+  * add template for WB-MAI2-mini/CC two channel 0-20mA to Modbus RTU 
+    converter
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 31 Jul 2018 20:53:43 +0300
+
 wb-mqtt-serial (1.43.1) stable; urgency=medium
 
   * remove channel mode registers from WB-MDM2 config for compatibility 
