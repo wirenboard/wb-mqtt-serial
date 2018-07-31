@@ -11,7 +11,7 @@
                 "reg_type": "input", 
                 "address": "246", 
                 "format": "s16", 
-                "scale": 0.03125
+                "scale": 3.125e-05
             }, 
             {
                 "name": "Current input 2 (mA)", 
@@ -19,7 +19,7 @@
                 "reg_type": "input", 
                 "address": "247", 
                 "format": "s16", 
-                "scale": 0.03125
+                "scale": 3.125e-05
             }, 
             {
                 "name": "Input Voltage", 
