@@ -2,8 +2,6 @@
 
 #include "declarations.h"
 
-#include <vector>
-
 
 class TIRDeviceQueryFactory
 {

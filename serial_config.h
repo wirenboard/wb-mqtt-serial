@@ -1,14 +1,14 @@
 #pragma once
 
+#include "register_config.h"
+#include "port_settings.h"
+
 #include <string>
 #include <sstream>
 #include <memory>
 #include <vector>
 #include <exception>
 #include <map>
-
-#include "register_config.h"
-#include "port_settings.h"
 
 #if defined(__APPLE__) || defined(__APPLE_CC__)
 #   include <json/json.h>

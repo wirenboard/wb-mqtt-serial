@@ -1,12 +1,8 @@
 #pragma once
 
 #include "declarations.h"
-#include "utils.h"
-#include "types.h"
 #include "ir_device_memory_view.h"
 
-#include <list>
-#include <vector>
 #include <cassert>
 
 /**

@@ -5,6 +5,7 @@
 #include <ostream>
 
 #define REGISTER_FORMATS \
+    /*<name>, <alias>, <max size>*/ \
     XX(AUTO, "auto", 0) \
     XX(U8, "u8", 1) \
     XX(S8, "s8", 1) \
