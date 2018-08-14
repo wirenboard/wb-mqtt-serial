@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.44.1) stable; urgency=medium
+
+  * fix MAI2-mini/CC template
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 14 Aug 2018 19:05:09 +0300
+
 wb-mqtt-serial (1.44) stable; urgency=medium
 
   * add template for WB-MAI2-mini/CC two channel 0-20mA to Modbus RTU 
