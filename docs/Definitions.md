@@ -1,3 +1,4 @@
+# Terminology specific to this driver
 #### Size
 Memory size in bytes
 
