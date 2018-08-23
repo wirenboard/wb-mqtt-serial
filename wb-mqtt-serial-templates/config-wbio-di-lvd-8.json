@@ -1,0 +1,105 @@
+{
+    "device_type": "WBIO-DI-LVD-8",
+    "device": {
+        "name": "WBIO-DI-LVD-8",
+        "id": "wb-mio-gpio",
+        "protocol": "modbus_io",
+        "stride": 1000,
+        "max_read_registers": 0,
+        "setup": [
+            {
+                "title": "IODIR",
+                "address": 10000,
+                "value": "0xffff"
+            },
+            {
+                "title": "IPOL",
+                "address": 10001,
+                "value": "0x0000"
+            },
+            {
+                "title": "GPINTEN",
+                "address": 10002,
+                "value": "0xffff"
+            },
+            {
+                "title": "DEFVAL",
+                "address": 10003,
+                "value": "0x0000"
+            },
+            {
+                "title": "INTCON",
+                "address": 10004,
+                "value": "0x0000"
+            },
+            {
+                "title": "IOCON",
+                "address": 10005,
+                "value": "0x4444"
+            },
+            {
+                "title": "CONFIG-FLAG",
+                "address": 9999,
+                "value": 1
+            }
+        ],
+        "channels": [
+            {
+                "name": "IN1",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 0,
+                "type": "switch"
+            },
+            {
+                "name": "IN2",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 1,
+                "type": "switch"
+            },
+            {
+                "name": "IN3",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 2,
+                "type": "switch"
+            },
+            {
+                "name": "IN4",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 3,
+                "type": "switch"
+            },
+            {
+                "name": "IN5",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 4,
+                "type": "switch"
+            },
+            {
+                "name": "IN6",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 5,
+                "type": "switch"
+            },
+            {
+                "name": "IN7",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 6,
+                "type": "switch"
+            },
+            {
+                "name": "IN8",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 7,
+                "type": "switch"
+            }
+        ]
+    }
+}

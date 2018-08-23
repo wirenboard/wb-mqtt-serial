@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.45) stable; urgency=medium
+
+  * add templates for LVD-8 and LVD-16 via WB-MIO
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 23 Aug 2018 11:50:48 +0300
+
 wb-mqtt-serial (1.44.1) stable; urgency=medium
 
   * fix MAI2-mini/CC template
