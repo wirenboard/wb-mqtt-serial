@@ -49,13 +49,13 @@
                 "name": "Discrete Input 1",
                 "type": "switch",
                 "reg_type": "discrete",
-                "address": 2
+                "address": 0
             },
             {
                 "name": "Discrete Input 2",
                 "type": "switch",
                 "reg_type": "discrete",
-                "address": 3
+                "address": 1
             },
             {		
                 "name": "Counter 1",
