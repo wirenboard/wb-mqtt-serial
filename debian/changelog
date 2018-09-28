@@ -1,3 +1,29 @@
+wb-mqtt-serial (1.44.1) stable; urgency=medium
+
+  * fix MAI2-mini/CC template
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 14 Aug 2018 19:05:09 +0300
+
+wb-mqtt-serial (1.44) stable; urgency=medium
+
+  * add template for WB-MAI2-mini/CC two channel 0-20mA to Modbus RTU 
+    converter
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 31 Jul 2018 20:53:43 +0300
+
+wb-mqtt-serial (1.43.1) stable; urgency=medium
+
+  * remove channel mode registers from WB-MDM2 config for compatibility 
+    with old fw versions
+
+ -- Evgeny Boger <boger@contactless.ru>  Sun, 29 Jul 2018 18:53:35 +0300
+
+wb-mqtt-serial (1.43) stable; urgency=medium
+
+  * Add template for WB-MAP3E
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 05 Jul 2018 11:29:15 +0300
+
 wb-mqtt-serial (1.42) stable; urgency=medium
 
   * add templates for WB-MAP3H 
