@@ -1,12 +1,18 @@
-wb-mqtt-serial (1.46); urgency=medium
+wb-mqtt-serial (1.47); urgency=medium
 
   * add template for WB-MWAC 
 
  -- sergey <sergey@contactless.ru>  Fri, 12 Oct 2018 14:21:45 +0300
 
+wb-mqtt-serial (1.46) stable; urgency=medium
+
+  * add template for WB-M1W2 fw v. 4 (w. discrete inputs and counters)
+
+ -- Evgeny Boger <boger@contactless.ru>  Fri, 28 Sep 2018 14:28:55 +0300
+
 wb-mqtt-serial (1.45) stable; urgency=medium
 
-  * add template for WB-MSW v.3
+* add template for WB-MSW v.3
 
  -- Evgeny Boger <boger@contactless.ru>  Wed, 03 Oct 2018 22:09:51 +0300
 
