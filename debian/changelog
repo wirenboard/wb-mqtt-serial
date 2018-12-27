@@ -1,3 +1,10 @@
+wb-mqtt-serial (1.47.2) stable; urgency=medium
+
+  * fix compatibility with wb-utils 2.0
+  * use of_machine_match instead of WB_VERSION
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 27 Dec 2018 18:26:55 +0300
+
 wb-mqtt-serial (1.47.1) stable; urgency=medium
 
   * fix u32 slave id string parser
