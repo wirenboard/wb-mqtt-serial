@@ -1,26 +1,22 @@
-#!/bin/sh
+#!/bin/bash
 . /etc/wb_env.sh
+
+wb_source "of"
 
 CONFFILE=/etc/wb-mqtt-serial.conf
 
-case "$WB_VERSION" in
-    "60" | "61" )
-        BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb6"
-    ;;
-
-    "58" | "55" | "52"|"50" )
-        BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5"
-    ;;
-
-    "41|32|28|KMON1" )
-        BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234"
-    ;;
-
-    * )
-        BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.default"
-    ;;
-esac
-
+if of_machine_match "contactless,imx6ul-wirenboard60"; then
+    BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb6"
+elif of_machine_match "contactless,imx28-wirenboard50"; then
+    BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5"
+elif of_machine_match "contactless,imx23-wirenboard41" || 
+     of_machine_match "contactless,imx23-wirenboard32" || 
+     of_machine_match "contactless,imx23-wirenboard28"; 
+then
+    BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234"
+else
+    BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.default"
+fi
 
 ucf --debconf-ok $BOARD_CONF $CONFFILE
 
