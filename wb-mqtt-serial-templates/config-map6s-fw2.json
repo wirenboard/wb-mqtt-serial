@@ -1,7 +1,7 @@
 {
- "device_type": "WB-MAP6S",
+ "device_type": "WB-MAP6S fw2",
  "device": {
-  "name": "WB-MAP6S",
+  "name": "WB-MAP6S fw2",
   "id": "wb-map6s",
   "max_read_registers": 60,
   "channels": [
@@ -35,11 +35,11 @@
    {
     "name": "Irms 1",
     "reg_type": "input",
-    "address": "0x10df",
+    "address": "0x141a",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "THDN I 1",
@@ -56,7 +56,7 @@
     "address": "0x1306",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -65,7 +65,7 @@
     "address": "0x130e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -74,7 +74,7 @@
     "address": "0x1316",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -92,8 +92,8 @@
     "address": "0x120c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -102,8 +102,8 @@
     "address": "0x122c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -118,11 +118,11 @@
    {
     "name": "Irms 2",
     "reg_type": "input",
-    "address": "0x10de",
+    "address": "0x1418",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "THDN I 2",
@@ -139,7 +139,7 @@
     "address": "0x1304",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -148,7 +148,7 @@
     "address": "0x130c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -157,7 +157,7 @@
     "address": "0x1314",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -175,8 +175,8 @@
     "address": "0x1208",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -185,8 +185,8 @@
     "address": "0x1228",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -201,11 +201,11 @@
    {
     "name": "Irms 3",
     "reg_type": "input",
-    "address": "0x10dd",
+    "address": "0x1416",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "THDN I 3",
@@ -222,7 +222,7 @@
     "address": "0x1302",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -231,7 +231,7 @@
     "address": "0x130a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -240,7 +240,7 @@
     "address": "0x1312",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -258,8 +258,8 @@
     "address": "0x1204",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -268,8 +268,8 @@
     "address": "0x1224",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -284,11 +284,11 @@
    {
     "name": "Irms 4",
     "reg_type": "input",
-    "address": "0x20df",
+    "address": "0x241a",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "THDN I 4",
@@ -305,7 +305,7 @@
     "address": "0x2306",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -314,7 +314,7 @@
     "address": "0x230e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -323,7 +323,7 @@
     "address": "0x2316",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -341,8 +341,8 @@
     "address": "0x220c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -351,8 +351,8 @@
     "address": "0x222c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -367,11 +367,11 @@
    {
     "name": "Irms 5",
     "reg_type": "input",
-    "address": "0x20de",
+    "address": "0x2418",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "THDN I 5",
@@ -388,7 +388,7 @@
     "address": "0x2304",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -397,7 +397,7 @@
     "address": "0x230c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -406,7 +406,7 @@
     "address": "0x2314",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -424,8 +424,8 @@
     "address": "0x2208",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -434,8 +434,8 @@
     "address": "0x2228",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -450,11 +450,11 @@
    {
     "name": "Irms 6",
     "reg_type": "input",
-    "address": "0x20dd",
+    "address": "0x2416",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "THDN I 6",
@@ -471,7 +471,7 @@
     "address": "0x2302",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -480,7 +480,7 @@
     "address": "0x230a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -489,7 +489,7 @@
     "address": "0x2312",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -507,8 +507,8 @@
     "address": "0x2204",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -517,8 +517,8 @@
     "address": "0x2224",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {

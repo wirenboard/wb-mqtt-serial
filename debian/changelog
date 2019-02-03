@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.48) unstable; urgency=medium
+
+  * add templates for WB-MAP fw. 2.1
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 24 Dec 2018 13:09:47 +0300
+
 wb-mqtt-serial (1.47.2) stable; urgency=medium
 
   * fix compatibility with wb-utils 2.0

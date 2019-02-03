@@ -1,18 +1,18 @@
 {
- "device_type": "WB-MAP3H",
+ "device_type": "WB-MAP3H fw2 (+ harmonics)",
  "device": {
-  "name": "WB-MAP3H",
+  "name": "WB-MAP3H fw2 (+ harmonics)",
   "id": "wb-map3h",
   "max_read_registers": 60,
   "channels": [
    {
     "name": "Urms L1",
     "reg_type": "input",
-    "address": "0x10d9",
+    "address": "0x1410",
     "type": "voltage",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
    },
    {
     "name": "THD U L1",
@@ -44,11 +44,11 @@
    {
     "name": "Urms L2",
     "reg_type": "input",
-    "address": "0x10da",
+    "address": "0x1412",
     "type": "voltage",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
    },
    {
     "name": "THD U L2",
@@ -80,11 +80,11 @@
    {
     "name": "Urms L3",
     "reg_type": "input",
-    "address": "0x10db",
+    "address": "0x1414",
     "type": "voltage",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
    },
    {
     "name": "THD U L3",
@@ -150,13 +150,193 @@
     "round_to": 0.01
    },
    {
-    "name": "Irms L1",
+    "name": "HR U 2 L1",
     "reg_type": "input",
-    "address": "0x10dd",
+    "address": "0x167b",
     "type": "value",
     "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 3 L1",
+    "reg_type": "input",
+    "address": "0x167c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 4 L1",
+    "reg_type": "input",
+    "address": "0x167d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 5 L1",
+    "reg_type": "input",
+    "address": "0x167e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 6 L1",
+    "reg_type": "input",
+    "address": "0x167f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 7 L1",
+    "reg_type": "input",
+    "address": "0x1680",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 2 L2",
+    "reg_type": "input",
+    "address": "0x16a4",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 3 L2",
+    "reg_type": "input",
+    "address": "0x16a5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 4 L2",
+    "reg_type": "input",
+    "address": "0x16a6",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 5 L2",
+    "reg_type": "input",
+    "address": "0x16a7",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 6 L2",
+    "reg_type": "input",
+    "address": "0x16a8",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 7 L2",
+    "reg_type": "input",
+    "address": "0x16a9",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 2 L3",
+    "reg_type": "input",
+    "address": "0x16cd",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 3 L3",
+    "reg_type": "input",
+    "address": "0x16ce",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 4 L3",
+    "reg_type": "input",
+    "address": "0x16cf",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 5 L3",
+    "reg_type": "input",
+    "address": "0x16d0",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 6 L3",
+    "reg_type": "input",
+    "address": "0x16d1",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 7 L3",
+    "reg_type": "input",
+    "address": "0x16d2",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Irms L1",
+    "reg_type": "input",
+    "address": "0x1416",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "THD I L1",
@@ -182,7 +362,7 @@
     "address": "0x1710",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -191,7 +371,7 @@
     "address": "0x1302",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -200,7 +380,7 @@
     "address": "0x130a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -209,7 +389,7 @@
     "address": "0x1312",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -218,7 +398,7 @@
     "address": "0x1582",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -236,7 +416,7 @@
     "address": "0x1402",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -245,7 +425,7 @@
     "address": "0x140a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -254,8 +434,8 @@
     "address": "0x1204",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -264,8 +444,8 @@
     "address": "0x1214",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -274,8 +454,8 @@
     "address": "0x1224",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -284,8 +464,8 @@
     "address": "0x1234",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -294,8 +474,8 @@
     "address": "0x1244",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -304,7 +484,7 @@
     "address": "0x1506",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -314,18 +494,18 @@
     "address": "0x1516",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
    {
     "name": "Irms L2",
     "reg_type": "input",
-    "address": "0x10de",
+    "address": "0x1418",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "THD I L2",
@@ -351,7 +531,7 @@
     "address": "0x1712",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -360,7 +540,7 @@
     "address": "0x1304",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -369,7 +549,7 @@
     "address": "0x130c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -378,7 +558,7 @@
     "address": "0x1314",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -387,7 +567,7 @@
     "address": "0x1584",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -405,7 +585,7 @@
     "address": "0x1404",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -414,7 +594,7 @@
     "address": "0x140c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -423,8 +603,8 @@
     "address": "0x1208",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -433,8 +613,8 @@
     "address": "0x1218",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -443,8 +623,8 @@
     "address": "0x1228",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -453,8 +633,8 @@
     "address": "0x1238",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -463,8 +643,8 @@
     "address": "0x1248",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -473,7 +653,7 @@
     "address": "0x150a",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -483,18 +663,18 @@
     "address": "0x151a",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
    {
     "name": "Irms L3",
     "reg_type": "input",
-    "address": "0x10df",
+    "address": "0x141a",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "THD I L3",
@@ -520,7 +700,7 @@
     "address": "0x1714",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -529,7 +709,7 @@
     "address": "0x1306",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -538,7 +718,7 @@
     "address": "0x130e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -547,7 +727,7 @@
     "address": "0x1316",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -556,7 +736,7 @@
     "address": "0x1586",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -574,7 +754,7 @@
     "address": "0x1406",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -583,7 +763,7 @@
     "address": "0x140e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -592,8 +772,8 @@
     "address": "0x120c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -602,8 +782,8 @@
     "address": "0x121c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -612,8 +792,8 @@
     "address": "0x122c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -622,8 +802,8 @@
     "address": "0x123c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -632,8 +812,8 @@
     "address": "0x124c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -642,7 +822,7 @@
     "address": "0x150e",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -652,7 +832,7 @@
     "address": "0x151e",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -662,7 +842,7 @@
     "address": "0x1300",
     "type": "power",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -671,7 +851,7 @@
     "address": "0x1308",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -680,7 +860,7 @@
     "address": "0x1310",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -707,7 +887,7 @@
     "address": "0x1580",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -716,7 +896,7 @@
     "address": "0x1400",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -725,7 +905,7 @@
     "address": "0x1408",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -734,8 +914,8 @@
     "address": "0x1200",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -744,8 +924,8 @@
     "address": "0x1210",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -754,8 +934,8 @@
     "address": "0x1220",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -764,8 +944,8 @@
     "address": "0x1230",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -774,8 +954,8 @@
     "address": "0x1240",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -784,7 +964,7 @@
     "address": "0x1502",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -794,7 +974,7 @@
     "address": "0x1512",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -824,6 +1004,306 @@
     "format": "s16",
     "scale": 0.1,
     "round_to": 0.01
+   },
+   {
+    "name": "HR I 2 L1",
+    "reg_type": "input",
+    "address": "0x1600",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 3 L1",
+    "reg_type": "input",
+    "address": "0x1601",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 4 L1",
+    "reg_type": "input",
+    "address": "0x1602",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 5 L1",
+    "reg_type": "input",
+    "address": "0x1603",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 6 L1",
+    "reg_type": "input",
+    "address": "0x1604",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 7 L1",
+    "reg_type": "input",
+    "address": "0x1605",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 9 L1",
+    "reg_type": "input",
+    "address": "0x1607",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 11 L1",
+    "reg_type": "input",
+    "address": "0x1609",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 13 L1",
+    "reg_type": "input",
+    "address": "0x160b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 15 L1",
+    "reg_type": "input",
+    "address": "0x160d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 2 L2",
+    "reg_type": "input",
+    "address": "0x1629",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 3 L2",
+    "reg_type": "input",
+    "address": "0x162a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 4 L2",
+    "reg_type": "input",
+    "address": "0x162b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 5 L2",
+    "reg_type": "input",
+    "address": "0x162c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 6 L2",
+    "reg_type": "input",
+    "address": "0x162d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 7 L2",
+    "reg_type": "input",
+    "address": "0x162e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 9 L2",
+    "reg_type": "input",
+    "address": "0x1630",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 11 L2",
+    "reg_type": "input",
+    "address": "0x1632",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 13 L2",
+    "reg_type": "input",
+    "address": "0x1634",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 15 L2",
+    "reg_type": "input",
+    "address": "0x1636",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 2 L3",
+    "reg_type": "input",
+    "address": "0x1652",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 3 L3",
+    "reg_type": "input",
+    "address": "0x1653",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 4 L3",
+    "reg_type": "input",
+    "address": "0x1654",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 5 L3",
+    "reg_type": "input",
+    "address": "0x1655",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 6 L3",
+    "reg_type": "input",
+    "address": "0x1656",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 7 L3",
+    "reg_type": "input",
+    "address": "0x1657",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 9 L3",
+    "reg_type": "input",
+    "address": "0x1659",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 11 L3",
+    "reg_type": "input",
+    "address": "0x165b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 13 L3",
+    "reg_type": "input",
+    "address": "0x165d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR I 15 L3",
+    "reg_type": "input",
+    "address": "0x165f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
    }
   ]
  }

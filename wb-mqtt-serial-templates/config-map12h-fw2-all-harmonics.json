@@ -1,18 +1,18 @@
 {
- "device_type": "WB-MAP12H (+ all harmonics)",
+ "device_type": "WB-MAP12H fw2 (+ all harmonics)",
  "device": {
-  "name": "WB-MAP12H (+ all harmonics)",
+  "name": "WB-MAP12H fw2 (+ all harmonics)",
   "id": "wb-map12h",
   "max_read_registers": 60,
   "channels": [
    {
     "name": "Urms L1",
     "reg_type": "input",
-    "address": "0x10d9",
+    "address": "0x1410",
     "type": "voltage",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
    },
    {
     "name": "THD U L1",
@@ -44,11 +44,11 @@
    {
     "name": "Urms L2",
     "reg_type": "input",
-    "address": "0x10da",
+    "address": "0x1412",
     "type": "voltage",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
    },
    {
     "name": "THD U L2",
@@ -80,11 +80,11 @@
    {
     "name": "Urms L3",
     "reg_type": "input",
-    "address": "0x10db",
+    "address": "0x1414",
     "type": "voltage",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
    },
    {
     "name": "THD U L3",
@@ -1382,11 +1382,11 @@
    {
     "name": "Ch 1 Irms L1",
     "reg_type": "input",
-    "address": "0x10dd",
+    "address": "0x1416",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 1 THD I L1",
@@ -1412,7 +1412,7 @@
     "address": "0x1710",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -1421,7 +1421,7 @@
     "address": "0x1302",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1430,7 +1430,7 @@
     "address": "0x130a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1439,7 +1439,7 @@
     "address": "0x1312",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1448,7 +1448,7 @@
     "address": "0x1582",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1466,7 +1466,7 @@
     "address": "0x1402",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1475,7 +1475,7 @@
     "address": "0x140a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1484,8 +1484,8 @@
     "address": "0x1204",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1494,8 +1494,8 @@
     "address": "0x1214",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1504,8 +1504,8 @@
     "address": "0x1224",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1514,8 +1514,8 @@
     "address": "0x1234",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1524,8 +1524,8 @@
     "address": "0x1244",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1534,7 +1534,7 @@
     "address": "0x1506",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -1544,18 +1544,18 @@
     "address": "0x1516",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
    {
     "name": "Ch 1 Irms L2",
     "reg_type": "input",
-    "address": "0x10de",
+    "address": "0x1418",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 1 THD I L2",
@@ -1581,7 +1581,7 @@
     "address": "0x1712",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -1590,7 +1590,7 @@
     "address": "0x1304",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1599,7 +1599,7 @@
     "address": "0x130c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1608,7 +1608,7 @@
     "address": "0x1314",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1617,7 +1617,7 @@
     "address": "0x1584",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1635,7 +1635,7 @@
     "address": "0x1404",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1644,7 +1644,7 @@
     "address": "0x140c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1653,8 +1653,8 @@
     "address": "0x1208",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1663,8 +1663,8 @@
     "address": "0x1218",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1673,8 +1673,8 @@
     "address": "0x1228",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1683,8 +1683,8 @@
     "address": "0x1238",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1693,8 +1693,8 @@
     "address": "0x1248",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1703,7 +1703,7 @@
     "address": "0x150a",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -1713,18 +1713,18 @@
     "address": "0x151a",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
    {
     "name": "Ch 1 Irms L3",
     "reg_type": "input",
-    "address": "0x10df",
+    "address": "0x141a",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 1 THD I L3",
@@ -1750,7 +1750,7 @@
     "address": "0x1714",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -1759,7 +1759,7 @@
     "address": "0x1306",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1768,7 +1768,7 @@
     "address": "0x130e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1777,7 +1777,7 @@
     "address": "0x1316",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1786,7 +1786,7 @@
     "address": "0x1586",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1804,7 +1804,7 @@
     "address": "0x1406",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1813,7 +1813,7 @@
     "address": "0x140e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -1822,8 +1822,8 @@
     "address": "0x120c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1832,8 +1832,8 @@
     "address": "0x121c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1842,8 +1842,8 @@
     "address": "0x122c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1852,8 +1852,8 @@
     "address": "0x123c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1862,8 +1862,8 @@
     "address": "0x124c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1872,7 +1872,7 @@
     "address": "0x150e",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -1882,7 +1882,7 @@
     "address": "0x151e",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -1892,7 +1892,7 @@
     "address": "0x1300",
     "type": "power",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -1901,7 +1901,7 @@
     "address": "0x1308",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -1910,7 +1910,7 @@
     "address": "0x1310",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -1937,7 +1937,7 @@
     "address": "0x1580",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -1946,7 +1946,7 @@
     "address": "0x1400",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -1955,7 +1955,7 @@
     "address": "0x1408",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -1964,8 +1964,8 @@
     "address": "0x1200",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1974,8 +1974,8 @@
     "address": "0x1210",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1984,8 +1984,8 @@
     "address": "0x1220",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -1994,8 +1994,8 @@
     "address": "0x1230",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -2004,8 +2004,8 @@
     "address": "0x1240",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -2014,7 +2014,7 @@
     "address": "0x1502",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -2024,7 +2024,7 @@
     "address": "0x1512",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -3288,11 +3288,11 @@
    {
     "name": "Ch 2 Irms L1",
     "reg_type": "input",
-    "address": "0x20dd",
+    "address": "0x2416",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 2 THD I L1",
@@ -3318,7 +3318,7 @@
     "address": "0x2710",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -3327,7 +3327,7 @@
     "address": "0x2302",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3336,7 +3336,7 @@
     "address": "0x230a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3345,7 +3345,7 @@
     "address": "0x2312",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3354,7 +3354,7 @@
     "address": "0x2582",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3372,7 +3372,7 @@
     "address": "0x2402",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3381,7 +3381,7 @@
     "address": "0x240a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3390,8 +3390,8 @@
     "address": "0x2204",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3400,8 +3400,8 @@
     "address": "0x2214",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3410,8 +3410,8 @@
     "address": "0x2224",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3420,8 +3420,8 @@
     "address": "0x2234",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3430,8 +3430,8 @@
     "address": "0x2244",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3440,7 +3440,7 @@
     "address": "0x2506",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -3450,18 +3450,18 @@
     "address": "0x2516",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
    {
     "name": "Ch 2 Irms L2",
     "reg_type": "input",
-    "address": "0x20de",
+    "address": "0x2418",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 2 THD I L2",
@@ -3487,7 +3487,7 @@
     "address": "0x2712",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -3496,7 +3496,7 @@
     "address": "0x2304",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3505,7 +3505,7 @@
     "address": "0x230c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3514,7 +3514,7 @@
     "address": "0x2314",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3523,7 +3523,7 @@
     "address": "0x2584",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3541,7 +3541,7 @@
     "address": "0x2404",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3550,7 +3550,7 @@
     "address": "0x240c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3559,8 +3559,8 @@
     "address": "0x2208",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3569,8 +3569,8 @@
     "address": "0x2218",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3579,8 +3579,8 @@
     "address": "0x2228",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3589,8 +3589,8 @@
     "address": "0x2238",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3599,8 +3599,8 @@
     "address": "0x2248",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3609,7 +3609,7 @@
     "address": "0x250a",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -3619,18 +3619,18 @@
     "address": "0x251a",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
    {
     "name": "Ch 2 Irms L3",
     "reg_type": "input",
-    "address": "0x20df",
+    "address": "0x241a",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 2 THD I L3",
@@ -3656,7 +3656,7 @@
     "address": "0x2714",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -3665,7 +3665,7 @@
     "address": "0x2306",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3674,7 +3674,7 @@
     "address": "0x230e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3683,7 +3683,7 @@
     "address": "0x2316",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3692,7 +3692,7 @@
     "address": "0x2586",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3710,7 +3710,7 @@
     "address": "0x2406",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3719,7 +3719,7 @@
     "address": "0x240e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -3728,8 +3728,8 @@
     "address": "0x220c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3738,8 +3738,8 @@
     "address": "0x221c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3748,8 +3748,8 @@
     "address": "0x222c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3758,8 +3758,8 @@
     "address": "0x223c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3768,8 +3768,8 @@
     "address": "0x224c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3778,7 +3778,7 @@
     "address": "0x250e",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -3788,7 +3788,7 @@
     "address": "0x251e",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -3798,7 +3798,7 @@
     "address": "0x2300",
     "type": "power",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -3807,7 +3807,7 @@
     "address": "0x2308",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -3816,7 +3816,7 @@
     "address": "0x2310",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -3843,7 +3843,7 @@
     "address": "0x2580",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -3852,7 +3852,7 @@
     "address": "0x2400",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -3861,7 +3861,7 @@
     "address": "0x2408",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -3870,8 +3870,8 @@
     "address": "0x2200",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3880,8 +3880,8 @@
     "address": "0x2210",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3890,8 +3890,8 @@
     "address": "0x2220",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3900,8 +3900,8 @@
     "address": "0x2230",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3910,8 +3910,8 @@
     "address": "0x2240",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -3920,7 +3920,7 @@
     "address": "0x2502",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -3930,7 +3930,7 @@
     "address": "0x2512",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -5194,11 +5194,11 @@
    {
     "name": "Ch 3 Irms L1",
     "reg_type": "input",
-    "address": "0x30dd",
+    "address": "0x3416",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 3 THD I L1",
@@ -5224,7 +5224,7 @@
     "address": "0x3710",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -5233,7 +5233,7 @@
     "address": "0x3302",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5242,7 +5242,7 @@
     "address": "0x330a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5251,7 +5251,7 @@
     "address": "0x3312",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5260,7 +5260,7 @@
     "address": "0x3582",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5278,7 +5278,7 @@
     "address": "0x3402",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5287,7 +5287,7 @@
     "address": "0x340a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5296,8 +5296,8 @@
     "address": "0x3204",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5306,8 +5306,8 @@
     "address": "0x3214",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5316,8 +5316,8 @@
     "address": "0x3224",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5326,8 +5326,8 @@
     "address": "0x3234",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5336,8 +5336,8 @@
     "address": "0x3244",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5346,7 +5346,7 @@
     "address": "0x3506",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -5356,18 +5356,18 @@
     "address": "0x3516",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
    {
     "name": "Ch 3 Irms L2",
     "reg_type": "input",
-    "address": "0x30de",
+    "address": "0x3418",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 3 THD I L2",
@@ -5393,7 +5393,7 @@
     "address": "0x3712",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -5402,7 +5402,7 @@
     "address": "0x3304",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5411,7 +5411,7 @@
     "address": "0x330c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5420,7 +5420,7 @@
     "address": "0x3314",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5429,7 +5429,7 @@
     "address": "0x3584",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5447,7 +5447,7 @@
     "address": "0x3404",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5456,7 +5456,7 @@
     "address": "0x340c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5465,8 +5465,8 @@
     "address": "0x3208",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5475,8 +5475,8 @@
     "address": "0x3218",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5485,8 +5485,8 @@
     "address": "0x3228",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5495,8 +5495,8 @@
     "address": "0x3238",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5505,8 +5505,8 @@
     "address": "0x3248",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5515,7 +5515,7 @@
     "address": "0x350a",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -5525,18 +5525,18 @@
     "address": "0x351a",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
    {
     "name": "Ch 3 Irms L3",
     "reg_type": "input",
-    "address": "0x30df",
+    "address": "0x341a",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 3 THD I L3",
@@ -5562,7 +5562,7 @@
     "address": "0x3714",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -5571,7 +5571,7 @@
     "address": "0x3306",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5580,7 +5580,7 @@
     "address": "0x330e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5589,7 +5589,7 @@
     "address": "0x3316",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5598,7 +5598,7 @@
     "address": "0x3586",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5616,7 +5616,7 @@
     "address": "0x3406",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5625,7 +5625,7 @@
     "address": "0x340e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -5634,8 +5634,8 @@
     "address": "0x320c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5644,8 +5644,8 @@
     "address": "0x321c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5654,8 +5654,8 @@
     "address": "0x322c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5664,8 +5664,8 @@
     "address": "0x323c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5674,8 +5674,8 @@
     "address": "0x324c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5684,7 +5684,7 @@
     "address": "0x350e",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -5694,7 +5694,7 @@
     "address": "0x351e",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -5704,7 +5704,7 @@
     "address": "0x3300",
     "type": "power",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -5713,7 +5713,7 @@
     "address": "0x3308",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -5722,7 +5722,7 @@
     "address": "0x3310",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -5749,7 +5749,7 @@
     "address": "0x3580",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -5758,7 +5758,7 @@
     "address": "0x3400",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -5767,7 +5767,7 @@
     "address": "0x3408",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -5776,8 +5776,8 @@
     "address": "0x3200",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5786,8 +5786,8 @@
     "address": "0x3210",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5796,8 +5796,8 @@
     "address": "0x3220",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5806,8 +5806,8 @@
     "address": "0x3230",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5816,8 +5816,8 @@
     "address": "0x3240",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -5826,7 +5826,7 @@
     "address": "0x3502",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -5836,7 +5836,7 @@
     "address": "0x3512",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -7100,11 +7100,11 @@
    {
     "name": "Ch 4 Irms L1",
     "reg_type": "input",
-    "address": "0x40dd",
+    "address": "0x4416",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 4 THD I L1",
@@ -7130,7 +7130,7 @@
     "address": "0x4710",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -7139,7 +7139,7 @@
     "address": "0x4302",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7148,7 +7148,7 @@
     "address": "0x430a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7157,7 +7157,7 @@
     "address": "0x4312",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7166,7 +7166,7 @@
     "address": "0x4582",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7184,7 +7184,7 @@
     "address": "0x4402",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7193,7 +7193,7 @@
     "address": "0x440a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7202,8 +7202,8 @@
     "address": "0x4204",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7212,8 +7212,8 @@
     "address": "0x4214",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7222,8 +7222,8 @@
     "address": "0x4224",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7232,8 +7232,8 @@
     "address": "0x4234",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7242,8 +7242,8 @@
     "address": "0x4244",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7252,7 +7252,7 @@
     "address": "0x4506",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -7262,18 +7262,18 @@
     "address": "0x4516",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
    {
     "name": "Ch 4 Irms L2",
     "reg_type": "input",
-    "address": "0x40de",
+    "address": "0x4418",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 4 THD I L2",
@@ -7299,7 +7299,7 @@
     "address": "0x4712",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -7308,7 +7308,7 @@
     "address": "0x4304",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7317,7 +7317,7 @@
     "address": "0x430c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7326,7 +7326,7 @@
     "address": "0x4314",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7335,7 +7335,7 @@
     "address": "0x4584",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7353,7 +7353,7 @@
     "address": "0x4404",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7362,7 +7362,7 @@
     "address": "0x440c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7371,8 +7371,8 @@
     "address": "0x4208",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7381,8 +7381,8 @@
     "address": "0x4218",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7391,8 +7391,8 @@
     "address": "0x4228",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7401,8 +7401,8 @@
     "address": "0x4238",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7411,8 +7411,8 @@
     "address": "0x4248",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7421,7 +7421,7 @@
     "address": "0x450a",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -7431,18 +7431,18 @@
     "address": "0x451a",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
    {
     "name": "Ch 4 Irms L3",
     "reg_type": "input",
-    "address": "0x40df",
+    "address": "0x441a",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
     "name": "Ch 4 THD I L3",
@@ -7468,7 +7468,7 @@
     "address": "0x4714",
     "type": "value",
     "format": "u16",
-    "scale": 0.0032656,
+    "scale": 0.0522496,
     "round_to": 0.01
    },
    {
@@ -7477,7 +7477,7 @@
     "address": "0x4306",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7486,7 +7486,7 @@
     "address": "0x430e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7495,7 +7495,7 @@
     "address": "0x4316",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7504,7 +7504,7 @@
     "address": "0x4586",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7522,7 +7522,7 @@
     "address": "0x4406",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7531,7 +7531,7 @@
     "address": "0x440e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.000244141,
     "round_to": 0.01
    },
    {
@@ -7540,8 +7540,8 @@
     "address": "0x420c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7550,8 +7550,8 @@
     "address": "0x421c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7560,8 +7560,8 @@
     "address": "0x422c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7570,8 +7570,8 @@
     "address": "0x423c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7580,8 +7580,8 @@
     "address": "0x424c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7590,7 +7590,7 @@
     "address": "0x450e",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -7600,7 +7600,7 @@
     "address": "0x451e",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -7610,7 +7610,7 @@
     "address": "0x4300",
     "type": "power",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -7619,7 +7619,7 @@
     "address": "0x4308",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -7628,7 +7628,7 @@
     "address": "0x4310",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -7655,7 +7655,7 @@
     "address": "0x4580",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -7664,7 +7664,7 @@
     "address": "0x4400",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -7673,7 +7673,7 @@
     "address": "0x4408",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.000976562,
     "round_to": 0.01
    },
    {
@@ -7682,8 +7682,8 @@
     "address": "0x4200",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7692,8 +7692,8 @@
     "address": "0x4210",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7702,8 +7702,8 @@
     "address": "0x4220",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7712,8 +7712,8 @@
     "address": "0x4230",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7722,8 +7722,8 @@
     "address": "0x4240",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -7732,7 +7732,7 @@
     "address": "0x4502",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },
@@ -7742,7 +7742,7 @@
     "address": "0x4512",
     "type": "value",
     "format": "u32",
-    "scale": 0.0182044,
+    "scale": 0.291271,
     "round_to": 0.0001,
     "word_order": "little_endian"
    },

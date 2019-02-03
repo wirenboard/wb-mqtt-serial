@@ -1,63 +1,66 @@
 {
- "device_type": "WB-MAP3H (basic)",
+ "device_type": "WB-MAP3E fw2",
  "device": {
-  "name": "WB-MAP3H (basic)",
-  "id": "wb-map3h",
+  "name": "WB-MAP3E fw2",
+  "id": "wb-map3e",
   "max_read_registers": 60,
   "channels": [
    {
     "name": "Urms L1",
     "reg_type": "input",
-    "address": "0x10d9",
+    "address": "0x1410",
     "type": "voltage",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
    },
    {
-    "name": "THDN U L1",
+    "name": "Upeak L1",
     "reg_type": "input",
-    "address": "0x10f1",
-    "type": "value",
-    "format": "u16",
+    "address": "0x1810",
+    "type": "voltage",
+    "format": "s32",
     "scale": 0.01,
-    "round_to": 0.01
+    "round_to": 0.01,
+    "word_order": "little_endian"
    },
    {
     "name": "Urms L2",
     "reg_type": "input",
-    "address": "0x10da",
+    "address": "0x1412",
     "type": "voltage",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
    },
    {
-    "name": "THDN U L2",
+    "name": "Upeak L2",
     "reg_type": "input",
-    "address": "0x10f2",
-    "type": "value",
-    "format": "u16",
+    "address": "0x1812",
+    "type": "voltage",
+    "format": "s32",
     "scale": 0.01,
-    "round_to": 0.01
+    "round_to": 0.01,
+    "word_order": "little_endian"
    },
    {
     "name": "Urms L3",
     "reg_type": "input",
-    "address": "0x10db",
+    "address": "0x1414",
     "type": "voltage",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
    },
    {
-    "name": "THDN U L3",
+    "name": "Upeak L3",
     "reg_type": "input",
-    "address": "0x10f3",
-    "type": "value",
-    "format": "u16",
+    "address": "0x1814",
+    "type": "voltage",
+    "format": "s32",
     "scale": 0.01,
-    "round_to": 0.01
+    "round_to": 0.01,
+    "word_order": "little_endian"
    },
    {
     "name": "Frequency",
@@ -98,20 +101,21 @@
    {
     "name": "Irms L1",
     "reg_type": "input",
-    "address": "0x10dd",
+    "address": "0x1416",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
-    "name": "THDN I L1",
+    "name": "Ipeak L1",
     "reg_type": "input",
-    "address": "0x10f5",
+    "address": "0x1818",
     "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "s32",
+    "scale": 0.016,
+    "round_to": 0.01,
+    "word_order": "little_endian"
    },
    {
     "name": "P L1",
@@ -119,7 +123,7 @@
     "address": "0x1302",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -128,7 +132,7 @@
     "address": "0x130a",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -137,7 +141,7 @@
     "address": "0x1312",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -155,8 +159,8 @@
     "address": "0x1204",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -165,27 +169,28 @@
     "address": "0x1224",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
     "name": "Irms L2",
     "reg_type": "input",
-    "address": "0x10de",
+    "address": "0x1418",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
-    "name": "THDN I L2",
+    "name": "Ipeak L2",
     "reg_type": "input",
-    "address": "0x10f6",
+    "address": "0x181a",
     "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "s32",
+    "scale": 0.016,
+    "round_to": 0.01,
+    "word_order": "little_endian"
    },
    {
     "name": "P L2",
@@ -193,7 +198,7 @@
     "address": "0x1304",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -202,7 +207,7 @@
     "address": "0x130c",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -211,7 +216,7 @@
     "address": "0x1314",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -229,8 +234,8 @@
     "address": "0x1208",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -239,27 +244,28 @@
     "address": "0x1228",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
     "name": "Irms L3",
     "reg_type": "input",
-    "address": "0x10df",
+    "address": "0x141a",
     "type": "value",
-    "format": "u16",
-    "scale": 0.001,
-    "round_to": 0.01
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
    },
    {
-    "name": "THDN I L3",
+    "name": "Ipeak L3",
     "reg_type": "input",
-    "address": "0x10f7",
+    "address": "0x181c",
     "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
+    "format": "s32",
+    "scale": 0.016,
+    "round_to": 0.01,
+    "word_order": "little_endian"
    },
    {
     "name": "P L3",
@@ -267,7 +273,7 @@
     "address": "0x1306",
     "type": "power",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -276,7 +282,7 @@
     "address": "0x130e",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -285,7 +291,7 @@
     "address": "0x1316",
     "type": "value",
     "format": "s32",
-    "scale": 1.52588e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -303,8 +309,8 @@
     "address": "0x120c",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -313,8 +319,8 @@
     "address": "0x122c",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -323,7 +329,7 @@
     "address": "0x1300",
     "type": "power",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -332,7 +338,7 @@
     "address": "0x1308",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -341,7 +347,7 @@
     "address": "0x1310",
     "type": "value",
     "format": "s32",
-    "scale": 6.10352e-05,
+    "scale": 0.00512,
     "round_to": 0.01
    },
    {
@@ -359,8 +365,8 @@
     "address": "0x1200",
     "type": "power_consumption",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
@@ -369,8 +375,8 @@
     "address": "0x1220",
     "type": "value",
     "format": "u64",
-    "scale": 3.125e-05,
-    "round_to": 0.0001,
+    "scale": 1e-05,
+    "round_to": 1e-06,
     "word_order": "little_endian"
    },
    {
