@@ -1,0 +1,218 @@
+{
+    "device_type": "WB-MSW v.3",
+    "device": {
+        "name": "WB-MSW v.3",
+        "id": "wb-msw-v3",
+        "max_read_registers": 0,
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "address": 0,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "error_value": "0x7FFF"
+            },
+            {
+                "name": "Humidity",
+                "reg_type": "input",
+                "address": 1,
+                "type": "rel_humidity",
+                "scale": 0.1,
+                "error_value": "0xFFFF"
+            },
+            {
+                "name": "Air Quality (VOC)",
+                "reg_type": "input",
+                "address": 11,
+                "type": "concentration",
+                "scale": 1,
+                "error_value": "0xFFFF"
+            },
+            {
+                "name": "CO2",
+                "reg_type": "holding",
+                "address": 8,
+                "type": "concentration",
+                "error_value": "0xFFFF"
+            },
+            {
+                "name": "Sound Level",
+                "reg_type": "input",
+                "address": 3,
+                "scale": 0.01,
+                "type": "sound_level"
+            },
+            {
+                "name": "Illuminance",
+                "reg_type": "input",
+                "address": 9,
+                "type": "lux",
+                "format": "u32",
+                "scale": 0.01,
+                "error_value": "0xFFFFFFFF"
+            },
+            {
+                "name": "Max Motion",
+                "type": "value",
+                "reg_type": "input",
+                "address": "280"
+            },
+            {
+                "name": "Current Motion",
+                "type": "value",
+                "reg_type": "input",
+                "address": "283"
+            },
+            {
+                "name": "Buzzer",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 0
+            },
+            {
+                "name": "Red LED",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 10
+            },
+            {
+                "name": "Green LED",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 11
+            },
+            {
+                "name": "LED Period (s)",
+                "reg_type": "holding",
+                "address": 97,
+                "type": "range",
+                "max": 10
+            },
+            {
+                "name": "LED Glow Duration (ms)",
+                "reg_type": "holding",
+                "address": 98,
+                "type": "range",
+                "max": 50
+            },
+            {
+                "name": "Learn to RAM",
+                "reg_type": "coil",
+                "address": 5001,
+                "type": "switch"
+            },
+            {
+                "name": "Play from RAM",
+                "reg_type": "coil",
+                "address": 5002,
+                "type": "pushbutton"
+            },
+            {
+                "name": "Learn to ROM1",
+                "reg_type": "coil",
+                "address": 5300,
+                "type": "switch"
+            },
+            {
+                "name": "Learn to ROM2",
+                "reg_type": "coil",
+                "address": 5301,
+                "type": "switch"
+            },
+            {
+                "name": "Learn to ROM3",
+                "reg_type": "coil",
+                "address": 5302,
+                "type": "switch"
+            },
+            {
+                "name": "Learn to ROM4",
+                "reg_type": "coil",
+                "address": 5303,
+                "type": "switch"
+            },
+            {
+                "name": "Learn to ROM5",
+                "reg_type": "coil",
+                "address": 5304,
+                "type": "switch"
+            },
+            {
+                "name": "Learn to ROM6",
+                "reg_type": "coil",
+                "address": 5305,
+                "type": "switch"
+            },
+            {
+                "name": "Learn to ROM7",
+                "reg_type": "coil",
+                "address": 5306,
+                "type": "switch"
+            },
+            {
+                "name": "Play from ROM1",
+                "reg_type": "coil",
+                "address": 5100,
+                "type": "pushbutton"
+            },
+            {
+                "name": "Play from ROM2",
+                "reg_type": "coil",
+                "address": 5101,
+                "type": "pushbutton"
+            },
+            {
+                "name": "Play from ROM3",
+                "reg_type": "coil",
+                "address": 5102,
+                "type": "pushbutton"
+            },
+            {
+                "name": "Play from ROM4",
+                "reg_type": "coil",
+                "address": 5103,
+                "type": "pushbutton"
+            },
+            {
+                "name": "Play from ROM5",
+                "reg_type": "coil",
+                "address": 5104,
+                "type": "pushbutton"
+            },
+            {
+                "name": "Play from ROM6",
+                "reg_type": "coil",
+                "address": 5105,
+                "type": "pushbutton"
+            },
+            {
+                "name": "Play from ROM7",
+                "reg_type": "coil",
+                "address": 5106,
+                "type": "pushbutton"
+            },
+            {
+                "name": "Reset all ROM",
+                "reg_type": "coil",
+                "address": 5000,
+                "type": "pushbutton"
+            },
+            {
+                "name": "Input Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "scale": 0.001,
+                "type": "voltage"
+            },
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "holding",
+                "address": 270,
+                "format": "u32"
+            }
+        ]
+    }
+}

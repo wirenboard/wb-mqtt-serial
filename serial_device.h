@@ -149,7 +149,7 @@ public:
 
 
 template<>
-int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s) const;
+unsigned long TBasicProtocolConverter<unsigned long>::ConvertSlaveId(const std::string &s) const;
 
 template<>
 TAggregatedSlaveId TBasicProtocolConverter<TAggregatedSlaveId>::ConvertSlaveId(const std::string &s) const;
@@ -158,7 +158,7 @@ TAggregatedSlaveId TBasicProtocolConverter<TAggregatedSlaveId>::ConvertSlaveId(c
  * Basic protocol implementation with slave ID collision check
  * using Slave ID extractor and registered slave ID map
  */
-template<class Dev, typename SlaveId = int>
+template<class Dev, typename SlaveId = unsigned long>
 class TBasicProtocol : public TBasicProtocolConverter<SlaveId>
 {
 public:
