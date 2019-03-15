@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.49.1) stable; urgency=medium
+
+  * add  wb-mrm2-mini template 
+
+-- Alexander Kilpio <kilpio@wirenboard.ru> Mon, 14 Mar 2019 18:22:00 +0300
+
 wb-mqtt-serial (1.49.0) stable; urgency=medium
 
   * add wbio-ai-dv-12(50V) template 
