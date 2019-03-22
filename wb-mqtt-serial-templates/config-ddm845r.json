@@ -1,0 +1,118 @@
+{
+    "device_type": "DDM845R",
+    "device": {
+        "name": "DDM845R",
+        "id": "ddm845r",
+        "guard_interval_us": 3500,
+        "max_read_registers": 10,
+        "delay_ms": 0,
+        "enabled": true,
+
+        "channels": [
+
+            {
+                "name": "Channel 1",
+                "reg_type": "holding",
+                "address": "0x28",
+                "type": "range",
+                "max": "0x3ff"
+            },
+            {
+                "name": "Channel 2",
+                "reg_type": "holding",
+                "address": "0x29",
+                "type": "range",
+                "max": "0x3ff"
+            },
+            {
+                "name": "Channel 3",
+                "reg_type": "holding",
+                "address": "0x2A",
+                "type": "range",
+                "max": "0x3ff"
+            },
+            {
+                "name": "Channel 4",
+                "reg_type": "holding",
+                "address": "0x2B",
+                "type": "range",
+                "max": "0x3ff"
+            },
+            {
+                "name": "All channels",
+                "reg_type": "holding",
+                "address": "0x2C",
+                "type": "range",
+                "max": "0x64"
+            },
+              {
+                "name" : "Input 1 state",
+                "reg_type" : "input",
+                "address" : 4,
+                "type" : "value"
+            },
+
+            {
+                "name" : "Input 2 state",
+                "reg_type" : "input",
+                "address" : 5,
+                "type" : "value"
+            },
+            {
+                "name" : "Input 3 state",
+                "reg_type" : "input",
+                "address" : 6,
+                "type" : "value"
+            },
+            {
+                "name" : "Input 4 state",
+                "reg_type" : "input",
+                "address" : 7,
+                "type" : "value"
+            },
+            {
+                "name" : "Input 5 state",
+                "reg_type" : "input",
+                "address" : 8,
+                "type" : "value"
+            },
+            {
+                "name" : "Input 6 state",
+                "reg_type" : "input",
+                "address" : 9,
+                "type" : "value"
+            },
+            {
+                "name" : "Input 7 state",
+                "reg_type" : "input",
+                "address" : 10,
+                "type" : "value"
+            },
+            {
+                "name" : "Input 8 state",
+                "reg_type" : "input",
+                "address" : 11,
+                "type" : "value"
+            },
+            {   "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": "60",
+		"scale": 0.01,
+                "type": "value"
+            },
+            {    "name": "Seconds RTC",
+                "reg_type": "input",
+                "address": "9009",
+                "type": "value"
+            },
+
+            {    "name": "Minutes RTC",
+                "reg_type": "input",
+                "address": "9008",
+                "type": "value"
+            }
+
+             
+        ]
+    }
+}
