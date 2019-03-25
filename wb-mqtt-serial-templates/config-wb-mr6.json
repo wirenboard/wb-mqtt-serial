@@ -41,14 +41,12 @@
                 "address": 5,
                 "type": "switch"
             },
-            //-----------------------------------------------------------------
             {
                 "name": "Safety Timer",
                 "reg_type": "holding",
                 "address": 8,
                 "type": "range"
             },
-            //-----------------------------------------------------------------
             {
                 "name": "Input 1",
                 "reg_type": "discrete",
@@ -91,7 +89,6 @@
                 "address": 7,
                 "type": "switch"
             },
-            //-----------------------------------------------------------------------------------------------
             {
                 "name": "Input 1 counter",
                 "reg_type": "input",
@@ -134,7 +131,6 @@
                 "address": 39,
                 "type": "value"
             },
-            //--------------------------------------------------------------------------------------
             {
                 "name": "Supply voltage",
                 "reg_type": "input",
@@ -144,7 +140,7 @@
             },
             {
                 "name": "Serial",
-                "type": "text",
+                "type": "input",
                 "reg_type": "holding",
                 "address": 270,
                 "format": "u32"
