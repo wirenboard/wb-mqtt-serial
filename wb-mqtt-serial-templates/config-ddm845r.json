@@ -5,7 +5,6 @@
     "id": "ddm845r",
     "guard_interval_us": 3500,
     "max_read_registers": 10,
-    "enabled": true,
     "channels": [
       {
         "name": "Channel 1",
@@ -92,10 +91,12 @@
       },
       {
         "name": "MCU Temperature",
+	"type": "temperature",
         "reg_type": "input",
         "address": "60",
         "scale": 0.01,
-        "type": "value"
+	"round_to": 1.0
+        
       }
     ]
   }
