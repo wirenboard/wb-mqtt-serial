@@ -15,15 +15,6 @@
     "round_to": 0.01
    },
    {
-    "name": "THDN U",
-    "reg_type": "input",
-    "address": "0x10f1",
-    "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
-   },
-   {
     "name": "Frequency",
     "reg_type": "input",
     "address": "0x10f8",
@@ -40,15 +31,6 @@
     "format": "u32",
     "scale": 2.44141e-07,
     "round_to": 0.0001
-   },
-   {
-    "name": "THDN I 1",
-    "reg_type": "input",
-    "address": "0x10f7",
-    "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
    },
    {
     "name": "P 1",
@@ -125,15 +107,6 @@
     "round_to": 0.0001
    },
    {
-    "name": "THDN I 2",
-    "reg_type": "input",
-    "address": "0x10f6",
-    "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
-   },
-   {
     "name": "P 2",
     "reg_type": "input",
     "address": "0x1304",
@@ -206,15 +179,6 @@
     "format": "u32",
     "scale": 2.44141e-07,
     "round_to": 0.0001
-   },
-   {
-    "name": "THDN I 3",
-    "reg_type": "input",
-    "address": "0x10f5",
-    "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
    },
    {
     "name": "P 3",
@@ -291,15 +255,6 @@
     "round_to": 0.0001
    },
    {
-    "name": "THDN I 4",
-    "reg_type": "input",
-    "address": "0x20f7",
-    "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
-   },
-   {
     "name": "P 4",
     "reg_type": "input",
     "address": "0x2306",
@@ -374,15 +329,6 @@
     "round_to": 0.0001
    },
    {
-    "name": "THDN I 5",
-    "reg_type": "input",
-    "address": "0x20f6",
-    "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
-   },
-   {
     "name": "P 5",
     "reg_type": "input",
     "address": "0x2304",
@@ -455,15 +401,6 @@
     "format": "u32",
     "scale": 2.44141e-07,
     "round_to": 0.0001
-   },
-   {
-    "name": "THDN I 6",
-    "reg_type": "input",
-    "address": "0x20f5",
-    "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
    },
    {
     "name": "P 6",

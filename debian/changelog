@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.49.3) stable; urgency=medium
+
+  * wb-map6s: remove unsupported THD registers from template
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 01 Apr 2019 18:58:26 +0300
+
 wb-mqtt-serial (1.49.2) stable; urgency=medium
 
   * add ddm845r template 
