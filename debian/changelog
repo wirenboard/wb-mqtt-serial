@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.49.2) stable; urgency=medium
+
+  * add ddm845r template 
+
+ -- Alexander Kilpio <kilpio@wirenboard.ru> Mon, 25 Mar 2019 15:05:00 +0300
+
 wb-mqtt-serial (1.49.1) stable; urgency=medium
 
   * add  wb-mrm2-mini template 
