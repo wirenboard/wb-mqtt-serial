@@ -1,0 +1,409 @@
+{
+    "device_type": "VACON_10",
+    "device": {
+        "name": "VACON_10",
+        "id": "vacon_10",
+        "max_read_registers": 0,
+        "setup" : [
+            {
+                "title": "Communication timeout",
+                "address": 813,
+                "value": 25
+            }
+        ],
+        "channels": [
+            {
+                "name": "V1.1 Output frequency (Hz)",
+                "reg_type": "input",
+                "address": 0,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "V1.2 Frequency reference (Hz)",
+                "reg_type": "input",
+                "address": 24,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "V1.3 Motor speed (rpm)",
+                "reg_type": "input",
+                "address": 1,
+                "scale": 1,
+                "type": "value"
+            },
+            {
+                "name": "V1.4 Motor current (A)",
+                "reg_type": "input",
+                "address": 2,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "V1.5 Motor torque (%)",
+                "reg_type": "input",
+                "address": 3,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "V1.6 Motor Power (%)",
+                "reg_type": "input",
+                "address": 4,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "V1.7 Motor voltage",
+                "reg_type": "input",
+                "address": 5,
+                "scale": 0.1,
+                "type": "voltage"
+            },
+            {
+                "name": "V1.8 DC-link voltage",
+                "reg_type": "input",
+                "address": 6,
+                "scale": 1,
+                "type": "voltage"
+            },
+            {
+                "name": "V1.9 Drive temperature",
+                "reg_type": "input",
+                "address": 7,
+                "scale": 1,
+                "type": "temperature"
+            },
+            {
+                "name": "V1.10 Motor temperature (%)",
+                "reg_type": "input",
+                "address": 8,
+                "scale": 1,
+                "type": "value"
+            },
+            {
+                "name": "V2.1 Analog input 1 (%)",
+                "reg_type": "input",
+                "address": 58,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "V2.2 Analog input 2 (%)",
+                "reg_type": "input",
+                "address": 59,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "V2.3 Analog output (%)",
+                "reg_type": "input",
+                "address": 80,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "V2.4 DI status (1,2,3)",
+                "reg_type": "input",
+                "address": 14,
+                "type": "value"
+            },
+            {
+                "name": "V2.5 DI status (4,5,6)",
+                "reg_type": "input",
+                "address": 15,
+                "type": "value"
+            },
+            {
+                "name": "V2.6 RO1, RO2, DO",
+                "reg_type": "input",
+                "address": 16,
+                "type": "value"
+            },
+            {
+                "name": "V4.1 PI setpoint (%)",
+                "reg_type": "input",
+                "address": 19,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "V4.2 PI feedback value (%)",
+                "reg_type": "input",
+                "address": 20,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "V4.3 PI error (%)",
+                "reg_type": "input",
+                "address": 21,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "V4.4 PI output (%)",
+                "reg_type": "input",
+                "address": 22,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "MWh counter",
+                "reg_type": "input",
+                "address": 826,
+                "type": "value"
+            },
+            {
+                "name": "Power on days",
+                "reg_type": "input",
+                "address": 827,
+                "type": "value"
+            },
+            {
+                "name": "Power on hours",
+                "reg_type": "input",
+                "address": 828,
+                "type": "value"
+            },
+            {
+                "name": "Run counter: Days",
+                "reg_type": "input",
+                "address": 839,
+                "type": "value"
+            },
+            {
+                "name": "Run counter: Hours",
+                "reg_type": "input",
+                "address": 840,
+                "type": "value"
+            },
+            {
+                "name": "Fault counter",
+                "reg_type": "input",
+                "address": 841,
+                "type": "value"
+            },
+            {
+                "name": "Motor speed (%)",
+                "reg_type": "input",
+                "address": 2102,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "Output frequency (+/- Hz)",
+                "reg_type": "input",
+                "address": 2103,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "Motor speed (rpm)",
+                "reg_type": "input",
+                "address": 2104,
+                "scale": 1,
+                "type": "value"
+            },
+            {
+                "name": "Motor current (A)",
+                "reg_type": "input",
+                "address": 2105,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "Motor torque +/- % (of nom)",
+                "reg_type": "input",
+                "address": 2106,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "Motor power +/- % (of nom)",
+                "reg_type": "input",
+                "address": 2107,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "Motor voltage",
+                "reg_type": "input",
+                "address": 2108,
+                "scale": 0.1,
+                "type": "voltage"
+            },
+            {
+                "name": "DC link voltage 2",
+                "reg_type": "input",
+                "address": 2109,
+                "scale": 1,
+                "type": "voltage"
+            },
+            {
+                "name": "Active fault code",
+                "reg_type": "input",
+                "address": 2110,
+                "type": "value"
+            },
+            {
+                "name": "Status Word",
+                "reg_type": "input",
+                "address": 2100,
+                "type": "value"
+            },
+            {
+                "name": "Status: Drive ready",
+                "reg_type": "input",
+                "address": "2100:0:1",
+                "type": "switch"
+            },
+            {
+                "name": "Status: Run",
+                "reg_type": "input",
+                "address": "2100:1:1",
+                "type": "switch"
+            },
+            {
+                "name": "Status: Counter-clockwise",
+                "reg_type": "input",
+                "address": "2100:2:1",
+                "type": "switch"
+            },
+            {
+                "name": "Status: Fault active",
+                "reg_type": "input",
+                "address": "2100:3:1",
+                "type": "switch"
+            },
+            {
+                "name": "Status: Alarm active",
+                "reg_type": "input",
+                "address": "2100:4:1",
+                "type": "switch"
+            },
+            {
+                "name": "Status: Speed reference reached",
+                "reg_type": "input",
+                "address": "2100:5:1",
+                "type": "switch"
+            },
+            {
+                "name": "Status: Drive is running at zero speed",
+                "reg_type": "input",
+                "address": "2100:6:1",
+                "type": "switch"
+            },
+            {
+                "name": "P1.1 Motor nominal voltage",
+                "reg_type": "holding",
+                "address": 109,
+                "scale": 1,
+                "type": "voltage"
+            },
+            {
+                "name": "P1.2 Motor nominal frequency (Hz)",
+                "reg_type": "holding",
+                "address": 110,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "P1.3 Motor nominal speed (rpm)",
+                "reg_type": "holding",
+                "address": 111,
+                "scale": 1,
+                "type": "value"
+            },
+            {
+                "name": "P1.4 Motor nominal current (A)",
+                "reg_type": "holding",
+                "address": 112,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "P1.5 Motor Power Factor",
+                "reg_type": "holding",
+                "address": 119,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "P1.7 Current limit",
+                "reg_type": "holding",
+                "address": 106,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "P3.1 Min frequency",
+                "reg_type": "holding",
+                "address": 100,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "P3.2 Max frequency",
+                "reg_type": "holding",
+                "address": 101,
+                "scale": 0.01,
+                "type": "value"
+            },
+            {
+                "name": "P3.3 Freq reference source",
+                "reg_type": "holding",
+                "address": 116,
+                "scale": 1,
+                "type": "value"
+            },
+            {
+                "name": "P4.2 Acceleration time (s)",
+                "reg_type": "holding",
+                "address": 102,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "P4.3 Deceleration time (s)",
+                "reg_type": "holding",
+                "address": 103,
+                "scale": 0.1,
+                "type": "value"
+            },
+            {
+                "name": "Set motor speed",
+                "reg_type": "holding",
+                "address": 2002,
+                "scale": 0.01,
+                "type": "range",
+                "max": 100
+            },
+            {
+                "name": "Control Word",
+                "reg_type": "input",
+                "address": "2000",
+                "type": "value"
+            },
+            {
+                "name": "Control: Run",
+                "reg_type": "holding",
+                "address": "2000:0:1",
+                "type": "switch"
+            },
+            {
+                "name": "Control: Counter-clockwise",
+                "reg_type": "holding",
+                "address": "2000:1:1",
+                "type": "switch"
+            },
+            {
+                "name": "Control: Reset fault",
+                "reg_type": "holding",
+                "address": "2000:2:1",
+                "type": "switch"
+            }
+        ]
+    }
+}

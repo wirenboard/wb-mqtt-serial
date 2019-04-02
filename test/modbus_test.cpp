@@ -260,7 +260,7 @@ protected:
 
     void SetUp();
     void TearDown();
-    const char* ConfigPath() const { return "configs/config-modbus-test.json"; }
+    const char* ConfigPath() const override { return "configs/config-modbus-test.json"; }
     void ExpectPollQueries(TestMode mode = TEST_DEFAULT);
     void InvalidateConfigPoll(TestMode mode = TEST_DEFAULT);
 };
@@ -447,3 +447,56 @@ TEST_F(TModbusIntegrationTest, GuardInterval)
     Config->PortConfigs[0]->DeviceConfigs[0]->GuardInterval = chrono::microseconds(1000);
     InvalidateConfigPoll();
 }
+
+
+class TModbusBitmasksIntegrationTest: public TModbusIntegrationTest
+{
+protected:
+    const char* ConfigPath() const override { return "configs/config-modbus-bitmasks-test.json"; }
+
+    void ExpectPollQueries(bool afterWrite = false, bool afterWriteMultiple = false);
+};
+
+void TModbusBitmasksIntegrationTest::ExpectPollQueries(bool afterWriteSingle, bool afterWriteMultiple)
+{
+    EnqueueU8Shift0Bits8HoldingReadResponse();
+    EnqueueU16Shift8HoldingReadResponse(afterWriteMultiple);
+    EnqueueU8Shift0SingleBitHoldingReadResponse(afterWriteSingle);
+    EnqueueU8Shift1SingleBitHoldingReadResponse(afterWriteSingle);
+    EnqueueU8Shift2SingleBitHoldingReadResponse(afterWriteSingle);
+}
+
+TEST_F(TModbusBitmasksIntegrationTest, Poll)
+{
+    ExpectPollQueries();
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+}
+
+TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
+{
+    ExpectPollQueries();
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+
+    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/U8:1/on", "1");
+
+    EnqueueU8Shift1SingleBitHoldingWriteResponse();
+    ExpectPollQueries(true);
+    Note() << "LoopOnce()";
+    Observer->LoopOnce();
+}
+
+// TEST_F(TModbusBitmasksIntegrationTest, MultipleWrite)
+// {
+//     ExpectPollQueries();
+//     Note() << "LoopOnce()";
+//     Observer->LoopOnce();
+
+//     MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/U16:8/on", "5555");
+
+//     EnqueueU16Shift8HoldingWriteResponse();
+//     ExpectPollQueries(false, true);
+//     Note() << "LoopOnce()";
+//     Observer->LoopOnce();
+// }
