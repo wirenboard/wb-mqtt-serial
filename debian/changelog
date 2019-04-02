@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.50.0) stable; urgency=medium
+
+  * add preliminary bitmasks implementation
+
+ -- Evgeny Boger <boger@contactless.ru>  Tue, 02 Apr 2019 16:49:55 +0300
+
 wb-mqtt-serial (1.49.3) stable; urgency=medium
 
   * wb-map6s: remove unsupported THD registers from template
