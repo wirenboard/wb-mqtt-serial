@@ -5,6 +5,7 @@
 # Default-Stop:      0 1 6
 # Required-Start: $remote_fs mosquitto
 # Required-Stop: $remote_fs
+# Should-Start: wb-hwconf-manager
 # Short-Description: MQTT Driver for serial devices
 # Description:       MQTT Driver for serial devices
 ### END INIT INFO

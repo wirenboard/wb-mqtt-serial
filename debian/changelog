@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.50.1) stable; urgency=medium
+
+  * add start dependency from wb-hwconf-manager
+
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Fri, 12 Apr 2019 16:50:55 +0300
+
 wb-mqtt-serial (1.50.0) stable; urgency=medium
 
   * add preliminary bitmasks implementation
