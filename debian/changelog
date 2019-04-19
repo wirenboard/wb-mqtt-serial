@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.50.2) stable; urgency=medium
+
+  * add wb-mcm8 template
+
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Fri, 19 Apr 2019 14:51:00 +0300
+
 wb-mqtt-serial (1.50.1) stable; urgency=medium
 
   * add start dependency from wb-hwconf-manager
