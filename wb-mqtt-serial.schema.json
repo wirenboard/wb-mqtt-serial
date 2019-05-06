@@ -89,7 +89,7 @@
           "title": "Response timeout (ms)",
           "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
           "minimum": 0,
-          "default": 0,
+          "default": 500,
           "propertyOrder": 6
         },
         "guard_interval_us": {
@@ -178,7 +178,7 @@
           "title": "Response timeout (ms)",
           "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
           "minimum": 0,
-          "default": 0,
+          "default": 500,
           "propertyOrder": 5
         },
         "guard_interval_us": {
