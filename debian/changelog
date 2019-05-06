@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.50.2) stable; urgency=medium
+
+  * default value for response_timeout_ms is 500 ms
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 06 May 2019 20:06:49 +0300
+
 wb-mqtt-serial (1.50.1) stable; urgency=medium
 
   * add start dependency from wb-hwconf-manager
