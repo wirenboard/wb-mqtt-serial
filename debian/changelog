@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.52.0) stable; urgency=medium
+
+  * add  template Pulsar water meter v.1.1 
+
+ -- Alexander Kilpio <kilpio@wirenboard.ru> Mon, 27 May 2019 16:05:20 +0300
+
 wb-mqtt-serial (1.50.2) stable; urgency=medium
 
   * default value for response_timeout_ms is 500 ms
