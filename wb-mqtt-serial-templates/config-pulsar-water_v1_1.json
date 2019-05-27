@@ -1,8 +1,8 @@
 {
-    "device_type": "pulsar-m-water",
+    "device_type": "pulsar-water-v1_1",
     "device": {
-        "name": "Pulsar-M Water Meter",
-        "id": "pulsar-m-water",
+        "name": "Pulsar Water Meter v1.1",
+        "id": "pulsar-water-v1_1",
         "protocol": "pulsar",
         "channels": [
             {
@@ -10,6 +10,8 @@
                 "reg_type": "default",
                 "address": "0",
                 "format": "u32",
+		"scale": 0.001,
+                "round_to": 0.001, 	
                 "type": "water_consumption"
             }
         ]
