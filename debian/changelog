@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.51.0) stable; urgency=medium
+
+  * add wb-mcm8 template
+
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Tue, 28 May 2019 14:15:00 +0300
+
 wb-mqtt-serial (1.50.2) stable; urgency=medium
 
   * default value for response_timeout_ms is 500 ms
