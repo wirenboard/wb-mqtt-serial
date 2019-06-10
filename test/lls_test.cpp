@@ -55,12 +55,6 @@ void TLLSIntegrationTest::EnqueeCmdFCResponse()
 TEST_F(TLLSIntegrationTest, Poll)
 {
     EnqueeCmdF0Response();
-    EnqueeCmdF0Response();
-    EnqueeCmdF0Response();
-    EnqueeCmdF0Response();
-    EnqueeCmdF0Response();
-    EnqueeCmdF0Response();
-    EnqueeCmdFCResponse();
     EnqueeCmdFCResponse();
     Note() << "LoopOnce()";
     Observer->LoopOnce();
