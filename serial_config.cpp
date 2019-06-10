@@ -441,7 +441,7 @@ void TConfigParser::LoadDeviceTemplatableConfigPart(PDeviceConfig device_config,
     if (device_data.isMember("shift"))
         device_config->Shift = GetInt(device_data, "shift");
     if (device_data.isMember("access_level"))
-        device_config->AccessLevel = GetInt(device_data, "access_level")
+        device_config->AccessLevel = GetInt(device_data, "access_level");
 }
 
 int TConfigParser::ToInt(const Json::Value& v, const string& title)
