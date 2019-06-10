@@ -57,7 +57,7 @@ uint64_t TLLSDevice::ReadRegister(PRegister reg)
     uint8_t offset = (reg->Address & 0x00FF);
 
     uint8_t buf[MAX_LEN] = {};
-    buf[0] = 0x31;
+    buf[0] = 0x31; // request prefix
     buf[1] = SlaveId;
     buf[2] = cmd;
     buf[3] = dallas_crc8(buf, 3);
@@ -77,14 +77,15 @@ uint64_t TLLSDevice::ReadRegister(PRegister reg)
         throw TSerialDeviceTransientErrorException("invalid response crc");
     }
 
-    int result_buf[4] = {};
+    int result_buf[8] = {};
     for (int i=0; i< reg->ByteWidth(); ++i) {
         result_buf[i] = buf[3+offset+i];
     }
-    std::cout <<  int(result_buf[0]) << std::endl;
     
-    uint32_t val = (uint32_t)0xFF00 & (int) result_buf[0];
-    return val;
+    return (result_buf[3] << 24) | 
+           (result_buf[2] << 16) | 
+           (result_buf[1] << 8) |
+           result_buf[0];
        
 }
 
