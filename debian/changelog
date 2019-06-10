@@ -1,8 +1,14 @@
-wb-mqtt-serial (1.51.0) stable; urgency=medium
+wb-mqtt-serial (1.52.0) stable; urgency=medium
 
   * add wb-ms v2 template
 
  -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Tue, 21 May 2019 18:27:44 +0300
+
+wb-mqtt-serial (1.51.0) stable; urgency=medium
+
+  * add wb-mcm8 template
+
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Tue, 28 May 2019 14:15:00 +0300
 
 wb-mqtt-serial (1.50.2) stable; urgency=medium
 
