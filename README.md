@@ -482,6 +482,7 @@ Uniel. Устройства Милур требуют дополнительны
 |  Wiren Board модуль дискретных/счётных входов WB-MCM16  |   WB-MCM16  |  WB-MCM16  |   wb-mcm16    |
 |  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS            |  WB-MS-THLS | wb-ms-thls | WB-MS-THLS    |
 |  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS  (fw. v.2) |  WB-MS-THLS v.2 | wb-ms-thls | WB-MS-THLS    |
+|  Все остальные Modbus-устройства Wiren Board            | WB-*        |  - | - |
 
 
 **Милур**
@@ -489,6 +490,7 @@ Uniel. Устройства Милур требуют дополнительны
 |                     Device                     | device_type   | id_prefix | name_prefix      |
 |:----------------------------------------------:|:-------------:|:---------:|:----------------:|
 | Счётчик электроэнергии Милур-305               | milur305      | milur305  | Milur 305        |
+| Счётчик электроэнергии Милур-307               | milur305      | milur305  | Milur 305        |
 | Счётчик электроэнергии Милур-105 (Милур-104)   | Milur 104/105 | milur105  | Milur 105        |
 
 **Mercury 230**
@@ -496,6 +498,15 @@ Uniel. Устройства Милур требуют дополнительны
 |                     Device                     | device_type | id_prefix      | name_prefix      |
 |:----------------------------------------------:|:-----------:|:--------------:|:----------------:|
 | Счётчик электроэнергии Меркурий-230            | mercury230  | mercury230ar02 | Mercury 230AR-02 |
+| Счётчик электроэнергии Меркурий-234            | mercury230  | mercury230ar02 | Mercury 230AR-02 |
+| Счётчик электроэнергии Меркурий-236            | mercury230  | mercury230ar02 | Mercury 230AR-02 |
+
+**Mercury 200**
+
+|                     Device                     | device_type | id_prefix      | name_prefix      |
+|:----------------------------------------------:|:-----------:|:--------------:|:----------------:|
+| Счётчик электроэнергии Меркурий-206            | Mercury 200.02  | mercury200.02 | Mercury 200.02 |
+| Счётчик электроэнергии Меркурий-200.02            | Mercury 200.02  | mercury200.02 | Mercury 200.02 |
 
 **Uniel**
 
@@ -521,3 +532,10 @@ Uniel. Устройства Милур требуют дополнительны
 | Счётчик воды "Пульсар"                         | pulsar-water   | pulsar-water   |  Pulsar Water Meter   |
 | Счётчик воды многоструйный "Пульсар-М"         | pulsar-m-water | pulsar-m-water |  Pulsar-M Water Meter |
 | Счётчик тепла "Пульсар"                        | pulsar-heat    | pulsar-heat    |  Pulsar Heat Meter    |
+
+
+**Omnicomm LLS**
+
+|                     Device                     | device_type    | id_prefix      | name_prefix           |
+|:----------------------------------------------:|:--------------:|:--------------:|:---------------------:|
+| Датчик уровня сыпучих веществ ЭСКОРТ ДБ-2     | ESCORT DB-2   | escort-db-2   |  ESCORT DB-2   |
