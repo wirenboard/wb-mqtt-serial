@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <cstring>
 #include <string>
+#include <stddef.h>
 
 #include "lls_device.h"
 
