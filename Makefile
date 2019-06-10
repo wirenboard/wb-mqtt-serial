@@ -45,6 +45,7 @@ SERIAL_SRCS=register.cpp \
   uniel_device.cpp \
   s2k_device.cpp \
   ivtm_device.cpp \
+  lls_device.cpp \
   crc16.cpp \
   modbus_common.cpp \
   modbus_device.cpp \
