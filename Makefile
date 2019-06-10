@@ -74,6 +74,7 @@ TEST_SRCS= \
   $(TEST_DIR)/em_integration.o \
   $(TEST_DIR)/mercury200_expectations.o \
   $(TEST_DIR)/mercury200_test.o \
+  $(TEST_DIR)/lls_test.o \
   $(TEST_DIR)/mercury230_expectations.o \
   $(TEST_DIR)/mercury230_test.o \
   $(TEST_DIR)/milur_expectations.o \
