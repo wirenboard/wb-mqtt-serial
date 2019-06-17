@@ -1,3 +1,10 @@
+wb-mqtt-serial (1.53.0) stable; urgency=medium
+
+  * addread-only support for Omnicomm LLS protocol
+  * add ESCORT DB-2 level sensor template
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 17 Jun 2019 20:37:52 +0300
+
 wb-mqtt-serial (1.52.0) stable; urgency=medium
 
   * add wb-ms v2 template
