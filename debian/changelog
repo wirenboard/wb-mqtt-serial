@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.53.1) stable; urgency=medium
+
+  * properly parse access_level config property
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 10 Jun 2019 15:01:14 +0300
+
 wb-mqtt-serial (1.53.0) stable; urgency=medium
 
   * addread-only support for Omnicomm LLS protocol
