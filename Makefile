@@ -45,6 +45,7 @@ SERIAL_SRCS=register.cpp \
   uniel_device.cpp \
   s2k_device.cpp \
   ivtm_device.cpp \
+  lls_device.cpp \
   crc16.cpp \
   modbus_common.cpp \
   modbus_device.cpp \
@@ -73,6 +74,7 @@ TEST_SRCS= \
   $(TEST_DIR)/em_integration.o \
   $(TEST_DIR)/mercury200_expectations.o \
   $(TEST_DIR)/mercury200_test.o \
+  $(TEST_DIR)/lls_test.o \
   $(TEST_DIR)/mercury230_expectations.o \
   $(TEST_DIR)/mercury230_test.o \
   $(TEST_DIR)/milur_expectations.o \

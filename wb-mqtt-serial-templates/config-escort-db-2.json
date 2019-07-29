@@ -1,0 +1,66 @@
+{
+    "device_type": "ESCORT DB-2",
+    "device": {
+        "name": "ESCORT DB-2",
+        "id": "escort-db-2",
+        "protocol": "lls",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "default",
+                "address": "0xF000",
+                "format": "s8",
+                "type": "temperature"
+            },
+            {
+                "name": "Level",
+                "reg_type": "default",
+                "address": "0xF001",
+                "format": "u16",
+                "type": "value"
+            },
+            {
+                "name": "Raw",
+                "reg_type": "default",
+                "address": "0xF003",
+                "format": "u32",
+                "type": "value"
+            },
+            {
+                "name": "Empty",
+                "reg_type": "default",
+                "address": "0xF007",
+                "format": "u32",
+                "type": "value"
+            },
+            {
+                "name": "Full",
+                "reg_type": "default",
+                "address": "0xF00b",
+                "format": "u32",
+                "type": "value"
+            },
+            {
+                "name": "Conversion Factor",
+                "reg_type": "default",
+                "address": "0xF00F",
+                "format": "u16",
+                "type": "value"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "default",
+                "address": "0xFC00",
+                "format": "u32",
+                "type": "value"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "default",
+                "address": "0xFC04",
+                "format": "u16",
+                "type": "value"
+            }
+        ]
+    }
+}
