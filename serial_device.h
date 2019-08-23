@@ -59,6 +59,11 @@ namespace std
             return hash<string>{}(to_string(x));
         }
     };
+
+    inline string to_string(const string & x)
+    {
+        return x;
+    }
 }
 
 
@@ -166,6 +171,9 @@ public:
 
 template<>
 unsigned long TBasicProtocolConverter<unsigned long>::ConvertSlaveId(const std::string &s) const;
+
+template<>
+std::string TBasicProtocolConverter<std::string>::ConvertSlaveId(const std::string &s) const;
 
 template<>
 TAggregatedSlaveId TBasicProtocolConverter<TAggregatedSlaveId>::ConvertSlaveId(const std::string &s) const;
