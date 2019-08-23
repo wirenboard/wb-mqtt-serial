@@ -39,11 +39,13 @@ fake_serial_device '12': Device cycle FAIL
 fake_serial_device '12': disconnected
 Port cycle FAIL
 >>> LoopOnce() (limited polling expected)
+Sleep(100000)
 fake_serial_device '12': write address '1' failed: 'Serial protocol error: device disconnected'
 fake_serial_device '12': Device cycle FAIL
 Port cycle FAIL
 >>> SimulateDisconnect(false)
 >>> LoopOnce()
+Sleep(100000)
 fake_serial_device '12': write to address '1' value '42'
 fake_serial_device '12': write to address '2' value '24'
 fake_serial_device '12': read address '1' value '42'
