@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.54.0) stable; urgency=medium
+
+  * add wbio-ai-dv-12-20ma template
+
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Thu, 22 Aug 2019 16:18:00 +0300
+
 wb-mqtt-serial (1.53.1) stable; urgency=medium
 
   * properly parse access_level config property
