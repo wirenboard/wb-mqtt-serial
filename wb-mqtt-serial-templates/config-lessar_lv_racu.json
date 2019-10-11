@@ -1,30 +1,31 @@
 {
-	"device_type" : "LESSAR_LV_RACU",
+	"device_type" : "Lessar LV-RACU/Salda RIRS",
 	"device" : {
-		"name": "LESSAR_LV_RACU",
-		"id": "lessar_lv_racu",
-		"enabled": true,
+		"name": "Lessar LV-RACU/Salda RIRS",
+		"id": "lessar-lv-racu",
 		"guard_interval_us": 50000,
-		"poll_interval": 100000,
 		"max_read_registers": 1,
 		"channels": [
 		{
 			"name": "Filter",
 			"reg_type": "coil",
 			"address": "0x2",
-			"type": "text"
+			"type": "switch",
+			"channel_readonly": 1
 		},
 		{
-		   "name": "Preheater",
+			"name": "Preheater",
 			"reg_type": "coil",
 			"address": "0xC",
-			"type": "text"
+			"type": "switch",
+			"channel_readonly": 1
 		},
 		{
 			"name": "Heater",
 			"reg_type": "coil",
 			"address": "0xE",
-			"type": "text"
+			"type": "switch",
+			"channel_readonly": 1
 		},
 		{
 			"name": "Speed",
@@ -45,32 +46,32 @@
 			"reg_type": "input",
 			"address": "0x0",
 			"type": "temperature",
-		"format": "u8",
-		"scale": 0.1
+			"format": "u8",
+			"scale": 0.1
 		},
 		{
 			"name": "Texhaust",
 			"reg_type": "input",
 			"address": "0x6",
 			"type": "temperature",
-		"format": "u8",
-		"scale": 0.1
+			"format": "u8",
+			"scale": 0.1
 		},
 		{
 			"name": "Textract",
 			"reg_type": "input",
 			"address": "0x3",
 			"type": "temperature",
-		"format": "u8",
-		"scale": 0.1
+			"format": "u8",
+			"scale": 0.1
 		},
 		{
 			"name": "ToutDoor",
 			"reg_type": "input",
 			"address": "0x9",
 			"type": "temperature",
-		"format": "s16",
-		"scale": 0.1
+			"format": "s16",
+			"scale": 0.1
 		},
 		{
 			"name": "RH_value",
@@ -100,7 +101,8 @@
 			"name": "MotorActive",
 			"reg_type": "coil",
 			"address": "0xD",
-			"type": "text"
+			"type": "switch",
+			"channel_readonly": 1
 		}
 		]
 	}
