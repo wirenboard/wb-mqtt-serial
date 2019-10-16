@@ -11,7 +11,7 @@ mqtt-logger/mqtt-logger
 wb-homa-zway/wb-homa-zway
 test/wb-homa-test
 *.deb
-*/debian/files
+debian/files
 *.build
 *.changes
 *.dsc
@@ -19,22 +19,11 @@ test/wb-homa-test
 *.tar.gz
 *.debhelper.log
 *.debhelper
-*/debian/*.substvars
-wb-mqtt-timestamper/debian/wb-mqtt-timestamper/
-wb-mqtt-timestamper/wb-mqtt-timestamper
-wb-mqtt-db/wb-mqtt-db
-mqtt-logger/debian/mqtt-logger/
-wb-homa-adc/debian/wb-homa-adc/
-wb-homa-gpio/debian/wb-homa-gpio/
-wb-mqtt-serial/debian/wb-mqtt-serial/
-wb-mqtt-serial/debian/wb-homa-modbus/
-wb-mqtt-serial/debian/tmp/
-wb-homa-w1/debian/wb-homa-w1/
-wb-homa-ninja-bridge/debian/wb-homa-ninja-bridge/
-wb-mqtt-lirc/debian/wb-mqtt-lirc/
-wb-mqtt-db/debian/wb-mqtt-db/
+debian/*.substvars
+debian/wb-mqtt-serial/
+debian/wb-homa-modbus/
+debian/tmp/
 .d
-wb-mqtt-serial/build
 
 ### JetBrains ###
 */.idea/workspace.xml
