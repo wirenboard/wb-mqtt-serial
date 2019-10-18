@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.55.0) stable; urgency=medium
+
+  * add wb-mdm3 template
+
+ -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Fri, 18 Oct 2019 16:05:54 +0300
+
 wb-mqtt-serial (1.54.0) stable; urgency=medium
 
   * add wbio-ai-dv-12-20ma template
