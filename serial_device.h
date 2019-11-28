@@ -59,6 +59,11 @@ namespace std
             return hash<string>{}(to_string(x));
         }
     };
+
+    inline string to_string(const string & x)
+    {
+        return x;
+    }
 }
 
 
@@ -71,7 +76,10 @@ public:
     virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles = true) const;
 
     // Prepare to access device (pauses for configured delay by default)
+    // i.e. "StartSession". Called before any read/write/etc after communicating with another device
     virtual void Prepare();
+    // Ends communication session with the device. Called before communicating with another device
+    virtual void EndSession() {/*do nothing by default */}; 
     // Read register value
     virtual uint64_t ReadRegister(PRegister reg) = 0;
     // Write register value
@@ -163,6 +171,9 @@ public:
 
 template<>
 unsigned long TBasicProtocolConverter<unsigned long>::ConvertSlaveId(const std::string &s) const;
+
+template<>
+std::string TBasicProtocolConverter<std::string>::ConvertSlaveId(const std::string &s) const;
 
 template<>
 TAggregatedSlaveId TBasicProtocolConverter<TAggregatedSlaveId>::ConvertSlaveId(const std::string &s) const;
