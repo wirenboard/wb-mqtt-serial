@@ -5,6 +5,7 @@
 #include <chrono>
 #include <functional>
 #include <vector>
+#include <string>
 
 
 class TPort: public std::enable_shared_from_this<TPort> {
