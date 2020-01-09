@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.57.0) stable; urgency=medium
+
+  * add wb-mr6cu template
+
+ -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Thu, 09 Jan 2020 16:00:46 +0300
+
 wb-mqtt-serial (1.56.0) stable; urgency=medium
 
   * add wb-mr6c-nc template
