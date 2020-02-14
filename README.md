@@ -460,28 +460,29 @@ Uniel. Устройства Милур требуют дополнительны
 
 **Modbus-RTU**
 
-|                          Device                         | device_type | id_prefix  | name_prefix   |
-|:-------------------------------------------------------:|:-----------:|:----------:|:-------------:|
-| "Разумный дом" четырёхканальный диммер светодиодов DDL4 |    DDL24    |   ddl24    |    DDL24      |
-|           "Разумный дом" релейный модуль DRB88          |    DRB88    |   drb88    |    DRB88      |
-|      "ICP DAS" модуль управления освещением LC-103      |    LC-103   |   lc-103   |    LC-103     |
-|                   "Разумный дом" MSU24                  |    MSU24    |   msu24    |    MSU24      |
-|                   "Разумный дом" MSU21                  |    MSU21    |   msu21    |    MSU21      |
-|                   "Разумный дом" MSU34+TLP              |    MSU34    |   msu34tlp |  MSU34+TLP    |
-|                   "Разумный дом" MSU34+TLHP             | MSU34TLHP   | msu34tlhp  |  MSU34+TLHP   |
-|          "ICP DAS" модуль ввода-вывода TM-P3R3          |   TM-P3R3   |  TM-P3R3   |    tmp3r3     |
-|     "Kvadro" модуль подключения термометров 1-wire      |kvadro-1wire |kvadro-1wire| Kvadro 1-Wire |
-|     PD561Z-9SY счётчик электроэнергии                   |    PD561Z   |  pd561z    | pd561z        |
-|     SDM220 счётчик электроэнергии                       |    SDM220   |  sdm220    |  sdm220       |
-|     SDM120 счётчик электроэнергии                       |    SDM120   |  sdm120    |  sdm120       |
-|     WELLPRO WP8028ADAM (8DI/8DO)                        | WP8028ADAM  | wp8028adam |   WP8028ADAM  |
-|  Wiren Board RGB-диммер WB-MRGB                         |   WB-MRGB   |  WB-MRGB   |   wb-mrgb     |
-|  Wiren Board Релейный модуль WB-MRM2                    |   WB-MRM2   |  WB-MRM2   |   wb-mrm2     |
-|  Wiren Board Релейный модуль WB-MR11                    |   WB-MR11   |  WB-MR11   |   wb-mr11     |
-|  Wiren Board Релейный модуль WB-MR14                    |   WB-MR14   |  WB-MR14   |   wb-mr14     |
-|  Wiren Board модуль дискретных/счётных входов WB-MCM16  |   WB-MCM16  |  WB-MCM16  |   wb-mcm16    |
-|  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS            |  WB-MS-THLS | wb-ms-thls | WB-MS-THLS    |
-|  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS  (fw. v.2) |  WB-MS-THLS v.2 | wb-ms-thls | WB-MS-THLS    |
+|                          Device                         | device_type    | id_prefix      | name_prefix    |
+|:-------------------------------------------------------:|:--------------:|:--------------:|:--------------:|
+| "Разумный дом" четырёхканальный диммер светодиодов DDL4 | DDL24          | ddl24          | DDL24          |
+|           "Разумный дом" релейный модуль DRB88          | DRB88          | drb88          | DRB88          |
+|      "ICP DAS" модуль управления освещением LC-103      | LC-103         | lc-103         | LC-103         |
+|                   "Разумный дом" MSU24                  | MSU24          | msu24          | MSU24          |
+|                   "Разумный дом" MSU21                  | MSU21          | msu21          | MSU21          |
+|                   "Разумный дом" MSU34+TLP              | MSU34          | msu34tlp       | MSU34+TLP      |
+|                   "Разумный дом" MSU34+TLHP             | MSU34TLHP      | msu34tlhp      | MSU34+TLHP     |
+|          "ICP DAS" модуль ввода-вывода TM-P3R3          | TM-P3R3        | TM-P3R3        | tmp3r3         |
+|     "Kvadro" модуль подключения термометров 1-wire      | kvadro-1wire   | kvadro-1wire   | Kvadro 1-Wire  |
+|     PD561Z-9SY счётчик электроэнергии                   | PD561Z         | pd561z         | pd561z         |
+|     SDM220 счётчик электроэнергии                       | SDM220         | sdm220         | sdm220         |
+|     SDM120 счётчик электроэнергии                       | SDM120         | sdm120         | sdm120         |
+|     WELLPRO WP8028ADAM (8DI/8DO)                        | WP8028ADAM     | wp8028adam     | WP8028ADAM     |
+|  Wiren Board RGB-диммер WB-MRGB                         | WB-MRGB        | WB-MRGB        | wb-mrgb        |
+|  Wiren Board Релейный модуль WB-MRM2                    | WB-MRM2        | WB-MRM2        | wb-mrm2        |
+|  Wiren Board Релейный модуль WB-MR11                    | WB-MR11        | WB-MR11        | wb-mr11        |
+|  Wiren Board Релейный модуль WB-MR14                    | WB-MR14        | WB-MR14        | wb-mr14        |
+|  Wiren Board модуль дискретных/счётных входов WB-MCM16  | WB-MCM16       | WB-MCM16       | wb-mcm16       |
+|  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS            | WB-MS-THLS     | wb-ms-thls     | WB-MS-THLS     |
+|  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS  (fw. v.2) | WB-MS-THLS v.2 | wb-ms-thls     | WB-MS-THLS     |
+|  Lessar LV-RACU(PACU) / Salda RIRS                      | LESSAR_LV_RACU | lessar_lv_racu | LESSAR_LV_RACU |
 
 
 **Милур**
