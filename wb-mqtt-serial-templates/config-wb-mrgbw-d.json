@@ -22,56 +22,72 @@
                         "address": 2
                     }
                 ]
-            }, 
+            },
+            {
+                "name" : "RGB State",
+                "reg_type" : "coil",
+                "address" : 4,
+                "type": "switch"
+            },
+            {
+                "name" : "White State",
+                "reg_type" : "coil",
+                "address" : 3,
+                "type": "switch"
+            },
+            {
+                "name": "RGB Brightnes", 
+                "reg_type": "holding", 
+                "address": 22, 
+                "type": "range", 
+                "max": 255
+            },
             {
                 "name": "White", 
                 "reg_type": "holding", 
                 "address": 3, 
                 "type": "range", 
                 "max": 255
-            }, 
+            },
             {
                 "name": "Button 1", 
-                "reg_type": "holding", 
-                "readonly": true, 
-                "address": 6, 
+                "reg_type": "discrete", 
+                "address": 0, 
                 "type": "switch"
-            }, 
+            },
             {
                 "name": "Button 2", 
-                "reg_type": "holding", 
-                "readonly": true, 
-                "address": 7, 
+                "reg_type": "discrete", 
+                "address": 1, 
                 "type": "switch"
-            }, 
+            },
             {
                 "name": "Button 3", 
-                "reg_type": "holding", 
-                "readonly": true, 
-                "address": 8, 
+                "reg_type": "discrete", 
+                "address": 2, 
                 "type": "switch"
-            }, 
+            },
             {
                 "name": "Button 1 counter", 
                 "reg_type": "holding", 
                 "readonly": true, 
                 "address": 32, 
                 "type": "value"
-            }, 
+            },
             {
                 "name": "Button 2 counter", 
                 "reg_type": "holding", 
                 "readonly": true, 
                 "address": 33, 
                 "type": "value"
-            }, 
+            },
             {
                 "name": "Button 3 counter", 
                 "reg_type": "holding", 
                 "readonly": true, 
                 "address": 34, 
                 "type": "value"
-            }, 
+            },
             {
                 "name": "Serial NO", 
                 "type": "text", 
@@ -82,4 +98,5 @@
         ]
     }
 }
+
 
