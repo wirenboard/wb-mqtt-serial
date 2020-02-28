@@ -35,4 +35,8 @@ protected:
     int             Fd;
     bool            DebugEnabled;
     PPortSettings   Settings;
+private:
+    int ReadAvailableData(uint8_t * buf, size_t max_read);
 };
+
+
