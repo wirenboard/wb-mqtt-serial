@@ -53,3 +53,4 @@ workspace.xml
 
 wb-mqtt-serial
 vgcore.*
+user-configs/
