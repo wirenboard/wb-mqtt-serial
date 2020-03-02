@@ -187,7 +187,9 @@ void TPtyBasedFakeSerial::FlushForwardingLogs()
 {
     if (ForwardedBytes.empty())
         return;
-    Fixture.Emit() << (ForwardingFromPrimary ? ">> " : "<< ") << ForwardedBytes;
+    if (DumpForwardingLogs) {
+        Fixture.Emit() << (ForwardingFromPrimary ? ">> " : "<< ") << ForwardedBytes;
+    }
     ForwardedBytes.clear();
 }
 

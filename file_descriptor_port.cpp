@@ -13,6 +13,8 @@ using namespace std;
 namespace {
     const chrono::milliseconds DefaultFrameTimeout(15);
     const chrono::milliseconds NoiseTimeout(10);
+    const chrono::milliseconds ContinuousNoiseTimeout(100);
+    const int ContinuousNoiseReopenNumber = 3;
 }
 
 TFileDescriptorPort::TFileDescriptorPort(const PPortSettings & settings)
@@ -204,10 +206,13 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
 
 void TFileDescriptorPort::SkipNoise()
 {
-    uint8_t b;
     uint8_t buf[255] = {};
+    auto start = std::chrono::steady_clock::now();
+    int ntries = 0;
+
     while (Select(NoiseTimeout)) {
         int nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
+        auto diff = std::chrono::steady_clock::now() - start;
 
         if (Debug()) {
             // TBD: move this to libwbmqtt (HexDump?)
@@ -218,6 +223,18 @@ void TFileDescriptorPort::SkipNoise()
             }
             cerr << endl;
             cerr.flags(f);
+        }
+
+        // if we are still getting data for already "ContinuousNoiseTimeout" milliseconds
+        if ((nread > 0) && (diff > ContinuousNoiseTimeout)) {
+            if (ntries < ContinuousNoiseReopenNumber)  {
+                std::cerr << "continuous unsolicited data flow detected, reopen the port" << std::endl;
+                Reopen();
+                ntries += 1;
+                start = std::chrono::steady_clock::now();
+            } else {
+                throw TSerialDeviceTransientErrorException("continous unsolicited data flow");
+            }
         }
     }
 }
