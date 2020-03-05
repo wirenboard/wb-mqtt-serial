@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.57.1) stable; urgency=medium
+
+  * implement workaround for i.mx uart bug
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 05 Mar 2020 22:39:45 +0300
+
 wb-mqtt-serial (1.57.0) stable; urgency=medium
 
   * add wb-mr6cu template
