@@ -1,2 +1,5 @@
+SkipNoise()
+SkipNoise()
+ReadByte()
 >> 01 02 03 04
 (pty-based fake serial -- stopping forwarding)
