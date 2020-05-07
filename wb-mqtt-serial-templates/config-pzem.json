@@ -10,7 +10,7 @@
         "reg_type": "input",
         "address": "0x0000",
         "type": "voltage",
-        "format": "au16",
+        "format": "u16",
         "scale": 0.1,
         "round_to": 0.1
       },
