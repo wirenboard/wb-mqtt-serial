@@ -1,8 +1,8 @@
 {
-    "device_type": "WB-MA010",
+    "device_type": "WB-MA04",
     "device": {
-        "name": "WB-MAO10",
-        "id": "wb-mao10",
+        "name": "WB-MAO4",
+        "id": "wb-mao4",
         "channels": [
             {
                 "name": "Channel 1",
