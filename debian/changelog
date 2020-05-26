@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.59.0) stable; urgency=medium
+
+  * add wb-mrgbw-d 2 templates, mao4 and mrgbw 4 channels
+
+ -- Fed Lidsky <matea@bk.ru>  Tue, 26 May 2020 19:28:00 +0300
+
 wb-mqtt-serial (1.57.0) stable; urgency=medium
 
   * add wb-mr6cu template
