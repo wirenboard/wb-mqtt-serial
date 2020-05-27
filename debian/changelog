@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.59.0) stable; urgency=medium
+
+  * add RD ddl04r template
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 28 May 2020 02:13:04 +0300
+
 wb-mqtt-serial (1.57.0) stable; urgency=medium
 
   * add wb-mr6cu template
