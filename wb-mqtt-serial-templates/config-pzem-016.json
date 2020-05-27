@@ -1,8 +1,8 @@
 {
-  "device_type": "Peacefair energy meter (PZEM)",
+  "device_type": "PZEM-016",
   "device": {
-    "name": "Peacefair energy meter (PZEM)",
-    "id": "pzem-em",
+    "name": "PZEM",
+    "id": "pzem",
     "max_read_registers": 60,
     "channels": [
       {
