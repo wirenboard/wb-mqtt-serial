@@ -483,7 +483,7 @@ Uniel. Устройства Милур требуют дополнительны
 |  Wiren Board модуль дискретных/счётных входов WB-MCM16  |   WB-MCM16  |  WB-MCM16  |   wb-mcm16    |
 |  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS            |  WB-MS-THLS | wb-ms-thls | WB-MS-THLS    |
 |  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS  (fw. v.2) |  WB-MS-THLS v.2 | wb-ms-thls | WB-MS-THLS    |
-
+|  Peacefair PZEM-016                                     |  PZEM-016   | pzem       | PZEM          |   
 
 **Милур**
 
