@@ -82,7 +82,7 @@
                 "scale": 0.001
             },
             {
-                "name": "Serial NO",
+                "name": "Serial",
                 "type": "text",
                 "reg_type": "input",
                 "address": 270,
