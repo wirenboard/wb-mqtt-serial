@@ -99,9 +99,9 @@
                 "scale" : 0.001
             },
             {
-                "name": "Serial NO",
+                "name": "Serial",
                 "type": "text",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": 270,
                 "format": "u32"
             }
