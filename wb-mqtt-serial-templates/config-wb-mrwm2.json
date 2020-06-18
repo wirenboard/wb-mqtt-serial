@@ -56,7 +56,7 @@
             {
                 "name" : "Energy K2",
                 "reg_type" : "input",
-                "address" : 504,
+                "address" : 506,
                 "type" : "power_consumption",
                 "scale" : 0.1,
                 "format": "u32"
