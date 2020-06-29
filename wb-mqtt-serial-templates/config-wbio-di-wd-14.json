@@ -1,4 +1,5 @@
 {
+
     "device_type": "WBIO-DI-WD-14",
     "device": {
         "name": "WBIO-DI-WD-14",
@@ -45,98 +46,98 @@
         ],
         "channels": [
             {
-                "name": "DR1",
+                "name": "IN1",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 0,
                 "type": "switch"
             },
             {
-                "name": "DR2",
+                "name": "IN2",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 1,
                 "type": "switch"
             },
             {
-                "name": "DR3",
+                "name": "IN3",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 2,
                 "type": "switch"
             },
             {
-                "name": "DR4",
+                "name": "IN4",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 3,
                 "type": "switch"
             },
             {
-                "name": "DR5",
+                "name": "IN5",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 4,
                 "type": "switch"
             },
             {
-                "name": "DR6",
+                "name": "IN6",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 5,
                 "type": "switch"
             },
             {
-                "name": "DR7",
+                "name": "IN7",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 6,
                 "type": "switch"
             },
             {
-                "name": "DR8",
+                "name": "IN8",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 7,
                 "type": "switch"
             },
             {
-                "name": "DR9",
+                "name": "IN9",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 8,
                 "type": "switch"
             },
             {
-                "name": "DR10",
+                "name": "IN10",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 9,
                 "type": "switch"
             },
             {
-                "name": "DR11",
+                "name": "IN11",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 10,
                 "type": "switch"
             },
             {
-                "name": "DR12",
+                "name": "IN12",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 11,
                 "type": "switch"
             },
             {
-                "name": "DR13",
+                "name": "IN13",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 12,
                 "type": "switch"
             },
             {
-                "name": "DR14",
+                "name": "IN14",
                 "reg_type": "coil",
                 "readonly": true,
                 "address": 13,
