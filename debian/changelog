@@ -1,3 +1,7 @@
+wb-mqtt-serial (1.61.0) stable; urgency=medium
+
+  * add cross-compile for armhf
+
 wb-mqtt-serial (1.60.0) stable; urgency=medium
 
   * add RD ddl04r template
