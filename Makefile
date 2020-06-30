@@ -9,6 +9,11 @@ ifeq ($(DEB_TARGET_ARCH),armel)
 CROSS_COMPILE=arm-linux-gnueabi-
 endif
 
+#brainroot add for cross-compile
+ifeq ($(DEB_TARGET_ARCH),armhf)
+CROSS_COMPILE=arm-linux-gnueabihf-
+endif
+
 CXX=$(CROSS_COMPILE)g++
 CXX_PATH := $(shell which $(CROSS_COMPILE)g++-4.7)
 
