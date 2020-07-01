@@ -464,6 +464,7 @@ Uniel. Устройства Милур требуют дополнительны
 |:-------------------------------------------------------:|:-----------:|:----------:|:-------------:|
 | "Разумный дом" четырёхканальный диммер светодиодов DDL4 |    DDL24    |   ddl24    |    DDL24      |
 |           "Разумный дом" релейный модуль DRB88          |    DRB88    |   drb88    |    DRB88      |
+|           RD DDL04R LED Strip Dimmer                    |    DDL04R   |   ddl04r   |    DDL04R     |
 |      "ICP DAS" модуль управления освещением LC-103      |    LC-103   |   lc-103   |    LC-103     |
 |                   "Разумный дом" MSU24                  |    MSU24    |   msu24    |    MSU24      |
 |                   "Разумный дом" MSU21                  |    MSU21    |   msu21    |    MSU21      |
@@ -482,7 +483,7 @@ Uniel. Устройства Милур требуют дополнительны
 |  Wiren Board модуль дискретных/счётных входов WB-MCM16  |   WB-MCM16  |  WB-MCM16  |   wb-mcm16    |
 |  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS            |  WB-MS-THLS | wb-ms-thls | WB-MS-THLS    |
 |  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS  (fw. v.2) |  WB-MS-THLS v.2 | wb-ms-thls | WB-MS-THLS    |
-
+|  Peacefair PZEM-016                                     |  PZEM-016   | pzem       | PZEM          |   
 
 **Милур**
 
