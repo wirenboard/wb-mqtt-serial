@@ -1,0 +1,7 @@
+foo()
+>> 01 02 03
+<< 10 20 30
+bar()
+>> 11 12 13
+<< 21 22 23
+(pty-based fake serial terminating)

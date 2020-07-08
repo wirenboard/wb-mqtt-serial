@@ -21,6 +21,7 @@ public:
     virtual void CycleEnd(bool ok) {}
     virtual void Open() = 0;
     virtual void Close() = 0;
+    virtual void Reopen() {if (IsOpen()) { Close(); Open(); }; };
     virtual bool IsOpen() const = 0;
     virtual void CheckPortOpen() const = 0;
     virtual void WriteBytes(const uint8_t * buf, int count) = 0;
