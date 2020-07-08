@@ -6,7 +6,7 @@
 #include "serial_port_settings.h"
 
 
-class TSerialPort final: public TFileDescriptorPort
+class TSerialPort: public TFileDescriptorPort
 {
     using Base = TFileDescriptorPort;
 public:

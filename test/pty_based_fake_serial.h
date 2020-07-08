@@ -19,6 +19,7 @@ public:
     void StartExpecting();
     void StartForwarding();
     void Flush();
+    void SetDumpForwardingLogs(bool val) {DumpForwardingLogs = val;};
 private:
     struct PtyPair {
         void Init();
@@ -48,6 +49,7 @@ private:
     std::deque<Expectation> Expectations;
     std::mutex Mutex;
     std::condition_variable Cond, FlushCond;
+    bool DumpForwardingLogs = true;
 };
 
 typedef std::shared_ptr<TPtyBasedFakeSerial> PPtyBasedFakeSerial;
