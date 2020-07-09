@@ -1,31 +1,13 @@
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 DEPDIR := .d
 $(shell mkdir -p $(DEPDIR) >/dev/null)
-DEPFLAGS = -std=c++0x -MT $@ -MMD -MP -MF $(DEPDIR)/$(notdir $*.Td)
+DEPFLAGS = -std=c++14 -MT $@ -MMD -MP -MF $(DEPDIR)/$(notdir $*.Td)
 
 POSTCOMPILE = mv -f $(DEPDIR)/$(notdir $*.Td) $(DEPDIR)/$(notdir $*.d)
 
-ifeq ($(DEB_TARGET_ARCH),armel)
-CROSS_COMPILE=arm-linux-gnueabi-
-endif
-
-CXX=$(CROSS_COMPILE)g++
-CXX_PATH := $(shell which $(CROSS_COMPILE)g++-4.7)
-
-CC=$(CROSS_COMPILE)gcc
-CC_PATH := $(shell which $(CROSS_COMPILE)gcc-4.7)
-
-ifneq ($(CXX_PATH),)
-	CXX=$(CROSS_COMPILE)g++-4.7
-endif
-
-ifneq ($(CC_PATH),)
-	CC=$(CROSS_COMPILE)gcc-4.7
-endif
-
 #CFLAGS=
-DEBUG_CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
-NORMAL_CFLAGS=-Wall -std=c++0x -O3 -I.
+DEBUG_CFLAGS=-Wall -ggdb -std=c++14 -O0 -I.
+NORMAL_CFLAGS=-Wall -std=c++14 -O3 -I.
 CFLAGS=$(if $(or $(DEBUG)), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
 LDFLAGS= -pthread -ljsoncpp -lwbmqtt1
 
@@ -111,17 +93,16 @@ $(TEST_DIR)/$(TEST_BIN): $(SERIAL_OBJS) $(TEST_OBJS)
 	${CXX} $^ ${LDFLAGS} -o $@ $(TEST_LIBS) $(SERIAL_LIBS)
 
 test: $(TEST_DIR)/$(TEST_BIN)
-	# cannot run valgrind under qemu chroot
 	rm -f $(TEST_DIR)/*.dat.out
 	if [ "$(shell arch)" = "armv7l" ]; then \
-          $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || $(TEST_DIR)/abt.sh show; \
-        else \
-          valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
-            if [ $$? = 180 ]; then \
-              echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
-              exit 1; \
-            else $(TEST_DIR)/abt.sh show; exit 1; fi; \
-        fi
+        $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
+    else \
+		valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
+		if [ $$? = 180 ]; then \
+			echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
+			exit 1; \
+		else $(TEST_DIR)/abt.sh show; exit 1; fi; \
+	fi
 
 clean :
 	-rm -rf *.o $(SERIAL_BIN) $(DEPDIR)

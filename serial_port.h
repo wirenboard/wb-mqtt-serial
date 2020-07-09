@@ -1,6 +1,7 @@
 #pragma once
 #include <chrono>
 #include <memory>
+#include <functional>
 #include <termios.h>
 
 #include "binary_semaphore.h"
