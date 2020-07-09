@@ -234,10 +234,10 @@ void TConfigParser::MergeAndLoadChannels(PDeviceConfig device_config, const Json
                 const Json::Value & override_channel_data = device_channels[it->second];
 
                 for (auto it = override_channel_data.begin(); it != override_channel_data.end(); ++it) {
-                   LOG(Info) << "override property " << it.memberName();
+                   LOG(Info) << "override property " << it.name();
                     // Channel fields from current device config
                     // take precedence over template field values
-                    channel_data[it.memberName()] = *it;
+                    channel_data[it.name()] = *it;
                 }
                 loaded.insert(it->second);
             }
@@ -430,7 +430,7 @@ PHandlerConfig TConfigParser::Parse()
         throw TConfigParserException("Serial driver configuration file not found: " + ConfigFileName);
 
     if(!reader.parse(myfile, Root, false))
-        throw TConfigParserException("Failed to parse JSON: " + reader.getFormatedErrorMessages());
+        throw TConfigParserException("Failed to parse JSON: " + reader.getFormattedErrorMessages());
 
     LoadConfig();
 
