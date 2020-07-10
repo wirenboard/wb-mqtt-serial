@@ -67,3 +67,11 @@ workspace.xml
 
 # core
 *.core
+
+debian/tmp
+debian/files
+debian/wb-homa-modbus
+debian/wb-mqtt-serial
+debian/*.substvars
+debhelper-build-stamp
+.clang-format
