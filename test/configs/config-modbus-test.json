@@ -16,7 +16,6 @@
             "enabled": true,
             "name": "Modbus-sample",
             "id": "modbus-sample",
-            "enabled": true,
             "max_read_registers": 0,
             "channels": [
             {

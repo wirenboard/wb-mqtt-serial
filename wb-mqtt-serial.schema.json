@@ -7,14 +7,42 @@
     "deviceProtocol": {
       "type": "string",
       "title": "Device protocol",
-      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k"],
+      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k", "modbus_io", "pulsar", "mercury200"],
       "default": "modbus"
     },
-    "port": {
-      "type": "object",
+    "serialPort": {
       "title": "Serial port",
-      "headerTemplate": "Port {{self.path}}{{ (|self.type|)}}",
+      "type": "object",
+      "additionalProperties": false,
       "properties": {
+        "port_type": {
+          "type": "string",
+          "title": "Port type",
+          "enum": ["serial"],
+          "default": "serial",
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true,
+            "forceDefault": true
+          }
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true
+          }
+        },
         "path": {
           "type": "string",
           "title": "Path to device",
@@ -61,8 +89,16 @@
           "title": "Response timeout (ms)",
           "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
           "minimum": 0,
-          "default": 0,
+          "default": 500,
           "propertyOrder": 6
+        },
+        "guard_interval_us": {
+          "type": "integer",
+          "title": "Guard interval (us)",
+          "description": "Specifies the delay in microseconds between reads / writes to port",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 7
         },
         "poll_interval": {
           "type": "integer",
@@ -70,7 +106,7 @@
           "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 7
+          "propertyOrder": 8
         },
         "devices": {
           "type": "array",
@@ -81,8 +117,120 @@
         }
       },
       "required": ["path"],
-      "defaultProperties": ["path", "type"],
+      "defaultProperties": ["path", "devices", "port_type"],
       "_format": "grid"
+    },
+    "tcpPort": {
+      "title": "TCP port",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "port_type": {
+          "type": "string",
+          "title": "Port type",
+          "enum": ["tcp"],
+          "default": "tcp",
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true,
+            "forceDefault": true
+          }
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true
+          }
+        },
+        "address": {
+          "type": "string",
+          "title": "IPv4 address or hostname of device",
+          "minLength": 1,
+          "propertyOrder": 2
+        },
+        "port": {
+          "type": "integer",
+          "title": "TCP port number",
+          "minimum": 1,
+          "maximum": 65536,
+          "propertyOrder": 3
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable port",
+          "default": true,
+          "_format": "checkbox",
+          "propertyOrder": 4
+        },
+        "response_timeout_ms": {
+          "type": "integer",
+          "title": "Response timeout (ms)",
+          "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
+          "minimum": 0,
+          "default": 500,
+          "propertyOrder": 5
+        },
+        "guard_interval_us": {
+          "type": "integer",
+          "title": "Guard interval (us)",
+          "description": "Specifies the delay in microseconds between reads / writes to port",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 6
+        },
+        "connection_timeout_ms": {
+          "type": "integer",
+          "title": "Connection timeout (ms)",
+          "description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
+          "minimum": -1,
+          "default": 5000,
+          "propertyOrder": 7
+        },
+        "connection_max_fail_cycles": {
+          "type": "integer",
+          "title": "Connection max fail cycles",
+          "description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
+          "minimum": -1,
+          "default": 2,
+          "propertyOrder": 8
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Desired poll interval (ms)",
+          "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
+          "minimum": 0,
+          "default": 20,
+          "propertyOrder": 9
+        },
+        "devices": {
+          "type": "array",
+          "title": "List of devices",
+          "description": "Lists devices attached to the port",
+          "items": { "$ref": "#/definitions/device" },
+          "propertyOrder": 10
+        }
+      },
+      "required": ["address", "port"],
+      "defaultProperties": ["address", "port", "devices", "port_type"],
+      "_format": "grid"
+    },
+    "port": {
+      "headerTemplate": "Port {{self.path}}{{self.address}} {{self.port}}",
+      "oneOf": [
+        { "$ref": "#/definitions/serialPort" },
+        { "$ref": "#/definitions/tcpPort" }
+      ]
     },
     "device": {
       "type": "object",
@@ -216,6 +364,22 @@
           "minimum": -1,
           "default": -1,
           "propertyOrder": 17
+        },
+        "device_timeout_ms": {
+          "type": "integer",
+          "title": "Device timeout (ms)",
+          "description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
+          "minimum": -1,
+          "default": 3000,
+          "propertyOrder": 17
+        },
+        "device_max_fail_cycles": {
+          "type": "integer",
+          "title": "Device max fail cycles",
+          "description": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
+          "minimum": -1,
+          "default": 2,
+          "propertyOrder": 18
         }
       },
       "required": ["slave_id"],
@@ -250,7 +414,7 @@
     "channel": {
       "type": "object",
       // "options": { "collapsed": true },
-      "oneOf": [
+      "anyOf": [
         {
           "title": "Register",
           "properties": {
@@ -321,15 +485,23 @@
               "propertyOrder": 11
             },
             "error_value": {
-              "type": "integer",
               "title": "Error value",
               "description": "Value which should be treated as read error",
-              "propertyOrder": 12
+              "propertyOrder": 12,
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
             },
             "word_order": {
               "$ref": "#/definitions/word_order",
               "propertyOrder": 13
-            },
+            }
           },
           // FIXME: require "reg_type" and "address" for non-templated devices
           "required": ["name"],
@@ -404,7 +576,7 @@
         "word_order": {
           "$ref": "#/definitions/word_order",
           "propertyOrder": 6
-        },
+        }
       },
       "required": ["reg_type", "address"]
     },
@@ -428,13 +600,16 @@
         // FIXME: "dimmer", "lux" and "pressure" aren't present in
         // conventions but is present in config-test.json in
         // wb-mqtt-serial
-        "dimmer", "lux", "pressure"
+        "dimmer", "lux", "pressure", "current", "sound_level"
       ]
     },
     "reg_type": {
       "type": "string",
       "title": "Register type",
-      "enum": ["coil", "discrete", "holding", "input", "direct"]
+      "enum": ["coil", "discrete", "holding", "holding_single", "holding_multi", "input", "direct", "relay", 
+               "brightness", "param", "relay_mode", "relay_default", "relay_delay", "energy", "array",
+               "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
+               "param24", "param32", "power", "freq", "power_factor"]
     },
     "format": {
       "type": "string",

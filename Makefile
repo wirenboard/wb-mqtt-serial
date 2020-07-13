@@ -110,28 +110,23 @@ clean :
 
 
 install: all
-	mkdir -p $(DESTDIR)/usr/share/wb-mqtt-confed/schemas
-	mkdir -p $(DESTDIR)/etc/wb-configs.d
-	install -d $(DESTDIR)
-	install -d $(DESTDIR)/etc
-	install -d $(DESTDIR)/usr/bin
-	install -d $(DESTDIR)/usr/lib
-	install -d $(DESTDIR)/usr/share/wb-mqtt-serial
+	install -d $(DESTDIR)/usr/share/wb-mqtt-confed/schemas
 	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
 
-	install -m 0644  config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
+	install -D -m 0644  data/config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
 
-	install -m 0644  config.json.wb234 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234
-	install -m 0644  config.json.wb5 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5
-	install -m 0644  config.json.wb6 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5
-	install -m 0644  config.json.default $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.default
+	install -D -m 0644  data/config.json.wb234 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234
+	install -D -m 0644  data/config.json.wb5 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5
+	install -D -m 0644  data/config.json.wb6 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5
+	install -D -m 0644  data/config.json.default $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.default
 
+	install -D -m 0644  wb-mqtt-serial.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-mqtt-serial
 
-	install -m 0644  wb-mqtt-serial.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-mqtt-serial
+	install -D -m 0644  data/wb-mqtt-serial.schema.json $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json
+	install -D -m 0644  data/wb-mqtt-serial-device-template.schema.json $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json
+	cp -r  data/wb-mqtt-serial-templates $(DESTDIR)/usr/share/wb-mqtt-serial/templates
 
-	install -m 0644  wb-mqtt-serial.schema.json $(DESTDIR)/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json
 	install -m 0755  $(SERIAL_BIN) $(DESTDIR)/usr/bin/$(SERIAL_BIN)
-	cp -r  wb-mqtt-serial-templates $(DESTDIR)/usr/share/wb-mqtt-serial/templates
 
 $(DEPDIR)/$(notdir %.d): ;
 

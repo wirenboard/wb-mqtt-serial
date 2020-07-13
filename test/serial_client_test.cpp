@@ -45,11 +45,9 @@ void TSerialClientTest::SetUp()
 #if 0
     SerialClient->SetModbusDebug(true);
 #endif
-    try {
-        auto config = std::make_shared<TDeviceConfig>("fake_sample", std::to_string(1), "fake");
-        config->MaxReadRegisters = 0;
-        Device = std::dynamic_pointer_cast<TFakeSerialDevice>(SerialClient->CreateDevice(config));
-    } catch (const TSerialDeviceException &e) {}
+    auto config = std::make_shared<TDeviceConfig>("fake_sample", std::to_string(1), "fake");
+    config->MaxReadRegisters = 0;
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(SerialClient->CreateDevice(config));
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             Emit() << "Read Callback: " << reg->ToString() << " becomes " <<
                 SerialClient->GetTextValue(reg) << (changed ? "" : " [unchanged]");
@@ -801,9 +799,13 @@ void TSerialClientIntegrationTest::SetUp()
 
     Driver->StartLoop();
 
-    TConfigParser parser(GetDataFilePath("configs/config-test.json"), false,
-                         TSerialDeviceFactory::GetRegisterTypes);
-    Config = parser.Parse();
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    AddProtocolType(configSchema, "fake");
+    AddRegisterType(configSchema, "fake");
+    Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
+                        false,
+                        TSerialDeviceFactory::GetRegisterTypes,
+                        configSchema);
 }
 
 void TSerialClientIntegrationTest::TearDown()
@@ -992,15 +994,20 @@ TEST_F(TSerialClientIntegrationTest, Errors)
 
 TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     {
-        TConfigParser parser(GetDataFilePath("configs/config-collision-test.json"), false, TSerialDeviceFactory::GetRegisterTypes);
-        Config = parser.Parse();
+        Config = LoadConfig(GetDataFilePath("configs/config-collision-test.json"), 
+                                            false,
+                                            TSerialDeviceFactory::GetRegisterTypes,
+                                            configSchema);
         EXPECT_THROW(make_shared<TMQTTSerialDriver>(Driver, Config), TSerialDeviceException);
     }
 
     {
-        TConfigParser parser(GetDataFilePath("configs/config-no-collision-test.json"), false, TSerialDeviceFactory::GetRegisterTypes);
-        Config = parser.Parse();
+        Config = LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"), 
+                                            false,
+                                            TSerialDeviceFactory::GetRegisterTypes,
+                                            configSchema);
         EXPECT_NO_THROW(make_shared<TMQTTSerialDriver>(Driver, Config));
     }
 }
@@ -1010,10 +1017,17 @@ class TConfigParserTest: public TLoggedFixture {};
 
 TEST_F(TConfigParserTest, Parse)
 {
-    TConfigTemplateParser device_parser(GetDataFilePath("device-templates/"), false);
-    TConfigParser parser(GetDataFilePath("configs/parse_test.json"), false,
-                         TSerialDeviceFactory::GetRegisterTypes, device_parser.Parse());
-    PHandlerConfig config = parser.Parse();
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    PTemplateMap templateMap = LoadConfigTemplates(GetDataFilePath("device-templates/"),
+                                                   LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
+                                                                             configSchema));
+
+    PHandlerConfig config = LoadConfig(GetDataFilePath("configs/parse_test.json"), 
+                                                       false,
+                                                       TSerialDeviceFactory::GetRegisterTypes,
+                                                       configSchema,
+                                                       templateMap);
+
     Emit() << "Debug: " << config->Debug;
     Emit() << "Ports:";
     for (auto port_config: config->PortConfigs) {
@@ -1077,15 +1091,18 @@ TEST_F(TConfigParserTest, Parse)
             }
         }
     }
-
 }
 
 TEST_F(TConfigParserTest, ForceDebug)
 {
-    TConfigParser parser(GetDataFilePath("configs/config-test.json"), true,
-                         TSerialDeviceFactory::GetRegisterTypes);
-    PHandlerConfig config = parser.Parse();
-    ASSERT_TRUE(config->Debug);
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    AddProtocolType(configSchema, "fake");
+    AddRegisterType(configSchema, "fake");
+    PHandlerConfig Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
+                                       true,
+                                       TSerialDeviceFactory::GetRegisterTypes,
+                                       configSchema);
+    ASSERT_TRUE(Config->Debug);
 }
 
 // TBD: the code must check mosquitto return values

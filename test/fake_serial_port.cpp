@@ -238,15 +238,21 @@ void TSerialDeviceIntegrationTest::SetUp()
     TSerialDeviceTest::SetUp();
     PortMakerCalled = false;
 
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+
     PTemplateMap templateMap = std::make_shared<TTemplateMap>();
     if (GetTemplatePath()) {
-        TConfigTemplateParser templateParser(GetDataFilePath(GetTemplatePath()), false);
-        templateMap = templateParser.Parse();
+        templateMap = LoadConfigTemplates(GetDataFilePath(GetTemplatePath()),
+                                          LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
+                                                                    configSchema));
     }
-    TConfigParser parser(GetDataFilePath(ConfigPath()), false, TSerialDeviceFactory::GetRegisterTypes, templateMap);
 
+    Config = LoadConfig(GetDataFilePath(ConfigPath()), 
+                         false,
+                         TSerialDeviceFactory::GetRegisterTypes,
+                         configSchema,
+                         templateMap);
 
-    Config = parser.Parse();
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient("em-test");
     auto backend = NewDriverBackend(MqttClient);

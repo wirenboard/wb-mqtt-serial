@@ -226,7 +226,7 @@ protected:
     void SetUp();
     void TearDown();
     const char* ConfigPath() const { return "configs/config-mercury230-test.json"; }
-    const char* GetTemplatePath() const { return "../wb-mqtt-serial-templates/"; }
+    const char* GetTemplatePath() const { return "../wb-mqtt-serial-templates"; }
     void ExpectQueries(bool firstPoll);
 };
 
