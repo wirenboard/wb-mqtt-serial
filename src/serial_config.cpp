@@ -505,20 +505,16 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName)
 }
 
 PHandlerConfig LoadConfig(const std::string& configFileName, 
-                          bool forceDebug,
                           TGetRegisterTypeMapFn getRegisterTypeMapFn,
                           const Json::Value& configSchema,
                           PTemplateMap templates)
 {
     PHandlerConfig handlerConfig(new THandlerConfig);
-    handlerConfig->Debug = forceDebug;
     Json::Value Root = WBMQTT::JSON::Parse(configFileName);
 
     WBMQTT::JSON::Validate(Root, configSchema);
 
-    if (Root.isMember("debug"))
-        handlerConfig->Debug = handlerConfig->Debug || Root["debug"].asBool();
-
+    WBMQTT::JSON::Get(Root, "debug", handlerConfig->Debug);
     WBMQTT::JSON::Get(Root, "max_unchanged_interval", handlerConfig->MaxUnchangedInterval);
 
     const Json::Value array = Root["ports"];

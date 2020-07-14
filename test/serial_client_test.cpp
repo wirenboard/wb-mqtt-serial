@@ -803,7 +803,6 @@ void TSerialClientIntegrationTest::SetUp()
     AddProtocolType(configSchema, "fake");
     AddRegisterType(configSchema, "fake");
     Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
-                        false,
                         TSerialDeviceFactory::GetRegisterTypes,
                         configSchema);
 }
@@ -997,7 +996,6 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     {
         Config = LoadConfig(GetDataFilePath("configs/config-collision-test.json"), 
-                                            false,
                                             TSerialDeviceFactory::GetRegisterTypes,
                                             configSchema);
         EXPECT_THROW(make_shared<TMQTTSerialDriver>(Driver, Config), TSerialDeviceException);
@@ -1005,7 +1003,6 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 
     {
         Config = LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"), 
-                                            false,
                                             TSerialDeviceFactory::GetRegisterTypes,
                                             configSchema);
         EXPECT_NO_THROW(make_shared<TMQTTSerialDriver>(Driver, Config));
@@ -1023,7 +1020,6 @@ TEST_F(TConfigParserTest, Parse)
                                                                              configSchema));
 
     PHandlerConfig config = LoadConfig(GetDataFilePath("configs/parse_test.json"), 
-                                                       false,
                                                        TSerialDeviceFactory::GetRegisterTypes,
                                                        configSchema,
                                                        templateMap);
@@ -1032,7 +1028,6 @@ TEST_F(TConfigParserTest, Parse)
     Emit() << "Ports:";
     for (auto port_config: config->PortConfigs) {
         TTestLogIndent indent(*this);
-        ASSERT_EQ(config->Debug, port_config->Debug);
         Emit() << "------";
         Emit() << "ConnSettings: " << port_config->ConnSettings;
         Emit() << "PollInterval: " << port_config->PollInterval.count();
@@ -1099,7 +1094,6 @@ TEST_F(TConfigParserTest, ForceDebug)
     AddProtocolType(configSchema, "fake");
     AddRegisterType(configSchema, "fake");
     PHandlerConfig Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
-                                       true,
                                        TSerialDeviceFactory::GetRegisterTypes,
                                        configSchema);
     ASSERT_TRUE(Config->Debug);

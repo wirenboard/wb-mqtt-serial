@@ -248,7 +248,6 @@ void TSerialDeviceIntegrationTest::SetUp()
     }
 
     Config = LoadConfig(GetDataFilePath(ConfigPath()), 
-                         false,
                          TSerialDeviceFactory::GetRegisterTypes,
                          configSchema,
                          templateMap);

@@ -93,7 +93,6 @@ struct TPortConfig {
     void AddDeviceConfig(PDeviceConfig device_config);
     TSerialPortSettings ConnSettings;
     std::chrono::milliseconds PollInterval = std::chrono::milliseconds(20);
-    bool Debug = false;
     int MaxUnchangedInterval;
     std::vector<PDeviceConfig> DeviceConfigs;
 };
@@ -102,7 +101,6 @@ typedef std::shared_ptr<TPortConfig> PPortConfig;
 
 struct THandlerConfig {
     void AddPortConfig(PPortConfig port_config) {
-        port_config->Debug = Debug;
         port_config->MaxUnchangedInterval = MaxUnchangedInterval;
         PortConfigs.push_back(port_config);
     }
@@ -133,8 +131,7 @@ typedef std::function<PRegisterTypeMap(PDeviceConfig device_config)> TGetRegiste
 
 Json::Value LoadConfigSchema(const std::string& schemaFileName);
 
-PHandlerConfig LoadConfig(const std::string& configFileName, 
-                          bool forceDebug,
+PHandlerConfig LoadConfig(const std::string& configFileName,
                           TGetRegisterTypeMapFn getRegisterTypeMapFn,
                           const Json::Value& configSchema,
                           PTemplateMap templates = PTemplateMap());
