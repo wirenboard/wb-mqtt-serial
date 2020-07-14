@@ -1,7 +1,7 @@
 #include <string>
 #include <wblib/testing/testlog.h>
 #include "fake_serial_port.h"
-#include "pulsar_device.h"
+#include "devices/pulsar_device.h"
 
 
 class TPulsarDeviceTest: public TSerialDeviceTest

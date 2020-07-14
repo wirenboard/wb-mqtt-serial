@@ -1,7 +1,7 @@
 #include <string>
 #include <wblib/testing/testlog.h>
 #include "fake_serial_port.h"
-#include "uniel_device.h"
+#include "devices/uniel_device.h"
 #include "uniel_expectations.h"
 
 class TUnielDeviceTest: public TSerialDeviceTest, public TUnielDeviceExpectations {

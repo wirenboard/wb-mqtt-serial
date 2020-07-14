@@ -1,7 +1,7 @@
 #include <string>
 #include "fake_serial_port.h"
 #include "mercury200_expectations.h"
-#include "mercury200_device.h"
+#include "devices/mercury200_device.h"
 
 class TMercury200Test: public TSerialDeviceTest, public TMercury200Expectations
 {

@@ -8,8 +8,8 @@
 #include <wblib/testing/testlog.h>
 
 #include "expector.h"
-#include "../serial_device.h"
-#include "../serial_driver.h"
+#include "serial_device.h"
+#include "serial_driver.h"
 
 using WBMQTT::Testing::TLoggedFixture;
 
