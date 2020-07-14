@@ -1,7 +1,8 @@
-#include <stdexcept>
-
 #include "modbus_device.h"
 #include "modbus_common.h"
+
+#include <iostream>
+#include <stdexcept>
 
 
 REGISTER_BASIC_INT_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
@@ -11,7 +12,7 @@ REGISTER_BASIC_INT_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
             { Modbus::REG_INPUT, "input", "text", U16, true }
         }));
 
-TModbusDevice::TModbusDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+TModbusDevice::TModbusDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>>(config, port, protocol)
 {}
 

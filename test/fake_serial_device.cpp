@@ -29,7 +29,7 @@ namespace //utility
 };  //utility
 
 
-TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol):
+TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol):
     TBasicProtocolSerialDevice<TBasicProtocol<TFakeSerialDevice>>(config, port, protocol)
 {}
 

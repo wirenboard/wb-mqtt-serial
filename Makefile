@@ -20,6 +20,8 @@ SERIAL_SRCS= \
   src/modbus_common.cpp               \
   src/bcd_utils.cpp                   \
   src/log.cpp                         \
+  src/tcp_port.cpp                    \
+  src/file_descriptor_port.cpp        \
   src/devices/mercury200_device.cpp   \
   src/devices/uniel_device.cpp        \
   src/devices/s2k_device.cpp          \

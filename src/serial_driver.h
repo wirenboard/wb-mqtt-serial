@@ -7,12 +7,13 @@
 
 #include <vector>
 #include <memory>
+#include <atomic>
 
 
 class TMQTTSerialDriver
 {
 public:
-    TMQTTSerialDriver(WBMQTT::PDeviceDriver mqtt_driver, PHandlerConfig handler_config, PAbstractSerialPort port_override = 0);
+    TMQTTSerialDriver(WBMQTT::PDeviceDriver mqtt_driver, PHandlerConfig handler_config, PPort port_override = 0);
     void LoopOnce();
     void ClearDevices();
 

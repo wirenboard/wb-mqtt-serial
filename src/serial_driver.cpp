@@ -12,7 +12,7 @@ using namespace WBMQTT;
 
 #define LOG(logger) ::logger.Log() << "[serial] "
 
-TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config, PAbstractSerialPort portOverride)
+TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config, PPort portOverride)
     : Active(false)
 {
     try {

@@ -97,8 +97,17 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
     // список портов
     "ports": [
         {
-            // устройство, соответствующее порту RS-485
+            // тип порта - serial: RS-485, tcp: TCP/IP (по умолчанию - serial)
+            "port_type": "serial",
+
+            // устройство, соответствующее порту RS-485 (если выбран тип порта serial)
             "path" : "/dev/ttyNSC0",
+
+            // IP адрес или имя хоста (если выбран тип порта TCP)
+            "address": "127.0.0.1",
+
+            // TCP порт (если выбран тип порта TCP)
+            "port": 3000,
 
             // скорость порта
             "baud_rate": 9600,

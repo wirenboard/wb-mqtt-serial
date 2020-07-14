@@ -20,7 +20,7 @@ namespace {
     typedef std::shared_ptr<TSerialPollEntry> PSerialPollEntry;
 };
 
-TSerialClient::TSerialClient(PAbstractSerialPort port)
+TSerialClient::TSerialClient(PPort port)
     : Port(port),
       Active(false),
       ReadCallback([](PRegister, bool){}),

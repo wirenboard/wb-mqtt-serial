@@ -22,7 +22,7 @@ public:
         REG_POWERFACTOR
     };
 
-    TMilurDevice(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol);
+    TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void Prepare();
 

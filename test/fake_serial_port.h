@@ -11,13 +11,12 @@
 #include "serial_device.h"
 #include "serial_driver.h"
 
-using WBMQTT::Testing::TLoggedFixture;
-
-class TFakeSerialPort: public TAbstractSerialPort, public TExpector {
+class TFakeSerialPort: public TPort, public TExpector {
 public:
-    TFakeSerialPort(TLoggedFixture& fixture);
+    TFakeSerialPort(WBMQTT::Testing::TLoggedFixture& fixture);
+
     void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
-    void CheckPortOpen();
+    void CheckPortOpen() const;
     void Open();
     void Close();
     bool IsOpen() const;
@@ -27,9 +26,10 @@ public:
                   const std::chrono::microseconds& timeout = std::chrono::microseconds(-1),
                   TFrameCompletePred frame_complete = 0);
     void SkipNoise();
-    void Sleep(const std::chrono::microseconds& us);
-    TTimePoint CurrentTime() const;
-    bool Wait(PBinarySemaphore semaphore, const TTimePoint& until);
+
+    void Sleep(const std::chrono::microseconds & us) override;
+    bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
+    TTimePoint CurrentTime() const override;
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     void DumpWhatWasRead();
@@ -40,7 +40,7 @@ private:
     void SkipFrameBoundary();
     const int FRAME_BOUNDARY = -1;
 
-    TLoggedFixture& Fixture;
+    WBMQTT::Testing::TLoggedFixture& Fixture;
     bool IsPortOpen;
     bool DoSimulateDisconnect;
     std::deque<const char*> PendingFuncs;
@@ -53,7 +53,7 @@ private:
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
 
-class TSerialDeviceTest: public TLoggedFixture, public virtual TExpectorProvider {
+class TSerialDeviceTest: public WBMQTT::Testing::TLoggedFixture, public virtual TExpectorProvider {
 protected:
     void SetUp();
     void TearDown();

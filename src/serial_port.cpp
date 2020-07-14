@@ -1,28 +1,12 @@
-#include "serial_exc.h"
 #include "serial_port.h"
-#include "log.h"
+#include "serial_exc.h"
 
 #include <map>
-#include <errno.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/select.h>
 #include <fcntl.h>
-#include <stdio.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <iostream>
-#include <utility>
-
-#define LOG(logger) ::logger.Log() << "[serial port] "
-
-using namespace WBMQTT;
 
 namespace {
-    const std::chrono::milliseconds DefaultFrameTimeout(15);
-    const std::chrono::milliseconds NoiseTimeout(10);
-
     int ConvertBaudRate(int rate)
     {
         switch (rate) {
@@ -38,7 +22,7 @@ namespace {
         case 57600: return B57600;
         case 115200: return B115200;
         default:
-            LOG(Warn) << "unsupported baud rate " << rate << " defaulting to 9600";
+            std::cerr << "Warning: unsupported baud rate " << rate << " defaulting to 9600" << std::endl;
             return B9600;
         }
     }
@@ -51,54 +35,45 @@ namespace {
         case 7: return CS7;
         case 8: return CS8;
         default:
-            LOG(Warn) << "unsupported data bits count " << data_bits << " defaulting to 8";
+            std::cerr << "Warning: unsupported data bits count " << data_bits << " defaulting to 8" << std::endl;
             return CS8;
         }
     }
 };
 
-
-TAbstractSerialPort::~TAbstractSerialPort() {}
-
-TSerialPort::TSerialPort(const TSerialPortSettings& settings)
-    : Settings(settings)
-    , Fd(-1)
+TSerialPort::TSerialPort(const PSerialPortSettings & settings)
+    : TFileDescriptorPort(settings)
+    , Settings(settings)
 {
     memset(&OldTermios, 0, sizeof(termios));
 }
 
-TSerialPort::~TSerialPort()
-{
-    if (Fd >= 0)
-        close(Fd);
-}
-
 void TSerialPort::Open()
 {
-    if (Fd >= 0)
+    if (IsOpen())
         throw TSerialDeviceException("port already open");
 
-    Fd = open(Settings.Device.c_str(), O_RDWR | O_NOCTTY | O_EXCL | O_NDELAY);
+    Fd = open(Settings->Device.c_str(), O_RDWR | O_NOCTTY | O_EXCL | O_NDELAY);
     if (Fd < 0)
         throw TSerialDeviceException("cannot open serial port");
 
     termios dev;
     memset(&dev, 0, sizeof(termios));
 
-    auto baud_rate = ConvertBaudRate(Settings.BaudRate);
+    auto baud_rate = ConvertBaudRate(Settings->BaudRate);
     if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
         auto error_code = errno;
         Close();
-        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from cfsetospeed / cfsetispeed; baud rate is " + std::to_string(Settings.BaudRate));
+        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from cfsetospeed / cfsetispeed; baud rate is " + std::to_string(Settings->BaudRate));
     }
 
-    if (Settings.StopBits == 1) {
+    if (Settings->StopBits == 1) {
         dev.c_cflag &= ~CSTOPB;
     } else {
         dev.c_cflag |= CSTOPB;
     }
 
-    switch (Settings.Parity) {
+    switch (Settings->Parity) {
     case 'N':
         dev.c_cflag &= ~PARENB;
         dev.c_iflag &= ~INPCK;
@@ -115,10 +90,10 @@ void TSerialPort::Open()
         break;
     default:
         Close();
-        throw TSerialDeviceException("cannot open serial port: invalid parity value: '" + std::string(1, Settings.Parity) + "'");
+        throw TSerialDeviceException("cannot open serial port: invalid parity value: '" + std::string(1, Settings->Parity) + "'");
     }
 
-    dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(Settings.DataBits) | CREAD | CLOCAL;
+    dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(Settings->DataBits) | CREAD | CLOCAL;
     dev.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
     dev.c_iflag &= ~(IXON | IXOFF | IXANY);
     dev.c_oflag &=~ OPOST;
@@ -142,153 +117,8 @@ void TSerialPort::Open()
 
 void TSerialPort::Close()
 {
-    CheckPortOpen();
-    tcsetattr(Fd, TCSANOW, &OldTermios);
-    close(Fd);
-    Fd = -1;
-}
-
-bool TSerialPort::IsOpen() const
-{
-    return Fd >= 0;
-}
-
-void TSerialPort::CheckPortOpen()
-{
-    if (Fd < 0)
-        throw TSerialDeviceException("port not open");
-}
-
-void TSerialPort::WriteBytes(const uint8_t* buf, int count) {
-    if (write(Fd, buf, count) < count)
-        throw TSerialDeviceException("serial write failed");
-
-    LOG(Debug) << "Write:" << TLogger::HexDump(buf, count);
-}
-
-bool TSerialPort::Select(const std::chrono::microseconds& us)
-{
-    fd_set rfds;
-    struct timeval tv, *tvp = 0;
-
-    FD_ZERO(&rfds);
-    FD_SET(Fd, &rfds);
-    if (us.count() > 0) {
-        tv.tv_sec = us.count() / 1000000;
-        tv.tv_usec = us.count();
-        tvp = &tv;
+    if (Base::IsOpen()) {
+        tcsetattr(Fd, TCSANOW, &OldTermios);
     }
-
-    int r = select(Fd + 1, &rfds, NULL, NULL, tvp);
-    if (r < 0)
-        throw TSerialDeviceException("select() failed");
-
-    return r > 0;
-}
-
-uint8_t TSerialPort::ReadByte()
-{
-    CheckPortOpen();
-
-    if (!Select(Settings.ResponseTimeout))
-        throw TSerialDeviceTransientErrorException("timeout");
-
-    uint8_t b;
-    if (read(Fd, &b, 1) < 1)
-        throw TSerialDeviceException("read() failed");
-
-    LOG(Debug) << "Read: " << TLogger::HexDump(b);
-
-    return b;
-}
-
-// Reading becomes unstable when using timeout less than default because of bufferization
-int TSerialPort::ReadFrame(uint8_t* buf, int size,
-                           const std::chrono::microseconds& timeout,
-                           TFrameCompletePred frame_complete)
-{
-    CheckPortOpen();
-    int nread = 0;
-    while (nread < size) {
-        if (frame_complete && frame_complete(buf, nread)) {
-            // XXX A hack.
-            // The problem is that if we don't pause here and the
-            // serial client switches to another device after
-            // processing this frame, that device may miss the frame
-            // boundary and consider the last response (from this
-            // device) and the query (from the master) to be single
-            // frame. On the other hand, we don't want to use
-            // device-specific frame timeout here as it can be quite
-            // long. The proper solution would be perhaps ensuring
-            // that there's a pause of at least
-            // DeviceConfig->FrameTimeoutMs before polling each
-            // device.
-            usleep(DefaultFrameTimeout.count());
-            break;
-        }
-
-        if (!Select(!nread ? Settings.ResponseTimeout :
-                    timeout.count() < 0 ? DefaultFrameTimeout :
-                    timeout))
-            break; // end of the frame
-
-        // We don't want to use non-blocking IO in general
-        // (e.g. we want blocking writes), but we don't want
-        // read() call below to block because actual frame
-        // size is not known at this point. So we must
-        // know how many bytes are available
-        int nb;
-        if (ioctl(Fd, FIONREAD, &nb) < 0)
-            throw TSerialDeviceException("FIONREAD ioctl() failed");
-        if (!nb)
-            continue; // shouldn't happen, actually
-        if (nb > size - nread)
-            nb = size - nread;
-
-        int n = read(Fd, buf + nread, nb);
-        if (n < 0)
-            throw TSerialDeviceException("read() failed");
-        if (n < nb) // may happen only due to a kernel/driver bug
-            throw TSerialDeviceException("short read()");
-
-        nread += nb;
-    }
-
-    if (!nread)
-        throw TSerialDeviceTransientErrorException("request timed out");
-
-    LOG(Debug) << "ReadFrame:" << TLogger::HexDump(buf, nread);
-
-    return nread;
-}
-
-void TSerialPort::SkipNoise()
-{
-    uint8_t b;
-    while (Select(NoiseTimeout)) {
-        if (read(Fd, &b, 1) < 1)
-            throw TSerialDeviceException("read() failed");
-
-        LOG(Debug) << "read noise: " << TLogger::HexDump(b);
-    }
-}
-
-void TSerialPort::Sleep(const std::chrono::microseconds& us)
-{
-    usleep(us.count());
-}
-
-TAbstractSerialPort::TTimePoint TSerialPort::CurrentTime() const
-{
-    return std::chrono::steady_clock::now();
-}
-
-bool TSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
-{
-    LOG(Debug) << std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now().time_since_epoch()).count() <<
-        ": Wait until " <<
-        std::chrono::duration_cast<std::chrono::milliseconds>(until.time_since_epoch()).count();
-
-    return semaphore->Wait(until);
+    Base::Close();
 }

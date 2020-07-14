@@ -1029,7 +1029,7 @@ TEST_F(TConfigParserTest, Parse)
     for (auto port_config: config->PortConfigs) {
         TTestLogIndent indent(*this);
         Emit() << "------";
-        Emit() << "ConnSettings: " << port_config->ConnSettings;
+        Emit() << "ConnSettings: " << port_config->ConnSettings->ToString();
         Emit() << "PollInterval: " << port_config->PollInterval.count();
         if (port_config->DeviceConfigs.empty()) {
             Emit() << "No device configs.";

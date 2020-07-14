@@ -8,6 +8,9 @@
 #include <iostream>
 #include <cassert>
 
+#include "serial_port.h"
+#include "tcp_port.h"
+
 using namespace std;
 using namespace WBMQTT;
 
@@ -27,13 +30,28 @@ namespace
 }
 
 
-TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig portConfig,
-                                     PAbstractSerialPort portOverride)
+TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig portConfig, PPort portOverride)
     : MqttDriver(mqttDriver),
-      Config(portConfig),
-      Port(portOverride ? portOverride : std::make_shared<TSerialPort>(Config->ConnSettings)),
-      SerialClient(new TSerialClient(Port))
-{}
+      Config(portConfig)
+{
+    // FIXME: Settings classes hierarchy is completely broken. As a result we have ugly casts
+    if (portOverride) {
+        Port = portOverride;
+    } else {
+        auto serialCfg = std::dynamic_pointer_cast<TSerialPortSettings>(Config->ConnSettings);
+        if (serialCfg) {
+            Port = std::make_shared<TSerialPort>(serialCfg);
+        } else {
+            auto tcpCfg = std::dynamic_pointer_cast<TTcpPortSettings>(Config->ConnSettings);
+            if (tcpCfg) {
+                Port = std::make_shared<TTcpPort>(tcpCfg);
+            } else {
+                throw std::runtime_error("Can't create port instance");
+            }
+        }
+    }
+    SerialClient = PSerialClient(new TSerialClient(Port));
+}
 
 TSerialPortDriver::~TSerialPortDriver()
 {}
@@ -47,7 +65,7 @@ void TSerialPortDriver::SetUpDevices()
         UpdateError(reg, state);
     });
 
-    LOG(Debug) << "setting up devices at " << Config->ConnSettings.Device;
+    LOG(Debug) << "setting up devices at " << Config->ConnSettings->ToString();
 
     try {
         auto tx = MqttDriver->BeginTx();

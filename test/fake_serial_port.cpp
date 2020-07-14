@@ -1,5 +1,4 @@
 #include "fake_serial_port.h"
-#include "utils.h"
 
 #include <wblib/driver.h>
 #include <wblib/backend.h>
@@ -10,6 +9,7 @@
 #include <stdexcept>
 
 using namespace WBMQTT;
+using namespace WBMQTT::Testing;
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
@@ -19,7 +19,7 @@ void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& t
     ExpectedFrameTimeout = timeout;
 }
 
-void TFakeSerialPort::CheckPortOpen()
+void TFakeSerialPort::CheckPortOpen() const
 {
     if (!IsPortOpen)
         throw TSerialDeviceException("port not open");
@@ -153,12 +153,7 @@ void TFakeSerialPort::Sleep(const std::chrono::microseconds& us)
     Fixture.Emit() << "Sleep(" << us.count() << ")";
 }
 
-TAbstractSerialPort::TTimePoint TFakeSerialPort::CurrentTime() const
-{
-    return Time;
-}
-
-bool TFakeSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
+bool TFakeSerialPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)
 {
     if (semaphore->TryWait())
         return true;
@@ -166,6 +161,11 @@ bool TFakeSerialPort::Wait(PBinarySemaphore semaphore, const TTimePoint& until)
         throw std::runtime_error("TFakeSerialPort::Wait(): going back in time");
     Time = until;
     return false;
+}
+
+TTimePoint TFakeSerialPort::CurrentTime() const
+{
+    return Time;
 }
 
 void TFakeSerialPort::DumpWhatWasRead()

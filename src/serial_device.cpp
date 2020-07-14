@@ -1,11 +1,12 @@
 #include "serial_device.h"
 #include "log.h"
 
+#include <iostream>
 #include <unistd.h>
 
 #define LOG(logger) ::logger.Log() << "[serial device] "
 
-TSerialDevice::TSerialDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol)
+TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : Delay(config->Delay)
     , SerialPort(port)
     , _DeviceConfig(config)
@@ -34,7 +35,7 @@ std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegi
 
 void TSerialDevice::Prepare()
 {
-    SerialPort->Sleep(Delay);
+    Port()->Sleep(Delay);
 }
 
 void TSerialDevice::EndPollCycle() {}
@@ -50,9 +51,9 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
         	continue;
         }
     	try {
-            if (DeviceConfig()->GuardInterval.count()){
-                usleep(DeviceConfig()->GuardInterval.count());
-            }
+	    if (DeviceConfig()->GuardInterval.count()){
+	        usleep(DeviceConfig()->GuardInterval.count());
+	    }
             simple_range->SetValue(reg, ReadRegister(reg));
         } catch (const TSerialDeviceTransientErrorException& e) {
             simple_range->SetError(reg);
@@ -142,7 +143,7 @@ PProtocol TSerialDeviceFactory::GetProtocol(const std::string &name)
     return it->second;
 }
 
-PSerialDevice TSerialDeviceFactory::CreateDevice(PDeviceConfig device_config, PAbstractSerialPort port)
+PSerialDevice TSerialDeviceFactory::CreateDevice(PDeviceConfig device_config, PPort port)
 {
     return GetProtocolEntry(device_config)->CreateDevice(device_config, port);
 }
@@ -156,7 +157,7 @@ void TSerialDeviceFactory::RemoveDevice(PSerialDevice device)
     }
 }
 
-PSerialDevice TSerialDeviceFactory::GetDevice(const std::string& slave_id, const std::string& protocol_name, PAbstractSerialPort port)
+PSerialDevice TSerialDeviceFactory::GetDevice(const std::string& slave_id, const std::string& protocol_name, PPort port)
 {
     return GetProtocol(protocol_name)->GetDevice(slave_id, port);
 }

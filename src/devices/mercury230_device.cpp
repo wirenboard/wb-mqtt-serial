@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iostream>
 #include "mercury230_device.h"
 #include "crc16.h"
 
@@ -12,7 +13,7 @@ REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
             { TMercury230Device::REG_PARAM_BE, "param_be", "value", S24, true }
         }));
 
-TMercury230Device::TMercury230Device(PDeviceConfig device_config, PAbstractSerialPort port, PProtocol protocol)
+TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TEMDevice<TBasicProtocol<TMercury230Device>>(device_config, port, protocol)
 {}
 
@@ -112,7 +113,7 @@ uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_l
 
             int sign = 1;
 
-            if (reg_type == REG_PARAM_SIGN_ACT)  {
+            if (reg_type == REG_PARAM_SIGN_ACT) {
                     sign = active_power_sign;
             } else if (reg_type == REG_PARAM_SIGN_REACT) {
                     sign = reactive_power_sign;

@@ -14,6 +14,9 @@
 
 #include <wblib/json_utils.h>
 
+#include "tcp_port_settings.h"
+#include "serial_port_settings.h"
+
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
 namespace {
@@ -389,22 +392,42 @@ namespace {
             return;
 
         PPortConfig port_config(new TPortConfig);
-        port_config->ConnSettings.Device = port_data["path"].asString();
 
-        if (port_data.isMember("baud_rate"))
-            port_config->ConnSettings.BaudRate = GetInt(port_data, "baud_rate");
+        auto port_type = port_data.get("port_type", "serial").asString();
 
-        if (port_data.isMember("parity"))
-            port_config->ConnSettings.Parity = port_data["parity"].asCString()[0]; // FIXME (can be '\0')
+        if (port_type == "serial") {
+            auto serial_port_settings = std::make_shared<TSerialPortSettings>(port_data["path"].asString());
 
-        if (port_data.isMember("data_bits"))
-            port_config->ConnSettings.DataBits = GetInt(port_data, "data_bits");
+            if (port_data.isMember("baud_rate"))
+                serial_port_settings->BaudRate = GetInt(port_data, "baud_rate");
 
-        if (port_data.isMember("stop_bits"))
-            port_config->ConnSettings.StopBits = GetInt(port_data, "stop_bits");
+            if (port_data.isMember("parity"))
+                serial_port_settings->Parity = port_data["parity"].asCString()[0]; // FIXME (can be '\0')
+
+            if (port_data.isMember("data_bits"))
+                serial_port_settings->DataBits = GetInt(port_data, "data_bits");
+
+            if (port_data.isMember("stop_bits"))
+                serial_port_settings->StopBits = GetInt(port_data, "stop_bits");
+
+            port_config->ConnSettings = serial_port_settings;
+
+        } else {
+            if (port_type == "tcp") {
+                auto tcp_port_settings = std::make_shared<TTcpPortSettings>(port_data["address"].asString(), GetInt(port_data, "port"));
+
+                if (port_data.isMember("connection_timeout_ms")) {
+                    tcp_port_settings->ConnectionTimeout = std::chrono::milliseconds(GetInt(port_data, "connection_timeout_ms"));
+                }
+
+                port_config->ConnSettings = tcp_port_settings;
+            } else {
+                throw TConfigParserException("Unknown port type: " + port_type);
+            }
+        }
 
         if (port_data.isMember("response_timeout_ms"))
-            port_config->ConnSettings.ResponseTimeout = std::chrono::milliseconds(
+            port_config->ConnSettings->ResponseTimeout = std::chrono::milliseconds(
                 GetInt(port_data, "response_timeout_ms"));
 
         if (port_data.isMember("poll_interval"))

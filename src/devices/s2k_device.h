@@ -17,7 +17,7 @@ public:
         REG_RELAY_DELAY,
     };
 
-    TS2KDevice(PDeviceConfig config, PAbstractSerialPort port, PProtocol protocol);
+    TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     virtual uint64_t ReadRegister(PRegister reg);
     virtual void WriteRegister(PRegister reg, uint64_t value);
 

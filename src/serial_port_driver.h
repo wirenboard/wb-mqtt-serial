@@ -52,7 +52,7 @@ struct TDeviceChannelState
 class TSerialPortDriver: public std::enable_shared_from_this<TSerialPortDriver>
 {
 public:
-    TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig port_config, PAbstractSerialPort port_override = 0);
+    TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig port_config, PPort port_override = 0);
     ~TSerialPortDriver();
     void SetUpDevices();
     void Cycle();
@@ -73,7 +73,7 @@ private:
 
     WBMQTT::PDeviceDriver MqttDriver;
     PPortConfig Config;
-    PAbstractSerialPort Port;
+    PPort Port;
     PSerialClient SerialClient;
     std::vector<PSerialDevice> Devices;
 
