@@ -20,35 +20,35 @@
             {
                 "name" : "Voltage K1",
                 "reg_type" : "input",
-                "address" : 500,
+                "address" : 56,
                 "type" : "voltage",
                 "scale" : 0.01
             },
             {
                 "name" : "Voltage K2",
                 "reg_type" : "input",
-                "address" : 504,
+                "address" : 57,
                 "type" : "voltage",
                 "scale" : 0.01
             },
             {
                 "name" : "Power K1",
                 "reg_type" : "input",
-                "address" : 501,
+                "address" : 64,
                 "type" : "power",
                 "scale" : 0.1
             },
             {
                 "name" : "Power K2",
                 "reg_type" : "input",
-                "address" : 505,
+                "address" : 65,
                 "type" : "power",
                 "scale" : 0.1
             },
             {
                 "name" : "Energy K1",
                 "reg_type" : "input",
-                "address" : 502,
+                "address" : 72,
                 "type" : "power_consumption",
                 "scale" : 0.1,
                 "format": "u32"
@@ -56,7 +56,7 @@
             {
                 "name" : "Energy K2",
                 "reg_type" : "input",
-                "address" : 506,
+                "address" : 74,
                 "type" : "power_consumption",
                 "scale" : 0.1,
                 "format": "u32"
