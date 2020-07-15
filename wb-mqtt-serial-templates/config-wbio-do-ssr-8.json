@@ -1,7 +1,7 @@
 {
-    "device_type": "WBIO-DI-SSR-8",
+    "device_type": "WBIO-DO-SSR-8",
     "device": {
-        "name": "WBIO-DI-SSR-8",
+        "name": "WBIO-DO-SSR-8",
         "id": "wb-mio-gpio",
         "protocol": "modbus_io",
         "stride": 1000,

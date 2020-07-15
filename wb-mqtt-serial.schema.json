@@ -7,7 +7,7 @@
     "deviceProtocol": {
       "type": "string",
       "title": "Device protocol",
-      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k", "modbus_io", "pulsar", "mercury200"],
+      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k", "modbus_io", "pulsar", "mercury200", "lls"],
       "default": "modbus"
     },
     "serialPort": {
@@ -642,6 +642,10 @@
     },
     "serial_int": {
       "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$"
+        },
         {
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"

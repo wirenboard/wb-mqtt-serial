@@ -140,12 +140,6 @@
                 "reg_type": "coil",
                 "address": 15,
                 "type": "switch"
-            },
-            {
-                "name": "K12",
-                "reg_type": "coil",
-                "address": 11,
-                "type": "switch"
             }
         ]
     }

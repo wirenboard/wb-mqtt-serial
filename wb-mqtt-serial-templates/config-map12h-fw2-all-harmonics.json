@@ -1,0 +1,9008 @@
+{
+ "device_type": "WB-MAP12H fw2 (+ all harmonics)",
+ "device": {
+  "name": "WB-MAP12H fw2 (+ all harmonics)",
+  "id": "wb-map12h",
+  "max_read_registers": 60,
+  "channels": [
+   {
+    "name": "Urms L1",
+    "reg_type": "input",
+    "address": "0x1410",
+    "type": "voltage",
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
+   },
+   {
+    "name": "THD U L1",
+    "reg_type": "input",
+    "address": "0x1703",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "THDN U L1",
+    "reg_type": "input",
+    "address": "0x10f1",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ufund L1",
+    "reg_type": "input",
+    "address": "0x1711",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.032656,
+    "round_to": 0.01
+   },
+   {
+    "name": "Urms L2",
+    "reg_type": "input",
+    "address": "0x1412",
+    "type": "voltage",
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
+   },
+   {
+    "name": "THD U L2",
+    "reg_type": "input",
+    "address": "0x1704",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "THDN U L2",
+    "reg_type": "input",
+    "address": "0x10f2",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ufund L2",
+    "reg_type": "input",
+    "address": "0x1713",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.032656,
+    "round_to": 0.01
+   },
+   {
+    "name": "Urms L3",
+    "reg_type": "input",
+    "address": "0x1414",
+    "type": "voltage",
+    "format": "u32",
+    "scale": 1.52588e-07,
+    "round_to": 0.001
+   },
+   {
+    "name": "THD U L3",
+    "reg_type": "input",
+    "address": "0x1705",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "THDN U L3",
+    "reg_type": "input",
+    "address": "0x10f3",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ufund L3",
+    "reg_type": "input",
+    "address": "0x1715",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.032656,
+    "round_to": 0.01
+   },
+   {
+    "name": "Frequency",
+    "reg_type": "input",
+    "address": "0x10f8",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Voltage angle L1",
+    "reg_type": "input",
+    "address": "0x10fd",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Voltage angle L2",
+    "reg_type": "input",
+    "address": "0x10fe",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Voltage angle L3",
+    "reg_type": "input",
+    "address": "0x10ff",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "HR U 2 L1",
+    "reg_type": "input",
+    "address": "0x167b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 3 L1",
+    "reg_type": "input",
+    "address": "0x167c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 4 L1",
+    "reg_type": "input",
+    "address": "0x167d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 5 L1",
+    "reg_type": "input",
+    "address": "0x167e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 6 L1",
+    "reg_type": "input",
+    "address": "0x167f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 7 L1",
+    "reg_type": "input",
+    "address": "0x1680",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 8 L1",
+    "reg_type": "input",
+    "address": "0x1681",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 9 L1",
+    "reg_type": "input",
+    "address": "0x1682",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 10 L1",
+    "reg_type": "input",
+    "address": "0x1683",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 11 L1",
+    "reg_type": "input",
+    "address": "0x1684",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 12 L1",
+    "reg_type": "input",
+    "address": "0x1685",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 13 L1",
+    "reg_type": "input",
+    "address": "0x1686",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 14 L1",
+    "reg_type": "input",
+    "address": "0x1687",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 15 L1",
+    "reg_type": "input",
+    "address": "0x1688",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 16 L1",
+    "reg_type": "input",
+    "address": "0x1689",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 17 L1",
+    "reg_type": "input",
+    "address": "0x168a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 18 L1",
+    "reg_type": "input",
+    "address": "0x168b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 19 L1",
+    "reg_type": "input",
+    "address": "0x168c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 20 L1",
+    "reg_type": "input",
+    "address": "0x168d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 21 L1",
+    "reg_type": "input",
+    "address": "0x168e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 22 L1",
+    "reg_type": "input",
+    "address": "0x168f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 23 L1",
+    "reg_type": "input",
+    "address": "0x1690",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 24 L1",
+    "reg_type": "input",
+    "address": "0x1691",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 25 L1",
+    "reg_type": "input",
+    "address": "0x1692",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 26 L1",
+    "reg_type": "input",
+    "address": "0x1693",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 27 L1",
+    "reg_type": "input",
+    "address": "0x1694",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 28 L1",
+    "reg_type": "input",
+    "address": "0x1695",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 29 L1",
+    "reg_type": "input",
+    "address": "0x1696",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 30 L1",
+    "reg_type": "input",
+    "address": "0x1697",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 31 L1",
+    "reg_type": "input",
+    "address": "0x1698",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 32 L1",
+    "reg_type": "input",
+    "address": "0x1699",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 33 L1",
+    "reg_type": "input",
+    "address": "0x169a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 34 L1",
+    "reg_type": "input",
+    "address": "0x169b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 35 L1",
+    "reg_type": "input",
+    "address": "0x169c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 36 L1",
+    "reg_type": "input",
+    "address": "0x169d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 37 L1",
+    "reg_type": "input",
+    "address": "0x169e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 38 L1",
+    "reg_type": "input",
+    "address": "0x169f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 39 L1",
+    "reg_type": "input",
+    "address": "0x16a0",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 40 L1",
+    "reg_type": "input",
+    "address": "0x16a1",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 41 L1",
+    "reg_type": "input",
+    "address": "0x16a2",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 42 L1",
+    "reg_type": "input",
+    "address": "0x16a3",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 2 L2",
+    "reg_type": "input",
+    "address": "0x16a4",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 3 L2",
+    "reg_type": "input",
+    "address": "0x16a5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 4 L2",
+    "reg_type": "input",
+    "address": "0x16a6",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 5 L2",
+    "reg_type": "input",
+    "address": "0x16a7",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 6 L2",
+    "reg_type": "input",
+    "address": "0x16a8",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 7 L2",
+    "reg_type": "input",
+    "address": "0x16a9",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 8 L2",
+    "reg_type": "input",
+    "address": "0x16aa",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 9 L2",
+    "reg_type": "input",
+    "address": "0x16ab",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 10 L2",
+    "reg_type": "input",
+    "address": "0x16ac",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 11 L2",
+    "reg_type": "input",
+    "address": "0x16ad",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 12 L2",
+    "reg_type": "input",
+    "address": "0x16ae",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 13 L2",
+    "reg_type": "input",
+    "address": "0x16af",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 14 L2",
+    "reg_type": "input",
+    "address": "0x16b0",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 15 L2",
+    "reg_type": "input",
+    "address": "0x16b1",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 16 L2",
+    "reg_type": "input",
+    "address": "0x16b2",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 17 L2",
+    "reg_type": "input",
+    "address": "0x16b3",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 18 L2",
+    "reg_type": "input",
+    "address": "0x16b4",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 19 L2",
+    "reg_type": "input",
+    "address": "0x16b5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 20 L2",
+    "reg_type": "input",
+    "address": "0x16b6",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 21 L2",
+    "reg_type": "input",
+    "address": "0x16b7",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 22 L2",
+    "reg_type": "input",
+    "address": "0x16b8",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 23 L2",
+    "reg_type": "input",
+    "address": "0x16b9",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 24 L2",
+    "reg_type": "input",
+    "address": "0x16ba",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 25 L2",
+    "reg_type": "input",
+    "address": "0x16bb",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 26 L2",
+    "reg_type": "input",
+    "address": "0x16bc",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 27 L2",
+    "reg_type": "input",
+    "address": "0x16bd",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 28 L2",
+    "reg_type": "input",
+    "address": "0x16be",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 29 L2",
+    "reg_type": "input",
+    "address": "0x16bf",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 30 L2",
+    "reg_type": "input",
+    "address": "0x16c0",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 31 L2",
+    "reg_type": "input",
+    "address": "0x16c1",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 32 L2",
+    "reg_type": "input",
+    "address": "0x16c2",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 33 L2",
+    "reg_type": "input",
+    "address": "0x16c3",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 34 L2",
+    "reg_type": "input",
+    "address": "0x16c4",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 35 L2",
+    "reg_type": "input",
+    "address": "0x16c5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 36 L2",
+    "reg_type": "input",
+    "address": "0x16c6",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 37 L2",
+    "reg_type": "input",
+    "address": "0x16c7",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 38 L2",
+    "reg_type": "input",
+    "address": "0x16c8",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 39 L2",
+    "reg_type": "input",
+    "address": "0x16c9",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 40 L2",
+    "reg_type": "input",
+    "address": "0x16ca",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 41 L2",
+    "reg_type": "input",
+    "address": "0x16cb",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 42 L2",
+    "reg_type": "input",
+    "address": "0x16cc",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 2 L3",
+    "reg_type": "input",
+    "address": "0x16cd",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 3 L3",
+    "reg_type": "input",
+    "address": "0x16ce",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 4 L3",
+    "reg_type": "input",
+    "address": "0x16cf",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 5 L3",
+    "reg_type": "input",
+    "address": "0x16d0",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 6 L3",
+    "reg_type": "input",
+    "address": "0x16d1",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 7 L3",
+    "reg_type": "input",
+    "address": "0x16d2",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 8 L3",
+    "reg_type": "input",
+    "address": "0x16d3",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 9 L3",
+    "reg_type": "input",
+    "address": "0x16d4",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 10 L3",
+    "reg_type": "input",
+    "address": "0x16d5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 11 L3",
+    "reg_type": "input",
+    "address": "0x16d6",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 12 L3",
+    "reg_type": "input",
+    "address": "0x16d7",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 13 L3",
+    "reg_type": "input",
+    "address": "0x16d8",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 14 L3",
+    "reg_type": "input",
+    "address": "0x16d9",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 15 L3",
+    "reg_type": "input",
+    "address": "0x16da",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 16 L3",
+    "reg_type": "input",
+    "address": "0x16db",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 17 L3",
+    "reg_type": "input",
+    "address": "0x16dc",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 18 L3",
+    "reg_type": "input",
+    "address": "0x16dd",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 19 L3",
+    "reg_type": "input",
+    "address": "0x16de",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 20 L3",
+    "reg_type": "input",
+    "address": "0x16df",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 21 L3",
+    "reg_type": "input",
+    "address": "0x16e0",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 22 L3",
+    "reg_type": "input",
+    "address": "0x16e1",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 23 L3",
+    "reg_type": "input",
+    "address": "0x16e2",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 24 L3",
+    "reg_type": "input",
+    "address": "0x16e3",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 25 L3",
+    "reg_type": "input",
+    "address": "0x16e4",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 26 L3",
+    "reg_type": "input",
+    "address": "0x16e5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 27 L3",
+    "reg_type": "input",
+    "address": "0x16e6",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 28 L3",
+    "reg_type": "input",
+    "address": "0x16e7",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 29 L3",
+    "reg_type": "input",
+    "address": "0x16e8",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 30 L3",
+    "reg_type": "input",
+    "address": "0x16e9",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 31 L3",
+    "reg_type": "input",
+    "address": "0x16ea",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 32 L3",
+    "reg_type": "input",
+    "address": "0x16eb",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 33 L3",
+    "reg_type": "input",
+    "address": "0x16ec",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 34 L3",
+    "reg_type": "input",
+    "address": "0x16ed",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 35 L3",
+    "reg_type": "input",
+    "address": "0x16ee",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 36 L3",
+    "reg_type": "input",
+    "address": "0x16ef",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 37 L3",
+    "reg_type": "input",
+    "address": "0x16f0",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 38 L3",
+    "reg_type": "input",
+    "address": "0x16f1",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 39 L3",
+    "reg_type": "input",
+    "address": "0x16f2",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 40 L3",
+    "reg_type": "input",
+    "address": "0x16f3",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 41 L3",
+    "reg_type": "input",
+    "address": "0x16f4",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "HR U 42 L3",
+    "reg_type": "input",
+    "address": "0x16f5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 Irms L1",
+    "reg_type": "input",
+    "address": "0x1416",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 1 THD I L1",
+    "reg_type": "input",
+    "address": "0x1700",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 THDN I L1",
+    "reg_type": "input",
+    "address": "0x10f5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Ifund L1",
+    "reg_type": "input",
+    "address": "0x1710",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 P L1",
+    "reg_type": "input",
+    "address": "0x1302",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Q L1",
+    "reg_type": "input",
+    "address": "0x130a",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 S L1",
+    "reg_type": "input",
+    "address": "0x1312",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 N L1",
+    "reg_type": "input",
+    "address": "0x1582",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 PF L1",
+    "reg_type": "input",
+    "address": "0x10bd",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Pfund L1",
+    "reg_type": "input",
+    "address": "0x1402",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Pharm L1",
+    "reg_type": "input",
+    "address": "0x140a",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 AP energy L1",
+    "reg_type": "input",
+    "address": "0x1204",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 AN energy L1",
+    "reg_type": "input",
+    "address": "0x1214",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 RP energy L1",
+    "reg_type": "input",
+    "address": "0x1224",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 RN energy L1",
+    "reg_type": "input",
+    "address": "0x1234",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 S energy L1",
+    "reg_type": "input",
+    "address": "0x1244",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 NP energy L1",
+    "reg_type": "input",
+    "address": "0x1506",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 NN energy L1",
+    "reg_type": "input",
+    "address": "0x1516",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 Irms L2",
+    "reg_type": "input",
+    "address": "0x1418",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 1 THD I L2",
+    "reg_type": "input",
+    "address": "0x1701",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 THDN I L2",
+    "reg_type": "input",
+    "address": "0x10f6",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Ifund L2",
+    "reg_type": "input",
+    "address": "0x1712",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 P L2",
+    "reg_type": "input",
+    "address": "0x1304",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Q L2",
+    "reg_type": "input",
+    "address": "0x130c",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 S L2",
+    "reg_type": "input",
+    "address": "0x1314",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 N L2",
+    "reg_type": "input",
+    "address": "0x1584",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 PF L2",
+    "reg_type": "input",
+    "address": "0x10be",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Pfund L2",
+    "reg_type": "input",
+    "address": "0x1404",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Pharm L2",
+    "reg_type": "input",
+    "address": "0x140c",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 AP energy L2",
+    "reg_type": "input",
+    "address": "0x1208",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 AN energy L2",
+    "reg_type": "input",
+    "address": "0x1218",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 RP energy L2",
+    "reg_type": "input",
+    "address": "0x1228",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 RN energy L2",
+    "reg_type": "input",
+    "address": "0x1238",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 S energy L2",
+    "reg_type": "input",
+    "address": "0x1248",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 NP energy L2",
+    "reg_type": "input",
+    "address": "0x150a",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 NN energy L2",
+    "reg_type": "input",
+    "address": "0x151a",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 Irms L3",
+    "reg_type": "input",
+    "address": "0x141a",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 1 THD I L3",
+    "reg_type": "input",
+    "address": "0x1702",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 THDN I L3",
+    "reg_type": "input",
+    "address": "0x10f7",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Ifund L3",
+    "reg_type": "input",
+    "address": "0x1714",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 P L3",
+    "reg_type": "input",
+    "address": "0x1306",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Q L3",
+    "reg_type": "input",
+    "address": "0x130e",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 S L3",
+    "reg_type": "input",
+    "address": "0x1316",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 N L3",
+    "reg_type": "input",
+    "address": "0x1586",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 PF L3",
+    "reg_type": "input",
+    "address": "0x10bf",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Pfund L3",
+    "reg_type": "input",
+    "address": "0x1406",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Pharm L3",
+    "reg_type": "input",
+    "address": "0x140e",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 AP energy L3",
+    "reg_type": "input",
+    "address": "0x120c",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 AN energy L3",
+    "reg_type": "input",
+    "address": "0x121c",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 RP energy L3",
+    "reg_type": "input",
+    "address": "0x122c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 RN energy L3",
+    "reg_type": "input",
+    "address": "0x123c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 S energy L3",
+    "reg_type": "input",
+    "address": "0x124c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 NP energy L3",
+    "reg_type": "input",
+    "address": "0x150e",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 NN energy L3",
+    "reg_type": "input",
+    "address": "0x151e",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 Total P",
+    "reg_type": "input",
+    "address": "0x1300",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Total Q",
+    "reg_type": "input",
+    "address": "0x1308",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Total S",
+    "reg_type": "input",
+    "address": "0x1310",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Total PF",
+    "reg_type": "input",
+    "address": "0x10bc",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Total SV",
+    "reg_type": "input",
+    "address": "0x1098",
+    "type": "value",
+    "format": "s32",
+    "scale": 6.10352e-05,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Total N",
+    "reg_type": "input",
+    "address": "0x1580",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Total Pfund",
+    "reg_type": "input",
+    "address": "0x1400",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Total Pharm",
+    "reg_type": "input",
+    "address": "0x1408",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Total AP energy",
+    "reg_type": "input",
+    "address": "0x1200",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 Total AN energy",
+    "reg_type": "input",
+    "address": "0x1210",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 Total RP energy",
+    "reg_type": "input",
+    "address": "0x1220",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 Total RN energy",
+    "reg_type": "input",
+    "address": "0x1230",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 Total S energy",
+    "reg_type": "input",
+    "address": "0x1240",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 Total NP energy",
+    "reg_type": "input",
+    "address": "0x1502",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 Total NN energy",
+    "reg_type": "input",
+    "address": "0x1512",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 1 Phase angle L1",
+    "reg_type": "input",
+    "address": "0x10f9",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Phase angle L2",
+    "reg_type": "input",
+    "address": "0x10fa",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 Phase angle L3",
+    "reg_type": "input",
+    "address": "0x10fb",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 1 HR I 2 L1",
+    "reg_type": "input",
+    "address": "0x1600",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 3 L1",
+    "reg_type": "input",
+    "address": "0x1601",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 4 L1",
+    "reg_type": "input",
+    "address": "0x1602",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 5 L1",
+    "reg_type": "input",
+    "address": "0x1603",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 6 L1",
+    "reg_type": "input",
+    "address": "0x1604",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 7 L1",
+    "reg_type": "input",
+    "address": "0x1605",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 8 L1",
+    "reg_type": "input",
+    "address": "0x1606",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 9 L1",
+    "reg_type": "input",
+    "address": "0x1607",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 10 L1",
+    "reg_type": "input",
+    "address": "0x1608",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 11 L1",
+    "reg_type": "input",
+    "address": "0x1609",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 12 L1",
+    "reg_type": "input",
+    "address": "0x160a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 13 L1",
+    "reg_type": "input",
+    "address": "0x160b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 14 L1",
+    "reg_type": "input",
+    "address": "0x160c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 15 L1",
+    "reg_type": "input",
+    "address": "0x160d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 16 L1",
+    "reg_type": "input",
+    "address": "0x160e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 17 L1",
+    "reg_type": "input",
+    "address": "0x160f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 18 L1",
+    "reg_type": "input",
+    "address": "0x1610",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 19 L1",
+    "reg_type": "input",
+    "address": "0x1611",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 20 L1",
+    "reg_type": "input",
+    "address": "0x1612",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 21 L1",
+    "reg_type": "input",
+    "address": "0x1613",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 22 L1",
+    "reg_type": "input",
+    "address": "0x1614",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 23 L1",
+    "reg_type": "input",
+    "address": "0x1615",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 24 L1",
+    "reg_type": "input",
+    "address": "0x1616",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 25 L1",
+    "reg_type": "input",
+    "address": "0x1617",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 26 L1",
+    "reg_type": "input",
+    "address": "0x1618",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 27 L1",
+    "reg_type": "input",
+    "address": "0x1619",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 28 L1",
+    "reg_type": "input",
+    "address": "0x161a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 29 L1",
+    "reg_type": "input",
+    "address": "0x161b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 30 L1",
+    "reg_type": "input",
+    "address": "0x161c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 31 L1",
+    "reg_type": "input",
+    "address": "0x161d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 32 L1",
+    "reg_type": "input",
+    "address": "0x161e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 33 L1",
+    "reg_type": "input",
+    "address": "0x161f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 34 L1",
+    "reg_type": "input",
+    "address": "0x1620",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 35 L1",
+    "reg_type": "input",
+    "address": "0x1621",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 36 L1",
+    "reg_type": "input",
+    "address": "0x1622",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 37 L1",
+    "reg_type": "input",
+    "address": "0x1623",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 38 L1",
+    "reg_type": "input",
+    "address": "0x1624",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 39 L1",
+    "reg_type": "input",
+    "address": "0x1625",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 40 L1",
+    "reg_type": "input",
+    "address": "0x1626",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 41 L1",
+    "reg_type": "input",
+    "address": "0x1627",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 42 L1",
+    "reg_type": "input",
+    "address": "0x1628",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 2 L2",
+    "reg_type": "input",
+    "address": "0x1629",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 3 L2",
+    "reg_type": "input",
+    "address": "0x162a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 4 L2",
+    "reg_type": "input",
+    "address": "0x162b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 5 L2",
+    "reg_type": "input",
+    "address": "0x162c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 6 L2",
+    "reg_type": "input",
+    "address": "0x162d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 7 L2",
+    "reg_type": "input",
+    "address": "0x162e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 8 L2",
+    "reg_type": "input",
+    "address": "0x162f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 9 L2",
+    "reg_type": "input",
+    "address": "0x1630",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 10 L2",
+    "reg_type": "input",
+    "address": "0x1631",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 11 L2",
+    "reg_type": "input",
+    "address": "0x1632",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 12 L2",
+    "reg_type": "input",
+    "address": "0x1633",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 13 L2",
+    "reg_type": "input",
+    "address": "0x1634",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 14 L2",
+    "reg_type": "input",
+    "address": "0x1635",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 15 L2",
+    "reg_type": "input",
+    "address": "0x1636",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 16 L2",
+    "reg_type": "input",
+    "address": "0x1637",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 17 L2",
+    "reg_type": "input",
+    "address": "0x1638",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 18 L2",
+    "reg_type": "input",
+    "address": "0x1639",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 19 L2",
+    "reg_type": "input",
+    "address": "0x163a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 20 L2",
+    "reg_type": "input",
+    "address": "0x163b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 21 L2",
+    "reg_type": "input",
+    "address": "0x163c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 22 L2",
+    "reg_type": "input",
+    "address": "0x163d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 23 L2",
+    "reg_type": "input",
+    "address": "0x163e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 24 L2",
+    "reg_type": "input",
+    "address": "0x163f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 25 L2",
+    "reg_type": "input",
+    "address": "0x1640",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 26 L2",
+    "reg_type": "input",
+    "address": "0x1641",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 27 L2",
+    "reg_type": "input",
+    "address": "0x1642",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 28 L2",
+    "reg_type": "input",
+    "address": "0x1643",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 29 L2",
+    "reg_type": "input",
+    "address": "0x1644",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 30 L2",
+    "reg_type": "input",
+    "address": "0x1645",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 31 L2",
+    "reg_type": "input",
+    "address": "0x1646",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 32 L2",
+    "reg_type": "input",
+    "address": "0x1647",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 33 L2",
+    "reg_type": "input",
+    "address": "0x1648",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 34 L2",
+    "reg_type": "input",
+    "address": "0x1649",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 35 L2",
+    "reg_type": "input",
+    "address": "0x164a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 36 L2",
+    "reg_type": "input",
+    "address": "0x164b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 37 L2",
+    "reg_type": "input",
+    "address": "0x164c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 38 L2",
+    "reg_type": "input",
+    "address": "0x164d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 39 L2",
+    "reg_type": "input",
+    "address": "0x164e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 40 L2",
+    "reg_type": "input",
+    "address": "0x164f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 41 L2",
+    "reg_type": "input",
+    "address": "0x1650",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 42 L2",
+    "reg_type": "input",
+    "address": "0x1651",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 2 L3",
+    "reg_type": "input",
+    "address": "0x1652",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 3 L3",
+    "reg_type": "input",
+    "address": "0x1653",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 4 L3",
+    "reg_type": "input",
+    "address": "0x1654",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 5 L3",
+    "reg_type": "input",
+    "address": "0x1655",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 6 L3",
+    "reg_type": "input",
+    "address": "0x1656",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 7 L3",
+    "reg_type": "input",
+    "address": "0x1657",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 8 L3",
+    "reg_type": "input",
+    "address": "0x1658",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 9 L3",
+    "reg_type": "input",
+    "address": "0x1659",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 10 L3",
+    "reg_type": "input",
+    "address": "0x165a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 11 L3",
+    "reg_type": "input",
+    "address": "0x165b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 12 L3",
+    "reg_type": "input",
+    "address": "0x165c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 13 L3",
+    "reg_type": "input",
+    "address": "0x165d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 14 L3",
+    "reg_type": "input",
+    "address": "0x165e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 15 L3",
+    "reg_type": "input",
+    "address": "0x165f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 16 L3",
+    "reg_type": "input",
+    "address": "0x1660",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 17 L3",
+    "reg_type": "input",
+    "address": "0x1661",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 18 L3",
+    "reg_type": "input",
+    "address": "0x1662",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 19 L3",
+    "reg_type": "input",
+    "address": "0x1663",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 20 L3",
+    "reg_type": "input",
+    "address": "0x1664",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 21 L3",
+    "reg_type": "input",
+    "address": "0x1665",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 22 L3",
+    "reg_type": "input",
+    "address": "0x1666",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 23 L3",
+    "reg_type": "input",
+    "address": "0x1667",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 24 L3",
+    "reg_type": "input",
+    "address": "0x1668",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 25 L3",
+    "reg_type": "input",
+    "address": "0x1669",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 26 L3",
+    "reg_type": "input",
+    "address": "0x166a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 27 L3",
+    "reg_type": "input",
+    "address": "0x166b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 28 L3",
+    "reg_type": "input",
+    "address": "0x166c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 29 L3",
+    "reg_type": "input",
+    "address": "0x166d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 30 L3",
+    "reg_type": "input",
+    "address": "0x166e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 31 L3",
+    "reg_type": "input",
+    "address": "0x166f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 32 L3",
+    "reg_type": "input",
+    "address": "0x1670",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 33 L3",
+    "reg_type": "input",
+    "address": "0x1671",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 34 L3",
+    "reg_type": "input",
+    "address": "0x1672",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 35 L3",
+    "reg_type": "input",
+    "address": "0x1673",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 36 L3",
+    "reg_type": "input",
+    "address": "0x1674",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 37 L3",
+    "reg_type": "input",
+    "address": "0x1675",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 38 L3",
+    "reg_type": "input",
+    "address": "0x1676",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 39 L3",
+    "reg_type": "input",
+    "address": "0x1677",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 40 L3",
+    "reg_type": "input",
+    "address": "0x1678",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 41 L3",
+    "reg_type": "input",
+    "address": "0x1679",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 1 HR I 42 L3",
+    "reg_type": "input",
+    "address": "0x167a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 Irms L1",
+    "reg_type": "input",
+    "address": "0x2416",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 2 THD I L1",
+    "reg_type": "input",
+    "address": "0x2700",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 THDN I L1",
+    "reg_type": "input",
+    "address": "0x20f5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Ifund L1",
+    "reg_type": "input",
+    "address": "0x2710",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 P L1",
+    "reg_type": "input",
+    "address": "0x2302",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Q L1",
+    "reg_type": "input",
+    "address": "0x230a",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 S L1",
+    "reg_type": "input",
+    "address": "0x2312",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 N L1",
+    "reg_type": "input",
+    "address": "0x2582",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 PF L1",
+    "reg_type": "input",
+    "address": "0x20bd",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Pfund L1",
+    "reg_type": "input",
+    "address": "0x2402",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Pharm L1",
+    "reg_type": "input",
+    "address": "0x240a",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 AP energy L1",
+    "reg_type": "input",
+    "address": "0x2204",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 AN energy L1",
+    "reg_type": "input",
+    "address": "0x2214",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 RP energy L1",
+    "reg_type": "input",
+    "address": "0x2224",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 RN energy L1",
+    "reg_type": "input",
+    "address": "0x2234",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 S energy L1",
+    "reg_type": "input",
+    "address": "0x2244",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 NP energy L1",
+    "reg_type": "input",
+    "address": "0x2506",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 NN energy L1",
+    "reg_type": "input",
+    "address": "0x2516",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 Irms L2",
+    "reg_type": "input",
+    "address": "0x2418",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 2 THD I L2",
+    "reg_type": "input",
+    "address": "0x2701",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 THDN I L2",
+    "reg_type": "input",
+    "address": "0x20f6",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Ifund L2",
+    "reg_type": "input",
+    "address": "0x2712",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 P L2",
+    "reg_type": "input",
+    "address": "0x2304",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Q L2",
+    "reg_type": "input",
+    "address": "0x230c",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 S L2",
+    "reg_type": "input",
+    "address": "0x2314",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 N L2",
+    "reg_type": "input",
+    "address": "0x2584",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 PF L2",
+    "reg_type": "input",
+    "address": "0x20be",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Pfund L2",
+    "reg_type": "input",
+    "address": "0x2404",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Pharm L2",
+    "reg_type": "input",
+    "address": "0x240c",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 AP energy L2",
+    "reg_type": "input",
+    "address": "0x2208",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 AN energy L2",
+    "reg_type": "input",
+    "address": "0x2218",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 RP energy L2",
+    "reg_type": "input",
+    "address": "0x2228",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 RN energy L2",
+    "reg_type": "input",
+    "address": "0x2238",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 S energy L2",
+    "reg_type": "input",
+    "address": "0x2248",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 NP energy L2",
+    "reg_type": "input",
+    "address": "0x250a",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 NN energy L2",
+    "reg_type": "input",
+    "address": "0x251a",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 Irms L3",
+    "reg_type": "input",
+    "address": "0x241a",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 2 THD I L3",
+    "reg_type": "input",
+    "address": "0x2702",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 THDN I L3",
+    "reg_type": "input",
+    "address": "0x20f7",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Ifund L3",
+    "reg_type": "input",
+    "address": "0x2714",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 P L3",
+    "reg_type": "input",
+    "address": "0x2306",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Q L3",
+    "reg_type": "input",
+    "address": "0x230e",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 S L3",
+    "reg_type": "input",
+    "address": "0x2316",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 N L3",
+    "reg_type": "input",
+    "address": "0x2586",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 PF L3",
+    "reg_type": "input",
+    "address": "0x20bf",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Pfund L3",
+    "reg_type": "input",
+    "address": "0x2406",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Pharm L3",
+    "reg_type": "input",
+    "address": "0x240e",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 AP energy L3",
+    "reg_type": "input",
+    "address": "0x220c",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 AN energy L3",
+    "reg_type": "input",
+    "address": "0x221c",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 RP energy L3",
+    "reg_type": "input",
+    "address": "0x222c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 RN energy L3",
+    "reg_type": "input",
+    "address": "0x223c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 S energy L3",
+    "reg_type": "input",
+    "address": "0x224c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 NP energy L3",
+    "reg_type": "input",
+    "address": "0x250e",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 NN energy L3",
+    "reg_type": "input",
+    "address": "0x251e",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 Total P",
+    "reg_type": "input",
+    "address": "0x2300",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Total Q",
+    "reg_type": "input",
+    "address": "0x2308",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Total S",
+    "reg_type": "input",
+    "address": "0x2310",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Total PF",
+    "reg_type": "input",
+    "address": "0x20bc",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Total SV",
+    "reg_type": "input",
+    "address": "0x2098",
+    "type": "value",
+    "format": "s32",
+    "scale": 6.10352e-05,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Total N",
+    "reg_type": "input",
+    "address": "0x2580",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Total Pfund",
+    "reg_type": "input",
+    "address": "0x2400",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Total Pharm",
+    "reg_type": "input",
+    "address": "0x2408",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Total AP energy",
+    "reg_type": "input",
+    "address": "0x2200",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 Total AN energy",
+    "reg_type": "input",
+    "address": "0x2210",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 Total RP energy",
+    "reg_type": "input",
+    "address": "0x2220",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 Total RN energy",
+    "reg_type": "input",
+    "address": "0x2230",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 Total S energy",
+    "reg_type": "input",
+    "address": "0x2240",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 Total NP energy",
+    "reg_type": "input",
+    "address": "0x2502",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 Total NN energy",
+    "reg_type": "input",
+    "address": "0x2512",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 2 Phase angle L1",
+    "reg_type": "input",
+    "address": "0x20f9",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Phase angle L2",
+    "reg_type": "input",
+    "address": "0x20fa",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 Phase angle L3",
+    "reg_type": "input",
+    "address": "0x20fb",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 2 HR I 2 L1",
+    "reg_type": "input",
+    "address": "0x2600",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 3 L1",
+    "reg_type": "input",
+    "address": "0x2601",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 4 L1",
+    "reg_type": "input",
+    "address": "0x2602",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 5 L1",
+    "reg_type": "input",
+    "address": "0x2603",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 6 L1",
+    "reg_type": "input",
+    "address": "0x2604",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 7 L1",
+    "reg_type": "input",
+    "address": "0x2605",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 8 L1",
+    "reg_type": "input",
+    "address": "0x2606",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 9 L1",
+    "reg_type": "input",
+    "address": "0x2607",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 10 L1",
+    "reg_type": "input",
+    "address": "0x2608",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 11 L1",
+    "reg_type": "input",
+    "address": "0x2609",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 12 L1",
+    "reg_type": "input",
+    "address": "0x260a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 13 L1",
+    "reg_type": "input",
+    "address": "0x260b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 14 L1",
+    "reg_type": "input",
+    "address": "0x260c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 15 L1",
+    "reg_type": "input",
+    "address": "0x260d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 16 L1",
+    "reg_type": "input",
+    "address": "0x260e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 17 L1",
+    "reg_type": "input",
+    "address": "0x260f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 18 L1",
+    "reg_type": "input",
+    "address": "0x2610",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 19 L1",
+    "reg_type": "input",
+    "address": "0x2611",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 20 L1",
+    "reg_type": "input",
+    "address": "0x2612",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 21 L1",
+    "reg_type": "input",
+    "address": "0x2613",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 22 L1",
+    "reg_type": "input",
+    "address": "0x2614",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 23 L1",
+    "reg_type": "input",
+    "address": "0x2615",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 24 L1",
+    "reg_type": "input",
+    "address": "0x2616",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 25 L1",
+    "reg_type": "input",
+    "address": "0x2617",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 26 L1",
+    "reg_type": "input",
+    "address": "0x2618",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 27 L1",
+    "reg_type": "input",
+    "address": "0x2619",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 28 L1",
+    "reg_type": "input",
+    "address": "0x261a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 29 L1",
+    "reg_type": "input",
+    "address": "0x261b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 30 L1",
+    "reg_type": "input",
+    "address": "0x261c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 31 L1",
+    "reg_type": "input",
+    "address": "0x261d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 32 L1",
+    "reg_type": "input",
+    "address": "0x261e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 33 L1",
+    "reg_type": "input",
+    "address": "0x261f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 34 L1",
+    "reg_type": "input",
+    "address": "0x2620",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 35 L1",
+    "reg_type": "input",
+    "address": "0x2621",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 36 L1",
+    "reg_type": "input",
+    "address": "0x2622",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 37 L1",
+    "reg_type": "input",
+    "address": "0x2623",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 38 L1",
+    "reg_type": "input",
+    "address": "0x2624",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 39 L1",
+    "reg_type": "input",
+    "address": "0x2625",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 40 L1",
+    "reg_type": "input",
+    "address": "0x2626",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 41 L1",
+    "reg_type": "input",
+    "address": "0x2627",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 42 L1",
+    "reg_type": "input",
+    "address": "0x2628",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 2 L2",
+    "reg_type": "input",
+    "address": "0x2629",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 3 L2",
+    "reg_type": "input",
+    "address": "0x262a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 4 L2",
+    "reg_type": "input",
+    "address": "0x262b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 5 L2",
+    "reg_type": "input",
+    "address": "0x262c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 6 L2",
+    "reg_type": "input",
+    "address": "0x262d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 7 L2",
+    "reg_type": "input",
+    "address": "0x262e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 8 L2",
+    "reg_type": "input",
+    "address": "0x262f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 9 L2",
+    "reg_type": "input",
+    "address": "0x2630",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 10 L2",
+    "reg_type": "input",
+    "address": "0x2631",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 11 L2",
+    "reg_type": "input",
+    "address": "0x2632",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 12 L2",
+    "reg_type": "input",
+    "address": "0x2633",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 13 L2",
+    "reg_type": "input",
+    "address": "0x2634",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 14 L2",
+    "reg_type": "input",
+    "address": "0x2635",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 15 L2",
+    "reg_type": "input",
+    "address": "0x2636",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 16 L2",
+    "reg_type": "input",
+    "address": "0x2637",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 17 L2",
+    "reg_type": "input",
+    "address": "0x2638",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 18 L2",
+    "reg_type": "input",
+    "address": "0x2639",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 19 L2",
+    "reg_type": "input",
+    "address": "0x263a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 20 L2",
+    "reg_type": "input",
+    "address": "0x263b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 21 L2",
+    "reg_type": "input",
+    "address": "0x263c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 22 L2",
+    "reg_type": "input",
+    "address": "0x263d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 23 L2",
+    "reg_type": "input",
+    "address": "0x263e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 24 L2",
+    "reg_type": "input",
+    "address": "0x263f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 25 L2",
+    "reg_type": "input",
+    "address": "0x2640",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 26 L2",
+    "reg_type": "input",
+    "address": "0x2641",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 27 L2",
+    "reg_type": "input",
+    "address": "0x2642",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 28 L2",
+    "reg_type": "input",
+    "address": "0x2643",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 29 L2",
+    "reg_type": "input",
+    "address": "0x2644",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 30 L2",
+    "reg_type": "input",
+    "address": "0x2645",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 31 L2",
+    "reg_type": "input",
+    "address": "0x2646",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 32 L2",
+    "reg_type": "input",
+    "address": "0x2647",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 33 L2",
+    "reg_type": "input",
+    "address": "0x2648",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 34 L2",
+    "reg_type": "input",
+    "address": "0x2649",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 35 L2",
+    "reg_type": "input",
+    "address": "0x264a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 36 L2",
+    "reg_type": "input",
+    "address": "0x264b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 37 L2",
+    "reg_type": "input",
+    "address": "0x264c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 38 L2",
+    "reg_type": "input",
+    "address": "0x264d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 39 L2",
+    "reg_type": "input",
+    "address": "0x264e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 40 L2",
+    "reg_type": "input",
+    "address": "0x264f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 41 L2",
+    "reg_type": "input",
+    "address": "0x2650",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 42 L2",
+    "reg_type": "input",
+    "address": "0x2651",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 2 L3",
+    "reg_type": "input",
+    "address": "0x2652",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 3 L3",
+    "reg_type": "input",
+    "address": "0x2653",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 4 L3",
+    "reg_type": "input",
+    "address": "0x2654",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 5 L3",
+    "reg_type": "input",
+    "address": "0x2655",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 6 L3",
+    "reg_type": "input",
+    "address": "0x2656",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 7 L3",
+    "reg_type": "input",
+    "address": "0x2657",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 8 L3",
+    "reg_type": "input",
+    "address": "0x2658",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 9 L3",
+    "reg_type": "input",
+    "address": "0x2659",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 10 L3",
+    "reg_type": "input",
+    "address": "0x265a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 11 L3",
+    "reg_type": "input",
+    "address": "0x265b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 12 L3",
+    "reg_type": "input",
+    "address": "0x265c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 13 L3",
+    "reg_type": "input",
+    "address": "0x265d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 14 L3",
+    "reg_type": "input",
+    "address": "0x265e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 15 L3",
+    "reg_type": "input",
+    "address": "0x265f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 16 L3",
+    "reg_type": "input",
+    "address": "0x2660",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 17 L3",
+    "reg_type": "input",
+    "address": "0x2661",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 18 L3",
+    "reg_type": "input",
+    "address": "0x2662",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 19 L3",
+    "reg_type": "input",
+    "address": "0x2663",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 20 L3",
+    "reg_type": "input",
+    "address": "0x2664",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 21 L3",
+    "reg_type": "input",
+    "address": "0x2665",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 22 L3",
+    "reg_type": "input",
+    "address": "0x2666",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 23 L3",
+    "reg_type": "input",
+    "address": "0x2667",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 24 L3",
+    "reg_type": "input",
+    "address": "0x2668",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 25 L3",
+    "reg_type": "input",
+    "address": "0x2669",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 26 L3",
+    "reg_type": "input",
+    "address": "0x266a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 27 L3",
+    "reg_type": "input",
+    "address": "0x266b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 28 L3",
+    "reg_type": "input",
+    "address": "0x266c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 29 L3",
+    "reg_type": "input",
+    "address": "0x266d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 30 L3",
+    "reg_type": "input",
+    "address": "0x266e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 31 L3",
+    "reg_type": "input",
+    "address": "0x266f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 32 L3",
+    "reg_type": "input",
+    "address": "0x2670",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 33 L3",
+    "reg_type": "input",
+    "address": "0x2671",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 34 L3",
+    "reg_type": "input",
+    "address": "0x2672",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 35 L3",
+    "reg_type": "input",
+    "address": "0x2673",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 36 L3",
+    "reg_type": "input",
+    "address": "0x2674",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 37 L3",
+    "reg_type": "input",
+    "address": "0x2675",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 38 L3",
+    "reg_type": "input",
+    "address": "0x2676",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 39 L3",
+    "reg_type": "input",
+    "address": "0x2677",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 40 L3",
+    "reg_type": "input",
+    "address": "0x2678",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 41 L3",
+    "reg_type": "input",
+    "address": "0x2679",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 2 HR I 42 L3",
+    "reg_type": "input",
+    "address": "0x267a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 Irms L1",
+    "reg_type": "input",
+    "address": "0x3416",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 3 THD I L1",
+    "reg_type": "input",
+    "address": "0x3700",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 THDN I L1",
+    "reg_type": "input",
+    "address": "0x30f5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Ifund L1",
+    "reg_type": "input",
+    "address": "0x3710",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 P L1",
+    "reg_type": "input",
+    "address": "0x3302",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Q L1",
+    "reg_type": "input",
+    "address": "0x330a",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 S L1",
+    "reg_type": "input",
+    "address": "0x3312",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 N L1",
+    "reg_type": "input",
+    "address": "0x3582",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 PF L1",
+    "reg_type": "input",
+    "address": "0x30bd",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Pfund L1",
+    "reg_type": "input",
+    "address": "0x3402",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Pharm L1",
+    "reg_type": "input",
+    "address": "0x340a",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 AP energy L1",
+    "reg_type": "input",
+    "address": "0x3204",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 AN energy L1",
+    "reg_type": "input",
+    "address": "0x3214",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 RP energy L1",
+    "reg_type": "input",
+    "address": "0x3224",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 RN energy L1",
+    "reg_type": "input",
+    "address": "0x3234",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 S energy L1",
+    "reg_type": "input",
+    "address": "0x3244",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 NP energy L1",
+    "reg_type": "input",
+    "address": "0x3506",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 NN energy L1",
+    "reg_type": "input",
+    "address": "0x3516",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 Irms L2",
+    "reg_type": "input",
+    "address": "0x3418",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 3 THD I L2",
+    "reg_type": "input",
+    "address": "0x3701",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 THDN I L2",
+    "reg_type": "input",
+    "address": "0x30f6",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Ifund L2",
+    "reg_type": "input",
+    "address": "0x3712",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 P L2",
+    "reg_type": "input",
+    "address": "0x3304",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Q L2",
+    "reg_type": "input",
+    "address": "0x330c",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 S L2",
+    "reg_type": "input",
+    "address": "0x3314",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 N L2",
+    "reg_type": "input",
+    "address": "0x3584",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 PF L2",
+    "reg_type": "input",
+    "address": "0x30be",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Pfund L2",
+    "reg_type": "input",
+    "address": "0x3404",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Pharm L2",
+    "reg_type": "input",
+    "address": "0x340c",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 AP energy L2",
+    "reg_type": "input",
+    "address": "0x3208",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 AN energy L2",
+    "reg_type": "input",
+    "address": "0x3218",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 RP energy L2",
+    "reg_type": "input",
+    "address": "0x3228",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 RN energy L2",
+    "reg_type": "input",
+    "address": "0x3238",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 S energy L2",
+    "reg_type": "input",
+    "address": "0x3248",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 NP energy L2",
+    "reg_type": "input",
+    "address": "0x350a",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 NN energy L2",
+    "reg_type": "input",
+    "address": "0x351a",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 Irms L3",
+    "reg_type": "input",
+    "address": "0x341a",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 3 THD I L3",
+    "reg_type": "input",
+    "address": "0x3702",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 THDN I L3",
+    "reg_type": "input",
+    "address": "0x30f7",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Ifund L3",
+    "reg_type": "input",
+    "address": "0x3714",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 P L3",
+    "reg_type": "input",
+    "address": "0x3306",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Q L3",
+    "reg_type": "input",
+    "address": "0x330e",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 S L3",
+    "reg_type": "input",
+    "address": "0x3316",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 N L3",
+    "reg_type": "input",
+    "address": "0x3586",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 PF L3",
+    "reg_type": "input",
+    "address": "0x30bf",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Pfund L3",
+    "reg_type": "input",
+    "address": "0x3406",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Pharm L3",
+    "reg_type": "input",
+    "address": "0x340e",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 AP energy L3",
+    "reg_type": "input",
+    "address": "0x320c",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 AN energy L3",
+    "reg_type": "input",
+    "address": "0x321c",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 RP energy L3",
+    "reg_type": "input",
+    "address": "0x322c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 RN energy L3",
+    "reg_type": "input",
+    "address": "0x323c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 S energy L3",
+    "reg_type": "input",
+    "address": "0x324c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 NP energy L3",
+    "reg_type": "input",
+    "address": "0x350e",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 NN energy L3",
+    "reg_type": "input",
+    "address": "0x351e",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 Total P",
+    "reg_type": "input",
+    "address": "0x3300",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Total Q",
+    "reg_type": "input",
+    "address": "0x3308",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Total S",
+    "reg_type": "input",
+    "address": "0x3310",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Total PF",
+    "reg_type": "input",
+    "address": "0x30bc",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Total SV",
+    "reg_type": "input",
+    "address": "0x3098",
+    "type": "value",
+    "format": "s32",
+    "scale": 6.10352e-05,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Total N",
+    "reg_type": "input",
+    "address": "0x3580",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Total Pfund",
+    "reg_type": "input",
+    "address": "0x3400",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Total Pharm",
+    "reg_type": "input",
+    "address": "0x3408",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Total AP energy",
+    "reg_type": "input",
+    "address": "0x3200",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 Total AN energy",
+    "reg_type": "input",
+    "address": "0x3210",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 Total RP energy",
+    "reg_type": "input",
+    "address": "0x3220",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 Total RN energy",
+    "reg_type": "input",
+    "address": "0x3230",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 Total S energy",
+    "reg_type": "input",
+    "address": "0x3240",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 Total NP energy",
+    "reg_type": "input",
+    "address": "0x3502",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 Total NN energy",
+    "reg_type": "input",
+    "address": "0x3512",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 3 Phase angle L1",
+    "reg_type": "input",
+    "address": "0x30f9",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Phase angle L2",
+    "reg_type": "input",
+    "address": "0x30fa",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 Phase angle L3",
+    "reg_type": "input",
+    "address": "0x30fb",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 3 HR I 2 L1",
+    "reg_type": "input",
+    "address": "0x3600",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 3 L1",
+    "reg_type": "input",
+    "address": "0x3601",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 4 L1",
+    "reg_type": "input",
+    "address": "0x3602",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 5 L1",
+    "reg_type": "input",
+    "address": "0x3603",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 6 L1",
+    "reg_type": "input",
+    "address": "0x3604",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 7 L1",
+    "reg_type": "input",
+    "address": "0x3605",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 8 L1",
+    "reg_type": "input",
+    "address": "0x3606",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 9 L1",
+    "reg_type": "input",
+    "address": "0x3607",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 10 L1",
+    "reg_type": "input",
+    "address": "0x3608",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 11 L1",
+    "reg_type": "input",
+    "address": "0x3609",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 12 L1",
+    "reg_type": "input",
+    "address": "0x360a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 13 L1",
+    "reg_type": "input",
+    "address": "0x360b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 14 L1",
+    "reg_type": "input",
+    "address": "0x360c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 15 L1",
+    "reg_type": "input",
+    "address": "0x360d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 16 L1",
+    "reg_type": "input",
+    "address": "0x360e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 17 L1",
+    "reg_type": "input",
+    "address": "0x360f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 18 L1",
+    "reg_type": "input",
+    "address": "0x3610",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 19 L1",
+    "reg_type": "input",
+    "address": "0x3611",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 20 L1",
+    "reg_type": "input",
+    "address": "0x3612",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 21 L1",
+    "reg_type": "input",
+    "address": "0x3613",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 22 L1",
+    "reg_type": "input",
+    "address": "0x3614",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 23 L1",
+    "reg_type": "input",
+    "address": "0x3615",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 24 L1",
+    "reg_type": "input",
+    "address": "0x3616",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 25 L1",
+    "reg_type": "input",
+    "address": "0x3617",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 26 L1",
+    "reg_type": "input",
+    "address": "0x3618",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 27 L1",
+    "reg_type": "input",
+    "address": "0x3619",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 28 L1",
+    "reg_type": "input",
+    "address": "0x361a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 29 L1",
+    "reg_type": "input",
+    "address": "0x361b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 30 L1",
+    "reg_type": "input",
+    "address": "0x361c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 31 L1",
+    "reg_type": "input",
+    "address": "0x361d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 32 L1",
+    "reg_type": "input",
+    "address": "0x361e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 33 L1",
+    "reg_type": "input",
+    "address": "0x361f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 34 L1",
+    "reg_type": "input",
+    "address": "0x3620",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 35 L1",
+    "reg_type": "input",
+    "address": "0x3621",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 36 L1",
+    "reg_type": "input",
+    "address": "0x3622",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 37 L1",
+    "reg_type": "input",
+    "address": "0x3623",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 38 L1",
+    "reg_type": "input",
+    "address": "0x3624",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 39 L1",
+    "reg_type": "input",
+    "address": "0x3625",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 40 L1",
+    "reg_type": "input",
+    "address": "0x3626",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 41 L1",
+    "reg_type": "input",
+    "address": "0x3627",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 42 L1",
+    "reg_type": "input",
+    "address": "0x3628",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 2 L2",
+    "reg_type": "input",
+    "address": "0x3629",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 3 L2",
+    "reg_type": "input",
+    "address": "0x362a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 4 L2",
+    "reg_type": "input",
+    "address": "0x362b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 5 L2",
+    "reg_type": "input",
+    "address": "0x362c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 6 L2",
+    "reg_type": "input",
+    "address": "0x362d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 7 L2",
+    "reg_type": "input",
+    "address": "0x362e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 8 L2",
+    "reg_type": "input",
+    "address": "0x362f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 9 L2",
+    "reg_type": "input",
+    "address": "0x3630",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 10 L2",
+    "reg_type": "input",
+    "address": "0x3631",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 11 L2",
+    "reg_type": "input",
+    "address": "0x3632",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 12 L2",
+    "reg_type": "input",
+    "address": "0x3633",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 13 L2",
+    "reg_type": "input",
+    "address": "0x3634",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 14 L2",
+    "reg_type": "input",
+    "address": "0x3635",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 15 L2",
+    "reg_type": "input",
+    "address": "0x3636",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 16 L2",
+    "reg_type": "input",
+    "address": "0x3637",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 17 L2",
+    "reg_type": "input",
+    "address": "0x3638",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 18 L2",
+    "reg_type": "input",
+    "address": "0x3639",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 19 L2",
+    "reg_type": "input",
+    "address": "0x363a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 20 L2",
+    "reg_type": "input",
+    "address": "0x363b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 21 L2",
+    "reg_type": "input",
+    "address": "0x363c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 22 L2",
+    "reg_type": "input",
+    "address": "0x363d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 23 L2",
+    "reg_type": "input",
+    "address": "0x363e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 24 L2",
+    "reg_type": "input",
+    "address": "0x363f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 25 L2",
+    "reg_type": "input",
+    "address": "0x3640",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 26 L2",
+    "reg_type": "input",
+    "address": "0x3641",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 27 L2",
+    "reg_type": "input",
+    "address": "0x3642",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 28 L2",
+    "reg_type": "input",
+    "address": "0x3643",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 29 L2",
+    "reg_type": "input",
+    "address": "0x3644",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 30 L2",
+    "reg_type": "input",
+    "address": "0x3645",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 31 L2",
+    "reg_type": "input",
+    "address": "0x3646",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 32 L2",
+    "reg_type": "input",
+    "address": "0x3647",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 33 L2",
+    "reg_type": "input",
+    "address": "0x3648",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 34 L2",
+    "reg_type": "input",
+    "address": "0x3649",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 35 L2",
+    "reg_type": "input",
+    "address": "0x364a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 36 L2",
+    "reg_type": "input",
+    "address": "0x364b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 37 L2",
+    "reg_type": "input",
+    "address": "0x364c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 38 L2",
+    "reg_type": "input",
+    "address": "0x364d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 39 L2",
+    "reg_type": "input",
+    "address": "0x364e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 40 L2",
+    "reg_type": "input",
+    "address": "0x364f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 41 L2",
+    "reg_type": "input",
+    "address": "0x3650",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 42 L2",
+    "reg_type": "input",
+    "address": "0x3651",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 2 L3",
+    "reg_type": "input",
+    "address": "0x3652",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 3 L3",
+    "reg_type": "input",
+    "address": "0x3653",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 4 L3",
+    "reg_type": "input",
+    "address": "0x3654",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 5 L3",
+    "reg_type": "input",
+    "address": "0x3655",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 6 L3",
+    "reg_type": "input",
+    "address": "0x3656",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 7 L3",
+    "reg_type": "input",
+    "address": "0x3657",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 8 L3",
+    "reg_type": "input",
+    "address": "0x3658",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 9 L3",
+    "reg_type": "input",
+    "address": "0x3659",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 10 L3",
+    "reg_type": "input",
+    "address": "0x365a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 11 L3",
+    "reg_type": "input",
+    "address": "0x365b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 12 L3",
+    "reg_type": "input",
+    "address": "0x365c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 13 L3",
+    "reg_type": "input",
+    "address": "0x365d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 14 L3",
+    "reg_type": "input",
+    "address": "0x365e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 15 L3",
+    "reg_type": "input",
+    "address": "0x365f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 16 L3",
+    "reg_type": "input",
+    "address": "0x3660",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 17 L3",
+    "reg_type": "input",
+    "address": "0x3661",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 18 L3",
+    "reg_type": "input",
+    "address": "0x3662",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 19 L3",
+    "reg_type": "input",
+    "address": "0x3663",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 20 L3",
+    "reg_type": "input",
+    "address": "0x3664",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 21 L3",
+    "reg_type": "input",
+    "address": "0x3665",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 22 L3",
+    "reg_type": "input",
+    "address": "0x3666",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 23 L3",
+    "reg_type": "input",
+    "address": "0x3667",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 24 L3",
+    "reg_type": "input",
+    "address": "0x3668",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 25 L3",
+    "reg_type": "input",
+    "address": "0x3669",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 26 L3",
+    "reg_type": "input",
+    "address": "0x366a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 27 L3",
+    "reg_type": "input",
+    "address": "0x366b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 28 L3",
+    "reg_type": "input",
+    "address": "0x366c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 29 L3",
+    "reg_type": "input",
+    "address": "0x366d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 30 L3",
+    "reg_type": "input",
+    "address": "0x366e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 31 L3",
+    "reg_type": "input",
+    "address": "0x366f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 32 L3",
+    "reg_type": "input",
+    "address": "0x3670",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 33 L3",
+    "reg_type": "input",
+    "address": "0x3671",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 34 L3",
+    "reg_type": "input",
+    "address": "0x3672",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 35 L3",
+    "reg_type": "input",
+    "address": "0x3673",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 36 L3",
+    "reg_type": "input",
+    "address": "0x3674",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 37 L3",
+    "reg_type": "input",
+    "address": "0x3675",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 38 L3",
+    "reg_type": "input",
+    "address": "0x3676",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 39 L3",
+    "reg_type": "input",
+    "address": "0x3677",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 40 L3",
+    "reg_type": "input",
+    "address": "0x3678",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 41 L3",
+    "reg_type": "input",
+    "address": "0x3679",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 3 HR I 42 L3",
+    "reg_type": "input",
+    "address": "0x367a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 Irms L1",
+    "reg_type": "input",
+    "address": "0x4416",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 4 THD I L1",
+    "reg_type": "input",
+    "address": "0x4700",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 THDN I L1",
+    "reg_type": "input",
+    "address": "0x40f5",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Ifund L1",
+    "reg_type": "input",
+    "address": "0x4710",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 P L1",
+    "reg_type": "input",
+    "address": "0x4302",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Q L1",
+    "reg_type": "input",
+    "address": "0x430a",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 S L1",
+    "reg_type": "input",
+    "address": "0x4312",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 N L1",
+    "reg_type": "input",
+    "address": "0x4582",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 PF L1",
+    "reg_type": "input",
+    "address": "0x40bd",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Pfund L1",
+    "reg_type": "input",
+    "address": "0x4402",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Pharm L1",
+    "reg_type": "input",
+    "address": "0x440a",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 AP energy L1",
+    "reg_type": "input",
+    "address": "0x4204",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 AN energy L1",
+    "reg_type": "input",
+    "address": "0x4214",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 RP energy L1",
+    "reg_type": "input",
+    "address": "0x4224",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 RN energy L1",
+    "reg_type": "input",
+    "address": "0x4234",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 S energy L1",
+    "reg_type": "input",
+    "address": "0x4244",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 NP energy L1",
+    "reg_type": "input",
+    "address": "0x4506",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 NN energy L1",
+    "reg_type": "input",
+    "address": "0x4516",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 Irms L2",
+    "reg_type": "input",
+    "address": "0x4418",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 4 THD I L2",
+    "reg_type": "input",
+    "address": "0x4701",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 THDN I L2",
+    "reg_type": "input",
+    "address": "0x40f6",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Ifund L2",
+    "reg_type": "input",
+    "address": "0x4712",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 P L2",
+    "reg_type": "input",
+    "address": "0x4304",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Q L2",
+    "reg_type": "input",
+    "address": "0x430c",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 S L2",
+    "reg_type": "input",
+    "address": "0x4314",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 N L2",
+    "reg_type": "input",
+    "address": "0x4584",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 PF L2",
+    "reg_type": "input",
+    "address": "0x40be",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Pfund L2",
+    "reg_type": "input",
+    "address": "0x4404",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Pharm L2",
+    "reg_type": "input",
+    "address": "0x440c",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 AP energy L2",
+    "reg_type": "input",
+    "address": "0x4208",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 AN energy L2",
+    "reg_type": "input",
+    "address": "0x4218",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 RP energy L2",
+    "reg_type": "input",
+    "address": "0x4228",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 RN energy L2",
+    "reg_type": "input",
+    "address": "0x4238",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 S energy L2",
+    "reg_type": "input",
+    "address": "0x4248",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 NP energy L2",
+    "reg_type": "input",
+    "address": "0x450a",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 NN energy L2",
+    "reg_type": "input",
+    "address": "0x451a",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 Irms L3",
+    "reg_type": "input",
+    "address": "0x441a",
+    "type": "value",
+    "format": "u32",
+    "scale": 2.44141e-07,
+    "round_to": 0.0001
+   },
+   {
+    "name": "Ch 4 THD I L3",
+    "reg_type": "input",
+    "address": "0x4702",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 THDN I L3",
+    "reg_type": "input",
+    "address": "0x40f7",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.01,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Ifund L3",
+    "reg_type": "input",
+    "address": "0x4714",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.0522496,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 P L3",
+    "reg_type": "input",
+    "address": "0x4306",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Q L3",
+    "reg_type": "input",
+    "address": "0x430e",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 S L3",
+    "reg_type": "input",
+    "address": "0x4316",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 N L3",
+    "reg_type": "input",
+    "address": "0x4586",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 PF L3",
+    "reg_type": "input",
+    "address": "0x40bf",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Pfund L3",
+    "reg_type": "input",
+    "address": "0x4406",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Pharm L3",
+    "reg_type": "input",
+    "address": "0x440e",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000244141,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 AP energy L3",
+    "reg_type": "input",
+    "address": "0x420c",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 AN energy L3",
+    "reg_type": "input",
+    "address": "0x421c",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 RP energy L3",
+    "reg_type": "input",
+    "address": "0x422c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 RN energy L3",
+    "reg_type": "input",
+    "address": "0x423c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 S energy L3",
+    "reg_type": "input",
+    "address": "0x424c",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 NP energy L3",
+    "reg_type": "input",
+    "address": "0x450e",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 NN energy L3",
+    "reg_type": "input",
+    "address": "0x451e",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 Total P",
+    "reg_type": "input",
+    "address": "0x4300",
+    "type": "power",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Total Q",
+    "reg_type": "input",
+    "address": "0x4308",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Total S",
+    "reg_type": "input",
+    "address": "0x4310",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Total PF",
+    "reg_type": "input",
+    "address": "0x40bc",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.001,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Total SV",
+    "reg_type": "input",
+    "address": "0x4098",
+    "type": "value",
+    "format": "s32",
+    "scale": 6.10352e-05,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Total N",
+    "reg_type": "input",
+    "address": "0x4580",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Total Pfund",
+    "reg_type": "input",
+    "address": "0x4400",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Total Pharm",
+    "reg_type": "input",
+    "address": "0x4408",
+    "type": "value",
+    "format": "s32",
+    "scale": 0.000976562,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Total AP energy",
+    "reg_type": "input",
+    "address": "0x4200",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 Total AN energy",
+    "reg_type": "input",
+    "address": "0x4210",
+    "type": "power_consumption",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 Total RP energy",
+    "reg_type": "input",
+    "address": "0x4220",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 Total RN energy",
+    "reg_type": "input",
+    "address": "0x4230",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 Total S energy",
+    "reg_type": "input",
+    "address": "0x4240",
+    "type": "value",
+    "format": "u64",
+    "scale": 1e-05,
+    "round_to": 1e-06,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 Total NP energy",
+    "reg_type": "input",
+    "address": "0x4502",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 Total NN energy",
+    "reg_type": "input",
+    "address": "0x4512",
+    "type": "value",
+    "format": "u32",
+    "scale": 0.291271,
+    "round_to": 0.0001,
+    "word_order": "little_endian"
+   },
+   {
+    "name": "Ch 4 Phase angle L1",
+    "reg_type": "input",
+    "address": "0x40f9",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Phase angle L2",
+    "reg_type": "input",
+    "address": "0x40fa",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 Phase angle L3",
+    "reg_type": "input",
+    "address": "0x40fb",
+    "type": "value",
+    "format": "s16",
+    "scale": 0.1,
+    "round_to": 0.01
+   },
+   {
+    "name": "Ch 4 HR I 2 L1",
+    "reg_type": "input",
+    "address": "0x4600",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 3 L1",
+    "reg_type": "input",
+    "address": "0x4601",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 4 L1",
+    "reg_type": "input",
+    "address": "0x4602",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 5 L1",
+    "reg_type": "input",
+    "address": "0x4603",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 6 L1",
+    "reg_type": "input",
+    "address": "0x4604",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 7 L1",
+    "reg_type": "input",
+    "address": "0x4605",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 8 L1",
+    "reg_type": "input",
+    "address": "0x4606",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 9 L1",
+    "reg_type": "input",
+    "address": "0x4607",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 10 L1",
+    "reg_type": "input",
+    "address": "0x4608",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 11 L1",
+    "reg_type": "input",
+    "address": "0x4609",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 12 L1",
+    "reg_type": "input",
+    "address": "0x460a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 13 L1",
+    "reg_type": "input",
+    "address": "0x460b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 14 L1",
+    "reg_type": "input",
+    "address": "0x460c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 15 L1",
+    "reg_type": "input",
+    "address": "0x460d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 16 L1",
+    "reg_type": "input",
+    "address": "0x460e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 17 L1",
+    "reg_type": "input",
+    "address": "0x460f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 18 L1",
+    "reg_type": "input",
+    "address": "0x4610",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 19 L1",
+    "reg_type": "input",
+    "address": "0x4611",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 20 L1",
+    "reg_type": "input",
+    "address": "0x4612",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 21 L1",
+    "reg_type": "input",
+    "address": "0x4613",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 22 L1",
+    "reg_type": "input",
+    "address": "0x4614",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 23 L1",
+    "reg_type": "input",
+    "address": "0x4615",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 24 L1",
+    "reg_type": "input",
+    "address": "0x4616",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 25 L1",
+    "reg_type": "input",
+    "address": "0x4617",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 26 L1",
+    "reg_type": "input",
+    "address": "0x4618",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 27 L1",
+    "reg_type": "input",
+    "address": "0x4619",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 28 L1",
+    "reg_type": "input",
+    "address": "0x461a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 29 L1",
+    "reg_type": "input",
+    "address": "0x461b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 30 L1",
+    "reg_type": "input",
+    "address": "0x461c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 31 L1",
+    "reg_type": "input",
+    "address": "0x461d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 32 L1",
+    "reg_type": "input",
+    "address": "0x461e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 33 L1",
+    "reg_type": "input",
+    "address": "0x461f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 34 L1",
+    "reg_type": "input",
+    "address": "0x4620",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 35 L1",
+    "reg_type": "input",
+    "address": "0x4621",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 36 L1",
+    "reg_type": "input",
+    "address": "0x4622",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 37 L1",
+    "reg_type": "input",
+    "address": "0x4623",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 38 L1",
+    "reg_type": "input",
+    "address": "0x4624",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 39 L1",
+    "reg_type": "input",
+    "address": "0x4625",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 40 L1",
+    "reg_type": "input",
+    "address": "0x4626",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 41 L1",
+    "reg_type": "input",
+    "address": "0x4627",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 42 L1",
+    "reg_type": "input",
+    "address": "0x4628",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 2 L2",
+    "reg_type": "input",
+    "address": "0x4629",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 3 L2",
+    "reg_type": "input",
+    "address": "0x462a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 4 L2",
+    "reg_type": "input",
+    "address": "0x462b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 5 L2",
+    "reg_type": "input",
+    "address": "0x462c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 6 L2",
+    "reg_type": "input",
+    "address": "0x462d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 7 L2",
+    "reg_type": "input",
+    "address": "0x462e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 8 L2",
+    "reg_type": "input",
+    "address": "0x462f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 9 L2",
+    "reg_type": "input",
+    "address": "0x4630",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 10 L2",
+    "reg_type": "input",
+    "address": "0x4631",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 11 L2",
+    "reg_type": "input",
+    "address": "0x4632",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 12 L2",
+    "reg_type": "input",
+    "address": "0x4633",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 13 L2",
+    "reg_type": "input",
+    "address": "0x4634",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 14 L2",
+    "reg_type": "input",
+    "address": "0x4635",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 15 L2",
+    "reg_type": "input",
+    "address": "0x4636",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 16 L2",
+    "reg_type": "input",
+    "address": "0x4637",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 17 L2",
+    "reg_type": "input",
+    "address": "0x4638",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 18 L2",
+    "reg_type": "input",
+    "address": "0x4639",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 19 L2",
+    "reg_type": "input",
+    "address": "0x463a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 20 L2",
+    "reg_type": "input",
+    "address": "0x463b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 21 L2",
+    "reg_type": "input",
+    "address": "0x463c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 22 L2",
+    "reg_type": "input",
+    "address": "0x463d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 23 L2",
+    "reg_type": "input",
+    "address": "0x463e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 24 L2",
+    "reg_type": "input",
+    "address": "0x463f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 25 L2",
+    "reg_type": "input",
+    "address": "0x4640",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 26 L2",
+    "reg_type": "input",
+    "address": "0x4641",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 27 L2",
+    "reg_type": "input",
+    "address": "0x4642",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 28 L2",
+    "reg_type": "input",
+    "address": "0x4643",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 29 L2",
+    "reg_type": "input",
+    "address": "0x4644",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 30 L2",
+    "reg_type": "input",
+    "address": "0x4645",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 31 L2",
+    "reg_type": "input",
+    "address": "0x4646",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 32 L2",
+    "reg_type": "input",
+    "address": "0x4647",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 33 L2",
+    "reg_type": "input",
+    "address": "0x4648",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 34 L2",
+    "reg_type": "input",
+    "address": "0x4649",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 35 L2",
+    "reg_type": "input",
+    "address": "0x464a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 36 L2",
+    "reg_type": "input",
+    "address": "0x464b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 37 L2",
+    "reg_type": "input",
+    "address": "0x464c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 38 L2",
+    "reg_type": "input",
+    "address": "0x464d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 39 L2",
+    "reg_type": "input",
+    "address": "0x464e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 40 L2",
+    "reg_type": "input",
+    "address": "0x464f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 41 L2",
+    "reg_type": "input",
+    "address": "0x4650",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 42 L2",
+    "reg_type": "input",
+    "address": "0x4651",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 2 L3",
+    "reg_type": "input",
+    "address": "0x4652",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 3 L3",
+    "reg_type": "input",
+    "address": "0x4653",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 4 L3",
+    "reg_type": "input",
+    "address": "0x4654",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 5 L3",
+    "reg_type": "input",
+    "address": "0x4655",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 6 L3",
+    "reg_type": "input",
+    "address": "0x4656",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 7 L3",
+    "reg_type": "input",
+    "address": "0x4657",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 8 L3",
+    "reg_type": "input",
+    "address": "0x4658",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 9 L3",
+    "reg_type": "input",
+    "address": "0x4659",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 10 L3",
+    "reg_type": "input",
+    "address": "0x465a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 11 L3",
+    "reg_type": "input",
+    "address": "0x465b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 12 L3",
+    "reg_type": "input",
+    "address": "0x465c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 13 L3",
+    "reg_type": "input",
+    "address": "0x465d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 14 L3",
+    "reg_type": "input",
+    "address": "0x465e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 15 L3",
+    "reg_type": "input",
+    "address": "0x465f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 16 L3",
+    "reg_type": "input",
+    "address": "0x4660",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 17 L3",
+    "reg_type": "input",
+    "address": "0x4661",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 18 L3",
+    "reg_type": "input",
+    "address": "0x4662",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 19 L3",
+    "reg_type": "input",
+    "address": "0x4663",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 20 L3",
+    "reg_type": "input",
+    "address": "0x4664",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 21 L3",
+    "reg_type": "input",
+    "address": "0x4665",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 22 L3",
+    "reg_type": "input",
+    "address": "0x4666",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 23 L3",
+    "reg_type": "input",
+    "address": "0x4667",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 24 L3",
+    "reg_type": "input",
+    "address": "0x4668",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 25 L3",
+    "reg_type": "input",
+    "address": "0x4669",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 26 L3",
+    "reg_type": "input",
+    "address": "0x466a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 27 L3",
+    "reg_type": "input",
+    "address": "0x466b",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 28 L3",
+    "reg_type": "input",
+    "address": "0x466c",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 29 L3",
+    "reg_type": "input",
+    "address": "0x466d",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 30 L3",
+    "reg_type": "input",
+    "address": "0x466e",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 31 L3",
+    "reg_type": "input",
+    "address": "0x466f",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 32 L3",
+    "reg_type": "input",
+    "address": "0x4670",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 33 L3",
+    "reg_type": "input",
+    "address": "0x4671",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 34 L3",
+    "reg_type": "input",
+    "address": "0x4672",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 35 L3",
+    "reg_type": "input",
+    "address": "0x4673",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 36 L3",
+    "reg_type": "input",
+    "address": "0x4674",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 37 L3",
+    "reg_type": "input",
+    "address": "0x4675",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 38 L3",
+    "reg_type": "input",
+    "address": "0x4676",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 39 L3",
+    "reg_type": "input",
+    "address": "0x4677",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 40 L3",
+    "reg_type": "input",
+    "address": "0x4678",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 41 L3",
+    "reg_type": "input",
+    "address": "0x4679",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   },
+   {
+    "name": "Ch 4 HR I 42 L3",
+    "reg_type": "input",
+    "address": "0x467a",
+    "type": "value",
+    "format": "u16",
+    "scale": 0.00610352,
+    "round_to": 0.01,
+    "error_value": 65535
+   }
+  ]
+ }
+}

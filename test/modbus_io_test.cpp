@@ -11,7 +11,7 @@ protected:
     void SetUp();
     void TearDown();
     const char* ConfigPath() const override { return "configs/config-modbus-io-test.json"; }
-    const char* GetTemplatePath() const override { return "device-templates";}
+    std::string GetTemplatePath() const override { return "device-templates";}
 
     void ExpectPollQueries();
 

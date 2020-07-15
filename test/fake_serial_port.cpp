@@ -232,6 +232,13 @@ void TSerialDeviceTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
+WBMQTT::TMap<std::string, TTemplateMap> TSerialDeviceIntegrationTest::Templates;
+
+std::string TSerialDeviceIntegrationTest::GetTemplatePath() const 
+{
+    return std::string();
+}
+
 void TSerialDeviceIntegrationTest::SetUp()
 {
     SetMode(E_Unordered);
@@ -240,17 +247,24 @@ void TSerialDeviceIntegrationTest::SetUp()
 
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
 
-    PTemplateMap templateMap = std::make_shared<TTemplateMap>();
-    if (GetTemplatePath()) {
-        templateMap = LoadConfigTemplates(GetDataFilePath(GetTemplatePath()),
-                                          LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
-                                                                    configSchema));
+    std::string path(GetTemplatePath());
+
+    auto it = Templates.find(path);
+    if (it == Templates.end()) {
+        if (path.empty()) {
+            it = Templates.emplace(path, TTemplateMap()).first;
+        } else {
+            it = Templates.emplace(path, 
+                                   LoadConfigTemplates(GetDataFilePath(path),
+                                                       LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
+                                                                                 configSchema))).first;
+        } 
     }
 
     Config = LoadConfig(GetDataFilePath(ConfigPath()), 
                          TSerialDeviceFactory::GetRegisterTypes,
                          configSchema,
-                         templateMap);
+                         it->second);
 
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient("em-test");
