@@ -59,7 +59,7 @@ typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
 
 static const int DEFAULT_INTER_DEVICE_DELAY_MS = 100;
 static const int DEFAULT_ACCESS_LEVEL = 1;
-static const int DEFAULT_DEVICE_TIMEOUT_MS = 1000;
+static const int DEFAULT_DEVICE_TIMEOUT_MS = 3000;
 
 struct TDeviceConfig {
     TDeviceConfig(std::string name = "", std::string slave_id = "", std::string protocol = "")
@@ -122,7 +122,7 @@ private:
     std::string Message;
 };
 
-PTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Value& templateSchema);
+TTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Value& templateSchema);
 
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema);
 void AddProtocolType(Json::Value& configSchema, const std::string& protocolType);
@@ -135,4 +135,4 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName);
 PHandlerConfig LoadConfig(const std::string& configFileName,
                           TGetRegisterTypeMapFn getRegisterTypeMapFn,
                           const Json::Value& configSchema,
-                          PTemplateMap templates = PTemplateMap());
+                          const TTemplateMap& templates = TTemplateMap());

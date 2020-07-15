@@ -303,6 +303,8 @@ namespace {
 
         if (device_data.isMember("frame_timeout_ms"))
             device_config->FrameTimeout = std::chrono::milliseconds(GetInt(device_data, "frame_timeout_ms"));
+        if (device_data.isMember("device_timeout_ms"))
+            device_config->DeviceTimeout = std::chrono::milliseconds(GetInt(device_data, "device_timeout_ms"));
         if (device_data.isMember("max_reg_hole"))
             device_config->MaxRegHole = GetInt(device_data, "max_reg_hole");
         if (device_data.isMember("max_bit_hole"))
@@ -320,7 +322,7 @@ namespace {
     void LoadDevice(PPortConfig port_config,
                     const Json::Value& device_data,
                     const std::string& default_id,
-                    PTemplateMap templates,
+                    const TTemplateMap& templates,
                     TGetRegisterTypeMapFn getRegisterTypeMapFn)
     {
         if (device_data.isMember("enabled") && !device_data["enabled"].asBool())
@@ -343,8 +345,8 @@ namespace {
 
         if (device_data.isMember("device_type")){
             device_config->DeviceType = device_data["device_type"].asString();
-            auto it = templates->find(device_config->DeviceType);
-            if (it == templates->end()) {
+            auto it = templates.find(device_config->DeviceType);
+            if (it == templates.end()) {
                 throw TConfigParserException(
                     "Can't find the template for '" + device_config->DeviceType + "' device type.");
             }
@@ -390,7 +392,7 @@ namespace {
         }
     }
 
-    void LoadPort(PHandlerConfig handlerConfig, const Json::Value& port_data, const std::string& id_prefix, PTemplateMap templates, TGetRegisterTypeMapFn getRegisterTypeMapFn)
+    void LoadPort(PHandlerConfig handlerConfig, const Json::Value& port_data, const std::string& id_prefix, const TTemplateMap& templates, TGetRegisterTypeMapFn getRegisterTypeMapFn)
     {
         if (port_data.isMember("enabled") && !port_data["enabled"].asBool())
             return;
@@ -467,7 +469,7 @@ TTemplate::TTemplate(const Json::Value& device_data):
     }
 }
 
-PTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Value& templateSchema)
+TTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Value& templateSchema)
 {
     DIR *dir;
     struct dirent *dirp;
@@ -476,7 +478,9 @@ PTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Va
     if ((dir = opendir(templatesDir.c_str())) == NULL)
         throw TConfigParserException("Cannot open templates directory");
 
-    PTemplateMap templates(new TTemplateMap());
+    TTemplateMap templates;
+
+    WBMQTT::JSON::TValidator validator(templateSchema);
 
     while ((dirp = readdir(dir))) {
         std::string dname = dirp->d_name;
@@ -490,13 +494,13 @@ PTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Va
         Json::Value root;
         try {
             root =WBMQTT::JSON::Parse(filepath);
-            WBMQTT::JSON::Validate(root, templateSchema);
+            validator.Validate(root);
         } catch (const std::exception& e) {
             LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
             continue;
         }
 
-        (*templates)[root["device_type"].asString()] = std::make_shared<TTemplate>(root["device"]);
+        templates[root["device_type"].asString()] = std::make_shared<TTemplate>(root["device"]);
     }
     closedir(dir);
     return templates;
@@ -537,7 +541,7 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName)
 PHandlerConfig LoadConfig(const std::string& configFileName, 
                           TGetRegisterTypeMapFn getRegisterTypeMapFn,
                           const Json::Value& configSchema,
-                          PTemplateMap templates)
+                          const TTemplateMap& templates)
 {
     PHandlerConfig handlerConfig(new THandlerConfig);
     Json::Value Root = WBMQTT::JSON::Parse(configFileName);

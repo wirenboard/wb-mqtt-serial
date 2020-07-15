@@ -17,7 +17,7 @@ void TDeviceTemplateFileExtensionTest::VerifyTemplates(const std::string& direct
         auto templates = LoadConfigTemplates(directory,
                                              LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
                                                                        configSchema));
-        ASSERT_FALSE(templates->count(bad_device_type));
+        ASSERT_FALSE(templates.count(bad_device_type));
     } catch (const TConfigParserException& e) {
         ADD_FAILURE() << "Parsing failed: " << e.what();
     }

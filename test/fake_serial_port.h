@@ -6,6 +6,7 @@
 
 #include <wblib/testing/fake_mqtt.h>
 #include <wblib/testing/testlog.h>
+#include <wblib/map.h>
 
 #include "expector.h"
 #include "serial_device.h"
@@ -69,7 +70,7 @@ protected:
     void Publish(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
     void PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
     virtual const char* ConfigPath() const = 0;
-    virtual const char* GetTemplatePath() const { return nullptr;};
+    virtual std::string GetTemplatePath() const;
 
     WBMQTT::Testing::PFakeMqttBroker MqttBroker;
     WBMQTT::Testing::PFakeMqttClient MqttClient;
@@ -78,4 +79,6 @@ protected:
     PMQTTSerialDriver SerialDriver;
     PHandlerConfig Config;
     bool PortMakerCalled;
+
+    static WBMQTT::TMap<std::string, TTemplateMap> Templates; // Key - path to folder, value - loaded templates map
 };

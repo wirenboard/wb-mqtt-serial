@@ -14,6 +14,8 @@
 #include <cassert>
 #include <gtest/gtest.h>
 
+#include "tcp_port_settings.h"
+
 using namespace std;
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
@@ -1015,9 +1017,9 @@ class TConfigParserTest: public TLoggedFixture {};
 TEST_F(TConfigParserTest, Parse)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    PTemplateMap templateMap = LoadConfigTemplates(GetDataFilePath("device-templates/"),
-                                                   LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
-                                                                             configSchema));
+    TTemplateMap templateMap(LoadConfigTemplates(GetDataFilePath("device-templates/"),
+                                                 LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
+                                                                             configSchema)));
 
     PHandlerConfig config = LoadConfig(GetDataFilePath("configs/parse_test.json"), 
                                                        TSerialDeviceFactory::GetRegisterTypes,
@@ -1032,6 +1034,11 @@ TEST_F(TConfigParserTest, Parse)
         Emit() << "ConnSettings: " << port_config->ConnSettings->ToString();
         Emit() << "PollInterval: " << port_config->PollInterval.count();
         Emit() << "GuardInterval: " << port_config->GuardInterval.count();
+
+        if(auto tcp_port_config = dynamic_pointer_cast<TTcpPortSettings>(port_config->ConnSettings)) {
+            Emit() << "ConnectionTimeout: " << tcp_port_config->ConnectionTimeout.count();
+        }
+
         if (port_config->DeviceConfigs.empty()) {
             Emit() << "No device configs.";
             continue;
@@ -1047,6 +1054,7 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "MaxBitHole: " << device_config->MaxBitHole;
             Emit() << "MaxReadRegisters: " << device_config->MaxReadRegisters;
             Emit() << "GuardInterval: " << device_config->GuardInterval.count();
+            Emit() << "DeviceTimeout: " << device_config->DeviceTimeout.count();
             if (!device_config->DeviceChannelConfigs.empty()) {
                 Emit() << "DeviceChannels:";
                 for (auto device_channel: device_config->DeviceChannelConfigs) {
