@@ -612,6 +612,13 @@ namespace ModbusRTU // modbus rtu protocol utilities
         int w = reg->Width();
 
         LOG(Debug) << "write " << w << " " << reg->TypeName << "(s) @ " << reg->Address << " of device " << reg->Device()->ToString();
+
+        auto config = reg->Device()->DeviceConfig();
+
+        if (config->GuardInterval.count()){
+            port->Sleep(config->GuardInterval);
+        }
+
         std::string exception_message;
         try {
             TWriteRequest request;
@@ -622,7 +629,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
             {   // Receive response
                 TWriteResponse response;
-                if (port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size())) > 0) {
+                auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
+
+                if (port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size())) > 0) {
                     try {
                         ModbusRTU::CheckResponse(request, response);
                         Modbus::ParseWriteResponse(PDU(response));
@@ -654,9 +663,15 @@ namespace ModbusRTU // modbus rtu protocol utilities
             throw std::runtime_error("modbus range expected");
         }
 
+        auto config = modbus_range->Device()->DeviceConfig();
+
         LOG(Debug) << "read " << modbus_range->GetCount() << " " <<
             modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
             " of device " << modbus_range->Device()->ToString();
+
+        if (config->GuardInterval.count()){
+            port->Sleep(config->GuardInterval);
+        }
 
         std::string exception_message;
         try {
@@ -670,8 +685,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
             {   // Receive response
                 auto byte_count = InferReadResponseSize(modbus_range);
                 TReadResponse response(byte_count);
+                auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
 
-                auto rc = port->ReadFrame(response.data(), response.size(), FrameTimeout, ExpectNBytes(response.size()));
+                auto rc = port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size()));
                 if (rc > 0) {
                     try {
                         ModbusRTU::CheckResponse(request, response);

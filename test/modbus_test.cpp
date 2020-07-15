@@ -352,3 +352,9 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
     Config->PortConfigs[0]->DeviceConfigs[0]->MaxReadRegisters = 3;
     InvalidateConfigPoll(TEST_MAX_READ_REGISTERS);
 }
+
+TEST_F(TModbusIntegrationTest, GuardInterval)
+{
+    Config->PortConfigs[0]->DeviceConfigs[0]->GuardInterval = chrono::microseconds(1000);
+    InvalidateConfigPoll();
+}

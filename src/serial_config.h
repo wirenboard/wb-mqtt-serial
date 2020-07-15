@@ -93,6 +93,7 @@ struct TPortConfig {
     void AddDeviceConfig(PDeviceConfig device_config);
     PPortSettings ConnSettings;
     std::chrono::milliseconds PollInterval = std::chrono::milliseconds(20);
+    std::chrono::microseconds GuardInterval = std::chrono::microseconds(0);
     int MaxUnchangedInterval;
     std::vector<PDeviceConfig> DeviceConfigs;
 };

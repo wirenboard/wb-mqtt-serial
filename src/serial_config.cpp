@@ -376,6 +376,10 @@ namespace {
         if (device_config->DeviceChannelConfigs.empty())
             throw TConfigParserException("the device has no channels: " + device_config->Name);
 
+        if (device_config->GuardInterval.count() == 0) {
+            device_config->GuardInterval = port_config->GuardInterval;
+        }
+
         port_config->AddDeviceConfig(device_config);
         for (auto channel: device_config->DeviceChannelConfigs) {
             for (auto reg: channel->RegisterConfigs) {
@@ -433,6 +437,9 @@ namespace {
         if (port_data.isMember("poll_interval"))
             port_config->PollInterval = std::chrono::milliseconds(
                 GetInt(port_data, "poll_interval"));
+
+        if (port_data.isMember("guard_interval_us"))
+            port_config->GuardInterval = std::chrono::microseconds(GetInt(port_data, "guard_interval_us"));
 
         const Json::Value array = port_data["devices"];
         for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index)
