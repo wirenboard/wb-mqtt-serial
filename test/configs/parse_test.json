@@ -59,6 +59,7 @@
                     "enabled": true,
                     "slave_id": "0x04",
                     "guard_interval_us": 1000,
+                    "device_timeout_ms": 2000,
                     "channels": [
                         {
                             "name" : "Relay 1",
@@ -140,6 +141,13 @@
             "port_type": "tcp",
             "address": "192.168.0.1",
             "port": 3000,
+            "enabled": true
+        },
+        {
+            "port_type": "tcp",
+            "address": "192.168.0.1",
+            "port": 3000,
+            "connection_timeout_ms": 10000,
             "enabled": true
         }
     ]

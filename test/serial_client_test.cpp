@@ -14,6 +14,8 @@
 #include <cassert>
 #include <gtest/gtest.h>
 
+#include "tcp_port_settings.h"
+
 using namespace std;
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
@@ -1032,6 +1034,11 @@ TEST_F(TConfigParserTest, Parse)
         Emit() << "ConnSettings: " << port_config->ConnSettings->ToString();
         Emit() << "PollInterval: " << port_config->PollInterval.count();
         Emit() << "GuardInterval: " << port_config->GuardInterval.count();
+
+        if(auto tcp_port_config = dynamic_pointer_cast<TTcpPortSettings>(port_config->ConnSettings)) {
+            Emit() << "ConnectionTimeout: " << tcp_port_config->ConnectionTimeout.count();
+        }
+
         if (port_config->DeviceConfigs.empty()) {
             Emit() << "No device configs.";
             continue;
@@ -1047,6 +1054,7 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "MaxBitHole: " << device_config->MaxBitHole;
             Emit() << "MaxReadRegisters: " << device_config->MaxReadRegisters;
             Emit() << "GuardInterval: " << device_config->GuardInterval.count();
+            Emit() << "DeviceTimeout: " << device_config->DeviceTimeout.count();
             if (!device_config->DeviceChannelConfigs.empty()) {
                 Emit() << "DeviceChannels:";
                 for (auto device_channel: device_config->DeviceChannelConfigs) {

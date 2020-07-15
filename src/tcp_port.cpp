@@ -14,6 +14,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+#include "log.h"
+
+#define LOG(logger) ::logger.Log() << "[tcp port] "
+
 using namespace std;
 
 namespace {
@@ -37,7 +41,7 @@ void TTcpPort::Open()
     try {
         OpenTcpPort();
     } catch (const TSerialDeviceException & e) {
-        cerr << "ERROR at port " << Settings->ToString() << ": " << e.what() << endl;
+        LOG(Error) << "port " << Settings->ToString() << ": " << e.what();
         Reset();
     }
 }
@@ -112,7 +116,7 @@ void TTcpPort::OpenTcpPort()
             }
         } else {
             ostringstream ss;
-            ss << "connect error: " << error;
+            ss << "connect error: " << error << " - " << strerror(error);
             throw TSerialDeviceException(ss.str());
         }
     }
@@ -147,6 +151,8 @@ void TTcpPort::WriteBytes(const uint8_t * buf, int count)
 {
     if (IsOpen()) {
         Base::WriteBytes(buf, count);
+    } else {
+        LOG(Warn) << "attempt to write to not open port";
     }
 }
 
