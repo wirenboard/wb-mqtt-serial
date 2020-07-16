@@ -39,11 +39,22 @@ void TTcpPort::CycleBegin()
 
 void TTcpPort::Open()
 {
+    auto begin = chrono::steady_clock::now();
+
     try {
         OpenTcpPort();
+        OnConnectionOk();
     } catch (const TSerialDeviceException & e) {
         LOG(Error) << "port " << Settings->ToString() << ": " << e.what();
         Reset();
+
+        // if failed too fast - sleep remaining time
+        auto deltaUs = chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now() - begin).count();
+        auto connectionTimeoutUs = CONNECTION_TIMEOUT_S * 1000000;
+
+        if (deltaUs < connectionTimeoutUs) {
+            usleep(connectionTimeoutUs - deltaUs);
+        }
     }
 }
 
@@ -138,6 +149,18 @@ void TTcpPort::Reset() noexcept
     }
 }
 
+void TTcpPort::OnConnectionOk()
+{
+    LastSuccessfulCycle = std::chrono::steady_clock::now();
+    RemainingFailCycles = Settings->ConnectionMaxFailCycles;
+}
+
+void TTcpPort::OnReadyEmptyFd()
+{
+    Close();
+    throw TSerialDeviceTransientErrorException("socket closed");
+}
+
 void TTcpPort::WriteBytes(const uint8_t * buf, int count)
 {
     if (IsOpen()) {
@@ -163,8 +186,7 @@ void TTcpPort::CycleEnd(bool ok)
     }
 
     if (ok) {
-        LastSuccessfulCycle = std::chrono::steady_clock::now();
-        RemainingFailCycles = Settings->ConnectionMaxFailCycles;
+        OnConnectionOk();
     } else {
         if (LastSuccessfulCycle == std::chrono::steady_clock::time_point()) {
             LastSuccessfulCycle = std::chrono::steady_clock::now();

@@ -92,6 +92,9 @@ bool TFileDescriptorPort::Select(const chrono::microseconds& us)
     return r > 0;
 }
 
+void TFileDescriptorPort::OnReadyEmptyFd()
+{}
+
 uint8_t TFileDescriptorPort::ReadByte()
 {
     CheckPortOpen();
