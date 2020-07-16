@@ -75,6 +75,32 @@ namespace {
         // v.asString() should give a bit more information what config this exception came from
     }
 
+    uint64_t ToUint64(const Json::Value& v, const std::string& title)
+    {
+        if (v.isUInt())
+            return v.asUInt();
+        if (v.isInt()) {
+            int val = v.asInt();
+            if (val >= 0) {
+                return val;
+            }
+        }
+
+        if (v.isString()) {
+            auto val = v.asString();
+            if (val.find("-") == std::string::npos) {
+                // don't try to parse strings containing munus sign
+                try {
+                    return stoull(val, /*pos= */ 0, /*base= */ 0);
+                } catch (const std::logic_error& e) {}
+            }
+        }
+
+        throw TConfigParserException(
+            title + ": 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of '" + v.asString() +
+            "'");
+    }
+
     int GetInt(const Json::Value& obj, const std::string& key)
     {
         return ToInt(obj[key], key);
@@ -126,7 +152,7 @@ namespace {
         uint64_t error_value = 0;
         if (register_data.isMember("error_value")) {
             has_error_value = true;
-            error_value = strtoull(register_data["error_value"].asString().c_str(), NULL, 0);
+            error_value = ToUint64(register_data["error_value"], "error_value");
         }
 
         PRegisterConfig reg = TRegisterConfig::Create(
