@@ -17,7 +17,7 @@ namespace Modbus  // modbus protocol common utilities
         REG_DISCRETE,
     };
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> reg_list, PDeviceConfig deviceConfig);
+    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, PDeviceConfig deviceConfig, bool enableHoles);
 };  // modbus protocol common utilities
 
 namespace ModbusRTU // modbus rtu protocol utilities

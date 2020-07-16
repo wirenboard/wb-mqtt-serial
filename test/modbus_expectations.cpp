@@ -591,6 +591,23 @@ void TModbusExpectations::EnqueueInvalidCRCCoilReadResponse()
     response, __func__);
 }
 
+void TModbusExpectations::EnqueueWrongDataSizeReadResponse()
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x01,   //function code
+        0x00,   //starting address Hi
+        0x00,   //starting address Lo
+        0x00,   //quantity Hi
+        0x01,   //quantity Lo
+    }),
+    WrapPDU(std::vector<int> {
+        0x01,   //function code
+        0x02,   //byte count (intentionally wrong, should be 0x01)
+        1<<1,   //coils status
+    }), __func__);
+}
+
 void TModbusExpectations::EnqueueWrongSlaveIdCoilReadResponse(uint8_t exception)
 {
     Expector()->Expect(

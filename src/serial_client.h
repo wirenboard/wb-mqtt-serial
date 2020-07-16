@@ -34,6 +34,7 @@ public:
     void NotifyFlushNeeded();
     bool WriteSetupRegisters(PSerialDevice dev);
     void ClearDevices();
+    void SplitRegisterRanges(std::set<PRegisterRange> &&);
 
 private:
     void PrepareRegisterRanges();

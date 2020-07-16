@@ -8,8 +8,8 @@ public:
     void TearDown() override;
 
     const char* ConfigPath() const override { return "configs/reconnect_test.json"; }
-    void EnqueueSetupSectionI1(bool reset, bool read);
-    void EnqueueSetupSectionI2(bool reset, bool read);
+    void EnqueueSetupSectionI1(bool read);
+    void EnqueueSetupSectionI2(bool read);
     void TryInitiateDisconnect(std::chrono::milliseconds delay);
 private:
     void EnqueueSetupSection(bool read, int addr, int value, const char* func);
@@ -61,12 +61,12 @@ void TReconnectDetectionTest::EnqueueSetupSection(bool read, int addr, int value
         func);
 }
 
-void TReconnectDetectionTest::EnqueueSetupSectionI1(bool reset, bool read)
+void TReconnectDetectionTest::EnqueueSetupSectionI1(bool read)
 {
     EnqueueSetupSection(read, 1, 42, __func__);
 }
 
-void TReconnectDetectionTest::EnqueueSetupSectionI2(bool reset, bool read)
+void TReconnectDetectionTest::EnqueueSetupSectionI2(bool read)
 {
     EnqueueSetupSection(read, 2, 24, __func__);
 }
@@ -75,14 +75,14 @@ void TReconnectDetectionTest::TryInitiateDisconnect(std::chrono::milliseconds de
 {
     {   // Test initial WriteInitValues
         ASSERT_TRUE(!!SerialPort);
-        EnqueueSetupSectionI1(false, false);
-        EnqueueSetupSectionI2(false, false);
+        EnqueueSetupSectionI1(false);
+        EnqueueSetupSectionI2(false);
         SerialDriver->WriteInitValues();
     }
 
     {   // Test read
-        EnqueueSetupSectionI1(false, true);
-        EnqueueSetupSectionI2(false, true);
+        EnqueueSetupSectionI1(true);
+        EnqueueSetupSectionI2(true);
         Note() << "LoopOnce()";
         SerialDriver->LoopOnce();
         SerialPort->DumpWhatWasRead();
@@ -117,12 +117,13 @@ TEST_F(TReconnectDetectionTest, Reconnect)
         Note() << "SimulateDisconnect(false)";
         SerialPort->SimulateDisconnect(false);
         // After first successful range read ...
-        EnqueueSetupSectionI1(false, true);
-        // we expect reconnect so we expect setup section to be written
-        EnqueueSetupSectionI1(false, false);
-        EnqueueSetupSectionI2(false, false);
-        // And then all remaining registers will be read
-        EnqueueSetupSectionI2(false, true);
+        EnqueueSetupSectionI1(true);
+        EnqueueSetupSectionI2(true);
+
+        // We expect reconnect so we expect setup section to be written in response to successfull polling
+        EnqueueSetupSectionI1(false);
+        EnqueueSetupSectionI2(false);
+
 
         Note() << "LoopOnce()";
         SerialDriver->LoopOnce();
@@ -130,8 +131,8 @@ TEST_F(TReconnectDetectionTest, Reconnect)
     }
 
     {   // Test read
-        EnqueueSetupSectionI1(false, true);
-        EnqueueSetupSectionI2(false, true);
+        EnqueueSetupSectionI1(true);
+        EnqueueSetupSectionI2(true);
         Note() << "LoopOnce()";
         SerialDriver->LoopOnce();
         SerialPort->DumpWhatWasRead();
@@ -149,8 +150,8 @@ TEST_F(TReconnectDetectionTest, ReconnectMiss)
         Note() << "SimulateDisconnect(false)";
         SerialPort->SimulateDisconnect(false);
         // We expect normal read, because no reconnect should've been triggered
-        EnqueueSetupSectionI1(false, true);
-        EnqueueSetupSectionI2(false, true);
+        EnqueueSetupSectionI1(true);
+        EnqueueSetupSectionI2(true);
 
         Note() << "LoopOnce()";
         SerialDriver->LoopOnce();

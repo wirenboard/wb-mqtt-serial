@@ -16,9 +16,9 @@ TModbusDevice::TModbusDevice(PDeviceConfig config, PPort port, PProtocol protoco
     : TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>>(config, port, protocol)
 {}
 
-std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> reg_list) const
+std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
 {
-    return Modbus::SplitRegisterList(reg_list, DeviceConfig());
+    return Modbus::SplitRegisterList(reg_list, DeviceConfig(), enableHoles);
 }
 
 uint64_t TModbusDevice::ReadRegister(PRegister reg)

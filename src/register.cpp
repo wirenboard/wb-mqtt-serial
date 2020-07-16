@@ -52,6 +52,16 @@ void TSimpleRegisterRange::MapRange(TValueCallback value_callback, TErrorCallbac
     }
 }
 
+TRegisterRange::EStatus TSimpleRegisterRange::GetStatus() const
+{
+    return Errors.size() == RegisterList().size() ? ST_UNKNOWN_ERROR: ST_OK;
+}
+
+bool TSimpleRegisterRange::NeedsSplit() const
+{
+    return false;
+}
+
 std::string TRegisterConfig::ToString() const {
     std::stringstream s;
     s << TypeName << ": " << Address;
@@ -62,6 +72,6 @@ std::string TRegister::ToString() const
 {
     return "<" + Device()->ToString() + ":" + TRegisterConfig::ToString() + ">";
 }
-    
+
 std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;
 std::mutex TRegister::Mutex;

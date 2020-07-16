@@ -122,3 +122,21 @@ void TPollPlan::Reset()
     while (!Queue.empty())
         Queue.pop();
 }
+
+void TPollPlan::Modify(std::function<bool(const PPollEntry & entry)> && thunk)
+{
+    std::queue<PQueueItem> items;
+    while (!Queue.empty()) {
+        auto item = Queue.top();
+        if (!thunk(item->Entry)) {
+            items.push(item);
+            Queue.pop();
+        } else {
+            break;
+        }
+    }
+    while (!items.empty()) {
+        Queue.push(items.front());
+        items.pop();
+    }
+}
