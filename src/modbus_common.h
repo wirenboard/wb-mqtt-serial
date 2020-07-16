@@ -15,6 +15,8 @@ namespace Modbus  // modbus protocol common utilities
         REG_INPUT,
         REG_COIL,
         REG_DISCRETE,
+        REG_HOLDING_SINGLE,
+        REG_HOLDING_MULTI,
     };
 
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, PDeviceConfig deviceConfig, bool enableHoles);

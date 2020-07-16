@@ -136,36 +136,66 @@ Publish: /devices/modbus-sample/controls/Coil 11/meta/readonly: '0' (QoS 1, reta
 Publish: /devices/modbus-sample/controls/Coil 11/meta/type: 'switch' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 11: '0' (QoS 1, retained)
 Subscribe: /devices/modbus-sample/controls/Coil 11/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/order: '23' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/Holding U64 Single/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/order: '24' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/Holding U16 Single/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/order: '25' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/Holding U64 Multi/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/order: '26' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/Holding U16 Multi/on (QoS 0)
 Publish: /devices/modbus-sample/controls/Coil 0/on: '1' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Coil 0: '1' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding U16/on: '3905' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Holding U16: '3905' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/on: '283686952306183' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single: '283686952306183' (QoS 1, retained)
 >>> LoopOnce()
 Open()
 Sleep(100000)
 EnqueueCoilWriteResponse()
 >> 01 05 00 00 FF 00 8C 3A
+Publish: /devices/modbus-sample/controls/Coil 0/meta/error: 'w' (QoS 1, retained)
 << 01 85 01 83 50
 EnqueueHoldingWriteU16Response()
 >> 01 06 00 46 0F 41 AD DF
-Publish: /devices/modbus-sample/controls/Coil 0/meta/error: 'w' (QoS 1, retained)
-<< 01 86 02 C3 A1
 Publish: /devices/modbus-sample/controls/Holding U16/meta/error: 'w' (QoS 1, retained)
+<< 01 86 02 C3 A1
+EnqueueHoldingSingleWriteU64Response()
+>> 01 06 00 5D 06 07 5A 7A
+<< 01 86 02 C3 A1
 EnqueueHoldingPackReadResponse()
 >> 01 03 00 04 00 06 84 09
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/error: 'w' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/RGB/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White/meta/error: 'r' (QoS 1, retained)
-<< 01 83 03 01 31
 Publish: /devices/modbus-sample/controls/RGB_All/meta/error: 'r' (QoS 1, retained)
-EnqueueHoldingPackReadResponse()
->> 01 03 00 12 00 01 24 0F
 Publish: /devices/modbus-sample/controls/White1/meta/error: 'r' (QoS 1, retained)
 << 01 83 03 01 31
+EnqueueHoldingPackReadResponse()
+>> 01 03 00 12 00 01 24 0F
 Publish: /devices/modbus-sample/controls/Voltage/meta/error: 'r' (QoS 1, retained)
+<< 01 83 03 01 31
 EnqueueHoldingReadS64Response()
 >> 01 03 00 1E 00 04 24 0F
-<< 01 83 04 40 F3
 Publish: /devices/modbus-sample/controls/Holding S64/meta/error: 'r' (QoS 1, retained)
+<< 01 83 04 40 F3
 EnqueueHoldingReadF32Response()
 >> 01 03 00 32 00 02 65 C4
 << 01 83 05 81 33
@@ -199,15 +229,43 @@ Publish: /devices/modbus-sample/controls/Coil 11/meta/error: 'r' (QoS 1, retaine
 EnqueueDiscreteReadResponse()
 >> 01 02 00 14 00 01 F9 CE
 Publish: /devices/modbus-sample/controls/Discrete 0/meta/error: 'r' (QoS 1, retained)
-Port cycle OK
 << 01 82 0B 01 67
+EnqueueHoldingSingleReadResponse()
+>> 01 03 00 5A 00 05 A5 DA
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/error: 'rw' (QoS 1, retained)
+<< 01 83 02 C0 F1
+EnqueueHoldingMultiReadResponse()
+>> 01 03 00 5F 00 05 B5 DB
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/error: 'r' (QoS 1, retained)
+Port cycle OK
+<< 01 83 03 01 31
 Close()
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 9/on
-Publish: /devices/modbus-sample/controls/Coil 9: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 9/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 9/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 9/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 9/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding U16 Multi/on
+Publish: /devices/modbus-sample/controls/Holding U16 Multi: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Multi/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding U16 Single/on
+Publish: /devices/modbus-sample/controls/Holding U16 Single: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 Single/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding U64 Single/on
+Publish: /devices/modbus-sample/controls/Holding U64 Single: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Single/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 11/on
+Publish: /devices/modbus-sample/controls/Coil 11: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 11/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 11/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 11/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 11/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 8/on
 Publish: /devices/modbus-sample/controls/Coil 8: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 8/meta/order: '' (QoS 1, retained)
@@ -220,48 +278,30 @@ Publish: /devices/modbus-sample/controls/Coil 6/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 6/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 6/meta/type: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 6/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 5/on
-Publish: /devices/modbus-sample/controls/Coil 5: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 5/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 5/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 5/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 5/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 4/on
 Publish: /devices/modbus-sample/controls/Coil 4: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 4/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 4/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 4/meta/type: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 4/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 7/on
-Publish: /devices/modbus-sample/controls/Coil 7: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 7/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 7/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 7/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 7/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 3/on
 Publish: /devices/modbus-sample/controls/Coil 3: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 3/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 3/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 3/meta/type: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 3/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 2/on
-Publish: /devices/modbus-sample/controls/Coil 2: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 2/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 2/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 2/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 2/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding U16/on
-Publish: /devices/modbus-sample/controls/Holding U16: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding U16/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding U16/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding U16/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding U16/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding Float/on
-Publish: /devices/modbus-sample/controls/Holding Float: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding Float/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding Float/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding Float/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding Float/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 0/on
+Publish: /devices/modbus-sample/controls/Coil 0: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 0/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 0/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 0/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 0/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/RGB/on
+Publish: /devices/modbus-sample/controls/RGB: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/White/on
 Publish: /devices/modbus-sample/controls/White: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White/meta/max: '' (QoS 1, retained)
@@ -269,30 +309,12 @@ Publish: /devices/modbus-sample/controls/White/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White/meta/type: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/RGB/on
-Publish: /devices/modbus-sample/controls/RGB: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 11/on
-Publish: /devices/modbus-sample/controls/Coil 11: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 11/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 11/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 11/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 11/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Voltage/on
-Publish: /devices/modbus-sample/controls/Voltage: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Voltage/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Voltage/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Voltage/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Voltage/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 0/on
-Publish: /devices/modbus-sample/controls/Coil 0: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 0/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 0/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 0/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 0/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 1/on
+Publish: /devices/modbus-sample/controls/Coil 1: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 1/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 1/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 1/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 1/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/RGB_All/on
 Publish: /devices/modbus-sample/controls/RGB_All: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/RGB_All/meta/max: '' (QoS 1, retained)
@@ -300,12 +322,6 @@ Publish: /devices/modbus-sample/controls/RGB_All/meta/order: '' (QoS 1, retained
 Publish: /devices/modbus-sample/controls/RGB_All/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/RGB_All/meta/type: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Discrete 0/on
-Publish: /devices/modbus-sample/controls/Discrete 0: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Discrete 0/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Discrete 0/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Discrete 0/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Discrete 0/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/White1/on
 Publish: /devices/modbus-sample/controls/White1: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White1/meta/max: '' (QoS 1, retained)
@@ -313,30 +329,78 @@ Publish: /devices/modbus-sample/controls/White1/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White1/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White1/meta/type: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White1/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 10/on
-Publish: /devices/modbus-sample/controls/Coil 10: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 10/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 10/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 10/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 10/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 5/on
+Publish: /devices/modbus-sample/controls/Coil 5: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 5/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 5/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 5/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 5/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Voltage/on
+Publish: /devices/modbus-sample/controls/Voltage: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Voltage/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Voltage/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Voltage/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Voltage/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Discrete 0/on
+Publish: /devices/modbus-sample/controls/Discrete 0: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Discrete 0/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Discrete 0/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Discrete 0/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Discrete 0/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding U64 Multi/on
+Publish: /devices/modbus-sample/controls/Holding U64 Multi: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U64 Multi/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding S64/on
 Publish: /devices/modbus-sample/controls/Holding S64: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding S64/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding S64/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding S64/meta/type: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding S64/meta/error: '' (QoS 1, retained)
-Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 1/on
-Publish: /devices/modbus-sample/controls/Coil 1: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 1/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 1/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 1/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 1/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 2/on
+Publish: /devices/modbus-sample/controls/Coil 2: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 2/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 2/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 2/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 2/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Input U16/on
 Publish: /devices/modbus-sample/controls/Input U16: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Input U16/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Input U16/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Input U16/meta/type: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Input U16/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 10/on
+Publish: /devices/modbus-sample/controls/Coil 10: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 10/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 10/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 10/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 10/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 9/on
+Publish: /devices/modbus-sample/controls/Coil 9: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 9/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 9/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 9/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 9/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding Float/on
+Publish: /devices/modbus-sample/controls/Holding Float: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding Float/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding Float/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding Float/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding Float/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 7/on
+Publish: /devices/modbus-sample/controls/Coil 7: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 7/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 7/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 7/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 7/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding U16/on
+Publish: /devices/modbus-sample/controls/Holding U16: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding U16/meta/error: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/meta/driver: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/meta/name: '' (QoS 1, retained)
 stop: em-test

@@ -17,6 +17,17 @@ public:
     void EnqueueHoldingReadU16Response(uint8_t exception = 0);
     void EnqueueInputReadU16Response(uint8_t exception = 0);
 
+    void EnqueueHoldingSingleMax3ReadResponse(uint8_t exception = 0);
+    void EnqueueHoldingMultiMax3ReadResponse(uint8_t exception = 0);
+
+    void EnqueueHoldingSingleReadResponse(uint8_t exception = 0);
+    void EnqueueHoldingMultiReadResponse(uint8_t exception = 0);
+
+    void EnqueueHoldingSingleWriteU64Response(uint8_t exception = 0);
+    void EnqueueHoldingSingleWriteU16Response(uint8_t exception = 0);
+    void EnqueueHoldingMultiWriteU64Response(uint8_t exception = 0);
+    void EnqueueHoldingMultiWriteU16Response(uint8_t exception = 0);
+
     void EnqueueCoilWriteResponse(uint8_t exception = 0);
     void EnqueueHoldingWriteU16Response(uint8_t exception = 0);
 
