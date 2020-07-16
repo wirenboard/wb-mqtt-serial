@@ -213,6 +213,7 @@ Publish: /devices/modbus-sample/controls/Coil 11: '1' (QoS 1, retained)
 EnqueueDiscreteReadResponse()
 >> 01 02 00 14 00 01 F9 CE
 Publish: /devices/modbus-sample/controls/Discrete 0: '1' (QoS 1, retained)
+Port cycle OK
 << 01 02 01 01 60 48
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Coil 9/on

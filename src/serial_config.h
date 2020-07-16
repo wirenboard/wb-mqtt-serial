@@ -57,9 +57,10 @@ struct TDeviceSetupItemConfig {
 
 typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
 
-static const int DEFAULT_INTER_DEVICE_DELAY_MS = 100;
-static const int DEFAULT_ACCESS_LEVEL = 1;
-static const int DEFAULT_DEVICE_TIMEOUT_MS = 3000;
+const int DEFAULT_INTER_DEVICE_DELAY_MS = 100;
+const int DEFAULT_ACCESS_LEVEL = 1;
+const int DEFAULT_DEVICE_TIMEOUT_MS = 3000;
+const int DEFAULT_DEVICE_FAIL_CYCLES = 2;
 
 struct TDeviceConfig {
     TDeviceConfig(std::string name = "", std::string slave_id = "", std::string protocol = "")
@@ -85,6 +86,7 @@ struct TDeviceConfig {
     PRegisterTypeMap TypeMap = 0;
     std::chrono::microseconds GuardInterval = std::chrono::microseconds(0);
     std::chrono::milliseconds DeviceTimeout = std::chrono::milliseconds(DEFAULT_DEVICE_TIMEOUT_MS);
+    int DeviceMaxFailCycles = DEFAULT_DEVICE_FAIL_CYCLES;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;

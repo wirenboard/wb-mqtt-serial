@@ -157,6 +157,7 @@ uint64_t TMercury230Device::ReadRegister(PRegister reg)
 void TMercury230Device::EndPollCycle()
 {
     CachedValues.clear();
+    TSerialDevice::EndPollCycle();
 }
 
 // TBD: custom password?

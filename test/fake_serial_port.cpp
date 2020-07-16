@@ -51,6 +51,11 @@ bool TFakeSerialPort::IsOpen() const
     return IsPortOpen;
 }
 
+TLoggedFixture & TFakeSerialPort::GetFixture()
+{
+    return Fixture;
+}
+
 void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
     if (DoSimulateDisconnect) {
         return;
@@ -168,6 +173,11 @@ TTimePoint TFakeSerialPort::CurrentTime() const
     return Time;
 }
 
+void TFakeSerialPort::CycleEnd(bool ok)
+{
+    Fixture.Emit() << (ok ? "Port cycle OK" : "Port cycle FAIL");
+}
+
 void TFakeSerialPort::DumpWhatWasRead()
 {
     assert(DumpPos <= RespPos);
@@ -198,6 +208,11 @@ void TFakeSerialPort::Elapse(const std::chrono::milliseconds& ms)
 void TFakeSerialPort::SimulateDisconnect(bool simulate)
 {
     DoSimulateDisconnect = simulate;
+}
+
+bool TFakeSerialPort::GetDoSimulateDisconnect() const
+{
+    return DoSimulateDisconnect;
 }
 
 void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func)

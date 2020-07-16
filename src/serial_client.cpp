@@ -61,7 +61,7 @@ void TSerialClient::AddRegister(PRegister reg)
         throw TSerialDeviceException("can't add registers to the active client");
     if (Handlers.find(reg) != Handlers.end())
         throw TSerialDeviceException("duplicate register");
-    Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg, FlushNeeded);
+    auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg, FlushNeeded);
     RegList.push_back(reg);
     LOG(Debug) << "AddRegister: " << reg;
 }
@@ -205,7 +205,7 @@ void TSerialClient::PollRange(PRegisterRange range)
     PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
     dev->ReadRegisterRange(range);
-    range->MapRange([this](PRegister reg, uint64_t new_value) {
+    range->MapRange([this, &range](PRegister reg, uint64_t new_value) {
             bool changed;
             auto handler = Handlers[reg];
             if (handler->NeedToPoll()) {
@@ -217,7 +217,7 @@ void TSerialClient::PollRange(PRegisterRange range)
                     handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
                     ReadCallback(reg, changed);
             }
-        }, [this](PRegister reg) {
+        }, [this, &range](PRegister reg) {
             bool changed;
             auto handler = Handlers[reg];
             if (handler->NeedToPoll())
@@ -233,33 +233,62 @@ void TSerialClient::Cycle()
     Port->CycleBegin();
 
     WaitForPollAndFlush();
-    std::map<PSerialDevice, std::set<TRegisterRange::EStatus>> devices_ranges_statuses;
+
+    // devices whose registers were polled during this cycle and statues
+    std::map<PSerialDevice, std::set<TRegisterRange::EStatus>> devicesRangesStatuses;
+    // ranges that needs to split
     std::set<PRegisterRange> rangesToSplit;
+
     Plan->ProcessPending([&](const PPollEntry& entry) {
-            for (auto range: std::dynamic_pointer_cast<TSerialPollEntry>(entry)->Ranges) {
-                PollRange(range);
-                devices_ranges_statuses[range->Device()].insert(range->GetStatus());
-                if (range->NeedsSplit()) {
-                    rangesToSplit.insert(range);
+        for (auto range: std::dynamic_pointer_cast<TSerialPollEntry>(entry)->Ranges) {
+            auto device = range->Device();
+            auto & statuses = devicesRangesStatuses[device];
+
+            if (device->GetIsDisconnected()) {
+                // limited polling mode
+                if (statuses.empty()) {
+                    // First interaction with disconnected device within this cycle: Try to reconnect
+                    if (device->HasSetupItems()) {
+                        auto wrote = device->WriteSetupRegisters(false);
+                        statuses.insert(wrote ? TRegisterRange::ST_OK : TRegisterRange::ST_UNKNOWN_ERROR);
+                        if (!wrote) {
+                            continue;
+                        }
+                    }
+                } else {
+                    // Not first interaction with disconnected device that has only errors - still disconnected
+                    if (statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size()) {
+                        continue;
+                    }
                 }
             }
-            MaybeFlushAvoidingPollStarvationButDontWait();
-        });
 
-    for (auto device_ranges_statuses: devices_ranges_statuses) {
-        auto device = device_ranges_statuses.first;
-        const auto & statuses = device_ranges_statuses.second;
-        // device with all registers with unknown error is considered disconnected
-        bool device_is_disconnected = statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size();
-
-        if (device_is_disconnected) {
-            device->OnConnectionError();
-        }
-        else {
-            if (device->GetIsDisconnected()) {
-                OnDeviceReconnect(device);
+            PollRange(range);
+            statuses.insert(range->GetStatus());
+            if (range->NeedsSplit()) {
+                rangesToSplit.insert(range);
             }
-            device->OnConnectionOk();
+        }
+        MaybeFlushAvoidingPollStarvationButDontWait();
+    });
+
+    for (const auto & deviceRangesStatuses: devicesRangesStatuses) {
+        const auto & device = deviceRangesStatuses.first;
+        const auto & statuses = deviceRangesStatuses.second;
+
+        if (statuses.empty()) {
+            std::cerr << "invariant violation: statuses empty @ " << __func__ << std::endl;
+            continue;   // this should not happen
+        }
+
+        bool deviceWasDisconnected = device->GetIsDisconnected(); // don't move after device->OnCycleEnd(...);
+        {
+            bool cycleFailed = statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size();
+            device->OnCycleEnd(!cycleFailed);
+        }
+
+        if (deviceWasDisconnected && !device->GetIsDisconnected()) {
+            OnDeviceReconnect(device);
         }
     }
 
@@ -267,6 +296,15 @@ void TSerialClient::Cycle()
 
     for (const auto& p: DevicesList) {
         p->EndPollCycle();
+    }
+
+    // Port status
+    {
+        bool cycleFailed = std::all_of(DevicesList.begin(), DevicesList.end(),
+            [](const PSerialDevice & device){ return device->GetIsDisconnected(); }
+        );
+
+        Port->CycleEnd(!cycleFailed);
     }
 }
 
@@ -335,5 +373,4 @@ void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
 {
 	LOG(Debug) << "device " << dev->ToString() << " reconnected";
 	dev->ResetUnavailableAddresses();
-	WriteSetupRegisters(dev);
 }

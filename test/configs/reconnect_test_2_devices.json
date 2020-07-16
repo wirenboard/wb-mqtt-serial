@@ -12,8 +12,8 @@
       "enabled": true,
       "devices" : [
         {
-          "name": "Reconnect test",
-          "id": "reconnect-test",
+          "name": "Reconnect test 1",
+          "id": "reconnect-test-1",
           "slave_id": 12,
           "enabled": true,
           "protocol": "fake",
@@ -31,6 +31,47 @@
                 "reg_type": "fake",
                 "address": 2,
                 "value": 24
+            }
+          ],
+          "channels": [
+            {
+              "name": "I1",
+              "reg_type": "fake",
+              "address": "0x01",
+              "format": "u8",
+              "type": "value",
+              "scale": 0.001
+            },
+			      {
+              "name": "I2",
+              "reg_type": "fake",
+              "address": "0x02",
+              "format": "u8",
+              "type": "value",
+              "scale": 0.001
+            }
+          ]
+        },
+        {
+          "name": "Reconnect test 2",
+          "id": "reconnect-test-2",
+          "slave_id": 13,
+          "enabled": true,
+          "protocol": "fake",
+          "frame_timeout_ms": 150,
+          "max_read_registers": 10,
+          "setup": [
+          	{
+                "title": "Input 1",
+                "reg_type": "fake",
+                "address": 1,
+                "value": 32
+            },
+            {
+                "title": "Input 2",
+                "reg_type": "fake",
+                "address": 2,
+                "value": 64
             }
           ],
           "channels": [

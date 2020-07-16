@@ -27,6 +27,7 @@ namespace {
 TTcpPort::TTcpPort(const PTcpPortSettings & settings)
     : TFileDescriptorPort(settings)
     , Settings(settings)
+    , RemainingFailCycles(settings->ConnectionMaxFailCycles)
 {}
 
 void TTcpPort::CycleBegin()
@@ -129,22 +130,12 @@ void TTcpPort::OpenTcpPort()
 
 void TTcpPort::Reset() noexcept
 {
+    LOG(Warn) << Settings->ToString() <<  ": connection reset";
     try {
         Close();
     } catch (...) {
         // pass
     }
-}
-
-bool TTcpPort::Select(const chrono::microseconds& us)
-{
-    bool selected = Base::Select(us);
-    if (selected) {
-        OnOkSelect();
-    } else {
-        OnBadSelect();
-    }
-    return selected;
 }
 
 void TTcpPort::WriteBytes(const uint8_t * buf, int count)
@@ -164,18 +155,29 @@ int TTcpPort::ReadFrame(uint8_t * buf, int count, const std::chrono::microsecond
     return 0;
 }
 
-void TTcpPort::OnBadSelect()
+void TTcpPort::CycleEnd(bool ok)
 {
-    if (LastSuccessfulSelect == std::chrono::steady_clock::time_point()) {
-		LastSuccessfulSelect = std::chrono::steady_clock::now();
-	}
+    // disable reconnect functionality option
+    if (Settings->ConnectionTimeout.count() < 0 || Settings->ConnectionMaxFailCycles < 0) {
+        return;
+    }
 
-    if (std::chrono::steady_clock::now() - LastSuccessfulSelect > Settings->ConnectionTimeout) {
-        Reset();
-	}
-}
+    if (ok) {
+        LastSuccessfulCycle = std::chrono::steady_clock::now();
+        RemainingFailCycles = Settings->ConnectionMaxFailCycles;
+    } else {
+        if (LastSuccessfulCycle == std::chrono::steady_clock::time_point()) {
+            LastSuccessfulCycle = std::chrono::steady_clock::now();
+        }
 
-void TTcpPort::OnOkSelect()
-{
-    LastSuccessfulSelect = std::chrono::steady_clock::now();
+        if (RemainingFailCycles > 0) {
+            --RemainingFailCycles;
+        }
+
+        if ((std::chrono::steady_clock::now() - LastSuccessfulCycle > Settings->ConnectionTimeout) &&
+            RemainingFailCycles == 0)
+        {
+            Reset();
+        }
+    }
 }

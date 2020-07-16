@@ -305,6 +305,8 @@ namespace {
             device_config->FrameTimeout = std::chrono::milliseconds(GetInt(device_data, "frame_timeout_ms"));
         if (device_data.isMember("device_timeout_ms"))
             device_config->DeviceTimeout = std::chrono::milliseconds(GetInt(device_data, "device_timeout_ms"));
+        if (device_data.isMember("device_max_fail_cycles"))
+            device_config->DeviceMaxFailCycles = GetInt(device_data, "device_max_fail_cycles");
         if (device_data.isMember("max_reg_hole"))
             device_config->MaxRegHole = GetInt(device_data, "max_reg_hole");
         if (device_data.isMember("max_bit_hole"))
@@ -424,6 +426,10 @@ namespace {
 
                 if (port_data.isMember("connection_timeout_ms")) {
                     tcp_port_settings->ConnectionTimeout = std::chrono::milliseconds(GetInt(port_data, "connection_timeout_ms"));
+                }
+
+                if (port_data.isMember("connection_max_fail_cycles")) {
+                    tcp_port_settings->ConnectionMaxFailCycles = GetInt(port_data, "connection_max_fail_cycles");
                 }
 
                 port_config->ConnSettings = tcp_port_settings;

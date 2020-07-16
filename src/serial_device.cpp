@@ -11,8 +11,9 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
     , SerialPort(port)
     , _DeviceConfig(config)
     , _Protocol(protocol)
-    , LastOkConnectionTimepoint()
+    , LastSuccessfulCycle()
     , IsDisconnected(false)
+    , RemainingFailCycles(config->DeviceMaxFailCycles)
 {}
 
 TSerialDevice::~TSerialDevice()
@@ -68,20 +69,32 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
     }
 }
 
-void TSerialDevice::OnConnectionOk()
+void TSerialDevice::OnCycleEnd(bool ok)
 {
-    LastOkConnectionTimepoint = std::chrono::steady_clock::now();
-    IsDisconnected = false;
-}
-
-void TSerialDevice::OnConnectionError()
-{
-    if (LastOkConnectionTimepoint == std::chrono::steady_clock::time_point()) {
-        LastOkConnectionTimepoint = std::chrono::steady_clock::now();
+    // disable reconnect functionality option
+    if (_DeviceConfig->DeviceTimeout.count() < 0 || _DeviceConfig->DeviceMaxFailCycles < 0) {
+        return;
     }
 
-    if (std::chrono::steady_clock::now() - LastOkConnectionTimepoint > _DeviceConfig->DeviceTimeout) {
-        IsDisconnected = true;
+    if (ok) {
+        LastSuccessfulCycle = std::chrono::steady_clock::now();
+        IsDisconnected = false;
+        RemainingFailCycles = _DeviceConfig->DeviceMaxFailCycles;
+    } else {
+        if (LastSuccessfulCycle == std::chrono::steady_clock::time_point()) {
+            LastSuccessfulCycle = std::chrono::steady_clock::now();
+        }
+
+        if (RemainingFailCycles > 0) {
+            --RemainingFailCycles;
+        }
+
+        if ((std::chrono::steady_clock::now() - LastSuccessfulCycle > _DeviceConfig->DeviceTimeout) &&
+            RemainingFailCycles == 0)
+        {
+            IsDisconnected = true;
+            std::cerr << "device " << ToString() << " disconnected" << std::endl;
+        }
     }
 }
 
@@ -101,7 +114,12 @@ void TSerialDevice::InitSetupItems()
 	}
 }
 
-bool TSerialDevice::WriteSetupRegisters()
+bool TSerialDevice::HasSetupItems() const
+{
+    return !SetupItems.empty();
+}
+
+bool TSerialDevice::WriteSetupRegisters(bool tryAll)
 {
     bool did_write = false;
     for (const auto& setup_item : SetupItems) {
@@ -114,6 +132,9 @@ bool TSerialDevice::WriteSetupRegisters()
             LOG(Warn) << "device '" << setup_item->Register->Device()->ToString() <<
                 "' register '" << setup_item->Register->ToString() <<
                 "' setup failed: " << e.what();
+            if (!did_write && !tryAll) {
+                break;
+            }
         }
     }
 

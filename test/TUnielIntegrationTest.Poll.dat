@@ -45,6 +45,7 @@ Publish: /devices/pseudo_uniel/controls/LowThr: '112' (QoS 1, retained)
 EnqueueBrightnessQueryResponse()
 >> FF FF 05 01 00 41 00 47
 Publish: /devices/pseudo_uniel/controls/LED 1: '66' (QoS 1, retained)
+Port cycle OK
 << FF FF 05 00 42 41 00 88
 Publish: /devices/pseudo_uniel/controls/Relay 1/on: '1' (QoS 0, retained)
 Publish: /devices/pseudo_uniel/controls/Relay 1: '1' (QoS 1, retained)
@@ -73,6 +74,7 @@ EnqueueThreshold0QueryResponse()
 << FF FF 05 00 70 02 00 77
 EnqueueBrightnessQueryResponse()
 >> FF FF 05 01 00 41 00 47
+Port cycle OK
 << FF FF 05 00 42 41 00 88
 Close()
 Unsubscribe -- em-test: /devices/pseudo_uniel/controls/LED 1/on

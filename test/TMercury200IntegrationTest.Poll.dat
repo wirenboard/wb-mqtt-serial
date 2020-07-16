@@ -68,6 +68,7 @@ Publish: /devices/mercury200.02_22417438/controls/Power consumption tariff 1: '6
 Publish: /devices/mercury200.02_22417438/controls/Power consumption tariff 2: '20.834' (QoS 1, retained)
 Publish: /devices/mercury200.02_22417438/controls/Power consumption tariff 3: '11.111' (QoS 1, retained)
 Publish: /devices/mercury200.02_22417438/controls/Power consumption tariff 4: '22.222' (QoS 1, retained)
+Port cycle OK
 << 01 56 10 1E 27 00 06 21 42 00 02 08 34 00 01 11 11 00 02 22 22 22 2F
 Close()
 Unsubscribe -- em-test: /devices/mercury200.02_22417438/controls/Battery/on
