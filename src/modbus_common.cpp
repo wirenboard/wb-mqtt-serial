@@ -686,6 +686,13 @@ namespace ModbusRTU // modbus rtu protocol utilities
                             LOG(Warn) << "SkipNoise failed: " << e.what();
                         }
                         throw;
+                    } catch (const TMalformedResponseError &) {
+                        try {
+                            port->SkipNoise();
+                        } catch (const std::exception & e) {
+                            LOG(Warn) << "SkipNoise failed: " << e.what();
+                        }
+                        throw;
                     }
                     return;
                 }
