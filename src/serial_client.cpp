@@ -248,6 +248,15 @@ void TSerialClient::Cycle()
                 // limited polling mode
                 if (statuses.empty()) {
                     // First interaction with disconnected device within this cycle: Try to reconnect
+                    
+                    // Force Prepare() (i.e. start session)
+                    try {
+                        device->Prepare();
+                    } catch ( const TSerialDeviceTransientErrorException& e) {
+                        std::cerr << "TSerialDevice::Prepare(): warning: " << e.what() << " [slave_id is "
+                            << device->ToString() + "]" << std::endl;
+                    }
+
                     if (device->HasSetupItems()) {
                         auto wrote = device->WriteSetupRegisters(false);
                         statuses.insert(wrote ? TRegisterRange::ST_OK : TRegisterRange::ST_UNKNOWN_ERROR);
@@ -364,8 +373,21 @@ PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
 void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
 {
     if (dev != LastAccessedDevice) {
+        if (LastAccessedDevice) {
+            try {
+                LastAccessedDevice->EndSession();
+            } catch ( const TSerialDeviceTransientErrorException& e) {
+                std::cerr << "TSerialDevice::EndSession(): warning: " << e.what() << " [slave_id is "
+                    << LastAccessedDevice->ToString() + "]" << std::endl;
+            }
+        }
         LastAccessedDevice = dev;
-        dev->Prepare();
+        try {
+            dev->Prepare();
+        } catch ( const TSerialDeviceTransientErrorException& e) {
+            std::cerr << "TSerialDevice::Prepare(): warning: " << e.what() << " [slave_id is "
+                << dev->ToString() + "]" << std::endl;
+        }
     }
 }
 

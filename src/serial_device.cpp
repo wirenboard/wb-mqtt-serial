@@ -199,6 +199,12 @@ unsigned long TBasicProtocolConverter<unsigned long>::ConvertSlaveId(const std::
 }
 
 template<>
+std::string TBasicProtocolConverter<std::string>::ConvertSlaveId(const std::string &s) const
+{
+    return s;
+}
+
+template<>
 TAggregatedSlaveId TBasicProtocolConverter<TAggregatedSlaveId>::ConvertSlaveId(const std::string &s) const
 {
     try {

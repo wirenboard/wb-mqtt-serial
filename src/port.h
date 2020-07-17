@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <functional>
+#include <vector>
 
 
 class TPort: public std::enable_shared_from_this<TPort> {
@@ -22,6 +23,8 @@ public:
     virtual bool IsOpen() const = 0;
     virtual void CheckPortOpen() const = 0;
     virtual void WriteBytes(const uint8_t * buf, int count) = 0;
+    void WriteBytes(const std::vector<uint8_t> buf) { WriteBytes(&buf[0], buf.size()); };
+    void WriteBytes(const std::string buf) { WriteBytes((const uint8_t*) buf.c_str(), buf.size()); };
     virtual uint8_t ReadByte() = 0;
     virtual int ReadFrame(
         uint8_t* buf, int count,
