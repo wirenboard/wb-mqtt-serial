@@ -110,7 +110,43 @@ namespace {
                                        const Json::Value& register_data,
                                        std::string& default_type_str)
     {
-        int address = GetInt(register_data, "address");
+        int address, bit_offset = 0, bit_width = 0;
+        {
+            const auto & addressValue = register_data["address"];
+            if (addressValue.isString()) {
+                const auto & addressStr = addressValue.asString();
+                auto pos1 = addressStr.find(':');
+                if (pos1 == std::string::npos) {
+                    address = GetInt(register_data, "address");
+                } else {
+                    auto pos2 = addressStr.find(':', pos1 + 1);
+
+                    address = stoi(addressStr.substr(0, pos1));
+                    bit_offset = stoi(addressStr.substr(pos1 + 1, pos2));
+
+                    if (bit_offset < 0 || bit_offset > 255) {
+                        throw TConfigParserException("error during address parsing: bit shift must be in range [0, 255] (address string: '" + addressStr + "')");
+                    }
+
+                    if (pos2 != std::string::npos) {
+                        bit_width = stoi(addressStr.substr(pos2 + 1));
+                        if (bit_width < 0 || bit_width > 64) {
+                            throw TConfigParserException("error during address parsing: bit count must be in range [0, 64] (address string: '" + addressStr + "')");
+                        }
+                    }
+                }
+            } else {
+                address = GetInt(register_data, "address");
+            }
+        }
+
+        if (bit_offset) {
+            std::cout << "bit offset: " << bit_offset << std::endl;
+        }
+
+        if (bit_width) {
+            std::cout << "bit width: " << bit_width << std::endl;
+        }
         std::string reg_type_str = register_data["reg_type"].asString();
         default_type_str = "text";
         auto it = device_config->TypeMap->find(reg_type_str);
@@ -158,7 +194,7 @@ namespace {
         PRegisterConfig reg = TRegisterConfig::Create(
             it->second.Index,
             address, format, scale, offset, round_to, true, force_readonly || it->second.ReadOnly,
-            it->second.Name, has_error_value, error_value, word_order);
+            it->second.Name, has_error_value, error_value, word_order, bit_offset, bit_width);
         if (register_data.isMember("poll_interval"))
             reg->PollInterval = std::chrono::milliseconds(GetInt(register_data, "poll_interval"));
         return reg;

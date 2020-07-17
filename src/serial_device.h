@@ -97,6 +97,19 @@ public:
 
     void ResetUnavailableAddresses();
 
+    std::map<int64_t, uint16_t> ModbusCache, ModbusTmpCache;
+
+    void ApplyTmpCache()
+    {
+        ModbusCache.insert(ModbusTmpCache.begin(), ModbusTmpCache.end());
+        DismissTmpCache();
+    }
+
+    void DismissTmpCache()
+    {
+        ModbusTmpCache.clear();
+    }
+
 private:
     std::chrono::milliseconds Delay;
     PPort SerialPort;

@@ -1,0 +1,61 @@
+{
+  "debug": true,
+  "max_unchanged_interval": 100,
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 100,
+      "enabled": true,
+      "devices" : [
+        {
+            "slave_id": 1,
+            "enabled": true,
+            "name": "Modbus-sample",
+            "id": "modbus-sample",
+            "max_read_registers": 1,
+            "channels": [
+                {
+                    "name" : "U8:0:8",
+                    "reg_type" : "holding",
+                    "address" : "70:0:8",
+                    "type": "value",
+                    "format": "u8"
+                },
+                {
+                    "name" : "U16:8",
+                    "reg_type" : "holding",
+                    "address" : "70:8:16",
+                    "type": "value",
+                    "format": "u16"
+                },
+                {
+                    "name" : "U8:0",
+                    "reg_type" : "holding",
+                    "address" : "72:0:1",
+                    "type": "value",
+                    "format": "u8"
+                },
+                {
+                    "name" : "U8:1",
+                    "reg_type" : "holding",
+                    "address" : "72:1:1",
+                    "type": "value",
+                    "format": "u8"
+                },
+                {
+                    "name" : "U8:2",
+                    "reg_type" : "holding",
+                    "address" : "72:2:1",
+                    "type": "value",
+                    "format": "u8"
+                }
+            ]
+        }
+      ]
+    }
+  ]
+}
