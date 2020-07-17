@@ -35,7 +35,7 @@ void TPtyBasedFakeSerial::PtyPair::Init()
     PtsName = ptsName;
 }
 
-TPtyBasedFakeSerial::TPtyBasedFakeSerial(TLoggedFixture& fixture):
+TPtyBasedFakeSerial::TPtyBasedFakeSerial(WBMQTT::Testing::TLoggedFixture& fixture):
     Fixture(fixture), Stop(false), ForceFlush(false), ForwardingFromPrimary(false)
 {
     Primary.Init();
@@ -158,6 +158,8 @@ void TPtyBasedFakeSerial::Forward()
             ForwardingFromPrimary = false;
             read_from = Secondary.MasterFd;
             write_to = Primary.MasterFd;
+        } else {
+            continue; //should not happen
         }
 
         uint8_t b;
@@ -185,7 +187,9 @@ void TPtyBasedFakeSerial::FlushForwardingLogs()
 {
     if (ForwardedBytes.empty())
         return;
-    Fixture.Emit() << (ForwardingFromPrimary ? ">> " : "<< ") << ForwardedBytes;
+    if (DumpForwardingLogs) {
+        Fixture.Emit() << (ForwardingFromPrimary ? ">> " : "<< ") << ForwardedBytes;
+    }
     ForwardedBytes.clear();
 }
 

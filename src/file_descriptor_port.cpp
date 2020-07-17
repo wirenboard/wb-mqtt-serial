@@ -18,6 +18,8 @@ using namespace std;
 namespace {
     const chrono::milliseconds DefaultFrameTimeout(15);
     const chrono::milliseconds NoiseTimeout(10);
+    const chrono::milliseconds ContinuousNoiseTimeout(100);
+    const int ContinuousNoiseReopenNumber = 3;
 }
 
 TFileDescriptorPort::TFileDescriptorPort(const PPortSettings & settings)
@@ -113,6 +115,39 @@ uint8_t TFileDescriptorPort::ReadByte()
     return b;
 }
 
+int TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
+{
+    // We don't want to use non-blocking IO in general
+    // (e.g. we want blocking writes), but we don't want
+    // read() call below to block because actual frame
+    // size is not known at this point. So we must
+    // know how many bytes are available
+    int nb;
+    if (ioctl(Fd, FIONREAD, &nb) < 0) {
+        throw TSerialDeviceException("FIONREAD ioctl() failed");
+    }
+
+    if (!nb) {
+        OnReadyEmptyFd();
+        return -1;
+    }
+
+    if (nb > max_read) {
+        nb = max_read;
+    }
+
+    int n = read(Fd, buf, nb);
+    if (n < 0) {
+        throw TSerialDeviceException("read() failed");
+    }
+
+    if (n < nb) { // may happen only due to a kernel/driver bug
+        throw TSerialDeviceException("short read()");
+    }
+
+    return nb;
+}
+
 // Reading becomes unstable when using timeout less than default because of bufferization
 int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
                            const chrono::microseconds& timeout,
@@ -142,33 +177,9 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
                     timeout.count() < 0 ? DefaultFrameTimeout :
                     timeout))
             break; // end of the frame
-
-        // We don't want to use non-blocking IO in general
-        // (e.g. we want blocking writes), but we don't want
-        // read() call below to block because actual frame
-        // size is not known at this point. So we must
-        // know how many bytes are available
-        int nb;
-        if (ioctl(Fd, FIONREAD, &nb) < 0) {
-            throw TSerialDeviceException("FIONREAD ioctl() failed");
-        }
-
-        if (!nb) {
-            continue; // shouldn't happen, actually
-        }
-
-        if (nb > size - nread) {
-            nb = size - nread;
-        }
-
-        int n = read(Fd, buf + nread, nb);
-        if (n < 0) {
-            throw TSerialDeviceException("read() failed");
-        }
-
-        if (n < nb) { // may happen only due to a kernel/driver bug
-            throw TSerialDeviceException("short read()");
-        }
+        
+        int nb = ReadAvailableData(buf + nread, size - nread);
+        if (nb < 0) continue;
 
         nread += nb;
     }
@@ -190,12 +201,35 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
 
 void TFileDescriptorPort::SkipNoise()
 {
-    uint8_t b;
+    uint8_t buf[255] = {};
+    auto start = std::chrono::steady_clock::now();
+    int ntries = 0;
+
     while (Select(NoiseTimeout)) {
-        if (read(Fd, &b, 1) < 1) {
-            throw TSerialDeviceException("read() failed");
+        int nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
+        auto diff = std::chrono::steady_clock::now() - start;
+
+        if (Debug.IsEnabled()) {
+            // TBD: move this to libwbmqtt (HexDump?)
+            stringstream ss;
+            ss << "read noise: " << hex << setfill('0');
+            for (int i = 0; i < nread; ++i) {
+                ss << " " << setw(2) << int(buf[i]);
+            }
+            LOG(Debug) << ss.str();
         }
-        LOG(Debug) << "read noise: " << hex << setfill('0') << setw(2) << int(b);
+
+        // if we are still getting data for already "ContinuousNoiseTimeout" milliseconds
+        if ((nread > 0) && (diff > ContinuousNoiseTimeout)) {
+            if (ntries < ContinuousNoiseReopenNumber)  {
+                LOG(Debug) << "continuous unsolicited data flow detected, reopen the port";
+                Reopen();
+                ntries += 1;
+                start = std::chrono::steady_clock::now();
+            } else {
+                throw TSerialDeviceTransientErrorException("continous unsolicited data flow");
+            }
+        }
     }
 }
 

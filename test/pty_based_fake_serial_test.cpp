@@ -2,9 +2,11 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "serial_device.h"
+#include "serial_port.h"
+#include "serial_port_settings.h"
 #include "pty_based_fake_serial.h"
 
-class TPtyBasedFakeSerialTest: public TLoggedFixture {
+class TPtyBasedFakeSerialTest: public WBMQTT::Testing::TLoggedFixture {
 protected:
     void SetUp();
     void TearDown();
@@ -40,13 +42,13 @@ uint32_t TPtyBasedFakeSerialTest::Read3(PPort port)
 
 void TPtyBasedFakeSerialTest::SetUp()
 {
-    TLoggedFixture::SetUp();
+    WBMQTT::Testing::TLoggedFixture::SetUp();
     FakeSerial = PPtyBasedFakeSerial(new TPtyBasedFakeSerial(*this));
-    Serial = PPort(
-        new TSerialPort(
-            TSerialPortSettings(
+    auto settings = std::make_shared<TSerialPortSettings>(
                 FakeSerial->GetPrimaryPtsName(),
-                9600, 'N', 8, 1, std::chrono::milliseconds(10000))));
+                9600, 'N', 8, 1, std::chrono::milliseconds(10000));
+    Serial = PPort(
+        new TSerialPort(settings));
     Serial->Open();
 }
 
@@ -74,11 +76,12 @@ TEST_F(TPtyBasedFakeSerialTest, Expect)
 TEST_F(TPtyBasedFakeSerialTest, Forward)
 {
     FakeSerial->StartForwarding();
+    auto settings = std::make_shared<TSerialPortSettings>(
+                FakeSerial->GetSecondaryPtsName(),
+                9600, 'N', 8, 1, std::chrono::milliseconds(10000));
     PPort secondary_serial = PPort(
         new TSerialPort(
-            TSerialPortSettings(
-                FakeSerial->GetSecondaryPtsName(),
-                9600, 'N', 8, 1, std::chrono::milliseconds(10000))));
+            settings));
     secondary_serial->Open();
 
     for (int i = 0; i < 3; ++i) {

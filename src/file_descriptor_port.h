@@ -32,4 +32,8 @@ protected:
 
     int             Fd;
     PPortSettings   Settings;
+private:
+    int ReadAvailableData(uint8_t * buf, size_t max_read);
 };
+
+
