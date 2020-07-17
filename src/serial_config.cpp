@@ -381,6 +381,8 @@ namespace {
             device_config->Stride = GetInt(device_data, "stride");
         if (device_data.isMember("shift"))
             device_config->Shift = GetInt(device_data, "shift");
+        if (device_data.isMember("access_level"))
+            device_config->AccessLevel = GetInt(device_data, "access_level");
     }
 
     void LoadDevice(PPortConfig port_config,
