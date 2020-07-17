@@ -1,7 +1,7 @@
 wb-mqtt-serial
 ==============
 
-Serial device <==> MQTT bridge which follows [Wiren Board MQTT Conventions](https://github.com/contactless/homeui/blob/contactless/conventions.md).
+Serial device <==> MQTT bridge which follows [Wiren Board MQTT Conventions](https://github.com/contactless/homeui/blob/master/conventions.md).
 It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of programmable automation controllers (PACs), although there is nothing that prevents it from running on a arbitrary Linux machine.
 
 Драйвер master-slave протоколов для устройств, работающих через
