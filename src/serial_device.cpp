@@ -189,10 +189,10 @@ PRegisterTypeMap TSerialDeviceFactory::GetRegisterTypes(PDeviceConfig device_con
 }
 
 template<>
-int TBasicProtocolConverter<int>::ConvertSlaveId(const std::string &s) const
+unsigned long TBasicProtocolConverter<unsigned long>::ConvertSlaveId(const std::string &s) const
 {
     try {
-        return std::stoi(s, /* pos = */ 0, /* base = */ 0);
+        return std::stoul(s, /* pos = */ 0, /* base = */ 0);
     } catch (const std::logic_error &e) {
         throw TSerialDeviceException("slave ID \"" + s + "\" is not convertible to string");
     }
