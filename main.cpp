@@ -110,11 +110,16 @@ int main(int argc, char *argv[])
 
     PHandlerConfig handlerConfig;
     try {
-        TConfigTemplateParser deviceParser(templatesFolder, debug);
-        TConfigParser parser(configFilename, debug, TSerialDeviceFactory::GetRegisterTypes,
-                             deviceParser.Parse());
-        handlerConfig = parser.Parse();
-    } catch (const TConfigParserException& e) {
+        Json::Value configSchema = LoadConfigSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json");
+        handlerConfig = LoadConfig(configFilename, 
+                                  debug, 
+                                  TSerialDeviceFactory::GetRegisterTypes,
+                                  configSchema,
+                                  LoadConfigTemplates(templatesFolder, 
+                                                      LoadConfigTemplatesSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json", 
+                                                                                configSchema)));
+        
+    } catch (const std::exception& e) {
         LOG(Error) << "FATAL: " << e.what();
         return 1;
     }

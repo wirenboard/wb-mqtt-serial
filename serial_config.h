@@ -126,46 +126,17 @@ private:
     std::string Message;
 };
 
-class TConfigTemplateParser {
-public:
-    TConfigTemplateParser(const std::string& template_config_dir, bool debug);
-    PTemplateMap Parse();
+PTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Value& templateSchema);
 
-private:
-    void LoadDeviceTemplate(const Json::Value& root, const std::string& filepath);
+Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema);
+void AddProtocolType(Json::Value& configSchema, const std::string& protocolType);
+void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
 
-    std::string DirectoryName;
-    bool Debug;
-    PTemplateMap Templates;
-};
+typedef std::function<PRegisterTypeMap(PDeviceConfig device_config)> TGetRegisterTypeMapFn;
 
-typedef std::function<PRegisterTypeMap(PDeviceConfig device_config)> TGetRegisterTypeMap;
+Json::Value LoadConfigSchema(const std::string& schemaFileName);
 
-class TConfigParser {
-public:
-    TConfigParser(const std::string& config_fname, bool force_debug,
-                  TGetRegisterTypeMap get_register_type_map,
-                  PTemplateMap templates = std::make_shared<TTemplateMap>());
-    PHandlerConfig Parse();
-    PRegisterConfig LoadRegisterConfig(PDeviceConfig device_config, const Json::Value& register_data,
-                           std::string& default_type_str);
-    void MergeAndLoadChannels(PDeviceConfig device_config, const Json::Value& device_data, PTemplate tmpl);
-    void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data);
-    void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data);
-    void LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data);
-    void LoadDevice(PPortConfig port_config, const Json::Value& device_data,
-                    const std::string& default_id);
-    void LoadPort(const Json::Value& port_data, const std::string& id_prefix);
-    void LoadConfig();
-
-private:
-    int GetInt(const Json::Value& obj, const std::string& key);
-    int ToInt(const Json::Value& v, const std::string& title);
-    uint64_t ToUint64(const Json::Value& v, const std::string& title);
-
-    std::string ConfigFileName;
-    PHandlerConfig HandlerConfig;
-    TGetRegisterTypeMap GetRegisterTypeMap;
-    PTemplateMap Templates;
-    Json::Value Root;
-};
+PHandlerConfig LoadConfig(const std::string& configFileName, 
+                          TGetRegisterTypeMapFn getRegisterTypeMapFn,
+                          const Json::Value& configSchema,
+                          PTemplateMap templates = PTemplateMap());
