@@ -54,7 +54,7 @@ class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDevic
 protected:
     void SetUp();
     void TearDown();
-    const char* ConfigPath() const { return "../config-s2k-test.json"; }
+    const char* ConfigPath() const { return "configs/config-s2k-test.json"; }
 };
 
 void TS2KIntegrationTest::SetUp()

@@ -93,7 +93,7 @@ class TUnielIntegrationTest: public TSerialDeviceIntegrationTest, public TUnielD
 protected:
     void SetUp();
     void TearDown();
-    const char* ConfigPath() const { return "../config-uniel-test.json"; }
+    const char* ConfigPath() const { return "configs/config-uniel-test.json"; }
 };
 
 void TUnielIntegrationTest::SetUp()
