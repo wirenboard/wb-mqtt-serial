@@ -28,11 +28,7 @@ int main(int argc, char *argv[])
     WBMQTT::SetThreadName("main");
 
     int c;
-    //~ int digit_optind = 0;
-    //~ int aopt = 0, bopt = 0;
-    //~ char *copt = 0, *dopt = 0;
     while ( (c = getopt(argc, argv, "d:sc:h:H:p:u:P:T:")) != -1) {
-        //~ int this_option_optind = optind ? optind : 1;
         switch (c) {
         case 'd':
             debug = stoi(optarg);
@@ -46,19 +42,15 @@ int main(int argc, char *argv[])
         case 'h':
             mqttConfig.Host = optarg;
             break;
-
         case 'T':
             mqttConfig.Prefix = optarg;
             break;
-
         case 'u':
             mqttConfig.User = optarg;
             break;
-
         case 'P':
             mqttConfig.Password = optarg;
             break;
-
         case '?':
         default:
             printf ("?? getopt returned character code 0%o ??\n", c);
@@ -157,21 +149,12 @@ int main(int argc, char *argv[])
         });
         WBMQTT::SignalHandling::Start();
         WBMQTT::SignalHandling::Wait();
-    } catch (const TSerialDeviceException & e) {
-        LOG(Error) << "FATAL: " << e.what();
-        return 1;
-    } catch (const WBMQTT::TBaseException & e) {
+    } catch (const std::exception & e) {
         LOG(Error) << "FATAL: " << e.what();
         return 1;
     }
-
 	return 0;
 }
-//build-dep libmosquittopp-dev libmosquitto-dev
-// dep: libjsoncpp0 libmosquittopp libmosquitto
-
 // TBD: fix race condition that occurs after modbus error on startup
 // (slave not active)
-// TBD: check json structure
 // TBD: proper error checking everywhere (catch exceptions, etc.)
-// TBD: automatic tests(?)
