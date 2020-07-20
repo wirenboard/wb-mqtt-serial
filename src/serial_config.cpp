@@ -622,9 +622,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 
     WBMQTT::JSON::Validate(Root, configSchema);
 
-    if (Root.isMember("debug"))
-        handlerConfig->Debug = Root["debug"].asBool();
-
+    WBMQTT::JSON::Get(Root, "debug", handlerConfig->Debug);
     WBMQTT::JSON::Get(Root, "max_unchanged_interval", handlerConfig->MaxUnchangedInterval);
 
     const Json::Value array = Root["ports"];

@@ -1377,7 +1377,6 @@ TEST_F(TConfigParserTest, Parse)
     Emit() << "Ports:";
     for (auto port_config: config->PortConfigs) {
         TTestLogIndent indent(*this);
-        ASSERT_EQ(config->Debug, port_config->Debug);
         Emit() << "------";
         Emit() << "ConnSettings: " << port_config->ConnSettings->ToString();
         Emit() << "PollInterval: " << port_config->PollInterval.count();

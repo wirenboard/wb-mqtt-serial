@@ -139,8 +139,7 @@ void TSerialPortDriver::SetValueToChannel(const PDeviceChannel & channel, const 
 
     for (size_t i = 0; i < registers.size(); ++i) {
         PRegister reg = registers[i];
-        if (Config->Debug)
-            LOG(Debug) << "setting device register: " << reg->ToString() << " <- " << valueItems[i];
+        LOG(Debug) << "setting device register: " << reg->ToString() << " <- " << valueItems[i];
 
         try {
             SerialClient->SetTextValue(reg,
@@ -202,7 +201,7 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
     const auto & channel = it->second.Channel;
     const auto & registers = channel->Registers;
 
-    if (Config->Debug && changed)
+    if (changed)
         LOG(Debug) << "register value change: " << reg->ToString() << " <- " << SerialClient->GetTextValue(reg);
 
     if (!NeedToPublish(reg, changed))
@@ -211,8 +210,7 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
     std::string value;
     if (!channel->OnValue.empty()) {
         value = SerialClient->GetTextValue(reg) == channel->OnValue ? "1" : "0";
-        if (Config->Debug)
-            LOG(Debug) << "OnValue: " << channel->OnValue << "; value: " << value;
+        LOG(Debug) << "OnValue: " << channel->OnValue << "; value: " << value;
     } else {
         std::stringstream s;
         for (size_t i = 0; i < registers.size(); ++i) {
@@ -229,8 +227,7 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
     }
 
     // Publish current value (make retained)
-    if (Config->Debug)
-        LOG(Debug) << channel->Describe() << " <-- " << value;
+    LOG(Debug) << channel->Describe() << " <-- " << value;
 
     {
         auto tx = MqttDriver->BeginTx();

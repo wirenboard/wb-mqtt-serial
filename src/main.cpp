@@ -17,59 +17,69 @@ const auto libwbmqttDbFile = "/var/lib/wb-mqtt-serial/libwbmqtt.db";
 const auto templatesFolder = "/usr/share/wb-mqtt-serial/templates";
 const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(3);
 
-int main(int argc, char *argv[])
+namespace
 {
-    WBMQTT::TMosquittoMqttConfig mqttConfig;
-    string configFilename;
-    int debug = 0;
-
-    WBMQTT::SignalHandling::Handle({ SIGINT });
-    WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ WBMQTT::SignalHandling::Stop(); });
-    WBMQTT::SetThreadName("main");
-
-    int c;
-    while ( (c = getopt(argc, argv, "d:sc:h:H:p:u:P:T:")) != -1) {
-        switch (c) {
-        case 'd':
-            debug = stoi(optarg);
-            break;
-        case 'c':
-            configFilename = optarg;
-            break;
-        case 'p':
-            mqttConfig.Port = stoi(optarg);
-            break;
-        case 'h':
-            mqttConfig.Host = optarg;
-            break;
-        case 'T':
-            mqttConfig.Prefix = optarg;
-            break;
-        case 'u':
-            mqttConfig.User = optarg;
-            break;
-        case 'P':
-            mqttConfig.Password = optarg;
-            break;
-        case '?':
-        default:
-            printf ("?? getopt returned character code 0%o ??\n", c);
-
-            printf("Usage:\n wb-mqtt-serial [options]\n");
-            printf("Options:\n");
-            printf("\t-d level    \t\t\t enable debuging output (1 - serial only; 2 - mqtt only; 3 - both; negative values - silent mode (-1, -2, -3))\n");
-            printf("\t-c config   \t\t\t config file\n");
-            printf("\t-p PORT     \t\t\t set to what port wb-mqtt-serial should connect (default: 1883)\n");
-            printf("\t-H IP       \t\t\t set to what IP wb-mqtt-serial should connect (default: localhost)\n");
-            printf("\t-u USER     \t\t\t MQTT user (optional)\n");
-            printf("\t-P PASSWORD \t\t\t MQTT user password (optional)\n");
-            printf("\t-T prefix   \t\t\t MQTT topic prefix (optional)\n");
-
-            exit(2);
-        }
+    void PrintUsage()
+    {
+        cout << "Usage:" << endl
+             << " wb-mqtt-serial [options]" << endl
+             << "Options:" << endl
+             << "  -d       level     enable debuging output:" << endl
+             << "                       1 - serial only;" << endl
+             << "                       2 - mqtt only;" << endl
+             << "                       3 - both;" << endl
+             << "                       negative values - silent mode (-1, -2, -3))" << endl
+             << "  -c       config    config file" << endl
+             << "  -p       port      MQTT broker port (default: 1883)" << endl
+             << "  -h, -H   IP        MQTT broker IP (default: localhost)" << endl
+             << "  -u       user      MQTT user (optional)" << endl
+             << "  -P       password  MQTT user password (optional)" << endl
+             << "  -T       prefix    MQTT topic prefix (optional)" << endl;
     }
 
-    switch(debug) {
+    void ParseCommadLine(int                           argc,
+                         char*                         argv[],
+                         WBMQTT::TMosquittoMqttConfig& mqttConfig,
+                         string&                       customConfig)
+    {
+        int debugLevel = 0;
+        int c;
+
+        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:")) != -1) {
+            switch (c) {
+            case 'd':
+                debugLevel = stoi(optarg);
+                break;
+            case 'c':
+                customConfig = optarg;
+                break;
+            case 'p':
+                mqttConfig.Port = stoi(optarg);
+                break;
+            case 'h':
+            case 'H': // backward compatibility
+                mqttConfig.Host = optarg;
+                break;
+            case 'T':
+                mqttConfig.Prefix = optarg;
+                break;
+            case 'u':
+                mqttConfig.User = optarg;
+                break;
+            case 'P':
+                mqttConfig.Password = optarg;
+                break;
+
+            case '?':
+            default:
+                PrintUsage();
+                exit(2);
+            }
+        }
+
+        switch (debugLevel) {
+        case 0:
+            break;
         case -1:
             Info.SetEnabled(false);
             break;
@@ -97,8 +107,29 @@ int main(int argc, char *argv[])
             break;
 
         default:
-            break;
+            cout << "Invalid -d parameter value " << debugLevel << endl;
+            PrintUsage();
+            exit(2);
+        }
+
+        if (optind < argc) {
+            for (int index = optind; index < argc; ++index) {
+                cout << "Skipping unknown argument " << argv[index] << endl;
+            }
+        }
     }
+}
+
+int main(int argc, char *argv[])
+{
+    WBMQTT::TMosquittoMqttConfig mqttConfig;
+    string configFilename;
+
+    WBMQTT::SignalHandling::Handle({ SIGINT });
+    WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ WBMQTT::SignalHandling::Stop(); });
+    WBMQTT::SetThreadName("main");
+
+    ParseCommadLine(argc, argv, mqttConfig, configFilename);
 
     PHandlerConfig handlerConfig;
     try {
@@ -109,11 +140,13 @@ int main(int argc, char *argv[])
                                   LoadConfigTemplates(templatesFolder, 
                                                       LoadConfigTemplatesSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json", 
                                                                                 configSchema)));
-        
     } catch (const std::exception& e) {
         LOG(Error) << "FATAL: " << e.what();
         return 1;
     }
+
+    if (handlerConfig->Debug)
+        Debug.SetEnabled(true);
 
     if (mqttConfig.Id.empty())
         mqttConfig.Id = driverName;
