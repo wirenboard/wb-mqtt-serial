@@ -15,7 +15,7 @@
         {
           "slave_id": "255",
           "name": "Device",
-          "id": "device",
+          "id": "device1",
           "enabled": true,
           "max_read_registers": 0,
           "protocol": "modbus",
@@ -42,7 +42,7 @@
         {
           "slave_id": "255",
           "name": "Device",
-          "id": "device",
+          "id": "device2",
           "enabled": true,
           "max_read_registers": 0,
           "protocol": "modbus",

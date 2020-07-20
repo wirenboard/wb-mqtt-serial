@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.0) UNRELEASED; urgency=medium
+
+  * implement using new libwbmqtt
+
+ -- Islam Boziev <i.boziev@wirenboard.ru>  Mon, 29 Jan 2018 20:37:43 +0300
+
 wb-mqtt-serial (1.61.0) stable; urgency=medium
 
   * add wbio-di-wd-14 template

@@ -1,95 +1,79 @@
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 DEPDIR := .d
 $(shell mkdir -p $(DEPDIR) >/dev/null)
-DEPFLAGS = -std=c++0x -MT $@ -MMD -MP -MF $(DEPDIR)/$(notdir $*.Td)
+DEPFLAGS = -std=c++14 -MT $@ -MMD -MP -MF $(DEPDIR)/$(notdir $*.Td)
 
 POSTCOMPILE = mv -f $(DEPDIR)/$(notdir $*.Td) $(DEPDIR)/$(notdir $*.d)
 
-ifeq ($(DEB_TARGET_ARCH),armel)
-CROSS_COMPILE=arm-linux-gnueabi-
-endif
-
-CXX=$(CROSS_COMPILE)g++
-CXX_PATH := $(shell which $(CROSS_COMPILE)g++-4.7)
-
-CC=$(CROSS_COMPILE)gcc
-CC_PATH := $(shell which $(CROSS_COMPILE)gcc-4.7)
-
-ifneq ($(CXX_PATH),)
-	CXX=$(CROSS_COMPILE)g++-4.7
-endif
-
-ifneq ($(CC_PATH),)
-	CC=$(CROSS_COMPILE)gcc-4.7
-endif
-
 #CFLAGS=
-DEBUG_CFLAGS=-Wall -ggdb -std=c++0x -O0 -I.
-NORMAL_CFLAGS=-Wall -std=c++0x -Os -I.
-CFLAGS=$(if $(or $(DEBUG),$(filter test, $(MAKECMDGOALS))), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
-LDFLAGS= -pthread -lmosquittopp -lmosquitto -ljsoncpp -lwbmqtt
+DEBUG_CFLAGS=-Wall -ggdb -std=c++14 -O0 -I.
+NORMAL_CFLAGS=-Wall -std=c++14 -O3 -I.
+CFLAGS=$(if $(or $(DEBUG)), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
+LDFLAGS= -pthread -ljsoncpp -lwbmqtt1
 
 SERIAL_BIN=wb-mqtt-serial
 SERIAL_LIBS=
-SERIAL_SRCS=register.cpp \
-  poll_plan.cpp \
-  serial_client.cpp \
-  register_handler.cpp \
-  serial_config.cpp \
-  serial_port_driver.cpp \
-  serial_observer.cpp \
-  file_descriptor_port.cpp \
-  tcp_port.cpp \
-  serial_port.cpp \
-  serial_device.cpp \
-  uniel_device.cpp \
-  s2k_device.cpp \
-  ivtm_device.cpp \
-  lls_device.cpp \
-  crc16.cpp \
-  modbus_common.cpp \
-  modbus_device.cpp \
-  modbus_io_device.cpp \
-  em_device.cpp \
-  milur_device.cpp \
-  mercury230_device.cpp \
-  mercury200_device.cpp \
-  pulsar_device.cpp \
-  bcd_utils.cpp
+SERIAL_SRCS= \
+  register.cpp            \
+  poll_plan.cpp           \
+  serial_client.cpp       \
+  register_handler.cpp    \
+  serial_config.cpp       \
+  serial_port_driver.cpp  \
+  serial_driver.cpp       \
+  serial_port.cpp         \
+  serial_device.cpp       \
+  uniel_device.cpp        \
+  s2k_device.cpp          \
+  ivtm_device.cpp         \
+  crc16.cpp               \
+  modbus_common.cpp       \
+  modbus_device.cpp       \
+  modbus_io_device.cpp    \
+  em_device.cpp           \
+  milur_device.cpp        \
+  mercury230_device.cpp   \
+  mercury200_device.cpp   \
+  pulsar_device.cpp       \
+  bcd_utils.cpp           \
+  log.cpp                 \
+  file_descriptor_port.cpp\
+  tcp_port.cpp            \
+  lls_device.cpp          \
+
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 TEST_SRCS= \
-  $(TEST_DIR)/testlog.o \
-  $(TEST_DIR)/poll_plan_test.o \
-  $(TEST_DIR)/serial_client_test.o \
-  $(TEST_DIR)/modbus_expectations_base.o \
-  $(TEST_DIR)/modbus_expectations.o \
-  $(TEST_DIR)/modbus_test.o \
-  $(TEST_DIR)/modbus_io_expectations.o \
-  $(TEST_DIR)/modbus_io_test.o \
-  $(TEST_DIR)/uniel_expectations.o \
-  $(TEST_DIR)/uniel_test.o \
-  $(TEST_DIR)/s2k_expectations.o \
-  $(TEST_DIR)/s2k_test.o \
-  $(TEST_DIR)/em_test.o \
-  $(TEST_DIR)/em_integration.o \
-  $(TEST_DIR)/mercury200_expectations.o \
-  $(TEST_DIR)/mercury200_test.o \
-  $(TEST_DIR)/lls_test.o \
-  $(TEST_DIR)/mercury230_expectations.o \
-  $(TEST_DIR)/mercury230_test.o \
-  $(TEST_DIR)/milur_expectations.o \
-  $(TEST_DIR)/milur_test.o \
-  $(TEST_DIR)/ivtm_test.o \
-  $(TEST_DIR)/pulsar_test.o \
-  $(TEST_DIR)/fake_mqtt.o \
-  $(TEST_DIR)/fake_serial_port.o \
-  $(TEST_DIR)/fake_serial_device.o \
-  $(TEST_DIR)/device_templates_file_extension_test.o \
-  $(TEST_DIR)/pty_based_fake_serial.o \
-  $(TEST_DIR)/serial_port_test.o \
-  $(TEST_DIR)/main.o
+  $(TEST_DIR)/poll_plan_test.o                        \
+  $(TEST_DIR)/serial_client_test.o                    \
+  $(TEST_DIR)/modbus_expectations_base.o              \
+  $(TEST_DIR)/modbus_expectations.o                   \
+  $(TEST_DIR)/modbus_test.o                           \
+  $(TEST_DIR)/modbus_io_expectations.o                \
+  $(TEST_DIR)/modbus_io_test.o                        \
+  $(TEST_DIR)/uniel_expectations.o                    \
+  $(TEST_DIR)/uniel_test.o                            \
+  $(TEST_DIR)/s2k_expectations.o                      \
+  $(TEST_DIR)/s2k_test.o                              \
+  $(TEST_DIR)/em_test.o                               \
+  $(TEST_DIR)/em_integration.o                        \
+  $(TEST_DIR)/mercury200_expectations.o               \
+  $(TEST_DIR)/mercury200_test.o                       \
+  $(TEST_DIR)/mercury230_expectations.o               \
+  $(TEST_DIR)/mercury230_test.o                       \
+  $(TEST_DIR)/milur_expectations.o                    \
+  $(TEST_DIR)/milur_test.o                            \
+  $(TEST_DIR)/ivtm_test.o                             \
+  $(TEST_DIR)/pulsar_test.o                           \
+  $(TEST_DIR)/lls_test.o                              \
+  $(TEST_DIR)/fake_serial_port.o                      \
+  $(TEST_DIR)/fake_serial_device.o                    \
+  $(TEST_DIR)/pty_based_fake_serial.o                 \
+  $(TEST_DIR)/device_templates_file_extension_test.o  \
+  $(TEST_DIR)/pty_based_fake_serial_test.o            \
+  $(TEST_DIR)/main.o                                  \
+
 TEST_OBJS=$(TEST_SRCS:.cpp=.o)
-TEST_LIBS=-lgtest -lpthread -lmosquittopp
+TEST_LIBS=-lgtest -lpthread -lmosquittopp -lwbmqtt_test_utils
 TEST_DIR=test
 TEST_BIN=wb-homa-test
 SRCS=$(SERIAL_SRCS) $(TEST_SRCS)
@@ -114,17 +98,16 @@ $(TEST_DIR)/$(TEST_BIN): $(SERIAL_OBJS) $(TEST_OBJS)
 	${CXX} $^ ${LDFLAGS} -o $@ $(TEST_LIBS) $(SERIAL_LIBS)
 
 test: $(TEST_DIR)/$(TEST_BIN)
-	# cannot run valgrind under qemu chroot
 	rm -f $(TEST_DIR)/*.dat.out
 	if [ "$(shell arch)" = "armv7l" ]; then \
-          $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || $(TEST_DIR)/abt.sh show; \
-        else \
-          valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
-            if [ $$? = 180 ]; then \
-              echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
-              exit 1; \
-            else $(TEST_DIR)/abt.sh show; exit 1; fi; \
-        fi
+        $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
+    else \
+		valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
+		if [ $$? = 180 ]; then \
+			echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
+			exit 1; \
+		else $(TEST_DIR)/abt.sh show; exit 1; fi; \
+	fi
 
 clean :
 	-rm -rf *.o $(SERIAL_BIN) $(DEPDIR)
@@ -139,6 +122,7 @@ install: all
 	install -d $(DESTDIR)/usr/bin
 	install -d $(DESTDIR)/usr/lib
 	install -d $(DESTDIR)/usr/share/wb-mqtt-serial
+	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
 
 	install -m 0644  config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
 

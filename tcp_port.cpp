@@ -14,6 +14,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+#include "log.h"
+
+#define LOG(logger) ::logger.Log() << "[tcp port] "
+
 using namespace std;
 
 namespace {
@@ -41,7 +45,7 @@ void TTcpPort::Open()
         OpenTcpPort();
         OnConnectionOk();
     } catch (const TSerialDeviceException & e) {
-        cerr << "ERROR at port " << Settings->ToString() << ": " << e.what() << endl;
+        LOG(Error) << "port " << Settings->ToString() << ": " << e.what();
         Reset();
 
         // if failed too fast - sleep remaining time
@@ -137,7 +141,7 @@ void TTcpPort::OpenTcpPort()
 
 void TTcpPort::Reset() noexcept
 {
-    cerr << Settings->ToString() <<  ": connection reset" << endl;
+    LOG(Warn) << Settings->ToString() <<  ": connection reset";
     try {
         Close();
     } catch (...) {
@@ -162,7 +166,7 @@ void TTcpPort::WriteBytes(const uint8_t * buf, int count)
     if (IsOpen()) {
         Base::WriteBytes(buf, count);
     } else {
-        cerr << "WARNING: attempt to write to not open port" << endl;
+        LOG(Warn) << "attempt to write to not open port";
     }
 }
 

@@ -291,8 +291,7 @@ public:
         auto p = std::dynamic_pointer_cast<Proto>(protocol);
 
         if (!p) {
-            std::cerr << "cannot cast " << protocol->GetName() << " to " << typeid(Proto).name() << std::endl;
-            throw std::runtime_error("Wrong protocol cast, check registration code and class header");
+            throw std::runtime_error("cannot cast " + protocol->GetName() + " to " + typeid(Proto).name());
         }
 
         SlaveId = p->ConvertSlaveId(config->SlaveId);

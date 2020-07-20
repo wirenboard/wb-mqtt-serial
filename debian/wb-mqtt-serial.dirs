@@ -4,3 +4,4 @@ etc/init.d
 etc/wb-configs.d
 var/lib/wirenboard
 usr/share/wb-mqtt-serial
+var/lib/wb-mqtt-serial

@@ -31,10 +31,9 @@ public:
     bool DidRead(PRegister reg) const;
     void SetReadCallback(const TReadCallback& callback);
     void SetErrorCallback(const TErrorCallback& callback);
-    void SetDebug(bool debug);
-    bool DebugEnabled() const;
     void NotifyFlushNeeded();
     bool WriteSetupRegisters(PSerialDevice dev);
+    void ClearDevices();
 
 private:
     void PrepareRegisterRanges();
@@ -57,7 +56,6 @@ private:
     int PollInterval;
     TReadCallback ReadCallback;
     TErrorCallback ErrorCallback;
-    bool Debug = false;
     PSerialDevice LastAccessedDevice = 0;
     PBinarySemaphore FlushNeeded;
     PPollPlan Plan;

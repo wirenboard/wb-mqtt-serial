@@ -35,7 +35,7 @@ void TPtyBasedFakeSerial::PtyPair::Init()
     PtsName = ptsName;
 }
 
-TPtyBasedFakeSerial::TPtyBasedFakeSerial(TLoggedFixture& fixture):
+TPtyBasedFakeSerial::TPtyBasedFakeSerial(WBMQTT::Testing::TLoggedFixture& fixture):
     Fixture(fixture), Stop(false), ForceFlush(false), ForwardingFromPrimary(false)
 {
     Primary.Init();

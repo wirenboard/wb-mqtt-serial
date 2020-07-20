@@ -1,5 +1,5 @@
 #include <string>
-#include "testlog.h"
+#include <wblib/testing/testlog.h>
 #include "fake_serial_port.h"
 #include "s2k_device.h"
 #include "s2k_expectations.h"
@@ -69,7 +69,6 @@ void TS2KIntegrationTest::TearDown()
 }
 TEST_F(TS2KIntegrationTest, Poll)
 {
-    Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 
     EnqueueReadConfig1();
@@ -82,16 +81,16 @@ TEST_F(TS2KIntegrationTest, Poll)
     EnqueueReadConfig8();
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
     SerialPort->DumpWhatWasRead();
 
     EnqueueSetRelayOnResponse();
     EnqueueSetRelay2On();
     EnqueueSetRelay3On2();
 
-    MQTTClient->DoPublish(true, 0, "/devices/pseudo_s2k/controls/Relay 1/on", "1");
-    MQTTClient->DoPublish(true, 0, "/devices/pseudo_s2k/controls/Relay 2/on", "1");
-    MQTTClient->DoPublish(true, 0, "/devices/pseudo_s2k/controls/Relay 3/on", "2");
+    PublishWaitOnValue("/devices/pseudo_s2k/controls/Relay 1/on", "1");
+    PublishWaitOnValue("/devices/pseudo_s2k/controls/Relay 2/on", "1");
+    PublishWaitOnValue("/devices/pseudo_s2k/controls/Relay 3/on", "2");
     SerialPort->DumpWhatWasRead();
 
 
@@ -105,7 +104,7 @@ TEST_F(TS2KIntegrationTest, Poll)
     EnqueueReadConfig8();
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
     SerialPort->DumpWhatWasRead();
 
     SerialPort->Close();

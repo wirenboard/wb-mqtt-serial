@@ -1,5 +1,7 @@
+#include "serial_config.h"
+#include "log.h"
+
 #include <set>
-#include <iostream>
 #include <fstream>
 #include <stdexcept>
 #include <dirent.h>
@@ -10,9 +12,10 @@
 #include <cstdlib>
 #include <memory>
 
-#include "serial_config.h"
 #include "serial_port_settings.h"
 #include "tcp_port_settings.h"
+
+#define LOG(logger) ::logger.Log() << "[serial config] "
 
 using namespace std;
 
@@ -100,15 +103,14 @@ PTemplateMap TConfigTemplateParser::Parse()
         ifstream input_stream;
         input_stream.open(filepath);
         if (!input_stream.is_open()) {
-            cerr << "Error while trying to open template config file " << filepath << endl;
+            LOG(Error) << "Error while trying to open template config file " << filepath;
             continue;
         }
 
         Json::Reader reader;
         Json::Value root;
         if (!reader.parse(input_stream, root, false)) {
-            cerr << "Failed to parse JSON: " << filepath << " " << reader.getFormattedErrorMessages()
-                      << endl;
+            LOG(Error) << "Failed to parse JSON: " << filepath << " " << reader.getFormattedErrorMessages();
             continue;
         }
 
@@ -129,10 +131,10 @@ void TConfigTemplateParser::LoadDeviceTemplate(const Json::Value& root, const st
             shared_ptr<TTemplate> t = make_shared<TTemplate>(root["device"]);
             (*Templates)[root["device_type"].asString()] = t;
         } catch (TConfigParserException &e){
-            if (Debug) cerr << "malformed template " << filepath << ": " << e.what() << endl;
+            LOG(Debug) << "malformed template " << filepath << ": " << e.what();
         }
-    } else if (Debug) {
-        cerr << "no device_type in json template in file " << filepath << endl;
+    } else {
+        LOG(Debug) << "no device_type in json template in file " << filepath;
     }
 }
 
@@ -275,7 +277,7 @@ void TConfigParser::MergeAndLoadChannels(PDeviceConfig device_config, const Json
                 const Json::Value & override_channel_data = device_channels[it->second];
 
                 for (auto it = override_channel_data.begin(); it != override_channel_data.end(); ++it) {
-                    cerr << "override property " << it.memberName() << endl;
+                   LOG(Info) << "override property " << it.memberName();
                     // Channel fields from current device config
                     // take precedence over template field values
                     channel_data[it.memberName()] = *it;

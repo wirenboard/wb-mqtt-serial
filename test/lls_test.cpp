@@ -17,7 +17,6 @@ protected:
 void TLLSIntegrationTest::SetUp()
 {
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 }
 
@@ -57,5 +56,5 @@ TEST_F(TLLSIntegrationTest, Poll)
     EnqueeCmdF0Response();
     EnqueeCmdFCResponse();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }

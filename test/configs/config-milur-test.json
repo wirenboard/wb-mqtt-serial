@@ -3,6 +3,7 @@
   "max_unchanged_interval": 100,
   "ports": [
     {
+      "port_type" : "serial",
       "path" : "/dev/ttyNSC0",
       "baud_rate": 9600,
       "parity": "N",

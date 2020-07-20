@@ -1,6 +1,7 @@
 #include "modbus_common.h"
 #include "serial_device.h"
 #include "crc16.h"
+#include "log.h"
 
 #include <cmath>
 #include <array>
@@ -9,6 +10,8 @@
 
 
 using namespace std;
+
+#define LOG(logger) ::logger.Log() << "[modbus] "
 
 namespace Modbus    // modbus protocol declarations
 {
@@ -650,10 +653,9 @@ namespace Modbus    // modbus protocol common utilities
                 if (!l.empty()) {
                     auto range = std::make_shared<TModbusRegisterRange>(l, hasHoles);
                     hasHoles = false;
-                    if (debug)
-                        std::cerr << "Adding range: " << range->GetCount() << " " <<
-                            range->TypeName() << "(s) @ " << range->GetStart() <<
-                            " of device " << range->Device()->ToString() << std::endl;
+                    LOG(Debug) << "Adding range: " << range->GetCount() << " " <<
+                        range->TypeName() << "(s) @ " << range->GetStart() <<
+                        " of device " << range->Device()->ToString();
                     r.push_back(range);
                     l.clear();
                 }
@@ -669,10 +671,9 @@ namespace Modbus    // modbus protocol common utilities
         }
         if (!l.empty()) {
             auto range = std::make_shared<TModbusRegisterRange>(l, hasHoles);
-            if (debug)
-                std::cerr << "Adding range: " << range->GetCount() << " " <<
-                    range->TypeName() << "(s) @ " << range->GetStart() <<
-                    " of device " << range->Device()->ToString() << std::endl;
+            LOG(Debug) << "Adding range: " << range->GetCount() << " " <<
+                range->TypeName() << "(s) @ " << range->GetStart() <<
+                " of device " << range->Device()->ToString();
             r.push_back(range);
         }
         return r;
@@ -921,7 +922,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
                         try {
                             port->SkipNoise();
                         } catch (const std::exception & e) {
-                            std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                            LOG(Warn) << "SkipNoise failed: " << e.what();
                         }
                         throw;
                     } catch (const TMalformedResponseError &) {
@@ -941,14 +942,12 @@ namespace ModbusRTU // modbus rtu protocol utilities
         }
 
         modbus_range->SetError(true);
-        std::ios::fmtflags f(std::cerr.flags());
-        std::cerr << "ModbusRTU::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
-            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
-            " of device " << modbus_range->Device()->ToString();
+
+        auto logWarn(std::move(LOG(Warn) << "ModbusRTU::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
+            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() << " of device " << modbus_range->Device()->ToString()));
+
         if (!exception_message.empty()) {
-            std::cerr << ": " << exception_message;
+            logWarn << ": " << exception_message;
         }
-        std::cerr << std::endl;
-        std::cerr.flags(f);
     }
 };  // modbus rtu protocol utilities

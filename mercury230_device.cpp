@@ -113,7 +113,7 @@ uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_l
 
             int sign = 1;
 
-            if (reg_type == REG_PARAM_SIGN_ACT)  {
+            if (reg_type == REG_PARAM_SIGN_ACT) {
                     sign = active_power_sign;
             } else if (reg_type == REG_PARAM_SIGN_REACT) {
                     sign = reactive_power_sign;
@@ -157,7 +157,6 @@ uint64_t TMercury230Device::ReadRegister(PRegister reg)
 void TMercury230Device::EndPollCycle()
 {
     CachedValues.clear();
-
     TSerialDevice::EndPollCycle();
 }
 

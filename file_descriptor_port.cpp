@@ -8,7 +8,11 @@
 #include <sys/select.h>
 #include <sys/ioctl.h>
 
+#include "log.h"
+
 using namespace std;
+
+#define LOG(logger) ::logger.Log() << "[port] "
 
 namespace {
     const chrono::milliseconds DefaultFrameTimeout(15);
@@ -54,7 +58,7 @@ void TFileDescriptorPort::WriteBytes(const uint8_t * buf, int count) {
         throw TSerialDeviceException("serial write failed");
     }
 
-    if (Debug()) {
+    if (this->Debug()) {
         // TBD: move this to libwbmqtt (HexDump?)
         ios::fmtflags f(cerr.flags());
         cerr << "Write:" << hex << setfill('0');
@@ -108,7 +112,7 @@ uint8_t TFileDescriptorPort::ReadByte()
         throw TSerialDeviceException("read() failed");
     }
 
-    if (Debug()) {
+    if (this->Debug()) {
         ios::fmtflags f(cerr.flags());
         cerr << "Read: " << hex << setw(2) << setfill('0') << int(b) << endl;
         cerr.flags(f);
@@ -190,7 +194,7 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
         throw TSerialDeviceTransientErrorException("request timed out");
     }
 
-    if (Debug()) {
+    if (this->Debug()) {
         // TBD: move this to libwbmqtt (HexDump?)
         ios::fmtflags f(cerr.flags());
         cerr << "ReadFrame:" << hex << uppercase << setfill('0');
@@ -214,21 +218,20 @@ void TFileDescriptorPort::SkipNoise()
         int nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
         auto diff = std::chrono::steady_clock::now() - start;
 
-        if (Debug()) {
+        if (::Debug.IsEnabled()) {
             // TBD: move this to libwbmqtt (HexDump?)
-            ios::fmtflags f(cerr.flags());
-            cerr << "read noise: " << hex << setfill('0');
+            stringstream ss;
+            ss << "read noise: " << hex << setfill('0');
             for (int i = 0; i < nread; ++i) {
-                cerr << " " << setw(2) << int(buf[i]);
+                ss << " " << setw(2) << int(buf[i]);
             }
-            cerr << endl;
-            cerr.flags(f);
+            LOG(Debug) << ss.str();
         }
 
         // if we are still getting data for already "ContinuousNoiseTimeout" milliseconds
         if ((nread > 0) && (diff > ContinuousNoiseTimeout)) {
             if (ntries < ContinuousNoiseReopenNumber)  {
-                std::cerr << "continuous unsolicited data flow detected, reopen the port" << std::endl;
+                LOG(Debug) << "continuous unsolicited data flow detected, reopen the port";
                 Reopen();
                 ntries += 1;
                 start = std::chrono::steady_clock::now();

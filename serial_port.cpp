@@ -1,10 +1,18 @@
-#include "serial_port.h"
 #include "serial_exc.h"
+#include "serial_port.h"
+#include "log.h"
 
 #include <map>
 #include <string.h>
 #include <fcntl.h>
 #include <iostream>
+#include <utility>
+
+#define LOG(logger) ::logger.Log() << "[serial port] "
+
+using namespace WBMQTT;
+
+#define LOG(logger) ::logger.Log() << "[serial port] "
 
 namespace {
     int ConvertBaudRate(int rate)
@@ -22,7 +30,7 @@ namespace {
         case 57600: return B57600;
         case 115200: return B115200;
         default:
-            std::cerr << "Warning: unsupported baud rate " << rate << " defaulting to 9600" << std::endl;
+            LOG(Warn) << "unsupported baud rate " << rate << " defaulting to 9600";
             return B9600;
         }
     }
@@ -35,7 +43,7 @@ namespace {
         case 7: return CS7;
         case 8: return CS8;
         default:
-            std::cerr << "Warning: unsupported data bits count " << data_bits << " defaulting to 8" << std::endl;
+            LOG(Warn) << "unsupported data bits count " << data_bits << " defaulting to 8";
             return CS8;
         }
     }

@@ -1,12 +1,13 @@
 #pragma once
-#include <memory>
-#include <unordered_map>
-
-#include <wbmqtt/mqtt_wrapper.h>
 #include "serial_config.h"
 #include "serial_client.h"
 #include "register_handler.h"
+
+#include <wblib/declarations.h>
+
 #include <chrono>
+#include <memory>
+#include <unordered_map>
 
 
 struct TDeviceChannel : public TDeviceChannelConfig
@@ -20,44 +21,69 @@ struct TDeviceChannel : public TDeviceChannelConfig
         }
     }
 
+    std::string Describe() const
+    {
+        return "channel '" + Name + "' of device '" + DeviceId + "'";
+    }
+
     PSerialDevice Device;
     std::vector<PRegister> Registers;
 };
 
 typedef std::shared_ptr<TDeviceChannel> PDeviceChannel;
 
+using TPublishTime = std::chrono::time_point<std::chrono::steady_clock>;
+using PPublishTime = std::unique_ptr<TPublishTime>;
 
-class TMQTTWrapper;
+struct TDeviceChannelState
+{
+    TDeviceChannelState(const PDeviceChannel & channel, TRegisterHandler::TErrorState error, PPublishTime && time)
+        : Channel(channel)
+        , ErrorState(error)
+        , LastPublishTime(std::move(time))
+    {}
 
-class TSerialPortDriver
+    PDeviceChannel                  Channel;
+    TRegisterHandler::TErrorState   ErrorState;
+    PPublishTime                    LastPublishTime;
+};
+
+
+class TSerialPortDriver: public std::enable_shared_from_this<TSerialPortDriver>
 {
 public:
-    TSerialPortDriver(PMQTTClientBase mqtt_client, PPortConfig port_config, PPort port_override = 0);
+    TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig port_config, PPort port_override = 0);
     ~TSerialPortDriver();
+    void SetUpDevices();
     void Cycle();
-    void PubSubSetup();
-    bool HandleMessage(const std::string& topic, const std::string& payload);
-    std::string GetChannelTopic(const TDeviceChannelConfig& channel);
     bool WriteInitValues();
+    void ClearDevices() noexcept;
+
+    static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event);
 
 private:
+    WBMQTT::TLocalDeviceArgs From(const PSerialDevice & device);
+    WBMQTT::TControlArgs From(const PDeviceChannel & channel);
+
+    void SetValueToChannel(const PDeviceChannel & channel, const std::string & value);
     bool NeedToPublish(PRegister reg, bool changed);
     void OnValueRead(PRegister reg, bool changed);
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
     void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);
 
-    PMQTTClientBase MQTTClient;
+    WBMQTT::PDeviceDriver MqttDriver;
     PPortConfig Config;
     PPort Port;
     PSerialClient SerialClient;
     std::vector<PSerialDevice> Devices;
 
-    std::unordered_map<PRegister, PDeviceChannel> RegisterToChannelMap;
-    std::unordered_map<PDeviceChannelConfig, std::vector<PRegister>> ChannelRegistersMap;
-    std::unordered_map<PRegister, TRegisterHandler::TErrorState> RegErrorStateMap;
-    std::unordered_map<PRegister, std::chrono::time_point<std::chrono::steady_clock>> RegLastPublishTimeMap;
-    std::unordered_map<std::string, std::string> PublishedErrorMap;
-    std::unordered_map<std::string, PDeviceChannel> NameToChannelMap;
+    std::unordered_map<PRegister, TDeviceChannelState> RegisterToChannelStateMap;
 };
 
 typedef std::shared_ptr<TSerialPortDriver> PSerialPortDriver;
+
+struct TControlLinkData
+{
+    std::weak_ptr<TSerialPortDriver>  PortDriver;
+    std::weak_ptr<TDeviceChannel>     DeviceChannel;
+};

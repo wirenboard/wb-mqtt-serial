@@ -1,5 +1,5 @@
 #include <string>
-#include "testlog.h"
+#include <wblib/testing/testlog.h>
 #include "fake_serial_port.h"
 #include "ivtm_device.h"
 
@@ -8,7 +8,7 @@ class TIVTMDeviceTest: public TSerialDeviceTest
 protected:
     void SetUp();
     PIVTMDevice Dev;
- 
+
     PRegister Dev1Temp;
     PRegister Dev1Humidity;
     PRegister Dev2Temp;
@@ -22,18 +22,18 @@ void TIVTMDeviceTest::SetUp()
         std::make_shared<TDeviceConfig>("ivtm", std::to_string(0x0001), "ivtm"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("ivtm"));
-    
+
     Dev1Temp = TRegister::Intern(Dev, TRegisterConfig::Create(0, 0, Float));
     Dev1Humidity = TRegister::Intern(Dev, TRegisterConfig::Create(0, 4, Float));
     Dev2Temp = TRegister::Intern(Dev, TRegisterConfig::Create(0, 0, Float));
-    
+
     SerialPort->Open();
 }
 
 TEST_F(TIVTMDeviceTest, IVTM7MQuery)
 {
     // >> 24 30 30 30 31 52 52 30 30 30 30 30 34 41 44 0d
-    // << 21 30 30 30 31 52 52 43 45 44 33 44 31 34 31 35 46 0D 
+    // << 21 30 30 30 31 52 52 43 45 44 33 44 31 34 31 35 46 0D
     // temperature == 26.228420
 
     SerialPort->Expect(

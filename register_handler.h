@@ -3,11 +3,13 @@
 #include <mutex>
 #include <memory>
 #include <string>
-#include <wbmqtt/utils.h>
+#include <wblib/utils.h>
 #include "register.h"
 #include "serial_device.h"
 #include "binary_semaphore.h"
 #include "bcd_utils.h"
+
+using WBMQTT::StringFormat;
 
 class TRegisterHandler
 {
@@ -20,7 +22,7 @@ public:
         UnknownErrorState,
         ErrorStateUnchanged
     };
-    TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed, bool debug = false);
+    TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed);
     PRegister Register() const { return Reg; }
     bool NeedToPoll();
     TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
@@ -32,7 +34,6 @@ public:
     bool DidRead() const { return DidReadReg; }
     TErrorState CurrentErrorState() const { return ErrorState; }
     PSerialDevice Device() const { return Dev.lock(); }
-    void SetDebug(bool debug) { Debug = debug; }
 
 private:
     template<typename T> static T RoundValue(T val, double round_to);
@@ -52,7 +53,6 @@ private:
     std::mutex SetValueMutex;
     TErrorState ErrorState = UnknownErrorState;
     PBinarySemaphore FlushNeeded;
-    bool Debug;
 };
 
 template<typename T>
