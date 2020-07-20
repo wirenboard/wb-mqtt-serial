@@ -111,8 +111,7 @@ int main(int argc, char *argv[])
     PHandlerConfig handlerConfig;
     try {
         Json::Value configSchema = LoadConfigSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json");
-        handlerConfig = LoadConfig(configFilename, 
-                                  debug, 
+        handlerConfig = LoadConfig(configFilename,
                                   TSerialDeviceFactory::GetRegisterTypes,
                                   configSchema,
                                   LoadConfigTemplates(templatesFolder, 

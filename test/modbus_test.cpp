@@ -1,6 +1,6 @@
 #include "fake_serial_port.h"
 #include "modbus_expectations.h"
-#include "modbus_device.h"
+#include "devices/modbus_device.h"
 #include "modbus_common.h"
 
 #include <wblib/control.h>

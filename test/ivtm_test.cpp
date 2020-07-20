@@ -1,7 +1,7 @@
 #include <string>
 #include <wblib/testing/testlog.h>
 #include "fake_serial_port.h"
-#include "ivtm_device.h"
+#include "devices/ivtm_device.h"
 
 class TIVTMDeviceTest: public TSerialDeviceTest
 {
