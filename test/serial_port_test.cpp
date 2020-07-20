@@ -9,6 +9,10 @@
 #include "serial_port_settings.h"
 #include "pty_based_fake_serial.h"
 
+#include <wblib/testing/testlog.h>
+
+using namespace WBMQTT::Testing;
+
 class TImxFloodThread {
 public:
     TImxFloodThread(PPort serial, std::chrono::milliseconds duration) : Serial(serial), Duration(duration) {};
@@ -110,7 +114,6 @@ void TSerialPortTest::SetUp()
                 9600, 'N', 8, 1, std::chrono::milliseconds(1000));
     Serial = PPort(
         new TSerialPort(settings));
-    Serial->SetDebug(true);
     Serial->Open();
 
     FakeSerial->StartForwarding();
@@ -141,7 +144,6 @@ TEST_F(TSerialPortTest, TestSkipNoise)
     uint8_t buf[] = {1,2,3};
     Serial->WriteBytes(buf, sizeof(buf));
     usleep(300);
-    SecondarySerial->SetDebug(true);
     SecondarySerial->SkipNoise();
 
     buf[0] = 0x04;
@@ -163,7 +165,6 @@ TEST_F(TSerialPortTest, TestImxBug)
 
     SecondarySerial->FloodThread.Start();
     usleep(10);
-    SecondarySerial->SetDebug(true);
     SecondarySerial->SkipNoise();
     SecondarySerial->FloodThread.Stop();
     // If flood thread is expired then skip noise was stuck forever

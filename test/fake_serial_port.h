@@ -30,8 +30,6 @@ public:
                   TFrameCompletePred frame_complete = 0);
     void SkipNoise();
 
-    void SetDebug(bool debug);
-    bool Debug() const;
     void Sleep(const std::chrono::microseconds & us) override;
     bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
     TTimePoint CurrentTime() const override;
