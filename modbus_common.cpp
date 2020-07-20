@@ -619,7 +619,7 @@ namespace Modbus    // modbus protocol common utilities
         ThrowIfModbusException(GetExceptionCode(pdu));
     }
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, PDeviceConfig deviceConfig, bool debug, bool enableHoles)
+    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, PDeviceConfig deviceConfig,bool enableHoles)
     {
         std::list<PRegisterRange> r;
         if (reg_list.empty())
@@ -816,9 +816,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
         int w = reg->Width();
 
-        if (port->Debug())
-            std::cerr << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
-                " of device " << reg->Device()->ToString() << std::endl;
+        LOG(Debug) << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
+                " of device " << reg->Device()->ToString();
 
         auto config = reg->Device()->DeviceConfig();
 
@@ -846,14 +845,14 @@ namespace ModbusRTU // modbus rtu protocol utilities
                             try {
                                 port->SkipNoise();
                             } catch (const std::exception & e) {
-                                std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                                LOG(Warn) << "SkipNoise failed: " << e.what();
                             }
                             throw;
                         } catch (const TMalformedResponseError &) {
                             try {
                                 port->SkipNoise();
-                            } catch (const std::exception & e) {
-                                std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                            } catch (const std::exception & e) { 
+                                LOG(Warn) << "SkipNoise failed: ";
                             }
                             throw;
                         }
@@ -890,10 +889,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
         // we need to clear any modbus errors from previous cycle
         modbus_range->ResetModbusError();
 
-        if (port->Debug())
-            std::cerr << "modbus: read " << modbus_range->GetCount() << " " <<
-                modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
-                " of device " << modbus_range->Device()->ToString() << std::endl;
+        LOG(Debug) << "modbus: read " << modbus_range->GetCount() << " " <<
+            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
+            " of device " << modbus_range->Device()->ToString();
 
         if (config->GuardInterval.count()){
             port->Sleep(config->GuardInterval);
@@ -929,7 +927,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
                         try {
                             port->SkipNoise();
                         } catch (const std::exception & e) {
-                            std::cerr << "SkipNoise failed: " << e.what() << std::endl;
+                            LOG(Warn) << "SkipNoise failed: " << e.what();
                         }
                         throw;
                     }

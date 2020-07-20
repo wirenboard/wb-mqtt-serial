@@ -174,9 +174,8 @@ int TTcpPort::ReadFrame(uint8_t * buf, int count, const std::chrono::microsecond
 {
     if (IsOpen()) {
         return Base::ReadFrame(buf, count, timeout, frame_complete);
-    } else {
-        cerr << "WARNING: attempt to read from not open port" << endl;
     }
+    LOG(Warn) << "Attempt to read from not open port";
     return 0;
 }
 

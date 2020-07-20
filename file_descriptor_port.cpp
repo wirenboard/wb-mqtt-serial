@@ -23,7 +23,6 @@ namespace {
 
 TFileDescriptorPort::TFileDescriptorPort(const PPortSettings & settings)
     : Fd(-1)
-    , DebugEnabled(false)
     , Settings(settings)
 {}
 
@@ -58,14 +57,14 @@ void TFileDescriptorPort::WriteBytes(const uint8_t * buf, int count) {
         throw TSerialDeviceException("serial write failed");
     }
 
-    if (this->Debug()) {
+    if (::Debug.IsEnabled()) {
         // TBD: move this to libwbmqtt (HexDump?)
-        ios::fmtflags f(cerr.flags());
-        cerr << "Write:" << hex << setfill('0');
-        for (int i = 0; i < count; ++i)
-            cerr << " " << setw(2) << int(buf[i]);
-        cerr << endl;
-        cerr.flags(f);
+        stringstream ss;
+        ss << "Write:" << hex << setfill('0');
+        for (int i = 0; i < count; ++i) {
+            ss << " " << setw(2) << int(buf[i]);
+        }
+        LOG(Debug) << ss.str();
     }
 }
 
@@ -112,11 +111,7 @@ uint8_t TFileDescriptorPort::ReadByte()
         throw TSerialDeviceException("read() failed");
     }
 
-    if (this->Debug()) {
-        ios::fmtflags f(cerr.flags());
-        cerr << "Read: " << hex << setw(2) << setfill('0') << int(b) << endl;
-        cerr.flags(f);
-    }
+    LOG(Debug) << "Read: " << hex << setw(2) << setfill('0') << int(b);
 
     return b;
 }
@@ -194,15 +189,14 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
         throw TSerialDeviceTransientErrorException("request timed out");
     }
 
-    if (this->Debug()) {
+    if (::Debug.IsEnabled()) {
         // TBD: move this to libwbmqtt (HexDump?)
-        ios::fmtflags f(cerr.flags());
-        cerr << "ReadFrame:" << hex << uppercase << setfill('0');
+        stringstream ss;
+        ss << "ReadFrame:" << hex << setfill('0');
         for (int i = 0; i < nread; ++i) {
-            cerr << " " << setw(2) << int(buf[i]);
+            ss << " " << setw(2) << int(buf[i]);
         }
-        cerr << endl;
-        cerr.flags(f);
+        LOG(Debug) << ss.str();
     }
 
     return nread;
@@ -249,25 +243,12 @@ void TFileDescriptorPort::Sleep(const chrono::microseconds & us)
 
 bool TFileDescriptorPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)
 {
-    if (DebugEnabled) {
-        cerr << chrono::duration_cast<chrono::milliseconds>(
-            chrono::steady_clock::now().time_since_epoch()).count() <<
-            ": Wait until " <<
-            chrono::duration_cast<chrono::milliseconds>(until.time_since_epoch()).count() <<
-            endl;
-        }
+    LOG(Debug) << chrono::duration_cast<chrono::milliseconds>(
+        chrono::steady_clock::now().time_since_epoch()).count() <<
+        ": Wait until " <<
+        chrono::duration_cast<chrono::milliseconds>(until.time_since_epoch()).count();
 
     return semaphore->Wait(until);
-}
-
-void TFileDescriptorPort::SetDebug(bool debug)
-{
-    DebugEnabled = debug;
-}
-
-bool TFileDescriptorPort::Debug() const
-{
-    return DebugEnabled;
 }
 
 TTimePoint TFileDescriptorPort::CurrentTime() const

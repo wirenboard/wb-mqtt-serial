@@ -34,8 +34,6 @@ public:
         TFrameCompletePred frame_complete = 0) = 0;
     virtual void SkipNoise() = 0;
 
-    virtual void SetDebug(bool debug) = 0;
-    virtual bool Debug() const = 0;
     virtual void Sleep(const std::chrono::microseconds& us) = 0;
     virtual bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) = 0;
     virtual TTimePoint CurrentTime() const = 0;

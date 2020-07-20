@@ -93,7 +93,7 @@ void TSerialDevice::OnCycleEnd(bool ok)
             RemainingFailCycles == 0)
         {
             IsDisconnected = true;
-            std::cerr << "device " << ToString() << " disconnected" << std::endl;
+            LOG(Info) << "device " << ToString() << " disconnected";
         }
     }
 }

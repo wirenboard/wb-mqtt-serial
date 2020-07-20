@@ -183,15 +183,6 @@ PRegisterConfig TConfigParser::LoadRegisterConfig(PDeviceConfig device_config,
         }
     }
 
-    cout << "address: " << address << endl;
-    if (bit_offset) {
-        cout << "bit offset: " << bit_offset << endl;
-    }
-
-    if (bit_width) {
-        cout << "bit width: " << bit_width << endl;
-    }
-
     string reg_type_str = register_data["reg_type"].asString();
     default_type_str = "text";
     auto it = device_config->TypeMap->find(reg_type_str);

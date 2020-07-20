@@ -20,7 +20,7 @@ TModbusIODevice::TModbusIODevice(PDeviceConfig config, PPort port, PProtocol pro
 
 std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
 {
-    return Modbus::SplitRegisterList(reg_list, DeviceConfig(), Port()->Debug(), enableHoles);
+    return Modbus::SplitRegisterList(reg_list, DeviceConfig(), enableHoles);
 }
 
 uint64_t TModbusIODevice::ReadRegister(PRegister reg)

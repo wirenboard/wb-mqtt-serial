@@ -24,8 +24,6 @@ public:
 
     void Sleep(const std::chrono::microseconds & us) override;
     bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
-    void SetDebug(bool debug) override;
-    bool Debug() const override;
     TTimePoint CurrentTime() const override;
 
 protected:
@@ -33,7 +31,6 @@ protected:
     virtual void OnReadyEmptyFd();
 
     int             Fd;
-    bool            DebugEnabled;
     PPortSettings   Settings;
 private:
     int ReadAvailableData(uint8_t * buf, size_t max_read);

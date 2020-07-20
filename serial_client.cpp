@@ -139,7 +139,7 @@ void TSerialClient::SplitRegisterRanges(std::set<PRegisterRange> && ranges)
                 if (ranges.count(*itRange)) {
                     auto device = (*itRange)->Device();
 
-                    std::cerr << "Disabling holes feature for register range" << std::endl;
+                    LOG(Debug) << "Disabling holes feature for register range";
 
                     auto newRanges = device->SplitRegisterList((*itRange)->RegisterList(), false);
                     serial_entry->Ranges.insert(itRange, newRanges.begin(), newRanges.end());
@@ -255,8 +255,7 @@ void TSerialClient::Cycle()
                     try {
                         device->Prepare();
                     } catch ( const TSerialDeviceTransientErrorException& e) {
-                        std::cerr << "TSerialDevice::Prepare(): warning: " << e.what() << " [slave_id is "
-                            << device->ToString() + "]" << std::endl;
+                        LOG(Warn) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
                     }
 
                     if (device->HasSetupItems()) {
@@ -288,7 +287,7 @@ void TSerialClient::Cycle()
         const auto & statuses = deviceRangesStatuses.second;
 
         if (statuses.empty()) {
-            std::cerr << "invariant violation: statuses empty @ " << __func__ << std::endl;
+            LOG(Debug) << "invariant violation: statuses empty @ " << __func__;
             continue;   // this should not happen
         }
 
@@ -379,16 +378,14 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
             try {
                 LastAccessedDevice->EndSession();
             } catch ( const TSerialDeviceTransientErrorException& e) {
-                std::cerr << "TSerialDevice::EndSession(): warning: " << e.what() << " [slave_id is "
-                    << LastAccessedDevice->ToString() + "]" << std::endl;
+                LOG(Warn) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
             }
         }
         LastAccessedDevice = dev;
         try {
             dev->Prepare();
         } catch ( const TSerialDeviceTransientErrorException& e) {
-            std::cerr << "TSerialDevice::Prepare(): warning: " << e.what() << " [slave_id is "
-                << dev->ToString() + "]" << std::endl;
+            LOG(Warn) << "TSerialDevice::Prepare(): warning: " << e.what() << " [slave_id is " << dev->ToString() + "]";
         }
     }
 }
