@@ -124,7 +124,7 @@ private:
     std::string Message;
 };
 
-PTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Value& templateSchema);
+TTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Value& templateSchema);
 
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema);
 void AddProtocolType(Json::Value& configSchema, const std::string& protocolType);
@@ -137,4 +137,4 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName);
 PHandlerConfig LoadConfig(const std::string& configFileName,
                           TGetRegisterTypeMapFn getRegisterTypeMapFn,
                           const Json::Value& configSchema,
-                          PTemplateMap templates = PTemplateMap());
+                          const TTemplateMap& templates = TTemplateMap());

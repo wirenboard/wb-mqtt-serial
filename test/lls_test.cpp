@@ -9,7 +9,7 @@ protected:
     void SetUp();
     void TearDown();
     const char* ConfigPath() const { return "configs/config-lls-test.json"; }
-    const char* GetTemplatePath() const { return "../wb-mqtt-serial-templates/"; }
+    std::string GetTemplatePath() const override { return "../wb-mqtt-serial-templates/"; }
     void EnqueeCmdF0Response();
     void EnqueeCmdFCResponse();
 };
