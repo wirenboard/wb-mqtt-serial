@@ -462,7 +462,8 @@
               "title": "Round to",
               "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
               "default" : 1,
-              "propertyOrder": 9
+              "propertyOrder": 9,
+              "minimum": 0
             },
             "channel_readonly": {
               "title": "Read-only",

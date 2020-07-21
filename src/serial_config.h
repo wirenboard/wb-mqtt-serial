@@ -16,15 +16,19 @@
 #   include <jsoncpp/json/json.h>
 #endif
 
-struct TTemplate {
-    TTemplate(const Json::Value& device_data);
-    Json::Value DeviceData;
+#include <wblib/json_utils.h>
+
+class TTemplateMap {
+        std::unordered_map<std::string, std::string> TemplateFiles;
+        std::unordered_map<std::string, Json::Value> ValidTemplates;
+
+        std::unique_ptr<WBMQTT::JSON::TValidator> Validator;
+    public:
+        TTemplateMap() = default;
+        TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema);
+
+        const Json::Value& GetTemplate(const std::string& deviceType);
 };
-
-typedef std::shared_ptr<TTemplate> PTemplate;
-
-typedef std::map<std::string, PTemplate> TTemplateMap;
-typedef std::shared_ptr<TTemplateMap> PTemplateMap;
 
 struct TDeviceChannelConfig {
     TDeviceChannelConfig(std::string name = "", std::string type = "text",
@@ -124,8 +128,6 @@ private:
     std::string Message;
 };
 
-TTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Value& templateSchema);
-
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema);
 void AddProtocolType(Json::Value& configSchema, const std::string& protocolType);
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
@@ -137,4 +139,8 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName);
 PHandlerConfig LoadConfig(const std::string& configFileName,
                           TGetRegisterTypeMapFn getRegisterTypeMapFn,
                           const Json::Value& configSchema,
-                          const TTemplateMap& templates = TTemplateMap());
+                          TTemplateMap& templates);
+
+PHandlerConfig LoadConfig(const std::string& configFileName,
+                          TGetRegisterTypeMapFn getRegisterTypeMapFn,
+                          const Json::Value& configSchema);

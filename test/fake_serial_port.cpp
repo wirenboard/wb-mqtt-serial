@@ -270,9 +270,9 @@ void TSerialDeviceIntegrationTest::SetUp()
             it = Templates.emplace(path, TTemplateMap()).first;
         } else {
             it = Templates.emplace(path, 
-                                   LoadConfigTemplates(GetDataFilePath(path),
-                                                       LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
-                                                                                 configSchema))).first;
+                                   TTemplateMap(GetDataFilePath(path),
+                                                LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
+                                                                          configSchema))).first;
         } 
     }
 

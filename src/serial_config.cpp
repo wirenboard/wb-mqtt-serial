@@ -12,14 +12,33 @@
 #include <cstdlib>
 #include <memory>
 
-#include <wblib/json_utils.h>
-
 #include "tcp_port_settings.h"
 #include "serial_port_settings.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
 using namespace std;
+using namespace WBMQTT::JSON;
+
+template <> inline bool WBMQTT::JSON::Is<std::chrono::milliseconds>(const Json::Value& value)
+{
+    return value.isInt();
+}
+
+template <> inline std::chrono::milliseconds WBMQTT::JSON::As<std::chrono::milliseconds>(const Json::Value& value)
+{
+    return std::chrono::milliseconds(value.asInt());
+}
+
+template <> inline bool WBMQTT::JSON::Is<std::chrono::microseconds>(const Json::Value& value)
+{
+    return value.isInt();
+}
+
+template <> inline std::chrono::microseconds WBMQTT::JSON::As<std::chrono::microseconds>(const Json::Value& value)
+{
+    return std::chrono::microseconds(value.asInt());
+}
 
 namespace {
     const char* DefaultProtocol = "modbus";
@@ -29,35 +48,12 @@ namespace {
         return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
     }
 
-    using TIndexedJsonArray = map<string, Json::ArrayIndex>;
-
-    class TPropertyIsEmptyError {};
-    class TIsNotArrayError {};
-    class TIsNotObjectError {};
-
-    TIndexedJsonArray IndexArrayOfObjectsBy(const string & property_name, const Json::Value & array)
-    {
-        if (!array.isArray()) {
-            throw TIsNotArrayError();
+    template <class T> T Read(const Json::Value& root, const std::string& key, const T& defaultValue) {
+        T value;
+        if (Get(root, key, value)) {
+            return value;
         }
-
-        TIndexedJsonArray result;
-
-        for(Json::ArrayIndex i = 0; i < array.size(); ++i) {
-            const auto & object = array[i];
-            if (!object.isObject()) {
-                throw TIsNotObjectError();
-            }
-
-            const auto & property = object[property_name].asString();
-            if (property.empty()) {
-                throw TPropertyIsEmptyError();
-            }
-
-            result[property] = i;
-        }
-
-        return result;
+        return defaultValue;
     }
 
     int ToInt(const Json::Value& v, const std::string& title)
@@ -158,26 +154,10 @@ namespace {
             WordOrderFromName(register_data["word_order"].asString()) :
             it->second.DefaultWordOrder;
 
-        double scale = 1;
-        if (register_data.isMember("scale"))
-            scale = register_data["scale"].asDouble(); // TBD: check for zero, too
-
-        double offset = 0;
-        if (register_data.isMember("offset"))
-            offset = register_data["offset"].asDouble();
-
-        double round_to = 0.0;
-        if (register_data.isMember("round_to")) {
-            round_to = register_data["round_to"].asDouble();
-            if (round_to < 0) {
-                throw TConfigParserException("round_to must be greater than or equal to 0 -- " +
-                                            device_config->DeviceType);
-            }
-        }
-
-        bool force_readonly = false;
-        if (register_data.isMember("readonly"))
-            force_readonly = register_data["readonly"].asBool();
+        double scale        = Read(register_data, "scale",    1.0); // TBD: check for zero, too
+        double offset       = Read(register_data, "offset",   0);
+        double round_to     = Read(register_data, "round_to", 0.0);
+        bool force_readonly = Read(register_data, "readonly", false);
 
         bool has_error_value = false;
         uint64_t error_value = 0;
@@ -190,21 +170,20 @@ namespace {
             it->second.Index,
             address, format, scale, offset, round_to, true, force_readonly || it->second.ReadOnly,
             it->second.Name, has_error_value, error_value, word_order, bit_offset, bit_width);
-        if (register_data.isMember("poll_interval"))
-            reg->PollInterval = std::chrono::milliseconds(GetInt(register_data, "poll_interval"));
+        
+        Get(register_data, "poll_interval", reg->PollInterval);
         return reg;
     }
 
     void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
     {
-        std::string name = channel_data["name"].asString();
         std::string default_type_str;
         std::vector<PRegisterConfig> registers;
         if (channel_data.isMember("consists_of")) {
-            const Json::Value reg_data = channel_data["consists_of"];
-            std::chrono::milliseconds poll_interval(-1);
-            if (channel_data.isMember("poll_interval"))
-                poll_interval = std::chrono::milliseconds(GetInt(channel_data, "poll_interval"));
+
+            std::chrono::milliseconds poll_interval(Read(channel_data, "poll_interval", std::chrono::milliseconds(-1)));
+
+            const Json::Value& reg_data = channel_data["consists_of"];
             for(Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
                 std::string def_type;
                 auto reg = LoadRegisterConfig(device_config, reg_data[i], def_type);
@@ -218,21 +197,18 @@ namespace {
                     throw TConfigParserException(("can't mix read-only and writable registers "
                                                 "in one channel -- ") + device_config->DeviceType);
             }
-            if (!registers.size())
-                throw TConfigParserException("empty \"consists_of\" section -- " + device_config->DeviceType);
-        } else
+        } else {
             registers.push_back(LoadRegisterConfig(device_config, channel_data, default_type_str));
+        }
 
-        std::string type_str = channel_data["type"].asString();
-        if (type_str.empty())
-            type_str = default_type_str;
+        std::string type_str(Read(channel_data, "type", default_type_str));
         if (type_str == "wo-switch") {
             type_str = "switch";
             for (auto& reg: registers)
                 reg->Poll = false;
         }
 
-        std::string on_value = "";
+        std::string on_value;
         if (channel_data.isMember("on_value")) {
             if (registers.size() != 1)
                 throw TConfigParserException("can only use on_value for single-valued controls -- " +
@@ -244,75 +220,67 @@ namespace {
         if (channel_data.isMember("max"))
             max = GetInt(channel_data, "max");
 
-        int order = device_config->NextOrderValue();
+        std::string name = channel_data["name"].asString();
+        int order        = device_config->NextOrderValue();
         PDeviceChannelConfig channel(new TDeviceChannelConfig(name, type_str, device_config->Id, order,
                                                 on_value, max, registers[0]->ReadOnly,
                                                 registers));
         device_config->AddChannel(channel);
     }
 
-    void MergeAndLoadChannels(PDeviceConfig device_config, const Json::Value& device_data, PTemplate tmpl)
+    void AppendProperties(Json::Value& device_data, const Json::Value& tmpl, const std::string& logPrefix)
     {
-        TIndexedJsonArray device_channels_index_by_name;
-        std::set<Json::ArrayIndex> loaded;
-
-        if (device_data.isMember("channels")) {
-            const auto & device_channels = device_data["channels"];
-            device_channels_index_by_name = IndexArrayOfObjectsBy("name", device_channels);
-        }
-
-        if (tmpl) {
-            // Load template channels first
-            auto template_channels = tmpl->DeviceData["channels"];
-            const auto & device_channels = device_data["channels"];
-
-            for (Json::ArrayIndex i = 0; i < template_channels.size(); ++i) {
-                auto & channel_data = template_channels[i];
-                const auto & name = channel_data["name"].asString();
-
-                auto it = device_channels_index_by_name.find(name);
-                if (it != device_channels_index_by_name.end()) {
-                    const Json::Value & override_channel_data = device_channels[it->second];
-
-                    for (auto it = override_channel_data.begin(); it != override_channel_data.end(); ++it) {
-                    LOG(Info) << "override property " << it.name();
-                        // Channel fields from current device config
-                        // take precedence over template field values
-                        channel_data[it.name()] = *it;
-                    }
-                    loaded.insert(it->second);
+        for (auto it_prop = tmpl.begin(); it_prop != tmpl.end(); ++it_prop) {
+            if (it_prop.name() != "channels") {
+                // Fields from current device config take precedence over template field values
+                if (device_data.isMember(it_prop.name())) {
+                    LOG(Info) << logPrefix << " override property " << it_prop.name();
+                } else {
+                    device_data[it_prop.name()] = *it_prop;
                 }
-
-                LoadChannel(device_config, channel_data);
-            }
-        }
-
-        if (device_data.isMember("channels")) {
-            // Load remaining channels that were declared in main config
-            const auto & device_channels = device_data["channels"];
-            for (Json::ArrayIndex i = 0; i < device_channels.size(); ++i) {
-                if (loaded.count(i)) {
-                    continue;
-                }
-                LoadChannel(device_config, device_channels[i]);
             }
         }
     }
 
+    void AppendUniqueChannels(Json::Value& device_data, const Json::Value& tmpl, const std::string& logPrefix)
+    {
+        std::unordered_map<std::string, Json::ArrayIndex> channelNames;
+
+        for (Json::ArrayIndex i = 0; i < device_data.size(); ++i) {
+            channelNames.emplace(device_data[i]["name"].asString(), i);
+        }
+
+        Json::Value array;
+
+        for (const auto& elem: tmpl) {
+            string channelName(elem["name"].asString());
+            if (channelNames.count(channelName)) {
+                AppendProperties(array.append(device_data[channelNames[channelName]]), elem, logPrefix + " channel " + channelName);
+                channelNames.erase(channelName);
+            } else {
+                array.append(elem);
+            }
+        }
+
+        for (const auto& elem: device_data) {
+            if (channelNames.count(elem["name"].asString())) {
+                array.append(elem);
+            }
+        }
+        device_data = array;
+    }
+
+    void AppendTemplateData(Json::Value& device_data, const Json::Value& tmpl, const std::string& deviceName)
+    {
+        AppendProperties(device_data, tmpl, deviceName);
+        AppendUniqueChannels(device_data["channels"], tmpl["channels"], deviceName);
+    }
+
     void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data)
     {
-        if (!item_data.isObject())
-            throw TConfigParserException("malformed config -- " + device_config->DeviceType);
-
-        std::string name = item_data.isMember("title") ?
-            item_data["title"].asString() : "<unnamed>";
-        if (!item_data.isMember("address"))
-            throw TConfigParserException("no address specified for init item");
-
         int address = GetInt(item_data, "address");
         std::string reg_type_str = item_data["reg_type"].asString();
         int type = 0;
-        std::string type_name = "<unspec>";
         if (!reg_type_str.empty()) {
             auto it = device_config->TypeMap->find(reg_type_str);
             if (it == device_config->TypeMap->end())
@@ -324,75 +292,67 @@ namespace {
         if (item_data.isMember("format"))
             format = RegisterFormatFromName(item_data["format"].asString());
         PRegisterConfig reg = TRegisterConfig::Create(
-            type, address, format, 1, 0, 0, true, true, type_name);
+            type, address, format, 1, 0, 0, true, true, "<unspec>");
 
-        if (!item_data.isMember("value"))
-            throw TConfigParserException("no reg specified for init item");
         int value = GetInt(item_data, "value");
+        std::string name(Read(item_data, "title", std::string("<unnamed>")));
         device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg, value)));
     }
 
     void LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data, TGetRegisterTypeMapFn getRegisterTypeMapFn)
     {
-        if (device_data.isMember("protocol"))
-            device_config->Protocol = device_data["protocol"].asString();
-        else if (device_config->Protocol.empty())
+        Get(device_data, "protocol", device_config->Protocol);
+        if (device_config->Protocol.empty()) {
             device_config->Protocol = DefaultProtocol;
+        }
+
         device_config->TypeMap = getRegisterTypeMapFn(device_config);
 
         if (device_data.isMember("setup")) {
-            const Json::Value array = device_data["setup"];
-            for(unsigned int index = 0; index < array.size(); ++index)
-                LoadSetupItem(device_config, array[index]);
+            for(const auto& setupItem: device_data["setup"])
+                LoadSetupItem(device_config, setupItem);
         }
 
         if (device_data.isMember("password")) {
-            const Json::Value array = device_data["password"];
             device_config->Password.clear();
-            for(unsigned int index = 0; index < array.size(); ++index)
-                device_config->Password.push_back(ToInt(array[index], "password item"));
+            for(const auto& passwordItem: device_data["password"])
+                device_config->Password.push_back(ToInt(passwordItem, "password item"));
         }
 
-        if (device_data.isMember("delay_usec")) // compat
-            device_config->Delay = std::chrono::milliseconds(GetInt(device_data, "delay_usec") / 1000);
-        else if (device_data.isMember("delay_ms"))
-            device_config->Delay = std::chrono::milliseconds(GetInt(device_data, "delay_ms"));
+        Get(device_data, "delay_ms", device_config->Delay);
+        if (Get(device_data, "delay_usec", device_config->Delay)) // compat
+            device_config->Delay = device_config->Delay / 1000;
 
-        if (device_data.isMember("frame_timeout_ms"))
-            device_config->FrameTimeout = std::chrono::milliseconds(GetInt(device_data, "frame_timeout_ms"));
-        if (device_data.isMember("device_timeout_ms"))
-            device_config->DeviceTimeout = chrono::milliseconds(GetInt(device_data, "device_timeout_ms"));
-        if (device_data.isMember("device_max_fail_cycles"))
-            device_config->DeviceMaxFailCycles = GetInt(device_data, "device_max_fail_cycles");
-        if (device_data.isMember("max_reg_hole"))
-            device_config->MaxRegHole = GetInt(device_data, "max_reg_hole");
-        if (device_data.isMember("max_bit_hole"))
-            device_config->MaxBitHole = GetInt(device_data, "max_bit_hole");
-        if (device_data.isMember("max_read_registers"))
-            device_config->MaxReadRegisters = GetInt(device_data, "max_read_registers");
-        if (device_data.isMember("guard_interval_us"))
-            device_config->GuardInterval = std::chrono::microseconds(GetInt(device_data, "guard_interval_us"));
-        if (device_data.isMember("stride"))
-            device_config->Stride = GetInt(device_data, "stride");
-        if (device_data.isMember("shift"))
-            device_config->Shift = GetInt(device_data, "shift");
-        if (device_data.isMember("access_level"))
-            device_config->AccessLevel = GetInt(device_data, "access_level");
+        Get(device_data, "frame_timeout_ms",       device_config->FrameTimeout);
+        Get(device_data, "device_timeout_ms",      device_config->DeviceTimeout);
+        Get(device_data, "device_max_fail_cycles", device_config->DeviceMaxFailCycles);
+        Get(device_data, "max_reg_hole",           device_config->MaxRegHole);
+        Get(device_data, "max_bit_hole",           device_config->MaxBitHole);
+        Get(device_data, "max_read_registers",     device_config->MaxReadRegisters);
+        Get(device_data, "guard_interval_us",      device_config->GuardInterval);
+        Get(device_data, "stride",                 device_config->Stride);
+        Get(device_data, "shift",                  device_config->Shift);
+        Get(device_data, "access_level",           device_config->AccessLevel);
+
+        if (device_data.isMember("channels")) {
+            for (const auto& channel_data: device_data["channels"]) {
+                LoadChannel(device_config, channel_data);
+            }
+        }
     }
 
     void LoadDevice(PPortConfig port_config,
                     const Json::Value& device_data,
                     const std::string& default_id,
-                    const TTemplateMap& templates,
+                    TTemplateMap& templates,
                     TGetRegisterTypeMapFn getRegisterTypeMapFn)
     {
         if (device_data.isMember("enabled") && !device_data["enabled"].asBool())
             return;
 
-        PTemplate tmpl;
         PDeviceConfig device_config = std::make_shared<TDeviceConfig>();
-        device_config->Id = device_data.isMember("id") ? device_data["id"].asString() : default_id;
-        device_config->Name = device_data.isMember("name") ? device_data["name"].asString() : "";
+        device_config->Id = Read(device_data, "id",  default_id);
+        Get(device_data, "name", device_config->Name);
 
         if (device_data["slave_id"].isString())
             device_config->SlaveId = device_data["slave_id"].asString();
@@ -400,42 +360,32 @@ namespace {
             device_config->SlaveId = std::to_string(device_data["slave_id"].asInt());
 
         auto device_poll_interval = std::chrono::milliseconds(-1);
-        if (device_data.isMember("poll_interval"))
-            device_poll_interval = std::chrono::milliseconds(
-                GetInt(device_data, "poll_interval"));
+        Get(device_data, "poll_interval", device_poll_interval);
 
-        if (device_data.isMember("device_type")){
+        if (device_data.isMember("device_type")) {
             device_config->DeviceType = device_data["device_type"].asString();
-            auto it = templates.find(device_config->DeviceType);
-            if (it == templates.end()) {
-                throw TConfigParserException(
-                    "Can't find the template for '" + device_config->DeviceType + "' device type.");
-            }
-            tmpl = it->second;
-            if (tmpl->DeviceData.isMember("name")) {
+            auto tmpl = templates.GetTemplate(device_config->DeviceType);
+            if (tmpl.isMember("name")) {
                 if (device_config->Name == "") {
-                    device_config->Name = tmpl->DeviceData["name"].asString() + " " +
-                        device_config->SlaveId;
+                    device_config->Name = tmpl["name"].asString() + " " + device_config->SlaveId;
                 }
             } else {
                 if (device_config->Name == "") {
                     throw TConfigParserException(
-                        "Property device_name is missing in " + device_config->DeviceType + " template");
+                        "Property name is missing in " + device_config->DeviceType + " template");
                 }
             }
 
-            if (tmpl->DeviceData.isMember("id")) {
+            if (tmpl.isMember("id")) {
                 if (device_config->Id == default_id)
-                    device_config->Id = tmpl->DeviceData["id"].asString() + "_" +
-                        device_config->SlaveId;
+                    device_config->Id = tmpl["id"].asString() + "_" + device_config->SlaveId;
             }
-
-            LoadDeviceTemplatableConfigPart(device_config, tmpl->DeviceData, getRegisterTypeMapFn);
+            Json::Value merged_data(device_data);
+            AppendTemplateData(merged_data, tmpl, device_config->Name);
+            LoadDeviceTemplatableConfigPart(device_config, merged_data, getRegisterTypeMapFn);
+        } else {
+            LoadDeviceTemplatableConfigPart(device_config, device_data, getRegisterTypeMapFn);
         }
-
-        LoadDeviceTemplatableConfigPart(device_config, device_data, getRegisterTypeMapFn);
-        MergeAndLoadChannels(device_config, device_data, tmpl);
-
         if (device_config->DeviceChannelConfigs.empty())
             throw TConfigParserException("the device has no channels: " + device_config->Name);
 
@@ -453,7 +403,7 @@ namespace {
         }
     }
 
-    void LoadPort(PHandlerConfig handlerConfig, const Json::Value& port_data, const std::string& id_prefix, const TTemplateMap& templates, TGetRegisterTypeMapFn getRegisterTypeMapFn)
+    void LoadPort(PHandlerConfig handlerConfig, const Json::Value& port_data, const std::string& id_prefix, TTemplateMap& templates, TGetRegisterTypeMapFn getRegisterTypeMapFn)
     {
         if (port_data.isMember("enabled") && !port_data["enabled"].asBool())
             return;
@@ -463,63 +413,35 @@ namespace {
         auto port_type = port_data.get("port_type", "serial").asString();
 
         if (port_type == "serial") {
-            if (!port_data.isMember("path")) {
-                throw TConfigParserException("path is not specified");
-            }
-
             auto serial_port_settings = make_shared<TSerialPortSettings>(port_data["path"].asString());
 
-            if (port_data.isMember("baud_rate"))
-                serial_port_settings->BaudRate = GetInt(port_data, "baud_rate");
+            Get(port_data, "baud_rate", serial_port_settings->BaudRate);
 
             if (port_data.isMember("parity"))
                 serial_port_settings->Parity = port_data["parity"].asCString()[0]; // FIXME (can be '\0')
 
-            if (port_data.isMember("data_bits"))
-                serial_port_settings->DataBits = GetInt(port_data, "data_bits");
-
-            if (port_data.isMember("stop_bits"))
-                serial_port_settings->StopBits = GetInt(port_data, "stop_bits");
+            Get(port_data, "data_bits", serial_port_settings->DataBits);
+            Get(port_data, "stop_bits", serial_port_settings->StopBits);
 
             port_config->ConnSettings = serial_port_settings;
-
-        } else if (port_type == "tcp") {
-            if (!port_data.isMember("address")) {
-                throw TConfigParserException("address is not specified");
-            }
-
-            if (!port_data.isMember("port")) {
-                throw TConfigParserException("port number is not specified");
+        } else {
+            if (port_type != "tcp") {
+                throw TConfigParserException("invalid port_type: '" + port_type + "'");
             }
 
             auto tcp_port_settings = make_shared<TTcpPortSettings>(port_data["address"].asString(), GetInt(port_data, "port"));
 
-            if (port_data.isMember("connection_timeout_ms")) {
-                tcp_port_settings->ConnectionTimeout = chrono::milliseconds(GetInt(port_data, "connection_timeout_ms"));
-            }
-
-            if (port_data.isMember("connection_max_fail_cycles")) {
-                tcp_port_settings->ConnectionMaxFailCycles = GetInt(port_data, "connection_max_fail_cycles");
-            }
+            Get(port_data, "connection_timeout_ms",      tcp_port_settings->ConnectionTimeout);
+            Get(port_data, "connection_max_fail_cycles", tcp_port_settings->ConnectionMaxFailCycles);
 
             port_config->ConnSettings = tcp_port_settings;
-
-        } else {
-            throw TConfigParserException("invalid port_type: '" + port_type + "'");
         }
 
-        if (port_data.isMember("response_timeout_ms"))
-            port_config->ConnSettings->ResponseTimeout = std::chrono::milliseconds(
-                GetInt(port_data, "response_timeout_ms"));
+        Get(port_data, "response_timeout_ms", port_config->ConnSettings->ResponseTimeout);
+        Get(port_data, "poll_interval",       port_config->PollInterval);
+        Get(port_data, "guard_interval_us",   port_config->GuardInterval);
 
-        if (port_data.isMember("poll_interval"))
-            port_config->PollInterval = std::chrono::milliseconds(
-                GetInt(port_data, "poll_interval"));
-
-        if (port_data.isMember("guard_interval_us"))
-            port_config->GuardInterval = chrono::microseconds(GetInt(port_data, "guard_interval_us"));
-
-        const Json::Value array = port_data["devices"];
+        const Json::Value& array = port_data["devices"];
         for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index)
             LoadDevice(port_config, array[index], id_prefix + std::to_string(index), templates, getRegisterTypeMapFn);
 
@@ -527,36 +449,15 @@ namespace {
     }
 }
 
-TTemplate::TTemplate(const Json::Value& device_data):
-    DeviceData(device_data)
-{
-    const Json::Value channels = DeviceData["channels"];
-    if (!channels.isArray())
-        throw TConfigParserException("template channels member must be an object");
-    for(Json::ArrayIndex i = 0; i < channels.size(); ++i) {
-        const auto& channel_data = channels[i];
-        if (!channel_data.isObject())
-            throw TConfigParserException("template channel definition is not an object");
-        if (!channel_data.isMember("name"))
-            throw TConfigParserException("template channel without name");
-        std::string name = channel_data["name"].asString();
-        if (name.empty())
-            throw TConfigParserException("template channel with empty name");
-    }
-}
-
-TTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Value& templateSchema)
+TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema): 
+    Validator(new  WBMQTT::JSON::TValidator(templateSchema)) 
 {
     DIR *dir;
     struct dirent *dirp;
     struct stat filestat;
 
     if ((dir = opendir(templatesDir.c_str())) == NULL)
-        throw TConfigParserException("Cannot open templates directory");
-
-    TTemplateMap templates;
-
-    WBMQTT::JSON::TValidator validator(templateSchema);
+        throw TConfigParserException("Cannot open " + templatesDir + " directory");
 
     while ((dirp = readdir(dir))) {
         std::string dname = dirp->d_name;
@@ -567,19 +468,37 @@ TTemplateMap LoadConfigTemplates(const std::string& templatesDir, const Json::Va
         if (stat(filepath.c_str(), &filestat)) continue;
         if (S_ISDIR(filestat.st_mode)) continue;
 
-        Json::Value root;
         try {
-            root =WBMQTT::JSON::Parse(filepath);
-            validator.Validate(root);
+            Json::Value root = WBMQTT::JSON::Parse(filepath);
+            TemplateFiles[root["device_type"].asString()] = filepath;
         } catch (const std::exception& e) {
             LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
             continue;
         }
-
-        templates[root["device_type"].asString()] = std::make_shared<TTemplate>(root["device"]);
     }
     closedir(dir);
-    return templates;
+}
+
+const Json::Value& TTemplateMap::GetTemplate(const std::string& deviceType) 
+{
+    if (!Validator) {
+        throw std::runtime_error("Can't find template for " + deviceType);
+    }
+    try {
+        return ValidTemplates.at(deviceType);
+    } catch ( const std::out_of_range& ) {
+        std::string filePath;
+        try {
+            filePath = TemplateFiles.at(deviceType);
+        } catch ( const std::out_of_range& ) {
+            throw std::runtime_error("Can't find template for " + deviceType);
+        }
+        Json::Value root(WBMQTT::JSON::Parse(filePath));
+        Validator->Validate(root);
+        TemplateFiles.erase(filePath);
+        ValidTemplates.emplace(filePath, root["device"]);
+        return ValidTemplates[filePath];
+    }
 }
 
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema)
@@ -603,7 +522,7 @@ void AddRegisterType(Json::Value& configSchema, const std::string& registerType)
 
 Json::Value LoadConfigSchema(const std::string& schemaFileName)
 {
-    Json::Value configSchema = WBMQTT::JSON::Parse(schemaFileName);
+    Json::Value configSchema(Parse(schemaFileName));
     // We use nonstandard syntax for #/definitions/device/properties/device_type in enum field
     // "enum": {
     //     "directories": ["/usr/share/wb-mqtt-serial/templates"],
@@ -617,17 +536,17 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName)
 PHandlerConfig LoadConfig(const std::string& configFileName, 
                           TGetRegisterTypeMapFn getRegisterTypeMapFn,
                           const Json::Value& configSchema,
-                          const TTemplateMap& templates)
+                          TTemplateMap& templates)
 {
     PHandlerConfig handlerConfig(new THandlerConfig);
-    Json::Value Root = WBMQTT::JSON::Parse(configFileName);
+    Json::Value Root(Parse(configFileName));
 
-    WBMQTT::JSON::Validate(Root, configSchema);
+    Validate(Root, configSchema);
 
-    WBMQTT::JSON::Get(Root, "debug", handlerConfig->Debug);
-    WBMQTT::JSON::Get(Root, "max_unchanged_interval", handlerConfig->MaxUnchangedInterval);
+    Get(Root, "debug", handlerConfig->Debug);
+    Get(Root, "max_unchanged_interval", handlerConfig->MaxUnchangedInterval);
 
-    const Json::Value array = Root["ports"];
+    const Json::Value& array = Root["ports"];
     for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index)
         LoadPort(handlerConfig, array[index], "wb-modbus-" + std::to_string(index) + "-", templates, getRegisterTypeMapFn); // XXX old default prefix for compat
 
@@ -639,6 +558,14 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
     }
 
     throw TConfigParserException("no devices defined in config. Nothing to do");
+}
+
+PHandlerConfig LoadConfig(const std::string& configFileName,
+                          TGetRegisterTypeMapFn getRegisterTypeMapFn,
+                          const Json::Value& configSchema)
+{
+    TTemplateMap t;
+    return LoadConfig(configFileName, getRegisterTypeMapFn, configSchema, t);
 }
 
 void TPortConfig::AddDeviceConfig(PDeviceConfig device_config)

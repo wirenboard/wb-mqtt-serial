@@ -1364,9 +1364,9 @@ class TConfigParserTest: public TLoggedFixture {};
 TEST_F(TConfigParserTest, Parse)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    TTemplateMap templateMap(LoadConfigTemplates(GetDataFilePath("device-templates/"),
-                                                 LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
-                                                                             configSchema)));
+    TTemplateMap templateMap(GetDataFilePath("device-templates/"),
+                             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
+                                                                             configSchema));
 
     PHandlerConfig config = LoadConfig(GetDataFilePath("configs/parse_test.json"), 
                                                        TSerialDeviceFactory::GetRegisterTypes,

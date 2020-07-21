@@ -134,12 +134,13 @@ int main(int argc, char *argv[])
     PHandlerConfig handlerConfig;
     try {
         Json::Value configSchema = LoadConfigSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json");
+        TTemplateMap templates(templatesFolder, 
+                               LoadConfigTemplatesSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json", 
+                                                         configSchema));
         handlerConfig = LoadConfig(configFilename,
                                   TSerialDeviceFactory::GetRegisterTypes,
                                   configSchema,
-                                  LoadConfigTemplates(templatesFolder, 
-                                                      LoadConfigTemplatesSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json", 
-                                                                                configSchema)));
+                                  templates);
     } catch (const std::exception& e) {
         LOG(Error) << "FATAL: " << e.what();
         return 1;
