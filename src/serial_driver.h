@@ -25,7 +25,8 @@ public:
 private:
     std::vector<PSerialPortDriver> PortDrivers;
     std::vector<std::thread>       PortLoops;
-    std::atomic_bool               Active;
+    std::mutex                     ActiveMutex;
+    bool                           Active;
 };
 
 typedef std::shared_ptr<TMQTTSerialDriver> PMQTTSerialDriver;

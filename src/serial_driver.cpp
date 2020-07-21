@@ -53,14 +53,18 @@ void TMQTTSerialDriver::ClearDevices()
 
 void TMQTTSerialDriver::Start()
 {
-    if (Active.load()) {
-        throw runtime_error("Start on already active TMQTTSerialDriver");
+    {
+        std::lock_guard<std::mutex> lg(ActiveMutex);
+        if (Active) {
+            LOG(Error) << "Attempt to start already active TMQTTSerialDriver";
+            return;
+        }
+        Active = true;
     }
 
-    Active.store(true);
     for (const auto& portDriver: PortDrivers) {
         PortLoops.emplace_back([&]{
-            while (Active.load()) {
+            while (Active) {
                 portDriver->Cycle();
             }
         });
@@ -69,11 +73,15 @@ void TMQTTSerialDriver::Start()
 
 void TMQTTSerialDriver::Stop()
 {
-    if (!Active.load()) {
-        throw runtime_error("StopLoop on non active TMQTTSerialDriver");
+    {
+        std::lock_guard<std::mutex> lg(ActiveMutex);
+        if (!Active) {
+            LOG(Error) << "Attempt to stop non active TMQTTSerialDriver";
+            return;
+        }
+        Active = false;
     }
 
-    Active.store(false);
     for (auto & loopThread : PortLoops) {
         if (loopThread.joinable()) {
             loopThread.join();
