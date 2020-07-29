@@ -20,24 +20,30 @@
 using namespace std;
 using namespace WBMQTT::JSON;
 
-template <> inline bool WBMQTT::JSON::Is<std::chrono::milliseconds>(const Json::Value& value)
+namespace WBMQTT
 {
-    return value.isInt();
-}
+    namespace JSON
+    {
+        template <> inline bool Is<std::chrono::milliseconds>(const Json::Value& value)
+        {
+            return value.isInt();
+        }
 
-template <> inline std::chrono::milliseconds WBMQTT::JSON::As<std::chrono::milliseconds>(const Json::Value& value)
-{
-    return std::chrono::milliseconds(value.asInt());
-}
+        template <> inline std::chrono::milliseconds As<std::chrono::milliseconds>(const Json::Value& value)
+        {
+            return std::chrono::milliseconds(value.asInt());
+        }
 
-template <> inline bool WBMQTT::JSON::Is<std::chrono::microseconds>(const Json::Value& value)
-{
-    return value.isInt();
-}
+        template <> inline bool Is<std::chrono::microseconds>(const Json::Value& value)
+        {
+            return value.isInt();
+        }
 
-template <> inline std::chrono::microseconds WBMQTT::JSON::As<std::chrono::microseconds>(const Json::Value& value)
-{
-    return std::chrono::microseconds(value.asInt());
+        template <> inline std::chrono::microseconds As<std::chrono::microseconds>(const Json::Value& value)
+        {
+            return std::chrono::microseconds(value.asInt());
+        }
+    }
 }
 
 namespace {
