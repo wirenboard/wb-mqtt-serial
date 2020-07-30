@@ -123,7 +123,7 @@ namespace
 int main(int argc, char *argv[])
 {
     WBMQTT::TMosquittoMqttConfig mqttConfig;
-    string configFilename;
+    string configFilename("/etc/wb-mqtt-serial.conf");
 
     WBMQTT::SignalHandling::Handle({ SIGINT });
     WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ WBMQTT::SignalHandling::Stop(); });
