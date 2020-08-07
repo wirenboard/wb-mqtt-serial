@@ -8,7 +8,7 @@
             {
                 "name": "Internal Temperature",
                 "type": "temperature",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": "6",
                 "format": "s16",
                 "scale": 0.0625
@@ -16,7 +16,7 @@
             {
                 "name": "External Sensor 1",
                 "type": "temperature",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": "7",
                 "format": "s16",
                 "scale": 0.0625,
@@ -25,7 +25,7 @@
             {
                 "name": "External Sensor 2",
                 "type": "temperature",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": "8",
                 "format": "s16",
                 "scale": 0.0625,
@@ -41,7 +41,7 @@
             {
                 "name": "Serial NO",
                 "type": "text",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": 270,
                 "format": "u32"
             }

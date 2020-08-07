@@ -39,14 +39,14 @@
             },
             {
                 "name": "Button 1 counter",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "readonly": true,
                 "address": 32,
                 "type": "value"
             },
             {
                 "name": "Button 2 counter",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "readonly": true,
                 "address": 33,
                 "type": "value"
@@ -61,7 +61,7 @@
             {
                 "name": "Serial",
                 "type": "text",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": 270,
                 "format": "u32"
             }
