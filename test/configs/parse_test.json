@@ -183,6 +183,28 @@
                 {
                     "device_type" : "TestDeviceOverride",
                     "slave_id": 6
+                },
+                {
+                    "device_type" : "TestDeviceOverride2",
+                    "slave_id": 7,
+                    "enabled": true,
+                    "channels": [
+                        {
+                            "name" : "Input",
+                            "poll_interval": 300,
+                            "readonly": false
+                        },
+                        {
+                            "name": "Holding",
+                            "poll_interval": 10000,
+                            "readonly": true
+                        },
+                        {
+                            "name": "Holding readonly",
+                            "poll_interval": 1000,
+                            "readonly": false
+                        }                        
+                    ]
                 }
             ]
         },

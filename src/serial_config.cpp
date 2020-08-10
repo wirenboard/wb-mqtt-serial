@@ -112,7 +112,8 @@ namespace {
 
     PRegisterConfig LoadRegisterConfig(PDeviceConfig device_config,
                                        const Json::Value& register_data,
-                                       std::string& default_type_str)
+                                       std::string& default_type_str,
+                                       const std::string& channel_name)
     {
         int address, bit_offset = 0, bit_width = 0;
         {
@@ -129,13 +130,17 @@ namespace {
                     bit_offset = stoi(addressStr.substr(pos1 + 1, pos2));
 
                     if (bit_offset < 0 || bit_offset > 255) {
-                        throw TConfigParserException("error during address parsing: bit shift must be in range [0, 255] (address string: '" + addressStr + "')");
+                        throw TConfigParserException("channel \"" + channel_name 
+                                                      + "\" error during address parsing: bit shift must be in range [0, 255] (address string: '" 
+                                                      + addressStr + "')");
                     }
 
                     if (pos2 != string::npos) {
                         bit_width = stoi(addressStr.substr(pos2 + 1));
                         if (bit_width < 0 || bit_width > 64) {
-                            throw TConfigParserException("error during address parsing: bit count must be in range [0, 64] (address string: '" + addressStr + "')");
+                            throw TConfigParserException("channel \"" + channel_name 
+                                                      + "\" error during address parsing: bit count must be in range [0, 64] (address string: '"
+                                                      + addressStr + "')");
                         }
                     }
                 }
@@ -148,7 +153,7 @@ namespace {
         default_type_str = "text";
         auto it = device_config->TypeMap->find(reg_type_str);
         if (it == device_config->TypeMap->end())
-            throw TConfigParserException("invalid register type: " + reg_type_str + " -- " + device_config->DeviceType);
+            throw TConfigParserException("channel \"" + channel_name + "\" invalid register type: " + reg_type_str + " -- " + device_config->DeviceType);
         if (!it->second.DefaultControlType.empty())
             default_type_str = it->second.DefaultControlType;
 
@@ -163,7 +168,13 @@ namespace {
         double scale        = Read(register_data, "scale",    1.0); // TBD: check for zero, too
         double offset       = Read(register_data, "offset",   0);
         double round_to     = Read(register_data, "round_to", 0.0);
-        bool force_readonly = Read(register_data, "readonly", false);
+        bool   readonly     = it->second.ReadOnly;
+        if (Get(register_data, "readonly", readonly)) {
+            if (it->second.ReadOnly && !readonly) {
+                LOG(Warn) << "Channel \"" << channel_name << "\" unable to make register of type \"" << it->second.Name << "\" writable";
+                readonly = true;
+            }
+        }
 
         bool has_error_value = false;
         uint64_t error_value = 0;
@@ -174,7 +185,7 @@ namespace {
 
         PRegisterConfig reg = TRegisterConfig::Create(
             it->second.Index,
-            address, format, scale, offset, round_to, true, force_readonly || it->second.ReadOnly,
+            address, format, scale, offset, round_to, true, readonly,
             it->second.Name, has_error_value, error_value, word_order, bit_offset, bit_width);
         
         Get(register_data, "poll_interval", reg->PollInterval);
@@ -183,6 +194,7 @@ namespace {
 
     void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
     {
+        std::string name = channel_data["name"].asString();
         std::string default_type_str;
         std::vector<PRegisterConfig> registers;
         if (channel_data.isMember("consists_of")) {
@@ -192,7 +204,7 @@ namespace {
             const Json::Value& reg_data = channel_data["consists_of"];
             for(Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
                 std::string def_type;
-                auto reg = LoadRegisterConfig(device_config, reg_data[i], def_type);
+                auto reg = LoadRegisterConfig(device_config, reg_data[i], def_type, name);
                 /* the poll_interval specified for the specific register has a precedence over the one specified for the compound channel */
                 if ((reg->PollInterval.count() < 0) && (poll_interval.count() >= 0))
                     reg->PollInterval = poll_interval;
@@ -204,7 +216,7 @@ namespace {
                                                 "in one channel -- ") + device_config->DeviceType);
             }
         } else {
-            registers.push_back(LoadRegisterConfig(device_config, channel_data, default_type_str));
+            registers.push_back(LoadRegisterConfig(device_config, channel_data, default_type_str, name));
         }
 
         std::string type_str(Read(channel_data, "type", default_type_str));
@@ -226,7 +238,6 @@ namespace {
         if (channel_data.isMember("max"))
             max = GetInt(channel_data, "max");
 
-        std::string name = channel_data["name"].asString();
         int order        = device_config->NextOrderValue();
         PDeviceChannelConfig channel(new TDeviceChannelConfig(name, type_str, device_config->Id, order,
                                                 on_value, max, registers[0]->ReadOnly,
@@ -234,52 +245,59 @@ namespace {
         device_config->AddChannel(channel);
     }
 
-    void AppendProperties(Json::Value& device_data, const Json::Value& tmpl, const std::string& logPrefix)
+    void MergeChannelProperties(Json::Value& dst, const Json::Value& src, const std::string& logPrefix)
     {
-        for (auto it_prop = tmpl.begin(); it_prop != tmpl.end(); ++it_prop) {
-            if (it_prop.name() != "channels") {
-                // Fields from current device config take precedence over template field values
-                if (device_data.isMember(it_prop.name())) {
-                    LOG(Info) << logPrefix << " override property " << it_prop.name();
-                } else {
-                    device_data[it_prop.name()] = *it_prop;
-                }
+        for (auto itProp = src.begin(); itProp != src.end(); ++itProp) {
+            if (itProp.name() == "poll_interval") {
+                dst[itProp.name()] = *itProp;
+                LOG(Info) << logPrefix << " override property \"" << itProp.name() << "\"";
+                continue;
             }
+            if (itProp.name() == "readonly") {
+                if ((itProp ->asString() != "true") && (dst.isMember(itProp.name())) && (dst[itProp.name()].asString() == "true")) {
+                    LOG(Warn) << logPrefix << " can't override property \"" << itProp.name() << "\"";
+                    continue;
+                }
+                if (dst[itProp.name()] != *itProp) {
+                    dst[itProp.name()] = *itProp;
+                    LOG(Info) << logPrefix << " override property \"" << itProp.name() << "\"";
+                }
+                continue;
+            }
+            if (itProp.name() == "name") {
+                continue;
+            }
+            LOG(Warn) << logPrefix << " can't override property \"" << itProp.name() << "\"";
         }
     }
 
-    void AppendUniqueChannels(Json::Value& device_data, const Json::Value& tmpl, const std::string& logPrefix)
+    void UpdateChannels(Json::Value& dst, const Json::Value& src, const std::string& logPrefix)
     {
         std::unordered_map<std::string, Json::ArrayIndex> channelNames;
 
-        for (Json::ArrayIndex i = 0; i < device_data.size(); ++i) {
-            channelNames.emplace(device_data[i]["name"].asString(), i);
+        for (Json::ArrayIndex i = 0; i < dst.size(); ++i) {
+            channelNames.emplace(dst[i]["name"].asString(), i);
         }
 
-        Json::Value array;
-
-        for (const auto& elem: tmpl) {
+        for (const auto& elem: src) {
             string channelName(elem["name"].asString());
             if (channelNames.count(channelName)) {
-                AppendProperties(array.append(device_data[channelNames[channelName]]), elem, logPrefix + " channel " + channelName);
-                channelNames.erase(channelName);
+                MergeChannelProperties(dst[channelNames[channelName]], elem, logPrefix + " channel \"" + channelName + "\"");
             } else {
-                array.append(elem);
+                dst.append(elem);
             }
         }
-
-        for (const auto& elem: device_data) {
-            if (channelNames.count(elem["name"].asString())) {
-                array.append(elem);
-            }
-        }
-        device_data = array;
     }
 
-    void AppendTemplateData(Json::Value& device_data, const Json::Value& tmpl, const std::string& deviceName)
+    void AppendUserData(Json::Value& dst, const Json::Value& src, const std::string& deviceName)
     {
-        AppendProperties(device_data, tmpl, deviceName);
-        AppendUniqueChannels(device_data["channels"], tmpl["channels"], deviceName);
+        for (auto itProp = src.begin(); itProp != src.end(); ++itProp) {
+            if (itProp.name() != "channels") {
+                LOG(Info) << deviceName << " override property " << itProp.name();
+                dst[itProp.name()] = *itProp;
+            }
+        }
+        UpdateChannels(dst["channels"], src["channels"], "\"" + deviceName + "\"");
     }
 
     void LoadSetupItem(PDeviceConfig device_config, const Json::Value& item_data)
@@ -386,9 +404,8 @@ namespace {
                 if (device_config->Id == default_id)
                     device_config->Id = tmpl["id"].asString() + "_" + device_config->SlaveId;
             }
-            Json::Value merged_data(device_data);
-            AppendTemplateData(merged_data, tmpl, device_config->Name);
-            LoadDeviceTemplatableConfigPart(device_config, merged_data, getRegisterTypeMapFn);
+            AppendUserData(tmpl, device_data, device_config->Name);
+            LoadDeviceTemplatableConfigPart(device_config, tmpl, getRegisterTypeMapFn);
         } else {
             LoadDeviceTemplatableConfigPart(device_config, device_data, getRegisterTypeMapFn);
         }

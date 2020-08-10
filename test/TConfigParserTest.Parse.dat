@@ -503,6 +503,79 @@ Ports:
                 PollInterval: 100
                 ErrorValue: not set
                 WordOrder: BigEndian
+        ------
+        Id: TestDeviceOverride2:template_7
+        Name: TestDeviceOverride2:template 7
+        SlaveId: 7
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 105
+        DeviceTimeout: 3000
+        DeviceChannels:
+            ------
+            Name: Input
+            Type: text
+            DeviceId: TestDeviceOverride2:template_7
+            Order: 1
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 300
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Holding
+            Type: text
+            DeviceId: TestDeviceOverride2:template_7
+            Order: 2
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: holding: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: holding
+                PollInterval: 10000
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Holding readonly
+            Type: text
+            DeviceId: TestDeviceOverride2:template_7
+            Order: 3
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: holding: 2
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: holding
+                PollInterval: 1000
+                ErrorValue: not set
+                WordOrder: BigEndian
     ------
     ConnSettings: <192.168.0.1:3000 timeout 500>
     PollInterval: 20
