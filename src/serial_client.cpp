@@ -72,8 +72,15 @@ void TSerialClient::Connect()
         return;
     if (!Handlers.size())
         throw TSerialDeviceException("no registers defined");
-    if (!Port->IsOpen())
-        Port->Open();
+    if (!Port->IsOpen()) {
+        try {
+            Port->Open();
+        } catch (const TSerialDeviceException& e) {
+            LOG(Warn) << e.what();
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            return;
+        }
+    }
     PrepareRegisterRanges();
     Active = true;
 }
