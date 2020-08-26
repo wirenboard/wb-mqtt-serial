@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 
     WBMQTT::SignalHandling::Handle({ SIGINT });
     WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ WBMQTT::SignalHandling::Stop(); });
-    WBMQTT::SetThreadName("main");
+    WBMQTT::SetThreadName("wb-mqtt-serial");
 
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
 
@@ -142,32 +142,32 @@ int main(int argc, char *argv[])
                                   configSchema,
                                   templates);
     } catch (const std::exception& e) {
-        LOG(Error) << "FATAL: " << e.what();
-        return 1;
+        LOG(Error) << e.what();
+        return 0;
     }
 
-    if (handlerConfig->Debug)
-        Debug.SetEnabled(true);
-
-    if (mqttConfig.Id.empty())
-        mqttConfig.Id = driverName;
-
-    auto mqtt = WBMQTT::NewMosquittoMqttClient(mqttConfig);
-    auto backend = WBMQTT::NewDriverBackend(mqtt);
-    auto driver = WBMQTT::NewDriver(WBMQTT::TDriverArgs{}
-        .SetId(driverName)
-        .SetBackend(backend)
-        .SetUseStorage(true)
-        .SetReownUnknownDevices(true)
-        .SetStoragePath(libwbmqttDbFile)
-    );
-
-    driver->StartLoop();
-    WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ driver->StopLoop(); });
-
-    driver->WaitForReady();
-
     try {
+        if (handlerConfig->Debug)
+            Debug.SetEnabled(true);
+
+        if (mqttConfig.Id.empty())
+            mqttConfig.Id = driverName;
+
+        auto mqtt = WBMQTT::NewMosquittoMqttClient(mqttConfig);
+        auto backend = WBMQTT::NewDriverBackend(mqtt);
+        auto driver = WBMQTT::NewDriver(WBMQTT::TDriverArgs{}
+            .SetId(driverName)
+            .SetBackend(backend)
+            .SetUseStorage(true)
+            .SetReownUnknownDevices(true)
+            .SetStoragePath(libwbmqttDbFile)
+        );
+
+        driver->StartLoop();
+        WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ driver->StopLoop(); });
+
+        driver->WaitForReady();
+
         auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
 
         if (serialDriver->WriteInitValues()) {
