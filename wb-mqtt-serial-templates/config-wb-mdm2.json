@@ -2,7 +2,8 @@
     "device_type": "WB-MDM2", 
     "device": {
         "name": "WB-MDM2", 
-        "id": "wb-mdm2", 
+        "id": "wb-mdm2",
+        "delay_ms": 8,
         "channels": [
             {
                 "name": "Input Voltage", 

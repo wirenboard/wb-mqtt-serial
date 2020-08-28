@@ -3,7 +3,8 @@
     "device": {
         "name": "WB-MAI2-mini/CC", 
         "id": "wb-mai2-mini", 
-        "max_read_registers": 0, 
+        "max_read_registers": 0,
+        "delay_ms": 8,
         "channels": [
             {
                 "name": "Current input 1 (mA)", 

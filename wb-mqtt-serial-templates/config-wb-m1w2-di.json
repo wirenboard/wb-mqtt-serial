@@ -4,6 +4,7 @@
         "name": "WB-M1W2",
         "id": "wb-m1w2",
         "max_read_registers": 0,
+        "delay_ms": 8,
         "channels": [
             {
                 "name": "Internal Temperature",

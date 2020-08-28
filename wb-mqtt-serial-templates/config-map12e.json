@@ -3,7 +3,8 @@
  "device": {
   "name": "WB-MAP12E", 
   "id": "wb-map12e", 
-  "max_read_registers": 60, 
+  "max_read_registers": 60,
+  "delay_ms": 8,
   "channels": [
    {
     "name": "Urms L1", 

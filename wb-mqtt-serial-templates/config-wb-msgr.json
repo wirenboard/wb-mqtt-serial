@@ -4,6 +4,7 @@
         "name": "WB-MSGR",
         "id": "wb-msgr",
         "max_read_registers": 0,
+        "delay_ms": 8,
         "channels": [
             {
                 "name": "Relay",

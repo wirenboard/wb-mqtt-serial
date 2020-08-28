@@ -4,6 +4,7 @@
         "name": "WB-MSW v.3",
         "id": "wb-msw-v3",
         "max_read_registers": 0,
+        "delay_ms": 8,
         "channels": [
             {
                 "name": "Temperature",

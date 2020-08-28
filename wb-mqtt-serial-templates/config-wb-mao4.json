@@ -3,6 +3,7 @@
     "device": {
         "name": "WB-MAO4",
         "id": "wb-mao4",
+        "delay_ms": 8,
         "channels": [
             {
                 "name": "Channel 1",

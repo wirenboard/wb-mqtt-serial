@@ -4,6 +4,7 @@
   "name": "WB-MAP12H (+ harmonics)",
   "id": "wb-map12h",
   "max_read_registers": 60,
+  "delay_ms": 8,
   "channels": [
    {
     "name": "Urms L1",

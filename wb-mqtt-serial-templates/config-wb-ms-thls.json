@@ -5,6 +5,7 @@
         "name": "WB-MS-THLS",
         "id": "wb-ms-thls",
         "max_read_registers": 0,
+        "delay_ms": 8,
         "channels": [
             {
                 "name": "Temperature",
