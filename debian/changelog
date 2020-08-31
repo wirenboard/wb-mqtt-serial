@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.62.0) stable; urgency=medium
+
+  * Fix wrong device_type in config-wb-mao4.json (WB-MA04>WB-MAO4)
+
+ -- Andrey Radionov <andrey.radionov@wirenboard.ru>  Mon, 31 Aug 2020 16:21:36 +0300
+
 wb-mqtt-serial (1.61.0) stable; urgency=medium
 
   * add wbio-di-wd-14 template
