@@ -5,7 +5,7 @@
         "id": "s2k-sp1",
         "protocol": "s2k",
         "delay_ms": 50,
-        "response_timeout_ms": 65,
+        "response_timeout_ms": 100,
         "frame_timeout_ms": 65,
         "channels": [
             {

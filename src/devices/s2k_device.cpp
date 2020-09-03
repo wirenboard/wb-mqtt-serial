@@ -129,8 +129,7 @@ uint64_t TS2KDevice::ReadRegister(PRegister reg)
         command[6] = CrcS2K(command, 6);
         Port()->WriteBytes(command, 7);
         uint8_t response[256];
-//FIXME:!!!
-        int size = Port()->ReadFrame(response, 256, std::chrono::microseconds(PAUSE_US), std::chrono::microseconds(PAUSE_US));
+        int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
         if (size != 6 ||
            response[0] != (uint8_t)SlaveId ||
            response[1] != 0x5 ||
