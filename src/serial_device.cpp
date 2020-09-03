@@ -7,7 +7,7 @@
 #define LOG(logger) ::logger.Log() << "[serial device] "
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : Delay(config->Delay)
+    : FirstRequestDelay(config->FirstRequestDelay)
     , SerialPort(port)
     , _DeviceConfig(config)
     , _Protocol(protocol)
@@ -36,7 +36,7 @@ std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegi
 
 void TSerialDevice::Prepare()
 {
-    Port()->Sleep(Delay);
+    Port()->Sleep(FirstRequestDelay);
 }
 
 void TSerialDevice::EndPollCycle() {}
@@ -52,8 +52,9 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
         	continue;
         }
     	try {
-            if (DeviceConfig()->GuardInterval.count()){
-                Port()->Sleep(DeviceConfig()->GuardInterval);
+            //FIXME: Why is it here?
+            if (DeviceConfig()->RequestDelay.count()){
+                Port()->Sleep(DeviceConfig()->RequestDelay);
             }
             simple_range->SetValue(reg, ReadRegister(reg));
         } catch (const TSerialDeviceTransientErrorException& e) {

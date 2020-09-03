@@ -8,6 +8,9 @@
 #include <iostream>
 #include <utility>
 
+#include <linux/serial.h>
+#include <sys/ioctl.h>
+
 #define LOG(logger) ::logger.Log() << "[serial port] "
 
 using namespace WBMQTT;
@@ -50,8 +53,7 @@ namespace {
 };
 
 TSerialPort::TSerialPort(const PSerialPortSettings & settings)
-    : TFileDescriptorPort(settings)
-    , Settings(settings)
+    : Settings(settings)
 {
     memset(&OldTermios, 0, sizeof(termios));
 }
@@ -118,6 +120,16 @@ void TSerialPort::Open()
         auto error_code = errno;
         Close();
         throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcsetattr");
+    }
+
+    serial_struct serial; 
+    if (ioctl(Fd, TIOCGSERIAL, &serial) < 0 ) {
+        LOG(Warn) << "Can't get serial_struct for " << Settings->Device;
+    } else {
+        serial.flags |= ASYNC_LOW_LATENCY;
+        if (ioctl(Fd, TIOCSSERIAL, &serial)) {
+            LOG(Warn) << "Can't set ASYNC_LOW_LATENCY for " << Settings->Device;
+        }
     }
 
     SkipNoise();    // flush data from previous instance if any

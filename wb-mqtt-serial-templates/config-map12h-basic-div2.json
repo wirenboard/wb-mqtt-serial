@@ -5,6 +5,8 @@
   "id": "wb-map12h", 
   "max_read_registers": 60,
   "delay_ms": 8,
+  "response_timeout_ms": 23,
+  "frame_timeout_ms": 15,
   "channels": [
    {
     "name": "Urms L1", 

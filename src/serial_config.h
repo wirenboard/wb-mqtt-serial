@@ -64,10 +64,19 @@ struct TDeviceSetupItemConfig
 
 typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
 
-const int DEFAULT_INTER_DEVICE_DELAY_MS = 100;
 const int DEFAULT_ACCESS_LEVEL          = 1;
-const int DEFAULT_DEVICE_TIMEOUT_MS     = 3000;
 const int DEFAULT_DEVICE_FAIL_CYCLES    = 2;
+
+const std::chrono::milliseconds DefaultPollInterval(20);
+const std::chrono::milliseconds DefaultResponseTimeout(500);
+const std::chrono::milliseconds DefaultFirstRequestDelay(100);
+const std::chrono::milliseconds DefaultDeviceTimeout(3000);
+
+//Because of Linux we can't wait fixed time.
+//Let's wait 15 ms between bytes. It is an experimentaly found acceptable timeout.
+//Any way we'll get rare timeout misses.
+const std::chrono::milliseconds DefaultFrameTimeout(15);
+
 
 struct TDeviceConfig 
 {
@@ -83,16 +92,19 @@ struct TDeviceConfig
     /*! Delay before first request to device. 
     *   This garantees fixed silence period on bus to help device to find start frame condition
     * */
-    std::chrono::milliseconds           FirstRequestDelay      = std::chrono::milliseconds(DEFAULT_INTER_DEVICE_DELAY_MS);
+    std::chrono::milliseconds           FirstRequestDelay      = DefaultFirstRequestDelay;
 
-    //! Maximum allowed time from request to response.
+    //! Maximum allowed time from request to response. -1 if not set, DefaultResponseTimeout will be used.
     std::chrono::milliseconds           ResponseTimeout        = std::chrono::milliseconds(-1);
 
+    //! Minimum inter-frame delay. -1 if not set, DefaultFrameTimeout will be used.
+    std::chrono::milliseconds           FrameTimeout           = std::chrono::milliseconds(-1);
+
     //! The period of unsuccessful requests after which the device is considered disconected.
-    std::chrono::milliseconds           DeviceTimeout          = std::chrono::milliseconds(DEFAULT_DEVICE_TIMEOUT_MS);
+    std::chrono::milliseconds           DeviceTimeout          = DefaultDeviceTimeout;
 
     //! Delay before sending any request
-    std::chrono::microseconds           RequestDelay           = std::chrono::microseconds(0);
+    std::chrono::microseconds           RequestDelay           = std::chrono::microseconds::zero();
 
     int                                 AccessLevel            = DEFAULT_ACCESS_LEVEL;
     int                                 MaxRegHole             = 0;
@@ -117,8 +129,15 @@ struct TPortConfig
     PPortSettings              ConnSettings;
     int                        MaxUnchangedInterval;
     std::vector<PDeviceConfig> DeviceConfigs;
-    std::chrono::milliseconds  PollInterval          = std::chrono::milliseconds(20);
-    std::chrono::microseconds  RequestDelay          = std::chrono::microseconds(0);
+    std::chrono::milliseconds  PollInterval          = DefaultPollInterval;
+    std::chrono::microseconds  RequestDelay          = std::chrono::microseconds::zero();
+
+    /**
+     * @brief Maximum allowed time from request to response for any device connected to the port.
+     * -1 if not set, DefaultResponseTimeout will be used.
+     * The timeout is used if device's ResponseTimeout is not set or if ResponseTimeout is smaller.
+     */
+    std::chrono::milliseconds  ResponseTimeout = std::chrono::milliseconds(-1);
 
     void AddDeviceConfig(PDeviceConfig device_config);
 };

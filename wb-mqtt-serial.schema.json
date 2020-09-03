@@ -365,6 +365,14 @@
           "default": -1,
           "propertyOrder": 17
         },
+        "response_timeout_ms": {
+          "type": "integer",
+          "title": "Response timeout (ms)",
+          "description": "Specifies maximum device's response time.",
+          "minimum": -1,
+          "default": -1,
+          "propertyOrder": 17
+        },
         "device_timeout_ms": {
           "type": "integer",
           "title": "Device timeout (ms)",

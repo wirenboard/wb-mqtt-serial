@@ -98,7 +98,7 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
     }
 }
 
-uint8_t TFakeSerialPort::ReadByte()
+uint8_t TFakeSerialPort::ReadByte(const std::chrono::microseconds& /*timeout*/)
 {
     if (DoSimulateDisconnect) {
         return 0xff;
@@ -114,16 +114,18 @@ uint8_t TFakeSerialPort::ReadByte()
     return Resp[RespPos++];
 }
 
-int TFakeSerialPort::ReadFrame(uint8_t* buf, int count,
-                               const std::chrono::microseconds& timeout,
+int TFakeSerialPort::ReadFrame(uint8_t* buf, 
+                               int count,
+                               const std::chrono::microseconds& responseTimeout,
+                               const std::chrono::microseconds& frameTimeout,
                                TFrameCompletePred frame_complete)
 {
     if (DoSimulateDisconnect) {
         return 0;
     }
-    if (ExpectedFrameTimeout.count() >= 0 && timeout != ExpectedFrameTimeout)
+    if (ExpectedFrameTimeout.count() >= 0 && frameTimeout != ExpectedFrameTimeout)
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
-                                 std::to_string(timeout.count()) + " instead of " +
+                                 std::to_string(frameTimeout.count()) + " instead of " +
                                  std::to_string(ExpectedFrameTimeout.count()));
     int nread = 0;
     uint8_t* p = buf;

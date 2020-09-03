@@ -229,10 +229,9 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
     // Publish current value (make retained)
     LOG(Debug) << channel->Describe() << " <-- " << value;
 
-    {
-        auto tx = MqttDriver->BeginTx();
+    MqttDriver->AccessAsync([=](const PDriverTx & tx){
         tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetRawValue(tx, value);
-    }
+    });
 }
 
 TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)
@@ -272,10 +271,9 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
     }
 
     std::string errorStr = readError ? (writeError ? "rw" : "r") : (writeError ? "w" : "");
-    {
-        auto tx = MqttDriver->BeginTx();
+    MqttDriver->AccessAsync([=](const PDriverTx & tx){
         tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetError(tx, errorStr);
-    }
+    });
 }
 
 void TSerialPortDriver::Cycle()

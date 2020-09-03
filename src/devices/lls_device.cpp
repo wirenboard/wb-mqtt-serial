@@ -16,11 +16,6 @@
 
 #include "lls_device.h"
 
-namespace {
-    const int DefaultTimeoutMs = 1000;
-    const int FrameTimeoutMs = 50;
-}
-
 REGISTER_BASIC_INT_PROTOCOL("lls", TLLSDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
 TLLSDevice::TLLSDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
@@ -76,7 +71,7 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     buf[3] = dallas_crc8(buf, REQUEST_LEN -1);
     Port()->WriteBytes(buf, REQUEST_LEN);
 
-    int len = Port()->ReadFrame(buf, RESPONSE_BUF_LEN, this->DeviceConfig()->FrameTimeout);
+    int len = Port()->ReadFrame(buf, RESPONSE_BUF_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
     if (buf[0] != 0x3e) {
         throw TSerialDeviceTransientErrorException("invalid response prefix");
     }

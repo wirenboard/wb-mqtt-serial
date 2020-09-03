@@ -6,6 +6,9 @@
         "protocol": "modbus_io",
         "stride": 1000,
         "max_read_registers": 0,
+        "delay_ms": 8,
+        "response_timeout_ms": 23,
+        "frame_timeout_ms": 15,
         "setup": [
             {
                 "title": "IODIR",

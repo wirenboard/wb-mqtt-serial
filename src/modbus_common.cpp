@@ -708,7 +708,6 @@ namespace ModbusRTU // modbus rtu protocol utilities
     };
 
     const size_t DATA_SIZE = 3;  // number of bytes in ADU that is not in PDU (slaveID (1b) + crc value (2b))
-    const std::chrono::milliseconds FrameTimeout(500);   // libmodbus default
 
     // get pointer to PDU in message
     template <class T>
@@ -828,16 +827,15 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
             for (const auto & request: requests) {
                 // Send request
-                if (config->GuardInterval.count()) {
-                    port->Sleep(config->GuardInterval);
+                if (config->RequestDelay.count()) {
+                    port->Sleep(config->RequestDelay);
                 }
                 port->WriteBytes(request.data(), request.size());
 
                 {   // Receive response
                     TWriteResponse response;
-                    auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
 
-                    if (port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size())) > 0) {
+                    if (port->ReadFrame(response.data(), response.size(), config->ResponseTimeout, config->FrameTimeout, ExpectNBytes(response.size())) > 0) {
                         try {
                             ModbusRTU::CheckResponse(request, response);
                             Modbus::ParseWriteResponse(PDU(response));
@@ -893,8 +891,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
             modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
             " of device " << modbus_range->Device()->ToString();
 
-        if (config->GuardInterval.count()){
-            port->Sleep(config->GuardInterval);
+        if (config->RequestDelay.count()){
+            port->Sleep(config->RequestDelay);
         }
 
         std::string exception_message;
@@ -909,9 +907,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
             {   // Receive response
                 auto byte_count = InferReadResponseSize(modbus_range);
                 TReadResponse response(byte_count);
-                auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
 
-                auto rc = port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size()));
+                auto rc = port->ReadFrame(response.data(), response.size(), config->ResponseTimeout, config->FrameTimeout, ExpectNBytes(response.size()));
                 if (rc > 0) {
                     try {
                         ModbusRTU::CheckResponse(request, response);

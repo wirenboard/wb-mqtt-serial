@@ -5,6 +5,9 @@
         "name": "UCH-M121RX 0808",
         "id": "uchm121rx",
         "protocol": "uniel",
+        "delay_ms": 100,
+        "response_timeout_ms": 500,
+        "frame_timeout_ms": 100,
         "setup": [
             {
                 "title": "Relay 0 manual mode",

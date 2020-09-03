@@ -4,6 +4,9 @@
     "name": "PZEM",
     "id": "pzem",
     "max_read_registers": 60,
+    "delay_ms": 5,
+    "response_timeout_ms": 115,
+    "frame_timeout_ms": 19,
     "channels": [
       {
         "name": "Voltage",

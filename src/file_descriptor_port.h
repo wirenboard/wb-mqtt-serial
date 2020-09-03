@@ -1,7 +1,6 @@
 #pragma once
 
 #include "port.h"
-#include "port_settings.h"
 
 /*!
  * Abstract port class for file descriptor based ports implementation
@@ -9,13 +8,14 @@
 class TFileDescriptorPort: public TPort
 {
 public:
-    TFileDescriptorPort(const PPortSettings & settings);
+    TFileDescriptorPort();
     ~TFileDescriptorPort();
 
     void WriteBytes(const uint8_t * buf, int count) override;
-    uint8_t ReadByte() override;
+    uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
     int ReadFrame(uint8_t * buf, int count,
-                  const std::chrono::microseconds & timeout = std::chrono::microseconds(-1),
+                  const std::chrono::microseconds & responseTimeout,
+                  const std::chrono::microseconds& frameTimeout,
                   TFrameCompletePred frame_complete = 0) override;
     void SkipNoise() override;
     void Close() override;
@@ -31,7 +31,7 @@ protected:
     virtual void OnReadyEmptyFd();
 
     int             Fd;
-    PPortSettings   Settings;
+    std::chrono::time_point<std::chrono::high_resolution_clock> LastInteraction;
 private:
     int ReadAvailableData(uint8_t * buf, size_t max_read);
 };

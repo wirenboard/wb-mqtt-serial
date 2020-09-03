@@ -4,7 +4,9 @@
 	"device" : {
 		"name": "LC-103",
 		"id": "lc103",
-	    "enabled": true,
+		"enabled": true,
+		"delay_ms": 5,
+		"frame_timeout_ms": 19,
 	    "channels": [
 		{
 			"name": "Relay 1",

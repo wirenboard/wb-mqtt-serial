@@ -770,9 +770,9 @@ protected:
     void PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
 
     /** reconnect test functions **/
-    static void DeviceTimeoutOnly(const PSerialDevice & device, int timeout);
+    static void DeviceTimeoutOnly(const PSerialDevice & device, chrono::milliseconds timeout);
     static void DeviceMaxFailCyclesOnly(const PSerialDevice & device, int cycleCount);
-    static void DeviceTimeoutAndMaxFailCycles(const PSerialDevice & device, int timeout, int cycleCount);
+    static void DeviceTimeoutAndMaxFailCycles(const PSerialDevice & device, chrono::milliseconds timeout, int cycleCount);
 
     PMQTTSerialDriver StartReconnectTest1Device(bool miss = false, bool pollIntervalTest = false);
     PMQTTSerialDriver StartReconnectTest2Devices();
@@ -851,9 +851,9 @@ void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
     ASSERT_FALSE(Config->PortConfigs.empty()) << "device not found: " << device_name;
 }
 
-void TSerialClientIntegrationTest::DeviceTimeoutOnly(const PSerialDevice & device, int timeout)
+void TSerialClientIntegrationTest::DeviceTimeoutOnly(const PSerialDevice & device, chrono::milliseconds timeout)
 {
-    device->DeviceConfig()->DeviceTimeout = chrono::milliseconds(timeout);
+    device->DeviceConfig()->DeviceTimeout = timeout;
     device->DeviceConfig()->DeviceMaxFailCycles = 0;
 }
 
@@ -863,9 +863,9 @@ void TSerialClientIntegrationTest::DeviceMaxFailCyclesOnly(const PSerialDevice &
     device->DeviceConfig()->DeviceMaxFailCycles = cycleCount;
 }
 
-void TSerialClientIntegrationTest::DeviceTimeoutAndMaxFailCycles(const PSerialDevice & device, int timeout, int cycleCount)
+void TSerialClientIntegrationTest::DeviceTimeoutAndMaxFailCycles(const PSerialDevice & device, chrono::milliseconds timeout, int cycleCount)
 {
-    device->DeviceConfig()->DeviceTimeout = chrono::milliseconds(0);
+    device->DeviceConfig()->DeviceTimeout = timeout;
     device->DeviceConfig()->DeviceMaxFailCycles = cycleCount;
 }
 
@@ -1299,7 +1299,7 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()> && thu
 TEST_F(TSerialClientIntegrationTest, ReconnectTimeout)
 {
     ReconnectTest1Device([&]{
-        DeviceTimeoutOnly(Device, DEFAULT_DEVICE_TIMEOUT_MS);
+        DeviceTimeoutOnly(Device, DefaultDeviceTimeout);
     });
 }
 
@@ -1313,7 +1313,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectCycles)
 TEST_F(TSerialClientIntegrationTest, ReconnectTimeoutAndCycles)
 {
     ReconnectTest1Device([&]{
-        DeviceTimeoutAndMaxFailCycles(Device, DEFAULT_DEVICE_TIMEOUT_MS, 10);
+        DeviceTimeoutAndMaxFailCycles(Device, DefaultDeviceTimeout, 10);
     });
 }
 
@@ -1322,7 +1322,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectRegisterWithBigPollInterval)
     auto t1 = chrono::steady_clock::now();
 
     ReconnectTest1Device([&]{
-        DeviceTimeoutOnly(Device, DEFAULT_DEVICE_TIMEOUT_MS);
+        DeviceTimeoutOnly(Device, DefaultDeviceTimeout);
     }, true);
 
     auto time = chrono::steady_clock::now() - t1;
@@ -1333,7 +1333,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectRegisterWithBigPollInterval)
 TEST_F(TSerialClientIntegrationTest, Reconnect2)
 {
     ReconnectTest2Devices([&]{
-        DeviceTimeoutOnly(Device, DEFAULT_DEVICE_TIMEOUT_MS);
+        DeviceTimeoutOnly(Device, DefaultDeviceTimeout);
     });
 }
 
@@ -1343,6 +1343,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
 
     auto observer = StartReconnectTest1Device(true);
 
+
     Device->Registers[1] = 1;   // set control values to make sure that no setup section is written
     Device->Registers[2] = 2;
 
@@ -1351,7 +1352,9 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
         Device->SetIsConnected(true);
 
         Note() << "LoopOnce()";
+        auto future = MqttBroker->WaitForPublish("/devices/reconnect-test/controls/I2");
         observer->LoopOnce();
+        future.Wait();
 
         EXPECT_EQ(1, Device->Registers[1]);
         EXPECT_EQ(2, Device->Registers[2]);
@@ -1380,7 +1383,8 @@ TEST_F(TConfigParserTest, Parse)
         Emit() << "------";
         Emit() << "ConnSettings: " << port_config->ConnSettings->ToString();
         Emit() << "PollInterval: " << port_config->PollInterval.count();
-        Emit() << "GuardInterval: " << port_config->GuardInterval.count();
+        Emit() << "GuardInterval: " << port_config->RequestDelay.count();
+        Emit() << "Response timeout: " << port_config->ResponseTimeout.count();
 
         if(auto tcp_port_config = dynamic_pointer_cast<TTcpPortSettings>(port_config->ConnSettings)) {
             Emit() << "ConnectionTimeout: " << tcp_port_config->ConnectionTimeout.count();
@@ -1400,8 +1404,10 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "MaxRegHole: " << device_config->MaxRegHole;
             Emit() << "MaxBitHole: " << device_config->MaxBitHole;
             Emit() << "MaxReadRegisters: " << device_config->MaxReadRegisters;
-            Emit() << "GuardInterval: " << device_config->GuardInterval.count();
+            Emit() << "GuardInterval: " << device_config->RequestDelay.count();
             Emit() << "DeviceTimeout: " << device_config->DeviceTimeout.count();
+            Emit() << "Response timeout: " << device_config->ResponseTimeout.count();
+            Emit() << "Frame timeout: " << device_config->FrameTimeout.count();
             if (!device_config->DeviceChannelConfigs.empty()) {
                 Emit() << "DeviceChannels:";
                 for (auto device_channel: device_config->DeviceChannelConfigs) {

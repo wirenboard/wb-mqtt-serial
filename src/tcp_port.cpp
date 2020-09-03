@@ -25,8 +25,7 @@ namespace {
 }
 
 TTcpPort::TTcpPort(const PTcpPortSettings & settings)
-    : TFileDescriptorPort(settings)
-    , Settings(settings)
+    : Settings(settings)
     , RemainingFailCycles(settings->ConnectionMaxFailCycles)
 {}
 
@@ -170,10 +169,14 @@ void TTcpPort::WriteBytes(const uint8_t * buf, int count)
     }
 }
 
-int TTcpPort::ReadFrame(uint8_t * buf, int count, const std::chrono::microseconds & timeout, TFrameCompletePred frame_complete)
+int TTcpPort::ReadFrame(uint8_t * buf, 
+                        int count, 
+                        const std::chrono::microseconds & responseTimeout,
+                        const std::chrono::microseconds& frameTimeout,
+                        TFrameCompletePred frame_complete)
 {
     if (IsOpen()) {
-        return Base::ReadFrame(buf, count, timeout, frame_complete);
+        return Base::ReadFrame(buf, count, responseTimeout, frameTimeout, frame_complete);
     }
     LOG(Warn) << "Attempt to read from not open port";
     return 0;

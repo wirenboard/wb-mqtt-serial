@@ -4,6 +4,8 @@
     "device": {
         "name": "PD561Z",
         "id": "pd561z",
+        "delay_ms": 5,
+        "frame_timeout_ms": 19,
         "channels": [
             {
                 "name": "Uan",

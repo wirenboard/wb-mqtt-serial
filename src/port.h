@@ -27,11 +27,25 @@ public:
     virtual void WriteBytes(const uint8_t * buf, int count) = 0;
     void WriteBytes(const std::vector<uint8_t> buf) { WriteBytes(&buf[0], buf.size()); };
     void WriteBytes(const std::string buf) { WriteBytes((const uint8_t*) buf.c_str(), buf.size()); };
-    virtual uint8_t ReadByte() = 0;
-    virtual int ReadFrame(
-        uint8_t* buf, int count,
-        const std::chrono::microseconds& timeout = std::chrono::microseconds(-1),
-        TFrameCompletePred frame_complete = 0) = 0;
+    virtual uint8_t ReadByte(const std::chrono::microseconds& timeout) = 0;
+
+    /**
+     * @brief Read frame.
+     *        Throws TSerialDeviceTransientErrorExceptionБ if nothing received during timeout.
+     * 
+     * @param buf receiving buffer for frame
+     * @param count maximum bytes to receive
+     * @param responseTimeout maximum waiting timeout before first byte of frame
+     * @param frameTimeout minimum inter-frame delay
+     * @param frame_complete 
+     * @return int received byte count
+     */
+    virtual int ReadFrame(uint8_t* buf, 
+                          int count,
+                          const std::chrono::microseconds& responseTimeout,
+                          const std::chrono::microseconds& frameTimeout,
+                          TFrameCompletePred frame_complete = 0) = 0;
+
     virtual void SkipNoise() = 0;
 
     virtual void Sleep(const std::chrono::microseconds& us) = 0;

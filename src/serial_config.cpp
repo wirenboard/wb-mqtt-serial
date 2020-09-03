@@ -347,7 +347,8 @@ namespace {
         if (Get(device_data, "delay_usec", device_config->FirstRequestDelay)) // compat
             device_config->FirstRequestDelay = device_config->FirstRequestDelay / 1000;
 
-        Get(device_data, "frame_timeout_ms",       device_config->ResponseTimeout);
+        Get(device_data, "frame_timeout_ms",       device_config->FrameTimeout);
+        Get(device_data, "response_timeout_ms",    device_config->ResponseTimeout);
         Get(device_data, "device_timeout_ms",      device_config->DeviceTimeout);
         Get(device_data, "device_max_fail_cycles", device_config->DeviceMaxFailCycles);
         Get(device_data, "max_reg_hole",           device_config->MaxRegHole);
@@ -416,6 +417,13 @@ namespace {
             device_config->RequestDelay = port_config->RequestDelay;
         }
 
+        if (port_config->ResponseTimeout > device_config->ResponseTimeout) {
+            device_config->ResponseTimeout = port_config->ResponseTimeout;
+        }
+        if (device_config->ResponseTimeout.count() == -1) {
+            device_config->ResponseTimeout = DefaultResponseTimeout;
+        }
+
         port_config->AddDeviceConfig(device_config);
         for (auto channel: device_config->DeviceChannelConfigs) {
             for (auto reg: channel->RegisterConfigs) {
@@ -460,7 +468,7 @@ namespace {
             port_config->ConnSettings = tcp_port_settings;
         }
 
-        Get(port_data, "response_timeout_ms", port_config->ConnSettings->ResponseTimeout);
+        Get(port_data, "response_timeout_ms", port_config->ResponseTimeout);
         Get(port_data, "poll_interval",       port_config->PollInterval);
         Get(port_data, "guard_interval_us",   port_config->RequestDelay);
 

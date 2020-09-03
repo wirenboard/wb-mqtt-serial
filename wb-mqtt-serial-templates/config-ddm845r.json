@@ -4,6 +4,8 @@
     "name": "DDM845R",
     "id": "ddm845r",
     "guard_interval_us": 3500,
+    "delay_ms": 5,
+    "frame_timeout_ms": 19,
     "max_read_registers": 10,
     "channels": [
       {

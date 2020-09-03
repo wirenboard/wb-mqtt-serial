@@ -24,9 +24,10 @@ public:
     void Close();
     bool IsOpen() const;
     void WriteBytes(const uint8_t* buf, int count);
-    uint8_t ReadByte();
+    uint8_t ReadByte(const std::chrono::microseconds& timeout);
     int ReadFrame(uint8_t* buf, int count,
-                  const std::chrono::microseconds& timeout = std::chrono::microseconds(-1),
+                  const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
+                  const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
                   TFrameCompletePred frame_complete = 0);
     void SkipNoise();
 
