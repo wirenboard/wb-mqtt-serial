@@ -155,9 +155,16 @@ void TFakeSerialPort::SkipNoise()
 
 void TFakeSerialPort::Sleep(const std::chrono::microseconds& us)
 {
-    SkipFrameBoundary();
-    DumpWhatWasRead();
-    Fixture.Emit() << "Sleep(" << us.count() << ")";
+    if (us > std::chrono::microseconds::zero()) {
+        SkipFrameBoundary();
+        DumpWhatWasRead();
+        Fixture.Emit() << "Sleep(" << us.count() << ")";
+    }
+}
+
+void TFakeSerialPort::SleepSinceLastInteraction(const std::chrono::microseconds& us)
+{
+    Sleep(us);
 }
 
 bool TFakeSerialPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)

@@ -32,6 +32,7 @@ public:
     void SkipNoise();
 
     void Sleep(const std::chrono::microseconds & us) override;
+    void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
     bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
     TTimePoint CurrentTime() const override;
     void CycleEnd(bool ok) override;

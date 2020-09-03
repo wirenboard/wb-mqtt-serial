@@ -43,6 +43,7 @@ void TTcpPort::Open()
     try {
         OpenTcpPort();
         OnConnectionOk();
+        LastInteraction = std::chrono::high_resolution_clock::now();
     } catch (const TSerialDeviceException & e) {
         LOG(Error) << "port " << Settings->ToString() << ": " << e.what();
         Reset();

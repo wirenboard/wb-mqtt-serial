@@ -49,6 +49,7 @@ public:
     virtual void SkipNoise() = 0;
 
     virtual void Sleep(const std::chrono::microseconds& us) = 0;
+    virtual void SleepSinceLastInteraction(const std::chrono::microseconds& us) = 0;
     virtual bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) = 0;
     virtual TTimePoint CurrentTime() const = 0;
 };

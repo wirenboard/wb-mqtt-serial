@@ -827,9 +827,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
             for (const auto & request: requests) {
                 // Send request
-                if (config->RequestDelay.count()) {
-                    port->Sleep(config->RequestDelay);
-                }
+                port->SleepSinceLastInteraction(config->RequestDelay);
                 port->WriteBytes(request.data(), request.size());
 
                 {   // Receive response
@@ -891,9 +889,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
             modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
             " of device " << modbus_range->Device()->ToString();
 
-        if (config->RequestDelay.count()){
-            port->Sleep(config->RequestDelay);
-        }
+        port->SleepSinceLastInteraction(config->RequestDelay);
 
         std::string exception_message;
         try {

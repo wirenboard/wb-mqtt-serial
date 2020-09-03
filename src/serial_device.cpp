@@ -36,7 +36,7 @@ std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegi
 
 void TSerialDevice::Prepare()
 {
-    Port()->Sleep(FirstRequestDelay);
+    Port()->SleepSinceLastInteraction(FirstRequestDelay);
 }
 
 void TSerialDevice::EndPollCycle() {}
@@ -52,10 +52,7 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
         	continue;
         }
     	try {
-            //FIXME: Why is it here?
-            if (DeviceConfig()->RequestDelay.count()){
-                Port()->Sleep(DeviceConfig()->RequestDelay);
-            }
+            Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
             simple_range->SetValue(reg, ReadRegister(reg));
         } catch (const TSerialDeviceTransientErrorException& e) {
             simple_range->SetError(reg);

@@ -43,7 +43,7 @@ Publish: /devices/escort-db-2_1/controls/FW Version/meta/type: 'value' (QoS 1, r
 Publish: /devices/escort-db-2_1/controls/FW Version: '0' (QoS 1, retained)
 >>> LoopOnce()
 Open()
-Sleep(100000)
+Sleep(5000)
 SkipNoise()
 EnqueeCmdF0Response()
 >> 31 01 F0 C5

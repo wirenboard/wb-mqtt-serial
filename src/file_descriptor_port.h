@@ -23,6 +23,7 @@ public:
     bool IsOpen() const override;
 
     void Sleep(const std::chrono::microseconds & us) override;
+    void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
     bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
     TTimePoint CurrentTime() const override;
 

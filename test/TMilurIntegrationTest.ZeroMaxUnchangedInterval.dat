@@ -90,7 +90,6 @@ Publish: /devices/milur305_255/controls/Frequency: '0' (QoS 1, retained)
 Open()
 EnqueueMilurIgnoredPacketWorkaround()
 >> FF
-Sleep(100000)
 SkipNoise()
 SkipNoise()
 EnqueueMilurSessionSetupResponse()
