@@ -5,8 +5,8 @@
 class TModbusIOExpectations: public TModbusExpectationsBase
 {
 public:
-    void EnqueueSetupSectionWriteResponse();
-    void EnqueueCoilReadResponse();
+    void EnqueueSetupSectionWriteResponse(bool firstModule);
+    void EnqueueCoilReadResponse(bool firstModule);
     void EnqueueCoilWriteResponse();
 };
 

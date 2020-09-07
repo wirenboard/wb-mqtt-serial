@@ -170,10 +170,6 @@ int main(int argc, char *argv[])
 
         auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
 
-        if (serialDriver->WriteInitValues()) {
-            LOG(Debug) << "register-based setup performed.";
-        }
-
         serialDriver->Start();
 
         WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ serialDriver->Stop(); });

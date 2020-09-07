@@ -288,16 +288,6 @@ void TSerialPortDriver::Cycle()
     }
 }
 
-bool TSerialPortDriver::WriteInitValues()
-{
-    bool didWrite = false;
-    for (auto& device : Devices) {
-    	didWrite |= SerialClient->WriteSetupRegisters(device);
-    }
-
-    return didWrite;
-}
-
 void TSerialPortDriver::ClearDevices() noexcept
 {
     try {

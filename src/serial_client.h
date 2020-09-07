@@ -32,7 +32,6 @@ public:
     void SetReadCallback(const TReadCallback& callback);
     void SetErrorCallback(const TErrorCallback& callback);
     void NotifyFlushNeeded();
-    bool WriteSetupRegisters(PSerialDevice dev);
     void ClearDevices();
 
 private:

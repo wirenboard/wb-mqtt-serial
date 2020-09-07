@@ -2,44 +2,43 @@
 
 
 // setup section
-void TModbusIOExpectations::EnqueueSetupSectionWriteResponse()
+void TModbusIOExpectations::EnqueueSetupSectionWriteResponse(bool firstModule)
 {
-    //----- module 1------
-    Expector()->Expect(
-    WrapPDU({
-        0x06,   //function code
-        0x2A,   //starting address Hi   (11000)
-        0xF8,   //starting address Lo
-        0xFF,   //value Hi
-        0xFF,   //value Lo
-    }),
-    WrapPDU({
-        0x06,   //function code
-        0x2A,   //starting address Hi   (11000)
-        0xF8,   //starting address Lo
-        0xFF,   //value Hi
-        0xFF,   //value Lo
-    }), __func__);
+    if (firstModule) {
+        Expector()->Expect(
+            WrapPDU({
+                0x06,   //function code
+                0x2A,   //starting address Hi   (11000)
+                0xF8,   //starting address Lo
+                0xFF,   //value Hi
+                0xFF,   //value Lo
+            }),
+            WrapPDU({
+                0x06,   //function code
+                0x2A,   //starting address Hi   (11000)
+                0xF8,   //starting address Lo
+                0xFF,   //value Hi
+                0xFF,   //value Lo
+            }), __func__);
 
-    // config flag
-    Expector()->Expect(
-    WrapPDU({
-        0x06,   //function code
-        0x2A,   //starting address Hi   (10999)
-        0xF7,   //starting address Lo
-        0x00,   //value Hi
-        0x01,   //value Lo
-    }),
-    WrapPDU({
-        0x06,   //function code
-        0x2A,   //starting address Hi   (10999)
-        0xF7,   //starting address Lo
-        0x00,   //value Hi
-        0x01,   //value Lo
-    }), __func__);
-    //----- module 1------
-
-    //----- module 2------
+            // config flag
+            Expector()->Expect(
+            WrapPDU({
+                0x06,   //function code
+                0x2A,   //starting address Hi   (10999)
+                0xF7,   //starting address Lo
+                0x00,   //value Hi
+                0x01,   //value Lo
+            }),
+            WrapPDU({
+                0x06,   //function code
+                0x2A,   //starting address Hi   (10999)
+                0xF7,   //starting address Lo
+                0x00,   //value Hi
+                0x01,   //value Lo
+            }), __func__);
+        return;
+    }
     Expector()->Expect(
     WrapPDU({
         0x06,   //function code
@@ -72,29 +71,27 @@ void TModbusIOExpectations::EnqueueSetupSectionWriteResponse()
         0x00,   //value Hi
         0x01,   //value Lo
     }), __func__);
-    //----- module 2------
 }
 
 // read 3 coils
-void TModbusIOExpectations::EnqueueCoilReadResponse()
+void TModbusIOExpectations::EnqueueCoilReadResponse(bool firstModule)
 {
-    //--------module 1--------
-    Expector()->Expect(
-    WrapPDU({
-        0x01,   //function code
-        0x03,   //starting address Hi   (1000)
-        0xE8,   //starting address Lo
-        0x00,   //quantity Hi
-        0x03,   //quantity Lo
-    }),
-    WrapPDU({
-        0x01,   //function code
-        0x01,   //byte count
-        0x01,   //coils status
-    }), __func__);
-    //--------module 1--------
-
-    //--------module 2--------
+    if (firstModule) {
+        Expector()->Expect(
+            WrapPDU({
+                0x01,   //function code
+                0x03,   //starting address Hi   (1000)
+                0xE8,   //starting address Lo
+                0x00,   //quantity Hi
+                0x03,   //quantity Lo
+            }),
+            WrapPDU({
+                0x01,   //function code
+                0x01,   //byte count
+                0x01,   //coils status
+            }), __func__);
+        return;
+    }
     Expector()->Expect(
     WrapPDU({
         0x01,   //function code
@@ -108,7 +105,6 @@ void TModbusIOExpectations::EnqueueCoilReadResponse()
         0x01,   //byte count
         0x01,   //coils status
     }), __func__);
-    //--------module 2--------
 }
 
 // write 1 coil on 2 modules

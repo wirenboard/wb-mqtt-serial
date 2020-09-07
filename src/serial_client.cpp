@@ -261,12 +261,13 @@ void TSerialClient::Cycle()
                     // Force Prepare() (i.e. start session)
                     try {
                         device->Prepare();
+                        LastAccessedDevice = device;
                     } catch ( const TSerialDeviceTransientErrorException& e) {
                         LOG(Warn) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
                     }
 
                     if (device->HasSetupItems()) {
-                        auto wrote = device->WriteSetupRegisters(false);
+                        auto wrote = device->WriteSetupRegisters();
                         statuses.insert(wrote ? TRegisterRange::ST_OK : TRegisterRange::ST_UNKNOWN_ERROR);
                         if (!wrote) {
                             continue;
@@ -325,13 +326,6 @@ void TSerialClient::Cycle()
     }
 }
 
-bool TSerialClient::WriteSetupRegisters(PSerialDevice dev)
-{
-    Connect();
-    PrepareToAccessDevice(dev);
-    return dev->WriteSetupRegisters();
-}
-
 void TSerialClient::ClearDevices()
 {
     for (auto &dev : DevicesList) {
@@ -381,13 +375,6 @@ PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
 void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
 {
     if (dev != LastAccessedDevice) {
-        if (LastAccessedDevice) {
-            try {
-                LastAccessedDevice->EndSession();
-            } catch ( const TSerialDeviceTransientErrorException& e) {
-                LOG(Warn) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
-            }
-        }
         LastAccessedDevice = dev;
         try {
             dev->Prepare();

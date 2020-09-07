@@ -77,7 +77,8 @@ void TReconnectDetectionTest::TryInitiateDisconnect(std::chrono::milliseconds de
         ASSERT_TRUE(!!SerialPort);
         EnqueueSetupSectionI1(false);
         EnqueueSetupSectionI2(false);
-        SerialDriver->WriteInitValues();
+        Note() << "LoopOnce() [first start]";
+        SerialDriver->LoopOnce();
     }
 
     {   // Test read

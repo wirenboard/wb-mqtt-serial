@@ -35,17 +35,21 @@ void TModbusIOIntegrationTest::TearDown()
 void TModbusIOIntegrationTest::ExpectPollQueries()
 {
     if (FirstPoll) {
-        EnqueueSetupSectionWriteResponse();
+        EnqueueSetupSectionWriteResponse(true);
+    }
+    EnqueueCoilReadResponse(true);
+
+    if (FirstPoll) {
+        EnqueueSetupSectionWriteResponse(false);
         FirstPoll = false;
     }
-    EnqueueCoilReadResponse();
+    EnqueueCoilReadResponse(false);
 }
 
 
 TEST_F(TModbusIOIntegrationTest, Poll)
 {
     ExpectPollQueries();
-    SerialDriver->WriteInitValues();
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
@@ -57,7 +61,6 @@ TEST_F(TModbusIOIntegrationTest, Poll)
 TEST_F(TModbusIOIntegrationTest, Write)
 {
     ExpectPollQueries();
-    SerialDriver->WriteInitValues();
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 

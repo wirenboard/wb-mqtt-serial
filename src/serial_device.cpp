@@ -12,7 +12,7 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
     , _DeviceConfig(config)
     , _Protocol(protocol)
     , LastSuccessfulCycle()
-    , IsDisconnected(false)
+    , IsDisconnected(true)
     , RemainingFailCycles(config->DeviceMaxFailCycles)
 {}
 
@@ -119,26 +119,22 @@ bool TSerialDevice::HasSetupItems() const
     return !SetupItems.empty();
 }
 
-bool TSerialDevice::WriteSetupRegisters(bool tryAll)
+bool TSerialDevice::WriteSetupRegisters()
 {
-    bool did_write = false;
     for (const auto& setup_item : SetupItems) {
         try {
-        	LOG(Info) << "Init: " << setup_item->Name << ": setup register " <<
-        			setup_item->Register->ToString() << " <-- " << setup_item->Value;
+        	LOG(Info) << "Init: " << setup_item->Name 
+                      << ": setup register " << setup_item->Register->ToString()
+                      << " <-- " << setup_item->Value;
             WriteRegister(setup_item->Register, setup_item->Value);
-            did_write = true;
         } catch (const TSerialDeviceException & e) {
-            LOG(Warn) << "device '" << setup_item->Register->Device()->ToString() <<
-                "' register '" << setup_item->Register->ToString() <<
-                "' setup failed: " << e.what();
-            if (!did_write && !tryAll) {
-                break;
-            }
+            LOG(Warn) << "Device '" << setup_item->Register->Device()->ToString()
+                      << "' register '" << setup_item->Register->ToString()
+                      << "' setup failed: " << e.what();
+            return false;
         }
     }
-
-    return did_write;
+    return true;
 }
 
 std::unordered_map<std::string, PProtocol> * TSerialDeviceFactory::Protocols = nullptr;
