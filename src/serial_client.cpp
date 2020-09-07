@@ -375,6 +375,13 @@ PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
 void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
 {
     if (dev != LastAccessedDevice) {
+        if (LastAccessedDevice) {
+            try {
+                LastAccessedDevice->EndSession();
+            } catch ( const TSerialDeviceTransientErrorException& e) {
+                LOG(Warn) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
+            }
+        }
         LastAccessedDevice = dev;
         try {
             dev->Prepare();
