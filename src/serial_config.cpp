@@ -449,7 +449,7 @@ namespace {
             Get(port_data, "baud_rate", serial_port_settings->BaudRate);
 
             if (port_data.isMember("parity"))
-                serial_port_settings->Parity = port_data["parity"].asCString()[0]; // FIXME (can be '\0')
+                serial_port_settings->Parity = port_data["parity"].asCString()[0];
 
             Get(port_data, "data_bits", serial_port_settings->DataBits);
             Get(port_data, "stop_bits", serial_port_settings->StopBits);
