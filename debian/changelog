@@ -1,3 +1,9 @@
+wb-mqtt-serial (1.63.0) stable; urgency=medium
+
+  * add wb-map12e template
+
+ -- Vladimir Romanov <v.romanov@wirenboard.ru>  Tue, 08 Sep 2020 11:59:12 +0300
+
 wb-mqtt-serial (1.62.0) stable; urgency=medium
 
   * Fix wrong device_type in config-wb-mao4.json (WB-MA04>WB-MAO4)
