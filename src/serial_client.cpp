@@ -207,6 +207,20 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
         DoFlush();
 }
 
+void TSerialClient::SetReadError(PRegisterRange range)
+{
+    range->Device()->SetReadError(range);
+    range->MapRange([this, &range](PRegister reg, uint64_t new_value) {}, 
+                    [this, &range](PRegister reg) {
+                        bool changed;
+                        auto handler = Handlers[reg];
+
+                        if (handler->NeedToPoll())
+                            // TBD: separate AcceptDeviceReadError method (changed is unused here)
+                            MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
+                    });
+}
+
 void TSerialClient::PollRange(PRegisterRange range)
 {
     PSerialDevice dev = range->Device();
@@ -269,15 +283,12 @@ void TSerialClient::Cycle()
                     if (device->HasSetupItems()) {
                         auto wrote = device->WriteSetupRegisters();
                         statuses.insert(wrote ? TRegisterRange::ST_OK : TRegisterRange::ST_UNKNOWN_ERROR);
-                        if (!wrote) {
-                            continue;
-                        }
                     }
-                } else {
-                    // Not first interaction with disconnected device that has only errors - still disconnected
-                    if (statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size()) {
-                        continue;
-                    }
+                }
+                // Interaction with disconnected device that has only errors - still disconnected
+                if (!statuses.empty() && statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size()) {
+                    SetReadError(range);
+                    continue;
                 }
             }
 

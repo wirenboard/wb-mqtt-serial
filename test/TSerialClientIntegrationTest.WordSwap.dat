@@ -10,7 +10,6 @@ Subscribe: /devices/WordsLETest/controls/Voltage/on (QoS 0)
 >>> LoopOnce()
 Open()
 Sleep(100000)
-Sleep(100000)
 fake_serial_device '145': read address '0' value '0'
 Publish: /devices/WordsLETest/controls/Voltage: '0' (QoS 1, retained)
 fake_serial_device '145': Device cycle OK

@@ -3,6 +3,7 @@ Open()
 Sleep(100000)
 fake_serial_device '1': write to address '100' value '10'
 fake_serial_device '1': write address '101' failed: 'Serial protocol error: write blocked'
+Error Callback: <fake:1:fake: 20>: read error
 fake_serial_device '1': Device cycle FAIL
 Port cycle FAIL
 fake_serial_device: block address '101' for writing

@@ -13,6 +13,16 @@ using namespace std;
 
 #define LOG(logger) ::logger.Log() << "[modbus] "
 
+TModbusException::TModbusException(Modbus::Error errorCode, const std::string& message):
+    TSerialDeviceTransientErrorException(message),
+    ErrorCode(errorCode)
+{}
+
+Modbus::Error TModbusException::code() const
+{
+    return ErrorCode;
+}
+
 namespace Modbus    // modbus protocol declarations
 {
     const int MAX_READ_BITS = 2000;
@@ -24,19 +34,6 @@ namespace Modbus    // modbus protocol declarations
 
     const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
     const size_t WRITE_RESPONSE_PDU_SIZE = 5;
-
-    enum ModbusError: uint8_t {
-        ERR_NONE                                    = 0x0,
-        ERR_ILLEGAL_FUNCTION                        = 0x1,
-        ERR_ILLEGAL_DATA_ADDRESS                    = 0x2,
-        ERR_ILLEGAL_DATA_VALUE                      = 0x3,
-        ERR_SERVER_DEVICE_FAILURE                   = 0x4,
-        ERR_ACKNOWLEDGE                             = 0x5,
-        ERR_SERVER_DEVICE_BUSY                      = 0x6,
-        ERR_MEMORY_PARITY_ERROR                     = 0x8,
-        ERR_GATEWAY_PATH_UNAVAILABLE                = 0xA,
-        ERR_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND = 0xB
-    };
 
     union TAddress
     {
@@ -61,12 +58,12 @@ namespace Modbus    // modbus protocol declarations
         void SetError(bool error) { Error = error; }
         bool GetError() const { return Error; }
         void ResetModbusError() { SetModbusError(ERR_NONE); }
-        void SetModbusError(ModbusError error) { ModbusErrorCode = error; }
-        ModbusError GetModbusError() const { return ModbusErrorCode; }
+        void SetModbusError(Modbus::Error error) { ModbusErrorCode = error; }
+        Modbus::Error GetModbusError() const { return ModbusErrorCode; }
     private:
         bool HasHoles = false;
         bool Error = false;
-        ModbusError ModbusErrorCode = ERR_NONE;
+        Modbus::Error ModbusErrorCode = ERR_NONE;
         int Start, Count;
         uint8_t* Bits = 0;
         uint16_t* Words = 0;
@@ -337,47 +334,28 @@ namespace Modbus    // modbus protocol common utilities
     // throws C++ exception on modbus error code
     void ThrowIfModbusException(uint8_t code)
     {
-        std::string message;
-        bool is_transient = true;
-        switch (code) {
-        case 0:
-            return; // not an error
-        case ERR_ILLEGAL_FUNCTION:
-            message = "illegal function";
-            break;
-        case ERR_ILLEGAL_DATA_ADDRESS:
-            message = "illegal data address";
-            break;
-        case ERR_ILLEGAL_DATA_VALUE:
-            message = "illegal data value";
-            break;
-        case ERR_SERVER_DEVICE_FAILURE:
-            message = "server device failure";
-            break;
-        case ERR_ACKNOWLEDGE:
-            message = "long operation (acknowledge)";
-            break;
-        case ERR_SERVER_DEVICE_BUSY:
-            message = "server device is busy";
-            break;
-        case ERR_MEMORY_PARITY_ERROR:
-            message = "memory parity error";
-            break;
-        case ERR_GATEWAY_PATH_UNAVAILABLE:
-            message = "gateway path is unavailable";
-            break;
-        case ERR_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
-            message = "gateway target device failed to respond";
-            break;
-        default:
-            message = "invalid modbus error code (" + std::to_string(code) + ")";
-            break;
+        if ( code == 0) {
+            return;
         }
-        if (is_transient) {
-            throw TSerialDeviceTransientErrorException(message);
-        } else {
-            throw TSerialDevicePermanentRegisterException(message);
+        const char* errMsg[] = 
+            { nullptr,                                     // 0x00
+              "illegal function",                          // 0x01
+              "illegal data address",                      // 0x02
+              "illegal data value",                        // 0x03
+              "server device failure",                     // 0x04
+              "long operation (acknowledge)",              // 0x05
+              "server device is busy",                     // 0x06
+              nullptr,                                     // 0x07
+              "memory parity error",                       // 0x08
+              nullptr,                                     // 0x09
+              "gateway path is unavailable",               // 0x0A
+              "gateway target device failed to respond"};  // 0x0B
+        if (code < sizeof(errMsg)/sizeof(const char*)) {
+            if (errMsg[code] != nullptr) {
+                throw TModbusException(static_cast<Modbus::Error>(code), errMsg[code]);
+            }
         }
+        throw TSerialDeviceTransientErrorException("invalid modbus error code (" + std::to_string(code) + ")");
     }
 
     // returns count of modbus registers needed to represent TRegister
@@ -581,7 +559,7 @@ namespace Modbus    // modbus protocol common utilities
         auto baseAddress = range->GetStart();
 
         auto exception_code = GetExceptionCode(pdu);
-        range->SetModbusError(static_cast<ModbusError>(exception_code));
+        range->SetModbusError(static_cast<Modbus::Error>(exception_code));
         ThrowIfModbusException(exception_code);
 
         uint8_t byte_count = pdu[1];
@@ -814,66 +792,62 @@ namespace ModbusRTU // modbus rtu protocol utilities
     {
         reg->Device()->DismissTmpCache();
 
-        int w = reg->Width();
+        std::unique_ptr<TRegister, std::function<void(TRegister*)>> tmpCacheGuard(reg.get(), [](TRegister* reg){reg->Device()->DismissTmpCache();});
 
-        LOG(Debug) << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
+        LOG(Debug) << "modbus: write " << reg->Width() << " " << reg->TypeName << "(s) @ " << reg->Address <<
                 " of device " << reg->Device()->ToString();
 
         auto config = reg->Device()->DeviceConfig();
 
-        std::string exception_message;
-        try {
-            std::vector<TWriteRequest> requests;
-            ComposeWriteRequests(requests, reg, slaveId, value, shift);
+        std::vector<TWriteRequest> requests;
+        ComposeWriteRequests(requests, reg, slaveId, value, shift);
 
-            for (const auto & request: requests) {
-                // Send request
-                if (config->GuardInterval.count()) {
-                    port->Sleep(config->GuardInterval);
-                }
-                port->WriteBytes(request.data(), request.size());
+        for (const auto & request: requests) {
+            // Send request
+            if (config->GuardInterval.count()) {
+                port->Sleep(config->GuardInterval);
+            }
+            port->WriteBytes(request.data(), request.size());
 
-                {   // Receive response
-                    TWriteResponse response;
-                    auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
+           // Receive response
+            TWriteResponse response;
+            auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
 
-                    if (port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size())) > 0) {
-                        try {
-                            ModbusRTU::CheckResponse(request, response);
-                            Modbus::ParseWriteResponse(PDU(response));
-                        } catch (const TInvalidCRCError &) {
-                            try {
-                                port->SkipNoise();
-                            } catch (const std::exception & e) {
-                                LOG(Warn) << "SkipNoise failed: " << e.what();
-                            }
-                            throw;
-                        } catch (const TMalformedResponseError &) {
-                            try {
-                                port->SkipNoise();
-                            } catch (const std::exception & e) { 
-                                LOG(Warn) << "SkipNoise failed: ";
-                            }
-                            throw;
-                        }
-                    } else {
-                        throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
-                    }
-                }
+            if (port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size())) <= 0) {
+                throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
             }
 
-            reg->Device()->ApplyTmpCache();
-            return;
-        } catch (TSerialDeviceTransientErrorException& e) {
-            exception_message = ": ";
-            exception_message += e.what();
+            try {
+                ModbusRTU::CheckResponse(request, response);
+                Modbus::ParseWriteResponse(PDU(response));
+            } catch (const TInvalidCRCError &) {
+                try {
+                    port->SkipNoise();
+                } catch (const std::exception & e) {
+                    LOG(Warn) << "SkipNoise failed: " << e.what();
+                }
+                throw;
+            } catch (const TMalformedResponseError &) {
+                try {
+                    port->SkipNoise();
+                } catch (const std::exception & e) { 
+                    LOG(Warn) << "SkipNoise failed: ";
+                }
+                throw;
+            }
         }
 
-        reg->Device()->DismissTmpCache();
+        reg->Device()->ApplyTmpCache();
+    }
 
-        throw TSerialDeviceTransientErrorException(
-            "failed to write " + reg->TypeName +
-            " @ " + std::to_string(reg->Address) + exception_message);
+    void SetReadError(PRegisterRange range)
+    {
+        auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
+        if (!modbus_range) {
+            throw std::runtime_error("modbus range expected");
+        }
+        modbus_range->ResetModbusError();
+        modbus_range->SetError(true);
     }
 
     void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift)

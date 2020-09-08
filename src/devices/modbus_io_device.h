@@ -9,6 +9,8 @@ public:
     uint64_t ReadRegister(PRegister reg) override;
     void WriteRegister(PRegister reg, uint64_t value) override;
     void ReadRegisterRange(PRegisterRange range) override;
+    bool WriteSetupRegisters() override;
+    void SetReadError(PRegisterRange range) override;
 
 private:
     int Shift;

@@ -88,13 +88,15 @@ public:
     virtual void EndPollCycle();
     // Read multiple registers
     virtual void ReadRegisterRange(PRegisterRange range);
+    // Set range as failed to read
+    virtual void SetReadError(PRegisterRange range);
 
     virtual std::string ToString() const;
 
     // Initialize setup items' registers
     void InitSetupItems();
     bool HasSetupItems() const;
-    bool WriteSetupRegisters();
+    virtual bool WriteSetupRegisters();
 
     PPort Port() const { return SerialPort; }
     PDeviceConfig DeviceConfig() const { return _DeviceConfig; }
@@ -118,12 +120,14 @@ public:
         ModbusTmpCache.clear();
     }
 
+protected:
+    std::vector<PDeviceSetupItem> SetupItems;
+
 private:
     std::chrono::milliseconds Delay;
     PPort SerialPort;
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
-    std::vector<PDeviceSetupItem> SetupItems;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
     std::set<int> UnavailableAddresses;

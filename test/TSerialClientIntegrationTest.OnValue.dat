@@ -10,7 +10,6 @@ Subscribe: /devices/OnValueTest/controls/Relay 1/on (QoS 0)
 >>> LoopOnce()
 Open()
 Sleep(100000)
-Sleep(100000)
 fake_serial_device '144': read address '0' value '0'
 Publish: /devices/OnValueTest/controls/Relay 1: '0' (QoS 1, retained)
 fake_serial_device '144': Device cycle OK

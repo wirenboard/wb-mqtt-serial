@@ -41,6 +41,18 @@ void TSerialDevice::Prepare()
 
 void TSerialDevice::EndPollCycle() {}
 
+void TSerialDevice::SetReadError(PRegisterRange range)
+{
+    PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
+    if (!simple_range) {
+        throw std::runtime_error("simple range expected");
+    }
+    simple_range->Reset();
+    for (auto reg: simple_range->RegisterList()) {
+        simple_range->SetError(reg);
+    }
+}
+
 void TSerialDevice::ReadRegisterRange(PRegisterRange range)
 {
     PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
@@ -128,8 +140,7 @@ bool TSerialDevice::WriteSetupRegisters()
                       << " <-- " << setup_item->Value;
             WriteRegister(setup_item->Register, setup_item->Value);
         } catch (const TSerialDeviceException & e) {
-            LOG(Warn) << "Device '" << setup_item->Register->Device()->ToString()
-                      << "' register '" << setup_item->Register->ToString()
+            LOG(Warn) << "Register '" << setup_item->Register->ToString()
                       << "' setup failed: " << e.what();
             return false;
         }

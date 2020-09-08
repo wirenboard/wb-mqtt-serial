@@ -2,7 +2,7 @@
 
 
 // setup section
-void TModbusIOExpectations::EnqueueSetupSectionWriteResponse(bool firstModule)
+void TModbusIOExpectations::EnqueueSetupSectionWriteResponse(bool firstModule, bool error)
 {
     if (firstModule) {
         Expector()->Expect(
@@ -21,7 +21,21 @@ void TModbusIOExpectations::EnqueueSetupSectionWriteResponse(bool firstModule)
                 0xFF,   //value Lo
             }), __func__);
 
-            // config flag
+        // config flag
+        if (error) {
+            Expector()->Expect(
+            WrapPDU({
+                0x06,   //function code
+                0x2A,   //starting address Hi   (10999)
+                0xF7,   //starting address Lo
+                0x00,   //value Hi
+                0x01,   //value Lo
+            }),
+            WrapPDU({
+                0x86,   //Exception
+                0x03,   //ILLEGAL DATA VALUE
+            }), __func__);
+        } else {
             Expector()->Expect(
             WrapPDU({
                 0x06,   //function code
@@ -37,6 +51,7 @@ void TModbusIOExpectations::EnqueueSetupSectionWriteResponse(bool firstModule)
                 0x00,   //value Hi
                 0x01,   //value Lo
             }), __func__);
+        }
         return;
     }
     Expector()->Expect(
@@ -56,21 +71,36 @@ void TModbusIOExpectations::EnqueueSetupSectionWriteResponse(bool firstModule)
     }), __func__);
 
     // config flag
-    Expector()->Expect(
-    WrapPDU({
-        0x06,   //function code
-        0x30,   //starting address Hi   (12499)
-        0xD3,   //starting address Lo
-        0x00,   //value Hi
-        0x01,   //value Lo
-    }),
-    WrapPDU({
-        0x06,   //function code
-        0x30,   //starting address Hi   (12499)
-        0xD3,   //starting address Lo
-        0x00,   //value Hi
-        0x01,   //value Lo
-    }), __func__);
+    if (error) {
+        Expector()->Expect(
+        WrapPDU({
+            0x06,   //function code
+            0x30,   //starting address Hi   (12499)
+            0xD3,   //starting address Lo
+            0x00,   //value Hi
+            0x01,   //value Lo
+        }),
+        WrapPDU({
+            0x86,   //Exception
+            0x02,   //ILLEGAL DATA ADDRESS
+        }), __func__);
+    } else {
+        Expector()->Expect(
+        WrapPDU({
+            0x06,   //function code
+            0x30,   //starting address Hi   (12499)
+            0xD3,   //starting address Lo
+            0x00,   //value Hi
+            0x01,   //value Lo
+        }),
+        WrapPDU({
+            0x06,   //function code
+            0x30,   //starting address Hi   (12499)
+            0xD3,   //starting address Lo
+            0x00,   //value Hi
+            0x01,   //value Lo
+        }), __func__);
+    }
 }
 
 // read 3 coils
@@ -108,43 +138,41 @@ void TModbusIOExpectations::EnqueueCoilReadResponse(bool firstModule)
 }
 
 // write 1 coil on 2 modules
-void TModbusIOExpectations::EnqueueCoilWriteResponse()
+void TModbusIOExpectations::EnqueueCoilWriteResponse(bool firstModule)
 {
-    //------module 1-----
-    Expector()->Expect(
-    WrapPDU({
-        0x05,   //function code
-        0x03,   //starting address Hi   (1000)
-        0xE8,   //starting address Lo
-        0xFF,   //value Hi
-        0x00,   //value Lo
-    }),
-    WrapPDU({
-        0x05,   //function code
-        0x03,   //starting address Hi   (1000)
-        0xE8,   //starting address Lo
-        0xFF,   //value Hi
-        0x00,   //value Lo
-    }), __func__);
-    //------module 1-----
-
-    //------module 2-----
-    Expector()->Expect(
-    WrapPDU({
-        0x05,   //function code
-        0x09,   //starting address Hi   (2500)
-        0xC4,   //starting address Lo
-        0x00,   //value Hi
-        0x00,   //value Lo
-    }),
-    WrapPDU({
-        0x05,   //function code
-        0x09,   //starting address Hi   (2500)
-        0xC4,   //starting address Lo
-        0x00,   //value Hi
-        0x00,   //value Lo
-    }), __func__);
-    //------module 2-----
+    if (firstModule) {
+        Expector()->Expect(
+        WrapPDU({
+            0x05,   //function code
+            0x03,   //starting address Hi   (1000)
+            0xE8,   //starting address Lo
+            0xFF,   //value Hi
+            0x00,   //value Lo
+        }),
+        WrapPDU({
+            0x05,   //function code
+            0x03,   //starting address Hi   (1000)
+            0xE8,   //starting address Lo
+            0xFF,   //value Hi
+            0x00,   //value Lo
+        }), __func__);
+    } else {
+        Expector()->Expect(
+        WrapPDU({
+            0x05,   //function code
+            0x09,   //starting address Hi   (2500)
+            0xC4,   //starting address Lo
+            0x00,   //value Hi
+            0x00,   //value Lo
+        }),
+        WrapPDU({
+            0x05,   //function code
+            0x09,   //starting address Hi   (2500)
+            0xC4,   //starting address Lo
+            0x00,   //value Hi
+            0x00,   //value Lo
+        }), __func__);
+    }
 }
 
 

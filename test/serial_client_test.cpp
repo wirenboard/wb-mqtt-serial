@@ -1071,6 +1071,35 @@ TEST_F(TSerialClientIntegrationTest, Errors)
     SerialDriver->LoopOnce();
 }
 
+TEST_F(TSerialClientIntegrationTest, SetupErrors)
+{
+    FilterConfig("DDL24");
+
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("23", "fake", Port));
+
+    if (!Device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    Device->BlockWriteFor(1, true);
+
+    Note() << "LoopOnce() [first start, write blacklisted]";
+    SerialDriver->LoopOnce();
+
+    Device->BlockWriteFor(1, false);
+    Device->BlockWriteFor(2, true);
+
+    Note() << "LoopOnce() [write blacklisted]";
+    SerialDriver->LoopOnce();
+
+    Device->BlockWriteFor(2, false);
+
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+}
+
 TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
