@@ -5,8 +5,6 @@
         "name": "TM-P3R3",
         "id": "tmp3r3",
         "enabled": true,
-		"delay_ms": 5,
-		"frame_timeout_ms": 19,
         "channels": [
             {
                 "name": "Relay 0",

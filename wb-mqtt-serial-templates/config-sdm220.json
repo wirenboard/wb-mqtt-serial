@@ -4,9 +4,6 @@
     "device": {
         "name": "SDM220",
         "id": "sdm220",
-        "delay_ms": 8,
-        "response_timeout_ms": 23,
-        "frame_timeout_ms": 15,
         "channels": [
             {
                 "name": "Voltage",

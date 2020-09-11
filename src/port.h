@@ -17,16 +17,19 @@ public:
     TPort& operator=(const TPort &) = delete;
     virtual ~TPort() = default;
 
-    virtual void CycleBegin() {}
-    virtual void CycleEnd(bool ok) {}
+    virtual void CycleBegin();
+    virtual void CycleEnd(bool ok);
+
     virtual void Open() = 0;
     virtual void Close() = 0;
-    virtual void Reopen() {if (IsOpen()) { Close(); Open(); }; };
+    virtual void Reopen();
     virtual bool IsOpen() const = 0;
     virtual void CheckPortOpen() const = 0;
-    virtual void WriteBytes(const uint8_t * buf, int count) = 0;
-    void WriteBytes(const std::vector<uint8_t> buf) { WriteBytes(&buf[0], buf.size()); };
-    void WriteBytes(const std::string buf) { WriteBytes((const uint8_t*) buf.c_str(), buf.size()); };
+
+    virtual void WriteBytes(const uint8_t* buf, int count) = 0;
+    void WriteBytes(const std::vector<uint8_t>& buf);
+    void WriteBytes(const std::string& buf);
+
     virtual uint8_t ReadByte(const std::chrono::microseconds& timeout) = 0;
 
     /**
@@ -48,10 +51,16 @@ public:
 
     virtual void SkipNoise() = 0;
 
-    virtual void Sleep(const std::chrono::microseconds& us) = 0;
     virtual void SleepSinceLastInteraction(const std::chrono::microseconds& us) = 0;
     virtual bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) = 0;
     virtual TTimePoint CurrentTime() const = 0;
+
+    /**
+     * @brief Calculate sending time for bytesNumber bytes
+     * 
+     * @param bytesCount number of bytes 
+     */
+    virtual std::chrono::milliseconds GetSendTime(double bytesNumber);
 };
 
 using PPort = std::shared_ptr<TPort>;

@@ -7,7 +7,6 @@
         "enabled": true,
         "protocol": "uniel",
         "guard_interval_us": 3500,
-        "delay_ms": 100,
         "response_timeout_ms": 500,
         "frame_timeout_ms": 100,
         "channels": [

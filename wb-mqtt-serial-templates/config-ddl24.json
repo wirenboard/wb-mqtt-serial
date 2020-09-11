@@ -5,8 +5,6 @@
 		"name": "DDL24",
 		"id": "ddl24",
 		"enabled": true,
-		"delay_ms": 5,
-		"frame_timeout_ms": 19,
 		"channels": [
 			{
 				"name": "RGB",

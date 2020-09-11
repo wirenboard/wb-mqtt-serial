@@ -227,19 +227,12 @@ void TFileDescriptorPort::SkipNoise()
     }
 }
 
-void TFileDescriptorPort::Sleep(const chrono::microseconds & us)
-{
-    usleep(us.count());
-}
-
 void TFileDescriptorPort::SleepSinceLastInteraction(const chrono::microseconds& us)
 {
     auto now = chrono::high_resolution_clock::now();
     auto delta = chrono::duration_cast<chrono::microseconds>(now - LastInteraction);
-    if (delta >= us) {
-        return;
-    }
-    Sleep(us - delta);
+    std::this_thread::sleep_for(us - delta);
+    LOG(Debug) << "Sleep " << us.count() << " us";
 }
 
 bool TFileDescriptorPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)

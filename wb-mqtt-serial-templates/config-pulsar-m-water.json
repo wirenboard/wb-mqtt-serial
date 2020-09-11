@@ -4,7 +4,6 @@
         "name": "Pulsar-M Water Meter",
         "id": "pulsar-m-water",
         "protocol": "pulsar",
-        "delay_ms": 100,
         "response_timeout_ms": 500,
         "frame_timeout_ms": 300,
         "channels": [

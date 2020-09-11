@@ -64,19 +64,12 @@ struct TDeviceSetupItemConfig
 
 typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
 
-const int DEFAULT_ACCESS_LEVEL          = 1;
-const int DEFAULT_DEVICE_FAIL_CYCLES    = 2;
+const int DEFAULT_ACCESS_LEVEL       = 1;
+const int DEFAULT_DEVICE_FAIL_CYCLES = 2;
 
 const std::chrono::milliseconds DefaultPollInterval(20);
 const std::chrono::milliseconds DefaultResponseTimeout(500);
-const std::chrono::milliseconds DefaultFirstRequestDelay(100);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
-
-//Because of Linux we can't wait fixed time.
-//Let's wait 15 ms between bytes. It is an experimentaly found acceptable timeout.
-//Any way we'll get rare timeout misses.
-const std::chrono::milliseconds DefaultFrameTimeout(15);
-
 
 struct TDeviceConfig 
 {
@@ -89,16 +82,11 @@ struct TDeviceConfig
     std::vector<PDeviceSetupItemConfig> SetupItemConfigs;
     std::vector<uint8_t>                Password;
 
-    /*! Delay before first request to device. 
-    *   This garantees fixed silence period on bus to help device to find start frame condition
-    * */
-    std::chrono::milliseconds           FirstRequestDelay      = DefaultFirstRequestDelay;
-
     //! Maximum allowed time from request to response. -1 if not set, DefaultResponseTimeout will be used.
     std::chrono::milliseconds           ResponseTimeout        = std::chrono::milliseconds(-1);
 
-    //! Minimum inter-frame delay. -1 if not set, DefaultFrameTimeout will be used.
-    std::chrono::milliseconds           FrameTimeout           = std::chrono::milliseconds(-1);
+    //! Minimum inter-frame delay.
+    std::chrono::milliseconds           FrameTimeout           = std::chrono::milliseconds::zero();
 
     //! The period of unsuccessful requests after which the device is considered disconected.
     std::chrono::milliseconds           DeviceTimeout          = DefaultDeviceTimeout;
@@ -135,7 +123,7 @@ struct TPortConfig
     /**
      * @brief Maximum allowed time from request to response for any device connected to the port.
      * -1 if not set, DefaultResponseTimeout will be used.
-     * The timeout is used if device's ResponseTimeout is not set or if ResponseTimeout is smaller.
+     * The timeout is used if device's ResponseTimeout is not set or if device's ResponseTimeout is smaller.
      */
     std::chrono::milliseconds  ResponseTimeout = std::chrono::milliseconds(-1);
 

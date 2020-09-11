@@ -4,8 +4,6 @@
     "device": {
         "name": "WP8026ADAM",
         "id": "wp8026adam",
-		"delay_ms": 5,
-		"frame_timeout_ms": 19,
         "channels": [
             //_____________________________________________________
             {

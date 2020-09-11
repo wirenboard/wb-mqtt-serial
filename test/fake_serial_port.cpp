@@ -153,18 +153,13 @@ void TFakeSerialPort::SkipNoise()
     Fixture.Emit() << "SkipNoise()";
 }
 
-void TFakeSerialPort::Sleep(const std::chrono::microseconds& us)
+void TFakeSerialPort::SleepSinceLastInteraction(const std::chrono::microseconds& us)
 {
     if (us > std::chrono::microseconds::zero()) {
         SkipFrameBoundary();
         DumpWhatWasRead();
         Fixture.Emit() << "Sleep(" << us.count() << ")";
     }
-}
-
-void TFakeSerialPort::SleepSinceLastInteraction(const std::chrono::microseconds& us)
-{
-    Sleep(us);
 }
 
 bool TFakeSerialPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)
@@ -238,6 +233,13 @@ void TFakeSerialPort::SkipFrameBoundary()
 {
     if (RespPos < Resp.size() && Resp[RespPos] == FRAME_BOUNDARY)
         RespPos++;
+}
+
+std::chrono::milliseconds TFakeSerialPort::GetSendTime(double bytesNumber)
+{
+    // 9600 8-N-2
+    auto ms = std::ceil((1000.0*11*bytesNumber)/9600.0);
+    return std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(ms));
 }
 
 void TSerialDeviceTest::SetUp()

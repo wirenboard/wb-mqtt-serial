@@ -678,11 +678,6 @@ namespace Modbus    // modbus protocol common utilities
         }
         return r;
     }
-
-    std::chrono::microseconds GetFrameTimeout(int baudRate)
-    {
-        return std::chrono::microseconds(static_cast<int64_t>(std::ceil(static_cast<double>(35000000)/baudRate)));
-    }
 };  // modbus protocol common utilities
 
 namespace ModbusRTU // modbus rtu protocol utilities
@@ -809,6 +804,38 @@ namespace ModbusRTU // modbus rtu protocol utilities
         }
     }
 
+    template<class Req, class Resp> bool ProcessRequest(PPort& port, const Req& request, Resp& response, const PDeviceConfig& config)
+    {
+        port->SleepSinceLastInteraction(config->RequestDelay);
+        port->WriteBytes(request.data(), request.size());
+
+        auto rc = port->ReadFrame(response.data(),
+                                  response.size(),
+                                  config->ResponseTimeout + config->FrameTimeout,
+                                  config->FrameTimeout,
+                                  ExpectNBytes(response.size()));
+        if (rc > 0) {
+            try {
+                ModbusRTU::CheckResponse(request, response);
+            } catch (const TInvalidCRCError &) {
+                try {
+                    port->SkipNoise();
+                } catch (const std::exception & e) {
+                    LOG(Warn) << "SkipNoise failed: " << e.what();
+                }
+                throw;
+            } catch (const TMalformedResponseError &) {
+                try {
+                    port->SkipNoise();
+                } catch (const std::exception & e) {
+                    LOG(Warn) << "SkipNoise failed: " << e.what();
+                }
+                throw;
+            }
+        }
+        return (rc > 0);
+    }
+
     void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift)
     {
         reg->Device()->DismissTmpCache();
@@ -818,43 +845,17 @@ namespace ModbusRTU // modbus rtu protocol utilities
         LOG(Debug) << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
                 " of device " << reg->Device()->ToString();
 
-        auto config = reg->Device()->DeviceConfig();
-
         std::string exception_message;
         try {
             std::vector<TWriteRequest> requests;
             ComposeWriteRequests(requests, reg, slaveId, value, shift);
 
             for (const auto & request: requests) {
-                // Send request
-                port->SleepSinceLastInteraction(config->RequestDelay);
-                port->WriteBytes(request.data(), request.size());
-
-                {   // Receive response
-                    TWriteResponse response;
-
-                    if (port->ReadFrame(response.data(), response.size(), config->ResponseTimeout, config->FrameTimeout, ExpectNBytes(response.size())) > 0) {
-                        try {
-                            ModbusRTU::CheckResponse(request, response);
-                            Modbus::ParseWriteResponse(PDU(response));
-                        } catch (const TInvalidCRCError &) {
-                            try {
-                                port->SkipNoise();
-                            } catch (const std::exception & e) {
-                                LOG(Warn) << "SkipNoise failed: " << e.what();
-                            }
-                            throw;
-                        } catch (const TMalformedResponseError &) {
-                            try {
-                                port->SkipNoise();
-                            } catch (const std::exception & e) { 
-                                LOG(Warn) << "SkipNoise failed: ";
-                            }
-                            throw;
-                        }
-                    } else {
-                        throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
-                    }
+                TWriteResponse response;
+                if (ProcessRequest(port, request, response, reg->Device()->DeviceConfig()) > 0) {
+                    Modbus::ParseWriteResponse(PDU(response));
+                } else {
+                    throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
                 }
             }
 
@@ -879,7 +880,6 @@ namespace ModbusRTU // modbus rtu protocol utilities
             throw std::runtime_error("modbus range expected");
         }
 
-        auto config = modbus_range->Device()->DeviceConfig();
         // in case if connection error occures right after modbus error
         // (probability of which is very low, but still),
         // we need to clear any modbus errors from previous cycle
@@ -889,44 +889,15 @@ namespace ModbusRTU // modbus rtu protocol utilities
             modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
             " of device " << modbus_range->Device()->ToString();
 
-        port->SleepSinceLastInteraction(config->RequestDelay);
-
         std::string exception_message;
         try {
             TReadRequest request;
-
-            {   // Send request
-                ComposeReadRequest(request, modbus_range, slaveId, shift);
-                port->WriteBytes(request.data(), request.size());
-            }
-
-            {   // Receive response
-                auto byte_count = InferReadResponseSize(modbus_range);
-                TReadResponse response(byte_count);
-
-                auto rc = port->ReadFrame(response.data(), response.size(), config->ResponseTimeout, config->FrameTimeout, ExpectNBytes(response.size()));
-                if (rc > 0) {
-                    try {
-                        ModbusRTU::CheckResponse(request, response);
-                        Modbus::ParseReadResponse(PDU(response), modbus_range);
-                    } catch (const TInvalidCRCError &) {
-                        try {
-                            port->SkipNoise();
-                        } catch (const std::exception & e) {
-                            LOG(Warn) << "SkipNoise failed: " << e.what();
-                        }
-                        throw;
-                    } catch (const TMalformedResponseError &) {
-                        try {
-                            port->SkipNoise();
-                        } catch (const std::exception & e) {
-                            LOG(Warn) << "SkipNoise failed: " << e.what();
-                        }
-                        throw;
-                    }
-                    modbus_range->SetError(false);
-                    return;
-                }
+            ComposeReadRequest(request, modbus_range, slaveId, shift);
+            TReadResponse response(InferReadResponseSize(modbus_range));
+            if (ProcessRequest(port, request, response, modbus_range->Device()->DeviceConfig()) > 0) {
+                Modbus::ParseReadResponse(PDU(response), modbus_range);
+                modbus_range->SetError(false);
+                return;
             }
         } catch (TSerialDeviceTransientErrorException& e) {
             exception_message = e.what();

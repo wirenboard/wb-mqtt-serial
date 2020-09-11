@@ -3,8 +3,6 @@
     "device": {
         "name": "SDM120",
         "id": "sdm120",
-        "delay_ms": 17,
-        "frame_timeout_ms": 32,
         "channels": [
             {
                 "name": "Voltage",

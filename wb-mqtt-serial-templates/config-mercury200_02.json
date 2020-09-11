@@ -4,9 +4,6 @@
         "name": "Mercury 200.02",
         "id": "mercury200.02",
         "protocol": "mercury200",
-        "delay_ms": 7,
-        "response_timeout_ms": 22,
-        "frame_timeout_ms": 15,
         "channels": [
             {
                 "name": "Power consumption tariff 1",

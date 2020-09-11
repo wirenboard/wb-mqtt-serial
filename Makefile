@@ -16,6 +16,7 @@ LDFLAGS= -lpthread -ljsoncpp -lwbmqtt1
 
 SERIAL_BIN=wb-mqtt-serial
 SERIAL_SRCS= \
+  src/port.cpp                        \
   src/register.cpp                    \
   src/poll_plan.cpp                   \
   src/serial_client.cpp               \

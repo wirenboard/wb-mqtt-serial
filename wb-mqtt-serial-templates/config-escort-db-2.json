@@ -4,9 +4,7 @@
         "name": "ESCORT DB-2",
         "id": "escort-db-2",
         "protocol": "lls",
-        "delay_ms": 5,
-        "response_timeout_ms": 115,
-        "frame_timeout_ms": 15,
+        "response_timeout_ms": 100,
         "channels": [
             {
                 "name": "Temperature",

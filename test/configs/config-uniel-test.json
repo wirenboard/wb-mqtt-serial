@@ -18,7 +18,7 @@
           "slave_id": 1,
           "enabled": true,
           "protocol": "uniel",
-
+          "frame_timeout_ms": 100,
           "channels": [
             {
               "name": "Input 0",

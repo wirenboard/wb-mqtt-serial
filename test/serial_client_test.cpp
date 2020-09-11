@@ -49,6 +49,7 @@ void TSerialClientTest::SetUp()
 #endif
     auto config = std::make_shared<TDeviceConfig>("fake_sample", std::to_string(1), "fake");
     config->MaxReadRegisters = 0;
+    config->FrameTimeout = std::chrono::milliseconds(100);
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(SerialClient->CreateDevice(config));
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             Emit() << "Read Callback: " << reg->ToString() << " becomes " <<
@@ -1286,6 +1287,7 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()> && thu
         dev1->SetIsConnected(true);
 
         Note() << "LoopOnce()";
+        auto future = MqttBroker->WaitForPublish("/devices/reconnect-test-1/controls/I2/meta/error");
         observer->LoopOnce();
 
         EXPECT_EQ(42, dev1->Registers[1]);
@@ -1293,6 +1295,8 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()> && thu
 
         EXPECT_EQ(1, dev2->Registers[1]);
         EXPECT_EQ(2, dev2->Registers[2]);
+
+        future.Wait();
     }
 }
 

@@ -3,9 +3,8 @@
     "device": {
         "name": "WB-MAO4",
         "id": "wb-mao4",
-        "delay_ms": 8,
-        "response_timeout_ms": 23,
-        "frame_timeout_ms": 15,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
         "channels": [
             {
                 "name": "Channel 1",

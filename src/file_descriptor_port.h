@@ -11,10 +11,11 @@ public:
     TFileDescriptorPort();
     ~TFileDescriptorPort();
 
-    void WriteBytes(const uint8_t * buf, int count) override;
+    void WriteBytes(const uint8_t* buf, int count) override;
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
-    int ReadFrame(uint8_t * buf, int count,
-                  const std::chrono::microseconds & responseTimeout,
+    int ReadFrame(uint8_t* buf,
+                  int count,
+                  const std::chrono::microseconds& responseTimeout,
                   const std::chrono::microseconds& frameTimeout,
                   TFrameCompletePred frame_complete = 0) override;
     void SkipNoise() override;
@@ -22,9 +23,8 @@ public:
     void CheckPortOpen() const override;
     bool IsOpen() const override;
 
-    void Sleep(const std::chrono::microseconds & us) override;
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
-    bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
+    bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
     TTimePoint CurrentTime() const override;
 
 protected:
@@ -34,7 +34,7 @@ protected:
     int             Fd;
     std::chrono::time_point<std::chrono::high_resolution_clock> LastInteraction;
 private:
-    int ReadAvailableData(uint8_t * buf, size_t max_read);
+    int ReadAvailableData(uint8_t* buf, size_t max_read);
 };
 
 

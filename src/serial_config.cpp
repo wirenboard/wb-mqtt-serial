@@ -343,11 +343,10 @@ namespace {
                 device_config->Password.push_back(ToInt(passwordItem, "password item"));
         }
 
-        Get(device_data, "delay_ms", device_config->FirstRequestDelay);
-        if (Get(device_data, "delay_usec", device_config->FirstRequestDelay)) // compat
-            device_config->FirstRequestDelay = device_config->FirstRequestDelay / 1000;
-
         Get(device_data, "frame_timeout_ms",       device_config->FrameTimeout);
+        if (device_config->FrameTimeout.count() < 0) {
+            device_config->FrameTimeout = std::chrono::milliseconds::zero();
+        }
         Get(device_data, "response_timeout_ms",    device_config->ResponseTimeout);
         Get(device_data, "device_timeout_ms",      device_config->DeviceTimeout);
         Get(device_data, "device_max_fail_cycles", device_config->DeviceMaxFailCycles);

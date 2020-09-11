@@ -3,8 +3,6 @@
     "device": {
         "name": "WP8028ADAM",
         "id": "wp8028adam",
-		"delay_ms": 5,
-		"frame_timeout_ms": 19,
         "channels": [
             {
                 "name": "DI_01",

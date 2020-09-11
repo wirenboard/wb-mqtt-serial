@@ -143,7 +143,7 @@ Publish: /devices/mercury230ar02_0/controls/Temperature/meta/type: 'value' (QoS 
 Publish: /devices/mercury230ar02_0/controls/Temperature: '0' (QoS 1, retained)
 >>> LoopOnce()
 Open()
-Sleep(5000)
+Sleep(7000)
 SkipNoise()
 EnqueueMercury230SessionSetupResponse()
 >> 00 01 01 01 01 01 01 01 01 77 81

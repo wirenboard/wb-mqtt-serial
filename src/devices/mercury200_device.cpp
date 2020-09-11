@@ -23,7 +23,9 @@ REGISTER_BASIC_INT_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes(
 
 TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TMercury200Device>>(config, port, protocol)
-{}
+{
+    config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(6));
+}
 
 TMercury200Device::~TMercury200Device()
 {}

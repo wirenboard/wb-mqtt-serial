@@ -4,9 +4,6 @@
         "name": "Mercury 230AR-02",
         "id": "mercury230ar02",
         "protocol": "mercury230",
-        "delay_ms": 5,
-        "response_timeout_ms": 165,
-        "frame_timeout_ms": 15,
         "channels": [
             {
                 "name": "Total consumption",
