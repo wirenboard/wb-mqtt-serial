@@ -4,6 +4,7 @@
 #include <sys/select.h>
 #include <stdexcept>
 #include <algorithm>
+#include <sstream>
 
 #include "pty_based_fake_serial.h"
 
@@ -14,25 +15,36 @@ namespace {
 void TPtyBasedFakeSerial::PtyPair::Init()
 {
     MasterFd = posix_openpt(O_RDWR | O_NOCTTY);
-    if (MasterFd < 0)
-        throw std::runtime_error("posix_openpt() failed");
+    if (MasterFd < 0){
+        std::stringstream ss;
+        ss << "posix_openpt() failed: " << errno;
+        throw std::runtime_error(ss.str());
+    }
 
     if (grantpt(MasterFd) < 0) {
+        std::stringstream ss;
+        ss << "grantpt() failed: " << errno;
         close(MasterFd);
-        throw std::runtime_error("grantpt() failed");
+        throw std::runtime_error(ss.str());
     }
 
     if (unlockpt(MasterFd) < 0) {
+        std::stringstream ss;
+        ss << "unlockpt() failed: " << errno;
         close(MasterFd);
-        throw std::runtime_error("unlockpt() failed");
+        throw std::runtime_error(ss.str());
     }
 
-    char* ptsName = ptsname(MasterFd);
-    if (!ptsName) {
+    char buffer[64] = {0};
+
+    int res = ptsname_r(MasterFd, buffer, sizeof(buffer));
+    if (res != 0) {
+        std::stringstream ss;
+        ss << "ptsname() failed: " << res;
         close(MasterFd);
-        throw std::runtime_error("ptsname() failed");
+        throw std::runtime_error(ss.str());
     }
-    PtsName = ptsName;
+    PtsName = buffer;
 }
 
 TPtyBasedFakeSerial::TPtyBasedFakeSerial(WBMQTT::Testing::TLoggedFixture& fixture):
