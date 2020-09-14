@@ -2,4 +2,3 @@ usr/bin/*
 etc/*
 etc/wb-configs.d/*
 usr/share/wb-mqtt-serial/*
-usr/share/wb-mqtt-confed/*

@@ -6,7 +6,7 @@
 #include "serial_port_settings.h"
 #include "pty_based_fake_serial.h"
 
-class TPtyBasedFakeSerialTest: public TLoggedFixture {
+class TPtyBasedFakeSerialTest: public WBMQTT::Testing::TLoggedFixture {
 protected:
     void SetUp();
     void TearDown();
@@ -42,7 +42,7 @@ uint32_t TPtyBasedFakeSerialTest::Read3(PPort port)
 
 void TPtyBasedFakeSerialTest::SetUp()
 {
-    TLoggedFixture::SetUp();
+    WBMQTT::Testing::TLoggedFixture::SetUp();
     FakeSerial = PPtyBasedFakeSerial(new TPtyBasedFakeSerial(*this));
     auto settings = std::make_shared<TSerialPortSettings>(
                 FakeSerial->GetPrimaryPtsName(),

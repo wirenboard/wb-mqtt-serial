@@ -26,28 +26,28 @@
             },
             {
                 "name": "Button 1",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "readonly": true,
                 "address": 6,
                 "type": "switch"
             },
             {
                 "name": "Button 2",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "readonly": true,
                 "address": 7,
                 "type": "switch"
             },
             {
                 "name": "Button 1 counter",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "readonly": true,
                 "address": 32,
                 "type": "value"
             },
             {
                 "name": "Button 2 counter",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "readonly": true,
                 "address": 33,
                 "type": "value"

@@ -10,7 +10,6 @@
       "stop_bits": 1,
       "poll_interval": 100,
       "enabled": true,
-      "protocol": "other",
       "devices" : [
         {
           "slave_id": "0",

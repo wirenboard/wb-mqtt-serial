@@ -1,7 +1,7 @@
 #include <string>
 #include "fake_serial_port.h"
 #include "mercury230_expectations.h"
-#include "mercury230_device.h"
+#include "devices/mercury230_device.h"
 
 
 class TMercury230Test: public TSerialDeviceTest, public TMercury230Expectations
@@ -226,14 +226,13 @@ protected:
     void SetUp();
     void TearDown();
     const char* ConfigPath() const { return "configs/config-mercury230-test.json"; }
-    const char* GetTemplatePath() const { return "../wb-mqtt-serial-templates/"; }
+    std::string GetTemplatePath() const override { return "../wb-mqtt-serial-templates"; }
     void ExpectQueries(bool firstPoll);
 };
 
 void TMercury230IntegrationTest::SetUp()
 {
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
     SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(150));
     ASSERT_TRUE(!!SerialPort);
 }
@@ -289,7 +288,7 @@ TEST_F(TMercury230IntegrationTest, Poll)
 {
 	ExpectQueries(true);
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 // NOTE: max unchanged interval tests concern the whole driver,
@@ -303,7 +302,7 @@ TEST_F(TMercury230IntegrationTest, MaxUnchangedInterval) {
         ExpectQueries(i == 0);
 
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
     }
 }
 
@@ -318,6 +317,6 @@ TEST_F(TMercury230IntegrationTest, ZeroMaxUnchangedInterval) {
     for (int i = 0; i < 3; ++i) {
         ExpectQueries(i == 0);
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
     }
 }

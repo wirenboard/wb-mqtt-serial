@@ -9,6 +9,10 @@
 #include "serial_port_settings.h"
 #include "pty_based_fake_serial.h"
 
+#include <wblib/testing/testlog.h>
+
+using namespace WBMQTT::Testing;
+
 class TImxFloodThread {
 public:
     TImxFloodThread(PPort serial, std::chrono::milliseconds duration) : Serial(serial), Duration(duration) {};
@@ -19,14 +23,25 @@ public:
 
         IsRunning = true;
         auto start = std::chrono::steady_clock::now();
+        bool sentSomething = false;
         while (IsRunning) {
             auto diff = std::chrono::steady_clock::now() - start;
             if (diff > Duration) {
-                Expired = true;     
+                Expired = true;
                 return;
             }
-            Serial->WriteBytes(buf, sizeof(buf));
+            try {
+                Serial->WriteBytes(buf, sizeof(buf));
+                sentSomething = true;
+            } catch (const TSerialDeviceErrnoException& e) {
+                if (e.GetErrnoValue() != EAGAIN) { // We write too fast. Let's give some time to a reader
+                    throw;
+                }
+            }
             usleep(1);
+        }
+        if (!sentSomething) {
+            throw std::runtime_error("TImxFloodThread sent nothing");
         }
     }
     
@@ -75,12 +90,24 @@ public:
         Fixture.Emit() << "ReadByte()";
         return TSerialPort::ReadByte();
     }
+
+    void EmptyReadBuffer()
+    {
+        while (true) {
+            try {
+                TSerialPort::ReadByte();
+            } catch (const TSerialDeviceTransientErrorException&) {
+                return;
+            }
+        }
+    }
 protected:
     void Reopen() override
     {
         Fixture.Emit() << "Reopen()";
         if (StopFloodOnReconnect) {
             FloodThread.Stop();
+            EmptyReadBuffer();
         }
     };
 
@@ -110,7 +137,6 @@ void TSerialPortTest::SetUp()
                 9600, 'N', 8, 1, std::chrono::milliseconds(1000));
     Serial = PPort(
         new TSerialPort(settings));
-    Serial->SetDebug(true);
     Serial->Open();
 
     FakeSerial->StartForwarding();
@@ -141,7 +167,6 @@ TEST_F(TSerialPortTest, TestSkipNoise)
     uint8_t buf[] = {1,2,3};
     Serial->WriteBytes(buf, sizeof(buf));
     usleep(300);
-    SecondarySerial->SetDebug(true);
     SecondarySerial->SkipNoise();
 
     buf[0] = 0x04;
@@ -163,7 +188,6 @@ TEST_F(TSerialPortTest, TestImxBug)
 
     SecondarySerial->FloodThread.Start();
     usleep(10);
-    SecondarySerial->SetDebug(true);
     SecondarySerial->SkipNoise();
     SecondarySerial->FloodThread.Stop();
     // If flood thread is expired then skip noise was stuck forever

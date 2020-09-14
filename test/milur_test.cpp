@@ -1,7 +1,7 @@
 #include <string>
 #include "fake_serial_port.h"
 #include "milur_expectations.h"
-#include "milur_device.h"
+#include "devices/milur_device.h"
 
 
 class TMilurTest: public TSerialDeviceTest, public TMilurExpectations
@@ -150,14 +150,13 @@ protected:
     void SetUp();
     void TearDown();
     const char* ConfigPath() const { return "configs/config-milur-test.json"; }
-    const char* GetTemplatePath() const { return "../wb-mqtt-serial-templates/"; }
+    std::string GetTemplatePath() const override { return "../wb-mqtt-serial-templates"; }
     void ExpectQueries(bool firstPoll);
 };
 
 void TMilurIntegrationTest::SetUp()
 {
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
     SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(150));
     ASSERT_TRUE(!!SerialPort);
 }
@@ -202,7 +201,7 @@ TEST_F(TMilurIntegrationTest, Poll)
 {
 	ExpectQueries(true);
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 // NOTE: max unchanged interval tests concern the whole driver,
@@ -216,7 +215,7 @@ TEST_F(TMilurIntegrationTest, MaxUnchangedInterval) {
         ExpectQueries(i == 0);
 
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
     }
 }
 
@@ -231,7 +230,7 @@ TEST_F(TMilurIntegrationTest, ZeroMaxUnchangedInterval) {
     for (int i = 0; i < 3; ++i) {
         ExpectQueries(i == 0);
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
     }
 }
 

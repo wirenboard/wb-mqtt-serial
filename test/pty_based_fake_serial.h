@@ -7,11 +7,11 @@
 #include <memory>
 #include <condition_variable>
 #include "expector.h"
-#include "testlog.h"
+#include <wblib/testing/testlog.h>
 
 class TPtyBasedFakeSerial: public TExpector {
 public:
-    TPtyBasedFakeSerial(TLoggedFixture& fixture);
+    TPtyBasedFakeSerial(WBMQTT::Testing::TLoggedFixture& fixture);
     ~TPtyBasedFakeSerial();
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     std::string GetPrimaryPtsName() const;
@@ -22,8 +22,10 @@ public:
     void SetDumpForwardingLogs(bool val) {DumpForwardingLogs = val;};
 private:
     struct PtyPair {
+        ~PtyPair();
         void Init();
-        int MasterFd;
+
+        int MasterFd = -1;
         std::string PtsName;
     };
     struct Expectation {
@@ -41,7 +43,7 @@ private:
     void Forward();
     void FlushForwardingLogs();
 
-    TLoggedFixture& Fixture;
+    WBMQTT::Testing::TLoggedFixture& Fixture;
     PtyPair Primary, Secondary;
     bool Stop, ForceFlush, ForwardingFromPrimary;
     std::vector<uint8_t> ForwardedBytes;

@@ -4,17 +4,20 @@
 #include <memory>
 #include <deque>
 
+#include <wblib/testing/fake_mqtt.h>
+#include <wblib/testing/testlog.h>
+#include <wblib/map.h>
+
 #include "expector.h"
-#include "testlog.h"
-#include "fake_mqtt.h"
-#include "../serial_device.h"
-#include "../serial_observer.h"
+#include "serial_device.h"
+#include "serial_driver.h"
+
+using WBMQTT::Testing::TLoggedFixture;
 
 class TFakeSerialPort: public TPort, public TExpector {
 public:
-    TFakeSerialPort(TLoggedFixture& fixture);
-    void SetDebug(bool debug);
-    bool Debug() const;
+    TFakeSerialPort(WBMQTT::Testing::TLoggedFixture& fixture);
+
     void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
     void CheckPortOpen() const;
     void Open();
@@ -37,13 +40,13 @@ public:
     void Elapse(const std::chrono::milliseconds& ms);
     void SimulateDisconnect(bool simulate);
     bool GetDoSimulateDisconnect() const;
-    TLoggedFixture& GetFixture();
+    WBMQTT::Testing::TLoggedFixture& GetFixture();
 
 private:
     void SkipFrameBoundary();
     const int FRAME_BOUNDARY = -1;
 
-    TLoggedFixture& Fixture;
+    WBMQTT::Testing::TLoggedFixture& Fixture;
     bool IsPortOpen;
     bool DoSimulateDisconnect;
     std::deque<const char*> PendingFuncs;
@@ -56,7 +59,7 @@ private:
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
 
-class TSerialDeviceTest: public TLoggedFixture, public virtual TExpectorProvider {
+class TSerialDeviceTest: public WBMQTT::Testing::TLoggedFixture, public virtual TExpectorProvider {
 protected:
     void SetUp();
     void TearDown();
@@ -69,11 +72,18 @@ class TSerialDeviceIntegrationTest: public virtual TSerialDeviceTest {
 protected:
     void SetUp();
     void TearDown();
+    void Publish(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
+    void PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
     virtual const char* ConfigPath() const = 0;
-    virtual const char* GetTemplatePath() const { return nullptr;};
+    virtual std::string GetTemplatePath() const;
 
-    PFakeMQTTClient MQTTClient;
-    PMQTTSerialObserver Observer;
+    WBMQTT::Testing::PFakeMqttBroker MqttBroker;
+    WBMQTT::Testing::PFakeMqttClient MqttClient;
+    WBMQTT::PDeviceDriver            Driver;
+
+    PMQTTSerialDriver SerialDriver;
     PHandlerConfig Config;
     bool PortMakerCalled;
+
+    static WBMQTT::TMap<std::string, TTemplateMap> Templates; // Key - path to folder, value - loaded templates map
 };

@@ -3,7 +3,7 @@
 #include "milur_expectations.h"
 #include "mercury230_expectations.h"
 #include "serial_config.h"
-#include "serial_observer.h"
+#include "serial_driver.h"
 
 class TEMIntegrationTest: public TSerialDeviceIntegrationTest, public TMilurExpectations, public TMercury230Expectations
 {
@@ -17,7 +17,6 @@ protected:
 void TEMIntegrationTest::SetUp()
 {
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
     SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(150));
     ASSERT_TRUE(!!SerialPort);
 }
@@ -57,7 +56,7 @@ TEST_F(TEMIntegrationTest, Poll)
     ExpectQueries(true);
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 // NOTE: max unchanged interval tests concern the whole driver,
@@ -71,7 +70,7 @@ TEST_F(TEMIntegrationTest, MaxUnchangedInterval) {
         ExpectQueries(i == 0);
 
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
     }
 }
 
@@ -86,7 +85,7 @@ TEST_F(TEMIntegrationTest, ZeroMaxUnchangedInterval) {
     for (int i = 0; i < 3; ++i) {
         ExpectQueries(i == 0);
         Note() << "LoopOnce()";
-        Observer->LoopOnce();
+        SerialDriver->LoopOnce();
     }
 }
 

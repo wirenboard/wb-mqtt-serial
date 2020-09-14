@@ -3,6 +3,7 @@
   "max_unchanged_interval": 100,
   "ports": [
     {
+      "port_type" : "serial",
       "path" : "/dev/ttyNSC0",
       "baud_rate": 9600,
       "parity": "N",
@@ -10,7 +11,6 @@
       "stop_bits": 1,
       "poll_interval": 100,
       "enabled": true,
-      "protocol": "other",
       "devices" : [
         {
           "slave_id": "0xFE123456",
