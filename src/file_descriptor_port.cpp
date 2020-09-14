@@ -55,13 +55,11 @@ void TFileDescriptorPort::CheckPortOpen() const
 void TFileDescriptorPort::WriteBytes(const uint8_t * buf, int count) {
     auto res = write(Fd, buf, count);
     if (res < count) {
-        stringstream ss;
-        ss << "serial write failed: ";
         if (res < 0) {
-            ss << errno;
-        } else {
-            ss << res << " bytes of " << count <<" is written";
+            throw TSerialDeviceErrnoException("serial write failed: ", errno);
         }
+        stringstream ss;
+        ss << "serial write failed: " << res << " bytes of " << count <<" is written";
         throw TSerialDeviceException(ss.str());
     }
 
