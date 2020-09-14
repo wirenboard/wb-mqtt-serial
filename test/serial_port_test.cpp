@@ -90,12 +90,24 @@ public:
         Fixture.Emit() << "ReadByte()";
         return TSerialPort::ReadByte();
     }
+
+    void EmptyReadBuffer()
+    {
+        while (true) {
+            try {
+                TSerialPort::ReadByte();
+            } catch (const TSerialDeviceTransientErrorException&) {
+                return;
+            }
+        }
+    }
 protected:
     void Reopen() override
     {
         Fixture.Emit() << "Reopen()";
         if (StopFloodOnReconnect) {
             FloodThread.Stop();
+            EmptyReadBuffer();
         }
     };
 
