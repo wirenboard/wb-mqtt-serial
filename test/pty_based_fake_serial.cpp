@@ -25,6 +25,7 @@ void TPtyBasedFakeSerial::PtyPair::Init()
         std::stringstream ss;
         ss << "grantpt() failed: " << errno;
         close(MasterFd);
+        MasterFd = -1;
         throw std::runtime_error(ss.str());
     }
 
@@ -32,6 +33,7 @@ void TPtyBasedFakeSerial::PtyPair::Init()
         std::stringstream ss;
         ss << "unlockpt() failed: " << errno;
         close(MasterFd);
+        MasterFd = -1;
         throw std::runtime_error(ss.str());
     }
 
@@ -42,9 +44,17 @@ void TPtyBasedFakeSerial::PtyPair::Init()
         std::stringstream ss;
         ss << "ptsname() failed: " << res;
         close(MasterFd);
+        MasterFd = -1;
         throw std::runtime_error(ss.str());
     }
     PtsName = buffer;
+}
+
+TPtyBasedFakeSerial::PtyPair::~PtyPair()
+{
+    if (MasterFd >= 0) {
+        close(MasterFd);
+    }
 }
 
 TPtyBasedFakeSerial::TPtyBasedFakeSerial(WBMQTT::Testing::TLoggedFixture& fixture):
@@ -61,7 +71,6 @@ TPtyBasedFakeSerial::~TPtyBasedFakeSerial()
     }
     Cond.notify_one();
     PtyMasterThread.join();
-    close(Primary.MasterFd);
 }
 
 void TPtyBasedFakeSerial::StartExpecting()
