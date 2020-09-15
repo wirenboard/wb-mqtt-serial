@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.0.3) experimental; urgency=medium
+
+  * add map12e template
+  * removed map12e-fw1 template
+
+ -- Vladimir Romanov <v.romanov@wirenboard.ru>  Tue, 08 Sep 2020 11:59:12 +0300
+
 wb-mqtt-serial (2.0.2) experimental; urgency=medium
 
   * restart service only on failure
