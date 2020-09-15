@@ -1,3 +1,11 @@
+wb-mqtt-serial (1.63.0) experimental; urgency=medium
+
+	Backported from 2.0.3
+  * add map12e template
+  * removed map12e-fw1 template
+
+ -- Vladimir Romanov <v.romanov@wirenboard.ru>  Tue, 08 Sep 2020 11:59:12 +0300
+
 wb-mqtt-serial (1.62.0) stable; urgency=medium
 
   * add mr inputs freq registers
