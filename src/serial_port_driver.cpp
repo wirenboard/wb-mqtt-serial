@@ -254,27 +254,17 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
     const auto & registers = channel->Registers;
 
     it->second.ErrorState = errorState;
-    bool readError = false, writeError = false;
+    size_t errorMask = 0;
     for (auto r: registers) {
-        switch (RegErrorState(r)) {
-        case TRegisterHandler::WriteError:
-            writeError = true;
-            break;
-        case TRegisterHandler::ReadError:
-            readError = true;
-            break;
-        case TRegisterHandler::ReadWriteError:
-            readError = writeError = true;
-            break;
-        default:
-            ; // make compiler happy
+        auto error = RegErrorState(r);
+        if (error <= TRegisterHandler::ReadWriteError) {
+            errorMask |= error;
         }
     }
-
-    std::string errorStr = readError ? (writeError ? "rw" : "r") : (writeError ? "w" : "");
+    const char* errorFlags[] = {"", "w", "r", "rw"};
     {
         auto tx = MqttDriver->BeginTx();
-        tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetError(tx, errorStr);
+        tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetError(tx, errorFlags[errorMask]);
     }
 }
 

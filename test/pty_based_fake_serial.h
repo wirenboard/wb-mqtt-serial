@@ -22,8 +22,10 @@ public:
     void SetDumpForwardingLogs(bool val) {DumpForwardingLogs = val;};
 private:
     struct PtyPair {
+        ~PtyPair();
         void Init();
-        int MasterFd;
+
+        int MasterFd = -1;
         std::string PtsName;
     };
     struct Expectation {
