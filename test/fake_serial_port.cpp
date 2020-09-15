@@ -1,21 +1,18 @@
+#include "fake_serial_port.h"
+
+#include <wblib/driver.h>
+#include <wblib/backend.h>
+#include <wblib/driver_args.h>
+
 #include <cassert>
 #include <algorithm>
 #include <stdexcept>
-#include "fake_serial_port.h"
-#include "utils.h"
+
+using namespace WBMQTT;
+using namespace WBMQTT::Testing;
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
-
-void TFakeSerialPort::SetDebug(bool debug)
-{
-    Fixture.Emit() << "SetDebug(" << debug << ")";
-}
-
-bool TFakeSerialPort::Debug() const
-{
-    return false;
-}
 
 void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
 {
@@ -250,27 +247,77 @@ void TSerialDeviceTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
+WBMQTT::TMap<std::string, TTemplateMap> TSerialDeviceIntegrationTest::Templates;
+
+std::string TSerialDeviceIntegrationTest::GetTemplatePath() const 
+{
+    return std::string();
+}
+
 void TSerialDeviceIntegrationTest::SetUp()
 {
+    SetMode(E_Unordered);
     TSerialDeviceTest::SetUp();
     PortMakerCalled = false;
 
-    PTemplateMap templateMap = std::make_shared<TTemplateMap>();
-    if (GetTemplatePath()) {
-        TConfigTemplateParser templateParser(GetDataFilePath(GetTemplatePath()), false);
-        templateMap = templateParser.Parse();
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+
+    std::string path(GetTemplatePath());
+
+    auto it = Templates.find(path);
+    if (it == Templates.end()) {
+        if (path.empty()) {
+            it = Templates.emplace(path, TTemplateMap()).first;
+        } else {
+            it = Templates.emplace(path, 
+                                   TTemplateMap(GetDataFilePath(path),
+                                                LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
+                                                                          configSchema))).first;
+        } 
     }
-    TConfigParser parser(GetDataFilePath(ConfigPath()), false, TSerialDeviceFactory::GetRegisterTypes, templateMap);
 
+    Config = LoadConfig(GetDataFilePath(ConfigPath()), 
+                         TSerialDeviceFactory::GetRegisterTypes,
+                         configSchema,
+                         it->second);
 
-    Config = parser.Parse();
-    MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("em-test", *this));
-    Observer = PMQTTSerialObserver(new TMQTTSerialObserver(MQTTClient, Config, SerialPort));
+    MqttBroker = NewFakeMqttBroker(*this);
+    MqttClient = MqttBroker->MakeClient("em-test");
+    auto backend = NewDriverBackend(MqttClient);
+    Driver = NewDriver(TDriverArgs{}
+        .SetId("em-test")
+        .SetBackend(backend)
+        .SetIsTesting(true)
+        .SetReownUnknownDevices(true)
+        .SetUseStorage(true)
+        .SetStoragePath("/tmp/wb-mqtt-serial-test.db")
+    );
+
+    Driver->StartLoop();
+
+    SerialDriver = std::make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
 }
 
 void TSerialDeviceIntegrationTest::TearDown()
 {
-    MQTTClient->Unobserve(Observer);
-    Observer.reset();
+    SerialDriver->ClearDevices();
+    Driver->StopLoop();
     TSerialDeviceTest::TearDown();
+}
+
+void TSerialDeviceIntegrationTest::Publish(const std::string & topic, const std::string & payload, uint8_t qos, bool retain)
+{
+    MqttBroker->Publish("em-test-other", {TMqttMessage{topic, payload, qos, retain}});
+}
+
+void TSerialDeviceIntegrationTest::PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos, bool retain)
+{
+    auto done = std::make_shared<WBMQTT::TPromise<void>>();
+    Driver->On<WBMQTT::TControlOnValueEvent>([=](const WBMQTT::TControlOnValueEvent & event) {
+        if (!done->IsFulfilled()) {
+            done->Complete();
+        }
+    });
+    Publish(topic, payload, qos, retain);
+    done->GetFuture().Sync();
 }

@@ -1,0 +1,72 @@
+Subscribe: /devices/+/meta/driver (QoS 0)
+Publish: /devices/reconnect-test/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/reconnect-test/meta/name: 'Reconnect test' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I1/meta/error: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I1/meta/order: '1' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I1/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I1/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I1: '0' (QoS 1, retained)
+Subscribe: /devices/reconnect-test/controls/I1/on (QoS 0)
+Publish: /devices/reconnect-test/controls/I2/meta/error: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I2/meta/order: '2' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I2/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I2/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I2: '0' (QoS 1, retained)
+Subscribe: /devices/reconnect-test/controls/I2/on (QoS 0)
+Open()
+Sleep(100000)
+EnqueueSetupSectionI1()
+>> FF FF 06 01 2A 01 00 32
+<< FF FF 06 00 2A 01 00 31
+EnqueueSetupSectionI2()
+>> FF FF 06 01 18 02 00 21
+>>> LoopOnce()
+<< FF FF 06 00 18 02 00 20
+EnqueueSetupSectionI1()
+>> FF FF 05 01 00 01 00 07
+Publish: /devices/reconnect-test/controls/I1: '0.042' (QoS 1, retained)
+<< FF FF 05 00 2A 01 00 30
+EnqueueSetupSectionI2()
+>> FF FF 05 01 00 02 00 08
+Publish: /devices/reconnect-test/controls/I2: '0.024' (QoS 1, retained)
+<< FF FF 05 00 18 02 00 1F
+>>> SimulateDisconnect(true)
+>>> LoopOnce()
+Publish: /devices/reconnect-test/controls/I1/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I2/meta/error: 'r' (QoS 1, retained)
+>>> LoopOnce()
+>>> LoopOnce()
+>>> LoopOnce()
+>>> LoopOnce()
+>>> LoopOnce()
+>>> LoopOnce()
+>>> LoopOnce()
+>>> LoopOnce()
+>>> LoopOnce()
+>>> LoopOnce()
+>>> SimulateDisconnect(false)
+>>> LoopOnce()
+EnqueueSetupSectionI1()
+>> FF FF 05 01 00 01 00 07
+Publish: /devices/reconnect-test/controls/I1/meta/error: '' (QoS 1, retained)
+<< FF FF 05 00 2A 01 00 30
+EnqueueSetupSectionI2()
+>> FF FF 05 01 00 02 00 08
+Publish: /devices/reconnect-test/controls/I2/meta/error: '' (QoS 1, retained)
+<< FF FF 05 00 18 02 00 1F
+Close()
+Unsubscribe -- em-test: /devices/reconnect-test/controls/I2/on
+Publish: /devices/reconnect-test/controls/I2: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I2/meta/order: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I2/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I2/meta/type: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I2/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/reconnect-test/controls/I1/on
+Publish: /devices/reconnect-test/controls/I1: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I1/meta/order: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I1/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I1/meta/type: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/controls/I1/meta/error: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/meta/driver: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/meta/name: '' (QoS 1, retained)
+stop: em-test

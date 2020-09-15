@@ -1,7 +1,7 @@
 #include <string>
-#include "testlog.h"
+#include <wblib/testing/testlog.h>
 #include "fake_serial_port.h"
-#include "s2k_device.h"
+#include "devices/s2k_device.h"
 #include "s2k_expectations.h"
 
 class TS2KDeviceTest: public TSerialDeviceTest, public TS2KDeviceExpectations {
@@ -54,7 +54,7 @@ class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDevic
 protected:
     void SetUp();
     void TearDown();
-    const char* ConfigPath() const { return "../config-s2k-test.json"; }
+    const char* ConfigPath() const { return "configs/config-s2k-test.json"; }
 };
 
 void TS2KIntegrationTest::SetUp()
@@ -69,7 +69,6 @@ void TS2KIntegrationTest::TearDown()
 }
 TEST_F(TS2KIntegrationTest, Poll)
 {
-    Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 
     EnqueueReadConfig1();
@@ -82,16 +81,16 @@ TEST_F(TS2KIntegrationTest, Poll)
     EnqueueReadConfig8();
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
     SerialPort->DumpWhatWasRead();
 
     EnqueueSetRelayOnResponse();
     EnqueueSetRelay2On();
     EnqueueSetRelay3On2();
 
-    MQTTClient->DoPublish(true, 0, "/devices/pseudo_s2k/controls/Relay 1/on", "1");
-    MQTTClient->DoPublish(true, 0, "/devices/pseudo_s2k/controls/Relay 2/on", "1");
-    MQTTClient->DoPublish(true, 0, "/devices/pseudo_s2k/controls/Relay 3/on", "2");
+    PublishWaitOnValue("/devices/pseudo_s2k/controls/Relay 1/on", "1");
+    PublishWaitOnValue("/devices/pseudo_s2k/controls/Relay 2/on", "1");
+    PublishWaitOnValue("/devices/pseudo_s2k/controls/Relay 3/on", "2");
     SerialPort->DumpWhatWasRead();
 
 
@@ -105,7 +104,7 @@ TEST_F(TS2KIntegrationTest, Poll)
     EnqueueReadConfig8();
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
     SerialPort->DumpWhatWasRead();
 
     SerialPort->Close();

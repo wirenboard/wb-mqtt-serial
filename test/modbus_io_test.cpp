@@ -11,7 +11,7 @@ protected:
     void SetUp();
     void TearDown();
     const char* ConfigPath() const override { return "configs/config-modbus-io-test.json"; }
-    const char* GetTemplatePath() const override { return "device-templates/";}
+    std::string GetTemplatePath() const override { return "device-templates";}
 
     void ExpectPollQueries();
 
@@ -23,7 +23,6 @@ void TModbusIOIntegrationTest::SetUp()
 {
     SelectModbusType(MODBUS_RTU);
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 }
 
@@ -46,28 +45,28 @@ void TModbusIOIntegrationTest::ExpectPollQueries()
 TEST_F(TModbusIOIntegrationTest, Poll)
 {
     ExpectPollQueries();
-    Observer->WriteInitValues();
+    SerialDriver->WriteInitValues();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIOIntegrationTest, Write)
 {
     ExpectPollQueries();
-    Observer->WriteInitValues();
+    SerialDriver->WriteInitValues();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
-    MQTTClient->Publish(nullptr, "/devices/modbus-io-1-1/controls/Coil 0/on", "1");
-    MQTTClient->Publish(nullptr, "/devices/modbus-io-1-2/controls/Coil 0/on", "0");
-    
+    PublishWaitOnValue("/devices/modbus-io-1-1/controls/Coil 0/on", "1");
+    PublishWaitOnValue("/devices/modbus-io-1-2/controls/Coil 0/on", "0");
+
     EnqueueCoilWriteResponse();
 
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }

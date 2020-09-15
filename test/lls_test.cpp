@@ -1,6 +1,6 @@
 #include <string>
 #include "fake_serial_port.h"
-#include "lls_device.h"
+#include "devices/lls_device.h"
 
 
 class TLLSIntegrationTest: public TSerialDeviceIntegrationTest
@@ -9,7 +9,7 @@ protected:
     void SetUp();
     void TearDown();
     const char* ConfigPath() const { return "configs/config-lls-test.json"; }
-    const char* GetTemplatePath() const { return "../wb-mqtt-serial-templates/"; }
+    std::string GetTemplatePath() const override { return "../wb-mqtt-serial-templates/"; }
     void EnqueeCmdF0Response();
     void EnqueeCmdFCResponse();
 };
@@ -17,7 +17,6 @@ protected:
 void TLLSIntegrationTest::SetUp()
 {
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 }
 
@@ -57,5 +56,5 @@ TEST_F(TLLSIntegrationTest, Poll)
     EnqueeCmdF0Response();
     EnqueeCmdFCResponse();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }

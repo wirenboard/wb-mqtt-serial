@@ -19,7 +19,4 @@ if [ -d /etc/wb-mqtt-confed ]; then
    rmdir --ignore-fail-on-non-empty /etc/wb-mqtt-confed
 fi
 
-exit 0
-# ignore debhelper
-
 #DEBHELPER#

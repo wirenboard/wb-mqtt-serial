@@ -118,14 +118,12 @@ void TFakeSerialDevice::OnCycleEnd(bool ok)
 void TFakeSerialDevice::BlockReadFor(int addr, bool block)
 {
     Blockings[addr].first = block;
-
     FakePort->GetFixture().Emit() << "fake_serial_device: block address '" << addr << "' for reading";
 }
 
 void TFakeSerialDevice::BlockWriteFor(int addr, bool block)
 {
     Blockings[addr].second = block;
-
     FakePort->GetFixture().Emit() << "fake_serial_device: block address '" << addr << "' for writing";
 }
 

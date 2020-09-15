@@ -1,7 +1,7 @@
 #include <string>
-#include "testlog.h"
+#include <wblib/testing/testlog.h>
 #include "fake_serial_port.h"
-#include "pulsar_device.h"
+#include "devices/pulsar_device.h"
 
 
 class TPulsarDeviceTest: public TSerialDeviceTest
@@ -23,10 +23,10 @@ void TPulsarDeviceTest::SetUp()
         std::make_shared<TDeviceConfig>("pulsar-heat", std::to_string(107080), "pulsar"),
         SerialPort,
         TSerialDeviceFactory::GetProtocol("pulsar"));
-    
+
     Heat_TempIn = TRegister::Intern(Dev, TRegisterConfig::Create(0, 2, Float));
     Heat_TempOut = TRegister::Intern(Dev, TRegisterConfig::Create(0, 3, Float));
-    
+
     SerialPort->Open();
 }
 

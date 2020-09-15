@@ -32,7 +32,7 @@
             },
             {
                 "name": "CO2",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": 8,
                 "type": "concentration",
                 "error_value": "0xFFFF"
@@ -209,7 +209,7 @@
             {
                 "name": "Serial",
                 "type": "text",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": 270,
                 "format": "u32"
             }

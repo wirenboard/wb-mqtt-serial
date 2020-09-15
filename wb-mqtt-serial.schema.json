@@ -7,7 +7,7 @@
     "deviceProtocol": {
       "type": "string",
       "title": "Device protocol",
-      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k"],
+      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k", "modbus_io", "pulsar", "mercury200", "lls"],
       "default": "modbus"
     },
     "serialPort": {
@@ -414,7 +414,7 @@
     "channel": {
       "type": "object",
       // "options": { "collapsed": true },
-      "oneOf": [
+      "anyOf": [
         {
           "title": "Register",
           "properties": {
@@ -462,7 +462,8 @@
               "title": "Round to",
               "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
               "default" : 1,
-              "propertyOrder": 9
+              "propertyOrder": 9,
+              "minimum": 0
             },
             "channel_readonly": {
               "title": "Read-only",
@@ -485,15 +486,25 @@
               "propertyOrder": 11
             },
             "error_value": {
-              "type": "integer",
               "title": "Error value",
               "description": "Value which should be treated as read error",
-              "propertyOrder": 12
+              "propertyOrder": 12,
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4294967295
+                }
+              ]
             },
             "word_order": {
               "$ref": "#/definitions/word_order",
               "propertyOrder": 13
-            },
+            }
           },
           // FIXME: require "reg_type" and "address" for non-templated devices
           "required": ["name"],
@@ -568,7 +579,7 @@
         "word_order": {
           "$ref": "#/definitions/word_order",
           "propertyOrder": 6
-        },
+        }
       },
       "required": ["reg_type", "address"]
     },
@@ -592,13 +603,16 @@
         // FIXME: "dimmer", "lux" and "pressure" aren't present in
         // conventions but is present in config-test.json in
         // wb-mqtt-serial
-        "dimmer", "lux", "pressure"
+        "dimmer", "lux", "pressure", "current", "sound_level"
       ]
     },
     "reg_type": {
       "type": "string",
       "title": "Register type",
-      "enum": ["coil", "discrete", "holding", "holding_single", "holding_multi", "input", "direct"]
+      "enum": ["coil", "discrete", "holding", "holding_single", "holding_multi", "input", "direct", "relay", 
+               "brightness", "param", "relay_mode", "relay_default", "relay_delay", "energy", "array",
+               "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
+               "param24", "param32", "power", "freq", "power_factor"]
     },
     "format": {
       "type": "string",
@@ -631,6 +645,10 @@
     },
     "serial_int": {
       "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$"
+        },
         {
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"

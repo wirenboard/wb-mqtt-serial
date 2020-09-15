@@ -3,7 +3,7 @@
     "debug": false,
     "ports": [
         {
-
+            "port_type" : "serial",
             "path" : "/dev/ttyRS485-1",
             "baud_rate": 9600,
             "parity": "N",
