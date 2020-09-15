@@ -4,10 +4,6 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "log.h"
-
-#define LOG(logger) ::logger.Log() << "[serial device] "
-
 REGISTER_BASIC_INT_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
             { Modbus::REG_COIL, "coil", "switch", U8 },
             { Modbus::REG_DISCRETE, "discrete", "switch", U8, true },
@@ -48,23 +44,5 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
 
 bool TModbusDevice::WriteSetupRegisters()
 {
-    for (const auto& item : SetupItems) {
-        try {
-            try {
-                LOG(Info) << "Init: " << item->Name 
-                        << ": setup register " << item->Register->ToString()
-                        << " <-- " << item->Value;
-                WriteRegister(item->Register, item->Value);
-            } catch (const TModbusException& modbusException) {
-                if (modbusException.code() != Modbus::ERR_ILLEGAL_DATA_ADDRESS) {
-                    throw;
-                }
-            }
-        } catch (const TSerialDeviceException& e) {
-            LOG(Warn) << "Register " << item->Register->ToString()
-                      << " setup failed: " << e.what();
-            return false;
-        }
-    }
-    return true;
+    return ModbusRTU::WriteSetupRegisters(Port(), SlaveId, SetupItems);
 }

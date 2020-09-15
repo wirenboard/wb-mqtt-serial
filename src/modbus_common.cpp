@@ -922,4 +922,27 @@ namespace ModbusRTU // modbus rtu protocol utilities
             logWarn << ": " << exception_message;
         }
     }
-};  // modbus rtu protocol utilities
+
+    bool WriteSetupRegisters(PPort port, uint8_t slaveId, const std::vector<PDeviceSetupItem>& setupItems, int shift)
+    {
+        for (const auto& item : setupItems) {
+            try {
+                try {
+                    LOG(Info) << "Init: " << item->Name 
+                            << ": setup register " << item->Register->ToString()
+                            << " <-- " << item->Value;
+                    WriteRegister(port, slaveId, item->Register, item->Value, shift);
+                } catch (const TModbusException& modbusException) {
+                    if (modbusException.code() != Modbus::ERR_ILLEGAL_DATA_ADDRESS) {
+                        throw;
+                    }
+                }
+            } catch (const TSerialDeviceException& e) {
+                LOG(Warn) << "Register " << item->Register->ToString()
+                        << " setup failed: " << e.what();
+                return false;
+            }
+        }
+        return true;
+    }
+}  // modbus rtu protocol utilities
