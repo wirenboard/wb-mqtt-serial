@@ -923,6 +923,11 @@ namespace ModbusRTU // modbus rtu protocol utilities
         }
     }
 
+    void WarnFailedRegisterSetup(const PDeviceSetupItem& item, const char* msg)
+    {
+        LOG(Warn) << "Register " << item->Register->ToString() << " setup failed: " << msg;
+    }
+
     bool WriteSetupRegisters(PPort port, uint8_t slaveId, const std::vector<PDeviceSetupItem>& setupItems, int shift)
     {
         for (const auto& item : setupItems) {
@@ -936,10 +941,10 @@ namespace ModbusRTU // modbus rtu protocol utilities
                     if (modbusException.code() != Modbus::ERR_ILLEGAL_DATA_ADDRESS) {
                         throw;
                     }
+                    WarnFailedRegisterSetup(item, modbusException.what());
                 }
             } catch (const TSerialDeviceException& e) {
-                LOG(Warn) << "Register " << item->Register->ToString()
-                        << " setup failed: " << e.what();
+                WarnFailedRegisterSetup(item, e.what());
                 return false;
             }
         }
