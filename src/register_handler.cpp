@@ -111,6 +111,10 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
         LOG(Warn) << "Register " << Reg->ToString()
                   << " TRegisterHandler::Flush() failed: " << e.what();
         return UpdateWriteError(true);
+    } catch (const TSerialDevicePermanentRegisterException& e) {
+        LOG(Warn) << "Register " << Reg->ToString()
+                  << " TRegisterHandler::Flush() failed: " << e.what();
+        return UpdateWriteError(true);
     }
     return UpdateWriteError(false);
 }

@@ -13,16 +13,6 @@ using namespace std;
 
 #define LOG(logger) ::logger.Log() << "[modbus] "
 
-TModbusException::TModbusException(Modbus::Error errorCode, const std::string& message):
-    TSerialDeviceTransientErrorException(message),
-    ErrorCode(errorCode)
-{}
-
-Modbus::Error TModbusException::code() const
-{
-    return ErrorCode;
-}
-
 namespace Modbus    // modbus protocol declarations
 {
     const int MAX_READ_BITS = 2000;
@@ -34,6 +24,19 @@ namespace Modbus    // modbus protocol declarations
 
     const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
     const size_t WRITE_RESPONSE_PDU_SIZE = 5;
+
+    enum Error: uint8_t {
+        ERR_NONE                                    = 0x0,
+        ERR_ILLEGAL_FUNCTION                        = 0x1,
+        ERR_ILLEGAL_DATA_ADDRESS                    = 0x2,
+        ERR_ILLEGAL_DATA_VALUE                      = 0x3,
+        ERR_SERVER_DEVICE_FAILURE                   = 0x4,
+        ERR_ACKNOWLEDGE                             = 0x5,
+        ERR_SERVER_DEVICE_BUSY                      = 0x6,
+        ERR_MEMORY_PARITY_ERROR                     = 0x8,
+        ERR_GATEWAY_PATH_UNAVAILABLE                = 0xA,
+        ERR_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND = 0xB
+    };
 
     union TAddress
     {
@@ -337,25 +340,30 @@ namespace Modbus    // modbus protocol common utilities
         if ( code == 0) {
             return;
         }
-        const char* errMsg[] = 
-            { nullptr,                                     // 0x00
-              "illegal function",                          // 0x01
-              "illegal data address",                      // 0x02
-              "illegal data value",                        // 0x03
-              "server device failure",                     // 0x04
-              "long operation (acknowledge)",              // 0x05
-              "server device is busy",                     // 0x06
-              nullptr,                                     // 0x07
-              "memory parity error",                       // 0x08
-              nullptr,                                     // 0x09
-              "gateway path is unavailable",               // 0x0A
-              "gateway target device failed to respond"};  // 0x0B
-        if (code < sizeof(errMsg)/sizeof(const char*)) {
-            if (errMsg[code] != nullptr) {
-                throw TModbusException(static_cast<Modbus::Error>(code), errMsg[code]);
+        typedef std::pair<const char*, bool> TModbusException;
+        const TModbusException errs[] =             
+            { {"illegal function",                        true },     // 0x01
+              {"illegal data address",                    true },     // 0x02
+              {"illegal data value",                      false},     // 0x03
+              {"server device failure",                   false},     // 0x04
+              {"long operation (acknowledge)",            false},     // 0x05
+              {"server device is busy",                   false},     // 0x06
+              {nullptr,                                   false},     // 0x07
+              {"memory parity error",                     false},     // 0x08
+              {nullptr,                                   false},     // 0x09
+              {"gateway path is unavailable",             false},     // 0x0A
+              {"gateway target device failed to respond", false}  };  // 0x0B
+        --code;
+        if (code < sizeof(errs)/sizeof(TModbusException)) {
+            const auto& err = errs[code];
+            if (err.first != nullptr) {
+                if (err.second) {
+                    throw TSerialDevicePermanentRegisterException(err.first);
+                }
+                throw TSerialDeviceTransientErrorException(err.first);
             }
         }
-        throw TSerialDeviceTransientErrorException("invalid modbus error code (" + std::to_string(code) + ")");
+        throw TSerialDeviceTransientErrorException("invalid modbus error code (" + std::to_string(code+1) + ")");
     }
 
     // returns count of modbus registers needed to represent TRegister
@@ -909,7 +917,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
                     return;
                 }
             }
-        } catch (TSerialDeviceTransientErrorException& e) {
+        } catch (const TSerialDeviceTransientErrorException& e) {
+            exception_message = e.what();
+        } catch (const TSerialDevicePermanentRegisterException& e) {
             exception_message = e.what();
         }
 
@@ -932,18 +942,13 @@ namespace ModbusRTU // modbus rtu protocol utilities
     {
         for (const auto& item : setupItems) {
             try {
-                try {
-                    LOG(Info) << "Init: " << item->Name 
-                            << ": setup register " << item->Register->ToString()
-                            << " <-- " << item->Value;
-                    WriteRegister(port, slaveId, item->Register, item->Value, shift);
-                } catch (const TModbusException& modbusException) {
-                    if (modbusException.code() != Modbus::ERR_ILLEGAL_DATA_ADDRESS) {
-                        throw;
-                    }
-                    WarnFailedRegisterSetup(item, modbusException.what());
-                }
-            } catch (const TSerialDeviceException& e) {
+                LOG(Info) << "Init: " << item->Name 
+                        << ": setup register " << item->Register->ToString()
+                        << " <-- " << item->Value;
+                WriteRegister(port, slaveId, item->Register, item->Value, shift);
+            } catch (const TSerialDevicePermanentRegisterException& e) {
+                WarnFailedRegisterSetup(item, e.what());
+            } catch (const TSerialDeviceTransientErrorException& e) {
                 WarnFailedRegisterSetup(item, e.what());
                 return false;
             }
