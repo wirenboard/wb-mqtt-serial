@@ -125,15 +125,6 @@ void TSerialPort::Open()
         throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcsetattr");
     }
 
-    serial_struct serial; 
-    if (ioctl(Fd, TIOCGSERIAL, &serial) < 0 ) {
-        LOG(Warn) << "Can't get serial_struct for " << Settings->Device;
-    } else {
-        serial.flags |= ASYNC_LOW_LATENCY;
-        if (ioctl(Fd, TIOCSSERIAL, &serial)) {
-            LOG(Warn) << "Can't set ASYNC_LOW_LATENCY for " << Settings->Device;
-        }
-    }
     LastInteraction = std::chrono::steady_clock::now();
     SkipNoise();    // flush data from previous instance if any
 }
