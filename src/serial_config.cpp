@@ -343,6 +343,10 @@ namespace {
                 device_config->Password.push_back(ToInt(passwordItem, "password item"));
         }
 
+        if (device_data.isMember("delay_ms")) {
+            LOG(Warn) << "\"delay_ms\" is not supported, use \"frame_timeout_ms\" instead";
+        }
+
         Get(device_data, "frame_timeout_ms",       device_config->FrameTimeout);
         if (device_config->FrameTimeout.count() < 0) {
             device_config->FrameTimeout = std::chrono::milliseconds::zero();
