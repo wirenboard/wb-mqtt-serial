@@ -4,7 +4,6 @@
 #include <iostream>
 #include <stdexcept>
 
-
 REGISTER_BASIC_INT_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
             { Modbus::REG_COIL, "coil", "switch", U8 },
             { Modbus::REG_DISCRETE, "discrete", "switch", U8, true },
@@ -33,7 +32,17 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
     ModbusRTU::WriteRegister(Port(), SlaveId, reg, value);
 }
 
+void TModbusDevice::SetReadError(PRegisterRange range)
+{
+    ModbusRTU::SetReadError(range);
+}
+
 void TModbusDevice::ReadRegisterRange(PRegisterRange range)
 {
     ModbusRTU::ReadRegisterRange(Port(), SlaveId, range);
+}
+
+bool TModbusDevice::WriteSetupRegisters()
+{
+    return ModbusRTU::WriteSetupRegisters(Port(), SlaveId, SetupItems);
 }

@@ -2,6 +2,7 @@
 
 #include "port.h"
 #include "serial_config.h"
+#include "serial_device.h"
 #include "register.h"
 #include <ostream>
 #include <bitset>
@@ -27,4 +28,8 @@ namespace ModbusRTU // modbus rtu protocol utilities
     void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift = 0);
 
     void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift = 0);
+
+    void SetReadError(PRegisterRange range);
+
+    bool WriteSetupRegisters(PPort port, uint8_t slaveId, const std::vector<PDeviceSetupItem>& setupItems, int shift = 0);
 };  // modbus rtu protocol utilities

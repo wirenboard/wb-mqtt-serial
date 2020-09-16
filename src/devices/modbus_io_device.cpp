@@ -4,7 +4,6 @@
 #include "modbus_io_device.h"
 #include "modbus_common.h"
 
-
 REGISTER_BASIC_PROTOCOL("modbus_io", TModbusIODevice, TAggregatedSlaveId, TRegisterTypes({
             { Modbus::REG_COIL, "coil", "switch", U8 },
             { Modbus::REG_DISCRETE, "discrete", "switch", U8, true },
@@ -36,4 +35,14 @@ void TModbusIODevice::WriteRegister(PRegister reg, uint64_t value)
 void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 {
     ModbusRTU::ReadRegisterRange(Port(), SlaveId.Primary, range, Shift);
+}
+
+void TModbusIODevice::SetReadError(PRegisterRange range)
+{
+    ModbusRTU::SetReadError(range);
+}
+
+bool TModbusIODevice::WriteSetupRegisters()
+{
+    return ModbusRTU::WriteSetupRegisters(Port(), SlaveId.Primary, SetupItems, Shift);
 }

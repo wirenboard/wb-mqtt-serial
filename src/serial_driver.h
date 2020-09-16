@@ -20,8 +20,6 @@ public:
     void Start();
     void Stop();
 
-    bool WriteInitValues();
-
 private:
     std::vector<PSerialPortDriver> PortDrivers;
     std::vector<std::thread>       PortLoops;
