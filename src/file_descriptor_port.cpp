@@ -55,7 +55,7 @@ void TFileDescriptorPort::WriteBytes(const uint8_t * buf, int count) {
         throw TSerialDeviceException("serial write failed");
     }
 
-    LastInteraction = std::chrono::high_resolution_clock::now();
+    LastInteraction = std::chrono::steady_clock::now();
 
     if (::Debug.IsEnabled()) {
         // TBD: move this to libwbmqtt (HexDump?)
@@ -105,7 +105,7 @@ uint8_t TFileDescriptorPort::ReadByte(const chrono::microseconds& timeout)
         throw TSerialDeviceException("read() failed");
     }
 
-    LastInteraction = std::chrono::high_resolution_clock::now();
+    LastInteraction = std::chrono::steady_clock::now();
 
     LOG(Debug) << "Read: " << hex << setw(2) << setfill('0') << int(b);
 
@@ -154,6 +154,8 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf,
 {
     CheckPortOpen();
     int nread = 0;
+
+    // Will wait first byte up to responseTimeout us
     auto selectTimeout = responseTimeout;
     while (nread < size) {
         if (frame_complete && frame_complete(buf, nread)) {
@@ -166,6 +168,8 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf,
         int nb = ReadAvailableData(buf + nread, size - nread);
         if (nb <= 0) continue;
 
+        // Got something, switch to frameTimeout to detect frame boundary
+        // Delay between bytes in one message can't be more than frameTimeout
         selectTimeout = frameTimeout;
         nread += nb;
     }
@@ -174,7 +178,7 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf,
         throw TSerialDeviceTransientErrorException("request timed out");
     }
 
-    LastInteraction = std::chrono::high_resolution_clock::now();
+    LastInteraction = std::chrono::steady_clock::now();
 
     if (::Debug.IsEnabled()) {
         // TBD: move this to libwbmqtt (HexDump?)
@@ -211,7 +215,7 @@ void TFileDescriptorPort::SkipNoise()
 
         // if we are still getting data for already "ContinuousNoiseTimeout" milliseconds
         if (nread > 0) {
-            LastInteraction = std::chrono::high_resolution_clock::now();
+            LastInteraction = std::chrono::steady_clock::now();
 
             if (diff > ContinuousNoiseTimeout) {
                 if (ntries < ContinuousNoiseReopenNumber)  {
@@ -229,7 +233,7 @@ void TFileDescriptorPort::SkipNoise()
 
 void TFileDescriptorPort::SleepSinceLastInteraction(const chrono::microseconds& us)
 {
-    auto now = chrono::high_resolution_clock::now();
+    auto now = chrono::steady_clock::now();
     auto delta = chrono::duration_cast<chrono::microseconds>(now - LastInteraction);
     std::this_thread::sleep_for(us - delta);
     LOG(Debug) << "Sleep " << us.count() << " us";

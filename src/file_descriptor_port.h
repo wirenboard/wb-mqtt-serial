@@ -32,7 +32,7 @@ protected:
     virtual void OnReadyEmptyFd();
 
     int             Fd;
-    std::chrono::time_point<std::chrono::high_resolution_clock> LastInteraction;
+    std::chrono::time_point<std::chrono::steady_clock> LastInteraction;
 private:
     int ReadAvailableData(uint8_t* buf, size_t max_read);
 };

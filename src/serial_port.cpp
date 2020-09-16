@@ -134,7 +134,7 @@ void TSerialPort::Open()
             LOG(Warn) << "Can't set ASYNC_LOW_LATENCY for " << Settings->Device;
         }
     }
-    LastInteraction = std::chrono::high_resolution_clock::now();
+    LastInteraction = std::chrono::steady_clock::now();
     SkipNoise();    // flush data from previous instance if any
 }
 
@@ -178,5 +178,5 @@ void TSerialPort::WriteBytes(const uint8_t* buf, int count)
 {
     Base::WriteBytes(buf, count);
     SleepSinceLastInteraction(GetSendTime(count));
-    LastInteraction = std::chrono::high_resolution_clock::now();
+    LastInteraction = std::chrono::steady_clock::now();
 }
