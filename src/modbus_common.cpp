@@ -344,7 +344,7 @@ namespace Modbus    // modbus protocol common utilities
         const TModbusException errs[] =             
             { {"illegal function",                        true },     // 0x01
               {"illegal data address",                    true },     // 0x02
-              {"illegal data value",                      false},     // 0x03
+              {"illegal data value",                      true },     // 0x03
               {"server device failure",                   false},     // 0x04
               {"long operation (acknowledge)",            false},     // 0x05
               {"server device is busy",                   false},     // 0x06

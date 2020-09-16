@@ -33,7 +33,7 @@ void TModbusIOExpectations::EnqueueSetupSectionWriteResponse(bool firstModule, b
             }),
             WrapPDU({
                 0x86,   //Exception
-                0x03,   //ILLEGAL DATA VALUE
+                0x04,   //SLAVE DEVICE FAILURE
             }), __func__);
         } else {
             Expector()->Expect(
