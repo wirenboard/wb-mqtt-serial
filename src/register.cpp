@@ -57,11 +57,6 @@ TRegisterRange::EStatus TSimpleRegisterRange::GetStatus() const
     return Errors.size() == RegisterList().size() ? ST_UNKNOWN_ERROR: ST_OK;
 }
 
-bool TSimpleRegisterRange::NeedsSplit() const
-{
-    return false;
-}
-
 std::string TRegisterConfig::ToString() const {
     std::stringstream s;
     s << TypeName << ": " << Address;
@@ -71,6 +66,16 @@ std::string TRegisterConfig::ToString() const {
 std::string TRegister::ToString() const
 {
     return "<" + Device()->ToString() + ":" + TRegisterConfig::ToString() + ">";
+}
+
+bool TRegister::IsAvailable() const
+{
+    return Available;
+}
+
+void TRegister::SetAvailable(bool available)
+{
+    Available = available;
 }
 
 std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;

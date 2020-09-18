@@ -87,7 +87,7 @@ public:
     // Handle end of poll cycle e.g. by resetting values caches
     virtual void EndPollCycle();
     // Read multiple registers
-    virtual void ReadRegisterRange(PRegisterRange range);
+    virtual std::list<PRegisterRange> ReadRegisterRange(PRegisterRange range);
     // Set range as failed to read
     virtual void SetReadError(PRegisterRange range);
 
@@ -104,8 +104,6 @@ public:
 
     virtual void OnCycleEnd(bool ok);
     bool GetIsDisconnected() const;
-
-    void ResetUnavailableAddresses();
 
     std::map<int64_t, uint16_t> ModbusCache, ModbusTmpCache;
 
@@ -130,7 +128,6 @@ private:
     PProtocol _Protocol;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
-    std::set<int> UnavailableAddresses;
     int RemainingFailCycles;
 };
 

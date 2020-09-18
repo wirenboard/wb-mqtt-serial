@@ -32,9 +32,9 @@ void TModbusIODevice::WriteRegister(PRegister reg, uint64_t value)
     ModbusRTU::WriteRegister(Port(), SlaveId.Primary, reg, value, Shift);
 }
 
-void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
+std::list<PRegisterRange> TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 {
-    ModbusRTU::ReadRegisterRange(Port(), SlaveId.Primary, range, Shift);
+    return ModbusRTU::ReadRegisterRange(Port(), SlaveId.Primary, range, Shift);
 }
 
 void TModbusIODevice::SetReadError(PRegisterRange range)

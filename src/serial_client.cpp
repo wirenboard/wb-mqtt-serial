@@ -134,35 +134,6 @@ void TSerialClient::PrepareRegisterRanges()
     }
 }
 
-void TSerialClient::SplitRegisterRanges(std::set<PRegisterRange> && ranges)
-{
-    if (ranges.empty()) {
-        return;
-    }
-
-    Plan->Modify([&](const PPollEntry & entry){
-        if (auto serial_entry = std::dynamic_pointer_cast<TSerialPollEntry>(entry)) {
-            for (auto itRange = serial_entry->Ranges.begin(); itRange != serial_entry->Ranges.end();) {
-                if (ranges.count(*itRange)) {
-                    auto device = (*itRange)->Device();
-
-                    LOG(Debug) << "Disabling holes feature for register range";
-
-                    auto newRanges = device->SplitRegisterList((*itRange)->RegisterList(), false);
-                    serial_entry->Ranges.insert(itRange, newRanges.begin(), newRanges.end());
-
-                    ranges.erase(*itRange);
-                    itRange = serial_entry->Ranges.erase(itRange);
-                } else {
-                    ++itRange;
-                }
-            }
-        }
-
-        return ranges.empty();
-    });
-}
-
 void TSerialClient::MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state)
 {
     if (state != TRegisterHandler::UnknownErrorState && state != TRegisterHandler::ErrorStateUnchanged)
@@ -221,11 +192,11 @@ void TSerialClient::SetReadError(PRegisterRange range)
                     });
 }
 
-void TSerialClient::PollRange(PRegisterRange range)
+std::list<PRegisterRange> TSerialClient::PollRange(PRegisterRange range)
 {
     PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
-    dev->ReadRegisterRange(range);
+    std::list<PRegisterRange> newRanges = dev->ReadRegisterRange(range);
     range->MapRange([this, &range](PRegister reg, uint64_t new_value) {
             bool changed;
             auto handler = Handlers[reg];
@@ -247,6 +218,7 @@ void TSerialClient::PollRange(PRegisterRange range)
                 // TBD: separate AcceptDeviceReadError method (changed is unused here)
                 MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
         });
+    return newRanges;
 }
 
 void TSerialClient::Cycle()
@@ -259,11 +231,11 @@ void TSerialClient::Cycle()
 
     // devices whose registers were polled during this cycle and statues
     std::map<PSerialDevice, std::set<TRegisterRange::EStatus>> devicesRangesStatuses;
-    // ranges that needs to split
-    std::set<PRegisterRange> rangesToSplit;
 
     Plan->ProcessPending([&](const PPollEntry& entry) {
-        for (auto range: std::dynamic_pointer_cast<TSerialPollEntry>(entry)->Ranges) {
+        auto pollEntry = std::dynamic_pointer_cast<TSerialPollEntry>(entry);
+        std::list<PRegisterRange> newRanges;
+        for (auto range: pollEntry->Ranges) {
             auto device = range->Device();
             auto & statuses = devicesRangesStatuses[device];
 
@@ -288,17 +260,15 @@ void TSerialClient::Cycle()
                 // Interaction with disconnected device that has only errors - still disconnected
                 if (!statuses.empty() && statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size()) {
                     SetReadError(range);
+                    newRanges.push_back(range);
                     continue;
                 }
             }
-
-            PollRange(range);
+            newRanges.splice(newRanges.end(), PollRange(range));
             statuses.insert(range->GetStatus());
-            if (range->NeedsSplit()) {
-                rangesToSplit.insert(range);
-            }
         }
         MaybeFlushAvoidingPollStarvationButDontWait();
+        pollEntry->Ranges.swap(newRanges);
     });
 
     for (const auto & deviceRangesStatuses: devicesRangesStatuses) {
@@ -320,8 +290,6 @@ void TSerialClient::Cycle()
             OnDeviceReconnect(device);
         }
     }
-
-    SplitRegisterRanges(std::move(rangesToSplit));
 
     for (const auto& p: DevicesList) {
         p->EndPollCycle();
@@ -405,5 +373,9 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
 void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
 {
 	LOG(Debug) << "device " << dev->ToString() << " reconnected";
-	dev->ResetUnavailableAddresses();
+    for(auto& reg: RegList) {
+        if (reg->Device() == dev) {
+            reg->SetAvailable(true);
+        }
+    }
 }

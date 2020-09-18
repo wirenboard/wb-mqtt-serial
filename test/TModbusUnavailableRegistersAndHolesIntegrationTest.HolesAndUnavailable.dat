@@ -1,0 +1,188 @@
+Subscribe: /devices/+/meta/driver (QoS 0)
+Publish: /devices/modbus-sample/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/name: 'Modbus-sample' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/max: '255' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/order: '1' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/type: 'dimmer' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White: '' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/White/on (QoS 0)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/max: '100' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/order: '2' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/type: 'range' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/RGB_All/on (QoS 0)
+Publish: /devices/modbus-sample/controls/White1/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/max: '100' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/order: '3' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/type: 'range' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/White1/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding2/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/order: '4' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/Holding2/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding1/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/order: '5' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/Holding1/on (QoS 0)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding1/on
+Publish: /devices/modbus-sample/controls/Holding1: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/type: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding2/on
+Publish: /devices/modbus-sample/controls/Holding2: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/type: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/White1/on
+Publish: /devices/modbus-sample/controls/White1: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/max: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/type: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/RGB_All/on
+Publish: /devices/modbus-sample/controls/RGB_All: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/max: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/type: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/White/on
+Publish: /devices/modbus-sample/controls/White: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/max: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/driver: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/name: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/name: 'Modbus-sample' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/max: '255' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/order: '1' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/type: 'dimmer' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White: '' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/White/on (QoS 0)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/max: '100' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/order: '2' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/type: 'range' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/RGB_All/on (QoS 0)
+Publish: /devices/modbus-sample/controls/White1/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/max: '100' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/order: '3' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/type: 'range' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/White1/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding2/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/order: '4' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/Holding2/on (QoS 0)
+Publish: /devices/modbus-sample/controls/Holding1/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/order: '5' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/Holding1/on (QoS 0)
+Open()
+>>> LoopOnce() [first read]
+Sleep(100000)
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 07 00 06 74 09
+Publish: /devices/modbus-sample/controls/White/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/error: 'r' (QoS 1, retained)
+Port cycle OK
+>>> LoopOnce() [disable holes]
+<< 01 83 03 01 31
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 07 00 03 B4 0A
+<< 01 83 03 01 31
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 0B 00 02 B5 C9
+Publish: /devices/modbus-sample/controls/Holding2/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2: '20' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1: '30' (QoS 1, retained)
+Port cycle OK
+>>> LoopOnce() [one by one]
+<< 01 03 04 00 14 00 1E 3A 3F
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 07 00 01 35 CB
+<< 01 03 02 00 0A 38 43
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 08 00 01 05 C8
+<< 01 03 02 00 0A 38 43
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 09 00 01 54 08
+<< 01 83 03 01 31
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 0B 00 02 B5 C9
+Port cycle OK
+>>> LoopOnce() [new ranges]
+<< 01 03 04 00 14 00 1E 3A 3F
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 07 00 02 75 CA
+Publish: /devices/modbus-sample/controls/White/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White: '10' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All: '20' (QoS 1, retained)
+<< 01 03 04 00 0A 00 14 DA 3E
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 0B 00 02 B5 C9
+Port cycle OK
+<< 01 03 04 00 14 00 1E 3A 3F
+Close()
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding1/on
+Publish: /devices/modbus-sample/controls/Holding1: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding2/on
+Publish: /devices/modbus-sample/controls/Holding2: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/White1/on
+Publish: /devices/modbus-sample/controls/White1: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/max: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White1/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/RGB_All/on
+Publish: /devices/modbus-sample/controls/RGB_All: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/max: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/White/on
+Publish: /devices/modbus-sample/controls/White: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/max: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/driver: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/name: '' (QoS 1, retained)
+stop: em-test

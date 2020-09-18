@@ -489,13 +489,98 @@ TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 }
-//     ExpectPollQueries();
-//     Observer->LoopOnce();
 
-//     MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/U16:8/on", "5555");
+class TModbusUnavailableRegistersIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    void SetUp()
+    {
+        SelectModbusType(MODBUS_RTU);
+        TSerialDeviceIntegrationTest::SetUp();
+        ASSERT_TRUE(!!SerialPort);
+    }
 
-//     EnqueueU16Shift8HoldingWriteResponse();
-//     ExpectPollQueries(false, true);
-//     Note() << "LoopOnce()";
-//     Observer->LoopOnce();
-// }
+    void TearDown()
+    {
+        SerialPort->Close();
+        TSerialDeviceIntegrationTest::TearDown();
+    }
+
+    const char* ConfigPath() const override { return "configs/config-modbus-unavailable-registers-test.json"; }
+};
+
+TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterOnBorder)
+{
+    // we check that driver detects unavailable register on the ranges border and stops to read it
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnavailableOnBorderReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
+    SerialDriver->LoopOnce();
+}
+
+TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddle)
+{
+    // we check that driver detects unavailable register in the middle of the range
+    // It must split the range into two parts and exclure unavailable register from reading
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
+    SerialDriver->LoopOnce();
+}
+
+class TModbusUnavailableRegistersAndHolesIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    void SetUp()
+    {
+        SelectModbusType(MODBUS_RTU);
+        TSerialDeviceIntegrationTest::SetUp();
+        ASSERT_TRUE(!!SerialPort);
+    }
+
+    void TearDown()
+    {
+        SerialPort->Close();
+        TSerialDeviceIntegrationTest::TearDown();
+    }
+
+    const char* ConfigPath() const override { return "configs/config-modbus-unavailable-registers-and-holes-test.json"; }
+};
+
+TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
+{
+    // we check that driver disables holes feature and after that detects and excludes unavailable register
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnavailableAndHolesReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [disable holes]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new ranges]";
+    SerialDriver->LoopOnce();
+}

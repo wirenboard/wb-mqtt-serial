@@ -47,29 +47,39 @@ namespace Modbus    // modbus protocol declarations
         };
     };
 
-    class TModbusRegisterRange: public TRegisterRange {
+    class TModbusRegisterRange: public TRegisterRange
+    {
     public:
         TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles);
         ~TModbusRegisterRange();
         void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
         EStatus GetStatus() const override;
-        bool NeedsSplit() const override;
         int GetStart() const { return Start; }
         int GetCount() const { return Count; }
         uint8_t* GetBits();
         uint16_t* GetWords();
         void SetError(bool error) { Error = error; }
         bool GetError() const { return Error; }
+
         void ResetModbusError() { SetModbusError(ERR_NONE); }
         void SetModbusError(Modbus::Error error) { ModbusErrorCode = error; }
         Modbus::Error GetModbusError() const { return ModbusErrorCode; }
+
+        bool HasHoles() const { return HasHolesFlg; }
+
+        // Read each register separately
+        bool ShouldReadOneByOne() const { return ReadOneByOne; }
+        void SetReadOneByOne(bool readOneByOne) { ReadOneByOne = readOneByOne; }
+
     private:
-        bool HasHoles = false;
-        bool Error = false;
-        Modbus::Error ModbusErrorCode = ERR_NONE;
-        int Start, Count;
-        uint8_t* Bits = 0;
-        uint16_t* Words = 0;
+        bool            ReadOneByOne    = false;
+        bool            HasHolesFlg     = false;
+        bool            Error           = false;
+        Modbus::Error   ModbusErrorCode = ERR_NONE;
+        int             Start;
+        int             Count;
+        uint8_t*        Bits  = 0;
+        uint16_t*       Words = 0;
     };
 
     using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
@@ -114,7 +124,7 @@ namespace Modbus    // modbus protocol common utilities
 {
     TModbusRegisterRange::TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles)
         : TRegisterRange(regs)
-        , HasHoles(hasHoles)
+        , HasHolesFlg(hasHoles)
     {
         if (regs.empty()) // shouldn't happen
             throw std::runtime_error("cannot construct empty register range");
@@ -173,14 +183,11 @@ namespace Modbus    // modbus protocol common utilities
             uint8_t bitsWritten = 0;
 
             while (w--) {
-                // cout << "reverseWordIndex: " << reg->Address - Start + w << endl;
                 uint16_t data = Words[reg->Address - Start + w];
 
                 auto localBitOffset = std::max(reg->BitOffset - wordIndex * 16, 0);
 
                 auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
-
-                //cout << "word: " << data << " offset: " << (int)localBitOffset << " bit count: " << (int)bitCount << endl;
 
                 auto mask = MersenneNumber(bitCount);
 
@@ -200,17 +207,6 @@ namespace Modbus    // modbus protocol common utilities
     {
         // any modbus error means successful response read
         return ModbusErrorCode == ERR_NONE ? (Error ? ST_UNKNOWN_ERROR : ST_OK) : ST_DEVICE_ERROR;
-    }
-
-    bool TModbusRegisterRange::NeedsSplit() const
-    {
-        switch (ModbusErrorCode) {
-        case ERR_ILLEGAL_DATA_ADDRESS:
-        case ERR_ILLEGAL_DATA_VALUE:
-            return HasHoles;
-        default:
-            return false;
-        }
     }
 
     TModbusRegisterRange::~TModbusRegisterRange() {
@@ -234,6 +230,13 @@ namespace Modbus    // modbus protocol common utilities
         if (!Words)
             Words = new uint16_t[Count];
         return Words;
+    }
+
+    ostream& operator<<(ostream& s, const TModbusRegisterRange& range)
+    {
+        s << range.GetCount() << " " << range.TypeName()
+          << "(s) @ " << range.GetStart() << " of device " << range.Device()->ToString();
+        return s;
     }
 
     const uint8_t EXCEPTION_BIT = 1 << 7;
@@ -494,17 +497,9 @@ namespace Modbus    // modbus protocol common utilities
 
             auto mask = MersenneNumber(bitCount);
 
-            // cout << "rBitPos: " << rBitPos << endl;
-
             auto valuePart = mask & (value >> rBitPos);
 
-            // cout << "value part: " << (valuePart << localBitOffset) << endl;
-
-            // cout << "cached part: " << (~(mask << rBitPos) & cachedValue) << endl;
-
             auto wordValue = (~mask & cachedValue) | (valuePart << localBitOffset);
-
-            // cout << "word: " << wordValue << " cached value: " << cachedValue << " value: " << value << " offset: " << (int)bitPos << " bit count: " << (int)bitCount << endl;
 
             tmpCache[address.AbsAddress] = wordValue & 0xffff;
 
@@ -545,8 +540,6 @@ namespace Modbus    // modbus protocol common utilities
         auto mask = MersenneNumber(bitCount) << localBitOffset;
 
         auto wordValue = (~mask & cachedValue) | (mask & (value << localBitOffset));
-
-        //cout << "cached: " << cachedValue << " input: " << value << " result: " << wordValue << " offset: " << localBitOffset << endl;
 
         tmpCache[address.AbsAddress] = wordValue & 0xffff;
 
@@ -605,7 +598,7 @@ namespace Modbus    // modbus protocol common utilities
         ThrowIfModbusException(GetExceptionCode(pdu));
     }
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, PDeviceConfig deviceConfig,bool enableHoles)
+    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list, PDeviceConfig deviceConfig, bool enableHoles)
     {
         std::list<PRegisterRange> r;
         if (reg_list.empty())
@@ -639,9 +632,7 @@ namespace Modbus    // modbus protocol common utilities
                 if (!l.empty()) {
                     auto range = std::make_shared<TModbusRegisterRange>(l, hasHoles);
                     hasHoles = false;
-                    LOG(Debug) << "Adding range: " << range->GetCount() << " " <<
-                        range->TypeName() << "(s) @ " << range->GetStart() <<
-                        " of device " << range->Device()->ToString();
+                    LOG(Debug) << "Adding range: " << *range;
                     r.push_back(range);
                     l.clear();
                 }
@@ -657,19 +648,12 @@ namespace Modbus    // modbus protocol common utilities
         }
         if (!l.empty()) {
             auto range = std::make_shared<TModbusRegisterRange>(l, hasHoles);
-            LOG(Debug) << "Adding range: " << range->GetCount() << " " <<
-                range->TypeName() << "(s) @ " << range->GetStart() <<
-                " of device " << range->Device()->ToString();
+            LOG(Debug) << "Adding range: " << *range;
             r.push_back(range);
         }
         return r;
     }
-
-    std::chrono::microseconds GetFrameTimeout(int baudRate)
-    {
-        return std::chrono::microseconds(static_cast<int64_t>(std::ceil(static_cast<double>(35000000)/baudRate)));
-    }
-};  // modbus protocol common utilities
+}  // modbus protocol common utilities
 
 namespace ModbusRTU // modbus rtu protocol utilities
 {
@@ -802,8 +786,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
         std::unique_ptr<TRegister, std::function<void(TRegister*)>> tmpCacheGuard(reg.get(), [](TRegister* reg){reg->Device()->DismissTmpCache();});
 
-        LOG(Debug) << "modbus: write " << reg->Width() << " " << reg->TypeName << "(s) @ " << reg->Address <<
-                " of device " << reg->Device()->ToString();
+        LOG(Debug) << "modbus: write " << reg->Width() << " " << reg->ToString();
 
         auto config = reg->Device()->DeviceConfig();
 
@@ -858,7 +841,124 @@ namespace ModbusRTU // modbus rtu protocol utilities
         modbus_range->SetError(true);
     }
 
-    void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift)
+    void ReadRange(Modbus::PModbusRegisterRange& range, PPort port, uint8_t slaveId, int shift)
+    {
+        auto config = range->Device()->DeviceConfig();
+        TReadRequest request;
+
+        // Send request
+        ComposeReadRequest(request, range, slaveId, shift);
+        if (config->GuardInterval.count()){
+            port->Sleep(config->GuardInterval);
+        }
+        port->WriteBytes(request.data(), request.size());
+
+        // Receive response
+        auto byte_count = InferReadResponseSize(range);
+        TReadResponse response(byte_count);
+        auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
+
+        auto rc = port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size()));
+        if (rc > 0) {
+            try {
+                ModbusRTU::CheckResponse(request, response);
+                Modbus::ParseReadResponse(PDU(response), range);
+            } catch (const TInvalidCRCError &) {
+                try {
+                    port->SkipNoise();
+                } catch (const std::exception & e) {
+                    LOG(Warn) << "SkipNoise failed: " << e.what();
+                }
+                throw;
+            } catch (const TMalformedResponseError &) {
+                try {
+                    port->SkipNoise();
+                } catch (const std::exception & e) {
+                    LOG(Warn) << "SkipNoise failed: " << e.what();
+                }
+                throw;
+            }
+        }
+    }
+
+    void ProcessRangeException(Modbus::PModbusRegisterRange& range, Modbus::Error error, const char* msg)
+    {
+        range->SetError(true);
+        range->SetModbusError(error);
+        LOG(Warn) << "ModbusRTU::ReadRegisterRange(): failed to read " << *range << ": " << msg;
+    }
+
+    std::list<PRegisterRange> ReadWholeRange(Modbus::PModbusRegisterRange& range, PPort port, uint8_t slaveId, int shift)
+    {
+        std::list<PRegisterRange> newRanges;
+        try {
+            ReadRange(range, port, slaveId, shift);
+            range->SetError(false);
+        } catch (const TSerialDeviceTransientErrorException& e) {
+            ProcessRangeException(range, range->GetModbusError(), e.what());
+        } catch (const TSerialDevicePermanentRegisterException& e) {
+            ProcessRangeException(range, range->GetModbusError(), e.what());
+            if (range->HasHoles()) {
+                LOG(Debug) << "Disabling holes feature for " << *range;
+                std::list<PRegister> l;
+                PRegister lastReg;
+                for (auto& reg: range->RegisterList()) {
+                    if (!l.empty() && lastReg->Address + 1 != reg->Address) {
+                        newRanges.push_back(std::make_shared<Modbus::TModbusRegisterRange>(l, false));
+                        l.clear();
+                    }
+                    lastReg = reg;
+                    l.push_back(reg);
+                }
+                if (!l.empty()) {
+                    newRanges.push_back(std::make_shared<Modbus::TModbusRegisterRange>(l, false));
+                }
+                return newRanges;
+            }
+            range->SetReadOneByOne(true);
+        }
+        newRanges.push_back(range);
+        return newRanges;
+    }
+
+    std::list<PRegisterRange> ReadOneByOne(Modbus::PModbusRegisterRange& range, PPort port, uint8_t slaveId, int shift)
+    {
+        std::list<Modbus::PModbusRegisterRange> subRanges;
+        for (auto& reg: range->RegisterList()) {
+            subRanges.push_back(std::make_shared<Modbus::TModbusRegisterRange>(std::list<PRegister>{ reg }, false));
+        }
+        for (auto& r: subRanges) {
+            try {
+                ReadRange(r, port, slaveId, shift);
+            } catch (const TSerialDeviceTransientErrorException& e) {
+                ProcessRangeException(range, r->GetModbusError(), e.what());
+                return std::list<PRegisterRange>{range};
+            } catch (const TSerialDevicePermanentRegisterException& e) {
+                r->RegisterList().front()->SetAvailable(false);
+                LOG(Warn) << "Register " << r->RegisterList().front()->ToString() << " is not supported";
+            }
+        }
+        std::list<PRegisterRange> newRanges;
+        std::list<PRegister> l;
+        PRegister lastReg;
+        for (auto& reg: range->RegisterList()) {
+            if (!l.empty() && lastReg->Address + 1 != reg->Address) {
+                newRanges.push_back(std::make_shared<Modbus::TModbusRegisterRange>(l, false));
+                l.clear();
+            }
+            if (reg->IsAvailable()) {
+                lastReg = reg;
+                l.push_back(reg);
+            }
+        }
+        if (!l.empty()) {
+            newRanges.push_back(std::make_shared<Modbus::TModbusRegisterRange>(l, false));
+        }
+        ProcessRangeException(range, Modbus::ERR_ILLEGAL_DATA_VALUE, "unavailable registers discovery");
+        return newRanges;
+    }
+
+    std::list<PRegisterRange> ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift)
     {
         auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
         if (!modbus_range) {
@@ -871,66 +971,12 @@ namespace ModbusRTU // modbus rtu protocol utilities
         // we need to clear any modbus errors from previous cycle
         modbus_range->ResetModbusError();
 
-        LOG(Debug) << "modbus: read " << modbus_range->GetCount() << " " <<
-            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
-            " of device " << modbus_range->Device()->ToString();
+        LOG(Debug) << "modbus: read " << *modbus_range;
 
-        if (config->GuardInterval.count()){
-            port->Sleep(config->GuardInterval);
+        if (modbus_range->ShouldReadOneByOne()) {
+            return ReadOneByOne(modbus_range, port, slaveId, shift);
         }
-
-        std::string exception_message;
-        try {
-            TReadRequest request;
-
-            {   // Send request
-                ComposeReadRequest(request, modbus_range, slaveId, shift);
-                port->WriteBytes(request.data(), request.size());
-            }
-
-            {   // Receive response
-                auto byte_count = InferReadResponseSize(modbus_range);
-                TReadResponse response(byte_count);
-                auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
-
-                auto rc = port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size()));
-                if (rc > 0) {
-                    try {
-                        ModbusRTU::CheckResponse(request, response);
-                        Modbus::ParseReadResponse(PDU(response), modbus_range);
-                    } catch (const TInvalidCRCError &) {
-                        try {
-                            port->SkipNoise();
-                        } catch (const std::exception & e) {
-                            LOG(Warn) << "SkipNoise failed: " << e.what();
-                        }
-                        throw;
-                    } catch (const TMalformedResponseError &) {
-                        try {
-                            port->SkipNoise();
-                        } catch (const std::exception & e) {
-                            LOG(Warn) << "SkipNoise failed: " << e.what();
-                        }
-                        throw;
-                    }
-                    modbus_range->SetError(false);
-                    return;
-                }
-            }
-        } catch (const TSerialDeviceTransientErrorException& e) {
-            exception_message = e.what();
-        } catch (const TSerialDevicePermanentRegisterException& e) {
-            exception_message = e.what();
-        }
-
-        modbus_range->SetError(true);
-
-        auto logWarn(std::move(LOG(Warn) << "ModbusRTU::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
-            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() << " of device " << modbus_range->Device()->ToString()));
-
-        if (!exception_message.empty()) {
-            logWarn << ": " << exception_message;
-        }
+        return ReadWholeRange(modbus_range, port, slaveId, shift);
     }
 
     void WarnFailedRegisterSetup(const PDeviceSetupItem& item, const char* msg)

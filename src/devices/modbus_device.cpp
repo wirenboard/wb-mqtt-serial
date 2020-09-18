@@ -37,9 +37,9 @@ void TModbusDevice::SetReadError(PRegisterRange range)
     ModbusRTU::SetReadError(range);
 }
 
-void TModbusDevice::ReadRegisterRange(PRegisterRange range)
+std::list<PRegisterRange> TModbusDevice::ReadRegisterRange(PRegisterRange range)
 {
-    ModbusRTU::ReadRegisterRange(Port(), SlaveId, range);
+    return ModbusRTU::ReadRegisterRange(Port(), SlaveId, range);
 }
 
 bool TModbusDevice::WriteSetupRegisters()

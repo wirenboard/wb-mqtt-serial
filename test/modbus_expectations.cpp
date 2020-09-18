@@ -123,6 +123,305 @@ void TModbusExpectations::EnqueueHoldingPackHoles10ReadResponse(uint8_t exceptio
     }), __func__);
 }
 
+// read holding registers [7 - 12)
+void TModbusExpectations::EnqueueHoldingPackUnavailableOnBorderReadResponse()
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x07,   //starting address Lo
+        0x00,   //quantity Hi
+        0x06,   //quantity Lo
+    }),
+    WrapPDU({
+        0x83,   //function code + 80
+        0x03    //ILLEGAL DATA VALUE
+    }), __func__);
+
+    for (uint8_t i = 7; i < 12; ++i) {
+        Expector()->Expect(
+        WrapPDU({
+            0x03,   //function code
+            0x00,   //starting address Hi
+            i,      //starting address Lo
+            0x00,   //quantity Hi
+            0x01,   //quantity Lo
+        }),
+        WrapPDU({
+            0x03,   //function code
+            0x02,   //byte count
+            0x00,   //data Hi
+            0x0a    //data Lo
+        }), __func__);
+    }
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        12,     //starting address Lo
+        0x00,   //quantity Hi
+        0x01,   //quantity Lo
+    }),
+    WrapPDU({
+        0x83,   //function code + 80
+        0x03    //ILLEGAL DATA VALUE
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x07,   //starting address Lo
+        0x00,   //quantity Hi
+        0x05,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x0A,   //byte count
+        0x00,   //data Hi 7
+        0x0a,   //data Lo 7
+        0x00,   //data Hi 8
+        0x14,   //data Lo 8
+        0x00,   //data Hi 9
+        0x1E,   //data Lo 9
+        0x00,   //data Hi 10
+        0x01,   //data Lo 10
+        0x00,   //data Hi 11
+        0x02    //data Lo 11
+    }), __func__);
+}
+
+// read holding registers [7 - 8], [9 - 12]
+void TModbusExpectations::EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x07,   //starting address Lo
+        0x00,   //quantity Hi
+        0x06,   //quantity Lo
+    }),
+    WrapPDU({
+        0x83,   //function code + 80
+        0x03    //ILLEGAL DATA VALUE
+    }), __func__);
+
+    for (uint8_t i = 7; i < 9; ++i) {
+        Expector()->Expect(
+        WrapPDU({
+            0x03,   //function code
+            0x00,   //starting address Hi
+            i,      //starting address Lo
+            0x00,   //quantity Hi
+            0x01,   //quantity Lo
+        }),
+        WrapPDU({
+            0x03,   //function code
+            0x02,   //byte count
+            0x00,   //data Hi
+            0x0a    //data Lo
+        }), __func__);
+    }
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        9,      //starting address Lo
+        0x00,   //quantity Hi
+        0x01,   //quantity Lo
+    }),
+    WrapPDU({
+        0x83,   //function code + 80
+        0x03    //ILLEGAL DATA VALUE
+    }), __func__);
+
+    for (uint8_t i = 10; i <= 12; ++i) {
+        Expector()->Expect(
+        WrapPDU({
+            0x03,   //function code
+            0x00,   //starting address Hi
+            i,      //starting address Lo
+            0x00,   //quantity Hi
+            0x01,   //quantity Lo
+        }),
+        WrapPDU({
+            0x03,   //function code
+            0x02,   //byte count
+            0x00,   //data Hi
+            0x0a    //data Lo
+        }), __func__);
+    }
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x07,   //starting address Lo
+        0x00,   //quantity Hi
+        0x02,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x04,   //byte count
+        0x00,   //data Hi 7
+        0x0a,   //data Lo 7
+        0x00,   //data Hi 8
+        0x14,   //data Lo 8
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x0A,   //starting address Lo
+        0x00,   //quantity Hi
+        0x03,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x06,   //byte count
+        0x00,   //data Hi 10
+        0x0a,   //data Lo 10
+        0x00,   //data Hi 11
+        0x14,   //data Lo 11
+        0x00,   //data Hi 12
+        0x1E,   //data Lo 12
+    }), __func__);
+}
+
+// read holding registers [7 - 8], [9 - 12]
+void TModbusExpectations::EnqueueHoldingPackUnavailableAndHolesReadResponse()
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x07,   //starting address Lo
+        0x00,   //quantity Hi
+        0x06,   //quantity Lo
+    }),
+    WrapPDU({
+        0x83,   //function code + 80
+        0x03    //ILLEGAL DATA VALUE
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x07,   //starting address Lo
+        0x00,   //quantity Hi
+        0x03,   //quantity Lo
+    }),
+    WrapPDU({
+        0x83,   //function code + 80
+        0x03    //ILLEGAL DATA VALUE
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x0B,   //starting address Lo
+        0x00,   //quantity Hi
+        0x02,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x04,   //byte count
+        0x00,   //data Hi 11
+        0x14,   //data Lo 11
+        0x00,   //data Hi 12
+        0x1E,   //data Lo 12
+    }), __func__);
+
+    for (uint8_t i = 7; i < 9; ++i) {
+        Expector()->Expect(
+        WrapPDU({
+            0x03,   //function code
+            0x00,   //starting address Hi
+            i,      //starting address Lo
+            0x00,   //quantity Hi
+            0x01,   //quantity Lo
+        }),
+        WrapPDU({
+            0x03,   //function code
+            0x02,   //byte count
+            0x00,   //data Hi
+            0x0a    //data Lo
+        }), __func__);
+    }
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        9,      //starting address Lo
+        0x00,   //quantity Hi
+        0x01,   //quantity Lo
+    }),
+    WrapPDU({
+        0x83,   //function code + 80
+        0x03    //ILLEGAL DATA VALUE
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x0B,   //starting address Lo
+        0x00,   //quantity Hi
+        0x02,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x04,   //byte count
+        0x00,   //data Hi 11
+        0x14,   //data Lo 11
+        0x00,   //data Hi 12
+        0x1E,   //data Lo 12
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x07,   //starting address Lo
+        0x00,   //quantity Hi
+        0x02,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x04,   //byte count
+        0x00,   //data Hi 7
+        0x0a,   //data Lo 7
+        0x00,   //data Hi 8
+        0x14,   //data Lo 8
+    }), __func__);
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x0B,   //starting address Lo
+        0x00,   //quantity Hi
+        0x02,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x04,   //byte count
+        0x00,   //data Hi 11
+        0x14,   //data Lo 11
+        0x00,   //data Hi 12
+        0x1E,   //data Lo 12
+    }), __func__);
+}
+
+
 // read holding registers [4 - 6] , [7 - 9], 18
 void TModbusExpectations::EnqueueHoldingPackMax3ReadResponse(uint8_t exception)
 {

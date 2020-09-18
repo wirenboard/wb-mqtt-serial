@@ -182,18 +182,7 @@ struct TRegister : public TRegisterConfig
     {}
 
     ~TRegister()
-    {
-        /* if (FromIntern) { */
-            /* TRegistry::RemoveIntern<TRegister(shared_from_this()); */
-        /* } */
-    }
-
-    /* static PRegister Intern(PSerialDevice device, PRegisterConfig config) */
-    /* { */
-        /* PRegister r = TRegistry::Intern<TRegister>(device, config); */
-        /* r->FromIntern = true; */
-        /* return r; */
-    /* } */
+    {}
 
     std::string ToString() const;
 
@@ -202,11 +191,17 @@ struct TRegister : public TRegisterConfig
         return _Device.lock();
     }
 
+    //! The register is available in the device. It is allowed to read or write it
+    bool IsAvailable() const;
+
+    //! Set register's availability
+    void SetAvailable(bool available);
+
     /* PSerialDevice Device; */
 private:
     std::weak_ptr<TSerialDevice> _Device;
     bool FromIntern = false;
-
+    bool Available = true;
 
     // Intern() implementation for TRegister
 private:
@@ -357,9 +352,6 @@ public:
     virtual void MapRange(TValueCallback value_callback, TErrorCallback error_callback) = 0;
     virtual EStatus GetStatus() const = 0;
 
-    // returns true when occured error is likely caused by hole registers
-    virtual bool NeedsSplit() const = 0;
-
 protected:
     TRegisterRange(const std::list<PRegister>& regs);
     TRegisterRange(PRegister reg);
@@ -383,7 +375,6 @@ public:
     void SetError(PRegister reg);
     void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
     EStatus GetStatus() const override;
-    bool NeedsSplit() const override;
 
 private:
     std::unordered_map<PRegister, uint64_t> Values;
