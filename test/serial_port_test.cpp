@@ -22,14 +22,25 @@ public:
 
         IsRunning = true;
         auto start = std::chrono::steady_clock::now();
+        bool sentSomething = false;
         while (IsRunning) {
             auto diff = std::chrono::steady_clock::now() - start;
             if (diff > Duration) {
-                Expired = true;     
+                Expired = true;
                 return;
             }
-            Serial->WriteBytes(buf, sizeof(buf));
+            try {
+                Serial->WriteBytes(buf, sizeof(buf));
+                sentSomething = true;
+            } catch (const TSerialDeviceErrnoException& e) {
+                if (e.GetErrnoValue() != EAGAIN) { // We write too fast. Let's give some time to a reader
+                    throw;
+                }
+            }
             usleep(1);
+        }
+        if (!sentSomething) {
+            throw std::runtime_error("TImxFloodThread sent nothing");
         }
     }
     
@@ -78,12 +89,24 @@ public:
         Fixture.Emit() << "ReadByte()";
         return TSerialPort::ReadByte(timeout);
     }
+
+    void EmptyReadBuffer()
+    {
+        while (true) {
+            try {
+                TSerialPort::ReadByte();
+            } catch (const TSerialDeviceTransientErrorException&) {
+                return;
+            }
+        }
+    }
 protected:
     void Reopen() override
     {
         Fixture.Emit() << "Reopen()";
         if (StopFloodOnReconnect) {
             FloodThread.Stop();
+            EmptyReadBuffer();
         }
     };
 
