@@ -94,7 +94,7 @@ public:
     {
         while (true) {
             try {
-                TSerialPort::ReadByte();
+                TSerialPort::ReadByte(std::chrono::milliseconds(100));
             } catch (const TSerialDeviceTransientErrorException&) {
                 return;
             }
