@@ -108,7 +108,7 @@ uint64_t TLLSDevice::ReadRegister(PRegister reg)
     auto result = ExecCommand(cmd);
     int result_buf[8] = {};
 
-    for (int i=0; i< reg->ByteWidth(); ++i) {
+    for (int i=0; i< reg->GetByteWidth(); ++i) {
         result_buf[i] = result[offset+i];
     }
     

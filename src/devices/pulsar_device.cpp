@@ -190,12 +190,12 @@ uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
 
     // send data request and receive response
     WriteDataRequest(SlaveId, mask, RequestID);
-    ReadResponse(SlaveId, payload, reg->ByteWidth(), RequestID);
+    ReadResponse(SlaveId, payload, reg->GetByteWidth(), RequestID);
 
     ++RequestID;
 
     // decode little-endian double64_t value
-    return ReadHex(payload, reg->ByteWidth(), false);
+    return ReadHex(payload, reg->GetByteWidth(), false);
 }
 
 uint64_t TPulsarDevice::ReadSysTimeRegister(PRegister reg)

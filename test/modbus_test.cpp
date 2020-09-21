@@ -83,13 +83,14 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
 
     for (auto range: ranges) {
         ModbusDev->ReadRegisterRange(range);
-        range->MapRange([&](PRegister reg, uint64_t value){
-            registerValues[reg->Address] = value;
+        for (auto& reg: range->RegisterList()) {
             readAddresses.insert(reg->Address);
-        }, [&](PRegister reg){
-            readAddresses.insert(reg->Address);
-            errorRegisters.insert(reg->Address);
-        });
+            if (reg->GetError()) {
+                errorRegisters.insert(reg->Address);
+            } else {
+                registerValues[reg->Address] = reg->GetValue();
+            }
+        }
     }
 
     EXPECT_EQ(to_string(registerList.size()), to_string(readAddresses.size()));
@@ -539,6 +540,22 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddl
     Note() << "LoopOnce() [first read]";
     SerialDriver->LoopOnce();
     Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
+    SerialDriver->LoopOnce();
+}
+
+TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
+{
+    // Check that driver detects unsupported registers
+    // It must remove unavailable registers from request if they are on borders of a range
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnsupportedOnBorderReadResponse();
+    Note() << "LoopOnce() [first read]";
     SerialDriver->LoopOnce();
     Note() << "LoopOnce() [new range]";
     SerialDriver->LoopOnce();
