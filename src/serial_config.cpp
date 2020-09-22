@@ -245,12 +245,18 @@ namespace {
         device_config->AddChannel(channel);
     }
 
+    void SetPropertyWithNotification(Json::Value& dst, Json::Value::const_iterator itProp, const std::string& logPrefix) {
+        if (dst.isMember(itProp.name()) && dst[itProp.name()] != *itProp) {
+            LOG(Info) << logPrefix << " override property \"" << itProp.name() << "\"";
+        }
+        dst[itProp.name()] = *itProp;
+    }
+
     void MergeChannelProperties(Json::Value& dst, const Json::Value& src, const std::string& logPrefix)
     {
         for (auto itProp = src.begin(); itProp != src.end(); ++itProp) {
             if (itProp.name() == "poll_interval") {
-                dst[itProp.name()] = *itProp;
-                LOG(Info) << logPrefix << " override property \"" << itProp.name() << "\"";
+                SetPropertyWithNotification(dst, itProp, logPrefix);
                 continue;
             }
             if (itProp.name() == "readonly") {
@@ -258,10 +264,7 @@ namespace {
                     LOG(Warn) << logPrefix << " can't override property \"" << itProp.name() << "\"";
                     continue;
                 }
-                if (dst[itProp.name()] != *itProp) {
-                    dst[itProp.name()] = *itProp;
-                    LOG(Info) << logPrefix << " override property \"" << itProp.name() << "\"";
-                }
+                SetPropertyWithNotification(dst, itProp, logPrefix);
                 continue;
             }
             if (itProp.name() == "name") {
@@ -293,8 +296,7 @@ namespace {
     {
         for (auto itProp = src.begin(); itProp != src.end(); ++itProp) {
             if (itProp.name() != "channels") {
-                LOG(Info) << deviceName << " override property " << itProp.name();
-                dst[itProp.name()] = *itProp;
+                SetPropertyWithNotification(dst, itProp, deviceName);
             }
         }
         UpdateChannels(dst["channels"], src["channels"], "\"" + deviceName + "\"");

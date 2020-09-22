@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.0.4) experimental; urgency=medium
+
+  * service startup after upgrading is fixed
+  * notifications about config properties overriding are shown only for changed values
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 22 Sep 2020 11:30:15 +0500
+
 wb-mqtt-serial (2.0.3) experimental; urgency=medium
 
   * add map12e template
