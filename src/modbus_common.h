@@ -28,3 +28,19 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
     void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift = 0);
 };  // modbus rtu protocol utilities
+
+namespace ModbusTCP // modbus tcp protocol utilities
+{
+    void WriteRegister(PPort     port,
+                       uint8_t   slaveId,
+                       PRegister reg,
+                       uint64_t  value,
+                       uint16_t* transactionId,
+                       int       shift = 0);
+
+    void ReadRegisterRange(PPort           port,
+                           uint8_t         slaveId,
+                           PRegisterRange  range,
+                           uint16_t*       transactionId,
+                           int             shift = 0);
+};  // modbus tcp protocol utilities

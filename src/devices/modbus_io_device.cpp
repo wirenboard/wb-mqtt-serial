@@ -23,11 +23,6 @@ std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRe
     return Modbus::SplitRegisterList(reg_list, DeviceConfig(), enableHoles);
 }
 
-uint64_t TModbusIODevice::ReadRegister(PRegister reg)
-{
-    throw TSerialDeviceException("modbus extension module: single register reading is not supported");
-}
-
 void TModbusIODevice::WriteRegister(PRegister reg, uint64_t value)
 {
     ModbusRTU::WriteRegister(Port(), SlaveId.Primary, reg, value, Shift);

@@ -81,7 +81,7 @@ public:
     // Ends communication session with the device. Called before communicating with another device
     virtual void EndSession() {/*do nothing by default */}; 
     // Read register value
-    virtual uint64_t ReadRegister(PRegister reg) = 0;
+    virtual uint64_t ReadRegister(PRegister reg);
     // Write register value
     virtual void WriteRegister(PRegister reg, uint64_t value) = 0;
     // Handle end of poll cycle e.g. by resetting values caches

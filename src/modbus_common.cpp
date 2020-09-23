@@ -948,4 +948,225 @@ namespace ModbusRTU // modbus rtu protocol utilities
             logWarn << ": " << exception_message;
         }
     }
-};  // modbus rtu protocol utilities
+}  // modbus rtu protocol utilities
+
+namespace ModbusTCP
+{
+    using TWriteRequest = std::vector<uint8_t>;
+    using TWriteResponse = std::array<uint8_t, 12>;
+
+    const size_t MBAP_SIZE = 7;
+
+    // get pointer to PDU in message
+    template <class T>
+    inline const uint8_t* PDU(const T& msg)
+    {
+        return &msg[MBAP_SIZE];
+    }
+
+    template <class T>
+    inline uint8_t* PDU(T& msg)
+    {
+        return &msg[MBAP_SIZE];
+    }
+
+    void SetMBAP(std::vector<uint8_t>& req, uint16_t transactionId, size_t pduSize, uint8_t slaveId)
+    {
+            req[0] = slaveId;
+            req[1] = slaveId;
+            req[2] = 0;
+            req[3] = 0;
+            req[4] = slaveId;
+            req[5] = slaveId;
+            req[6] = slaveId;
+    }
+
+    void ComposeWriteRequests(std::vector<TWriteRequest>& requests, PRegister reg, uint8_t slaveId, uint64_t value, uint16_t* transactionId, int shift)
+    {
+        requests.resize(Modbus::InferWriteRequestsCount(reg));
+
+        for (std::size_t i = 0; i < requests.size(); ++i) {
+            auto & req = requests[i];
+            size_t pduSize = Modbus::InferWriteRequestPDUSize(reg);
+            req.resize(pduSize + MBAP_SIZE);
+
+            ++(*transactionId);
+            SetMBAP(req, *transactionId, pduSize, slaveId);
+
+            if (IsPacking(reg)) {
+                assert(requests.size() == 1 && "only one request is expected when using multiple write");
+                Modbus::ComposeMultipleWriteRequestPDU(PDU(req), reg, value, shift);
+            } else {
+                Modbus::ComposeSingleWriteRequestPDU(PDU(req), reg, static_cast<uint16_t>(value & 0xffff), shift, requests.size() - i - 1);
+                value >>= 16;
+            }
+        }
+    }
+
+    TPort::TFrameCompletePred EmptyPred()
+    {
+        return [](uint8_t* buf, int size){return false;};
+    }
+
+    bool CheckResponse(const std::vector<uint8_t>& req, const std::vector<uint8_t>& res)
+    {
+        // slave id / unit indentifier
+        if (req[6] != res[6]) {
+            LOG(Warn) << "request and response unit indentifier mismatch";
+            return false;
+        }
+
+        // function code
+        if (PDU(req)[0] != (PDU(res)[0] & 127)) { // get actual function code even if exception
+            LOG(Warn) << "request and response function code mismatch";
+            return false;
+        }
+
+        if (req[0] != res[0] || req[1] != res[1]) {
+            LOG(Warn) << "transaction id mismatch";
+            return false;
+        }
+        return true;
+    }
+
+    std::vector<uint8_t> GetFrame(PPort port, std::chrono::milliseconds& frameTimeout)
+    {
+        std::vector<uint8_t> buf(MBAP_SIZE);
+        if (port->ReadFrame(buf.data(), buf.size(), frameTimeout, EmptyPred()) > 0) {
+            size_t len = GetLength(buf);
+            --len; // length includes one byte of unit identifier which is already in buffer
+            buf.resize(MBAP_SIZE + len);
+            if (port->ReadFrame(buf.data() + MBAP_SIZE, len, frameTimeout, EmptyPred()) > 0) {
+                return buf;
+            }
+        }
+        throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
+    }
+
+    void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, uint16_t* transactionId, int shift)
+    {
+        reg->Device()->DismissTmpCache();
+
+        int w = reg->Width();
+
+        LOG(Debug) << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
+                " of device " << reg->Device()->ToString();
+
+        auto config = reg->Device()->DeviceConfig();
+
+        std::string exception_message;
+        try {
+            std::vector<TWriteRequest> requests;
+            ComposeWriteRequests(requests, reg, slaveId, value, transactionId, shift);
+
+            for (const auto & request: requests) {
+                try {
+                    port->SkipNoise();
+                } catch (const std::exception & e) {
+                    LOG(Warn) << "SkipNoise failed: " << e.what();
+                }
+                // Send request
+                if (config->GuardInterval.count()) {
+                    port->Sleep(config->GuardInterval);
+                }
+                port->WriteBytes(request.data(), request.size());
+
+                // Receive response
+                auto frame_timeout = config->FrameTimeout.count() < 0 ? ModbusRTU::FrameTimeout: config->FrameTimeout;
+                // TODO: Timeout
+                while(true) {
+                    auto response = GetFrame(port, frame_timeout);
+                    if (CheckResponse(request, response)) {
+                        Modbus::ParseWriteResponse(PDU(response));
+                        break;
+                    }
+                }
+            }
+
+            reg->Device()->ApplyTmpCache();
+            return;
+        } catch (TSerialDeviceTransientErrorException& e) {
+            exception_message = ": ";
+            exception_message += e.what();
+        }
+
+        reg->Device()->DismissTmpCache();
+
+        throw TSerialDeviceTransientErrorException(
+            "failed to write " + reg->TypeName +
+            " @ " + std::to_string(reg->Address) + exception_message);
+    }
+
+    void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift)
+    {
+        auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
+        if (!modbus_range) {
+            throw std::runtime_error("modbus range expected");
+        }
+
+        auto config = modbus_range->Device()->DeviceConfig();
+        // in case if connection error occures right after modbus error
+        // (probability of which is very low, but still),
+        // we need to clear any modbus errors from previous cycle
+        modbus_range->ResetModbusError();
+
+        LOG(Debug) << "modbus: read " << modbus_range->GetCount() << " " <<
+            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
+            " of device " << modbus_range->Device()->ToString();
+
+        if (config->GuardInterval.count()){
+            port->Sleep(config->GuardInterval);
+        }
+
+        std::string exception_message;
+        try {
+            TReadRequest request;
+
+            {   // Send request
+                ComposeReadRequest(request, modbus_range, slaveId, shift);
+                port->WriteBytes(request.data(), request.size());
+            }
+
+            {   // Receive response
+                auto byte_count = InferReadResponseSize(modbus_range);
+                TReadResponse response(byte_count);
+                auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
+
+                auto rc = port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size()));
+                if (rc > 0) {
+                    try {
+                        ModbusRTU::CheckResponse(request, response);
+                        Modbus::ParseReadResponse(PDU(response), modbus_range);
+                    } catch (const TInvalidCRCError &) {
+                        try {
+                            port->SkipNoise();
+                        } catch (const std::exception & e) {
+                            LOG(Warn) << "SkipNoise failed: " << e.what();
+                        }
+                        throw;
+                    } catch (const TMalformedResponseError &) {
+                        try {
+                            port->SkipNoise();
+                        } catch (const std::exception & e) {
+                            LOG(Warn) << "SkipNoise failed: " << e.what();
+                        }
+                        throw;
+                    }
+                    modbus_range->SetError(false);
+                    return;
+                }
+            }
+        } catch (TSerialDeviceTransientErrorException& e) {
+            exception_message = e.what();
+        }
+
+        modbus_range->SetError(true);
+
+        auto logWarn(std::move(LOG(Warn) << "ModbusRTU::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
+            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() << " of device " << modbus_range->Device()->ToString()));
+
+        if (!exception_message.empty()) {
+            logWarn << ": " << exception_message;
+        }
+    }
+}  // modbus tcp protocol utilities

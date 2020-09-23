@@ -41,6 +41,12 @@ void TSerialDevice::Prepare()
 
 void TSerialDevice::EndPollCycle() {}
 
+
+uint64_t TSerialDevice::ReadRegister(PRegister reg)
+{
+    throw TSerialDeviceException("single register reading is not supported");
+}
+
 void TSerialDevice::ReadRegisterRange(PRegisterRange range)
 {
     PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
