@@ -13,7 +13,7 @@ namespace
     const ptrdiff_t HEADER_SZ = 5;
 }
 
-REGISTER_BASIC_INT_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes(
+REGISTER_BASIC_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes(
         {
             { TMercury200Device::REG_PARAM_VALUE16, "param8", "value", U8, true },
             { TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true },
@@ -22,7 +22,7 @@ REGISTER_BASIC_INT_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes(
         }));
 
 TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TMercury200Device>>(config, port, protocol)
+    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
 {}
 
 TMercury200Device::~TMercury200Device()

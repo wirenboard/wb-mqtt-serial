@@ -2,7 +2,8 @@
 
 #include "serial_device.h"
 
-class TModbusIODevice : public TBasicProtocolSerialDevice<TBasicProtocol<TModbusIODevice, TAggregatedSlaveId>> {
+class TModbusIODevice : public TSerialDevice, public TAggregatedSlaveId
+{
 public:
     TModbusIODevice(PDeviceConfig config, PPort port, PProtocol protocol);
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles = true) const override;

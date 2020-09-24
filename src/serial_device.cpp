@@ -6,6 +6,27 @@
 
 #define LOG(logger) ::logger.Log() << "[serial device] "
 
+IProtocol::IProtocol(const std::string& name, const TRegisterTypes& reg_types)
+    : Name(name)
+{
+    RegTypes = std::make_shared<TRegisterTypeMap>();
+    for (const auto& rt : reg_types)
+        RegTypes->insert(std::make_pair(rt.Name, rt));
+}
+
+IProtocol::~IProtocol()
+{}
+
+const std::string& IProtocol::GetName() const
+{ 
+    return Name;
+}
+
+PRegisterTypeMap IProtocol::GetRegTypes() const
+{
+    return RegTypes;
+}
+
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : Delay(config->Delay)
     , SerialPort(port)
@@ -17,13 +38,11 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
 {}
 
 TSerialDevice::~TSerialDevice()
-{
-    /* TSerialDeviceFactory::RemoveDevice(shared_from_this()); */
-}
+{}
 
 std::string TSerialDevice::ToString() const
 {
-    return DeviceConfig()->Name + "(" + DeviceConfig()->SlaveId + ")";
+    return Protocol()->GetName() + ":" + DeviceConfig()->SlaveId;
 }
 
 std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool) const
@@ -122,7 +141,7 @@ void TSerialDevice::InitSetupItems()
 
 bool TSerialDevice::HasSetupItems() const
 {
-    return !SetupItems.empty();
+    return !_DeviceConfig->SetupItemConfigs.empty();
 }
 
 bool TSerialDevice::WriteSetupRegisters(bool tryAll)
@@ -147,14 +166,11 @@ bool TSerialDevice::WriteSetupRegisters(bool tryAll)
     return did_write;
 }
 
-std::unordered_map<std::string, PProtocol> * TSerialDeviceFactory::Protocols = nullptr;
+std::unordered_map<std::string, PProtocol> TSerialDeviceFactory::Protocols;
 
 void TSerialDeviceFactory::RegisterProtocol(PProtocol protocol)
 {
-    if (!Protocols)
-        Protocols = new std::unordered_map<std::string, PProtocol>();
-
-    Protocols->insert(std::make_pair(protocol->GetName(), protocol));
+    Protocols.insert(std::make_pair(protocol->GetName(), protocol));
 }
 
 const PProtocol TSerialDeviceFactory::GetProtocolEntry(PDeviceConfig device_config)
@@ -162,10 +178,10 @@ const PProtocol TSerialDeviceFactory::GetProtocolEntry(PDeviceConfig device_conf
     return TSerialDeviceFactory::GetProtocol(device_config->Protocol);
 }
 
-PProtocol TSerialDeviceFactory::GetProtocol(const std::string &name)
+PProtocol TSerialDeviceFactory::GetProtocol(const std::string& name)
 {
-    auto it = Protocols->find(name);
-    if (it == Protocols->end())
+    auto it = Protocols.find(name);
+    if (it == Protocols.end())
         throw TSerialDeviceException("unknown serial protocol: " + name);
     return it->second;
 }
@@ -175,48 +191,32 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(PDeviceConfig device_config, PP
     return GetProtocolEntry(device_config)->CreateDevice(device_config, port);
 }
 
-void TSerialDeviceFactory::RemoveDevice(PSerialDevice device)
-{
-    if (device) {
-        device->Protocol()->RemoveDevice(device);
-    } else {
-        throw TSerialDeviceException("can't remove empty device");
-    }
-}
-
-PSerialDevice TSerialDeviceFactory::GetDevice(const std::string& slave_id, const std::string& protocol_name, PPort port)
-{
-    return GetProtocol(protocol_name)->GetDevice(slave_id, port);
-}
-
 PRegisterTypeMap TSerialDeviceFactory::GetRegisterTypes(PDeviceConfig device_config)
 {
     return GetProtocolEntry(device_config)->GetRegTypes();
 }
 
-template<>
-unsigned long TBasicProtocolConverter<unsigned long>::ConvertSlaveId(const std::string &s) const
+TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId)
 {
     try {
-        return std::stoul(s, /* pos = */ 0, /* base = */ 0);
+        SlaveId = std::stoul(slaveId, /* pos = */ 0, /* base = */ 0);
     } catch (const std::logic_error &e) {
-        throw TSerialDeviceException("slave ID \"" + s + "\" is not convertible to string");
+        throw TSerialDeviceException("slave ID \"" + slaveId + "\" is not convertible to string");
     }
 }
 
-template<>
-std::string TBasicProtocolConverter<std::string>::ConvertSlaveId(const std::string &s) const
-{
-    return s;
-}
-
-template<>
-TAggregatedSlaveId TBasicProtocolConverter<TAggregatedSlaveId>::ConvertSlaveId(const std::string &s) const
+TAggregatedSlaveId::TAggregatedSlaveId(const std::string& slaveId)
 {
     try {
-        auto delimiter_it = s.find(':');
-        return {std::stoi(s.substr(0, delimiter_it), 0, 0), std::stoi(s.substr(delimiter_it + 1), 0, 0)};
+        auto delimiter_it = slaveId.find(':');
+        PrimaryId = std::stoi(slaveId.substr(0, delimiter_it), 0, 0);
+        SecondaryId = std::stoi(slaveId.substr(delimiter_it + 1), 0, 0);
     } catch (const std::logic_error &e) {
-        throw TSerialDeviceException("slave ID \"" + s + "\" is not convertible to string");
+        throw TSerialDeviceException("slave ID \"" + slaveId + "\" is not convertible to string");
     }
+}
+
+bool TAggregatedSlaveId::operator==(const TAggregatedSlaveId & other) const
+{
+    return PrimaryId == other.PrimaryId && SecondaryId == other.SecondaryId;
 }

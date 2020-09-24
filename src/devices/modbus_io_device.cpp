@@ -5,7 +5,7 @@
 #include "modbus_common.h"
 
 
-REGISTER_BASIC_PROTOCOL("modbus_io", TModbusIODevice, TAggregatedSlaveId, TRegisterTypes({
+REGISTER_BASIC_PROTOCOL("modbus_io", TModbusIODevice, TRegisterTypes({
             { Modbus::REG_COIL, "coil", "switch", U8 },
             { Modbus::REG_DISCRETE, "discrete", "switch", U8, true },
             { Modbus::REG_HOLDING, "holding", "text", U16 },
@@ -13,9 +13,9 @@ REGISTER_BASIC_PROTOCOL("modbus_io", TModbusIODevice, TAggregatedSlaveId, TRegis
         }));
 
 TModbusIODevice::TModbusIODevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TModbusIODevice, TAggregatedSlaveId>>(config, port, protocol)
+    : TSerialDevice(config, port, protocol), TAggregatedSlaveId(config->SlaveId)
 {
-    Shift = (((SlaveId.Secondary - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
+    Shift = (((SecondaryId - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
 }
 
 std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
@@ -25,10 +25,10 @@ std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRe
 
 void TModbusIODevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    ModbusRTU::WriteRegister(Port(), SlaveId.Primary, reg, value, Shift);
+    ModbusRTU::WriteRegister(Port(), PrimaryId, reg, value, Shift);
 }
 
 void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 {
-    ModbusRTU::ReadRegisterRange(Port(), SlaveId.Primary, range, Shift);
+    ModbusRTU::ReadRegisterRange(Port(), PrimaryId, range, Shift);
 }

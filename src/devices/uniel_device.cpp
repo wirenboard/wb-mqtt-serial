@@ -23,7 +23,7 @@ namespace {
     };
 }
 
-REGISTER_BASIC_INT_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
+REGISTER_BASIC_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
             { TUnielDevice::REG_RELAY, "relay", "switch", U8 },
             { TUnielDevice::REG_INPUT, "input", "text", U8, true },
             { TUnielDevice::REG_PARAM, "param", "value", U8 },
@@ -32,7 +32,7 @@ REGISTER_BASIC_INT_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
         }));
 
 TUnielDevice::TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TUnielDevice>>(config, port, protocol)
+    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
 {}
 
 void TUnielDevice::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)

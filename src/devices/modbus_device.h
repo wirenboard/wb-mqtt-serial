@@ -7,7 +7,7 @@
 
 #include "serial_device.h"
 
-class TModbusDevice : public TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>>
+class TModbusDevice : public TSerialDevice, public TUInt32SlaveId
 {
 public:
     static const int DefaultTimeoutMs = 1000;
@@ -19,7 +19,7 @@ public:
 };
 
 
-class TModbusTCPDevice : public TBasicProtocolSerialDevice<TBasicProtocol<TModbusTCPDevice>>
+class TModbusTCPDevice : public TSerialDevice, public TUInt32SlaveId
 {
     std::shared_ptr<uint16_t> TransactionId;
 public:

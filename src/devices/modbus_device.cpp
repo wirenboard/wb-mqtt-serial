@@ -16,11 +16,10 @@ namespace
         });
 }
 
-REGISTER_BASIC_INT_PROTOCOL("modbus", TModbusDevice, ModbusRegisterTypes);
-REGISTER_BASIC_INT_PROTOCOL("modbus-tcp", TModbusTCPDevice, ModbusRegisterTypes);
+REGISTER_BASIC_PROTOCOL("modbus", TModbusDevice, ModbusRegisterTypes);
 
 TModbusDevice::TModbusDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>>(config, port, protocol)
+    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
 {}
 
 std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
@@ -38,8 +37,29 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
     ModbusRTU::ReadRegisterRange(Port(), SlaveId, range);
 }
 
+class TModbusTCPProtocol: public IProtocol
+{
+    std::unordered_map<PPort, std::shared_ptr<uint16_t>> TransactionIds;
+public:
+    TModbusTCPProtocol() : IProtocol("modbus-tcp", ModbusRegisterTypes)
+    {}
+
+    PSerialDevice CreateDevice(PDeviceConfig config, PPort port) override
+    {
+        auto it = TransactionIds.find(port);
+        if (it == TransactionIds.end()) {
+            std::tie(it, std::ignore) = TransactionIds.insert({port, std::make_shared<uint16_t>(0)});
+        }
+        PSerialDevice dev = std::make_shared<TModbusTCPDevice>(config, port, this, it->second);
+        dev->InitSetupItems();
+        return dev;
+    }
+};
+
+REGISTER_NEW_PROTOCOL(TModbusTCPProtocol);
+
 TModbusTCPDevice::TModbusTCPDevice(PDeviceConfig config, PPort port, PProtocol protocol, std::shared_ptr<uint16_t> transactionId)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TModbusTCPDevice>>(config, port, protocol).
+    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId),
       TransactionId(transactionId)
 {}
 

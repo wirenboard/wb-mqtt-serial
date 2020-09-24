@@ -401,11 +401,6 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
     Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
     InvalidateConfigPoll(TEST_HOLES);
 
-    auto device = TSerialDeviceFactory::GetDevice("1", "modbus", SerialPort);
-
-    ASSERT_EQ(device->DeviceConfig()->MaxRegHole, 10);
-    ASSERT_EQ(device->DeviceConfig()->MaxBitHole, 80);
-
     EnqueueHoldingPackHoles10ReadResponse(0x3); // this must result in auto-disabling holes feature
     EnqueueHoldingReadS64Response();
     EnqueueHoldingReadF32Response();
@@ -489,13 +484,3 @@ TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 }
-//     ExpectPollQueries();
-//     Observer->LoopOnce();
-
-//     MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/U16:8/on", "5555");
-
-//     EnqueueU16Shift8HoldingWriteResponse();
-//     ExpectPollQueries(false, true);
-//     Note() << "LoopOnce()";
-//     Observer->LoopOnce();
-// }

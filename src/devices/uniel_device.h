@@ -7,7 +7,8 @@
 
 #include "serial_device.h"
 
-class TUnielDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TUnielDevice>> {
+class TUnielDevice: public TSerialDevice, public TUInt32SlaveId
+{
 public:
     static const int DefaultTimeoutMs = 1000;
     enum RegisterType {

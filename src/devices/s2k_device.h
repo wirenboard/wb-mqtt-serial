@@ -7,7 +7,8 @@
 
 #include "serial_device.h"
 
-class TS2KDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TS2KDevice>> {
+class TS2KDevice: public TSerialDevice, public TUInt32SlaveId
+{
 public:
     enum RegisterType
     {

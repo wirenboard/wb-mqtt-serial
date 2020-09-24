@@ -7,7 +7,9 @@
 #include <array>
 #include <cassert>
 #include <unistd.h>
+#include <string.h>
 
+#include <netinet/in.h>
 
 using namespace std;
 
@@ -679,10 +681,12 @@ namespace Modbus    // modbus protocol common utilities
         return r;
     }
 
-    std::chrono::microseconds GetFrameTimeout(int baudRate)
+    class TMalformedResponseError: public TSerialDeviceTransientErrorException
     {
-        return std::chrono::microseconds(static_cast<int64_t>(std::ceil(static_cast<double>(35000000)/baudRate)));
-    }
+    public:
+        TMalformedResponseError(const std::string & what): TSerialDeviceTransientErrorException("malformed response: " + what)
+        {}
+    };
 };  // modbus protocol common utilities
 
 namespace ModbusRTU // modbus rtu protocol utilities
@@ -697,13 +701,6 @@ namespace ModbusRTU // modbus rtu protocol utilities
     {
     public:
         TInvalidCRCError(): TSerialDeviceTransientErrorException("invalid crc")
-        {}
-    };
-
-    class TMalformedResponseError: public TSerialDeviceTransientErrorException
-    {
-    public:
-        TMalformedResponseError(const std::string & what): TSerialDeviceTransientErrorException("malformed response: " + what)
         {}
     };
 
@@ -788,7 +785,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         auto pdu_size = GetResponsePDUSize(res);
 
         if (pdu_size >= (res.size() - 2)) {
-            throw TMalformedResponseError("invalid data size");
+            throw Modbus::TMalformedResponseError("invalid data size");
         }
 
         uint16_t crc = (res[pdu_size + 1] << 8) + res[pdu_size + 2];
@@ -848,7 +845,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
                                 LOG(Warn) << "SkipNoise failed: " << e.what();
                             }
                             throw;
-                        } catch (const TMalformedResponseError &) {
+                        } catch (const Modbus::TMalformedResponseError &) {
                             try {
                                 port->SkipNoise();
                             } catch (const std::exception & e) { 
@@ -923,7 +920,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
                             LOG(Warn) << "SkipNoise failed: " << e.what();
                         }
                         throw;
-                    } catch (const TMalformedResponseError &) {
+                    } catch (const Modbus::TMalformedResponseError &) {
                         try {
                             port->SkipNoise();
                         } catch (const std::exception & e) {
@@ -952,8 +949,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
 
 namespace ModbusTCP
 {
-    using TWriteRequest = std::vector<uint8_t>;
-    using TWriteResponse = std::array<uint8_t, 12>;
+    typedef std::vector<uint8_t> TRequest;
 
     const size_t MBAP_SIZE = 7;
 
@@ -981,7 +977,7 @@ namespace ModbusTCP
             req[6] = slaveId;
     }
 
-    void ComposeWriteRequests(std::vector<TWriteRequest>& requests, PRegister reg, uint8_t slaveId, uint64_t value, uint16_t* transactionId, int shift)
+    void ComposeWriteRequests(std::vector<TRequest>& requests, PRegister reg, uint8_t slaveId, uint64_t value, uint16_t* transactionId, int shift)
     {
         requests.resize(Modbus::InferWriteRequestsCount(reg));
 
@@ -1001,11 +997,6 @@ namespace ModbusTCP
                 value >>= 16;
             }
         }
-    }
-
-    TPort::TFrameCompletePred EmptyPred()
-    {
-        return [](uint8_t* buf, int size){return false;};
     }
 
     bool CheckResponse(const std::vector<uint8_t>& req, const std::vector<uint8_t>& res)
@@ -1029,14 +1020,24 @@ namespace ModbusTCP
         return true;
     }
 
+    uint16_t GetLengthFromMBAP(const std::vector<uint8_t>& buf)
+    {
+        uint16_t l;
+        memcpy(&l, buf.data()+4, 2);
+        return ntohs(l);
+    }
+
     std::vector<uint8_t> GetFrame(PPort port, std::chrono::milliseconds& frameTimeout)
     {
         std::vector<uint8_t> buf(MBAP_SIZE);
-        if (port->ReadFrame(buf.data(), buf.size(), frameTimeout, EmptyPred()) > 0) {
-            size_t len = GetLength(buf);
+        if (port->ReadFrame(buf.data(), buf.size(), frameTimeout) > 0) {
+            auto len = GetLengthFromMBAP(buf);
+            if (len < 3) {
+                throw Modbus::TMalformedResponseError("wrong MBAP length value");
+            }
             --len; // length includes one byte of unit identifier which is already in buffer
             buf.resize(MBAP_SIZE + len);
-            if (port->ReadFrame(buf.data() + MBAP_SIZE, len, frameTimeout, EmptyPred()) > 0) {
+            if (port->ReadFrame(buf.data() + MBAP_SIZE, len, frameTimeout) > 0) {
                 return buf;
             }
         }
@@ -1049,22 +1050,17 @@ namespace ModbusTCP
 
         int w = reg->Width();
 
-        LOG(Debug) << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
+        LOG(Debug) << "write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
                 " of device " << reg->Device()->ToString();
 
         auto config = reg->Device()->DeviceConfig();
 
         std::string exception_message;
         try {
-            std::vector<TWriteRequest> requests;
+            std::vector<TRequest> requests;
             ComposeWriteRequests(requests, reg, slaveId, value, transactionId, shift);
 
             for (const auto & request: requests) {
-                try {
-                    port->SkipNoise();
-                } catch (const std::exception & e) {
-                    LOG(Warn) << "SkipNoise failed: " << e.what();
-                }
                 // Send request
                 if (config->GuardInterval.count()) {
                     port->Sleep(config->GuardInterval);
@@ -1075,10 +1071,20 @@ namespace ModbusTCP
                 auto frame_timeout = config->FrameTimeout.count() < 0 ? ModbusRTU::FrameTimeout: config->FrameTimeout;
                 // TODO: Timeout
                 while(true) {
-                    auto response = GetFrame(port, frame_timeout);
-                    if (CheckResponse(request, response)) {
-                        Modbus::ParseWriteResponse(PDU(response));
-                        break;
+                    try
+                    {
+                        auto response = GetFrame(port, frame_timeout);
+                        if (CheckResponse(request, response)) {
+                            Modbus::ParseWriteResponse(PDU(response));
+                            break;
+                        }
+                    } catch (const Modbus::TMalformedResponseError &) {
+                        try {
+                            port->SkipNoise();
+                        } catch (const std::exception & e) {
+                            LOG(Warn) << "SkipNoise failed: " << e.what();
+                        }
+                        throw;
                     }
                 }
             }
@@ -1097,7 +1103,16 @@ namespace ModbusTCP
             " @ " + std::to_string(reg->Address) + exception_message);
     }
 
-    void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift)
+    void ComposeReadRequest(TRequest& req, Modbus::PModbusRegisterRange range, uint8_t slaveId, uint16_t* transactionId, int shift)
+    {
+        const uint16_t REQUEST_PDU_SIZE = 5;
+        req.resize(MBAP_SIZE + REQUEST_PDU_SIZE);
+        ++(*transactionId);
+        SetMBAP(req, *transactionId, REQUEST_PDU_SIZE, slaveId);
+        Modbus::ComposeReadRequestPDU(PDU(req), range, shift);
+    }
+
+    void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, uint16_t* transactionId, int shift)
     {
         auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
         if (!modbus_range) {
@@ -1110,52 +1125,49 @@ namespace ModbusTCP
         // we need to clear any modbus errors from previous cycle
         modbus_range->ResetModbusError();
 
-        LOG(Debug) << "modbus: read " << modbus_range->GetCount() << " " <<
+        LOG(Debug) << "read " << modbus_range->GetCount() << " " <<
             modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
             " of device " << modbus_range->Device()->ToString();
 
-        if (config->GuardInterval.count()){
-            port->Sleep(config->GuardInterval);
-        }
 
         std::string exception_message;
         try {
-            TReadRequest request;
+            TRequest request;
 
-            {   // Send request
-                ComposeReadRequest(request, modbus_range, slaveId, shift);
-                port->WriteBytes(request.data(), request.size());
+            // Send request
+            ComposeReadRequest(request, modbus_range, slaveId, transactionId, shift);
+            if (config->GuardInterval.count()){
+                port->Sleep(config->GuardInterval);
             }
+            port->WriteBytes(request.data(), request.size());
 
-            {   // Receive response
-                auto byte_count = InferReadResponseSize(modbus_range);
-                TReadResponse response(byte_count);
-                auto frame_timeout = config->FrameTimeout.count() < 0 ? FrameTimeout: config->FrameTimeout;
-
-                auto rc = port->ReadFrame(response.data(), response.size(), frame_timeout, ExpectNBytes(response.size()));
-                if (rc > 0) {
-                    try {
-                        ModbusRTU::CheckResponse(request, response);
+            // Receive response
+            auto frame_timeout = config->FrameTimeout.count() < 0 ? ModbusRTU::FrameTimeout: config->FrameTimeout;
+            auto response = GetFrame(port, frame_timeout);
+            // TODO: Timeout
+            while(true) {
+                try
+                {
+                    auto response = GetFrame(port, frame_timeout);
+                    if (CheckResponse(request, response)) {
+                        auto pduSize = Modbus::InferReadResponsePDUSize(modbus_range);
+                        if (GetLengthFromMBAP(response) != pduSize + 1) {
+                            throw Modbus::TMalformedResponseError("PDU length in response doesn't match request");
+                        }
                         Modbus::ParseReadResponse(PDU(response), modbus_range);
-                    } catch (const TInvalidCRCError &) {
-                        try {
-                            port->SkipNoise();
-                        } catch (const std::exception & e) {
-                            LOG(Warn) << "SkipNoise failed: " << e.what();
-                        }
-                        throw;
-                    } catch (const TMalformedResponseError &) {
-                        try {
-                            port->SkipNoise();
-                        } catch (const std::exception & e) {
-                            LOG(Warn) << "SkipNoise failed: " << e.what();
-                        }
-                        throw;
+                        modbus_range->SetError(false);
+                        break;
                     }
-                    modbus_range->SetError(false);
-                    return;
+                } catch (const Modbus::TMalformedResponseError &) {
+                    try {
+                        port->SkipNoise();
+                    } catch (const std::exception & e) {
+                        LOG(Warn) << "SkipNoise failed: " << e.what();
+                    }
+                    throw;
                 }
             }
+            return;
         } catch (TSerialDeviceTransientErrorException& e) {
             exception_message = e.what();
         }

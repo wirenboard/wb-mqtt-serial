@@ -11,6 +11,7 @@
       "default": "modbus"
     },
     "commonPortSettings": {
+      "type": "object",
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -56,7 +57,6 @@
     "serialPort": {
       "title": "Serial port",
       "type": "object",
-      "additionalProperties": false,
       "allOf" : [
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
@@ -154,7 +154,6 @@
     "modbusTcpPort": {
       "title": "MODBUS TCP port",
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "port_type": {
           "type": "string",
@@ -177,7 +176,6 @@
     "tcpPort": {
       "title": "TCP port",
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "port_type": {
           "type": "string",

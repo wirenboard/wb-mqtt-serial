@@ -10,7 +10,8 @@
 class TMilurDevice;
 typedef TBasicProtocol<TMilurDevice> TMilurProtocol;
 
-class TMilurDevice: public TEMDevice<TMilurProtocol> {
+class TMilurDevice: public TEMDevice
+{
 public:
     static const int DefaultTimeoutMs = 1000;
     static const int FrameTimeoutMs = 50;

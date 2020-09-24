@@ -7,7 +7,8 @@
 #include "serial_device.h"
 
 
-class TPulsarDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TPulsarDevice>> {
+class TPulsarDevice: public TSerialDevice, public TUInt32SlaveId
+{
 public:
 
     enum RegisterType {
@@ -15,7 +16,7 @@ public:
         REG_SYSTIME
     };
 
-    TPulsarDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
+    TPulsarDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 

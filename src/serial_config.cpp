@@ -431,6 +431,8 @@ namespace {
         if (port_data.isMember("enabled") && !port_data["enabled"].asBool())
             return;
 
+        //TODO: Check similar slaveIds
+
         auto port_config = make_shared<TPortConfig>();
 
         auto port_type = port_data.get("port_type", "serial").asString();
