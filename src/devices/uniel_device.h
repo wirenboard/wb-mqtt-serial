@@ -9,7 +9,6 @@
 
 class TUnielDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TUnielDevice>> {
 public:
-    static const int DefaultTimeoutMs = 1000;
     enum RegisterType {
         REG_RELAY = 0,
         REG_INPUT,

@@ -166,7 +166,7 @@ Publish: /devices/modbus-sample/controls/Holding U64 Single/on: '283686952306183
 Publish: /devices/modbus-sample/controls/Holding U64 Single: '283686952306183' (QoS 1, retained)
 >>> LoopOnce()
 Open()
-Sleep(100000)
+Sleep(5000)
 EnqueueCoilWriteResponse()
 >> 01 05 00 00 FF 00 8C 3A
 Publish: /devices/modbus-sample/controls/Coil 0/meta/error: 'w' (QoS 1, retained)

@@ -1,9 +1,7 @@
 #include "modbus_device.h"
 #include "modbus_common.h"
 
-#include <iostream>
-#include <stdexcept>
-
+#include <algorithm>
 
 REGISTER_BASIC_INT_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
             { Modbus::REG_COIL, "coil", "switch", U8 },
@@ -16,7 +14,9 @@ REGISTER_BASIC_INT_PROTOCOL("modbus", TModbusDevice, TRegisterTypes({
 
 TModbusDevice::TModbusDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TModbusDevice>>(config, port, protocol)
-{}
+{
+    config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
+}
 
 std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
 {

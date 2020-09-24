@@ -16,6 +16,7 @@ TModbusIODevice::TModbusIODevice(PDeviceConfig config, PPort port, PProtocol pro
     : TBasicProtocolSerialDevice<TBasicProtocol<TModbusIODevice, TAggregatedSlaveId>>(config, port, protocol)
 {
     Shift = (((SlaveId.Secondary - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
+    config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
 }
 
 std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const

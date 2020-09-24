@@ -6,7 +6,6 @@
 
 #include "serial_device.h"
 #include "serial_port.h"
-#include "serial_port_settings.h"
 #include "pty_based_fake_serial.h"
 
 #include <wblib/testing/testlog.h>
@@ -85,17 +84,17 @@ public:
         TSerialPort::SkipNoise();
     }
 
-    uint8_t ReadByte() override
+    uint8_t ReadByte(const std::chrono::microseconds& timeout) override
     {
         Fixture.Emit() << "ReadByte()";
-        return TSerialPort::ReadByte();
+        return TSerialPort::ReadByte(timeout);
     }
 
     void EmptyReadBuffer()
     {
         while (true) {
             try {
-                TSerialPort::ReadByte();
+                TSerialPort::ReadByte(std::chrono::milliseconds(100));
             } catch (const TSerialDeviceTransientErrorException&) {
                 return;
             }
@@ -134,7 +133,7 @@ void TSerialPortTest::SetUp()
     FakeSerial = PPtyBasedFakeSerial(new TPtyBasedFakeSerial(*this));
     auto settings = std::make_shared<TSerialPortSettings>(
                 FakeSerial->GetPrimaryPtsName(),
-                9600, 'N', 8, 1, std::chrono::milliseconds(1000));
+                9600, 'N', 8, 1);
     Serial = PPort(
         new TSerialPort(settings));
     Serial->Open();
@@ -142,7 +141,7 @@ void TSerialPortTest::SetUp()
     FakeSerial->StartForwarding();
     auto secondary_settings = std::make_shared<TSerialPortSettings>(
                 FakeSerial->GetSecondaryPtsName(),
-                9600, 'N', 8, 1, std::chrono::milliseconds(1000));
+                9600, 'N', 8, 1);
     SecondarySerial = std::shared_ptr<TSerialPortTestWrapper>(
         new TSerialPortTestWrapper(
             secondary_settings,
@@ -172,7 +171,7 @@ TEST_F(TSerialPortTest, TestSkipNoise)
     buf[0] = 0x04;
     // Should read 0x04, not 0x01
     Serial->WriteBytes(buf, 1);
-    uint8_t read_back = SecondarySerial->ReadByte();
+    uint8_t read_back = SecondarySerial->ReadByte(std::chrono::milliseconds(1000));
     ASSERT_EQ(read_back, buf[0]);
 
     FakeSerial->Flush(); // shouldn't change anything here, but shouldn't hang either
@@ -196,7 +195,7 @@ TEST_F(TSerialPortTest, TestImxBug)
     buf[0] = 0x04;
     // Should read 0x04, not 0x01
     Serial->WriteBytes(buf, 1);
-    uint8_t read_back = SecondarySerial->ReadByte();
+    uint8_t read_back = SecondarySerial->ReadByte(std::chrono::milliseconds(1000));
     ASSERT_EQ(read_back, buf[0]);
 
     // in case reconnect won't help with cont. data flow, exception must be raised

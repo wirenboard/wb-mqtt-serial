@@ -119,7 +119,6 @@ public:
     }
 
 private:
-    std::chrono::milliseconds Delay;
     PPort SerialPort;
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;

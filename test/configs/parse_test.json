@@ -30,6 +30,7 @@
                     "id": "OnValueTest",
                     "enabled": true,
                     "slave_id": "0x90",
+                    "frame_timeout_ms": 111,
                     "channels": [
                         {
                             "name" : "Relay 1",
@@ -100,6 +101,7 @@
             "stop_bits": 1,
             "poll_interval": 100,
             "guard_interval_us": 105,
+            "response_timeout_ms": 222,
             "enabled": true,
             "devices" : [
                 {

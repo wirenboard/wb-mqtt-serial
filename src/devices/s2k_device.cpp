@@ -12,11 +12,6 @@
 
 #include "s2k_device.h"
 
-namespace
-{
-    const int PAUSE_US = 100000;
-}
-
 REGISTER_BASIC_INT_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
         {
             { TS2KDevice::REG_RELAY, "relay", "switch", U8 },
@@ -90,7 +85,7 @@ void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
     command[6] = CrcS2K(command, 6);
     Port()->WriteBytes(command, 7);
     uint8_t response[256];
-    int size = Port()->ReadFrame(response, 256, std::chrono::microseconds(PAUSE_US));
+    int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
     if (size != 6 ||
        response[0] != (uint8_t)SlaveId ||
        response[1] != 5 ||
@@ -134,7 +129,7 @@ uint64_t TS2KDevice::ReadRegister(PRegister reg)
         command[6] = CrcS2K(command, 6);
         Port()->WriteBytes(command, 7);
         uint8_t response[256];
-        int size = Port()->ReadFrame(response, 256, std::chrono::microseconds(PAUSE_US));
+        int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
         if (size != 6 ||
            response[0] != (uint8_t)SlaveId ||
            response[1] != 0x5 ||

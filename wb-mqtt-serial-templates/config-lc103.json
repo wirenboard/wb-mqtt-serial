@@ -4,7 +4,7 @@
 	"device" : {
 		"name": "LC-103",
 		"id": "lc103",
-	    "enabled": true,
+		"enabled": true,
 	    "channels": [
 		{
 			"name": "Relay 1",

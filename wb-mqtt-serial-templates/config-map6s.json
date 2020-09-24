@@ -4,6 +4,8 @@
   "name": "WB-MAP6S",
   "id": "wb-map6s",
   "max_read_registers": 60,
+  "response_timeout_ms": 1,
+  "frame_timeout_ms": 8,
   "channels": [
    {
     "name": "Urms",

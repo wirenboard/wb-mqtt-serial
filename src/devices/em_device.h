@@ -15,8 +15,6 @@
 template<class Proto>
 class TEMDevice: public TBasicProtocolSerialDevice<Proto> {
 public:
-    static const int DefaultTimeoutMs = 1000;
-
     TEMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
         : TBasicProtocolSerialDevice<Proto>(device_config, port, protocol)
     {}
@@ -61,7 +59,7 @@ protected:
                                TPort::TFrameCompletePred frame_complete = 0)
     {
         uint8_t buf[MAX_LEN], *p = buf;
-        int nread = this->Port()->ReadFrame(buf, MAX_LEN, this->DeviceConfig()->FrameTimeout, frame_complete);
+        int nread = this->Port()->ReadFrame(buf, MAX_LEN, this->DeviceConfig()->ResponseTimeout, this->DeviceConfig()->FrameTimeout, frame_complete);
         if (nread < 3 + SlaveIdWidth)
             throw TSerialDeviceTransientErrorException("frame too short");
 

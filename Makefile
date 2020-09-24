@@ -16,6 +16,7 @@ LDFLAGS= -lpthread -ljsoncpp -lwbmqtt1
 
 SERIAL_BIN=wb-mqtt-serial
 SERIAL_SRCS= \
+  src/port.cpp                        \
   src/register.cpp                    \
   src/poll_plan.cpp                   \
   src/serial_client.cpp               \
@@ -38,7 +39,6 @@ SERIAL_SRCS= \
   src/devices/pulsar_device.cpp       \
   src/devices/modbus_device.cpp       \
   src/devices/modbus_io_device.cpp    \
-  src/devices/em_device.cpp           \
   src/devices/milur_device.cpp        \
   src/devices/mercury230_device.cpp   \
   src/devices/lls_device.cpp          \
