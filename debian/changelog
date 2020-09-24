@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.0.3) experimental; urgency=medium
+wb-mqtt-serial (2.1.0) experimental; urgency=medium
 
   * delay_ms setting is removed, frame_timeout_ms should be used instead
   * interframe timeouts are calculated according to port speeds for modbus, modbus_io, milur, mercury200, mercury 230 and lls protocols
