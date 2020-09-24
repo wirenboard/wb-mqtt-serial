@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.1.0) experimental; urgency=medium
+
+  * delay_ms setting is removed, frame_timeout_ms should be used instead
+  * interframe timeouts are calculated according to port speeds for modbus, modbus_io, milur, mercury200, mercury 230 and lls protocols
+  * frame_timeout_ms and response_timeout_ms are set in all device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 11 Sep 2020 11:38:01 +0500
+
 wb-mqtt-serial (2.0.3) experimental; urgency=medium
 
   * add map12e template

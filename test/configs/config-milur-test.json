@@ -14,7 +14,6 @@
       "devices" : [
         {
           "slave_id": "255",
-          "frame_timeout_ms": 150,
           "device_type": "milur305"
         }
       ]

@@ -15,15 +15,13 @@ using namespace std;
 #define LOG(logger) ::logger.Log() << "[port] "
 
 namespace {
-    const chrono::milliseconds DefaultFrameTimeout(15);
     const chrono::milliseconds NoiseTimeout(10);
     const chrono::milliseconds ContinuousNoiseTimeout(100);
     const int ContinuousNoiseReopenNumber = 3;
 }
 
-TFileDescriptorPort::TFileDescriptorPort(const PPortSettings & settings)
+TFileDescriptorPort::TFileDescriptorPort()
     : Fd(-1)
-    , Settings(settings)
 {}
 
 TFileDescriptorPort::~TFileDescriptorPort()
@@ -63,6 +61,8 @@ void TFileDescriptorPort::WriteBytes(const uint8_t * buf, int count) {
         throw TSerialDeviceException(ss.str());
     }
 
+    LastInteraction = std::chrono::steady_clock::now();
+
     if (::Debug.IsEnabled()) {
         // TBD: move this to libwbmqtt (HexDump?)
         stringstream ss;
@@ -78,12 +78,6 @@ bool TFileDescriptorPort::Select(const chrono::microseconds& us)
 {
     fd_set rfds;
     struct timeval tv, *tvp = 0;
-
-#if 0
-    // too verbose
-    if (Dbg)
-        cerr << "Select on " << Settings.Device << ": " << ms.count() << " us" << endl;
-#endif
 
     FD_ZERO(&rfds);
     FD_SET(Fd, &rfds);
@@ -104,11 +98,11 @@ bool TFileDescriptorPort::Select(const chrono::microseconds& us)
 void TFileDescriptorPort::OnReadyEmptyFd()
 {}
 
-uint8_t TFileDescriptorPort::ReadByte()
+uint8_t TFileDescriptorPort::ReadByte(const chrono::microseconds& timeout)
 {
     CheckPortOpen();
 
-    if (!Select(Settings->ResponseTimeout)) {
+    if (!Select(timeout)) {
         throw TSerialDeviceTransientErrorException("timeout");
     }
 
@@ -116,6 +110,8 @@ uint8_t TFileDescriptorPort::ReadByte()
     if (read(Fd, &b, 1) < 1) {
         throw TSerialDeviceException("read() failed");
     }
+
+    LastInteraction = std::chrono::steady_clock::now();
 
     LOG(Debug) << "Read: " << hex << setw(2) << setfill('0') << int(b);
 
@@ -129,7 +125,7 @@ int TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
     // read() call below to block because actual frame
     // size is not known at this point. So we must
     // know how many bytes are available
-    int nb;
+    int nb = 0;
     if (ioctl(Fd, FIONREAD, &nb) < 0) {
         throw TSerialDeviceException("FIONREAD ioctl() failed");
     }
@@ -139,7 +135,7 @@ int TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
         return -1;
     }
 
-    if (nb > max_read) {
+    if (static_cast<size_t>(nb) > max_read) {
         nb = max_read;
     }
 
@@ -156,44 +152,39 @@ int TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
 }
 
 // Reading becomes unstable when using timeout less than default because of bufferization
-int TFileDescriptorPort::ReadFrame(uint8_t * buf, int size,
-                           const chrono::microseconds& timeout,
-                           TFrameCompletePred frame_complete)
+int TFileDescriptorPort::ReadFrame(uint8_t * buf, 
+                                   int size,
+                                   const std::chrono::microseconds& responseTimeout,
+                                   const std::chrono::microseconds& frameTimeout,
+                                   TFrameCompletePred frame_complete)
 {
     CheckPortOpen();
     int nread = 0;
+
+    // Will wait first byte up to responseTimeout us
+    auto selectTimeout = responseTimeout;
     while (nread < size) {
         if (frame_complete && frame_complete(buf, nread)) {
-            // XXX A hack.
-            // The problem is that if we don't pause here and the
-            // serial client switches to another device after
-            // processing this frame, that device may miss the frame
-            // boundary and consider the last response (from this
-            // device) and the query (from the master) to be single
-            // frame. On the other hand, we don't want to use
-            // device-specific frame timeout here as it can be quite
-            // long. The proper solution would be perhaps ensuring
-            // that there's a pause of at least
-            // DeviceConfig->FrameTimeoutMs before polling each
-            // device.
-            usleep(DefaultFrameTimeout.count());
             break;
         }
 
-        if (!Select(!nread ? Settings->ResponseTimeout :
-                    timeout.count() < 0 ? DefaultFrameTimeout :
-                    timeout))
+        if (!Select(selectTimeout))
             break; // end of the frame
-        
-        int nb = ReadAvailableData(buf + nread, size - nread);
-        if (nb < 0) continue;
 
+        int nb = ReadAvailableData(buf + nread, size - nread);
+        if (nb <= 0) continue;
+
+        // Got something, switch to frameTimeout to detect frame boundary
+        // Delay between bytes in one message can't be more than frameTimeout
+        selectTimeout = frameTimeout;
         nread += nb;
     }
 
     if (!nread) {
         throw TSerialDeviceTransientErrorException("request timed out");
     }
+
+    LastInteraction = std::chrono::steady_clock::now();
 
     if (::Debug.IsEnabled()) {
         // TBD: move this to libwbmqtt (HexDump?)
@@ -229,22 +220,29 @@ void TFileDescriptorPort::SkipNoise()
         }
 
         // if we are still getting data for already "ContinuousNoiseTimeout" milliseconds
-        if ((nread > 0) && (diff > ContinuousNoiseTimeout)) {
-            if (ntries < ContinuousNoiseReopenNumber)  {
-                LOG(Debug) << "continuous unsolicited data flow detected, reopen the port";
-                Reopen();
-                ntries += 1;
-                start = std::chrono::steady_clock::now();
-            } else {
-                throw TSerialDeviceTransientErrorException("continous unsolicited data flow");
+        if (nread > 0) {
+            LastInteraction = std::chrono::steady_clock::now();
+
+            if (diff > ContinuousNoiseTimeout) {
+                if (ntries < ContinuousNoiseReopenNumber)  {
+                    LOG(Debug) << "continuous unsolicited data flow detected, reopen the port";
+                    Reopen();
+                    ntries += 1;
+                    start = std::chrono::steady_clock::now();
+                } else {
+                    throw TSerialDeviceTransientErrorException("continous unsolicited data flow");
+                }
             }
         }
     }
 }
 
-void TFileDescriptorPort::Sleep(const chrono::microseconds & us)
+void TFileDescriptorPort::SleepSinceLastInteraction(const chrono::microseconds& us)
 {
-    usleep(us.count());
+    auto now = chrono::steady_clock::now();
+    auto delta = chrono::duration_cast<chrono::microseconds>(now - LastInteraction);
+    std::this_thread::sleep_for(us - delta);
+    LOG(Debug) << "Sleep " << us.count() << " us";
 }
 
 bool TFileDescriptorPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)

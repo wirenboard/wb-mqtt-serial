@@ -157,7 +157,7 @@ protected:
 void TMilurIntegrationTest::SetUp()
 {
     TSerialDeviceIntegrationTest::SetUp();
-    SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(150));
+    SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(5));
     ASSERT_TRUE(!!SerialPort);
 }
 
