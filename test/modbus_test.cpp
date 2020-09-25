@@ -83,13 +83,14 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
 
     for (auto range: ranges) {
         ModbusDev->ReadRegisterRange(range);
-        range->MapRange([&](PRegister reg, uint64_t value){
-            registerValues[reg->Address] = value;
+        for (auto& reg: range->RegisterList()) {
             readAddresses.insert(reg->Address);
-        }, [&](PRegister reg){
-            readAddresses.insert(reg->Address);
-            errorRegisters.insert(reg->Address);
-        });
+            if (reg->GetError()) {
+                errorRegisters.insert(reg->Address);
+            } else {
+                registerValues[reg->Address] = reg->GetValue();
+            }
+        }
     }
 
     EXPECT_EQ(to_string(registerList.size()), to_string(readAddresses.size()));
@@ -220,7 +221,7 @@ TEST_F(TModbusTest, WrongSlaveIdWrite)
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response slave id mismatch"), e.what());
+        EXPECT_EQ(string("Serial protocol error: request and response slave id mismatch"), e.what());
     }
 
     SerialPort->Close();
@@ -234,7 +235,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWrite)
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response function code mismatch"), e.what());
+        EXPECT_EQ(string("Serial protocol error: request and response function code mismatch"), e.what());
     }
 
     SerialPort->Close();
@@ -248,7 +249,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWithExceptionWrite)
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response function code mismatch"), e.what());
+        EXPECT_EQ(string("Serial protocol error: request and response function code mismatch"), e.what());
     }
 
     SerialPort->Close();
@@ -442,7 +443,7 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
 
 TEST_F(TModbusIntegrationTest, GuardInterval)
 {
-    Config->PortConfigs[0]->DeviceConfigs[0]->GuardInterval = chrono::microseconds(1000);
+    Config->PortConfigs[0]->DeviceConfigs[0]->RequestDelay = chrono::microseconds(1000);
     InvalidateConfigPoll();
 }
 
@@ -482,5 +483,116 @@ TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
     EnqueueU8Shift1SingleBitHoldingWriteResponse();
     ExpectPollQueries(true);
     Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+}
+
+class TModbusUnavailableRegistersIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    void SetUp()
+    {
+        SelectModbusType(MODBUS_RTU);
+        TSerialDeviceIntegrationTest::SetUp();
+        ASSERT_TRUE(!!SerialPort);
+    }
+
+    void TearDown()
+    {
+        SerialPort->Close();
+        TSerialDeviceIntegrationTest::TearDown();
+    }
+
+    const char* ConfigPath() const override { return "configs/config-modbus-unavailable-registers-test.json"; }
+};
+
+TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterOnBorder)
+{
+    // we check that driver detects unavailable register on the ranges border and stops to read it
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnavailableOnBorderReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
+    SerialDriver->LoopOnce();
+}
+
+TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddle)
+{
+    // we check that driver detects unavailable register in the middle of the range
+    // It must split the range into two parts and exclure unavailable register from reading
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
+    SerialDriver->LoopOnce();
+}
+
+TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
+{
+    // Check that driver detects unsupported registers
+    // It must remove unavailable registers from request if they are on borders of a range
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnsupportedOnBorderReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
+    SerialDriver->LoopOnce();
+}
+
+class TModbusUnavailableRegistersAndHolesIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    void SetUp()
+    {
+        SelectModbusType(MODBUS_RTU);
+        TSerialDeviceIntegrationTest::SetUp();
+        ASSERT_TRUE(!!SerialPort);
+    }
+
+    void TearDown()
+    {
+        SerialPort->Close();
+        TSerialDeviceIntegrationTest::TearDown();
+    }
+
+    const char* ConfigPath() const override { return "configs/config-modbus-unavailable-registers-and-holes-test.json"; }
+};
+
+TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
+{
+    // we check that driver disables holes feature and after that detects and excludes unavailable register
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnavailableAndHolesReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [disable holes]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new ranges]";
     SerialDriver->LoopOnce();
 }

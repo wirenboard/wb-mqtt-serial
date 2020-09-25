@@ -16,7 +16,6 @@ typedef TBasicProtocol<TMercury230Device> TMercury230Protocol;
 class TMercury230Device: public TEMDevice
 {
 public:
-    static const int DefaultTimeoutMs = 1000;
     enum RegisterType {
         REG_VALUE_ARRAY = 0,
         REG_PARAM = 1,

@@ -35,6 +35,8 @@ TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol pr
     if (SlaveId > 0xFF) {
         SlaveIdWidth = 4;
     }
+
+    device_config->FrameTimeout = std::max(device_config->FrameTimeout, port->GetSendTime(3.5));
 }
 
 bool TMilurDevice::ConnectionSetup()

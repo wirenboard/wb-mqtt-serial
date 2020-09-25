@@ -16,6 +16,7 @@ TModbusIODevice::TModbusIODevice(PDeviceConfig config, PPort port, PProtocol pro
     : TSerialDevice(config, port, protocol), TAggregatedSlaveId(config->SlaveId)
 {
     Shift = (((SecondaryId - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
+    config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
 }
 
 std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
@@ -28,7 +29,12 @@ void TModbusIODevice::WriteRegister(PRegister reg, uint64_t value)
     ModbusRTU::WriteRegister(Port(), PrimaryId, reg, value, Shift);
 }
 
-void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
+std::list<PRegisterRange> TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 {
-    ModbusRTU::ReadRegisterRange(Port(), PrimaryId, range, Shift);
+    return ModbusRTU::ReadRegisterRange(Port(), SlaveId.Primary, range, Shift);
+}
+
+bool TModbusIODevice::WriteSetupRegisters()
+{
+    return ModbusRTU::WriteSetupRegisters(Port(), SlaveId.Primary, SetupItems, Shift);
 }

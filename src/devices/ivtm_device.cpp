@@ -14,11 +14,6 @@
 
 #include "ivtm_device.h"
 
-namespace {
-    const int DefaultTimeoutMs = 1000;
-    const int FrameTimeoutMs = 50;
-}
-
 REGISTER_BASIC_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
 TIVTMDevice::TIVTMDevice(PDeviceConfig config, PPort port, PProtocol protocol)
@@ -84,7 +79,7 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     uint8_t buf[MAX_LEN];
 
     int nread = Port()->ReadFrame(
-        buf, MAX_LEN, std::chrono::milliseconds(FrameTimeoutMs),
+        buf, MAX_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout,
         [](uint8_t* buf, int size) {
             return size > 0 && buf[size - 1] == '\r';
         });
@@ -128,9 +123,9 @@ uint64_t TIVTMDevice::ReadRegister(PRegister reg)
 {
     Port()->SkipNoise();
 
-    WriteCommand(SlaveId, reg->Address, reg->ByteWidth());
+    WriteCommand(SlaveId, reg->Address, reg->GetByteWidth());
     uint8_t response[4];
-    ReadResponse(SlaveId, response, reg->ByteWidth());
+    ReadResponse(SlaveId, response, reg->GetByteWidth());
 
     uint8_t * p = response;//&response[(address % 2) * 4];
 

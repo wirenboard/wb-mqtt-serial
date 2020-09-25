@@ -1,9 +1,10 @@
 Debug: 0
 Ports:
     ------
-    ConnSettings: </dev/ttyNSC0 9600 8 N2 timeout 500>
+    ConnSettings: </dev/ttyNSC0 9600 8 N2>
     PollInterval: 10
     GuardInterval: 0
+    Response timeout: -1
     DeviceConfigs:
         ------
         Id: msu34tlp_2
@@ -14,6 +15,8 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 0
         DeviceChannels:
             ------
             Name: Temp 1
@@ -108,6 +111,8 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 111
         DeviceChannels:
             ------
             Name: Relay 1
@@ -139,6 +144,8 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 0
         DeviceChannels:
             ------
             Name: uint16
@@ -267,9 +274,10 @@ Ports:
                 ErrorValue: 18446744073709551615
                 WordOrder: BigEndian
     ------
-    ConnSettings: </dev/ttyNSC1 9600 8 N1 timeout 500>
+    ConnSettings: </dev/ttyNSC1 9600 8 N1>
     PollInterval: 100
     GuardInterval: 105
+    Response timeout: 222
     DeviceConfigs:
         ------
         Id: lc103
@@ -280,6 +288,8 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 1000
         DeviceTimeout: 2000
+        Response timeout: 222
+        Frame timeout: 0
         DeviceChannels:
             ------
             Name: Relay 1
@@ -374,6 +384,8 @@ Ports:
         MaxReadRegisters: 0
         GuardInterval: 105
         DeviceTimeout: 3000
+        Response timeout: 222
+        Frame timeout: 0
         DeviceChannels:
             ------
             Name: RGB
@@ -450,6 +462,8 @@ Ports:
         MaxReadRegisters: 42
         GuardInterval: 105
         DeviceTimeout: 3000
+        Response timeout: 222
+        Frame timeout: 0
         DeviceChannels:
             ------
             Name: Chan 1
@@ -481,6 +495,8 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
+        Response timeout: 222
+        Frame timeout: 0
         DeviceChannels:
             ------
             Name: Chan 1
@@ -512,6 +528,8 @@ Ports:
         MaxReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
+        Response timeout: 222
+        Frame timeout: 0
         DeviceChannels:
             ------
             Name: Input
@@ -577,14 +595,16 @@ Ports:
                 ErrorValue: not set
                 WordOrder: BigEndian
     ------
-    ConnSettings: <192.168.0.1:3000 timeout 500>
+    ConnSettings: <192.168.0.1:3000>
     PollInterval: 20
     GuardInterval: 0
+    Response timeout: -1
     ConnectionTimeout: 5000
     No device configs.
     ------
-    ConnSettings: <192.168.0.1:3000 timeout 500>
+    ConnSettings: <192.168.0.1:3000>
     PollInterval: 20
     GuardInterval: 0
+    Response timeout: -1
     ConnectionTimeout: 10000
     No device configs.

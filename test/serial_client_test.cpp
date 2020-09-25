@@ -32,11 +32,22 @@ protected:
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
             TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
-            "fake", false, 0, word_order));
+            "fake", std::unique_ptr<uint64_t>(), word_order));
     }
     PFakeSerialPort Port;
     PSerialClient SerialClient;
     PFakeSerialDevice Device;
+
+    bool HasSetupRegisters = false;
+};
+
+class TSerialClientTestWithSetupRegisters: public TSerialClientTest
+{
+public:
+    TSerialClientTestWithSetupRegisters()
+    {
+        HasSetupRegisters = true;
+    }
 };
 
 void TSerialClientTest::SetUp()
@@ -49,6 +60,19 @@ void TSerialClientTest::SetUp()
 #endif
     auto config = std::make_shared<TDeviceConfig>("fake_sample", "1", "fake");
     config->MaxReadRegisters = 0;
+
+    if (HasSetupRegisters) {
+        PRegisterConfig reg1 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 100);
+        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup1", reg1, 10)));
+
+        PRegisterConfig reg2 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 101);
+        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup2", reg2, 11)));
+
+        PRegisterConfig reg3 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 102);
+        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup3", reg3, 12)));
+    }
+
+    config->FrameTimeout = std::chrono::milliseconds(100);
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(SerialClient->CreateDevice(config));
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             Emit() << "Read Callback: " << reg->ToString() << " becomes " <<
@@ -718,9 +742,13 @@ TEST_F(TSerialClientTest, Round)
 TEST_F(TSerialClientTest, Errors)
 {
     PRegister reg20 = Reg(20);
+    SerialClient->AddRegister(reg20);
+
+    Note() << "Cycle() [first start]";
+    SerialClient->Cycle();
+
     Device->BlockReadFor(20, true);
     Device->BlockWriteFor(20, true);
-    SerialClient->AddRegister(reg20);
 
     for (int i = 0; i < 3; i++) {
         Note() << "Cycle() [read, rw blacklisted]";
@@ -751,8 +779,7 @@ TEST_F(TSerialClientTest, Errors)
     SerialClient->Cycle();
 
 
-    reg20->HasErrorValue = true;
-    reg20->ErrorValue = 42;
+    reg20->ErrorValue = std::make_unique<uint64_t>(42);
     Note() << "Cycle() [read, set error value for register]";
     SerialClient->Cycle();
     SerialClient->GetTextValue(reg20);
@@ -760,6 +787,25 @@ TEST_F(TSerialClientTest, Errors)
     SerialClient->Cycle();
 }
 
+TEST_F(TSerialClientTestWithSetupRegisters, SetupOk)
+{
+    PRegister reg20 = Reg(20);
+    SerialClient->AddRegister(reg20);
+    SerialClient->Cycle();
+    EXPECT_FALSE(Device->GetIsDisconnected());
+}
+
+TEST_F(TSerialClientTestWithSetupRegisters, SetupFail)
+{
+    PRegister reg20 = Reg(20);
+    SerialClient->AddRegister(reg20);
+    Device->BlockWriteFor(101, true);
+    SerialClient->Cycle();
+    EXPECT_TRUE(Device->GetIsDisconnected());
+    Device->BlockWriteFor(101, false);
+    SerialClient->Cycle();
+    EXPECT_FALSE(Device->GetIsDisconnected());
+}
 
 class TSerialClientIntegrationTest: public TSerialClientTest
 {
@@ -771,9 +817,9 @@ protected:
     void PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
 
     /** reconnect test functions **/
-    static void DeviceTimeoutOnly(const PSerialDevice & device, int timeout);
+    static void DeviceTimeoutOnly(const PSerialDevice & device, chrono::milliseconds timeout);
     static void DeviceMaxFailCyclesOnly(const PSerialDevice & device, int cycleCount);
-    static void DeviceTimeoutAndMaxFailCycles(const PSerialDevice & device, int timeout, int cycleCount);
+    static void DeviceTimeoutAndMaxFailCycles(const PSerialDevice & device, chrono::milliseconds timeout, int cycleCount);
 
     PMQTTSerialDriver StartReconnectTest1Device(bool miss = false, bool pollIntervalTest = false);
     PMQTTSerialDriver StartReconnectTest2Devices();
@@ -853,9 +899,9 @@ void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
     ASSERT_FALSE(Config->PortConfigs.empty()) << "device not found: " << device_name;
 }
 
-void TSerialClientIntegrationTest::DeviceTimeoutOnly(const PSerialDevice & device, int timeout)
+void TSerialClientIntegrationTest::DeviceTimeoutOnly(const PSerialDevice & device, chrono::milliseconds timeout)
 {
-    device->DeviceConfig()->DeviceTimeout = chrono::milliseconds(timeout);
+    device->DeviceConfig()->DeviceTimeout = timeout;
     device->DeviceConfig()->DeviceMaxFailCycles = 0;
 }
 
@@ -865,9 +911,9 @@ void TSerialClientIntegrationTest::DeviceMaxFailCyclesOnly(const PSerialDevice &
     device->DeviceConfig()->DeviceMaxFailCycles = cycleCount;
 }
 
-void TSerialClientIntegrationTest::DeviceTimeoutAndMaxFailCycles(const PSerialDevice & device, int timeout, int cycleCount)
+void TSerialClientIntegrationTest::DeviceTimeoutAndMaxFailCycles(const PSerialDevice & device, chrono::milliseconds timeout, int cycleCount)
 {
-    device->DeviceConfig()->DeviceTimeout = chrono::milliseconds(0);
+    device->DeviceConfig()->DeviceTimeout = timeout;
     device->DeviceConfig()->DeviceMaxFailCycles = cycleCount;
 }
 
@@ -992,10 +1038,13 @@ TEST_F(TSerialClientIntegrationTest, Errors)
         throw std::runtime_error("device not found or wrong type");
     }
 
-    device->BlockReadFor(4, true);
-    device->BlockWriteFor(4, true);
-    device->BlockReadFor(7, true);
-    device->BlockWriteFor(7, true);
+    Note() << "LoopOnce() [first start]";
+    SerialDriver->LoopOnce();
+
+    Device->BlockReadFor(4, true);
+    Device->BlockWriteFor(4, true);
+    Device->BlockReadFor(7, true);
+    Device->BlockWriteFor(7, true);
 
     Note() << "LoopOnce() [read, rw blacklisted]";
     SerialDriver->LoopOnce();
@@ -1021,6 +1070,35 @@ TEST_F(TSerialClientIntegrationTest, Errors)
     SerialDriver->LoopOnce();
 
     Note() << "LoopOnce() [read, nothing blacklisted] (2)";
+    SerialDriver->LoopOnce();
+}
+
+TEST_F(TSerialClientIntegrationTest, SetupErrors)
+{
+    FilterConfig("DDL24");
+
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("23", "fake", Port));
+
+    if (!Device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    Device->BlockWriteFor(1, true);
+
+    Note() << "LoopOnce() [first start, write blacklisted]";
+    SerialDriver->LoopOnce();
+
+    Device->BlockWriteFor(1, false);
+    Device->BlockWriteFor(2, true);
+
+    Note() << "LoopOnce() [write blacklisted]";
+    SerialDriver->LoopOnce();
+
+    Device->BlockWriteFor(2, false);
+
+    Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 }
 
@@ -1073,7 +1151,8 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
     auto device = TFakeSerialDevice::GetDevice("12");
 
     {   // Test initial WriteInitValues
-        mqttDriver->WriteInitValues();
+        Note() << "LoopOnce() [first start]";
+        mqttDriver->LoopOnce();
 
         EXPECT_EQ(42, device->Registers[1]);
         EXPECT_EQ(24, device->Registers[2]);
@@ -1167,8 +1246,9 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
     auto dev1 = TFakeSerialDevice::GetDevice("12");
     auto dev2 = TFakeSerialDevice::GetDevice("13");
 
-    {   // Test initial WriteInitValues
-        mqttDriver->WriteInitValues();
+    {   // Test initial setup
+        Note() << "LoopOnce() [first start]";
+        mqttDriver->LoopOnce();
 
         EXPECT_EQ(42, dev1->Registers[1]);
         EXPECT_EQ(24, dev1->Registers[2]);
@@ -1289,6 +1369,7 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()> && thu
         dev1->SetIsConnected(true);
 
         Note() << "LoopOnce()";
+        auto future = MqttBroker->WaitForPublish("/devices/reconnect-test-1/controls/I2/meta/error");
         observer->LoopOnce();
 
         EXPECT_EQ(42, dev1->Registers[1]);
@@ -1296,13 +1377,15 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()> && thu
 
         EXPECT_EQ(1, dev2->Registers[1]);
         EXPECT_EQ(2, dev2->Registers[2]);
+
+        future.Wait();
     }
 }
 
 TEST_F(TSerialClientIntegrationTest, ReconnectTimeout)
 {
     ReconnectTest1Device([&]{
-        DeviceTimeoutOnly(Device, DEFAULT_DEVICE_TIMEOUT_MS);
+        DeviceTimeoutOnly(Device, DefaultDeviceTimeout);
     });
 }
 
@@ -1316,7 +1399,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectCycles)
 TEST_F(TSerialClientIntegrationTest, ReconnectTimeoutAndCycles)
 {
     ReconnectTest1Device([&]{
-        DeviceTimeoutAndMaxFailCycles(Device, DEFAULT_DEVICE_TIMEOUT_MS, 10);
+        DeviceTimeoutAndMaxFailCycles(Device, DefaultDeviceTimeout, 10);
     });
 }
 
@@ -1325,7 +1408,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectRegisterWithBigPollInterval)
     auto t1 = chrono::steady_clock::now();
 
     ReconnectTest1Device([&]{
-        DeviceTimeoutOnly(Device, DEFAULT_DEVICE_TIMEOUT_MS);
+        DeviceTimeoutOnly(Device, DefaultDeviceTimeout);
     }, true);
 
     auto time = chrono::steady_clock::now() - t1;
@@ -1336,7 +1419,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectRegisterWithBigPollInterval)
 TEST_F(TSerialClientIntegrationTest, Reconnect2)
 {
     ReconnectTest2Devices([&]{
-        DeviceTimeoutOnly(Device, DEFAULT_DEVICE_TIMEOUT_MS);
+        DeviceTimeoutOnly(Device, DefaultDeviceTimeout);
     });
 }
 
@@ -1354,7 +1437,9 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
         device->SetIsConnected(true);
 
         Note() << "LoopOnce()";
+        auto future = MqttBroker->WaitForPublish("/devices/reconnect-test/controls/I2");
         observer->LoopOnce();
+        future.Wait();
 
         EXPECT_EQ(1, device->Registers[1]);
         EXPECT_EQ(2, device->Registers[2]);
@@ -1383,7 +1468,8 @@ TEST_F(TConfigParserTest, Parse)
         Emit() << "------";
         Emit() << "ConnSettings: " << port_config->ConnSettings->ToString();
         Emit() << "PollInterval: " << port_config->PollInterval.count();
-        Emit() << "GuardInterval: " << port_config->GuardInterval.count();
+        Emit() << "GuardInterval: " << port_config->RequestDelay.count();
+        Emit() << "Response timeout: " << port_config->ResponseTimeout.count();
 
         if(auto tcp_port_config = dynamic_pointer_cast<TTcpPortSettings>(port_config->ConnSettings)) {
             Emit() << "ConnectionTimeout: " << tcp_port_config->ConnectionTimeout.count();
@@ -1403,8 +1489,10 @@ TEST_F(TConfigParserTest, Parse)
             Emit() << "MaxRegHole: " << device_config->MaxRegHole;
             Emit() << "MaxBitHole: " << device_config->MaxBitHole;
             Emit() << "MaxReadRegisters: " << device_config->MaxReadRegisters;
-            Emit() << "GuardInterval: " << device_config->GuardInterval.count();
+            Emit() << "GuardInterval: " << device_config->RequestDelay.count();
             Emit() << "DeviceTimeout: " << device_config->DeviceTimeout.count();
+            Emit() << "Response timeout: " << device_config->ResponseTimeout.count();
+            Emit() << "Frame timeout: " << device_config->FrameTimeout.count();
             if (!device_config->DeviceChannelConfigs.empty()) {
                 Emit() << "DeviceChannels:";
                 for (auto device_channel: device_config->DeviceChannelConfigs) {
@@ -1432,8 +1520,8 @@ TEST_F(TConfigParserTest, Parse)
                         Emit() << "ReadOnly: " << reg->ReadOnly;
                         Emit() << "TypeName: " << reg->TypeName;
                         Emit() << "PollInterval: " << reg->PollInterval.count();
-                        if (reg->HasErrorValue) {
-                            Emit() << "ErrorValue: " << reg->ErrorValue;
+                        if (reg->ErrorValue) {
+                            Emit() << "ErrorValue: " << *reg->ErrorValue;
                         } else {
                             Emit() << "ErrorValue: not set";
                         }

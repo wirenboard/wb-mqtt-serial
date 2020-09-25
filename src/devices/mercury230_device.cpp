@@ -15,7 +15,33 @@ REGISTER_BASIC_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
 
 TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TEMDevice(device_config, port, protocol)
-{}
+{
+    /*
+        Mercury 230 documentation:
+        ~2 ms  - 34800
+        ~3 ms  - 19200
+        ~5 ms  - 9600
+        ~10 ms - 4800
+        ~20 ms - 2400
+        etc
+
+        Mercury 200 documentation says about 5-6 bytes delay. It is similar to table for Mercury 230.
+    */
+    device_config->FrameTimeout = std::max(device_config->FrameTimeout, port->GetSendTime(6));
+
+    /*
+        Mercury 230 documentation:
+        150 ms  - 9600-34800
+        180 ms  - 4800
+        250 ms  - 2400
+        400 ms  - 1200
+        800 ms  - 600
+        1600 ms - 300
+    */
+    const std::chrono::milliseconds minTimeout(150); 
+    auto timeout = std::max(minTimeout, std::chrono::milliseconds(115) + port->GetSendTime(35));
+    device_config->ResponseTimeout = std::max(device_config->FrameTimeout, timeout);
+}
 
 bool TMercury230Device::ConnectionSetup( )
 {
@@ -148,7 +174,7 @@ uint64_t TMercury230Device::ReadRegister(PRegister reg)
     case REG_PARAM_SIGN_REACT:
     case REG_PARAM_SIGN_IGNORE:
     case REG_PARAM_BE:
-        return ReadParam( reg->Address & 0xffff, reg->ByteWidth(), (RegisterType) reg->Type);
+        return ReadParam( reg->Address & 0xffff, reg->GetByteWidth(), (RegisterType) reg->Type);
     default:
         throw TSerialDeviceException("mercury230: invalid register type");
     }

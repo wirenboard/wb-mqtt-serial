@@ -15,8 +15,6 @@
 class TEMDevice: public TSerialDevice, public TUInt32SlaveId
 {
 public:
-    static const int DefaultTimeoutMs = 1000;
-
     TEMDevice(PDeviceConfig config, PPort port, PProtocol protocol);
 
     void WriteRegister(PRegister reg, uint64_t value) override;

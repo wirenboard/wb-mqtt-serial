@@ -1,0 +1,26 @@
+@startuml Timeouts
+
+start
+
+repeat
+    #BurlyWood :Подождать "poll_interval";
+    while (Есть регистры для опроса?)
+        if (Устройство было отключено?) then (да)
+            while (Есть регистры для записи в устройство?)
+                #BurlyWood :Подождать "frame_timeout_ms" (по умолчанию **0 мс или задано протоколом**);
+                #BurlyWood :Подождать "guard_interval_us" (по умолчанию **0 мс**);
+                :Записать регистр;
+                #BurlyWood :Ожидание подтвержения записи в течение "response_timeout_ms" (по умолчанию **500 мс**);
+            endwhile
+        else (нет)
+        endif
+        #BurlyWood :Подождать "frame_timeout_ms" (по умолчанию **0 мс или задано протоколом**);
+        #BurlyWood :Подождать "guard_interval_us" (по умолчанию **0 мс**);
+        :Послать запрос на чтение регистров;
+        #BurlyWood :Ожидание данных регистров в течение "response_timeout_ms" (по умолчанию **500 мс**);
+    endwhile
+repeat while ()
+
+stop
+
+@enduml

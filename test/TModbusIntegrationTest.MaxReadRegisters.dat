@@ -452,7 +452,7 @@ Publish: /devices/modbus-sample/controls/Holding U16 Multi: '0' (QoS 1, retained
 Subscribe: /devices/modbus-sample/controls/Holding U16 Multi/on (QoS 0)
 Open()
 >>> LoopOnce()
-Sleep(100000)
+Sleep(5000)
 EnqueueHoldingPackMax3ReadResponse()
 >> 01 03 00 04 00 03 44 0A
 Publish: /devices/modbus-sample/controls/RGB: '10;20;30' (QoS 1, retained)

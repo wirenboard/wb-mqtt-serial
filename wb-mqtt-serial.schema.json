@@ -290,13 +290,6 @@
           "default": 1,
           "propertyOrder": 11
         },
-        "delay_ms": {
-          "type": "integer",
-          "title": "Delay before accessing the device (ms)",
-          "minimum": 0,
-          "default": 100,
-          "propertyOrder": 12
-        },
         "max_reg_hole": {
           "type": "integer",
           "title": "Max dummy read register count",
@@ -322,7 +315,7 @@
         "guard_interval_us": {
           "type": "integer",
           "title": "Interval between register reads",
-          "description" : "Specifies the delay in microseconds between reads of consecutive registers in polling process",
+          "description" : "Additional delay before writing to port",
           "minimum": 0,
           "default": 0,
           "propertyOrder": 16
@@ -331,6 +324,14 @@
           "type": "integer",
           "title": "Frame timeout (ms)",
           "description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
+          "minimum": -1,
+          "default": -1,
+          "propertyOrder": 17
+        },
+        "response_timeout_ms": {
+          "type": "integer",
+          "title": "Response timeout (ms)",
+          "description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
           "minimum": -1,
           "default": -1,
           "propertyOrder": 17
@@ -469,9 +470,16 @@
                 }
               ]
             },
+            "unsupported_value": {
+              "title": "Unsupported register value",
+              "description": "Value which should be treated as 'register is unsupported by device'",
+              "propertyOrder": 13,
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+)$"
+            },
             "word_order": {
               "$ref": "#/definitions/word_order",
-              "propertyOrder": 13
+              "propertyOrder": 14
             }
           },
           // FIXME: require "reg_type" and "address" for non-templated devices

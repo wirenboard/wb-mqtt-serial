@@ -1,3 +1,39 @@
+wb-mqtt-serial (2.2.1) experimental; urgency=medium
+
+  * add mr inputs freq registers
+
+ -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Thu, 06 Aug 2020 18:57:25 +0300
+
+wb-mqtt-serial (2.2.0) experimental; urgency=medium
+
+  * unsupported registers detection is added to modbus and modbus_io protocols.
+    The service automaticaly excludes them from reading cycle.
+  * parameter "unsupported_value" is added to device's configuration options.
+    It can be used to detect unsupported registers during multiple register read operations.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 22 Sep 2020 14:54:22 +0500
+
+wb-mqtt-serial (2.1.2) experimental; urgency=medium
+
+  * service startup after upgrading is fixed
+  * notifications about config properties overriding are shown only for changed values
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 22 Sep 2020 11:30:15 +0500
+
+wb-mqtt-serial (2.1.1) experimental; urgency=medium
+
+  * retry device setup on write register failure
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 15 Sep 2020 13:51:01 +0500
+
+wb-mqtt-serial (2.1.0) experimental; urgency=medium
+
+  * delay_ms setting is removed, frame_timeout_ms should be used instead
+  * interframe timeouts are calculated according to port speeds for modbus, modbus_io, milur, mercury200, mercury 230 and lls protocols
+  * frame_timeout_ms and response_timeout_ms are set in all device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 11 Sep 2020 11:38:01 +0500
+
 wb-mqtt-serial (2.0.3) experimental; urgency=medium
 
   * add map12e template

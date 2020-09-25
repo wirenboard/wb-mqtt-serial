@@ -28,12 +28,11 @@ PRegisterTypeMap IProtocol::GetRegTypes() const
 }
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : Delay(config->Delay)
-    , SerialPort(port)
+    : SerialPort(port)
     , _DeviceConfig(config)
     , _Protocol(protocol)
     , LastSuccessfulCycle()
-    , IsDisconnected(false)
+    , IsDisconnected(true)
     , RemainingFailCycles(config->DeviceMaxFailCycles)
 {}
 
@@ -55,7 +54,7 @@ std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegi
 
 void TSerialDevice::Prepare()
 {
-    Port()->Sleep(Delay);
+    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
 }
 
 void TSerialDevice::EndPollCycle() {}
@@ -66,32 +65,30 @@ uint64_t TSerialDevice::ReadRegister(PRegister reg)
     throw TSerialDeviceException("single register reading is not supported");
 }
 
-void TSerialDevice::ReadRegisterRange(PRegisterRange range)
+std::list<PRegisterRange> TSerialDevice::ReadRegisterRange(PRegisterRange range)
 {
     PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
     if (!simple_range)
         throw std::runtime_error("simple range expected");
-    simple_range->Reset();
     for (auto reg: simple_range->RegisterList()) {
-        if (UnavailableAddresses.count(reg->Address)) {
-        	continue;
+        if (!reg->IsAvailable()) {
+            continue;
         }
     	try {
-            if (DeviceConfig()->GuardInterval.count()){
-                Port()->Sleep(DeviceConfig()->GuardInterval);
-            }
-            simple_range->SetValue(reg, ReadRegister(reg));
+            Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
+            reg->SetValue(ReadRegister(reg));
         } catch (const TSerialDeviceTransientErrorException& e) {
-            simple_range->SetError(reg);
+            reg->SetError();
             LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "]";
         } catch (const TSerialDevicePermanentRegisterException& e) {
-        	UnavailableAddresses.insert(reg->Address);
-        	simple_range->SetError(reg);
-			LOG(Warn) << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-					  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported";
+            reg->SetAvailable(false);
+            reg->SetError();
+            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
+                  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported";
         }
     }
+    return std::list<PRegisterRange>{range};
 }
 
 void TSerialDevice::OnCycleEnd(bool ok)
@@ -128,10 +125,6 @@ bool TSerialDevice::GetIsDisconnected() const
 	return IsDisconnected;
 }
 
-void TSerialDevice::ResetUnavailableAddresses() {
-	UnavailableAddresses.clear();
-}
-
 void TSerialDevice::InitSetupItems()
 {
 	for (auto& setup_item_config: _DeviceConfig->SetupItemConfigs) {
@@ -144,26 +137,21 @@ bool TSerialDevice::HasSetupItems() const
     return !_DeviceConfig->SetupItemConfigs.empty();
 }
 
-bool TSerialDevice::WriteSetupRegisters(bool tryAll)
+bool TSerialDevice::WriteSetupRegisters()
 {
-    bool did_write = false;
     for (const auto& setup_item : SetupItems) {
         try {
-        	LOG(Info) << "Init: " << setup_item->Name << ": setup register " <<
-        			setup_item->Register->ToString() << " <-- " << setup_item->Value;
+        	LOG(Info) << "Init: " << setup_item->Name 
+                      << ": setup register " << setup_item->Register->ToString()
+                      << " <-- " << setup_item->Value;
             WriteRegister(setup_item->Register, setup_item->Value);
-            did_write = true;
         } catch (const TSerialDeviceException & e) {
-            LOG(Warn) << "device '" << setup_item->Register->Device()->ToString() <<
-                "' register '" << setup_item->Register->ToString() <<
-                "' setup failed: " << e.what();
-            if (!did_write && !tryAll) {
-                break;
-            }
+            LOG(Warn) << "Register '" << setup_item->Register->ToString()
+                      << "' setup failed: " << e.what();
+            return false;
         }
     }
-
-    return did_write;
+    return true;
 }
 
 std::unordered_map<std::string, PProtocol> TSerialDeviceFactory::Protocols;

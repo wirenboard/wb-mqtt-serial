@@ -1,9 +1,6 @@
 #include "modbus_device.h"
 #include "modbus_common.h"
 
-#include <iostream>
-#include <stdexcept>
-
 namespace 
 {
     const TRegisterTypes ModbusRegisterTypes({
@@ -20,7 +17,9 @@ REGISTER_BASIC_PROTOCOL("modbus", TModbusDevice, ModbusRegisterTypes);
 
 TModbusDevice::TModbusDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
-{}
+{
+    config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
+}
 
 std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
 {
@@ -32,9 +31,14 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
     ModbusRTU::WriteRegister(Port(), SlaveId, reg, value);
 }
 
-void TModbusDevice::ReadRegisterRange(PRegisterRange range)
+std::list<PRegisterRange> TModbusDevice::ReadRegisterRange(PRegisterRange range)
 {
-    ModbusRTU::ReadRegisterRange(Port(), SlaveId, range);
+    return ModbusRTU::ReadRegisterRange(Port(), SlaveId, range);
+}
+
+bool TModbusDevice::WriteSetupRegisters()
+{
+    return ModbusRTU::WriteSetupRegisters(Port(), SlaveId, SetupItems);
 }
 
 class TModbusTCPProtocol: public IProtocol

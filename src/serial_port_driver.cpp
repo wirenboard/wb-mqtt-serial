@@ -229,10 +229,9 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
     // Publish current value (make retained)
     LOG(Debug) << channel->Describe() << " <-- " << value;
 
-    {
-        auto tx = MqttDriver->BeginTx();
+    MqttDriver->AccessAsync([=](const PDriverTx & tx){
         tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetRawValue(tx, value);
-    }
+    });
 }
 
 TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)
@@ -261,11 +260,11 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
             errorMask |= error;
         }
     }
+
     const char* errorFlags[] = {"", "w", "r", "rw"};
-    {
-        auto tx = MqttDriver->BeginTx();
+    MqttDriver->AccessAsync([=](const PDriverTx & tx){
         tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetError(tx, errorFlags[errorMask]);
-    }
+    });
 }
 
 void TSerialPortDriver::Cycle()
@@ -276,16 +275,6 @@ void TSerialPortDriver::Cycle()
         LOG(Error) << "FATAL: " << e.what() << ". Stopping event loops.";
         exit(1);
     }
-}
-
-bool TSerialPortDriver::WriteInitValues()
-{
-    bool didWrite = false;
-    for (auto& device : Devices) {
-    	didWrite |= SerialClient->WriteSetupRegisters(device);
-    }
-
-    return didWrite;
 }
 
 void TSerialPortDriver::ClearDevices() noexcept

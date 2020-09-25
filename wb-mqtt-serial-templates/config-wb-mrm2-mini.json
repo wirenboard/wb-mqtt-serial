@@ -4,6 +4,8 @@
         "name": "WB-MRM2-mini",
         "id": "wb-mrm2-mini",
         "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
         "channels": [
             {
                 "name": "Relay 1",
@@ -50,6 +52,24 @@
                 "readonly": true,
                 "address": 33,
                 "type": "value"
+            },
+            {
+                "name": "Button 1 freq",
+                "reg_type": "input",
+                "address": 40,
+                "type": "value",
+                "format": "u32",
+                "scale": 1.52588e-05,
+                "round_to": 0.001
+            },
+            {
+                "name": "Button 2 freq",
+                "reg_type": "input",
+                "address": 42,
+                "type": "value",
+                "format": "u32",
+                "scale": 1.52588e-05,
+                "round_to": 0.001
             },
             {
                 "name": "Input Voltage",

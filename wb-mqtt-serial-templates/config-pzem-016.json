@@ -4,6 +4,7 @@
     "name": "PZEM",
     "id": "pzem",
     "max_read_registers": 60,
+    "response_timeout_ms": 100,
     "channels": [
       {
         "name": "Voltage",

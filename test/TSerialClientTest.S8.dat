@@ -9,6 +9,7 @@ fake_serial_device '1': read address '30' value '20'
 Error Callback: <fake:1:fake: 30>: no error
 Read Callback: <fake:1:fake: 30> becomes 20
 fake_serial_device '1': Device cycle OK
+fake_serial_device '1': reconnected
 Port cycle OK
 >>> server -> client: -2, -3
 >>> Cycle()

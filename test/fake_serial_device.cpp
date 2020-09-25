@@ -62,7 +62,7 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
             throw runtime_error("invalid register type");
         }
 
-        auto value = GetValue(&Registers[reg->Address], reg->Width());
+        auto value = GetValue(&Registers[reg->Address], reg->Get16BitWidth());
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << value << "'";
 
@@ -93,7 +93,7 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
             throw runtime_error("invalid register type");
         }
 
-        SetValue(&Registers[reg->Address], reg->Width(), value);
+        SetValue(&Registers[reg->Address], reg->Get16BitWidth(), value);
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << value << "'";
     } catch (const exception & e) {

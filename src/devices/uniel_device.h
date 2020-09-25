@@ -10,7 +10,6 @@
 class TUnielDevice: public TSerialDevice, public TUInt32SlaveId
 {
 public:
-    static const int DefaultTimeoutMs = 1000;
     enum RegisterType {
         REG_RELAY = 0,
         REG_INPUT,

@@ -63,7 +63,7 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
     bool first_poll = !DidReadReg;
     DidReadReg = true;
 
-    if (Reg->HasErrorValue && Reg->ErrorValue == new_value) {
+    if (Reg->ErrorValue && *Reg->ErrorValue == new_value) {
         LOG(Debug) << "register " << Reg->ToString() << " contains error value";
         return UpdateReadError(true);
     }
@@ -108,7 +108,12 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
     try {
         Device()->WriteRegister(Reg, Value);
     } catch (const TSerialDeviceTransientErrorException& e) {
-        LOG(Warn) << "TRegisterHandler::Flush(): " << e.what() << " for device " << Reg->Device()->ToString();
+        LOG(Warn) << "Register " << Reg->ToString()
+                  << " TRegisterHandler::Flush() failed: " << e.what();
+        return UpdateWriteError(true);
+    } catch (const TSerialDevicePermanentRegisterException& e) {
+        LOG(Warn) << "Register " << Reg->ToString()
+                  << " TRegisterHandler::Flush() failed: " << e.what();
         return UpdateWriteError(true);
     }
     return UpdateWriteError(false);
@@ -123,7 +128,7 @@ uint64_t TRegisterHandler::InvertWordOrderIfNeeded(const uint64_t value) const
     uint64_t result = 0;
     uint64_t cur_value = value;
 
-    for (int i = 0; i < Reg->Width(); ++i) {
+    for (int i = 0; i < Reg->Get16BitWidth(); ++i) {
         uint16_t last_word = (((uint64_t) cur_value) & 0xFFFF);
         result <<= 16;
         result |= last_word;

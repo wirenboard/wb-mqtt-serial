@@ -53,23 +53,23 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
 {
     uint8_t buf[5];
     for (;;) {
-        uint8_t first = Port()->ReadByte();
+        uint8_t first = Port()->ReadByte(DeviceConfig()->ResponseTimeout);
         if (first != 0xff) {
             LOG(Warn) << "resync";
             continue;
         }
-        uint8_t second = Port()->ReadByte();
+        uint8_t second = Port()->ReadByte(DeviceConfig()->FrameTimeout);
         if (second == 0xff) {
-            second = Port()->ReadByte();
+            second = Port()->ReadByte(DeviceConfig()->FrameTimeout);
         }
         buf[0] = second;
         uint8_t s = second;
         for (int i = 1; i < 5; ++i) {
-            buf[i] = Port()->ReadByte();
+            buf[i] = Port()->ReadByte(DeviceConfig()->FrameTimeout);
             s += buf[i];
         }
 
-        if (Port()->ReadByte() != s)
+        if (Port()->ReadByte(DeviceConfig()->FrameTimeout) != s)
             throw TSerialDeviceTransientErrorException("uniel: warning: checksum failure");
 
         break;
@@ -88,7 +88,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
 uint64_t TUnielDevice::ReadRegister(PRegister reg)
 {
     WriteCommand(READ_CMD, SlaveId, 0, uint8_t(reg->Address), 0);
-    uint8_t response[3];
+    uint8_t response[3] = {0};
     ReadResponse(READ_CMD, response);
     if (response[1] != uint8_t(reg->Address))
         throw TSerialDeviceTransientErrorException("register index mismatch");

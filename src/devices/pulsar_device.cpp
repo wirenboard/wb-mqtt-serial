@@ -5,11 +5,6 @@
 
 #include "pulsar_device.h"
 
-/* FIXME: move this to configuration file! */
-namespace {
-    const int FrameTimeout = 300;
-}
-
 REGISTER_BASIC_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
     { TPulsarDevice::REG_DEFAULT, "default", "value", Double, true },
     { TPulsarDevice::REG_SYSTIME, "systime", "value", U64, true }
@@ -146,7 +141,7 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, u
     const int exp_size = size + 10; /* payload size + service bytes */
     uint8_t response[exp_size];
 
-    int nread = Port()->ReadFrame(response, exp_size, std::chrono::milliseconds(FrameTimeout),
+    int nread = Port()->ReadFrame(response, exp_size, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout,
             [] (uint8_t *buf, int size) {
                     return size >= 6 && size == buf[5];
             });
@@ -190,12 +185,12 @@ uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
 
     // send data request and receive response
     WriteDataRequest(SlaveId, mask, RequestID);
-    ReadResponse(SlaveId, payload, reg->ByteWidth(), RequestID);
+    ReadResponse(SlaveId, payload, reg->GetByteWidth(), RequestID);
 
     ++RequestID;
 
     // decode little-endian double64_t value
-    return ReadHex(payload, reg->ByteWidth(), false);
+    return ReadHex(payload, reg->GetByteWidth(), false);
 }
 
 uint64_t TPulsarDevice::ReadSysTimeRegister(PRegister reg)

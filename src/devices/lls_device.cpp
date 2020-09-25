@@ -1,25 +1,4 @@
-#include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/select.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <termios.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
-#include <iostream>
-#include <cstdio>
-#include <cstring>
-#include <string>
-#include <stddef.h>
-
 #include "lls_device.h"
-
-namespace {
-    const int DefaultTimeoutMs = 1000;
-    const int FrameTimeoutMs = 50;
-}
 
 REGISTER_BASIC_PROTOCOL("lls", TLLSDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
@@ -58,7 +37,6 @@ namespace
     const ptrdiff_t HEADER_SZ = 3;
     const uint8_t REQUEST_PREFIX = 0x31;
     const uint8_t RESPONSE_PREFIX = 0x3E;
-
 }
 
 std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
@@ -68,14 +46,18 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
         return it->second;
     }
 
+    Port()->CheckPortOpen();
+    Port()->SkipNoise();
+
     uint8_t buf[RESPONSE_BUF_LEN] = {};
     buf[0] = REQUEST_PREFIX;
     buf[1] = SlaveId;
     buf[2] = cmd;
     buf[3] = dallas_crc8(buf, REQUEST_LEN -1);
     Port()->WriteBytes(buf, REQUEST_LEN);
+    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
 
-    int len = Port()->ReadFrame(buf, RESPONSE_BUF_LEN, this->DeviceConfig()->FrameTimeout);
+    int len = Port()->ReadFrame(buf, RESPONSE_BUF_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
     if (buf[0] != 0x3e) {
         throw TSerialDeviceTransientErrorException("invalid response prefix");
     }
@@ -95,19 +77,15 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-
 uint64_t TLLSDevice::ReadRegister(PRegister reg)
 {
-    Port()->SkipNoise();
-    Port()->CheckPortOpen();
+    uint8_t cmd    = (reg->Address & 0xFF00) >> 8;
+    auto    result = ExecCommand(cmd);
 
-    uint8_t cmd = (reg->Address & 0xFF00) >> 8;
+    int result_buf[8] = {};
     uint8_t offset = (reg->Address & 0x00FF);
 
-    auto result = ExecCommand(cmd);
-    int result_buf[8] = {};
-
-    for (int i=0; i< reg->ByteWidth(); ++i) {
+    for (int i=0; i< reg->GetByteWidth(); ++i) {
         result_buf[i] = result[offset+i];
     }
     
@@ -115,7 +93,6 @@ uint64_t TLLSDevice::ReadRegister(PRegister reg)
            (result_buf[2] << 16) | 
            (result_buf[1] << 8) |
            result_buf[0];
-       
 }
 
 void TLLSDevice::WriteRegister(PRegister, uint64_t)
