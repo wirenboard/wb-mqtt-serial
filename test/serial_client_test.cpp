@@ -32,7 +32,7 @@ protected:
         return TRegister::Intern(
             Device, TRegisterConfig::Create(
             TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
-            "fake", false, 0, word_order));
+            "fake", std::unique_ptr<uint64_t>(), word_order));
     }
     PFakeSerialPort Port;
     PSerialClient SerialClient;
@@ -778,8 +778,7 @@ TEST_F(TSerialClientTest, Errors)
     SerialClient->Cycle();
 
 
-    reg20->HasErrorValue = true;
-    reg20->ErrorValue = 42;
+    reg20->ErrorValue = std::make_unique<uint64_t>(42);
     Note() << "Cycle() [read, set error value for register]";
     SerialClient->Cycle();
     SerialClient->GetTextValue(reg20);
@@ -1519,8 +1518,8 @@ TEST_F(TConfigParserTest, Parse)
                         Emit() << "ReadOnly: " << reg->ReadOnly;
                         Emit() << "TypeName: " << reg->TypeName;
                         Emit() << "PollInterval: " << reg->PollInterval.count();
-                        if (reg->HasErrorValue) {
-                            Emit() << "ErrorValue: " << reg->ErrorValue;
+                        if (reg->ErrorValue) {
+                            Emit() << "ErrorValue: " << *reg->ErrorValue;
                         } else {
                             Emit() << "ErrorValue: not set";
                         }

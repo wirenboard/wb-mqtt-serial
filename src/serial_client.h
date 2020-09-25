@@ -39,13 +39,12 @@ private:
     void DoFlush();
     void WaitForPollAndFlush();
     void MaybeFlushAvoidingPollStarvationButDontWait();
-    void PollRange(PRegisterRange range);
+    std::list<PRegisterRange> PollRange(PRegisterRange range);
     void SetReadError(PRegisterRange range);
     PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
     void PrepareToAccessDevice(PSerialDevice dev);
     void OnDeviceReconnect(PSerialDevice dev);
-    void SplitRegisterRanges(std::set<PRegisterRange> &&);
 
     PPort Port;
     std::list<PRegister> RegList;

@@ -38,42 +38,30 @@ void TSerialDevice::Prepare()
 
 void TSerialDevice::EndPollCycle() {}
 
-void TSerialDevice::SetReadError(PRegisterRange range)
-{
-    PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
-    if (!simple_range) {
-        throw std::runtime_error("simple range expected");
-    }
-    simple_range->Reset();
-    for (auto reg: simple_range->RegisterList()) {
-        simple_range->SetError(reg);
-    }
-}
-
-void TSerialDevice::ReadRegisterRange(PRegisterRange range)
+std::list<PRegisterRange> TSerialDevice::ReadRegisterRange(PRegisterRange range)
 {
     PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
     if (!simple_range)
         throw std::runtime_error("simple range expected");
-    simple_range->Reset();
     for (auto reg: simple_range->RegisterList()) {
-        if (UnavailableAddresses.count(reg->Address)) {
-        	continue;
+        if (!reg->IsAvailable()) {
+            continue;
         }
     	try {
             Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
-            simple_range->SetValue(reg, ReadRegister(reg));
+            reg->SetValue(ReadRegister(reg));
         } catch (const TSerialDeviceTransientErrorException& e) {
-            simple_range->SetError(reg);
+            reg->SetError();
             LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "]";
         } catch (const TSerialDevicePermanentRegisterException& e) {
-        	UnavailableAddresses.insert(reg->Address);
-        	simple_range->SetError(reg);
-			LOG(Warn) << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-					  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported";
+            reg->SetAvailable(false);
+            reg->SetError();
+            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
+                  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported";
         }
     }
+    return std::list<PRegisterRange>{range};
 }
 
 void TSerialDevice::OnCycleEnd(bool ok)
@@ -108,10 +96,6 @@ void TSerialDevice::OnCycleEnd(bool ok)
 bool TSerialDevice::GetIsDisconnected() const
 {
 	return IsDisconnected;
-}
-
-void TSerialDevice::ResetUnavailableAddresses() {
-	UnavailableAddresses.clear();
 }
 
 void TSerialDevice::InitSetupItems()

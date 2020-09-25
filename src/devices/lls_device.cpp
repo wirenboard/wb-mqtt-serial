@@ -88,7 +88,7 @@ uint64_t TLLSDevice::ReadRegister(PRegister reg)
     int result_buf[8] = {};
     uint8_t offset = (reg->Address & 0x00FF);
 
-    for (int i=0; i< reg->ByteWidth(); ++i) {
+    for (int i=0; i< reg->GetByteWidth(); ++i) {
         result_buf[i] = result[offset+i];
     }
     

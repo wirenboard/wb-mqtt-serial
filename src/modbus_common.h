@@ -27,9 +27,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
 {
     void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift = 0);
 
-    void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift = 0);
-
-    void SetReadError(PRegisterRange range);
+    std::list<PRegisterRange> ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift = 0);
 
     bool WriteSetupRegisters(PPort port, uint8_t slaveId, const std::vector<PDeviceSetupItem>& setupItems, int shift = 0);
 };  // modbus rtu protocol utilities
