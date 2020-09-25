@@ -4,6 +4,8 @@
         "name": "S2K-SP1",
         "id": "s2k-sp1",
         "protocol": "s2k",
+        "response_timeout_ms": 100,
+        "frame_timeout_ms": 50,
         "channels": [
             {
                 "name": "Relay 1",

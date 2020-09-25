@@ -30,6 +30,7 @@
                     "id": "OnValueTest",
                     "enabled": true,
                     "slave_id": "0x90",
+                    "frame_timeout_ms": 111,
                     "channels": [
                         {
                             "name" : "Relay 1",
@@ -38,7 +39,6 @@
                             "type": "switch",
                             "on_value" : 500
                         }
-
                     ]
                 },
                 {
@@ -101,6 +101,7 @@
             "stop_bits": 1,
             "poll_interval": 100,
             "guard_interval_us": 105,
+            "response_timeout_ms": 222,
             "enabled": true,
             "devices" : [
                 {
@@ -184,6 +185,28 @@
                 {
                     "device_type" : "TestDeviceOverride",
                     "slave_id": 6
+                },
+                {
+                    "device_type" : "TestDeviceOverride2",
+                    "slave_id": 7,
+                    "enabled": true,
+                    "channels": [
+                        {
+                            "name" : "Input",
+                            "poll_interval": 300,
+                            "readonly": false
+                        },
+                        {
+                            "name": "Holding",
+                            "poll_interval": 10000,
+                            "readonly": true
+                        },
+                        {
+                            "name": "Holding readonly",
+                            "poll_interval": 1000,
+                            "readonly": false
+                        }                        
+                    ]
                 }
             ]
         },

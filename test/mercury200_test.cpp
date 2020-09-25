@@ -1,7 +1,7 @@
 #include <string>
 #include "fake_serial_port.h"
 #include "mercury200_expectations.h"
-#include "mercury200_device.h"
+#include "devices/mercury200_device.h"
 
 class TMercury200Test: public TSerialDeviceTest, public TMercury200Expectations
 {
@@ -104,14 +104,13 @@ protected:
     void SetUp();
     void TearDown();
     const char* ConfigPath() const { return "configs/config-mercury200-test.json"; }
-    const char* GetTemplatePath() const { return "../wb-mqtt-serial-templates/"; }
+    std::string GetTemplatePath() const override { return "../wb-mqtt-serial-templates"; }
 };
 
 void TMercury200IntegrationTest::SetUp()
 {
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
-    SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(150));
+    SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(7));
     ASSERT_TRUE(!!SerialPort);
 }
 
@@ -128,5 +127,5 @@ TEST_F(TMercury200IntegrationTest, Poll)
     EnqueueMercury200ParamResponse();
     EnqueueMercury200EnergyResponse();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }

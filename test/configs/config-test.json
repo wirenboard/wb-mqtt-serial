@@ -17,6 +17,21 @@
                     "enabled": true,
                     "max_read_registers": 0,
                     "protocol": "fake",
+                    "setup": [
+                        {
+                          "title": "Input 1",
+                          "reg_type": "fake",
+                          "address": 1,
+                          "value": 42
+                      },
+                      {
+                          "title": "Input 2",
+                          "reg_type": "fake",
+                          "address": 2,
+                          "value": 24
+                      }
+                    ],
+                    "frame_timeout_ms": 100,
                     "channels": [
                     {
                         "name" : "RGB",
@@ -71,6 +86,7 @@
                     "enabled": true,
                     "slave_id": "0x90",
                     "protocol": "fake",
+                    "frame_timeout_ms": 100,
                     "channels": [
                         {
                             "name" : "Relay 1",
@@ -87,6 +103,7 @@
                     "id": "WordsLETest",
                     "slave_id": "0x91",
                     "protocol": "fake",
+                    "frame_timeout_ms": 100,
                     "channels": [
                         {
                             "name" : "Voltage",
@@ -104,6 +121,7 @@
                     "id": "RoundTest",
                     "slave_id": "0x92",
                     "protocol": "fake",
+                    "frame_timeout_ms": 100,
                     "channels": [
                         {
                             "name" : "Float_0_01",

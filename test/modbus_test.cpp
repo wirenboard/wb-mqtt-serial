@@ -1,7 +1,9 @@
 #include "fake_serial_port.h"
 #include "modbus_expectations.h"
-#include "modbus_device.h"
+#include "devices/modbus_device.h"
 #include "modbus_common.h"
+
+#include <wblib/control.h>
 
 using namespace std;
 
@@ -81,13 +83,14 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
 
     for (auto range: ranges) {
         ModbusDev->ReadRegisterRange(range);
-        range->MapRange([&](PRegister reg, uint64_t value){
-            registerValues[reg->Address] = value;
+        for (auto& reg: range->RegisterList()) {
             readAddresses.insert(reg->Address);
-        }, [&](PRegister reg){
-            readAddresses.insert(reg->Address);
-            errorRegisters.insert(reg->Address);
-        });
+            if (reg->GetError()) {
+                errorRegisters.insert(reg->Address);
+            } else {
+                registerValues[reg->Address] = reg->GetValue();
+            }
+        }
     }
 
     EXPECT_EQ(to_string(registerList.size()), to_string(readAddresses.size()));
@@ -218,7 +221,7 @@ TEST_F(TModbusTest, WrongSlaveIdWrite)
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response slave id mismatch"), e.what());
+        EXPECT_EQ(string("Serial protocol error: request and response slave id mismatch"), e.what());
     }
 
     SerialPort->Close();
@@ -232,7 +235,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWrite)
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response function code mismatch"), e.what());
+        EXPECT_EQ(string("Serial protocol error: request and response function code mismatch"), e.what());
     }
 
     SerialPort->Close();
@@ -246,7 +249,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWithExceptionWrite)
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response function code mismatch"), e.what());
+        EXPECT_EQ(string("Serial protocol error: request and response function code mismatch"), e.what());
     }
 
     SerialPort->Close();
@@ -269,7 +272,6 @@ void TModbusIntegrationTest::SetUp()
 {
     SelectModbusType(MODBUS_RTU);
     TSerialDeviceIntegrationTest::SetUp();
-    Observer->SetUp();
     ASSERT_TRUE(!!SerialPort);
 }
 
@@ -319,14 +321,14 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 
 void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
 {
-    TSerialDeviceFactory::RemoveDevice(TSerialDeviceFactory::GetDevice("1", "modbus", SerialPort));
-    Observer = make_shared<TMQTTSerialObserver>(MQTTClient, Config, SerialPort);
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
 
-    Observer->SetUp();
+    SerialPort->Open();
 
     ExpectPollQueries(mode);
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 
@@ -334,17 +336,18 @@ TEST_F(TModbusIntegrationTest, Poll)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, Write)
 {
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Coil 0/on", "1");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/RGB/on", "10;20;30");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding S64/on", "81985529216486895");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U16/on", "3905");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U64 Single/on", "283686952306183");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U64 Multi/on", "81985529216486895");
+
+    PublishWaitOnValue("/devices/modbus-sample/controls/Coil 0/on", "1");
+    PublishWaitOnValue("/devices/modbus-sample/controls/RGB/on", "10;20;30");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Holding S64/on", "81985529216486895");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Holding U16/on", "3905");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Holding U64 Single/on", "283686952306183");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Holding U64 Multi/on", "81985529216486895");
 
     EnqueueCoilWriteResponse();
     EnqueueRGBWriteResponse();
@@ -354,15 +357,16 @@ TEST_F(TModbusIntegrationTest, Write)
     EnqueueHoldingMultiWriteU64Response();
 
     ExpectPollQueries();
+
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, Errors)
 {
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Coil 0/on", "1");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U16/on", "3905");
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/Holding U64 Single/on", "283686952306183");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Coil 0/on", "1");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Holding U16/on", "3905");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Holding U64 Single/on", "283686952306183");
 
     EnqueueCoilWriteResponse(0x1);
     EnqueueHoldingWriteU16Response(0x2);
@@ -380,7 +384,7 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueHoldingMultiReadResponse(0x3);
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, Holes)
@@ -415,7 +419,7 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
     EnqueueHoldingMultiReadResponse();
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
     EnqueueHoldingPackReadResponse();
     EnqueueHoldingReadS64Response();
@@ -429,7 +433,7 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
     EnqueueHoldingMultiReadResponse();
 
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, MaxReadRegisters)
@@ -444,7 +448,7 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
 
 TEST_F(TModbusIntegrationTest, GuardInterval)
 {
-    Config->PortConfigs[0]->DeviceConfigs[0]->GuardInterval = chrono::microseconds(1000);
+    Config->PortConfigs[0]->DeviceConfigs[0]->RequestDelay = chrono::microseconds(1000);
     InvalidateConfigPoll();
 }
 
@@ -470,33 +474,130 @@ TEST_F(TModbusBitmasksIntegrationTest, Poll)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 
-    MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/U8:1/on", "1");
+    PublishWaitOnValue("/devices/modbus-sample/controls/U8:1/on", "1");
 
     EnqueueU8Shift1SingleBitHoldingWriteResponse();
     ExpectPollQueries(true);
     Note() << "LoopOnce()";
-    Observer->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
-// TEST_F(TModbusBitmasksIntegrationTest, MultipleWrite)
-// {
-//     ExpectPollQueries();
-//     Note() << "LoopOnce()";
-//     Observer->LoopOnce();
+class TModbusUnavailableRegistersIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    void SetUp()
+    {
+        SelectModbusType(MODBUS_RTU);
+        TSerialDeviceIntegrationTest::SetUp();
+        ASSERT_TRUE(!!SerialPort);
+    }
 
-//     MQTTClient->Publish(nullptr, "/devices/modbus-sample/controls/U16:8/on", "5555");
+    void TearDown()
+    {
+        SerialPort->Close();
+        TSerialDeviceIntegrationTest::TearDown();
+    }
 
-//     EnqueueU16Shift8HoldingWriteResponse();
-//     ExpectPollQueries(false, true);
-//     Note() << "LoopOnce()";
-//     Observer->LoopOnce();
-// }
+    const char* ConfigPath() const override { return "configs/config-modbus-unavailable-registers-test.json"; }
+};
+
+TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterOnBorder)
+{
+    // we check that driver detects unavailable register on the ranges border and stops to read it
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnavailableOnBorderReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
+    SerialDriver->LoopOnce();
+}
+
+TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddle)
+{
+    // we check that driver detects unavailable register in the middle of the range
+    // It must split the range into two parts and exclure unavailable register from reading
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
+    SerialDriver->LoopOnce();
+}
+
+TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
+{
+    // Check that driver detects unsupported registers
+    // It must remove unavailable registers from request if they are on borders of a range
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnsupportedOnBorderReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
+    SerialDriver->LoopOnce();
+}
+
+class TModbusUnavailableRegistersAndHolesIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    void SetUp()
+    {
+        SelectModbusType(MODBUS_RTU);
+        TSerialDeviceIntegrationTest::SetUp();
+        ASSERT_TRUE(!!SerialPort);
+    }
+
+    void TearDown()
+    {
+        SerialPort->Close();
+        TSerialDeviceIntegrationTest::TearDown();
+    }
+
+    const char* ConfigPath() const override { return "configs/config-modbus-unavailable-registers-and-holes-test.json"; }
+};
+
+TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
+{
+    // we check that driver disables holes feature and after that detects and excludes unavailable register
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
+    Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+
+    SerialPort->Open();
+
+    EnqueueHoldingPackUnavailableAndHolesReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [disable holes]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new ranges]";
+    SerialDriver->LoopOnce();
+}

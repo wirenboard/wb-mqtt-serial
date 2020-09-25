@@ -24,6 +24,10 @@ debian/wb-mqtt-serial/
 debian/wb-homa-modbus/
 debian/tmp/
 .d
+wb-mqtt-serial/build
+wb-mqtt-serial
+vgcore.*
+test/*.out
 
 ### JetBrains ###
 */.idea/workspace.xml
@@ -51,6 +55,13 @@ workspace.xml
 **/.project
 **/.settings
 
-wb-mqtt-serial
-vgcore.*
-user-configs/
+# core
+*.core
+
+debian/tmp
+debian/files
+debian/wb-homa-modbus
+debian/wb-mqtt-serial
+debian/*.substvars
+debhelper-build-stamp
+.clang-format

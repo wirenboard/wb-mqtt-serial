@@ -1,0 +1,128 @@
+// Configuration options
+{
+  "debug": false,
+  "ports": [
+    {
+      "port_type" : "serial",
+      "path" : "/dev/ttyAPP1",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 10,
+      "enabled": true,
+      "devices" : [
+        {
+          "name": "PseudoS2K",
+          "id": "pseudo_s2k",
+          "slave_id": 1,
+          "enabled": true,
+          "protocol": "s2k",
+          "frame_timeout_ms": 100,
+          "channels": [
+            {
+              "name": "Relay 1",
+              "reg_type": "relay",
+              "address": "0x01",
+              "format": "u8"
+            },
+            {
+              "name": "Relay 2",
+              "reg_type": "relay",
+              "address": "0x02",
+              "format": "u8"
+            },
+            {
+              "name": "Relay 3",
+              "reg_type": "relay",
+              "address": "0x03",
+              "format": "u8"
+            },
+            {
+              "name": "Relay 4",
+              "reg_type": "relay",
+              "address": "0x04",
+              "format": "u8"
+            },
+            {
+              "name": "Relay multi 1",
+              "reg_type": "relay_mode",
+              "address": "0x01",
+              "format": "u8",
+              "max": "0x0A"
+            },
+            {
+              "name": "Relay multi 2",
+              "reg_type": "relay_mode",
+              "address": "0x02",
+              "format": "u8",
+              "max": "0x0A"
+            },
+            {
+              "name": "Relay multi 3",
+              "reg_type": "relay_mode",
+              "address": "0x03",
+              "format": "u8",
+              "max": "0x0A"
+            },
+            {
+              "name": "Relay multi 4",
+              "reg_type": "relay_mode",
+              "address": "0x04",
+              "format": "u8",
+              "max": "0x0A"
+            },
+            {
+              "name": "Relay default 1",
+              "reg_type": "relay_default",
+              "address": "0x01",
+              "format": "u8"
+            },
+            {
+              "name": "Relay default 2",
+              "reg_type": "relay_default",
+              "address": "0x02",
+              "format": "u8"
+            },
+            {
+              "name": "Relay default 3",
+              "reg_type": "relay_default",
+              "address": "0x03",
+              "format": "u8"
+            },
+            {
+              "name": "Relay default 4",
+              "reg_type": "relay_default",
+              "address": "0x04",
+              "format": "u8"
+            },
+            {
+              "name": "Relay delay 1",
+              "reg_type": "relay_delay",
+              "address": "0x01",
+              "format": "u8"
+            },
+            {
+              "name": "Relay delay 2",
+              "reg_type": "relay_delay",
+              "address": "0x02",
+              "format": "u8"
+            },
+            {
+              "name": "Relay delay 3",
+              "reg_type": "relay_delay",
+              "address": "0x03",
+              "format": "u8"
+            },
+            {
+              "name": "Relay delay 4",
+              "reg_type": "relay_delay",
+              "address": "0x04",
+              "format": "u8"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -10,12 +10,11 @@
       "stop_bits": 1,
       "poll_interval": 100,
       "enabled": true,
-      "protocol": "modbus",
       "devices" : [
         {
           "slave_id": "255",
           "name": "Device",
-          "id": "device",
+          "id": "device1",
           "enabled": true,
           "max_read_registers": 0,
           "protocol": "modbus",
@@ -30,7 +29,7 @@
         {
           "slave_id": "0xff",
           "name": "Device",
-          "id": "device",
+          "id": "device2",
           "enabled": true,
           "max_read_registers": 0,
           "protocol": "modbus",
@@ -52,12 +51,11 @@
       "stop_bits": 1,
       "poll_interval": 100,
       "enabled": true,
-      "protocol": "modbus",
       "devices" : [
         {
           "slave_id": "255",
           "name": "Device",
-          "id": "device",
+          "id": "device3",
           "enabled": true,
           "max_read_registers": 0,
           "protocol": "modbus",

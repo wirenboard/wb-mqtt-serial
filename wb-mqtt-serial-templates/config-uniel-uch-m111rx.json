@@ -7,6 +7,8 @@
         "enabled": true,
         "protocol": "uniel",
         "setup": [],
+        "response_timeout_ms": 500,
+        "frame_timeout_ms": 100,
         "channels": [
             {
                 "name": "Input 0",

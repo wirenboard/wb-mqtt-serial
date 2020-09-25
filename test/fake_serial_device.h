@@ -12,7 +12,6 @@ public:
     enum RegisterType {REG_FAKE = 123};
 
     TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
-
     uint64_t ReadRegister(PRegister reg) override;
     void WriteRegister(PRegister reg, uint64_t value) override;
     void OnCycleEnd(bool ok) override;

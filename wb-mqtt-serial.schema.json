@@ -7,7 +7,7 @@
     "deviceProtocol": {
       "type": "string",
       "title": "Device protocol",
-      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k"],
+      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k", "modbus_io", "pulsar", "mercury200", "lls"],
       "default": "modbus"
     },
     "serialPort": {
@@ -87,7 +87,7 @@
         "response_timeout_ms": {
           "type": "integer",
           "title": "Response timeout (ms)",
-          "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
+          "description": "Specifies maximum response time for all devices connected to the port. Zero means no timeout. If not set, the default timeout (500ms) is used.",
           "minimum": 0,
           "default": 500,
           "propertyOrder": 6
@@ -95,7 +95,7 @@
         "guard_interval_us": {
           "type": "integer",
           "title": "Guard interval (us)",
-          "description": "Specifies the delay in microseconds between reads / writes to port",
+          "description": "Additional delay before writing to port",
           "minimum": 0,
           "default": 0,
           "propertyOrder": 7
@@ -176,7 +176,7 @@
         "response_timeout_ms": {
           "type": "integer",
           "title": "Response timeout (ms)",
-          "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
+          "description": "Specifies maximum response time for all devices connected to the port. Zero means no timeout. If not set, the default timeout (500ms) is used.",
           "minimum": 0,
           "default": 500,
           "propertyOrder": 5
@@ -184,7 +184,7 @@
         "guard_interval_us": {
           "type": "integer",
           "title": "Guard interval (us)",
-          "description": "Specifies the delay in microseconds between reads / writes to port",
+          "description": "Additional delay before writing to port",
           "minimum": 0,
           "default": 0,
           "propertyOrder": 6
@@ -320,13 +320,6 @@
           "default": 1,
           "propertyOrder": 11
         },
-        "delay_ms": {
-          "type": "integer",
-          "title": "Delay before accessing the device (ms)",
-          "minimum": 0,
-          "default": 100,
-          "propertyOrder": 12
-        },
         "max_reg_hole": {
           "type": "integer",
           "title": "Max dummy read register count",
@@ -352,7 +345,7 @@
         "guard_interval_us": {
           "type": "integer",
           "title": "Interval between register reads",
-          "description" : "Specifies the delay in microseconds between reads of consecutive registers in polling process",
+          "description" : "Additional delay before writing to port",
           "minimum": 0,
           "default": 0,
           "propertyOrder": 16
@@ -361,6 +354,14 @@
           "type": "integer",
           "title": "Frame timeout (ms)",
           "description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
+          "minimum": -1,
+          "default": -1,
+          "propertyOrder": 17
+        },
+        "response_timeout_ms": {
+          "type": "integer",
+          "title": "Response timeout (ms)",
+          "description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
           "minimum": -1,
           "default": -1,
           "propertyOrder": 17
@@ -414,7 +415,7 @@
     "channel": {
       "type": "object",
       // "options": { "collapsed": true },
-      "oneOf": [
+      "anyOf": [
         {
           "title": "Register",
           "properties": {
@@ -462,7 +463,8 @@
               "title": "Round to",
               "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
               "default" : 1,
-              "propertyOrder": 9
+              "propertyOrder": 9,
+              "minimum": 0
             },
             "channel_readonly": {
               "title": "Read-only",
@@ -485,15 +487,32 @@
               "propertyOrder": 11
             },
             "error_value": {
-              "type": "integer",
               "title": "Error value",
               "description": "Value which should be treated as read error",
-              "propertyOrder": 12
+              "propertyOrder": 12,
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4294967295
+                }
+              ]
+            },
+            "unsupported_value": {
+              "title": "Unsupported register value",
+              "description": "Value which should be treated as 'register is unsupported by device'",
+              "propertyOrder": 13,
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+)$"
             },
             "word_order": {
               "$ref": "#/definitions/word_order",
-              "propertyOrder": 13
-            },
+              "propertyOrder": 14
+            }
           },
           // FIXME: require "reg_type" and "address" for non-templated devices
           "required": ["name"],
@@ -568,7 +587,7 @@
         "word_order": {
           "$ref": "#/definitions/word_order",
           "propertyOrder": 6
-        },
+        }
       },
       "required": ["reg_type", "address"]
     },
@@ -592,13 +611,16 @@
         // FIXME: "dimmer", "lux" and "pressure" aren't present in
         // conventions but is present in config-test.json in
         // wb-mqtt-serial
-        "dimmer", "lux", "pressure"
+        "dimmer", "lux", "pressure", "current", "sound_level"
       ]
     },
     "reg_type": {
       "type": "string",
       "title": "Register type",
-      "enum": ["coil", "discrete", "holding", "holding_single", "holding_multi", "input", "direct"]
+      "enum": ["coil", "discrete", "holding", "holding_single", "holding_multi", "input", "direct", "relay", 
+               "brightness", "param", "relay_mode", "relay_default", "relay_delay", "energy", "array",
+               "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
+               "param24", "param32", "power", "freq", "power_factor"]
     },
     "format": {
       "type": "string",
@@ -631,6 +653,10 @@
     },
     "serial_int": {
       "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$"
+        },
         {
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"

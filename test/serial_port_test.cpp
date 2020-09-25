@@ -6,8 +6,11 @@
 
 #include "serial_device.h"
 #include "serial_port.h"
-#include "serial_port_settings.h"
 #include "pty_based_fake_serial.h"
+
+#include <wblib/testing/testlog.h>
+
+using namespace WBMQTT::Testing;
 
 class TImxFloodThread {
 public:
@@ -19,14 +22,25 @@ public:
 
         IsRunning = true;
         auto start = std::chrono::steady_clock::now();
+        bool sentSomething = false;
         while (IsRunning) {
             auto diff = std::chrono::steady_clock::now() - start;
             if (diff > Duration) {
-                Expired = true;     
+                Expired = true;
                 return;
             }
-            Serial->WriteBytes(buf, sizeof(buf));
+            try {
+                Serial->WriteBytes(buf, sizeof(buf));
+                sentSomething = true;
+            } catch (const TSerialDeviceErrnoException& e) {
+                if (e.GetErrnoValue() != EAGAIN) { // We write too fast. Let's give some time to a reader
+                    throw;
+                }
+            }
             usleep(1);
+        }
+        if (!sentSomething) {
+            throw std::runtime_error("TImxFloodThread sent nothing");
         }
     }
     
@@ -70,10 +84,21 @@ public:
         TSerialPort::SkipNoise();
     }
 
-    uint8_t ReadByte() override
+    uint8_t ReadByte(const std::chrono::microseconds& timeout) override
     {
         Fixture.Emit() << "ReadByte()";
-        return TSerialPort::ReadByte();
+        return TSerialPort::ReadByte(timeout);
+    }
+
+    void EmptyReadBuffer()
+    {
+        while (true) {
+            try {
+                TSerialPort::ReadByte(std::chrono::milliseconds(100));
+            } catch (const TSerialDeviceTransientErrorException&) {
+                return;
+            }
+        }
     }
 protected:
     void Reopen() override
@@ -81,6 +106,7 @@ protected:
         Fixture.Emit() << "Reopen()";
         if (StopFloodOnReconnect) {
             FloodThread.Stop();
+            EmptyReadBuffer();
         }
     };
 
@@ -107,16 +133,15 @@ void TSerialPortTest::SetUp()
     FakeSerial = PPtyBasedFakeSerial(new TPtyBasedFakeSerial(*this));
     auto settings = std::make_shared<TSerialPortSettings>(
                 FakeSerial->GetPrimaryPtsName(),
-                9600, 'N', 8, 1, std::chrono::milliseconds(1000));
+                9600, 'N', 8, 1);
     Serial = PPort(
         new TSerialPort(settings));
-    Serial->SetDebug(true);
     Serial->Open();
 
     FakeSerial->StartForwarding();
     auto secondary_settings = std::make_shared<TSerialPortSettings>(
                 FakeSerial->GetSecondaryPtsName(),
-                9600, 'N', 8, 1, std::chrono::milliseconds(1000));
+                9600, 'N', 8, 1);
     SecondarySerial = std::shared_ptr<TSerialPortTestWrapper>(
         new TSerialPortTestWrapper(
             secondary_settings,
@@ -141,13 +166,12 @@ TEST_F(TSerialPortTest, TestSkipNoise)
     uint8_t buf[] = {1,2,3};
     Serial->WriteBytes(buf, sizeof(buf));
     usleep(300);
-    SecondarySerial->SetDebug(true);
     SecondarySerial->SkipNoise();
 
     buf[0] = 0x04;
     // Should read 0x04, not 0x01
     Serial->WriteBytes(buf, 1);
-    uint8_t read_back = SecondarySerial->ReadByte();
+    uint8_t read_back = SecondarySerial->ReadByte(std::chrono::milliseconds(1000));
     ASSERT_EQ(read_back, buf[0]);
 
     FakeSerial->Flush(); // shouldn't change anything here, but shouldn't hang either
@@ -163,7 +187,6 @@ TEST_F(TSerialPortTest, TestImxBug)
 
     SecondarySerial->FloodThread.Start();
     usleep(10);
-    SecondarySerial->SetDebug(true);
     SecondarySerial->SkipNoise();
     SecondarySerial->FloodThread.Stop();
     // If flood thread is expired then skip noise was stuck forever
@@ -172,7 +195,7 @@ TEST_F(TSerialPortTest, TestImxBug)
     buf[0] = 0x04;
     // Should read 0x04, not 0x01
     Serial->WriteBytes(buf, 1);
-    uint8_t read_back = SecondarySerial->ReadByte();
+    uint8_t read_back = SecondarySerial->ReadByte(std::chrono::milliseconds(1000));
     ASSERT_EQ(read_back, buf[0]);
 
     // in case reconnect won't help with cont. data flow, exception must be raised

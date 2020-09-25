@@ -1,78 +1,96 @@
-SetDebug(1)
-Publish: /devices/milur305_255/meta/name: 'Milur 305 255' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A voltage/meta/type: 'voltage' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A voltage/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A voltage/meta/order: '1' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase A voltage/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase B voltage/meta/type: 'voltage' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B voltage/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B voltage/meta/order: '2' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase B voltage/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase C voltage/meta/type: 'voltage' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C voltage/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C voltage/meta/order: '3' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase C voltage/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase A current/meta/type: 'value' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A current/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A current/meta/order: '4' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase A current/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase B current/meta/type: 'value' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B current/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B current/meta/order: '5' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase B current/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase C current/meta/type: 'value' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C current/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C current/meta/order: '6' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase C current/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase A active power/meta/type: 'power' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A active power/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A active power/meta/order: '7' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase A active power/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase B active power/meta/type: 'power' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B active power/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B active power/meta/order: '8' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase B active power/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase C active power/meta/type: 'power' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C active power/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C active power/meta/order: '9' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase C active power/on (QoS 0)
-Publish: /devices/milur305_255/controls/Total active power/meta/type: 'power' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total active power/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total active power/meta/order: '10' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Total active power/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase A reactive power/meta/type: 'power' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A reactive power/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A reactive power/meta/order: '11' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase A reactive power/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase B reactive power/meta/type: 'power' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B reactive power/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B reactive power/meta/order: '12' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase B reactive power/on (QoS 0)
-Publish: /devices/milur305_255/controls/Phase C reactive power/meta/type: 'power' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C reactive power/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C reactive power/meta/order: '13' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Phase C reactive power/on (QoS 0)
-Publish: /devices/milur305_255/controls/Total reactive power/meta/type: 'power' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total reactive power/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total reactive power/meta/order: '14' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Total reactive power/on (QoS 0)
-Publish: /devices/milur305_255/controls/Total consumption/meta/type: 'power_consumption' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total consumption/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total consumption/meta/order: '15' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Total consumption/on (QoS 0)
-Publish: /devices/milur305_255/controls/Total reactive energy/meta/type: 'power_consumption' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total reactive energy/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total reactive energy/meta/order: '16' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Total reactive energy/on (QoS 0)
-Publish: /devices/milur305_255/controls/Frequency/meta/type: 'value' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Frequency/meta/readonly: '1' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Frequency/meta/order: '17' (QoS 0, retained)
-Subscribe: /devices/milur305_255/controls/Frequency/on (QoS 0)
+Subscribe: /devices/+/meta/driver (QoS 0)
+Publish: /devices/milur305_255/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/milur305_255/meta/name: 'Milur 305 255' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage/meta/order: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage/meta/type: 'voltage' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage/meta/order: '2' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage/meta/type: 'voltage' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage/meta/order: '3' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage/meta/type: 'voltage' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A current/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A current/meta/order: '4' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A current/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A current/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A current: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B current/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B current/meta/order: '5' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B current/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B current/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B current: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C current/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C current/meta/order: '6' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C current/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C current/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C current: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A active power/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A active power/meta/order: '7' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A active power/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A active power/meta/type: 'power' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A active power: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B active power/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B active power/meta/order: '8' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B active power/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B active power/meta/type: 'power' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B active power: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C active power/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C active power/meta/order: '9' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C active power/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C active power/meta/type: 'power' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C active power: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total active power/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total active power/meta/order: '10' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total active power/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total active power/meta/type: 'power' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total active power: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power/meta/order: '11' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power/meta/type: 'power' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power/meta/order: '12' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power/meta/type: 'power' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power/meta/order: '13' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power/meta/type: 'power' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive power/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive power/meta/order: '14' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive power/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive power/meta/type: 'power' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive power: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total consumption/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total consumption/meta/order: '15' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total consumption/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total consumption/meta/type: 'power_consumption' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total consumption: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy/meta/order: '16' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy/meta/type: 'power_consumption' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy: '0' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Frequency/meta/error: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Frequency/meta/order: '17' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Frequency/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Frequency/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Frequency: '0' (QoS 1, retained)
 >>> LoopOnce()
 Open()
 EnqueueMilurIgnoredPacketWorkaround()
 >> FF
-Sleep(100000)
+Sleep(5000)
 SkipNoise()
 SkipNoise()
 EnqueueMilurSessionSetupResponse()
@@ -80,228 +98,282 @@ EnqueueMilurSessionSetupResponse()
 << FF 08 01 87 F0
 EnqueueMilurPhaseAVoltageResponse()
 >> FF 01 64 41 8B
-Publish: /devices/milur305_255/controls/Phase A voltage/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A voltage: '234.607' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage: '234.607' (QoS 1, retained)
 << FF 01 64 03 6F 94 03 7A 8E
 EnqueueMilurPhaseBVoltageResponse()
 >> FF 01 65 80 4B
-Publish: /devices/milur305_255/controls/Phase B voltage/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B voltage: '234.607' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage: '234.607' (QoS 1, retained)
 << FF 01 65 03 6F 94 03 47 4E
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
-Publish: /devices/milur305_255/controls/Phase C voltage/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C voltage: '234.607' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage: '234.607' (QoS 1, retained)
 << FF 01 66 03 6F 94 03 03 4E
 EnqueueMilurPhaseACurrentResponse()
 >> FF 01 67 01 8A
-Publish: /devices/milur305_255/controls/Phase A current/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A current: '-10' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A current: '-10' (QoS 1, retained)
 << FF 01 67 03 F0 D8 FF 3A 21
 EnqueueMilurPhaseBCurrentResponse()
 >> FF 01 68 41 8E
-Publish: /devices/milur305_255/controls/Phase B current/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B current: '-10' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B current: '-10' (QoS 1, retained)
 << FF 01 68 03 F0 D8 FF 6E 20
 EnqueueMilurPhaseCCurrentResponse()
 >> FF 01 69 80 4E
-Publish: /devices/milur305_255/controls/Phase C current/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C current: '-10' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C current: '-10' (QoS 1, retained)
 << FF 01 69 03 F0 D8 FF 53 E0
 EnqueueMilurPhaseAActivePowerResponse()
 >> FF 01 6A C0 4F
-Publish: /devices/milur305_255/controls/Phase A active power/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A active power: '-100' (QoS 1, retained)
 << FF 01 6A 04 F0 D8 FF FF 55 8E
 EnqueueMilurPhaseBActivePowerResponse()
 >> FF 01 6B 01 8F
-Publish: /devices/milur305_255/controls/Phase B active power/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B active power: '-100' (QoS 1, retained)
 << FF 01 6B 04 F0 D8 FF FF 54 5F
 EnqueueMilurPhaseCActivePowerResponse()
 >> FF 01 6C 40 4D
-Publish: /devices/milur305_255/controls/Phase C active power/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C active power: '-100' (QoS 1, retained)
 << FF 01 6C 04 F0 D8 FF FF 55 E8
 EnqueueMilurTotalActivePowerResponse()
 >> FF 01 6D 81 8D
-Publish: /devices/milur305_255/controls/Total active power/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total active power: '-100' (QoS 1, retained)
 << FF 01 6D 04 F0 D8 FF FF 54 39
 EnqueueMilurPhaseAReactivePowerResponse()
 >> FF 01 6E C1 8C
-Publish: /devices/milur305_255/controls/Phase A reactive power/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase A reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power: '-100' (QoS 1, retained)
 << FF 01 6E 04 F0 D8 FF FF 54 0A
 EnqueueMilurPhaseBReactivePowerResponse()
 >> FF 01 6F 00 4C
-Publish: /devices/milur305_255/controls/Phase B reactive power/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase B reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power: '-100' (QoS 1, retained)
 << FF 01 6F 04 F0 D8 FF FF 55 DB
 EnqueueMilurPhaseCReactivePowerResponse()
 >> FF 01 70 41 84
-Publish: /devices/milur305_255/controls/Phase C reactive power/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Phase C reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power: '-100' (QoS 1, retained)
 << FF 01 70 04 F0 D8 FF FF 57 B4
 EnqueueMilurTotalReactivePowerResponse()
 >> FF 01 71 80 44
-Publish: /devices/milur305_255/controls/Total reactive power/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total reactive power: '-100' (QoS 1, retained)
 << FF 01 71 04 F0 D8 FF FF 56 65
 EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
-Publish: /devices/milur305_255/controls/Total consumption/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 1, retained)
 << FF 01 76 04 44 11 10 00 AC 6C
 EnqueueMilurTotalReactiveEnergyResponse()
 >> FF 01 7F 01 80
-Publish: /devices/milur305_255/controls/Total reactive energy/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 1, retained)
 << FF 01 7F 04 F0 D8 FF FF 57 4B
 EnqueueMilurFrequencyResponse()
 >> FF 01 09 80 66
-Publish: /devices/milur305_255/controls/Frequency/meta/error: '' (QoS 0, retained)
-Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 1, retained)
 Port cycle OK
 >>> LoopOnce()
 << FF 01 09 02 A0 C3 B3 D9
 EnqueueMilurPhaseAVoltageResponse()
 >> FF 01 64 41 8B
-Publish: /devices/milur305_255/controls/Phase A voltage: '234.607' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage: '234.607' (QoS 1, retained)
 << FF 01 64 03 6F 94 03 7A 8E
 EnqueueMilurPhaseBVoltageResponse()
 >> FF 01 65 80 4B
-Publish: /devices/milur305_255/controls/Phase B voltage: '234.607' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage: '234.607' (QoS 1, retained)
 << FF 01 65 03 6F 94 03 47 4E
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
-Publish: /devices/milur305_255/controls/Phase C voltage: '234.607' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage: '234.607' (QoS 1, retained)
 << FF 01 66 03 6F 94 03 03 4E
 EnqueueMilurPhaseACurrentResponse()
 >> FF 01 67 01 8A
-Publish: /devices/milur305_255/controls/Phase A current: '-10' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A current: '-10' (QoS 1, retained)
 << FF 01 67 03 F0 D8 FF 3A 21
 EnqueueMilurPhaseBCurrentResponse()
 >> FF 01 68 41 8E
-Publish: /devices/milur305_255/controls/Phase B current: '-10' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B current: '-10' (QoS 1, retained)
 << FF 01 68 03 F0 D8 FF 6E 20
 EnqueueMilurPhaseCCurrentResponse()
 >> FF 01 69 80 4E
-Publish: /devices/milur305_255/controls/Phase C current: '-10' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C current: '-10' (QoS 1, retained)
 << FF 01 69 03 F0 D8 FF 53 E0
 EnqueueMilurPhaseAActivePowerResponse()
 >> FF 01 6A C0 4F
-Publish: /devices/milur305_255/controls/Phase A active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A active power: '-100' (QoS 1, retained)
 << FF 01 6A 04 F0 D8 FF FF 55 8E
 EnqueueMilurPhaseBActivePowerResponse()
 >> FF 01 6B 01 8F
-Publish: /devices/milur305_255/controls/Phase B active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B active power: '-100' (QoS 1, retained)
 << FF 01 6B 04 F0 D8 FF FF 54 5F
 EnqueueMilurPhaseCActivePowerResponse()
 >> FF 01 6C 40 4D
-Publish: /devices/milur305_255/controls/Phase C active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C active power: '-100' (QoS 1, retained)
 << FF 01 6C 04 F0 D8 FF FF 55 E8
 EnqueueMilurTotalActivePowerResponse()
 >> FF 01 6D 81 8D
-Publish: /devices/milur305_255/controls/Total active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total active power: '-100' (QoS 1, retained)
 << FF 01 6D 04 F0 D8 FF FF 54 39
 EnqueueMilurPhaseAReactivePowerResponse()
 >> FF 01 6E C1 8C
-Publish: /devices/milur305_255/controls/Phase A reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power: '-100' (QoS 1, retained)
 << FF 01 6E 04 F0 D8 FF FF 54 0A
 EnqueueMilurPhaseBReactivePowerResponse()
 >> FF 01 6F 00 4C
-Publish: /devices/milur305_255/controls/Phase B reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power: '-100' (QoS 1, retained)
 << FF 01 6F 04 F0 D8 FF FF 55 DB
 EnqueueMilurPhaseCReactivePowerResponse()
 >> FF 01 70 41 84
-Publish: /devices/milur305_255/controls/Phase C reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power: '-100' (QoS 1, retained)
 << FF 01 70 04 F0 D8 FF FF 57 B4
 EnqueueMilurTotalReactivePowerResponse()
 >> FF 01 71 80 44
-Publish: /devices/milur305_255/controls/Total reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total reactive power: '-100' (QoS 1, retained)
 << FF 01 71 04 F0 D8 FF FF 56 65
 EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
-Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 1, retained)
 << FF 01 76 04 44 11 10 00 AC 6C
 EnqueueMilurTotalReactiveEnergyResponse()
 >> FF 01 7F 01 80
-Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 1, retained)
 << FF 01 7F 04 F0 D8 FF FF 57 4B
 EnqueueMilurFrequencyResponse()
 >> FF 01 09 80 66
-Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 1, retained)
 Port cycle OK
 >>> LoopOnce()
 << FF 01 09 02 A0 C3 B3 D9
 EnqueueMilurPhaseAVoltageResponse()
 >> FF 01 64 41 8B
-Publish: /devices/milur305_255/controls/Phase A voltage: '234.607' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage: '234.607' (QoS 1, retained)
 << FF 01 64 03 6F 94 03 7A 8E
 EnqueueMilurPhaseBVoltageResponse()
 >> FF 01 65 80 4B
-Publish: /devices/milur305_255/controls/Phase B voltage: '234.607' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage: '234.607' (QoS 1, retained)
 << FF 01 65 03 6F 94 03 47 4E
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
-Publish: /devices/milur305_255/controls/Phase C voltage: '234.607' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage: '234.607' (QoS 1, retained)
 << FF 01 66 03 6F 94 03 03 4E
 EnqueueMilurPhaseACurrentResponse()
 >> FF 01 67 01 8A
-Publish: /devices/milur305_255/controls/Phase A current: '-10' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A current: '-10' (QoS 1, retained)
 << FF 01 67 03 F0 D8 FF 3A 21
 EnqueueMilurPhaseBCurrentResponse()
 >> FF 01 68 41 8E
-Publish: /devices/milur305_255/controls/Phase B current: '-10' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B current: '-10' (QoS 1, retained)
 << FF 01 68 03 F0 D8 FF 6E 20
 EnqueueMilurPhaseCCurrentResponse()
 >> FF 01 69 80 4E
-Publish: /devices/milur305_255/controls/Phase C current: '-10' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C current: '-10' (QoS 1, retained)
 << FF 01 69 03 F0 D8 FF 53 E0
 EnqueueMilurPhaseAActivePowerResponse()
 >> FF 01 6A C0 4F
-Publish: /devices/milur305_255/controls/Phase A active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A active power: '-100' (QoS 1, retained)
 << FF 01 6A 04 F0 D8 FF FF 55 8E
 EnqueueMilurPhaseBActivePowerResponse()
 >> FF 01 6B 01 8F
-Publish: /devices/milur305_255/controls/Phase B active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B active power: '-100' (QoS 1, retained)
 << FF 01 6B 04 F0 D8 FF FF 54 5F
 EnqueueMilurPhaseCActivePowerResponse()
 >> FF 01 6C 40 4D
-Publish: /devices/milur305_255/controls/Phase C active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C active power: '-100' (QoS 1, retained)
 << FF 01 6C 04 F0 D8 FF FF 55 E8
 EnqueueMilurTotalActivePowerResponse()
 >> FF 01 6D 81 8D
-Publish: /devices/milur305_255/controls/Total active power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total active power: '-100' (QoS 1, retained)
 << FF 01 6D 04 F0 D8 FF FF 54 39
 EnqueueMilurPhaseAReactivePowerResponse()
 >> FF 01 6E C1 8C
-Publish: /devices/milur305_255/controls/Phase A reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power: '-100' (QoS 1, retained)
 << FF 01 6E 04 F0 D8 FF FF 54 0A
 EnqueueMilurPhaseBReactivePowerResponse()
 >> FF 01 6F 00 4C
-Publish: /devices/milur305_255/controls/Phase B reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power: '-100' (QoS 1, retained)
 << FF 01 6F 04 F0 D8 FF FF 55 DB
 EnqueueMilurPhaseCReactivePowerResponse()
 >> FF 01 70 41 84
-Publish: /devices/milur305_255/controls/Phase C reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power: '-100' (QoS 1, retained)
 << FF 01 70 04 F0 D8 FF FF 57 B4
 EnqueueMilurTotalReactivePowerResponse()
 >> FF 01 71 80 44
-Publish: /devices/milur305_255/controls/Total reactive power: '-100' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total reactive power: '-100' (QoS 1, retained)
 << FF 01 71 04 F0 D8 FF FF 56 65
 EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
-Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total consumption: '111.44' (QoS 1, retained)
 << FF 01 76 04 44 11 10 00 AC 6C
 EnqueueMilurTotalReactiveEnergyResponse()
 >> FF 01 7F 01 80
-Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy: '1666593.15' (QoS 1, retained)
 << FF 01 7F 04 F0 D8 FF FF 57 4B
 EnqueueMilurFrequencyResponse()
 >> FF 01 09 80 66
-Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 0, retained)
+Publish: /devices/milur305_255/controls/Frequency: '50.08' (QoS 1, retained)
 Port cycle OK
 << FF 01 09 02 A0 C3 B3 D9
 Close()
+Publish: /devices/milur305_255/controls/Total reactive energy: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive energy/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A voltage/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B voltage/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Frequency: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Frequency/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Frequency/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Frequency/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive power: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive power/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive power/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total reactive power/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C voltage/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A current: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A current/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A current/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A current/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B current: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B current/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B current/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B current/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B active power: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B active power/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B active power/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B active power/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C current: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C current/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C current/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C current/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A active power: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A active power/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A active power/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A active power/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total active power: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total active power/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total active power/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total active power/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase A reactive power/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total consumption: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total consumption/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total consumption/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Total consumption/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C active power: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C active power/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C active power/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C active power/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase C reactive power/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power/meta/order: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/milur305_255/controls/Phase B reactive power/meta/type: '' (QoS 1, retained)
+Publish: /devices/milur305_255/meta/driver: '' (QoS 1, retained)
+Publish: /devices/milur305_255/meta/name: '' (QoS 1, retained)
+stop: em-test

@@ -5,7 +5,9 @@
         "id": "wbio-ai-dv-12-50v", 
         "protocol": "modbus_io", 
         "stride": 1000, 
-        "max_read_registers": 0, 
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
         "setup": [
             {
                 "title": "CONF_A1_A2", 

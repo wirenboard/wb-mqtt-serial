@@ -1,21 +1,18 @@
+#include "fake_serial_port.h"
+
+#include <wblib/driver.h>
+#include <wblib/backend.h>
+#include <wblib/driver_args.h>
+
 #include <cassert>
 #include <algorithm>
 #include <stdexcept>
-#include "fake_serial_port.h"
-#include "utils.h"
+
+using namespace WBMQTT;
+using namespace WBMQTT::Testing;
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
-
-void TFakeSerialPort::SetDebug(bool debug)
-{
-    Fixture.Emit() << "SetDebug(" << debug << ")";
-}
-
-bool TFakeSerialPort::Debug() const
-{
-    return false;
-}
 
 void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
 {
@@ -71,37 +68,42 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
         PendingFuncs.pop_front();
     }
     Fixture.Emit() << ">> " << std::vector<uint8_t>(buf, buf + count);
-    auto start = Req.begin() + ReqPos;
-    try {
-        if (Req.size() - ReqPos < size_t(count) + 1 || Req[ReqPos + count] != FRAME_BOUNDARY)
-            throw std::runtime_error("Request mismatch");
 
-        const uint8_t* p = buf;
-        for (auto it = start; p < buf + count; ++p, ++it) {
-            if (*it != int(*p))
-                throw std::runtime_error(std::string("Request mismatch: ") +
-                        HexDump(std::vector<uint8_t>(buf, buf + count)) +
-                        ", expected: " +
-                        HexDump(std::vector<uint8_t>(start, start + count))
-                    );
-        }
-
-
-        if (Req[ReqPos + count] != FRAME_BOUNDARY)
-            throw std::runtime_error("Unexpectedly short request");
-
-        ReqPos += count + 1;
-    } catch (const std::runtime_error& e) {
-        auto stop = std::find(start, Req.end(), FRAME_BOUNDARY);
-        if (start != stop)
-            Fixture.Emit() << "*> " << std::vector<uint8_t>(start, stop);
-        else
-            Fixture.Emit() << "*> req empty";
-        throw;
+    if (Req.size() - ReqPos < size_t(count) + 1) {
+        throw std::runtime_error(std::string("Request: ") +
+                HexDump(std::vector<uint8_t>(buf, buf + count)) +
+                " is longer than expected");
     }
+
+    auto start = Req.begin() + ReqPos;
+    if (Req[ReqPos + count] != FRAME_BOUNDARY) {
+        throw std::runtime_error(std::string("Request mismatch: ") +
+                HexDump(std::vector<uint8_t>(buf, buf + count)) +
+                ", expected: " +
+                HexDump(std::vector<uint8_t>(start, start + count)) +
+                ", frame boundary " + std::to_string(Req[ReqPos + count])
+            );
+    }
+
+    const uint8_t* p = buf;
+    for (auto it = start; p < buf + count; ++p, ++it) {
+        if (*it != int(*p)) {
+            throw std::runtime_error(std::string("Request mismatch: ") +
+                    HexDump(std::vector<uint8_t>(buf, buf + count)) +
+                    ", expected: " +
+                    HexDump(std::vector<uint8_t>(start, start + count))
+                );
+        }
+    }
+
+
+    if (Req[ReqPos + count] != FRAME_BOUNDARY)
+        throw std::runtime_error("Unexpectedly short request");
+
+    ReqPos += count + 1;
 }
 
-uint8_t TFakeSerialPort::ReadByte()
+uint8_t TFakeSerialPort::ReadByte(const std::chrono::microseconds& /*timeout*/)
 {
     if (DoSimulateDisconnect) {
         return 0xff;
@@ -117,16 +119,18 @@ uint8_t TFakeSerialPort::ReadByte()
     return Resp[RespPos++];
 }
 
-int TFakeSerialPort::ReadFrame(uint8_t* buf, int count,
-                               const std::chrono::microseconds& timeout,
+int TFakeSerialPort::ReadFrame(uint8_t* buf, 
+                               int count,
+                               const std::chrono::microseconds& responseTimeout,
+                               const std::chrono::microseconds& frameTimeout,
                                TFrameCompletePred frame_complete)
 {
     if (DoSimulateDisconnect) {
         return 0;
     }
-    if (ExpectedFrameTimeout.count() >= 0 && timeout != ExpectedFrameTimeout)
+    if (ExpectedFrameTimeout.count() >= 0 && frameTimeout != ExpectedFrameTimeout)
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
-                                 std::to_string(timeout.count()) + " instead of " +
+                                 std::to_string(frameTimeout.count()) + " instead of " +
                                  std::to_string(ExpectedFrameTimeout.count()));
     int nread = 0;
     uint8_t* p = buf;
@@ -154,11 +158,13 @@ void TFakeSerialPort::SkipNoise()
     Fixture.Emit() << "SkipNoise()";
 }
 
-void TFakeSerialPort::Sleep(const std::chrono::microseconds& us)
+void TFakeSerialPort::SleepSinceLastInteraction(const std::chrono::microseconds& us)
 {
-    SkipFrameBoundary();
-    DumpWhatWasRead();
-    Fixture.Emit() << "Sleep(" << us.count() << ")";
+    if (us > std::chrono::microseconds::zero()) {
+        SkipFrameBoundary();
+        DumpWhatWasRead();
+        Fixture.Emit() << "Sleep(" << us.count() << ")";
+    }
 }
 
 bool TFakeSerialPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)
@@ -234,6 +240,13 @@ void TFakeSerialPort::SkipFrameBoundary()
         RespPos++;
 }
 
+std::chrono::milliseconds TFakeSerialPort::GetSendTime(double bytesNumber)
+{
+    // 9600 8-N-2
+    auto ms = std::ceil((1000.0*11*bytesNumber)/9600.0);
+    return std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(ms));
+}
+
 void TSerialDeviceTest::SetUp()
 {
     SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
@@ -250,27 +263,77 @@ void TSerialDeviceTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
+WBMQTT::TMap<std::string, TTemplateMap> TSerialDeviceIntegrationTest::Templates;
+
+std::string TSerialDeviceIntegrationTest::GetTemplatePath() const 
+{
+    return std::string();
+}
+
 void TSerialDeviceIntegrationTest::SetUp()
 {
+    SetMode(E_Unordered);
     TSerialDeviceTest::SetUp();
     PortMakerCalled = false;
 
-    PTemplateMap templateMap = std::make_shared<TTemplateMap>();
-    if (GetTemplatePath()) {
-        TConfigTemplateParser templateParser(GetDataFilePath(GetTemplatePath()), false);
-        templateMap = templateParser.Parse();
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+
+    std::string path(GetTemplatePath());
+
+    auto it = Templates.find(path);
+    if (it == Templates.end()) {
+        if (path.empty()) {
+            it = Templates.emplace(path, TTemplateMap()).first;
+        } else {
+            it = Templates.emplace(path, 
+                                   TTemplateMap(GetDataFilePath(path),
+                                                LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
+                                                                          configSchema))).first;
+        } 
     }
-    TConfigParser parser(GetDataFilePath(ConfigPath()), false, TSerialDeviceFactory::GetRegisterTypes, templateMap);
 
+    Config = LoadConfig(GetDataFilePath(ConfigPath()), 
+                         TSerialDeviceFactory::GetRegisterTypes,
+                         configSchema,
+                         it->second);
 
-    Config = parser.Parse();
-    MQTTClient = PFakeMQTTClient(new TFakeMQTTClient("em-test", *this));
-    Observer = PMQTTSerialObserver(new TMQTTSerialObserver(MQTTClient, Config, SerialPort));
+    MqttBroker = NewFakeMqttBroker(*this);
+    MqttClient = MqttBroker->MakeClient("em-test");
+    auto backend = NewDriverBackend(MqttClient);
+    Driver = NewDriver(TDriverArgs{}
+        .SetId("em-test")
+        .SetBackend(backend)
+        .SetIsTesting(true)
+        .SetReownUnknownDevices(true)
+        .SetUseStorage(true)
+        .SetStoragePath("/tmp/wb-mqtt-serial-test.db")
+    );
+
+    Driver->StartLoop();
+
+    SerialDriver = std::make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
 }
 
 void TSerialDeviceIntegrationTest::TearDown()
 {
-    MQTTClient->Unobserve(Observer);
-    Observer.reset();
+    SerialDriver->ClearDevices();
+    Driver->StopLoop();
     TSerialDeviceTest::TearDown();
+}
+
+void TSerialDeviceIntegrationTest::Publish(const std::string & topic, const std::string & payload, uint8_t qos, bool retain)
+{
+    MqttBroker->Publish("em-test-other", {TMqttMessage{topic, payload, qos, retain}});
+}
+
+void TSerialDeviceIntegrationTest::PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos, bool retain)
+{
+    auto done = std::make_shared<WBMQTT::TPromise<void>>();
+    Driver->On<WBMQTT::TControlOnValueEvent>([=](const WBMQTT::TControlOnValueEvent & event) {
+        if (!done->IsFulfilled()) {
+            done->Complete();
+        }
+    });
+    Publish(topic, payload, qos, retain);
+    done->GetFuture().Sync();
 }
