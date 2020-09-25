@@ -32,9 +32,18 @@ Open()
 Sleep(150000)
 fake_serial_device '12': write to address '1' value '42'
 fake_serial_device '12': write to address '2' value '24'
+fake_serial_device '12': read address '1' value '42'
+fake_serial_device '12': read address '2' value '24'
 Sleep(150000)
 fake_serial_device '13': write to address '1' value '32'
 fake_serial_device '13': write to address '2' value '64'
+fake_serial_device '13': read address '1' value '32'
+fake_serial_device '13': read address '2' value '64'
+fake_serial_device '12': Device cycle OK
+fake_serial_device '12': reconnected
+fake_serial_device '13': Device cycle OK
+fake_serial_device '13': reconnected
+Port cycle OK
 >>> LoopOnce()
 Sleep(150000)
 fake_serial_device '12': read address '1' value '42'
@@ -86,6 +95,7 @@ Port cycle OK
 >>> LoopOnce() (limited polling expected)
 Sleep(150000)
 fake_serial_device '12': write address '1' failed: 'Serial protocol error: device disconnected'
+Sleep(150000)
 fake_serial_device '13': read address '1' value '1'
 fake_serial_device '13': read address '2' value '2'
 fake_serial_device '12': Device cycle FAIL
@@ -96,7 +106,6 @@ Port cycle OK
 Sleep(150000)
 fake_serial_device '12': write to address '1' value '42'
 fake_serial_device '12': write to address '2' value '24'
-Sleep(150000)
 fake_serial_device '12': read address '1' value '42'
 fake_serial_device '12': read address '2' value '24'
 Sleep(150000)
