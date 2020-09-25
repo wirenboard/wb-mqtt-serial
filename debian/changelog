@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.2.1) experimental; urgency=medium
+
+  * add mr inputs freq registers
+
+ -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Thu, 06 Aug 2020 18:57:25 +0300
+
 wb-mqtt-serial (2.2.0) experimental; urgency=medium
 
   * unsupported registers detection is added to modbus and modbus_io protocols.
