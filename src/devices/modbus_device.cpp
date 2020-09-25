@@ -32,11 +32,6 @@ void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
     ModbusRTU::WriteRegister(Port(), SlaveId, reg, value);
 }
 
-void TModbusDevice::SetReadError(PRegisterRange range)
-{
-    ModbusRTU::SetReadError(range);
-}
-
 std::list<PRegisterRange> TModbusDevice::ReadRegisterRange(PRegisterRange range)
 {
     return ModbusRTU::ReadRegisterRange(Port(), SlaveId, range);

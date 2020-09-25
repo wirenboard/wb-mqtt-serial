@@ -37,11 +37,6 @@ std::list<PRegisterRange> TModbusIODevice::ReadRegisterRange(PRegisterRange rang
     return ModbusRTU::ReadRegisterRange(Port(), SlaveId.Primary, range, Shift);
 }
 
-void TModbusIODevice::SetReadError(PRegisterRange range)
-{
-    ModbusRTU::SetReadError(range);
-}
-
 bool TModbusIODevice::WriteSetupRegisters()
 {
     return ModbusRTU::WriteSetupRegisters(Port(), SlaveId.Primary, SetupItems, Shift);

@@ -119,57 +119,22 @@ Subscribe: /devices/modbus-sample/controls/Holding1/on (QoS 0)
 Open()
 >>> LoopOnce() [first read]
 Sleep(100000)
-EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
 >> 01 03 00 07 00 06 74 09
 Publish: /devices/modbus-sample/controls/White/meta/error: 'r' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB_All/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All: '20' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White1/meta/error: 'r' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Voltage/meta/error: 'r' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding2/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Voltage: '1' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2: '2' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding1/meta/error: 'r' (QoS 1, retained)
 Port cycle OK
->>> LoopOnce() [one by one]
-<< 01 83 03 01 31
-EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
->> 01 03 00 07 00 01 35 CB
-<< 01 03 02 00 0A 38 43
-EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
->> 01 03 00 08 00 01 05 C8
-<< 01 03 02 00 0A 38 43
-EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
->> 01 03 00 09 00 01 54 08
-<< 01 83 03 01 31
-EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
->> 01 03 00 0A 00 01 A4 08
-<< 01 03 02 00 0A 38 43
-EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
->> 01 03 00 0B 00 01 F5 C8
-<< 01 03 02 00 0A 38 43
-EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
->> 01 03 00 0C 00 01 44 09
-Publish: /devices/modbus-sample/controls/White/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/White: '10' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB_All: '10' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Voltage/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Voltage: '10' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding2/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding2: '10' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding1/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding1: '10' (QoS 1, retained)
-Port cycle OK
 >>> LoopOnce() [new range]
-<< 01 03 02 00 0A 38 43
-EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
->> 01 03 00 07 00 02 75 CA
-Publish: /devices/modbus-sample/controls/RGB_All: '20' (QoS 1, retained)
-<< 01 03 04 00 0A 00 14 DA 3E
-EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
->> 01 03 00 0A 00 03 25 C9
-Publish: /devices/modbus-sample/controls/Holding2: '20' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding1: '30' (QoS 1, retained)
+<< 01 03 0C FF FE 00 14 FF FE 00 01 00 02 FF FE 00 35
+>> 01 03 00 08 00 04 C5 CB
+Publish: /devices/modbus-sample/controls/RGB_All: '21' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Voltage: '2' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding2: '3' (QoS 1, retained)
 Port cycle OK
-<< 01 03 06 00 0A 00 14 00 1E 79 78
+<< 01 03 08 00 15 FF FE 00 02 00 03 0D 0C
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding1/on
 Publish: /devices/modbus-sample/controls/Holding1: '' (QoS 1, retained)
@@ -182,13 +147,11 @@ Publish: /devices/modbus-sample/controls/Holding2: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding2/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding2/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding2/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding2/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Voltage/on
 Publish: /devices/modbus-sample/controls/Voltage: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Voltage/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Voltage/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Voltage/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Voltage/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/White1/on
 Publish: /devices/modbus-sample/controls/White1: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White1/meta/max: '' (QoS 1, retained)
@@ -202,7 +165,6 @@ Publish: /devices/modbus-sample/controls/RGB_All/meta/max: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/RGB_All/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/RGB_All/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/RGB_All/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/White/on
 Publish: /devices/modbus-sample/controls/White: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White/meta/max: '' (QoS 1, retained)

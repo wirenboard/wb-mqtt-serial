@@ -501,9 +501,16 @@
                 }
               ]
             },
+            "unsupported_value": {
+              "title": "Unsupported register value",
+              "description": "Value which should be treated as 'register is unsupported by device'",
+              "propertyOrder": 13,
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+)$"
+            },
             "word_order": {
               "$ref": "#/definitions/word_order",
-              "propertyOrder": 13
+              "propertyOrder": 14
             }
           },
           // FIXME: require "reg_type" and "address" for non-templated devices

@@ -10,10 +10,12 @@ public:
     void EnqueueHoldingPackReadResponse(uint8_t exception = 0);
     void EnqueueHoldingPackHoles10ReadResponse(uint8_t exception = 0);
     void EnqueueHoldingPackMax3ReadResponse(uint8_t exception = 0);
-    
+
     void EnqueueHoldingPackUnavailableOnBorderReadResponse();
     void EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
     void EnqueueHoldingPackUnavailableAndHolesReadResponse();
+
+    void EnqueueHoldingPackUnsupportedOnBorderReadResponse();
 
     void EnqueueDiscreteReadResponse(uint8_t exception = 0);
     void EnqueueHoldingReadS64Response(uint8_t exception = 0);

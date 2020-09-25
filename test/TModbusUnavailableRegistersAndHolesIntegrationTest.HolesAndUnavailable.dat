@@ -132,6 +132,10 @@ EnqueueHoldingPackUnavailableAndHolesReadResponse()
 << 01 03 02 00 0A 38 43
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
 >> 01 03 00 09 00 01 54 08
+Publish: /devices/modbus-sample/controls/White/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White: '10' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All: '10' (QoS 1, retained)
 << 01 83 03 01 31
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
 >> 01 03 00 0B 00 02 B5 C9
@@ -140,9 +144,6 @@ Port cycle OK
 << 01 03 04 00 14 00 1E 3A 3F
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
 >> 01 03 00 07 00 02 75 CA
-Publish: /devices/modbus-sample/controls/White/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/White: '10' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/RGB_All: '20' (QoS 1, retained)
 << 01 03 04 00 0A 00 14 DA 3E
 EnqueueHoldingPackUnavailableAndHolesReadResponse()

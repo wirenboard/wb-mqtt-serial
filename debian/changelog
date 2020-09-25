@@ -1,3 +1,12 @@
+wb-mqtt-serial (2.0.4) experimental; urgency=medium
+
+  * unsupported registers detection is added to modbus and modbus_io protocols.
+    The service automaticaly excludes them from reading cycle.
+  * parameter "unsupported_value" is added to device's configuration options.
+    It can be used to detect unsupported registers during multiple register read operations.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 22 Sep 2020 14:54:22 +0500
+
 wb-mqtt-serial (2.0.3) experimental; urgency=medium
 
   * retry device setup on write register failure

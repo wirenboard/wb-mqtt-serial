@@ -421,6 +421,54 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableAndHolesReadResponse()
     }), __func__);
 }
 
+void TModbusExpectations::EnqueueHoldingPackUnsupportedOnBorderReadResponse()
+{
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x07,   //starting address Lo
+        0x00,   //quantity Hi
+        0x06,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x0C,   //byte count
+        0xFF,   //data Hi 7
+        0xFE,   //data Lo 7
+        0x00,   //data Hi 8
+        0x14,   //data Lo 8
+        0xFF,   //data Hi 9
+        0xFE,   //data Lo 9
+        0x00,   //data Hi 10
+        0x01,   //data Lo 10
+        0x00,   //data Hi 11
+        0x02,   //data Lo 11
+        0xFF,   //data Hi 12
+        0xFE    //data Lo 12
+    }));
+
+    Expector()->Expect(
+    WrapPDU({
+        0x03,   //function code
+        0x00,   //starting address Hi
+        0x08,   //starting address Lo
+        0x00,   //quantity Hi
+        0x04,   //quantity Lo
+    }),
+    WrapPDU({
+        0x03,   //function code
+        0x08,   //byte count
+        0x00,   //data Hi 8
+        0x15,   //data Lo 8
+        0xFF,   //data Hi 9
+        0xFE,   //data Lo 9
+        0x00,   //data Hi 10
+        0x02,   //data Lo 10
+        0x00,   //data Hi 11
+        0x03    //data Lo 11
+    }));
+}
 
 // read holding registers [4 - 6] , [7 - 9], 18
 void TModbusExpectations::EnqueueHoldingPackMax3ReadResponse(uint8_t exception)

@@ -82,9 +82,9 @@ namespace {
     uint64_t ToUint64(const Json::Value& v, const string& title)
     {
         if (v.isUInt())
-            return v.asUInt();
+            return v.asUInt64();
         if (v.isInt()) {
-            int val = v.asInt();
+            int val = v.asInt64();
             if (val >= 0) {
                 return val;
             }
@@ -176,17 +176,20 @@ namespace {
             }
         }
 
-        bool has_error_value = false;
-        uint64_t error_value = 0;
+        std::unique_ptr<uint64_t> error_value;
         if (register_data.isMember("error_value")) {
-            has_error_value = true;
-            error_value = ToUint64(register_data["error_value"], "error_value");
+            error_value = std::make_unique<uint64_t>(ToUint64(register_data["error_value"], "error_value"));
+        }
+
+        std::unique_ptr<uint64_t> unsupported_value;
+        if (register_data.isMember("unsupported_value")) {
+            unsupported_value = std::make_unique<uint64_t>(ToUint64(register_data["unsupported_value"], "unsupported_value"));
         }
 
         PRegisterConfig reg = TRegisterConfig::Create(
-            it->second.Index,
-            address, format, scale, offset, round_to, true, readonly,
-            it->second.Name, has_error_value, error_value, word_order, bit_offset, bit_width);
+            it->second.Index, address, format, scale, offset,
+            round_to, true, readonly, it->second.Name, std::move(error_value),
+            word_order, bit_offset, bit_width, std::move(unsupported_value));
         
         Get(register_data, "poll_interval", reg->PollInterval);
         return reg;
@@ -293,7 +296,9 @@ namespace {
     {
         for (auto itProp = src.begin(); itProp != src.end(); ++itProp) {
             if (itProp.name() != "channels") {
-                LOG(Info) << deviceName << " override property " << itProp.name();
+                if (dst.isMember(itProp.name()) && dst[itProp.name()] != *itProp) {
+                    LOG(Info) << deviceName << " override property " << itProp.name();
+                }
                 dst[itProp.name()] = *itProp;
             }
         }

@@ -88,8 +88,6 @@ public:
     virtual void EndPollCycle();
     // Read multiple registers
     virtual std::list<PRegisterRange> ReadRegisterRange(PRegisterRange range);
-    // Set range as failed to read
-    virtual void SetReadError(PRegisterRange range);
 
     virtual std::string ToString() const;
 

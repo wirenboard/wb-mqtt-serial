@@ -180,16 +180,15 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 
 void TSerialClient::SetReadError(PRegisterRange range)
 {
-    range->Device()->SetReadError(range);
-    range->MapRange([this, &range](PRegister reg, uint64_t new_value) {}, 
-                    [this, &range](PRegister reg) {
-                        bool changed;
-                        auto handler = Handlers[reg];
+    for (auto reg: range->RegisterList()) {
+        reg->SetError();
+        bool changed;
+        auto handler = Handlers[reg];
 
-                        if (handler->NeedToPoll())
-                            // TBD: separate AcceptDeviceReadError method (changed is unused here)
-                            MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
-                    });
+        if (handler->NeedToPoll())
+            // TBD: separate AcceptDeviceReadError method (changed is unused here)
+            MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
+    }
 }
 
 std::list<PRegisterRange> TSerialClient::PollRange(PRegisterRange range)
@@ -197,12 +196,16 @@ std::list<PRegisterRange> TSerialClient::PollRange(PRegisterRange range)
     PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
     std::list<PRegisterRange> newRanges = dev->ReadRegisterRange(range);
-    range->MapRange([this, &range](PRegister reg, uint64_t new_value) {
-            bool changed;
-            auto handler = Handlers[reg];
-
+    for (auto& reg: range->RegisterList()) {
+        bool changed;
+        auto handler = Handlers[reg];
+        if (reg->GetError()) {
+            if (handler->NeedToPoll())
+                // TBD: separate AcceptDeviceReadError method (changed is unused here)
+                MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
+        } else {
             if (handler->NeedToPoll()) {
-                MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(new_value, true, &changed));
+                MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(reg->GetValue(), true, &changed));
                 // Note that handler->CurrentErrorState() is not the
                 // same as the value returned by handler->AcceptDeviceValue(...),
                 // because the latter may be ErrorStateUnchanged.
@@ -210,14 +213,8 @@ std::list<PRegisterRange> TSerialClient::PollRange(PRegisterRange range)
                     handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
                     ReadCallback(reg, changed);
             }
-        }, [this, &range](PRegister reg) {
-            bool changed;
-            auto handler = Handlers[reg];
-
-            if (handler->NeedToPoll())
-                // TBD: separate AcceptDeviceReadError method (changed is unused here)
-                MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
-        });
+        }
+    }
     return newRanges;
 }
 
