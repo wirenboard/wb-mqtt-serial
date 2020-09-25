@@ -56,7 +56,6 @@ public:
     ~TSerialPortDriver();
     void SetUpDevices();
     void Cycle();
-    bool WriteInitValues();
     void ClearDevices() noexcept;
 
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event);

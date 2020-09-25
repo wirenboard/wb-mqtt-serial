@@ -37,6 +37,17 @@ protected:
     PFakeSerialPort Port;
     PSerialClient SerialClient;
     PFakeSerialDevice Device;
+
+    bool HasSetupRegisters = false;
+};
+
+class TSerialClientTestWithSetupRegisters: public TSerialClientTest
+{
+public:
+    TSerialClientTestWithSetupRegisters()
+    {
+        HasSetupRegisters = true;
+    }
 };
 
 void TSerialClientTest::SetUp()
@@ -49,6 +60,18 @@ void TSerialClientTest::SetUp()
 #endif
     auto config = std::make_shared<TDeviceConfig>("fake_sample", std::to_string(1), "fake");
     config->MaxReadRegisters = 0;
+
+    if (HasSetupRegisters) {
+        PRegisterConfig reg1 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 100);
+        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup1", reg1, 10)));
+
+        PRegisterConfig reg2 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 101);
+        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup2", reg2, 11)));
+
+        PRegisterConfig reg3 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 102);
+        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup3", reg3, 12)));
+    }
+
     config->FrameTimeout = std::chrono::milliseconds(100);
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(SerialClient->CreateDevice(config));
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
@@ -718,9 +741,13 @@ TEST_F(TSerialClientTest, Round)
 TEST_F(TSerialClientTest, Errors)
 {
     PRegister reg20 = Reg(20);
+    SerialClient->AddRegister(reg20);
+
+    Note() << "Cycle() [first start]";
+    SerialClient->Cycle();
+
     Device->BlockReadFor(20, true);
     Device->BlockWriteFor(20, true);
-    SerialClient->AddRegister(reg20);
 
     for (int i = 0; i < 3; i++) {
         Note() << "Cycle() [read, rw blacklisted]";
@@ -760,6 +787,25 @@ TEST_F(TSerialClientTest, Errors)
     SerialClient->Cycle();
 }
 
+TEST_F(TSerialClientTestWithSetupRegisters, SetupOk)
+{
+    PRegister reg20 = Reg(20);
+    SerialClient->AddRegister(reg20);
+    SerialClient->Cycle();
+    EXPECT_FALSE(Device->GetIsDisconnected());
+}
+
+TEST_F(TSerialClientTestWithSetupRegisters, SetupFail)
+{
+    PRegister reg20 = Reg(20);
+    SerialClient->AddRegister(reg20);
+    Device->BlockWriteFor(101, true);
+    SerialClient->Cycle();
+    EXPECT_TRUE(Device->GetIsDisconnected());
+    Device->BlockWriteFor(101, false);
+    SerialClient->Cycle();
+    EXPECT_FALSE(Device->GetIsDisconnected());
+}
 
 class TSerialClientIntegrationTest: public TSerialClientTest
 {
@@ -991,6 +1037,9 @@ TEST_F(TSerialClientIntegrationTest, Errors)
         throw std::runtime_error("device not found or wrong type");
     }
 
+    Note() << "LoopOnce() [first start]";
+    SerialDriver->LoopOnce();
+
     Device->BlockReadFor(4, true);
     Device->BlockWriteFor(4, true);
     Device->BlockReadFor(7, true);
@@ -1020,6 +1069,35 @@ TEST_F(TSerialClientIntegrationTest, Errors)
     SerialDriver->LoopOnce();
 
     Note() << "LoopOnce() [read, nothing blacklisted] (2)";
+    SerialDriver->LoopOnce();
+}
+
+TEST_F(TSerialClientIntegrationTest, SetupErrors)
+{
+    FilterConfig("DDL24");
+
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("23", "fake", Port));
+
+    if (!Device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    Device->BlockWriteFor(1, true);
+
+    Note() << "LoopOnce() [first start, write blacklisted]";
+    SerialDriver->LoopOnce();
+
+    Device->BlockWriteFor(1, false);
+    Device->BlockWriteFor(2, true);
+
+    Note() << "LoopOnce() [write blacklisted]";
+    SerialDriver->LoopOnce();
+
+    Device->BlockWriteFor(2, false);
+
+    Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 }
 
@@ -1072,7 +1150,8 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("12", "fake", Port));
 
     {   // Test initial WriteInitValues
-        mqttDriver->WriteInitValues();
+        Note() << "LoopOnce() [first start]";
+        mqttDriver->LoopOnce();
 
         EXPECT_EQ(42, Device->Registers[1]);
         EXPECT_EQ(24, Device->Registers[2]);
@@ -1166,8 +1245,9 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
     auto dev1 = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("12", "fake", Port));
     auto dev2 = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("13", "fake", Port));
 
-    {   // Test initial WriteInitValues
-        mqttDriver->WriteInitValues();
+    {   // Test initial setup
+        Note() << "LoopOnce() [first start]";
+        mqttDriver->LoopOnce();
 
         EXPECT_EQ(42, dev1->Registers[1]);
         EXPECT_EQ(24, dev1->Registers[2]);

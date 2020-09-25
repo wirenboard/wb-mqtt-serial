@@ -17,6 +17,20 @@
                     "enabled": true,
                     "max_read_registers": 0,
                     "protocol": "fake",
+                    "setup": [
+                        {
+                          "title": "Input 1",
+                          "reg_type": "fake",
+                          "address": 1,
+                          "value": 42
+                      },
+                      {
+                          "title": "Input 2",
+                          "reg_type": "fake",
+                          "address": 2,
+                          "value": 24
+                      }
+                    ],
                     "frame_timeout_ms": 100,
                     "channels": [
                     {

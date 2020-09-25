@@ -207,6 +207,20 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
         DoFlush();
 }
 
+void TSerialClient::SetReadError(PRegisterRange range)
+{
+    range->Device()->SetReadError(range);
+    range->MapRange([this, &range](PRegister reg, uint64_t new_value) {}, 
+                    [this, &range](PRegister reg) {
+                        bool changed;
+                        auto handler = Handlers[reg];
+
+                        if (handler->NeedToPoll())
+                            // TBD: separate AcceptDeviceReadError method (changed is unused here)
+                            MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
+                    });
+}
+
 void TSerialClient::PollRange(PRegisterRange range)
 {
     PSerialDevice dev = range->Device();
@@ -261,22 +275,20 @@ void TSerialClient::Cycle()
                     // Force Prepare() (i.e. start session)
                     try {
                         device->Prepare();
+                        LastAccessedDevice = device;
                     } catch ( const TSerialDeviceTransientErrorException& e) {
                         LOG(Warn) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
                     }
 
                     if (device->HasSetupItems()) {
-                        auto wrote = device->WriteSetupRegisters(false);
+                        auto wrote = device->WriteSetupRegisters();
                         statuses.insert(wrote ? TRegisterRange::ST_OK : TRegisterRange::ST_UNKNOWN_ERROR);
-                        if (!wrote) {
-                            continue;
-                        }
                     }
-                } else {
-                    // Not first interaction with disconnected device that has only errors - still disconnected
-                    if (statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size()) {
-                        continue;
-                    }
+                }
+                // Interaction with disconnected device that has only errors - still disconnected
+                if (!statuses.empty() && statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size()) {
+                    SetReadError(range);
+                    continue;
                 }
             }
 
@@ -323,13 +335,6 @@ void TSerialClient::Cycle()
 
         Port->CycleEnd(!cycleFailed);
     }
-}
-
-bool TSerialClient::WriteSetupRegisters(PSerialDevice dev)
-{
-    Connect();
-    PrepareToAccessDevice(dev);
-    return dev->WriteSetupRegisters();
 }
 
 void TSerialClient::ClearDevices()

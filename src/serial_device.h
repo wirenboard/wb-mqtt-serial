@@ -79,7 +79,7 @@ public:
     // i.e. "StartSession". Called before any read/write/etc after communicating with another device
     virtual void Prepare();
     // Ends communication session with the device. Called before communicating with another device
-    virtual void EndSession() {/*do nothing by default */}; 
+    virtual void EndSession() {/*do nothing by default */}
     // Read register value
     virtual uint64_t ReadRegister(PRegister reg) = 0;
     // Write register value
@@ -88,13 +88,15 @@ public:
     virtual void EndPollCycle();
     // Read multiple registers
     virtual void ReadRegisterRange(PRegisterRange range);
+    // Set range as failed to read
+    virtual void SetReadError(PRegisterRange range);
 
     virtual std::string ToString() const;
 
     // Initialize setup items' registers
     void InitSetupItems();
     bool HasSetupItems() const;
-    bool WriteSetupRegisters(bool tryAll = true);
+    virtual bool WriteSetupRegisters();
 
     PPort Port() const { return SerialPort; }
     PDeviceConfig DeviceConfig() const { return _DeviceConfig; }
@@ -118,11 +120,13 @@ public:
         ModbusTmpCache.clear();
     }
 
+protected:
+    std::vector<PDeviceSetupItem> SetupItems;
+
 private:
     PPort SerialPort;
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
-    std::vector<PDeviceSetupItem> SetupItems;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
     std::set<int> UnavailableAddresses;

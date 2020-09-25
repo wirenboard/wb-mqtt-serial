@@ -13,15 +13,21 @@ Publish: /devices/reconnect-test/controls/I2/meta/readonly: '0' (QoS 1, retained
 Publish: /devices/reconnect-test/controls/I2/meta/type: 'value' (QoS 1, retained)
 Publish: /devices/reconnect-test/controls/I2: '0' (QoS 1, retained)
 Subscribe: /devices/reconnect-test/controls/I2/on (QoS 0)
+>>> LoopOnce() [first start]
 Open()
 Sleep(150000)
 fake_serial_device '12': write to address '1' value '42'
 fake_serial_device '12': write to address '2' value '24'
->>> LoopOnce()
 fake_serial_device '12': read address '1' value '42'
 Publish: /devices/reconnect-test/controls/I1: '0.042' (QoS 1, retained)
 fake_serial_device '12': read address '2' value '24'
 Publish: /devices/reconnect-test/controls/I2: '0.024' (QoS 1, retained)
+fake_serial_device '12': Device cycle OK
+fake_serial_device '12': reconnected
+Port cycle OK
+>>> LoopOnce()
+fake_serial_device '12': read address '1' value '42'
+fake_serial_device '12': read address '2' value '24'
 fake_serial_device '12': Device cycle OK
 Port cycle OK
 >>> SimulateDisconnect(true)

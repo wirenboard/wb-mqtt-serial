@@ -1,9 +1,15 @@
-wb-mqtt-serial (2.1.1) experimental; urgency=medium
+wb-mqtt-serial (2.1.2) experimental; urgency=medium
 
   * service startup after upgrading is fixed
   * notifications about config properties overriding are shown only for changed values
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 22 Sep 2020 11:30:15 +0500
+
+wb-mqtt-serial (2.1.1) experimental; urgency=medium
+
+  * retry device setup on write register failure
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 15 Sep 2020 13:51:01 +0500
 
 wb-mqtt-serial (2.1.0) experimental; urgency=medium
 
