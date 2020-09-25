@@ -33,7 +33,7 @@ Publish: /devices/modbus-sample/controls/U8:2: '0' (QoS 1, retained)
 Subscribe: /devices/modbus-sample/controls/U8:2/on (QoS 0)
 >>> LoopOnce()
 Open()
-Sleep(100000)
+Sleep(5000)
 EnqueueU8Shift0Bits8HoldingReadResponse()
 >> 01 03 00 46 00 01 65 DF
 Publish: /devices/modbus-sample/controls/U8:0:8: '0' (QoS 1, retained)

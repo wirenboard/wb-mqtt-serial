@@ -77,7 +77,7 @@ Publish: /devices/mercury230ar02-test/controls/AP2: '0' (QoS 1, retained)
 Open()
 EnqueueMilurIgnoredPacketWorkaround()
 >> FF
-Sleep(100000)
+Sleep(150000)
 SkipNoise()
 SkipNoise()
 EnqueueMilurSessionSetupResponse()
@@ -95,7 +95,7 @@ EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
 Publish: /devices/milur305.32r-test/controls/Total consumption: '111.44' (QoS 1, retained)
 << FF 01 76 04 44 11 10 00 AC 6C
-Sleep(100000)
+Sleep(150000)
 SkipNoise()
 EnqueueMercury230SessionSetupResponse()
 >> 00 01 01 01 01 01 01 01 01 77 81
@@ -145,7 +145,7 @@ Port cycle OK
 << 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
 EnqueueMilurIgnoredPacketWorkaround()
 >> FF
-Sleep(100000)
+Sleep(150000)
 SkipNoise()
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
@@ -159,7 +159,7 @@ EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
 Publish: /devices/milur305.32r-test/controls/Total consumption: '111.44' (QoS 1, retained)
 << FF 01 76 04 44 11 10 00 AC 6C
-Sleep(100000)
+Sleep(150000)
 EnqueueMercury230EnergyResponse1()
 >> 00 05 00 00 10 25
 Publish: /devices/mercury230ar02-test/controls/Total consumption: '3196.2' (QoS 1, retained)
@@ -205,7 +205,7 @@ Port cycle OK
 << 00 30 00 29 C5 30 00 29 00 04 00 9D 95 50 99
 EnqueueMilurIgnoredPacketWorkaround()
 >> FF
-Sleep(100000)
+Sleep(150000)
 SkipNoise()
 EnqueueMilurPhaseCVoltageResponse()
 >> FF 01 66 C0 4A
@@ -219,7 +219,7 @@ EnqueueMilurTotalConsumptionResponse()
 >> FF 01 76 C1 86
 Publish: /devices/milur305.32r-test/controls/Total consumption: '111.44' (QoS 1, retained)
 << FF 01 76 04 44 11 10 00 AC 6C
-Sleep(100000)
+Sleep(150000)
 EnqueueMercury230EnergyResponse1()
 >> 00 05 00 00 10 25
 Publish: /devices/mercury230ar02-test/controls/Total consumption: '3196.2' (QoS 1, retained)

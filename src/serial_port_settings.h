@@ -15,10 +15,8 @@ struct TSerialPortSettings final: TPortSettings
                         int baudRate = 9600,
                         char parity = 'N',
                         int dataBits = 8,
-                        int stopBits = 1,
-                        const std::chrono::milliseconds & responseTimeout = std::chrono::milliseconds(500))
-        : TPortSettings(responseTimeout)
-        , Device(device)
+                        int stopBits = 1)
+        : Device(device)
         , BaudRate(baudRate)
         , Parity(parity)
         , DataBits(dataBits)
@@ -43,7 +41,6 @@ using PSerialPortSettings = std::shared_ptr<TSerialPortSettings>;
 
 inline ::std::ostream& operator<<(::std::ostream& os, const TSerialPortSettings& settings) {
     return os << "<" << settings.Device << " " << settings.BaudRate <<
-        " " << settings.DataBits << " " << settings.Parity << settings.StopBits <<
-        " timeout " << settings.ResponseTimeout.count() << ">";
+        " " << settings.DataBits << " " << settings.Parity << settings.StopBits << ">";
 }
 

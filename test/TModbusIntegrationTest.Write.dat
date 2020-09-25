@@ -172,7 +172,7 @@ Publish: /devices/modbus-sample/controls/Holding U64 Multi/on: '8198552921648689
 Publish: /devices/modbus-sample/controls/Holding U64 Multi: '81985529216486895' (QoS 1, retained)
 >>> LoopOnce()
 Open()
-Sleep(100000)
+Sleep(5000)
 EnqueueCoilWriteResponse()
 >> 01 05 00 00 FF 00 8C 3A
 << 01 05 00 00 FF 00 8C 3A

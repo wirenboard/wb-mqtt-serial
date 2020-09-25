@@ -2,17 +2,18 @@
 #include "serial_port.h"
 #include "log.h"
 
-#include <map>
 #include <string.h>
 #include <fcntl.h>
 #include <iostream>
 #include <utility>
+#include <cmath>
+
+#include <linux/serial.h>
+#include <sys/ioctl.h>
 
 #define LOG(logger) ::logger.Log() << "[serial port] "
 
 using namespace WBMQTT;
-
-#define LOG(logger) ::logger.Log() << "[serial port] "
 
 namespace {
     int ConvertBaudRate(int rate)
@@ -47,11 +48,15 @@ namespace {
             return CS8;
         }
     }
+
+    std::chrono::milliseconds GetLinuxLag(int baudRate)
+    {
+        return std::chrono::milliseconds(baudRate < 9600 ? 34 : 24);
+    }
 };
 
 TSerialPort::TSerialPort(const PSerialPortSettings & settings)
-    : TFileDescriptorPort(settings)
-    , Settings(settings)
+    : Settings(settings)
 {
     memset(&OldTermios, 0, sizeof(termios));
 }
@@ -120,6 +125,7 @@ void TSerialPort::Open()
         throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcsetattr");
     }
 
+    LastInteraction = std::chrono::steady_clock::now();
     SkipNoise();    // flush data from previous instance if any
 }
 
@@ -129,4 +135,39 @@ void TSerialPort::Close()
         tcsetattr(Fd, TCSANOW, &OldTermios);
     }
     Base::Close();
+}
+
+std::chrono::milliseconds TSerialPort::GetSendTime(double bytesNumber)
+{
+    size_t bitsPerByte = 1 + Settings->DataBits + Settings->StopBits;
+    if (Settings->Parity != 'N') {
+        ++bitsPerByte;
+    }
+    auto ms = std::ceil((1000.0*bitsPerByte*bytesNumber)/double(Settings->BaudRate));
+    return std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(ms));
+}
+
+uint8_t TSerialPort::ReadByte(const std::chrono::microseconds& timeout)
+{
+    return Base::ReadByte(timeout + GetLinuxLag(Settings->BaudRate));
+}
+
+int TSerialPort::ReadFrame(uint8_t* buf,
+                           int count,
+                           const std::chrono::microseconds& responseTimeout,
+                           const std::chrono::microseconds& frameTimeout,
+                           TFrameCompletePred frameComplete)
+{
+    return Base::ReadFrame(buf,
+                           count,
+                           responseTimeout + GetLinuxLag(Settings->BaudRate),
+                           frameTimeout + std::chrono::milliseconds(15),
+                           frameComplete);
+}
+
+void TSerialPort::WriteBytes(const uint8_t* buf, int count)
+{
+    Base::WriteBytes(buf, count);
+    SleepSinceLastInteraction(GetSendTime(count));
+    LastInteraction = std::chrono::steady_clock::now();
 }

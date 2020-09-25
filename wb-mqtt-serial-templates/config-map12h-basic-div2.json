@@ -3,7 +3,9 @@
  "device": {
   "name": "WB-MAP12H (basic div2)", 
   "id": "wb-map12h", 
-  "max_read_registers": 60, 
+  "max_read_registers": 60,
+  "response_timeout_ms": 1,
+  "frame_timeout_ms": 8,
   "channels": [
    {
     "name": "Urms L1", 

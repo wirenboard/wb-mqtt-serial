@@ -4,6 +4,8 @@
     "name": "WB-MCM8",
     "id": "wb-mcm8",
     "max_read_registers": 0,
+    "response_timeout_ms": 1,
+    "frame_timeout_ms": 8,
     "channels": [
       {
         "name": "Input 1 counter",

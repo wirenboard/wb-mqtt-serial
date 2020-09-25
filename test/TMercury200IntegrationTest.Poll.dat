@@ -43,7 +43,7 @@ Publish: /devices/mercury200.02_0xFE123456/controls/Battery/meta/type: 'voltage'
 Publish: /devices/mercury200.02_0xFE123456/controls/Battery: '0' (QoS 1, retained)
 >>> LoopOnce()
 Open()
-Sleep(100000)
+Sleep(7000)
 EnqueueMercury200BatteryVoltageResponse()
 >> FE 12 34 56 29 B7 1C
 Publish: /devices/mercury200.02_0xFE123456/controls/Battery: '3.91' (QoS 1, retained)

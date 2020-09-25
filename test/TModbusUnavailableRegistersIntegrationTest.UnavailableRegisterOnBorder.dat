@@ -118,7 +118,7 @@ Publish: /devices/modbus-sample/controls/Holding1: '0' (QoS 1, retained)
 Subscribe: /devices/modbus-sample/controls/Holding1/on (QoS 0)
 Open()
 >>> LoopOnce() [first read]
-Sleep(100000)
+Sleep(5000)
 EnqueueHoldingPackUnavailableOnBorderReadResponse()
 >> 01 03 00 07 00 06 74 09
 Publish: /devices/modbus-sample/controls/White/meta/error: 'r' (QoS 1, retained)

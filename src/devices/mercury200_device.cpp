@@ -23,7 +23,9 @@ REGISTER_BASIC_INT_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes(
 
 TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol)
     : TBasicProtocolSerialDevice<TBasicProtocol<TMercury200Device>>(config, port, protocol)
-{}
+{
+    config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(6));
+}
 
 TMercury200Device::~TMercury200Device()
 {}
@@ -110,7 +112,7 @@ int TMercury200Device::RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* res
     uint8_t request[REQUEST_LEN];
     FillCommand(request, slave, cmd);
     Port()->WriteBytes(request, REQUEST_LEN);
-    return Port()->ReadFrame(response, RESPONSE_BUF_LEN, this->DeviceConfig()->FrameTimeout);
+    return Port()->ReadFrame(response, RESPONSE_BUF_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
 }
 
 void TMercury200Device::FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) const

@@ -7,8 +7,7 @@
 #define LOG(logger) ::logger.Log() << "[serial device] "
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : Delay(config->Delay)
-    , SerialPort(port)
+    : SerialPort(port)
     , _DeviceConfig(config)
     , _Protocol(protocol)
     , LastSuccessfulCycle()
@@ -17,9 +16,7 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
 {}
 
 TSerialDevice::~TSerialDevice()
-{
-    /* TSerialDeviceFactory::RemoveDevice(shared_from_this()); */
-}
+{}
 
 std::string TSerialDevice::ToString() const
 {
@@ -36,7 +33,7 @@ std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegi
 
 void TSerialDevice::Prepare()
 {
-    Port()->Sleep(Delay);
+    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
 }
 
 void TSerialDevice::EndPollCycle() {}
@@ -50,10 +47,8 @@ std::list<PRegisterRange> TSerialDevice::ReadRegisterRange(PRegisterRange range)
         if (!reg->IsAvailable()) {
             continue;
         }
-        try {
-            if (DeviceConfig()->GuardInterval.count()){
-                Port()->Sleep(DeviceConfig()->GuardInterval);
-            }
+    	try {
+            Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
             reg->SetValue(ReadRegister(reg));
         } catch (const TSerialDeviceTransientErrorException& e) {
             reg->SetError();
