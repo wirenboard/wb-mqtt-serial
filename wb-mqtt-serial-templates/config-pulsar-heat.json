@@ -4,6 +4,8 @@
         "name": "Pulsar Heat Meter",
         "id": "pulsar-heat",
         "protocol": "pulsar",
+        "response_timeout_ms": 500,
+        "frame_timeout_ms": 300,
         "channels": [
             {
                 "name": "Input temperature",

@@ -343,17 +343,21 @@ namespace {
                 device_config->Password.push_back(ToInt(passwordItem, "password item"));
         }
 
-        Get(device_data, "delay_ms", device_config->Delay);
-        if (Get(device_data, "delay_usec", device_config->Delay)) // compat
-            device_config->Delay = device_config->Delay / 1000;
+        if (device_data.isMember("delay_ms")) {
+            LOG(Warn) << "\"delay_ms\" is not supported, use \"frame_timeout_ms\" instead";
+        }
 
         Get(device_data, "frame_timeout_ms",       device_config->FrameTimeout);
+        if (device_config->FrameTimeout.count() < 0) {
+            device_config->FrameTimeout = std::chrono::milliseconds::zero();
+        }
+        Get(device_data, "response_timeout_ms",    device_config->ResponseTimeout);
         Get(device_data, "device_timeout_ms",      device_config->DeviceTimeout);
         Get(device_data, "device_max_fail_cycles", device_config->DeviceMaxFailCycles);
         Get(device_data, "max_reg_hole",           device_config->MaxRegHole);
         Get(device_data, "max_bit_hole",           device_config->MaxBitHole);
         Get(device_data, "max_read_registers",     device_config->MaxReadRegisters);
-        Get(device_data, "guard_interval_us",      device_config->GuardInterval);
+        Get(device_data, "guard_interval_us",      device_config->RequestDelay);
         Get(device_data, "stride",                 device_config->Stride);
         Get(device_data, "shift",                  device_config->Shift);
         Get(device_data, "access_level",           device_config->AccessLevel);
@@ -412,8 +416,15 @@ namespace {
         if (device_config->DeviceChannelConfigs.empty())
             throw TConfigParserException("the device has no channels: " + device_config->Name);
 
-        if (device_config->GuardInterval.count() == 0) {
-            device_config->GuardInterval = port_config->GuardInterval;
+        if (device_config->RequestDelay.count() == 0) {
+            device_config->RequestDelay = port_config->RequestDelay;
+        }
+
+        if (port_config->ResponseTimeout > device_config->ResponseTimeout) {
+            device_config->ResponseTimeout = port_config->ResponseTimeout;
+        }
+        if (device_config->ResponseTimeout.count() == -1) {
+            device_config->ResponseTimeout = DefaultResponseTimeout;
         }
 
         port_config->AddDeviceConfig(device_config);
@@ -460,9 +471,9 @@ namespace {
             port_config->ConnSettings = tcp_port_settings;
         }
 
-        Get(port_data, "response_timeout_ms", port_config->ConnSettings->ResponseTimeout);
+        Get(port_data, "response_timeout_ms", port_config->ResponseTimeout);
         Get(port_data, "poll_interval",       port_config->PollInterval);
-        Get(port_data, "guard_interval_us",   port_config->GuardInterval);
+        Get(port_data, "guard_interval_us",   port_config->RequestDelay);
 
         const Json::Value& array = port_data["devices"];
         for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index)
@@ -570,8 +581,10 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
     Get(Root, "max_unchanged_interval", handlerConfig->MaxUnchangedInterval);
 
     const Json::Value& array = Root["ports"];
-    for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index)
-        LoadPort(handlerConfig, array[index], "wb-modbus-" + std::to_string(index) + "-", templates, getRegisterTypeMapFn); // XXX old default prefix for compat
+    for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
+        // XXX old default prefix for compat
+        LoadPort(handlerConfig, array[index], "wb-modbus-" + std::to_string(index) + "-", templates, getRegisterTypeMapFn);
+    }
 
     // check are there any devices defined
     for (const auto& port_config : handlerConfig->PortConfigs) {
@@ -602,3 +615,49 @@ void TPortConfig::AddDeviceConfig(PDeviceConfig device_config)
 
     DeviceConfigs.push_back(device_config);
 }
+
+TDeviceChannelConfig::TDeviceChannelConfig(const std::string& name,
+                                           const std::string& type,
+                                           const std::string& deviceId,
+                                           int                order,
+                                           const std::string& onValue,
+                                           int max,
+                                           bool readOnly,
+                                           const std::vector<PRegisterConfig> regs)
+    : Name(name), Type(type), DeviceId(deviceId),
+      Order(order), OnValue(onValue), Max(max),
+      ReadOnly(readOnly), RegisterConfigs(regs) 
+{}
+
+TDeviceSetupItemConfig::TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, int value)
+        : Name(name), RegisterConfig(reg), Value(value)
+{}
+
+TDeviceConfig::TDeviceConfig(const std::string& name, const std::string& slave_id, const std::string& protocol)
+        : Name(name), SlaveId(slave_id), Protocol(protocol) 
+{}
+
+int TDeviceConfig::NextOrderValue() const 
+{
+    return DeviceChannelConfigs.size() + 1;
+}
+
+void TDeviceConfig::AddChannel(PDeviceChannelConfig channel)
+{
+    DeviceChannelConfigs.push_back(channel); 
+}
+
+void TDeviceConfig::AddSetupItem(PDeviceSetupItemConfig item) 
+{
+    SetupItemConfigs.push_back(item);
+}
+
+void THandlerConfig::AddPortConfig(PPortConfig portConfig) 
+{
+    portConfig->MaxUnchangedInterval = MaxUnchangedInterval;
+    PortConfigs.push_back(portConfig);
+}
+
+TConfigParserException::TConfigParserException(const std::string& message)
+    : std::runtime_error("Error parsing config file: " + message) 
+{}

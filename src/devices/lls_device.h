@@ -1,9 +1,5 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include <exception>
-#include <stdint.h>
 #include "serial_device.h"
 
 class TLLSDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TLLSDevice>> {

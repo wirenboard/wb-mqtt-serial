@@ -16,6 +16,17 @@ public:
     void Open() override;
     void Close() override;
 
+    void WriteBytes(const uint8_t* buf, int count) override;
+
+    uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
+    int ReadFrame(uint8_t* buf,
+                  int count,
+                  const std::chrono::microseconds& responseTimeout,
+                  const std::chrono::microseconds& frameTimeout,
+                  TFrameCompletePred frameComplete = 0) override;
+
+    std::chrono::milliseconds GetSendTime(double bytesNumber) override;
+
 private:
     PSerialPortSettings Settings;
     termios             OldTermios;

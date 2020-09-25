@@ -18,6 +18,7 @@
           "slave_id": 1,
           "enabled": true,
           "protocol": "s2k",
+          "frame_timeout_ms": 100,
           "channels": [
             {
               "name": "Relay 1",

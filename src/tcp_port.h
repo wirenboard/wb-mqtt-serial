@@ -16,7 +16,8 @@ public:
     void Open() override;
     void WriteBytes(const uint8_t * buf, int count) override;
     int ReadFrame(uint8_t * buf, int count,
-                  const std::chrono::microseconds & timeout = std::chrono::microseconds(-1),
+                  const std::chrono::microseconds & responseTimeout,
+                  const std::chrono::microseconds& frameTimeout,
                   TFrameCompletePred frame_complete = 0) override;
 
 private:

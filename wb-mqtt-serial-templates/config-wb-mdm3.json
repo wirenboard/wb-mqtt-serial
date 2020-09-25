@@ -3,6 +3,8 @@
     "device": {
         "name": "WB-MDM3",
         "id": "wb-mdm3",
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
         "channels": [
             {
                 "name": "K1",

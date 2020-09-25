@@ -110,7 +110,7 @@ protected:
 void TMercury200IntegrationTest::SetUp()
 {
     TSerialDeviceIntegrationTest::SetUp();
-    SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(150));
+    SerialPort->SetExpectedFrameTimeout(std::chrono::milliseconds(7));
     ASSERT_TRUE(!!SerialPort);
 }
 

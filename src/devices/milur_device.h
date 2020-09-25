@@ -12,8 +12,6 @@ typedef TBasicProtocol<TMilurDevice> TMilurProtocol;
 
 class TMilurDevice: public TEMDevice<TMilurProtocol> {
 public:
-    static const int DefaultTimeoutMs = 1000;
-    static const int FrameTimeoutMs = 50;
     enum RegisterType {
         REG_PARAM = 0,
         REG_POWER,
