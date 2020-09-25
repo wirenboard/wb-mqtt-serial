@@ -1,8 +1,15 @@
+>>> Cycle() [first start]
+Open()
+Sleep(100000)
+fake_serial_device '1': read address '20' value '0'
+Error Callback: <fake:1:fake: 20>: no error
+Read Callback: <fake:1:fake: 20> becomes 0
+fake_serial_device '1': Device cycle OK
+fake_serial_device '1': reconnected
+Port cycle OK
 fake_serial_device: block address '20' for reading
 fake_serial_device: block address '20' for writing
 >>> Cycle() [read, rw blacklisted]
-Open()
-Sleep(100000)
 fake_serial_device '1': read address '20' failed: 'Serial protocol error: read blocked'
 Error Callback: <fake:1:fake: 20>: read error
 fake_serial_device '1': Device cycle FAIL

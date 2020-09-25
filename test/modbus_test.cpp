@@ -220,7 +220,7 @@ TEST_F(TModbusTest, WrongSlaveIdWrite)
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response slave id mismatch"), e.what());
+        EXPECT_EQ(string("Serial protocol error: request and response slave id mismatch"), e.what());
     }
 
     SerialPort->Close();
@@ -234,7 +234,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWrite)
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response function code mismatch"), e.what());
+        EXPECT_EQ(string("Serial protocol error: request and response function code mismatch"), e.what());
     }
 
     SerialPort->Close();
@@ -248,7 +248,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWithExceptionWrite)
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException & e) {
-        EXPECT_EQ(string("Serial protocol error: failed to write (type 2) @ 0: Serial protocol error: request and response function code mismatch"), e.what());
+        EXPECT_EQ(string("Serial protocol error: request and response function code mismatch"), e.what());
     }
 
     SerialPort->Close();

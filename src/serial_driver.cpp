@@ -90,14 +90,3 @@ void TMQTTSerialDriver::Stop()
 
     ClearDevices();
 }
-
-bool TMQTTSerialDriver::WriteInitValues()
-{
-    bool did_write = false;
-    for (const auto & portDriver: PortDrivers) {
-        if (portDriver->WriteInitValues())
-            did_write = true;
-    }
-
-    return did_write;
-}

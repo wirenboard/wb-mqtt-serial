@@ -32,7 +32,6 @@ public:
     void SetReadCallback(const TReadCallback& callback);
     void SetErrorCallback(const TErrorCallback& callback);
     void NotifyFlushNeeded();
-    bool WriteSetupRegisters(PSerialDevice dev);
     void ClearDevices();
 
 private:
@@ -41,6 +40,7 @@ private:
     void WaitForPollAndFlush();
     void MaybeFlushAvoidingPollStarvationButDontWait();
     void PollRange(PRegisterRange range);
+    void SetReadError(PRegisterRange range);
     PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
     void PrepareToAccessDevice(PSerialDevice dev);

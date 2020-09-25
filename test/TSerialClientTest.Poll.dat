@@ -17,6 +17,7 @@ fake_serial_device '1': read address '33' value '0'
 Error Callback: <fake:1:fake: 33>: no error
 Read Callback: <fake:1:fake: 33> becomes 0
 fake_serial_device '1': Device cycle OK
+fake_serial_device '1': reconnected
 Port cycle OK
 >>> Cycle()
 fake_serial_device '1': read address '0' value '0'

@@ -25,7 +25,7 @@ namespace Modbus    // modbus protocol declarations
     const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
     const size_t WRITE_RESPONSE_PDU_SIZE = 5;
 
-    enum ModbusError: uint8_t {
+    enum Error: uint8_t {
         ERR_NONE                                    = 0x0,
         ERR_ILLEGAL_FUNCTION                        = 0x1,
         ERR_ILLEGAL_DATA_ADDRESS                    = 0x2,
@@ -61,12 +61,12 @@ namespace Modbus    // modbus protocol declarations
         void SetError(bool error) { Error = error; }
         bool GetError() const { return Error; }
         void ResetModbusError() { SetModbusError(ERR_NONE); }
-        void SetModbusError(ModbusError error) { ModbusErrorCode = error; }
-        ModbusError GetModbusError() const { return ModbusErrorCode; }
+        void SetModbusError(Modbus::Error error) { ModbusErrorCode = error; }
+        Modbus::Error GetModbusError() const { return ModbusErrorCode; }
     private:
         bool HasHoles = false;
         bool Error = false;
-        ModbusError ModbusErrorCode = ERR_NONE;
+        Modbus::Error ModbusErrorCode = ERR_NONE;
         int Start, Count;
         uint8_t* Bits = 0;
         uint16_t* Words = 0;
@@ -337,47 +337,33 @@ namespace Modbus    // modbus protocol common utilities
     // throws C++ exception on modbus error code
     void ThrowIfModbusException(uint8_t code)
     {
-        std::string message;
-        bool is_transient = true;
-        switch (code) {
-        case 0:
-            return; // not an error
-        case ERR_ILLEGAL_FUNCTION:
-            message = "illegal function";
-            break;
-        case ERR_ILLEGAL_DATA_ADDRESS:
-            message = "illegal data address";
-            break;
-        case ERR_ILLEGAL_DATA_VALUE:
-            message = "illegal data value";
-            break;
-        case ERR_SERVER_DEVICE_FAILURE:
-            message = "server device failure";
-            break;
-        case ERR_ACKNOWLEDGE:
-            message = "long operation (acknowledge)";
-            break;
-        case ERR_SERVER_DEVICE_BUSY:
-            message = "server device is busy";
-            break;
-        case ERR_MEMORY_PARITY_ERROR:
-            message = "memory parity error";
-            break;
-        case ERR_GATEWAY_PATH_UNAVAILABLE:
-            message = "gateway path is unavailable";
-            break;
-        case ERR_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
-            message = "gateway target device failed to respond";
-            break;
-        default:
-            message = "invalid modbus error code (" + std::to_string(code) + ")";
-            break;
+        if ( code == 0) {
+            return;
         }
-        if (is_transient) {
-            throw TSerialDeviceTransientErrorException(message);
-        } else {
-            throw TSerialDevicePermanentRegisterException(message);
+        typedef std::pair<const char*, bool> TModbusException;
+        const TModbusException errs[] =             
+            { {"illegal function",                        true },     // 0x01
+              {"illegal data address",                    true },     // 0x02
+              {"illegal data value",                      true },     // 0x03
+              {"server device failure",                   false},     // 0x04
+              {"long operation (acknowledge)",            false},     // 0x05
+              {"server device is busy",                   false},     // 0x06
+              {nullptr,                                   false},     // 0x07
+              {"memory parity error",                     false},     // 0x08
+              {nullptr,                                   false},     // 0x09
+              {"gateway path is unavailable",             false},     // 0x0A
+              {"gateway target device failed to respond", false}  };  // 0x0B
+        --code;
+        if (code < sizeof(errs)/sizeof(TModbusException)) {
+            const auto& err = errs[code];
+            if (err.first != nullptr) {
+                if (err.second) {
+                    throw TSerialDevicePermanentRegisterException(err.first);
+                }
+                throw TSerialDeviceTransientErrorException(err.first);
+            }
         }
+        throw TSerialDeviceTransientErrorException("invalid modbus error code (" + std::to_string(code+1) + ")");
     }
 
     // returns count of modbus registers needed to represent TRegister
@@ -581,7 +567,7 @@ namespace Modbus    // modbus protocol common utilities
         auto baseAddress = range->GetStart();
 
         auto exception_code = GetExceptionCode(pdu);
-        range->SetModbusError(static_cast<ModbusError>(exception_code));
+        range->SetModbusError(static_cast<Modbus::Error>(exception_code));
         ThrowIfModbusException(exception_code);
 
         uint8_t byte_count = pdu[1];
@@ -840,37 +826,34 @@ namespace ModbusRTU // modbus rtu protocol utilities
     {
         reg->Device()->DismissTmpCache();
 
-        int w = reg->Width();
+        std::unique_ptr<TRegister, std::function<void(TRegister*)>> tmpCacheGuard(reg.get(), [](TRegister* reg){reg->Device()->DismissTmpCache();});
 
-        LOG(Debug) << "modbus: write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
+        LOG(Debug) << "modbus: write " << reg->Width() << " " << reg->TypeName << "(s) @ " << reg->Address <<
                 " of device " << reg->Device()->ToString();
 
-        std::string exception_message;
-        try {
-            std::vector<TWriteRequest> requests;
-            ComposeWriteRequests(requests, reg, slaveId, value, shift);
+        std::vector<TWriteRequest> requests;
+        ComposeWriteRequests(requests, reg, slaveId, value, shift);
 
-            for (const auto & request: requests) {
-                TWriteResponse response;
-                if (ProcessRequest(port, request, response, reg->Device()->DeviceConfig()) > 0) {
-                    Modbus::ParseWriteResponse(PDU(response));
-                } else {
-                    throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
-                }
+        for (const auto & request: requests) {
+            TWriteResponse response;
+            if (ProcessRequest(port, request, response, reg->Device()->DeviceConfig()) > 0) {
+                Modbus::ParseWriteResponse(PDU(response));
+            } else {
+                throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
             }
-
-            reg->Device()->ApplyTmpCache();
-            return;
-        } catch (TSerialDeviceTransientErrorException& e) {
-            exception_message = ": ";
-            exception_message += e.what();
         }
 
-        reg->Device()->DismissTmpCache();
+        reg->Device()->ApplyTmpCache();
+    }
 
-        throw TSerialDeviceTransientErrorException(
-            "failed to write " + reg->TypeName +
-            " @ " + std::to_string(reg->Address) + exception_message);
+    void SetReadError(PRegisterRange range)
+    {
+        auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
+        if (!modbus_range) {
+            throw std::runtime_error("modbus range expected");
+        }
+        modbus_range->ResetModbusError();
+        modbus_range->SetError(true);
     }
 
     void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift)
@@ -899,7 +882,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
                 modbus_range->SetError(false);
                 return;
             }
-        } catch (TSerialDeviceTransientErrorException& e) {
+        } catch (const TSerialDeviceTransientErrorException& e) {
+            exception_message = e.what();
+        } catch (const TSerialDevicePermanentRegisterException& e) {
             exception_message = e.what();
         }
 
@@ -912,4 +897,27 @@ namespace ModbusRTU // modbus rtu protocol utilities
             logWarn << ": " << exception_message;
         }
     }
-};  // modbus rtu protocol utilities
+
+    void WarnFailedRegisterSetup(const PDeviceSetupItem& item, const char* msg)
+    {
+        LOG(Warn) << "Register " << item->Register->ToString() << " setup failed: " << msg;
+    }
+
+    bool WriteSetupRegisters(PPort port, uint8_t slaveId, const std::vector<PDeviceSetupItem>& setupItems, int shift)
+    {
+        for (const auto& item : setupItems) {
+            try {
+                LOG(Info) << "Init: " << item->Name 
+                        << ": setup register " << item->Register->ToString()
+                        << " <-- " << item->Value;
+                WriteRegister(port, slaveId, item->Register, item->Value, shift);
+            } catch (const TSerialDevicePermanentRegisterException& e) {
+                WarnFailedRegisterSetup(item, e.what());
+            } catch (const TSerialDeviceTransientErrorException& e) {
+                WarnFailedRegisterSetup(item, e.what());
+                return false;
+            }
+        }
+        return true;
+    }
+}  // modbus rtu protocol utilities
