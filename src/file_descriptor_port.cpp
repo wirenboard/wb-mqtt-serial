@@ -118,24 +118,25 @@ uint8_t TFileDescriptorPort::ReadByte(const chrono::microseconds& timeout)
     return b;
 }
 
-int TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
+size_t TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
 {
     // We don't want to use non-blocking IO in general
     // (e.g. we want blocking writes), but we don't want
     // read() call below to block because actual frame
     // size is not known at this point. So we must
     // know how many bytes are available
-    int nb = 0;
+    size_t nb = 0;
     if (ioctl(Fd, FIONREAD, &nb) < 0) {
         throw TSerialDeviceException("FIONREAD ioctl() failed");
     }
 
+    // Got Fd as ready for read from select, but no actual data to read
     if (!nb) {
         OnReadyEmptyFd();
-        return -1;
+        return 0;
     }
 
-    if (static_cast<size_t>(nb) > max_read) {
+    if (nb > max_read) {
         nb = max_read;
     }
 
@@ -144,7 +145,7 @@ int TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
         throw TSerialDeviceException("read() failed");
     }
 
-    if (n < nb) { // may happen only due to a kernel/driver bug
+    if (static_cast<size_t>(n) < nb) { // may happen only due to a kernel/driver bug
         throw TSerialDeviceException("short read()");
     }
 
@@ -152,14 +153,14 @@ int TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
 }
 
 // Reading becomes unstable when using timeout less than default because of bufferization
-int TFileDescriptorPort::ReadFrame(uint8_t * buf, 
-                                   int size,
-                                   const std::chrono::microseconds& responseTimeout,
-                                   const std::chrono::microseconds& frameTimeout,
-                                   TFrameCompletePred frame_complete)
+size_t TFileDescriptorPort::ReadFrame(uint8_t * buf, 
+                                      size_t size,
+                                      const std::chrono::microseconds& responseTimeout,
+                                      const std::chrono::microseconds& frameTimeout,
+                                      TFrameCompletePred frame_complete)
 {
     CheckPortOpen();
-    int nread = 0;
+    size_t nread = 0;
 
     // Will wait first byte up to responseTimeout us
     auto selectTimeout = responseTimeout;
@@ -171,8 +172,12 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf,
         if (!Select(selectTimeout))
             break; // end of the frame
 
-        int nb = ReadAvailableData(buf + nread, size - nread);
-        if (nb <= 0) continue;
+        size_t nb = ReadAvailableData(buf + nread, size - nread);
+
+        // Got Fd as ready for read from select, but no actual data to read
+        if (nb == 0) {
+            continue;
+        }
 
         // Got something, switch to frameTimeout to detect frame boundary
         // Delay between bytes in one message can't be more than frameTimeout
@@ -190,7 +195,7 @@ int TFileDescriptorPort::ReadFrame(uint8_t * buf,
         // TBD: move this to libwbmqtt (HexDump?)
         stringstream ss;
         ss << "ReadFrame:" << hex << setfill('0');
-        for (int i = 0; i < nread; ++i) {
+        for (size_t i = 0; i < nread; ++i) {
             ss << " " << setw(2) << int(buf[i]);
         }
         LOG(Debug) << ss.str();
@@ -206,14 +211,14 @@ void TFileDescriptorPort::SkipNoise()
     int ntries = 0;
 
     while (Select(NoiseTimeout)) {
-        int nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
+        size_t nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
         auto diff = std::chrono::steady_clock::now() - start;
 
         if (::Debug.IsEnabled()) {
             // TBD: move this to libwbmqtt (HexDump?)
             stringstream ss;
             ss << "read noise: " << hex << setfill('0');
-            for (int i = 0; i < nread; ++i) {
+            for (size_t i = 0; i < nread; ++i) {
                 ss << " " << setw(2) << int(buf[i]);
             }
             LOG(Debug) << ss.str();

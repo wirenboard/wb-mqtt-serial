@@ -33,7 +33,7 @@ bool TEMDevice::ReadResponse( int expectedByte1, uint8_t* payload, int len,
                             TPort::TFrameCompletePred frame_complete)
 {
     uint8_t buf[MAX_LEN], *p = buf;
-    int nread = this->Port()->ReadFrame(buf, MAX_LEN, this->DeviceConfig()->FrameTimeout, frame_complete);
+    int nread = Port()->ReadFrame(buf, MAX_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout, frame_complete);
     if (nread < 3 + SlaveIdWidth)
         throw TSerialDeviceTransientErrorException("frame too short");
 
@@ -45,7 +45,7 @@ bool TEMDevice::ReadResponse( int expectedByte1, uint8_t* payload, int len,
         throw TSerialDeviceTransientErrorException("invalid crc");
 
     for (int i = 0; i < SlaveIdWidth; ++i) {
-        if (*p++ != (this->SlaveId & (0xFF << (8*i))) >> (8*i)) {
+        if (*p++ != (SlaveId & (0xFF << (8*i))) >> (8*i)) {
             throw TSerialDeviceTransientErrorException("invalid slave id");
         }
     }
@@ -84,20 +84,20 @@ void TEMDevice::Talk( uint8_t cmd, uint8_t* payload, int payload_len,
             WriteCommand(cmd, payload, payload_len);
         }
     } catch ( const TSerialDeviceTransientErrorException& e) {
-        this->Port()->SkipNoise();
+        Port()->SkipNoise();
         throw;
     }
 }
 
 void TEMDevice::EnsureSlaveConnected(bool force)
 {
-    if (!force && ConnectedSlaves.find(this->SlaveId) != ConnectedSlaves.end())
+    if (!force && ConnectedSlaves.find(SlaveId) != ConnectedSlaves.end())
         return;
 
-    ConnectedSlaves.erase(this->SlaveId);
-    this->Port()->SkipNoise();
+    ConnectedSlaves.erase(SlaveId);
+    Port()->SkipNoise();
     if (!ConnectionSetup())
         throw TSerialDeviceTransientErrorException("failed to establish meter connection");
 
-    ConnectedSlaves.insert(this->SlaveId);
+    ConnectedSlaves.insert(SlaveId);
 }

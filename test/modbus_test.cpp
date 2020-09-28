@@ -43,7 +43,9 @@ void TModbusTest::SetUp()
     SelectModbusType(MODBUS_RTU);
     TSerialDeviceTest::SetUp();
 
-    ModbusDev = std::make_shared<TModbusDevice>(GetDeviceConfig(), SerialPort,
+    auto modbusRtuTraits = std::make_unique<Modbus::TModbusRTUTraits>();
+
+    ModbusDev = std::make_shared<TModbusDevice>(std::move(modbusRtuTraits), GetDeviceConfig(), SerialPort,
                                 TSerialDeviceFactory::GetProtocol("modbus"));
     ModbusCoil0 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 0, U8));
     ModbusCoil1 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 1, U8));
@@ -322,9 +324,7 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
 {
     SerialDriver->ClearDevices();
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
-
-    SerialPort->Open();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     ExpectPollQueries(mode);
     Note() << "LoopOnce()";
@@ -509,9 +509,7 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterOnBorder)
 {
     // we check that driver detects unavailable register on the ranges border and stops to read it
     SerialDriver->ClearDevices();
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
-
-    SerialPort->Open();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     EnqueueHoldingPackUnavailableOnBorderReadResponse();
     Note() << "LoopOnce() [first read]";
@@ -527,16 +525,14 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddl
     // we check that driver detects unavailable register in the middle of the range
     // It must split the range into two parts and exclure unavailable register from reading
     SerialDriver->ClearDevices();
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
-
-    SerialPort->Open();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
     Note() << "LoopOnce() [first read]";
     SerialDriver->LoopOnce();
     Note() << "LoopOnce() [one by one]";
     SerialDriver->LoopOnce();
-    Note() << "LoopOnce() [new range]";
+    Note() << "LoopOnce() [new range]"; 
     SerialDriver->LoopOnce();
 }
 
@@ -545,9 +541,7 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
     // Check that driver detects unsupported registers
     // It must remove unavailable registers from request if they are on borders of a range
     SerialDriver->ClearDevices();
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
-
-    SerialPort->Open();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     EnqueueHoldingPackUnsupportedOnBorderReadResponse();
     Note() << "LoopOnce() [first read]";
@@ -582,9 +576,7 @@ TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
     Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
 
     SerialDriver->ClearDevices();
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
-
-    SerialPort->Open();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     EnqueueHoldingPackUnavailableAndHolesReadResponse();
     Note() << "LoopOnce() [first read]";

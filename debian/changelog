@@ -1,3 +1,16 @@
+wb-mqtt-serial (2.3.0) experimental; urgency=medium
+
+  * Modbus TCP support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 30 Sep 2020 10:19:22 +0500
+
+wb-mqtt-serial (2.2.2) experimental; urgency=medium
+
+  * segmentation fault after port opening failure is fixed
+  * too small response timeout when using tcp port is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 29 Sep 2020 12:36:45 +0500
+
 wb-mqtt-serial (2.2.1) experimental; urgency=medium
 
   * add mr inputs freq registers

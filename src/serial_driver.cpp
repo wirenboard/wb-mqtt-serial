@@ -12,17 +12,18 @@ using namespace WBMQTT;
 
 #define LOG(logger) ::logger.Log() << "[serial] "
 
-TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config, PPort portOverride)
+TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config)
     : Active(false)
 {
     try {
         for (const auto& portConfig : config->PortConfigs) {
+            
             if (portConfig->DeviceConfigs.empty()) {
-                LOG(Warn) << "no devices defined for port " << portConfig->ConnSettings << ". Skipping.";
+                LOG(Warn) << "no devices defined for port " << portConfig->Port->GetDescription() << ". Skipping.";
                 continue;
             }
 
-            PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, portOverride));
+            PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig));
             PortDrivers.back()->SetUpDevices();
         }
     } catch (const exception & e) {

@@ -12,7 +12,7 @@ using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
-    : Fixture(fixture), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
+    : Fixture(fixture), AllowOpen(true), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
 
 void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
 {
@@ -29,6 +29,9 @@ void TFakeSerialPort::Open()
 {
     if (IsPortOpen)
         throw TSerialDeviceException("port already open");
+    if (!AllowOpen) {
+        throw TSerialDeviceException("Port open error simulation");
+    }
     Fixture.Emit() << "Open()";
     IsPortOpen = true;
 }
@@ -119,11 +122,11 @@ uint8_t TFakeSerialPort::ReadByte(const std::chrono::microseconds& /*timeout*/)
     return Resp[RespPos++];
 }
 
-int TFakeSerialPort::ReadFrame(uint8_t* buf, 
-                               int count,
-                               const std::chrono::microseconds& responseTimeout,
-                               const std::chrono::microseconds& frameTimeout,
-                               TFrameCompletePred frame_complete)
+size_t TFakeSerialPort::ReadFrame(uint8_t* buf, 
+                                  size_t count,
+                                  const std::chrono::microseconds& responseTimeout,
+                                  const std::chrono::microseconds& frameTimeout,
+                                  TFrameCompletePred frame_complete)
 {
     if (DoSimulateDisconnect) {
         return 0;
@@ -132,7 +135,7 @@ int TFakeSerialPort::ReadFrame(uint8_t* buf,
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
                                  std::to_string(frameTimeout.count()) + " instead of " +
                                  std::to_string(ExpectedFrameTimeout.count()));
-    int nread = 0;
+    size_t nread = 0;
     uint8_t* p = buf;
     for (; nread < count; ++nread) {
         if (RespPos == Resp.size())
@@ -173,6 +176,12 @@ bool TFakeSerialPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint 
         return true;
     if (until < Time)
         throw std::runtime_error("TFakeSerialPort::Wait(): going back in time");
+
+    auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(until - std::chrono::steady_clock::now()).count();
+    if (delta > 1000) {
+        throw std::runtime_error("Too long waiting for test: " + std::to_string(delta) + " ms");
+    }
+
     Time = until;
     return false;
 }
@@ -240,11 +249,21 @@ void TFakeSerialPort::SkipFrameBoundary()
         RespPos++;
 }
 
+void TFakeSerialPort::SetAllowOpen(bool allowOpen)
+{
+    AllowOpen = allowOpen;
+}
+
 std::chrono::milliseconds TFakeSerialPort::GetSendTime(double bytesNumber)
 {
     // 9600 8-N-2
     auto ms = std::ceil((1000.0*11*bytesNumber)/9600.0);
     return std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(ms));
+}
+
+std::string TFakeSerialPort::GetDescription() const
+{
+    return "<TFakeSerialPort>";
 }
 
 void TSerialDeviceTest::SetUp()
@@ -293,9 +312,10 @@ void TSerialDeviceIntegrationTest::SetUp()
     }
 
     Config = LoadConfig(GetDataFilePath(ConfigPath()), 
-                         TSerialDeviceFactory::GetRegisterTypes,
+                         DeviceFactory,
                          configSchema,
-                         it->second);
+                         it->second,
+                         [=](const Json::Value&) {return std::make_pair(SerialPort, false);});
 
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient("em-test");
@@ -311,7 +331,7 @@ void TSerialDeviceIntegrationTest::SetUp()
 
     Driver->StartLoop();
 
-    SerialDriver = std::make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+    SerialDriver = std::make_shared<TMQTTSerialDriver>(Driver, Config);
 }
 
 void TSerialDeviceIntegrationTest::TearDown()

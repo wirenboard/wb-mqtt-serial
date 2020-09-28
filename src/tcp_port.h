@@ -8,17 +8,20 @@ class TTcpPort final: public TFileDescriptorPort
 {
     using Base = TFileDescriptorPort;
 public:
-    TTcpPort(const PTcpPortSettings & settings);
+    TTcpPort(const TTcpPortSettings& settings);
     ~TTcpPort() = default;
 
     void CycleBegin() override;
     void CycleEnd(bool ok) override;
     void Open() override;
     void WriteBytes(const uint8_t * buf, int count) override;
-    int ReadFrame(uint8_t * buf, int count,
-                  const std::chrono::microseconds & responseTimeout,
-                  const std::chrono::microseconds& frameTimeout,
-                  TFrameCompletePred frame_complete = 0) override;
+    uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
+    size_t ReadFrame(uint8_t * buf, size_t count,
+                     const std::chrono::microseconds & responseTimeout,
+                     const std::chrono::microseconds& frameTimeout,
+                     TFrameCompletePred frame_complete = 0) override;
+
+    std::string GetDescription() const override;
 
 private:
     void OpenTcpPort();
@@ -27,7 +30,7 @@ private:
 
     void OnReadyEmptyFd() override;
 
-    PTcpPortSettings                        Settings;
+    TTcpPortSettings                        Settings;
     std::chrono::steady_clock::time_point   LastSuccessfulCycle;
     int                                     RemainingFailCycles;
 };

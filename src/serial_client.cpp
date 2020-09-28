@@ -72,17 +72,14 @@ void TSerialClient::Connect()
         return;
     if (!Handlers.size())
         throw TSerialDeviceException("no registers defined");
-    if (!Port->IsOpen()) {
-        try {
-            Port->Open();
-        } catch (const TSerialDeviceException& e) {
-            LOG(Warn) << e.what();
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            return;
-        }
+    try {
+        Port->Open();
+        Active = true;
+    } catch (const TSerialDeviceException& e) {
+        LOG(Warn) << e.what();
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     PrepareRegisterRanges();
-    Active = true;
 }
 
 void TSerialClient::Disconnect()
@@ -261,8 +258,15 @@ void TSerialClient::Cycle()
                     continue;
                 }
             }
-            newRanges.splice(newRanges.end(), PollRange(range));
-            statuses.insert(range->GetStatus());
+            try {
+                newRanges.splice(newRanges.end(), PollRange(range));
+                statuses.insert(range->GetStatus());
+            } catch (const TSerialDeviceException& e) {
+                LOG(Error) << e.what();
+                statuses.insert(TRegisterRange::ST_UNKNOWN_ERROR);
+                SetReadError(range);
+                newRanges.push_back(range);
+            }
         }
         MaybeFlushAvoidingPollStarvationButDontWait();
         pollEntry->Ranges.swap(newRanges);

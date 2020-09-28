@@ -1,21 +1,15 @@
 #pragma once
 
-#include "port_settings.h"
-
 #include <string>
 #include <sstream>
 
-struct TTcpPortSettings;
-
-::std::ostream& operator<<(::std::ostream& os, const TTcpPortSettings & settings);
-
 const int DEFAULT_PORT_FAIL_CYCLES = 2;
 
-struct TTcpPortSettings final: TPortSettings
+struct TTcpPortSettings
 {
-    TTcpPortSettings(const std::string & address = "localhost",
+    TTcpPortSettings(const std::string& address = "localhost",
                      uint16_t port = 0,
-                     const std::chrono::milliseconds & connectionTimeout = std::chrono::milliseconds(5000),
+                     const std::chrono::milliseconds& connectionTimeout = std::chrono::milliseconds(5000),
                      int failCycles = DEFAULT_PORT_FAIL_CYCLES)
         : Address(address)
         , Port(port)
@@ -23,10 +17,10 @@ struct TTcpPortSettings final: TPortSettings
         , ConnectionMaxFailCycles(failCycles)
     {}
 
-    std::string ToString() const override
+    std::string ToString() const
     {
         std::ostringstream ss;
-        ss << *this;
+        ss << "<" << Address << ":" << Port << "  " << ConnectionTimeout.count() << "ms, " << ConnectionMaxFailCycles <<">";
         return ss.str();
     }
 
@@ -35,9 +29,3 @@ struct TTcpPortSettings final: TPortSettings
     std::chrono::milliseconds   ConnectionTimeout;
     int                         ConnectionMaxFailCycles;
 };
-
-using PTcpPortSettings = std::shared_ptr<TTcpPortSettings>;
-
-inline ::std::ostream& operator<<(::std::ostream& os, const TTcpPortSettings & settings) {
-    return os << "<" << settings.Address << ":" << settings.Port << ">";
-}

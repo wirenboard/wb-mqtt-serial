@@ -189,22 +189,11 @@ TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId)
     try {
         SlaveId = std::stoul(slaveId, /* pos = */ 0, /* base = */ 0);
     } catch (const std::logic_error &e) {
-        throw TSerialDeviceException("slave ID \"" + slaveId + "\" is not convertible to string");
+        throw TSerialDeviceException("slave ID \"" + slaveId + "\" is not convertible to integer");
     }
 }
 
-TAggregatedSlaveId::TAggregatedSlaveId(const std::string& slaveId)
+bool TUInt32SlaveId::operator==(const TUInt32SlaveId& id) const
 {
-    try {
-        auto delimiter_it = slaveId.find(':');
-        PrimaryId = std::stoi(slaveId.substr(0, delimiter_it), 0, 0);
-        SecondaryId = std::stoi(slaveId.substr(delimiter_it + 1), 0, 0);
-    } catch (const std::logic_error &e) {
-        throw TSerialDeviceException("slave ID \"" + slaveId + "\" is not convertible to string");
-    }
-}
-
-bool TAggregatedSlaveId::operator==(const TAggregatedSlaveId & other) const
-{
-    return PrimaryId == other.PrimaryId && SecondaryId == other.SecondaryId;
+    return SlaveId == id.SlaveId;
 }

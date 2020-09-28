@@ -55,7 +55,7 @@ namespace {
     }
 };
 
-TSerialPort::TSerialPort(const PSerialPortSettings & settings)
+TSerialPort::TSerialPort(const TSerialPortSettings& settings)
     : Settings(settings)
 {
     memset(&OldTermios, 0, sizeof(termios));
@@ -66,27 +66,27 @@ void TSerialPort::Open()
     if (IsOpen())
         throw TSerialDeviceException("port already open");
 
-    Fd = open(Settings->Device.c_str(), O_RDWR | O_NOCTTY | O_EXCL | O_NDELAY);
+    Fd = open(Settings.Device.c_str(), O_RDWR | O_NOCTTY | O_EXCL | O_NDELAY);
     if (Fd < 0)
         throw TSerialDeviceException("cannot open serial port");
 
     termios dev;
     memset(&dev, 0, sizeof(termios));
 
-    auto baud_rate = ConvertBaudRate(Settings->BaudRate);
+    auto baud_rate = ConvertBaudRate(Settings.BaudRate);
     if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
         auto error_code = errno;
         Close();
-        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from cfsetospeed / cfsetispeed; baud rate is " + std::to_string(Settings->BaudRate));
+        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from cfsetospeed / cfsetispeed; baud rate is " + std::to_string(Settings.BaudRate));
     }
 
-    if (Settings->StopBits == 1) {
+    if (Settings.StopBits == 1) {
         dev.c_cflag &= ~CSTOPB;
     } else {
         dev.c_cflag |= CSTOPB;
     }
 
-    switch (Settings->Parity) {
+    switch (Settings.Parity) {
     case 'N':
         dev.c_cflag &= ~PARENB;
         dev.c_iflag &= ~INPCK;
@@ -103,10 +103,10 @@ void TSerialPort::Open()
         break;
     default:
         Close();
-        throw TSerialDeviceException("cannot open serial port: invalid parity value: '" + std::string(1, Settings->Parity) + "'");
+        throw TSerialDeviceException("cannot open serial port: invalid parity value: '" + std::string(1, Settings.Parity) + "'");
     }
 
-    dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(Settings->DataBits) | CREAD | CLOCAL;
+    dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(Settings.DataBits) | CREAD | CLOCAL;
     dev.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
     dev.c_iflag &= ~(IXON | IXOFF | IXANY);
     dev.c_oflag &=~ OPOST;
@@ -139,28 +139,28 @@ void TSerialPort::Close()
 
 std::chrono::milliseconds TSerialPort::GetSendTime(double bytesNumber)
 {
-    size_t bitsPerByte = 1 + Settings->DataBits + Settings->StopBits;
-    if (Settings->Parity != 'N') {
+    size_t bitsPerByte = 1 + Settings.DataBits + Settings.StopBits;
+    if (Settings.Parity != 'N') {
         ++bitsPerByte;
     }
-    auto ms = std::ceil((1000.0*bitsPerByte*bytesNumber)/double(Settings->BaudRate));
+    auto ms = std::ceil((1000.0*bitsPerByte*bytesNumber)/double(Settings.BaudRate));
     return std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(ms));
 }
 
 uint8_t TSerialPort::ReadByte(const std::chrono::microseconds& timeout)
 {
-    return Base::ReadByte(timeout + GetLinuxLag(Settings->BaudRate));
+    return Base::ReadByte(timeout + GetLinuxLag(Settings.BaudRate));
 }
 
-int TSerialPort::ReadFrame(uint8_t* buf,
-                           int count,
+size_t TSerialPort::ReadFrame(uint8_t* buf,
+                           size_t count,
                            const std::chrono::microseconds& responseTimeout,
                            const std::chrono::microseconds& frameTimeout,
                            TFrameCompletePred frameComplete)
 {
     return Base::ReadFrame(buf,
                            count,
-                           responseTimeout + GetLinuxLag(Settings->BaudRate),
+                           responseTimeout + GetLinuxLag(Settings.BaudRate),
                            frameTimeout + std::chrono::milliseconds(15),
                            frameComplete);
 }
@@ -170,4 +170,9 @@ void TSerialPort::WriteBytes(const uint8_t* buf, int count)
     Base::WriteBytes(buf, count);
     SleepSinceLastInteraction(GetSendTime(count));
     LastInteraction = std::chrono::steady_clock::now();
+}
+
+std::string TSerialPort::GetDescription() const
+{
+    return Settings.ToString();
 }

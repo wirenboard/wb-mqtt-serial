@@ -25,10 +25,10 @@ public:
     bool IsOpen() const;
     void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte(const std::chrono::microseconds& timeout);
-    int ReadFrame(uint8_t* buf, int count,
-                  const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
-                  const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
-                  TFrameCompletePred frame_complete = 0);
+    size_t ReadFrame(uint8_t* buf, size_t count,
+                     const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
+                     const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
+                     TFrameCompletePred frame_complete = 0);
     void SkipNoise();
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
@@ -45,11 +45,16 @@ public:
     bool GetDoSimulateDisconnect() const;
     WBMQTT::Testing::TLoggedFixture& GetFixture();
 
+    std::string GetDescription() const override;
+
+    void SetAllowOpen(bool allowOpen);
+
 private:
     void SkipFrameBoundary();
     const int FRAME_BOUNDARY = -1;
 
     WBMQTT::Testing::TLoggedFixture& Fixture;
+    bool AllowOpen;
     bool IsPortOpen;
     bool DoSimulateDisconnect;
     std::deque<const char*> PendingFuncs;
@@ -69,6 +74,7 @@ protected:
     PExpector Expector() const;
 
     PFakeSerialPort SerialPort;
+    TSerialDeviceFactory DeviceFactory;
 };
 
 class TSerialDeviceIntegrationTest: public virtual TSerialDeviceTest {

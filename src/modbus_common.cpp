@@ -90,16 +90,16 @@ namespace   // general utilities
     }
 
     // returns true if multi write needs to be done
-    inline bool IsPacking(PRegister reg)
+    inline bool IsPacking(const TRegister& reg)
     {
-        return (reg->Type == Modbus::REG_HOLDING_MULTI) ||
-              ((reg->Type == Modbus::REG_HOLDING) && (reg->Get16BitWidth() > 1));
+        return (reg.Type == Modbus::REG_HOLDING_MULTI) ||
+              ((reg.Type == Modbus::REG_HOLDING) && (reg.Get16BitWidth() > 1));
     }
 
-    inline bool IsPacking(Modbus::PModbusRegisterRange range)
+    inline bool IsPacking(Modbus::TModbusRegisterRange& range)
     {
-        return (range->Type() == Modbus::REG_HOLDING_MULTI) ||
-              ((range->Type() == Modbus::REG_HOLDING) && (range->GetCount() > 1));
+        return (range.Type() == Modbus::REG_HOLDING_MULTI) ||
+              ((range.Type() == Modbus::REG_HOLDING) && (range.GetCount() > 1));
     }
 
     inline bool IsSingleBitType(int type)
@@ -117,6 +117,16 @@ namespace   // general utilities
 
 namespace Modbus    // modbus protocol common utilities
 {
+    TMalformedResponseError::TMalformedResponseError(const std::string & what): TSerialDeviceTransientErrorException("malformed response: " + what)
+    {}
+
+    class TInvalidCRCError: public TMalformedResponseError
+    {
+    public:
+        TInvalidCRCError(): TMalformedResponseError("invalid crc")
+        {}
+    };
+
     TModbusRegisterRange::TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles)
         : TRegisterRange(regs)
         , HasHolesFlg(hasHoles)
@@ -275,14 +285,14 @@ namespace Modbus    // modbus protocol common utilities
         }
     }
 
-    inline uint8_t GetFunction(PRegister reg, OperationType op)
+    inline uint8_t GetFunction(const TRegister& reg, OperationType op)
     {
-        return GetFunctionImpl(reg->Type, op, reg->TypeName, IsPacking(reg));
+        return GetFunctionImpl(reg.Type, op, reg.TypeName, IsPacking(reg));
     }
 
-    inline uint8_t GetFunction(PModbusRegisterRange range, OperationType op)
+    inline uint8_t GetFunction(TModbusRegisterRange& range, OperationType op)
     {
-        return GetFunctionImpl(range->Type(), op, range->TypeName(), IsPacking(range));
+        return GetFunctionImpl(range.Type(), op, range.TypeName(), IsPacking(range));
     }
 
     // throws C++ exception on modbus error code
@@ -318,27 +328,27 @@ namespace Modbus    // modbus protocol common utilities
     }
 
     // returns count of modbus registers needed to represent TRegister
-    uint16_t GetQuantity(PRegister reg)
+    uint16_t GetQuantity(TRegister& reg)
     {
-        int w = reg->Get16BitWidth();
+        int w = reg.Get16BitWidth();
 
-        if (IsSingleBitType(reg->Type)) {
+        if (IsSingleBitType(reg.Type)) {
             if (w != 1) {
-                throw TSerialDeviceException("width other than 1 is not currently supported for reg type" + reg->TypeName);
+                throw TSerialDeviceException("width other than 1 is not currently supported for reg type" + reg.TypeName);
             }
             return 1;
         } else {
-            if (w > 4 && reg->BitOffset == 0) {
-                throw TSerialDeviceException("can't pack more than 4 " + reg->TypeName + "s into a single value");
+            if (w > 4 && reg.BitOffset == 0) {
+                throw TSerialDeviceException("can't pack more than 4 " + reg.TypeName + "s into a single value");
             }
             return w;
         }
     }
 
     // returns count of modbus registers needed to represent TModbusRegisterRange
-    uint16_t GetQuantity(PModbusRegisterRange range)
+    uint16_t GetQuantity(TModbusRegisterRange& range)
     {
-        auto type = range->Type();
+        auto type = range.Type();
 
         if (!IsSingleBitType(type) &&
              type != REG_HOLDING &&
@@ -349,27 +359,27 @@ namespace Modbus    // modbus protocol common utilities
             throw TSerialDeviceException("invalid register type");
         }
 
-        return range->GetCount();
+        return range.GetCount();
     }
 
     // returns number of bytes needed to hold request
-    size_t InferWriteRequestPDUSize(PRegister reg)
+    size_t InferWriteRequestPDUSize(const TRegister& reg)
     {
-       return IsPacking(reg) ? 6 + reg->Get16BitWidth() * 2 : 5;
+       return IsPacking(reg) ? 6 + reg.Get16BitWidth() * 2 : 5;
     }
 
     // returns number of requests needed to write register
-    size_t InferWriteRequestsCount(PRegister reg)
+    size_t InferWriteRequestsCount(const TRegister& reg)
     {
-       return IsPacking(reg) ? 1 : reg->Get16BitWidth();
+       return IsPacking(reg) ? 1 : reg.Get16BitWidth();
     }
 
     // returns number of bytes needed to hold response
-    size_t InferReadResponsePDUSize(PModbusRegisterRange range)
+    size_t InferReadResponsePDUSize(TModbusRegisterRange& range)
     {
-        auto count = range->GetCount();
+        auto count = range.GetCount();
 
-        if (IsSingleBitType(range->Type())) {
+        if (IsSingleBitType(range.Type())) {
             return 2 + std::ceil(static_cast<float>(count) / 8);    // coil values are packed into bytes as bitset
         } else {
             return 2 + count * 2;   // count is for uint16_t, we need byte count
@@ -389,45 +399,45 @@ namespace Modbus    // modbus protocol common utilities
     }
 
     // fills pdu with read request data according to Modbus specification
-    void ComposeReadRequestPDU(uint8_t* pdu, PRegister reg, int shift)
+    void ComposeReadRequestPDU(uint8_t* pdu, TRegister& reg, int shift)
     {
         pdu[0] = GetFunction(reg, OperationType::OP_READ);
-        WriteAs2Bytes(pdu + 1, reg->Address + shift);
+        WriteAs2Bytes(pdu + 1, reg.Address + shift);
         WriteAs2Bytes(pdu + 3, GetQuantity(reg));
     }
 
-    void ComposeReadRequestPDU(uint8_t* pdu, PModbusRegisterRange range, int shift)
+    void ComposeReadRequestPDU(uint8_t* pdu, TModbusRegisterRange& range, int shift)
     {
         pdu[0] = GetFunction(range, OperationType::OP_READ);
-        WriteAs2Bytes(pdu + 1, range->GetStart() + shift);
+        WriteAs2Bytes(pdu + 1, range.GetStart() + shift);
         WriteAs2Bytes(pdu + 3, GetQuantity(range));
     }
 
     // fills pdu with write request data according to Modbus specification
-    void ComposeMultipleWriteRequestPDU(uint8_t* pdu, PRegister reg, uint64_t value, int shift)
+    void ComposeMultipleWriteRequestPDU(uint8_t* pdu, const TRegister& reg, uint64_t value, int shift)
     {
-        auto & tmpCache = reg->Device()->ModbusTmpCache;
-        const auto & cache = reg->Device()->ModbusCache;
+        auto & tmpCache = reg.Device()->ModbusTmpCache;
+        const auto & cache = reg.Device()->ModbusCache;
 
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
-        auto baseAddress = reg->Address + shift;
-        const auto bitWidth = reg->GetBitWidth();
+        auto baseAddress = reg.Address + shift;
+        const auto bitWidth = reg.GetBitWidth();
 
         auto bitsToAllocate = bitWidth;
 
         TAddress address;
 
-        address.Type = reg->Type;
+        address.Type = reg.Type;
 
         WriteAs2Bytes(pdu + 1, baseAddress);
-        WriteAs2Bytes(pdu + 3, reg->Get16BitWidth());
+        WriteAs2Bytes(pdu + 3, reg.Get16BitWidth());
 
-        pdu[5] = reg->Get16BitWidth() * 2;
+        pdu[5] = reg.Get16BitWidth() * 2;
 
         uint8_t bitPos = 0, bitPosEnd = bitWidth;
 
-        for (int i = 0; i < reg->Get16BitWidth(); ++i) {
+        for (int i = 0; i < reg.Get16BitWidth(); ++i) {
             address.Address = baseAddress + i;
 
             uint16_t cachedValue;
@@ -437,7 +447,7 @@ namespace Modbus    // modbus protocol common utilities
                 cachedValue = value & 0xffff;
             }
 
-            auto localBitOffset = std::max(reg->BitOffset - bitPos, 0);
+            auto localBitOffset = std::max(reg.BitOffset - bitPos, 0);
 
             auto bitCount = std::min(uint8_t(16 - localBitOffset), bitsToAllocate);
 
@@ -457,21 +467,21 @@ namespace Modbus    // modbus protocol common utilities
         }
     }
 
-    void ComposeSingleWriteRequestPDU(uint8_t* pdu, PRegister reg, uint16_t value, int shift, uint8_t wordIndex)
+    void ComposeSingleWriteRequestPDU(uint8_t* pdu, const TRegister& reg, uint16_t value, int shift, uint8_t wordIndex)
     {
-        auto & tmpCache = reg->Device()->ModbusTmpCache;
-        const auto & cache = reg->Device()->ModbusCache;
+        auto & tmpCache = reg.Device()->ModbusTmpCache;
+        const auto & cache = reg.Device()->ModbusCache;
 
-        if (reg->Type == REG_COIL) {
+        if (reg.Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8: 0x00;
         }
 
-        auto bitWidth = reg->GetBitWidth();
+        auto bitWidth = reg.GetBitWidth();
 
         TAddress address;
 
-        address.Type = reg->Type;
-        address.Address = reg->Address + shift + wordIndex;
+        address.Type = reg.Type;
+        address.Address = reg.Address + shift + wordIndex;
 
         uint16_t cachedValue;
         if (cache.count(address.AbsAddress)) {
@@ -481,7 +491,7 @@ namespace Modbus    // modbus protocol common utilities
         }
 
 
-        auto localBitOffset = std::max(reg->BitOffset - wordIndex * 16, 0);
+        auto localBitOffset = std::max(reg.BitOffset - wordIndex * 16, 0);
 
         auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
 
@@ -498,24 +508,28 @@ namespace Modbus    // modbus protocol common utilities
     }
 
     // parses modbus response and stores result
-    void ParseReadResponse(const uint8_t* pdu, PModbusRegisterRange range)
+    void ParseReadResponse(const uint8_t* pdu, size_t pduSize, TModbusRegisterRange& range)
     {
         TAddress address;
 
-        address.Type = range->Type();
+        address.Type = range.Type();
 
-        auto & cache = range->Device()->ModbusCache;
-        auto baseAddress = range->GetStart();
+        auto & cache = range.Device()->ModbusCache;
+        auto baseAddress = range.GetStart();
 
         ThrowIfModbusException(GetExceptionCode(pdu));
 
         uint8_t byte_count = pdu[1];
 
+        if (pduSize - 2 < byte_count) {
+            throw TMalformedResponseError("invalid read response byte count: " + std::to_string(byte_count) + ", got " + std::to_string(pduSize - 2));
+        }
+
         auto start = pdu + 2;
         auto end = start + byte_count;
-        if (IsSingleBitType(range->Type())) {
-            auto destination = range->GetBits();
-            auto coil_count = range->GetCount();
+        if (IsSingleBitType(range.Type())) {
+            auto destination = range.GetBits();
+            auto coil_count = range.GetCount();
             while (start != end) {
                 std::bitset<8> coils(*start++);
                 auto coils_in_byte = std::min(coil_count, 8);
@@ -527,14 +541,14 @@ namespace Modbus    // modbus protocol common utilities
                 destination += coils_in_byte;
             }
 
-            for (auto reg: range->RegisterList()) {
-                reg->SetValue(range->GetBits()[reg->Address - range->GetStart()]);
+            for (auto reg: range.RegisterList()) {
+                reg->SetValue(range.GetBits()[reg->Address - range.GetStart()]);
             }
             return;
 
         }
 
-        auto destination = range->GetWords();
+        auto destination = range.GetWords();
         for (int i = 0; i < byte_count / 2; ++i) {
             address.Address = baseAddress + i;
 
@@ -543,19 +557,19 @@ namespace Modbus    // modbus protocol common utilities
             start += 2;
         }
 
-        for (auto reg: range->RegisterList()) {
+        for (auto reg: range.RegisterList()) {
             int w = reg->Get16BitWidth();
             auto bitWidth = reg->GetBitWidth();
 
             uint64_t r = 0;
 
-            auto wordIndex = (reg->Address - range->GetStart());
+            auto wordIndex = (reg->Address - range.GetStart());
             auto reverseWordIndex = w - 1;
 
             uint8_t bitsWritten = 0;
 
             while (w--) {
-                uint16_t data = destination[reg->Address - range->GetStart() + w];
+                uint16_t data = destination[reg->Address - range.GetStart() + w];
 
                 auto localBitOffset = std::max(reg->BitOffset - wordIndex * 16, 0);
 
@@ -581,12 +595,17 @@ namespace Modbus    // modbus protocol common utilities
     }
 
     // checks modbus response on write
-    void ParseWriteResponse(const uint8_t* pdu)
+    void ParseWriteResponse(const uint8_t* pdu, size_t pduSize)
     {
         ThrowIfModbusException(GetExceptionCode(pdu));
+        auto pdu_size = WriteResponsePDUSize(pdu);
+
+        if (pdu_size != pduSize) {
+            throw TMalformedResponseError("invalid write response PDU size: " + std::to_string(pdu_size) + ", expected " + std::to_string(pduSize));
+        }
     }
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list, PDeviceConfig deviceConfig, bool enableHoles)
+    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list, const TDeviceConfig& deviceConfig, bool enableHoles)
     {
         std::list<PRegisterRange> r;
         if (reg_list.empty())
@@ -595,14 +614,14 @@ namespace Modbus    // modbus protocol common utilities
         std::list<PRegister> l;
         int prev_start = -1, prev_type = -1, prev_end = -1;
         std::chrono::milliseconds prev_interval;
-        int max_hole = enableHoles ? (IsSingleBitType(reg_list.front()->Type) ? deviceConfig->MaxBitHole : deviceConfig->MaxRegHole) : 0;
+        int max_hole = enableHoles ? (IsSingleBitType(reg_list.front()->Type) ? deviceConfig.MaxBitHole : deviceConfig.MaxRegHole) : 0;
         int max_regs;
 
         if (IsSingleBitType(reg_list.front()->Type)) {
             max_regs = MAX_READ_BITS;
         } else {
-            if ((deviceConfig->MaxReadRegisters > 0) && (deviceConfig->MaxReadRegisters <= MAX_READ_REGISTERS)) {
-                max_regs = deviceConfig->MaxReadRegisters;
+            if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= MAX_READ_REGISTERS)) {
+                max_regs = deviceConfig.MaxReadRegisters;
             } else {
                 max_regs = MAX_READ_REGISTERS;
             }
@@ -642,216 +661,118 @@ namespace Modbus    // modbus protocol common utilities
         return r;
     }
 
-    class TMalformedResponseError: public TSerialDeviceTransientErrorException
+    IModbusTraits::~IModbusTraits()
+    {}
+
+    size_t ProcessRequest(IModbusTraits& traits,
+                          TPort& port, 
+                          const TRequest& request,
+                          TResponse& response, 
+                          const TDeviceConfig& config)
     {
-    public:
-        TMalformedResponseError(const std::string & what): TSerialDeviceTransientErrorException("malformed response: " + what)
-        {}
-    };
-}  // modbus protocol common utilities
+        port.SleepSinceLastInteraction(config.RequestDelay);
+        port.WriteBytes(request.data(), request.size());
 
-namespace ModbusRTU // modbus rtu protocol utilities
-{
-    using TReadRequest = std::array<uint8_t, 8>;
-    using TWriteRequest = std::vector<uint8_t>;
-
-    using TReadResponse = std::vector<uint8_t>;
-    using TWriteResponse = std::array<uint8_t, 8>;
-
-    class TInvalidCRCError: public TSerialDeviceTransientErrorException
-    {
-    public:
-        TInvalidCRCError(): TSerialDeviceTransientErrorException("invalid crc")
-        {}
-    };
-
-    const size_t DATA_SIZE = 3;  // number of bytes in ADU that is not in PDU (slaveID (1b) + crc value (2b))
-
-    // get pointer to PDU in message
-    template <class T>
-    inline const uint8_t* PDU(const T& msg)
-    {
-        return &msg[1];
-    }
-
-    template <class T>
-    inline uint8_t* PDU(T& msg)
-    {
-        return &msg[1];
-    }
-
-    inline size_t InferWriteRequestSize(PRegister reg)
-    {
-        return Modbus::InferWriteRequestPDUSize(reg) + DATA_SIZE;
-    }
-
-    inline size_t InferReadResponseSize(Modbus::PModbusRegisterRange range)
-    {
-        return Modbus::InferReadResponsePDUSize(range) + DATA_SIZE;
-    }
-
-    TPort::TFrameCompletePred ExpectNBytes(int n)
-    {
-        return [n](uint8_t* buf, int size) {
-            if (size < 2)
-                return false;
-            if (Modbus::IsException(PDU(buf)))
-                return size >= static_cast<int>(Modbus::EXCEPTION_RESPONSE_PDU_SIZE + DATA_SIZE);
-            return size >= n;
-        };
-    }
-
-    void ComposeReadRequest(TReadRequest& req, Modbus::PModbusRegisterRange range, uint8_t slaveId, int shift)
-    {
-        req[0] = slaveId;
-        Modbus::ComposeReadRequestPDU(PDU(req), range, shift);
-        WriteAs2Bytes(&req[6], CRC16::CalculateCRC16(req.data(), 6));
-    }
-
-    void ComposeWriteRequests(std::vector<TWriteRequest> & requests, PRegister reg, uint8_t slaveId, uint64_t value, int shift)
-    {
-        requests.resize(Modbus::InferWriteRequestsCount(reg));
-
-        for (std::size_t i = 0; i < requests.size(); ++i) {
-            auto & req = requests[i];
-            req.resize(InferWriteRequestSize(reg));
-            req[0] = slaveId;
-
-            if (IsPacking(reg)) {
-                assert(requests.size() == 1 && "only one request is expected when using multiple write");
-                Modbus::ComposeMultipleWriteRequestPDU(PDU(req), reg, value, shift);
-            } else {
-                Modbus::ComposeSingleWriteRequestPDU(PDU(req), reg, static_cast<uint16_t>(value & 0xffff), shift, requests.size() - i - 1);
-                value >>= 16;
-            }
-
-            WriteAs2Bytes(&req[req.size() - 2], CRC16::CalculateCRC16(req.data(), req.size() - 2));
+        auto res = traits.ReadFrame(port, config.ResponseTimeout, config.FrameTimeout, request, response);
+        // PDU size must be at least 2 bytes
+        if (res < 2) {
+            throw TMalformedResponseError("Wrong PDU size: " + to_string(res));
         }
-    }
-
-    size_t GetResponsePDUSize(const TReadResponse & res)
-    {
-        return Modbus::ReadResponsePDUSize(PDU(res));
-    }
-
-    size_t GetResponsePDUSize(const TWriteResponse & res)
-    {
-        return Modbus::WriteResponsePDUSize(PDU(res));
-    }
-
-    template <class TRequest, class TResponse>
-    void CheckResponse(const TRequest & req, const TResponse & res)
-    {
-        auto pdu_size = GetResponsePDUSize(res);
-
-        if (pdu_size >= (res.size() - 2)) {
-            throw Modbus::TMalformedResponseError("invalid data size");
-        }
-
-        uint16_t crc = (res[pdu_size + 1] << 8) + res[pdu_size + 2];
-        if (crc != CRC16::CalculateCRC16(res.data(), pdu_size + 1)) {
-            throw TInvalidCRCError();
-        }
-
-        auto requestSlaveId = req[0];
-        auto responseSlaveId = res[0];
-        if (requestSlaveId != responseSlaveId) {
-            throw TSerialDeviceTransientErrorException("request and response slave id mismatch");
-        }
-
-        auto requestFunctionCode = PDU(req)[0];
-        auto responseFunctionCode = PDU(res)[0] & 127; // get actual function code even if exception
+        auto requestFunctionCode = traits.GetPDU(request)[0];
+        auto responseFunctionCode = traits.GetPDU(response)[0] & 127; // get actual function code even if exception
 
         if (requestFunctionCode != responseFunctionCode) {
             throw TSerialDeviceTransientErrorException("request and response function code mismatch");
         }
+        return res;
     }
 
-    template<class Req, class Resp> bool ProcessRequest(PPort& port, const Req& request, Resp& response, const PDeviceConfig& config)
+    void WriteRegister(IModbusTraits& traits, TPort& port, uint8_t slaveId, TRegister& reg, uint64_t value, int shift)
     {
-        port->SleepSinceLastInteraction(config->RequestDelay);
-        port->WriteBytes(request.data(), request.size());
+        reg.Device()->DismissTmpCache();
 
-        auto rc = port->ReadFrame(response.data(),
-                                  response.size(),
-                                  config->ResponseTimeout + config->FrameTimeout,
-                                  config->FrameTimeout,
-                                  ExpectNBytes(response.size()));
-        if (rc > 0) {
-            try {
-                ModbusRTU::CheckResponse(request, response);
-            } catch (const TInvalidCRCError &) {
-                try {
-                    port->SkipNoise();
-                } catch (const std::exception & e) {
-                    LOG(Warn) << "SkipNoise failed: " << e.what();
-                }
-                throw;
-            } catch (const TMalformedResponseError &) {
-                try {
-                    port->SkipNoise();
-                } catch (const std::exception & e) {
-                    LOG(Warn) << "SkipNoise failed: " << e.what();
-                }
-                throw;
+        std::unique_ptr<TRegister, std::function<void(TRegister*)>> tmpCacheGuard(&reg, [](TRegister* reg){reg->Device()->DismissTmpCache();});
+
+        LOG(Debug) << "modbus: write " << reg.Get16BitWidth() << " " << reg.TypeName << "(s) @ " << reg.Address <<
+                " of device " << reg.Device()->ToString();
+
+        // 1 byte - function code, 2 bytes - register address, 2 bytes - value
+        const uint16_t WRITE_RESPONSE_PDU_SIZE = 5;
+        TResponse response(traits.GetPacketSize(WRITE_RESPONSE_PDU_SIZE));
+
+        vector<TRequest> requests(InferWriteRequestsCount(reg));
+
+        for (size_t i = 0; i < requests.size(); ++i) {
+            auto& req = requests[i];
+            req.resize(traits.GetPacketSize(InferWriteRequestPDUSize(reg)));
+
+            if (IsPacking(reg)) {
+                assert(requests.size() == 1 && "only one request is expected when using multiple write");
+                ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, value, shift);
+            } else {
+                ComposeSingleWriteRequestPDU(traits.GetPDU(req), reg, static_cast<uint16_t>(value & 0xffff), shift, requests.size() - i - 1);
+                value >>= 16;
             }
+
+            traits.FinalizeRequest(req, slaveId);
         }
-        return (rc > 0);
-    }
-
-    void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, int shift)
-    {
-        reg->Device()->DismissTmpCache();
-
-        std::unique_ptr<TRegister, std::function<void(TRegister*)>> tmpCacheGuard(reg.get(), [](TRegister* reg){reg->Device()->DismissTmpCache();});
-
-        LOG(Debug) << "modbus: write " << reg->Get16BitWidth() << " " << reg->TypeName << "(s) @ " << reg->Address <<
-                " of device " << reg->Device()->ToString();
-
-        std::vector<TWriteRequest> requests;
-        ComposeWriteRequests(requests, reg, slaveId, value, shift);
 
         for (const auto & request: requests) {
-            TWriteResponse response;
-            if (ProcessRequest(port, request, response, reg->Device()->DeviceConfig()) > 0) {
-                Modbus::ParseWriteResponse(PDU(response));
-            } else {
-                throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
+            try {
+                auto pduSize = ProcessRequest(traits, port, request, response, *reg.Device()->DeviceConfig());
+                ParseWriteResponse(traits.GetPDU(response), pduSize);
+            } catch (const TMalformedResponseError &) {
+                try {
+                    port.SkipNoise();
+                } catch (const std::exception & e) {
+                    LOG(Warn) << "SkipNoise failed: " << e.what();
+                }
+                throw;
             }
         }
 
-        reg->Device()->ApplyTmpCache();
+        reg.Device()->ApplyTmpCache();
     }
 
-    void ReadRange(Modbus::PModbusRegisterRange& range, PPort port, uint8_t slaveId, int shift)
+    void ReadRange(IModbusTraits& traits, TModbusRegisterRange& range, TPort& port, uint8_t slaveId, int shift)
     {
-        auto config = range->Device()->DeviceConfig();
-        range->SetStatus(TRegisterRange::ST_UNKNOWN_ERROR);
-        TReadRequest request;
-        ComposeReadRequest(request, range, slaveId, shift);
-        TReadResponse response(InferReadResponseSize(range));
+        range.SetStatus(TRegisterRange::ST_UNKNOWN_ERROR);
+
+        // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
+        const uint16_t REQUEST_PDU_SIZE = 5;
+
+        TRequest request(traits.GetPacketSize(REQUEST_PDU_SIZE));
+        TResponse response(traits.GetPacketSize(InferReadResponsePDUSize(range)));
+        Modbus::ComposeReadRequestPDU(traits.GetPDU(request), range, shift);
+        traits.FinalizeRequest(request, slaveId);
+
         try {
-            if (ProcessRequest(port, request, response, config)) {
-                Modbus::ParseReadResponse(PDU(response), range);
-                range->SetStatus(TRegisterRange::ST_OK);
-            } else {
-                throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
+            auto pduSize = ProcessRequest(traits, port, request, response, *range.Device()->DeviceConfig());
+            ParseReadResponse(traits.GetPDU(response), pduSize, range);
+            range.SetStatus(TRegisterRange::ST_OK);
+        } catch (const TMalformedResponseError &) {
+            try {
+                port.SkipNoise();
+            } catch (const std::exception & e) {
+                LOG(Warn) << "SkipNoise failed: " << e.what();
             }
+            range.SetStatus(TRegisterRange::ST_DEVICE_ERROR);
+            throw;
         } catch (const TSerialDevicePermanentRegisterException&) {
-            range->SetStatus(TRegisterRange::ST_DEVICE_ERROR);
+            range.SetStatus(TRegisterRange::ST_DEVICE_ERROR);
             throw;
         } catch (const TSerialDeviceTransientErrorException&) {
-            range->SetStatus(TRegisterRange::ST_DEVICE_ERROR);
+            range.SetStatus(TRegisterRange::ST_DEVICE_ERROR);
             throw;
         }
     }
 
-    void ProcessRangeException(Modbus::PModbusRegisterRange& range, const char* msg)
+    void ProcessRangeException(TModbusRegisterRange& range, const char* msg)
     {
-        for (auto& r: range->RegisterList()) {
+        for (auto& r: range.RegisterList()) {
             r->SetError();
         }
-        LOG(Warn) << "ModbusRTU::ReadRegisterRange(): failed to read " << *range << ": " << msg;
+        LOG(Warn) << "ModbusRTU::ReadRegisterRange(): failed to read " << range << ": " << msg;
     }
 
     // Remove unsupported registers on borders
@@ -884,11 +805,11 @@ namespace ModbusRTU // modbus rtu protocol utilities
         return newRanges;
     }
 
-    std::list<PRegisterRange> ReadWholeRange(Modbus::PModbusRegisterRange& range, PPort port, uint8_t slaveId, int shift)
+    std::list<PRegisterRange> ReadWholeRange(Modbus::IModbusTraits& traits, Modbus::PModbusRegisterRange& range, TPort& port, uint8_t slaveId, int shift)
     {
         std::list<PRegisterRange> newRanges;
         try {
-            ReadRange(range, port, slaveId, shift);
+            ReadRange(traits, *range, port, slaveId, shift);
             auto l = RemoveUnsupportedFromBorders(range->RegisterList());
             if (!l.empty()) {
                 auto newRange = std::make_shared<Modbus::TModbusRegisterRange>(l, range->HasHoles());
@@ -896,10 +817,10 @@ namespace ModbusRTU // modbus rtu protocol utilities
                 newRanges.push_back(newRange);
             }
         } catch (const TSerialDeviceTransientErrorException& e) {
-            ProcessRangeException(range, e.what());
+            ProcessRangeException(*range, e.what());
             newRanges.push_back(range);
         } catch (const TSerialDevicePermanentRegisterException& e) {
-            ProcessRangeException(range, e.what());
+            ProcessRangeException(*range, e.what());
             if (range->HasHoles()) {
                 LOG(Debug) << "Disabling holes feature for " << *range;
                 return SplitRangeByHoles(range->RegisterList(), false);
@@ -910,7 +831,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         return newRanges;
     }
 
-    std::list<PRegisterRange> ReadOneByOne(Modbus::PModbusRegisterRange& range, PPort port, uint8_t slaveId, int shift)
+    std::list<PRegisterRange> ReadOneByOne(Modbus::IModbusTraits& traits, Modbus::PModbusRegisterRange& range, TPort& port, uint8_t slaveId, int shift)
     {
         range->SetStatus(TRegisterRange::ST_UNKNOWN_ERROR);
         std::list<Modbus::PModbusRegisterRange> subRanges;
@@ -919,9 +840,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
         }
         for (auto& r: subRanges) {
             try {
-                ReadRange(r, port, slaveId, shift);
+                ReadRange(traits, *r, port, slaveId, shift);
             } catch (const TSerialDeviceTransientErrorException& e) {
-                ProcessRangeException(range, e.what());
+                ProcessRangeException(*range, e.what());
                 return std::list<PRegisterRange>{range};
             } catch (const TSerialDevicePermanentRegisterException& e) {
                 r->RegisterList().front()->SetAvailable(false);
@@ -933,7 +854,7 @@ namespace ModbusRTU // modbus rtu protocol utilities
         return SplitRangeByHoles(range->RegisterList(), true);;
     }
 
-    std::list<PRegisterRange> ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, int shift)
+    std::list<PRegisterRange> ReadRegisterRange(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId, PRegisterRange range, int shift)
     {
         auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
         if (!modbus_range) {
@@ -943,9 +864,9 @@ namespace ModbusRTU // modbus rtu protocol utilities
         LOG(Debug) << "modbus: read " << *modbus_range;
 
         if (modbus_range->ShouldReadOneByOne()) {
-            return ReadOneByOne(modbus_range, port, slaveId, shift);
+            return ReadOneByOne(traits, modbus_range, port, slaveId, shift);
         }
-        return ReadWholeRange(modbus_range, port, slaveId, shift);
+        return ReadWholeRange(traits, modbus_range, port, slaveId, shift);
     }
 
     void WarnFailedRegisterSetup(const PDeviceSetupItem& item, const char* msg)
@@ -953,14 +874,14 @@ namespace ModbusRTU // modbus rtu protocol utilities
         LOG(Warn) << "Register " << item->Register->ToString() << " setup failed: " << msg;
     }
 
-    bool WriteSetupRegisters(PPort port, uint8_t slaveId, const std::vector<PDeviceSetupItem>& setupItems, int shift)
+    bool WriteSetupRegisters(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId, const std::vector<PDeviceSetupItem>& setupItems, int shift)
     {
         for (const auto& item : setupItems) {
             try {
                 LOG(Info) << "Init: " << item->Name 
                         << ": setup register " << item->Register->ToString()
                         << " <-- " << item->Value;
-                WriteRegister(port, slaveId, item->Register, item->Value, shift);
+                WriteRegister(traits, port, slaveId, *item->Register, item->Value, shift);
             } catch (const TSerialDevicePermanentRegisterException& e) {
                 WarnFailedRegisterSetup(item, e.what());
             } catch (const TSerialDeviceTransientErrorException& e) {
@@ -970,240 +891,163 @@ namespace ModbusRTU // modbus rtu protocol utilities
         }
         return true;
     }
-}  // modbus rtu protocol utilities
 
-namespace ModbusTCP
-{
-    typedef std::vector<uint8_t> TRequest;
+// TModbusRTUTraits
 
-    const size_t MBAP_SIZE = 7;
-
-    // get pointer to PDU in message
-    template <class T>
-    inline const uint8_t* PDU(const T& msg)
+    TPort::TFrameCompletePred TModbusRTUTraits::ExpectNBytes(int n) const
     {
-        return &msg[MBAP_SIZE];
+        return [=](uint8_t* buf, int size) {
+            if (size < 2)
+                return false;
+            if (Modbus::IsException(buf + 1)) // GetPDU
+                return size >= static_cast<int>(EXCEPTION_RESPONSE_PDU_SIZE + DATA_SIZE);
+            return size >= n;
+        };
     }
 
-    template <class T>
-    inline uint8_t* PDU(T& msg)
+    size_t TModbusRTUTraits::GetPacketSize(size_t pduSize) const
     {
-        return &msg[MBAP_SIZE];
+        return DATA_SIZE + pduSize;
     }
 
-    void SetMBAP(std::vector<uint8_t>& req, uint16_t transactionId, size_t pduSize, uint8_t slaveId)
+    void TModbusRTUTraits::FinalizeRequest(TRequest& request, uint8_t slaveId)
     {
-            req[0] = slaveId;
-            req[1] = slaveId;
-            req[2] = 0;
-            req[3] = 0;
-            req[4] = slaveId;
-            req[5] = slaveId;
-            req[6] = slaveId;
+        request[0] = slaveId;
+        WriteAs2Bytes(&request[request.size() - 2], CRC16::CalculateCRC16(request.data(), request.size() - 2));
     }
 
-    void ComposeWriteRequests(std::vector<TRequest>& requests, PRegister reg, uint8_t slaveId, uint64_t value, uint16_t* transactionId, int shift)
+    size_t TModbusRTUTraits::ReadFrame(TPort& port,
+                                       const std::chrono::milliseconds& responseTimeout,
+                                       const std::chrono::milliseconds& frameTimeout,
+                                       const TRequest& req,
+                                       TResponse& res) const
     {
-        requests.resize(Modbus::InferWriteRequestsCount(reg));
+        auto rc = port.ReadFrame(res.data(),
+                                 res.size(),
+                                 responseTimeout + frameTimeout,
+                                 frameTimeout,
+                                 ExpectNBytes(res.size()));
+        //RTU response should be at least 3 bytes: 1 byte slave_id, 2 bytes CRC
+        if (rc < DATA_SIZE) {
+            throw Modbus::TMalformedResponseError("invalid data size");
+        }
 
-        for (std::size_t i = 0; i < requests.size(); ++i) {
-            auto & req = requests[i];
-            size_t pduSize = Modbus::InferWriteRequestPDUSize(reg);
-            req.resize(pduSize + MBAP_SIZE);
+        uint16_t crc = (res[rc - 2] << 8) + res[rc - 1];
+        if (crc != CRC16::CalculateCRC16(res.data(), rc - 2)) {
+            throw TInvalidCRCError();
+        }
 
-            ++(*transactionId);
-            SetMBAP(req, *transactionId, pduSize, slaveId);
+        auto requestSlaveId = req[0];
+        auto responseSlaveId = res[0];
+        if (requestSlaveId != responseSlaveId) {
+            throw TSerialDeviceTransientErrorException("request and response slave id mismatch");
+        }
+        return rc - DATA_SIZE;
+    }
+    
+    uint8_t* TModbusRTUTraits::GetPDU(std::vector<uint8_t>& frame) const
+    {
+        return &frame[1];
+    }
 
-            if (IsPacking(reg)) {
-                assert(requests.size() == 1 && "only one request is expected when using multiple write");
-                Modbus::ComposeMultipleWriteRequestPDU(PDU(req), reg, value, shift);
-            } else {
-                Modbus::ComposeSingleWriteRequestPDU(PDU(req), reg, static_cast<uint16_t>(value & 0xffff), shift, requests.size() - i - 1);
-                value >>= 16;
+    const uint8_t* TModbusRTUTraits::GetPDU(const std::vector<uint8_t>& frame) const
+    {
+        return &frame[1];
+    }
+
+// TModbusTCPTraits
+
+    TModbusTCPTraits::TModbusTCPTraits(std::shared_ptr<uint16_t> transactionId): TransactionId(transactionId)
+    {}
+
+    void TModbusTCPTraits::SetMBAP(TRequest& req, uint16_t transactionId, size_t pduSize, uint8_t slaveId) const
+    {
+        req[0] = ((transactionId >> 8) & 0xFF);
+        req[1] = (transactionId & 0xFF);
+        req[2] = 0; // MODBUS
+        req[3] = 0;
+        ++pduSize;  // length includes additional byte of unit identifier 
+        req[4] = ((pduSize >> 8) & 0xFF);
+        req[5] = (pduSize & 0xFF);
+        req[6] = slaveId;
+    }
+
+    uint16_t TModbusTCPTraits::GetLengthFromMBAP(const TResponse& buf) const
+    {
+        uint16_t l = buf[4];
+        l <<= 8;
+        l += buf[5];
+        return l;
+    }
+
+    size_t TModbusTCPTraits::GetPacketSize(size_t pduSize) const
+    {
+        return MBAP_SIZE + pduSize;
+    }
+
+    void TModbusTCPTraits::FinalizeRequest(TRequest& request, uint8_t slaveId)
+    {
+        ++(*TransactionId);
+        SetMBAP(request, *TransactionId, request.size() - MBAP_SIZE, slaveId);
+    }
+
+    size_t TModbusTCPTraits::ReadFrame(TPort& port,
+                                       const std::chrono::milliseconds& responseTimeout,
+                                       const std::chrono::milliseconds& frameTimeout,
+                                       const TRequest& req,
+                                       TResponse& res) const
+    {
+        auto startTime = chrono::steady_clock::now();
+        while (chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - startTime) < responseTimeout + frameTimeout) {
+            if (res.size() < MBAP_SIZE) {
+                res.resize(MBAP_SIZE);
             }
-        }
-    }
+            auto rc = port.ReadFrame(res.data(),
+                                     MBAP_SIZE,
+                                     responseTimeout + frameTimeout,
+                                     frameTimeout);
 
-    bool CheckResponse(const std::vector<uint8_t>& req, const std::vector<uint8_t>& res)
-    {
-        // slave id / unit indentifier
-        if (req[6] != res[6]) {
-            LOG(Warn) << "request and response unit indentifier mismatch";
-            return false;
-        }
+            if (rc < MBAP_SIZE) {
+                throw TMalformedResponseError("Can't read full MBAP");
+            }
 
-        // function code
-        if (PDU(req)[0] != (PDU(res)[0] & 127)) { // get actual function code even if exception
-            LOG(Warn) << "request and response function code mismatch";
-            return false;
-        }
-
-        if (req[0] != res[0] || req[1] != res[1]) {
-            LOG(Warn) << "transaction id mismatch";
-            return false;
-        }
-        return true;
-    }
-
-    uint16_t GetLengthFromMBAP(const std::vector<uint8_t>& buf)
-    {
-        uint16_t l;
-        memcpy(&l, buf.data()+4, 2);
-        return ntohs(l);
-    }
-
-    std::vector<uint8_t> GetFrame(PPort port, std::chrono::milliseconds& frameTimeout)
-    {
-        std::vector<uint8_t> buf(MBAP_SIZE);
-        if (port->ReadFrame(buf.data(), buf.size(), frameTimeout) > 0) {
-            auto len = GetLengthFromMBAP(buf);
-            if (len < 3) {
-                throw Modbus::TMalformedResponseError("wrong MBAP length value");
+            auto len = GetLengthFromMBAP(res);
+            // MBAP length should be at least 1 byte for unit indentifier
+            if (len == 0) {
+                throw TMalformedResponseError("Wrong MBAP length value: 0");
             }
             --len; // length includes one byte of unit identifier which is already in buffer
-            buf.resize(MBAP_SIZE + len);
-            if (port->ReadFrame(buf.data() + MBAP_SIZE, len, frameTimeout) > 0) {
-                return buf;
+
+            if (len + MBAP_SIZE > res.size()) {
+                res.resize(len + MBAP_SIZE);
             }
-        }
-        throw TSerialDeviceTransientErrorException("ReadFrame unknown error");
-    }
 
-    void WriteRegister(PPort port, uint8_t slaveId, PRegister reg, uint64_t value, uint16_t* transactionId, int shift)
-    {
-        reg->Device()->DismissTmpCache();
+            rc = port.ReadFrame(res.data() + MBAP_SIZE, len, frameTimeout, frameTimeout);
+            if (rc != len) {
+                throw TMalformedResponseError("Wrong PDU size: " + to_string(rc) + ", expected " + to_string(len));
+            }
 
-        int w = reg->Width();
-
-        LOG(Debug) << "write " << w << " " << reg->TypeName << "(s) @ " << reg->Address <<
-                " of device " << reg->Device()->ToString();
-
-        auto config = reg->Device()->DeviceConfig();
-
-        std::string exception_message;
-        try {
-            std::vector<TRequest> requests;
-            ComposeWriteRequests(requests, reg, slaveId, value, transactionId, shift);
-
-            for (const auto & request: requests) {
-                // Send request
-                if (config->GuardInterval.count()) {
-                    port->Sleep(config->GuardInterval);
+            // check transaction id
+            if (req[0] == res[0] && req[1] == res[1]) {
+                // check unit indentifier
+                if (req[6] != res[6]) {
+                    throw TSerialDeviceTransientErrorException("request and response unit indentifier mismatch");
                 }
-                port->WriteBytes(request.data(), request.size());
-
-                // Receive response
-                auto frame_timeout = config->FrameTimeout.count() < 0 ? ModbusRTU::FrameTimeout: config->FrameTimeout;
-                // TODO: Timeout
-                while(true) {
-                    try
-                    {
-                        auto response = GetFrame(port, frame_timeout);
-                        if (CheckResponse(request, response)) {
-                            Modbus::ParseWriteResponse(PDU(response));
-                            break;
-                        }
-                    } catch (const Modbus::TMalformedResponseError &) {
-                        try {
-                            port->SkipNoise();
-                        } catch (const std::exception & e) {
-                            LOG(Warn) << "SkipNoise failed: " << e.what();
-                        }
-                        throw;
-                    }
-                }
+                return rc;
             }
 
-            reg->Device()->ApplyTmpCache();
-            return;
-        } catch (TSerialDeviceTransientErrorException& e) {
-            exception_message = ": ";
-            exception_message += e.what();
+            LOG(Warn) << "Transaction id mismatch";
         }
-
-        reg->Device()->DismissTmpCache();
-
-        throw TSerialDeviceTransientErrorException(
-            "failed to write " + reg->TypeName +
-            " @ " + std::to_string(reg->Address) + exception_message);
+        throw TSerialDeviceTransientErrorException("request timed out");
     }
-
-    void ComposeReadRequest(TRequest& req, Modbus::PModbusRegisterRange range, uint8_t slaveId, uint16_t* transactionId, int shift)
+    
+    uint8_t* TModbusTCPTraits::GetPDU(std::vector<uint8_t>& frame) const
     {
-        const uint16_t REQUEST_PDU_SIZE = 5;
-        req.resize(MBAP_SIZE + REQUEST_PDU_SIZE);
-        ++(*transactionId);
-        SetMBAP(req, *transactionId, REQUEST_PDU_SIZE, slaveId);
-        Modbus::ComposeReadRequestPDU(PDU(req), range, shift);
+        return &frame[MBAP_SIZE];
     }
 
-    void ReadRegisterRange(PPort port, uint8_t slaveId, PRegisterRange range, uint16_t* transactionId, int shift)
+    const uint8_t* TModbusTCPTraits::GetPDU(const std::vector<uint8_t>& frame) const
     {
-        auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
-        if (!modbus_range) {
-            throw std::runtime_error("modbus range expected");
-        }
-
-        auto config = modbus_range->Device()->DeviceConfig();
-        // in case if connection error occures right after modbus error
-        // (probability of which is very low, but still),
-        // we need to clear any modbus errors from previous cycle
-        modbus_range->ResetModbusError();
-
-        LOG(Debug) << "read " << modbus_range->GetCount() << " " <<
-            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() <<
-            " of device " << modbus_range->Device()->ToString();
-
-
-        std::string exception_message;
-        try {
-            TRequest request;
-
-            // Send request
-            ComposeReadRequest(request, modbus_range, slaveId, transactionId, shift);
-            if (config->GuardInterval.count()){
-                port->Sleep(config->GuardInterval);
-            }
-            port->WriteBytes(request.data(), request.size());
-
-            // Receive response
-            auto frame_timeout = config->FrameTimeout.count() < 0 ? ModbusRTU::FrameTimeout: config->FrameTimeout;
-            auto response = GetFrame(port, frame_timeout);
-            // TODO: Timeout
-            while(true) {
-                try
-                {
-                    auto response = GetFrame(port, frame_timeout);
-                    if (CheckResponse(request, response)) {
-                        auto pduSize = Modbus::InferReadResponsePDUSize(modbus_range);
-                        if (GetLengthFromMBAP(response) != pduSize + 1) {
-                            throw Modbus::TMalformedResponseError("PDU length in response doesn't match request");
-                        }
-                        Modbus::ParseReadResponse(PDU(response), modbus_range);
-                        modbus_range->SetError(false);
-                        break;
-                    }
-                } catch (const Modbus::TMalformedResponseError &) {
-                    try {
-                        port->SkipNoise();
-                    } catch (const std::exception & e) {
-                        LOG(Warn) << "SkipNoise failed: " << e.what();
-                    }
-                    throw;
-                }
-            }
-            return;
-        } catch (TSerialDeviceTransientErrorException& e) {
-            exception_message = e.what();
-        }
-
-        modbus_range->SetError(true);
-
-        auto logWarn(std::move(LOG(Warn) << "ModbusRTU::ReadRegisterRange(): failed to read " << modbus_range->GetCount() << " " <<
-            modbus_range->TypeName() << "(s) @ " << modbus_range->GetStart() << " of device " << modbus_range->Device()->ToString()));
-
-        if (!exception_message.empty()) {
-            logWarn << ": " << exception_message;
-        }
+        return &frame[MBAP_SIZE];
     }
-}  // modbus tcp protocol utilities
+}  // modbus protocol utilities

@@ -101,6 +101,9 @@ void TPollPlan::ProcessPending(const TCallback& callback)
 
 bool TPollPlan::PollIsDue()
 {
+    if (Queue.empty()) {
+        return true;
+    }
     CurrentTime = ClockFunc();
     return Queue.top()->DueAt <= CurrentTime;
 }

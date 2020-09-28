@@ -40,12 +40,15 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
         throw runtime_error("not fake serial port passed to fake serial device");
     }
     Devices.push_back(this);
-    std::cout << "\t!!!! " << config->SlaveId << std::endl;
 }
 
 uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 {
     try {
+        if (!FakePort->IsOpen()) {
+            throw TSerialDeviceException("port not open");
+        }
+
         if (!Connected || FakePort->GetDoSimulateDisconnect()) {
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
@@ -77,6 +80,10 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 {
     try {
+        if (!FakePort->IsOpen()) {
+            throw TSerialDeviceException("port not open");
+        }
+
         if (!Connected || FakePort->GetDoSimulateDisconnect()) {
             throw TSerialDeviceTransientErrorException("device disconnected");
         }

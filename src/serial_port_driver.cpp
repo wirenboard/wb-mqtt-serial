@@ -30,27 +30,11 @@ namespace
 }
 
 
-TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig portConfig, PPort portOverride)
+TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig portConfig)
     : MqttDriver(mqttDriver),
       Config(portConfig)
 {
-    // FIXME: Settings classes hierarchy is completely broken. As a result we have ugly casts
-    if (portOverride) {
-        Port = portOverride;
-    } else {
-        auto serialCfg = std::dynamic_pointer_cast<TSerialPortSettings>(Config->ConnSettings);
-        if (serialCfg) {
-            Port = std::make_shared<TSerialPort>(serialCfg);
-        } else {
-            auto tcpCfg = std::dynamic_pointer_cast<TTcpPortSettings>(Config->ConnSettings);
-            if (tcpCfg) {
-                Port = std::make_shared<TTcpPort>(tcpCfg);
-            } else {
-                throw std::runtime_error("Can't create port instance");
-            }
-        }
-    }
-    SerialClient = PSerialClient(new TSerialClient(Port));
+    SerialClient = PSerialClient(new TSerialClient(Config->Port));
 }
 
 TSerialPortDriver::~TSerialPortDriver()
@@ -65,7 +49,7 @@ void TSerialPortDriver::SetUpDevices()
         UpdateError(reg, state);
     });
 
-    LOG(Debug) << "setting up devices at " << Config->ConnSettings->ToString();
+    LOG(Debug) << "setting up devices at " << Config->Port->GetDescription();
 
     try {
         auto tx = MqttDriver->BeginTx();
@@ -170,7 +154,7 @@ bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
     }
 
     // max_unchanged_interval > 0: update if changed or the time interval is exceeded
-    auto now = Port->CurrentTime();
+    auto now = Config->Port->CurrentTime();
     if (changed) {
         UpdateOrMake(it->second.LastPublishTime, now);
         return true;

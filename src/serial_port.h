@@ -10,7 +10,7 @@ class TSerialPort: public TFileDescriptorPort
 {
     using Base = TFileDescriptorPort;
 public:
-    TSerialPort(const PSerialPortSettings & settings);
+    TSerialPort(const TSerialPortSettings& settings);
     ~TSerialPort() = default;
 
     void Open() override;
@@ -19,16 +19,18 @@ public:
     void WriteBytes(const uint8_t* buf, int count) override;
 
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
-    int ReadFrame(uint8_t* buf,
-                  int count,
-                  const std::chrono::microseconds& responseTimeout,
-                  const std::chrono::microseconds& frameTimeout,
-                  TFrameCompletePred frameComplete = 0) override;
+    size_t ReadFrame(uint8_t* buf,
+                     size_t count,
+                     const std::chrono::microseconds& responseTimeout,
+                     const std::chrono::microseconds& frameTimeout,
+                     TFrameCompletePred frameComplete = 0) override;
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) override;
 
+    std::string GetDescription() const override;
+
 private:
-    PSerialPortSettings Settings;
+    TSerialPortSettings Settings;
     termios             OldTermios;
 };
 

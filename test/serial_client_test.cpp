@@ -37,6 +37,7 @@ protected:
     PFakeSerialPort Port;
     PSerialClient SerialClient;
     PFakeSerialDevice Device;
+    TSerialDeviceFactory DeviceFactory;
 
     bool HasSetupRegisters = false;
 };
@@ -106,6 +107,30 @@ void TSerialClientTest::TearDown()
     TFakeSerialDevice::ClearDevices();
 }
 
+TEST_F(TSerialClientTest, PortOpenError)
+{
+    // The test checks recovery logic after port opening failure
+    // TSerialClient must try to open port during every cycle and set /meta/error for controls
+
+    PRegister reg0 = Reg(0, U8);
+    PRegister reg1 = Reg(1, U8);
+
+    SerialClient->AddRegister(reg0);
+    SerialClient->AddRegister(reg1);
+
+    Port->SetAllowOpen(false);
+
+    Note() << "Cycle() [port open error]";
+    SerialClient->Cycle();
+
+    Note() << "Cycle() [port open error2]";
+    SerialClient->Cycle();
+
+    Port->SetAllowOpen(true);
+
+    Note() << "Cycle() [successful port open]";
+    SerialClient->Cycle();
+}
 
 TEST_F(TSerialClientTest, Poll)
 {
@@ -863,8 +888,9 @@ void TSerialClientIntegrationTest::SetUp()
     AddProtocolType(configSchema, "fake");
     AddRegisterType(configSchema, "fake");
     Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
-                        TSerialDeviceFactory::GetRegisterTypes,
-                        configSchema);
+                        DeviceFactory,
+                        configSchema,
+                        [=](const Json::Value&) {return std::make_pair(Port, false);});
 }
 
 void TSerialClientIntegrationTest::TearDown()
@@ -938,7 +964,7 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
 {
     FilterConfig("OnValueTest");
 
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     auto device = TFakeSerialDevice::GetDevice("0x90");
 
@@ -962,7 +988,7 @@ TEST_F(TSerialClientIntegrationTest, WordSwap)
 {
     FilterConfig("WordsLETest");
 
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     auto device = TFakeSerialDevice::GetDevice("0x91");
 
@@ -988,7 +1014,7 @@ TEST_F(TSerialClientIntegrationTest, Round)
 {
     FilterConfig("RoundTest");
 
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     auto device = TFakeSerialDevice::GetDevice("0x92");
 
@@ -1030,7 +1056,7 @@ TEST_F(TSerialClientIntegrationTest, Errors)
 {
     FilterConfig("DDL24");
 
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     auto device = TFakeSerialDevice::GetDevice("23");
 
@@ -1041,10 +1067,10 @@ TEST_F(TSerialClientIntegrationTest, Errors)
     Note() << "LoopOnce() [first start]";
     SerialDriver->LoopOnce();
 
-    Device->BlockReadFor(4, true);
-    Device->BlockWriteFor(4, true);
-    Device->BlockReadFor(7, true);
-    Device->BlockWriteFor(7, true);
+    device->BlockReadFor(4, true);
+    device->BlockWriteFor(4, true);
+    device->BlockReadFor(7, true);
+    device->BlockWriteFor(7, true);
 
     Note() << "LoopOnce() [read, rw blacklisted]";
     SerialDriver->LoopOnce();
@@ -1077,26 +1103,26 @@ TEST_F(TSerialClientIntegrationTest, SetupErrors)
 {
     FilterConfig("DDL24");
 
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
-    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("23", "fake", Port));
+    auto device = TFakeSerialDevice::GetDevice("23");
 
-    if (!Device) {
+    if (!device) {
         throw std::runtime_error("device not found or wrong type");
     }
 
-    Device->BlockWriteFor(1, true);
+    device->BlockWriteFor(1, true);
 
     Note() << "LoopOnce() [first start, write blacklisted]";
     SerialDriver->LoopOnce();
 
-    Device->BlockWriteFor(1, false);
-    Device->BlockWriteFor(2, true);
+    device->BlockWriteFor(1, false);
+    device->BlockWriteFor(2, true);
 
     Note() << "LoopOnce() [write blacklisted]";
     SerialDriver->LoopOnce();
 
-    Device->BlockWriteFor(2, false);
+    device->BlockWriteFor(2, false);
 
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
@@ -1105,19 +1131,28 @@ TEST_F(TSerialClientIntegrationTest, SetupErrors)
 TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    {
-        Config = LoadConfig(GetDataFilePath("configs/config-collision-test.json"), 
-                                            TSerialDeviceFactory::GetRegisterTypes,
-                                            configSchema);
-        EXPECT_THROW(make_shared<TMQTTSerialDriver>(Driver, Config), TSerialDeviceException);
-    }
 
-    {
-        Config = LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"), 
-                                            TSerialDeviceFactory::GetRegisterTypes,
-                                            configSchema);
-        EXPECT_NO_THROW(make_shared<TMQTTSerialDriver>(Driver, Config));
-    }
+    EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test.json"), 
+                                        DeviceFactory,
+                                        configSchema,
+                                        [=](const Json::Value&) {return std::make_pair(Port, false);}),
+                    TConfigParserException);
+
+    EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test2.json"), 
+                                        DeviceFactory,
+                                        configSchema,
+                                        [=](const Json::Value&) {return std::make_pair(Port, false);}),
+                    TConfigParserException);
+
+    EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"), 
+                                        DeviceFactory,
+                                        configSchema,
+                                        [=](const Json::Value&) {return std::make_pair(Port, false);}));
+
+    EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test2.json"), 
+                                        DeviceFactory,
+                                        configSchema,
+                                        [=](const Json::Value&) {return std::make_pair(Port, false);}));
 }
 
 /** Reconnect test cases **/
@@ -1139,14 +1174,15 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
     AddProtocolType(configSchema, "fake");
     AddRegisterType(configSchema, "fake");
     Config = LoadConfig(GetDataFilePath("configs/reconnect_test_1_device.json"), 
-                                            TSerialDeviceFactory::GetRegisterTypes,
-                                            configSchema);
+                                            DeviceFactory,
+                                            configSchema,
+                                            [=](const Json::Value&) {return std::make_pair(Port, false);});
 
     if (pollIntervalTest) {
         Config->PortConfigs[0]->DeviceConfigs[0]->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval = chrono::seconds(100);
     }
 
-    PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+    PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     auto device = TFakeSerialDevice::GetDevice("12");
 
@@ -1238,10 +1274,11 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
     AddProtocolType(configSchema, "fake");
     AddRegisterType(configSchema, "fake");
     Config = LoadConfig(GetDataFilePath("configs/reconnect_test_2_devices.json"), 
-                                            TSerialDeviceFactory::GetRegisterTypes,
-                                            configSchema);
+                                            DeviceFactory,
+                                            configSchema,
+                                            [=](const Json::Value&) {return std::make_pair(Port, false);});
 
-    PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+    PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     auto dev1 = TFakeSerialDevice::GetDevice("12");
     auto dev2 = TFakeSerialDevice::GetDevice("13");
@@ -1425,9 +1462,12 @@ TEST_F(TSerialClientIntegrationTest, Reconnect2)
 
 TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
 {
-    auto device = TFakeSerialDevice::GetDevice("12");
-
     auto observer = StartReconnectTest1Device(true);
+
+    auto device = TFakeSerialDevice::GetDevice("12");
+    if (!device) {
+        throw std::runtime_error("device not found");
+    }
 
     device->Registers[1] = 1;   // set control values to make sure that no setup section is written
     device->Registers[2] = 2;
@@ -1447,7 +1487,11 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
 }
 
 
-class TConfigParserTest: public TLoggedFixture {};
+class TConfigParserTest: public TLoggedFixture 
+{
+    protected:
+        TSerialDeviceFactory DeviceFactory;
+};
 
 TEST_F(TConfigParserTest, Parse)
 {
@@ -1457,7 +1501,7 @@ TEST_F(TConfigParserTest, Parse)
                                                                              configSchema));
 
     PHandlerConfig config = LoadConfig(GetDataFilePath("configs/parse_test.json"), 
-                                                       TSerialDeviceFactory::GetRegisterTypes,
+                                                       DeviceFactory,
                                                        configSchema,
                                                        templateMap);
 
@@ -1466,14 +1510,10 @@ TEST_F(TConfigParserTest, Parse)
     for (auto port_config: config->PortConfigs) {
         TTestLogIndent indent(*this);
         Emit() << "------";
-        Emit() << "ConnSettings: " << port_config->ConnSettings->ToString();
+        Emit() << "ConnSettings: " << port_config->Port->GetDescription();
         Emit() << "PollInterval: " << port_config->PollInterval.count();
         Emit() << "GuardInterval: " << port_config->RequestDelay.count();
         Emit() << "Response timeout: " << port_config->ResponseTimeout.count();
-
-        if(auto tcp_port_config = dynamic_pointer_cast<TTcpPortSettings>(port_config->ConnSettings)) {
-            Emit() << "ConnectionTimeout: " << tcp_port_config->ConnectionTimeout.count();
-        }
 
         if (port_config->DeviceConfigs.empty()) {
             Emit() << "No device configs.";
@@ -1551,7 +1591,7 @@ TEST_F(TConfigParserTest, ForceDebug)
     AddProtocolType(configSchema, "fake");
     AddRegisterType(configSchema, "fake");
     PHandlerConfig Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
-                                       TSerialDeviceFactory::GetRegisterTypes,
+                                       DeviceFactory,
                                        configSchema);
     ASSERT_TRUE(Config->Debug);
 }
@@ -1564,7 +1604,7 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
         Emit() << "Parsing config " << fname;
         try {
             PHandlerConfig config = LoadConfig(GetDataFilePath(fname), 
-                                       TSerialDeviceFactory::GetRegisterTypes,
+                                       DeviceFactory,
                                        configSchema);
         } catch (const std::exception& e) {
             Emit() << e.what();
