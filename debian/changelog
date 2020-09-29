@@ -1,6 +1,7 @@
 wb-mqtt-serial (2.2.2) experimental; urgency=medium
 
   * segmentation fault after port opening failure is fixed
+  * too small response timeout when using tcp port is fixed
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 29 Sep 2020 12:36:45 +0500
 
