@@ -324,8 +324,6 @@ void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
     SerialDriver->ClearDevices();
     SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
 
-    SerialPort->Open();
-
     ExpectPollQueries(mode);
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
@@ -516,8 +514,6 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterOnBorder)
     SerialDriver->ClearDevices();
     SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
 
-    SerialPort->Open();
-
     EnqueueHoldingPackUnavailableOnBorderReadResponse();
     Note() << "LoopOnce() [first read]";
     SerialDriver->LoopOnce();
@@ -534,8 +530,6 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddl
     SerialDriver->ClearDevices();
     SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
 
-    SerialPort->Open();
-
     EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
     Note() << "LoopOnce() [first read]";
     SerialDriver->LoopOnce();
@@ -551,8 +545,6 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
     // It must remove unavailable registers from request if they are on borders of a range
     SerialDriver->ClearDevices();
     SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
-
-    SerialPort->Open();
 
     EnqueueHoldingPackUnsupportedOnBorderReadResponse();
     Note() << "LoopOnce() [first read]";
@@ -588,8 +580,6 @@ TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
 
     SerialDriver->ClearDevices();
     SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
-
-    SerialPort->Open();
 
     EnqueueHoldingPackUnavailableAndHolesReadResponse();
     Note() << "LoopOnce() [first read]";

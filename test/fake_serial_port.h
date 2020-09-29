@@ -45,11 +45,14 @@ public:
     bool GetDoSimulateDisconnect() const;
     WBMQTT::Testing::TLoggedFixture& GetFixture();
 
+    void SetAllowOpen(bool allowOpen);
+
 private:
     void SkipFrameBoundary();
     const int FRAME_BOUNDARY = -1;
 
     WBMQTT::Testing::TLoggedFixture& Fixture;
+    bool AllowOpen;
     bool IsPortOpen;
     bool DoSimulateDisconnect;
     std::deque<const char*> PendingFuncs;
