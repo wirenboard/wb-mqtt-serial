@@ -7,7 +7,7 @@
         "stride": 1000,
         "shift": 500,
         "max_read_registers": 0,
-        "response_timeout_ms": 1,
+        "response_timeout_ms": 40,
         "frame_timeout_ms": 8,
         "setup": [
             {
