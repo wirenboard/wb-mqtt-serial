@@ -471,7 +471,7 @@ namespace {
         Get(port_data, "data_bits", settings.DataBits);
         Get(port_data, "stop_bits", settings.StopBits);
 
-        return std::make_shared<TSerialPort>(settings);
+        return std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(settings));
     }
 
     PPort OpenTcpPort(const Json::Value& port_data)

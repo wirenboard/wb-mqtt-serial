@@ -16,32 +16,35 @@ LDFLAGS= -lpthread -ljsoncpp -lwbmqtt1
 
 SERIAL_BIN=wb-mqtt-serial
 SERIAL_SRCS= \
-  src/port.cpp                        \
-  src/register.cpp                    \
-  src/poll_plan.cpp                   \
-  src/serial_client.cpp               \
-  src/register_handler.cpp            \
-  src/serial_config.cpp               \
-  src/serial_port_driver.cpp          \
-  src/serial_driver.cpp               \
-  src/serial_port.cpp                 \
-  src/serial_device.cpp               \
-  src/crc16.cpp                       \
-  src/modbus_common.cpp               \
-  src/bcd_utils.cpp                   \
-  src/log.cpp                         \
-  src/file_descriptor_port.cpp         \
-  src/tcp_port.cpp                    \
-  src/devices/mercury200_device.cpp   \
-  src/devices/uniel_device.cpp        \
-  src/devices/s2k_device.cpp          \
-  src/devices/ivtm_device.cpp         \
-  src/devices/pulsar_device.cpp       \
-  src/devices/modbus_device.cpp       \
-  src/devices/milur_device.cpp        \
-  src/devices/mercury230_device.cpp   \
-  src/devices/lls_device.cpp          \
-  src/devices/em_device.cpp           \
+  src/port.cpp                           \
+  src/register.cpp                       \
+  src/poll_plan.cpp                      \
+  src/serial_client.cpp                  \
+  src/register_handler.cpp               \
+  src/serial_config.cpp                  \
+  src/serial_port_driver.cpp             \
+  src/serial_driver.cpp                  \
+  src/serial_port.cpp                    \
+  src/serial_device.cpp                  \
+  src/crc16.cpp                          \
+  src/modbus_common.cpp                  \
+  src/iec_common.cpp                     \
+  src/bcd_utils.cpp                      \
+  src/log.cpp                            \
+  src/file_descriptor_port.cpp           \
+  src/tcp_port.cpp                       \
+  src/devices/mercury200_device.cpp      \
+  src/devices/uniel_device.cpp           \
+  src/devices/s2k_device.cpp             \
+  src/devices/ivtm_device.cpp            \
+  src/devices/pulsar_device.cpp          \
+  src/devices/modbus_device.cpp          \
+  src/devices/milur_device.cpp           \
+  src/devices/mercury230_device.cpp      \
+  src/devices/lls_device.cpp             \
+  src/devices/em_device.cpp              \
+  src/devices/energomera_iec_device.cpp  \
+  src/devices/neva_device.cpp            \
 
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 
@@ -74,6 +77,9 @@ TEST_SRCS= \
   $(TEST_DIR)/device_templates_file_extension_test.o  \
   $(TEST_DIR)/pty_based_fake_serial.o                 \
   $(TEST_DIR)/serial_port_test.o                      \
+  $(TEST_DIR)/iec_test.o                              \
+  $(TEST_DIR)/neva_test.o                             \
+  $(TEST_DIR)/energomera_test.o                       \
   $(TEST_DIR)/main.o                                  \
 
 TEST_OBJS=$(TEST_SRCS:.cpp=.o)

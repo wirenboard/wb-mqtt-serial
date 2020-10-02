@@ -769,9 +769,7 @@ namespace Modbus    // modbus protocol common utilities
 
     void ProcessRangeException(TModbusRegisterRange& range, const char* msg)
     {
-        for (auto& r: range.RegisterList()) {
-            r->SetError();
-        }
+        range.SetError();
         LOG(Warn) << "ModbusRTU::ReadRegisterRange(): failed to read " << range << ": " << msg;
     }
 

@@ -28,3 +28,6 @@ std::chrono::milliseconds TPort::GetSendTime(double bytesNumber)
 {
     return std::chrono::milliseconds::zero();
 }
+
+void TPort::SetSerialPortByteFormat(const TSerialPortByteFormat* params)
+{}

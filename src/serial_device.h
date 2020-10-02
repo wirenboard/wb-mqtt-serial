@@ -217,8 +217,7 @@ private:
 };
 
 /*!
- * Basic protocol implementation with slave ID collision check
- * using Slave ID extractor and registered slave ID map
+ * Basic protocol implementation with uint32_t slave ID
  */
 template<class Dev> class TBasicProtocol : public IProtocol
 {
@@ -232,8 +231,6 @@ public:
     /*!
      * New concrete device builder
      *
-     * Make slave ID collision check, throws exception in case of collision
-     * or creates new device and returns pointer to it
      * \param config    PDeviceConfig for device
      * \param port      Serial port
      * \return          Smart pointer to created device

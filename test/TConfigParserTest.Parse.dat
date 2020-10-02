@@ -1,7 +1,7 @@
 Debug: 0
 Ports:
     ------
-    ConnSettings: </dev/ttyNSC0 9600 8 N2>
+    ConnSettings: </dev/ttyNSC0 9600 8 N 2>
     PollInterval: 10
     GuardInterval: 0
     Response timeout: -1
@@ -274,7 +274,7 @@ Ports:
                 ErrorValue: 18446744073709551615
                 WordOrder: BigEndian
     ------
-    ConnSettings: </dev/ttyNSC1 9600 8 N1>
+    ConnSettings: </dev/ttyNSC1 9600 8 N 1>
     PollInterval: 100
     GuardInterval: 105
     Response timeout: 222

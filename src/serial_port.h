@@ -29,9 +29,54 @@ public:
 
     std::string GetDescription() const override;
 
+    const TSerialPortSettings& GetSettings() const;
+
 private:
     TSerialPortSettings Settings;
     termios             OldTermios;
 };
 
 using PSerialPort = std::shared_ptr<TSerialPort>;
+
+class TSerialPortWithIECHack: public TPort
+{
+    PSerialPort Port;
+public:
+    TSerialPortWithIECHack(PSerialPort port);
+    ~TSerialPortWithIECHack() = default;
+
+    void CycleBegin() override;
+    void CycleEnd(bool ok) override;
+
+    void Open() override;
+    void Close() override;
+    void Reopen() override;
+    bool IsOpen() const override;
+    void CheckPortOpen() const override;
+
+    void WriteBytes(const uint8_t* buf, int count) override;
+
+    uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
+
+    size_t ReadFrame(uint8_t* buf, 
+                     size_t count,
+                     const std::chrono::microseconds& responseTimeout,
+                     const std::chrono::microseconds& frameTimeout,
+                     TFrameCompletePred frame_complete = 0) override;
+
+    void SkipNoise() override;
+
+    void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
+    bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
+    TTimePoint CurrentTime() const override;
+
+    std::chrono::milliseconds GetSendTime(double bytesNumber) override;
+
+    std::string GetDescription() const override;
+
+    void SetSerialPortByteFormat(const TSerialPortByteFormat* params) override;
+
+private:
+    //! Use 7E to 8N conversion. The workaround allows using IEC devices and other devices on the same bus.
+    bool UseIECHack;
+};
