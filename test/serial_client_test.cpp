@@ -105,6 +105,30 @@ void TSerialClientTest::TearDown()
     TRegister::DeleteIntern();
 }
 
+TEST_F(TSerialClientTest, PortOpenError)
+{
+    // The test checks recovery logic after port opening failure
+    // TSerialClient must try to open port during every cycle and set /meta/error for controls
+
+    PRegister reg0 = Reg(0, U8);
+    PRegister reg1 = Reg(1, U8);
+
+    SerialClient->AddRegister(reg0);
+    SerialClient->AddRegister(reg1);
+
+    Port->SetAllowOpen(false);
+
+    Note() << "Cycle() [port open error]";
+    SerialClient->Cycle();
+
+    Note() << "Cycle() [port open error2]";
+    SerialClient->Cycle();
+
+    Port->SetAllowOpen(true);
+
+    Note() << "Cycle() [successful port open]";
+    SerialClient->Cycle();
+}
 
 TEST_F(TSerialClientTest, Poll)
 {

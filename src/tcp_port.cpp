@@ -22,6 +22,9 @@ using namespace std;
 
 namespace {
     const int CONNECTION_TIMEOUT_S = 5;
+
+    // Additional timeout for reading from tcp port. It is caused by intermediate hardware and internal Linux processing
+    const std::chrono::microseconds TCPLag = std::chrono::microseconds(100000);
 }
 
 TTcpPort::TTcpPort(const PTcpPortSettings & settings)
@@ -170,6 +173,11 @@ void TTcpPort::WriteBytes(const uint8_t * buf, int count)
     }
 }
 
+uint8_t TTcpPort::ReadByte(const std::chrono::microseconds& timeout)
+{
+    return Base::ReadByte(timeout + TCPLag);
+}
+
 int TTcpPort::ReadFrame(uint8_t * buf, 
                         int count, 
                         const std::chrono::microseconds & responseTimeout,
@@ -177,7 +185,7 @@ int TTcpPort::ReadFrame(uint8_t * buf,
                         TFrameCompletePred frame_complete)
 {
     if (IsOpen()) {
-        return Base::ReadFrame(buf, count, responseTimeout, frameTimeout, frame_complete);
+        return Base::ReadFrame(buf, count, responseTimeout + TCPLag, frameTimeout + TCPLag, frame_complete);
     }
     LOG(Warn) << "Attempt to read from not open port";
     return 0;

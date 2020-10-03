@@ -12,7 +12,7 @@ using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
-    : Fixture(fixture), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
+    : Fixture(fixture), AllowOpen(true), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
 
 void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
 {
@@ -29,6 +29,9 @@ void TFakeSerialPort::Open()
 {
     if (IsPortOpen)
         throw TSerialDeviceException("port already open");
+    if (!AllowOpen) {
+        throw TSerialDeviceException("Port open error simulation");
+    }
     Fixture.Emit() << "Open()";
     IsPortOpen = true;
 }
@@ -173,6 +176,12 @@ bool TFakeSerialPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint 
         return true;
     if (until < Time)
         throw std::runtime_error("TFakeSerialPort::Wait(): going back in time");
+
+    auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(until - std::chrono::steady_clock::now()).count();
+    if (delta > 1000) {
+        throw std::runtime_error("Too long waiting for test: " + std::to_string(delta) + " ms");
+    }
+
     Time = until;
     return false;
 }
@@ -238,6 +247,11 @@ void TFakeSerialPort::SkipFrameBoundary()
 {
     if (RespPos < Resp.size() && Resp[RespPos] == FRAME_BOUNDARY)
         RespPos++;
+}
+
+void TFakeSerialPort::SetAllowOpen(bool allowOpen)
+{
+    AllowOpen = allowOpen;
 }
 
 std::chrono::milliseconds TFakeSerialPort::GetSendTime(double bytesNumber)

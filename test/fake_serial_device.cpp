@@ -43,6 +43,10 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
 uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 {
     try {
+        if (!FakePort->IsOpen()) {
+            throw TSerialDeviceException("port not open");
+        }
+
         if (!Connected || FakePort->GetDoSimulateDisconnect()) {
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
@@ -74,6 +78,10 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 {
     try {
+        if (!FakePort->IsOpen()) {
+            throw TSerialDeviceException("port not open");
+        }
+
         if (!Connected || FakePort->GetDoSimulateDisconnect()) {
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
