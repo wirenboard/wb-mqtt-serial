@@ -1050,4 +1050,18 @@ namespace Modbus    // modbus protocol common utilities
     {
         return &frame[MBAP_SIZE];
     }
+
+    std::unique_ptr<Modbus::IModbusTraits> TModbusRTUTraitsFactory::GetModbusTraits(PPort /*port*/)
+    {
+        return std::make_unique<Modbus::TModbusRTUTraits>();
+    }
+
+    std::unique_ptr<Modbus::IModbusTraits> TModbusTCPTraitsFactory::GetModbusTraits(PPort port)
+    {
+        auto it = TransactionIds.find(port);
+        if (it == TransactionIds.end()) {
+            std::tie(it, std::ignore) = TransactionIds.insert({port, std::make_shared<uint16_t>(0)});
+        }
+        return std::make_unique<Modbus::TModbusTCPTraits>(it->second);
+    }
 }  // modbus protocol utilities

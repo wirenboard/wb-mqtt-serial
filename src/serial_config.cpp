@@ -344,11 +344,6 @@ namespace {
         device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg, value)));
     }
 
-    bool isModbusProtocol(const std::string& protocolName) 
-    {
-        return (protocolName == "modbus") || (protocolName == "modbus_io");
-    }
-
     bool LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data, TSerialDeviceFactory& deviceFactory, bool modbusTcpWorkaround)
     {
         Get(device_data, "protocol", device_config->Protocol);
@@ -357,7 +352,7 @@ namespace {
         }
 
         if (modbusTcpWorkaround) {
-            if (isModbusProtocol(device_config->Protocol)) {
+            if (deviceFactory.GetProtocol(device_config->Protocol)->IsModbus()) {
                 device_config->Protocol += "-tcp";
             } else {
                 LOG(Warn) << "Device \"" << device_config->Name << "\": protocol \"" + device_config->Protocol + "\" is not compatible with Modbus TCP";
