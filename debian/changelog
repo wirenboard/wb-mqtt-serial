@@ -1,7 +1,6 @@
 wb-mqtt-serial (2.5.0) experimental; urgency=medium
 
   * Support for user defined device templates in /etc/wb-mqtt-serial.conf.d/templates folder is added.
-  * too small response timeout when using tcp port is fixed
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 26 Oct 2020 12:30:05 +0500
 
