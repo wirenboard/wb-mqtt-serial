@@ -25,7 +25,23 @@ class TTemplateMap
         std::unique_ptr<WBMQTT::JSON::TValidator>    Validator;
     public:
         TTemplateMap() = default;
+
+        /**
+         * @brief Construct a new TTemplateMap object.
+         *        Throws TConfigParserException if can't open templatesDir.
+         * 
+         * @param templatesDirs directory with templates
+         * @param templateSchema JSON Schema for template file validation
+         */
         TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema);
+
+        /**
+         * @brief Add templates from templatesDir to map.
+         *        Throws TConfigParserException if can't open templatesDir.
+         * 
+         * @param templatesDir directory with templates
+         */
+        void AddTemplatesDir(const std::string& templatesDir);
 
         const Json::Value& GetTemplate(const std::string& deviceType);
 };

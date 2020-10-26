@@ -13,8 +13,16 @@ using namespace std;
 #define LOG(logger) ::logger.Log() << "[serial] "
 
 const auto driverName      = "wb-modbus";
-const auto libwbmqttDbFile = "/var/lib/wb-mqtt-serial/libwbmqtt.db";
-const auto templatesFolder = "/usr/share/wb-mqtt-serial/templates";
+
+const auto BIN_NAME        = "wb-mqtt-serial";
+
+const auto LIBWBMQTT_DB_FULL_FILE_PATH          = "/var/lib/wb-mqtt-serial/libwbmqtt.db";
+const auto CONFIG_FULL_FILE_PATH                = "/etc/wb-mqtt-serial.conf";
+const auto TEMPLATES_DIR                        = "/usr/share/wb-mqtt-serial/templates";
+const auto USER_TEMPLATES_DIR                   = "/etc/wb-mqtt-serial.conf.d/templates";
+const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH    = "/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json";
+const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
+
 const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(3);
 
 namespace
@@ -22,7 +30,7 @@ namespace
     void PrintUsage()
     {
         cout << "Usage:" << endl
-             << " wb-mqtt-serial [options]" << endl
+             << " " << BIN_NAME << " [options]" << endl
              << "Options:" << endl
              << "  -d       level     enable debuging output:" << endl
              << "                       1 - serial only;" << endl
@@ -123,20 +131,26 @@ namespace
 int main(int argc, char *argv[])
 {
     WBMQTT::TMosquittoMqttConfig mqttConfig;
-    string configFilename("/etc/wb-mqtt-serial.conf");
+    string configFilename(CONFIG_FULL_FILE_PATH);
 
     WBMQTT::SignalHandling::Handle({ SIGINT });
     WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ WBMQTT::SignalHandling::Stop(); });
-    WBMQTT::SetThreadName("wb-mqtt-serial");
+    WBMQTT::SetThreadName(BIN_NAME);
 
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
 
     PHandlerConfig handlerConfig;
     try {
-        Json::Value configSchema = LoadConfigSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json");
-        TTemplateMap templates(templatesFolder, 
-                               LoadConfigTemplatesSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json", 
+        Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
+        TTemplateMap templates(TEMPLATES_DIR,
+                               LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, 
                                                          configSchema));
+
+        try {
+            templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
+        } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
+        }
+
         handlerConfig = LoadConfig(configFilename,
                                   TSerialDeviceFactory::GetRegisterTypes,
                                   configSchema,
@@ -160,7 +174,7 @@ int main(int argc, char *argv[])
             .SetBackend(backend)
             .SetUseStorage(true)
             .SetReownUnknownDevices(true)
-            .SetStoragePath(libwbmqttDbFile)
+            .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH)
         );
 
         driver->StartLoop();
