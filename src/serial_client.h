@@ -49,6 +49,7 @@ private:
     void OnDeviceReconnect(PSerialDevice dev);
     void ClosedPortCycle();
     void OpenPortCycle();
+    void UpdateFlushNeeded();
 
     PPort Port;
     std::list<PRegister>       RegList;
