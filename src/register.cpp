@@ -61,16 +61,6 @@ TSimpleRegisterRange::TSimpleRegisterRange(const std::list<PRegister>& regs): TR
 
 TSimpleRegisterRange::TSimpleRegisterRange(PRegister reg): TRegisterRange(reg) {}
 
-void TSimpleRegisterRange::MapRange(TValueCallback value_callback, TErrorCallback error_callback)
-{
-    for (auto reg: RegisterList()) {
-        if (reg->GetError())
-            error_callback(reg);
-        else
-            value_callback(reg, reg->GetValue());
-    }
-}
-
 TRegisterRange::EStatus TSimpleRegisterRange::GetStatus() const
 {
     if (std::all_of(RegisterList().begin(), RegisterList().end(), [](const PRegister& r) {return r->GetError();})) {
@@ -87,7 +77,10 @@ std::string TRegisterConfig::ToString() const {
 
 std::string TRegister::ToString() const
 {
-    return "<" + Device()->ToString() + ":" + TRegisterConfig::ToString() + ">";
+    if (Device()) {
+        return "<" + Device()->ToString() + ":" + TRegisterConfig::ToString() + ">";
+    }
+    return "<unknown device:" + TRegisterConfig::ToString() + ">";
 }
 
 bool TRegister::IsAvailable() const

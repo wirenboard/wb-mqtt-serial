@@ -14,6 +14,7 @@ Port cycle OK
 >>> client -> server: 10
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '10'
+Read Callback: <fake:1:fake: 20> becomes 10
 fake_serial_device '1': read address '20' value '10'
 Read Callback: <fake:1:fake: 20> becomes 10 [unchanged]
 fake_serial_device '1': read address '30' value '18446744073709551615'
@@ -23,6 +24,7 @@ Port cycle OK
 >>> client -> server: -2
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '18446744073709551614'
+Read Callback: <fake:1:fake: 20> becomes 18446744073709551614
 fake_serial_device '1': read address '20' value '18446744073709551614'
 Read Callback: <fake:1:fake: 20> becomes 18446744073709551614 [unchanged]
 fake_serial_device '1': read address '30' value '18446744073709551615'

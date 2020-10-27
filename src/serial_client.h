@@ -45,6 +45,7 @@ private:
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
     void PrepareToAccessDevice(PSerialDevice dev);
     void OnDeviceReconnect(PSerialDevice dev);
+    void UpdateFlushNeeded();
 
     PPort Port;
     std::list<PRegister> RegList;

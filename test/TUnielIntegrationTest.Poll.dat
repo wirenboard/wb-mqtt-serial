@@ -31,27 +31,24 @@ Open()
 Sleep(100000)
 EnqueueRelayOffQueryResponse()
 >> FF FF 05 01 00 1B 00 21
-Publish: /devices/pseudo_uniel/controls/Relay 1: '0' (QoS 1, retained)
 << FF FF 05 00 00 1B 00 20
 EnqueueVoltageQueryResponse()
 >> FF FF 05 01 00 0A 00 10
-Publish: /devices/pseudo_uniel/controls/Input 0: '154' (QoS 1, retained)
 << FF FF 05 00 9A 0A 00 A9
 EnqueueThreshold0QueryResponse()
 >> FF FF 05 01 00 02 00 08
-Publish: /devices/pseudo_uniel/controls/LowThr: '112' (QoS 1, retained)
 << FF FF 05 00 70 02 00 77
 EnqueueBrightnessQueryResponse()
 >> FF FF 05 01 00 41 00 47
-Publish: /devices/pseudo_uniel/controls/LED 1: '66' (QoS 1, retained)
 Port cycle OK
 << FF FF 05 00 42 41 00 88
 Publish: /devices/pseudo_uniel/controls/Relay 1/on: '1' (QoS 0, retained)
-Publish: /devices/pseudo_uniel/controls/Relay 1: '1' (QoS 1, retained)
-Publish: /devices/pseudo_uniel/controls/LowThr/on: '112' (QoS 0, retained)
+Publish: /devices/pseudo_uniel/controls/Relay 1: '0' (QoS 1, retained)
+Publish: /devices/pseudo_uniel/controls/Input 0: '154' (QoS 1, retained)
 Publish: /devices/pseudo_uniel/controls/LowThr: '112' (QoS 1, retained)
-Publish: /devices/pseudo_uniel/controls/LED 1/on: '66' (QoS 0, retained)
 Publish: /devices/pseudo_uniel/controls/LED 1: '66' (QoS 1, retained)
+Publish: /devices/pseudo_uniel/controls/LowThr/on: '112' (QoS 0, retained)
+Publish: /devices/pseudo_uniel/controls/LED 1/on: '66' (QoS 0, retained)
 >>> LoopOnce()
 EnqueueSetRelayOnResponse()
 >> FF FF 06 01 FF 1B 00 21
@@ -76,6 +73,9 @@ EnqueueBrightnessQueryResponse()
 Port cycle OK
 << FF FF 05 00 42 41 00 88
 Close()
+Publish: /devices/pseudo_uniel/controls/Relay 1: '1' (QoS 1, retained)
+Publish: /devices/pseudo_uniel/controls/LowThr: '112' (QoS 1, retained)
+Publish: /devices/pseudo_uniel/controls/LED 1: '66' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/pseudo_uniel/controls/LED 1/on
 Publish: /devices/pseudo_uniel/controls/LED 1: '' (QoS 1, retained)
 Publish: /devices/pseudo_uniel/controls/LED 1/meta/max: '' (QoS 1, retained)

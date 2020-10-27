@@ -45,7 +45,7 @@ TRegisterHandler::TErrorState TRegisterHandler::UpdateWriteError(bool error) {
 bool TRegisterHandler::NeedToPoll()
 {
     std::lock_guard<std::mutex> lock(SetValueMutex);
-    return Reg->Poll && !Dirty;
+    return Reg->Poll;
 }
 
 TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_value, bool ok, bool *changed)
@@ -69,23 +69,20 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
     }
 
     SetValueMutex.lock();
-    if (Value != new_value) {
-        if (Dirty) {
-            SetValueMutex.unlock();
-            return UpdateReadError(false);
-        }
 
-        Value = new_value;
+    if (OldValue != new_value) {
+        OldValue = new_value;
         SetValueMutex.unlock();
 
         LOG(Debug) << "new val for " << Reg->ToString() << ": " << std::hex << new_value;
-
         *changed = true;
         return UpdateReadError(false);
-    } else
-        SetValueMutex.unlock();
+    }
+
+    SetValueMutex.unlock();
 
     *changed = first_poll;
+
     return UpdateReadError(false);
 }
 
@@ -95,28 +92,33 @@ bool TRegisterHandler::NeedToFlush()
     return Dirty;
 }
 
-TRegisterHandler::TErrorState TRegisterHandler::Flush()
+std::pair<TRegisterHandler::TErrorState, bool> TRegisterHandler::Flush()
 {
-    if (!NeedToFlush())
-        return ErrorStateUnchanged;
-
-    {
-        std::lock_guard<std::mutex> lock(SetValueMutex);
-        Dirty = false;
-    }
-
+    bool changed = false;
     try {
-        Device()->WriteRegister(Reg, Value);
+        volatile uint64_t TempValue;
+        {
+            std::lock_guard<std::mutex> lock(SetValueMutex);
+            TempValue = ValueToSet;
+        }
+        Device()->WriteRegister(Reg, TempValue);
+        {
+            std::lock_guard<std::mutex> lock(SetValueMutex);
+            Dirty = (TempValue != ValueToSet);
+        }
+        changed = (OldValue != TempValue);
+        OldValue = TempValue;
+        Reg->SetValue(OldValue);
     } catch (const TSerialDeviceTransientErrorException& e) {
         LOG(Warn) << "Register " << Reg->ToString()
                   << " TRegisterHandler::Flush() failed: " << e.what();
-        return UpdateWriteError(true);
+        return std::make_pair(UpdateWriteError(true), false);
     } catch (const TSerialDevicePermanentRegisterException& e) {
         LOG(Warn) << "Register " << Reg->ToString()
                   << " TRegisterHandler::Flush() failed: " << e.what();
-        return UpdateWriteError(true);
+        return std::make_pair(UpdateWriteError(true), false);
     }
-    return UpdateWriteError(false);
+    return std::make_pair(UpdateWriteError(false), changed);
 }
 
 uint64_t TRegisterHandler::InvertWordOrderIfNeeded(const uint64_t value) const
@@ -139,7 +141,7 @@ uint64_t TRegisterHandler::InvertWordOrderIfNeeded(const uint64_t value) const
 
 std::string TRegisterHandler::TextValue() const
 {
-    return ConvertSlaveValue(InvertWordOrderIfNeeded(Value));
+    return ConvertSlaveValue(InvertWordOrderIfNeeded(Reg->GetValue()));
 }
 
 std::string TRegisterHandler::ConvertSlaveValue(uint64_t value) const
@@ -199,7 +201,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
         // don't hold the lock while notifying the client below
         std::lock_guard<std::mutex> lock(SetValueMutex);
         Dirty = true;
-        Value = InvertWordOrderIfNeeded(ConvertMasterValue(v));
+        ValueToSet = InvertWordOrderIfNeeded(ConvertMasterValue(v));
     }
     FlushNeeded->Signal();
 }

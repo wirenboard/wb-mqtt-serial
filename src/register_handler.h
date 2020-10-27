@@ -22,12 +22,19 @@ public:
         UnknownErrorState,
         ErrorStateUnchanged
     };
+    
     TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed);
     PRegister Register() const { return Reg; }
     bool NeedToPoll();
     TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
     bool NeedToFlush();
-    TErrorState Flush();
+
+    /**
+     * @brief Write pending register value. NeedToFlush must be checked before call.
+     * 
+     * @return std::pair<TErrorState, bool> error state and register value changed flag
+     */
+    std::pair<TErrorState, bool> Flush();
     std::string TextValue() const;
 
     void SetTextValue(const std::string& v);
@@ -46,7 +53,8 @@ private:
     uint64_t InvertWordOrderIfNeeded(const uint64_t value) const;
 
     std::weak_ptr<TSerialDevice> Dev;
-    uint64_t Value = 0;
+    uint64_t OldValue = 0;
+    uint64_t ValueToSet = 0;
     PRegister Reg;
     volatile bool Dirty = false;
     bool DidReadReg = false;

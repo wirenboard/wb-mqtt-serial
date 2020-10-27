@@ -89,7 +89,7 @@ void TSerialPortDriver::SetUpDevices()
 
 void TSerialPortDriver::HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event)
 {
-    const auto & value = event.Control->GetRawValue();
+    const auto & value = event.RawValue;
     const auto & linkData = event.Control->GetUserData().As<TControlLinkData>();
 
     const auto & portDriver = linkData.PortDriver.lock();

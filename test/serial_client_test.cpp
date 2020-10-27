@@ -365,7 +365,6 @@ TEST_F(TSerialClientTest, S32)
 
     Note() << "client -> server: -2";
     SerialClient->SetTextValue(reg20, "-2");
-    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
@@ -404,7 +403,6 @@ TEST_F(TSerialClientTest, WordSwap)
 
     Note() << "client -> server: -2";
     SerialClient->SetTextValue(reg20, "-2");
-    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
@@ -983,6 +981,37 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
     ASSERT_EQ(500, device->Registers[0]);
 }
 
+TEST_F(TSerialClientIntegrationTest, OnValueError)
+{
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+
+    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x90", "fake", Port));
+
+    if (!Device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    Device->Registers[0] = 0;
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    Device->BlockWriteFor(0, true);
+
+    PublishWaitOnValue("/devices/OnValueTest/controls/Relay 1/on", "1", 0, true);
+
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    Device->BlockWriteFor(0, false);
+
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    ASSERT_EQ(500, Device->Registers[0]);
+}
 
 TEST_F(TSerialClientIntegrationTest, WordSwap)
 {
