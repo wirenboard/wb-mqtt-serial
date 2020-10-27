@@ -983,19 +983,19 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
 
 TEST_F(TSerialClientIntegrationTest, OnValueError)
 {
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config, Port);
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
-    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(TSerialDeviceFactory::GetDevice("0x90", "fake", Port));
+    auto device = TFakeSerialDevice::GetDevice("0x90");
 
-    if (!Device) {
+    if (!device) {
         throw std::runtime_error("device not found or wrong type");
     }
 
-    Device->Registers[0] = 0;
+    device->Registers[0] = 0;
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
-    Device->BlockWriteFor(0, true);
+    device->BlockWriteFor(0, true);
 
     PublishWaitOnValue("/devices/OnValueTest/controls/Relay 1/on", "1", 0, true);
 
@@ -1005,12 +1005,12 @@ TEST_F(TSerialClientIntegrationTest, OnValueError)
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
-    Device->BlockWriteFor(0, false);
+    device->BlockWriteFor(0, false);
 
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
-    ASSERT_EQ(500, Device->Registers[0]);
+    ASSERT_EQ(500, device->Registers[0]);
 }
 
 TEST_F(TSerialClientIntegrationTest, WordSwap)
