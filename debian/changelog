@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.16.0) stable; urgency=medium
+
+  * For "on" topic messages retry of failed registers writes is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 08 Jun 2021 14:21:45 +0500
+
 wb-mqtt-serial (2.15.3) stable; urgency=medium
 
   * Enabled parameters in Mercury 234 D and Energomera CE308 Z templates are moved to top of a channel list
@@ -225,13 +231,13 @@ wb-mqtt-serial (2.4.0) experimental; urgency=medium
   * NEVA energy meters support
   * Energomera CE301/CE303 energy meters support
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 21 Oct 2020 09:34:12 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 21 Oct 2020 09:34:12 +0500
 
 wb-mqtt-serial (2.3.0) experimental; urgency=medium
 
   * Modbus TCP support
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 30 Sep 2020 10:19:22 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 30 Sep 2020 10:19:22 +0500
 
 wb-mqtt-serial (2.2.2) experimental; urgency=medium
 
@@ -274,7 +280,7 @@ wb-mqtt-serial (2.1.0) experimental; urgency=medium
   * interframe timeouts are calculated according to port speeds for modbus, modbus_io, milur, mercury200, mercury 230 and lls protocols
   * frame_timeout_ms and response_timeout_ms are set in all device templates
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 11 Sep 2020 11:38:01 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 11 Sep 2020 11:38:01 +0500
 
 wb-mqtt-serial (2.0.3) experimental; urgency=medium
 

@@ -130,7 +130,10 @@ const IRegisterAddress& TRegisterConfig::GetAddress() const
 
 std::string TRegister::ToString() const
 {
-    return TRegisterConfig::ToString() + " of device " + Device()->ToString();
+    if (Device()) {
+        return "<" + Device()->ToString() + ":" + TRegisterConfig::ToString() + ">";
+    }
+    return "<unknown device:" + TRegisterConfig::ToString() + ">";
 }
 
 bool TRegister::IsAvailable() const
