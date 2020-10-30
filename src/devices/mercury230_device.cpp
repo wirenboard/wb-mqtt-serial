@@ -3,7 +3,7 @@
 #include "mercury230_device.h"
 #include "crc16.h"
 
-REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
+REGISTER_BASIC_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
             { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },
             { TMercury230Device::REG_VALUE_ARRAY12, "array12", "power_consumption", U32, true },
             { TMercury230Device::REG_PARAM, "param", "value", U24, true },
@@ -14,7 +14,7 @@ REGISTER_BASIC_INT_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
         }));
 
 TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TEMDevice<TBasicProtocol<TMercury230Device>>(device_config, port, protocol)
+    : TEMDevice(device_config, port, protocol)
 {
     /*
         Mercury 230 documentation:
@@ -68,15 +68,15 @@ bool TMercury230Device::ConnectionSetup( )
     }
 }
 
-TEMDevice<TMercury230Protocol>::ErrorType TMercury230Device::CheckForException(uint8_t* frame, int len, const char** message)
+TEMDevice::ErrorType TMercury230Device::CheckForException(uint8_t* frame, int len, const char** message)
 {
     *message = 0;
     if (len != 4 || (frame[1] & 0x0f) == 0)
-        return TEMDevice<TMercury230Protocol>::NO_ERROR;
+        return TEMDevice::NO_ERROR;
     switch (frame[1] & 0x0f) {
     case 1:
         *message = "Invalid command or parameter";
-        return TEMDevice<TMercury230Protocol>::PERMANENT_ERROR;
+        return TEMDevice::PERMANENT_ERROR;
     case 2:
         *message = "Internal meter error";
         break;
@@ -88,11 +88,11 @@ TEMDevice<TMercury230Protocol>::ErrorType TMercury230Device::CheckForException(u
         break;
     case 5:
         *message = "Connection closed";
-        return TEMDevice<TMercury230Protocol>::NO_OPEN_SESSION;
+        return TEMDevice::NO_OPEN_SESSION;
     default:
         *message = "Unknown error";
     }
-    return TEMDevice<TMercury230Protocol>::OTHER_ERROR;
+    return TEMDevice::OTHER_ERROR;
 }
 
 const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(uint32_t address, int resp_len)

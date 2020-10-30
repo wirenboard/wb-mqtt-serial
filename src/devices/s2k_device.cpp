@@ -12,7 +12,7 @@
 
 #include "s2k_device.h"
 
-REGISTER_BASIC_INT_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
+REGISTER_BASIC_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
         {
             { TS2KDevice::REG_RELAY, "relay", "switch", U8 },
             { TS2KDevice::REG_RELAY_MODE, "relay_mode", "value", U8, true },
@@ -21,7 +21,7 @@ REGISTER_BASIC_INT_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
         }));
 
 TS2KDevice::TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TS2KDevice>>(config, port, protocol)
+    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
 {
     RelayState[1] = 2;
     RelayState[2] = 2;

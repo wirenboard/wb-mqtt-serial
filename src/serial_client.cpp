@@ -308,9 +308,6 @@ void TSerialClient::Cycle()
 
 void TSerialClient::ClearDevices()
 {
-    for (auto &dev : DevicesList) {
-        TSerialDeviceFactory::RemoveDevice(dev);
-    }
     DevicesList.clear();
 }
 

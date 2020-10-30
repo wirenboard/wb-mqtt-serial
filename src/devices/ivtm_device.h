@@ -6,9 +6,10 @@
 #include <stdint.h>
 #include "serial_device.h"
 
-class TIVTMDevice: public TBasicProtocolSerialDevice<TBasicProtocol<TIVTMDevice>> {
+class TIVTMDevice: public TSerialDevice, public TUInt32SlaveId
+{
 public:
-    TIVTMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
+    TIVTMDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
 

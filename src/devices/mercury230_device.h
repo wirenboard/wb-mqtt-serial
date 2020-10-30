@@ -13,7 +13,8 @@
 class TMercury230Device;
 typedef TBasicProtocol<TMercury230Device> TMercury230Protocol;
 
-class TMercury230Device: public TEMDevice<TBasicProtocol<TMercury230Device>> {
+class TMercury230Device: public TEMDevice
+{
 public:
     enum RegisterType {
         REG_VALUE_ARRAY = 0,

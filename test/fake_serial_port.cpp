@@ -122,11 +122,11 @@ uint8_t TFakeSerialPort::ReadByte(const std::chrono::microseconds& /*timeout*/)
     return Resp[RespPos++];
 }
 
-int TFakeSerialPort::ReadFrame(uint8_t* buf, 
-                               int count,
-                               const std::chrono::microseconds& responseTimeout,
-                               const std::chrono::microseconds& frameTimeout,
-                               TFrameCompletePred frame_complete)
+size_t TFakeSerialPort::ReadFrame(uint8_t* buf, 
+                                  size_t count,
+                                  const std::chrono::microseconds& responseTimeout,
+                                  const std::chrono::microseconds& frameTimeout,
+                                  TFrameCompletePred frame_complete)
 {
     if (DoSimulateDisconnect) {
         return 0;
@@ -135,7 +135,7 @@ int TFakeSerialPort::ReadFrame(uint8_t* buf,
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
                                  std::to_string(frameTimeout.count()) + " instead of " +
                                  std::to_string(ExpectedFrameTimeout.count()));
-    int nread = 0;
+    size_t nread = 0;
     uint8_t* p = buf;
     for (; nread < count; ++nread) {
         if (RespPos == Resp.size())
@@ -261,6 +261,11 @@ std::chrono::milliseconds TFakeSerialPort::GetSendTime(double bytesNumber)
     return std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(ms));
 }
 
+std::string TFakeSerialPort::GetDescription() const
+{
+    return "<TFakeSerialPort>";
+}
+
 void TSerialDeviceTest::SetUp()
 {
     SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
@@ -307,9 +312,10 @@ void TSerialDeviceIntegrationTest::SetUp()
     }
 
     Config = LoadConfig(GetDataFilePath(ConfigPath()), 
-                         TSerialDeviceFactory::GetRegisterTypes,
+                         DeviceFactory,
                          configSchema,
-                         it->second);
+                         it->second,
+                         [=](const Json::Value&) {return std::make_pair(SerialPort, false);});
 
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient("em-test");
@@ -325,7 +331,7 @@ void TSerialDeviceIntegrationTest::SetUp()
 
     Driver->StartLoop();
 
-    SerialDriver = std::make_shared<TMQTTSerialDriver>(Driver, Config, SerialPort);
+    SerialDriver = std::make_shared<TMQTTSerialDriver>(Driver, Config);
 }
 
 void TSerialDeviceIntegrationTest::TearDown()

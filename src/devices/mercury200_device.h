@@ -12,7 +12,7 @@
 
 #include "serial_device.h"
 
-class TMercury200Device : public TBasicProtocolSerialDevice<TBasicProtocol<TMercury200Device>>
+class TMercury200Device : public TSerialDevice, public TUInt32SlaveId
 {
 public:
     enum RegisterType

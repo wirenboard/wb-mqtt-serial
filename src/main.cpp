@@ -132,13 +132,14 @@ int main(int argc, char *argv[])
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
 
     PHandlerConfig handlerConfig;
+    TSerialDeviceFactory deviceFactory;
     try {
         Json::Value configSchema = LoadConfigSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json");
         TTemplateMap templates(templatesFolder, 
                                LoadConfigTemplatesSchema("/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json", 
                                                          configSchema));
         handlerConfig = LoadConfig(configFilename,
-                                  TSerialDeviceFactory::GetRegisterTypes,
+                                  deviceFactory,
                                   configSchema,
                                   templates);
     } catch (const std::exception& e) {

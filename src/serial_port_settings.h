@@ -1,17 +1,11 @@
 #pragma once
 
-#include "port_settings.h"
-
 #include <string>
 #include <sstream>
 
-struct TSerialPortSettings;
-
-::std::ostream& operator<<(::std::ostream& os, const TSerialPortSettings& settings);
-
-struct TSerialPortSettings final: TPortSettings
+struct TSerialPortSettings
 {
-    TSerialPortSettings(std::string device = "/dev/ttyS0",
+    TSerialPortSettings(const std::string& device = "/dev/ttyS0",
                         int baudRate = 9600,
                         char parity = 'N',
                         int dataBits = 8,
@@ -23,10 +17,10 @@ struct TSerialPortSettings final: TPortSettings
         , StopBits(stopBits)
     {}
 
-    std::string ToString() const override
+    std::string ToString() const
     {
         std::ostringstream ss;
-        ss << *this;
+        ss << "<" << Device << " " << BaudRate << " " << DataBits << " " << Parity << StopBits << ">";
         return ss.str();
     }
 
@@ -36,11 +30,3 @@ struct TSerialPortSettings final: TPortSettings
     int         DataBits;
     int         StopBits;
 };
-
-using PSerialPortSettings = std::shared_ptr<TSerialPortSettings>;
-
-inline ::std::ostream& operator<<(::std::ostream& os, const TSerialPortSettings& settings) {
-    return os << "<" << settings.Device << " " << settings.BaudRate <<
-        " " << settings.DataBits << " " << settings.Parity << settings.StopBits << ">";
-}
-

@@ -15,7 +15,7 @@ namespace {
     }
 }
 
-REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
+REGISTER_BASIC_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
             { TMilurDevice::REG_PARAM, "param", "value", U24, true },
             { TMilurDevice::REG_POWER, "power", "power", S32, true },
             { TMilurDevice::REG_ENERGY, "energy", "power_consumption", BCD32, true },
@@ -24,7 +24,7 @@ REGISTER_BASIC_INT_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
                                                         }));
 
 TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TEMDevice<TBasicProtocol<TMilurDevice>>(device_config, port, protocol)
+    : TEMDevice(device_config, port, protocol)
 {
     /* FIXME: Milur driver should set address width based on slave_id string:
     0xFF: 1-byte address
@@ -67,11 +67,11 @@ bool TMilurDevice::ConnectionSetup()
     }
 }
 
-TEMDevice<TMilurProtocol>::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, const char** message)
+TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, const char** message)
 {
     if (len != 6 || !(frame[1] & 0x80)) {
         *message = 0;
-        return TEMDevice<TMilurProtocol>::NO_ERROR;
+        return TEMDevice::NO_ERROR;
     }
 
     switch (frame[2]) {
@@ -98,7 +98,7 @@ TEMDevice<TMilurProtocol>::ErrorType TMilurDevice::CheckForException(uint8_t* fr
         break;
     case 0x08:
         *message = "Session closed";
-        return TEMDevice<TMilurProtocol>::NO_OPEN_SESSION;
+        return TEMDevice::NO_OPEN_SESSION;
     case 0x09:
         *message = "Access denied";
         break;
@@ -117,7 +117,7 @@ TEMDevice<TMilurProtocol>::ErrorType TMilurDevice::CheckForException(uint8_t* fr
     default:
         *message = "Unknown error";
     }
-    return TEMDevice<TMilurProtocol>::OTHER_ERROR;
+    return TEMDevice::OTHER_ERROR;
 }
 
 uint64_t TMilurDevice::ReadRegister(PRegister reg)

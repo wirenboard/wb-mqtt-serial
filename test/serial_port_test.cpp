@@ -71,7 +71,7 @@ public:
 
 class TSerialPortTestWrapper: public TSerialPort {
 public:
-    TSerialPortTestWrapper(const PSerialPortSettings & settings, TLoggedFixture& fixture, PPort other_port) 
+    TSerialPortTestWrapper(const TSerialPortSettings& settings, TLoggedFixture& fixture, PPort other_port) 
         : TSerialPort(settings)
         , Fixture(fixture)
         , OtherEndPort(other_port)
@@ -131,17 +131,12 @@ void TSerialPortTest::SetUp()
 {
     TLoggedFixture::SetUp();
     FakeSerial = PPtyBasedFakeSerial(new TPtyBasedFakeSerial(*this));
-    auto settings = std::make_shared<TSerialPortSettings>(
-                FakeSerial->GetPrimaryPtsName(),
-                9600, 'N', 8, 1);
-    Serial = PPort(
-        new TSerialPort(settings));
+    TSerialPortSettings settings(FakeSerial->GetPrimaryPtsName(), 9600, 'N', 8, 1);
+    Serial = PPort(new TSerialPort(settings));
     Serial->Open();
 
     FakeSerial->StartForwarding();
-    auto secondary_settings = std::make_shared<TSerialPortSettings>(
-                FakeSerial->GetSecondaryPtsName(),
-                9600, 'N', 8, 1);
+    TSerialPortSettings secondary_settings(FakeSerial->GetSecondaryPtsName(), 9600, 'N', 8, 1);
     SecondarySerial = std::shared_ptr<TSerialPortTestWrapper>(
         new TSerialPortTestWrapper(
             secondary_settings,

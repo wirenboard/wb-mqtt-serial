@@ -14,10 +14,10 @@
 
 #include "ivtm_device.h"
 
-REGISTER_BASIC_INT_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
+REGISTER_BASIC_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
-TIVTMDevice::TIVTMDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TIVTMDevice>>(device_config, port, protocol)
+TIVTMDevice::TIVTMDevice(PDeviceConfig config, PPort port, PProtocol protocol)
+    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
 {}
 
 void TIVTMDevice::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len)
