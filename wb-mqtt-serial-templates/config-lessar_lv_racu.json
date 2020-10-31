@@ -1,5 +1,5 @@
 {
-	"device_type" : "Lessar LV-RACU/Salda RIRS",
+	"device_type" : "LESSAR-LV-RACU",
 	"device" : {
 		"name": "Lessar LV-RACU/Salda RIRS",
 		"id": "lessar-lv-racu",
