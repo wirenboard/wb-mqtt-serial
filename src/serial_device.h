@@ -211,6 +211,11 @@ public:
 
     virtual bool IsSameSlaveId(const std::string& id1, const std::string& id2) const = 0;
 
+    /*! The protocol is from MODBUS family. 
+     *  We check it during config validation to pevent using non MODBUS devices on modbus-tcp port.
+     */
+    virtual bool IsModbus() const = 0;
+
 private:
     std::string Name;
     PRegisterTypeMap RegTypes;
@@ -245,6 +250,11 @@ public:
     bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
     {
         return (TUInt32SlaveId(id1) == TUInt32SlaveId(id2));
+    }
+
+    bool IsModbus() const
+    {
+        return false;
     }
 };
 

@@ -125,7 +125,7 @@ size_t TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
     // read() call below to block because actual frame
     // size is not known at this point. So we must
     // know how many bytes are available
-    size_t nb = 0;
+    int nb = 0;
     if (ioctl(Fd, FIONREAD, &nb) < 0) {
         throw TSerialDeviceException("FIONREAD ioctl() failed");
     }
@@ -136,7 +136,7 @@ size_t TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
         return 0;
     }
 
-    if (nb > max_read) {
+    if (nb >= 0 && static_cast<size_t>(nb) > max_read) {
         nb = max_read;
     }
 
@@ -145,7 +145,7 @@ size_t TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
         throw TSerialDeviceException("read() failed");
     }
 
-    if (static_cast<size_t>(n) < nb) { // may happen only due to a kernel/driver bug
+    if (n < nb) { // may happen only due to a kernel/driver bug
         throw TSerialDeviceException("short read()");
     }
 

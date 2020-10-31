@@ -693,7 +693,7 @@ namespace Modbus    // modbus protocol common utilities
 
         std::unique_ptr<TRegister, std::function<void(TRegister*)>> tmpCacheGuard(&reg, [](TRegister* reg){reg->Device()->DismissTmpCache();});
 
-        LOG(Debug) << "modbus: write " << reg.Get16BitWidth() << " " << reg.TypeName << "(s) @ " << reg.Address <<
+        LOG(Debug) << "write " << reg.Get16BitWidth() << " " << reg.TypeName << "(s) @ " << reg.Address <<
                 " of device " << reg.Device()->ToString();
 
         // 1 byte - function code, 2 bytes - register address, 2 bytes - value
@@ -770,7 +770,7 @@ namespace Modbus    // modbus protocol common utilities
     void ProcessRangeException(TModbusRegisterRange& range, const char* msg)
     {
         range.SetError();
-        LOG(Warn) << "ModbusRTU::ReadRegisterRange(): failed to read " << range << ": " << msg;
+        LOG(Warn) << "failed to read " << range << ": " << msg;
     }
 
     // Remove unsupported registers on borders
@@ -859,7 +859,7 @@ namespace Modbus    // modbus protocol common utilities
             throw std::runtime_error("modbus range expected");
         }
 
-        LOG(Debug) << "modbus: read " << *modbus_range;
+        LOG(Debug) << "read " << *modbus_range;
 
         if (modbus_range->ShouldReadOneByOne()) {
             return ReadOneByOne(traits, modbus_range, port, slaveId, shift);
@@ -1047,5 +1047,19 @@ namespace Modbus    // modbus protocol common utilities
     const uint8_t* TModbusTCPTraits::GetPDU(const std::vector<uint8_t>& frame) const
     {
         return &frame[MBAP_SIZE];
+    }
+
+    std::unique_ptr<Modbus::IModbusTraits> TModbusRTUTraitsFactory::GetModbusTraits(PPort /*port*/)
+    {
+        return std::make_unique<Modbus::TModbusRTUTraits>();
+    }
+
+    std::unique_ptr<Modbus::IModbusTraits> TModbusTCPTraitsFactory::GetModbusTraits(PPort port)
+    {
+        auto it = TransactionIds.find(port);
+        if (it == TransactionIds.end()) {
+            std::tie(it, std::ignore) = TransactionIds.insert({port, std::make_shared<uint16_t>(0)});
+        }
+        return std::make_unique<Modbus::TModbusTCPTraits>(it->second);
     }
 }  // modbus protocol utilities

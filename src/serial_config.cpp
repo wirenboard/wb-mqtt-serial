@@ -113,6 +113,22 @@ namespace {
         return ToInt(obj[key], key);
     }
 
+    bool ReadChannelsReadonlyProperty(const Json::Value& register_data,
+                                      const std::string& key,
+                                      bool templateReadonly,
+                                      const std::string& channel_name,
+                                      const std::string& register_type)
+    {
+        bool readonly = templateReadonly;
+        if (Get(register_data, key, readonly)) {
+            if (templateReadonly && !readonly) {
+                LOG(Warn) << "Channel \"" << channel_name << "\" unable to make register of type \"" << register_type << "\" writable";
+                return true;
+            }
+        }
+        return readonly;
+    }
+
     PRegisterConfig LoadRegisterConfig(PDeviceConfig device_config,
                                        const Json::Value& register_data,
                                        std::string& default_type_str,
@@ -171,13 +187,10 @@ namespace {
         double scale        = Read(register_data, "scale",    1.0); // TBD: check for zero, too
         double offset       = Read(register_data, "offset",   0);
         double round_to     = Read(register_data, "round_to", 0.0);
-        bool   readonly     = it->second.ReadOnly;
-        if (Get(register_data, "readonly", readonly)) {
-            if (it->second.ReadOnly && !readonly) {
-                LOG(Warn) << "Channel \"" << channel_name << "\" unable to make register of type \"" << it->second.Name << "\" writable";
-                readonly = true;
-            }
-        }
+
+        bool readonly = ReadChannelsReadonlyProperty(register_data, "readonly", it->second.ReadOnly, channel_name, it->second.Name);
+        // For comptibility with old configs
+        readonly = ReadChannelsReadonlyProperty(register_data, "channel_readonly", readonly, channel_name, it->second.Name);
 
         std::unique_ptr<uint64_t> error_value;
         if (register_data.isMember("error_value")) {
@@ -331,11 +344,6 @@ namespace {
         device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg, value)));
     }
 
-    bool isModbusProtocol(const std::string& protocolName) 
-    {
-        return (protocolName == "modbus") || (protocolName == "modbus_io");
-    }
-
     bool LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data, TSerialDeviceFactory& deviceFactory, bool modbusTcpWorkaround)
     {
         Get(device_data, "protocol", device_config->Protocol);
@@ -344,7 +352,7 @@ namespace {
         }
 
         if (modbusTcpWorkaround) {
-            if (isModbusProtocol(device_config->Protocol)) {
+            if (deviceFactory.GetProtocol(device_config->Protocol)->IsModbus()) {
                 device_config->Protocol += "-tcp";
             } else {
                 LOG(Warn) << "Device \"" << device_config->Name << "\": protocol \"" + device_config->Protocol + "\" is not compatible with Modbus TCP";

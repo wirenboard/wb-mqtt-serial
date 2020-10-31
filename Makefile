@@ -39,6 +39,7 @@ SERIAL_SRCS= \
   src/devices/ivtm_device.cpp            \
   src/devices/pulsar_device.cpp          \
   src/devices/modbus_device.cpp          \
+  src/devices/modbus_io_device.cpp       \
   src/devices/milur_device.cpp           \
   src/devices/mercury230_device.cpp      \
   src/devices/lls_device.cpp             \
