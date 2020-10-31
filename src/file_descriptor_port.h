@@ -13,11 +13,11 @@ public:
 
     void WriteBytes(const uint8_t* buf, int count) override;
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
-    int ReadFrame(uint8_t* buf,
-                  int count,
-                  const std::chrono::microseconds& responseTimeout,
-                  const std::chrono::microseconds& frameTimeout,
-                  TFrameCompletePred frame_complete = 0) override;
+    size_t ReadFrame(uint8_t* buf,
+                     size_t count,
+                     const std::chrono::microseconds& responseTimeout,
+                     const std::chrono::microseconds& frameTimeout,
+                     TFrameCompletePred frame_complete = 0) override;
     void SkipNoise() override;
     void Close() override;
     void CheckPortOpen() const override;
@@ -34,7 +34,14 @@ protected:
     int             Fd;
     std::chrono::time_point<std::chrono::steady_clock> LastInteraction;
 private:
-    int ReadAvailableData(uint8_t* buf, size_t max_read);
+    /**
+     * @brief Reads data from port. Throws TSerialDeviceException on errors
+     * 
+     * @param buf buffer to read to
+     * @param max_read maximum bytes to read
+     * @return size_t actual read bytes number
+     */
+    size_t ReadAvailableData(uint8_t* buf, size_t max_read);
 };
 
 

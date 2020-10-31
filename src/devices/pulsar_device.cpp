@@ -5,13 +5,13 @@
 
 #include "pulsar_device.h"
 
-REGISTER_BASIC_INT_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
+REGISTER_BASIC_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
     { TPulsarDevice::REG_DEFAULT, "default", "value", Double, true },
     { TPulsarDevice::REG_SYSTIME, "systime", "value", U64, true }
 }));
 
-TPulsarDevice::TPulsarDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TPulsarDevice>>(device_config, port, protocol)
+TPulsarDevice::TPulsarDevice(PDeviceConfig config, PPort port, PProtocol protocol)
+    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
     , RequestID(0)
 {}
 

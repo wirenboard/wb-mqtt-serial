@@ -34,20 +34,21 @@ public:
 
     /**
      * @brief Read frame.
-     *        Throws TSerialDeviceTransientErrorExceptionБ if nothing received during timeout.
+     *        Throws TSerialDeviceTransientErrorException if nothing received during timeout.
+     *        Throws TSerialDeviceException on internal errors.
      * 
      * @param buf receiving buffer for frame
      * @param count maximum bytes to receive
      * @param responseTimeout maximum waiting timeout before first byte of frame
      * @param frameTimeout minimum inter-frame delay
      * @param frame_complete 
-     * @return int received byte count
+     * @return size_t received byte count
      */
-    virtual int ReadFrame(uint8_t* buf, 
-                          int count,
-                          const std::chrono::microseconds& responseTimeout,
-                          const std::chrono::microseconds& frameTimeout,
-                          TFrameCompletePred frame_complete = 0) = 0;
+    virtual size_t ReadFrame(uint8_t* buf, 
+                             size_t count,
+                             const std::chrono::microseconds& responseTimeout,
+                             const std::chrono::microseconds& frameTimeout,
+                             TFrameCompletePred frame_complete = 0) = 0;
 
     virtual void SkipNoise() = 0;
 
@@ -61,6 +62,8 @@ public:
      * @param bytesCount number of bytes 
      */
     virtual std::chrono::milliseconds GetSendTime(double bytesNumber);
+
+    virtual std::string GetDescription() const = 0;
 };
 
 using PPort = std::shared_ptr<TPort>;

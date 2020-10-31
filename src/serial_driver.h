@@ -13,7 +13,7 @@
 class TMQTTSerialDriver
 {
 public:
-    TMQTTSerialDriver(WBMQTT::PDeviceDriver mqtt_driver, PHandlerConfig handler_config, PPort port_override = 0);
+    TMQTTSerialDriver(WBMQTT::PDeviceDriver mqtt_driver, PHandlerConfig handler_config);
     void LoopOnce();
     void ClearDevices();
 

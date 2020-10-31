@@ -13,7 +13,10 @@
 #include <memory>
 
 #include "tcp_port_settings.h"
+#include "tcp_port.h"
+
 #include "serial_port_settings.h"
+#include "serial_port.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
@@ -110,6 +113,22 @@ namespace {
         return ToInt(obj[key], key);
     }
 
+    bool ReadChannelsReadonlyProperty(const Json::Value& register_data,
+                                      const std::string& key,
+                                      bool templateReadonly,
+                                      const std::string& channel_name,
+                                      const std::string& register_type)
+    {
+        bool readonly = templateReadonly;
+        if (Get(register_data, key, readonly)) {
+            if (templateReadonly && !readonly) {
+                LOG(Warn) << "Channel \"" << channel_name << "\" unable to make register of type \"" << register_type << "\" writable";
+                return true;
+            }
+        }
+        return readonly;
+    }
+
     PRegisterConfig LoadRegisterConfig(PDeviceConfig device_config,
                                        const Json::Value& register_data,
                                        std::string& default_type_str,
@@ -168,13 +187,10 @@ namespace {
         double scale        = Read(register_data, "scale",    1.0); // TBD: check for zero, too
         double offset       = Read(register_data, "offset",   0);
         double round_to     = Read(register_data, "round_to", 0.0);
-        bool   readonly     = it->second.ReadOnly;
-        if (Get(register_data, "readonly", readonly)) {
-            if (it->second.ReadOnly && !readonly) {
-                LOG(Warn) << "Channel \"" << channel_name << "\" unable to make register of type \"" << it->second.Name << "\" writable";
-                readonly = true;
-            }
-        }
+
+        bool readonly = ReadChannelsReadonlyProperty(register_data, "readonly", it->second.ReadOnly, channel_name, it->second.Name);
+        // For comptibility with old configs
+        readonly = ReadChannelsReadonlyProperty(register_data, "channel_readonly", readonly, channel_name, it->second.Name);
 
         std::unique_ptr<uint64_t> error_value;
         if (register_data.isMember("error_value")) {
@@ -328,14 +344,22 @@ namespace {
         device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg, value)));
     }
 
-    void LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data, TGetRegisterTypeMapFn getRegisterTypeMapFn)
+    bool LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data, TSerialDeviceFactory& deviceFactory, bool modbusTcpWorkaround)
     {
         Get(device_data, "protocol", device_config->Protocol);
         if (device_config->Protocol.empty()) {
             device_config->Protocol = DefaultProtocol;
         }
 
-        device_config->TypeMap = getRegisterTypeMapFn(device_config);
+        if (modbusTcpWorkaround) {
+            if (deviceFactory.GetProtocol(device_config->Protocol)->IsModbus()) {
+                device_config->Protocol += "-tcp";
+            } else {
+                LOG(Warn) << "Device \"" << device_config->Name << "\": protocol \"" + device_config->Protocol + "\" is not compatible with Modbus TCP";
+            }
+        }
+
+        device_config->TypeMap = deviceFactory.GetRegisterTypes(device_config);
 
         if (device_data.isMember("setup")) {
             for(const auto& setupItem: device_data["setup"])
@@ -372,13 +396,14 @@ namespace {
                 LoadChannel(device_config, channel_data);
             }
         }
+        return true;
     }
 
     void LoadDevice(PPortConfig port_config,
                     const Json::Value& device_data,
                     const std::string& default_id,
                     TTemplateMap& templates,
-                    TGetRegisterTypeMapFn getRegisterTypeMapFn)
+                    TSerialDeviceFactory& deviceFactory)
     {
         if (device_data.isMember("enabled") && !device_data["enabled"].asBool())
             return;
@@ -414,9 +439,9 @@ namespace {
                     device_config->Id = tmpl["id"].asString() + "_" + device_config->SlaveId;
             }
             AppendUserData(tmpl, device_data, device_config->Name);
-            LoadDeviceTemplatableConfigPart(device_config, tmpl, getRegisterTypeMapFn);
+            LoadDeviceTemplatableConfigPart(device_config, tmpl, deviceFactory, port_config->IsModbusTcp);
         } else {
-            LoadDeviceTemplatableConfigPart(device_config, device_data, getRegisterTypeMapFn);
+            LoadDeviceTemplatableConfigPart(device_config, device_data, deviceFactory, port_config->IsModbusTcp);
         }
         if (device_config->DeviceChannelConfigs.empty())
             throw TConfigParserException("the device has no channels: " + device_config->Name);
@@ -432,7 +457,7 @@ namespace {
             device_config->ResponseTimeout = DefaultResponseTimeout;
         }
 
-        port_config->AddDeviceConfig(device_config);
+        port_config->AddDeviceConfig(device_config, deviceFactory);
         for (auto channel: device_config->DeviceChannelConfigs) {
             for (auto reg: channel->RegisterConfigs) {
                 if (reg->PollInterval.count() < 0) {
@@ -442,50 +467,73 @@ namespace {
         }
     }
 
-    void LoadPort(PHandlerConfig handlerConfig, const Json::Value& port_data, const std::string& id_prefix, TTemplateMap& templates, TGetRegisterTypeMapFn getRegisterTypeMapFn)
+    PPort OpenSerialPort(const Json::Value& port_data)
+    {
+        TSerialPortSettings settings(port_data["path"].asString());
+
+        Get(port_data, "baud_rate", settings.BaudRate);
+
+        if (port_data.isMember("parity"))
+            settings.Parity = port_data["parity"].asCString()[0];
+
+        Get(port_data, "data_bits", settings.DataBits);
+        Get(port_data, "stop_bits", settings.StopBits);
+
+        return std::make_shared<TSerialPort>(settings);
+    }
+
+    PPort OpenTcpPort(const Json::Value& port_data)
+    {
+        TTcpPortSettings settings(port_data["address"].asString(), GetInt(port_data, "port"));
+
+        Get(port_data, "connection_timeout_ms",      settings.ConnectionTimeout);
+        Get(port_data, "connection_max_fail_cycles", settings.ConnectionMaxFailCycles);
+
+        return std::make_shared<TTcpPort>(settings);
+    }
+
+    void LoadPort(PHandlerConfig handlerConfig,
+                  const Json::Value& port_data,
+                  const std::string& id_prefix,
+                  TTemplateMap& templates,
+                  TSerialDeviceFactory& deviceFactory,
+                  TPortFactoryFn portFactory)
     {
         if (port_data.isMember("enabled") && !port_data["enabled"].asBool())
             return;
 
         auto port_config = make_shared<TPortConfig>();
 
-        auto port_type = port_data.get("port_type", "serial").asString();
-
-        if (port_type == "serial") {
-            auto serial_port_settings = make_shared<TSerialPortSettings>(port_data["path"].asString());
-
-            Get(port_data, "baud_rate", serial_port_settings->BaudRate);
-
-            if (port_data.isMember("parity"))
-                serial_port_settings->Parity = port_data["parity"].asCString()[0];
-
-            Get(port_data, "data_bits", serial_port_settings->DataBits);
-            Get(port_data, "stop_bits", serial_port_settings->StopBits);
-
-            port_config->ConnSettings = serial_port_settings;
-        } else {
-            if (port_type != "tcp") {
-                throw TConfigParserException("invalid port_type: '" + port_type + "'");
-            }
-
-            auto tcp_port_settings = make_shared<TTcpPortSettings>(port_data["address"].asString(), GetInt(port_data, "port"));
-
-            Get(port_data, "connection_timeout_ms",      tcp_port_settings->ConnectionTimeout);
-            Get(port_data, "connection_max_fail_cycles", tcp_port_settings->ConnectionMaxFailCycles);
-
-            port_config->ConnSettings = tcp_port_settings;
-        }
-
         Get(port_data, "response_timeout_ms", port_config->ResponseTimeout);
         Get(port_data, "poll_interval",       port_config->PollInterval);
         Get(port_data, "guard_interval_us",   port_config->RequestDelay);
 
+        auto port_type = port_data.get("port_type", "serial").asString();
+
+        std::tie(port_config->Port, port_config->IsModbusTcp) = portFactory(port_data);
+
+
         const Json::Value& array = port_data["devices"];
         for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index)
-            LoadDevice(port_config, array[index], id_prefix + std::to_string(index), templates, getRegisterTypeMapFn);
+            LoadDevice(port_config, array[index], id_prefix + std::to_string(index), templates, deviceFactory);
 
         handlerConfig->AddPortConfig(port_config);
     }
+}
+
+std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data)
+{
+    auto port_type = port_data.get("port_type", "serial").asString();
+    if (port_type == "serial") {
+        return {OpenSerialPort(port_data), false};
+    }
+    if (port_type == "tcp") {
+        return {OpenTcpPort(port_data), false};
+    }
+    if (port_type == "modbus tcp") {
+        return {OpenTcpPort(port_data), true};
+    }
+    throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }
 
 TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema): 
@@ -582,9 +630,10 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName)
 }
 
 PHandlerConfig LoadConfig(const std::string& configFileName, 
-                          TGetRegisterTypeMapFn getRegisterTypeMapFn,
+                          TSerialDeviceFactory& deviceFactory,
                           const Json::Value& configSchema,
-                          TTemplateMap& templates)
+                          TTemplateMap& templates,
+                          TPortFactoryFn portFactory)
 {
     PHandlerConfig handlerConfig(new THandlerConfig);
     Json::Value Root(Parse(configFileName));
@@ -597,7 +646,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
     const Json::Value& array = Root["ports"];
     for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
         // XXX old default prefix for compat
-        LoadPort(handlerConfig, array[index], "wb-modbus-" + std::to_string(index) + "-", templates, getRegisterTypeMapFn);
+        LoadPort(handlerConfig, array[index], "wb-modbus-" + std::to_string(index) + "-", templates, deviceFactory, portFactory);
     }
 
     // check are there any devices defined
@@ -611,20 +660,25 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 }
 
 PHandlerConfig LoadConfig(const std::string& configFileName,
-                          TGetRegisterTypeMapFn getRegisterTypeMapFn,
-                          const Json::Value& configSchema)
+                          TSerialDeviceFactory& deviceFactory,
+                          const Json::Value& configSchema,
+                          TPortFactoryFn portFactory)
 {
     TTemplateMap t;
-    return LoadConfig(configFileName, getRegisterTypeMapFn, configSchema, t);
+    return LoadConfig(configFileName, deviceFactory, configSchema, t, portFactory);
 }
 
-void TPortConfig::AddDeviceConfig(PDeviceConfig device_config)
+void TPortConfig::AddDeviceConfig(PDeviceConfig device_config, TSerialDeviceFactory& deviceFactory)
 {
-    // try to found duplicate of this device
+    // try to find duplicate of this device
     for (PDeviceConfig dev : DeviceConfigs) {
-        if (dev->SlaveId == device_config->SlaveId &&
-            dev->Protocol == device_config->Protocol)
-            throw TConfigParserException("device redefinition: " + dev->Protocol + ":" + dev->SlaveId);
+        if (dev->Protocol == device_config->Protocol)
+        {
+            auto protocol = deviceFactory.GetProtocol(dev->Protocol);
+            if (protocol->IsSameSlaveId(dev->SlaveId, device_config->SlaveId)) {
+                throw TConfigParserException("device redefinition: " + device_config->Protocol + ":" + device_config->SlaveId);
+            }
+        }
     }
 
     DeviceConfigs.push_back(device_config);

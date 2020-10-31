@@ -23,13 +23,13 @@ Error 7
   desc: Failed to validate against child schema #0.
 Error 8
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Missing required property 'consists_of'.
+  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'address'.
 Error 9
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
 Error 10
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any schemas allowed by anyOf constraint.
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
 Error 11
   context: <root>[ports][0][devices][0][channels]
   desc: Failed to validate item #0 in array.
@@ -46,60 +46,39 @@ Error 15
   context: <root>[ports][0]
   desc: Failed to validate against child schema #0.
 Error 16
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Value type not permitted by 'type' constraint.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
 Error 17
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against child schema #0.
+  context: <root>[ports][0]
+  desc: Missing required property 'address'.
 Error 18
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Expected number greater than or equal to 0.000000
+  context: <root>[ports][0]
+  desc: Missing required property 'port'.
 Error 19
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against child schema #1.
-Error 20
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 21
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against schema associated with property name 'error_value'.
-Error 22
-  context: <root>[ports][0][devices][0][channels][0]
+  context: <root>[ports][0]
   desc: Failed to validate against child schema #0.
+Error 20
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 21
+  context: <root>[ports][0]
+  desc: Missing required property 'address'.
+Error 22
+  context: <root>[ports][0]
+  desc: Missing required property 'port'.
 Error 23
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Missing required property 'consists_of'.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
 Error 24
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against child schema #1.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #2.
 Error 25
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any schemas allowed by anyOf constraint.
-Error 26
-  context: <root>[ports][0][devices][0][channels]
-  desc: Failed to validate item #0 in array.
-Error 27
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against schema associated with property name 'channels'.
-Error 28
-  context: <root>[ports][0][devices]
-  desc: Failed to validate item #0 in array.
-Error 29
-  context: <root>[ports][0]
-  desc: Failed to validate against schema associated with property name 'devices'.
-Error 30
-  context: <root>[ports][0]
-  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'path'.
-Error 31
-  context: <root>[ports][0]
-  desc: Failed to validate against child schema #1.
-Error 32
   context: <root>[ports][0]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 33
+Error 26
   context: <root>[ports]
   desc: Failed to validate item #0 in array.
-Error 34
+Error 27
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 
@@ -128,13 +107,13 @@ Error 7
   desc: Failed to validate against child schema #0.
 Error 8
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Missing required property 'consists_of'.
+  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'address'.
 Error 9
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
 Error 10
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any schemas allowed by anyOf constraint.
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
 Error 11
   context: <root>[ports][0][devices][0][channels]
   desc: Failed to validate item #0 in array.
@@ -151,60 +130,39 @@ Error 15
   context: <root>[ports][0]
   desc: Failed to validate against child schema #0.
 Error 16
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to match regex specified by 'pattern' constraint.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
 Error 17
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against child schema #0.
+  context: <root>[ports][0]
+  desc: Missing required property 'address'.
 Error 18
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Value type not permitted by 'type' constraint.
+  context: <root>[ports][0]
+  desc: Missing required property 'port'.
 Error 19
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against child schema #1.
-Error 20
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 21
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against schema associated with property name 'error_value'.
-Error 22
-  context: <root>[ports][0][devices][0][channels][0]
+  context: <root>[ports][0]
   desc: Failed to validate against child schema #0.
+Error 20
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 21
+  context: <root>[ports][0]
+  desc: Missing required property 'address'.
+Error 22
+  context: <root>[ports][0]
+  desc: Missing required property 'port'.
 Error 23
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Missing required property 'consists_of'.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
 Error 24
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against child schema #1.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #2.
 Error 25
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any schemas allowed by anyOf constraint.
-Error 26
-  context: <root>[ports][0][devices][0][channels]
-  desc: Failed to validate item #0 in array.
-Error 27
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against schema associated with property name 'channels'.
-Error 28
-  context: <root>[ports][0][devices]
-  desc: Failed to validate item #0 in array.
-Error 29
-  context: <root>[ports][0]
-  desc: Failed to validate against schema associated with property name 'devices'.
-Error 30
-  context: <root>[ports][0]
-  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'path'.
-Error 31
-  context: <root>[ports][0]
-  desc: Failed to validate against child schema #1.
-Error 32
   context: <root>[ports][0]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 33
+Error 26
   context: <root>[ports]
   desc: Failed to validate item #0 in array.
-Error 34
+Error 27
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 
@@ -233,13 +191,13 @@ Error 7
   desc: Failed to validate against child schema #0.
 Error 8
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Missing required property 'consists_of'.
+  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'address'.
 Error 9
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
 Error 10
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any schemas allowed by anyOf constraint.
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
 Error 11
   context: <root>[ports][0][devices][0][channels]
   desc: Failed to validate item #0 in array.
@@ -256,60 +214,39 @@ Error 15
   context: <root>[ports][0]
   desc: Failed to validate against child schema #0.
 Error 16
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to match regex specified by 'pattern' constraint.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
 Error 17
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against child schema #0.
+  context: <root>[ports][0]
+  desc: Missing required property 'address'.
 Error 18
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Value type not permitted by 'type' constraint.
+  context: <root>[ports][0]
+  desc: Missing required property 'port'.
 Error 19
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against child schema #1.
-Error 20
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 21
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against schema associated with property name 'error_value'.
-Error 22
-  context: <root>[ports][0][devices][0][channels][0]
+  context: <root>[ports][0]
   desc: Failed to validate against child schema #0.
+Error 20
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 21
+  context: <root>[ports][0]
+  desc: Missing required property 'address'.
+Error 22
+  context: <root>[ports][0]
+  desc: Missing required property 'port'.
 Error 23
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Missing required property 'consists_of'.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
 Error 24
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against child schema #1.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #2.
 Error 25
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any schemas allowed by anyOf constraint.
-Error 26
-  context: <root>[ports][0][devices][0][channels]
-  desc: Failed to validate item #0 in array.
-Error 27
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against schema associated with property name 'channels'.
-Error 28
-  context: <root>[ports][0][devices]
-  desc: Failed to validate item #0 in array.
-Error 29
-  context: <root>[ports][0]
-  desc: Failed to validate against schema associated with property name 'devices'.
-Error 30
-  context: <root>[ports][0]
-  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'path'.
-Error 31
-  context: <root>[ports][0]
-  desc: Failed to validate against child schema #1.
-Error 32
   context: <root>[ports][0]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 33
+Error 26
   context: <root>[ports]
   desc: Failed to validate item #0 in array.
-Error 34
+Error 27
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 
@@ -338,13 +275,13 @@ Error 7
   desc: Failed to validate against child schema #0.
 Error 8
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Missing required property 'consists_of'.
+  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'address'.
 Error 9
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
 Error 10
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any schemas allowed by anyOf constraint.
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
 Error 11
   context: <root>[ports][0][devices][0][channels]
   desc: Failed to validate item #0 in array.
@@ -361,60 +298,39 @@ Error 15
   context: <root>[ports][0]
   desc: Failed to validate against child schema #0.
 Error 16
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Value type not permitted by 'type' constraint.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
 Error 17
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against child schema #0.
+  context: <root>[ports][0]
+  desc: Missing required property 'address'.
 Error 18
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Expected number less than or equal to 4294967295.000000
+  context: <root>[ports][0]
+  desc: Missing required property 'port'.
 Error 19
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against child schema #1.
-Error 20
-  context: <root>[ports][0][devices][0][channels][0][error_value]
-  desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 21
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against schema associated with property name 'error_value'.
-Error 22
-  context: <root>[ports][0][devices][0][channels][0]
+  context: <root>[ports][0]
   desc: Failed to validate against child schema #0.
+Error 20
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 21
+  context: <root>[ports][0]
+  desc: Missing required property 'address'.
+Error 22
+  context: <root>[ports][0]
+  desc: Missing required property 'port'.
 Error 23
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Missing required property 'consists_of'.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
 Error 24
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against child schema #1.
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #2.
 Error 25
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any schemas allowed by anyOf constraint.
-Error 26
-  context: <root>[ports][0][devices][0][channels]
-  desc: Failed to validate item #0 in array.
-Error 27
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against schema associated with property name 'channels'.
-Error 28
-  context: <root>[ports][0][devices]
-  desc: Failed to validate item #0 in array.
-Error 29
-  context: <root>[ports][0]
-  desc: Failed to validate against schema associated with property name 'devices'.
-Error 30
-  context: <root>[ports][0]
-  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'path'.
-Error 31
-  context: <root>[ports][0]
-  desc: Failed to validate against child schema #1.
-Error 32
   context: <root>[ports][0]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 33
+Error 26
   context: <root>[ports]
   desc: Failed to validate item #0 in array.
-Error 34
+Error 27
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 

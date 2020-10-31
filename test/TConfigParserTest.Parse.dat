@@ -595,16 +595,14 @@ Ports:
                 ErrorValue: not set
                 WordOrder: BigEndian
     ------
-    ConnSettings: <192.168.0.1:3000>
+    ConnSettings: <192.168.0.1:3000  5000ms, 2>
     PollInterval: 20
     GuardInterval: 0
     Response timeout: -1
-    ConnectionTimeout: 5000
     No device configs.
     ------
-    ConnSettings: <192.168.0.1:3000>
+    ConnSettings: <192.168.0.1:3000  10000ms, 2>
     PollInterval: 20
     GuardInterval: 0
     Response timeout: -1
-    ConnectionTimeout: 10000
     No device configs.

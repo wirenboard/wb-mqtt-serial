@@ -1,8 +1,8 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "Serial Device Driver Configuration",
   "description": "Lists devices attached to RS-485 ports",
+
   "definitions": {
     "deviceProtocol": {
       "type": "string",
@@ -10,10 +10,55 @@
       "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k", "modbus_io", "pulsar", "mercury200", "lls"],
       "default": "modbus"
     },
+    "commonPortSettings": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable port",
+          "default": true,
+          "_format": "checkbox",
+          "propertyOrder": 2
+        },
+        "response_timeout_ms": {
+          "type": "integer",
+          "title": "Response timeout (ms)",
+          "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
+          "minimum": 0,
+          "default": 500,
+          "propertyOrder": 8
+        },
+        "guard_interval_us": {
+          "type": "integer",
+          "title": "Guard interval (us)",
+          "description": "Specifies the delay in microseconds between reads / writes to port",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 9
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Desired poll interval (ms)",
+          "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
+          "minimum": 0,
+          "default": 20,
+          "propertyOrder": 10
+        },
+        "devices": {
+          "type": "array",
+          "title": "List of devices",
+          "description": "Lists devices attached to the port",
+          "items": { "$ref": "#/definitions/device" },
+          "propertyOrder": 11
+        }
+      }
+    },
     "serialPort": {
       "title": "Serial port",
       "type": "object",
-      "additionalProperties": false,
+      "allOf" : [
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
       "properties": {
         "port_type": {
           "type": "string",
@@ -26,104 +71,107 @@
             "forceDefault": true
           }
         },
-        "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "propertyOrder": 1,
-          "options": {
-            "hidden": true
-          }
-        },
         "path": {
           "type": "string",
           "title": "Path to device",
           "minLength": 1,
-          "propertyOrder": 1
-        },
-        "enabled": {
-          "type": "boolean",
-          "title": "Enable port",
-          "default": true,
-          "_format": "checkbox",
-          "propertyOrder": 2
+          "propertyOrder": 3
         },
         "baud_rate": {
           "type": "integer",
           "title": "Baud rate",
           "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200],
           "default": 9600,
-          "propertyOrder": 3
+          "propertyOrder": 4
         },
         "parity": {
           "type": "string",
           "title": "Parity",
           "enum": ["N", "E", "O"],
           "default": "N",
-          "propertyOrder": 4
+          "propertyOrder": 5
         },
         "data_bits": {
           "type": "integer",
           "title": "Data bits",
           "enum": [5, 6, 7, 8],
           "default": 8,
-          "propertyOrder": 5
+          "propertyOrder": 6
         },
         "stop_bits": {
           "type": "integer",
           "title": "Stop bits",
           "enum": [1, 2],
           "default": 1,
-          "propertyOrder": 5
-        },
-        "response_timeout_ms": {
-          "type": "integer",
-          "title": "Response timeout (ms)",
-          "description": "Specifies maximum response time for all devices connected to the port. Zero means no timeout. If not set, the default timeout (500ms) is used.",
-          "minimum": 0,
-          "default": 500,
-          "propertyOrder": 6
-        },
-        "guard_interval_us": {
-          "type": "integer",
-          "title": "Guard interval (us)",
-          "description": "Additional delay before writing to port",
-          "minimum": 0,
-          "default": 0,
           "propertyOrder": 7
-        },
-        "poll_interval": {
-          "type": "integer",
-          "title": "Desired poll interval (ms)",
-          "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
-          "minimum": 0,
-          "default": 20,
-          "propertyOrder": 8
-        },
-        "devices": {
-          "type": "array",
-          "title": "List of devices",
-          "description": "Lists devices attached to the port",
-          "items": { "$ref": "#/definitions/device" },
-          "propertyOrder": 9
         }
       },
       "required": ["path"],
-      "defaultProperties": ["path", "devices", "port_type"],
+      "defaultProperties": ["path", "port_type", "devices"],
+      "_format": "grid"
+    },
+    "commonTcpPortSettings": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "title": "IPv4 address or hostname of device",
+          "minLength": 1,
+          "propertyOrder": 3
+        },
+        "port": {
+          "type": "integer",
+          "title": "TCP port number",
+          "minimum": 1,
+          "maximum": 65536,
+          "propertyOrder": 4
+        },
+        "connection_timeout_ms": {
+          "type": "integer",
+          "title": "Connection timeout (ms)",
+          "description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
+          "minimum": -1,
+          "default": 5000,
+          "propertyOrder": 5
+        },
+        "connection_max_fail_cycles": {
+          "type": "integer",
+          "title": "Connection max fail cycles",
+          "description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
+          "minimum": -1,
+          "default": 2,
+          "propertyOrder": 6
+        }
+      },
+      "required": ["address", "port"]
+    },
+    "modbusTcpPort": {
+      "title": "MODBUS TCP port",
+      "type": "object",
+      "properties": {
+        "port_type": {
+          "type": "string",
+          "title": "Port type",
+          "enum": ["modbus tcp"],
+          "default": "modbus tcp",
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true,
+            "forceDefault": true
+          }
+        }
+      },
+      "allOf" : [
+        { "$ref" : "#/definitions/commonTcpPortSettings"},
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
+      "required": ["port_type"],
+      "defaultProperties": ["address", "port", "port_type", "devices"],
       "_format": "grid"
     },
     "tcpPort": {
-      "title": "TCP port",
+      "title": "TCP port (Serial over TCP)",
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "port_type": {
           "type": "string",
@@ -135,108 +183,33 @@
             "hidden": true,
             "forceDefault": true
           }
-        },
-        "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "propertyOrder": 1,
-          "options": {
-            "hidden": true
-          }
-        },
-        "address": {
-          "type": "string",
-          "title": "IPv4 address or hostname of device",
-          "minLength": 1,
-          "propertyOrder": 2
-        },
-        "port": {
-          "type": "integer",
-          "title": "TCP port number",
-          "minimum": 1,
-          "maximum": 65536,
-          "propertyOrder": 3
-        },
-        "enabled": {
-          "type": "boolean",
-          "title": "Enable port",
-          "default": true,
-          "_format": "checkbox",
-          "propertyOrder": 4
-        },
-        "response_timeout_ms": {
-          "type": "integer",
-          "title": "Response timeout (ms)",
-          "description": "Specifies maximum response time for all devices connected to the port. Zero means no timeout. If not set, the default timeout (500ms) is used.",
-          "minimum": 0,
-          "default": 500,
-          "propertyOrder": 5
-        },
-        "guard_interval_us": {
-          "type": "integer",
-          "title": "Guard interval (us)",
-          "description": "Additional delay before writing to port",
-          "minimum": 0,
-          "default": 0,
-          "propertyOrder": 6
-        },
-        "connection_timeout_ms": {
-          "type": "integer",
-          "title": "Connection timeout (ms)",
-          "description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
-          "minimum": -1,
-          "default": 5000,
-          "propertyOrder": 7
-        },
-        "connection_max_fail_cycles": {
-          "type": "integer",
-          "title": "Connection max fail cycles",
-          "description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
-          "minimum": -1,
-          "default": 2,
-          "propertyOrder": 8
-        },
-        "poll_interval": {
-          "type": "integer",
-          "title": "Desired poll interval (ms)",
-          "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
-          "minimum": 0,
-          "default": 20,
-          "propertyOrder": 9
-        },
-        "devices": {
-          "type": "array",
-          "title": "List of devices",
-          "description": "Lists devices attached to the port",
-          "items": { "$ref": "#/definitions/device" },
-          "propertyOrder": 10
         }
       },
-      "required": ["address", "port"],
-      "defaultProperties": ["address", "port", "devices", "port_type"],
+      "allOf" : [
+        { "$ref" : "#/definitions/commonTcpPortSettings"},
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
+      "required": ["port_type"],
+      "defaultProperties": ["address", "port", "port_type", "devices"],
       "_format": "grid"
     },
     "port": {
       "headerTemplate": "Port {{self.path}}{{self.address}} {{self.port}}",
+      "title": "Port",
       "oneOf": [
         { "$ref": "#/definitions/serialPort" },
-        { "$ref": "#/definitions/tcpPort" }
-      ]
+        { "$ref": "#/definitions/tcpPort" },
+        { "$ref": "#/definitions/modbusTcpPort" }
+      ],
+      "options": {
+        "keep_oneof_values": false,
+        "disable_collapse" : true
+      }
     },
     "device": {
       "type": "object",
       "title": "Serial device",
       "headerTemplate": "{{|self.device_type|}}{{ (slave id |self.slave_id|)}}{{ (name: |self.name|)}}",
-      // "options": { "collapsed": true },
       "properties": {
         "name": {
           "type": "string",
@@ -389,7 +362,6 @@
     "setup_cmd": {
       "type": "object",
       "title": "Setup command",
-      // "options": { "collapsed": true },
       "properties": {
         "title": {
           "type": "string",
@@ -412,149 +384,173 @@
       },
       "required": ["address", "value"]
     },
-    "channel": {
+    "registerChannel": {
+      "title": "Register",
       "type": "object",
-      // "options": { "collapsed": true },
-      "anyOf": [
-        {
-          "title": "Register",
-          "properties": {
-            "name": {
-              "$ref": "#/definitions/channel_name",
-              "propertyOrder": 1
-            },
-            "type": {
-              "$ref": "#/definitions/control_type",
-              "propertyOrder": 2
-            },
-            "reg_type": {
-              "$ref": "#/definitions/reg_type",
-              "propertyOrder": 3
-            },
-            "address": {
-              "$ref": "#/definitions/address",
-              "propertyOrder": 4
-            },
-            "format": {
-              "$ref": "#/definitions/format",
-              "propertyOrder": 5
-            },
-            "max": {
-              "title": "Maximum value",
-              "$ref": "#/definitions/serial_int",
-              "propertyOrder": 6
-            },
-            "scale": {
-              "type": "number",
-              "title": "Scale (value multiplier)",
-              "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
-              "default" : 1,
-              "propertyOrder": 7
-            },
-            "offset": {
-              "type": "number",
-              "title": "Value offset",
-              "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
-              "default" : 0,
-              "propertyOrder": 8
-            },
-            "round_to": {
-              "type": "number",
-              "title": "Round to",
-              "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
-              "default" : 1,
-              "propertyOrder": 9,
-              "minimum": 0
-            },
-            "channel_readonly": {
-              "title": "Read-only",
-              "type": "boolean",
-              "propertyOrder": 10
-            },
-            "on_value": {
-              // TBD: only use on_value for 'switch' and 'wo-switch' types
-              "title": "'On' value",
-              "description": "Value corresponding to the 'On' state of the switch",
-              "$ref": "#/definitions/serial_int",
-              "propertyOrder": 10
-            },
-            "poll_interval": {
-              "type": "integer",
-              "title": "Desired poll interval (ms)",
-              "description" : "This option specifies the desired interval between two consecutive polls of the channel",
-              "minimum": 0,
-              "default": 20,
-              "propertyOrder": 11
-            },
-            "error_value": {
-              "title": "Error value",
-              "description": "Value which should be treated as read error",
-              "propertyOrder": 12,
-              "oneOf": [
-                {
-                  "type": "string",
-                  "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
-                },
-                {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 4294967295
-                }
-              ]
-            },
-            "unsupported_value": {
-              "title": "Unsupported register value",
-              "description": "Value which should be treated as 'register is unsupported by device'",
-              "propertyOrder": 13,
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+)$"
-            },
-            "word_order": {
-              "$ref": "#/definitions/word_order",
-              "propertyOrder": 14
-            }
-          },
-          // FIXME: require "reg_type" and "address" for non-templated devices
-          "required": ["name"],
-          "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale", "offset"],
-          "_format": "grid"
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/channel_name",
+          "propertyOrder": 1
         },
-        {
-          "title": "Compound register",
-          "properties": {
-            "name": {
-              "$ref": "#/definitions/channel_name",
-              "propertyOrder": 1
+        "type": {
+          "$ref": "#/definitions/control_type",
+          "propertyOrder": 2
+        },
+        "reg_type": {
+          "$ref": "#/definitions/reg_type",
+          "propertyOrder": 3
+        },
+        "address": {
+          "$ref": "#/definitions/address",
+          "propertyOrder": 4
+        },
+        "format": {
+          "$ref": "#/definitions/format",
+          "propertyOrder": 5
+        },
+        "max": {
+          "title": "Maximum value",
+          "$ref": "#/definitions/serial_int",
+          "propertyOrder": 6
+        },
+        "scale": {
+          "type": "number",
+          "title": "Scale (value multiplier)",
+          "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
+          "default" : 1,
+          "propertyOrder": 7
+        },
+        "offset": {
+          "type": "number",
+          "title": "Value offset",
+          "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
+          "default" : 0,
+          "propertyOrder": 8
+        },
+        "round_to": {
+          "type": "number",
+          "title": "Round to",
+          "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
+          "default" : 1,
+          "propertyOrder": 9,
+          "minimum": 0
+        },
+        "readonly": {
+          "title": "Read-only",
+          "type": "boolean",
+          "propertyOrder": 10
+        },
+        // For compatibility with old configs
+        "channel_readonly": {
+          "type": "boolean",
+          "options": {
+            "hidden": true
+          }
+        },
+        "on_value": {
+          // TBD: only use on_value for 'switch' and 'wo-switch' types
+          "title": "'On' value",
+          "description": "Value corresponding to the 'On' state of the switch",
+          "$ref": "#/definitions/serial_int",
+          "propertyOrder": 10
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Desired poll interval (ms)",
+          "description" : "This option specifies the desired interval between two consecutive polls of the channel",
+          "minimum": 0,
+          "default": 20,
+          "propertyOrder": 11
+        },
+        "error_value": {
+          "title": "Error value",
+          "description": "Value which should be treated as read error",
+          "propertyOrder": 12,
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
             },
-            "type": {
-              "$ref": "#/definitions/control_type",
-              "propertyOrder": 2
-            },
-            "channel_readonly": {
-              "title": "Read-only",
-              "type": "boolean",
-              "propertyOrder": 8
-            },
-            "consists_of": {
-              "type": "array",
-              "title": "A list of subregisters",
-              "items": { "$ref": "#/definitions/subreg" },
-              "minItems": 1,
-              "_format": "table",
-              "propertyOrder": 3
-            },
-            "poll_interval": {
+            {
               "type": "integer",
-              "title": "Desired poll interval (ms)",
-              "description" :  "This option specifies the desired interval between two consecutive polls of the channel",
               "minimum": 0,
-              "default": 20,
-              "propertyOrder": 4
+              "maximum": 4294967295
             }
-          },
-          "required": ["name", "consists_of"]
+          ]
+        },
+        "unsupported_value": {
+          "title": "Unsupported register value",
+          "description": "Value which should be treated as 'register is unsupported by device'",
+          "propertyOrder": 13,
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+)$"
+        },
+        "word_order": {
+          "$ref": "#/definitions/word_order",
+          "propertyOrder": 14
         }
-      ]
+      },
+      "additionalProperties": false,
+      // FIXME: require "reg_type" and "address" for non-templated devices
+      "required": ["name"],
+      "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale", "offset"],
+      "_format": "grid"
+    },
+    "compoundRegisterChannel": {
+      "title": "Compound register",
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/channel_name",
+          "propertyOrder": 1
+        },
+        "type": {
+          "$ref": "#/definitions/control_type",
+          "propertyOrder": 2
+        },
+        "readonly": {
+          "title": "Read-only",
+          "type": "boolean",
+          "propertyOrder": 8
+        },
+        // For compatibility with old configs
+        "channel_readonly": {
+          "type": "boolean",
+          "options": {
+            "hidden": true
+          }
+        },
+        "consists_of": {
+          "type": "array",
+          "title": "A list of subregisters",
+          "items": { "$ref": "#/definitions/subreg" },
+          "minItems": 1,
+          "_format": "table",
+          "propertyOrder": 3
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Desired poll interval (ms)",
+          "description" :  "This option specifies the desired interval between two consecutive polls of the channel",
+          "minimum": 0,
+          "default": 20,
+          "propertyOrder": 4
+        }
+      },
+      "additionalProperties": false,
+      "required": ["name", "consists_of"],
+      "defaultProperties": ["name", "consists_of"]
+    },
+    "channel": {
+      "headerTemplate": "{{self.name}}",
+      "title": "Channel",
+      "oneOf": [
+        { "$ref": "#/definitions/registerChannel" },
+        { "$ref": "#/definitions/compoundRegisterChannel" }
+      ],
+      "options": {
+        "keep_oneof_values": false
+      }
     },
     "subreg": {
       "type": "object",
@@ -589,7 +585,8 @@
           "propertyOrder": 6
         }
       },
-      "required": ["reg_type", "address"]
+      "required": ["reg_type", "address"],
+      "defaultProperties":  ["reg_type", "address"]
     },
     "channel_name": {
       "type": "string",
@@ -654,15 +651,18 @@
     "serial_int": {
       "oneOf": [
         {
-          "type": "string",
-          "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$"
+          "title": "Integer",
+          "type": "integer"
         },
         {
+          "title": "Integer or hex",
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
         },
         {
-          "type": "integer"
+          "title": "Bits",
+          "type": "string",
+          "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$"
         }
       ]
     },
@@ -678,6 +678,7 @@
       ]
     }
   },
+
   "properties": {
     "debug": {
       "type": "boolean",
@@ -693,7 +694,10 @@
       "items": { "$ref": "#/definitions/port" },
       "minItems": 1,
       "_format": "tabs",
-      "propertyOrder": 2
+      "propertyOrder": 2,
+      "options" : {
+          "disable_collapse" : true
+      }
     },
     "max_unchanged_interval" : {
       "type" : "integer",
@@ -703,7 +707,9 @@
       "propertyOrder" : 3
     }
   },
+
   "required": ["ports"],
+
   "configFile": {
     "path": "/etc/wb-mqtt-serial.conf",
     "service": "wb-mqtt-serial"

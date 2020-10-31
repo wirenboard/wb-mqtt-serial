@@ -1,12 +1,14 @@
 #include "lls_device.h"
 
-REGISTER_BASIC_INT_PROTOCOL("lls", TLLSDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
+#include <stddef.h>
 
-TLLSDevice::TLLSDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TLLSDevice>>(device_config, port, protocol)
+REGISTER_BASIC_PROTOCOL("lls", TLLSDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
+
+TLLSDevice::TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol)
+    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
 {
     auto timeout = port->GetSendTime(3.5) + std::chrono::milliseconds(1);
-    device_config->FrameTimeout = std::max(device_config->FrameTimeout, timeout);
+    config->FrameTimeout = std::max(config->FrameTimeout, timeout);
 }
 
 static unsigned char dallas_crc8(const unsigned char * data, const unsigned int size)

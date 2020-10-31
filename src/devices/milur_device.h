@@ -10,7 +10,8 @@
 class TMilurDevice;
 typedef TBasicProtocol<TMilurDevice> TMilurProtocol;
 
-class TMilurDevice: public TEMDevice<TMilurProtocol> {
+class TMilurDevice: public TEMDevice
+{
 public:
     enum RegisterType {
         REG_PARAM = 0,

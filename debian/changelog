@@ -4,6 +4,12 @@ wb-mqtt-serial (2.5.0) experimental; urgency=medium
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 26 Oct 2020 12:30:05 +0500
 
+wb-mqtt-serial (2.3.0) experimental; urgency=medium
+
+  * Modbus TCP support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 30 Sep 2020 10:19:22 +0500
+
 wb-mqtt-serial (2.2.2) experimental; urgency=medium
 
   * segmentation fault after port opening failure is fixed

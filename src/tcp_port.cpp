@@ -24,12 +24,14 @@ namespace {
     const int CONNECTION_TIMEOUT_S = 5;
 
     // Additional timeout for reading from tcp port. It is caused by intermediate hardware and internal Linux processing
-    const std::chrono::microseconds TCPLag = std::chrono::microseconds(100000);
+    // Values are taken from old default timeouts
+    const std::chrono::microseconds ResponseTCPLag = std::chrono::microseconds(500000);
+    const std::chrono::microseconds FrameTCPLag    = std::chrono::microseconds(150000);
 }
 
-TTcpPort::TTcpPort(const PTcpPortSettings & settings)
+TTcpPort::TTcpPort(const TTcpPortSettings& settings)
     : Settings(settings)
-    , RemainingFailCycles(settings->ConnectionMaxFailCycles)
+    , RemainingFailCycles(Settings.ConnectionMaxFailCycles)
 {}
 
 void TTcpPort::CycleBegin()
@@ -48,7 +50,7 @@ void TTcpPort::Open()
         OnConnectionOk();
         LastInteraction = std::chrono::steady_clock::now();
     } catch (const TSerialDeviceException & e) {
-        LOG(Error) << "port " << Settings->ToString() << ": " << e.what();
+        LOG(Error) << "port " << Settings.ToString() << ": " << e.what();
         Reset();
 
         // if failed too fast - sleep remaining time
@@ -84,11 +86,11 @@ void TTcpPort::OpenTcpPort()
     struct sockaddr_in serv_addr;
     struct hostent * server;
 
-    server = gethostbyname(Settings->Address.c_str());
+    server = gethostbyname(Settings.Address.c_str());
 
     if (!server) {
         ostringstream ss;
-        ss << "no such host: " << Settings->Address;
+        ss << "no such host: " << Settings.Address;
         throw TSerialDeviceException(ss.str());
     }
 
@@ -97,7 +99,7 @@ void TTcpPort::OpenTcpPort()
 
     bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
 
-    serv_addr.sin_port = htons(Settings->Port);
+    serv_addr.sin_port = htons(Settings.Port);
     if (connect(Fd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) {
         auto error = errno;
         if (error == EINPROGRESS) {
@@ -144,7 +146,7 @@ void TTcpPort::OpenTcpPort()
 
 void TTcpPort::Reset() noexcept
 {
-    LOG(Warn) << Settings->ToString() <<  ": connection reset";
+    LOG(Warn) << Settings.ToString() <<  ": connection reset";
     try {
         Close();
     } catch (...) {
@@ -155,7 +157,7 @@ void TTcpPort::Reset() noexcept
 void TTcpPort::OnConnectionOk()
 {
     LastSuccessfulCycle = std::chrono::steady_clock::now();
-    RemainingFailCycles = Settings->ConnectionMaxFailCycles;
+    RemainingFailCycles = Settings.ConnectionMaxFailCycles;
 }
 
 void TTcpPort::OnReadyEmptyFd()
@@ -169,23 +171,23 @@ void TTcpPort::WriteBytes(const uint8_t * buf, int count)
     if (IsOpen()) {
         Base::WriteBytes(buf, count);
     } else {
-        LOG(Warn) << "attempt to write to not open port";
+        LOG(Warn) << "Attempt to write to not open port";
     }
 }
 
 uint8_t TTcpPort::ReadByte(const std::chrono::microseconds& timeout)
 {
-    return Base::ReadByte(timeout + TCPLag);
+    return Base::ReadByte(timeout + ResponseTCPLag);
 }
 
-int TTcpPort::ReadFrame(uint8_t * buf, 
-                        int count, 
-                        const std::chrono::microseconds & responseTimeout,
-                        const std::chrono::microseconds& frameTimeout,
-                        TFrameCompletePred frame_complete)
+size_t TTcpPort::ReadFrame(uint8_t * buf, 
+                           size_t count, 
+                           const std::chrono::microseconds & responseTimeout,
+                           const std::chrono::microseconds& frameTimeout,
+                           TFrameCompletePred frame_complete)
 {
     if (IsOpen()) {
-        return Base::ReadFrame(buf, count, responseTimeout + TCPLag, frameTimeout + TCPLag, frame_complete);
+        return Base::ReadFrame(buf, count, responseTimeout + ResponseTCPLag, frameTimeout + FrameTCPLag, frame_complete);
     }
     LOG(Warn) << "Attempt to read from not open port";
     return 0;
@@ -194,7 +196,7 @@ int TTcpPort::ReadFrame(uint8_t * buf,
 void TTcpPort::CycleEnd(bool ok)
 {
     // disable reconnect functionality option
-    if (Settings->ConnectionTimeout.count() < 0 || Settings->ConnectionMaxFailCycles < 0) {
+    if (Settings.ConnectionTimeout.count() < 0 || Settings.ConnectionMaxFailCycles < 0) {
         return;
     }
 
@@ -209,10 +211,15 @@ void TTcpPort::CycleEnd(bool ok)
             --RemainingFailCycles;
         }
 
-        if ((std::chrono::steady_clock::now() - LastSuccessfulCycle > Settings->ConnectionTimeout) &&
+        if ((std::chrono::steady_clock::now() - LastSuccessfulCycle > Settings.ConnectionTimeout) &&
             RemainingFailCycles == 0)
         {
             Reset();
         }
     }
+}
+
+std::string TTcpPort::GetDescription() const
+{
+    return Settings.ToString();
 }

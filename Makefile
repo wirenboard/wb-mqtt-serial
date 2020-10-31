@@ -10,7 +10,7 @@ ifeq ($(origin CXX),default)
 endif
 
 DEBUG_CFLAGS=-Wall -ggdb -std=c++14 -O0 -I./src
-NORMAL_CFLAGS=-Wall -std=c++14 -O3 -I./src
+NORMAL_CFLAGS=-Wall -Werror -std=c++14 -O3 -I./src
 CFLAGS=$(if $(or $(DEBUG)), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
 LDFLAGS= -lpthread -ljsoncpp -lwbmqtt1
 
@@ -42,7 +42,7 @@ SERIAL_SRCS= \
   src/devices/milur_device.cpp        \
   src/devices/mercury230_device.cpp   \
   src/devices/lls_device.cpp          \
-
+  src/devices/em_device.cpp           \
 
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 
@@ -54,6 +54,7 @@ TEST_SRCS= \
   $(TEST_DIR)/modbus_test.o                           \
   $(TEST_DIR)/modbus_io_expectations.o                \
   $(TEST_DIR)/modbus_io_test.o                        \
+  $(TEST_DIR)/modbus_tcp_test.o                       \
   $(TEST_DIR)/uniel_expectations.o                    \
   $(TEST_DIR)/uniel_test.o                            \
   $(TEST_DIR)/s2k_expectations.o                      \

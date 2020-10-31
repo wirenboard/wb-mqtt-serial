@@ -3,10 +3,11 @@
 
 using namespace std;
 
-REGISTER_BASIC_INT_PROTOCOL("fake", TFakeSerialDevice, TRegisterTypes({
+REGISTER_BASIC_PROTOCOL("fake", TFakeSerialDevice, TRegisterTypes({
     { TFakeSerialDevice::REG_FAKE, "fake", "text", U16 },
 }));
 
+std::list<TFakeSerialDevice*> TFakeSerialDevice::Devices;
 
 namespace //utility
 {
@@ -31,13 +32,14 @@ namespace //utility
 
 
 TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TBasicProtocolSerialDevice<TBasicProtocol<TFakeSerialDevice>>(config, port, protocol)
+    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
     , Connected(true)
 {
     FakePort = dynamic_pointer_cast<TFakeSerialPort>(port);
     if (!FakePort) {
         throw runtime_error("not fake serial port passed to fake serial device");
     }
+    Devices.push_back(this);
 }
 
 uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
@@ -147,3 +149,18 @@ void TFakeSerialDevice::SetIsConnected(bool connected)
 
 TFakeSerialDevice::~TFakeSerialDevice()
 {}
+
+TFakeSerialDevice* TFakeSerialDevice::GetDevice(const std::string& slaveId)
+{
+    for (auto device: Devices) {
+        if (device->DeviceConfig()->SlaveId == slaveId) {
+            return device;
+        }
+    }
+    return nullptr;
+}
+
+void TFakeSerialDevice::ClearDevices()
+{
+    Devices.clear();
+}

@@ -140,6 +140,7 @@ int main(int argc, char *argv[])
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
 
     PHandlerConfig handlerConfig;
+    TSerialDeviceFactory deviceFactory;
     try {
         Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
         TTemplateMap templates(TEMPLATES_DIR,
@@ -152,7 +153,7 @@ int main(int argc, char *argv[])
         }
 
         handlerConfig = LoadConfig(configFilename,
-                                  TSerialDeviceFactory::GetRegisterTypes,
+                                  deviceFactory,
                                   configSchema,
                                   templates);
     } catch (const std::exception& e) {
