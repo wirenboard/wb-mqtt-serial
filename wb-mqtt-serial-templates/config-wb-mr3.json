@@ -1,5 +1,196 @@
 {
     "device_type" : "WB-MR3",
+    "setup_schema": {
+        "type": "array",
+        "title": "List of setup commands",
+        "description": "Lists holding register values that must be written during initialization",
+        "items": {
+            "headerTemplate": " ",
+            "title": "Setup command",
+            "oneOf": [
+                {
+                    "type": "object",
+                    "title": "Input 0 mode (address 16)",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "enum": [ "Input 0 mode" ],
+                        "options": {
+                            "hidden": true
+                        }
+                      },
+                      "address": {
+                        "type": "integer",
+                        "enum": [ 16 ],
+                        "options": {
+                            "hidden": true
+                        }
+                      },
+                      "value": {
+                        "title": "Mode",
+                        "type": "integer",
+                        "enum": [ 0, 1, 2, 3, 4, 5 ],
+                        "default": 2,
+                        "options": {
+                            "enum_titles": [
+                                "push button (0)",
+                                "latching switch (1)",
+                                "turn off all relays on activation (2)",
+                                "disable communication between input and outputs (3)",
+                                "operate according to mapping-matix (4)",
+                                "operate according to mapping-matix, after 20 minutes re-simulate the input state (5)"
+                            ]
+                        },
+                        "_format": "select"
+                      }
+                    },
+                    "options": {
+                      "disable_collapse": true,
+                      "disable_edit_json": true,
+                      "disable_properties": true
+                    },
+                    "required": ["title", "address", "value"]
+                },
+                {
+                    "type": "object",
+                    "title": "Input 1 mode (address 9)",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "enum": [ "Input 1 mode" ],
+                        "options": {
+                            "hidden": true
+                        }
+                      },
+                      "address": {
+                        "type": "integer",
+                        "enum": [ 9 ],
+                        "options": {
+                            "hidden": true
+                        }
+                      },
+                      "value": {
+                        "title": "Mode",
+                        "type": "integer",
+                        "enum": [ 0, 1, 2, 3, 4, 5 ],
+                        "default": 1,
+                        "options": {
+                            "enum_titles": [
+                                "push button (0)",
+                                "latching switch (1)",
+                                "turn off all relays on activation (2)",
+                                "disable communication between input and outputs (3)",
+                                "operate according to mapping-matix (4)",
+                                "operate according to mapping-matix, after 20 minutes re-simulate the input state (5)"
+                            ]
+                        },
+                        "_format": "select"
+                      }
+                    },
+                    "options": {
+                      "disable_collapse": true,
+                      "disable_edit_json": true,
+                      "disable_properties": true
+                    },
+                    "required": ["title", "address", "value"]
+                },
+                {
+                    "type": "object",
+                    "title": "Input 2 mode (address 10)",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "enum": [ "Input 1 mode" ],
+                        "options": {
+                            "hidden": true
+                        }
+                      },
+                      "address": {
+                        "type": "integer",
+                        "enum": [ 10 ],
+                        "options": {
+                            "hidden": true
+                        }
+                      },
+                      "value": {
+                        "title": "Mode",
+                        "type": "integer",
+                        "enum": [ 0, 1, 2, 3, 4, 5 ],
+                        "default": 1,
+                        "options": {
+                            "enum_titles": [
+                                "push button (0)",
+                                "latching switch (1)",
+                                "turn off all relays on activation (2)",
+                                "disable communication between input and outputs (3)",
+                                "operate according to mapping-matix (4)",
+                                "operate according to mapping-matix, after 20 minutes re-simulate the input state (5)"
+                            ]
+                        },
+                        "_format": "select"
+                      }
+                    },
+                    "options": {
+                      "disable_collapse": true,
+                      "disable_edit_json": true,
+                      "disable_properties": true
+                    },
+                    "required": ["title", "address", "value"]
+                },
+                {
+                    "type": "object",
+                    "title": "Input 3 mode (address 11)",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "enum": [ "Input 3 mode" ],
+                        "options": {
+                            "hidden": true
+                        }
+                      },
+                      "address": {
+                        "type": "integer",
+                        "enum": [ 11 ],
+                        "options": {
+                            "hidden": true
+                        }
+                      },
+                      "value": {
+                        "title": "Mode",
+                        "type": "integer",
+                        "enum": [ 0, 1, 2, 3, 4, 5 ],
+                        "default": 1,
+                        "options": {
+                            "enum_titles": [
+                                "push button (0)",
+                                "latching switch (1)",
+                                "turn off all relays on activation (2)",
+                                "disable communication between input and outputs (3)",
+                                "operate according to mapping-matix (4)",
+                                "operate according to mapping-matix, after 20 minutes re-simulate the input state (5)"
+                            ]
+                        },
+                        "_format": "select"
+                      }
+                    },
+                    "options": {
+                      "disable_collapse": true,
+                      "disable_edit_json": true,
+                      "disable_properties": true
+                    },
+                    "required": ["title", "address", "value"]
+                },
+                { "$ref": "#/definitions/setup_cmd" }
+            ],
+            "options": {
+                "keep_oneof_values": false
+            }
+        },
+        "options": {
+          "disable_array_reorder": true
+        },
+        "propertyOrder": 8
+    },
     "device" : {
         "name" : "WB-MR3",
         "id" : "wb-mr3",

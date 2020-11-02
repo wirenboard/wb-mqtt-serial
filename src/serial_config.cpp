@@ -581,7 +581,11 @@ const Json::Value& TTemplateMap::GetTemplate(const std::string& deviceType)
             throw std::runtime_error("Can't find template for " + deviceType);
         }
         Json::Value root(WBMQTT::JSON::Parse(filePath));
-        Validator->Validate(root);
+        try {
+            Validator->Validate(root);
+        } catch (const std::runtime_error& e) {
+            throw std::runtime_error("File: " + filePath + " error: " + e.what());
+        }
         TemplateFiles.erase(filePath);
         ValidTemplates.emplace(filePath, root["device"]);
         return ValidTemplates[filePath];
@@ -592,8 +596,8 @@ Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName,
 {
     Json::Value schema = WBMQTT::JSON::Parse(templateSchemaFileName);
     schema["definitions"] = configSchema["definitions"];
-    schema["definitions"]["device"]["properties"].removeMember("slave_id");
-    schema["definitions"]["device"].removeMember("required");
+    schema["definitions"]["deviceCommon"]["properties"].removeMember("slave_id");
+    schema["definitions"]["deviceCommon"].removeMember("required");
     return schema;
 }
 
@@ -616,11 +620,19 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName)
     //     "pointer": "/device_type",
     //     "pattern": "^.*\\.json$" },
     // Validator will complain about it. So let's remove it.
-    configSchema["definitions"]["device"]["properties"]["device_type"].removeMember("enum");
+//    configSchema["definitions"]["device"]["properties"]["device_type"].removeMember("enum");
+    const Json::Value& array = configSchema["definitions"]["device"]["oneOf"];
+    Json::Value newArray = Json::arrayValue;
+    for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
+        if (!array[index].isMember("$_devicesDefinitions")) {
+            newArray.append(array[index]);
+        }
+    }
+    configSchema["definitions"]["device"]["oneOf"] = newArray;
     return configSchema;
 }
 
-PHandlerConfig LoadConfig(const std::string& configFileName, 
+PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
                           const Json::Value& configSchema,
                           TTemplateMap& templates,
@@ -629,7 +641,11 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
     PHandlerConfig handlerConfig(new THandlerConfig);
     Json::Value Root(Parse(configFileName));
 
-    Validate(Root, configSchema);
+    try {
+        Validate(Root, configSchema);
+    } catch (const std::runtime_error& e) {
+        throw std::runtime_error("File: " + configFileName + " error: " + e.what());
+    }
 
     Get(Root, "debug", handlerConfig->Debug);
     Get(Root, "max_unchanged_interval", handlerConfig->MaxUnchangedInterval);

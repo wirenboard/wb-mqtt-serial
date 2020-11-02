@@ -56,9 +56,6 @@
     "serialPort": {
       "title": "Serial port",
       "type": "object",
-      "allOf" : [
-        { "$ref" : "#/definitions/commonPortSettings"}
-      ],
       "properties": {
         "port_type": {
           "type": "string",
@@ -161,10 +158,7 @@
           }
         }
       },
-      "allOf" : [
-        { "$ref" : "#/definitions/commonTcpPortSettings"},
-        { "$ref" : "#/definitions/commonPortSettings"}
-      ],
+      "$ref" : "#/definitions/commonTcpPortSettings",
       "required": ["port_type"],
       "defaultProperties": ["address", "port", "port_type", "devices"],
       "_format": "grid"
@@ -185,10 +179,7 @@
           }
         }
       },
-      "allOf" : [
-        { "$ref" : "#/definitions/commonTcpPortSettings"},
-        { "$ref" : "#/definitions/commonPortSettings"}
-      ],
+      "$ref" : "#/definitions/commonTcpPortSettings",
       "required": ["port_type"],
       "defaultProperties": ["address", "port", "port_type", "devices"],
       "_format": "grid"
@@ -204,11 +195,31 @@
       "options": {
         "keep_oneof_values": false,
         "disable_collapse" : true
+      },
+      "$ref" : "#/definitions/commonPortSettings"
+    },
+    "customDevice": {
+      "type": "object",
+      "title": "Custom device",
+      "properties": {
+        "protocol": {
+          "title": "Protocol",
+          "$ref": "#/definitions/deviceProtocol",
+          "propertyOrder": 5
+        },
+        "setup": {
+          "type": "array",
+          "title": "List of setup commands",
+          "description": "Lists holding register values that must be written during initialization",
+          "items": { "$ref": "#/definitions/setup_cmd" },
+          "options": {
+            "disable_array_reorder": true
+          },
+          "propertyOrder": 8
+        }
       }
     },
-    "device": {
-      "type": "object",
-      "title": "Serial device",
+    "deviceCommon": {
       "headerTemplate": "{{|self.device_type|}}{{ (slave id |self.slave_id|)}}{{ (name: |self.name|)}}",
       "properties": {
         "name": {
@@ -238,21 +249,6 @@
           "_format": "checkbox",
           "propertyOrder": 4
         },
-        "protocol": {
-          "$ref": "#/definitions/deviceProtocol",
-          "propertyOrder": 5
-        },
-        "device_type": {
-          "type": "string",
-          "title": "Device type",
-          "description": "Selects device template",
-          "enum": {
-            "directories": ["/usr/share/wb-mqtt-serial/templates"],
-            "pointer": "/device_type",
-            "pattern": "^.*\\.json$"
-          },
-          "propertyOrder": 6
-        },
         "poll_interval": {
           "type": "integer",
           "title": "Desired poll interval (ms)",
@@ -260,14 +256,6 @@
           "minimum": 0,
           "default": 20,
           "propertyOrder": 7
-        },
-        "setup": {
-          "type": "array",
-          "title": "List of setup commands",
-          "description": "Lists holding register values that must be written during initialization",
-          "items": { "$ref": "#/definitions/setup_cmd" },
-          "_format": "table",
-          "propertyOrder": 8
         },
         "channels": {
           "type": "array",
@@ -357,7 +345,24 @@
         }
       },
       "required": ["slave_id"],
-      "defaultProperties": ["slave_id", "device_type"]
+      "defaultProperties": ["slave_id"]
+    },
+    "device": {
+      "headerTemplate": "{{self.name}} {{slave id: |self.slave_id|}}",
+      "title": "Device",
+      "oneOf": [
+        { "$ref": "#/definitions/customDevice" },
+        { "$_devicesDefinitions": {
+               "directories": ["/usr/share/wb-mqtt-serial/templates"],
+               "pointer": [ "/device_type", "/setup_schema" ],
+               "pattern": "^.*\\.json$"
+           }
+        }
+      ],
+      "options": {
+        "disable_edit_json": true
+      },
+      "$ref": "#/definitions/deviceCommon"
     },
     "setup_cmd": {
       "type": "object",
@@ -382,6 +387,12 @@
           "$ref": "#/definitions/serial_int"
         }
       },
+      "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true,
+        "disable_properties": true
+      },
+      "_format": "grid",
       "required": ["address", "value"]
     },
     "registerChannel": {

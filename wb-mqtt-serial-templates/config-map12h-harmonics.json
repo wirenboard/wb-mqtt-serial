@@ -1,5 +1,768 @@
 {
  "device_type": "WB-MAP12H (+ harmonics)",
+ "setup_schema": {
+    "type": "array",
+    "title": "List of setup commands",
+    "description": "Lists holding register values that must be written during initialization",
+    "items": {
+        "headerTemplate": " ",
+        "title": "Setup command",
+        "oneOf": [
+            {
+                "type": "object",
+                "title": "Ch1 L1 Turns (address 0x1460)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch1 L1 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x1460" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch1 L2 Turns (address 0x1461)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch1 L2 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x1461" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch1 L3 Turns (address 0x1462)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch1 L3 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x1462" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch2 L1 Turns (address 0x2460)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch2 L1 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x2460" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch2 L2 Turns (address 0x2461)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch2 L2 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x2461" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch2 L3 Turns (address 0x2462)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch2 L3 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x2462" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch3 L1 Turns (address 0x3460)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch3 L1 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x3460" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch3 L2 Turns (address 0x3461)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch3 L2 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x3461" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch3 L3 Turns (address 0x3462)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch3 L3 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x3462" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch4 L1 Turns (address 0x4460)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch4 L1 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x4460" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch4 L2 Turns (address 0x4461)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch4 L2 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x4461" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch4 L3 Turns (address 0x4462)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch4 L3 Turns" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x4462" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch1 L1 Phi (address 0x1463)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch1 L1 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x1463" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch1 L2 Phi (address 0x1464)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch1 L1 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x1464" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch1 L3 Phi (address 0x1465)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch1 L3 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x1465" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch2 L1 Phi (address 0x2463)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch2 L1 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x2463" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch2 L2 Phi (address 0x2464)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch2 L1 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x2464" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch2 L3 Phi (address 0x2465)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch2 L3 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x2465" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch3 L1 Phi (address 0x3463)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch3 L1 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x3463" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch3 L2 Phi (address 0x3464)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch3 L1 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x3464" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch3 L3 Phi (address 0x3465)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch3 L3 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x3465" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch4 L1 Phi (address 0x4463)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch4 L1 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x4463" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch4 L2 Phi (address 0x4464)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch4 L1 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x4464" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            {
+                "type": "object",
+                "title": "Ch4 L3 Phi (address 0x4465)",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "enum": [ "Ch4 L3 Phi" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "address": {
+                    "type": "string",
+                    "enum": [ "0x4465" ],
+                    "options": {
+                        "hidden": true
+                    }
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "integer",
+                    "default": 0
+                  }
+                },
+                "options": {
+                  "disable_collapse": true,
+                  "disable_edit_json": true,
+                  "disable_properties": true
+                },
+                "required": ["title", "address", "value"]
+            },
+            { "$ref": "#/definitions/setup_cmd" }
+        ],
+        "options": {
+            "keep_oneof_values": false
+        }
+    },
+    "options": {
+        "disable_array_reorder": true
+    },
+    "propertyOrder": 8
+ },
  "device": {
   "name": "WB-MAP12H (+ harmonics)",
   "id": "wb-map12h",

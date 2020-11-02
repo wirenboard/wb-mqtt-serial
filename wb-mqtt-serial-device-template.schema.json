@@ -8,7 +8,7 @@
     "device": {
       // must be "$ref": "wb-mqtt-serial.schema.json#/definitions/device" but valijson doesn't support loading external refs
       // so we append definitions in c++ code
-      "$ref": "#/definitions/device"
+      "$ref": "#/definitions/customDevice"
     }
   },
   "required": ["device_type", "device"]

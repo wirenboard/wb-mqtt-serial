@@ -1,5 +1,85 @@
 {
     "device_type": "WB-M1W2 DI",
+    "setup_schema": {
+        "type": "array",
+        "title": "List of setup commands",
+        "description": "Lists holding register values that must be written during initialization",
+        "items": {
+            "headerTemplate": " ",
+            "title": "Setup command",
+            "oneOf": [
+                {
+                    "type": "object",
+                    "title": "Input 1 mode (address 275)",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "enum": [ "Input 1 mode" ],
+                        "options": {
+                            "hidden": true
+                        }
+                      },
+                      "address": {
+                        "type": "integer",
+                        "enum": [ 275 ],
+                        "options": {
+                            "hidden": true
+                        }
+                      },
+                      "value": {
+                        "title": "Mode",
+                        "type": "integer",
+                        "enum": [ 0, 1 ],
+                        "default": 0,
+                        "options": {
+                            "enum_titles": [ "1-Wire", "discrete input"]
+                        },
+                        "_format": "select"
+                      }
+                    },
+                    "options": {
+                      "disable_collapse": true,
+                      "disable_edit_json": true,
+                      "disable_properties": true
+                    },
+                    "required": ["title", "address", "value"]
+                },
+                {
+                    "type": "object",
+                    "title": "Input 2 mode (address 276)",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "enum": [ "Input 2 mode" ]
+                      },
+                      "address": {
+                        "type": "integer",
+                        "enum": [ 276 ]
+                      },
+                      "value": {
+                        "title": "Mode",
+                        "type": "integer",
+                        "enum": [ 0, 1 ],
+                        "default": 0,
+                        "enum_titles": [ "1-Wire", "discrete input"],
+                        "_format": "select"
+                      }
+                    },
+                    "options": {
+                      "disable_collapse": true,
+                      "disable_edit_json": true,
+                      "disable_properties": true
+                    },
+                    "required": ["title", "address", "value"]
+                },
+                { "$ref": "#/definitions/setup_cmd" }
+            ]
+        },
+        "options": {
+          "disable_array_reorder": true
+        },
+        "propertyOrder": 8
+    },
     "device": {
         "name": "WB-M1W2",
         "id": "wb-m1w2",
