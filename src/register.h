@@ -291,6 +291,8 @@ inline RegisterFormat RegisterFormatFromName(const std::string& name) {
         return U16; // FIXME!
 }
 
+size_t RegisterFormatByteWidth(RegisterFormat format);
+
 inline EWordOrder WordOrderFromName(const std::string& name) {
     if (name == "big_endian")
         return EWordOrder::BigEndian;

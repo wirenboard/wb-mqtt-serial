@@ -146,8 +146,7 @@ bool TSerialDevice::WriteSetupRegisters()
                       << " <-- " << setup_item->Value;
             WriteRegister(setup_item->Register, setup_item->Value);
         } catch (const TSerialDeviceException & e) {
-            LOG(Warn) << "Register '" << setup_item->Register->ToString()
-                      << "' setup failed: " << e.what();
+            LOG(Warn) << "failed to write: " << setup_item->Register->ToString() << ": " << e.what();
             return false;
         }
     }

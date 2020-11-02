@@ -60,6 +60,13 @@
                 "scale": 0.001,
                 "format": "u16",
                 "type": "voltage"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

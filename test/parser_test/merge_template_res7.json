@@ -1,0 +1,69 @@
+{
+        "channels" : 
+        [
+                {
+                        "address" : "0x0504",
+                        "format" : "s32",
+                        "name" : "Temperature",
+                        "reg_type" : "input"
+                },
+                {
+                        "channels" : 
+                        [
+                                {
+                                        "address" : "0x0501",
+                                        "format" : "s32",
+                                        "name" : "c11",
+                                        "reg_type" : "input"
+                                },
+                                {
+                                        "channels" : 
+                                        [
+                                                {
+                                                        "address" : "0x0502",
+                                                        "format" : "s32",
+                                                        "name" : "c12",
+                                                        "poll_interval" : 100,
+                                                        "reg_type" : "input"
+                                                },
+                                                {
+                                                        "address" : "0x0506",
+                                                        "enabled" : false,
+                                                        "format" : "s32",
+                                                        "name" : "c22",
+                                                        "reg_type" : "input"
+                                                }
+                                        ],
+                                        "device_type" : "subdevice2",
+                                        "name" : "c2",
+                                        "setup" : 
+                                        [
+                                                {
+                                                        "address" : 20000,
+                                                        "title" : "s12",
+                                                        "value" : "0xfff2"
+                                                },
+                                                {
+                                                        "address" : 9992,
+                                                        "title" : "s22",
+                                                        "value" : 2
+                                                },
+                                                {
+                                                        "address" : 25000,
+                                                        "title" : "31",
+                                                        "value" : "0xffff"
+                                                }
+                                        ],
+                                        "shift" : 200
+                                }
+                        ],
+                        "device_type" : "subdevice1",
+                        "name" : "Sub",
+                        "shift" : 100
+                }
+        ],
+        "device_type" : "merge subdevice2",
+        "id" : "merge-subdevice2_2",
+        "name" : "merge subdevice2 2",
+        "slave_id" : 2
+}

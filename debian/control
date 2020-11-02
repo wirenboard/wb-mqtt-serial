@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 10), pkg-config, libjsoncpp-dev, libwbmqtt1-dev (>=
 
 Package: wb-mqtt-serial
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libjsoncpp0 | libjsoncpp1, ucf, bsdutils, libwbmqtt1 (>= 1.1.0)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libjsoncpp0 | libjsoncpp1, ucf, bsdutils, libwbmqtt1 (>= 1.1.0), wb-mqtt-confed (>= 1.2.5), wb-mqtt-homeui (>= 2.1.0)
 Replaces: wb-homa-modbus (<< 1.14.1)
 Breaks: wb-homa-modbus (<< 1.14.1), wb-mqtt-confed (<< 1.0.2), wb-mqtt-homeui (<< 1.7)
 Description: Wiren Board Smart Home MQTT serial protocol driver.

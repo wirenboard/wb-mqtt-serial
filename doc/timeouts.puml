@@ -8,14 +8,14 @@ repeat
         if (Устройство было отключено?) then (да)
             while (Есть регистры для записи в устройство?)
                 #BurlyWood :Подождать "frame_timeout_ms" (по умолчанию **0 мс или задано протоколом**);
-                #BurlyWood :Подождать "guard_interval_us" (по умолчанию **0 мс**);
+                #BurlyWood :Подождать "guard_interval_us" (по умолчанию **0 мкс**);
                 :Записать регистр;
                 #BurlyWood :Ожидание подтвержения записи в течение "response_timeout_ms" (по умолчанию **500 мс**);
             endwhile
         else (нет)
         endif
         #BurlyWood :Подождать "frame_timeout_ms" (по умолчанию **0 мс или задано протоколом**);
-        #BurlyWood :Подождать "guard_interval_us" (по умолчанию **0 мс**);
+        #BurlyWood :Подождать "guard_interval_us" (по умолчанию **0 мкс**);
         :Послать запрос на чтение регистров;
         #BurlyWood :Ожидание данных регистров в течение "response_timeout_ms" (по умолчанию **500 мс**);
     endwhile

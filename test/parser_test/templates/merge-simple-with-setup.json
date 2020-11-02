@@ -1,0 +1,34 @@
+{
+    "device_type": "merge simple with setup",
+    "device": {
+        "name": "merge simple with setup",
+        "id": "merge-simple-with-setup",
+        "poll_interval": 200,
+        "setup": [
+            {
+                "title": "IODIR",
+                "address": 10000,
+                "value": "0xffff"
+            },
+            {
+                "title": "CONFIG-FLAG",
+                "address": 9999,
+                "value": 1
+            }
+        ],
+        "channels": [
+            {
+                "name": "Voltage",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0500"
+            },
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ]
+    }
+}

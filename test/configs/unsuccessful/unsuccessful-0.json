@@ -9,7 +9,6 @@
                     "id": "ErrorValueTest",
                     "slave_id": "0x91",
                     "channels": [
-
                         {
                             "name" : "negative-int",
                             "reg_type" : "holding",

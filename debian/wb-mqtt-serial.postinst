@@ -19,5 +19,6 @@ else
 fi
 
 ucf --debconf-ok $BOARD_CONF $CONFFILE
+rm -f /usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json
 
 #DEBHELPER#

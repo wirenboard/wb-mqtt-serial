@@ -214,6 +214,56 @@
                 "reg_type": "input",
                 "address": 270,
                 "format": "u32"
+            },
+            {
+                "name": "Force CO₂ sensor calibration",
+                "reg_type": "coil",
+                "address": 1,
+                "enabled": false
+            },
+            {
+                "name": "HDC1080 heater",
+                "reg_type": "coil",
+                "address": 2,
+                "enabled": false
+            },
+            {
+                "name": "CO₂ sensor enable",
+                "reg_type": "coil",
+                "address": 3,
+                "enabled": false
+            },
+            {
+                "name": "Minimum voltage since startup",
+                "reg_type": "input",
+                "address": 122,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false
+            },
+            {
+                "name": "MCU voltage",
+                "reg_type": "coil",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false
+            },
+            {
+                "name": "MCU temperature",
+                "reg_type": "coil",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

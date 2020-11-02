@@ -44,9 +44,14 @@ namespace
             return false;
         }
 
-        bool IsModbus() const
+        bool IsModbus() const override
         {
             return true;
+        }
+
+        bool SupportsBroadcast() const override
+        {
+            return false;
         }
     };
 }

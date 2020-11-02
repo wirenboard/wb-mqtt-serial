@@ -250,6 +250,13 @@
                 "reg_type": "holding", 
                 "address": 100, 
                 "type": "pushbutton"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

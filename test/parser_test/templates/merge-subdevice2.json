@@ -1,0 +1,71 @@
+{
+    "device_type": "merge subdevice2",
+    "device": {
+        "name": "merge subdevice2",
+        "id": "merge-subdevice2",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            },
+            {
+                "name": "Sub",
+                "device_type": "subdevice1",
+                "shift": 100
+            }
+        ],
+        "subdevices": [
+            {
+                "device_type": "subdevice1",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "c11",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0501"
+                        },
+                        {
+                            "name": "c2",
+                            "device_type": "subdevice2",
+                            "shift": 200
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "subdevice2",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "s12",
+                            "address": 20000,
+                            "value": "0xfff2"
+                        },
+                        {
+                            "title": "s22",
+                            "address": 9992,
+                            "value": 2
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "c12",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0502"
+                        },
+                        {
+                            "name": "c22",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0506"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

@@ -1,5 +1,6 @@
 {
     "device_type": "pulsar-water",
+    "title": "Pulsar Water Meter",
     "device": {
         "name": "Pulsar Water Meter",
         "id": "pulsar-water",

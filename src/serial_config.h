@@ -5,7 +5,6 @@
 #include <memory>
 #include <vector>
 #include <exception>
-#include <map>
 
 #include "register.h"
 
@@ -21,11 +20,42 @@
 #include "port.h"
 #include "serial_device.h"
 
-class TTemplateMap 
+struct TDeviceTemplate
 {
-        std::unordered_map<std::string, std::string> TemplateFiles;
-        std::unordered_map<std::string, Json::Value> ValidTemplates;
-        std::unique_ptr<WBMQTT::JSON::TValidator>    Validator;
+    std::string Type;
+    std::string Title;
+    Json::Value Schema;
+
+    TDeviceTemplate(const std::string& type, const std::string title, const Json::Value& schema);
+};
+
+class ITemplateMap
+{
+    public:
+        virtual ~ITemplateMap() = default;
+
+        virtual const TDeviceTemplate& GetTemplate(const std::string& deviceType) = 0;
+        virtual std::vector<std::string> GetDeviceTypes() const = 0;
+};
+
+class TTemplateMap: public ITemplateMap
+{
+        /**
+         *  @brief Device type to template file path mapping.
+         *         Files in map are jsons with device_type parameter, but aren't yet validated against schema.
+         */
+        std::unordered_map<std::string, std::string>                       TemplateFiles;
+
+        /**
+         * @brief Device type to TDeviceTemplate mapping.
+         *        Valid and parsed templates.
+         */
+        std::unordered_map<std::string, std::shared_ptr<TDeviceTemplate> > ValidTemplates;
+
+        std::unique_ptr<WBMQTT::JSON::TValidator>                          Validator;
+
+        Json::Value Validate(const std::string& deviceType, const std::string& filePath);
+        std::shared_ptr<TDeviceTemplate> GetTemplatePtr(const std::string& deviceType);
     public:
         TTemplateMap() = default;
 
@@ -46,7 +76,23 @@ class TTemplateMap
          */
         void AddTemplatesDir(const std::string& templatesDir);
 
-        const Json::Value& GetTemplate(const std::string& deviceType);
+        const TDeviceTemplate& GetTemplate(const std::string& deviceType) override;
+
+        std::vector<std::string> GetDeviceTypes() const override;
+
+        std::vector<std::shared_ptr<TDeviceTemplate>> GetTemplatesOrderedByName();
+};
+
+class TSubDevicesTemplateMap: public ITemplateMap
+{
+        std::unordered_map<std::string, TDeviceTemplate> Templates;
+        std::string                                      DeviceType;
+    public:
+        TSubDevicesTemplateMap(const std::string& deviceType, const Json::Value& device);
+
+        const TDeviceTemplate& GetTemplate(const std::string& deviceType) override;
+
+        std::vector<std::string> GetDeviceTypes() const override;
 };
 
 struct TPortConfig 
@@ -101,7 +147,13 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TTemplateMap& templates,
                           TPortFactoryFn portFactory = DefaultPortFactory);
 
-PHandlerConfig LoadConfig(const std::string& configFileName,
-                          TSerialDeviceFactory& deviceFactory,
-                          const Json::Value& configSchema,
-                          TPortFactoryFn portFactory = DefaultPortFactory);
+bool IsSubdeviceChannel(const Json::Value& channelSchema);
+
+std::string GetDeviceKey(const std::string& deviceType);
+std::string GetSubdeviceSchemaKey(const std::string& deviceType, const std::string& subDeviceType);
+std::string GetSubdeviceKey(const std::string& subDeviceType);
+
+void AppendParams(Json::Value& dst, const Json::Value& src);
+void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value& src, const std::string& srcKey);
+std::string DecorateIfNotEmpty(const std::string& prefix, const std::string& str, const std::string& postfix = std::string());
+std::string GetProtocolName(const Json::Value& deviceDescription);

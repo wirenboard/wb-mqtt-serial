@@ -19,6 +19,7 @@
 struct TDeviceChannelConfig 
 {
     std::string                  Name;
+    std::string                  MqttId; // MQTT topic name. If empty Name is used
     std::string                  Type;
     std::string                  DeviceId;
     int                          Order            = 0;
@@ -34,6 +35,7 @@ struct TDeviceChannelConfig
                          const std::string& onValue              = "",
                          int                max                  = - 1,
                          bool               readOnly             = false,
+                         const std::string& mqttId               = "",
                          const std::vector<PRegisterConfig> regs = std::vector<PRegisterConfig>());
 };
 
@@ -60,7 +62,10 @@ const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 
 struct TDeviceConfig 
 {
+    //! Part of /devices/+ topic name
     std::string                         Id;
+
+    //! Will be published in /devices/+/meta/name and used in log messages
     std::string                         Name;
     std::string                         SlaveId;
     std::string                         DeviceType;
@@ -97,6 +102,10 @@ struct TDeviceConfig
     void AddSetupItem(PDeviceSetupItemConfig item);
 
     std::string GetDescription() const;
+
+private:
+    // map key is setup item address
+    std::unordered_map<int, std::string> SetupItemsByAddress;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
@@ -220,6 +229,11 @@ public:
      */
     virtual bool IsModbus() const = 0;
 
+    /*! Protocol supports broadcast messages.
+     *  We check it during generation of JSON schema for UI in wb-mqtt-confed.
+     */
+    virtual bool SupportsBroadcast() const = 0;
+
 private:
     std::string Name;
     PRegisterTypeMap RegTypes;
@@ -273,6 +287,11 @@ public:
     bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
     {
         return (TUInt32SlaveId(id1, AllowBroadcast) == TUInt32SlaveId(id2, AllowBroadcast));
+    }
+
+    bool SupportsBroadcast() const override
+    {
+        return AllowBroadcast;
     }
 };
 
