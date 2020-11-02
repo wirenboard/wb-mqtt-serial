@@ -1,7 +1,6 @@
 #include "iec_common.h"
 
 #include <gmock/gmock.h>
-#include <math.h>
 
 #include "serial_port.h"
 
