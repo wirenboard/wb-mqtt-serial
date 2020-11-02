@@ -1,0 +1,5 @@
+// additional channels and setup registers, parameters overriding
+{
+    "device_type" : "merge subdevice",
+    "slave_id": 2
+}

@@ -13,6 +13,16 @@ Publish: /devices/reconnect-test/controls/I2/meta/readonly: '0' (QoS 1, retained
 Publish: /devices/reconnect-test/controls/I2/meta/type: 'value' (QoS 1, retained)
 Publish: /devices/reconnect-test/controls/I2: '0' (QoS 1, retained)
 Subscribe: /devices/reconnect-test/controls/I2/on (QoS 0)
+Subscribe: /devices/reconnect-test/controls/# (QoS 0)
+(retain) -> /devices/reconnect-test/controls/I1: '0' (QoS 1, retained)
+(retain) -> /devices/reconnect-test/controls/I1/meta/order: '1' (QoS 1, retained)
+(retain) -> /devices/reconnect-test/controls/I1/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/reconnect-test/controls/I1/meta/type: 'value' (QoS 1, retained)
+(retain) -> /devices/reconnect-test/controls/I2: '0' (QoS 1, retained)
+(retain) -> /devices/reconnect-test/controls/I2/meta/order: '2' (QoS 1, retained)
+(retain) -> /devices/reconnect-test/controls/I2/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/reconnect-test/controls/I2/meta/type: 'value' (QoS 1, retained)
+Unsubscribe -- serial-client-integration-test: /devices/reconnect-test/controls/#
 >>> LoopOnce() [first start]
 Open()
 Sleep(150000)

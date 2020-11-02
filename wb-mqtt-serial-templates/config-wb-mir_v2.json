@@ -518,6 +518,13 @@
                 "reg_type": "coil", 
                 "address": 5000, 
                 "type": "pushbutton"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

@@ -1,0 +1,46 @@
+{
+    "channels" : 
+    [
+        {
+            "address" : "0x0500",
+            "format" : "s32",
+            "name" : "Voltage",
+            "reg_type" : "input"
+        },
+        {
+            "address" : "0x0504",
+            "format" : "s32",
+            "name" : "Temperature",
+            "reg_type" : "input"
+        },
+        {
+            "address" : "0x0506",
+            "format" : "s32",
+            "name" : "New channel",
+            "reg_type" : "input"
+        }
+    ],
+    "device_type" : "merge simple with setup",
+    "id" : "1",
+    "name" : "2",
+    "poll_interval" : 300,
+    "setup" : 
+    [
+        {
+            "address" : 10000,
+            "title" : "IODIR",
+            "value" : "0xffff"
+        },
+        {
+            "address" : 9999,
+            "title" : "CONFIG-FLAG",
+            "value" : 1
+        },
+        {
+                "address" : 50000,
+                "title" : "new setup",
+                "value" : "0xffff"
+        }
+    ],
+    "slave_id" : 2
+}

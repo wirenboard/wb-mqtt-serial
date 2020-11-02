@@ -6,6 +6,64 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
+        "parameters": {
+            "in0_mode": {
+                "title": "Input 0 mode",
+                "address": 16,
+                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "default": 2,
+                "enum_titles": [
+                    "push button",
+                    "latching switch",
+                    "turn off all relays on activation",
+                    "disable communication between input and outputs",
+                    "operate according to mapping-matix",
+                    "operate according to mapping-matix, after 20 minutes re-simulate the input state"
+                ]
+            },
+            "in1_mode": {
+                "title": "Input 1 mode",
+                "address": 9,
+                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "default": 2,
+                "enum_titles": [
+                    "push button",
+                    "latching switch",
+                    "turn off all relays on activation",
+                    "disable communication between input and outputs",
+                    "operate according to mapping-matix",
+                    "operate according to mapping-matix, after 20 minutes re-simulate the input state"
+                ]
+            },
+            "in2_mode": {
+                "title": "Input 2 mode",
+                "address": 10,
+                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "default": 2,
+                "enum_titles": [
+                    "push button",
+                    "latching switch",
+                    "turn off all relays on activation",
+                    "disable communication between input and outputs",
+                    "operate according to mapping-matix",
+                    "operate according to mapping-matix, after 20 minutes re-simulate the input state"
+                ]
+            },
+            "in3_mode": {
+                "title": "Input 3 mode",
+                "address": 11,
+                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "default": 2,
+                "enum_titles": [
+                    "push button",
+                    "latching switch",
+                    "turn off all relays on activation",
+                    "disable communication between input and outputs",
+                    "operate according to mapping-matix",
+                    "operate according to mapping-matix, after 20 minutes re-simulate the input state"
+                ]
+            }
+        },
         "channels" : [
             {
                 "name" : "K1",
@@ -125,6 +183,13 @@
                 "address" : 121,
                 "type" : "voltage",
                 "scale" : 0.001
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

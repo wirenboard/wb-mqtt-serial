@@ -108,12 +108,10 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
     try {
         Device()->WriteRegister(Reg, Value);
     } catch (const TSerialDeviceTransientErrorException& e) {
-        LOG(Warn) << "Register " << Reg->ToString()
-                  << " TRegisterHandler::Flush() failed: " << e.what();
+        LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
         return UpdateWriteError(true);
     } catch (const TSerialDevicePermanentRegisterException& e) {
-        LOG(Warn) << "Register " << Reg->ToString()
-                  << " TRegisterHandler::Flush() failed: " << e.what();
+        LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
         return UpdateWriteError(true);
     }
     return UpdateWriteError(false);

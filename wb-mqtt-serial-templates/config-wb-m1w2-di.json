@@ -6,6 +6,22 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
+        "parameters": {
+            "in1_mode": {
+                "title": "Input 1 mode",
+                "address": 275,
+                "enum": [ 0, 1 ],
+                "default": 0,
+                "enum_titles": [ "1-Wire", "discrete input"]
+            },
+            "in2_mode": {
+                "title": "Input 2 mode",
+                "address": 276,
+                "enum": [ 0, 1 ],
+                "default": 0,
+                "enum_titles": [ "1-Wire", "discrete input"]
+            }
+        },
         "channels": [
             {
                 "name": "Internal Temperature",
@@ -72,6 +88,13 @@
                 "reg_type": "input",
                 "address": 278,
                 "format": "u16"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

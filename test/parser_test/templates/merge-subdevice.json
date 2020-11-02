@@ -1,0 +1,59 @@
+{
+    "device_type": "merge subdevice",
+    "device": {
+        "name": "merge subdevice",
+        "id": "merge-subdevice",
+        "channels": [
+            {
+                "name": "Voltage",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0500"
+            },
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            },
+            {
+                "name": "Sub",
+                "device_type": "subdevice1",
+                "shift": 100
+            }
+        ],
+        "subdevices": [
+            {
+                "device_type": "subdevice1",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "s1",
+                            "address": 10000,
+                            "value": "0xffff"
+                        },
+                        {
+                            "title": "s2",
+                            "address": 9999,
+                            "value": 1
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "c1",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "c2",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

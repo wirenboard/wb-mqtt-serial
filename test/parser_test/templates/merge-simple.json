@@ -1,0 +1,21 @@
+{
+    "device_type": "merge simple",
+    "device": {
+        "name": "merge simple",
+        "id": "merge-simple",
+        "channels": [
+            {
+                "name": "Voltage",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0500"
+            },
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ]
+    }
+}

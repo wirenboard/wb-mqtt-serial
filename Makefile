@@ -9,9 +9,12 @@ ifeq ($(origin CXX),default)
 	CXX := $(CROSS_COMPILE)g++
 endif
 
+GIT_REVISION:=$(shell git rev-parse HEAD)
+DEB_VERSION:=$(shell head -1 debian/changelog | awk '{ print $$2 }' | sed 's/[\(\)]//g')
+
 DEBUG_CFLAGS=-Wall -ggdb -std=c++14 -O0 -I./src
 NORMAL_CFLAGS=-Wall -Werror -std=c++14 -O3 -I./src
-CFLAGS=$(if $(or $(DEBUG)), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
+CFLAGS=$(if $(or $(DEBUG)), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS)) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)"
 LDFLAGS= -lpthread -ljsoncpp -lwbmqtt1
 
 SERIAL_BIN=wb-mqtt-serial
@@ -22,6 +25,10 @@ SERIAL_SRCS= \
   src/serial_client.cpp                  \
   src/register_handler.cpp               \
   src/serial_config.cpp                  \
+  src/confed_schema_generator.cpp        \
+  src/confed_json_generator.cpp          \
+  src/confed_config_generator.cpp        \
+  src/config_merge_template.cpp          \
   src/serial_port_driver.cpp             \
   src/serial_driver.cpp                  \
   src/serial_port.cpp                    \
@@ -46,6 +53,7 @@ SERIAL_SRCS= \
   src/devices/em_device.cpp              \
   src/devices/energomera_iec_device.cpp  \
   src/devices/neva_device.cpp            \
+  src/file_utils.cpp                     \
 
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 
@@ -53,6 +61,7 @@ TEST_SRCS= \
   $(TEST_DIR)/expector.o                              \
   $(TEST_DIR)/poll_plan_test.o                        \
   $(TEST_DIR)/serial_client_test.o                    \
+  $(TEST_DIR)/serial_config_test.o                    \
   $(TEST_DIR)/modbus_expectations_base.o              \
   $(TEST_DIR)/modbus_expectations.o                   \
   $(TEST_DIR)/modbus_test.o                           \

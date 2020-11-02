@@ -7,6 +7,19 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
+        "parameters": {
+            "in_mode": {
+                "title": "Input mode",
+                "address": 5,
+                "enum": [ 0, 1, 255 ],
+                "default": 1,
+                "enum_titles": [
+                    "push button",
+                    "switch",
+                    "disable communication between inputs and outputs"
+                ]
+            }
+        },
         "channels": [
             {
                 "name": "Relay 1",
@@ -53,6 +66,13 @@
                 "readonly": true,
                 "address": 33,
                 "type": "value"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

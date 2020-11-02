@@ -1,0 +1,7 @@
+{
+    "device_type": "Custom device",
+    "device": {
+        "name": "Custom device",
+        "id": "custom-device"
+    }
+}

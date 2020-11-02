@@ -20,32 +20,11 @@ Ports:
         Frame timeout: 20
         DeviceChannels:
             ------
-            Name: Temp 1
-            Type: temperature
-            DeviceId: msu34tlp_2
-            Order: 1
-            OnValue: 
-            Max: -1
-            ReadOnly: 1
-            Registers:
-                ------
-                Type and Address: input: 0
-                Format: S8
-                Scale: 1
-                Offset: 0
-                RoundTo: 0
-                Poll: 1
-                ReadOnly: 1
-                TypeName: input
-                PollInterval: 10
-                ErrorValue: not set
-                UnsupportedValue: not set
-                WordOrder: BigEndian
-            ------
             Name: Illuminance
             Type: lux
+            MqttId: Illuminance
             DeviceId: msu34tlp_2
-            Order: 2
+            Order: 1
             OnValue: 
             Max: -1
             ReadOnly: 1
@@ -66,8 +45,9 @@ Ports:
             ------
             Name: Pressure
             Type: pressure
+            MqttId: Pressure
             DeviceId: msu34tlp_2
-            Order: 3
+            Order: 2
             OnValue: 
             Max: -1
             ReadOnly: 1
@@ -88,8 +68,9 @@ Ports:
             ------
             Name: Temp 2
             Type: temperature
+            MqttId: Temp 2
             DeviceId: msu34tlp_2
-            Order: 4
+            Order: 3
             OnValue: 
             Max: -1
             ReadOnly: 1
@@ -122,6 +103,7 @@ Ports:
             ------
             Name: Relay 1
             Type: switch
+            MqttId: Relay 1
             DeviceId: OnValueTest
             Order: 1
             OnValue: 500
@@ -156,6 +138,7 @@ Ports:
             ------
             Name: uint16
             Type: switch
+            MqttId: uint16
             DeviceId: ErrorValueTest
             Order: 1
             OnValue: 
@@ -178,6 +161,7 @@ Ports:
             ------
             Name: uint32
             Type: switch
+            MqttId: uint32
             DeviceId: ErrorValueTest
             Order: 2
             OnValue: 
@@ -200,6 +184,7 @@ Ports:
             ------
             Name: str-uint32
             Type: switch
+            MqttId: str-uint32
             DeviceId: ErrorValueTest
             Order: 3
             OnValue: 
@@ -222,6 +207,7 @@ Ports:
             ------
             Name: str-hex-uint32
             Type: switch
+            MqttId: str-hex-uint32
             DeviceId: ErrorValueTest
             Order: 4
             OnValue: 
@@ -244,6 +230,7 @@ Ports:
             ------
             Name: str-uint64
             Type: switch
+            MqttId: str-uint64
             DeviceId: ErrorValueTest
             Order: 5
             OnValue: 
@@ -266,6 +253,7 @@ Ports:
             ------
             Name: str-hex-uint64
             Type: switch
+            MqttId: str-hex-uint64
             DeviceId: ErrorValueTest
             Order: 6
             OnValue: 
@@ -306,6 +294,7 @@ Ports:
             ------
             Name: Relay 1
             Type: switch
+            MqttId: Relay 1
             DeviceId: lc103
             Order: 1
             OnValue: 
@@ -328,6 +317,7 @@ Ports:
             ------
             Name: Relay 2
             Type: switch
+            MqttId: Relay 2
             DeviceId: lc103
             Order: 2
             OnValue: 
@@ -350,6 +340,7 @@ Ports:
             ------
             Name: Relay 3
             Type: switch
+            MqttId: Relay 3
             DeviceId: lc103
             Order: 3
             OnValue: 
@@ -372,6 +363,7 @@ Ports:
             ------
             Name: Switch AC In
             Type: switch
+            MqttId: Switch AC In
             DeviceId: lc103
             Order: 4
             OnValue: 
@@ -406,6 +398,7 @@ Ports:
             ------
             Name: RGB
             Type: rgb
+            MqttId: RGB
             DeviceId: wb-mrgb
             Order: 1
             OnValue: 
@@ -454,6 +447,7 @@ Ports:
             ------
             Name: Button 1 counter
             Type: value
+            MqttId: Button 1 counter
             DeviceId: wb-mrgb
             Order: 2
             OnValue: 
@@ -488,6 +482,7 @@ Ports:
             ------
             Name: Chan 1
             Type: temperature
+            MqttId: Chan 1
             DeviceId: TestDeviceOverride:config
             Order: 1
             OnValue: 
@@ -522,6 +517,7 @@ Ports:
             ------
             Name: Chan 1
             Type: temperature
+            MqttId: Chan 1
             DeviceId: TestDeviceOverride:template_6
             Order: 1
             OnValue: 
@@ -556,6 +552,7 @@ Ports:
             ------
             Name: Input
             Type: text
+            MqttId: Input
             DeviceId: TestDeviceOverride2:template_7
             Order: 1
             OnValue: 
@@ -578,6 +575,7 @@ Ports:
             ------
             Name: Holding
             Type: text
+            MqttId: Holding
             DeviceId: TestDeviceOverride2:template_7
             Order: 2
             OnValue: 
@@ -600,6 +598,7 @@ Ports:
             ------
             Name: Holding readonly
             Type: text
+            MqttId: Holding readonly
             DeviceId: TestDeviceOverride2:template_7
             Order: 3
             OnValue: 
@@ -634,6 +633,7 @@ Ports:
             ------
             Name: Reg
             Type: value
+            MqttId: Reg
             DeviceId: AllRegisterParams
             Order: 1
             OnValue: 500
@@ -653,6 +653,285 @@ Ports:
                 ErrorValue: 11
                 UnsupportedValue: 170
                 WordOrder: LittleEndian
+        ------
+        Id: with subdevice_22
+        Name: with subdevice 22
+        SlaveId: 22
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 105
+        DeviceTimeout: 3000
+        Response timeout: 222
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temperature
+            Type: text
+            MqttId: Temperature
+            DeviceId: with subdevice_22
+            Order: 1
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1284
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub c1
+            Type: text
+            MqttId: Sub c1
+            DeviceId: with subdevice_22
+            Order: 2
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1381
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub c2 c12
+            Type: text
+            MqttId: Sub id sub id
+            DeviceId: with subdevice_22
+            Order: 3
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1582
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub c2 c22
+            Type: text
+            MqttId: Sub id c22
+            DeviceId: with subdevice_22
+            Order: 4
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1586
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub c3 c12
+            Type: text
+            MqttId: Sub c3 sub id
+            DeviceId: with subdevice_22
+            Order: 5
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1686
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub c3 c22
+            Type: text
+            MqttId: Sub c3 c22
+            DeviceId: with subdevice_22
+            Order: 6
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1690
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub2 c1
+            Type: text
+            MqttId: c1
+            DeviceId: with subdevice_22
+            Order: 7
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1483
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub2 c2 c12
+            Type: text
+            MqttId: id sub id
+            DeviceId: with subdevice_22
+            Order: 8
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1682
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub2 c2 c22
+            Type: text
+            MqttId: id c22
+            DeviceId: with subdevice_22
+            Order: 9
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1686
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub2 c3 c22
+            Type: text
+            MqttId: c3 c22
+            DeviceId: with subdevice_22
+            Order: 10
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1790
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+        SetupItems:
+            ------
+            Name: Old Sub2 c2 s21
+            Address: 20400
+            Value: 1
+            ------
+            Name: s1
+            Address: 10
+            Value: 15
+            ------
+            Name: Sub s2
+            Address: 10092
+            Value: 65522
+            ------
+            Name: Sub s1
+            Address: 20100
+            Value: 63
+            ------
+            Name: Sub c2 s21
+            Address: 20300
+            Value: 65522
+            ------
+            Name: Sub c3 s21
+            Address: 20402
+            Value: 65522
+            ------
+            Name: Sub2 s2
+            Address: 10193
+            Value: 65522
+            ------
+            Name: Sub2 c3 s21
+            Address: 20502
+            Value: 65522
+            ------
+            Name: Sub2 c3 s22
+            Address: 10494
+            Value: 111
     ------
     ConnSettings: <192.168.0.1:3000  5000ms, 2>
     PollInterval: 20
