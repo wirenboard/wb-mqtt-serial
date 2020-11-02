@@ -1,1 +1,2 @@
 wb_move /etc/wb-mqtt-serial.conf
+wb_move /etc/wb-mqtt-serial.conf.d
