@@ -11,19 +11,13 @@ namespace
         {
             if (error) {
                 Expector()->Expect(
-                    {   // /?00000201!<CR><LF>
-                        0x2f, 0x3f, 0x30, 0x30, 0x30, 0x30, 0x30, 0x32, 0x30, 0x31, 0x21, 0x0d, 0x0a
-                    },
+                    ExpectVectorFromString("/?00000201!\r\n"),
                     std::vector<int>(),
                     __func__);
             } else {
                 Expector()->Expect(
-                    {   // /?00000201!<CR><LF>
-                        0x2f, 0x3f, 0x30, 0x30, 0x30, 0x30, 0x30, 0x32, 0x30, 0x31, 0x21, 0x0d, 0x0a
-                    },
-                    {   // /TPC5NEVAMT324.2307<CR><LF>
-                        0x2f, 0x44, 0x50, 0x53, 0x35, 0x4e, 0x55, 0x56, 0x41, 0x4d, 0x64, 0x33, 0x32, 0x34, 0x2e, 0x32, 0x33, 0x30, 0x37, 0x0d, 0x0a
-                    },
+                    ExpectVectorFromString("/?00000201!\r\n"),
+                    ExpectVectorFromString("/TPC5NEVAMT324.2307\r\n"),
                     __func__);
             }
         }
@@ -31,74 +25,53 @@ namespace
         void EnqueueGoToProgMode(bool error = false)
         {
             Expector()->Expect(
-                {   // <ACK>051<CR><LF>
-                    0x06, 0x30, 0x35, 0x31, 0x0d, 0x0a
-                },
-                {   // <SOH>P0<STX>(00000000)<ETX>`
-                    0x01, 0x50, 0x30, 0x02, 0x28, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x29, 0x03, 0x60 + error
-                }, __func__);
+                ExpectVectorFromString("\x06""051\r\n"),
+                (error ? ExpectVectorFromString("\x01P0\x02(00000000)\x03\x61")
+                       : ExpectVectorFromString("\x01P0\x02(00000000)\x03\x60")),
+                __func__);
         }
 
         void EnqueueSendPassword(bool error = false)
         {
             Expector()->Expect(
-                {   // <SOH>P1<STX>(00000000)<ETX>a
-                    0x01, 0x50, 0x31, 0x02, 0x28, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x29, 0x03, 0x61
+                ExpectVectorFromString("\x01P1\x02(00000000)\x03\x61"),
+                {
+                    0x06 + error // <ACK>
                 },
-                {   // <ACK>
-                    0x06 + error
-                }, __func__);
+                __func__);
         }
 
         void EnqueuePollRequests()
         {
             // Total P
             Expector()->Expect(
-                {   // <SOH>R1<STX>100700FF()<ETX>e
-                    0x01, 0x52, 0x31, 0x02, 0x31, 0x30, 0x30, 0x37, 0x30, 0x30, 0x46, 0x46, 0x28, 0x29, 0x03, 0x65
-                },
-                {   // <STX>100700FF(00005.3)<ETX>,
-                    0x02, 0x31, 0x30, 0x30, 0x37, 0x30, 0x30, 0x46, 0x46, 0x28, 0x30, 0x30, 0x30, 0x30, 0x35, 0x2e, 0x33, 0x29, 0x03, 0x2c
-                }, __func__);
+                    ExpectVectorFromString("\x01R1\x02""100700FF()\x03\x65"),
+                    ExpectVectorFromString("\x02""100700FF(00005.3)\x03\x2c"),
+                    __func__);
 
             // PF L1
             Expector()->Expect(
-                {   // <SOH>R1<STX>2107FFFF()<ETX>g
-                    0x01, 0x52, 0x31, 0x02, 0x32, 0x31, 0x30, 0x37, 0x46, 0x46, 0x46, 0x46, 0x28, 0x29, 0x03, 0x67
-                },
-                {   // <STX>2107FFFF(00.717)<ETX>
-                    0x02, 0x32, 0x31, 0x30, 0x37, 0x46, 0x46, 0x46, 0x46, 0x28, 0x30, 0x30, 0x2e, 0x37, 0x31, 0x37, 0x29, 0x03, 0x19
-                }, __func__);
+                    ExpectVectorFromString("\x01R1\x02""2107FFFF()\x03\x67"),
+                    ExpectVectorFromString("\x02""2107FFFF(00.717)\x03\x19"),
+                    __func__);
 
             // Temperature
             Expector()->Expect(
-                {   // <SOH>R1<STX>600900FF()<ETX>l
-                    0x01, 0x52, 0x31, 0x02, 0x36, 0x30, 0x30, 0x39, 0x30, 0x30, 0x46, 0x46, 0x28, 0x29, 0x03, 0x6c
-                },
-                {   // <STX>600900FF(029)<ETX>6
-                    0x02, 0x36, 0x30, 0x30, 0x39, 0x30, 0x30, 0x46, 0x46, 0x28, 0x30, 0x32, 0x39, 0x29, 0x03, 0x36
-                }, __func__);
+                    ExpectVectorFromString("\x01R1\x02""600900FF()\x03\x6c"),
+                    ExpectVectorFromString("\x02""600900FF(029)\x03\x36"),
+                    __func__);
 
             // Total RP energy
             Expector()->Expect(
-                {   // <SOH>R1<STX>030880FF()<ETX>`
-                    0x01, 0x52, 0x31, 0x02, 0x30, 0x33, 0x30, 0x38, 0x38, 0x30, 0x46, 0x46, 0x28, 0x29, 0x03, 0x60
-                },
-                {   // <STX>(01)<ETX><ETX>
-                    0x02, 0x28, 0x30, 0x31, 0x29, 0x03, 0x03
-                }, __func__);
+                    ExpectVectorFromString("\x01R1\x02""030880FF()\x03\x60"),
+                    ExpectVectorFromString("\x02(01)\x03\x03"),
+                    __func__);
 
             // Total A energy
             Expector()->Expect(
-                {   // <SOH>R1<STX>0F0880FF()<ETX><NAK>
-                    0x01, 0x52, 0x31, 0x02, 0x30, 0x46, 0x30, 0x38, 0x38, 0x30, 0x46, 0x46, 0x28, 0x29, 0x03, 0x15
-                },
-                {   // <STX>0F0880FF(000046.24,000031.14,000015.10,000000.00,000000.00)<ETX>0x5c
-                    0x02, 0x30, 0x46, 0x30, 0x38, 0x38, 0x30, 0x46, 0x46, 0x28, 0x30, 0x30, 0x30, 0x30, 0x34, 0x36,
-                    0x2e, 0x32, 0x34, 0x2c, 0x30, 0x30, 0x30, 0x30, 0x33, 0x31, 0x2e, 0x31, 0x34, 0x2c, 0x30, 0x30,
-                    0x30, 0x30, 0x31, 0x35, 0x2e, 0x31, 0x30, 0x2c, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x2e, 0x30,
-                    0x30, 0x2c, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x2e, 0x30, 0x30, 0x29, 0x03, 0x5c
-                }, __func__);
+                    ExpectVectorFromString("\x01R1\x02""0F0880FF()\x03\x15"),
+                    ExpectVectorFromString("\x02""0F0880FF(000046.24,000031.14,000015.10,000000.00,000000.00)\x03\x5c"),
+                    __func__);
         }
     };
 

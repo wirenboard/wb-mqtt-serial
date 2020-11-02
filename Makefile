@@ -50,6 +50,7 @@ SERIAL_SRCS= \
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 
 TEST_SRCS= \
+  $(TEST_DIR)/expector.o                              \
   $(TEST_DIR)/poll_plan_test.o                        \
   $(TEST_DIR)/serial_client_test.o                    \
   $(TEST_DIR)/modbus_expectations_base.o              \
