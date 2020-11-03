@@ -1,0 +1,55 @@
+{
+  "ports": [
+    {
+      "port_type" : "serial",
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 100,
+      "enabled": true,
+      "devices" : [
+        {
+          "slave_id": "00000211",
+          "name": "Reduced Energomera registers set",
+          "id": "reduced_energomera",
+          "enabled": true,
+          "protocol": "energomera_iec",
+          "channels": [
+            {
+                "name": "Frequency",
+                "reg_type": "group_single",
+                "type": "value",
+                "address": "0x400D01"
+            },
+            {
+                "name": "Voltage angle L1-L2",
+                "reg_type": "group_single",
+                "type": "value",
+                "address": "0x400B01"
+            },
+            {
+                "name": "Voltage angle L3-L1",
+                "reg_type": "group_single",
+                "type": "value",
+                "address": "0x400B03"
+            },
+            {
+                "name": "Voltage angle L2-L3",
+                "reg_type": "group_single",
+                "type": "value",
+                "address": "0x400B02"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "group_single",
+                "type": "value",
+                "address": "0x500301"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
