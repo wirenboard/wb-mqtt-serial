@@ -1,0 +1,90 @@
+Subscribe: /devices/+/meta/driver (QoS 0)
+Publish: /devices/reduced_neva/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/reduced_neva/meta/name: 'Reduced NEVA registers set' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total A energy/meta/error: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total A energy/meta/order: '1' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total A energy/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total A energy/meta/type: 'power_consumption' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total A energy: '0' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy/meta/error: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy/meta/order: '2' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy/meta/type: 'power_consumption' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy: '0' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total P/meta/error: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total P/meta/order: '3' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total P/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total P/meta/type: 'power' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total P: '0' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/PF L1/meta/error: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/PF L1/meta/order: '4' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/PF L1/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/PF L1/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/PF L1: '0' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Temperature/meta/error: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Temperature/meta/order: '5' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Temperature/meta/readonly: '1' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Temperature/meta/type: 'temperature' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Temperature: '0' (QoS 1, retained)
+>>> LoopOnce()
+Open()
+SkipNoise()
+EnqueueStartSession()
+>> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
+<< 2F 54 50 43 35 4E 45 56 41 4D 54 33 32 34 2E 32 33 30 37 0D 0A
+EnqueueGoToProgMode()
+>> 06 30 35 31 0D 0A
+<< 01 50 30 02 28 30 30 30 30 30 30 30 30 29 03 60
+EnqueueSendPassword()
+>> 01 50 31 02 28 30 30 30 30 30 30 30 30 29 03 61
+<< 06
+SkipNoise()
+EnqueuePollRequests()
+>> 01 52 31 02 31 30 30 37 30 30 46 46 28 29 03 65
+<< 02 31 30 30 37 30 30 46 46 28 30 30 30 30 35 2E 33 29 03 2C
+SkipNoise()
+EnqueuePollRequests()
+>> 01 52 31 02 32 31 30 37 46 46 46 46 28 29 03 67
+<< 02 32 31 30 37 46 46 46 46 28 30 30 2E 37 31 37 29 03 19
+SkipNoise()
+EnqueuePollRequests()
+>> 01 52 31 02 36 30 30 39 30 30 46 46 28 29 03 6C
+<< 02 36 30 30 39 30 30 46 46 28 30 32 39 29 03 36
+SkipNoise()
+EnqueuePollRequests()
+>> 01 52 31 02 30 33 30 38 38 30 46 46 28 29 03 60
+<< 02 28 30 31 29 03 03
+SkipNoise()
+EnqueuePollRequests()
+>> 01 52 31 02 30 46 30 38 38 30 46 46 28 29 03 15
+<< 02 30 46 30 38 38 30 46 46 28 30 30 30 30 34 36 2E 32 34 2C 30 30 30 30 33 31 2E 31 34 2C 30 30 30 30 31 35 2E 31 30 2C 30 30 30 30 30 30 2E 30 30 2C 30 30 30 30 30 30 2E 30 30 29 03 5C
+Port cycle OK
+Publish: /devices/reduced_neva/controls/Total P: '5.3' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/PF L1: '0.717' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Temperature: '29' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total A energy: '46.24' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/PF L1: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/PF L1/meta/order: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/PF L1/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/PF L1/meta/type: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Temperature: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Temperature/meta/order: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Temperature/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Temperature/meta/type: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total P: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total P/meta/order: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total P/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total P/meta/type: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy/meta/order: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy/meta/type: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total RP energy/meta/error: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total A energy: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total A energy/meta/order: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total A energy/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/controls/Total A energy/meta/type: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/meta/driver: '' (QoS 1, retained)
+Publish: /devices/reduced_neva/meta/name: '' (QoS 1, retained)
+stop: em-test

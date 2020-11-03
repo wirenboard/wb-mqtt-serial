@@ -1,0 +1,57 @@
+{
+  "debug": true,
+  "max_unchanged_interval": 100,
+  "ports": [
+    {
+      "port_type" : "serial",
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 100,
+      "enabled": true,
+      "devices" : [
+        {
+          "slave_id": "00000201",
+          "name": "Reduced NEVA registers set",
+          "id": "reduced_neva",
+          "enabled": true,
+          "protocol": "neva",
+          "channels": [
+            {
+              "name": "Total A energy",
+              "reg_type": "obis_cdef_1",
+              "type": "power_consumption",
+              "address": "0x0F0880FF"
+            },
+            {
+              "name": "Total RP energy",
+              "reg_type": "obis_cdef_1",
+              "type": "power_consumption",
+              "address": "0x030880FF"
+            },
+            {
+              "name": "Total P",
+              "reg_type": "obis_cdef",
+              "type": "power",
+              "address": "0x100700FF"
+            },
+            {
+              "name": "PF L1",
+              "reg_type": "obis_cdef_pf",
+              "type": "value",
+              "address": "0x2107FFFF"
+            },
+            {
+              "name": "Temperature",
+              "reg_type": "obis_cdef_temp",
+              "type": "temperature",
+              "address": "0x600900FF"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

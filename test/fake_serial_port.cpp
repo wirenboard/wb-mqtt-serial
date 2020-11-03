@@ -131,10 +131,12 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
     if (DoSimulateDisconnect) {
         return 0;
     }
-    if (ExpectedFrameTimeout.count() >= 0 && frameTimeout != ExpectedFrameTimeout)
+    if (ExpectedFrameTimeout.count() >= 0 && frameTimeout != ExpectedFrameTimeout) {
+        DumpWhatWasRead();
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
                                  std::to_string(frameTimeout.count()) + " instead of " +
                                  std::to_string(ExpectedFrameTimeout.count()));
+    }
     size_t nread = 0;
     uint8_t* p = buf;
     for (; nread < count; ++nread) {
@@ -148,8 +150,10 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
             break;
         *p++ = (uint8_t)b;
     }
-    if (frame_complete && !frame_complete(buf, nread))
-        throw std::runtime_error("incomplete frame read");
+    DumpWhatWasRead();
+    if (nread == 0) {
+        throw TSerialDeviceTransientErrorException("request timed out");
+    }
     return nread;
 }
 
@@ -165,7 +169,6 @@ void TFakeSerialPort::SleepSinceLastInteraction(const std::chrono::microseconds&
 {
     if (us > std::chrono::microseconds::zero()) {
         SkipFrameBoundary();
-        DumpWhatWasRead();
         Fixture.Emit() << "Sleep(" << us.count() << ")";
     }
 }
