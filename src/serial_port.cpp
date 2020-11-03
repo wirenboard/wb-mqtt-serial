@@ -1,12 +1,14 @@
 #include "serial_exc.h"
 #include "serial_port.h"
 #include "log.h"
+#include "iec_common.h"
 
 #include <string.h>
 #include <fcntl.h>
 #include <iostream>
 #include <utility>
 #include <cmath>
+#include <iomanip>
 
 #include <linux/serial.h>
 #include <sys/ioctl.h>
@@ -103,7 +105,14 @@ void TSerialPort::Open()
         break;
     default:
         Close();
-        throw TSerialDeviceException("cannot open serial port: invalid parity value: '" + std::string(1, Settings.Parity) + "'");
+        std::stringstream ss;
+        ss << "cannot open serial port: invalid parity value: ";
+        if (isprint(Settings.Parity)) {
+            ss << "'" << Settings.Parity << "'";
+        } else {
+            ss << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << int(Settings.Parity);
+        }
+        throw TSerialDeviceException(ss.str());
     }
 
     dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(Settings.DataBits) | CREAD | CLOCAL;
@@ -175,4 +184,144 @@ void TSerialPort::WriteBytes(const uint8_t* buf, int count)
 std::string TSerialPort::GetDescription() const
 {
     return Settings.ToString();
+}
+
+const TSerialPortSettings& TSerialPort::GetSettings() const
+{
+    return Settings;
+}
+
+TSerialPortWithIECHack::TSerialPortWithIECHack(PSerialPort port): Port(port), UseIECHack(false)
+{}
+
+void TSerialPortWithIECHack::CycleBegin()
+{
+    Port->CycleBegin();
+}
+
+void TSerialPortWithIECHack::CycleEnd(bool ok)
+{
+    Port->CycleEnd(ok);
+}
+
+void TSerialPortWithIECHack::Open()
+{
+    Port->Open();
+}
+
+void TSerialPortWithIECHack::Close()
+{
+    Port->Close();
+}
+
+void TSerialPortWithIECHack::Reopen()
+{
+    Port->Reopen();
+}
+
+bool TSerialPortWithIECHack::IsOpen() const
+{
+    return Port->IsOpen();
+}
+
+void TSerialPortWithIECHack::CheckPortOpen() const
+{
+    Port->CheckPortOpen();
+}
+
+void TSerialPortWithIECHack::WriteBytes(const uint8_t* buf, int count)
+{
+    if (UseIECHack) {
+        std::vector<uint8_t> buf_8bit(IEC::SetEvenParity(buf, count));
+        Port->WriteBytes(buf_8bit.data(), count);
+    } else {
+        Port->WriteBytes(buf, count);
+    }
+}
+
+uint8_t TSerialPortWithIECHack::ReadByte(const std::chrono::microseconds& timeout)
+{
+    auto c = Port->ReadByte(timeout);
+    if (UseIECHack) {
+        IEC::CheckStripEvenParity(&c, 1);
+    }
+    return c;
+}
+
+size_t TSerialPortWithIECHack::ReadFrame(uint8_t* buf, 
+                    size_t count,
+                    const std::chrono::microseconds& responseTimeout,
+                    const std::chrono::microseconds& frameTimeout,
+                    TFrameCompletePred frameComplete)
+{
+    if (UseIECHack) {
+        auto wrappedFrameComplete = [=](uint8_t* buf, size_t count){
+                                            std::vector<uint8_t> b(buf, buf + count);
+                                            IEC::CheckStripEvenParity(b.data(), count);
+                                            return frameComplete(b.data(), count);
+                                        };
+        auto l = Port->ReadFrame(buf,
+                                count,
+                                responseTimeout,
+                                frameTimeout,
+                                wrappedFrameComplete);
+        IEC::CheckStripEvenParity(buf, l);
+        return l;
+    }
+    return Port->ReadFrame(buf,
+                           count,
+                           responseTimeout,
+                           frameTimeout,
+                           frameComplete);
+}
+
+void TSerialPortWithIECHack::SkipNoise()
+{
+    Port->SkipNoise();
+}
+
+void TSerialPortWithIECHack::SleepSinceLastInteraction(const std::chrono::microseconds& us)
+{
+    Port->SleepSinceLastInteraction(us);
+}
+
+bool TSerialPortWithIECHack::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)
+{
+    return Port->Wait(semaphore, until);
+}
+
+TTimePoint TSerialPortWithIECHack::CurrentTime() const
+{
+    return Port->CurrentTime();
+}
+
+std::chrono::milliseconds TSerialPortWithIECHack::GetSendTime(double bytesNumber)
+{
+    return Port->GetSendTime(bytesNumber);
+}
+
+std::string TSerialPortWithIECHack::GetDescription() const
+{
+    return Port->GetDescription();
+}
+
+void TSerialPortWithIECHack::SetSerialPortByteFormat(const TSerialPortByteFormat* params)
+{
+    if (params == nullptr) {
+        UseIECHack = false;
+        return;
+    }
+
+    if (   Port->GetSettings().DataBits == 8 && Port->GetSettings().Parity == 'N' && Port->GetSettings().StopBits == 1
+        && params->DataBits == 7 && params->Parity == 'E' && params->StopBits == 1) {
+        UseIECHack = true;
+        return;
+    }
+
+    if (   Port->GetSettings().DataBits == 7 && Port->GetSettings().Parity == 'E' && Port->GetSettings().StopBits == 1
+        && params->DataBits == 7 && params->Parity == 'E' && params->StopBits == 1) {
+        UseIECHack = false;
+        return;
+    }
+    throw std::runtime_error("Can't change " + Port->GetSettings().ToString() + " byte format. Set port settings to 8N1, please");
 }

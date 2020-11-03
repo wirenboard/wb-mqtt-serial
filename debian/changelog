@@ -4,6 +4,13 @@ wb-mqtt-serial (2.5.0) experimental; urgency=medium
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 26 Oct 2020 12:30:05 +0500
 
+wb-mqtt-serial (2.4.0) experimental; urgency=medium
+
+  * NEVA energy meters support
+  * Energomera CE301/CE303 energy meters support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 21 Oct 2020 09:34:12 +0500
+
 wb-mqtt-serial (2.3.0) experimental; urgency=medium
 
   * Modbus TCP support

@@ -311,13 +311,20 @@ public:
         ST_DEVICE_ERROR // valid response from device, which reports error
     };
 
-    virtual ~TRegisterRange();
-    const std::list<PRegister>& RegisterList() const { return RegList; }
-    std::list<PRegister>& RegisterList() { return RegList; }
-    PSerialDevice Device() const { return RegDevice.lock(); }
-    int Type() const { return RegType; }
-    std::string TypeName() const  { return RegTypeName; }
-    std::chrono::milliseconds PollInterval() const { return RegPollInterval; }
+    virtual ~TRegisterRange() = default;
+
+    const std::list<PRegister>& RegisterList() const;
+    std::list<PRegister>& RegisterList();
+    PSerialDevice Device() const;
+    int Type() const;
+    std::string TypeName() const;
+    std::chrono::milliseconds PollInterval() const;
+
+    /**
+     * @brief Set error to all registers in range
+     */
+    void SetError();
+
     virtual EStatus GetStatus() const = 0;
 
 protected:

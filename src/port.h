@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 
+#include "serial_port_settings.h"
 
 class TPort: public std::enable_shared_from_this<TPort> {
 public:
@@ -64,6 +65,13 @@ public:
     virtual std::chrono::milliseconds GetSendTime(double bytesNumber);
 
     virtual std::string GetDescription() const = 0;
+
+    /**
+     * @brief Set new byte parameters if it is a serial port.
+     * 
+     * @param params pointer to new parameters, if nullptr the port will use default values set on startup
+     */
+    virtual void SetSerialPortByteFormat(const TSerialPortByteFormat* params);
 };
 
 using PPort = std::shared_ptr<TPort>;

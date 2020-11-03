@@ -238,6 +238,17 @@ void TSerialClient::Cycle()
                 if (statuses.empty()) {
                     // First interaction with disconnected device within this cycle: Try to reconnect
                     
+                    // TODO: Not a good solution as LastAccessedDevice can be disconnected too.
+                    //       But we can't rely on GetIsDisconnected here because it updates only after full cycle.
+                    //       The whole EndSession/GetIsDisconnected logic should be revised
+                    try {
+                        if (LastAccessedDevice && LastAccessedDevice != device ) {
+                            LastAccessedDevice->EndSession();
+                        }
+                    } catch ( const TSerialDeviceTransientErrorException& e) {
+                        LOG(Warn) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
+                    }
+
                     // Force Prepare() (i.e. start session)
                     try {
                         device->Prepare();

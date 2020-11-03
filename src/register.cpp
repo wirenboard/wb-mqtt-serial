@@ -20,7 +20,42 @@ TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
     RegPollInterval = reg->PollInterval;
 }
 
-TRegisterRange::~TRegisterRange() {}
+const std::list<PRegister>& TRegisterRange::RegisterList() const
+{
+    return RegList;
+}
+
+std::list<PRegister>& TRegisterRange::RegisterList()
+{
+    return RegList;
+}
+
+PSerialDevice TRegisterRange::Device() const
+{
+    return RegDevice.lock();
+}
+
+int TRegisterRange::Type() const
+{
+    return RegType;
+}
+
+std::string TRegisterRange::TypeName() const
+{
+    return RegTypeName;
+}
+
+std::chrono::milliseconds TRegisterRange::PollInterval() const
+{
+    return RegPollInterval;
+}
+
+void TRegisterRange::SetError()
+{
+    for (auto& r: RegList) {
+        r->SetError();
+    }
+}
 
 TSimpleRegisterRange::TSimpleRegisterRange(const std::list<PRegister>& regs): TRegisterRange(regs) {}
 
@@ -84,6 +119,7 @@ void TRegister::SetValue(uint64_t value)
 {
     Value = value;
     Error = false;
+    Available = true;
 }
 
 std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;

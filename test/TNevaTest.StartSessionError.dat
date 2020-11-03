@@ -1,0 +1,17 @@
+Open()
+SkipNoise()
+EnqueueStartSession()
+>> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
+SkipNoise()
+EnqueueStartSession()
+>> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
+SkipNoise()
+EnqueueStartSession()
+>> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
+SkipNoise()
+EnqueueStartSession()
+>> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
+SkipNoise()
+EnqueueStartSession()
+>> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
+Close()
