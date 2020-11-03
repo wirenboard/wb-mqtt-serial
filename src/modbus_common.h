@@ -94,6 +94,26 @@ namespace Modbus  // modbus protocol common utilities
             const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const;
     };
 
+    class IModbusTraitsFactory
+    {
+        public:
+            virtual ~IModbusTraitsFactory() = default;
+            virtual std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) = 0;
+    };
+
+    class TModbusTCPTraitsFactory: public IModbusTraitsFactory
+    {
+            std::unordered_map<PPort, std::shared_ptr<uint16_t>> TransactionIds;
+        public:
+            std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) override;
+    };
+
+    class TModbusRTUTraitsFactory: public IModbusTraitsFactory
+    {
+        public:
+            std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) override;
+    };
+
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list, const TDeviceConfig& deviceConfig, bool enableHoles);
 
     void WriteRegister(IModbusTraits& traits, TPort& port, uint8_t slaveId, TRegister& reg, uint64_t value, int shift = 0);
