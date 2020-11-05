@@ -4,6 +4,12 @@ wb-mqtt-serial (2.6.0) experimental; urgency=medium
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 27 Oct 2020 15:33:43 +0500
 
+wb-mqtt-serial (2.5.0) experimental; urgency=medium
+
+  * Support for user defined device templates in /etc/wb-mqtt-serial.conf.d/templates folder is added.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 26 Oct 2020 12:30:05 +0500
+
 wb-mqtt-serial (2.4.0) experimental; urgency=medium
 
   * NEVA energy meters support

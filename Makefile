@@ -50,6 +50,7 @@ SERIAL_SRCS= \
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 
 TEST_SRCS= \
+  $(TEST_DIR)/expector.o                              \
   $(TEST_DIR)/poll_plan_test.o                        \
   $(TEST_DIR)/serial_client_test.o                    \
   $(TEST_DIR)/modbus_expectations_base.o              \
@@ -126,6 +127,7 @@ clean :
 install:
 	install -d $(DESTDIR)/usr/share/wb-mqtt-confed/schemas
 	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
+	install -d $(DESTDIR)/etc/wb-mqtt-serial.conf.d/templates
 
 	install -D -m 0644  config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
 

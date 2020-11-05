@@ -539,6 +539,11 @@ std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data)
 TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema): 
     Validator(new  WBMQTT::JSON::TValidator(templateSchema)) 
 {
+    AddTemplatesDir(templatesDir);
+}
+
+void TTemplateMap::AddTemplatesDir(const std::string& templatesDir)
+{
     DIR *dir;
     struct dirent *dirp;
     struct stat filestat;
@@ -552,8 +557,12 @@ TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& t
             continue;
 
         std::string filepath = templatesDir + "/" + dname;
-        if (stat(filepath.c_str(), &filestat)) continue;
-        if (S_ISDIR(filestat.st_mode)) continue;
+        if (stat(filepath.c_str(), &filestat)) {
+            continue;
+        }
+        if (S_ISDIR(filestat.st_mode)) {
+            continue;
+        }
 
         try {
             Json::Value root = WBMQTT::JSON::Parse(filepath);
