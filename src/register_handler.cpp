@@ -12,7 +12,7 @@ namespace
 }
 
 TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed)
-    : Dev(dev), Reg(reg), FlushNeeded(flush_needed), WriteFailCount(0)
+    : Dev(dev), Reg(reg), FlushNeeded(flush_needed), WriteFail(false)
 {}
 
 TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
@@ -114,7 +114,7 @@ std::pair<TRegisterHandler::TErrorState, bool> TRegisterHandler::Flush()
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
             Dirty = (TempValue != ValueToSet);
-            WriteFailCount = 0;
+            WriteFail = false;
         }
         changed = (OldValue != TempValue);
         OldValue = TempValue;
@@ -124,14 +124,13 @@ std::pair<TRegisterHandler::TErrorState, bool> TRegisterHandler::Flush()
                   << " TRegisterHandler::Flush() failed: " << e.what();
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
-            if (WriteFailCount == 0) {
+            if (!WriteFail) {
                 WriteFirstTryTime = steady_clock::now();
             }
-            ++WriteFailCount;
-            if (   WriteFailCount > MAX_WRITE_FAILS 
-                || duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) > MAX_WRITE_FAIL_TIME) {
+            WriteFail = true;
+            if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) > MAX_WRITE_FAIL_TIME) {
                 Dirty = (TempValue != ValueToSet);
-                WriteFailCount = 0;
+                WriteFail = false;
             }
         }
         return std::make_pair(UpdateWriteError(true), false);
@@ -141,7 +140,7 @@ std::pair<TRegisterHandler::TErrorState, bool> TRegisterHandler::Flush()
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
             Dirty = (TempValue != ValueToSet);
-            WriteFailCount = 0;
+            WriteFail = false;
         }
         return std::make_pair(UpdateWriteError(true), false);
     }

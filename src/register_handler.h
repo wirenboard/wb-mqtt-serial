@@ -61,7 +61,7 @@ private:
     std::mutex SetValueMutex;
     TErrorState ErrorState = UnknownErrorState;
     PBinarySemaphore FlushNeeded;
-    size_t WriteFailCount;
+    bool WriteFail;
     std::chrono::steady_clock::time_point WriteFirstTryTime;
 };
 
