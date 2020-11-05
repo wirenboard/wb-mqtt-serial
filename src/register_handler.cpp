@@ -3,8 +3,17 @@
 
 #define LOG(logger) ::logger.Log() << "[register handler] "
 
+using namespace std::chrono;
+
+namespace 
+{
+    const size_t MAX_WRITE_FAILS = 10;
+    const seconds MAX_WRITE_FAIL_TIME(600); // 10 minutes
+}
+
 TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed)
-    : Dev(dev), Reg(reg), FlushNeeded(flush_needed){}
+    : Dev(dev), Reg(reg), FlushNeeded(flush_needed), WriteFailCount(0)
+{}
 
 TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
     TErrorState newState;
@@ -95,8 +104,8 @@ bool TRegisterHandler::NeedToFlush()
 std::pair<TRegisterHandler::TErrorState, bool> TRegisterHandler::Flush()
 {
     bool changed = false;
+    volatile uint64_t TempValue;
     try {
-        volatile uint64_t TempValue;
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
             TempValue = ValueToSet;
@@ -105,6 +114,7 @@ std::pair<TRegisterHandler::TErrorState, bool> TRegisterHandler::Flush()
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
             Dirty = (TempValue != ValueToSet);
+            WriteFailCount = 0;
         }
         changed = (OldValue != TempValue);
         OldValue = TempValue;
@@ -112,10 +122,27 @@ std::pair<TRegisterHandler::TErrorState, bool> TRegisterHandler::Flush()
     } catch (const TSerialDeviceTransientErrorException& e) {
         LOG(Warn) << "Register " << Reg->ToString()
                   << " TRegisterHandler::Flush() failed: " << e.what();
+        {
+            std::lock_guard<std::mutex> lock(SetValueMutex);
+            if (WriteFailCount == 0) {
+                WriteFirstTryTime = steady_clock::now();
+            }
+            ++WriteFailCount;
+            if (   WriteFailCount > MAX_WRITE_FAILS 
+                || duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) > MAX_WRITE_FAIL_TIME) {
+                Dirty = (TempValue != ValueToSet);
+                WriteFailCount = 0;
+            }
+        }
         return std::make_pair(UpdateWriteError(true), false);
     } catch (const TSerialDevicePermanentRegisterException& e) {
         LOG(Warn) << "Register " << Reg->ToString()
                   << " TRegisterHandler::Flush() failed: " << e.what();
+        {
+            std::lock_guard<std::mutex> lock(SetValueMutex);
+            Dirty = (TempValue != ValueToSet);
+            WriteFailCount = 0;
+        }
         return std::make_pair(UpdateWriteError(true), false);
     }
     return std::make_pair(UpdateWriteError(false), changed);

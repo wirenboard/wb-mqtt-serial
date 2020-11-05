@@ -61,6 +61,8 @@ private:
     std::mutex SetValueMutex;
     TErrorState ErrorState = UnknownErrorState;
     PBinarySemaphore FlushNeeded;
+    size_t WriteFailCount;
+    std::chrono::steady_clock::time_point WriteFirstTryTime;
 };
 
 template<typename T>
