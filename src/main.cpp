@@ -7,6 +7,7 @@
 
 #include <getopt.h>
 #include <unistd.h>
+#include <fstream>
 
 using namespace std;
 
@@ -45,6 +46,36 @@ namespace
              << "  -T       prefix    MQTT topic prefix (optional)" << endl;
     }
 
+    void ConfigToConfed()
+    {
+        try {
+            Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
+            TTemplateMap templates(TEMPLATES_DIR,
+                                    LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, configSchema));
+            Json::StreamWriterBuilder builder;
+            builder["indentation"] = "";
+            std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+            writer->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, configSchema, templates), &std::cout);
+        } catch (const std::exception& e) {
+            std::cout << e.what() << std::endl;
+        }
+    }
+
+    void ConfedToConfig()
+    {
+        try {
+            Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
+            TTemplateMap templates(TEMPLATES_DIR,
+                                    LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, configSchema));
+            Json::StreamWriterBuilder builder;
+            builder["indentation"] = "    ";
+            std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+            writer->write(MakeConfigFromConfed(std::cin, templates), &std::cout);
+        } catch (const std::exception& e) {
+            std::cout << e.what() << std::endl;
+        }
+    }
+
     void ParseCommadLine(int                           argc,
                          char*                         argv[],
                          WBMQTT::TMosquittoMqttConfig& mqttConfig,
@@ -53,7 +84,7 @@ namespace
         int debugLevel = 0;
         int c;
 
-        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:")) != -1) {
+        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:jJ")) != -1) {
             switch (c) {
             case 'd':
                 debugLevel = stoi(optarg);
@@ -77,7 +108,12 @@ namespace
             case 'P':
                 mqttConfig.Password = optarg;
                 break;
-
+            case 'j': // make JSON for confed from config's JSON
+                ConfigToConfed();
+                exit(0);
+            case 'J': // make config JSON from confed's JSON
+                ConfedToConfig();
+                exit(0);
             case '?':
             default:
                 PrintUsage();

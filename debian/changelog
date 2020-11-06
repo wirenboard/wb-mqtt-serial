@@ -1,6 +1,7 @@
 wb-mqtt-serial (2.6.0) experimental; urgency=medium
 
-  * Setup section descriptions for generating UI compatible to wb-mqtt-confed 1.3.0 are added. 
+  * Setup section descriptions for generating UI compatible to wb-mqtt-confed 1.3.0 are added.
+  * Parameter "enabled" is added to channel's configuration. If false it excludes channel from polling.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 2 Nov 2020 17:10:01 +0500
 

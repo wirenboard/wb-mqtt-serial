@@ -229,6 +229,9 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             // /devices/<идентификатор канала>/controls/<имя канала>
                             "name" : "Temp 1",
 
+                            // Включает канал в цикл опроса. По умолчанию, равен true.
+                            "enabled": true,
+
                             // тип регистра
                             // возможные значения для Modbus:
                             // "coil" - 1 бит, чтение/запись

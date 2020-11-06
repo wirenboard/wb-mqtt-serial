@@ -158,7 +158,9 @@
           }
         }
       },
-      "$ref" : "#/definitions/commonTcpPortSettings",
+      "allOf": [
+        { "$ref" : "#/definitions/commonTcpPortSettings"}
+      ],
       "required": ["port_type"],
       "defaultProperties": ["address", "port", "port_type", "devices"],
       "_format": "grid"
@@ -179,7 +181,9 @@
           }
         }
       },
-      "$ref" : "#/definitions/commonTcpPortSettings",
+      "allOf": [
+        { "$ref" : "#/definitions/commonTcpPortSettings"}
+      ],
       "required": ["port_type"],
       "defaultProperties": ["address", "port", "port_type", "devices"],
       "_format": "grid"
@@ -196,7 +200,9 @@
         "keep_oneof_values": false,
         "disable_collapse" : true
       },
-      "$ref" : "#/definitions/commonPortSettings"
+      "allOf": [
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ]
     },
     "customDevice": {
       "type": "object",
@@ -216,6 +222,13 @@
             "disable_array_reorder": true
           },
           "propertyOrder": 8
+        },
+        "channels": {
+          "type": "array",
+          "title": "List of channels",
+          "description": "Lists device registers and their corresponding controls",
+          "items": { "$ref": "#/definitions/channel" },
+          "propertyOrder": 9
         }
       }
     },
@@ -257,20 +270,13 @@
           "default": 20,
           "propertyOrder": 7
         },
-        "channels": {
-          "type": "array",
-          "title": "List of channels",
-          "description": "Lists device registers and their corresponding controls",
-          "items": { "$ref": "#/definitions/channel" },
-          "propertyOrder": 9
-        },
         "password": {
           "type": "array",
           "title": "Password as a list of bytes",
           "description": "Contains password for devices that support it",
           "items": { "$ref": "#/definitions/serial_int" },
           "_format": "table",
-          "propertyOrder": 10
+          "propertyOrder": 11
         },
         "access_level": {
           "type": "integer",
@@ -279,7 +285,7 @@
           "minimum": 0,
           "maximum": 2,
           "default": 1,
-          "propertyOrder": 11
+          "propertyOrder": 12
         },
         "max_reg_hole": {
           "type": "integer",
@@ -325,7 +331,7 @@
           "description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
           "minimum": -1,
           "default": -1,
-          "propertyOrder": 17
+          "propertyOrder": 18
         },
         "device_timeout_ms": {
           "type": "integer",
@@ -333,7 +339,7 @@
           "description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
           "minimum": -1,
           "default": 3000,
-          "propertyOrder": 17
+          "propertyOrder": 19
         },
         "device_max_fail_cycles": {
           "type": "integer",
@@ -341,7 +347,7 @@
           "description": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
           "minimum": -1,
           "default": 2,
-          "propertyOrder": 18
+          "propertyOrder": 20
         }
       },
       "required": ["slave_id"],
@@ -351,18 +357,22 @@
       "headerTemplate": "{{self.name}} {{slave id: |self.slave_id|}}",
       "title": "Device",
       "oneOf": [
-        { "$ref": "#/definitions/customDevice" },
-        { "$_devicesDefinitions": {
-               "directories": ["/usr/share/wb-mqtt-serial/templates"],
-               "pointer": [ "/device_type", "/setup_schema" ],
-               "pattern": "^.*\\.json$"
-           }
-        }
+        { 
+          "$_devicesDefinitions": {
+            "directories": ["/usr/share/wb-mqtt-serial/templates", "/etc/wb-mqtt-serial.conf.d/templates"],
+            "pointer": [ "/device_type", "/setup_schema", "/device/channels" ],
+            "pattern": "^.*\\.json$"
+          }
+        },
+        { "$ref": "#/definitions/customDevice" }
       ],
       "options": {
-        "disable_edit_json": true
+        "disable_edit_json": true,
+        "keep_oneof_values": false
       },
-      "$ref": "#/definitions/deviceCommon"
+      "allOf": [
+        { "$ref": "#/definitions/deviceCommon" }
+      ]
     },
     "setup_cmd": {
       "type": "object",
@@ -399,57 +409,63 @@
       "title": "Register",
       "type": "object",
       "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "default" : true,
+          "propertyOrder": 1
+        },
         "name": {
           "$ref": "#/definitions/channel_name",
-          "propertyOrder": 1
+          "propertyOrder": 2
         },
         "type": {
           "$ref": "#/definitions/control_type",
-          "propertyOrder": 2
+          "propertyOrder": 3
         },
         "reg_type": {
           "$ref": "#/definitions/reg_type",
-          "propertyOrder": 3
+          "propertyOrder": 4
         },
         "address": {
           "$ref": "#/definitions/address",
-          "propertyOrder": 4
+          "propertyOrder": 5
         },
         "format": {
           "$ref": "#/definitions/format",
-          "propertyOrder": 5
+          "propertyOrder": 6
         },
         "max": {
           "title": "Maximum value",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 6
+          "propertyOrder": 7
         },
         "scale": {
           "type": "number",
           "title": "Scale (value multiplier)",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 7
+          "propertyOrder": 8
         },
         "offset": {
           "type": "number",
           "title": "Value offset",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 0,
-          "propertyOrder": 8
+          "propertyOrder": 9
         },
         "round_to": {
           "type": "number",
           "title": "Round to",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 9,
+          "propertyOrder": 10,
           "minimum": 0
         },
         "readonly": {
           "title": "Read-only",
           "type": "boolean",
-          "propertyOrder": 10
+          "propertyOrder": 11
         },
         // For compatibility with old configs
         "channel_readonly": {
@@ -463,7 +479,7 @@
           "title": "'On' value",
           "description": "Value corresponding to the 'On' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 10
+          "propertyOrder": 12
         },
         "poll_interval": {
           "type": "integer",
@@ -471,12 +487,12 @@
           "description" : "This option specifies the desired interval between two consecutive polls of the channel",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 11
+          "propertyOrder": 13
         },
         "error_value": {
           "title": "Error value",
           "description": "Value which should be treated as read error",
-          "propertyOrder": 12,
+          "propertyOrder": 14,
           "oneOf": [
             {
               "type": "string",
@@ -492,13 +508,13 @@
         "unsupported_value": {
           "title": "Unsupported register value",
           "description": "Value which should be treated as 'register is unsupported by device'",
-          "propertyOrder": 13,
+          "propertyOrder": 15,
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+)$"
         },
         "word_order": {
           "$ref": "#/definitions/word_order",
-          "propertyOrder": 14
+          "propertyOrder": 16
         }
       },
       "additionalProperties": false,
@@ -511,18 +527,24 @@
       "title": "Compound register",
       "type": "object",
       "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "default" : true,
+          "propertyOrder": 1
+        },
         "name": {
           "$ref": "#/definitions/channel_name",
-          "propertyOrder": 1
+          "propertyOrder": 2
         },
         "type": {
           "$ref": "#/definitions/control_type",
-          "propertyOrder": 2
+          "propertyOrder": 3
         },
         "readonly": {
           "title": "Read-only",
           "type": "boolean",
-          "propertyOrder": 8
+          "propertyOrder": 4
         },
         // For compatibility with old configs
         "channel_readonly": {
@@ -537,15 +559,15 @@
           "items": { "$ref": "#/definitions/subreg" },
           "minItems": 1,
           "_format": "table",
-          "propertyOrder": 3
+          "propertyOrder": 5
         },
         "poll_interval": {
           "type": "integer",
           "title": "Desired poll interval (ms)",
-          "description" :  "This option specifies the desired interval between two consecutive polls of the channel",
+          "description" : "This option specifies the desired interval between two consecutive polls of the channel",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 4
+          "propertyOrder": 6
         }
       },
       "additionalProperties": false,
@@ -561,6 +583,38 @@
       ],
       "options": {
         "keep_oneof_values": false
+      }
+    },
+    "channelSettings": {
+      "type": "object",
+      "id": "arr_item",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Control name",
+          "template": "{{cname}}",
+          "watch": {
+            "cname": "arr_item.hidden_name"
+          }
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "default": true,
+          "_format": "checkbox"
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Poll interval (ms)",
+          "minimum": 0,
+          "default": 20
+        },
+        "hidden_name": {
+          "type": "string",
+          "options": {
+            "hidden": true
+          }
+        }
       }
     },
     "subreg": {
@@ -629,7 +683,7 @@
                "brightness", "param", "relay_mode", "relay_default", "relay_delay", "energy", "array",
                "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
                "param24", "param32", "power", "freq", "power_factor", "group_single", 
-               "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5"]
+               "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5", "alarm"]
     },
     "format": {
       "type": "string",
@@ -724,6 +778,8 @@
 
   "configFile": {
     "path": "/etc/wb-mqtt-serial.conf",
-    "service": "wb-mqtt-serial"
+    "service": "wb-mqtt-serial",
+    "toJSON": ["wb-mqtt-serial", "-j"],
+    "fromJSON": ["wb-mqtt-serial", "-J"]
   }
 }

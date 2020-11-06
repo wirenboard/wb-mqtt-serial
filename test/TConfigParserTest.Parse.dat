@@ -19,31 +19,10 @@ Ports:
         Frame timeout: 0
         DeviceChannels:
             ------
-            Name: Temp 1
-            Type: temperature
-            DeviceId: msu34tlp_2
-            Order: 1
-            OnValue: 
-            Max: -1
-            ReadOnly: 1
-            Registers:
-                ------
-                Type and Address: input: 0
-                Format: S8
-                Scale: 1
-                Offset: 0
-                RoundTo: 0
-                Poll: 1
-                ReadOnly: 1
-                TypeName: input
-                PollInterval: 10
-                ErrorValue: not set
-                WordOrder: BigEndian
-            ------
             Name: Illuminance
             Type: lux
             DeviceId: msu34tlp_2
-            Order: 2
+            Order: 1
             OnValue: 
             Max: -1
             ReadOnly: 1
@@ -64,7 +43,7 @@ Ports:
             Name: Pressure
             Type: pressure
             DeviceId: msu34tlp_2
-            Order: 3
+            Order: 2
             OnValue: 
             Max: -1
             ReadOnly: 1
@@ -85,7 +64,7 @@ Ports:
             Name: Temp 2
             Type: temperature
             DeviceId: msu34tlp_2
-            Order: 4
+            Order: 3
             OnValue: 
             Max: -1
             ReadOnly: 1

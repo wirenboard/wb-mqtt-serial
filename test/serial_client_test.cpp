@@ -1603,9 +1603,7 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
         auto fname = std::string("configs/unsuccessful/unsuccessful-") + to_string(i) +  ".json";
         Emit() << "Parsing config " << fname;
         try {
-            PHandlerConfig config = LoadConfig(GetDataFilePath(fname), 
-                                       DeviceFactory,
-                                       configSchema);
+            PHandlerConfig config = LoadConfig(GetDataFilePath(fname), DeviceFactory, configSchema);
         } catch (const std::exception& e) {
             Emit() << e.what();
         }

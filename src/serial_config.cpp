@@ -213,6 +213,9 @@ namespace {
 
     void LoadChannel(PDeviceConfig device_config, const Json::Value& channel_data)
     {
+        if (channel_data.isMember("enabled") && !channel_data["enabled"].asBool()) {
+            return;
+        }
         std::string name = channel_data["name"].asString();
         std::string default_type_str;
         std::vector<PRegisterConfig> registers;
@@ -274,7 +277,7 @@ namespace {
     void MergeChannelProperties(Json::Value& dst, const Json::Value& src, const std::string& logPrefix)
     {
         for (auto itProp = src.begin(); itProp != src.end(); ++itProp) {
-            if (itProp.name() == "poll_interval") {
+            if (itProp.name() == "poll_interval" || itProp.name() == "enabled") {
                 SetPropertyWithNotification(dst, itProp, logPrefix);
                 continue;
             }
@@ -623,21 +626,23 @@ void AddRegisterType(Json::Value& configSchema, const std::string& registerType)
 Json::Value LoadConfigSchema(const std::string& schemaFileName)
 {
     Json::Value configSchema(Parse(schemaFileName));
-    // We use nonstandard syntax for #/definitions/device/properties/device_type in enum field
-    // "enum": {
-    //     "directories": ["/usr/share/wb-mqtt-serial/templates"],
-    //     "pointer": "/device_type",
-    //     "pattern": "^.*\\.json$" },
+    // We use nonstandard syntax for #/definitions/device/oneOf in $_devicesDefinitions field
+    // "$_devicesDefinitions": {
+    //     "directories": ["/usr/share/wb-mqtt-serial/templates", "/etc/wb-mqtt-serial.conf.d/templates"],
+    //     "pointer": [ "/device_type", "/setup_schema", "/device/channels" ],
+    //     "pattern": "^.*\\.json$"
+    //   }
     // Validator will complain about it. So let's remove it.
-//    configSchema["definitions"]["device"]["properties"]["device_type"].removeMember("enum");
-    const Json::Value& array = configSchema["definitions"]["device"]["oneOf"];
-    Json::Value newArray = Json::arrayValue;
-    for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
-        if (!array[index].isMember("$_devicesDefinitions")) {
-            newArray.append(array[index]);
+    if (configSchema["definitions"]["device"].isMember("oneOf")) {
+        const Json::Value& array = configSchema["definitions"]["device"]["oneOf"];
+        Json::Value newArray = Json::arrayValue;
+        for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
+            if (!array[index].isMember("$_devicesDefinitions")) {
+                newArray.append(array[index]);
+            }
         }
+        configSchema["definitions"]["device"]["oneOf"] = newArray;
     }
-    configSchema["definitions"]["device"]["oneOf"] = newArray;
     return configSchema;
 }
 
@@ -745,3 +750,132 @@ void THandlerConfig::AddPortConfig(PPortConfig portConfig)
 TConfigParserException::TConfigParserException(const std::string& message)
     : std::runtime_error("Error parsing config file: " + message) 
 {}
+
+Json::Value RemoveReadonlyProperties(const Json::Value& value)
+{
+    Json::Value res;
+    res["name"] = value["name"];
+    if (value.isMember("poll_interval")) {
+        res["poll_interval"] = value["poll_interval"];
+    }
+    if (value.isMember("enabled")) {
+        res["enabled"] = value["enabled"];
+    }
+    return res;
+}
+
+std::pair<Json::Value, Json::Value> SplitChannels(Json::Value& device, TTemplateMap& templates)
+{
+    Json::Value channels(Json::arrayValue);
+    if (!device.isMember("device_type")) {
+        return std::make_pair(channels, device["channels"]);
+    }
+
+    Json::Value customChannels(Json::arrayValue);
+    std::unordered_map<std::string, Json::Value> regs;
+    if (device.isMember("channels")) {
+        for (Json::Value& channel: device["channels"]) {
+            regs[channel["name"].asString()] = channel;
+        }
+    }
+
+    for (const Json::Value& ch: templates.GetTemplate(device["device_type"].asString())["channels"]) {
+        auto it = regs.find(ch["name"].asString());
+        if (it != regs.end()) {
+            channels.append(RemoveReadonlyProperties(it->second));
+            regs.erase(it);
+        } else {
+            channels.append(RemoveReadonlyProperties(ch));
+        }
+    }
+
+    for (auto ch: regs) {
+        customChannels.append(ch.second);
+    }
+
+    return std::make_pair(channels, customChannels);
+}
+
+Json::Value FilterStandardChannels(Json::Value& device, TTemplateMap& templates)
+{
+    Json::Value channels(Json::arrayValue);
+    if (!device.isMember("device_type")) {
+        return channels;
+    }
+
+    std::unordered_map<std::string, Json::Value> regs;
+    if (device.isMember("channels")) {
+        for (const Json::Value& channel: templates.GetTemplate(device["device_type"].asString())["channels"]) {
+            regs[channel["name"].asString()] = channel;
+        }
+    }
+
+    for (Json::Value& ch: device["channels"]) {
+        auto it = regs.find(ch["name"].asString());
+        if (it != regs.end()) {
+            ch.removeMember("hidden_name");
+            bool hasPollInterval = false;
+            if (ch.isMember("poll_interval")) {
+                hasPollInterval = true;
+                int pollIntervalToErase = DefaultPollInterval.count();
+                if (it->second.isMember("poll_interval")) {
+                    pollIntervalToErase = it->second["poll_interval"].asInt();
+                }
+                if (ch["poll_interval"].asInt() == pollIntervalToErase) {
+                    ch.removeMember("poll_interval");
+                    hasPollInterval = false;
+                }
+            }
+            if (ch.isMember("enabled") && (!ch["enabled"].asBool() || hasPollInterval)) {
+                channels.append(ch);
+            }
+        }
+    }
+
+    return channels;
+}
+
+Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Value& configSchema, TTemplateMap& templates)
+{
+    Json::Value root(Parse(configFileName));
+    Validate(root, configSchema);
+    for (Json::Value& port : root["ports"]) {
+        for (Json::Value& device : port["devices"]) {
+            Json::Value customChannels;
+            std::tie(device["channels"], customChannels) = SplitChannels(device, templates);
+            if ( customChannels.size() ) {
+                device["custom_channels"] = customChannels;
+            }
+        }
+    }
+    return root;
+}
+
+Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
+{
+    Json::Value  root;
+    Json::Reader reader;
+
+    if (!reader.parse(stream, root, false)) {
+        throw std::runtime_error("Failed to parse JSON:" + reader.getFormattedErrorMessages());
+    }
+
+    for (Json::Value& port : root["ports"]) {
+        for (Json::Value& device : port["devices"]) {
+            Json::Value filteredChannels = FilterStandardChannels(device, templates);
+            if ( device.isMember("custom_channels") ) {
+                for (Json::Value& ch : device["custom_channels"]) {
+                    filteredChannels.append(ch);
+                }
+                device.removeMember("custom_channels");
+            }
+            if (filteredChannels.size()) {
+                device["channels"] = filteredChannels;
+            } else {
+                device.removeMember("channels");
+            }
+        }
+    }
+
+    return root;
+}

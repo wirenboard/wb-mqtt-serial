@@ -105,3 +105,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
                           const Json::Value& configSchema,
                           TPortFactoryFn portFactory = DefaultPortFactory);
+
+Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Value& configSchema, TTemplateMap& templates);
+Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates);
