@@ -232,6 +232,18 @@
         }
       }
     },
+    "typedCustomDevice": {
+      "type": "object",
+      "properties": {
+        "device_type": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        { "$ref": "#/definitions/customDevice" }
+      ],
+      "required": ["device_type"]
+    },
     "deviceCommon": {
       "headerTemplate": "{{|self.device_type|}}{{ (slave id |self.slave_id|)}}{{ (name: |self.name|)}}",
       "properties": {
@@ -364,7 +376,12 @@
             "pattern": "^.*\\.json$"
           }
         },
-        { "$ref": "#/definitions/customDevice" }
+        {
+          "allOf": [
+            { "$ref": "#/definitions/customDevice" }
+          ],
+          "not": { "required": ["device_type"] }
+        }
       ],
       "options": {
         "disable_edit_json": true,

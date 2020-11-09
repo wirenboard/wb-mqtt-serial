@@ -632,13 +632,18 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName)
     //     "pointer": [ "/device_type", "/setup_schema", "/device/channels" ],
     //     "pattern": "^.*\\.json$"
     //   }
-    // Validator will complain about it. So let's remove it.
+    // Validator will complain about it. We replace it with #/definitions/typedCustomDevice.
     if (configSchema["definitions"]["device"].isMember("oneOf")) {
         const Json::Value& array = configSchema["definitions"]["device"]["oneOf"];
         Json::Value newArray = Json::arrayValue;
         for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
             if (!array[index].isMember("$_devicesDefinitions")) {
                 newArray.append(array[index]);
+            } 
+            else {
+                Json::Value customTypedDevice(Json::objectValue);
+                customTypedDevice["$ref"] = "#/definitions/typedCustomDevice";
+                newArray.append(customTypedDevice);
             }
         }
         configSchema["definitions"]["device"]["oneOf"] = newArray;
