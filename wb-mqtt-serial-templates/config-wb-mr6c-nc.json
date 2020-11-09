@@ -100,7 +100,7 @@
                     "properties": {
                       "title": {
                         "type": "string",
-                        "enum": [ "Input 1 mode" ],
+                        "enum": [ "Input 2 mode" ],
                         "options": {
                             "hidden": true
                         }
@@ -182,7 +182,7 @@
                 },
                 {
                     "type": "object",
-                    "title": "Input 4 mode (address 11)",
+                    "title": "Input 4 mode (address 12)",
                     "properties": {
                       "title": {
                         "type": "string",
@@ -225,7 +225,7 @@
                 },
                 {
                     "type": "object",
-                    "title": "Input 5 mode (address 11)",
+                    "title": "Input 5 mode (address 13)",
                     "properties": {
                       "title": {
                         "type": "string",
@@ -268,7 +268,7 @@
                 },
                 {
                     "type": "object",
-                    "title": "Input 6 mode (address 11)",
+                    "title": "Input 6 mode (address 14)",
                     "properties": {
                       "title": {
                         "type": "string",

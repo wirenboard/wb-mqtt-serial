@@ -57,7 +57,7 @@
                     "properties": {
                       "title": {
                         "type": "string",
-                        "enum": [ "Input 1 mode" ],
+                        "enum": [ "Input 2 mode" ],
                         "options": {
                             "hidden": true
                         }
