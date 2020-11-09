@@ -809,13 +809,13 @@ Json::Value FilterStandardChannels(Json::Value& device, TTemplateMap& templates)
     }
 
     std::unordered_map<std::string, Json::Value> regs;
-    if (device.isMember("channels")) {
+    if (device.isMember("standard_channels")) {
         for (const Json::Value& channel: templates.GetTemplate(device["device_type"].asString())["channels"]) {
             regs[channel["name"].asString()] = channel;
         }
     }
 
-    for (Json::Value& ch: device["channels"]) {
+    for (Json::Value& ch: device["standard_channels"]) {
         auto it = regs.find(ch["name"].asString());
         if (it != regs.end()) {
             ch.removeMember("hidden_name");
@@ -847,9 +847,11 @@ Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Val
     for (Json::Value& port : root["ports"]) {
         for (Json::Value& device : port["devices"]) {
             Json::Value customChannels;
-            std::tie(device["channels"], customChannels) = SplitChannels(device, templates);
+            std::tie(device["standard_channels"], customChannels) = SplitChannels(device, templates);
             if ( customChannels.size() ) {
-                device["custom_channels"] = customChannels;
+                device["channels"] = customChannels;
+            } else {
+                device.removeMember("channels");
             }
         }
     }
@@ -868,15 +870,15 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
     for (Json::Value& port : root["ports"]) {
         for (Json::Value& device : port["devices"]) {
             Json::Value filteredChannels = FilterStandardChannels(device, templates);
-            if ( device.isMember("custom_channels") ) {
-                for (Json::Value& ch : device["custom_channels"]) {
-                    filteredChannels.append(ch);
+            device.removeMember("standard_channels");
+            if ( device.isMember("channels") ) {
+                for (Json::Value& ch : filteredChannels) {
+                    device["channels"].append(ch);
                 }
-                device.removeMember("custom_channels");
-            }
-            if (filteredChannels.size()) {
-                device["channels"] = filteredChannels;
             } else {
+                device["channels"] = filteredChannels;
+            }
+            if (device["channels"].empty()) {
                 device.removeMember("channels");
             }
         }

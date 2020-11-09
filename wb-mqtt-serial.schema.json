@@ -222,13 +222,6 @@
             "disable_array_reorder": true
           },
           "propertyOrder": 8
-        },
-        "channels": {
-          "type": "array",
-          "title": "List of channels",
-          "description": "Lists device registers and their corresponding controls",
-          "items": { "$ref": "#/definitions/channel" },
-          "propertyOrder": 9
         }
       }
     },
@@ -281,6 +274,13 @@
           "minimum": 0,
           "default": 20,
           "propertyOrder": 7
+        },
+        "channels": {
+          "type": "array",
+          "title": "List of custom channels",
+          "description": "Lists device's custom registers and their corresponding controls",
+          "items": { "$ref": "#/definitions/channel" },
+          "propertyOrder": 10
         },
         "password": {
           "type": "array",
