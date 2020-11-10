@@ -81,13 +81,13 @@ TRegisterRange::EStatus TSimpleRegisterRange::GetStatus() const
 
 std::string TRegisterConfig::ToString() const {
     std::stringstream s;
-    s << TypeName << ": " << Address;
+    s << TypeName << " @ " << Address;
     return s.str();
 }
 
 std::string TRegister::ToString() const
 {
-    return "<" + Device()->ToString() + ":" + TRegisterConfig::ToString() + ">";
+    return TRegisterConfig::ToString() + " of device " + Device()->ToString();
 }
 
 bool TRegister::IsAvailable() const

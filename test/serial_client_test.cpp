@@ -76,8 +76,9 @@ void TSerialClientTest::SetUp()
     config->FrameTimeout = std::chrono::milliseconds(100);
     Device = std::dynamic_pointer_cast<TFakeSerialDevice>(SerialClient->CreateDevice(config));
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
-            Emit() << "Read Callback: " << reg->ToString() << " becomes " <<
-                SerialClient->GetTextValue(reg) << (changed ? "" : " [unchanged]");
+            Emit() << "Read Callback: <"
+                   << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->Address << "> becomes "
+                   << SerialClient->GetTextValue(reg) << (changed ? "" : " [unchanged]");
         });
     SerialClient->SetErrorCallback(
         [this](PRegister reg, TRegisterHandler::TErrorState errorState) {
@@ -95,7 +96,7 @@ void TSerialClientTest::SetUp()
             default:
                 what = "no error";
             }
-            Emit() << "Error Callback: " << reg->ToString() << ": " << what;
+            Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->Address << ">: " << what;
         });
 }
 
@@ -1551,7 +1552,7 @@ TEST_F(TConfigParserTest, Parse)
                     for (auto reg: device_channel->RegisterConfigs) {
                         TTestLogIndent indent(*this);
                         Emit() << "------";
-                        Emit() << "Type and Address: " << reg;
+                        Emit() << "Type and Address: " << reg->TypeName << ": " << reg->Address;
                         Emit() << "Format: " << RegisterFormatName(reg->Format);
                         Emit() << "Scale: " << reg->Scale;
                         Emit() << "Offset: " << reg->Offset;

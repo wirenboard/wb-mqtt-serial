@@ -869,7 +869,7 @@ namespace Modbus    // modbus protocol common utilities
 
     void WarnFailedRegisterSetup(const PDeviceSetupItem& item, const char* msg)
     {
-        LOG(Warn) << "Register " << item->Register->ToString() << " setup failed: " << msg;
+        LOG(Warn) << "failed to write: " << item->Register->ToString() << ": " << msg;
     }
 
     bool WriteSetupRegisters(Modbus::IModbusTraits& traits, TPort& port, uint8_t slaveId, const std::vector<PDeviceSetupItem>& setupItems, int shift)
