@@ -847,11 +847,15 @@ Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Val
     for (Json::Value& port : root["ports"]) {
         for (Json::Value& device : port["devices"]) {
             Json::Value customChannels;
-            std::tie(device["standard_channels"], customChannels) = SplitChannels(device, templates);
+            Json::Value standardChannels;
+            std::tie(standardChannels, customChannels) = SplitChannels(device, templates);
             if ( customChannels.size() ) {
                 device["channels"] = customChannels;
             } else {
                 device.removeMember("channels");
+            }
+            if ( standardChannels.size() ) {
+                device["standard_channels"] = standardChannels;
             }
         }
     }
