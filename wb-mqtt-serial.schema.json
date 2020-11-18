@@ -205,8 +205,6 @@
       ]
     },
     "customDevice": {
-      "type": "object",
-      "title": "Custom device",
       "properties": {
         "protocol": {
           "title": "Protocol",
@@ -230,41 +228,49 @@
       "properties": {
         "device_type": {
           "type": "string"
-        }
+        },
+        "slave_id": { "$ref": "#/definitions/slave_id" }
       },
       "allOf": [
         { "$ref": "#/definitions/customDevice" }
       ],
-      "required": ["device_type"]
+      "required": ["device_type", "slave_id"]
+    },
+    "untypedCustomDevice": {
+      "type": "object",
+      "title": "Custom device",
+      "properties": {
+        "slave_id": { "$ref": "#/definitions/slave_id" }
+      },
+      "allOf": [
+        { "$ref": "#/definitions/customDevice" }
+      ],
+      "not": { "required": ["device_type"] },
+      "required": ["slave_id"],
+      "defaultProperties": ["slave_id"]
     },
     "deviceCommon": {
       "headerTemplate": "{{|self.device_type|}}{{ (slave id |self.slave_id|)}}{{ (name: |self.name|)}}",
       "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable device",
+          "default": true,
+          "_format": "checkbox",
+          "propertyOrder": 1
+        },
         "name": {
           "type": "string",
           "title": "Device name",
           "description": "Device name to be displayed in UI",
           "minLength": 1,
-          "propertyOrder": 1
+          "propertyOrder": 2
         },
         "id": {
           "type": "string",
           "title": "MQTT id of the device",
           "description": "Used as part of the topic",
           "minLength": 1,
-          "propertyOrder": 2
-        },
-        "slave_id": {
-          "title": "Slave id of the device",
-          "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
-          "propertyOrder": 3,
-          "$ref": "#/definitions/slave_id"
-        },
-        "enabled": {
-          "type": "boolean",
-          "title": "Enable device",
-          "default": true,
-          "_format": "checkbox",
           "propertyOrder": 4
         },
         "poll_interval": {
@@ -361,9 +367,7 @@
           "default": 2,
           "propertyOrder": 20
         }
-      },
-      "required": ["slave_id"],
-      "defaultProperties": ["slave_id"]
+      }
     },
     "device": {
       "headerTemplate": "{{self.name}} {{slave id: |self.slave_id|}}",
@@ -376,12 +380,7 @@
             "pattern": "^.*\\.json$"
           }
         },
-        {
-          "allOf": [
-            { "$ref": "#/definitions/customDevice" }
-          ],
-          "not": { "required": ["device_type"] }
-        }
+        { "$ref": "#/definitions/untypedCustomDevice" }
       ],
       "options": {
         "disable_edit_json": true,
@@ -750,6 +749,9 @@
       ]
     },
     "slave_id": {
+      "title": "Slave id of the device",
+      "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
+      "propertyOrder": 3,
       "oneOf": [
         {
           "type": "string",
