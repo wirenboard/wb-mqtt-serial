@@ -1,0 +1,675 @@
+{
+    "device_type": "WB-MAI",
+    "setup_schema": {
+        "type": "array",
+        "title": "Settings",
+        "propertyOrder": 8,
+        "minItems": 11,
+        "maxItems": 11,
+        "items": {
+            "type": "object",
+            "title": "Channel",
+            "headerTemplate": "Channel {{i1}}",
+            "properties": {
+                "p_sensor_type": {
+                    "title": "IN/IN_P type",
+                    "type": "integer",
+                    "propertyOrder": 1,
+                    "enum": [-1, 0, 256, 1, 257, 2, 258, 3, 4, 4096, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4608, 4609, 4610, 4611, 4624, 4625, 4626, 4627, 4640, 4641, 4642, 4643, 4656, 4657, 4658, 4864, 4865, 4866, 5120, 5376, 5632, 5888 ],
+                    "options": {
+                        "grid_columns": 12,
+                        "grid_break": true,
+                        "enum_titles": [
+                            "Disabled",
+                            "Voltage measurement from ratiometric sensors",
+                            "Differential voltage measurement from -5 to 5 V",
+                            "Normal voltage measurement from 0 to 2 V",
+                            "Differential voltage measurement from -2 to 2V or thermocouple measurement",
+                            "Resistance measurement using two-wire circuit/dry contact sensors",
+                            "Three-wire resistance measurement",
+                            "Current measurement from 0 to 20 mA",
+                            "Resistance measurement through measurement of the current in the circuit",
+                            "Thermoelectric converter THA (K)",
+                            "Two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                            "Two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                            "Two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                            "Two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                            "Two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                            "Two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                            "Two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                            "Two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                            "Two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                            "Two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                            "Two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                            "Two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                            "Two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                            "Two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                            "Two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                            "Three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                            "Three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                            "Three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                            "Three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                            "Three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                            "Three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                            "Three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                            "Three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                            "Three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                            "Three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                            "Three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                            "Three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                            "Three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                            "Three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                            "Three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                            "Current output sensor 0 to 5 mA",
+                            "Current output sensor 0 to 20 mA",
+                            "Current output sensor 4 to 20 mA",
+                            "Sensor with voltage output in normal mode 0 to 1V",
+                            "Sensor with voltage output in differential mode from -50 to 50mV",
+                            "Dry contact",
+                            "NTC thermistor 10k (B = 3988 K)"
+                        ]
+                    }
+                },
+                "p_rate": {
+                    "title": "Data rate",
+                    "type": "integer",
+                    "propertyOrder": 2,
+                    "enum": [20, 45, 90, 175, 330, 600, 1000]
+                },
+                "p_count": {
+                    "title": "Number of measurements",
+                    "minimum": 0,
+                    "maximum": 50,
+                    "propertyOrder": 3,
+                    "type": "integer"
+                },
+                "p_lowpass": {
+                    "title": "Lowpass filter time, ms",
+                    "minimum": 0,
+                    "maximum": 65000,
+                    "propertyOrder": 4,
+                    "type": "integer"
+                },
+                "p_low": {
+                    "title": "Minimum value",
+                    "propertyOrder": 5,
+                    "type": "integer"
+                },
+                "p_high": {
+                    "title": "Maximum value",
+                    "propertyOrder": 6,
+                    "type": "integer"
+                },
+                "p_k": {
+                    "title": "Gain",
+                    "propertyOrder": 7,
+                    "type": "integer",
+                    "enum": [0, 1, 2, 4, 8, 16, 32, 64, 128],
+                    "options": {
+                        "enum_titles": [
+                            "auto"
+                        ]
+                    }
+                },
+                "n_sensor_type": {
+                    "title": "IN_N type",
+                    "propertyOrder": 8,
+                    "type": "integer",
+                    "enum": [-1, 0, 1, 2, 3, 4, 4096, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5632, 5888 ],
+                    "options": {
+                        "grid_columns": 12,
+                        "grid_break": true,
+                        "enum_titles": [
+                            "Disabled",
+                            "Voltage measurement from ratiometric sensors",
+                            "Normal voltage measurement from 0 to 2 V",
+                            "Resistance measurement using two-wire circuit/dry contact sensors",
+                            "Current measurement from 0 to 20 mA",
+                            "Resistance measurement through measurement of the current in the circuit",
+                            "Thermoelectric converter THA (K)",
+                            "Two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                            "Two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                            "Two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                            "Two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                            "Two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                            "Two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                            "Two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                            "Two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                            "Two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                            "Two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                            "Two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                            "Two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                            "Two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                            "Two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                            "Two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                            "Current output sensor 0 to 5 mA",
+                            "Current output sensor 0 to 20 mA",
+                            "Current output sensor 4 to 20 mA",
+                            "Sensor with voltage output in normal mode 0 to 1V",
+                            "Dry contact",
+                            "NTC thermistor 10k (B = 3988 K)"
+                        ]
+                    }
+                },
+                "n_rate": {
+                    "title": "Data rate",
+                    "type": "integer",
+                    "propertyOrder": 9,
+                    "enum": [20, 45, 90, 175, 330, 600, 1000]
+                },
+                "n_count": {
+                    "title": "Number of measurements",
+                    "minimum": 0,
+                    "maximum": 50,
+                    "propertyOrder": 10,
+                    "type": "integer"
+                },
+                "n_lowpass": {
+                    "title": "Lowpass filter time, ms",
+                    "minimum": 0,
+                    "maximum": 65000,
+                    "propertyOrder": 11,
+                    "type": "integer"
+                },
+                "n_low": {
+                    "title": "Minimum value",
+                    "propertyOrder": 12,
+                    "type": "integer"
+                },
+                "n_high": {
+                    "title": "Maximum value",
+                    "propertyOrder": 13,
+                    "type": "integer"
+                },
+                "n_k": {
+                    "title": "Gain",
+                    "propertyOrder": 14,
+                    "type": "integer",
+                    "enum": [0, 1, 2, 4, 8, 16, 32, 64, 128],
+                    "options": {
+                        "enum_titles": [
+                            "auto"
+                        ]
+                    }
+                }
+            },
+            "options" : {
+                "disable_edit_json": true,
+                "disable_properties": true,
+                "disable_collapse": true
+            },
+            "format": "grid"
+        },
+        "options" : {
+            "disable_array_delete": true,
+            "disable_array_reorder": true
+        },
+        "format": "tabs"
+    },
+    "device": {
+        "name": "WB-MAI",
+        "id": "wb-mai",
+        "max_read_registers": 60,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+        "channels": [
+            {
+                "name": "IN1_IN1P raw",
+                "reg_type": "input",
+                "address": "0x1500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN1N raw",
+                "reg_type": "input",
+                "address": "0x1502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN1_IN1P",
+                "reg_type": "input",
+                "address": "0x1504",
+                "type": "value"
+            },
+            {
+                "name": "IN1N",
+                "reg_type": "input",
+                "address": "0x1505",
+                "type": "value"
+            },
+            {
+                "name": "IN1_IN1P gain",
+                "reg_type": "input",
+                "address": "0x1506",
+                "type": "value"
+            },
+            {
+                "name": "IN1N gain",
+                "reg_type": "input",
+                "address": "0x1507",
+                "type": "value"
+            },
+
+            {
+                "name": "IN2_IN2P raw",
+                "reg_type": "input",
+                "address": "0x2500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN2N raw",
+                "reg_type": "input",
+                "address": "0x2502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN2_IN2P",
+                "reg_type": "input",
+                "address": "0x2504",
+                "type": "value"
+            },
+            {
+                "name": "IN2N",
+                "reg_type": "input",
+                "address": "0x2505",
+                "type": "value"
+            },
+            {
+                "name": "IN2_IN2P gain",
+                "reg_type": "input",
+                "address": "0x2506",
+                "type": "value"
+            },
+            {
+                "name": "IN2N gain",
+                "reg_type": "input",
+                "address": "0x2507",
+                "type": "value"
+            },
+
+            {
+                "name": "IN3_IN3P raw",
+                "reg_type": "input",
+                "address": "0x3500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN3N raw",
+                "reg_type": "input",
+                "address": "0x3502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN3_IN3P",
+                "reg_type": "input",
+                "address": "0x3504",
+                "type": "value"
+            },
+            {
+                "name": "IN3N",
+                "reg_type": "input",
+                "address": "0x3505",
+                "type": "value"
+            },
+            {
+                "name": "IN3_IN3P gain",
+                "reg_type": "input",
+                "address": "0x3506",
+                "type": "value"
+            },
+            {
+                "name": "IN3N gain",
+                "reg_type": "input",
+                "address": "0x3507",
+                "type": "value"
+            },
+
+            {
+                "name": "IN4_IN4P raw",
+                "reg_type": "input",
+                "address": "0x4500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN4N raw",
+                "reg_type": "input",
+                "address": "0x4502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN4_IN4P",
+                "reg_type": "input",
+                "address": "0x4504",
+                "type": "value"
+            },
+            {
+                "name": "IN4N",
+                "reg_type": "input",
+                "address": "0x4505",
+                "type": "value"
+            },
+            {
+                "name": "IN4_IN4P gain",
+                "reg_type": "input",
+                "address": "0x4506",
+                "type": "value"
+            },
+            {
+                "name": "IN4N gain",
+                "reg_type": "input",
+                "address": "0x4507",
+                "type": "value"
+            },
+
+            {
+                "name": "IN5_IN5P raw",
+                "reg_type": "input",
+                "address": "0x5500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN5N raw",
+                "reg_type": "input",
+                "address": "0x5502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN5_IN5P",
+                "reg_type": "input",
+                "address": "0x5504",
+                "type": "value"
+            },
+            {
+                "name": "IN5N",
+                "reg_type": "input",
+                "address": "0x5505",
+                "type": "value"
+            },
+            {
+                "name": "IN5_IN5P gain",
+                "reg_type": "input",
+                "address": "0x5506",
+                "type": "value"
+            },
+            {
+                "name": "IN5N gain",
+                "reg_type": "input",
+                "address": "0x5507",
+                "type": "value"
+            },
+
+            {
+                "name": "IN6_IN6P raw",
+                "reg_type": "input",
+                "address": "0x6500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN6N raw",
+                "reg_type": "input",
+                "address": "0x6502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN6_IN6P",
+                "reg_type": "input",
+                "address": "0x6504",
+                "type": "value"
+            },
+            {
+                "name": "IN6N",
+                "reg_type": "input",
+                "address": "0x6505",
+                "type": "value"
+            },
+            {
+                "name": "IN6_IN6P gain",
+                "reg_type": "input",
+                "address": "0x6506",
+                "type": "value"
+            },
+            {
+                "name": "IN6N gain",
+                "reg_type": "input",
+                "address": "0x6507",
+                "type": "value"
+            },
+
+            {
+                "name": "IN7_IN7P raw",
+                "reg_type": "input",
+                "address": "0x7500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN7N raw",
+                "reg_type": "input",
+                "address": "0x7502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN7_IN7P",
+                "reg_type": "input",
+                "address": "0x7504",
+                "type": "value"
+            },
+            {
+                "name": "IN7N",
+                "reg_type": "input",
+                "address": "0x7505",
+                "type": "value"
+            },
+            {
+                "name": "IN7_IN7P gain",
+                "reg_type": "input",
+                "address": "0x7506",
+                "type": "value"
+            },
+            {
+                "name": "IN7N gain",
+                "reg_type": "input",
+                "address": "0x7507",
+                "type": "value"
+            },
+
+            {
+                "name": "IN8_IN8P raw",
+                "reg_type": "input",
+                "address": "0x8500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN8N raw",
+                "reg_type": "input",
+                "address": "0x8502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN8_IN8P",
+                "reg_type": "input",
+                "address": "0x8504",
+                "type": "value"
+            },
+            {
+                "name": "IN8N",
+                "reg_type": "input",
+                "address": "0x8505",
+                "type": "value"
+            },
+            {
+                "name": "IN8_IN8P gain",
+                "reg_type": "input",
+                "address": "0x8506",
+                "type": "value"
+            },
+            {
+                "name": "IN8N gain",
+                "reg_type": "input",
+                "address": "0x8507",
+                "type": "value"
+            },
+
+            {
+                "name": "IN9_IN9P raw",
+                "reg_type": "input",
+                "address": "0x9500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN9N raw",
+                "reg_type": "input",
+                "address": "0x9502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN9_IN9P",
+                "reg_type": "input",
+                "address": "0x9504",
+                "type": "value"
+            },
+            {
+                "name": "IN9N",
+                "reg_type": "input",
+                "address": "0x9505",
+                "type": "value"
+            },
+            {
+                "name": "IN9_IN9P gain",
+                "reg_type": "input",
+                "address": "0x9506",
+                "type": "value"
+            },
+            {
+                "name": "IN9N gain",
+                "reg_type": "input",
+                "address": "0x9507",
+                "type": "value"
+            },
+
+            {
+                "name": "IN10_IN10P raw",
+                "reg_type": "input",
+                "address": "0xA500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN10N raw",
+                "reg_type": "input",
+                "address": "0xA502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN10_IN10P",
+                "reg_type": "input",
+                "address": "0xA504",
+                "type": "value"
+            },
+            {
+                "name": "IN10N",
+                "reg_type": "input",
+                "address": "0xA505",
+                "type": "value"
+            },
+            {
+                "name": "IN10_IN10P gain",
+                "reg_type": "input",
+                "address": "0xA506",
+                "type": "value"
+            },
+            {
+                "name": "IN10N gain",
+                "reg_type": "input",
+                "address": "0xA507",
+                "type": "value"
+            },
+
+            {
+                "name": "IN11_IN11P raw",
+                "reg_type": "input",
+                "address": "0xB500",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN11N raw",
+                "reg_type": "input",
+                "address": "0xB502",
+                "type": "value",
+                "format": "s32"
+            },
+            {
+                "name": "IN11_IN11P",
+                "reg_type": "input",
+                "address": "0xB504",
+                "type": "value"
+            },
+            {
+                "name": "IN11N",
+                "reg_type": "input",
+                "address": "0xB505",
+                "type": "value"
+            },
+            {
+                "name": "IN11_IN11P gain",
+                "reg_type": "input",
+                "address": "0xB506",
+                "type": "value"
+            },
+            {
+                "name": "IN11N gain",
+                "reg_type": "input",
+                "address": "0xB507",
+                "type": "value"
+            },
+
+            {
+                "name": "5V output voltage",
+                "reg_type": "input",
+                "address": "0x0600",
+                "type": "voltage",
+                "scale": 0.001,
+                "round_to": 0.001
+            },
+
+            {
+                "name": "Internal Temperature",
+                "reg_type": "input",
+                "address": "0x0601",
+                "type": "temperature",
+                "format": "s16",
+                "error_value" : "0x7fff",
+                "scale": 0.01,
+                "round_to": 0.01
+            },
+
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32"
+            }
+        ]
+    }
+}
+            
