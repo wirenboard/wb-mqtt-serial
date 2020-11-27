@@ -23,7 +23,7 @@
 class TTemplateMap 
 {
         std::unordered_map<std::string, std::string> TemplateFiles;
-        std::unordered_map<std::string, Json::Value> ValidTemplates;
+        std::map<std::string, Json::Value>           ValidTemplates;
         std::unique_ptr<WBMQTT::JSON::TValidator>    Validator;
     public:
         TTemplateMap() = default;
@@ -46,6 +46,8 @@ class TTemplateMap
         void AddTemplatesDir(const std::string& templatesDir);
 
         const Json::Value& GetTemplate(const std::string& deviceType);
+
+        const std::map<std::string, Json::Value>& GetTemplates();
 };
 
 struct TPortConfig 
@@ -108,3 +110,4 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 
 Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Value& configSchema, TTemplateMap& templates);
 Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates);
+void MakeSchemaForConfed(Json::Value& schema, TTemplateMap& templates);

@@ -581,7 +581,7 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir)
 const Json::Value& TTemplateMap::GetTemplate(const std::string& deviceType) 
 {
     if (!Validator) {
-        throw std::runtime_error("Can't find template for " + deviceType);
+        throw std::runtime_error("Can't find validator for device templates");
     }
     try {
         return ValidTemplates.at(deviceType);
@@ -604,12 +604,29 @@ const Json::Value& TTemplateMap::GetTemplate(const std::string& deviceType)
     }
 }
 
+const std::map<std::string, Json::Value>& TTemplateMap::GetTemplates()
+{
+    if (!Validator) {
+        throw std::runtime_error("Can't find validator for device templates");
+    }
+
+    for (const auto& file: TemplateFiles) {
+        Json::Value root(WBMQTT::JSON::Parse(file.second));
+        try {
+            Validator->Validate(root);
+        } catch (const std::runtime_error& e) {
+            throw std::runtime_error("File: " + file.second + " error: " + e.what());
+        }
+        ValidTemplates.emplace(file.first, root["device"]);
+    }
+    TemplateFiles.clear();
+    return ValidTemplates;
+}
+
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema)
 {
     Json::Value schema = WBMQTT::JSON::Parse(templateSchemaFileName);
     schema["definitions"] = configSchema["definitions"];
-    schema["definitions"]["deviceCommon"]["properties"].removeMember("slave_id");
-    schema["definitions"]["deviceCommon"].removeMember("required");
     return schema;
 }
 
@@ -625,30 +642,7 @@ void AddRegisterType(Json::Value& configSchema, const std::string& registerType)
 
 Json::Value LoadConfigSchema(const std::string& schemaFileName)
 {
-    Json::Value configSchema(Parse(schemaFileName));
-    // We use nonstandard syntax for #/definitions/device/oneOf in $_devicesDefinitions field
-    // "$_devicesDefinitions": {
-    //     "directories": ["/usr/share/wb-mqtt-serial/templates", "/etc/wb-mqtt-serial.conf.d/templates"],
-    //     "pointer": [ "/device_type", "/setup_schema", "/device/channels" ],
-    //     "pattern": "^.*\\.json$"
-    //   }
-    // Validator will complain about it. We replace it with #/definitions/typedCustomDevice.
-    if (configSchema["definitions"]["device"].isMember("oneOf")) {
-        const Json::Value& array = configSchema["definitions"]["device"]["oneOf"];
-        Json::Value newArray = Json::arrayValue;
-        for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
-            if (!array[index].isMember("$_devicesDefinitions")) {
-                newArray.append(array[index]);
-            } 
-            else {
-                Json::Value customTypedDevice(Json::objectValue);
-                customTypedDevice["$ref"] = "#/definitions/typedCustomDevice";
-                newArray.append(customTypedDevice);
-            }
-        }
-        configSchema["definitions"]["device"]["oneOf"] = newArray;
-    }
-    return configSchema;
+    return Parse(schemaFileName);
 }
 
 PHandlerConfig LoadConfig(const std::string& configFileName,
@@ -762,9 +756,13 @@ Json::Value RemoveReadonlyProperties(const Json::Value& value)
     res["name"] = value["name"];
     if (value.isMember("poll_interval")) {
         res["poll_interval"] = value["poll_interval"];
+    } else  {
+        res["poll_interval"] = 20;
     }
     if (value.isMember("enabled")) {
         res["enabled"] = value["enabled"];
+    } else {
+        res["enabled"] = true;
     }
     return res;
 }
@@ -840,11 +838,17 @@ Json::Value FilterStandardChannels(Json::Value& device, TTemplateMap& templates)
     return channels;
 }
 
+std::string GetDeviceTypeHash(const std::string& deviceType)
+{
+    return "type_" + std::to_string(std::hash<std::string>()(deviceType));
+}
+
 Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Value& configSchema, TTemplateMap& templates)
 {
     Json::Value root(Parse(configFileName));
     Validate(root, configSchema);
     for (Json::Value& port : root["ports"]) {
+        Json::Value newDevices(Json::arrayValue);
         for (Json::Value& device : port["devices"]) {
             Json::Value customChannels;
             Json::Value standardChannels;
@@ -857,8 +861,19 @@ Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Val
             if ( standardChannels.size() ) {
                 device["standard_channels"] = standardChannels;
             }
+            if (device.isMember("device_type")) {
+                Json::Value dev;
+                auto dt = device["device_type"].asString();
+                device.removeMember("device_type");
+                dev[GetDeviceTypeHash(dt)] = device;
+                newDevices.append(dev);
+            } else {
+                newDevices.append(device);
+            }
         }
+        port["devices"] = newDevices;
     }
+
     return root;
 }
 
@@ -889,4 +904,143 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
     }
 
     return root;
+}
+
+
+//  {
+//      "type": "object",
+//      "title": DEVICE_TYPE,
+//      "headerTemplate": "{{|self.name|,}}{{ slave id:|self.slave_id|,}}",
+//      "properties": {
+//          "type_DEVICE_TYPE_HASH": {
+//              "type": "object",
+//              "title": " ",
+//              "allOf": [
+//                  { "$ref": "#/definitions/deviceCommon" }
+//              ]
+//              "properties": {
+//                  "setup": setupSchema,
+//                  "standard_channels": {
+//                      "type": "array",
+//                      "_format": "table",
+//                      "title": "List of standard channels",
+//                      "description": "Lists device registers and their corresponding controls",
+//                      "items": { "$ref": "#/definitions/channelSettings" },
+//                      "default": [
+//                          {
+//                              "name": CHANNEL_NAME,
+//                              "poll_interval": POLL_INTERVAL
+//                          },
+//                          ....
+//                      ],
+//                      "options": {
+//                          "disable_array_delete": true,
+//                          "disable_array_reorder": true,
+//                          "disable_array_add": true
+//                      },
+//                      "propertyOrder": 9
+//                  }
+//              },
+//              "required": ["slave_id"],
+//              "defaultProperties": ["slave_id"],
+//              "options": {
+//                  "disable_collapse": true,
+//                  "disable_edit_json": true
+//              }
+//          }
+//      },
+//      "required": [ type_DEVICE_TYPE_HASH ]
+//  }
+Json::Value MakeDeviceUISchema(const std::string& deviceType, const Json::Value& t)
+{
+    auto dtHash = GetDeviceTypeHash(deviceType);
+
+    Json::Value res;
+    res["type"] = "object";
+    res["title"] = deviceType;
+    res["headerTemplate"] = "{{|self." + dtHash + ".name|,}}{{ slave id:|self." + dtHash + ".slave_id|,}}";
+
+    Json::Value p;
+    p["type"] = "object";
+    p["title"] = " ";
+    p["options"]["disable_edit_json"] = true;
+
+    if (t.isMember("setup_schema")) {
+        p["properties"]["setup"] = t["setup_schema"];
+    }
+
+    const auto& channels = t["channels"];
+    Json::Value def(Json::arrayValue);
+    for (const auto& ch: channels) {
+        Json::Value v;
+        v["name"] = ch["name"];
+        if (ch.isMember("poll_interval")) {
+            v["poll_interval"] = ch["poll_interval"];
+        } else {
+            v["poll_interval"] = 20;
+        }
+        if (ch.isMember("enabled")) {
+            v["enabled"] = ch["enabled"];
+        } else {
+            v["enabled"] = true;
+        }
+        def.append(v);
+    }
+    p["properties"]["standard_channels"]["default"] = def;
+    p["properties"]["standard_channels"]["type"] = "array";
+    p["properties"]["standard_channels"]["_format"] = "table";
+    p["properties"]["standard_channels"]["title"] = "List of standard channels";
+    p["properties"]["standard_channels"]["description"] = "Lists device registers and their corresponding controls";
+    p["properties"]["standard_channels"]["items"]["$ref"] = "#/definitions/channelSettings";
+    p["properties"]["standard_channels"]["options"]["disable_array_delete"] = true;
+    p["properties"]["standard_channels"]["options"]["disable_array_reorder"] = true;
+    p["properties"]["standard_channels"]["options"]["disable_array_add"] = true;
+    p["properties"]["standard_channels"]["propertyOrder"] = 9;
+
+    Json::Value req(Json::arrayValue);
+    req.append("slave_id");
+    p["required"] = req;
+    p["defaultProperties"] = req;
+
+    req.clear();
+    Json::Value ref;
+    ref["$ref"] = "#/definitions/deviceCommon";
+    req.append(ref);
+    p["allOf"] = req;
+
+    res["properties"][dtHash] = p;
+
+    req.clear();
+    req.append(dtHash);
+    res["required"] = req;
+
+    return res;
+}
+
+void AppendDeviceSchemas(Json::Value& list, TTemplateMap& templates)
+{
+    for (const auto& t: templates.GetTemplates()) {
+        try {
+            list.append(MakeDeviceUISchema(t.first, t.second));
+        } catch (const std::exception& e) {
+            LOG(Error) << e.what();
+        }
+    }
+}
+
+void MakeSchemaForConfed(Json::Value& configSchema, TTemplateMap& templates)
+{
+    // Let's replace #/definitions/device/oneOf typedCustomDevice node by list of device's generated from templates
+    if (configSchema["definitions"]["device"].isMember("oneOf")) {
+        const Json::Value& array = configSchema["definitions"]["device"]["oneOf"];
+        Json::Value newArray(Json::arrayValue);
+        for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
+            if (array[index].isMember("$ref") && array[index]["$ref"].asString() == "#/definitions/typedCustomDevice") {
+                AppendDeviceSchemas(newArray, templates);
+            } else {
+                newArray.append(array[index]);
+            }
+        }
+        configSchema["definitions"]["device"]["oneOf"] = newArray;
+    }
 }

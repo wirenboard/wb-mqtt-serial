@@ -7,6 +7,12 @@ Publish: /devices/OnValueTest/controls/Relay 1/meta/readonly: '0' (QoS 1, retain
 Publish: /devices/OnValueTest/controls/Relay 1/meta/type: 'switch' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1: '0' (QoS 1, retained)
 Subscribe: /devices/OnValueTest/controls/Relay 1/on (QoS 0)
+Subscribe: /devices/OnValueTest/controls/# (QoS 0)
+(retain) -> /devices/OnValueTest/controls/Relay 1: '0' (QoS 1, retained)
+(retain) -> /devices/OnValueTest/controls/Relay 1/meta/order: '1' (QoS 1, retained)
+(retain) -> /devices/OnValueTest/controls/Relay 1/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/OnValueTest/controls/Relay 1/meta/type: 'switch' (QoS 1, retained)
+Unsubscribe -- serial-client-integration-test: /devices/OnValueTest/controls/#
 >>> LoopOnce()
 Open()
 Sleep(100000)

@@ -52,6 +52,10 @@ namespace
             Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
             TTemplateMap templates(TEMPLATES_DIR,
                                     LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, configSchema));
+            try {
+                templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
+            } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
+            }
             Json::StreamWriterBuilder builder;
             builder["indentation"] = "";
             std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
@@ -67,6 +71,10 @@ namespace
             Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
             TTemplateMap templates(TEMPLATES_DIR,
                                     LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, configSchema));
+            try {
+                templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
+            } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
+            }
             Json::StreamWriterBuilder builder;
             builder["indentation"] = "    ";
             std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
@@ -74,6 +82,23 @@ namespace
         } catch (const std::exception& e) {
             std::cout << e.what() << std::endl;
         }
+    }
+
+    void SchemaForConfed(TTemplateMap& templates)
+    {
+        Json::Value configSchema(LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH));
+        Json::StreamWriterBuilder builder;
+        builder["indentation"] = "    ";
+        std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+        const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
+        {
+            std::ofstream f(resultingSchemaFile);
+            MakeSchemaForConfed(configSchema, templates);
+            writer->write(configSchema, &f);
+        }
+        std::ifstream  src(resultingSchemaFile, std::ios::binary);
+        std::ofstream  dst("/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json",   std::ios::binary);
+        dst << src.rdbuf();
     }
 
     void ParseCommadLine(int                           argc,
@@ -169,8 +194,8 @@ int main(int argc, char *argv[])
     WBMQTT::TMosquittoMqttConfig mqttConfig;
     string configFilename(CONFIG_FULL_FILE_PATH);
 
-    WBMQTT::SignalHandling::Handle({ SIGINT });
-    WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ WBMQTT::SignalHandling::Stop(); });
+    WBMQTT::SignalHandling::Handle({ SIGINT, SIGTERM });
+    WBMQTT::SignalHandling::OnSignals( {SIGINT, SIGTERM }, [&]{ WBMQTT::SignalHandling::Stop(); });
     WBMQTT::SetThreadName(BIN_NAME);
 
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
@@ -187,6 +212,8 @@ int main(int argc, char *argv[])
             templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
         } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
         }
+
+        SchemaForConfed(templates);
 
         handlerConfig = LoadConfig(configFilename,
                                   deviceFactory,
@@ -215,7 +242,7 @@ int main(int argc, char *argv[])
         );
 
         driver->StartLoop();
-        WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ driver->StopLoop(); });
+        WBMQTT::SignalHandling::OnSignals({ SIGINT, SIGTERM },  [&]{ driver->StopLoop(); });
 
         driver->WaitForReady();
 
@@ -223,7 +250,7 @@ int main(int argc, char *argv[])
 
         serialDriver->Start();
 
-        WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ serialDriver->Stop(); });
+        WBMQTT::SignalHandling::OnSignals({ SIGINT, SIGTERM }, [&]{ serialDriver->Stop(); });
         WBMQTT::SignalHandling::SetOnTimeout(SERIAL_DRIVER_STOP_TIMEOUT_S, [&]{
             LOG(Error) << "Driver takes too long to stop. Exiting.";
             exit(1);

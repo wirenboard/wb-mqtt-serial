@@ -228,29 +228,26 @@
       "properties": {
         "device_type": {
           "type": "string"
-        },
-        "slave_id": { "$ref": "#/definitions/slave_id" }
+        }
       },
       "allOf": [
-        { "$ref": "#/definitions/customDevice" }
+        { "$ref": "#/definitions/customDevice" },
+        { "$ref": "#/definitions/deviceCommon" }
       ],
       "required": ["device_type", "slave_id"]
     },
     "untypedCustomDevice": {
       "type": "object",
       "title": "Custom device",
-      "properties": {
-        "slave_id": { "$ref": "#/definitions/slave_id" }
-      },
       "allOf": [
-        { "$ref": "#/definitions/customDevice" }
+        { "$ref": "#/definitions/customDevice" },
+        { "$ref": "#/definitions/deviceCommon" }
       ],
       "not": { "required": ["device_type"] },
       "required": ["slave_id"],
       "defaultProperties": ["slave_id"]
     },
     "deviceCommon": {
-      "headerTemplate": "{{|self.device_type|}}{{ (slave id |self.slave_id|)}}{{ (name: |self.name|)}}",
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -272,6 +269,20 @@
           "description": "Used as part of the topic",
           "minLength": 1,
           "propertyOrder": 4
+        },
+        "slave_id": {
+          "title": "Slave id of the device",
+          "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
+          "propertyOrder": 3,
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$"
+            },
+            {
+              "type": "integer"
+            }
+          ]
         },
         "poll_interval": {
           "type": "integer",
@@ -370,25 +381,17 @@
       }
     },
     "device": {
-      "headerTemplate": "{{self.name}} {{slave id: |self.slave_id|}}",
       "title": "Device",
       "oneOf": [
-        { 
-          "$_devicesDefinitions": {
-            "directories": ["/usr/share/wb-mqtt-serial/templates", "/etc/wb-mqtt-serial.conf.d/templates"],
-            "pointer": [ "/device_type", "/setup_schema", "/device/channels" ],
-            "pattern": "^.*\\.json$"
-          }
-        },
+        { "$ref": "#/definitions/typedCustomDevice" },
         { "$ref": "#/definitions/untypedCustomDevice" }
       ],
       "options": {
         "disable_edit_json": true,
+        "disable_properties": true,
+        "disable_collapse": true,
         "keep_oneof_values": false
-      },
-      "allOf": [
-        { "$ref": "#/definitions/deviceCommon" }
-      ]
+      }
     },
     "setup_cmd": {
       "type": "object",
@@ -603,15 +606,11 @@
     },
     "channelSettings": {
       "type": "object",
-      "id": "arr_item",
       "properties": {
         "name": {
           "type": "string",
           "title": "Control name",
-          "template": "{{cname}}",
-          "watch": {
-            "cname": "arr_item.hidden_name"
-          }
+          "readOnly": true
         },
         "enabled": {
           "type": "boolean",
@@ -623,12 +622,11 @@
           "type": "integer",
           "title": "Poll interval (ms)",
           "minimum": 0,
-          "default": 20
-        },
-        "hidden_name": {
-          "type": "string",
+          "default": 20,
           "options": {
-            "hidden": true
+            "enabled": {
+              "poll": true
+            }
           }
         }
       }
@@ -745,20 +743,6 @@
           "title": "Bits",
           "type": "string",
           "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$"
-        }
-      ]
-    },
-    "slave_id": {
-      "title": "Slave id of the device",
-      "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
-      "propertyOrder": 3,
-      "oneOf": [
-        {
-          "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$"
-        },
-        {
-          "type": "integer"
         }
       ]
     }
