@@ -379,8 +379,7 @@
                   "disable_properties": true
                 },
                 "required": ["title", "address", "value"]
-            },
-            { "$ref": "#/definitions/setup_cmd" }
+            }
         ],
         "options": {
             "keep_oneof_values": false

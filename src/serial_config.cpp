@@ -617,7 +617,11 @@ const std::map<std::string, Json::Value>& TTemplateMap::GetTemplates()
         } catch (const std::runtime_error& e) {
             throw std::runtime_error("File: " + file.second + " error: " + e.what());
         }
-        ValidTemplates.emplace(file.first, root["device"]);
+        Json::Value v(root["device"]);
+        if (root.isMember("setup_schema")) {
+            v["setup_schema"] = root["setup_schema"];
+        }
+        ValidTemplates.emplace(file.first, v);
     }
     TemplateFiles.clear();
     return ValidTemplates;
@@ -816,7 +820,6 @@ Json::Value FilterStandardChannels(Json::Value& device, TTemplateMap& templates)
     for (Json::Value& ch: device["standard_channels"]) {
         auto it = regs.find(ch["name"].asString());
         if (it != regs.end()) {
-            ch.removeMember("hidden_name");
             bool hasPollInterval = false;
             if (ch.isMember("poll_interval")) {
                 hasPollInterval = true;
@@ -852,27 +855,27 @@ Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Val
             Json::Value customChannels;
             Json::Value standardChannels;
             std::tie(standardChannels, customChannels) = SplitChannels(device, templates);
-            if ( customChannels.size() ) {
-                device["channels"] = customChannels;
-            } else {
-                device.removeMember("channels");
-            }
-            if ( standardChannels.size() ) {
-                device["standard_channels"] = standardChannels;
-            }
             if (device.isMember("device_type")) {
+                Json::Value newDev;
                 auto dt = device["device_type"].asString();
-                device[GetHashedParam(dt, "slave_id")] = device["slave_id"];
+                newDev["device_type"] = dt;
+                device.removeMember("device_type");
+                newDev["slave_id"] = device["slave_id"];
                 device.removeMember("slave_id");
                 if (device.isMember("name")) {
-                    device[GetHashedParam(dt, "name")] = device["name"];
+                    newDev["name"] = device["name"];
                     device.removeMember("name");
                 }
-                if (device.isMember("standard_channels")) {
-                    device[GetHashedParam(dt, "standard_channels")] = device["standard_channels"];
-                    device.removeMember("standard_channels");
+                if ( customChannels.size() ) {
+                    device["channels"] = customChannels;
+                } else {
+                    device.removeMember("channels");
                 }
-                device.removeMember("device_type");
+                if ( standardChannels.size() ) {
+                    device["standard_channels"] = standardChannels;
+                }
+                newDev[GetHashedParam(dt, "s")] = device;
+                device = newDev;
             }
         }
     }
@@ -891,6 +894,14 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 
     for (Json::Value& port : root["ports"]) {
         for (Json::Value& device : port["devices"]) {
+            if (device.isMember("device_type")) {
+                auto sName = GetHashedParam(device["device_type"].asString(), "s");
+                auto& s = device[sName];
+                for (Json::Value::iterator it = s.begin(); it != s.end(); ++it) {
+                    device[it.name()] = s[it.name()];
+                }
+                device.removeMember(sName);
+            }
             Json::Value filteredChannels = FilterStandardChannels(device, templates);
             device.removeMember("standard_channels");
             if ( device.isMember("channels") ) {
@@ -913,42 +924,59 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 //  {
 //      "type": "object",
 //      "title": DEVICE_TYPE,
-//      "headerTemplate": "{{|self.name_DEVICE_HASH|}}{{ slave id:|self.slave_id_DEVICE_HASH|}}",
 //      "options": {
 //          "disable_edit_json": true
 //      },
-//      "required": ["slave_id_DEVICE_HASH"],
-//      "defaultProperties": ["slave_id_DEVICE_HASH"],
+//      "required": ["device_type", "slave_id"],
+//      "defaultProperties": ["device_type", "slave_id"],
 //      "properties": {
-//          "slave_id_DEVICE_HASH": {"$ref", "#/definitions/slave_id"},
-//          "name_DEVICE_HASH": {"$ref", "#/definitions/device_name"},
-//          "settings_DEVICE_HASH": {
+//          "slave_id": {
+//              "title": "Slave id",
+//              "$ref": "#/definitions/slave_id"
+//          },
+//          "device_name" : {
+//              "$ref" : "#/definitions/device_name",
+//              "title" : "Device name"
+//          }
+//          "device_type": {
+//              "type": "string",
+//              "enum": [ DEVICE_TYPE ],
+//              "options": {
+//                  "hidden": true
+//              }
+//          },
+//          "s_DEVICE_HASH": {
 //              "title": "Settings",
 //              "allOf": [
 //                  { "$ref": "#/definitions/deviceCommon" },
-//                  SETUP_SCHEMA
 //              ],
-//              "propertyOrder": 3
-//          }
-//          "standard_channels_DEVICE_HASH": {
-//              "type": "array",
-//              "_format": "table",
-//              "title": "List of standard channels",
-//              "description": "Lists device registers and their corresponding controls",
-//              "items": { "$ref": "#/definitions/channelSettings" },
-//              "default": [
-//                  {
-//                      "name": CHANNEL_NAME,
-//                      "poll_interval": POLL_INTERVAL
-//                  },
-//                  ....
-//              ],
-//              "options": {
-//                  "disable_array_delete": true,
-//                  "disable_array_reorder": true,
-//                  "disable_array_add": true
+//              "properties": {
+//                  "setup": SETUP_SCHEMA,
+//                  "standard_channels": {
+//                      "type": "array",
+//                      "_format": "table",
+//                      "title": "List of standard channels",
+//                      "items": { "$ref": "#/definitions/channelSettings" },
+//                      "default": [
+//                          {
+//                              "name": CHANNEL_NAME,
+//                              "poll_interval": POLL_INTERVAL
+//                          },
+//                          ....
+//                      ],
+//                      "options": {
+//                          "disable_array_delete": true,
+//                          "disable_array_reorder": true,
+//                          "disable_array_add": true,
+//                          "collapsed": true
+//                      },
+//                      "propertyOrder": 9
+//                  }
 //              },
-//              "propertyOrder": 4
+//              "options": {
+//                  "disable_edit_json": true
+//              },
+//              "defaultProperties": ["enabled"]
 //          }
 //      }
 //  }
@@ -957,38 +985,41 @@ Json::Value MakeDeviceUISchema(const std::string& deviceType, const Json::Value&
     Json::Value res;
     res["type"] = "object";
     res["title"] = deviceType;
-    res["headerTemplate"] = "{{self." + GetHashedParam(deviceType, "name") + "}}{{ slave id:|self." + GetHashedParam(deviceType, "slave_id") + "|}}",
     res["options"]["disable_edit_json"] = true;
 
     Json::Value req(Json::arrayValue);
-    req.append(GetHashedParam(deviceType, "slave_id"));
+    req.append("device_type");
+    req.append("slave_id");
     res["required"] = req;
     res["defaultProperties"] = req;
 
-    res["properties"][GetHashedParam(deviceType, "slave_id")]["$ref"] = "#/definitions/slave_id";
-    res["properties"][GetHashedParam(deviceType, "slave_id")]["title"] = "Slave id of the device";
+    res["properties"]["slave_id"]["title"] = "Slave id";
+    res["properties"]["slave_id"]["$ref"] = "#/definitions/slave_id";
 
-    res["properties"][GetHashedParam(deviceType, "name")]["$ref"] = "#/definitions/device_name";
-    res["properties"][GetHashedParam(deviceType, "name")]["title"] = "Device name";
+    res["properties"]["device_name"]["title"] = "Device name";
+    res["properties"]["device_name"]["$ref"] = "#/definitions/device_name";
+
+    res["properties"]["device_type"]["type"] = "string";
+    res["properties"]["device_type"]["options"]["hidden"] = true;
+    req.clear();
+    req.append(deviceType);
+    res["properties"]["device_type"]["enum"] = req;
 
     Json::Value ar(Json::arrayValue);
     Json::Value ref;
     ref["$ref"] = "#/definitions/deviceCommon";
     ar.append(ref);
-    if (t.isMember("setup_schema")) {
-        ar.append(t["setup_schema"]);
-    }
 
-    auto set = GetHashedParam(deviceType, "settings");
+    auto set = GetHashedParam(deviceType, "s");
     if (ar.size()) {
         res["properties"][set]["allOf"] = ar;
     }
     res["properties"][set]["title"] = "Settings";
-    res["properties"][set]["propertyOrder"] = 3;
     res["properties"][set]["type"] = "object";
-    res["properties"][set]["options"]["disabele_edit_json"] = true;
-
-    auto stChan = GetHashedParam(deviceType, "standard_channels");
+    res["properties"][set]["options"]["disable_edit_json"] = true;
+    ar.clear();
+    ar.append("enabled");
+    res["properties"][set]["defaultProperties"] = ar;
 
     const auto& channels = t["channels"];
     Json::Value def(Json::arrayValue);
@@ -1007,16 +1038,20 @@ Json::Value MakeDeviceUISchema(const std::string& deviceType, const Json::Value&
         }
         def.append(v);
     }
-    res["properties"][stChan]["default"] = def;
-    res["properties"][stChan]["type"] = "array";
-    res["properties"][stChan]["_format"] = "table";
-    res["properties"][stChan]["title"] = "List of standard channels";
-    res["properties"][stChan]["description"] = "Lists device registers and their corresponding controls";
-    res["properties"][stChan]["items"]["$ref"] = "#/definitions/channelSettings";
-    res["properties"][stChan]["options"]["disable_array_delete"] = true;
-    res["properties"][stChan]["options"]["disable_array_reorder"] = true;
-    res["properties"][stChan]["options"]["disable_array_add"] = true;
-    res["properties"][stChan]["propertyOrder"] = 4;
+    res["properties"][set]["properties"]["standard_channels"]["default"] = def;
+    res["properties"][set]["properties"]["standard_channels"]["type"] = "array";
+    res["properties"][set]["properties"]["standard_channels"]["_format"] = "table";
+    res["properties"][set]["properties"]["standard_channels"]["title"] = "List of standard channels";
+    res["properties"][set]["properties"]["standard_channels"]["propertyOrder"] = 9;
+    res["properties"][set]["properties"]["standard_channels"]["items"]["$ref"] = "#/definitions/channelSettings";
+    res["properties"][set]["properties"]["standard_channels"]["options"]["disable_array_delete"] = true;
+    res["properties"][set]["properties"]["standard_channels"]["options"]["disable_array_reorder"] = true;
+    res["properties"][set]["properties"]["standard_channels"]["options"]["disable_array_add"] = true;
+    res["properties"][set]["properties"]["standard_channels"]["options"]["collapsed"] = true;
+
+    if (t.isMember("setup_schema")) {
+        res["properties"][set]["properties"]["setup"] = t["setup_schema"];
+    }
 
     return res;
 }

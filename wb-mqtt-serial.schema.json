@@ -56,6 +56,9 @@
     "serialPort": {
       "title": "Serial port",
       "type": "object",
+      "allOf": [
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
       "properties": {
         "port_type": {
           "type": "string",
@@ -109,6 +112,9 @@
     },
     "commonTcpPortSettings": {
       "type": "object",
+      "allOf": [
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
       "properties": {
         "address": {
           "type": "string",
@@ -199,10 +205,7 @@
       "options": {
         "keep_oneof_values": false,
         "disable_collapse" : true
-      },
-      "allOf": [
-        { "$ref" : "#/definitions/commonPortSettings"}
-      ]
+      }
     },
     "customDevice": {
       "properties": {
@@ -228,13 +231,19 @@
       "properties": {
         "device_type": {
           "type": "string"
+        },
+        "slave_id" : {
+          "$ref" : "#/definitions/slave_id"
+        },
+        "device_name": {
+          "$ref" : "#/definitions/device_name"
         }
       },
       "allOf": [
         { "$ref": "#/definitions/customDevice" },
         { "$ref": "#/definitions/deviceCommon" }
       ],
-      "required": ["device_type", "slave_id"]
+      "required": ["device_type"]
     },
     "untypedCustomDevice": {
       "type": "object",
@@ -243,16 +252,21 @@
         { "$ref": "#/definitions/customDevice" },
         { "$ref": "#/definitions/deviceCommon" }
       ],
-      "not": { "required": ["device_type"] },
-      "required": ["slave_id"],
-      "defaultProperties": ["slave_id"]
-    },
-    "device_name": {
-      "type": "string",
-      "title": "Device name",
-      "description": "Device name to be displayed in UI",
-      "minLength": 1,
-      "propertyOrder": 2
+      "properties": {
+        "slave_id" : {
+          "$ref" : "#/definitions/slave_id",
+          "title" : "Slave id"
+        },
+        "device_name" : {
+          "$ref" : "#/definitions/device_name",
+          "title" : "Device name"
+        }
+      },
+      "defaultProperties" : [
+        "slave_id",
+        "channels"
+      ],
+      "not": { "required": ["device_type"] }
     },
     "slave_id": {
       "title": "Slave id of the device",
@@ -267,6 +281,13 @@
           "type": "integer"
         }
       ]
+    },
+    "device_name": {
+      "description" : "Device name to be displayed in UI",
+      "minLength" : 1,
+      "propertyOrder" : 2,
+      "title" : "Device name",
+      "type" : "string"
     },
     "deviceCommon": {
       "properties": {
@@ -297,7 +318,10 @@
           "title": "List of custom channels",
           "description": "Lists device's custom registers and their corresponding controls",
           "items": { "$ref": "#/definitions/channel" },
-          "propertyOrder": 10
+          "propertyOrder": 10,
+          "options": {
+            "collapsed": true
+          }
         },
         "password": {
           "type": "array",
@@ -382,6 +406,7 @@
     },
     "device": {
       "title": "Device",
+      "headerTemplate": "{{self.device_name}}{{ (slave id: |self.slave_id|)}}",
       "oneOf": [
         { "$ref": "#/definitions/typedCustomDevice" },
         { "$ref": "#/definitions/untypedCustomDevice" }
@@ -700,7 +725,6 @@
     "format": {
       "type": "string",
       "title": "Format",
-      "description": "s=signed, u=unsigned, the number indicates the number of bits",
       "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"],
       "options": {
         "enum_titles" : [ "Signed 16-bit integer", "Unsigned 16-bit integer", "Signed 8-bit integer", "Unsigned 8-bit integer",
@@ -713,7 +737,6 @@
     "word_order": {
       "type": "string",
       "title": "16-bit Word Order",
-      "description": "s=signed, u=unsigned, the number indicates the number of bits",
       "enum": ["big_endian", "little_endian"],
       "options": {
         "enum_titles" : [ "Big-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD)",
