@@ -1,6 +1,6 @@
 #include "iec_common.h"
 
-#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include "serial_port.h"
 
@@ -19,7 +19,9 @@ namespace
 
         void WriteBytes(const uint8_t* buf, int count) override
         {
-            ASSERT_THAT(std::vector<uint8_t>(buf, buf + count), ::testing::ElementsAreArray(ExpectWrite));
+            ASSERT_EQ(count, ExpectWrite.size());
+            for (int i = 0; i < count; ++i)
+                ASSERT_EQ(buf[i], ExpectWrite[i]) << i;
         }
 
         size_t ReadFrame(uint8_t* buf,
@@ -50,7 +52,9 @@ namespace
         {
             std::vector<uint8_t> readBuf(expectReadArray.size(), 0);
             iecPort->ReadFrame(readBuf.data(), readBuf.size(), std::chrono::microseconds::zero(), std::chrono::microseconds::zero());
-            ASSERT_THAT(readBuf, ::testing::ElementsAreArray(expectReadArray));
+            ASSERT_EQ(readBuf.size(), expectReadArray.size());
+            for (size_t i = 0; i < readBuf.size(); ++i)
+                ASSERT_EQ(readBuf[i], expectReadArray[i]) << i;
         }
     }
 
@@ -88,7 +92,8 @@ TEST(TIECTest, CheckStripParity)
 {
     uint8_t b1[] = {0x81, 0x82, 0x03, 0x84};
     IEC::CheckStripEvenParity(b1, sizeof(b1));
-    ASSERT_THAT(b1, ::testing::ElementsAreArray({0x1, 0x2, 0x3, 0x4}));
+    for (size_t i = 0; i < sizeof(b1); ++i)
+        ASSERT_EQ(b1[i], i + 1);
 
     uint8_t b2[] = {0x81, 0x2, 0x3, 0x84};
     ASSERT_THROW(IEC::CheckStripEvenParity(b2, sizeof(b2)), TSerialDeviceTransientErrorException);
