@@ -1,4 +1,5 @@
 Debug: 0
+PublishParams: 0 0
 Ports:
     ------
     ConnSettings: </dev/ttyNSC0 9600 8 N 2>
