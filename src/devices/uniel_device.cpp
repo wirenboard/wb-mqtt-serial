@@ -23,7 +23,7 @@ namespace {
     };
 }
 
-REGISTER_BASIC_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
+REGISTER_UINT_SLAVE_ID_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
             { TUnielDevice::REG_RELAY, "relay", "switch", U8 },
             { TUnielDevice::REG_INPUT, "input", "text", U8, true },
             { TUnielDevice::REG_PARAM, "param", "value", U8 },

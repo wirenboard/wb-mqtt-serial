@@ -3,7 +3,7 @@
 
 using namespace std;
 
-REGISTER_BASIC_PROTOCOL("fake", TFakeSerialDevice, TRegisterTypes({
+REGISTER_UINT_SLAVE_ID_PROTOCOL("fake", TFakeSerialDevice, TRegisterTypes({
     { TFakeSerialDevice::REG_FAKE, "fake", "text", U16 },
 }));
 

@@ -227,7 +227,7 @@
         },
         "slave_id": {
           "title": "Slave id of the device",
-          "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
+          "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF). Leave empty for broadcast messages",
           "propertyOrder": 3,
           "$ref": "#/definitions/slave_id"
         },
@@ -356,7 +356,6 @@
           "propertyOrder": 18
         }
       },
-      "required": ["slave_id"],
       "defaultProperties": ["slave_id", "device_type"]
     },
     "setup_cmd": {
@@ -670,8 +669,7 @@
     "slave_id": {
       "oneOf": [
         {
-          "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$"
+          "type": "string"
         },
         {
           "type": "integer"

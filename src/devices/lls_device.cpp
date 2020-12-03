@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-REGISTER_BASIC_PROTOCOL("lls", TLLSDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
+REGISTER_UINT_SLAVE_ID_PROTOCOL("lls", TLLSDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
 TLLSDevice::TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
