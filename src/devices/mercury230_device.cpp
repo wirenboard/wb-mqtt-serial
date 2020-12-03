@@ -3,7 +3,7 @@
 #include "mercury230_device.h"
 #include "crc16.h"
 
-REGISTER_BASIC_PROTOCOL("mercury230", TMercury230Device, TRegisterTypes({
+REGISTER_UINT_SLAVE_ID_PROTOCOL_WITH_BROADCAST("mercury230", TMercury230Device, TRegisterTypes({
             { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },
             { TMercury230Device::REG_VALUE_ARRAY12, "array12", "power_consumption", U32, true },
             { TMercury230Device::REG_PARAM, "param", "value", U24, true },

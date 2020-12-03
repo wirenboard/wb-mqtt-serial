@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.6.0) unstable; urgency=medium
+
+  * Support for broadcast messages in energomera_iec, neva and mercury230 protocols is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 02 Dec 2020 14:23:00 +0500
+
 wb-mqtt-serial (2.5.1) experimental; urgency=medium
 
   * Build fixes.
