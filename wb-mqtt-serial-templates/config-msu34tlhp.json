@@ -4,7 +4,7 @@
     "device": {
         "name": "MSU34+TLHP",
         "id": "msu34tlhp",
-        "enabled": true,
+        "frame_timeout_ms": 0,
         "channels": [
             {
                 "name": "Illuminance",

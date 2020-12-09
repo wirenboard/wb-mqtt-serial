@@ -376,9 +376,9 @@ namespace {
             LOG(Warn) << "\"delay_ms\" is not supported, use \"frame_timeout_ms\" instead";
         }
 
-        Get(device_data, "frame_timeout_ms",       device_config->FrameTimeout);
+        Get(device_data, "frame_timeout_ms", device_config->FrameTimeout);
         if (device_config->FrameTimeout.count() < 0) {
-            device_config->FrameTimeout = std::chrono::milliseconds::zero();
+            device_config->FrameTimeout = DefaultFrameTimeout;
         }
         Get(device_data, "response_timeout_ms",    device_config->ResponseTimeout);
         Get(device_data, "device_timeout_ms",      device_config->DeviceTimeout);

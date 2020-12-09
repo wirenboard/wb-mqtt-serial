@@ -4,6 +4,7 @@
         "name": "Milur 105",
         "id": "milur105",
         "protocol": "milur",
+        "frame_timeout_ms": 0,
         "channels": [
             {
                 "name": "Voltage",

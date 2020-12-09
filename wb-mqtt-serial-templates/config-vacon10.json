@@ -4,6 +4,7 @@
         "name": "VACON_10",
         "id": "vacon_10",
         "max_read_registers": 0,
+        "frame_timeout_ms": 0,
         "setup" : [
             {
                 "title": "Communication timeout",
