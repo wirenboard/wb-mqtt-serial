@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.6.1) unstable; urgency=medium
+
+  * More permissive config validation allowing additional fields in channel description.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 09 Dec 2020 18:39:00 +0500
+
 wb-mqtt-serial (2.6.0) unstable; urgency=medium
 
   * Support for broadcast messages in energomera_iec, neva and mercury230 protocols is added

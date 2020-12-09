@@ -489,9 +489,9 @@
           "propertyOrder": 14
         }
       },
-      "additionalProperties": false,
       // FIXME: require "reg_type" and "address" for non-templated devices
       "required": ["name"],
+      "not": { "required": ["consists_of"] },
       "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale", "offset"],
       "_format": "grid"
     },
@@ -536,7 +536,6 @@
           "propertyOrder": 4
         }
       },
-      "additionalProperties": false,
       "required": ["name", "consists_of"],
       "defaultProperties": ["name", "consists_of"]
     },
