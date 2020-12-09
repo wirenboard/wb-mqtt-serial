@@ -4,6 +4,7 @@
     "device": {
         "name": "WP3066ADAM",
         "id": "wp3066adam",
+        "frame_timeout_ms": 0,
         "channels": [
             {
                 "name": "Temp 1",

@@ -4,6 +4,7 @@
     "device": {
         "name": "Kvadro 1-Wire",
         "id": "kvadro-1wire",
+        "frame_timeout_ms": 0,
         "channels": [
             {
                 "name": "Temp 1",
