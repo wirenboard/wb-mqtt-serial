@@ -247,7 +247,7 @@
           "title": "Device type",
           "description": "Selects device template",
           "enum": {
-            "directories": ["/usr/share/wb-mqtt-serial/templates"],
+            "directories": ["/usr/share/wb-mqtt-serial/templates", "/etc/wb-mqtt-serial.conf.d/templates"],
             "pointer": "/device_type",
             "pattern": "^.*\\.json$"
           },
