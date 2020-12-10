@@ -6,7 +6,7 @@ wb-mqtt-serial (2.6.2) unstable; urgency=medium
 
 wb-mqtt-serial (2.6.1) unstable; urgency=medium
 
-* Default frame_timeout_ms value for MAP's is changed.
+  * Default frame_timeout_ms value for MAP's is changed.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 02 Dec 2020 09:07:00 +0500
 
