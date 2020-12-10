@@ -23,7 +23,7 @@ Error 7
   desc: Failed to validate against child schema #0.
 Error 8
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'address'.
+  desc: Missing required property 'consists_of'.
 Error 9
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
@@ -968,7 +968,7 @@ Error 7
   desc: Failed to validate against child schema #0.
 Error 8
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'address'.
+  desc: Missing required property 'consists_of'.
 Error 9
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
@@ -1109,8 +1109,8 @@ Error 54
   desc: Failed to validate against child schema #0.
 Error 55
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'address'.
-Error 56
+  desc: Missing required property 'consists_of'.
+Error 9
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
 Error 57
@@ -1211,8 +1211,8 @@ Error 88
   desc: Failed to validate against child schema #0.
 Error 89
   context: <root>[ports][0][devices][0][channels][0]
-  desc: Object contains a property that could not be validated using 'properties' or 'additionalProperties' constraints: 'address'.
-Error 90
+  desc: Missing required property 'consists_of'.
+Error 9
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
 Error 91

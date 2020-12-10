@@ -16,6 +16,7 @@
           "id": "reduced_energomera",
           "enabled": true,
           "protocol": "energomera_iec",
+          "frame_timeout_ms": 0,
           "channels": [
             {
                 "name": "Frequency",

@@ -5,7 +5,7 @@
 
 #include "pulsar_device.h"
 
-REGISTER_BASIC_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
+REGISTER_UINT_SLAVE_ID_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
     { TPulsarDevice::REG_DEFAULT, "default", "value", Double, true },
     { TPulsarDevice::REG_SYSTIME, "systime", "value", U64, true }
 }));

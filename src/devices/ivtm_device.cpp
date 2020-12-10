@@ -14,7 +14,7 @@
 
 #include "ivtm_device.h"
 
-REGISTER_BASIC_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
+REGISTER_UINT_SLAVE_ID_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
 
 TIVTMDevice::TIVTMDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)

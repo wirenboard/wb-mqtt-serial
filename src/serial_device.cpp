@@ -183,8 +183,14 @@ PRegisterTypeMap TSerialDeviceFactory::GetRegisterTypes(PDeviceConfig device_con
     return GetProtocolEntry(device_config)->GetRegTypes();
 }
 
-TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId)
+TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)
 {
+    if (allowBroadcast) {
+        if (slaveId.empty()) {
+            HasBroadcastSlaveId = true;
+            return;
+        }
+    }
     try {
         SlaveId = std::stoul(slaveId, /* pos = */ 0, /* base = */ 0);
     } catch (const std::logic_error &e) {
@@ -194,5 +200,8 @@ TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId)
 
 bool TUInt32SlaveId::operator==(const TUInt32SlaveId& id) const
 {
+    if (HasBroadcastSlaveId || id.HasBroadcastSlaveId) {
+        return true;
+    }
     return SlaveId == id.SlaveId;
 }

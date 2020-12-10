@@ -12,7 +12,7 @@
 
 #include "s2k_device.h"
 
-REGISTER_BASIC_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
+REGISTER_UINT_SLAVE_ID_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
         {
             { TS2KDevice::REG_RELAY, "relay", "switch", U8 },
             { TS2KDevice::REG_RELAY_MODE, "relay_mode", "value", U8, true },

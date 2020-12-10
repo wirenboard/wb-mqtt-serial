@@ -16,7 +16,7 @@ Ports:
         GuardInterval: 20000
         DeviceTimeout: 3000
         Response timeout: 500
-        Frame timeout: 0
+        Frame timeout: 20
         DeviceChannels:
             ------
             Name: Illuminance
@@ -124,7 +124,7 @@ Ports:
         GuardInterval: 0
         DeviceTimeout: 3000
         Response timeout: 500
-        Frame timeout: 0
+        Frame timeout: 20
         DeviceChannels:
             ------
             Name: uint16
@@ -268,7 +268,7 @@ Ports:
         GuardInterval: 1000
         DeviceTimeout: 2000
         Response timeout: 222
-        Frame timeout: 0
+        Frame timeout: 20
         DeviceChannels:
             ------
             Name: Relay 1
@@ -364,7 +364,7 @@ Ports:
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222
-        Frame timeout: 0
+        Frame timeout: 20
         DeviceChannels:
             ------
             Name: RGB
@@ -442,7 +442,7 @@ Ports:
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222
-        Frame timeout: 0
+        Frame timeout: 20
         DeviceChannels:
             ------
             Name: Chan 1
@@ -475,7 +475,7 @@ Ports:
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222
-        Frame timeout: 0
+        Frame timeout: 20
         DeviceChannels:
             ------
             Name: Chan 1
@@ -508,7 +508,7 @@ Ports:
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222
-        Frame timeout: 0
+        Frame timeout: 20
         DeviceChannels:
             ------
             Name: Input

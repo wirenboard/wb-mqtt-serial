@@ -4,7 +4,7 @@
     "device": {
         "name": "MSU34+TLP",
         "id": "msu34tlp",
-        "enabled": true,
+        "frame_timeout_ms": 0,
         "channels": [
             {
                 "name": "Temp 1",
