@@ -89,7 +89,9 @@ namespace
 
         PDeviceConfig GetDeviceConfig()
         {
-            return std::make_shared<TDeviceConfig>("neva32x", "00000201", "neva");
+            auto cfg = std::make_shared<TDeviceConfig>("neva32x", "00000201", "neva");
+            cfg->FrameTimeout = std::chrono::milliseconds::zero();
+            return cfg;
         }
     };
 

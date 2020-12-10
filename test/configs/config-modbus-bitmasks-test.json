@@ -17,6 +17,7 @@
             "name": "Modbus-sample",
             "id": "modbus-sample",
             "max_read_registers": 1,
+            "frame_timeout_ms": 0,
             "channels": [
                 {
                     "name" : "U8:0:8",

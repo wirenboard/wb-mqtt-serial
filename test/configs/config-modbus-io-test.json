@@ -11,18 +11,20 @@
         "poll_interval": 100,
         "enabled": true,
         "devices" : [
-        {
-            "slave_id": "1:1",
-            "device_type" : "ModbusI-test-device",
-            "name": "ModbusIO_1_1",
-            "id": "modbus-io-1-1"
-        },
-        {
-            "slave_id": "1:2",
-            "device_type" : "ModbusO-test-device",
-            "name": "ModbusIO_1_2",
-            "id": "modbus-io-1-2"
-        }
+            {
+                "slave_id": "1:1",
+                "device_type" : "ModbusI-test-device",
+                "name": "ModbusIO_1_1",
+                "id": "modbus-io-1-1",
+                "frame_timeout_ms": 0
+            },
+            {
+                "slave_id": "1:2",
+                "device_type" : "ModbusO-test-device",
+                "name": "ModbusIO_1_2",
+                "id": "modbus-io-1-2",
+                "frame_timeout_ms": 0
+            }
         ]
     }
     ]

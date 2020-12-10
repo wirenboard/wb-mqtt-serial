@@ -4,7 +4,7 @@
         "name": "DDL04R",
         "id": "ddl04r",
         "max_read_registers": 4,
-        "enabled": true,
+        "frame_timeout_ms": 0,
         "channels": [
             {
                 "name": "Channel 1",

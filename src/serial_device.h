@@ -54,6 +54,7 @@ const int DEFAULT_ACCESS_LEVEL       = 1;
 const int DEFAULT_DEVICE_FAIL_CYCLES = 2;
 
 const std::chrono::milliseconds DefaultPollInterval(20);
+const std::chrono::milliseconds DefaultFrameTimeout(20);
 const std::chrono::milliseconds DefaultResponseTimeout(500);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 
@@ -72,7 +73,7 @@ struct TDeviceConfig
     std::chrono::milliseconds           ResponseTimeout        = std::chrono::milliseconds(-1);
 
     //! Minimum inter-frame delay.
-    std::chrono::milliseconds           FrameTimeout           = std::chrono::milliseconds::zero();
+    std::chrono::milliseconds           FrameTimeout           = DefaultFrameTimeout;
 
     //! The period of unsuccessful requests after which the device is considered disconected.
     std::chrono::milliseconds           DeviceTimeout          = DefaultDeviceTimeout;
