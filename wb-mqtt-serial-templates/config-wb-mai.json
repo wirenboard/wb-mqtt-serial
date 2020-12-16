@@ -1,0 +1,3624 @@
+{
+    "device_type": "WB-MAI",
+    "device": {
+        "name": "WB-MAI",
+        "id": "wb-mai",
+        "max_read_registers": 4,
+        "frame_timeout_ms": 0,
+        "channels": [
+            {
+                "name": "Channel 1",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 4096,
+                "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Channel 2",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 8192,
+                "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Channel 3",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 12288,
+                "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Channel 4",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 16384,
+                "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Channel 5",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 20480,
+                "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Channel 6",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 24576,
+                "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Channel 7",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 28672,
+                "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Channel 8",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 32768,
+                "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Channel 9",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 36864,
+                "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Channel 10",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 40960,
+                "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Channel 11",
+                "oneOf": [
+                    "thermocouple ТХА (K)",
+                    "NTC thermistor 10k (B = 3988 K)",
+                    "IN_P: current measurement 4 to 20 mA",
+                    "IN_P: dry contact sensor",
+                    "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                    "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                    "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "IN_P: current measurement 0 to 5 mA",
+                    "IN_P: current measurement 0 to 20 mA",
+                    "IN_P: voltage measurement from ratiometric sensor",
+                    "differential voltage measurement from ratiometric sensor",
+                    "IN_P: single-ended voltage measurement from 0 to 2 V",
+                    "IN_P: single-ended voltage measurement from 0 to 1 V",
+                    "voltage measurement in differential mode from -50 to 50 mV",
+                    "voltage measurement in differential mode from -2 to 2 V",
+                    "three-wire resistance measurement",
+                    "IN_P: two-wire resistance measurement",
+                    "IN_P: resistance measurement using current measurement",
+                    "IN_P: current measurement",
+                    "disabled"
+                ],
+                "shift": 45056,
+                "device_type": "thermocouple ТХА (K)"
+            }
+        ],
+        "subdevices": [
+            {
+                "device_type": "thermocouple ТХА (K)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4096"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Voltage [mV·100]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "NTC thermistor 10k (B = 3988 K)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "5888"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        },
+                        {
+                            "title": "Gain",
+                            "address": "0x040C",
+                            "enum": ["0", "1", "2", "4"],
+                            "enum_titles": [ "auto" ]
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "disabled",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "value": "0"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "current measurement",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "3"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        },
+                        {
+                            "title": "Gain",
+                            "address": "0x040C",
+                            "enum": ["0", "1", "2", "4"],
+                            "enum_titles": [ "auto" ]
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Current [mA·10000]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "current measurement 0 to 5 mA",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4864"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Current [mA·10000]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "current measurement 0 to 20 mA",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4865"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Current [mA·10000]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "current measurement 4 to 20 mA",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4866"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Current [mA·10000]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "IN_P: current measurement 4 to 20 mA",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "current measurement 4 to 20 mA"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "current measurement 4 to 20 mA",
+                                "current measurement 0 to 20 mA",
+                                "current measurement 0 to 5 mA",
+                                "current measurement",
+                                "disabled"
+                            ],
+                            "device_type": "current measurement 4 to 20 mA"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: current measurement 0 to 5 mA",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "current measurement 0 to 5 mA"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "current measurement 4 to 20 mA",
+                                "current measurement 0 to 20 mA",
+                                "current measurement 0 to 5 mA",
+                                "current measurement",
+                                "disabled"
+                            ],
+                            "device_type": "current measurement 0 to 5 mA"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: current measurement 0 to 20 mA",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "current measurement 0 to 20 mA"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "current measurement 4 to 20 mA",
+                                "current measurement 0 to 20 mA",
+                                "current measurement 0 to 5 mA",
+                                "current measurement",
+                                "disabled"
+                            ],
+                            "device_type": "current measurement 0 to 20 mA"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4352"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4353"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4354"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4355"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4368"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4369"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4370"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4371"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4384"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4385"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4386"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4387"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4400"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4401"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4402"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "dry contact sensor",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0401",
+                            "value": "5632"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "State",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "two-wire resistance measurement",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "2"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        },
+                        {
+                            "title": "Gain",
+                            "address": "0x040C",
+                            "enum": ["0", "1", "2", "4"],
+                            "enum_titles": [ "auto" ]
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "IN_P: dry contact sensor",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "dry contact sensor"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "dry contact sensor"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: two-wire resistance measurement",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "two-wire resistance measurement"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                                "dry contact sensor",
+                                "two-wire resistance measurement",
+                                "disabled"
+                            ],
+                            "device_type": "two-wire resistance measurement"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4608"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4609"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4610"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4611"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4624"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4625"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4626"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4627"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4640"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4641"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4642"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4643"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4656"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4657"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4658"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        },
+                        {
+                            "name": "Temperature [°C·10]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0504"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "voltage measurement from ratiometric sensor",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "0"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        },
+                        {
+                            "title": "Gain",
+                            "address": "0x040C",
+                            "enum": ["0", "1", "2", "4"],
+                            "enum_titles": [ "auto" ]
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Percent [%·100]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "IN_P: voltage measurement from ratiometric sensor",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "voltage measurement from ratiometric sensor"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "voltage measurement from ratiometric sensor",
+                                "disabled"
+                            ],
+                            "device_type": "voltage measurement from ratiometric sensor"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "differential voltage measurement from ratiometric sensor",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "256"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        },
+                        {
+                            "title": "Gain",
+                            "address": "0x040C",
+                            "enum": ["0", "1", "2", "4"],
+                            "enum_titles": [ "auto" ]
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Percent [%·100]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "single-ended voltage measurement from 0 to 2 V",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "1"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        },
+                        {
+                            "title": "Gain",
+                            "address": "0x040C",
+                            "enum": ["0", "1", "2", "4"],
+                            "enum_titles": [ "auto" ]
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Voltage [mV·100]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "single-ended voltage measurement from 0 to 1 V",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "5120"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Voltage [mV·100]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "IN_P: single-ended voltage measurement from 0 to 2 V",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "single-ended voltage measurement from 0 to 2 V"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "single-ended voltage measurement from 0 to 2 V",
+                                "single-ended voltage measurement from 0 to 1 V",
+                                "disabled"
+                            ],
+                            "device_type": "single-ended voltage measurement from 0 to 2 V"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: single-ended voltage measurement from 0 to 1 V",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "single-ended voltage measurement from 0 to 1 V"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "single-ended voltage measurement from 0 to 2 V",
+                                "single-ended voltage measurement from 0 to 1 V",
+                                "disabled"
+                            ],
+                            "device_type": "single-ended voltage measurement from 0 to 1 V"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "voltage measurement in differential mode from -50 to 50 mV",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "5376"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Voltage [mV·100]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "voltage measurement in differential mode from -2 to 2 V",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "257"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        },
+                        {
+                            "title": "Gain",
+                            "address": "0x040C",
+                            "enum": ["0", "1", "2", "4", "8", "16", "32", "64", "128"],
+                            "enum_titles": [ "auto" ]
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Voltage [mV·100]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "IN_P: single-ended voltage measurement from 0 to 1 V",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "single-ended voltage measurement from 0 to 1 V"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "single-ended voltage measurement from 0 to 2 V",
+                                "single-ended voltage measurement from 0 to 1 V",
+                                "disabled"
+                            ],
+                            "device_type": "single-ended voltage measurement from 0 to 1 V"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "three-wire resistance measurement",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "258"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        },
+                        {
+                            "title": "Gain",
+                            "address": "0x040C",
+                            "enum": ["0", "1", "2", "4"],
+                            "enum_titles": [ "auto" ]
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm·100]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "resistance measurement using current measurement",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": "4"
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": ["20", "45", "90", "175", "330", "600", "1000"]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404"
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406"
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408"
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A"
+                        },
+                        {
+                            "title": "Gain",
+                            "address": "0x040C",
+                            "enum": ["0", "1", "2", "4"],
+                            "enum_titles": [ "auto" ]
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Resistance [Ohm]",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "IN_P: resistance measurement using current measurement",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "resistance measurement using current measurement"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "resistance measurement using current measurement",
+                                "disabled"
+                            ],
+                            "device_type": "resistance measurement using current measurement"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "device_type": "IN_P: current measurement",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "device_type": "current measurement"
+                        },
+                        {
+                            "shift": 1,
+                            "channels_shift": 2,
+                            "name": "IN_N",
+                            "oneOf": [
+                                "current measurement 4 to 20 mA",
+                                "current measurement 0 to 20 mA",
+                                "current measurement 0 to 5 mA",
+                                "current measurement",
+                                "disabled"
+                            ],
+                            "device_type": "current measurement"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            }
+        ]
+    }
+}

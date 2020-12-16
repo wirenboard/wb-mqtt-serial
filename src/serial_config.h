@@ -20,7 +20,15 @@
 #include "port.h"
 #include "serial_device.h"
 
-class TTemplateMap 
+class ITemplateMap
+{
+    public:
+        virtual ~ITemplateMap() = default;
+
+        virtual const Json::Value& GetTemplate(const std::string& deviceType) = 0;
+};
+
+class TTemplateMap: public ITemplateMap
 {
         std::unordered_map<std::string, std::string> TemplateFiles;
         std::map<std::string, Json::Value>           ValidTemplates;
@@ -45,7 +53,7 @@ class TTemplateMap
          */
         void AddTemplatesDir(const std::string& templatesDir);
 
-        const Json::Value& GetTemplate(const std::string& deviceType);
+        const Json::Value& GetTemplate(const std::string& deviceType) override;
 
         const std::map<std::string, Json::Value>& GetTemplates();
 };

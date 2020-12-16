@@ -60,7 +60,10 @@ const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 
 struct TDeviceConfig 
 {
+    //! Part of /devices/+ topic name
     std::string                         Id;
+
+    //! Will be published in /devices/+/meta/name and used in log messages
     std::string                         Name;
     std::string                         SlaveId;
     std::string                         DeviceType;

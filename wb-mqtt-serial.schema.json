@@ -46,8 +46,7 @@
         },
         "devices": {
           "type": "array",
-          "title": "List of devices",
-          "description": "Lists devices attached to the port",
+          "title": "Devices attached to the port",
           "items": { "$ref": "#/definitions/device" },
           "propertyOrder": 11
         }
@@ -235,7 +234,7 @@
         "slave_id" : {
           "$ref" : "#/definitions/slave_id"
         },
-        "device_name": {
+        "name": {
           "$ref" : "#/definitions/device_name"
         }
       },
@@ -257,7 +256,7 @@
           "$ref" : "#/definitions/slave_id",
           "title" : "Slave id"
         },
-        "device_name" : {
+        "name" : {
           "$ref" : "#/definitions/device_name",
           "title" : "Device name"
         }
@@ -270,7 +269,7 @@
     },
     "slave_id": {
       "title": "Slave id of the device",
-      "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
+      "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF). Leave empty for broadcast messages",
       "propertyOrder": 1,
       "oneOf": [
         {
@@ -297,6 +296,16 @@
           "_format": "checkbox",
           "propertyOrder": 1
         },
+        "slave_id": {
+            "title": "Slave id",
+            "$ref": "#/definitions/slave_id",
+            "propertyOrder": 2
+        },
+        "name" : {
+            "$ref" : "#/definitions/device_name",
+            "title" : "Device name",
+            "propertyOrder": 3
+        },
         "id": {
           "type": "string",
           "title": "MQTT id of the device",
@@ -314,13 +323,13 @@
         },
         "channels": {
           "type": "array",
-          "title": "List of custom channels",
-          "description": "Lists device's custom registers and their corresponding controls",
+          "title": "Custom channels",
           "items": { "$ref": "#/definitions/channel" },
           "propertyOrder": 10,
           "options": {
             "collapsed": true
-          }
+          },
+          "_format": "tabs"
         },
         "password": {
           "type": "array",
@@ -401,23 +410,33 @@
           "default": 2,
           "propertyOrder": 20
         }
-      }
+      },
+      "required": ["slave_id"],
+      "defaultProperties": ["slave_id"]
     },
     "device": {
       "title": "Device",
-      "headerTemplate": "{{self.device_name}}{{ (slave id: |self.slave_id|)}}",
+      "headerTemplate": "",
       "oneOf": [
         { "$ref": "#/definitions/typedCustomDevice" },
         { "$ref": "#/definitions/untypedCustomDevice" }
       ],
       "options": {
         "disable_edit_json": true,
+        "disable_collapse": true,
+        "disable_properties": true,
         "keep_oneof_values": false
       }
+    },
+    "customSetupRegisters": {
+      "type": "array",
+      "title": "Custom setup registers",
+      "items": { "$ref": "#/definitions/setup_cmd" }
     },
     "setup_cmd": {
       "type": "object",
       "title": "Setup command",
+      "headerTemplate": "{{self.title}}",
       "properties": {
         "title": {
           "type": "string",
@@ -630,12 +649,45 @@
       "properties": {
         "name": {
           "type": "string",
-          "title": "Control name",
+          "options": {
+            "hidden": true
+          }
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable poll",
+          "default": true,
+          "_format": "checkbox"
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Poll interval (ms)",
+          "minimum": 0,
+          "default": 20,
+          "options": {
+            "enabled": {
+              "poll": true
+            }
+          }
+        }
+      },
+      "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true,
+        "disable_properties": true
+      }
+    },
+    "tableChannelSettings": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Parameter",
+          "type": "string",
           "readOnly": true
         },
         "enabled": {
           "type": "boolean",
-          "title": "Enabled",
+          "title": "Enable poll",
           "default": true,
           "_format": "checkbox"
         },
