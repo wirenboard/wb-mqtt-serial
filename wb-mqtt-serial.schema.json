@@ -411,8 +411,7 @@
           "propertyOrder": 20
         }
       },
-      "required": ["slave_id"],
-      "defaultProperties": ["slave_id"]
+      "required": ["slave_id"]
     },
     "device": {
       "title": "Device",

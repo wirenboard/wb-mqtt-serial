@@ -22,6 +22,9 @@ SERIAL_SRCS= \
   src/serial_client.cpp                  \
   src/register_handler.cpp               \
   src/serial_config.cpp                  \
+  src/confed_schema_generator.cpp        \
+  src/confed_json_generator.cpp          \
+  src/confed_config_generator.cpp        \
   src/serial_port_driver.cpp             \
   src/serial_driver.cpp                  \
   src/serial_port.cpp                    \

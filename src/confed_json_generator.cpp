@@ -1,0 +1,254 @@
+#include "confed_json_generator.h"
+#include "confed_schema_generator.h"
+#include "log.h"
+
+#define LOG(logger) ::logger.Log() << "[serial config] "
+
+using namespace std;
+using namespace WBMQTT::JSON;
+
+Json::Value MakeJsonFromChannelTemplate(const Json::Value& channelTemplate)
+{
+    Json::Value res;
+    res["name"] = channelTemplate["name"];
+
+    if (channelTemplate.isMember("device_type")) {
+        res["device_type"] = channelTemplate["device_type"];
+        return res;
+    }
+    if (channelTemplate.isMember("oneOf")) {
+        if (channelTemplate.isMember("default")) {
+            res["device_type"] = channelTemplate["default"];
+        } else {
+            res["device_type"] = channelTemplate["oneOf"][0].asString();
+        }
+        return res;
+    }
+    res["poll_interval"] = 20;
+    SetIfExists(res, "poll_interval", channelTemplate, "poll_interval");
+    res["enabled"] = true;
+    SetIfExists(res, "enabled", channelTemplate, "enabled");
+    return res;
+}
+
+Json::Value MakeJsonFromChannelConfig(const Json::Value& channelConfig)
+{
+    Json::Value res;
+    res["name"] = channelConfig["name"];
+    if (channelConfig.isMember("device_type")) {
+        res["device_type"] = channelConfig["device_type"];
+        SetIfExists(res, "channels", channelConfig, "channels");
+        SetIfExists(res, "setup", channelConfig, "setup");
+        return res;
+    }
+
+    res["poll_interval"] = 20;
+    SetIfExists(res, "poll_interval", channelConfig, "poll_interval");
+    res["enabled"] = true;
+    SetIfExists(res, "enabled", channelConfig, "enabled");
+    return res;
+}
+
+std::pair<Json::Value, Json::Value> SplitChannels(const Json::Value& device, const Json::Value& deviceTemplate)
+{
+    Json::Value channels(Json::arrayValue);
+    Json::Value customChannels(Json::arrayValue);
+    std::unordered_map<std::string, Json::Value> regs;
+    if (device.isMember("channels")) {
+        for (const Json::Value& channel: device["channels"]) {
+            regs[channel["name"].asString()] = channel;
+        }
+    }
+
+    for (const Json::Value& ch: deviceTemplate["channels"]) {
+        auto it = regs.find(ch["name"].asString());
+        if (it != regs.end()) { // template overriding
+            channels.append(MakeJsonFromChannelConfig(it->second));
+            regs.erase(it);
+        } else { // use template channel definition
+            channels.append(MakeJsonFromChannelTemplate(ch));
+        }
+    }
+
+    for (auto ch: regs) {
+        customChannels.append(ch.second);
+    }
+
+    return std::make_pair(channels, customChannels);
+}
+
+std::pair<Json::Value, Json::Value> SplitChannels(const Json::Value& device, TTemplateMap& templates)
+{
+    if (!device.isMember("device_type")) {
+        return std::make_pair(Json::Value(Json::arrayValue), device["channels"]);
+    }
+
+    return SplitChannels(device, templates.GetTemplate(device["device_type"].asString()));
+}
+
+bool IsCustomisableRegister(const Json::Value& registerTemplate)
+{
+    return !registerTemplate.isMember("value");
+}
+
+std::pair<Json::Value, Json::Value> SplitSetupRegisters(const Json::Value& configSchema, const Json::Value& deviceTemplateSchema)
+{
+    Json::Value setupParams;
+    Json::Value customSetupRegisters(Json::arrayValue);
+    std::unordered_map<std::string, Json::Value> configRegisters;
+    if (configSchema.isMember("setup")) {
+        for (const auto& r: configSchema["setup"]) {
+            configRegisters.insert({r["title"].asString(), r});
+        }
+    }
+
+    if (deviceTemplateSchema.isMember("setup")) {
+        size_t i = 0;
+        for (const auto& r: deviceTemplateSchema["setup"]) {
+            if (IsCustomisableRegister(r)) {
+                auto it = configRegisters.find(r["title"].asString());
+                if (it != configRegisters.end()) {
+                    setupParams[MakeSetupRegisterParameterName(i)] = it->second["value"];
+                    configRegisters.erase(it);
+                } else {
+                    setupParams[MakeSetupRegisterParameterName(i)] = GetDefaultSetupRegisterValue(r);
+                }
+                ++i;
+            }
+        }
+    }
+
+    // Let's append custom registers in the order they are declared in config file
+    if (!configRegisters.empty()) {
+        for (const auto& r: configSchema["setup"]) {
+            auto it = configRegisters.find(r["title"].asString());
+            if (it != configRegisters.end()) {
+                customSetupRegisters.append(r);
+            }
+        }
+    }
+
+    return std::make_pair(setupParams, customSetupRegisters);
+}
+
+Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, size_t nestingLevel);
+
+void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, size_t nestingLevel)
+{
+    for (Json::Value& device : devices) {
+        if (device.isMember("device_type")) {
+            device = MakeDeviceForConfed(device, templates, nestingLevel);
+        }
+    }
+}
+
+TSubDevicesTemplateMap::TSubDevicesTemplateMap(const Json::Value& device)
+{
+    if (device.isMember("subdevices")) {
+        for (auto& dev: device["subdevices"]) {
+            Templates.insert({dev["device_type"].asString(), dev["device"]});
+        }
+    }
+}
+
+const Json::Value& TSubDevicesTemplateMap::GetTemplate(const std::string& deviceType)
+{
+    try {
+        return Templates.at(deviceType);
+    } catch ( const std::out_of_range& ) {
+        throw std::runtime_error("TSubDevicesTemplateMap. Can't find template for " + deviceType);
+    }
+}
+
+std::vector<std::string> TSubDevicesTemplateMap::GetDeviceTypes() const
+{
+    std::vector<std::string> res;
+    for (const auto& elem: Templates) {
+        res.push_back(elem.first);
+    }
+    return res;
+}
+
+//  {
+//      "name": ...
+//      "device_type": DT,
+//      COMMON_DEVICE_SETUP_PARAMS,
+//      "setup": [ ... ],
+//      "channels": [ ... ]
+//  }
+//           ||
+//           \/
+//  {
+//      "name": ...,
+//      "s_DT_HASH": {
+//          COMMON_DEVICE_SETUP_PARAMS,
+//          "set_1": { ... },
+//          ...
+//          "custom_setup": [ ... ],
+//          "channels": [ ... ],
+//          "standard_channels": [ ... ]
+//      }
+//  }
+Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, size_t nestingLevel)
+{
+    Json::Value ar(Json::arrayValue);
+    if (nestingLevel > 5){
+        LOG(Warn) << "Too deep nesting";
+        return Json::Value();
+    }
+
+    auto dt = config["device_type"].asString();
+    auto deviceTemplate = deviceTemplates.GetTemplate(dt);
+    Json::Value newDev(config);
+
+    auto setupRegs = SplitSetupRegisters(config, deviceTemplate);
+    if (setupRegs.second.size()) {
+        newDev["custom_setup"] = setupRegs.second;
+    }
+    newDev.removeMember("setup");
+
+    AppendParams(newDev, setupRegs.first);
+
+    newDev.removeMember("device_type");
+
+    Json::Value customChannels;
+    Json::Value standardChannels;
+    std::tie(standardChannels, customChannels) = SplitChannels(config, deviceTemplate);
+    if ( customChannels.size() ) {
+        newDev["channels"] = customChannels;
+    } else {
+        newDev.removeMember("channels");
+    }
+    if ( standardChannels.size() ) {
+        if (nestingLevel == 1) {
+            TSubDevicesTemplateMap templates(deviceTemplate);
+            MakeDevicesForConfed(standardChannels, templates, nestingLevel + 1);
+        } else {
+            MakeDevicesForConfed(standardChannels, deviceTemplates, nestingLevel + 1);
+        } 
+        newDev["standard_channels"] = standardChannels;
+    }
+
+    Json::Value res;
+    if (newDev.isMember("name")) {
+        res["name"] = newDev["name"];
+        newDev.removeMember("name");
+    }
+    if (nestingLevel == 1) {
+        res[GetDeviceKey(dt)] = newDev;
+    } else {
+        res[GetSubdeviceKey(dt)] = newDev;
+    }
+    return res;
+}
+
+Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Value& configSchema, TTemplateMap& templates)
+{
+    Json::Value root(Parse(configFileName));
+    Validate(root, configSchema);
+    for (Json::Value& port : root["ports"]) {
+        MakeDevicesForConfed(port["devices"], templates, 1);
+    }
+
+    return root;
+}

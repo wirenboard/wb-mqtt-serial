@@ -9,6 +9,10 @@
 #include <unistd.h>
 #include <fstream>
 
+#include "confed_schema_generator.h"
+#include "confed_json_generator.h"
+#include "confed_config_generator.h"
+
 using namespace std;
 
 #define LOG(logger) ::logger.Log() << "[serial] "

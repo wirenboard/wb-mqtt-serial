@@ -26,6 +26,7 @@ class ITemplateMap
         virtual ~ITemplateMap() = default;
 
         virtual const Json::Value& GetTemplate(const std::string& deviceType) = 0;
+        virtual std::vector<std::string> GetDeviceTypes() const = 0;
 };
 
 class TTemplateMap: public ITemplateMap
@@ -56,6 +57,8 @@ class TTemplateMap: public ITemplateMap
         const Json::Value& GetTemplate(const std::string& deviceType) override;
 
         const std::map<std::string, Json::Value>& GetTemplates();
+
+        std::vector<std::string> GetDeviceTypes() const override;
 };
 
 struct TPortConfig 
@@ -116,6 +119,10 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           const Json::Value& configSchema,
                           TPortFactoryFn portFactory = DefaultPortFactory);
 
-Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Value& configSchema, TTemplateMap& templates);
-Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates);
-void MakeSchemaForConfed(Json::Value& schema, TTemplateMap& templates);
+bool IsSubdeviceChannel(const Json::Value& channelSchema);
+std::string GetHashedParam(const std::string& deviceType, const std::string& prefix);
+std::string GetDeviceKey(const std::string& deviceType);
+std::string GetSubdeviceSchemaKey(const std::string& deviceType, const std::string& subDeviceType);
+std::string GetSubdeviceKey(const std::string& subDeviceType);
+void AppendParams(Json::Value& dst, const Json::Value& src);
+void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value& src, const std::string& srcKey);
