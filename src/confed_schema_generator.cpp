@@ -5,6 +5,26 @@
 
 using namespace WBMQTT::JSON;
 
+std::string GetHashedParam(const std::string& deviceType, const std::string& prefix)
+{
+    return prefix + "_" + std::to_string(std::hash<std::string>()(deviceType));
+}
+
+std::string GetSubdeviceSchemaKey(const std::string& deviceType, const std::string& subDeviceType)
+{
+    return GetDeviceKey(deviceType) + GetHashedParam(subDeviceType, "d");
+}
+
+std::string GetDeviceKey(const std::string& deviceType)
+{
+    return GetHashedParam(deviceType, "s");
+}
+
+std::string GetSubdeviceKey(const std::string& subDeviceType)
+{
+    return GetDeviceKey(subDeviceType) + "_e";
+}
+
 std::string MakeSetupRegisterParameterName(size_t registerIndex)
 {
     return "set" + std::to_string(registerIndex);
@@ -223,7 +243,8 @@ Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& 
 //      "options": {
 //          "disable_edit_json": true,
 //          "disable_array_reorder": true,
-//          "disable_collapse": true
+//          "disable_collapse": true,
+//          "grid_columns": 12
 //      },
 //      "items": { "$ref", "#/definitions/tableChannelSettings"},
 //      "minItems": CHANNELS_COUNT,
@@ -271,6 +292,7 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
         r["minItems"] = items.size();
         r["maxItems"] = items.size();
     } else {
+        r["options"]["grid_columns"] = 12;
         r["items"]["$ref"] = "#/definitions/tableChannelSettings";
         Json::Value defaults(Json::arrayValue);
         for (const auto& channel: channels) {
@@ -382,16 +404,14 @@ Json::Value MakeSubDeviceUISchema(const std::string& deviceType, const Json::Val
 //                  "disable_array_reorder": true
 //              },
 //              "allOf": [
-//                  { "$ref": "#/definitions/deviceCommon" },
+//                  { "$ref": "#/definitions/deviceProperties" },
+//                  { "$ref": "#/definitions/deviceConfigParams" },
+//                  { "$ref": "#/definitions/customDevice" }    // for custom device only
 //              ],
 //              "properties": {
 //                  "standard_channels": STANDARD_CHANNELS_SCHEMA,
 //                  "set_0": { ... },
 //                  ...
-//                  "custom_setup": { 
-//                      "$ref": "#/definitions/customSetupRegisters",
-//                      "title": "Custom setup registers"
-//                  }
 //              },
 //              "defaultProperties": ["slave_id", "standard_channels"]
 //          },
@@ -418,11 +438,15 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const std::string& device
 
     Json::Value ar(Json::arrayValue);
     Json::Value ref;
-    ref["$ref"] = "#/definitions/deviceCommon";
+    ref["$ref"] = "#/definitions/deviceProperties";
     ar.append(ref);
-    if (ar.size()) {
-        res["properties"][set]["allOf"] = ar;
+    ref["$ref"] = "#/definitions/deviceConfigParams";
+    ar.append(ref);
+    if (deviceType == CUSTOM_DEVICE_TYPE) {
+        ref["$ref"] = "#/definitions/customDevice";
+        ar.append(ref);
     }
+    res["properties"][set]["allOf"] = ar;
 
     std::string channelsFormat("default");
     std::string channelsTitle("Channels");
@@ -431,24 +455,26 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const std::string& device
         Get(t["ui_options"], "channels_format", channelsFormat);
         Get(t["ui_options"], "channels_title", channelsTitle);
     }
-    res["properties"][set]["properties"]["standard_channels"] = MakeChannelsSchema(t["channels"], set, 9, channelsFormat, channelsTitle, true);
+
+    if (t.isMember("channels")) {
+        res["properties"][set]["properties"]["standard_channels"] = MakeChannelsSchema(t["channels"], set, 99, channelsFormat, channelsTitle, true);
+    }
 
     if (t.isMember("setup")) {
         size_t i = 0;
         for (const auto& setupRegister: t["setup"]) {
             if (!setupRegister.isMember("value")) {
-                res["properties"][set]["properties"][MakeSetupRegisterParameterName(i)] = MakeSetupRegisterSchema(setupRegister, 8);
+                res["properties"][set]["properties"][MakeSetupRegisterParameterName(i)] = MakeSetupRegisterSchema(setupRegister, 8 + i);
                 ++i;
             }
         }
     }
 
-    res["properties"][set]["properties"]["custom_setup"]["$ref"] = "#/definitions/customSetupRegisters";
-    res["properties"][set]["properties"]["custom_setup"]["title"] = "Custom setup registers";
-
     req.clear();
     req.append("slave_id");
-    req.append("standard_channels");
+    if (t.isMember("channels")) {
+        req.append("standard_channels");
+    }
     res["properties"][set]["defaultProperties"] = req;
 
     Json::Value definitions;
@@ -485,8 +511,6 @@ void MakeSchemaForConfed(Json::Value& configSchema, TTemplateMap& templates)
         for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
             if (array[index].isMember("$ref") && array[index]["$ref"].asString() == "#/definitions/typedCustomDevice") {
                 AppendDeviceSchemas(newArray, configSchema["definitions"], templates);
-            } else {
-                newArray.append(array[index]);
             }
         }
         configSchema["definitions"]["device"]["oneOf"] = newArray;

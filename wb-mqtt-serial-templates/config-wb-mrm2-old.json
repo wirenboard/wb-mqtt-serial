@@ -1,70 +1,25 @@
 // Configuration options
 {
     "device_type": "WB-MRM2-old",
-    "setup_schema": {
-        "type": "array",
-        "title": "List of setup commands",
-        "description": "Lists holding register values that must be written during initialization",
-        "items": {
-            "headerTemplate": " ",
-            "title": "Setup command",
-            "oneOf": [
-                {
-                    "type": "object",
-                    "title": "Input mode (address 5)",
-                    "properties": {
-                      "title": {
-                        "type": "string",
-                        "enum": [ "Input mode" ],
-                        "options": {
-                            "hidden": true
-                        }
-                      },
-                      "address": {
-                        "type": "integer",
-                        "enum": [ 5 ],
-                        "options": {
-                            "hidden": true
-                        }
-                      },
-                      "value": {
-                        "title": "Mode",
-                        "type": "integer",
-                        "enum": [ 0, 1, 255 ],
-                        "default": 1,
-                        "options": {
-                            "enum_titles": [
-                                "push button (0)",
-                                "switch (1)",
-                                "disable communication between inputs and outputs (255)"
-                            ]
-                        },
-                        "_format": "select"
-                      }
-                    },
-                    "options": {
-                      "disable_collapse": true,
-                      "disable_edit_json": true,
-                      "disable_properties": true
-                    },
-                    "required": ["title", "address", "value"]
-                }
-            ],
-            "options": {
-                "keep_oneof_values": false
-            }
-        },
-        "options": {
-            "disable_array_reorder": true
-        },
-        "propertyOrder": 8
-    },
     "device": {
         "name": "WB-MRM2-old",
         "id": "wb-mrm2-old",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
+        "setup": [
+            {
+                "title": "Input mode",
+                "address": 5,
+                "enum": [ 0, 1, 255 ],
+                "default": 1,
+                "enum_titles": [
+                    "push button",
+                    "switch",
+                    "disable communication between inputs and outputs"
+                ]
+            }
+        ],
         "channels": [
             {
                 "name": "Relay 1",

@@ -212,60 +212,38 @@
           "title": "Protocol",
           "$ref": "#/definitions/deviceProtocol",
           "propertyOrder": 5
-        },
-        "setup": {
-          "type": "array",
-          "title": "List of setup commands",
-          "description": "Lists holding register values that must be written during initialization",
-          "items": { "$ref": "#/definitions/setup_cmd" },
-          "options": {
-            "disable_array_reorder": true
-          },
-          "propertyOrder": 8
         }
       }
     },
     "typedCustomDevice": {
       "type": "object",
-      "properties": {
-        "device_type": {
-          "type": "string"
-        },
-        "slave_id" : {
-          "$ref" : "#/definitions/slave_id"
-        },
-        "name": {
-          "$ref" : "#/definitions/device_name"
-        }
-      },
       "allOf": [
         { "$ref": "#/definitions/customDevice" },
-        { "$ref": "#/definitions/deviceCommon" }
-      ],
-      "required": ["device_type"]
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/deviceConfigParams" },
+        {
+          "properties": {
+            "device_type": {
+              "type": "string"
+            }
+          },
+          "required": ["device_type"]
+        }
+      ]
     },
     "untypedCustomDevice": {
       "type": "object",
       "title": "Custom device",
       "allOf": [
         { "$ref": "#/definitions/customDevice" },
-        { "$ref": "#/definitions/deviceCommon" }
-      ],
-      "properties": {
-        "slave_id" : {
-          "$ref" : "#/definitions/slave_id",
-          "title" : "Slave id"
-        },
-        "name" : {
-          "$ref" : "#/definitions/device_name",
-          "title" : "Device name"
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/deviceConfigParams" },
+        {
+          "not": {
+            "required": ["device_type"]
+          }
         }
-      },
-      "defaultProperties" : [
-        "slave_id",
-        "channels"
-      ],
-      "not": { "required": ["device_type"] }
+      ]
     },
     "slave_id": {
       "title": "Slave id of the device",
@@ -287,7 +265,7 @@
       "title" : "Device name",
       "type" : "string"
     },
-    "deviceCommon": {
+    "deviceProperties": {
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -295,11 +273,6 @@
           "default": true,
           "_format": "checkbox",
           "propertyOrder": 1
-        },
-        "slave_id": {
-            "title": "Slave id",
-            "$ref": "#/definitions/slave_id",
-            "propertyOrder": 2
         },
         "name" : {
             "$ref" : "#/definitions/device_name",
@@ -321,23 +294,13 @@
           "default": 20,
           "propertyOrder": 7
         },
-        "channels": {
-          "type": "array",
-          "title": "Custom channels",
-          "items": { "$ref": "#/definitions/channel" },
-          "propertyOrder": 10,
-          "options": {
-            "collapsed": true
-          },
-          "_format": "tabs"
-        },
         "password": {
           "type": "array",
           "title": "Password as a list of bytes",
           "description": "Contains password for devices that support it",
           "items": { "$ref": "#/definitions/serial_int" },
           "_format": "table",
-          "propertyOrder": 11
+          "propertyOrder": 101
         },
         "access_level": {
           "type": "integer",
@@ -346,21 +309,21 @@
           "minimum": 0,
           "maximum": 2,
           "default": 1,
-          "propertyOrder": 12
+          "propertyOrder": 102
         },
         "max_reg_hole": {
           "type": "integer",
           "title": "Max dummy read register count",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 13
+          "propertyOrder": 103
         },
         "max_bit_hole": {
           "type": "integer",
           "title": "Max dummy read bit count",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 14
+          "propertyOrder": 104
         },
         "max_read_registers": {
           "type": "integer",
@@ -368,7 +331,7 @@
           "description" : " Maximum number of registers in a single bulk read request",
           "minimum": 0,
           "default": 1,
-          "propertyOrder": 15
+          "propertyOrder": 105
         },
         "guard_interval_us": {
           "type": "integer",
@@ -376,7 +339,7 @@
           "description" : "Additional delay before writing to port",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 16
+          "propertyOrder": 106
         },
         "frame_timeout_ms": {
           "type": "integer",
@@ -384,7 +347,7 @@
           "description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
           "minimum": -1,
           "default": -1,
-          "propertyOrder": 17
+          "propertyOrder": 107
         },
         "response_timeout_ms": {
           "type": "integer",
@@ -392,7 +355,7 @@
           "description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
           "minimum": -1,
           "default": -1,
-          "propertyOrder": 18
+          "propertyOrder": 108
         },
         "device_timeout_ms": {
           "type": "integer",
@@ -400,7 +363,7 @@
           "description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
           "minimum": -1,
           "default": 3000,
-          "propertyOrder": 19
+          "propertyOrder": 109
         },
         "device_max_fail_cycles": {
           "type": "integer",
@@ -408,7 +371,30 @@
           "description": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
           "minimum": -1,
           "default": 2,
-          "propertyOrder": 20
+          "propertyOrder": 110
+        }
+      }
+    },
+    "deviceConfigParams": {
+      "properties": {
+        "slave_id": {
+          "title": "Slave id",
+          "$ref": "#/definitions/slave_id",
+          "propertyOrder": 2
+        },
+        "channels": {
+          "type": "array",
+          "title": "Custom channels",
+          "items": { "$ref": "#/definitions/channel" },
+          "propertyOrder": 99,
+          "_format": "tabs"
+        },
+        "setup": {
+          "type": "array",
+          "title": "Custom setup commands",
+          "items": { "$ref": "#/definitions/setup_cmd" },
+          "propertyOrder": 100,
+          "_format": "tabs"
         }
       },
       "required": ["slave_id"]
@@ -426,11 +412,6 @@
         "disable_properties": true,
         "keep_oneof_values": false
       }
-    },
-    "customSetupRegisters": {
-      "type": "array",
-      "title": "Custom setup registers",
-      "items": { "$ref": "#/definitions/setup_cmd" }
     },
     "setup_cmd": {
       "type": "object",
@@ -462,7 +443,58 @@
         "disable_properties": true
       },
       "_format": "grid",
-      "required": ["address", "value"]
+      "required": ["value"]
+    },
+    "subdeviceChannel": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/channel_name"
+        },
+        "device_type": {
+          "type": "string"
+        },
+        "oneOf": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "shift": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
+            }
+          ]
+        },
+        "stride": {
+          "type": "integer"
+        },
+        "channels": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/channel" }
+        },
+        "setup": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "address": {
+                "$ref": "#/definitions/serial_int"
+              },
+              "value": {
+                "$ref": "#/definitions/serial_int"
+              }
+            }
+          }
+        }
+      },
+      "required": ["device_type"]
     },
     "registerChannel": {
       "title": "Register",
@@ -578,9 +610,18 @@
       },
       // FIXME: require "reg_type" and "address" for non-templated devices
       "required": ["name"],
-      "not": { "required": ["consists_of"] },
+      "not": { 
+        "anyOf": [
+          { "required": ["consists_of"] },
+          { "required": ["device_type"] }
+        ]
+      },
       "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale", "offset"],
-      "_format": "grid"
+      "_format": "grid",
+      "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true
+      }
     },
     "compoundRegisterChannel": {
       "title": "Compound register",
@@ -630,14 +671,19 @@
         }
       },
       "required": ["name", "consists_of"],
-      "defaultProperties": ["name", "consists_of"]
+      "defaultProperties": ["name", "consists_of"],
+      "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true
+      }
     },
     "channel": {
       "headerTemplate": "{{self.name}}",
       "title": "Channel",
       "oneOf": [
         { "$ref": "#/definitions/registerChannel" },
-        { "$ref": "#/definitions/compoundRegisterChannel" }
+        { "$ref": "#/definitions/compoundRegisterChannel" },
+        { "$ref": "#/definitions/subdeviceChannel" }
       ],
       "options": {
         "keep_oneof_values": false

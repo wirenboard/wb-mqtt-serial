@@ -61,6 +61,17 @@ class TTemplateMap: public ITemplateMap
         std::vector<std::string> GetDeviceTypes() const override;
 };
 
+class TSubDevicesTemplateMap: public ITemplateMap
+{
+        std::unordered_map<std::string, Json::Value> Templates;
+    public:
+        TSubDevicesTemplateMap(const Json::Value& device);
+
+        const Json::Value& GetTemplate(const std::string& deviceType) override;
+
+        std::vector<std::string> GetDeviceTypes() const override;
+};
+
 struct TPortConfig 
 {
     PPort                      Port;
@@ -120,9 +131,11 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TPortFactoryFn portFactory = DefaultPortFactory);
 
 bool IsSubdeviceChannel(const Json::Value& channelSchema);
-std::string GetHashedParam(const std::string& deviceType, const std::string& prefix);
+
 std::string GetDeviceKey(const std::string& deviceType);
 std::string GetSubdeviceSchemaKey(const std::string& deviceType, const std::string& subDeviceType);
 std::string GetSubdeviceKey(const std::string& subDeviceType);
+
 void AppendParams(Json::Value& dst, const Json::Value& src);
 void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value& src, const std::string& srcKey);
+std::string DecorateIfNotEmpty(const std::string& prefix, const std::string& str, const std::string& postfix = std::string());

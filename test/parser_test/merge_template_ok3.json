@@ -1,0 +1,25 @@
+// additional channels and setup registers, parameters overriding
+{
+    "device_type" : "merge simple with setup",
+    "slave_id": 2,
+    "channels" : 
+    [
+        {
+            "address" : "0x0506",
+            "format" : "s32",
+            "name" : "New channel",
+            "reg_type" : "input"
+        }
+    ],
+    "id" : "1",
+    "name" : "2",
+    "poll_interval": 300,
+    "setup" : 
+    [
+        {
+            "address" : 50000,
+            "title" : "new setup",
+            "value" : "0xffff"
+        }
+    ]
+}

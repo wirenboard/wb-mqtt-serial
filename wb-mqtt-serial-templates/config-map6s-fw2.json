@@ -1,864 +1,156 @@
 {
- "device_type": "WB-MAP6S fw2",
- "setup_schema": {
-    "type": "array",
-    "title": "List of setup commands",
-    "description": "Lists holding register values that must be written during initialization",
-    "items": {
-        "headerTemplate": " ",
-        "title": "Setup command",
-        "oneOf": [
-            {
-                "type": "object",
-                "title": "Ch1 Turns (address 0x1462)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch1 Turns" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x1462" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch2 Turns (address 0x1461)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch2 Turns" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x1461" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch3 Turns (address 0x1460)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch3 Turns" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x1460" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch4 Turns (address 0x2462)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch4 Turns" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x2462" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch5 Turns (address 0x2461)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch5 Turns" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x2461" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch6 Turns (address 0x2460)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch6 Turns" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x2460" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch1 Phi (address 0x1465)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch1 Phi" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x1465" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch2 Phi (address 0x1464)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch2 Phi" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x1464" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch3 Phi (address 0x1463)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch3 Phi" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x1463" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch4 Phi (address 0x2465)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch4 Phi" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x2465" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch5 Phi (address 0x2464)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch5 Phi" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x2464" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
-            },
-            {
-                "type": "object",
-                "title": "Ch6 Phi (address 0x2463)",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "enum": [ "Ch6 Phi" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "address": {
-                    "type": "string",
-                    "enum": [ "0x2463" ],
-                    "options": {
-                        "hidden": true
-                    }
-                  },
-                  "value": {
-                    "title": "Value",
-                    "type": "integer",
-                    "default": 0
-                  }
-                },
-                "options": {
-                  "disable_collapse": true,
-                  "disable_edit_json": true,
-                  "disable_properties": true
-                },
-                "required": ["title", "address", "value"]
+  "device_type": "WB-MAP6S fw2",
+  "device": {
+    "name": "WB-MAP6S fw2",
+    "id": "wb-map6s",
+    "max_read_registers": 60,
+    "response_timeout_ms": 1,
+    "frame_timeout_ms": 15,
+    "channels": [
+      {
+        "device_type": "channel",
+        "name": "Channel 1",
+        "stride": 2
+      },
+      {
+        "device_type": "channel",
+        "name": "Channel 2",
+        "stride": 1
+      },
+      {
+        "device_type": "channel",
+        "name": "Channel 3"
+      },
+      {
+        "device_type": "channel",
+        "name": "Channel 4",
+        "shift": "0x1000",
+        "stride": 2
+      },
+      {
+        "device_type": "channel",
+        "name": "Channel 5",
+        "shift": "0x1000",
+        "stride": 1
+      },
+      {
+        "device_type": "channel",
+        "name": "Channel 6",
+        "shift": "0x1000"
+      },
+      {
+        "name": "Urms",
+        "reg_type": "input",
+        "address": "0x10d9",
+        "type": "voltage",
+        "format": "u16",
+        "scale": 0.01,
+        "round_to": 0.01
+      },
+      {
+        "name": "Frequency",
+        "reg_type": "input",
+        "address": "0x10f8",
+        "type": "value",
+        "format": "u16",
+        "scale": 0.01,
+        "round_to": 0.01
+      }
+    ],
+    "subdevices": [
+      {
+        "device_type": "channel",
+        "device": {
+            "setup": [
+              {
+                "title": "Turns",
+                "address": "0x1460",
+                "min": 0
+              },
+              {
+                "title": "Phi",
+                "address": "0x1463",
+                "min": 0
             }
-        ],
-        "options": {
-            "keep_oneof_values": false
+          ],
+          "channels": [
+            {
+              "name": "Irms",
+              "reg_type": "input",
+              "address": "0x1416",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "P",
+              "reg_type": "input",
+              "address": "0x1302",
+              "type": "power",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "Q",
+              "reg_type": "input",
+              "address": "0x130a",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "S",
+              "reg_type": "input",
+              "address": "0x1312",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "PF",
+              "reg_type": "input",
+              "address": "0x10bd",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "AP energy",
+              "reg_type": "input",
+              "address": "0x1204",
+              "type": "power_consumption",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "RP energy",
+              "reg_type": "input",
+              "address": "0x1224",
+              "type": "value",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "Phase angle",
+              "reg_type": "input",
+              "address": "0x10f9",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.1,
+              "round_to": 0.01
+            }
+          ]
         }
-    },
-    "options": {
-        "disable_array_reorder": true
-    },
-    "propertyOrder": 8
- },
- "device": {
-  "name": "WB-MAP6S fw2",
-  "id": "wb-map6s",
-  "max_read_registers": 60,
-  "response_timeout_ms": 1,
-  "frame_timeout_ms": 15,
-  "channels": [
-   {
-    "name": "Urms",
-    "reg_type": "input",
-    "address": "0x10d9",
-    "type": "voltage",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
-   },
-   {
-    "name": "Frequency",
-    "reg_type": "input",
-    "address": "0x10f8",
-    "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
-   },
-   {
-    "name": "Irms 1",
-    "reg_type": "input",
-    "address": "0x141a",
-    "type": "value",
-    "format": "u32",
-    "scale": 2.44141e-07,
-    "round_to": 0.0001
-   },
-   {
-    "name": "P 1",
-    "reg_type": "input",
-    "address": "0x1306",
-    "type": "power",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "Q 1",
-    "reg_type": "input",
-    "address": "0x130e",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "S 1",
-    "reg_type": "input",
-    "address": "0x1316",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "PF 1",
-    "reg_type": "input",
-    "address": "0x10bf",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.001,
-    "round_to": 0.01
-   },
-   {
-    "name": "AP energy 1",
-    "reg_type": "input",
-    "address": "0x120c",
-    "type": "power_consumption",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "RP energy 1",
-    "reg_type": "input",
-    "address": "0x122c",
-    "type": "value",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "Phase angle 1",
-    "reg_type": "input",
-    "address": "0x10fb",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.1,
-    "round_to": 0.01
-   },
-   {
-    "name": "Irms 2",
-    "reg_type": "input",
-    "address": "0x1418",
-    "type": "value",
-    "format": "u32",
-    "scale": 2.44141e-07,
-    "round_to": 0.0001
-   },
-   {
-    "name": "P 2",
-    "reg_type": "input",
-    "address": "0x1304",
-    "type": "power",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "Q 2",
-    "reg_type": "input",
-    "address": "0x130c",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "S 2",
-    "reg_type": "input",
-    "address": "0x1314",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "PF 2",
-    "reg_type": "input",
-    "address": "0x10be",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.001,
-    "round_to": 0.01
-   },
-   {
-    "name": "AP energy 2",
-    "reg_type": "input",
-    "address": "0x1208",
-    "type": "power_consumption",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "RP energy 2",
-    "reg_type": "input",
-    "address": "0x1228",
-    "type": "value",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "Phase angle 2",
-    "reg_type": "input",
-    "address": "0x10fa",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.1,
-    "round_to": 0.01
-   },
-   {
-    "name": "Irms 3",
-    "reg_type": "input",
-    "address": "0x1416",
-    "type": "value",
-    "format": "u32",
-    "scale": 2.44141e-07,
-    "round_to": 0.0001
-   },
-   {
-    "name": "P 3",
-    "reg_type": "input",
-    "address": "0x1302",
-    "type": "power",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "Q 3",
-    "reg_type": "input",
-    "address": "0x130a",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "S 3",
-    "reg_type": "input",
-    "address": "0x1312",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "PF 3",
-    "reg_type": "input",
-    "address": "0x10bd",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.001,
-    "round_to": 0.01
-   },
-   {
-    "name": "AP energy 3",
-    "reg_type": "input",
-    "address": "0x1204",
-    "type": "power_consumption",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "RP energy 3",
-    "reg_type": "input",
-    "address": "0x1224",
-    "type": "value",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "Phase angle 3",
-    "reg_type": "input",
-    "address": "0x10f9",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.1,
-    "round_to": 0.01
-   },
-   {
-    "name": "Irms 4",
-    "reg_type": "input",
-    "address": "0x241a",
-    "type": "value",
-    "format": "u32",
-    "scale": 2.44141e-07,
-    "round_to": 0.0001
-   },
-   {
-    "name": "P 4",
-    "reg_type": "input",
-    "address": "0x2306",
-    "type": "power",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "Q 4",
-    "reg_type": "input",
-    "address": "0x230e",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "S 4",
-    "reg_type": "input",
-    "address": "0x2316",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "PF 4",
-    "reg_type": "input",
-    "address": "0x20bf",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.001,
-    "round_to": 0.01
-   },
-   {
-    "name": "AP energy 4",
-    "reg_type": "input",
-    "address": "0x220c",
-    "type": "power_consumption",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "RP energy 4",
-    "reg_type": "input",
-    "address": "0x222c",
-    "type": "value",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "Phase angle 4",
-    "reg_type": "input",
-    "address": "0x20fb",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.1,
-    "round_to": 0.01
-   },
-   {
-    "name": "Irms 5",
-    "reg_type": "input",
-    "address": "0x2418",
-    "type": "value",
-    "format": "u32",
-    "scale": 2.44141e-07,
-    "round_to": 0.0001
-   },
-   {
-    "name": "P 5",
-    "reg_type": "input",
-    "address": "0x2304",
-    "type": "power",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "Q 5",
-    "reg_type": "input",
-    "address": "0x230c",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "S 5",
-    "reg_type": "input",
-    "address": "0x2314",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "PF 5",
-    "reg_type": "input",
-    "address": "0x20be",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.001,
-    "round_to": 0.01
-   },
-   {
-    "name": "AP energy 5",
-    "reg_type": "input",
-    "address": "0x2208",
-    "type": "power_consumption",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "RP energy 5",
-    "reg_type": "input",
-    "address": "0x2228",
-    "type": "value",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "Phase angle 5",
-    "reg_type": "input",
-    "address": "0x20fa",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.1,
-    "round_to": 0.01
-   },
-   {
-    "name": "Irms 6",
-    "reg_type": "input",
-    "address": "0x2416",
-    "type": "value",
-    "format": "u32",
-    "scale": 2.44141e-07,
-    "round_to": 0.0001
-   },
-   {
-    "name": "P 6",
-    "reg_type": "input",
-    "address": "0x2302",
-    "type": "power",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "Q 6",
-    "reg_type": "input",
-    "address": "0x230a",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "S 6",
-    "reg_type": "input",
-    "address": "0x2312",
-    "type": "value",
-    "format": "s32",
-    "scale": 0.000244141,
-    "round_to": 0.01
-   },
-   {
-    "name": "PF 6",
-    "reg_type": "input",
-    "address": "0x20bd",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.001,
-    "round_to": 0.01
-   },
-   {
-    "name": "AP energy 6",
-    "reg_type": "input",
-    "address": "0x2204",
-    "type": "power_consumption",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "RP energy 6",
-    "reg_type": "input",
-    "address": "0x2224",
-    "type": "value",
-    "format": "u64",
-    "scale": 1e-05,
-    "round_to": 1e-06,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "Phase angle 6",
-    "reg_type": "input",
-    "address": "0x20f9",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.1,
-    "round_to": 0.01
-   }
-  ]
- }
+      }
+    ]
+  }
 }

@@ -881,8 +881,7 @@
                             "device_type": "current measurement 4 to 20 mA"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "current measurement 4 to 20 mA",
@@ -908,8 +907,7 @@
                             "device_type": "current measurement 0 to 5 mA"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "current measurement 4 to 20 mA",
@@ -935,8 +933,7 @@
                             "device_type": "current measurement 0 to 20 mA"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "current measurement 4 to 20 mA",
@@ -1704,8 +1701,7 @@
                             "device_type": "dry contact sensor"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1744,8 +1740,7 @@
                             "device_type": "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1784,8 +1779,7 @@
                             "device_type": "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1824,8 +1818,7 @@
                             "device_type": "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1864,8 +1857,7 @@
                             "device_type": "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1904,8 +1896,7 @@
                             "device_type": "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1944,8 +1935,7 @@
                             "device_type": "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1984,8 +1974,7 @@
                             "device_type": "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2024,8 +2013,7 @@
                             "device_type": "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2064,8 +2052,7 @@
                             "device_type": "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2104,8 +2091,7 @@
                             "device_type": "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2144,8 +2130,7 @@
                             "device_type": "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2184,8 +2169,7 @@
                             "device_type": "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2224,8 +2208,7 @@
                             "device_type": "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2264,8 +2247,7 @@
                             "device_type": "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2304,8 +2286,7 @@
                             "device_type": "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2344,8 +2325,7 @@
                             "device_type": "two-wire resistance measurement"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -3083,8 +3063,7 @@
                             "device_type": "voltage measurement from ratiometric sensor"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "voltage measurement from ratiometric sensor",
@@ -3252,8 +3231,7 @@
                             "device_type": "single-ended voltage measurement from 0 to 2 V"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "single-ended voltage measurement from 0 to 2 V",
@@ -3277,8 +3255,7 @@
                             "device_type": "single-ended voltage measurement from 0 to 1 V"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "single-ended voltage measurement from 0 to 2 V",
@@ -3393,8 +3370,7 @@
                             "device_type": "single-ended voltage measurement from 0 to 1 V"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "single-ended voltage measurement from 0 to 2 V",
@@ -3526,8 +3502,7 @@
                             "device_type": "resistance measurement using current measurement"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "resistance measurement using current measurement",
@@ -3550,8 +3525,7 @@
                             "device_type": "current measurement"
                         },
                         {
-                            "shift": 1,
-                            "channels_shift": 2,
+                            "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
                                 "current measurement 4 to 20 mA",

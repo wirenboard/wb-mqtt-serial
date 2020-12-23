@@ -573,6 +573,257 @@ Ports:
                 PollInterval: 1000
                 ErrorValue: not set
                 WordOrder: BigEndian
+        ------
+        Id: with subdevice_22
+        Name: with subdevice 22
+        SlaveId: 22
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 105
+        DeviceTimeout: 3000
+        Response timeout: 222
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temperature
+            Type: text
+            DeviceId: with subdevice_22
+            Order: 1
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1284
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub c1
+            Type: text
+            DeviceId: with subdevice_22
+            Order: 2
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1381
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub c2 c12
+            Type: text
+            DeviceId: with subdevice_22
+            Order: 3
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1582
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub c2 c22
+            Type: text
+            DeviceId: with subdevice_22
+            Order: 4
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1586
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub c3 c12
+            Type: text
+            DeviceId: with subdevice_22
+            Order: 5
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1686
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub c3 c22
+            Type: text
+            DeviceId: with subdevice_22
+            Order: 6
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1690
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub2 c1
+            Type: text
+            DeviceId: with subdevice_22
+            Order: 7
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1483
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub2 c2 c12
+            Type: text
+            DeviceId: with subdevice_22
+            Order: 8
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1682
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub2 c2 c22
+            Type: text
+            DeviceId: with subdevice_22
+            Order: 9
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1686
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Sub2 c3 c22
+            Type: text
+            DeviceId: with subdevice_22
+            Order: 10
+            OnValue: 
+            Max: -1
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1790
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 100
+                ErrorValue: not set
+                WordOrder: BigEndian
+        SetupItems:
+            ------
+            Name: Sub s1
+            Address: 20100
+            Value: 100
+            ------
+            Name: Sub s2
+            Address: 10092
+            Value: 65522
+            ------
+            Name: Sub c2 s21
+            Address: 20300
+            Value: 65522
+            ------
+            Name: Sub c3 s21
+            Address: 20402
+            Value: 65522
+            ------
+            Name: Sub2 s2
+            Address: 10193
+            Value: 65522
+            ------
+            Name: Sub2 c2 s21
+            Address: 20400
+            Value: 65522
+            ------
+            Name: Sub2 c3 s21
+            Address: 20502
+            Value: 65522
     ------
     ConnSettings: <192.168.0.1:3000  5000ms, 2>
     PollInterval: 20

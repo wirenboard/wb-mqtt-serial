@@ -1,6 +1,29 @@
 #include "register.h"
 #include "serial_device.h"
 
+size_t RegisterFormatByteWidth(RegisterFormat format)
+{
+    switch (format) {
+        case S64:
+        case U64:
+        case Double:
+            return 8;
+        case U32:
+        case S32:
+        case BCD32:
+        case Float:
+            return 4;
+        case U24:
+        case S24:
+        case BCD24:
+            return 3;
+        case Char8:
+            return 1;
+        default:
+            return 2;
+    }
+}
+
 TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
 {
     if (RegList.empty())
@@ -187,25 +210,7 @@ TRegisterConfig::TRegisterConfig(const TRegisterConfig& config)
 
 uint8_t TRegisterConfig::GetByteWidth() const
 {
-    switch (Format) {
-        case S64:
-        case U64:
-        case Double:
-            return 8;
-        case U32:
-        case S32:
-        case BCD32:
-        case Float:
-            return 4;
-        case U24:
-        case S24:
-        case BCD24:
-            return 3;
-        case Char8:
-            return 1;
-        default:
-            return 2;
-    }
+    return RegisterFormatByteWidth(Format);
 }
 
 uint8_t TRegisterConfig::Get16BitWidth() const

@@ -139,12 +139,9 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
         for (Json::Value& device : port["devices"]) {
 
             RemoveDeviceHash(device, deviceTypeHashes);
+            auto dt = device["device_type"].asString();
 
-            Json::Value deviceTemplate;
-            if (device.isMember("device_type")) {
-                deviceTemplate = templates.GetTemplate(device["device_type"].asString());
-            }
-
+            Json::Value deviceTemplate(templates.GetTemplate(dt));
             TSubDevicesTemplateMap subdevices(deviceTemplate);
             std::unordered_map<std::string, std::string> subdeviceTypeHashes;
             for (const auto& dt: subdevices.GetDeviceTypes()) {
@@ -165,6 +162,9 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
             }
 
             TransformSetupParams(device, deviceTemplate);
+            if (dt == CUSTOM_DEVICE_TYPE) {
+                device.removeMember("device_type");
+            }
         }
     }
 

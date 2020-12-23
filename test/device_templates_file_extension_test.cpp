@@ -51,7 +51,11 @@ TEST(TDeviceTemplatesTest, Validate)
         if (stat(filepath.c_str(), &filestat)) continue;
         if (S_ISDIR(filestat.st_mode)) continue;
 
-        validator.Validate(WBMQTT::JSON::Parse(filepath));
+        try {
+            validator.Validate(WBMQTT::JSON::Parse(filepath));
+        } catch (const std::exception& e) {
+            throw std::runtime_error(filepath + ": " + e.what());
+        }
     }
     closedir(dir);
 }

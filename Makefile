@@ -25,6 +25,7 @@ SERIAL_SRCS= \
   src/confed_schema_generator.cpp        \
   src/confed_json_generator.cpp          \
   src/confed_config_generator.cpp        \
+  src/config_merge_template.cpp          \
   src/serial_port_driver.cpp             \
   src/serial_driver.cpp                  \
   src/serial_port.cpp                    \
@@ -56,6 +57,7 @@ TEST_SRCS= \
   $(TEST_DIR)/expector.o                              \
   $(TEST_DIR)/poll_plan_test.o                        \
   $(TEST_DIR)/serial_client_test.o                    \
+  $(TEST_DIR)/serial_config_test.o                    \
   $(TEST_DIR)/modbus_expectations_base.o              \
   $(TEST_DIR)/modbus_expectations.o                   \
   $(TEST_DIR)/modbus_test.o                           \
@@ -110,17 +112,17 @@ $(SERIAL_BIN) : src/main.o $(SERIAL_OBJS)
 $(TEST_DIR)/$(TEST_BIN): $(SERIAL_OBJS) $(TEST_OBJS)
 	${CXX} $^ ${LDFLAGS} $(TEST_LIBS) -o $@ -fno-lto
 
-# test: $(TEST_DIR)/$(TEST_BIN)
-# 	rm -f $(TEST_DIR)/*.dat.out
-# 	if [ "$(shell arch)" != "armv7l" ] && [ "$(CROSS_COMPILE)" = "" ] || [ "$(CROSS_COMPILE)" = "x86_64-linux-gnu-" ]; then \
-# 		valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
-# 		if [ $$? = 180 ]; then \
-# 			echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
-# 			exit 1; \
-# 		else $(TEST_DIR)/abt.sh show; exit 1; fi; \
-#     else \
-#         $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
-# 	fi
+test: $(TEST_DIR)/$(TEST_BIN)
+	rm -f $(TEST_DIR)/*.dat.out
+	if [ "$(shell arch)" != "armv7l" ] && [ "$(CROSS_COMPILE)" = "" ] || [ "$(CROSS_COMPILE)" = "x86_64-linux-gnu-" ]; then \
+		valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
+		if [ $$? = 180 ]; then \
+			echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
+			exit 1; \
+		else $(TEST_DIR)/abt.sh show; exit 1; fi; \
+    else \
+        $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
+	fi
 
 clean :
 	-rm -rf src/*.o src/devices/*.o $(SERIAL_BIN)

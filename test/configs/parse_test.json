@@ -211,6 +211,39 @@
                             "readonly": false
                         }                        
                     ]
+                },
+                {
+                    "device_type" : "with subdevice",
+                    "slave_id": 22,
+                    "enabled": true,
+                    "channels": [
+                        {
+                            "name" : "Sub",
+                            "device_type": "subdevice1",
+                            "setup": [
+                                {
+                                    "title": "s1",
+                                    "value": 100
+                                }
+                            ]
+                        },
+                        {
+                            "name" : "Sub2",
+                            "device_type": "subdevice1",
+                            "channels": [
+                                {
+                                    "name": "c3",
+                                    "device_type": "subdevice2",
+                                    "channels": [
+                                        {
+                                            "name": "c12",
+                                            "enabled": false
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         },

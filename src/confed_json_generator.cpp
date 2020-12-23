@@ -60,13 +60,15 @@ std::pair<Json::Value, Json::Value> SplitChannels(const Json::Value& device, con
         }
     }
 
-    for (const Json::Value& ch: deviceTemplate["channels"]) {
-        auto it = regs.find(ch["name"].asString());
-        if (it != regs.end()) { // template overriding
-            channels.append(MakeJsonFromChannelConfig(it->second));
-            regs.erase(it);
-        } else { // use template channel definition
-            channels.append(MakeJsonFromChannelTemplate(ch));
+    if (deviceTemplate.isMember("channels")) {
+        for (const Json::Value& ch: deviceTemplate["channels"]) {
+            auto it = regs.find(ch["name"].asString());
+            if (it != regs.end()) { // template overriding
+                channels.append(MakeJsonFromChannelConfig(it->second));
+                regs.erase(it);
+            } else { // use template channel definition
+                channels.append(MakeJsonFromChannelTemplate(ch));
+            }
         }
     }
 
@@ -142,33 +144,7 @@ void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, size_t 
     }
 }
 
-TSubDevicesTemplateMap::TSubDevicesTemplateMap(const Json::Value& device)
-{
-    if (device.isMember("subdevices")) {
-        for (auto& dev: device["subdevices"]) {
-            Templates.insert({dev["device_type"].asString(), dev["device"]});
-        }
-    }
-}
-
-const Json::Value& TSubDevicesTemplateMap::GetTemplate(const std::string& deviceType)
-{
-    try {
-        return Templates.at(deviceType);
-    } catch ( const std::out_of_range& ) {
-        throw std::runtime_error("TSubDevicesTemplateMap. Can't find template for " + deviceType);
-    }
-}
-
-std::vector<std::string> TSubDevicesTemplateMap::GetDeviceTypes() const
-{
-    std::vector<std::string> res;
-    for (const auto& elem: Templates) {
-        res.push_back(elem.first);
-    }
-    return res;
-}
-
+//  nestingLevel == 1
 //  {
 //      "name": ...
 //      "device_type": DT,
@@ -179,16 +155,37 @@ std::vector<std::string> TSubDevicesTemplateMap::GetDeviceTypes() const
 //           ||
 //           \/
 //  {
-//      "name": ...,
 //      "s_DT_HASH": {
+//          "name": ...,
 //          COMMON_DEVICE_SETUP_PARAMS,
 //          "set_1": { ... },
 //          ...
-//          "custom_setup": [ ... ],
+//          "setup": [ ... ],
 //          "channels": [ ... ],
 //          "standard_channels": [ ... ]
 //      }
 //  }
+
+//  nestingLevel > 1
+//  {
+//      "name": ...
+//      "device_type": CT,
+//      "setup": [ ... ],
+//      "channels": [ ... ]
+//  }
+//           ||
+//           \/
+//  {
+//      "name": ...,
+//      "s_CT_HASH": {
+//          "set_1": { ... },
+//          ...
+//          "setup": [ ... ],
+//          "channels": [ ... ],
+//          "standard_channels": [ ... ]
+//      }
+//  }
+
 Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, size_t nestingLevel)
 {
     Json::Value ar(Json::arrayValue);
@@ -202,10 +199,11 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
     Json::Value newDev(config);
 
     auto setupRegs = SplitSetupRegisters(config, deviceTemplate);
-    if (setupRegs.second.size()) {
-        newDev["custom_setup"] = setupRegs.second;
+    if (setupRegs.second.empty()) {
+        newDev.removeMember("setup");
+    } else {
+        newDev["setup"] = setupRegs.second;
     }
-    newDev.removeMember("setup");
 
     AppendParams(newDev, setupRegs.first);
 
@@ -214,12 +212,12 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
     Json::Value customChannels;
     Json::Value standardChannels;
     std::tie(standardChannels, customChannels) = SplitChannels(config, deviceTemplate);
-    if ( customChannels.size() ) {
-        newDev["channels"] = customChannels;
-    } else {
+    if ( customChannels.empty() ) {
         newDev.removeMember("channels");
+    } else {
+        newDev["channels"] = customChannels;
     }
-    if ( standardChannels.size() ) {
+    if ( !standardChannels.empty() ) {
         if (nestingLevel == 1) {
             TSubDevicesTemplateMap templates(deviceTemplate);
             MakeDevicesForConfed(standardChannels, templates, nestingLevel + 1);
@@ -230,10 +228,14 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
     }
 
     Json::Value res;
-    if (newDev.isMember("name")) {
-        res["name"] = newDev["name"];
-        newDev.removeMember("name");
+
+    if (nestingLevel > 1) {
+        if (newDev.isMember("name")) {
+            res["name"] = newDev["name"];
+            newDev.removeMember("name");
+        }
     }
+
     if (nestingLevel == 1) {
         res[GetDeviceKey(dt)] = newDev;
     } else {
@@ -247,7 +249,12 @@ Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Val
     Json::Value root(Parse(configFileName));
     Validate(root, configSchema);
     for (Json::Value& port : root["ports"]) {
-        MakeDevicesForConfed(port["devices"], templates, 1);
+        for (Json::Value& device : port["devices"]) {
+            if (!device.isMember("device_type")) {
+                device["device_type"] = CUSTOM_DEVICE_TYPE;
+            }
+            device = MakeDeviceForConfed(device, templates, 1);
+        }
     }
 
     return root;
