@@ -405,7 +405,7 @@ Json::Value MakeSubDeviceUISchema(const std::string& deviceType, const Json::Val
 //              },
 //              "allOf": [
 //                  { "$ref": "#/definitions/deviceProperties" },
-//                  { "$ref": "#/definitions/deviceConfigParams" },
+//                  { "$ref": "#/definitions/deviceConfigParamsForUI" },
 //                  { "$ref": "#/definitions/customDevice" }    // for custom device only
 //              ],
 //              "properties": {
@@ -440,7 +440,7 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const std::string& device
     Json::Value ref;
     ref["$ref"] = "#/definitions/deviceProperties";
     ar.append(ref);
-    ref["$ref"] = "#/definitions/deviceConfigParams";
+    ref["$ref"] = "#/definitions/deviceConfigParamsForUI";
     ar.append(ref);
     if (deviceType == CUSTOM_DEVICE_TYPE) {
         ref["$ref"] = "#/definitions/customDevice";

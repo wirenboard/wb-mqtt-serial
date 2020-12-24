@@ -375,6 +375,30 @@
         }
       }
     },
+    "deviceConfigParamsForUI": {
+      "properties": {
+        "slave_id": {
+          "title": "Slave id",
+          "$ref": "#/definitions/slave_id",
+          "propertyOrder": 2
+        },
+        "channels": {
+          "type": "array",
+          "title": "Custom channels",
+          "items": { "$ref": "#/definitions/customChannel" },
+          "propertyOrder": 99,
+          "_format": "tabs"
+        },
+        "setup": {
+          "type": "array",
+          "title": "Custom setup commands",
+          "items": { "$ref": "#/definitions/setup_cmd" },
+          "propertyOrder": 100,
+          "_format": "tabs"
+        }
+      },
+      "required": ["slave_id"]
+    },
     "deviceConfigParams": {
       "properties": {
         "slave_id": {
@@ -684,6 +708,17 @@
         { "$ref": "#/definitions/registerChannel" },
         { "$ref": "#/definitions/compoundRegisterChannel" },
         { "$ref": "#/definitions/subdeviceChannel" }
+      ],
+      "options": {
+        "keep_oneof_values": false
+      }
+    },
+    "customChannel": {
+      "headerTemplate": "{{self.name}}",
+      "title": "Channel",
+      "oneOf": [
+        { "$ref": "#/definitions/registerChannel" },
+        { "$ref": "#/definitions/compoundRegisterChannel" }
       ],
       "options": {
         "keep_oneof_values": false
