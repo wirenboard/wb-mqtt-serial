@@ -36,11 +36,10 @@ void AppendSetupItems(Json::Value& dst, const Json::Value& src)
                     continue;
                 }
             }
-            if (item.isMember("address")) {
-                newDst.append(item);
-            } else {
-                LOG(Warn) << "Setup command '" << item["title"].asString() << "' must have address";
+            if (!item.isMember("address")) {
+                throw TConfigParserException("Setup command '" + item["title"].asString() + "' must have address");
             }
+            newDst.append(item);
         }
     }
 
@@ -87,6 +86,11 @@ void CheckDeviceType(Json::Value& templateConfig, const Json::Value& userConfig,
         if (!userConfig.isMember("device_type") || (userConfig["device_type"] != templateConfig["device_type"])) {
             throw TConfigParserException("'" + logPrefix + "' device_type must be '" + templateConfig["device_type"].asString() + "'");
         }
+        return;
+    }
+
+    if (userConfig.isMember("device_type")) {
+        throw TConfigParserException("'" + logPrefix + "' can't contain device_type");
     }
 }
 

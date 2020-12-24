@@ -1,0 +1,27 @@
+// setup command without value
+{
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "devices" : [
+                {
+                    "device_type" : "subdevice",
+                    "slave_id": 2,
+                    "channels":
+                    [
+                        {
+                            "name" : "Sub1",
+                            "device_type" : "subdevice1",
+                            "setup": [
+                                {
+                                    "title": "bad",
+                                    "value": 10
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

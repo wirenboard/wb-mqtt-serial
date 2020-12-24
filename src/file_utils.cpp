@@ -3,6 +3,7 @@
 #include <cstring>
 #include <dirent.h>
 #include <iomanip>
+#include <algorithm>
 
 TNoDirError::TNoDirError(const std::string& msg) : std::runtime_error(msg) {}
 
@@ -45,8 +46,25 @@ void IterateDir(const std::string& dirName, std::function<bool(const std::string
 
 std::string IterateDirByPattern(const std::string&                      dirName,
                                 const std::string&                      pattern,
-                                std::function<bool(const std::string&)> fn)
+                                std::function<bool(const std::string&)> fn,
+                                bool                                    sort)
 {
+    if (sort) {
+        std::vector<std::string> files;
+        IterateDir(dirName, [&](const auto& name) {
+            if (name.find(pattern) != std::string::npos) {
+                files.push_back(dirName + "/" + name);
+            }
+            return false;
+        });
+        std::sort(files.begin(), files.end());
+        for (const auto& fileName: files) {
+            if (fn(fileName)) {
+                return fileName;
+            }
+        }
+        return std::string();
+    }
     std::string res;
     IterateDir(dirName, [&](const auto& name) {
         if (name.find(pattern) != std::string::npos) {

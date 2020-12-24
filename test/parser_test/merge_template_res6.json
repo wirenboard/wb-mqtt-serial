@@ -14,7 +14,7 @@
                     "address" : "0x0501",
                     "format" : "s32",
                     "name" : "c11",
-                    "reg_type" : "input1"
+                    "reg_type" : "input"
                 },
                 {
                     "channels" : 

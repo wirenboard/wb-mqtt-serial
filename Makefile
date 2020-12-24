@@ -50,6 +50,7 @@ SERIAL_SRCS= \
   src/devices/em_device.cpp              \
   src/devices/energomera_iec_device.cpp  \
   src/devices/neva_device.cpp            \
+  src/file_utils.cpp                     \
 
 SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
 

@@ -125,11 +125,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TTemplateMap& templates,
                           TPortFactoryFn portFactory = DefaultPortFactory);
 
-PHandlerConfig LoadConfig(const std::string& configFileName,
-                          TSerialDeviceFactory& deviceFactory,
-                          const Json::Value& configSchema,
-                          TPortFactoryFn portFactory = DefaultPortFactory);
-
 bool IsSubdeviceChannel(const Json::Value& channelSchema);
 
 std::string GetDeviceKey(const std::string& deviceType);

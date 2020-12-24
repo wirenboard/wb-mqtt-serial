@@ -3,6 +3,7 @@
 #include "serial_device.h"
 #include "serial_config.h"
 #include "config_merge_template.h"
+#include "file_utils.h"
 
 using namespace std;
 using namespace WBMQTT;
@@ -112,24 +113,34 @@ TEST_F(TConfigParserTest, ForceDebug)
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     AddProtocolType(configSchema, "fake");
     AddRegisterType(configSchema, "fake");
+    TTemplateMap t;
     PHandlerConfig Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
                                        DeviceFactory,
-                                       configSchema);
+                                       configSchema, 
+                                       t);
     ASSERT_TRUE(Config->Debug);
 }
 
 TEST_F(TConfigParserTest, UnsuccessfulParse)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    for (size_t i = 0; i < 4; ++i) {
-        auto fname = std::string("configs/unsuccessful/unsuccessful-") + to_string(i) +  ".json";
-        Emit() << "Parsing config " << fname;
-        try {
-            PHandlerConfig config = LoadConfig(GetDataFilePath(fname), DeviceFactory, configSchema);
-        } catch (const std::exception& e) {
-            Emit() << e.what();
-        }
-    }
+    TTemplateMap templateMap(GetDataFilePath("parser_test/templates/"),
+                             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
+                                                                       configSchema));
+
+    IterateDirByPattern(GetDataFilePath("configs/unsuccessful"),
+                        "unsuccessful-",
+                        [&](const std::string& fname)
+                        {
+                            Emit() << "Parsing config " << fname;
+                            try {
+                                PHandlerConfig config = LoadConfig(fname, DeviceFactory, configSchema, templateMap);
+                            } catch (const std::exception& e) {
+                                Emit() << e.what();
+                            }
+                            return false;
+                        },
+                        true);
 }
 
 TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
@@ -144,9 +155,4 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
         auto mergedConfig(MergeDeviceConfigWithTemplate(deviceConfig, templateMap));
         ASSERT_EQ(JSON::Parse(GetDataFilePath("parser_test/merge_template_res" + to_string(i) + ".json")), mergedConfig) << i;
     }
-
-    // for (auto i = 1 ; i <= 3; ++i) {
-    //     auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_throw" + to_string(i) + ".json")));
-    //     ASSERT_THROW(MergeDeviceConfigWithTemplate(deviceConfig, templateMap), TConfigParserException) << i;
-    // }
 }

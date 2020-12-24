@@ -1,6 +1,6 @@
 // additional channels and setup registers, parameters overriding in subsubdevice
 {
-    "device_type" : "merge subdevice",
+    "device_type" : "merge subdevice2",
     "slave_id": 2,
     "channels" : 
     [

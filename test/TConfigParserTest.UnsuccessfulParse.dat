@@ -1,4 +1,4 @@
-Parsing config configs/unsuccessful/unsuccessful-0.json
+Parsing config test/configs/unsuccessful/unsuccessful-0.json
 File: test/configs/unsuccessful/unsuccessful-0.json error: Validation failed.
 Error 1
   context: <root>[ports][0][devices][0][channels][0][error_value]
@@ -349,7 +349,7 @@ Error 116
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 
-Parsing config configs/unsuccessful/unsuccessful-1.json
+Parsing config test/configs/unsuccessful/unsuccessful-1.json
 File: test/configs/unsuccessful/unsuccessful-1.json error: Validation failed.
 Error 1
   context: <root>[ports][0][devices][0][channels][0][error_value]
@@ -700,7 +700,7 @@ Error 116
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 
-Parsing config configs/unsuccessful/unsuccessful-2.json
+Parsing config test/configs/unsuccessful/unsuccessful-2.json
 File: test/configs/unsuccessful/unsuccessful-2.json error: Validation failed.
 Error 1
   context: <root>[ports][0][devices][0][channels][0][error_value]
@@ -1051,7 +1051,7 @@ Error 116
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 
-Parsing config configs/unsuccessful/unsuccessful-3.json
+Parsing config test/configs/unsuccessful/unsuccessful-3.json
 File: test/configs/unsuccessful/unsuccessful-3.json error: Validation failed.
 Error 1
   context: <root>[ports][0][devices][0][channels][0][error_value]
@@ -1402,3 +1402,15 @@ Error 116
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 
+Parsing config test/configs/unsuccessful/unsuccessful-4.json
+Error parsing config file: '"subdevice 2" channel "Sub"' device_type must be 'subdevice1'
+Parsing config test/configs/unsuccessful/unsuccessful-5.json
+Error parsing config file: '"subdevice 2" channel "Sub2"' can't have type 'subdevice3'
+Parsing config test/configs/unsuccessful/unsuccessful-6.json
+Error parsing config file: value: plain integer or '0x..' hex string expected instead of ''
+Parsing config test/configs/unsuccessful/unsuccessful-7.json
+Error parsing config file: Setup command 'bad' must have address
+Parsing config test/configs/unsuccessful/unsuccessful-8.json
+Error parsing config file: '"subdevice 2" channel "Sub2"' must contain device_type
+Parsing config test/configs/unsuccessful/unsuccessful-9.json
+Error parsing config file: '"subdevice 2" Sub1 channel "c11"' can't contain device_type

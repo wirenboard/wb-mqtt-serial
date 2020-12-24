@@ -888,9 +888,11 @@ void TSerialClientIntegrationTest::SetUp()
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     AddProtocolType(configSchema, "fake");
     AddRegisterType(configSchema, "fake");
+    TTemplateMap t;
     Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
                         DeviceFactory,
                         configSchema,
+                        t,
                         [=](const Json::Value&) {return std::make_pair(Port, false);});
 }
 
@@ -1132,27 +1134,32 @@ TEST_F(TSerialClientIntegrationTest, SetupErrors)
 TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    TTemplateMap t;
 
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test.json"), 
                                         DeviceFactory,
                                         configSchema,
+                                        t,
                                         [=](const Json::Value&) {return std::make_pair(Port, false);}),
                     TConfigParserException);
 
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test2.json"), 
                                         DeviceFactory,
                                         configSchema,
+                                        t,
                                         [=](const Json::Value&) {return std::make_pair(Port, false);}),
                     TConfigParserException);
 
     EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"), 
                                         DeviceFactory,
                                         configSchema,
+                                        t,
                                         [=](const Json::Value&) {return std::make_pair(Port, false);}));
 
     EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test2.json"), 
                                         DeviceFactory,
                                         configSchema,
+                                        t,
                                         [=](const Json::Value&) {return std::make_pair(Port, false);}));
 }
 
@@ -1174,9 +1181,11 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     AddProtocolType(configSchema, "fake");
     AddRegisterType(configSchema, "fake");
+    TTemplateMap t;
     Config = LoadConfig(GetDataFilePath("configs/reconnect_test_1_device.json"), 
                                             DeviceFactory,
                                             configSchema,
+                                            t,
                                             [=](const Json::Value&) {return std::make_pair(Port, false);});
 
     if (pollIntervalTest) {
@@ -1274,9 +1283,11 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     AddProtocolType(configSchema, "fake");
     AddRegisterType(configSchema, "fake");
+    TTemplateMap t;
     Config = LoadConfig(GetDataFilePath("configs/reconnect_test_2_devices.json"), 
                                             DeviceFactory,
                                             configSchema,
+                                            t,
                                             [=](const Json::Value&) {return std::make_pair(Port, false);});
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);

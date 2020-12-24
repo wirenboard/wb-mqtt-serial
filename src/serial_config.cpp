@@ -741,15 +741,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
     throw TConfigParserException("no devices defined in config. Nothing to do");
 }
 
-PHandlerConfig LoadConfig(const std::string& configFileName,
-                          TSerialDeviceFactory& deviceFactory,
-                          const Json::Value& configSchema,
-                          TPortFactoryFn portFactory)
-{
-    TTemplateMap t;
-    return LoadConfig(configFileName, deviceFactory, configSchema, t, portFactory);
-}
-
 void TPortConfig::AddDeviceConfig(PDeviceConfig device_config, TSerialDeviceFactory& deviceFactory)
 {
     // try to find duplicate of this device

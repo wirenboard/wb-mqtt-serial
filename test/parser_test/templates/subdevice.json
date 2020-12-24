@@ -1,8 +1,8 @@
 {
-    "device_type": "merge subdevice2",
+    "device_type": "subdevice",
     "device": {
-        "name": "merge subdevice2",
-        "id": "merge-subdevice2",
+        "name": "subdevice",
+        "id": "subdevice",
         "channels": [
             {
                 "name": "Temperature",
@@ -12,6 +12,12 @@
             },
             {
                 "name": "Sub",
+                "device_type": "subdevice1",
+                "shift": 100
+            },
+            {
+                "name": "Sub2",
+                "oneOf": [ "subdevice1", "subdevice2" ],
                 "device_type": "subdevice1",
                 "shift": 100
             }
