@@ -27,14 +27,6 @@
                     ]
                 },
                 {
-                    "device_type" : "MSU21",
-                    "name": "MSU21",
-                    "id": "msu21",
-                    "slave_id": 24,
-                    "poll_interval" : 100,
-                    "enabled": true
-                },
-                {
                     "device_type" : "MSU24",
                     "name": "MSU24",
                     "id": "msu24",
@@ -49,34 +41,6 @@
                     //        "type": "text"
                     //    }
                     //]
-                },
-                {
-                    "device_type" : "DDL24",
-                    "name": "DDL24",
-                    "enabled": true,
-                    "slave_id": 23
-                },
-                {
-                    "device_type" : "DRB88",
-                    "id": "drb88",
-                    "enabled": true,
-                    "slave_id": "22"
-                },
-                {
-                    "name": "OnValueTest",
-                    "id": "OnValueTest",
-                    "enabled": true,
-                    "slave_id": "0x90",
-                    "channels": [
-                        {
-                            "name" : "Relay 1",
-                            "reg_type" : "holding",
-                            "address" : "0x00",
-                            "type": "switch",
-                            "on_value" : 500
-                        }
-
-                    ]
                 }
             ]
         },
@@ -90,44 +54,7 @@
             "enabled": true,
             "devices" : [
                 {
-                    "device_type" : "TM-P3R3",
-                    "name": "tM-P3R3",
-                    "enabled": true,
-                    "slave_id": 1
-                },
-                {
-                    "name": "LC-103",
-                    "id": "lc103",
-                    "enabled": true,
-                    "slave_id": "0x04",
-                    "channels": [
-                        {
-                            "name" : "Relay 1",
-                            "reg_type" : "coil",
-                            "address" : "0x00",
-                            "type": "switch"
-                        },
-                        {
-                            "name" : "Relay 2",
-                            "reg_type" : "coil",
-                            "address" : "0x01",
-                            "type": "switch"
-                        },
-                        {
-                            "name" : "Relay 3",
-                            "reg_type" : "coil",
-                            "address" : "0x02",
-                            "type": "switch"
-                        },
-                        {
-                            "name" : "Switch AC In",
-                            "reg_type" : "discrete",
-                            "address" : "0x00"
-                        }
-                    ]
-                },
-                {
-                    "name" : "WB-MRGB",
+                    "device_type" : "WB-MRGB",
                     "id" : "wb-mrgb",
                     "slave_id" : 2,
                     "channels" : [
@@ -157,6 +84,32 @@
                             "readonly" : true,
                             "address" : 32,
                             "type" : "value"
+                        }
+                    ]
+                },
+                {
+                    "device_type" : "WB-M1W2 DI",
+                    "slave_id" : 3,
+                    "setup": [
+                        {
+                            "title": "Input 1 mode",
+                            "value": 1
+                        }
+                    ]
+                },
+                {
+                    "device_type": "WB-MAP3E fw2",
+                    "slave_id" : 4,
+                    "channels": [
+                        {
+                            "name": "L1",
+                            "device_type": "phase",
+                            "channels": [
+                                {
+                                  "name": "Urms",
+                                  "enabled": false
+                                }
+                            ]
                         }
                     ]
                 }
