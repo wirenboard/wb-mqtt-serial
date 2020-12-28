@@ -88,6 +88,13 @@
                 "reg_type": "input",
                 "address": 278,
                 "format": "u16"
+            },
+            {
+                "name": "Uptime",
+                "type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

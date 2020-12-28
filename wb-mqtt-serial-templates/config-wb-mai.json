@@ -599,6 +599,13 @@
                 ],
                 "shift": 45056,
                 "device_type": "thermocouple ТХА (K)"
+            },
+            {
+                "name": "Uptime",
+                "type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ],
         "subdevices": [

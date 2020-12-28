@@ -61,6 +61,13 @@
                 "format": "s16",
                 "scale": 0.0625,
                 "error_value": "0x7FFF"
+            },
+            {
+                "name": "Uptime",
+                "type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

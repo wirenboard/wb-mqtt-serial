@@ -113,6 +113,21 @@
         "name": "Ch 4 Total",
         "device_type": "channel total",
         "shift": "0x3000"
+      },
+      {
+        "name": "Uptime",
+        "type": "input",
+        "address": 104,
+        "format": "u32",
+        "enabled": false
+      },
+      {
+        "name": "Supply voltage",
+        "reg_type": "input",
+        "address": 121,
+        "scale": 0.001,
+        "type": "voltage",
+        "enabled": false
       }
     ],
     "subdevices": [

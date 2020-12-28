@@ -193,6 +193,13 @@
                 "address": 5000,
                 "type": "pushbutton",
                 "poll_interval": 0
+            },
+            {
+                "name": "Uptime",
+                "type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

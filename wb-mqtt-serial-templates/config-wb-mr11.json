@@ -217,6 +217,13 @@
                 "address": 121,
                 "type": "voltage",
                 "scale": 0.001
+            },
+            {
+                "name": "Uptime",
+                "type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }
