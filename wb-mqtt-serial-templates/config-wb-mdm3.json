@@ -133,13 +133,13 @@
             },
             {
                 "name": "AC on L-N",
-                "type": "input",
+                "reg_type": "input",
                 "address": 97,
                 "enabled": false
             },
             {
                 "name": "Uptime",
-                "type": "input",
+                "reg_type": "input",
                 "address": 104,
                 "format": "u32",
                 "enabled": false

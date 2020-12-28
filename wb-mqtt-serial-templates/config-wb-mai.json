@@ -1,8 +1,8 @@
 {
-    "device_type": "WB-MAI",
+    "device_type": "WB-MAI11",
     "device": {
-        "name": "WB-MAI",
-        "id": "wb-mai",
+        "name": "WB-MAI11",
+        "id": "wb-mai11",
         "max_read_registers": 4,
         "frame_timeout_ms": 0,
         "channels": [
@@ -602,7 +602,7 @@
             },
             {
                 "name": "Uptime",
-                "type": "input",
+                "reg_type": "input",
                 "address": 104,
                 "format": "u32",
                 "enabled": false
@@ -917,9 +917,9 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "current measurement 0 to 5 mA",
                                 "current measurement 4 to 20 mA",
                                 "current measurement 0 to 20 mA",
-                                "current measurement 0 to 5 mA",
                                 "current measurement",
                                 "disabled"
                             ],
@@ -943,8 +943,8 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
-                                "current measurement 4 to 20 mA",
                                 "current measurement 0 to 20 mA",
+                                "current measurement 4 to 20 mA",
                                 "current measurement 0 to 5 mA",
                                 "current measurement",
                                 "disabled"
@@ -1711,6 +1711,7 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "dry contact sensor",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
@@ -1726,7 +1727,6 @@
                                 "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
-                                "dry contact sensor",
                                 "two-wire resistance measurement",
                                 "disabled"
                             ],
@@ -1789,8 +1789,8 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
-                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                                "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
@@ -1828,9 +1828,9 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
-                                "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
@@ -1867,10 +1867,10 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
-                                "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
@@ -1906,11 +1906,11 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
-                                "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
@@ -1945,12 +1945,12 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
-                                "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
@@ -1984,13 +1984,13 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
-                                "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
@@ -2023,6 +2023,7 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
@@ -2030,7 +2031,6 @@
                                 "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
-                                "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
@@ -2062,6 +2062,7 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
@@ -2070,7 +2071,6 @@
                                 "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
-                                "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
@@ -2101,6 +2101,7 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
@@ -2110,7 +2111,6 @@
                                 "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
-                                "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
@@ -2140,6 +2140,7 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
@@ -2150,7 +2151,6 @@
                                 "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
-                                "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
@@ -2179,6 +2179,7 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
@@ -2190,7 +2191,6 @@
                                 "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
-                                "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
@@ -2218,6 +2218,7 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
@@ -2230,7 +2231,6 @@
                                 "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
-                                "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
                                 "dry contact sensor",
@@ -2257,6 +2257,7 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
@@ -2270,7 +2271,6 @@
                                 "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
-                                "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
                                 "dry contact sensor",
                                 "two-wire resistance measurement",
@@ -2296,6 +2296,7 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
@@ -2310,7 +2311,6 @@
                                 "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
-                                "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
                                 "dry contact sensor",
                                 "two-wire resistance measurement",
                                 "disabled"
@@ -2335,6 +2335,7 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "two-wire resistance measurement",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
@@ -2351,7 +2352,6 @@
                                 "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
                                 "dry contact sensor",
-                                "two-wire resistance measurement",
                                 "disabled"
                             ],
                             "device_type": "two-wire resistance measurement"
@@ -3265,8 +3265,8 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
-                                "single-ended voltage measurement from 0 to 2 V",
                                 "single-ended voltage measurement from 0 to 1 V",
+                                "single-ended voltage measurement from 0 to 2 V",
                                 "disabled"
                             ],
                             "device_type": "single-ended voltage measurement from 0 to 1 V"
@@ -3380,8 +3380,8 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
-                                "single-ended voltage measurement from 0 to 2 V",
                                 "single-ended voltage measurement from 0 to 1 V",
+                                "single-ended voltage measurement from 0 to 2 V",
                                 "disabled"
                             ],
                             "device_type": "single-ended voltage measurement from 0 to 1 V"
@@ -3535,10 +3535,10 @@
                             "stride": 1,
                             "name": "IN_N",
                             "oneOf": [
+                                "current measurement",
                                 "current measurement 4 to 20 mA",
                                 "current measurement 0 to 20 mA",
                                 "current measurement 0 to 5 mA",
-                                "current measurement",
                                 "disabled"
                             ],
                             "device_type": "current measurement"
