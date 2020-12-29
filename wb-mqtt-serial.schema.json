@@ -476,6 +476,9 @@
         "name": {
           "$ref": "#/definitions/channel_name"
         },
+        "id": {
+          "type": "string"
+        },
         "device_type": {
           "type": "string"
         },
@@ -535,53 +538,59 @@
           "$ref": "#/definitions/channel_name",
           "propertyOrder": 2
         },
+        "id": {
+          "type": "string",
+          "title": "MQTT id of the channel",
+          "description": "Used as part of the topic",
+          "propertyOrder": 3
+        },
         "type": {
           "$ref": "#/definitions/control_type",
-          "propertyOrder": 3
+          "propertyOrder": 4
         },
         "reg_type": {
           "$ref": "#/definitions/reg_type",
-          "propertyOrder": 4
+          "propertyOrder": 5
         },
         "address": {
           "$ref": "#/definitions/address",
-          "propertyOrder": 5
+          "propertyOrder": 6
         },
         "format": {
           "$ref": "#/definitions/format",
-          "propertyOrder": 6
+          "propertyOrder": 7
         },
         "max": {
           "title": "Maximum value",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 7
+          "propertyOrder": 8
         },
         "scale": {
           "type": "number",
           "title": "Scale (value multiplier)",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 8
+          "propertyOrder": 9
         },
         "offset": {
           "type": "number",
           "title": "Value offset",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 0,
-          "propertyOrder": 9
+          "propertyOrder": 10
         },
         "round_to": {
           "type": "number",
           "title": "Round to",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 10,
+          "propertyOrder": 11,
           "minimum": 0
         },
         "readonly": {
           "title": "Read-only",
           "type": "boolean",
-          "propertyOrder": 11
+          "propertyOrder": 12
         },
         // For compatibility with old configs
         "channel_readonly": {
@@ -595,7 +604,7 @@
           "title": "'On' value",
           "description": "Value corresponding to the 'On' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 12
+          "propertyOrder": 13
         },
         "poll_interval": {
           "type": "integer",
@@ -603,12 +612,12 @@
           "description" : "This option specifies the desired interval between two consecutive polls of the channel",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 13
+          "propertyOrder": 14
         },
         "error_value": {
           "title": "Error value",
           "description": "Value which should be treated as read error",
-          "propertyOrder": 14,
+          "propertyOrder": 15,
           "oneOf": [
             {
               "type": "string",
@@ -624,13 +633,13 @@
         "unsupported_value": {
           "title": "Unsupported register value",
           "description": "Value which should be treated as 'register is unsupported by device'",
-          "propertyOrder": 15,
+          "propertyOrder": 16,
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+)$"
         },
         "word_order": {
           "$ref": "#/definitions/word_order",
-          "propertyOrder": 16
+          "propertyOrder": 17
         }
       },
       // FIXME: require "reg_type" and "address" for non-templated devices
@@ -662,14 +671,20 @@
           "$ref": "#/definitions/channel_name",
           "propertyOrder": 2
         },
+        "id": {
+          "type": "string",
+          "title": "MQTT id of the channel",
+          "description": "Used as part of the topic",
+          "propertyOrder": 3
+        },
         "type": {
           "$ref": "#/definitions/control_type",
-          "propertyOrder": 3
+          "propertyOrder": 4
         },
         "readonly": {
           "title": "Read-only",
           "type": "boolean",
-          "propertyOrder": 4
+          "propertyOrder": 5
         },
         // For compatibility with old configs
         "channel_readonly": {
@@ -684,7 +699,7 @@
           "items": { "$ref": "#/definitions/subreg" },
           "minItems": 1,
           "_format": "table",
-          "propertyOrder": 5
+          "propertyOrder": 6
         },
         "poll_interval": {
           "type": "integer",
@@ -692,7 +707,7 @@
           "description" : "This option specifies the desired interval between two consecutive polls of the channel",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 6
+          "propertyOrder": 7
         }
       },
       "required": ["name", "consists_of"],

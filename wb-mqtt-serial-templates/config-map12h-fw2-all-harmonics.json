@@ -9,14 +9,17 @@
     "channels": [
       {
         "name": "L1",
+        "id": "",
         "device_type": "phase L1"
       },
       {
         "name": "L2",
+        "id": "",
         "device_type": "phase L2"
       },
       {
         "name": "L3",
+        "id": "",
         "device_type": "phase L3"
       },
       {
@@ -30,14 +33,17 @@
       },
       {
         "name": "Ch 1 L1",
+        "id": "Ch 1",
         "device_type": "channel phase L1"
       },
       {
         "name": "Ch 1 L2",
+        "id": "Ch 1",
         "device_type": "channel phase L2"
       },
       {
         "name": "Ch 1 L3",
+        "id": "Ch 1",
         "device_type": "channel phase L3"
       },
       {
@@ -46,16 +52,19 @@
       },
       {
         "name": "Ch 2 L1",
+        "id": "Ch 2",
         "device_type": "channel phase L1",
         "shift": "0x1000"
       },
       {
         "name": "Ch 2 L2",
+        "id": "Ch 2",
         "device_type": "channel phase L2",
         "shift": "0x1000"
       },
       {
         "name": "Ch 2 L3",
+        "id": "Ch 2",
         "device_type": "channel phase L3",
         "shift": "0x1000"
       },
@@ -66,16 +75,19 @@
       },
       {
         "name": "Ch 3 L1",
+        "id": "Ch 3",
         "device_type": "channel phase L1",
         "shift": "0x2000"
       },
       {
         "name": "Ch 3 L2",
+        "id": "Ch 3",
         "device_type": "channel phase L2",
         "shift": "0x2000"
       },
       {
         "name": "Ch 3 L3",
+        "id": "Ch 3",
         "device_type": "channel phase L3",
         "shift": "0x2000"
       },
@@ -86,17 +98,20 @@
       },
       {
         "name": "Ch 4 L1",
+        "id": "Ch 4",
         "device_type": "channel phase L1",
         "shift": "0x3000"
       },
       {
         "name": "Ch 4 L2",
+        "id": "Ch 4",
         "device_type": "channel phase L2",
         "stride": 1,
         "shift": "0x3000"
       },
       {
         "name": "Ch 4 L3",
+        "id": "Ch 4",
         "device_type": "channel phase L3",
         "shift": "0x3000"
       },
@@ -128,6 +143,7 @@
           "channels": [
             {
               "name": "Urms",
+              "id": "Urms L1",
               "reg_type": "input",
               "address": "0x1410",
               "type": "voltage",
@@ -137,6 +153,7 @@
             },
             {
               "name": "THD U",
+              "id": "THD U L1",
               "reg_type": "input",
               "address": "0x1703",
               "type": "value",
@@ -146,6 +163,7 @@
             },
             {
               "name": "THDN U",
+              "id": "THDN U L1",
               "reg_type": "input",
               "address": "0x10f1",
               "type": "value",
@@ -155,6 +173,7 @@
             },
             {
               "name": "Ufund",
+              "id": "Ufund L1",
               "reg_type": "input",
               "address": "0x1711",
               "type": "value",
@@ -164,6 +183,7 @@
             },
             {
               "name": "Voltage angle",
+              "id": "Voltage angle L1",
               "reg_type": "input",
               "address": "0x10fd",
               "type": "value",
@@ -173,6 +193,7 @@
             },
             {
               "name": "HR U 2",
+              "id": "HR U 2 L1",
               "reg_type": "input",
               "address": "0x167b",
               "type": "value",
@@ -183,6 +204,7 @@
             },
             {
               "name": "HR U 3",
+              "id": "HR U 3 L1",
               "reg_type": "input",
               "address": "0x167c",
               "type": "value",
@@ -193,6 +215,7 @@
             },
             {
               "name": "HR U 4",
+              "id": "HR U 4 L1",
               "reg_type": "input",
               "address": "0x167d",
               "type": "value",
@@ -203,6 +226,7 @@
             },
             {
               "name": "HR U 5",
+              "id": "HR U 5 L1",
               "reg_type": "input",
               "address": "0x167e",
               "type": "value",
@@ -213,6 +237,7 @@
             },
             {
               "name": "HR U 6",
+              "id": "HR U 6 L1",
               "reg_type": "input",
               "address": "0x167f",
               "type": "value",
@@ -223,6 +248,7 @@
             },
             {
               "name": "HR U 7",
+              "id": "HR U 7 L1",
               "reg_type": "input",
               "address": "0x1680",
               "type": "value",
@@ -233,6 +259,7 @@
             },
             {
               "name": "HR U 8",
+              "id": "HR U 8 L1",
               "reg_type": "input",
               "address": "0x1681",
               "type": "value",
@@ -243,6 +270,7 @@
             },
             {
               "name": "HR U 9",
+              "id": "HR U 9 L1",
               "reg_type": "input",
               "address": "0x1682",
               "type": "value",
@@ -253,6 +281,7 @@
             },
             {
               "name": "HR U 10",
+              "id": "HR U 10 L1",
               "reg_type": "input",
               "address": "0x1683",
               "type": "value",
@@ -263,6 +292,7 @@
             },
             {
               "name": "HR U 11",
+              "id": "HR U 11 L1",
               "reg_type": "input",
               "address": "0x1684",
               "type": "value",
@@ -273,6 +303,7 @@
             },
             {
               "name": "HR U 12",
+              "id": "HR U 12 L1",
               "reg_type": "input",
               "address": "0x1685",
               "type": "value",
@@ -283,6 +314,7 @@
             },
             {
               "name": "HR U 13",
+              "id": "HR U 13 L1",
               "reg_type": "input",
               "address": "0x1686",
               "type": "value",
@@ -293,6 +325,7 @@
             },
             {
               "name": "HR U 14",
+              "id": "HR U 14 L1",
               "reg_type": "input",
               "address": "0x1687",
               "type": "value",
@@ -303,6 +336,7 @@
             },
             {
               "name": "HR U 15",
+              "id": "HR U 15 L1",
               "reg_type": "input",
               "address": "0x1688",
               "type": "value",
@@ -313,6 +347,7 @@
             },
             {
               "name": "HR U 16",
+              "id": "HR U 16 L1",
               "reg_type": "input",
               "address": "0x1689",
               "type": "value",
@@ -323,6 +358,7 @@
             },
             {
               "name": "HR U 17",
+              "id": "HR U 17 L1",
               "reg_type": "input",
               "address": "0x168a",
               "type": "value",
@@ -333,6 +369,7 @@
             },
             {
               "name": "HR U 18",
+              "id": "HR U 18 L1",
               "reg_type": "input",
               "address": "0x168b",
               "type": "value",
@@ -343,6 +380,7 @@
             },
             {
               "name": "HR U 19",
+              "id": "HR U 19 L1",
               "reg_type": "input",
               "address": "0x168c",
               "type": "value",
@@ -353,6 +391,7 @@
             },
             {
               "name": "HR U 20",
+              "id": "HR U 20 L1",
               "reg_type": "input",
               "address": "0x168d",
               "type": "value",
@@ -363,6 +402,7 @@
             },
             {
               "name": "HR U 21",
+              "id": "HR U 21 L1",
               "reg_type": "input",
               "address": "0x168e",
               "type": "value",
@@ -373,6 +413,7 @@
             },
             {
               "name": "HR U 22",
+              "id": "HR U 22 L1",
               "reg_type": "input",
               "address": "0x168f",
               "type": "value",
@@ -383,6 +424,7 @@
             },
             {
               "name": "HR U 23",
+              "id": "HR U 23 L1",
               "reg_type": "input",
               "address": "0x1690",
               "type": "value",
@@ -393,6 +435,7 @@
             },
             {
               "name": "HR U 24",
+              "id": "HR U 24 L1",
               "reg_type": "input",
               "address": "0x1691",
               "type": "value",
@@ -403,6 +446,7 @@
             },
             {
               "name": "HR U 25",
+              "id": "HR U 25 L1",
               "reg_type": "input",
               "address": "0x1692",
               "type": "value",
@@ -413,6 +457,7 @@
             },
             {
               "name": "HR U 26",
+              "id": "HR U 26 L1",
               "reg_type": "input",
               "address": "0x1693",
               "type": "value",
@@ -423,6 +468,7 @@
             },
             {
               "name": "HR U 27",
+              "id": "HR U 27 L1",
               "reg_type": "input",
               "address": "0x1694",
               "type": "value",
@@ -433,6 +479,7 @@
             },
             {
               "name": "HR U 28",
+              "id": "HR U 28 L1",
               "reg_type": "input",
               "address": "0x1695",
               "type": "value",
@@ -443,6 +490,7 @@
             },
             {
               "name": "HR U 29",
+              "id": "HR U 29 L1",
               "reg_type": "input",
               "address": "0x1696",
               "type": "value",
@@ -453,6 +501,7 @@
             },
             {
               "name": "HR U 30",
+              "id": "HR U 30 L1",
               "reg_type": "input",
               "address": "0x1697",
               "type": "value",
@@ -463,6 +512,7 @@
             },
             {
               "name": "HR U 31",
+              "id": "HR U 31 L1",
               "reg_type": "input",
               "address": "0x1698",
               "type": "value",
@@ -473,6 +523,7 @@
             },
             {
               "name": "HR U 32",
+              "id": "HR U 32 L1",
               "reg_type": "input",
               "address": "0x1699",
               "type": "value",
@@ -483,6 +534,7 @@
             },
             {
               "name": "HR U 33",
+              "id": "HR U 33 L1",
               "reg_type": "input",
               "address": "0x169a",
               "type": "value",
@@ -493,6 +545,7 @@
             },
             {
               "name": "HR U 34",
+              "id": "HR U 34 L1",
               "reg_type": "input",
               "address": "0x169b",
               "type": "value",
@@ -503,6 +556,7 @@
             },
             {
               "name": "HR U 35",
+              "id": "HR U 35 L1",
               "reg_type": "input",
               "address": "0x169c",
               "type": "value",
@@ -513,6 +567,7 @@
             },
             {
               "name": "HR U 36",
+              "id": "HR U 36 L1",
               "reg_type": "input",
               "address": "0x169d",
               "type": "value",
@@ -523,6 +578,7 @@
             },
             {
               "name": "HR U 37",
+              "id": "HR U 37 L1",
               "reg_type": "input",
               "address": "0x169e",
               "type": "value",
@@ -533,6 +589,7 @@
             },
             {
               "name": "HR U 38",
+              "id": "HR U 38 L1",
               "reg_type": "input",
               "address": "0x169f",
               "type": "value",
@@ -543,6 +600,7 @@
             },
             {
               "name": "HR U 39",
+              "id": "HR U 39 L1",
               "reg_type": "input",
               "address": "0x16a0",
               "type": "value",
@@ -553,6 +611,7 @@
             },
             {
               "name": "HR U 40",
+              "id": "HR U 40 L1",
               "reg_type": "input",
               "address": "0x16a1",
               "type": "value",
@@ -563,6 +622,7 @@
             },
             {
               "name": "HR U 41",
+              "id": "HR U 41 L1",
               "reg_type": "input",
               "address": "0x16a2",
               "type": "value",
@@ -573,6 +633,7 @@
             },
             {
               "name": "HR U 42",
+              "id": "HR U 42 L1",
               "reg_type": "input",
               "address": "0x16a3",
               "type": "value",
@@ -590,6 +651,7 @@
           "channels": [
             {
               "name": "Urms",
+              "id": "Urms L2",
               "reg_type": "input",
               "address": "0x1412",
               "type": "voltage",
@@ -599,6 +661,7 @@
             },
             {
               "name": "THD U",
+              "id": "THD U L2",
               "reg_type": "input",
               "address": "0x1704",
               "type": "value",
@@ -608,6 +671,7 @@
             },
             {
               "name": "THDN U",
+              "id": "THDN U L2",
               "reg_type": "input",
               "address": "0x10f2",
               "type": "value",
@@ -617,6 +681,7 @@
             },
             {
               "name": "Ufund",
+              "id": "Ufund L2",
               "reg_type": "input",
               "address": "0x1713",
               "type": "value",
@@ -626,6 +691,7 @@
             },
             {
               "name": "Voltage angle",
+              "id": "Voltage angle L2",
               "reg_type": "input",
               "address": "0x10fe",
               "type": "value",
@@ -635,6 +701,7 @@
             },
             {
               "name": "HR U 2",
+              "id": "HR U 2 L2",
               "reg_type": "input",
               "address": "0x16a4",
               "type": "value",
@@ -645,6 +712,7 @@
             },
             {
               "name": "HR U 3",
+              "id": "HR U 3 L2",
               "reg_type": "input",
               "address": "0x16a5",
               "type": "value",
@@ -655,6 +723,7 @@
             },
             {
               "name": "HR U 4",
+              "id": "HR U 4 L2",
               "reg_type": "input",
               "address": "0x16a6",
               "type": "value",
@@ -665,6 +734,7 @@
             },
             {
               "name": "HR U 5",
+              "id": "HR U 5 L2",
               "reg_type": "input",
               "address": "0x16a7",
               "type": "value",
@@ -675,6 +745,7 @@
             },
             {
               "name": "HR U 6",
+              "id": "HR U 6 L2",
               "reg_type": "input",
               "address": "0x16a8",
               "type": "value",
@@ -685,6 +756,7 @@
             },
             {
               "name": "HR U 7",
+              "id": "HR U 7 L2",
               "reg_type": "input",
               "address": "0x16a9",
               "type": "value",
@@ -695,6 +767,7 @@
             },
             {
               "name": "HR U 8",
+              "id": "HR U 8 L2",
               "reg_type": "input",
               "address": "0x16aa",
               "type": "value",
@@ -705,6 +778,7 @@
             },
             {
               "name": "HR U 9",
+              "id": "HR U 9 L2",
               "reg_type": "input",
               "address": "0x16ab",
               "type": "value",
@@ -715,6 +789,7 @@
             },
             {
               "name": "HR U 10",
+              "id": "HR U 10 L2",
               "reg_type": "input",
               "address": "0x16ac",
               "type": "value",
@@ -725,6 +800,7 @@
             },
             {
               "name": "HR U 11",
+              "id": "HR U 11 L2",
               "reg_type": "input",
               "address": "0x16ad",
               "type": "value",
@@ -735,6 +811,7 @@
             },
             {
               "name": "HR U 12",
+              "id": "HR U 12 L2",
               "reg_type": "input",
               "address": "0x16ae",
               "type": "value",
@@ -745,6 +822,7 @@
             },
             {
               "name": "HR U 13",
+              "id": "HR U 13 L2",
               "reg_type": "input",
               "address": "0x16af",
               "type": "value",
@@ -755,6 +833,7 @@
             },
             {
               "name": "HR U 14",
+              "id": "HR U 14 L2",
               "reg_type": "input",
               "address": "0x16b0",
               "type": "value",
@@ -765,6 +844,7 @@
             },
             {
               "name": "HR U 15",
+              "id": "HR U 15 L2",
               "reg_type": "input",
               "address": "0x16b1",
               "type": "value",
@@ -775,6 +855,7 @@
             },
             {
               "name": "HR U 16",
+              "id": "HR U 16 L2",
               "reg_type": "input",
               "address": "0x16b2",
               "type": "value",
@@ -785,6 +866,7 @@
             },
             {
               "name": "HR U 17",
+              "id": "HR U 17 L2",
               "reg_type": "input",
               "address": "0x16b3",
               "type": "value",
@@ -795,6 +877,7 @@
             },
             {
               "name": "HR U 18",
+              "id": "HR U 18 L2",
               "reg_type": "input",
               "address": "0x16b4",
               "type": "value",
@@ -805,6 +888,7 @@
             },
             {
               "name": "HR U 19",
+              "id": "HR U 19 L2",
               "reg_type": "input",
               "address": "0x16b5",
               "type": "value",
@@ -815,6 +899,7 @@
             },
             {
               "name": "HR U 20",
+              "id": "HR U 20 L2",
               "reg_type": "input",
               "address": "0x16b6",
               "type": "value",
@@ -825,6 +910,7 @@
             },
             {
               "name": "HR U 21",
+              "id": "HR U 21 L2",
               "reg_type": "input",
               "address": "0x16b7",
               "type": "value",
@@ -835,6 +921,7 @@
             },
             {
               "name": "HR U 22",
+              "id": "HR U 22 L2",
               "reg_type": "input",
               "address": "0x16b8",
               "type": "value",
@@ -845,6 +932,7 @@
             },
             {
               "name": "HR U 23",
+              "id": "HR U 23 L2",
               "reg_type": "input",
               "address": "0x16b9",
               "type": "value",
@@ -855,6 +943,7 @@
             },
             {
               "name": "HR U 24",
+              "id": "HR U 24 L2",
               "reg_type": "input",
               "address": "0x16ba",
               "type": "value",
@@ -865,6 +954,7 @@
             },
             {
               "name": "HR U 25",
+              "id": "HR U 25 L2",
               "reg_type": "input",
               "address": "0x16bb",
               "type": "value",
@@ -875,6 +965,7 @@
             },
             {
               "name": "HR U 26",
+              "id": "HR U 26 L2",
               "reg_type": "input",
               "address": "0x16bc",
               "type": "value",
@@ -885,6 +976,7 @@
             },
             {
               "name": "HR U 27",
+              "id": "HR U 27 L2",
               "reg_type": "input",
               "address": "0x16bd",
               "type": "value",
@@ -895,6 +987,7 @@
             },
             {
               "name": "HR U 28",
+              "id": "HR U 28 L2",
               "reg_type": "input",
               "address": "0x16be",
               "type": "value",
@@ -905,6 +998,7 @@
             },
             {
               "name": "HR U 29",
+              "id": "HR U 29 L2",
               "reg_type": "input",
               "address": "0x16bf",
               "type": "value",
@@ -915,6 +1009,7 @@
             },
             {
               "name": "HR U 30",
+              "id": "HR U 30 L2",
               "reg_type": "input",
               "address": "0x16c0",
               "type": "value",
@@ -925,6 +1020,7 @@
             },
             {
               "name": "HR U 31",
+              "id": "HR U 31 L2",
               "reg_type": "input",
               "address": "0x16c1",
               "type": "value",
@@ -935,6 +1031,7 @@
             },
             {
               "name": "HR U 32",
+              "id": "HR U 32 L2",
               "reg_type": "input",
               "address": "0x16c2",
               "type": "value",
@@ -945,6 +1042,7 @@
             },
             {
               "name": "HR U 33",
+              "id": "HR U 33 L2",
               "reg_type": "input",
               "address": "0x16c3",
               "type": "value",
@@ -955,6 +1053,7 @@
             },
             {
               "name": "HR U 34",
+              "id": "HR U 34 L2",
               "reg_type": "input",
               "address": "0x16c4",
               "type": "value",
@@ -965,6 +1064,7 @@
             },
             {
               "name": "HR U 35",
+              "id": "HR U 35 L2",
               "reg_type": "input",
               "address": "0x16c5",
               "type": "value",
@@ -975,6 +1075,7 @@
             },
             {
               "name": "HR U 36",
+              "id": "HR U 36 L2",
               "reg_type": "input",
               "address": "0x16c6",
               "type": "value",
@@ -985,6 +1086,7 @@
             },
             {
               "name": "HR U 37",
+              "id": "HR U 37 L2",
               "reg_type": "input",
               "address": "0x16c7",
               "type": "value",
@@ -995,6 +1097,7 @@
             },
             {
               "name": "HR U 38",
+              "id": "HR U 38 L2",
               "reg_type": "input",
               "address": "0x16c8",
               "type": "value",
@@ -1005,6 +1108,7 @@
             },
             {
               "name": "HR U 39",
+              "id": "HR U 39 L2",
               "reg_type": "input",
               "address": "0x16c9",
               "type": "value",
@@ -1015,6 +1119,7 @@
             },
             {
               "name": "HR U 40",
+              "id": "HR U 40 L2",
               "reg_type": "input",
               "address": "0x16ca",
               "type": "value",
@@ -1025,6 +1130,7 @@
             },
             {
               "name": "HR U 41",
+              "id": "HR U 41 L2",
               "reg_type": "input",
               "address": "0x16cb",
               "type": "value",
@@ -1035,6 +1141,7 @@
             },
             {
               "name": "HR U 42",
+              "id": "HR U 42 L2",
               "reg_type": "input",
               "address": "0x16cc",
               "type": "value",
@@ -1052,6 +1159,7 @@
           "channels": [
             {
               "name": "Urms",
+              "id": "Urms L3",
               "reg_type": "input",
               "address": "0x1414",
               "type": "voltage",
@@ -1061,6 +1169,7 @@
             },
             {
               "name": "THD U",
+              "id": "THD U L3",
               "reg_type": "input",
               "address": "0x1705",
               "type": "value",
@@ -1070,6 +1179,7 @@
             },
             {
               "name": "THDN U",
+              "id": "THDN U L3",
               "reg_type": "input",
               "address": "0x10f3",
               "type": "value",
@@ -1079,6 +1189,7 @@
             },
             {
               "name": "Ufund",
+              "id": "Ufund L3",
               "reg_type": "input",
               "address": "0x1715",
               "type": "value",
@@ -1088,6 +1199,7 @@
             },
             {
               "name": "Voltage angle",
+              "id": "Voltage angle L3",
               "reg_type": "input",
               "address": "0x10ff",
               "type": "value",
@@ -1097,6 +1209,7 @@
             },
             {
               "name": "HR U 2",
+              "id": "HR U 2 L3",
               "reg_type": "input",
               "address": "0x16cd",
               "type": "value",
@@ -1107,6 +1220,7 @@
             },
             {
               "name": "HR U 3",
+              "id": "HR U 3 L3",
               "reg_type": "input",
               "address": "0x16ce",
               "type": "value",
@@ -1117,6 +1231,7 @@
             },
             {
               "name": "HR U 4",
+              "id": "HR U 4 L3",
               "reg_type": "input",
               "address": "0x16cf",
               "type": "value",
@@ -1127,6 +1242,7 @@
             },
             {
               "name": "HR U 5",
+              "id": "HR U 5 L3",
               "reg_type": "input",
               "address": "0x16d0",
               "type": "value",
@@ -1137,6 +1253,7 @@
             },
             {
               "name": "HR U 6",
+              "id": "HR U 6 L3",
               "reg_type": "input",
               "address": "0x16d1",
               "type": "value",
@@ -1147,6 +1264,7 @@
             },
             {
               "name": "HR U 7",
+              "id": "HR U 7 L3",
               "reg_type": "input",
               "address": "0x16d2",
               "type": "value",
@@ -1157,6 +1275,7 @@
             },
             {
               "name": "HR U 8",
+              "id": "HR U 8 L3",
               "reg_type": "input",
               "address": "0x16d3",
               "type": "value",
@@ -1167,6 +1286,7 @@
             },
             {
               "name": "HR U 9",
+              "id": "HR U 9 L3",
               "reg_type": "input",
               "address": "0x16d4",
               "type": "value",
@@ -1177,6 +1297,7 @@
             },
             {
               "name": "HR U 10",
+              "id": "HR U 10 L3",
               "reg_type": "input",
               "address": "0x16d5",
               "type": "value",
@@ -1187,6 +1308,7 @@
             },
             {
               "name": "HR U 11",
+              "id": "HR U 11 L3",
               "reg_type": "input",
               "address": "0x16d6",
               "type": "value",
@@ -1197,6 +1319,7 @@
             },
             {
               "name": "HR U 12",
+              "id": "HR U 12 L3",
               "reg_type": "input",
               "address": "0x16d7",
               "type": "value",
@@ -1207,6 +1330,7 @@
             },
             {
               "name": "HR U 13",
+              "id": "HR U 13 L3",
               "reg_type": "input",
               "address": "0x16d8",
               "type": "value",
@@ -1217,6 +1341,7 @@
             },
             {
               "name": "HR U 14",
+              "id": "HR U 14 L3",
               "reg_type": "input",
               "address": "0x16d9",
               "type": "value",
@@ -1227,6 +1352,7 @@
             },
             {
               "name": "HR U 15",
+              "id": "HR U 15 L3",
               "reg_type": "input",
               "address": "0x16da",
               "type": "value",
@@ -1237,6 +1363,7 @@
             },
             {
               "name": "HR U 16",
+              "id": "HR U 16 L3",
               "reg_type": "input",
               "address": "0x16db",
               "type": "value",
@@ -1247,6 +1374,7 @@
             },
             {
               "name": "HR U 17",
+              "id": "HR U 17 L3",
               "reg_type": "input",
               "address": "0x16dc",
               "type": "value",
@@ -1257,6 +1385,7 @@
             },
             {
               "name": "HR U 18",
+              "id": "HR U 18 L3",
               "reg_type": "input",
               "address": "0x16dd",
               "type": "value",
@@ -1267,6 +1396,7 @@
             },
             {
               "name": "HR U 19",
+              "id": "HR U 19 L3",
               "reg_type": "input",
               "address": "0x16de",
               "type": "value",
@@ -1277,6 +1407,7 @@
             },
             {
               "name": "HR U 20",
+              "id": "HR U 20 L3",
               "reg_type": "input",
               "address": "0x16df",
               "type": "value",
@@ -1287,6 +1418,7 @@
             },
             {
               "name": "HR U 21",
+              "id": "HR U 21 L3",
               "reg_type": "input",
               "address": "0x16e0",
               "type": "value",
@@ -1297,6 +1429,7 @@
             },
             {
               "name": "HR U 22",
+              "id": "HR U 22 L3",
               "reg_type": "input",
               "address": "0x16e1",
               "type": "value",
@@ -1307,6 +1440,7 @@
             },
             {
               "name": "HR U 23",
+              "id": "HR U 23 L3",
               "reg_type": "input",
               "address": "0x16e2",
               "type": "value",
@@ -1317,6 +1451,7 @@
             },
             {
               "name": "HR U 24",
+              "id": "HR U 24 L3",
               "reg_type": "input",
               "address": "0x16e3",
               "type": "value",
@@ -1327,6 +1462,7 @@
             },
             {
               "name": "HR U 25",
+              "id": "HR U 25 L3",
               "reg_type": "input",
               "address": "0x16e4",
               "type": "value",
@@ -1337,6 +1473,7 @@
             },
             {
               "name": "HR U 26",
+              "id": "HR U 26 L3",
               "reg_type": "input",
               "address": "0x16e5",
               "type": "value",
@@ -1347,6 +1484,7 @@
             },
             {
               "name": "HR U 27",
+              "id": "HR U 27 L3",
               "reg_type": "input",
               "address": "0x16e6",
               "type": "value",
@@ -1357,6 +1495,7 @@
             },
             {
               "name": "HR U 28",
+              "id": "HR U 28 L3",
               "reg_type": "input",
               "address": "0x16e7",
               "type": "value",
@@ -1367,6 +1506,7 @@
             },
             {
               "name": "HR U 29",
+              "id": "HR U 29 L3",
               "reg_type": "input",
               "address": "0x16e8",
               "type": "value",
@@ -1377,6 +1517,7 @@
             },
             {
               "name": "HR U 30",
+              "id": "HR U 30 L3",
               "reg_type": "input",
               "address": "0x16e9",
               "type": "value",
@@ -1387,6 +1528,7 @@
             },
             {
               "name": "HR U 31",
+              "id": "HR U 31 L3",
               "reg_type": "input",
               "address": "0x16ea",
               "type": "value",
@@ -1397,6 +1539,7 @@
             },
             {
               "name": "HR U 32",
+              "id": "HR U 32 L3",
               "reg_type": "input",
               "address": "0x16eb",
               "type": "value",
@@ -1407,6 +1550,7 @@
             },
             {
               "name": "HR U 33",
+              "id": "HR U 33 L3",
               "reg_type": "input",
               "address": "0x16ec",
               "type": "value",
@@ -1417,6 +1561,7 @@
             },
             {
               "name": "HR U 34",
+              "id": "HR U 34 L3",
               "reg_type": "input",
               "address": "0x16ed",
               "type": "value",
@@ -1427,6 +1572,7 @@
             },
             {
               "name": "HR U 35",
+              "id": "HR U 35 L3",
               "reg_type": "input",
               "address": "0x16ee",
               "type": "value",
@@ -1437,6 +1583,7 @@
             },
             {
               "name": "HR U 36",
+              "id": "HR U 36 L3",
               "reg_type": "input",
               "address": "0x16ef",
               "type": "value",
@@ -1447,6 +1594,7 @@
             },
             {
               "name": "HR U 37",
+              "id": "HR U 37 L3",
               "reg_type": "input",
               "address": "0x16f0",
               "type": "value",
@@ -1457,6 +1605,7 @@
             },
             {
               "name": "HR U 38",
+              "id": "HR U 38 L3",
               "reg_type": "input",
               "address": "0x16f1",
               "type": "value",
@@ -1467,6 +1616,7 @@
             },
             {
               "name": "HR U 39",
+              "id": "HR U 39 L3",
               "reg_type": "input",
               "address": "0x16f2",
               "type": "value",
@@ -1477,6 +1627,7 @@
             },
             {
               "name": "HR U 40",
+              "id": "HR U 40 L3",
               "reg_type": "input",
               "address": "0x16f3",
               "type": "value",
@@ -1487,6 +1638,7 @@
             },
             {
               "name": "HR U 41",
+              "id": "HR U 41 L3",
               "reg_type": "input",
               "address": "0x16f4",
               "type": "value",
@@ -1497,6 +1649,7 @@
             },
             {
               "name": "HR U 42",
+              "id": "HR U 42 L3",
               "reg_type": "input",
               "address": "0x16f5",
               "type": "value",
@@ -1526,6 +1679,7 @@
           "channels": [
             {
               "name": "Irms",
+              "id": "Irms L1",
               "reg_type": "input",
               "address": "0x1416",
               "type": "value",
@@ -1535,6 +1689,7 @@
             },
             {
               "name": "THD I",
+              "id": "THD I L1",
               "reg_type": "input",
               "address": "0x1700",
               "type": "value",
@@ -1544,6 +1699,7 @@
             },
             {
               "name": "THDN I",
+              "id": "THDN I L1",
               "reg_type": "input",
               "address": "0x10f5",
               "type": "value",
@@ -1553,6 +1709,7 @@
             },
             {
               "name": "Ifund",
+              "id": "Ifund L1",
               "reg_type": "input",
               "address": "0x1710",
               "type": "value",
@@ -1562,6 +1719,7 @@
             },
             {
               "name": "P",
+              "id": "P L1",
               "reg_type": "input",
               "address": "0x1302",
               "type": "power",
@@ -1571,6 +1729,7 @@
             },
             {
               "name": "Q",
+              "id": "Q L1",
               "reg_type": "input",
               "address": "0x130a",
               "type": "value",
@@ -1580,6 +1739,7 @@
             },
             {
               "name": "S",
+              "id": "S L1",
               "reg_type": "input",
               "address": "0x1312",
               "type": "value",
@@ -1589,6 +1749,7 @@
             },
             {
               "name": "N",
+              "id": "N L1",
               "reg_type": "input",
               "address": "0x1582",
               "type": "value",
@@ -1598,6 +1759,7 @@
             },
             {
               "name": "PF",
+              "id": "PF L1",
               "reg_type": "input",
               "address": "0x10bd",
               "type": "value",
@@ -1607,6 +1769,7 @@
             },
             {
               "name": "Pfund",
+              "id": "Pfund L1",
               "reg_type": "input",
               "address": "0x1402",
               "type": "value",
@@ -1616,6 +1779,7 @@
             },
             {
               "name": "Pharm",
+              "id": "Pharm L1",
               "reg_type": "input",
               "address": "0x140a",
               "type": "value",
@@ -1625,6 +1789,7 @@
             },
             {
               "name": "AP energy",
+              "id": "AP energy L1",
               "reg_type": "input",
               "address": "0x1204",
               "type": "power_consumption",
@@ -1635,6 +1800,7 @@
             },
             {
               "name": "AN energy",
+              "id": "AN energy L1",
               "reg_type": "input",
               "address": "0x1214",
               "type": "power_consumption",
@@ -1645,6 +1811,7 @@
             },
             {
               "name": "RP energy",
+              "id": "RP energy L1",
               "reg_type": "input",
               "address": "0x1224",
               "type": "value",
@@ -1655,6 +1822,7 @@
             },
             {
               "name": "RN energy",
+              "id": "RN energy L1",
               "reg_type": "input",
               "address": "0x1234",
               "type": "value",
@@ -1665,6 +1833,7 @@
             },
             {
               "name": "S energy",
+              "id": "S energy L1",
               "reg_type": "input",
               "address": "0x1244",
               "type": "value",
@@ -1675,6 +1844,7 @@
             },
             {
               "name": "NP energy",
+              "id": "NP energy L1",
               "reg_type": "input",
               "address": "0x1506",
               "type": "value",
@@ -1685,6 +1855,7 @@
             },
             {
               "name": "NN energy",
+              "id": "NN energy L1",
               "reg_type": "input",
               "address": "0x1516",
               "type": "value",
@@ -1695,6 +1866,7 @@
             },
             {
               "name": "Phase angle",
+              "id": "Phase angle L1",
               "reg_type": "input",
               "address": "0x10f9",
               "type": "value",
@@ -1704,6 +1876,7 @@
             },
             {
               "name": "HR I 2",
+              "id": "HR I 2 L1",
               "reg_type": "input",
               "address": "0x1600",
               "type": "value",
@@ -1714,6 +1887,7 @@
             },
             {
               "name": "HR I 3",
+              "id": "HR I 3 L1",
               "reg_type": "input",
               "address": "0x1601",
               "type": "value",
@@ -1724,6 +1898,7 @@
             },
             {
               "name": "HR I 4",
+              "id": "HR I 4 L1",
               "reg_type": "input",
               "address": "0x1602",
               "type": "value",
@@ -1734,6 +1909,7 @@
             },
             {
               "name": "HR I 5",
+              "id": "HR I 5 L1",
               "reg_type": "input",
               "address": "0x1603",
               "type": "value",
@@ -1744,6 +1920,7 @@
             },
             {
               "name": "HR I 6",
+              "id": "HR I 6 L1",
               "reg_type": "input",
               "address": "0x1604",
               "type": "value",
@@ -1754,6 +1931,7 @@
             },
             {
               "name": "HR I 7",
+              "id": "HR I 7 L1",
               "reg_type": "input",
               "address": "0x1605",
               "type": "value",
@@ -1764,6 +1942,7 @@
             },
             {
               "name": "HR I 8",
+              "id": "HR I 8 L1",
               "reg_type": "input",
               "address": "0x1606",
               "type": "value",
@@ -1774,6 +1953,7 @@
             },
             {
               "name": "HR I 9",
+              "id": "HR I 9 L1",
               "reg_type": "input",
               "address": "0x1607",
               "type": "value",
@@ -1784,6 +1964,7 @@
             },
             {
               "name": "HR I 10",
+              "id": "HR I 10 L1",
               "reg_type": "input",
               "address": "0x1608",
               "type": "value",
@@ -1794,6 +1975,7 @@
             },
             {
               "name": "HR I 11",
+              "id": "HR I 11 L1",
               "reg_type": "input",
               "address": "0x1609",
               "type": "value",
@@ -1804,6 +1986,7 @@
             },
             {
               "name": "HR I 12",
+              "id": "HR I 12 L1",
               "reg_type": "input",
               "address": "0x160a",
               "type": "value",
@@ -1814,6 +1997,7 @@
             },
             {
               "name": "HR I 13",
+              "id": "HR I 13 L1",
               "reg_type": "input",
               "address": "0x160b",
               "type": "value",
@@ -1824,6 +2008,7 @@
             },
             {
               "name": "HR I 14",
+              "id": "HR I 14 L1",
               "reg_type": "input",
               "address": "0x160c",
               "type": "value",
@@ -1834,6 +2019,7 @@
             },
             {
               "name": "HR I 15",
+              "id": "HR I 15 L1",
               "reg_type": "input",
               "address": "0x160d",
               "type": "value",
@@ -1844,6 +2030,7 @@
             },
             {
               "name": "HR I 16",
+              "id": "HR I 16 L1",
               "reg_type": "input",
               "address": "0x160e",
               "type": "value",
@@ -1854,6 +2041,7 @@
             },
             {
               "name": "HR I 17",
+              "id": "HR I 17 L1",
               "reg_type": "input",
               "address": "0x160f",
               "type": "value",
@@ -1864,6 +2052,7 @@
             },
             {
               "name": "HR I 18",
+              "id": "HR I 18 L1",
               "reg_type": "input",
               "address": "0x1610",
               "type": "value",
@@ -1874,6 +2063,7 @@
             },
             {
               "name": "HR I 19",
+              "id": "HR I 19 L1",
               "reg_type": "input",
               "address": "0x1611",
               "type": "value",
@@ -1884,6 +2074,7 @@
             },
             {
               "name": "HR I 20",
+              "id": "HR I 20 L1",
               "reg_type": "input",
               "address": "0x1612",
               "type": "value",
@@ -1894,6 +2085,7 @@
             },
             {
               "name": "HR I 21",
+              "id": "HR I 21 L1",
               "reg_type": "input",
               "address": "0x1613",
               "type": "value",
@@ -1904,6 +2096,7 @@
             },
             {
               "name": "HR I 22",
+              "id": "HR I 22 L1",
               "reg_type": "input",
               "address": "0x1614",
               "type": "value",
@@ -1914,6 +2107,7 @@
             },
             {
               "name": "HR I 23",
+              "id": "HR I 23 L1",
               "reg_type": "input",
               "address": "0x1615",
               "type": "value",
@@ -1924,6 +2118,7 @@
             },
             {
               "name": "HR I 24",
+              "id": "HR I 24 L1",
               "reg_type": "input",
               "address": "0x1616",
               "type": "value",
@@ -1934,6 +2129,7 @@
             },
             {
               "name": "HR I 25",
+              "id": "HR I 25 L1",
               "reg_type": "input",
               "address": "0x1617",
               "type": "value",
@@ -1944,6 +2140,7 @@
             },
             {
               "name": "HR I 26",
+              "id": "HR I 26 L1",
               "reg_type": "input",
               "address": "0x1618",
               "type": "value",
@@ -1954,6 +2151,7 @@
             },
             {
               "name": "HR I 27",
+              "id": "HR I 27 L1",
               "reg_type": "input",
               "address": "0x1619",
               "type": "value",
@@ -1964,6 +2162,7 @@
             },
             {
               "name": "HR I 28",
+              "id": "HR I 28 L1",
               "reg_type": "input",
               "address": "0x161a",
               "type": "value",
@@ -1974,6 +2173,7 @@
             },
             {
               "name": "HR I 29",
+              "id": "HR I 29 L1",
               "reg_type": "input",
               "address": "0x161b",
               "type": "value",
@@ -1984,6 +2184,7 @@
             },
             {
               "name": "HR I 30",
+              "id": "HR I 30 L1",
               "reg_type": "input",
               "address": "0x161c",
               "type": "value",
@@ -1994,6 +2195,7 @@
             },
             {
               "name": "HR I 31",
+              "id": "HR I 31 L1",
               "reg_type": "input",
               "address": "0x161d",
               "type": "value",
@@ -2004,6 +2206,7 @@
             },
             {
               "name": "HR I 32",
+              "id": "HR I 32 L1",
               "reg_type": "input",
               "address": "0x161e",
               "type": "value",
@@ -2014,6 +2217,7 @@
             },
             {
               "name": "HR I 33",
+              "id": "HR I 33 L1",
               "reg_type": "input",
               "address": "0x161f",
               "type": "value",
@@ -2024,6 +2228,7 @@
             },
             {
               "name": "HR I 34",
+              "id": "HR I 34 L1",
               "reg_type": "input",
               "address": "0x1620",
               "type": "value",
@@ -2034,6 +2239,7 @@
             },
             {
               "name": "HR I 35",
+              "id": "HR I 35 L1",
               "reg_type": "input",
               "address": "0x1621",
               "type": "value",
@@ -2044,6 +2250,7 @@
             },
             {
               "name": "HR I 36",
+              "id": "HR I 36 L1",
               "reg_type": "input",
               "address": "0x1622",
               "type": "value",
@@ -2054,6 +2261,7 @@
             },
             {
               "name": "HR I 37",
+              "id": "HR I 37 L1",
               "reg_type": "input",
               "address": "0x1623",
               "type": "value",
@@ -2064,6 +2272,7 @@
             },
             {
               "name": "HR I 38",
+              "id": "HR I 38 L1",
               "reg_type": "input",
               "address": "0x1624",
               "type": "value",
@@ -2074,6 +2283,7 @@
             },
             {
               "name": "HR I 39",
+              "id": "HR I 39 L1",
               "reg_type": "input",
               "address": "0x1625",
               "type": "value",
@@ -2084,6 +2294,7 @@
             },
             {
               "name": "HR I 40",
+              "id": "HR I 40 L1",
               "reg_type": "input",
               "address": "0x1626",
               "type": "value",
@@ -2094,6 +2305,7 @@
             },
             {
               "name": "HR I 41",
+              "id": "HR I 41 L1",
               "reg_type": "input",
               "address": "0x1627",
               "type": "value",
@@ -2104,6 +2316,7 @@
             },
             {
               "name": "HR I 42",
+              "id": "HR I 42 L1",
               "reg_type": "input",
               "address": "0x1628",
               "type": "value",
@@ -2133,6 +2346,7 @@
           "channels": [
             {
               "name": "Irms",
+              "id": "Irms L2",
               "reg_type": "input",
               "address": "0x1418",
               "type": "value",
@@ -2142,6 +2356,7 @@
             },
             {
               "name": "THD I",
+              "id": "THD I L2",
               "reg_type": "input",
               "address": "0x1701",
               "type": "value",
@@ -2151,6 +2366,7 @@
             },
             {
               "name": "THDN I",
+              "id": "THDN I L2",
               "reg_type": "input",
               "address": "0x10f6",
               "type": "value",
@@ -2160,6 +2376,7 @@
             },
             {
               "name": "Ifund",
+              "id": "Ifund L2",
               "reg_type": "input",
               "address": "0x1712",
               "type": "value",
@@ -2169,6 +2386,7 @@
             },
             {
               "name": "P",
+              "id": "P L2",
               "reg_type": "input",
               "address": "0x1304",
               "type": "power",
@@ -2178,6 +2396,7 @@
             },
             {
               "name": "Q",
+              "id": "Q L2",
               "reg_type": "input",
               "address": "0x130c",
               "type": "value",
@@ -2187,6 +2406,7 @@
             },
             {
               "name": "S",
+              "id": "S L2",
               "reg_type": "input",
               "address": "0x1314",
               "type": "value",
@@ -2196,6 +2416,7 @@
             },
             {
               "name": "N",
+              "id": "N L2",
               "reg_type": "input",
               "address": "0x1584",
               "type": "value",
@@ -2205,6 +2426,7 @@
             },
             {
               "name": "PF",
+              "id": "PF L2",
               "reg_type": "input",
               "address": "0x10be",
               "type": "value",
@@ -2214,6 +2436,7 @@
             },
             {
               "name": "Pfund",
+              "id": "Pfund L2",
               "reg_type": "input",
               "address": "0x1404",
               "type": "value",
@@ -2223,6 +2446,7 @@
             },
             {
               "name": "Pharm",
+              "id": "Pharm L2",
               "reg_type": "input",
               "address": "0x140c",
               "type": "value",
@@ -2232,6 +2456,7 @@
             },
             {
               "name": "AP energy",
+              "id": "AP energy L2",
               "reg_type": "input",
               "address": "0x1208",
               "type": "power_consumption",
@@ -2242,6 +2467,7 @@
             },
             {
               "name": "AN energy",
+              "id": "AN energy L2",
               "reg_type": "input",
               "address": "0x1218",
               "type": "power_consumption",
@@ -2252,6 +2478,7 @@
             },
             {
               "name": "RP energy",
+              "id": "RP energy L2",
               "reg_type": "input",
               "address": "0x1228",
               "type": "value",
@@ -2262,6 +2489,7 @@
             },
             {
               "name": "RN energy",
+              "id": "RN energy L2",
               "reg_type": "input",
               "address": "0x1238",
               "type": "value",
@@ -2272,6 +2500,7 @@
             },
             {
               "name": "S energy",
+              "id": "S energy L2",
               "reg_type": "input",
               "address": "0x1248",
               "type": "value",
@@ -2282,6 +2511,7 @@
             },
             {
               "name": "NP energy",
+              "id": "NP energy L2",
               "reg_type": "input",
               "address": "0x150a",
               "type": "value",
@@ -2292,6 +2522,7 @@
             },
             {
               "name": "NN energy",
+              "id": "NN energy L2",
               "reg_type": "input",
               "address": "0x151a",
               "type": "value",
@@ -2302,6 +2533,7 @@
             },
             {
               "name": "Phase angle",
+              "id": "Phase angle L2",
               "reg_type": "input",
               "address": "0x10fa",
               "type": "value",
@@ -2311,6 +2543,7 @@
             },
             {
               "name": "HR I 2",
+              "id": "HR I 2 L2",
               "reg_type": "input",
               "address": "0x1629",
               "type": "value",
@@ -2321,6 +2554,7 @@
             },
             {
               "name": "HR I 3",
+              "id": "HR I 3 L2",
               "reg_type": "input",
               "address": "0x162a",
               "type": "value",
@@ -2331,6 +2565,7 @@
             },
             {
               "name": "HR I 4",
+              "id": "HR I 4 L2",
               "reg_type": "input",
               "address": "0x162b",
               "type": "value",
@@ -2341,6 +2576,7 @@
             },
             {
               "name": "HR I 5",
+              "id": "HR I 5 L2",
               "reg_type": "input",
               "address": "0x162c",
               "type": "value",
@@ -2351,6 +2587,7 @@
             },
             {
               "name": "HR I 6",
+              "id": "HR I 6 L2",
               "reg_type": "input",
               "address": "0x162d",
               "type": "value",
@@ -2361,6 +2598,7 @@
             },
             {
               "name": "HR I 7",
+              "id": "HR I 7 L2",
               "reg_type": "input",
               "address": "0x162e",
               "type": "value",
@@ -2371,6 +2609,7 @@
             },
             {
               "name": "HR I 8",
+              "id": "HR I 8 L2",
               "reg_type": "input",
               "address": "0x162f",
               "type": "value",
@@ -2381,6 +2620,7 @@
             },
             {
               "name": "HR I 9",
+              "id": "HR I 9 L2",
               "reg_type": "input",
               "address": "0x1630",
               "type": "value",
@@ -2391,6 +2631,7 @@
             },
             {
               "name": "HR I 10",
+              "id": "HR I 10 L2",
               "reg_type": "input",
               "address": "0x1631",
               "type": "value",
@@ -2401,6 +2642,7 @@
             },
             {
               "name": "HR I 11",
+              "id": "HR I 11 L2",
               "reg_type": "input",
               "address": "0x1632",
               "type": "value",
@@ -2411,6 +2653,7 @@
             },
             {
               "name": "HR I 12",
+              "id": "HR I 12 L2",
               "reg_type": "input",
               "address": "0x1633",
               "type": "value",
@@ -2421,6 +2664,7 @@
             },
             {
               "name": "HR I 13",
+              "id": "HR I 13 L2",
               "reg_type": "input",
               "address": "0x1634",
               "type": "value",
@@ -2431,6 +2675,7 @@
             },
             {
               "name": "HR I 14",
+              "id": "HR I 14 L2",
               "reg_type": "input",
               "address": "0x1635",
               "type": "value",
@@ -2441,6 +2686,7 @@
             },
             {
               "name": "HR I 15",
+              "id": "HR I 15 L2",
               "reg_type": "input",
               "address": "0x1636",
               "type": "value",
@@ -2451,6 +2697,7 @@
             },
             {
               "name": "HR I 16",
+              "id": "HR I 16 L2",
               "reg_type": "input",
               "address": "0x1637",
               "type": "value",
@@ -2461,6 +2708,7 @@
             },
             {
               "name": "HR I 17",
+              "id": "HR I 17 L2",
               "reg_type": "input",
               "address": "0x1638",
               "type": "value",
@@ -2471,6 +2719,7 @@
             },
             {
               "name": "HR I 18",
+              "id": "HR I 18 L2",
               "reg_type": "input",
               "address": "0x1639",
               "type": "value",
@@ -2481,6 +2730,7 @@
             },
             {
               "name": "HR I 19",
+              "id": "HR I 19 L2",
               "reg_type": "input",
               "address": "0x163a",
               "type": "value",
@@ -2491,6 +2741,7 @@
             },
             {
               "name": "HR I 20",
+              "id": "HR I 20 L2",
               "reg_type": "input",
               "address": "0x163b",
               "type": "value",
@@ -2501,6 +2752,7 @@
             },
             {
               "name": "HR I 21",
+              "id": "HR I 21 L2",
               "reg_type": "input",
               "address": "0x163c",
               "type": "value",
@@ -2511,6 +2763,7 @@
             },
             {
               "name": "HR I 22",
+              "id": "HR I 22 L2",
               "reg_type": "input",
               "address": "0x163d",
               "type": "value",
@@ -2521,6 +2774,7 @@
             },
             {
               "name": "HR I 23",
+              "id": "HR I 23 L2",
               "reg_type": "input",
               "address": "0x163e",
               "type": "value",
@@ -2531,6 +2785,7 @@
             },
             {
               "name": "HR I 24",
+              "id": "HR I 24 L2",
               "reg_type": "input",
               "address": "0x163f",
               "type": "value",
@@ -2541,6 +2796,7 @@
             },
             {
               "name": "HR I 25",
+              "id": "HR I 25 L2",
               "reg_type": "input",
               "address": "0x1640",
               "type": "value",
@@ -2551,6 +2807,7 @@
             },
             {
               "name": "HR I 26",
+              "id": "HR I 26 L2",
               "reg_type": "input",
               "address": "0x1641",
               "type": "value",
@@ -2561,6 +2818,7 @@
             },
             {
               "name": "HR I 27",
+              "id": "HR I 27 L2",
               "reg_type": "input",
               "address": "0x1642",
               "type": "value",
@@ -2571,6 +2829,7 @@
             },
             {
               "name": "HR I 28",
+              "id": "HR I 28 L2",
               "reg_type": "input",
               "address": "0x1643",
               "type": "value",
@@ -2581,6 +2840,7 @@
             },
             {
               "name": "HR I 29",
+              "id": "HR I 29 L2",
               "reg_type": "input",
               "address": "0x1644",
               "type": "value",
@@ -2591,6 +2851,7 @@
             },
             {
               "name": "HR I 30",
+              "id": "HR I 30 L2",
               "reg_type": "input",
               "address": "0x1645",
               "type": "value",
@@ -2601,6 +2862,7 @@
             },
             {
               "name": "HR I 31",
+              "id": "HR I 31 L2",
               "reg_type": "input",
               "address": "0x1646",
               "type": "value",
@@ -2611,6 +2873,7 @@
             },
             {
               "name": "HR I 32",
+              "id": "HR I 32 L2",
               "reg_type": "input",
               "address": "0x1647",
               "type": "value",
@@ -2621,6 +2884,7 @@
             },
             {
               "name": "HR I 33",
+              "id": "HR I 33 L2",
               "reg_type": "input",
               "address": "0x1648",
               "type": "value",
@@ -2631,6 +2895,7 @@
             },
             {
               "name": "HR I 34",
+              "id": "HR I 34 L2",
               "reg_type": "input",
               "address": "0x1649",
               "type": "value",
@@ -2641,6 +2906,7 @@
             },
             {
               "name": "HR I 35",
+              "id": "HR I 35 L2",
               "reg_type": "input",
               "address": "0x164a",
               "type": "value",
@@ -2651,6 +2917,7 @@
             },
             {
               "name": "HR I 36",
+              "id": "HR I 36 L2",
               "reg_type": "input",
               "address": "0x164b",
               "type": "value",
@@ -2661,6 +2928,7 @@
             },
             {
               "name": "HR I 37",
+              "id": "HR I 37 L2",
               "reg_type": "input",
               "address": "0x164c",
               "type": "value",
@@ -2671,6 +2939,7 @@
             },
             {
               "name": "HR I 38",
+              "id": "HR I 38 L2",
               "reg_type": "input",
               "address": "0x164d",
               "type": "value",
@@ -2681,6 +2950,7 @@
             },
             {
               "name": "HR I 39",
+              "id": "HR I 39 L2",
               "reg_type": "input",
               "address": "0x164e",
               "type": "value",
@@ -2691,6 +2961,7 @@
             },
             {
               "name": "HR I 40",
+              "id": "HR I 40 L2",
               "reg_type": "input",
               "address": "0x164f",
               "type": "value",
@@ -2701,6 +2972,7 @@
             },
             {
               "name": "HR I 41",
+              "id": "HR I 41 L2",
               "reg_type": "input",
               "address": "0x1650",
               "type": "value",
@@ -2711,6 +2983,7 @@
             },
             {
               "name": "HR I 42",
+              "id": "HR I 42 L2",
               "reg_type": "input",
               "address": "0x1651",
               "type": "value",
@@ -2740,6 +3013,7 @@
           "channels": [
             {
               "name": "Irms",
+              "id": "Irms L3",
               "reg_type": "input",
               "address": "0x141a",
               "type": "value",
@@ -2749,6 +3023,7 @@
             },
             {
               "name": "THD I",
+              "id": "THD I L3",
               "reg_type": "input",
               "address": "0x1702",
               "type": "value",
@@ -2758,6 +3033,7 @@
             },
             {
               "name": "THDN I",
+              "id": "THDN I L3",
               "reg_type": "input",
               "address": "0x10f7",
               "type": "value",
@@ -2767,6 +3043,7 @@
             },
             {
               "name": "Ifund",
+              "id": "Ifund L3",
               "reg_type": "input",
               "address": "0x1714",
               "type": "value",
@@ -2776,6 +3053,7 @@
             },
             {
               "name": "P",
+              "id": "P L3",
               "reg_type": "input",
               "address": "0x1306",
               "type": "power",
@@ -2785,6 +3063,7 @@
             },
             {
               "name": "Q",
+              "id": "Q L3",
               "reg_type": "input",
               "address": "0x130e",
               "type": "value",
@@ -2794,6 +3073,7 @@
             },
             {
               "name": "S",
+              "id": "S L3",
               "reg_type": "input",
               "address": "0x1316",
               "type": "value",
@@ -2803,6 +3083,7 @@
             },
             {
               "name": "N",
+              "id": "N L3",
               "reg_type": "input",
               "address": "0x1586",
               "type": "value",
@@ -2812,6 +3093,7 @@
             },
             {
               "name": "PF",
+              "id": "PF L3",
               "reg_type": "input",
               "address": "0x10bf",
               "type": "value",
@@ -2821,6 +3103,7 @@
             },
             {
               "name": "Pfund",
+              "id": "Pfund L3",
               "reg_type": "input",
               "address": "0x1406",
               "type": "value",
@@ -2830,6 +3113,7 @@
             },
             {
               "name": "Pharm",
+              "id": "Pharm L3",
               "reg_type": "input",
               "address": "0x140e",
               "type": "value",
@@ -2839,6 +3123,7 @@
             },
             {
               "name": "AP energy",
+              "id": "AP energy L3",
               "reg_type": "input",
               "address": "0x120c",
               "type": "power_consumption",
@@ -2849,6 +3134,7 @@
             },
             {
               "name": "AN energy",
+              "id": "AN energy L3",
               "reg_type": "input",
               "address": "0x121c",
               "type": "power_consumption",
@@ -2859,6 +3145,7 @@
             },
             {
               "name": "RP energy",
+              "id": "RP energy L3",
               "reg_type": "input",
               "address": "0x122c",
               "type": "value",
@@ -2869,6 +3156,7 @@
             },
             {
               "name": "RN energy",
+              "id": "RN energy L3",
               "reg_type": "input",
               "address": "0x123c",
               "type": "value",
@@ -2879,6 +3167,7 @@
             },
             {
               "name": "S energy",
+              "id": "S energy L3",
               "reg_type": "input",
               "address": "0x124c",
               "type": "value",
@@ -2889,6 +3178,7 @@
             },
             {
               "name": "NP energy",
+              "id": "NP energy L3",
               "reg_type": "input",
               "address": "0x150e",
               "type": "value",
@@ -2899,6 +3189,7 @@
             },
             {
               "name": "NN energy",
+              "id": "NN energy L3",
               "reg_type": "input",
               "address": "0x151e",
               "type": "value",
@@ -2909,6 +3200,7 @@
             },
             {
               "name": "Phase angle",
+              "id": "Phase angle L3",
               "reg_type": "input",
               "address": "0x10fb",
               "type": "value",
@@ -2918,6 +3210,7 @@
             },
             {
               "name": "HR I 2",
+              "id": "HR I 2 L3",
               "reg_type": "input",
               "address": "0x1652",
               "type": "value",
@@ -2928,6 +3221,7 @@
             },
             {
               "name": "HR I 3",
+              "id": "HR I 3 L3",
               "reg_type": "input",
               "address": "0x1653",
               "type": "value",
@@ -2938,6 +3232,7 @@
             },
             {
               "name": "HR I 4",
+              "id": "HR I 4 L3",
               "reg_type": "input",
               "address": "0x1654",
               "type": "value",
@@ -2948,6 +3243,7 @@
             },
             {
               "name": "HR I 5",
+              "id": "HR I 5 L3",
               "reg_type": "input",
               "address": "0x1655",
               "type": "value",
@@ -2958,6 +3254,7 @@
             },
             {
               "name": "HR I 6",
+              "id": "HR I 6 L3",
               "reg_type": "input",
               "address": "0x1656",
               "type": "value",
@@ -2968,6 +3265,7 @@
             },
             {
               "name": "HR I 7",
+              "id": "HR I 7 L3",
               "reg_type": "input",
               "address": "0x1657",
               "type": "value",
@@ -2978,6 +3276,7 @@
             },
             {
               "name": "HR I 8",
+              "id": "HR I 8 L3",
               "reg_type": "input",
               "address": "0x1658",
               "type": "value",
@@ -2988,6 +3287,7 @@
             },
             {
               "name": "HR I 9",
+              "id": "HR I 9 L3",
               "reg_type": "input",
               "address": "0x1659",
               "type": "value",
@@ -2998,6 +3298,7 @@
             },
             {
               "name": "HR I 10",
+              "id": "HR I 10 L3",
               "reg_type": "input",
               "address": "0x165a",
               "type": "value",
@@ -3008,6 +3309,7 @@
             },
             {
               "name": "HR I 11",
+              "id": "HR I 11 L3",
               "reg_type": "input",
               "address": "0x165b",
               "type": "value",
@@ -3018,6 +3320,7 @@
             },
             {
               "name": "HR I 12",
+              "id": "HR I 12 L3",
               "reg_type": "input",
               "address": "0x165c",
               "type": "value",
@@ -3028,6 +3331,7 @@
             },
             {
               "name": "HR I 13",
+              "id": "HR I 13 L3",
               "reg_type": "input",
               "address": "0x165d",
               "type": "value",
@@ -3038,6 +3342,7 @@
             },
             {
               "name": "HR I 14",
+              "id": "HR I 14 L3",
               "reg_type": "input",
               "address": "0x165e",
               "type": "value",
@@ -3048,6 +3353,7 @@
             },
             {
               "name": "HR I 15",
+              "id": "HR I 15 L3",
               "reg_type": "input",
               "address": "0x165f",
               "type": "value",
@@ -3058,6 +3364,7 @@
             },
             {
               "name": "HR I 16",
+              "id": "HR I 16 L3",
               "reg_type": "input",
               "address": "0x1660",
               "type": "value",
@@ -3068,6 +3375,7 @@
             },
             {
               "name": "HR I 17",
+              "id": "HR I 17 L3",
               "reg_type": "input",
               "address": "0x1661",
               "type": "value",
@@ -3078,6 +3386,7 @@
             },
             {
               "name": "HR I 18",
+              "id": "HR I 18 L3",
               "reg_type": "input",
               "address": "0x1662",
               "type": "value",
@@ -3088,6 +3397,7 @@
             },
             {
               "name": "HR I 19",
+              "id": "HR I 19 L3",
               "reg_type": "input",
               "address": "0x1663",
               "type": "value",
@@ -3098,6 +3408,7 @@
             },
             {
               "name": "HR I 20",
+              "id": "HR I 20 L3",
               "reg_type": "input",
               "address": "0x1664",
               "type": "value",
@@ -3108,6 +3419,7 @@
             },
             {
               "name": "HR I 21",
+              "id": "HR I 21 L3",
               "reg_type": "input",
               "address": "0x1665",
               "type": "value",
@@ -3118,6 +3430,7 @@
             },
             {
               "name": "HR I 22",
+              "id": "HR I 22 L3",
               "reg_type": "input",
               "address": "0x1666",
               "type": "value",
@@ -3128,6 +3441,7 @@
             },
             {
               "name": "HR I 23",
+              "id": "HR I 23 L3",
               "reg_type": "input",
               "address": "0x1667",
               "type": "value",
@@ -3138,6 +3452,7 @@
             },
             {
               "name": "HR I 24",
+              "id": "HR I 24 L3",
               "reg_type": "input",
               "address": "0x1668",
               "type": "value",
@@ -3148,6 +3463,7 @@
             },
             {
               "name": "HR I 25",
+              "id": "HR I 25 L3",
               "reg_type": "input",
               "address": "0x1669",
               "type": "value",
@@ -3158,6 +3474,7 @@
             },
             {
               "name": "HR I 26",
+              "id": "HR I 26 L3",
               "reg_type": "input",
               "address": "0x166a",
               "type": "value",
@@ -3168,6 +3485,7 @@
             },
             {
               "name": "HR I 27",
+              "id": "HR I 27 L3",
               "reg_type": "input",
               "address": "0x166b",
               "type": "value",
@@ -3178,6 +3496,7 @@
             },
             {
               "name": "HR I 28",
+              "id": "HR I 28 L3",
               "reg_type": "input",
               "address": "0x166c",
               "type": "value",
@@ -3188,6 +3507,7 @@
             },
             {
               "name": "HR I 29",
+              "id": "HR I 29 L3",
               "reg_type": "input",
               "address": "0x166d",
               "type": "value",
@@ -3198,6 +3518,7 @@
             },
             {
               "name": "HR I 30",
+              "id": "HR I 30 L3",
               "reg_type": "input",
               "address": "0x166e",
               "type": "value",
@@ -3208,6 +3529,7 @@
             },
             {
               "name": "HR I 31",
+              "id": "HR I 31 L3",
               "reg_type": "input",
               "address": "0x166f",
               "type": "value",
@@ -3218,6 +3540,7 @@
             },
             {
               "name": "HR I 32",
+              "id": "HR I 32 L3",
               "reg_type": "input",
               "address": "0x1670",
               "type": "value",
@@ -3228,6 +3551,7 @@
             },
             {
               "name": "HR I 33",
+              "id": "HR I 33 L3",
               "reg_type": "input",
               "address": "0x1671",
               "type": "value",
@@ -3238,6 +3562,7 @@
             },
             {
               "name": "HR I 34",
+              "id": "HR I 34 L3",
               "reg_type": "input",
               "address": "0x1672",
               "type": "value",
@@ -3248,6 +3573,7 @@
             },
             {
               "name": "HR I 35",
+              "id": "HR I 35 L3",
               "reg_type": "input",
               "address": "0x1673",
               "type": "value",
@@ -3258,6 +3584,7 @@
             },
             {
               "name": "HR I 36",
+              "id": "HR I 36 L3",
               "reg_type": "input",
               "address": "0x1674",
               "type": "value",
@@ -3268,6 +3595,7 @@
             },
             {
               "name": "HR I 37",
+              "id": "HR I 37 L3",
               "reg_type": "input",
               "address": "0x1675",
               "type": "value",
@@ -3278,6 +3606,7 @@
             },
             {
               "name": "HR I 38",
+              "id": "HR I 38 L3",
               "reg_type": "input",
               "address": "0x1676",
               "type": "value",
@@ -3288,6 +3617,7 @@
             },
             {
               "name": "HR I 39",
+              "id": "HR I 39 L3",
               "reg_type": "input",
               "address": "0x1677",
               "type": "value",
@@ -3298,6 +3628,7 @@
             },
             {
               "name": "HR I 40",
+              "id": "HR I 40 L3",
               "reg_type": "input",
               "address": "0x1678",
               "type": "value",
@@ -3308,6 +3639,7 @@
             },
             {
               "name": "HR I 41",
+              "id": "HR I 41 L3",
               "reg_type": "input",
               "address": "0x1679",
               "type": "value",
@@ -3318,6 +3650,7 @@
             },
             {
               "name": "HR I 42",
+              "id": "HR I 42 L3",
               "reg_type": "input",
               "address": "0x167a",
               "type": "value",

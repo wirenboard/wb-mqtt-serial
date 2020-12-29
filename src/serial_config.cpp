@@ -232,9 +232,15 @@ namespace {
                            const Json::Value& channel_data,
                            size_t             device_base_address,
                            size_t             stride,
-                           const std::string& name_prefix)
+                           const std::string& name_prefix,
+                           const std::string& mqtt_prefix)
     {
-        std::string name = channel_data["name"].asString();
+        std::string name(channel_data["name"].asString());
+        std::string mqtt_channel_name(name);
+        Get(channel_data, "id", mqtt_channel_name);
+        if (!mqtt_prefix.empty()) {
+            mqtt_channel_name = mqtt_prefix + " " + mqtt_channel_name;
+        }
         if (!name_prefix.empty()) {
             name = name_prefix + " " + name;
         }
@@ -247,7 +253,7 @@ namespace {
             const Json::Value& reg_data = channel_data["consists_of"];
             for(Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
                 std::string def_type;
-                auto reg = LoadRegisterConfig(device_config, reg_data[i], def_type, name, device_base_address, stride);
+                auto reg = LoadRegisterConfig(device_config, reg_data[i], def_type, mqtt_channel_name, device_base_address, stride);
                 /* the poll_interval specified for the specific register has a precedence over the one specified for the compound channel */
                 if ((reg->PollInterval.count() < 0) && (poll_interval.count() >= 0))
                     reg->PollInterval = poll_interval;
@@ -259,7 +265,7 @@ namespace {
                                                 "in one channel -- ") + device_config->DeviceType);
             }
         } else {
-            registers.push_back(LoadRegisterConfig(device_config, channel_data, default_type_str, name, device_base_address, stride));
+            registers.push_back(LoadRegisterConfig(device_config, channel_data, default_type_str, mqtt_channel_name, device_base_address, stride));
         }
 
         std::string type_str(Read(channel_data, "type", default_type_str));
@@ -283,31 +289,43 @@ namespace {
 
         int order        = device_config->NextOrderValue();
         PDeviceChannelConfig channel(new TDeviceChannelConfig(name, type_str, device_config->Id, order,
-                                                on_value, max, registers[0]->ReadOnly,
+                                                on_value, max, registers[0]->ReadOnly, mqtt_channel_name,
                                                 registers));
         device_config->AddChannel(channel);
     }
 
     void LoadChannel(PDeviceConfig      device_config,
                      const Json::Value& channel_data,
-                     size_t             device_base_address,
-                     size_t             stride,
-                     const std::string& name_prefix);
+                     size_t             device_base_address = 0,
+                     size_t             stride              = 0,
+                     const std::string& name_prefix         = "",
+                     const std::string& mqtt_prefix         = "");
 
     void LoadSetupItem(PDeviceConfig      device_config,
                        const Json::Value& item_data,
                        size_t             device_base_address,
                        size_t             stride,
-                       const std::string& name_prefix);
+                       const std::string& mqtt_prefix);
 
     void LoadSubdeviceChannel(PDeviceConfig      device_config,
                               const Json::Value& channel_data,
                               size_t             device_base_address,
-                              const std::string& name_prefix)
+                              const std::string& name_prefix,
+                              const std::string& mqtt_prefix)
     {
-        auto new_name_prefix = channel_data["name"].asString();
+        std::string new_name_prefix(channel_data["name"].asString());
         if (!name_prefix.empty()) {
             new_name_prefix = name_prefix + " " + new_name_prefix;
+        }
+
+        std::string mqtt_channel_prefix(channel_data["name"].asString());
+        Get(channel_data, "id", mqtt_channel_prefix);
+        if (!mqtt_prefix.empty()) {
+            if (mqtt_channel_prefix.empty()) {
+                mqtt_channel_prefix = mqtt_prefix;
+            } else {
+                mqtt_channel_prefix = mqtt_prefix + " " + mqtt_channel_prefix;
+            }
         }
 
         size_t baseAddress = device_base_address + Read(channel_data, "shift", 0);
@@ -320,7 +338,7 @@ namespace {
 
         if (channel_data.isMember("channels")) {
             for (const auto& ch: channel_data["channels"]) {
-                LoadChannel(device_config, ch, baseAddress, stride, new_name_prefix);
+                LoadChannel(device_config, ch, baseAddress, stride, new_name_prefix, mqtt_channel_prefix);
             }
         }
     }
@@ -329,16 +347,17 @@ namespace {
                      const Json::Value& channel_data,
                      size_t             device_base_address,
                      size_t             stride,
-                     const std::string& name_prefix)
+                     const std::string& name_prefix,
+                     const std::string& mqtt_prefix)
     {
         if (channel_data.isMember("enabled") && !channel_data["enabled"].asBool()) {
             return;
         }
 
         if (channel_data.isMember("device_type")) {
-            LoadSubdeviceChannel(device_config, channel_data, device_base_address, name_prefix);
+            LoadSubdeviceChannel(device_config, channel_data, device_base_address, name_prefix, mqtt_prefix);
         } else {
-            LoadSimpleChannel(device_config, channel_data, device_base_address, stride, name_prefix);
+            LoadSimpleChannel(device_config, channel_data, device_base_address, stride, name_prefix, mqtt_prefix);
         }
     }
 
@@ -424,7 +443,7 @@ namespace {
 
         if (device_data.isMember("channels")) {
             for (const auto& channel_data: device_data["channels"]) {
-                LoadChannel(device_config, channel_data, 0, 0, "");
+                LoadChannel(device_config, channel_data);
             }
         }
     }
@@ -762,10 +781,11 @@ TDeviceChannelConfig::TDeviceChannelConfig(const std::string& name,
                                            const std::string& deviceId,
                                            int                order,
                                            const std::string& onValue,
-                                           int max,
-                                           bool readOnly,
+                                           int                max,
+                                           bool               readOnly,
+                                           const std::string& mqttId,
                                            const std::vector<PRegisterConfig> regs)
-    : Name(name), Type(type), DeviceId(deviceId),
+    : Name(name), MqttId(mqttId), Type(type), DeviceId(deviceId),
       Order(order), OnValue(onValue), Max(max),
       ReadOnly(readOnly), RegisterConfigs(regs) 
 {}

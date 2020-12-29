@@ -8,34 +8,40 @@
     "frame_timeout_ms": 15,
     "channels": [
       {
-        "device_type": "channel",
         "name": "Channel 1",
+        "id": "",
+        "device_type": "channel 1",
         "stride": 2
       },
       {
-        "device_type": "channel",
         "name": "Channel 2",
+        "id": "",
+        "device_type": "channel 2",
         "stride": 1
       },
       {
-        "device_type": "channel",
-        "name": "Channel 3"
+        "name": "Channel 3",
+        "id": "",
+        "device_type": "channel 3"
       },
       {
-        "device_type": "channel",
         "name": "Channel 4",
+        "id": "",
+        "device_type": "channel 4",
         "shift": "0x1000",
         "stride": 2
       },
       {
-        "device_type": "channel",
         "name": "Channel 5",
+        "id": "",
+        "device_type": "channel 5",
         "shift": "0x1000",
         "stride": 1
       },
       {
-        "device_type": "channel",
         "name": "Channel 6",
+        "id": "",
+        "device_type": "channel 6",
         "shift": "0x1000"
       },
       {
@@ -74,11 +80,12 @@
     ],
     "subdevices": [
       {
-        "device_type": "channel",
+        "device_type": "channel 1",
         "device": {
           "channels": [
             {
               "name": "Irms",
+              "id": "Irms 1",
               "reg_type": "input",
               "address": "0x10dd",
               "type": "value",
@@ -88,6 +95,7 @@
             },
             {
               "name": "P",
+              "id": "P 1",
               "reg_type": "input",
               "address": "0x1302",
               "type": "power",
@@ -97,6 +105,7 @@
             },
             {
               "name": "Q",
+              "id": "Q 1",
               "reg_type": "input",
               "address": "0x130a",
               "type": "value",
@@ -106,6 +115,7 @@
             },
             {
               "name": "S",
+              "id": "S 1",
               "reg_type": "input",
               "address": "0x1312",
               "type": "value",
@@ -115,6 +125,7 @@
             },
             {
               "name": "PF",
+              "id": "PF 1",
               "reg_type": "input",
               "address": "0x10bd",
               "type": "value",
@@ -124,6 +135,7 @@
             },
             {
               "name": "AP energy",
+              "id": "AP energy 1",
               "reg_type": "input",
               "address": "0x1204",
               "type": "power_consumption",
@@ -134,6 +146,7 @@
             },
             {
               "name": "RP energy",
+              "id": "RP energy 1",
               "reg_type": "input",
               "address": "0x1224",
               "type": "value",
@@ -144,6 +157,452 @@
             },
             {
               "name": "Phase angle",
+              "id": "Phase angle 1",
+              "reg_type": "input",
+              "address": "0x10f9",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.1,
+              "round_to": 0.01
+            }
+          ]
+        }
+      },
+      {
+        "device_type": "channel 2",
+        "device": {
+          "channels": [
+            {
+              "name": "Irms",
+              "id": "Irms 2",
+              "reg_type": "input",
+              "address": "0x10dd",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "P",
+              "id": "P 2",
+              "reg_type": "input",
+              "address": "0x1302",
+              "type": "power",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "Q",
+              "id": "Q 2",
+              "reg_type": "input",
+              "address": "0x130a",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "S",
+              "id": "S 2",
+              "reg_type": "input",
+              "address": "0x1312",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "PF",
+              "id": "PF 2",
+              "reg_type": "input",
+              "address": "0x10bd",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "AP energy",
+              "id": "AP energy 2",
+              "reg_type": "input",
+              "address": "0x1204",
+              "type": "power_consumption",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "RP energy",
+              "id": "RP energy 2",
+              "reg_type": "input",
+              "address": "0x1224",
+              "type": "value",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "Phase angle",
+              "id": "Phase angle 2",
+              "reg_type": "input",
+              "address": "0x10f9",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.1,
+              "round_to": 0.01
+            }
+          ]
+        }
+      },
+      {
+        "device_type": "channel 3",
+        "device": {
+          "channels": [
+            {
+              "name": "Irms",
+              "id": "Irms 3",
+              "reg_type": "input",
+              "address": "0x10dd",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "P",
+              "id": "P 3",
+              "reg_type": "input",
+              "address": "0x1302",
+              "type": "power",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "Q",
+              "id": "Q 3",
+              "reg_type": "input",
+              "address": "0x130a",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "S",
+              "id": "S 3",
+              "reg_type": "input",
+              "address": "0x1312",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "PF",
+              "id": "PF 3",
+              "reg_type": "input",
+              "address": "0x10bd",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "AP energy",
+              "id": "AP energy 3",
+              "reg_type": "input",
+              "address": "0x1204",
+              "type": "power_consumption",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "RP energy",
+              "id": "RP energy 3",
+              "reg_type": "input",
+              "address": "0x1224",
+              "type": "value",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "Phase angle",
+              "id": "Phase angle 3",
+              "reg_type": "input",
+              "address": "0x10f9",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.1,
+              "round_to": 0.01
+            }
+          ]
+        }
+      },
+      {
+        "device_type": "channel 4",
+        "device": {
+          "channels": [
+            {
+              "name": "Irms",
+              "id": "Irms 4",
+              "reg_type": "input",
+              "address": "0x10dd",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "P",
+              "id": "P 4",
+              "reg_type": "input",
+              "address": "0x1302",
+              "type": "power",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "Q",
+              "id": "Q 4",
+              "reg_type": "input",
+              "address": "0x130a",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "S",
+              "id": "S 4",
+              "reg_type": "input",
+              "address": "0x1312",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "PF",
+              "id": "PF 4",
+              "reg_type": "input",
+              "address": "0x10bd",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "AP energy",
+              "id": "AP energy 4",
+              "reg_type": "input",
+              "address": "0x1204",
+              "type": "power_consumption",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "RP energy",
+              "id": "RP energy 4",
+              "reg_type": "input",
+              "address": "0x1224",
+              "type": "value",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "Phase angle",
+              "id": "Phase angle 4",
+              "reg_type": "input",
+              "address": "0x10f9",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.1,
+              "round_to": 0.01
+            }
+          ]
+        }
+      },
+      {
+        "device_type": "channel 5",
+        "device": {
+          "channels": [
+            {
+              "name": "Irms",
+              "id": "Irms 5",
+              "reg_type": "input",
+              "address": "0x10dd",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "P",
+              "id": "P 5",
+              "reg_type": "input",
+              "address": "0x1302",
+              "type": "power",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "Q",
+              "id": "Q 5",
+              "reg_type": "input",
+              "address": "0x130a",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "S",
+              "id": "S 5",
+              "reg_type": "input",
+              "address": "0x1312",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "PF",
+              "id": "PF 5",
+              "reg_type": "input",
+              "address": "0x10bd",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "AP energy",
+              "id": "AP energy 5",
+              "reg_type": "input",
+              "address": "0x1204",
+              "type": "power_consumption",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "RP energy",
+              "id": "RP energy 5",
+              "reg_type": "input",
+              "address": "0x1224",
+              "type": "value",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "Phase angle",
+              "id": "Phase angle 5",
+              "reg_type": "input",
+              "address": "0x10f9",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.1,
+              "round_to": 0.01
+            }
+          ]
+        }
+      },
+      {
+        "device_type": "channel 6",
+        "device": {
+          "channels": [
+            {
+              "name": "Irms",
+              "id": "Irms 6",
+              "reg_type": "input",
+              "address": "0x10dd",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "P",
+              "id": "P 6",
+              "reg_type": "input",
+              "address": "0x1302",
+              "type": "power",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "Q",
+              "id": "Q 6",
+              "reg_type": "input",
+              "address": "0x130a",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "S",
+              "id": "S 6",
+              "reg_type": "input",
+              "address": "0x1312",
+              "type": "value",
+              "format": "s32",
+              "scale": 1.52588e-05,
+              "round_to": 0.01
+            },
+            {
+              "name": "PF",
+              "id": "PF 6",
+              "reg_type": "input",
+              "address": "0x10bd",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "AP energy",
+              "id": "AP energy 6",
+              "reg_type": "input",
+              "address": "0x1204",
+              "type": "power_consumption",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "RP energy",
+              "id": "RP energy 6",
+              "reg_type": "input",
+              "address": "0x1224",
+              "type": "value",
+              "format": "u64",
+              "scale": 3.125e-05,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "Phase angle",
+              "id": "Phase angle 6",
               "reg_type": "input",
               "address": "0x10f9",
               "type": "value",

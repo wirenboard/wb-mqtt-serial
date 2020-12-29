@@ -49,6 +49,9 @@
         "name": {
           "$ref": "#/definitions/channel_name"
         },
+        "id": {
+          "type": "string"
+        },
         "device_type": {
           "type": "string"
         },

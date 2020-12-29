@@ -8,6 +8,7 @@
         "channels": [
             {
                 "name": "Input 1",
+                "id": "IN 1",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -62,6 +63,7 @@
             },
             {
                 "name": "Input 2",
+                "id": "IN 2",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -116,6 +118,7 @@
             },
             {
                 "name": "Input 3",
+                "id": "IN 3",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -170,6 +173,7 @@
             },
             {
                 "name": "Input 4",
+                "id": "IN 4",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -224,6 +228,7 @@
             },
             {
                 "name": "Input 5",
+                "id": "IN 5",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -278,6 +283,7 @@
             },
             {
                 "name": "Input 6",
+                "id": "IN 6",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -332,6 +338,7 @@
             },
             {
                 "name": "Input 7",
+                "id": "IN 7",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -386,6 +393,7 @@
             },
             {
                 "name": "Input 8",
+                "id": "IN 8",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -440,6 +448,7 @@
             },
             {
                 "name": "Input 9",
+                "id": "IN 9",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -494,6 +503,7 @@
             },
             {
                 "name": "Input 10",
+                "id": "IN 10",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -548,6 +558,7 @@
             },
             {
                 "name": "Input 11",
+                "id": "IN 11",
                 "oneOf": [
                     "thermocouple ТХА (K)",
                     "NTC thermistor 10k (B = 3988 K)",
@@ -638,13 +649,17 @@
                     ],
                     "channels": [
                         {
-                            "name": "Voltage [mV·100]",
+                            "name": "Voltage",
+                            "control_type": "voltage",
+                            "scale": 0.00001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -688,13 +703,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -760,7 +777,9 @@
                     ],
                     "channels": [
                         {
-                            "name": "Current [mA·10000]",
+                            "name": "Current",
+                            "control_type": "current",
+                            "scale": 0.00000001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -797,7 +816,9 @@
                     ],
                     "channels": [
                         {
-                            "name": "Current [mA·10000]",
+                            "name": "Current",
+                            "control_type": "current",
+                            "scale": 0.00000001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -834,7 +855,9 @@
                     ],
                     "channels": [
                         {
-                            "name": "Current [mA·10000]",
+                            "name": "Current",
+                            "control_type": "current",
+                            "scale": 0.00000001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -871,7 +894,9 @@
                     ],
                     "channels": [
                         {
-                            "name": "Current [mA·10000]",
+                            "name": "Current",
+                            "control_type": "current",
+                            "scale": 0.00000001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -885,11 +910,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "current measurement 4 to 20 mA"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "current measurement 4 to 20 mA",
                                 "current measurement 0 to 20 mA",
@@ -911,11 +938,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "current measurement 0 to 5 mA"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "current measurement 0 to 5 mA",
                                 "current measurement 4 to 20 mA",
@@ -937,11 +966,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "current measurement 0 to 20 mA"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "current measurement 0 to 20 mA",
                                 "current measurement 4 to 20 mA",
@@ -986,13 +1017,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1029,13 +1062,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1072,13 +1107,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1115,13 +1152,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1158,13 +1197,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1201,13 +1242,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1244,13 +1287,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1287,13 +1332,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1330,13 +1377,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1373,13 +1422,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1416,13 +1467,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1459,13 +1512,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1502,13 +1557,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1545,13 +1602,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1588,13 +1647,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -1631,7 +1692,7 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -1691,7 +1752,7 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -1705,11 +1766,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "dry contact sensor"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "dry contact sensor",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1744,11 +1807,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
@@ -1783,11 +1848,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1822,11 +1889,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1861,11 +1930,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1900,11 +1971,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1939,11 +2012,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -1978,11 +2053,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2017,11 +2094,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2056,11 +2135,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2095,11 +2176,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2134,11 +2217,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2173,11 +2258,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2212,11 +2299,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2251,11 +2340,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2290,11 +2381,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2329,11 +2422,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "two-wire resistance measurement"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "two-wire resistance measurement",
                                 "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
@@ -2391,13 +2486,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2434,13 +2531,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2477,13 +2576,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2520,13 +2621,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2563,13 +2666,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2606,13 +2711,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2649,13 +2756,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2692,13 +2801,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2735,13 +2846,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2778,13 +2891,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2821,13 +2936,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2864,13 +2981,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2907,13 +3026,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2950,13 +3071,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -2993,13 +3116,15 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
-                            "name": "Temperature [°C·10]",
+                            "name": "Temperature",
+                            "control_type": "temperature",
+                            "scale": 0.1,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0504"
@@ -3053,7 +3178,8 @@
                     ],
                     "channels": [
                         {
-                            "name": "Percent [%·100]",
+                            "name": "Percent",
+                            "scale": 0.01,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3067,11 +3193,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "voltage measurement from ratiometric sensor"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "voltage measurement from ratiometric sensor",
                                 "disabled"
@@ -3130,7 +3258,8 @@
                     ],
                     "channels": [
                         {
-                            "name": "Percent [%·100]",
+                            "name": "Percent",
+                            "scale": 0.01,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3184,7 +3313,9 @@
                     ],
                     "channels": [
                         {
-                            "name": "Voltage [mV·100]",
+                            "name": "Voltage",
+                            "control_type": "voltage",
+                            "scale": 0.00001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3221,7 +3352,9 @@
                     ],
                     "channels": [
                         {
-                            "name": "Voltage [mV·100]",
+                            "name": "Voltage",
+                            "control_type": "voltage",
+                            "scale": 0.00001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3235,11 +3368,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "single-ended voltage measurement from 0 to 2 V"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "single-ended voltage measurement from 0 to 2 V",
                                 "single-ended voltage measurement from 0 to 1 V",
@@ -3259,11 +3394,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "single-ended voltage measurement from 0 to 1 V"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "single-ended voltage measurement from 0 to 1 V",
                                 "single-ended voltage measurement from 0 to 2 V",
@@ -3306,7 +3443,9 @@
                     ],
                     "channels": [
                         {
-                            "name": "Voltage [mV·100]",
+                            "name": "Voltage",
+                            "control_type": "voltage",
+                            "scale": 0.00001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3360,7 +3499,9 @@
                     ],
                     "channels": [
                         {
-                            "name": "Voltage [mV·100]",
+                            "name": "Voltage",
+                            "control_type": "voltage",
+                            "scale": 0.00001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3374,11 +3515,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "single-ended voltage measurement from 0 to 1 V"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "single-ended voltage measurement from 0 to 1 V",
                                 "single-ended voltage measurement from 0 to 2 V",
@@ -3438,10 +3581,12 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm·100]",
+                            "name": "Resistance",
+                            "control_type": "resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale": 0.01
                         }
                     ]
                 }
@@ -3492,7 +3637,7 @@
                     ],
                     "channels": [
                         {
-                            "name": "Resistance [Ohm]",
+                            "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3506,11 +3651,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "resistance measurement using current measurement"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "resistance measurement using current measurement",
                                 "disabled"
@@ -3529,11 +3676,13 @@
                     "channels": [
                         {
                             "name": "IN_P",
+                            "id": "P",
                             "device_type": "current measurement"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
+                            "id": "N",
                             "oneOf": [
                                 "current measurement",
                                 "current measurement 4 to 20 mA",

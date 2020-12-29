@@ -63,6 +63,7 @@ TEST_F(TConfigParserTest, Parse)
                     Emit() << "------";
                     Emit() << "Name: " << device_channel->Name;
                     Emit() << "Type: " << device_channel->Type;
+                    Emit() << "MqttId: " << device_channel->MqttId;
                     Emit() << "DeviceId: " << device_channel->DeviceId;
                     Emit() << "Order: " << device_channel->Order;
                     Emit() << "OnValue: " << device_channel->OnValue;

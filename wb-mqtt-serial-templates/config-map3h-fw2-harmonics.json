@@ -9,16 +9,19 @@
     "channels": [
       {
         "name": "L1",
-        "device_type": "phase"
+        "id": "",
+        "device_type": "phase L1"
       },
       {
         "name": "L2",
-        "device_type": "phase",
+        "id": "",
+        "device_type": "phase L2",
         "stride": 1
       },
       {
         "name": "L3",
-        "device_type": "phase",
+        "id": "",
+        "device_type": "phase L3",
         "stride": 2
       },
       {
@@ -190,7 +193,7 @@
     ],
     "subdevices": [
       {
-        "device_type": "phase",
+        "device_type": "phase L1",
         "device": {
           "setup": [
             {
@@ -207,6 +210,7 @@
           "channels": [
             {
               "name": "Urms",
+              "id": "Urms L1",
               "reg_type": "input",
               "address": "0x1410",
               "type": "voltage",
@@ -216,6 +220,7 @@
             },
             {
               "name": "THD U",
+              "id": "THD U L1",
               "reg_type": "input",
               "address": "0x1703",
               "type": "value",
@@ -225,6 +230,7 @@
             },
             {
               "name": "THDN U",
+              "id": "THDN U L1",
               "reg_type": "input",
               "address": "0x10f1",
               "type": "value",
@@ -234,6 +240,7 @@
             },
             {
               "name": "Ufund",
+              "id": "Ufund L1",
               "reg_type": "input",
               "address": "0x1711",
               "type": "value",
@@ -243,6 +250,7 @@
             },
             {
               "name": "Voltage angle",
+              "id": "Voltage angle L1",
               "reg_type": "input",
               "address": "0x10fd",
               "type": "value",
@@ -252,6 +260,7 @@
             },
             {
               "name": "HR U 2",
+              "id": "HR U 2 L1",
               "reg_type": "input",
               "address": "0x167b",
               "type": "value",
@@ -262,6 +271,7 @@
             },
             {
               "name": "HR U 3",
+              "id": "HR U 3 L1",
               "reg_type": "input",
               "address": "0x167c",
               "type": "value",
@@ -272,6 +282,7 @@
             },
             {
               "name": "HR U 4",
+              "id": "HR U 4 L1",
               "reg_type": "input",
               "address": "0x167d",
               "type": "value",
@@ -282,6 +293,7 @@
             },
             {
               "name": "HR U 5",
+              "id": "HR U 5 L1",
               "reg_type": "input",
               "address": "0x167e",
               "type": "value",
@@ -292,6 +304,7 @@
             },
             {
               "name": "HR U 6",
+              "id": "HR U 6 L1",
               "reg_type": "input",
               "address": "0x167f",
               "type": "value",
@@ -302,6 +315,7 @@
             },
             {
               "name": "HR U 7",
+              "id": "HR U 7 L1",
               "reg_type": "input",
               "address": "0x1680",
               "type": "value",
@@ -312,6 +326,7 @@
             },
             {
               "name": "Irms",
+              "id": "Irms L1",
               "reg_type": "input",
               "address": "0x1416",
               "type": "value",
@@ -321,6 +336,7 @@
             },
             {
               "name": "THD I",
+              "id": "THD I L1",
               "reg_type": "input",
               "address": "0x1700",
               "type": "value",
@@ -330,6 +346,7 @@
             },
             {
               "name": "THDN I",
+              "id": "THDN I L1",
               "reg_type": "input",
               "address": "0x10f5",
               "type": "value",
@@ -339,6 +356,7 @@
             },
             {
               "name": "Ifund",
+              "id": "Ifund L1",
               "reg_type": "input",
               "address": "0x1710",
               "type": "value",
@@ -348,6 +366,7 @@
             },
             {
               "name": "P",
+              "id": "P L1",
               "reg_type": "input",
               "address": "0x1302",
               "type": "power",
@@ -357,6 +376,7 @@
             },
             {
               "name": "Q",
+              "id": "Q L1",
               "reg_type": "input",
               "address": "0x130a",
               "type": "value",
@@ -366,6 +386,7 @@
             },
             {
               "name": "S",
+              "id": "S L1",
               "reg_type": "input",
               "address": "0x1312",
               "type": "value",
@@ -375,6 +396,7 @@
             },
             {
               "name": "N",
+              "id": "N L1",
               "reg_type": "input",
               "address": "0x1582",
               "type": "value",
@@ -384,6 +406,7 @@
             },
             {
               "name": "PF",
+              "id": "PF L1",
               "reg_type": "input",
               "address": "0x10bd",
               "type": "value",
@@ -393,6 +416,7 @@
             },
             {
               "name": "Pfund",
+              "id": "Pfund L1",
               "reg_type": "input",
               "address": "0x1402",
               "type": "value",
@@ -402,6 +426,7 @@
             },
             {
               "name": "Pharm",
+              "id": "Pharm L1",
               "reg_type": "input",
               "address": "0x140a",
               "type": "value",
@@ -411,6 +436,7 @@
             },
             {
               "name": "AP energy",
+              "id": "AP energy L1",
               "reg_type": "input",
               "address": "0x1204",
               "type": "power_consumption",
@@ -421,6 +447,7 @@
             },
             {
               "name": "AN energy",
+              "id": "AN energy L1",
               "reg_type": "input",
               "address": "0x1214",
               "type": "power_consumption",
@@ -431,6 +458,7 @@
             },
             {
               "name": "RP energy",
+              "id": "RP energy L1",
               "reg_type": "input",
               "address": "0x1224",
               "type": "value",
@@ -441,6 +469,7 @@
             },
             {
               "name": "RN energy",
+              "id": "RN energy L1",
               "reg_type": "input",
               "address": "0x1234",
               "type": "value",
@@ -451,6 +480,7 @@
             },
             {
               "name": "S energy",
+              "id": "S energy L1",
               "reg_type": "input",
               "address": "0x1244",
               "type": "value",
@@ -461,6 +491,7 @@
             },
             {
               "name": "NP energy",
+              "id": "NP energy L1",
               "reg_type": "input",
               "address": "0x1506",
               "type": "value",
@@ -471,6 +502,7 @@
             },
             {
               "name": "NN energy",
+              "id": "NN energy L1",
               "reg_type": "input",
               "address": "0x1516",
               "type": "value",
@@ -481,6 +513,7 @@
             },
             {
               "name": "Phase angle",
+              "id": "Phase angle L1",
               "reg_type": "input",
               "address": "0x10f9",
               "type": "value",
@@ -490,6 +523,7 @@
             },
             {
               "name": "HR I 2",
+              "id": "HR I 2 L1",
               "reg_type": "input",
               "address": "0x1600",
               "type": "value",
@@ -500,6 +534,7 @@
             },
             {
               "name": "HR I 3",
+              "id": "HR I 3 L1",
               "reg_type": "input",
               "address": "0x1601",
               "type": "value",
@@ -510,6 +545,7 @@
             },
             {
               "name": "HR I 4",
+              "id": "HR I 4 L1",
               "reg_type": "input",
               "address": "0x1602",
               "type": "value",
@@ -520,6 +556,7 @@
             },
             {
               "name": "HR I 5",
+              "id": "HR I 5 L1",
               "reg_type": "input",
               "address": "0x1603",
               "type": "value",
@@ -530,6 +567,7 @@
             },
             {
               "name": "HR I 6",
+              "id": "HR I 6 L1",
               "reg_type": "input",
               "address": "0x1604",
               "type": "value",
@@ -540,6 +578,7 @@
             },
             {
               "name": "HR I 7",
+              "id": "HR I 7 L1",
               "reg_type": "input",
               "address": "0x1605",
               "type": "value",
@@ -550,6 +589,7 @@
             },
             {
               "name": "HR I 9",
+              "id": "HR I 9 L1",
               "reg_type": "input",
               "address": "0x1607",
               "type": "value",
@@ -560,6 +600,7 @@
             },
             {
               "name": "HR I 11",
+              "id": "HR I 11 L1",
               "reg_type": "input",
               "address": "0x1609",
               "type": "value",
@@ -570,6 +611,7 @@
             },
             {
               "name": "HR I 13",
+              "id": "HR I 13 L1",
               "reg_type": "input",
               "address": "0x160b",
               "type": "value",
@@ -580,6 +622,891 @@
             },
             {
               "name": "HR I 15",
+              "id": "HR I 15 L1",
+              "reg_type": "input",
+              "address": "0x160d",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            }
+          ]
+        }
+      },
+      {
+        "device_type": "phase L2",
+        "device": {
+          "setup": [
+            {
+              "title": "Turns",
+              "address": "0x1460",
+              "min": 0
+            },
+            {
+              "title": "Phi",
+              "address": "0x1463",
+              "min": 0
+            }
+          ],
+          "channels": [
+            {
+              "name": "Urms",
+              "id": "Urms L2",
+              "reg_type": "input",
+              "address": "0x1410",
+              "type": "voltage",
+              "format": "u32",
+              "scale": 1.52588e-07,
+              "round_to": 0.001
+            },
+            {
+              "name": "THD U",
+              "id": "THD U L2",
+              "reg_type": "input",
+              "address": "0x1703",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01
+            },
+            {
+              "name": "THDN U",
+              "id": "THDN U L2",
+              "reg_type": "input",
+              "address": "0x10f1",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.01,
+              "round_to": 0.01
+            },
+            {
+              "name": "Ufund",
+              "id": "Ufund L2",
+              "reg_type": "input",
+              "address": "0x1711",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.032656,
+              "round_to": 0.01
+            },
+            {
+              "name": "Voltage angle",
+              "id": "Voltage angle L2",
+              "reg_type": "input",
+              "address": "0x10fd",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.1,
+              "round_to": 0.01
+            },
+            {
+              "name": "HR U 2",
+              "id": "HR U 2 L2",
+              "reg_type": "input",
+              "address": "0x167b",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR U 3",
+              "id": "HR U 3 L2",
+              "reg_type": "input",
+              "address": "0x167c",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR U 4",
+              "id": "HR U 4 L2",
+              "reg_type": "input",
+              "address": "0x167d",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR U 5",
+              "id": "HR U 5 L2",
+              "reg_type": "input",
+              "address": "0x167e",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR U 6",
+              "id": "HR U 6 L2",
+              "reg_type": "input",
+              "address": "0x167f",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR U 7",
+              "id": "HR U 7 L2",
+              "reg_type": "input",
+              "address": "0x1680",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "Irms",
+              "id": "Irms L2",
+              "reg_type": "input",
+              "address": "0x1416",
+              "type": "value",
+              "format": "u32",
+              "scale": 2.44141e-07,
+              "round_to": 0.0001
+            },
+            {
+              "name": "THD I",
+              "id": "THD I L2",
+              "reg_type": "input",
+              "address": "0x1700",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01
+            },
+            {
+              "name": "THDN I",
+              "id": "THDN I L2",
+              "reg_type": "input",
+              "address": "0x10f5",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.01,
+              "round_to": 0.01
+            },
+            {
+              "name": "Ifund",
+              "id": "Ifund L2",
+              "reg_type": "input",
+              "address": "0x1710",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.0522496,
+              "round_to": 0.01
+            },
+            {
+              "name": "P",
+              "id": "P L2",
+              "reg_type": "input",
+              "address": "0x1302",
+              "type": "power",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "Q",
+              "id": "Q L2",
+              "reg_type": "input",
+              "address": "0x130a",
+              "type": "value",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "S",
+              "id": "S L2",
+              "reg_type": "input",
+              "address": "0x1312",
+              "type": "value",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "N",
+              "id": "N L2",
+              "reg_type": "input",
+              "address": "0x1582",
+              "type": "value",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "PF",
+              "id": "PF L2",
+              "reg_type": "input",
+              "address": "0x10bd",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "Pfund",
+              "id": "Pfund L2",
+              "reg_type": "input",
+              "address": "0x1402",
+              "type": "value",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "Pharm",
+              "id": "Pharm L2",
+              "reg_type": "input",
+              "address": "0x140a",
+              "type": "value",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "AP energy",
+              "id": "AP energy L2",
+              "reg_type": "input",
+              "address": "0x1204",
+              "type": "power_consumption",
+              "format": "u64",
+              "scale": 1e-05,
+              "round_to": 1e-06,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "AN energy",
+              "id": "AN energy L2",
+              "reg_type": "input",
+              "address": "0x1214",
+              "type": "power_consumption",
+              "format": "u64",
+              "scale": 1e-05,
+              "round_to": 1e-06,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "RP energy",
+              "id": "RP energy L2",
+              "reg_type": "input",
+              "address": "0x1224",
+              "type": "value",
+              "format": "u64",
+              "scale": 1e-05,
+              "round_to": 1e-06,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "RN energy",
+              "id": "RN energy L2",
+              "reg_type": "input",
+              "address": "0x1234",
+              "type": "value",
+              "format": "u64",
+              "scale": 1e-05,
+              "round_to": 1e-06,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "S energy",
+              "id": "S energy L2",
+              "reg_type": "input",
+              "address": "0x1244",
+              "type": "value",
+              "format": "u64",
+              "scale": 1e-05,
+              "round_to": 1e-06,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "NP energy",
+              "id": "NP energy L2",
+              "reg_type": "input",
+              "address": "0x1506",
+              "type": "value",
+              "format": "u32",
+              "scale": 0.291271,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "NN energy",
+              "id": "NN energy L2",
+              "reg_type": "input",
+              "address": "0x1516",
+              "type": "value",
+              "format": "u32",
+              "scale": 0.291271,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "Phase angle",
+              "id": "Phase angle L2",
+              "reg_type": "input",
+              "address": "0x10f9",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.1,
+              "round_to": 0.01
+            },
+            {
+              "name": "HR I 2",
+              "id": "HR I 2 L2",
+              "reg_type": "input",
+              "address": "0x1600",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 3",
+              "id": "HR I 3 L2",
+              "reg_type": "input",
+              "address": "0x1601",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 4",
+              "id": "HR I 4 L2",
+              "reg_type": "input",
+              "address": "0x1602",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 5",
+              "id": "HR I 5 L2",
+              "reg_type": "input",
+              "address": "0x1603",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 6",
+              "id": "HR I 6 L2",
+              "reg_type": "input",
+              "address": "0x1604",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 7",
+              "id": "HR I 7 L2",
+              "reg_type": "input",
+              "address": "0x1605",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 9",
+              "id": "HR I 9 L2",
+              "reg_type": "input",
+              "address": "0x1607",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 11",
+              "id": "HR I 11 L2",
+              "reg_type": "input",
+              "address": "0x1609",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 13",
+              "id": "HR I 13 L2",
+              "reg_type": "input",
+              "address": "0x160b",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 15",
+              "id": "HR I 15 L2",
+              "reg_type": "input",
+              "address": "0x160d",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            }
+          ]
+        }
+      },
+      {
+        "device_type": "phase L3",
+        "device": {
+          "setup": [
+            {
+              "title": "Turns",
+              "address": "0x1460",
+              "min": 0
+            },
+            {
+              "title": "Phi",
+              "address": "0x1463",
+              "min": 0
+            }
+          ],
+          "channels": [
+            {
+              "name": "Urms",
+              "id": "Urms L3",
+              "reg_type": "input",
+              "address": "0x1410",
+              "type": "voltage",
+              "format": "u32",
+              "scale": 1.52588e-07,
+              "round_to": 0.001
+            },
+            {
+              "name": "THD U",
+              "id": "THD U L3",
+              "reg_type": "input",
+              "address": "0x1703",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01
+            },
+            {
+              "name": "THDN U",
+              "id": "THDN U L3",
+              "reg_type": "input",
+              "address": "0x10f1",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.01,
+              "round_to": 0.01
+            },
+            {
+              "name": "Ufund",
+              "id": "Ufund L3",
+              "reg_type": "input",
+              "address": "0x1711",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.032656,
+              "round_to": 0.01
+            },
+            {
+              "name": "Voltage angle",
+              "id": "Voltage angle L3",
+              "reg_type": "input",
+              "address": "0x10fd",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.1,
+              "round_to": 0.01
+            },
+            {
+              "name": "HR U 2",
+              "id": "HR U 2 L3",
+              "reg_type": "input",
+              "address": "0x167b",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR U 3",
+              "id": "HR U 3 L3",
+              "reg_type": "input",
+              "address": "0x167c",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR U 4",
+              "id": "HR U 4 L3",
+              "reg_type": "input",
+              "address": "0x167d",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR U 5",
+              "id": "HR U 5 L3",
+              "reg_type": "input",
+              "address": "0x167e",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR U 6",
+              "id": "HR U 6 L3",
+              "reg_type": "input",
+              "address": "0x167f",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR U 7",
+              "id": "HR U 7 L3",
+              "reg_type": "input",
+              "address": "0x1680",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "Irms",
+              "id": "Irms L3",
+              "reg_type": "input",
+              "address": "0x1416",
+              "type": "value",
+              "format": "u32",
+              "scale": 2.44141e-07,
+              "round_to": 0.0001
+            },
+            {
+              "name": "THD I",
+              "id": "THD I L3",
+              "reg_type": "input",
+              "address": "0x1700",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01
+            },
+            {
+              "name": "THDN I",
+              "id": "THDN I L3",
+              "reg_type": "input",
+              "address": "0x10f5",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.01,
+              "round_to": 0.01
+            },
+            {
+              "name": "Ifund",
+              "id": "Ifund L3",
+              "reg_type": "input",
+              "address": "0x1710",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.0522496,
+              "round_to": 0.01
+            },
+            {
+              "name": "P",
+              "id": "P L3",
+              "reg_type": "input",
+              "address": "0x1302",
+              "type": "power",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "Q",
+              "id": "Q L3",
+              "reg_type": "input",
+              "address": "0x130a",
+              "type": "value",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "S",
+              "id": "S L3",
+              "reg_type": "input",
+              "address": "0x1312",
+              "type": "value",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "N",
+              "id": "N L3",
+              "reg_type": "input",
+              "address": "0x1582",
+              "type": "value",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "PF",
+              "id": "PF L3",
+              "reg_type": "input",
+              "address": "0x10bd",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.001,
+              "round_to": 0.01
+            },
+            {
+              "name": "Pfund",
+              "id": "Pfund L3",
+              "reg_type": "input",
+              "address": "0x1402",
+              "type": "value",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "Pharm",
+              "id": "Pharm L3",
+              "reg_type": "input",
+              "address": "0x140a",
+              "type": "value",
+              "format": "s32",
+              "scale": 0.000244141,
+              "round_to": 0.01
+            },
+            {
+              "name": "AP energy",
+              "id": "AP energy L3",
+              "reg_type": "input",
+              "address": "0x1204",
+              "type": "power_consumption",
+              "format": "u64",
+              "scale": 1e-05,
+              "round_to": 1e-06,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "AN energy",
+              "id": "AN energy L3",
+              "reg_type": "input",
+              "address": "0x1214",
+              "type": "power_consumption",
+              "format": "u64",
+              "scale": 1e-05,
+              "round_to": 1e-06,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "RP energy",
+              "id": "RP energy L3",
+              "reg_type": "input",
+              "address": "0x1224",
+              "type": "value",
+              "format": "u64",
+              "scale": 1e-05,
+              "round_to": 1e-06,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "RN energy",
+              "id": "RN energy L3",
+              "reg_type": "input",
+              "address": "0x1234",
+              "type": "value",
+              "format": "u64",
+              "scale": 1e-05,
+              "round_to": 1e-06,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "S energy",
+              "id": "S energy L3",
+              "reg_type": "input",
+              "address": "0x1244",
+              "type": "value",
+              "format": "u64",
+              "scale": 1e-05,
+              "round_to": 1e-06,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "NP energy",
+              "id": "NP energy L3",
+              "reg_type": "input",
+              "address": "0x1506",
+              "type": "value",
+              "format": "u32",
+              "scale": 0.291271,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "NN energy",
+              "id": "NN energy L3",
+              "reg_type": "input",
+              "address": "0x1516",
+              "type": "value",
+              "format": "u32",
+              "scale": 0.291271,
+              "round_to": 0.0001,
+              "word_order": "little_endian"
+            },
+            {
+              "name": "Phase angle",
+              "id": "Phase angle L3",
+              "reg_type": "input",
+              "address": "0x10f9",
+              "type": "value",
+              "format": "s16",
+              "scale": 0.1,
+              "round_to": 0.01
+            },
+            {
+              "name": "HR I 2",
+              "id": "HR I 2 L3",
+              "reg_type": "input",
+              "address": "0x1600",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 3",
+              "id": "HR I 3 L3",
+              "reg_type": "input",
+              "address": "0x1601",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 4",
+              "id": "HR I 4 L3",
+              "reg_type": "input",
+              "address": "0x1602",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 5",
+              "id": "HR I 5 L3",
+              "reg_type": "input",
+              "address": "0x1603",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 6",
+              "id": "HR I 6 L3",
+              "reg_type": "input",
+              "address": "0x1604",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 7",
+              "id": "HR I 7 L3",
+              "reg_type": "input",
+              "address": "0x1605",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 9",
+              "id": "HR I 9 L3",
+              "reg_type": "input",
+              "address": "0x1607",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 11",
+              "id": "HR I 11 L3",
+              "reg_type": "input",
+              "address": "0x1609",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 13",
+              "id": "HR I 13 L3",
+              "reg_type": "input",
+              "address": "0x160b",
+              "type": "value",
+              "format": "u16",
+              "scale": 0.00610352,
+              "round_to": 0.01,
+              "error_value": 65535
+            },
+            {
+              "name": "HR I 15",
+              "id": "HR I 15 L3",
               "reg_type": "input",
               "address": "0x160d",
               "type": "value",

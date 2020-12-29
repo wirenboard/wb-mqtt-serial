@@ -19,6 +19,7 @@
 struct TDeviceChannelConfig 
 {
     std::string                  Name;
+    std::string                  MqttId; // MQTT topic name. If empty Name is used
     std::string                  Type;
     std::string                  DeviceId;
     int                          Order            = 0;
@@ -34,6 +35,7 @@ struct TDeviceChannelConfig
                          const std::string& onValue              = "",
                          int                max                  = - 1,
                          bool               readOnly             = false,
+                         const std::string& mqttId               = "",
                          const std::vector<PRegisterConfig> regs = std::vector<PRegisterConfig>());
 };
 

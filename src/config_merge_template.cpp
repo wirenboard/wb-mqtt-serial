@@ -143,6 +143,7 @@ Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig, ITe
     SetIfExists(res, "name", channelConfig, "name");
     SetIfExists(res, "shift", channelConfig, "shift");
     SetIfExists(res, "stride", channelConfig, "stride");
+    SetIfExists(res, "id", channelConfig, "id");
     AppendSetupItems(res, channelConfig);
     UpdateChannels(res["channels"], channelConfig["channels"], templates, logPrefix + " " + channelConfig["name"].asString());
     return res;

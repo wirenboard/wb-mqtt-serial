@@ -23,6 +23,9 @@ struct TDeviceChannel : public TDeviceChannelConfig
 
     std::string Describe() const
     {
+        if (Name != MqttId) {
+            return "channel '" + Name + "' (MQTT control '" + MqttId + "') of device '" + DeviceId + "'";
+        }
         return "channel '" + Name + "' of device '" + DeviceId + "'";
     }
 

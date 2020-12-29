@@ -210,7 +210,7 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
     LOG(Debug) << channel->Describe() << " <-- " << value;
 
     MqttDriver->AccessAsync([=](const PDriverTx & tx){
-        tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetRawValue(tx, value);
+        tx->GetDevice(channel->DeviceId)->GetControl(channel->MqttId)->SetRawValue(tx, value);
     });
 }
 
@@ -243,7 +243,7 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
 
     const char* errorFlags[] = {"", "w", "r", "rw"};
     MqttDriver->AccessAsync([=](const PDriverTx & tx){
-        tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetError(tx, errorFlags[errorMask]);
+        tx->GetDevice(channel->DeviceId)->GetControl(channel->MqttId)->SetError(tx, errorFlags[errorMask]);
     });
 }
 
@@ -291,7 +291,7 @@ TLocalDeviceArgs TSerialPortDriver::From(const PSerialDevice & device)
 
 TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
 {
-    auto args = TControlArgs{}.SetId(channel->Name)
+    auto args = TControlArgs{}.SetId(channel->MqttId)
                               .SetOrder(channel->Order)
                               .SetType(channel->Type)
                               .SetReadonly(channel->ReadOnly)
