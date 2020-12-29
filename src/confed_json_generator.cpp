@@ -158,8 +158,10 @@ void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, size_t 
 //      "s_DT_HASH": {
 //          "name": ...,
 //          COMMON_DEVICE_SETUP_PARAMS,
-//          "set_1": { ... },
-//          ...
+//          "standard_setup": {
+//              "set_1": { ... },
+//              ...
+//          },
 //          "setup": [ ... ],
 //          "channels": [ ... ],
 //          "standard_channels": [ ... ]
@@ -205,7 +207,13 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
         newDev["setup"] = setupRegs.second;
     }
 
-    AppendParams(newDev, setupRegs.first);
+    if (!setupRegs.first.empty()) {
+        if (nestingLevel == 1) {
+            AppendParams(newDev["standard_setup"], setupRegs.first);
+        } else {
+            AppendParams(newDev, setupRegs.first);
+        }
+    }
 
     newDev.removeMember("device_type");
 

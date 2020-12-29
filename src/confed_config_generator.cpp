@@ -161,7 +161,12 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
                 device.removeMember("channels");
             }
 
+            if (device.isMember("standard_setup")) {
+                AppendParams(device, device["standard_params"]);
+                device.removeMember("standard_params");
+            }
             TransformSetupParams(device, deviceTemplate);
+
             if (dt == CUSTOM_DEVICE_TYPE) {
                 device.removeMember("device_type");
             }

@@ -138,7 +138,7 @@ Json::Value MakeTabSimpleChannelSchema(const std::string& name)
 //              "oneOf": [
 //                  { "$ref": "#/definitions/DEVICE_SCHEMA_NAME" },
 //                  ...
-//              ],
+//              ]
 //          },
 //          {
 //              "properties": {
@@ -229,11 +229,13 @@ Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& 
 //          "disable_array_reorder": true,
 //          "disable_collapse": true
 //      },
+//      "propertyOrder": PROPERTY_ORDER,
 //      "minItems": CHANNELS_COUNT,
 //      "maxItems": CHANNELS_COUNT,
 //      "items": [
 //         CHANNELS_SCHEMAS
-//      ]
+//      ],
+//      "_format": "tabs"
 //  }
 //
 //  Schema for table
@@ -246,13 +248,15 @@ Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& 
 //          "disable_collapse": true,
 //          "grid_columns": 12
 //      },
+//      "propertyOrder": PROPERTY_ORDER,
 //      "items": { "$ref", "#/definitions/tableChannelSettings"},
 //      "minItems": CHANNELS_COUNT,
 //      "maxItems": CHANNELS_COUNT,
 //      "default: [ 
 //          { "name": CHANNEL1_NAME },
 //          ...
-//      ]
+//      ],
+//      "_format": "table"
 //  }
 Json::Value MakeChannelsSchema(const Json::Value& channels,
                                const std::string& deviceDefinitionPrefix,
@@ -269,6 +273,7 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
     if (!allowCollapse) {
         r["options"]["disable_collapse"] = true;
     }
+    r["propertyOrder"] = propertyOrder;
 
     bool tabs = false;
 
@@ -304,7 +309,6 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
         r["maxItems"] = defaults.size();
         r["default"] = defaults;
     }
-    r["propertyOrder"] = propertyOrder;
     if ( format != "list" ) {
         r["_format"] = (tabs ? "tabs" : "table");
     }
@@ -392,6 +396,39 @@ Json::Value MakeSubDeviceUISchema(const std::string& deviceType, const Json::Val
 
 //  {
 //      "type": "object",
+//      "title": "Device options",
+//      "properties": {
+//          "set_0": { ... },
+//          ...
+//      },
+//      "options": {
+//          "disable_edit_json": true,
+//          "disable_properties": true
+//      },
+//      "propertyOrder": PROPERTY_ORDER
+//  }
+Json::Value MakeDeviceSettingsUI(const Json::Value& deviceTemplate, int propertyOrder)
+{
+    Json::Value res;
+
+    res["type"] = "object";
+    res["title"] = "Device options";
+    res["options"]["disable_edit_json"] = true;
+    res["options"]["disable_properties"] = true;
+    res["propertyOrder"] = propertyOrder;
+
+    size_t i = 0;
+    for (const auto& setupRegister: deviceTemplate["setup"]) {
+        if (!setupRegister.isMember("value")) {
+            res["properties"][MakeSetupRegisterParameterName(i)] = MakeSetupRegisterSchema(setupRegister, i);
+            ++i;
+        }
+    }
+    return res;
+}
+
+//  {
+//      "type": "object",
 //      "title": DEVICE_TYPE,
 //      "required": ["DEVICE_HASH"],
 //      "properties": {
@@ -410,10 +447,10 @@ Json::Value MakeSubDeviceUISchema(const std::string& deviceType, const Json::Val
 //              ],
 //              "properties": {
 //                  "standard_channels": STANDARD_CHANNELS_SCHEMA,
-//                  "set_0": { ... },
+//                  "standard_setup": STANDARD_SETUP_SCHEMA,
 //                  ...
 //              },
-//              "defaultProperties": ["slave_id", "standard_channels"]
+//              "defaultProperties": ["slave_id", "standard_channels", "standard_setup"]
 //          },
 //          "_format": SETUP_FORMAT
 //      }
@@ -457,17 +494,11 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const std::string& device
     }
 
     if (t.isMember("channels")) {
-        res["properties"][set]["properties"]["standard_channels"] = MakeChannelsSchema(t["channels"], set, 99, channelsFormat, channelsTitle, true);
+        res["properties"][set]["properties"]["standard_channels"] = MakeChannelsSchema(t["channels"], set, 98, channelsFormat, channelsTitle, true);
     }
 
     if (t.isMember("setup")) {
-        size_t i = 0;
-        for (const auto& setupRegister: t["setup"]) {
-            if (!setupRegister.isMember("value")) {
-                res["properties"][set]["properties"][MakeSetupRegisterParameterName(i)] = MakeSetupRegisterSchema(setupRegister, 8 + i);
-                ++i;
-            }
-        }
+        res["properties"][set]["properties"]["standard_setup"] = MakeDeviceSettingsUI(t, 97);
     }
 
     req.clear();
@@ -475,10 +506,12 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const std::string& device
     if (t.isMember("channels")) {
         req.append("standard_channels");
     }
+    if (t.isMember("setup")) {
+        req.append("standard_setup");
+    }
     res["properties"][set]["defaultProperties"] = req;
 
     Json::Value definitions;
-
     if (t.isMember("subdevices")) {
         for (const auto& subDevice: t["subdevices"]) {
             auto name = subDevice["device_type"].asString();
