@@ -203,7 +203,8 @@
       ],
       "options": {
         "keep_oneof_values": false,
-        "disable_collapse" : true
+        "disable_collapse" : true,
+        "disable_edit_json": true
       }
     },
     "customDevice": {
@@ -929,6 +930,10 @@
   },
 
   "required": ["ports"],
+
+  "options": {
+    "disable_edit_json": true
+  },
 
   "configFile": {
     "path": "/etc/wb-mqtt-serial.conf",
