@@ -224,6 +224,11 @@
                                 {
                                     "title": "s1",
                                     "value": 100
+                                },
+                                {
+                                    "title": "override",
+                                    "address": 20000,
+                                    "value": 200
                                 }
                             ]
                         },
@@ -242,6 +247,13 @@
                                     ]
                                 }
                             ]
+                        }
+                    ],
+                    "setup": [
+                        {
+                            "title": "Old Sub2 c2 s21",
+                            "address": 20400,
+                            "value": 1
                         }
                     ]
                 }

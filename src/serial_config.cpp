@@ -790,7 +790,14 @@ void TDeviceConfig::AddChannel(PDeviceChannelConfig channel)
 
 void TDeviceConfig::AddSetupItem(PDeviceSetupItemConfig item) 
 {
-    SetupItemConfigs.push_back(item);
+    auto addrIt = SetupItemsByAddress.find(item->RegisterConfig->Address);
+    if (addrIt != SetupItemsByAddress.end()) {
+        LOG(Warn) << "Setup command \"" << item->Name << "\" will be ignored. It has the same address " 
+                  << item->RegisterConfig->Address << " as command \"" << addrIt->second << "\"";
+    } else {
+        SetupItemsByAddress.insert({item->RegisterConfig->Address, item->Name});
+        SetupItemConfigs.push_back(item);
+    }
 }
 
 std::string TDeviceConfig::GetDescription() const

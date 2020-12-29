@@ -100,6 +100,10 @@ struct TDeviceConfig
     void AddSetupItem(PDeviceSetupItemConfig item);
 
     std::string GetDescription() const;
+
+private:
+    // map key is setup item address
+    std::unordered_map<int, std::string> SetupItemsByAddress;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;

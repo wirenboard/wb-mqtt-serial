@@ -797,6 +797,10 @@ Ports:
                 WordOrder: BigEndian
         SetupItems:
             ------
+            Name: Old Sub2 c2 s21
+            Address: 20400
+            Value: 1
+            ------
             Name: Sub s1
             Address: 20100
             Value: 100
@@ -815,10 +819,6 @@ Ports:
             ------
             Name: Sub2 s2
             Address: 10193
-            Value: 65522
-            ------
-            Name: Sub2 c2 s21
-            Address: 20400
             Value: 65522
             ------
             Name: Sub2 c3 s21
