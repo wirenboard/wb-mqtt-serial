@@ -1,0 +1,107 @@
+{
+ "device_type": "Siemens RDF302",
+ "device": {
+  "name": "Siemens RDF302",
+  "id": "siemens-rdf302",
+  "setup": [
+      {
+          "title": "Plant type",
+          "address": "0x006C",
+          "enum": [ 0, 1, 2, 3, 4 ],
+          "enum_titles": [
+            "0. NONE",
+            "1. 2-pipe",
+            "2. 2-pipe 3-position",
+            "3. 2-pipe with electric heater",
+            "4. 4-pipe"
+          ],
+          "default": 0
+      },       
+      {
+          "title": "P01. Control sequence. 2-pipe: [0…3], 4-pipe: [2…4]",
+          "address": "0x0000",
+          "enum": [ 0, 1, 2, 3, 4 ],
+          "enum_titles": [
+            "0. Heating only",
+            "1. Cooling only",
+            "2. H/C changeover manual",
+            "3. H/C changeover auto",
+            "4. Heating and Cooling"
+          ],
+          "default": 1
+      },
+      {
+          "title": "P04. Selection of °C or °F",
+          "address": "0x0003",
+          "enum": [ 0, 1 ],
+          "enum_titles": [
+            "0. °C",
+            "1. °F"
+          ],
+          "default": 0
+      }
+  ],  
+  "channels": [
+   {
+    "name": "Room operating mode",
+    "reg_type": "input",
+    "address": "0x03E8",
+    "type": "value",
+    "format": "s16"
+   },
+   {
+    "name": "Fan output",
+    "reg_type": "input",
+    "address": "0x03E9",
+    "type": "value",
+    "format": "s16"
+   },
+   {
+    "name": "Fan operation",
+    "reg_type": "input",
+    "address": "0x03F1",
+    "type": "value",
+    "format": "s16"
+   },
+   {
+    "name": "Room temperature",
+    "reg_type": "input",
+    "address": "0x03EA",
+    "type": "temperature",
+    "format": "s16",
+    "scale": 0.0198,
+    "round_to": 0.5
+   },
+   {
+    "name": "Room temperature: Current setpoint",
+    "reg_type": "input",
+    "address": "0x03EB",
+    "type": "temperature",
+    "format": "s16",
+    "scale": 0.0198,
+    "round_to": 0.5
+   },
+   {
+    "name": "Heating output",
+    "reg_type": "input",
+    "address": "0x03EC",
+    "type": "value",
+    "format": "s16"
+   },
+   {
+    "name": "Cooling output",
+    "reg_type": "input",
+    "address": "0x03ED",
+    "type": "value",
+    "format": "s16"
+   },
+   {
+    "name": "Electric heater output",
+    "reg_type": "input",
+    "address": "0x03EE",
+    "type": "value",
+    "format": "s16"
+   }
+  ]
+ }
+}
