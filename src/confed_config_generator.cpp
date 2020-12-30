@@ -162,8 +162,8 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
             }
 
             if (device.isMember("standard_setup")) {
-                AppendParams(device, device["standard_params"]);
-                device.removeMember("standard_params");
+                AppendParams(device, device["standard_setup"]);
+                device.removeMember("standard_setup");
             }
             TransformSetupParams(device, deviceTemplate);
 
