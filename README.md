@@ -28,7 +28,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 порты (ports) -> устройства (devices) -> каналы (channels).
 Конфигурация устройства device может быть задана двумя способами:
 вручную прописать все параметры или задать только пять параметров:
-```json
+```jsonc
 {
     // По DeviceType драйвер будет искать в папках с шаблонами описаний устройств
     "device_type" : "DeviceType",
@@ -81,7 +81,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 
 Ниже приведён пример конфигурационного файла /etc/wb-mqtt-serial.conf
 
-```json
+```jsonc
 {
     // опция debug включает или выключает отладочную печать.
     // Опция -d командной строки wb-mqtt-serial также
