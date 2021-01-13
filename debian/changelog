@@ -1,8 +1,44 @@
-wb-mqtt-serial (2.6.0) experimental; urgency=medium
+wb-mqtt-serial (2.7.0) experimental; urgency=medium
 
   * For "on" topic messages retry of failed registers writes is added
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 27 Oct 2020 15:33:43 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 13 Jan 2021 10:17:00 +0500
+
+wb-mqtt-serial (2.6.4) unstable; urgency=medium
+
+  * Compatibility with firmwares 4.16.0 and 4.16.1 of WB-MIR, WB-MS, WB-MSW, WB-M1W2, WB-MAI2 MINI is impoved.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 21 Dec 2020 10:16:00 +0500
+
+wb-mqtt-serial (2.6.3) unstable; urgency=medium
+
+  * Device templates loading from /etc/wb-mqtt-serial.conf.d/templates is fixed.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 10 Dec 2020 11:43:00 +0500
+
+wb-mqtt-serial (2.6.2) unstable; urgency=medium
+
+  * More permissive config validation allowing additional fields in channel description.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 09 Dec 2020 18:39:00 +0500
+
+wb-mqtt-serial (2.6.1) unstable; urgency=medium
+
+  * Default frame_timeout_ms value for MAP's is changed.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 02 Dec 2020 09:07:00 +0500
+
+wb-mqtt-serial (2.6.0) unstable; urgency=medium
+
+  * Support for broadcast messages in energomera_iec, neva and mercury230 protocols is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 02 Dec 2020 14:23:00 +0500
+
+wb-mqtt-serial (2.5.1) experimental; urgency=medium
+
+  * Build fixes.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 27 Oct 2020 17:42:00 +0500
 
 wb-mqtt-serial (2.5.0) experimental; urgency=medium
 

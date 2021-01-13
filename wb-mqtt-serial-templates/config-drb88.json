@@ -4,7 +4,7 @@
 	"device": {
 		"name": "DRB88",
 		"id": "drb88",
-		"enabled": true,
+		"frame_timeout_ms": 0,
 		"setup": [
 			{
 				"title": "Input 0 type",

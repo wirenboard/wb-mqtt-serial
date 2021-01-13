@@ -4,7 +4,7 @@
 	"device": {
 		"name": "MSU24",
 		"id": "msu24",
-		"enabled": true,
+		"frame_timeout_ms": 0,
 		"channels": [
 			{
 				"name": "Illuminance",

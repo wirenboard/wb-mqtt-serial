@@ -227,7 +227,7 @@
         },
         "slave_id": {
           "title": "Slave id of the device",
-          "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF)",
+          "description": "Supported range: device-dependent, 1-247 (0x01-0xF7 hex) in case of Modbus. Value could be either decimal (e.g. 123) or hex (e.g. 0xAF). Leave empty for broadcast messages",
           "propertyOrder": 3,
           "$ref": "#/definitions/slave_id"
         },
@@ -247,7 +247,7 @@
           "title": "Device type",
           "description": "Selects device template",
           "enum": {
-            "directories": ["/usr/share/wb-mqtt-serial/templates"],
+            "directories": ["/usr/share/wb-mqtt-serial/templates", "/etc/wb-mqtt-serial.conf.d/templates"],
             "pointer": "/device_type",
             "pattern": "^.*\\.json$"
           },
@@ -356,7 +356,6 @@
           "propertyOrder": 18
         }
       },
-      "required": ["slave_id"],
       "defaultProperties": ["slave_id", "device_type"]
     },
     "setup_cmd": {
@@ -490,9 +489,9 @@
           "propertyOrder": 14
         }
       },
-      "additionalProperties": false,
       // FIXME: require "reg_type" and "address" for non-templated devices
       "required": ["name"],
+      "not": { "required": ["consists_of"] },
       "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale", "offset"],
       "_format": "grid"
     },
@@ -537,7 +536,6 @@
           "propertyOrder": 4
         }
       },
-      "additionalProperties": false,
       "required": ["name", "consists_of"],
       "defaultProperties": ["name", "consists_of"]
     },
@@ -670,8 +668,7 @@
     "slave_id": {
       "oneOf": [
         {
-          "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$"
+          "type": "string"
         },
         {
           "type": "integer"

@@ -54,6 +54,7 @@ const int DEFAULT_ACCESS_LEVEL       = 1;
 const int DEFAULT_DEVICE_FAIL_CYCLES = 2;
 
 const std::chrono::milliseconds DefaultPollInterval(20);
+const std::chrono::milliseconds DefaultFrameTimeout(20);
 const std::chrono::milliseconds DefaultResponseTimeout(500);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 
@@ -72,7 +73,7 @@ struct TDeviceConfig
     std::chrono::milliseconds           ResponseTimeout        = std::chrono::milliseconds(-1);
 
     //! Minimum inter-frame delay.
-    std::chrono::milliseconds           FrameTimeout           = std::chrono::milliseconds::zero();
+    std::chrono::milliseconds           FrameTimeout           = DefaultFrameTimeout;
 
     //! The period of unsuccessful requests after which the device is considered disconected.
     std::chrono::milliseconds           DeviceTimeout          = DefaultDeviceTimeout;
@@ -89,11 +90,13 @@ struct TDeviceConfig
     PRegisterTypeMap                    TypeMap                = 0;
     int                                 DeviceMaxFailCycles    = DEFAULT_DEVICE_FAIL_CYCLES;
 
-    TDeviceConfig(const std::string& name = "", const std::string& slave_id = "", const std::string& protocol = "");
+    explicit TDeviceConfig(const std::string& name = "", const std::string& slave_id = "", const std::string& protocol = "");
 
     int NextOrderValue() const;
     void AddChannel(PDeviceChannelConfig channel);
     void AddSetupItem(PDeviceSetupItemConfig item);
+
+    std::string GetDescription() const;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
@@ -118,8 +121,9 @@ typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
 struct TUInt32SlaveId
 {
     uint32_t SlaveId;
+    bool     HasBroadcastSlaveId;
 
-    TUInt32SlaveId(const std::string& slaveId);
+    TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast = false);
 
     bool operator==(const TUInt32SlaveId& id) const;
 };
@@ -222,7 +226,7 @@ private:
 };
 
 /*!
- * Basic protocol implementation with uint32_t slave ID
+ * Basic protocol implementation
  */
 template<class Dev> class TBasicProtocol : public IProtocol
 {
@@ -247,14 +251,28 @@ public:
         return dev;
     }
 
-    bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
-    {
-        return (TUInt32SlaveId(id1) == TUInt32SlaveId(id2));
-    }
-
     bool IsModbus() const
     {
         return false;
+    }
+};
+
+/*!
+ * Basic protocol implementation with uint32_t slave ID without broadcast
+ */
+template<class Dev> class TUint32SlaveIdProtocol : public TBasicProtocol<Dev>
+{
+    bool AllowBroadcast;
+public:
+    /*! Construct new protocol with given name and register types list */
+    TUint32SlaveIdProtocol(const std::string& name, const TRegisterTypes& reg_types, bool allowBroadcast) 
+        : TBasicProtocol<Dev>(name, reg_types), AllowBroadcast(allowBroadcast)
+    {}
+
+public:
+    bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
+    {
+        return (TUInt32SlaveId(id1, AllowBroadcast) == TUInt32SlaveId(id2, AllowBroadcast));
     }
 };
 
@@ -280,8 +298,11 @@ public:
     }
 };
 
-#define REGISTER_BASIC_PROTOCOL(name, cls, regTypes) \
-    TProtocolRegistrator reg__##cls(new TBasicProtocol<cls>(name, regTypes))
+#define REGISTER_UINT_SLAVE_ID_PROTOCOL(name, cls, regTypes) \
+    TProtocolRegistrator reg__##cls(new TUint32SlaveIdProtocol<cls>(name, regTypes, false))
+
+#define REGISTER_UINT_SLAVE_ID_PROTOCOL_WITH_BROADCAST(name, cls, regTypes) \
+    TProtocolRegistrator reg__##cls(new TUint32SlaveIdProtocol<cls>(name, regTypes, true))
 
 /* Usage:
  *

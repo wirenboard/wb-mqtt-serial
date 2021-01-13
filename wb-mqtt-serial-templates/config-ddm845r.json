@@ -5,6 +5,7 @@
     "id": "ddm845r",
     "guard_interval_us": 3500,
     "max_read_registers": 10,
+    "frame_timeout_ms": 0,
     "channels": [
       {
         "name": "Channel 1",

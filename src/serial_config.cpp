@@ -376,9 +376,9 @@ namespace {
             LOG(Warn) << "\"delay_ms\" is not supported, use \"frame_timeout_ms\" instead";
         }
 
-        Get(device_data, "frame_timeout_ms",       device_config->FrameTimeout);
+        Get(device_data, "frame_timeout_ms", device_config->FrameTimeout);
         if (device_config->FrameTimeout.count() < 0) {
-            device_config->FrameTimeout = std::chrono::milliseconds::zero();
+            device_config->FrameTimeout = DefaultFrameTimeout;
         }
         Get(device_data, "response_timeout_ms",    device_config->ResponseTimeout);
         Get(device_data, "device_timeout_ms",      device_config->DeviceTimeout);
@@ -399,6 +399,14 @@ namespace {
         return true;
     }
 
+    std::string DecorateIfNotEmpty(const std::string& prefix, const std::string& str, const std::string& postfix = std::string())
+    {
+        if (str.empty()) {
+            return std::string();
+        }
+        return prefix + str + postfix;
+    }
+
     void LoadDevice(PPortConfig port_config,
                     const Json::Value& device_data,
                     const std::string& default_id,
@@ -412,10 +420,12 @@ namespace {
         device_config->Id = Read(device_data, "id",  default_id);
         Get(device_data, "name", device_config->Name);
 
-        if (device_data["slave_id"].isString())
-            device_config->SlaveId = device_data["slave_id"].asString();
-        else // legacy
-            device_config->SlaveId = std::to_string(device_data["slave_id"].asInt());
+        if (device_data.isMember("slave_id")) {
+            if (device_data["slave_id"].isString())
+                device_config->SlaveId = device_data["slave_id"].asString();
+            else // legacy
+                device_config->SlaveId = std::to_string(device_data["slave_id"].asInt());
+        }
 
         auto device_poll_interval = std::chrono::milliseconds(-1);
         Get(device_data, "poll_interval", device_poll_interval);
@@ -425,7 +435,7 @@ namespace {
             auto tmpl = templates.GetTemplate(device_config->DeviceType);
             if (tmpl.isMember("name")) {
                 if (device_config->Name == "") {
-                    device_config->Name = tmpl["name"].asString() + " " + device_config->SlaveId;
+                    device_config->Name = tmpl["name"].asString() + DecorateIfNotEmpty(" ", device_config->SlaveId);
                 }
             } else {
                 if (device_config->Name == "") {
@@ -435,8 +445,9 @@ namespace {
             }
 
             if (tmpl.isMember("id")) {
-                if (device_config->Id == default_id)
-                    device_config->Id = tmpl["id"].asString() + "_" + device_config->SlaveId;
+                if (device_config->Id == default_id) {
+                    device_config->Id = tmpl["id"].asString() + DecorateIfNotEmpty("_", device_config->SlaveId);
+                }
             }
             AppendUserData(tmpl, device_data, device_config->Name);
             LoadDeviceTemplatableConfigPart(device_config, tmpl, deviceFactory, port_config->IsModbusTcp);
@@ -601,8 +612,6 @@ Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName,
 {
     Json::Value schema = WBMQTT::JSON::Parse(templateSchemaFileName);
     schema["definitions"] = configSchema["definitions"];
-    schema["definitions"]["device"]["properties"].removeMember("slave_id");
-    schema["definitions"]["device"].removeMember("required");
     return schema;
 }
 
@@ -718,6 +727,13 @@ void TDeviceConfig::AddChannel(PDeviceChannelConfig channel)
 void TDeviceConfig::AddSetupItem(PDeviceSetupItemConfig item) 
 {
     SetupItemConfigs.push_back(item);
+}
+
+std::string TDeviceConfig::GetDescription() const
+{
+    return "Device " + Name + " " + Id 
+                     + DecorateIfNotEmpty(" (", DeviceType, ")")
+                     + DecorateIfNotEmpty(", protocol: ", Protocol);
 }
 
 void THandlerConfig::AddPortConfig(PPortConfig portConfig) 

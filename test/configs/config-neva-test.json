@@ -18,6 +18,7 @@
           "id": "reduced_neva",
           "enabled": true,
           "protocol": "neva",
+          "frame_timeout_ms": 0,
           "channels": [
             {
               "name": "Total A energy",
