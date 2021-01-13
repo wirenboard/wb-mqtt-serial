@@ -650,7 +650,10 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
     Validate(Root, configSchema);
 
     Get(Root, "debug", handlerConfig->Debug);
-    Get(Root, "max_unchanged_interval", handlerConfig->MaxUnchangedInterval);
+
+    int32_t maxUnchangedInterval = -1;
+    Get(Root, "max_unchanged_interval", maxUnchangedInterval);
+    handlerConfig->PublishParameters.Set(maxUnchangedInterval);
 
     const Json::Value& array = Root["ports"];
     for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
@@ -738,7 +741,6 @@ std::string TDeviceConfig::GetDescription() const
 
 void THandlerConfig::AddPortConfig(PPortConfig portConfig) 
 {
-    portConfig->MaxUnchangedInterval = MaxUnchangedInterval;
     PortConfigs.push_back(portConfig);
 }
 
