@@ -9,13 +9,16 @@
 #include "pty_based_fake_serial.h"
 
 #include <wblib/testing/testlog.h>
+#include <wblib/promise.h>
 
 using namespace WBMQTT::Testing;
 
 class TImxFloodThread {
 public:
-    TImxFloodThread(PPort serial, std::chrono::milliseconds duration) : Serial(serial), Duration(duration) {};
-    void Run() 
+    TImxFloodThread(PPort serial, std::chrono::milliseconds duration) : Serial(serial), Duration(duration)
+    {}
+
+    void Run(WBMQTT::TPromise<void>& started) 
     {
         uint8_t buf[8] = {};
         memset(buf, 0xFF, sizeof(buf));
@@ -23,6 +26,7 @@ public:
         IsRunning = true;
         auto start = std::chrono::steady_clock::now();
         bool sentSomething = false;
+        started.Complete();
         while (IsRunning) {
             auto diff = std::chrono::steady_clock::now() - start;
             if (diff > Duration) {
@@ -44,13 +48,19 @@ public:
         }
     }
     
-    bool IsExpired() {return Expired; };
+    bool IsExpired()
+    {
+        return Expired;
+    }
+
     void Start()
     {
         if (!IsRunning) {
             Expired = false;
             IsRunning = true;
-            FloodThread = std::thread(&TImxFloodThread::Run, std::ref(*this));
+            WBMQTT::TPromise<void> initialized;
+            FloodThread = std::thread([&]() {this->Run(initialized);});
+            initialized.GetFuture().Wait();
         }
     }
 

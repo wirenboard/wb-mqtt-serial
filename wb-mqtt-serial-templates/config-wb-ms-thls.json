@@ -6,7 +6,7 @@
         "id": "wb-ms-thls",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
-        "frame_timeout_ms": 8,
+        "frame_timeout_ms": 12,
         "channels": [
             {
                 "name": "Temperature",

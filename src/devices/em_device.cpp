@@ -1,8 +1,12 @@
 #include "em_device.h"
 
 TEMDevice::TEMDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
-{}
+    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId, true)
+{
+    if (HasBroadcastSlaveId) {
+        SlaveId = 0;
+    }
+}
 
 void TEMDevice::WriteRegister(PRegister reg, uint64_t value)
 {

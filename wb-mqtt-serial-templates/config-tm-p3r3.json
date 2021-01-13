@@ -4,7 +4,7 @@
     "device": {
         "name": "TM-P3R3",
         "id": "tmp3r3",
-        "enabled": true,
+        "frame_timeout_ms": 0,
         "channels": [
             {
                 "name": "Relay 0",

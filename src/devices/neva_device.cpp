@@ -23,6 +23,10 @@ public:
 
     bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
     {
+        // Can be only one device with broadcast address
+        if (id1.empty() || id2.empty()) {
+            return true;
+        }
         return id1 == id2;
     }
 };
