@@ -29,23 +29,24 @@ Subscribe: /devices/RoundTest/controls/Float_0_2/on (QoS 0)
 Open()
 Sleep(100000)
 fake_serial_device '146': read address '0' value '0'
-Publish: /devices/RoundTest/controls/Float_0_01: '0' (QoS 1, retained)
 fake_serial_device '146': read address '2' value '0'
-Publish: /devices/RoundTest/controls/Float_1: '0' (QoS 1, retained)
 fake_serial_device '146': read address '4' value '0'
-Publish: /devices/RoundTest/controls/Float_10: '0' (QoS 1, retained)
 fake_serial_device '146': read address '6' value '0'
-Publish: /devices/RoundTest/controls/Float_0_2: '0' (QoS 1, retained)
 fake_serial_device '146': Device cycle OK
 fake_serial_device '146': reconnected
 Port cycle OK
 Publish: /devices/RoundTest/controls/Float_0_01/on: '12.345' (QoS 0, retained)
-Publish: /devices/RoundTest/controls/Float_1/on: '12.345' (QoS 0, retained)
+Publish: /devices/RoundTest/controls/Float_0_01: '0' (QoS 1, retained)
+Publish: /devices/RoundTest/controls/Float_1: '0' (QoS 1, retained)
+Publish: /devices/RoundTest/controls/Float_10: '0' (QoS 1, retained)
+Publish: /devices/RoundTest/controls/Float_0_2: '0' (QoS 1, retained)
 Publish: /devices/RoundTest/controls/Float_0_01: '12.345' (QoS 1, retained)
+Publish: /devices/RoundTest/controls/Float_1/on: '12.345' (QoS 0, retained)
 Publish: /devices/RoundTest/controls/Float_1: '12.345' (QoS 1, retained)
 Publish: /devices/RoundTest/controls/Float_10/on: '12.345' (QoS 0, retained)
 Publish: /devices/RoundTest/controls/Float_10: '12.345' (QoS 1, retained)
 Publish: /devices/RoundTest/controls/Float_0_2/on: '12.345' (QoS 0, retained)
+Publish: /devices/RoundTest/controls/Float_0_2: '12.345' (QoS 1, retained)
 >>> LoopOnce()
 fake_serial_device '146': write to address '0' value '1095080346'
 fake_serial_device '146': write to address '2' value '1094713344'
@@ -57,7 +58,10 @@ fake_serial_device '146': read address '4' value '1092616192'
 fake_serial_device '146': read address '6' value '1095132774'
 fake_serial_device '146': Device cycle OK
 Port cycle OK
-Publish: /devices/RoundTest/controls/Float_0_2: '12.345' (QoS 1, retained)
+Publish: /devices/RoundTest/controls/Float_0_01: '12.35' (QoS 1, retained)
+Publish: /devices/RoundTest/controls/Float_1: '12' (QoS 1, retained)
+Publish: /devices/RoundTest/controls/Float_10: '10' (QoS 1, retained)
+Publish: /devices/RoundTest/controls/Float_0_2: '12.4' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/RoundTest/controls/Float_0_2/on
 Publish: /devices/RoundTest/controls/Float_0_2: '' (QoS 1, retained)
 Publish: /devices/RoundTest/controls/Float_0_2/meta/order: '' (QoS 1, retained)
