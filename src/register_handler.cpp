@@ -104,20 +104,20 @@ bool TRegisterHandler::NeedToFlush()
 std::pair<TRegisterHandler::TErrorState, bool> TRegisterHandler::Flush()
 {
     bool changed = false;
-    volatile uint64_t TempValue;
+    volatile uint64_t tempValue;
     try {
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
-            TempValue = ValueToSet;
+            tempValue = ValueToSet;
         }
-        Device()->WriteRegister(Reg, TempValue);
+        Device()->WriteRegister(Reg, tempValue);
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
-            Dirty = (TempValue != ValueToSet);
+            Dirty = (tempValue != ValueToSet);
             WriteFail = false;
         }
-        changed = (OldValue != TempValue);
-        OldValue = TempValue;
+        changed = (OldValue != tempValue);
+        OldValue = tempValue;
         Reg->SetValue(OldValue);
     } catch (const TSerialDeviceTransientErrorException& e) {
         LOG(Warn) << "Register " << Reg->ToString()
@@ -129,7 +129,7 @@ std::pair<TRegisterHandler::TErrorState, bool> TRegisterHandler::Flush()
             }
             WriteFail = true;
             if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) > MAX_WRITE_FAIL_TIME) {
-                Dirty = (TempValue != ValueToSet);
+                Dirty = (tempValue != ValueToSet);
                 WriteFail = false;
             }
         }
@@ -139,7 +139,7 @@ std::pair<TRegisterHandler::TErrorState, bool> TRegisterHandler::Flush()
                   << " TRegisterHandler::Flush() failed: " << e.what();
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
-            Dirty = (TempValue != ValueToSet);
+            Dirty = (tempValue != ValueToSet);
             WriteFail = false;
         }
         return std::make_pair(UpdateWriteError(true), false);
