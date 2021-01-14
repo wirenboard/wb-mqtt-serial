@@ -662,7 +662,7 @@
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -708,14 +708,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1030,14 +1031,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1076,14 +1078,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1122,14 +1125,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1168,14 +1172,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1214,14 +1219,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1260,14 +1266,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1306,14 +1313,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1352,14 +1360,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1398,14 +1407,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1444,14 +1454,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1490,14 +1501,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1536,14 +1548,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1582,14 +1595,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1628,14 +1642,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1674,14 +1689,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1720,12 +1736,13 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "State",
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1781,7 +1798,8 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         }
                     ]
                 }
@@ -2533,14 +2551,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -2579,14 +2598,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -2625,14 +2645,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -2671,14 +2692,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -2717,14 +2739,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -2763,14 +2786,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -2809,14 +2833,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -2855,14 +2880,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -2901,14 +2927,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -2947,14 +2974,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -2993,14 +3021,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -3039,14 +3068,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -3085,14 +3115,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -3131,14 +3162,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -3177,14 +3209,15 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "control_type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -3683,7 +3716,8 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         }
                     ]
                 }
