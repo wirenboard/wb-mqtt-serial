@@ -16,20 +16,6 @@ using namespace WBMQTT;
 
 #define LOG(logger) ::logger.Log() << "[serial port driver] "
 
-namespace
-{
-    template <class T, class V>
-    inline void UpdateOrMake(unique_ptr<T> & pointer, const V & value)
-    {
-        if (pointer) {
-            *pointer = value;
-        } else {
-            pointer = MakeUnique<T>(value);
-        }
-    }
-}
-
-
 TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig portConfig)
     : MqttDriver(mqttDriver),
       Config(portConfig)
@@ -66,7 +52,7 @@ void TSerialPortDriver::SetUpDevices()
                 mqttDevice->CreateControl(tx, From(channel)).GetValue();
 
                 for (auto & reg: channel->Registers) {
-                    RegisterToChannelStateMap.emplace(reg, TDeviceChannelState{channel, TRegisterHandler::UnknownErrorState, nullptr});
+                    RegisterToChannelStateMap.emplace(reg, TDeviceChannelState{channel, TRegisterHandler::UnknownErrorState});
                     SerialClient->AddRegister(reg);
                 }
             }
@@ -134,43 +120,6 @@ void TSerialPortDriver::SetValueToChannel(const PDeviceChannel & channel, const 
     }
 }
 
-bool TSerialPortDriver::NeedToPublish(PRegister reg, bool changed)
-{
-    // max_unchanged_interval = 0: always update, don't track last change time
-    if (!Config->MaxUnchangedInterval)
-        return true;
-
-    // max_unchanged_interval < 0: update if changed, don't track last change time
-    if (Config->MaxUnchangedInterval < 0)
-        return changed;
-
-    auto it = RegisterToChannelStateMap.find(reg);
-    if (it == RegisterToChannelStateMap.end()) {
-        return false;   // should not happen
-    }
-
-    // max_unchanged_interval > 0: update if changed or the time interval is exceeded
-    auto now = Config->Port->CurrentTime();
-    if (changed) {
-        UpdateOrMake(it->second.LastPublishTime, now);
-        return true;
-    }
-
-    if (!it->second.LastPublishTime) {
-        // too strange - unchanged, but not tracked yet, but ok, let's publish it
-        UpdateOrMake(it->second.LastPublishTime, now);
-        return true;
-    }
-
-    std::chrono::duration<double> elapsed = now - *it->second.LastPublishTime;
-    if (elapsed.count() < Config->MaxUnchangedInterval)
-        return false; // still fresh
-
-    // unchanged interval elapsed
-    UpdateOrMake(it->second.LastPublishTime, now);
-    return true;
-}
-
 void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
 {
     auto it = RegisterToChannelStateMap.find(reg);
@@ -183,9 +132,6 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
 
     if (changed)
         LOG(Debug) << "register value change: " << reg->ToString() << " <- " << SerialClient->GetTextValue(reg);
-
-    if (!NeedToPublish(reg, changed))
-        return;
 
     std::string value;
     if (!channel->OnValue.empty()) {

@@ -242,7 +242,8 @@ int main(int argc, char *argv[])
             .SetBackend(backend)
             .SetUseStorage(true)
             .SetReownUnknownDevices(true)
-            .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH)
+            .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH),
+            handlerConfig->PublishParameters
         );
 
         driver->StartLoop();

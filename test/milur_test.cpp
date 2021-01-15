@@ -204,36 +204,6 @@ TEST_F(TMilurIntegrationTest, Poll)
     SerialDriver->LoopOnce();
 }
 
-// NOTE: max unchanged interval tests concern the whole driver,
-// not just EM case, but it's hard to test for modbus devices
-// because pty_based_fake_serial has to be used there.
-
-TEST_F(TMilurIntegrationTest, MaxUnchangedInterval) {
-    for (int i = 0; i < 6; ++i) {
-        if (i == 2 || i == 5)
-            SerialPort->Elapse(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::seconds(100))); // force 'unchanged' update
-        ExpectQueries(i == 0);
-
-        Note() << "LoopOnce()";
-        SerialDriver->LoopOnce();
-    }
-}
-
-TEST_F(TMilurIntegrationTest, ZeroMaxUnchangedInterval) {
-    // Patching config after the driver is initialized is unpretty,
-    // but adding separate fixture for this test case due to config
-    // changes would be even uglier.
-    Config->MaxUnchangedInterval = 0;
-    for (auto portConfig: Config->PortConfigs)
-        portConfig->MaxUnchangedInterval = 0;
-
-    for (int i = 0; i < 3; ++i) {
-        ExpectQueries(i == 0);
-        Note() << "LoopOnce()";
-        SerialDriver->LoopOnce();
-    }
-}
-
 class TMilur32Test: public TSerialDeviceTest, public TMilurExpectations
 {
 protected:

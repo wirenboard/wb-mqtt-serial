@@ -35,20 +35,15 @@ struct TDeviceChannel : public TDeviceChannelConfig
 
 typedef std::shared_ptr<TDeviceChannel> PDeviceChannel;
 
-using TPublishTime = std::chrono::time_point<std::chrono::steady_clock>;
-using PPublishTime = std::unique_ptr<TPublishTime>;
-
 struct TDeviceChannelState
 {
-    TDeviceChannelState(const PDeviceChannel & channel, TRegisterHandler::TErrorState error, PPublishTime && time)
+    TDeviceChannelState(const PDeviceChannel & channel, TRegisterHandler::TErrorState error)
         : Channel(channel)
         , ErrorState(error)
-        , LastPublishTime(std::move(time))
     {}
 
     PDeviceChannel                  Channel;
     TRegisterHandler::TErrorState   ErrorState;
-    PPublishTime                    LastPublishTime;
 };
 
 
@@ -68,7 +63,6 @@ private:
     WBMQTT::TControlArgs From(const PDeviceChannel & channel);
 
     void SetValueToChannel(const PDeviceChannel & channel, const std::string & value);
-    bool NeedToPublish(PRegister reg, bool changed);
     void OnValueRead(PRegister reg, bool changed);
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
     void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);

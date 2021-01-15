@@ -16,6 +16,7 @@
 #endif
 
 #include <wblib/json_utils.h>
+#include <wblib/driver_args.h>
 
 #include "port.h"
 #include "serial_device.h"
@@ -75,7 +76,6 @@ class TSubDevicesTemplateMap: public ITemplateMap
 struct TPortConfig 
 {
     PPort                      Port;
-    int                        MaxUnchangedInterval;
     std::vector<PDeviceConfig> DeviceConfigs;
     std::chrono::milliseconds  PollInterval          = DefaultPollInterval;
     std::chrono::microseconds  RequestDelay          = std::chrono::microseconds::zero();
@@ -96,9 +96,9 @@ typedef std::shared_ptr<TPortConfig> PPortConfig;
 
 struct THandlerConfig 
 {
-    bool                     Debug                = false;
-    int                      MaxUnchangedInterval = -1;
-    std::vector<PPortConfig> PortConfigs;
+    bool                       Debug = false;
+    WBMQTT::TPublishParameters PublishParameters;
+    std::vector<PPortConfig>   PortConfigs;
 
     void AddPortConfig(PPortConfig portConfig);
 };

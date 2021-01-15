@@ -1497,5 +1497,3 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
         EXPECT_EQ(2, device->Registers[2]);
     }
 }
-
-// TBD: the code must check mosquitto return values

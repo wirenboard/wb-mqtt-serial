@@ -29,6 +29,7 @@ TEST_F(TConfigParserTest, Parse)
                                                        templateMap);
 
     Emit() << "Debug: " << config->Debug;
+    Emit() << "PublishParams: " << config->PublishParameters.Policy << " " << config->PublishParameters.PublishUnchangedInterval.count();
     Emit() << "Ports:";
     for (auto port_config: config->PortConfigs) {
         TTestLogIndent indent(*this);
