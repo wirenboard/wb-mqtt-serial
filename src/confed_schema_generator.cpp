@@ -153,7 +153,9 @@ Json::Value MakeTabSimpleChannelSchema(const std::string& name)
 //          }
 //      ]
 //  }
-Json::Value MakeTabOneOfChannelSchema(const Json::Value& channel, const std::string& deviceDefinitionPrefix)
+Json::Value MakeTabOneOfChannelSchema(const Json::Value&      channel,
+                                      const std::string&      deviceDefinitionPrefix,
+                                      TSubDevicesTemplateMap& subdeviceTemplates)
 {
     Json::Value r;
     r["headerTemplate"] = channel["name"].asString();
@@ -164,8 +166,9 @@ Json::Value MakeTabOneOfChannelSchema(const Json::Value& channel, const std::str
     Json::Value ar(Json::arrayValue);
     for (const auto& deviceName: channel["oneOf"]) {
         Json::Value ref;
+        auto deviceTypeId = subdeviceTemplates.GetDeviceTypeId(deviceName.asString());
         // TODO: move to common function
-        ref["$ref"] = "#/definitions/" + deviceDefinitionPrefix + GetHashedParam(deviceName.asString(), "d");
+        ref["$ref"] = "#/definitions/" + deviceDefinitionPrefix + GetHashedParam(deviceTypeId, "d");
         ar.append(ref);
     }
     item["oneOf"] = ar;
@@ -195,27 +198,32 @@ Json::Value MakeTabOneOfChannelSchema(const Json::Value& channel, const std::str
 //          "disable_properties": true
 //      }
 //  }
-Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channel, const std::string& deviceDefinitionPrefix)
+Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value&     channel,
+                                            const std::string&      deviceDefinitionPrefix,
+                                            TSubDevicesTemplateMap& subdeviceTemplates)
 {
     Json::Value r;
     r["headerTemplate"] = channel["name"].asString();
     r["options"]["disable_properties"] = true;
     r["allOf"] = Json::Value(Json::arrayValue);
     Json::Value item;
+    auto deviceTypeId = subdeviceTemplates.GetDeviceTypeId(channel["device_type"].asString());
     // TODO: move to common function
-    item["$ref"] = "#/definitions/" + deviceDefinitionPrefix + GetHashedParam(channel["device_type"].asString(), "d");
+    item["$ref"] = "#/definitions/" + deviceDefinitionPrefix + GetHashedParam(deviceTypeId, "d");
     r["allOf"].append(item);
     r["allOf"].append(MakeHiddenNameObject(channel["name"].asString()));
     return r;
 }
 
-Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& deviceDefinitionPrefix)
+Json::Value MakeTabChannelSchema(const Json::Value&      channel,
+                                 const std::string&      deviceDefinitionPrefix,
+                                 TSubDevicesTemplateMap& subdeviceTemplates)
 {
     if (channel.isMember("oneOf")) {
-        return MakeTabOneOfChannelSchema(channel, deviceDefinitionPrefix);
+        return MakeTabOneOfChannelSchema(channel, deviceDefinitionPrefix, subdeviceTemplates);
     }
     if (channel.isMember("device_type")) {
-        return MakeTabSingleDeviceChannelSchema(channel, deviceDefinitionPrefix);
+        return MakeTabSingleDeviceChannelSchema(channel, deviceDefinitionPrefix, subdeviceTemplates);
     }
     return MakeTabSimpleChannelSchema(channel["name"].asString());
 }
@@ -258,12 +266,13 @@ Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& 
 //      ],
 //      "_format": "table"
 //  }
-Json::Value MakeChannelsSchema(const Json::Value& channels,
-                               const std::string& deviceDefinitionPrefix,
-                               int propertyOrder,
-                               const std::string& format,
-                               const std::string& title,
-                               bool allowCollapse = false)
+Json::Value MakeChannelsSchema(const Json::Value&      channels,
+                               const std::string&      deviceDefinitionPrefix,
+                               int                     propertyOrder,
+                               const std::string&      format,
+                               const std::string&      title,
+                               TSubDevicesTemplateMap& subdeviceTemplates,
+                               bool                    allowCollapse = false)
 {
     Json::Value r;
     r["type"] = "array";
@@ -291,7 +300,7 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
     if (tabs) {
         Json::Value items(Json::arrayValue);
         for (const auto& channel: channels) {
-            items.append(MakeTabChannelSchema(channel, deviceDefinitionPrefix));
+            items.append(MakeTabChannelSchema(channel, deviceDefinitionPrefix, subdeviceTemplates));
         }
         r["items"] = items;
         r["minItems"] = items.size();
@@ -341,16 +350,20 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
 //          }
 //      }
 //  }
-Json::Value MakeSubDeviceUISchema(const std::string& deviceType, const Json::Value& subdeviceShema, const std::string& devicePrefix)
+Json::Value MakeSubDeviceUISchema(const std::string&      deviceTypeName,
+                                  const std::string&      deviceTypeId,
+                                  const Json::Value&      subdeviceShema,
+                                  const std::string&      devicePrefix,
+                                  TSubDevicesTemplateMap& subdeviceTemplates)
 {
     Json::Value res;
     res["type"] = "object";
-    res["title"] = deviceType;
+    res["title"] = deviceTypeName;
     res["options"]["disable_edit_json"] = true;
     res["options"]["disable_properties"] = true;
     res["options"]["disable_collapse"] = true;
 
-    auto set = GetSubdeviceKey(deviceType);
+    auto set = GetSubdeviceKey(deviceTypeId);
 
     Json::Value req(Json::arrayValue);
     req.append(set);
@@ -385,7 +398,12 @@ Json::Value MakeSubDeviceUISchema(const std::string& deviceType, const Json::Val
     }
 
     if (subdeviceShema.isMember("channels")) {
-        res["properties"][set]["properties"]["standard_channels"] = MakeChannelsSchema(subdeviceShema["channels"], devicePrefix, i, channelsFormat, channelsTitle);
+        res["properties"][set]["properties"]["standard_channels"] = MakeChannelsSchema(subdeviceShema["channels"],
+                                                                                       devicePrefix,
+                                                                                       i,
+                                                                                       channelsFormat,
+                                                                                       channelsTitle,
+                                                                                       subdeviceTemplates);
     } else {
         // No channels, so it is just a stub device with predefined settings, nothig to show in UI.
         res["properties"][set]["options"]["collapsed"] = true;
@@ -493,8 +511,9 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const std::string& device
         Get(t["ui_options"], "channels_title", channelsTitle);
     }
 
+    TSubDevicesTemplateMap subdeviceTemplates(t);
     if (t.isMember("channels")) {
-        res["properties"][set]["properties"]["standard_channels"] = MakeChannelsSchema(t["channels"], set, 98, channelsFormat, channelsTitle, true);
+        res["properties"][set]["properties"]["standard_channels"] = MakeChannelsSchema(t["channels"], set, 98, channelsFormat, channelsTitle, subdeviceTemplates, true);
     }
 
     if (t.isMember("setup")) {
@@ -511,11 +530,13 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const std::string& device
     }
     res["properties"][set]["defaultProperties"] = req;
 
+
     Json::Value definitions;
     if (t.isMember("subdevices")) {
         for (const auto& subDevice: t["subdevices"]) {
             auto name = subDevice["device_type"].asString();
-            definitions[GetSubdeviceSchemaKey(deviceType, name)] = MakeSubDeviceUISchema(name, subDevice["device"], set);
+            auto id = subdeviceTemplates.GetDeviceTypeId(name);
+            definitions[GetSubdeviceSchemaKey(deviceType, id)] = MakeSubDeviceUISchema(name, id, subDevice["device"], set, subdeviceTemplates);
         }
     }
 

@@ -677,22 +677,39 @@ std::vector<std::string> TTemplateMap::GetDeviceTypes() const
     return res;
 }
 
+ std::string TTemplateMap::GetDeviceTypeId(const std::string& deviceTypeNameOrId) const
+ {
+     return deviceTypeNameOrId;
+ }
+
 TSubDevicesTemplateMap::TSubDevicesTemplateMap(const Json::Value& device)
 {
     if (device.isMember("subdevices")) {
         for (auto& dev: device["subdevices"]) {
-            Templates.insert({dev["device_type"].asString(), dev["device"]});
+            auto deviceTypeName = dev["device_type"].asString();
+            auto deviceTypeId = deviceTypeName;
+            Get(dev, "id", deviceTypeId);
+            if (Templates.count(deviceTypeId)) {
+                LOG(Warn) << "Duplicate subdevice type: " << deviceTypeId;
+            } else {
+                Templates.insert({deviceTypeId, dev["device"]});
+                DeviceTypeIds.insert({deviceTypeName, deviceTypeId});
+                DeviceTypeNames[deviceTypeName].insert(deviceTypeName);
+                DeviceTypeNames[deviceTypeName].insert(deviceTypeId);
+                DeviceTypeNames[deviceTypeId] = DeviceTypeNames[deviceTypeName];
+            }
         }
     }
 }
 
 const Json::Value& TSubDevicesTemplateMap::GetTemplate(const std::string& deviceType)
 {
-    try {
-        return Templates.at(deviceType);
-    } catch ( const std::out_of_range& ) {
-        throw std::runtime_error("TSubDevicesTemplateMap. Can't find template for " + deviceType);
+    for (const auto& n: GetDeviceTypeNames(deviceType)) {
+        try {
+            return Templates.at(n);
+        } catch (...) {}
     }
+    throw std::runtime_error("TSubDevicesTemplateMap. Can't find template for " + deviceType);
 }
 
 std::vector<std::string> TSubDevicesTemplateMap::GetDeviceTypes() const
@@ -702,6 +719,24 @@ std::vector<std::string> TSubDevicesTemplateMap::GetDeviceTypes() const
         res.push_back(elem.first);
     }
     return res;
+}
+
+std::set<std::string> TSubDevicesTemplateMap::GetDeviceTypeNames(const std::string& deviceTypeNameOrId) const
+{
+    auto it = DeviceTypeNames.find(deviceTypeNameOrId);
+    if (it == DeviceTypeNames.end()) {
+        return std::set<std::string>();
+    }
+    return it->second;
+}
+
+std::string TSubDevicesTemplateMap::GetDeviceTypeId(const std::string& deviceTypeNameOrId) const
+{
+    auto it = DeviceTypeIds.find(deviceTypeNameOrId);
+    if (it == DeviceTypeIds.end()) {
+        return deviceTypeNameOrId;
+    }
+    return it->second;
 }
 
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema)

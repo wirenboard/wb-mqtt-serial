@@ -622,6 +622,7 @@
         "subdevices": [
             {
                 "device_type": "thermocouple ТХА (K)",
+                "id": "thermocouple",
                 "device": {
                     "setup": [
                         {
@@ -669,6 +670,7 @@
             },
             {
                 "device_type": "NTC thermistor 10k (B = 3988 K)",
+                "id": "ntc",
                 "device": {
                     "setup": [
                         {
@@ -733,6 +735,7 @@
             },
             {
                 "device_type": "current measurement",
+                "id": "current",
                 "device": {
                     "setup": [
                         {
@@ -789,6 +792,7 @@
             },
             {
                 "device_type": "current measurement 0 to 5 mA",
+                "id": "current_0_5",
                 "device": {
                     "setup": [
                         {
@@ -828,6 +832,7 @@
             },
             {
                 "device_type": "current measurement 0 to 20 mA",
+                "id": "current_0_20",
                 "device": {
                     "setup": [
                         {
@@ -867,6 +872,7 @@
             },
             {
                 "device_type": "current measurement 4 to 20 mA",
+                "id": "current_4_20",
                 "device": {
                     "setup": [
                         {
@@ -906,6 +912,7 @@
             },
             {
                 "device_type": "IN_P: current measurement 4 to 20 mA",
+                "id": "2w_current_4_20",
                 "device": {
                     "channels": [
                         {
@@ -934,6 +941,7 @@
             },
             {
                 "device_type": "IN_P: current measurement 0 to 5 mA",
+                "id": "2w_current_0_5",
                 "device": {
                     "channels": [
                         {
@@ -962,6 +970,7 @@
             },
             {
                 "device_type": "IN_P: current measurement 0 to 20 mA",
+                "id": "2w_current_0_20",
                 "device": {
                     "channels": [
                         {
@@ -990,6 +999,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                "id": "pt50",
                 "device": {
                     "setup": [
                         {
@@ -1035,6 +1045,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                "id": "pt100",
                 "device": {
                     "setup": [
                         {
@@ -1080,6 +1091,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                "id": "pt500",
                 "device": {
                     "setup": [
                         {
@@ -1125,6 +1137,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                "id": "pt1000",
                 "device": {
                     "setup": [
                         {
@@ -1170,6 +1183,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                "id": "50p",
                 "device": {
                     "setup": [
                         {
@@ -1215,6 +1229,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                "id": "100p",
                 "device": {
                     "setup": [
                         {
@@ -1260,6 +1275,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                "id": "500p",
                 "device": {
                     "setup": [
                         {
@@ -1305,6 +1321,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                "id": "1000p",
                 "device": {
                     "setup": [
                         {
@@ -1350,6 +1367,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                "id": "50M",
                 "device": {
                     "setup": [
                         {
@@ -1395,6 +1413,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                "id": "100M",
                 "device": {
                     "setup": [
                         {
@@ -1440,6 +1459,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                "id": "500M",
                 "device": {
                     "setup": [
                         {
@@ -1485,6 +1505,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                "id": "1000M",
                 "device": {
                     "setup": [
                         {
@@ -1530,6 +1551,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                "id": "ni100",
                 "device": {
                     "setup": [
                         {
@@ -1575,6 +1597,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                "id": "ni500",
                 "device": {
                     "setup": [
                         {
@@ -1620,6 +1643,7 @@
             },
             {
                 "device_type": "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                "id": "ni1000",
                 "device": {
                     "setup": [
                         {
@@ -1665,6 +1689,7 @@
             },
             {
                 "device_type": "dry contact sensor",
+                "id": "dry_contact",
                 "device": {
                     "setup": [
                         {
@@ -1708,6 +1733,7 @@
             },
             {
                 "device_type": "two-wire resistance measurement",
+                "id": "resistance",
                 "device": {
                     "setup": [
                         {
@@ -1762,6 +1788,7 @@
             },
             {
                 "device_type": "IN_P: dry contact sensor",
+                "id": "2w_dry_contact",
                 "device": {
                     "channels": [
                         {
@@ -1803,6 +1830,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                "id": "2w_pt50",
                 "device": {
                     "channels": [
                         {
@@ -1844,6 +1872,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                "id": "2w_pt100",
                 "device": {
                     "channels": [
                         {
@@ -1885,6 +1914,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                "id": "2w_pt500",
                 "device": {
                     "channels": [
                         {
@@ -1926,6 +1956,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                "id": "2w_pt1000",
                 "device": {
                     "channels": [
                         {
@@ -1967,6 +1998,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                "id": "2w_50p",
                 "device": {
                     "channels": [
                         {
@@ -2008,6 +2040,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                "id": "2w_100p",
                 "device": {
                     "channels": [
                         {
@@ -2049,6 +2082,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                "id": "2w_500p",
                 "device": {
                     "channels": [
                         {
@@ -2090,6 +2124,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                "id": "2w_1000p",
                 "device": {
                     "channels": [
                         {
@@ -2131,6 +2166,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                "id": "2w_50M",
                 "device": {
                     "channels": [
                         {
@@ -2172,6 +2208,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                "id": "2w_100M",
                 "device": {
                     "channels": [
                         {
@@ -2213,6 +2250,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                "id": "2w_500M",
                 "device": {
                     "channels": [
                         {
@@ -2254,6 +2292,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                "id": "2w_1000M",
                 "device": {
                     "channels": [
                         {
@@ -2295,6 +2334,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                "id": "2w_ni100",
                 "device": {
                     "channels": [
                         {
@@ -2336,6 +2376,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                "id": "2w_ni500",
                 "device": {
                     "channels": [
                         {
@@ -2377,6 +2418,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                "id": "2w_ni1000",
                 "device": {
                     "channels": [
                         {
@@ -2418,6 +2460,7 @@
             },
             {
                 "device_type": "IN_P: two-wire resistance measurement",
+                "id": "2w_resistance",
                 "device": {
                     "channels": [
                         {
@@ -2459,6 +2502,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                "id": "3w_pt50",
                 "device": {
                     "setup": [
                         {
@@ -2504,6 +2548,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                "id": "3w_pt100",
                 "device": {
                     "setup": [
                         {
@@ -2549,6 +2594,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                "id": "3w_pt500",
                 "device": {
                     "setup": [
                         {
@@ -2594,6 +2640,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                "id": "3w_pt1000",
                 "device": {
                     "setup": [
                         {
@@ -2639,6 +2686,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                "id": "3w_50p",
                 "device": {
                     "setup": [
                         {
@@ -2684,6 +2732,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                "id": "3w_100p",
                 "device": {
                     "setup": [
                         {
@@ -2729,6 +2778,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                "id": "3w_500p",
                 "device": {
                     "setup": [
                         {
@@ -2774,6 +2824,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                "id": "3w_1000p",
                 "device": {
                     "setup": [
                         {
@@ -2819,6 +2870,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                "id": "3w_50M",
                 "device": {
                     "setup": [
                         {
@@ -2864,6 +2916,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                "id": "3w_100M",
                 "device": {
                     "setup": [
                         {
@@ -2909,6 +2962,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                "id": "3w_500M",
                 "device": {
                     "setup": [
                         {
@@ -2954,6 +3008,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                "id": "3w_1000M",
                 "device": {
                     "setup": [
                         {
@@ -2999,6 +3054,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                "id": "3w_ni100",
                 "device": {
                     "setup": [
                         {
@@ -3044,6 +3100,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                "id": "3w_ni500",
                 "device": {
                     "setup": [
                         {
@@ -3089,6 +3146,7 @@
             },
             {
                 "device_type": "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                "id": "3w_ni1000",
                 "device": {
                     "setup": [
                         {
@@ -3134,6 +3192,7 @@
             },
             {
                 "device_type": "voltage measurement from ratiometric sensor",
+                "id": "ratiometric",
                 "device": {
                     "setup": [
                         {
@@ -3189,6 +3248,7 @@
             },
             {
                 "device_type": "IN_P: voltage measurement from ratiometric sensor",
+                "id": "2w_ratiometric",
                 "device": {
                     "channels": [
                         {
@@ -3214,6 +3274,7 @@
             },
             {
                 "device_type": "differential voltage measurement from ratiometric sensor",
+                "id": "diff_ratiometric",
                 "device": {
                     "setup": [
                         {
@@ -3269,6 +3330,7 @@
             },
             {
                 "device_type": "single-ended voltage measurement from 0 to 2 V",
+                "id": "v_0_2",
                 "device": {
                     "setup": [
                         {
@@ -3325,6 +3387,7 @@
             },
             {
                 "device_type": "single-ended voltage measurement from 0 to 1 V",
+                "id": "v_0_1",
                 "device": {
                     "setup": [
                         {
@@ -3364,6 +3427,7 @@
             },
             {
                 "device_type": "IN_P: single-ended voltage measurement from 0 to 2 V",
+                "id": "2w_v_0_2",
                 "device": {
                     "channels": [
                         {
@@ -3390,6 +3454,7 @@
             },
             {
                 "device_type": "IN_P: single-ended voltage measurement from 0 to 1 V",
+                "id": "2w_v_0_1",
                 "device": {
                     "channels": [
                         {
@@ -3416,6 +3481,7 @@
             },
             {
                 "device_type": "voltage measurement in differential mode from -50 to 50 mV",
+                "id": "3w_v_50_50",
                 "device": {
                     "setup": [
                         {
@@ -3455,6 +3521,7 @@
             },
             {
                 "device_type": "voltage measurement in differential mode from -2 to 2 V",
+                "id": "3w_v_2_2",
                 "device": {
                     "setup": [
                         {
@@ -3510,33 +3577,8 @@
                 }
             },
             {
-                "device_type": "IN_P: single-ended voltage measurement from 0 to 1 V",
-                "device": {
-                    "channels": [
-                        {
-                            "name": "IN_P",
-                            "id": "P",
-                            "device_type": "single-ended voltage measurement from 0 to 1 V"
-                        },
-                        {
-                            "stride": 1,
-                            "name": "IN_N",
-                            "id": "N",
-                            "oneOf": [
-                                "single-ended voltage measurement from 0 to 1 V",
-                                "single-ended voltage measurement from 0 to 2 V",
-                                "disabled"
-                            ],
-                            "device_type": "single-ended voltage measurement from 0 to 1 V"
-                        }
-                    ],
-                    "ui_options": {
-                        "channels_format": "list"
-                    }
-                }
-            },
-            {
                 "device_type": "three-wire resistance measurement",
+                "id": "3w_resistance",
                 "device": {
                     "setup": [
                         {
@@ -3593,6 +3635,7 @@
             },
             {
                 "device_type": "resistance measurement using current measurement",
+                "id": "current_resistance",
                 "device": {
                     "setup": [
                         {
@@ -3647,6 +3690,7 @@
             },
             {
                 "device_type": "IN_P: resistance measurement using current measurement",
+                "id": "2w_current_resistance",
                 "device": {
                     "channels": [
                         {
@@ -3672,6 +3716,7 @@
             },
             {
                 "device_type": "IN_P: current measurement",
+                "id": "2w_current",
                 "device": {
                     "channels": [
                         {

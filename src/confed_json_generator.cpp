@@ -196,7 +196,7 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
         return Json::Value();
     }
 
-    auto dt = config["device_type"].asString();
+    auto dt = deviceTemplates.GetDeviceTypeId(config["device_type"].asString());
     auto deviceTemplate = deviceTemplates.GetTemplate(dt);
     Json::Value newDev(config);
 

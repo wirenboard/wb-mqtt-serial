@@ -7,7 +7,7 @@
 using namespace std;
 using namespace WBMQTT::JSON;
 
-void UpdateChannels(Json::Value& dst, const Json::Value& userConfig, ITemplateMap& channelTemplates, const std::string& logPrefix);
+void UpdateChannels(Json::Value& dst, const Json::Value& userConfig, TSubDevicesTemplateMap& channelTemplates, const std::string& logPrefix);
 
 void AppendSetupItems(Json::Value& dst, const Json::Value& src)
 {
@@ -68,14 +68,17 @@ void SetPropertyWithNotification(Json::Value& dst, Json::Value::const_iterator i
     dst[itProp.name()] = *itProp;
 }
 
-void CheckDeviceType(Json::Value& templateConfig, const Json::Value& userConfig, const std::string& logPrefix)
+void CheckDeviceType(Json::Value&            templateConfig,
+                     const Json::Value&      userConfig,
+                     const std::string&      logPrefix,
+                     TSubDevicesTemplateMap& subdeviceTemplates)
 {
     if (templateConfig.isMember("oneOf")) {
         if (!userConfig.isMember("device_type")) {
             throw TConfigParserException("'" + logPrefix + "' must contain device_type");
         }
         for (const auto& item: templateConfig["oneOf"]) {
-            if (item == userConfig["device_type"]) {
+            if (subdeviceTemplates.GetDeviceTypeNames(item.asString()).count(userConfig["device_type"].asString())) {
                 templateConfig["device_type"] = item;
                 return;
             }
@@ -83,8 +86,16 @@ void CheckDeviceType(Json::Value& templateConfig, const Json::Value& userConfig,
         throw TConfigParserException("'" + logPrefix + "' can't have type '" + userConfig["device_type"].asString() + "'");
     }
     if (templateConfig.isMember("device_type")) {
-        if (!userConfig.isMember("device_type") || (userConfig["device_type"] != templateConfig["device_type"])) {
-            throw TConfigParserException("'" + logPrefix + "' device_type must be '" + templateConfig["device_type"].asString() + "'");
+        auto desiredDeviceTypes = subdeviceTemplates.GetDeviceTypeNames(templateConfig["device_type"].asString());
+        if (!userConfig.isMember("device_type") || !desiredDeviceTypes.count(userConfig["device_type"].asString())) {
+            std::string desiredDeviceTypeNames;
+            for (const auto& dt: desiredDeviceTypes) {
+                if (!desiredDeviceTypeNames.empty()) {
+                    desiredDeviceTypeNames += " or ";
+                }
+                desiredDeviceTypeNames += "'" + dt + "'";
+            }
+            throw TConfigParserException("'" + logPrefix + "' device_type must be " + desiredDeviceTypeNames);
         }
         return;
     }
@@ -94,9 +105,12 @@ void CheckDeviceType(Json::Value& templateConfig, const Json::Value& userConfig,
     }
 }
 
-void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& userConfig, const std::string& logPrefix)
+void MergeChannelProperties(Json::Value&            templateConfig,
+                            const Json::Value&      userConfig,
+                            const std::string&      logPrefix,
+                            TSubDevicesTemplateMap& subdeviceTemplates)
 {
-    CheckDeviceType(templateConfig, userConfig, logPrefix);
+    CheckDeviceType(templateConfig, userConfig, logPrefix, subdeviceTemplates);
 
     for (auto itProp = userConfig.begin(); itProp != userConfig.end(); ++itProp) {
         if (itProp.name() == "poll_interval" || itProp.name() == "enabled") {
@@ -132,7 +146,7 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
     }
 }
 
-Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig, ITemplateMap& templates, const std::string& logPrefix)
+Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig, TSubDevicesTemplateMap& templates, const std::string& logPrefix)
 {
     if (!channelConfig.isMember("device_type")) {
         return channelConfig;
@@ -149,7 +163,10 @@ Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig, ITe
     return res;
 }
 
-void UpdateChannels(Json::Value& channelsFromTemplate, const Json::Value& userChannels, ITemplateMap& channelTemplates, const std::string& logPrefix)
+void UpdateChannels(Json::Value&            channelsFromTemplate,
+                    const Json::Value&      userChannels,
+                    TSubDevicesTemplateMap& channelTemplates,
+                    const std::string&      logPrefix)
 {
     std::unordered_map<std::string, Json::ArrayIndex> channelNames;
 
@@ -160,7 +177,7 @@ void UpdateChannels(Json::Value& channelsFromTemplate, const Json::Value& userCh
     for (const auto& elem: userChannels) {
         auto channelName(elem["name"].asString());
         if (channelNames.count(channelName)) {
-            MergeChannelProperties(channelsFromTemplate[channelNames[channelName]], elem, logPrefix + " channel \"" + channelName + "\"");
+            MergeChannelProperties(channelsFromTemplate[channelNames[channelName]], elem, logPrefix + " channel \"" + channelName + "\"", channelTemplates);
         } else {
             channelsFromTemplate.append(elem);
         }

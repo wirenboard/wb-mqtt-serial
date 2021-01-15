@@ -28,6 +28,7 @@ class ITemplateMap
 
         virtual const Json::Value& GetTemplate(const std::string& deviceType) = 0;
         virtual std::vector<std::string> GetDeviceTypes() const = 0;
+        virtual std::string GetDeviceTypeId(const std::string& deviceTypeNameOrId) const = 0;
 };
 
 class TTemplateMap: public ITemplateMap
@@ -57,20 +58,28 @@ class TTemplateMap: public ITemplateMap
 
         const Json::Value& GetTemplate(const std::string& deviceType) override;
 
-        const std::map<std::string, Json::Value>& GetTemplates();
-
         std::vector<std::string> GetDeviceTypes() const override;
+
+        std::string GetDeviceTypeId(const std::string& deviceTypeNameOrId) const override;
+
+        const std::map<std::string, Json::Value>& GetTemplates();
 };
 
 class TSubDevicesTemplateMap: public ITemplateMap
 {
-        std::unordered_map<std::string, Json::Value> Templates;
+        std::unordered_map<std::string, Json::Value>           Templates;
+        std::unordered_map<std::string, std::set<std::string>> DeviceTypeNames;
+        std::unordered_map<std::string, std::string>           DeviceTypeIds;
     public:
         TSubDevicesTemplateMap(const Json::Value& device);
 
         const Json::Value& GetTemplate(const std::string& deviceType) override;
 
         std::vector<std::string> GetDeviceTypes() const override;
+
+        std::string GetDeviceTypeId(const std::string& deviceTypeNameOrId) const override;
+
+        std::set<std::string> GetDeviceTypeNames(const std::string& deviceTypeNameOrId) const;
 };
 
 struct TPortConfig 

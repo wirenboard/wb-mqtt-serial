@@ -449,7 +449,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
             // Канал - вложенное устройство
             {
                 "name": "Sub",
-                "device_type": "subdevice1"
+                "device_type": "sb1"
             },
 
             // Канал - вложенное устройство.
@@ -457,11 +457,13 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
             {
                 "name": "Sub2",
                 
-                // Список типов вложенных устройств, которые можно выбрать для канала
-                "oneOf": [ "subdevice1", "subdevice2" ],
+                // Список типов вложенных устройств, которые можно выбрать для канала.
+                // В списке можно указать как id вложенного устройства, так и его device_type
+                "oneOf": [ "sb1", "sb2" ],
 
-                // Устройство, выбранное по умолчанию
-                "device_type": "subdevice1",
+                // Устройство, выбранное по умолчанию.
+                // Можно указать как id вложенного устройства, так и его device_type
+                "device_type": "sb1",
 
                 // Смещение регистров канала относительно родительского канала
                 "shift": 100,
@@ -474,8 +476,13 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
         "subdevices": [
             {
                 // Имя вложенного устройства,
-                // которое будет использоваться в поле device_type канала
-                "device_type": "subdevice1",
+                // которое будет использоваться в интерфейсе web-конфигуратора
+                "device_type": "subdevice 1",
+
+                // Идентификатор вложенного устройства,
+                // который будет использоваться в полях device_type и oneOf канала
+                "id": "sb1",
+
                 "device": {
                     "channels": [
                         // Вложенные устройства могут иметь свои каналы
@@ -490,13 +497,14 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                         // каналы с вложенными устройствами
                         {
                             "name": "c2",
-                            "device_type": "subdevice2"
+                            "device_type": "sb2"
                         }
                     ]
                 }
             },
             {
                 "device_type": "subdevice2",
+                "id": "sb2",
                 "device": {
                     // Вложенные устройства могут иметь
                     // собственную секцию с настройками

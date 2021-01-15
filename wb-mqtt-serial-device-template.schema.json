@@ -101,6 +101,7 @@
       "type": "object",
       "properties": {
         "device_type": { "$ref": "#/definitions/device_type" },
+        "id": { "$ref": "#/definitions/device_type" },
         "device": { "$ref": "#/definitions/subdevice_device" }
       },
       "additionalProperties": false,
