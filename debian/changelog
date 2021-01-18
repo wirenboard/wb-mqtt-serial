@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.6.6) unstable; urgency=medium
+
+  * Add template config-bht-6000-series.json
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 18 Jan 2021 12:30:00 +0400
+ 
 wb-mqtt-serial (2.6.5) unstable; urgency=medium
 
   * libwbmqtt1 dependency bump
