@@ -447,6 +447,30 @@ TEST_F(TModbusIntegrationTest, GuardInterval)
     InvalidateConfigPoll();
 }
 
+class TModbusReconnectTest: public TModbusIntegrationTest
+{
+    public:
+        const char* ConfigPath() const override { return "configs/config-modbus-reconnect.json"; }
+};
+
+TEST_F(TModbusReconnectTest, Disconnect)
+{
+    EnqueueHoldingSingleWriteU16Response();
+    EnqueueHoldingReadU16Response();
+    Note() << "LoopOnce() [connected]";
+    SerialDriver->LoopOnce();
+    EnqueueHoldingReadU16Response();
+    Note() << "LoopOnce() [on-line]";
+    SerialDriver->LoopOnce();
+    this_thread::sleep_for(std::chrono::milliseconds(10));
+    EnqueueHoldingReadU16Response(0, true);
+    Note() << "LoopOnce() [disconnected]";
+    SerialDriver->LoopOnce();
+    EnqueueHoldingSingleWriteU16Response();
+    EnqueueHoldingReadU16Response();
+    Note() << "LoopOnce() [connected2]";
+    SerialDriver->LoopOnce();
+}
 
 class TModbusBitmasksIntegrationTest: public TModbusIntegrationTest
 {

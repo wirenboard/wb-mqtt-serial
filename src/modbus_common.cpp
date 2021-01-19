@@ -756,13 +756,13 @@ namespace Modbus    // modbus protocol common utilities
             } catch (const std::exception & e) {
                 LOG(Warn) << "SkipNoise failed: " << e.what();
             }
-            range.SetStatus(TRegisterRange::ST_DEVICE_ERROR);
+            range.SetStatus(TRegisterRange::ST_UNKNOWN_ERROR);
             throw;
         } catch (const TSerialDevicePermanentRegisterException&) {
             range.SetStatus(TRegisterRange::ST_DEVICE_ERROR);
             throw;
         } catch (const TSerialDeviceTransientErrorException&) {
-            range.SetStatus(TRegisterRange::ST_DEVICE_ERROR);
+            range.SetStatus(TRegisterRange::ST_UNKNOWN_ERROR);
             throw;
         }
     }

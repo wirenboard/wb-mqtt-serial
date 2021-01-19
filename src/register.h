@@ -346,7 +346,6 @@ public:
     TSimpleRegisterRange(const std::list<PRegister>& regs);
     TSimpleRegisterRange(PRegister reg);
 
-    void MapRange(TValueCallback value_callback, TErrorCallback error_callback);
     EStatus GetStatus() const override;
 };
 
