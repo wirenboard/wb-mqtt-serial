@@ -115,7 +115,7 @@ void TSerialDevice::OnCycleEnd(bool ok)
             RemainingFailCycles == 0)
         {
             IsDisconnected = true;
-            LOG(Info) << "device " << ToString() << " disconnected";
+            LOG(Info) << "device " << ToString() << " is disconnected";
         }
     }
 }

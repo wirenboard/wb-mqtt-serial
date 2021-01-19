@@ -1,0 +1,41 @@
+{
+  "debug": true,
+  "max_unchanged_interval": 100,
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 100,
+      "enabled": true,
+      "devices" : [
+        {
+          "slave_id": 1,
+          "enabled": true,
+          "name": "Modbus",
+          "id": "modbus",
+          "max_read_registers": 0,
+          "frame_timeout_ms": 0,
+          "device_timeout_ms": 1,
+          "device_max_fail_cycles": 1,
+          "setup": [
+            {
+                "title": "Set",
+                "address": 94,
+                "value": "0x0F41"
+            }
+          ],
+          "channels": [
+            {
+              "name" : "Ch 0",
+              "reg_type" : "holding",
+              "address" : 70
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -613,7 +613,7 @@ void TModbusExpectations::EnqueueHoldingReadF32Response(uint8_t exception)
 }
 
 // read 1 holding
-void TModbusExpectations::EnqueueHoldingReadU16Response(uint8_t exception)
+void TModbusExpectations::EnqueueHoldingReadU16Response(uint8_t exception, bool timeout)
 {
     Expector()->Expect(
     WrapPDU({
@@ -623,15 +623,18 @@ void TModbusExpectations::EnqueueHoldingReadU16Response(uint8_t exception)
         0x00,   //quantity Hi
         0x01,   //quantity Lo
     }),
-    WrapPDU(exception == 0 ? std::vector<int> {
-        0x03,   //function code
-        0x02,   //byte count
-        0x00,   //data Hi
-        0x15    //data Lo
-    } : std::vector<int> {
-        0x83,   //function code + 80
-        exception
-    }), __func__);
+    timeout ? std::vector<int>()
+            : WrapPDU(exception == 0 ? std::vector<int> {
+                                            0x03,   //function code
+                                            0x02,   //byte count
+                                            0x00,   //data Hi
+                                            0x15    //data Lo
+                                        }
+                                     : std::vector<int> {
+                                            0x83,   //function code + 80
+                                            exception
+                                        }),
+    __func__);
 }
 
 // read 1 input
