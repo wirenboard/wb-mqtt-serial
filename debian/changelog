@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.6.6) unstable; urgency=medium
+
+  * error during parsing of float value in config's "offset" parameter is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 19 Jan 2021 09:45:00 +0500
+
 wb-mqtt-serial (2.6.5) unstable; urgency=medium
 
   * libwbmqtt1 dependency bump

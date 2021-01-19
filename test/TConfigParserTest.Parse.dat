@@ -39,6 +39,7 @@ Ports:
                 TypeName: input
                 PollInterval: 10
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: Illuminance
@@ -60,6 +61,7 @@ Ports:
                 TypeName: input
                 PollInterval: 300
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: Pressure
@@ -81,6 +83,7 @@ Ports:
                 TypeName: input
                 PollInterval: 10000
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: Temp 2
@@ -102,6 +105,7 @@ Ports:
                 TypeName: input
                 PollInterval: 10
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
         ------
         Id: OnValueTest
@@ -135,6 +139,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
         ------
         Id: ErrorValueTest
@@ -168,6 +173,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 65535
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: uint32
@@ -189,6 +195,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 4294967295
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: str-uint32
@@ -210,6 +217,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 4294967295
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: str-hex-uint32
@@ -231,6 +239,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 4294967295
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: str-uint64
@@ -252,6 +261,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 18446744073709551615
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: str-hex-uint64
@@ -273,6 +283,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 10
                 ErrorValue: 18446744073709551615
+                UnsupportedValue: not set
                 WordOrder: BigEndian
     ------
     ConnSettings: </dev/ttyNSC1 9600 8 N 1>
@@ -312,6 +323,7 @@ Ports:
                 TypeName: coil
                 PollInterval: 100
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: Relay 2
@@ -333,6 +345,7 @@ Ports:
                 TypeName: coil
                 PollInterval: 100
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: Relay 3
@@ -354,6 +367,7 @@ Ports:
                 TypeName: coil
                 PollInterval: 100
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: Switch AC In
@@ -375,6 +389,7 @@ Ports:
                 TypeName: discrete
                 PollInterval: 100
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
         ------
         Id: wb-mrgb
@@ -408,6 +423,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 103
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
                 ------
                 Type and Address: holding: 0
@@ -420,6 +436,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 102
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
                 ------
                 Type and Address: holding: 2
@@ -432,6 +449,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 102
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: Button 1 counter
@@ -453,6 +471,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 101
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
         ------
         Id: TestDeviceOverride:config
@@ -486,6 +505,7 @@ Ports:
                 TypeName: input
                 PollInterval: 100
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
         ------
         Id: TestDeviceOverride:template_6
@@ -519,6 +539,7 @@ Ports:
                 TypeName: input
                 PollInterval: 100
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
         ------
         Id: TestDeviceOverride2:template_7
@@ -552,6 +573,7 @@ Ports:
                 TypeName: input
                 PollInterval: 300
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: Holding
@@ -573,6 +595,7 @@ Ports:
                 TypeName: holding
                 PollInterval: 10000
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
             Name: Holding readonly
@@ -594,7 +617,42 @@ Ports:
                 TypeName: holding
                 PollInterval: 1000
                 ErrorValue: not set
+                UnsupportedValue: not set
                 WordOrder: BigEndian
+        ------
+        Id: AllRegisterParams
+        Name: AllRegisterParams
+        SlaveId: 0x99
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 105
+        DeviceTimeout: 3000
+        Response timeout: 222
+        Frame timeout: 111
+        DeviceChannels:
+            ------
+            Name: Reg
+            Type: value
+            DeviceId: AllRegisterParams
+            Order: 1
+            OnValue: 500
+            Max: 200
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: holding: 0
+                Format: S32
+                Scale: 0.03125
+                Offset: -2.4
+                RoundTo: 125.5
+                Poll: 1
+                ReadOnly: 1
+                TypeName: holding
+                PollInterval: 100
+                ErrorValue: 11
+                UnsupportedValue: 170
+                WordOrder: LittleEndian
     ------
     ConnSettings: <192.168.0.1:3000  5000ms, 2>
     PollInterval: 20

@@ -185,7 +185,7 @@ namespace {
             it->second.DefaultWordOrder;
 
         double scale        = Read(register_data, "scale",    1.0); // TBD: check for zero, too
-        double offset       = Read(register_data, "offset",   0);
+        double offset       = Read(register_data, "offset",   0.0);
         double round_to     = Read(register_data, "round_to", 0.0);
 
         bool readonly = ReadChannelsReadonlyProperty(register_data, "readonly", it->second.ReadOnly, channel_name, it->second.Name);
