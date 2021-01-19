@@ -381,7 +381,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
 
 void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
 {
-	LOG(Debug) << "device " << dev->ToString() << " reconnected";
+	LOG(Info) << "device " << dev->ToString() << " is connected";
     for(auto& reg: RegList) {
         if (reg->Device() == dev) {
             reg->SetAvailable(true);
