@@ -26,7 +26,6 @@ public:
         IsRunning = true;
         auto start = std::chrono::steady_clock::now();
         bool sentSomething = false;
-        started.Complete();
         while (IsRunning) {
             auto diff = std::chrono::steady_clock::now() - start;
             if (diff > Duration) {
@@ -35,7 +34,10 @@ public:
             }
             try {
                 Serial->WriteBytes(buf, sizeof(buf));
-                sentSomething = true;
+                if (!sentSomething) {
+                    sentSomething = true;
+                    started.Complete();
+                }
             } catch (const TSerialDeviceErrnoException& e) {
                 if (e.GetErrnoValue() != EAGAIN) { // We write too fast. Let's give some time to a reader
                     throw;
@@ -204,8 +206,8 @@ TEST_F(TSerialPortTest, TestImxBug)
     ASSERT_EQ(read_back, buf[0]);
 
     // in case reconnect won't help with cont. data flow, exception must be raised
-    SecondarySerial->FloodThread.Start();
     SecondarySerial->StopFloodOnReconnect = false;
+    SecondarySerial->FloodThread.Start();
     usleep(10);
     EXPECT_THROW(SecondarySerial->SkipNoise(), TSerialDeviceTransientErrorException);
     SecondarySerial->FloodThread.Stop();
