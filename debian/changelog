@@ -6,9 +6,21 @@ wb-mqtt-serial (2.7.0) experimental; urgency=medium
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 2 Nov 2020 17:10:01 +0500
 
+wb-mqtt-serial (2.6.7) unstable; urgency=medium
+
+  * Device disconnection detection error is fixed. The bug was introduced in version 2.3.0.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 19 Jan 2021 14:37:00 +0500
+
+wb-mqtt-serial (2.6.6) unstable; urgency=medium
+
+  * Error during parsing of float value in config's "offset" parameter is fixed.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 19 Jan 2021 09:45:00 +0500
+
 wb-mqtt-serial (2.6.5) unstable; urgency=medium
 
-  * libwbmqtt1 dependency bump
+  * libwbmqtt1 dependency bump.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 13 Jan 2021 10:34:00 +0500
 

@@ -90,6 +90,11 @@ TEST_F(TConfigParserTest, Parse)
                         } else {
                             Emit() << "ErrorValue: not set";
                         }
+                        if (reg->UnsupportedValue) {
+                            Emit() << "UnsupportedValue: " << *reg->UnsupportedValue;
+                        } else {
+                            Emit() << "UnsupportedValue: not set";
+                        }
                         Emit() << "WordOrder: " << reg->WordOrder;
                     }
                 }
