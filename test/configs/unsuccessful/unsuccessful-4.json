@@ -10,7 +10,7 @@
                     "channels":
                     [
                         {
-                            "name" : "Sub",
+                            "name" : "Sub1",
                             "device_type" : "subdevice2"
                         }
                     ]

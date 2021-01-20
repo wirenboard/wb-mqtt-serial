@@ -11,7 +11,7 @@
                 "address": "0x0504"
             },
             {
-                "name": "Sub",
+                "name": "Sub1",
                 "device_type": "subdevice1",
                 "shift": 100
             },
