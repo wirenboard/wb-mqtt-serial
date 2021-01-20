@@ -1694,7 +1694,7 @@
                     "setup": [
                         {
                             "title": "Type",
-                            "address": "0x0401",
+                            "address": "0x0400",
                             "value": 5632
                         },
                         {

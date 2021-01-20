@@ -162,6 +162,9 @@ void UpdateChannels(Json::Value& channelsFromTemplate, const Json::Value& userCh
         if (channelNames.count(channelName)) {
             MergeChannelProperties(channelsFromTemplate[channelNames[channelName]], elem, logPrefix + " channel \"" + channelName + "\"");
         } else {
+            if (elem.isMember("device_type")) {
+                throw TConfigParserException(logPrefix + " channel \"" + channelName + "\" can't contain \"device_type\" property");
+            }
             channelsFromTemplate.append(elem);
         }
     }

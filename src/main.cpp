@@ -13,13 +13,16 @@
 #include "confed_json_generator.h"
 #include "confed_config_generator.h"
 
+#define STR(x) #x
+#define XSTR(x) STR(x)
+
 using namespace std;
 
 #define LOG(logger) ::logger.Log() << "[serial] "
 
 const auto driverName      = "wb-modbus";
 
-const auto BIN_NAME        = "wb-mqtt-serial";
+const auto APP_NAME        = "wb-mqtt-serial";
 
 const auto LIBWBMQTT_DB_FULL_FILE_PATH          = "/var/lib/wb-mqtt-serial/libwbmqtt.db";
 const auto CONFIG_FULL_FILE_PATH                = "/etc/wb-mqtt-serial.conf";
@@ -32,10 +35,20 @@ const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(60);
 
 namespace
 {
+    void PrintStartupInfo()
+    {
+        std::string commit(XSTR(WBMQTT_COMMIT));
+        cout << APP_NAME << " " << XSTR(WBMQTT_VERSION);
+        if (!commit.empty()) {
+            cout << " git " << commit;
+        }
+        cout << endl;
+    }
+
     void PrintUsage()
     {
         cout << "Usage:" << endl
-             << " " << BIN_NAME << " [options]" << endl
+             << " " << APP_NAME << " [options]" << endl
              << "Options:" << endl
              << "  -d       level     enable debuging output:" << endl
              << "                       1 - serial only;" << endl
@@ -47,7 +60,10 @@ namespace
              << "  -h, -H   IP        MQTT broker IP (default: localhost)" << endl
              << "  -u       user      MQTT user (optional)" << endl
              << "  -P       password  MQTT user password (optional)" << endl
-             << "  -T       prefix    MQTT topic prefix (optional)" << endl;
+             << "  -T       prefix    MQTT topic prefix (optional)" << endl
+             << "  -g                 Generate JSON Schema for wb-mqtt-confed" << endl
+             << "  -j                 Make JSON for wb-mqtt-confed from /etc/wb-mqtt-serial.conf" << endl
+             << "  -J                 Make /etc/wb-mqtt-serial.conf from wb-mqtt-confed output" << endl;
     }
 
     void ConfigToConfed()
@@ -88,21 +104,34 @@ namespace
         }
     }
 
-    void SchemaForConfed(TTemplateMap& templates)
+    void SchemaForConfed()
     {
-        Json::Value configSchema(LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH));
-        Json::StreamWriterBuilder builder;
-        builder["indentation"] = "    ";
-        std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-        const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
-        {
-            std::ofstream f(resultingSchemaFile);
-            MakeSchemaForConfed(configSchema, templates);
-            writer->write(configSchema, &f);
+        try {
+            Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
+            TTemplateMap templates(TEMPLATES_DIR,
+                                LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, 
+                                                            configSchema));
+
+            try {
+                templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
+            } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
+            }
+
+            Json::StreamWriterBuilder builder;
+            builder["indentation"] = "    ";
+            std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+            const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
+            {
+                std::ofstream f(resultingSchemaFile);
+                MakeSchemaForConfed(configSchema, templates);
+                writer->write(configSchema, &f);
+            }
+            std::ifstream  src(resultingSchemaFile, std::ios::binary);
+            std::ofstream  dst("/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json",   std::ios::binary);
+            dst << src.rdbuf();
+        } catch (const std::exception& e) {
+            LOG(Error) << e.what();
         }
-        std::ifstream  src(resultingSchemaFile, std::ios::binary);
-        std::ofstream  dst("/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json",   std::ios::binary);
-        dst << src.rdbuf();
     }
 
     void ParseCommadLine(int                           argc,
@@ -113,7 +142,7 @@ namespace
         int debugLevel = 0;
         int c;
 
-        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:jJ")) != -1) {
+        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:jJg")) != -1) {
             switch (c) {
             case 'd':
                 debugLevel = stoi(optarg);
@@ -143,8 +172,12 @@ namespace
             case 'J': // make config JSON from confed's JSON
                 ConfedToConfig();
                 exit(0);
+            case 'g':
+                SchemaForConfed();
+                exit(0);
             case '?':
             default:
+                PrintStartupInfo();
                 PrintUsage();
                 exit(2);
             }
@@ -180,6 +213,7 @@ namespace
             break;
 
         default:
+            PrintStartupInfo();
             cout << "Invalid -d parameter value " << debugLevel << endl;
             PrintUsage();
             exit(2);
@@ -200,7 +234,7 @@ int main(int argc, char *argv[])
 
     WBMQTT::SignalHandling::Handle({ SIGINT, SIGTERM });
     WBMQTT::SignalHandling::OnSignals( {SIGINT, SIGTERM }, [&]{ WBMQTT::SignalHandling::Stop(); });
-    WBMQTT::SetThreadName(BIN_NAME);
+    WBMQTT::SetThreadName(APP_NAME);
 
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
 
@@ -216,8 +250,6 @@ int main(int argc, char *argv[])
             templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
         } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
         }
-
-        SchemaForConfed(templates);
 
         handlerConfig = LoadConfig(configFilename,
                                   deviceFactory,
