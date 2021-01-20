@@ -9,9 +9,12 @@ ifeq ($(origin CXX),default)
 	CXX := $(CROSS_COMPILE)g++
 endif
 
+GIT_REVISION:=$(shell git rev-parse HEAD)
+DEB_VERSION:=$(shell head -1 debian/changelog | awk '{ print $$2 }' | sed 's/[\(\)]//g')
+
 DEBUG_CFLAGS=-Wall -ggdb -std=c++14 -O0 -I./src
 NORMAL_CFLAGS=-Wall -Werror -std=c++14 -O3 -I./src
-CFLAGS=$(if $(or $(DEBUG)), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS))
+CFLAGS=$(if $(or $(DEBUG)), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS)) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)"
 LDFLAGS= -lpthread -ljsoncpp -lwbmqtt1
 
 SERIAL_BIN=wb-mqtt-serial
