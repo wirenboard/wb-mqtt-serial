@@ -1,5 +1,6 @@
 {
     "device_type": "mercury230",
+    "title": "Mercury 230",
     "device": {
         "name": "Mercury 230AR-02",
         "id": "mercury230ar02",

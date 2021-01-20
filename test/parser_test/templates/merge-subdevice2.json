@@ -29,7 +29,7 @@
                         },
                         {
                             "name": "c2",
-                            "device_type": "sub2",
+                            "device_type": "subdevice2",
                             "shift": 200
                         }
                     ]
@@ -37,7 +37,6 @@
             },
             {
                 "device_type": "subdevice2",
-                "id": "sub2",
                 "device": {
                     "setup": [
                         {

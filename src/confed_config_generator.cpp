@@ -59,7 +59,7 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
         return false;
     }
 
-    Json::Value deviceTemplate(templates.GetTemplate(channel["device_type"].asString()));
+    Json::Value deviceTemplate(templates.GetTemplate(channel["device_type"].asString()).Schema);
     Json::Value filteredChannels = FilterStandardChannels(channel, deviceTemplate, templates, subdeviceTypeHashes);
     channel.removeMember("standard_channels");
     if ( channel.isMember("channels") ) {
@@ -141,8 +141,8 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
             RemoveDeviceHash(device, deviceTypeHashes);
             auto dt = device["device_type"].asString();
 
-            Json::Value deviceTemplate(templates.GetTemplate(dt));
-            TSubDevicesTemplateMap subdevices(deviceTemplate);
+            Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
+            TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
             std::unordered_map<std::string, std::string> subdeviceTypeHashes;
             for (const auto& dt: subdevices.GetDeviceTypes()) {
                 subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;

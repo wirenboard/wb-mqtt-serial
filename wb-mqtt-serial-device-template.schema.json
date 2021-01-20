@@ -93,6 +93,10 @@
               { "$ref": "#/definitions/subdevice_channel" }
             ]
           }
+        },
+        "subdevices": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/subdevice" }
         }
       }
     },
@@ -101,7 +105,7 @@
       "type": "object",
       "properties": {
         "device_type": { "$ref": "#/definitions/device_type" },
-        "id": { "$ref": "#/definitions/device_type" },
+        "title": { "$ref": "#/definitions/device_type" },
         "device": { "$ref": "#/definitions/subdevice_device" }
       },
       "additionalProperties": false,
@@ -112,6 +116,7 @@
 
   "properties": {
     "device_type": { "$ref": "#/definitions/device_type" },
+    "title": { "$ref": "#/definitions/device_type" },
     "device": {
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },

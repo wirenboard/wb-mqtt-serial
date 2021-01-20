@@ -34,7 +34,7 @@
                                                         "reg_type" : "input"
                                                 }
                                         ],
-                                        "device_type" : "sub2",
+                                        "device_type" : "subdevice2",
                                         "name" : "c2",
                                         "setup" : 
                                         [

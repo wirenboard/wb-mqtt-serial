@@ -623,7 +623,32 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir)
     closedir(dir);
 }
 
-const Json::Value& TTemplateMap::GetTemplate(const std::string& deviceType) 
+Json::Value TTemplateMap::Validate(const std::string& deviceType, const std::string& filePath)
+{
+    Json::Value root(WBMQTT::JSON::Parse(filePath));
+    try {
+        Validator->Validate(root);
+    } catch (const std::runtime_error& e) {
+        throw std::runtime_error("File: " + filePath + " error: " + e.what());
+    }
+    //Check that channels refer to valid subdevices
+    if (root["device"].isMember("subdevices")) {
+        TSubDevicesTemplateMap subdevices(deviceType, root["device"]);
+        for (const auto& ch: root["device"]["channels"]) {
+            if (ch.isMember("device_type")) {
+                subdevices.GetTemplate(ch["device_type"].asString());
+            }
+            if (ch.isMember("oneOf")) {
+                for (const auto& subdeviceType: ch["oneOf"]) {
+                    subdevices.GetTemplate(subdeviceType.asString());
+                }
+            }
+        }
+    }
+    return root;
+}
+
+std::shared_ptr<TDeviceTemplate> TTemplateMap::GetTemplatePtr(const std::string& deviceType) 
 {
     if (!Validator) {
         throw std::runtime_error("Can't find validator for device templates");
@@ -635,37 +660,31 @@ const Json::Value& TTemplateMap::GetTemplate(const std::string& deviceType)
         try {
             filePath = TemplateFiles.at(deviceType);
         } catch ( const std::out_of_range& ) {
-            throw std::runtime_error("Can't find template for " + deviceType);
+            throw std::runtime_error("Can't find template for '" + deviceType + "'");
         }
-        Json::Value root(WBMQTT::JSON::Parse(filePath));
-        try {
-            Validator->Validate(root);
-        } catch (const std::runtime_error& e) {
-            throw std::runtime_error("File: " + filePath + " error: " + e.what());
-        }
+        Json::Value root(Validate(deviceType, filePath));
         TemplateFiles.erase(filePath);
-        ValidTemplates.emplace(filePath, root["device"]);
-        return ValidTemplates[filePath];
+        auto deviceTypeTitle = deviceType;
+        Get(root, "title", deviceTypeTitle);
+        auto deviceTemplate = std::make_shared<TDeviceTemplate>(deviceType, deviceTypeTitle, root["device"]);
+        ValidTemplates.insert({deviceType, deviceTemplate});
+        return deviceTemplate;
     }
 }
 
-const std::map<std::string, Json::Value>& TTemplateMap::GetTemplates()
+const TDeviceTemplate& TTemplateMap::GetTemplate(const std::string& deviceType) 
 {
-    if (!Validator) {
-        throw std::runtime_error("Can't find validator for device templates");
-    }
+    return *GetTemplatePtr(deviceType);
+}
 
+std::vector<std::shared_ptr<TDeviceTemplate>> TTemplateMap::GetTemplatesOrderedByName()
+{
+    std::vector<std::shared_ptr<TDeviceTemplate>> templates;
     for (const auto& file: TemplateFiles) {
-        Json::Value root(WBMQTT::JSON::Parse(file.second));
-        try {
-            Validator->Validate(root);
-        } catch (const std::runtime_error& e) {
-            throw std::runtime_error("File: " + file.second + " error: " + e.what());
-        }
-        ValidTemplates.emplace(file.first, root["device"]);
+        templates.push_back(GetTemplatePtr(file.first));
     }
-    TemplateFiles.clear();
-    return ValidTemplates;
+    std::sort(templates.begin(), templates.end(), [](auto p1, auto p2) {return p1->Title < p2->Title;});
+    return templates;
 }
 
 std::vector<std::string> TTemplateMap::GetDeviceTypes() const
@@ -677,39 +696,44 @@ std::vector<std::string> TTemplateMap::GetDeviceTypes() const
     return res;
 }
 
- std::string TTemplateMap::GetDeviceTypeId(const std::string& deviceTypeNameOrId) const
- {
-     return deviceTypeNameOrId;
- }
-
-TSubDevicesTemplateMap::TSubDevicesTemplateMap(const Json::Value& device)
+TSubDevicesTemplateMap::TSubDevicesTemplateMap(const std::string& deviceType, const Json::Value& device)
+    : DeviceType(deviceType)
 {
     if (device.isMember("subdevices")) {
         for (auto& dev: device["subdevices"]) {
-            auto deviceTypeName = dev["device_type"].asString();
-            auto deviceTypeId = deviceTypeName;
-            Get(dev, "id", deviceTypeId);
-            if (Templates.count(deviceTypeId)) {
-                LOG(Warn) << "Duplicate subdevice type: " << deviceTypeId;
+            auto deviceType = dev["device_type"].asString();
+            if (Templates.count(deviceType)) {
+                LOG(Warn) << "Device type '" << DeviceType << "'. Duplicate subdevice type '" << deviceType << "'";
             } else {
-                Templates.insert({deviceTypeId, dev["device"]});
-                DeviceTypeIds.insert({deviceTypeName, deviceTypeId});
-                DeviceTypeNames[deviceTypeName].insert(deviceTypeName);
-                DeviceTypeNames[deviceTypeName].insert(deviceTypeId);
-                DeviceTypeNames[deviceTypeId] = DeviceTypeNames[deviceTypeName];
+                auto deviceTypeTitle = deviceType;
+                Get(dev, "title", deviceTypeTitle);
+                Templates.insert({deviceType, {deviceType, deviceTypeTitle, dev["device"]}});
+            }
+        }
+
+        //Check that channels refer to valid subdevices
+        for (const auto& subdeviceTemplate: Templates) {
+            for (const auto& ch: subdeviceTemplate.second.Schema["channels"]) {
+                if (ch.isMember("device_type")) {
+                    GetTemplate(ch["device_type"].asString());
+                }
+                if (ch.isMember("oneOf")) {
+                    for (const auto& subdeviceType: ch["oneOf"]) {
+                        GetTemplate(subdeviceType.asString());
+                    }
+                }
             }
         }
     }
 }
 
-const Json::Value& TSubDevicesTemplateMap::GetTemplate(const std::string& deviceType)
+const TDeviceTemplate& TSubDevicesTemplateMap::GetTemplate(const std::string& deviceType)
 {
-    for (const auto& n: GetDeviceTypeNames(deviceType)) {
-        try {
-            return Templates.at(n);
-        } catch (...) {}
+    try {
+        return Templates.at(deviceType);
+    } catch (...) {
+        throw std::runtime_error("Device type '" + DeviceType + "'. Can't find template for subdevice '" + deviceType + "'");
     }
-    throw std::runtime_error("TSubDevicesTemplateMap. Can't find template for " + deviceType);
 }
 
 std::vector<std::string> TSubDevicesTemplateMap::GetDeviceTypes() const
@@ -719,24 +743,6 @@ std::vector<std::string> TSubDevicesTemplateMap::GetDeviceTypes() const
         res.push_back(elem.first);
     }
     return res;
-}
-
-std::set<std::string> TSubDevicesTemplateMap::GetDeviceTypeNames(const std::string& deviceTypeNameOrId) const
-{
-    auto it = DeviceTypeNames.find(deviceTypeNameOrId);
-    if (it == DeviceTypeNames.end()) {
-        return std::set<std::string>();
-    }
-    return it->second;
-}
-
-std::string TSubDevicesTemplateMap::GetDeviceTypeId(const std::string& deviceTypeNameOrId) const
-{
-    auto it = DeviceTypeIds.find(deviceTypeNameOrId);
-    if (it == DeviceTypeIds.end()) {
-        return deviceTypeNameOrId;
-    }
-    return it->second;
 }
 
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema)
@@ -885,3 +891,7 @@ void AppendParams(Json::Value& dst, const Json::Value& src)
         dst[it.name()] = src[it.name()];
     }
 }
+
+TDeviceTemplate::TDeviceTemplate(const std::string& type, const std::string title, const Json::Value& schema)
+    : Type(type), Title(title), Schema(schema)
+{}
