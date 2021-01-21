@@ -669,7 +669,7 @@
                     "channels": [
                         {
                             "name": "Voltage",
-                            "control_type": "voltage",
+                            "type": "voltage",
                             "scale": 0.00001,
                             "reg_type": "input",
                             "format": "s32",
@@ -677,7 +677,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -731,7 +731,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -800,7 +800,7 @@
                     "channels": [
                         {
                             "name": "Current",
-                            "control_type": "current",
+                            "type": "current",
                             "scale": 0.00000001,
                             "reg_type": "input",
                             "format": "s32",
@@ -840,7 +840,7 @@
                     "channels": [
                         {
                             "name": "Current",
-                            "control_type": "current",
+                            "type": "current",
                             "scale": 0.00000001,
                             "reg_type": "input",
                             "format": "s32",
@@ -880,7 +880,7 @@
                     "channels": [
                         {
                             "name": "Current",
-                            "control_type": "current",
+                            "type": "current",
                             "scale": 0.00000001,
                             "reg_type": "input",
                             "format": "s32",
@@ -920,7 +920,7 @@
                     "channels": [
                         {
                             "name": "Current",
-                            "control_type": "current",
+                            "type": "current",
                             "scale": 0.00000001,
                             "reg_type": "input",
                             "format": "s32",
@@ -1054,7 +1054,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1101,7 +1101,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1148,7 +1148,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1195,7 +1195,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1242,7 +1242,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1289,7 +1289,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1336,7 +1336,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1383,7 +1383,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1430,7 +1430,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1477,7 +1477,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1524,7 +1524,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1571,7 +1571,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1618,7 +1618,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1665,7 +1665,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1712,7 +1712,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1815,6 +1815,7 @@
                         {
                             "name": "Resistance",
                             "reg_type": "input",
+                            "type": "resistance",
                             "format": "s32",
                             "address": "0x0500",
                             "scale" : 0.01
@@ -2574,7 +2575,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2617,11 +2618,11 @@
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "type" : "resistance",
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2668,7 +2669,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2715,7 +2716,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2762,7 +2763,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2809,7 +2810,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2856,7 +2857,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2903,7 +2904,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2950,7 +2951,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2997,7 +2998,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3044,7 +3045,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3091,7 +3092,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3138,7 +3139,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3185,7 +3186,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3232,7 +3233,7 @@
                         },
                         {
                             "name": "Temperature",
-                            "control_type": "temperature",
+                            "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3427,7 +3428,7 @@
                     "channels": [
                         {
                             "name": "Voltage",
-                            "control_type": "voltage",
+                            "type": "voltage",
                             "scale": 0.00001,
                             "reg_type": "input",
                             "format": "s32",
@@ -3467,7 +3468,7 @@
                     "channels": [
                         {
                             "name": "Voltage",
-                            "control_type": "voltage",
+                            "type": "voltage",
                             "scale": 0.00001,
                             "reg_type": "input",
                             "format": "s32",
@@ -3561,7 +3562,7 @@
                     "channels": [
                         {
                             "name": "Voltage",
-                            "control_type": "voltage",
+                            "type": "voltage",
                             "scale": 0.00001,
                             "reg_type": "input",
                             "format": "s32",
@@ -3618,7 +3619,7 @@
                     "channels": [
                         {
                             "name": "Voltage",
-                            "control_type": "voltage",
+                            "type": "voltage",
                             "scale": 0.00001,
                             "reg_type": "input",
                             "format": "s32",
@@ -3675,7 +3676,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "control_type": "resistance",
+                            "type": "resistance",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
