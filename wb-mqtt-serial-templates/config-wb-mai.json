@@ -1816,6 +1816,7 @@
                         {
                             "name": "Resistance",
                             "reg_type": "input",
+                            "type": "resistance",
                             "format": "s32",
                             "address": "0x0500",
                             "scale" : 0.01
@@ -2618,7 +2619,7 @@
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "type" : "resistance",
                         },
                         {
                             "name": "Temperature",
