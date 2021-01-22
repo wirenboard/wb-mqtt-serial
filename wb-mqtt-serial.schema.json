@@ -1,7 +1,6 @@
 {
   "type": "object",
   "title": "Serial Device Driver Configuration",
-  "description": "Lists devices attached to RS-485 ports",
 
   "definitions": {
     "deviceProtocol": {
@@ -11,7 +10,6 @@
       "default": "modbus"
     },
     "commonPortSettings": {
-      "type": "object",
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -56,77 +54,80 @@
       "title": "Serial port",
       "type": "object",
       "allOf": [
-        { "$ref" : "#/definitions/commonPortSettings"}
-      ],
-      "properties": {
-        "port_type": {
-          "type": "string",
-          "title": "Port type",
-          "enum": ["serial"],
-          "default": "serial",
-          "propertyOrder": 1,
-          "options": {
-            "hidden": true,
-            "forceDefault": true
-          }
-        },
-        "path": {
-          "type": "string",
-          "title": "Path to device",
-          "minLength": 1,
-          "propertyOrder": 3
-        },
-        "baud_rate": {
-          "type": "integer",
-          "title": "Baud rate",
-          "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200],
-          "default": 9600,
-          "propertyOrder": 4
-        },
-        "parity": {
-          "type": "string",
-          "title": "Parity",
-          "enum": ["N", "E", "O"],
-          "default": "N",
-          "propertyOrder": 5
-        },
-        "data_bits": {
-          "type": "integer",
-          "title": "Data bits",
-          "enum": [5, 6, 7, 8],
-          "default": 8,
-          "propertyOrder": 6
-        },
-        "stop_bits": {
-          "type": "integer",
-          "title": "Stop bits",
-          "enum": [1, 2],
-          "default": 1,
-          "propertyOrder": 7
+        { "$ref" : "#/definitions/commonPortSettings"},
+        {
+          "properties": {
+            "port_type": {
+              "type": "string",
+              "title": "Port type",
+              "enum": ["serial"],
+              "default": "serial",
+              "propertyOrder": 1,
+              "options": {
+                "hidden": true
+              }
+            },
+            "path": {
+              "type": "string",
+              "title": "Path to device",
+              "minLength": 1,
+              "propertyOrder": 3
+            },
+            "baud_rate": {
+              "type": "integer",
+              "title": "Baud rate",
+              "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200],
+              "default": 9600,
+              "propertyOrder": 4
+            },
+            "parity": {
+              "type": "string",
+              "title": "Parity",
+              "enum": ["N", "E", "O"],
+              "default": "N",
+              "propertyOrder": 5
+            },
+            "data_bits": {
+              "type": "integer",
+              "title": "Data bits",
+              "enum": [5, 6, 7, 8],
+              "default": 8,
+              "propertyOrder": 6
+            },
+            "stop_bits": {
+              "type": "integer",
+              "title": "Stop bits",
+              "enum": [1, 2],
+              "default": 1,
+              "propertyOrder": 7
+            }
+          },
+          "required": ["path"]
         }
-      },
-      "required": ["path"],
-      "defaultProperties": ["path", "port_type", "devices"],
+      ],
+      "defaultProperties": ["port_type", "path", "baud_rate", "parity", "data_bits", "stop_bits", "devices", "poll_interval"],
       "_format": "grid"
     },
     "commonTcpPortSettings": {
-      "type": "object",
-      "allOf": [
-        { "$ref" : "#/definitions/commonPortSettings"}
-      ],
       "properties": {
         "address": {
           "type": "string",
           "title": "IPv4 address or hostname of device",
           "minLength": 1,
-          "propertyOrder": 3
+          "propertyOrder": 3,
+          "options": {
+            "grid_columns": 10
+          }
         },
         "port": {
           "type": "integer",
           "title": "TCP port number",
           "minimum": 1,
           "maximum": 65536,
-          "propertyOrder": 4
+          "propertyOrder": 4,
+          "options": {
+            "grid_columns": 2
+          }
         },
         "connection_timeout_ms": {
           "type": "integer",
@@ -150,51 +151,55 @@
     "modbusTcpPort": {
       "title": "MODBUS TCP port",
       "type": "object",
-      "properties": {
-        "port_type": {
-          "type": "string",
-          "title": "Port type",
-          "enum": ["modbus tcp"],
-          "default": "modbus tcp",
-          "propertyOrder": 1,
-          "options": {
-            "hidden": true,
-            "forceDefault": true
-          }
-        }
-      },
       "allOf": [
-        { "$ref" : "#/definitions/commonTcpPortSettings"}
+        { "$ref" : "#/definitions/commonTcpPortSettings"},
+        { "$ref" : "#/definitions/commonPortSettings"},
+        {
+          "properties": {
+            "port_type": {
+              "type": "string",
+              "title": "Port type",
+              "enum": ["modbus tcp"],
+              "default": "modbus tcp",
+              "propertyOrder": 1,
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["port_type"]
+        }
       ],
-      "required": ["port_type"],
-      "defaultProperties": ["address", "port", "port_type", "devices"],
+      "defaultProperties": ["port_type", "address", "port", "enabled", "devices", "poll_interval"],
       "_format": "grid"
     },
     "tcpPort": {
       "title": "TCP port (Serial over TCP)",
       "type": "object",
-      "properties": {
-        "port_type": {
-          "type": "string",
-          "title": "Port type",
-          "enum": ["tcp"],
-          "default": "tcp",
-          "propertyOrder": 1,
-          "options": {
-            "hidden": true,
-            "forceDefault": true
-          }
-        }
-      },
       "allOf": [
-        { "$ref" : "#/definitions/commonTcpPortSettings"}
+        { "$ref" : "#/definitions/commonTcpPortSettings"},
+        { "$ref" : "#/definitions/commonPortSettings"},
+        {
+          "properties": {
+            "port_type": {
+              "type": "string",
+              "title": "Port type",
+              "enum": ["tcp"],
+              "default": "tcp",
+              "propertyOrder": 1,
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["port_type"]
+        }
       ],
-      "required": ["port_type"],
-      "defaultProperties": ["address", "port", "port_type", "devices"],
+      "defaultProperties": ["port_type", "address", "port", "enabled", "devices", "poll_interval"],
       "_format": "grid"
     },
     "port": {
-      "headerTemplate": "Port {{self.path}}{{self.address}} {{self.port}}",
+      "headerTemplate": "Port {{self.port_type| }}{{self.path}}{{self.address}} {{self.port}}",
       "title": "Port",
       "oneOf": [
         { "$ref": "#/definitions/serialPort" },
@@ -925,8 +930,7 @@
     },
     "ports": {
       "type": "array",
-      "title": "List of serial ports",
-      "description": "Lists serial ports that can be used by the driver",
+      "title": "List of ports",
       "items": { "$ref": "#/definitions/port" },
       "minItems": 1,
       "_format": "tabs",
