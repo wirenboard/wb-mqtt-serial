@@ -116,15 +116,19 @@ Json::Value MakeSetupRegisterSchema(const Json::Value& setupRegister, int index)
 //      "$ref": "#/definitions/channelSettings",
 //      "headerTemplate": CHANNEL_NAME,
 //      "default": {
-//        "name": CHANNEL_NAME
+//        "name": CHANNEL_NAME,
+//        "enabled": CHANNEL_ENABLED,
+//        "poll_interval": CHANNEL_POLL_INTERVAL
 //      }
 //  }
-Json::Value MakeTabSimpleChannelSchema(const std::string& name)
+Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate)
 {
     Json::Value r;
     r["$ref"] = "#/definitions/channelSettings";
-    r["headerTemplate"] = name;
-    r["default"]["name"] = name;
+    r["headerTemplate"] = channelTemplate["name"].asString();
+    r["default"]["name"] = channelTemplate["name"].asString();
+    SetIfExists(r["default"], "enabled", channelTemplate, "enabled");
+    SetIfExists(r["default"], "poll_interval", channelTemplate, "poll_interval");
     return r;
 }
 
@@ -217,7 +221,7 @@ Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& 
     if (channel.isMember("device_type")) {
         return MakeTabSingleDeviceChannelSchema(channel, deviceDefinitionPrefix);
     }
-    return MakeTabSimpleChannelSchema(channel["name"].asString());
+    return MakeTabSimpleChannelSchema(channel);
 }
 
 //  Schema for tabs
@@ -253,7 +257,11 @@ Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& 
 //      "minItems": CHANNELS_COUNT,
 //      "maxItems": CHANNELS_COUNT,
 //      "default: [ 
-//          { "name": CHANNEL1_NAME },
+//          {
+//              "name": CHANNEL1_NAME,
+//              "enabled": CHANNEL_ENABLED,
+//              "poll_interval": CHANNEL_POLL_INTERVAL
+//          },
 //          ...
 //      ],
 //      "_format": "table"
@@ -303,6 +311,8 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
         for (const auto& channel: channels) {
             Json::Value v;
             v["name"] = channel["name"];
+            SetIfExists(v, "enabled", channel, "enabled");
+            SetIfExists(v, "poll_interval", channel, "poll_interval");
             defaults.append(v);
         }
         r["minItems"] = defaults.size();

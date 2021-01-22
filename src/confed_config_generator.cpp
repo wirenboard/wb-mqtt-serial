@@ -78,6 +78,32 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
     return true;
 }
 
+bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemplate)
+{
+    bool ok = false;
+    if (ch.isMember("poll_interval")) {
+        int pollIntervalToErase = DefaultPollInterval.count();
+        if (channelTemplate.isMember("poll_interval")) {
+            pollIntervalToErase = channelTemplate["poll_interval"].asInt();
+        }
+        if (ch["poll_interval"].asInt() != pollIntervalToErase) {
+            ok = true;
+        } else {
+            ch.removeMember("poll_interval");
+        }
+    }
+    if (ch.isMember("enabled")) {
+        bool enabledInTemplate = true;
+        Get(channelTemplate, "enabled", enabledInTemplate);
+        if ( ch["enabled"].asBool() == enabledInTemplate) {
+            ch.removeMember("enabled");
+        } else {
+            ok = true;
+        }
+    }
+    return ok;
+}
+
 Json::Value FilterStandardChannels(const Json::Value& device, 
                                    const Json::Value& deviceTemplate,
                                    ITemplateMap& templates,
@@ -96,24 +122,9 @@ Json::Value FilterStandardChannels(const Json::Value& device,
     for (Json::Value ch: device["standard_channels"]) {
         auto it = regs.find(ch["name"].asString());
         if (it != regs.end()) {
-            if (TryToTransformSubDeviceChannel(ch, templates, subdeviceTypeHashes)) {
+            if (   TryToTransformSubDeviceChannel(ch, templates, subdeviceTypeHashes)
+                || TryToTransformSimpleChannel(ch, it->second)) {
                 channels.append(ch);
-            } else {
-                bool hasPollInterval = false;
-                if (ch.isMember("poll_interval")) {
-                    hasPollInterval = true;
-                    int pollIntervalToErase = DefaultPollInterval.count();
-                    if (it->second.isMember("poll_interval")) {
-                        pollIntervalToErase = it->second["poll_interval"].asInt();
-                    }
-                    if (ch["poll_interval"].asInt() == pollIntervalToErase) {
-                        ch.removeMember("poll_interval");
-                        hasPollInterval = false;
-                    }
-                }
-                if ((ch.isMember("enabled") && !ch["enabled"].asBool()) || hasPollInterval) {
-                    channels.append(ch);
-                }
             }
         }
     }
