@@ -134,3 +134,4 @@ std::string GetSubdeviceKey(const std::string& subDeviceType);
 void AppendParams(Json::Value& dst, const Json::Value& src);
 void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value& src, const std::string& srcKey);
 std::string DecorateIfNotEmpty(const std::string& prefix, const std::string& str, const std::string& postfix = std::string());
+std::string GetProtocolName(const Json::Value& deviceDescription);

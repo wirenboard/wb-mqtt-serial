@@ -33,9 +33,14 @@ namespace
             return (TUInt32SlaveId(id1) == TUInt32SlaveId(id2));
         }
 
-        bool IsModbus() const
+        bool IsModbus() const override
         {
             return true;
+        }
+
+        bool SupportsBroadcast() const override
+        {
+            return false;
         }
     };
 }

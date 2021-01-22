@@ -9,4 +9,4 @@ std::string GetSubdeviceKey(const std::string& subDeviceType);
 std::string MakeSetupRegisterParameterName(size_t registerIndex);
 Json::Value GetDefaultSetupRegisterValue(const Json::Value& setupRegisterSchema);
 
-void MakeSchemaForConfed(Json::Value& configSchema, TTemplateMap& templates);
+void MakeSchemaForConfed(Json::Value& configSchema, TTemplateMap& templates, TSerialDeviceFactory& deviceFactory);
