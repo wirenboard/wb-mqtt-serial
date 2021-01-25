@@ -178,6 +178,10 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
             if (dt == CUSTOM_DEVICE_TYPE) {
                 device.removeMember("device_type");
             }
+
+            if (device["slave_id"].isBool()) {
+                device["slave_id"] = "";
+            }
         }
     }
 
