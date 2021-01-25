@@ -161,15 +161,12 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 
             Json::Value filteredChannels = FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes);
             device.removeMember("standard_channels");
-            if ( device.isMember("channels") ) {
-                for (Json::Value& ch : filteredChannels) {
-                    device["channels"].append(ch);
-                }
-            } else {
-                device["channels"] = filteredChannels;
+            for (Json::Value& ch : device["channels"]) {
+                filteredChannels.append(ch);
             }
-            if (device["channels"].empty()) {
-                device.removeMember("channels");
+            device.removeMember("channels");
+            if (!filteredChannels.empty()) {
+                device["channels"] = filteredChannels;
             }
 
             if (device.isMember("standard_setup")) {

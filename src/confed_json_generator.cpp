@@ -72,8 +72,12 @@ std::pair<Json::Value, Json::Value> SplitChannels(const Json::Value& device, con
         }
     }
 
-    for (auto ch: regs) {
-        customChannels.append(ch.second);
+    // Preserve custom channels order
+    for (const Json::Value& ch: device["channels"]) {
+        auto it = regs.find(ch["name"].asString());
+        if (it != regs.end()) {
+            customChannels.append(it->second);
+        }
     }
 
     return std::make_pair(channels, customChannels);
@@ -220,12 +224,11 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
     Json::Value customChannels;
     Json::Value standardChannels;
     std::tie(standardChannels, customChannels) = SplitChannels(config, deviceTemplate.Schema);
-    if ( customChannels.empty() ) {
-        newDev.removeMember("channels");
-    } else {
+    newDev.removeMember("channels");
+    if (!customChannels.empty()) {
         newDev["channels"] = customChannels;
     }
-    if ( !standardChannels.empty() ) {
+    if (!standardChannels.empty()) {
         if (nestingLevel == 1) {
             TSubDevicesTemplateMap templates(deviceTemplate.Type, deviceTemplate.Schema);
             MakeDevicesForConfed(standardChannels, templates, nestingLevel + 1);
