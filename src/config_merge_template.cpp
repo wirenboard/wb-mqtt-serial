@@ -138,7 +138,7 @@ Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig, ITe
         return channelConfig;
     }
 
-    Json::Value res(templates.GetTemplate(channelConfig["device_type"].asString()));
+    Json::Value res(templates.GetTemplate(channelConfig["device_type"].asString()).Schema);
     res["device_type"] = channelConfig["device_type"];
     SetIfExists(res, "name", channelConfig, "name");
     SetIfExists(res, "shift", channelConfig, "shift");
@@ -180,8 +180,9 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData, ITempla
         return deviceData;
     }
 
-    Json::Value res(templates.GetTemplate(deviceData["device_type"].asString()));
-    TSubDevicesTemplateMap subDevicesTemplates(res);
+    auto deviceType = deviceData["device_type"].asString();
+    Json::Value res(templates.GetTemplate(deviceType).Schema);
+    TSubDevicesTemplateMap subDevicesTemplates(deviceType, res);
     res.removeMember("subdevices");
 
     std::string deviceName;

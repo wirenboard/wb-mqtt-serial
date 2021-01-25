@@ -5,7 +5,6 @@
 #include <memory>
 #include <vector>
 #include <exception>
-#include <map>
 
 #include "register.h"
 
@@ -21,20 +20,42 @@
 #include "port.h"
 #include "serial_device.h"
 
+struct TDeviceTemplate
+{
+    std::string Type;
+    std::string Title;
+    Json::Value Schema;
+
+    TDeviceTemplate(const std::string& type, const std::string title, const Json::Value& schema);
+};
+
 class ITemplateMap
 {
     public:
         virtual ~ITemplateMap() = default;
 
-        virtual const Json::Value& GetTemplate(const std::string& deviceType) = 0;
+        virtual const TDeviceTemplate& GetTemplate(const std::string& deviceType) = 0;
         virtual std::vector<std::string> GetDeviceTypes() const = 0;
 };
 
 class TTemplateMap: public ITemplateMap
 {
-        std::unordered_map<std::string, std::string> TemplateFiles;
-        std::map<std::string, Json::Value>           ValidTemplates;
-        std::unique_ptr<WBMQTT::JSON::TValidator>    Validator;
+        /**
+         *  @brief Device type to template file path mapping.
+         *         Files in map are jsons with device_type parameter, but aren't yet validated against schema.
+         */
+        std::unordered_map<std::string, std::string>                       TemplateFiles;
+
+        /**
+         * @brief Device type to TDeviceTemplate mapping.
+         *        Valid and parsed templates.
+         */
+        std::unordered_map<std::string, std::shared_ptr<TDeviceTemplate> > ValidTemplates;
+
+        std::unique_ptr<WBMQTT::JSON::TValidator>                          Validator;
+
+        Json::Value Validate(const std::string& deviceType, const std::string& filePath);
+        std::shared_ptr<TDeviceTemplate> GetTemplatePtr(const std::string& deviceType);
     public:
         TTemplateMap() = default;
 
@@ -55,20 +76,21 @@ class TTemplateMap: public ITemplateMap
          */
         void AddTemplatesDir(const std::string& templatesDir);
 
-        const Json::Value& GetTemplate(const std::string& deviceType) override;
-
-        const std::map<std::string, Json::Value>& GetTemplates();
+        const TDeviceTemplate& GetTemplate(const std::string& deviceType) override;
 
         std::vector<std::string> GetDeviceTypes() const override;
+
+        std::vector<std::shared_ptr<TDeviceTemplate>> GetTemplatesOrderedByName();
 };
 
 class TSubDevicesTemplateMap: public ITemplateMap
 {
-        std::unordered_map<std::string, Json::Value> Templates;
+        std::unordered_map<std::string, TDeviceTemplate> Templates;
+        std::string                                      DeviceType;
     public:
-        TSubDevicesTemplateMap(const Json::Value& device);
+        TSubDevicesTemplateMap(const std::string& deviceType, const Json::Value& device);
 
-        const Json::Value& GetTemplate(const std::string& deviceType) override;
+        const TDeviceTemplate& GetTemplate(const std::string& deviceType) override;
 
         std::vector<std::string> GetDeviceTypes() const override;
 };

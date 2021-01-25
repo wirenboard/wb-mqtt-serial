@@ -59,7 +59,7 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
         return false;
     }
 
-    Json::Value deviceTemplate(templates.GetTemplate(channel["device_type"].asString()));
+    Json::Value deviceTemplate(templates.GetTemplate(channel["device_type"].asString()).Schema);
     Json::Value filteredChannels = FilterStandardChannels(channel, deviceTemplate, templates, subdeviceTypeHashes);
     channel.removeMember("standard_channels");
     if ( channel.isMember("channels") ) {
@@ -76,6 +76,32 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
     TransformSetupParams(channel, deviceTemplate);
 
     return true;
+}
+
+bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemplate)
+{
+    bool ok = false;
+    if (ch.isMember("poll_interval")) {
+        int pollIntervalToErase = DefaultPollInterval.count();
+        if (channelTemplate.isMember("poll_interval")) {
+            pollIntervalToErase = channelTemplate["poll_interval"].asInt();
+        }
+        if (ch["poll_interval"].asInt() != pollIntervalToErase) {
+            ok = true;
+        } else {
+            ch.removeMember("poll_interval");
+        }
+    }
+    if (ch.isMember("enabled")) {
+        bool enabledInTemplate = true;
+        Get(channelTemplate, "enabled", enabledInTemplate);
+        if ( ch["enabled"].asBool() == enabledInTemplate) {
+            ch.removeMember("enabled");
+        } else {
+            ok = true;
+        }
+    }
+    return ok;
 }
 
 Json::Value FilterStandardChannels(const Json::Value& device, 
@@ -96,24 +122,9 @@ Json::Value FilterStandardChannels(const Json::Value& device,
     for (Json::Value ch: device["standard_channels"]) {
         auto it = regs.find(ch["name"].asString());
         if (it != regs.end()) {
-            if (TryToTransformSubDeviceChannel(ch, templates, subdeviceTypeHashes)) {
+            if (   TryToTransformSubDeviceChannel(ch, templates, subdeviceTypeHashes)
+                || TryToTransformSimpleChannel(ch, it->second)) {
                 channels.append(ch);
-            } else {
-                bool hasPollInterval = false;
-                if (ch.isMember("poll_interval")) {
-                    hasPollInterval = true;
-                    int pollIntervalToErase = DefaultPollInterval.count();
-                    if (it->second.isMember("poll_interval")) {
-                        pollIntervalToErase = it->second["poll_interval"].asInt();
-                    }
-                    if (ch["poll_interval"].asInt() == pollIntervalToErase) {
-                        ch.removeMember("poll_interval");
-                        hasPollInterval = false;
-                    }
-                }
-                if ((ch.isMember("enabled") && !ch["enabled"].asBool()) || hasPollInterval) {
-                    channels.append(ch);
-                }
             }
         }
     }
@@ -141,8 +152,8 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
             RemoveDeviceHash(device, deviceTypeHashes);
             auto dt = device["device_type"].asString();
 
-            Json::Value deviceTemplate(templates.GetTemplate(dt));
-            TSubDevicesTemplateMap subdevices(deviceTemplate);
+            Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
+            TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
             std::unordered_map<std::string, std::string> subdeviceTypeHashes;
             for (const auto& dt: subdevices.GetDeviceTypes()) {
                 subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;
@@ -150,15 +161,12 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 
             Json::Value filteredChannels = FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes);
             device.removeMember("standard_channels");
-            if ( device.isMember("channels") ) {
-                for (Json::Value& ch : filteredChannels) {
-                    device["channels"].append(ch);
-                }
-            } else {
-                device["channels"] = filteredChannels;
+            for (Json::Value& ch : device["channels"]) {
+                filteredChannels.append(ch);
             }
-            if (device["channels"].empty()) {
-                device.removeMember("channels");
+            device.removeMember("channels");
+            if (!filteredChannels.empty()) {
+                device["channels"] = filteredChannels;
             }
 
             if (device.isMember("standard_setup")) {

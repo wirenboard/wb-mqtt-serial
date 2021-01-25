@@ -428,6 +428,11 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 {
     // Название типа устройства, оно указывается в поле device_type в файле настроек
     "device_type": "Device type name",
+
+    // Название типа устройства, которое будет отображаться в онлайн-конфигураторе.
+    // Необязательный параметр. Если не указан, используется device_type.
+    "title": "Device",
+
     "device": {
         // отображаемое имя устройства. Публикуется как
         // .../meta/name в MQTT
@@ -476,6 +481,12 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                 // Имя вложенного устройства,
                 // которое будет использоваться в поле device_type канала
                 "device_type": "subdevice1",
+
+                // Название вложенного устройства,
+                // которое будет отображаться в онлайн-конфигураторе.
+                // Необязательный параметр. Если не указан, используется device_type.
+                "title": "Sub1",
+
                 "device": {
                     "channels": [
                         // Вложенные устройства могут иметь свои каналы
