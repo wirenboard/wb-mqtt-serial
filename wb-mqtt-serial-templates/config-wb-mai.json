@@ -11,6 +11,8 @@
                 "name": "Input 1",
                 "id": "IN 1",
                 "oneOf": [
+                    "disabled",
+
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -61,17 +63,16 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 4096,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 2",
                 "id": "IN 2",
                 "oneOf": [
+                    "disabled",
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -122,17 +123,17 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 8192,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 3",
                 "id": "IN 3",
                 "oneOf": [
+                    "disabled",
+
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -183,17 +184,17 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 12288,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 4",
                 "id": "IN 4",
                 "oneOf": [
+                    "disabled",
+
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -244,17 +245,17 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 16384,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 5",
                 "id": "IN 5",
                 "oneOf": [
+                    "disabled",
+
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -305,17 +306,17 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 20480,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 6",
                 "id": "IN 6",
                 "oneOf": [
+                    "disabled",
+
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -366,17 +367,17 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 24576,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 7",
                 "id": "IN 7",
                 "oneOf": [
+                    "disabled",
+
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -427,17 +428,17 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 28672,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 8",
                 "id": "IN 8",
                 "oneOf": [
+                    "disabled",
+
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -488,17 +489,17 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 32768,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 9",
                 "id": "IN 9",
                 "oneOf": [
+                    "disabled",
+
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -549,17 +550,17 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 36864,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 10",
                 "id": "IN 10",
                 "oneOf": [
+                    "disabled",
+
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -610,17 +611,17 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 40960,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 11",
                 "id": "IN 11",
                 "oneOf": [
+                    "disabled",
+
                     "thermocouple_k",
                     "p_2w_pt50",
                     "p_2w_pt100",
@@ -671,12 +672,10 @@
                     "p_generic_current",
                     "p_generic_voltage",
                     "generic_diff_voltage",
-                    "p_generic_current_resistance",
-
-                    "disabled"
+                    "p_generic_current_resistance"
                 ],
                 "shift": 45056,
-                "device_type": "thermocouple_k"
+                "device_type": "disabled"
             },
             {
                 "name": "Uptime",
