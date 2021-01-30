@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.6.8) unstable; urgency=medium
+
+  * After startup the driver publishes last known values, not zeros.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 27 Jan 2021 16:40:00 +0500
+
 wb-mqtt-serial (2.6.7) unstable; urgency=medium
 
   * Device disconnection detection error is fixed. The bug was introduced in version 2.3.0.

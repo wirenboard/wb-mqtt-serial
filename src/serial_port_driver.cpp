@@ -236,7 +236,9 @@ void TSerialPortDriver::ClearDevices() noexcept
 TLocalDeviceArgs TSerialPortDriver::From(const PSerialDevice & device)
 {
     return TLocalDeviceArgs{}.SetId(device->DeviceConfig()->Id)
-                             .SetTitle(device->DeviceConfig()->Name);
+                             .SetTitle(device->DeviceConfig()->Name)
+                             .SetIsVirtual(true)
+                             .SetDoLoadPrevious(true);
 }
 
 TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
