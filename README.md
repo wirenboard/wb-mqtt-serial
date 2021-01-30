@@ -458,7 +458,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 
 ## Вложенные устройства в шаблонах конфигурации
 Пример описания вложенных устройств.
-```json
+```jsonc
 {
     // Название типа устройства, оно указывается в поле device_type в файле настроек
     "device_type": "Device type name",
