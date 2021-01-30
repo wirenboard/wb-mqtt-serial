@@ -11,9 +11,6 @@
                 "id": "IN 1",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -29,6 +26,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -44,18 +42,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 4096,
@@ -66,9 +72,6 @@
                 "id": "IN 2",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -84,6 +87,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -99,18 +103,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 8192,
@@ -121,9 +133,6 @@
                 "id": "IN 3",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -139,6 +148,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -154,18 +164,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 12288,
@@ -176,9 +194,6 @@
                 "id": "IN 4",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -194,6 +209,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -209,18 +225,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 16384,
@@ -231,9 +255,6 @@
                 "id": "IN 5",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -249,6 +270,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -264,18 +286,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 20480,
@@ -286,9 +316,6 @@
                 "id": "IN 6",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -304,6 +331,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -319,18 +347,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 24576,
@@ -341,9 +377,6 @@
                 "id": "IN 7",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -359,6 +392,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -374,18 +408,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 28672,
@@ -396,9 +438,6 @@
                 "id": "IN 8",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -414,6 +453,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -429,18 +469,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 32768,
@@ -451,9 +499,6 @@
                 "id": "IN 9",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -469,6 +514,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -484,18 +530,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 36864,
@@ -506,9 +560,6 @@
                 "id": "IN 10",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -524,6 +575,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -539,18 +591,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 40960,
@@ -561,9 +621,6 @@
                 "id": "IN 11",
                 "oneOf": [
                     "thermocouple_k",
-                    "p_ntc_10k",
-                    "p_4_20ma",
-                    "p_dry_contact",
                     "p_2w_pt50",
                     "p_2w_pt100",
                     "p_2w_pt500",
@@ -579,6 +636,7 @@
                     "p_2w_ni100",
                     "p_2w_ni500",
                     "p_2w_ni1000",
+
                     "3w_pt50",
                     "3w_pt100",
                     "3w_pt500",
@@ -594,18 +652,26 @@
                     "3w_ni100",
                     "3w_ni500",
                     "3w_ni1000",
-                    "p_0_5ma",
+
+                    "p_4_20ma",
                     "p_0_20ma",
-                    "p_ratiometric",
-                    "diff_ratiometric",
-                    "p_generic_voltage",
+                    "p_0_5ma",
+
                     "p_0_1v",
                     "+-50mv",
-                    "generic_diff_voltage",
-                    "generic_3w_resistance",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
+                    "diff_ratiometric",
                     "p_generic_2w_resistance",
-                    "p_generic_current_resistance",
+                    "generic_3w_resistance",
                     "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance",
+
                     "disabled"
                 ],
                 "shift": 45056,
