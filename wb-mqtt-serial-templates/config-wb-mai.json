@@ -5,6 +5,7 @@
         "id": "wb-mai11",
         "max_read_registers": 4,
         "frame_timeout_ms": 0,
+        "response_timeout_ms" : 1,
         "channels": [
             {
                 "name": "Input 1",
