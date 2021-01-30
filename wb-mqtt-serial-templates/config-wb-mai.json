@@ -680,8 +680,7 @@
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
-                "format": "u32",
-                "enabled": true
+                "format": "u32"
             },
             {
                 "name": "5V Output",
@@ -689,8 +688,7 @@
                 "address": "0x0600",
                 "type" : "voltage",
                 "scale" : 0.001,
-                "format": "s16",
-                "enabled": true
+                "format": "s16"
             },
             {
                 "name": "Internal Temperature",
@@ -698,8 +696,14 @@
                 "address": "0x0601",
                 "type" : "temperature",
                 "scale" : 0.01,
-                "format": "s16",
-                "enabled": true
+                "format": "s16"
+            },
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32"
             }
         ],
         "subdevices": [
