@@ -674,6 +674,7 @@
                             "scale": 0.000001,
                             "reg_type": "input",
                             "format": "s32",
+                            "error_value":"0x7FFFFFFF",
                             "address": "0x0500"
                         },
                         {
@@ -726,6 +727,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1054,6 +1056,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1062,6 +1065,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1101,6 +1105,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1109,6 +1114,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1148,6 +1154,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1156,6 +1163,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1195,6 +1203,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1203,6 +1212,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1242,6 +1252,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1250,6 +1261,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1289,6 +1301,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1297,6 +1310,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1336,6 +1350,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1344,6 +1359,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1383,6 +1399,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1391,6 +1408,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1430,6 +1448,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1438,6 +1457,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1477,6 +1497,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1485,6 +1506,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1524,6 +1546,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1532,6 +1555,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1571,6 +1595,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1579,6 +1604,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1618,6 +1644,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1626,6 +1653,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1665,6 +1693,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1673,6 +1702,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1712,6 +1742,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -1720,6 +1751,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1759,6 +1791,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -2576,6 +2609,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -2584,6 +2618,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2673,6 +2708,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -2681,6 +2717,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2720,6 +2757,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -2728,6 +2766,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2767,6 +2806,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -2775,6 +2815,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2814,6 +2855,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -2822,6 +2864,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2861,6 +2904,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -2869,6 +2913,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2908,6 +2953,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -2916,6 +2962,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2955,6 +3002,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -2963,6 +3011,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3002,6 +3051,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -3010,6 +3060,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3049,6 +3100,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -3057,6 +3109,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3096,6 +3149,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -3104,6 +3158,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3143,6 +3198,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -3151,6 +3207,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3190,6 +3247,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -3198,6 +3256,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3237,6 +3296,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
@@ -3245,6 +3305,7 @@
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3484,6 +3545,7 @@
                             "scale": 0.000001,
                             "reg_type": "input",
                             "format": "s32",
+                            "error_value" : "0x7FFFFFFF",
                             "address": "0x0500"
                         }
                     ]
@@ -3577,6 +3639,7 @@
                             "type": "voltage",
                             "scale": 0.000001,
                             "reg_type": "input",
+                            "error_value" : "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
                         }
@@ -3634,6 +3697,7 @@
                             "type": "voltage",
                             "scale": 0.000001,
                             "reg_type": "input",
+                            "error_value" : "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
                         }
