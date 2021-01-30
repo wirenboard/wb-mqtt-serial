@@ -670,7 +670,7 @@
                         {
                             "name": "Voltage",
                             "type": "voltage",
-                            "scale": 0.00001,
+                            "scale": 0.000001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -803,7 +803,7 @@
                         {
                             "name": "Current",
                             "type": "current",
-                            "scale": 0.00000001,
+                            "scale": 1e-9,
                             "reg_type": "input",
                             "format": "s32",
                             "error_value" : "0x7FFFFFFF",
@@ -844,7 +844,7 @@
                         {
                             "name": "Current",
                             "type": "current",
-                            "scale": 0.00000001,
+                            "scale": 1E-9,
                             "reg_type": "input",
                             "error_value" : "0x7FFFFFFF",
                             "format": "s32",
@@ -885,7 +885,7 @@
                         {
                             "name": "Current",
                             "type": "current",
-                            "scale": 0.00000001,
+                            "scale": 1E-9,
                             "reg_type": "input",
                             "error_value" : "0x7FFFFFFF",
                             "format": "s32",
@@ -926,7 +926,7 @@
                         {
                             "name": "Current",
                             "type": "current",
-                            "scale": 0.00000001,
+                            "scale": 1E-9,
                             "error_value" : "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -3439,7 +3439,8 @@
                         {
                             "name": "Voltage",
                             "type": "voltage",
-                            "scale": 0.00001,
+                            "scale": 0.000001,
+                            "error_value" : "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3479,7 +3480,7 @@
                         {
                             "name": "Voltage",
                             "type": "voltage",
-                            "scale": 0.00001,
+                            "scale": 0.000001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3573,7 +3574,7 @@
                         {
                             "name": "Voltage",
                             "type": "voltage",
-                            "scale": 0.00001,
+                            "scale": 0.000001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3630,7 +3631,7 @@
                         {
                             "name": "Voltage",
                             "type": "voltage",
-                            "scale": 0.00001,
+                            "scale": 0.000001,
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
