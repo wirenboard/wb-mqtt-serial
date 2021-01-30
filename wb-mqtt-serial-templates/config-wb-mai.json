@@ -727,6 +727,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1056,6 +1057,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1105,6 +1107,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1154,6 +1157,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1203,6 +1207,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1252,6 +1257,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1301,6 +1307,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1350,6 +1357,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1399,6 +1407,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1448,6 +1457,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1497,6 +1507,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1546,6 +1557,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1595,6 +1607,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1644,6 +1657,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1693,6 +1707,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1742,6 +1757,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -1791,6 +1807,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -2609,6 +2626,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -2708,6 +2726,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -2757,6 +2776,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -2806,6 +2826,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -2855,6 +2876,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -2904,6 +2926,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -2953,6 +2976,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -3002,6 +3026,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -3051,6 +3076,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -3100,6 +3126,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -3149,6 +3176,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -3198,6 +3226,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -3247,6 +3276,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
@@ -3296,6 +3326,7 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
