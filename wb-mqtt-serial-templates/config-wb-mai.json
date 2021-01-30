@@ -786,16 +786,6 @@
                             "max": 65000
                         },
                         {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
-                        },
-                        {
                             "title": "Gain",
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
@@ -842,6 +832,16 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408",
+                            "default": 0
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A",
+                            "default": 10000
                         }
                     ],
                     "channels": [
@@ -853,6 +853,14 @@
                             "error_value" : "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
+                        },
+                        {
+                            "name": "Value",
+                            "reg_type": "input",
+                            "type" : "value",
+                            "format": "s16",
+                            "error_value" : "0x7fff",
+                            "address": "0x0504"
                         }
                     ]
                 }
@@ -883,6 +891,16 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408",
+                            "default": 0
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A",
+                            "default": 10000
                         }
                     ],
                     "channels": [
@@ -894,6 +912,14 @@
                             "error_value" : "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
+                        },
+                        {
+                            "name": "Value",
+                            "reg_type": "input",
+                            "type" : "value",
+                            "format": "s16",
+                            "error_value" : "0x7fff",
+                            "address": "0x0504"
                         }
                     ]
                 }
@@ -924,6 +950,16 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408",
+                            "default": 0
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A",
+                            "default": 10000
                         }
                     ],
                     "channels": [
@@ -935,6 +971,14 @@
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
+                        },
+                        {
+                            "name": "Value",
+                            "reg_type": "input",
+                            "type" : "value",
+                            "format": "s16",
+                            "error_value" : "0x7fff",
+                            "address": "0x0504"
                         }
                     ]
                 }
@@ -1849,16 +1893,6 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
-                        },
-                        {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
                         },
                         {
                             "title": "Gain",
@@ -3511,16 +3545,6 @@
                             "max": 65000
                         },
                         {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
-                        },
-                        {
                             "title": "Gain",
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
@@ -3567,6 +3591,16 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408",
+                            "default": 0
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A",
+                            "default": 1000
                         }
                     ],
                     "channels": [
@@ -3578,6 +3612,14 @@
                             "format": "s32",
                             "error_value" : "0x7FFFFFFF",
                             "address": "0x0500"
+                        },
+                        {
+                            "name": "Value",
+                            "reg_type": "input",
+                            "type" : "value",
+                            "format": "s16",
+                            "error_value" : "0x7fff",
+                            "address": "0x0504"
                         }
                     ]
                 }
@@ -3662,6 +3704,16 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408",
+                            "default": 0
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A",
+                            "default": 1000
                         }
                     ],
                     "channels": [
@@ -3673,8 +3725,15 @@
                             "error_value" : "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
-                        }
-                    ]
+                        },
+                        {
+                            "name": "Value",
+                            "reg_type": "input",
+                            "type" : "value",
+                            "format": "s16",
+                            "error_value" : "0x7fff",
+                            "address": "0x0504"
+                        }                    ]
                 }
             },
             {
@@ -3703,16 +3762,6 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
-                        },
-                        {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
                         },
                         {
                             "title": "Gain",
@@ -3761,23 +3810,6 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
-                        },
-                        {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
-                        },
-                        {
-                            "title": "Gain",
-                            "address": "0x040C",
-                            "enum": [0, 1, 2, 4],
-                            "enum_titles": [ "auto" ],
-                            "default": 0
                         }
                     ],
                     "channels": [
@@ -3820,16 +3852,6 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
-                        },
-                        {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
                         },
                         {
                             "title": "Gain",
