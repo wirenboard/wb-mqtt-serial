@@ -640,7 +640,7 @@
         ],
         "subdevices": [
             {
-                "title": "thermocouple ТХА (K)",
+                "title": "Thermocouple type K (ТХА)",
                 "device_type": "thermocouple_k",
                 "device": {
                     "setup": [
@@ -807,7 +807,7 @@
                 }
             },
             {
-                "title": "current measurement 0 to 5 mA",
+                "title": "0-5 mA sensor",
                 "device_type": "0_5ma",
                 "device": {
                     "setup": [
@@ -866,7 +866,7 @@
                 }
             },
             {
-                "title": "current measurement 0 to 20 mA",
+                "title": "0-20 mA sensor",
                 "device_type": "0_20ma",
                 "device": {
                     "setup": [
@@ -925,7 +925,7 @@
                 }
             },
             {
-                "title": "current measurement 4 to 20 mA",
+                "title": "4-20 mA sensor",
                 "device_type": "4_20ma",
                 "device": {
                     "setup": [
@@ -984,7 +984,7 @@
                 }
             },
             {
-                "title": "IN_P: current measurement 4 to 20 mA",
+                "title": "IN_P: 4-20 mA sensor",
                 "device_type": "p_4_20ma",
                 "device": {
                     "channels": [
@@ -1013,7 +1013,7 @@
                 }
             },
             {
-                "title": "IN_P: current measurement 0 to 5 mA",
+                "title": "IN_P: 0-5 mA sensor",
                 "device_type": "p_0_5ma",
                 "device": {
                     "channels": [
@@ -1042,7 +1042,7 @@
                 }
             },
             {
-                "title": "IN_P: current measurement 0 to 20 mA",
+                "title": "IN_P: 0-20 mA sensor",
                 "device_type": "p_0_20ma",
                 "device": {
                     "channels": [
@@ -1071,7 +1071,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                "title": "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
                 "device_type": "2w_pt50",
                 "device": {
                     "setup": [
@@ -1121,7 +1121,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                "title": "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
                 "device_type": "2w_pt100",
                 "device": {
                     "setup": [
@@ -1171,7 +1171,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                "title": "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
                 "device_type": "2w_pt500",
                 "device": {
                     "setup": [
@@ -1221,7 +1221,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                "title": "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
                 "device_type": "2w_pt1000",
                 "device": {
                     "setup": [
@@ -1271,7 +1271,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                "title": "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
                 "device_type": "2w_50p",
                 "device": {
                     "setup": [
@@ -1321,7 +1321,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                "title": "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
                 "device_type": "2w_100p",
                 "device": {
                     "setup": [
@@ -1371,7 +1371,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                "title": "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
                 "device_type": "2w_500p",
                 "device": {
                     "setup": [
@@ -1421,7 +1421,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                "title": "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
                 "device_type": "2w_1000p",
                 "device": {
                     "setup": [
@@ -1471,7 +1471,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                "title": "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
                 "device_type": "2w_50m",
                 "device": {
                     "setup": [
@@ -1521,7 +1521,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                "title": "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
                 "device_type": "2w_100m",
                 "device": {
                     "setup": [
@@ -1571,7 +1571,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                "title": "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
                 "device_type": "2w_500m",
                 "device": {
                     "setup": [
@@ -1621,7 +1621,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                "title": "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
                 "device_type": "2w_1000m",
                 "device": {
                     "setup": [
@@ -1671,7 +1671,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                "title": "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
                 "device_type": "2w_ni100",
                 "device": {
                     "setup": [
@@ -1721,7 +1721,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                "title": "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
                 "device_type": "2w_ni500",
                 "device": {
                     "setup": [
@@ -1771,7 +1771,7 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                "title": "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
                 "device_type": "2w_ni1000",
                 "device": {
                     "setup": [
@@ -1958,7 +1958,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
                 "device_type": "p_2w_pt50",
                 "device": {
                     "channels": [
@@ -2000,7 +2000,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
                 "device_type": "p_2w_pt100",
                 "device": {
                     "channels": [
@@ -2042,7 +2042,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
                 "device_type": "p_2w_pt500",
                 "device": {
                     "channels": [
@@ -2084,7 +2084,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
                 "device_type": "p_2w_pt1000",
                 "device": {
                     "channels": [
@@ -2126,7 +2126,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)",
                 "device_type": "p_2w_50p",
                 "device": {
                     "channels": [
@@ -2168,7 +2168,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)",
                 "device_type": "p_2w_100p",
                 "device": {
                     "channels": [
@@ -2210,7 +2210,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)",
                 "device_type": "p_2w_500p",
                 "device": {
                     "channels": [
@@ -2252,7 +2252,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
                 "device_type": "p_2w_1000p",
                 "device": {
                     "channels": [
@@ -2294,7 +2294,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)",
                 "device_type": "p_2w_50m",
                 "device": {
                     "channels": [
@@ -2336,7 +2336,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)",
                 "device_type": "p_2w_100m",
                 "device": {
                     "channels": [
@@ -2378,7 +2378,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)",
                 "device_type": "p_2w_500m",
                 "device": {
                     "channels": [
@@ -2420,7 +2420,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
                 "device_type": "p_2w_1000m",
                 "device": {
                     "channels": [
@@ -2462,7 +2462,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
                 "device_type": "p_2w_ni100",
                 "device": {
                     "channels": [
@@ -2504,7 +2504,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
                 "device_type": "p_2w_ni500",
                 "device": {
                     "channels": [
@@ -2546,7 +2546,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                "title": "IN_P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
                 "device_type": "p_2w_ni1000",
                 "device": {
                     "channels": [
@@ -2630,7 +2630,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
+                "title": "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
                 "device_type": "3w_pt50",
                 "device": {
                     "setup": [
@@ -2680,7 +2680,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
+                "title": "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
                 "device_type": "3w_pt100",
                 "device": {
                     "setup": [
@@ -2730,7 +2730,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
+                "title": "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
                 "device_type": "3w_pt500",
                 "device": {
                     "setup": [
@@ -2780,7 +2780,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
+                "title": "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
                 "device_type": "3w_pt1000",
                 "device": {
                     "setup": [
@@ -2830,7 +2830,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
+                "title": "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
                 "device_type": "3w_50p",
                 "device": {
                     "setup": [
@@ -2880,7 +2880,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
+                "title": "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
                 "device_type": "3w_100p",
                 "device": {
                     "setup": [
@@ -2930,7 +2930,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
+                "title": "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
                 "device_type": "3w_500p",
                 "device": {
                     "setup": [
@@ -2980,7 +2980,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
+                "title": "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
                 "device_type": "3w_1000p",
                 "device": {
                     "setup": [
@@ -3030,7 +3030,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
+                "title": "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
                 "device_type": "3w_50m",
                 "device": {
                     "setup": [
@@ -3080,7 +3080,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
+                "title": "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
                 "device_type": "3w_100m",
                 "device": {
                     "setup": [
@@ -3130,7 +3130,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
+                "title": "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
                 "device_type": "3w_500m",
                 "device": {
                     "setup": [
@@ -3180,7 +3180,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
+                "title": "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
                 "device_type": "3w_1000m",
                 "device": {
                     "setup": [
@@ -3230,7 +3230,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
+                "title": "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
                 "device_type": "3w_ni100",
                 "device": {
                     "setup": [
@@ -3280,7 +3280,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
+                "title": "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
                 "device_type": "3w_ni500",
                 "device": {
                     "setup": [
@@ -3330,7 +3330,7 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
+                "title": "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
                 "device_type": "3w_ni1000",
                 "device": {
                     "setup": [
@@ -3566,7 +3566,7 @@
                 }
             },
             {
-                "title": "single-ended voltage measurement from 0 to 1 V",
+                "title": "0-1V sensor",
                 "device_type": "0_1v",
                 "device": {
                     "setup": [
@@ -3652,7 +3652,7 @@
                 }
             },
             {
-                "title": "IN_P: single-ended voltage measurement from 0 to 1 V",
+                "title": "IN_P: 0-1V sensor",
                 "device_type": "p_0_1v",
                 "device": {
                     "channels": [
@@ -3679,7 +3679,7 @@
                 }
             },
             {
-                "title": "voltage measurement in differential mode from -50 to 50 mV",
+                "title": "-50 to 50 mV sensor",
                 "device_type": "+-50mv",
                 "device": {
                     "setup": [
