@@ -760,7 +760,7 @@
             },
             {
                 "title": "NTC thermistor 10k (B = 3988 K)",
-                "device_type": "p_ntc_10k",
+                "device_type": "ntc_10k",
                 "device": {
                     "setup": [
                         {
@@ -3957,6 +3957,7 @@
                             "id": "N",
                             "oneOf": [
                                 "generic_current_resistance",
+                                "ntc_10k",
                                 "disabled"
                             ],
                             "device_type": "generic_current_resistance"
@@ -3967,6 +3968,33 @@
                     }
                 }
             },
+            {
+                "title": "IN_P: NTC thermistor 10k (B = 3988 K)",
+                "device_type": "p_ntc_10k",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "id": "P",
+                            "device_type": "ntc_10k"
+                        },
+                        {
+                            "stride": 1,
+                            "name": "IN_N",
+                            "id": "N",
+                            "oneOf": [
+                                "ntc_10k",
+                                "generic_current_resistance",
+                                "disabled"
+                            ],
+                            "device_type": "ntc_10k"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },            
             {
                 "title": "IN_P: current measurement",
                 "device_type": "p_generic_current",
