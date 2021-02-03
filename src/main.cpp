@@ -23,7 +23,7 @@ const auto USER_TEMPLATES_DIR                   = "/etc/wb-mqtt-serial.conf.d/te
 const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH    = "/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json";
 const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
 
-const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(3);
+const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(60);
 
 namespace
 {
@@ -133,8 +133,8 @@ int main(int argc, char *argv[])
     WBMQTT::TMosquittoMqttConfig mqttConfig;
     string configFilename(CONFIG_FULL_FILE_PATH);
 
-    WBMQTT::SignalHandling::Handle({ SIGINT });
-    WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ WBMQTT::SignalHandling::Stop(); });
+    WBMQTT::SignalHandling::Handle({SIGINT, SIGTERM});
+    WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&]{ WBMQTT::SignalHandling::Stop(); });
     WBMQTT::SetThreadName(BIN_NAME);
 
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
@@ -180,7 +180,11 @@ int main(int argc, char *argv[])
         );
 
         driver->StartLoop();
-        WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ driver->StopLoop(); });
+        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, 
+                                          [&]{
+                                                driver->StopLoop();
+                                                driver->Close();
+                                            });
 
         driver->WaitForReady();
 
@@ -188,7 +192,7 @@ int main(int argc, char *argv[])
 
         serialDriver->Start();
 
-        WBMQTT::SignalHandling::OnSignal(SIGINT, [&]{ serialDriver->Stop(); });
+        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&]{ serialDriver->Stop(); });
         WBMQTT::SignalHandling::SetOnTimeout(SERIAL_DRIVER_STOP_TIMEOUT_S, [&]{
             LOG(Error) << "Driver takes too long to stop. Exiting.";
             exit(1);
