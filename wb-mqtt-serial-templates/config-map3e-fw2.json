@@ -121,6 +121,13 @@
               "order": 2,
               "address": "0x1463",
               "min": 0
+            },
+            "phase": {
+              "title": "Phase",
+              "address": "0x14A0",
+              "enum": [1, 2, 3],
+              "enum_titles": ["L1", "L2", "L3"],
+              "default": 1
             }
           },
           "channels": [
@@ -266,6 +273,13 @@
               "order": 2,
               "address": "0x1463",
               "min": 0
+            },
+            "phase": {
+              "title": "Phase",
+              "address": "0x14A0",
+              "enum": [1, 2, 3],
+              "enum_titles": ["L1", "L2", "L3"],
+              "default": 2
             }
           },
           "channels": [
@@ -411,6 +425,13 @@
               "order": 2,
               "address": "0x1463",
               "min": 0
+            },
+            "phase": {
+              "title": "Phase",
+              "address": "0x14A0",
+              "enum": [1, 2, 3],
+              "enum_titles": ["L1", "L2", "L3"],
+              "default": 3
             }
           },
           "channels": [
