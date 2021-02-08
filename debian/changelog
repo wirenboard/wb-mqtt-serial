@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.7.1) stable; urgency=medium
+
+  * Do not crash on duplicate channel names.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 08 Feb 2021 14:32:00 +0500
+ 
 wb-mqtt-serial (2.7.0) stable; urgency=medium
 
   * Add template for MAP3EV.
