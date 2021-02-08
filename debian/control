@@ -3,7 +3,7 @@ Maintainer: Evgeny Boger <boger@contactless.ru>
 Section: misc
 Priority: optional
 Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 10), pkg-config, libjsoncpp-dev, libwbmqtt1-dev (>= 1.1.0), libwbmqtt1-test-utils (>= 1.1.0), git
+Build-Depends: debhelper (>= 10), pkg-config, libjsoncpp-dev, libwbmqtt1-dev (>= 1.1.0), libwbmqtt1-test-utils (>= 1.1.0)
 
 Package: wb-mqtt-serial
 Architecture: any
