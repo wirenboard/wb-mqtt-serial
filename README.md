@@ -564,6 +564,9 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             // Надписи в списке выбора в web-конфигураторе
                             "enum_titles": ["one", "two", "three" ],
 
+                            // Значение по умолчанию в web-конфигураторе
+                            "default": 2,
+
                             // Минимально возможное значение
                             "min": 1,
 
