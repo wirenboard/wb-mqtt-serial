@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.7.1) experimental; urgency=medium
+
+  * UI allows to select broadcast mode only for devices with appropiate protocols in templates.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 08 Feb 2021 13:44:00 +0500
+
 wb-mqtt-serial (2.7.0) experimental; urgency=medium
 
   * Setup section descriptions for generating UI are added.
