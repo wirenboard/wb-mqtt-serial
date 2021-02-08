@@ -29,6 +29,11 @@ public:
         }
         return id1 == id2;
     }
+
+    bool SupportsBroadcast() const override
+    {
+        return true;
+    }
 };
 
 REGISTER_NEW_PROTOCOL(TNevaIecProtocol,

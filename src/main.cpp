@@ -117,13 +117,15 @@ namespace
             } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
             }
 
+            TSerialDeviceFactory deviceFactory;
+
             Json::StreamWriterBuilder builder;
             builder["indentation"] = "    ";
             std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
             const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
             {
                 std::ofstream f(resultingSchemaFile);
-                MakeSchemaForConfed(configSchema, templates);
+                MakeSchemaForConfed(configSchema, templates, deviceFactory);
                 writer->write(configSchema, &f);
             }
             std::ifstream  src(resultingSchemaFile, std::ios::binary);

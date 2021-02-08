@@ -229,6 +229,11 @@ public:
      */
     virtual bool IsModbus() const = 0;
 
+    /*! Protocol supports broadcast messages.
+     *  We check it during generation of JSON schema for UI in wb-mqtt-confed.
+     */
+    virtual bool SupportsBroadcast() const = 0;
+
 private:
     std::string Name;
     PRegisterTypeMap RegTypes;
@@ -264,6 +269,11 @@ public:
     {
         return false;
     }
+
+    bool SupportsBroadcast() const
+    {
+        return false;
+    }
 };
 
 /*!
@@ -282,6 +292,11 @@ public:
     bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
     {
         return (TUInt32SlaveId(id1, AllowBroadcast) == TUInt32SlaveId(id2, AllowBroadcast));
+    }
+
+    bool SupportsBroadcast() const override
+    {
+        return AllowBroadcast;
     }
 };
 

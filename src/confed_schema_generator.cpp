@@ -454,7 +454,6 @@ Json::Value MakeDeviceSettingsUI(const Json::Value& deviceTemplate, int property
 //              "propertyOrder": 9
 //              "options": {
 //                  "disable_edit_json": true,
-//                  "disable_array_reorder": true
 //              },
 //              "allOf": [
 //                  { "$ref": "#/definitions/deviceProperties" },
@@ -464,14 +463,23 @@ Json::Value MakeDeviceSettingsUI(const Json::Value& deviceTemplate, int property
 //              "properties": {
 //                  "standard_channels": STANDARD_CHANNELS_SCHEMA,
 //                  "standard_setup": STANDARD_SETUP_SCHEMA,
-//                  ...
+//                  "slave_id": {
+//                      "$ref": "#/definitions/slave_id",
+//                      "options": { "keep_oneof_values": false }    // we must to place it here due to a bug in json-editor
+//                  } 
+//                  or
+//                  "slave_id": {
+//                      "$ref": "#/definitions/slave_id_broadcast",
+//                      "options": { "keep_oneof_values": false }    // we must to place it here due to a bug in json-editor
+//                  }
 //              },
-//              "defaultProperties": ["slave_id", "standard_channels", "standard_setup"]
+//              "defaultProperties": ["slave_id", "standard_channels", "standard_setup"],
+//              "required": ["slave_id"]
 //          },
 //          "_format": SETUP_FORMAT
 //      }
 //  }
-std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& deviceTemplate)
+std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& deviceTemplate, TSerialDeviceFactory& deviceFactory)
 {
     auto set = GetDeviceKey(deviceTemplate.Type);
 
@@ -483,11 +491,12 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& de
     req.append(set);
     res["required"] = req;
 
-    res["properties"][set]["type"] = "object";
-    res["properties"][set]["title"] = " ";
-    res["properties"][set]["propertyOrder"] = 9;
-    res["properties"][set]["options"]["disable_edit_json"] = true;
-    res["properties"][set]["options"]["disable_array_reorder"] = true;
+    Json::Value& pr = res["properties"][set];
+
+    pr["type"] = "object";
+    pr["title"] = " ";
+    pr["propertyOrder"] = 9;
+    pr["options"]["disable_edit_json"] = true;
 
     Json::Value ar(Json::arrayValue);
     Json::Value ref;
@@ -504,31 +513,39 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& de
     std::string channelsFormat("default");
     std::string channelsTitle("Channels");
     if (deviceTemplate.Schema.isMember("ui_options")) {
-        SetIfExists(res["properties"][set], "_format", deviceTemplate.Schema["ui_options"], "setup_format");
+        SetIfExists(pr, "_format", deviceTemplate.Schema["ui_options"], "setup_format");
         Get(deviceTemplate.Schema["ui_options"], "channels_format", channelsFormat);
         Get(deviceTemplate.Schema["ui_options"], "channels_title", channelsTitle);
     }
 
-    TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
     if (deviceTemplate.Schema.isMember("channels")) {
-        res["properties"][set]["properties"]["standard_channels"] = MakeChannelsSchema(deviceTemplate.Schema["channels"], set, 98, channelsFormat, channelsTitle, true);
+        pr["properties"]["standard_channels"] = MakeChannelsSchema(deviceTemplate.Schema["channels"], set, 98, channelsFormat, channelsTitle, true);
     }
 
     if (deviceTemplate.Schema.isMember("setup")) {
-        res["properties"][set]["properties"]["standard_setup"] = MakeDeviceSettingsUI(deviceTemplate.Schema, 97);
+        pr["properties"]["standard_setup"] = MakeDeviceSettingsUI(deviceTemplate.Schema, 97);
     }
+
+    if ((deviceTemplate.Type != CUSTOM_DEVICE_TYPE) && deviceFactory.GetProtocol(GetProtocolName(deviceTemplate.Schema))->SupportsBroadcast()) {
+        pr["properties"]["slave_id"]["$ref"] = "#/definitions/slave_id_broadcast";
+    } else {
+        pr["properties"]["slave_id"]["$ref"] = "#/definitions/slave_id";
+    }
+    pr["properties"]["slave_id"]["options"]["keep_oneof_values"] = false;
 
     req.clear();
     req.append("slave_id");
+    pr["required"] = req;
+
     if (deviceTemplate.Schema.isMember("channels")) {
         req.append("standard_channels");
     }
     if (deviceTemplate.Schema.isMember("setup")) {
         req.append("standard_setup");
     }
-    res["properties"][set]["defaultProperties"] = req;
+    pr["defaultProperties"] = req;
 
-
+    TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
     Json::Value definitions;
     if (deviceTemplate.Schema.isMember("subdevices")) {
         for (const auto& subDevice: deviceTemplate.Schema["subdevices"]) {
@@ -540,11 +557,11 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& de
     return std::make_pair(res, definitions);
 }
 
-void AppendDeviceSchemas(Json::Value& list, Json::Value& definitions, TTemplateMap& templates)
+void AppendDeviceSchemas(Json::Value& list, Json::Value& definitions, TTemplateMap& templates, TSerialDeviceFactory& deviceFactory)
 {
     for (const auto& t: templates.GetTemplatesOrderedByName()) {
         try {
-            auto s = MakeDeviceUISchema(*t);
+            auto s = MakeDeviceUISchema(*t, deviceFactory);
             list.append(s.first);
             AppendParams(definitions, s.second);
         } catch (const std::exception& e) {
@@ -553,17 +570,12 @@ void AppendDeviceSchemas(Json::Value& list, Json::Value& definitions, TTemplateM
     }
 }
 
-void MakeSchemaForConfed(Json::Value& configSchema, TTemplateMap& templates)
+void MakeSchemaForConfed(Json::Value& configSchema, TTemplateMap& templates, TSerialDeviceFactory& deviceFactory)
 {
-    // Let's replace #/definitions/device/oneOf typedCustomDevice node by list of device's generated from templates
+    // Let's replace #/definitions/device/oneOf by list of device's generated from templates
     if (configSchema["definitions"]["device"].isMember("oneOf")) {
-        const Json::Value& array = configSchema["definitions"]["device"]["oneOf"];
         Json::Value newArray(Json::arrayValue);
-        for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
-            if (array[index].isMember("$ref") && array[index]["$ref"].asString() == "#/definitions/typedCustomDevice") {
-                AppendDeviceSchemas(newArray, configSchema["definitions"], templates);
-            }
-        }
+        AppendDeviceSchemas(newArray, configSchema["definitions"], templates, deviceFactory);
         configSchema["definitions"]["device"]["oneOf"] = newArray;
     }
     configSchema.setComment(std::string("// THIS FILE IS GENERATED BY wb-mqtt-serial SERVICE. DO NOT EDIT IT!"), Json::commentBefore);

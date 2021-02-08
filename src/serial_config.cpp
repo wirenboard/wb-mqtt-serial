@@ -396,10 +396,7 @@ namespace {
 
     void LoadDeviceTemplatableConfigPart(PDeviceConfig device_config, const Json::Value& device_data, TSerialDeviceFactory& deviceFactory, bool modbusTcpWorkaround)
     {
-        Get(device_data, "protocol", device_config->Protocol);
-        if (device_config->Protocol.empty()) {
-            device_config->Protocol = DefaultProtocol;
-        }
+        device_config->Protocol = GetProtocolName(device_data);
 
         if (modbusTcpWorkaround) {
             if (deviceFactory.GetProtocol(device_config->Protocol)->IsModbus()) {
@@ -890,6 +887,16 @@ void AppendParams(Json::Value& dst, const Json::Value& src)
     for (auto it = src.begin(); it != src.end(); ++it) {
         dst[it.name()] = src[it.name()];
     }
+}
+
+std::string GetProtocolName(const Json::Value& deviceDescription)
+{
+    std::string p;
+    Get(deviceDescription, "protocol", p);
+    if (p.empty()) {
+        p = DefaultProtocol;
+    }
+    return p;
 }
 
 TDeviceTemplate::TDeviceTemplate(const std::string& type, const std::string title, const Json::Value& schema)
