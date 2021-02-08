@@ -11,619 +11,706 @@
                 "name": "Input 1",
                 "id": "IN 1",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 4096,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 2",
                 "id": "IN 2",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 8192,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 3",
                 "id": "IN 3",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 12288,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 4",
                 "id": "IN 4",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 16384,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 5",
                 "id": "IN 5",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 20480,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 6",
                 "id": "IN 6",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 24576,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 7",
                 "id": "IN 7",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 28672,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 8",
                 "id": "IN 8",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 32768,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 9",
                 "id": "IN 9",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 36864,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 10",
                 "id": "IN 10",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 40960,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Input 11",
                 "id": "IN 11",
                 "oneOf": [
-                    "thermocouple",
-                    "ntc",
-                    "2w_current_4_20",
-                    "2w_dry_contact",
-                    "2w_Pt50",
-                    "2w_Pt100",
-                    "2w_Pt500",
-                    "2w_Pt1000",
-                    "2w_50P",
-                    "2w_100P",
-                    "2w_500P",
-                    "2w_1000P",
-                    "2w_50M",
-                    "2w_100M",
-                    "2w_500M",
-                    "2w_1000M",
-                    "2w_Ni100",
-                    "2w_Ni500",
-                    "2w_Ni1000",
-                    "3w_Pt50",
-                    "3w_Pt100",
-                    "3w_Pt500",
-                    "3w_Pt1000",
-                    "3w_50P",
-                    "3w_100P",
-                    "3w_500P",
-                    "3w_1000P",
-                    "3w_50M",
-                    "3w_100M",
-                    "3w_500M",
-                    "3w_1000M",
-                    "3w_Ni100",
-                    "3w_Ni500",
-                    "3w_Ni1000",
-                    "2w_current_0_5",
-                    "2w_current_0_20",
-                    "2w_ratiometric",
+                    "disabled",
+
+                    "thermocouple_k",
+                    "p_2w_pt50",
+                    "p_2w_pt100",
+                    "p_2w_pt500",
+                    "p_2w_pt1000",
+                    "p_2w_50p",
+                    "p_2w_100p",
+                    "p_2w_500p",
+                    "p_2w_1000p",
+                    "p_2w_50m",
+                    "p_2w_100m",
+                    "p_2w_500m",
+                    "p_2w_1000m",
+                    "p_2w_ni100",
+                    "p_2w_ni500",
+                    "p_2w_ni1000",
+
+                    "3w_pt50",
+                    "3w_pt100",
+                    "3w_pt500",
+                    "3w_pt1000",
+                    "3w_50p",
+                    "3w_100p",
+                    "3w_500p",
+                    "3w_1000p",
+                    "3w_50m",
+                    "3w_100m",
+                    "3w_500m",
+                    "3w_1000m",
+                    "3w_ni100",
+                    "3w_ni500",
+                    "3w_ni1000",
+
+                    "p_4_20ma",
+                    "p_0_20ma",
+                    "p_0_5ma",
+
+                    "p_0_1v",
+                    "+-50mv",
+
+                    "p_dry_contact",
+                    "p_ntc_10k",
+
+                    "p_ratiometric",
                     "diff_ratiometric",
-                    "2w_v_0_2",
-                    "2w_v_0_1",
-                    "3w_v_50_50",
-                    "3w_v_2_2",
-                    "3w_resistance",
-                    "2w_resistance",
-                    "2w_current_resistance",
-                    "2w_current",
-                    "disabled"
+                    "p_generic_2w_resistance",
+                    "generic_3w_resistance",
+                    "p_generic_current",
+                    "p_generic_voltage",
+                    "generic_diff_voltage",
+                    "p_generic_current_resistance"
                 ],
                 "shift": 45056,
-                "device_type": "thermocouple"
+                "device_type": "disabled"
             },
             {
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
-                "format": "u32",
-                "enabled": false
+                "format": "u32"
+            },
+            {
+                "name": "5V Output",
+                "reg_type": "input",
+                "address": "0x0600",
+                "type" : "voltage",
+                "scale" : 0.001,
+                "format": "s16"
+            },
+            {
+                "name": "Internal Temperature",
+                "reg_type": "input",
+                "address": "0x0601",
+                "type" : "temperature",
+                "scale" : 0.01,
+                "format": "s16"
+            },
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32"
             }
         ],
         "subdevices": [
             {
-                "title": "thermocouple ТХА (K)",
-                "device_type": "thermocouple",
+                "title": "Thermocouple type K (ТХА)",
+                "device_type": "thermocouple_k",
                 "device": {
                     "setup": [
                         {
@@ -653,9 +740,10 @@
                         {
                             "name": "Voltage",
                             "type": "voltage",
-                            "scale": 0.00001,
+                            "scale": 0.000001,
                             "reg_type": "input",
                             "format": "s32",
+                            "error_value":"0x7FFFFFFF",
                             "address": "0x0500"
                         },
                         {
@@ -663,7 +751,8 @@
                             "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "error_value" : "0x7fff",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -671,7 +760,7 @@
             },
             {
                 "title": "NTC thermistor 10k (B = 3988 K)",
-                "device_type": "ntc",
+                "device_type": "ntc_10k",
                 "device": {
                     "setup": [
                         {
@@ -707,16 +796,20 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
+                            "error_value" : "0x7FFF",
                             "address": "0x0504"
                         }
                     ]
@@ -736,13 +829,61 @@
             },
             {
                 "title": "current measurement",
-                "device_type": "current",
+                "device_type": "generic_current",
                 "device": {
                     "setup": [
                         {
                             "title": "Type",
                             "address": "0x0400",
                             "value": 3
+                        },
+                        {
+                            "title": "Data rate",
+                            "address": "0x0402",
+                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                        },
+                        {
+                            "title": "Number of measurements",
+                            "address": "0x0404",
+                            "min": 0,
+                            "max": 50
+                        },
+                        {
+                            "title": "Lowpass filter time, ms",
+                            "address": "0x0406",
+                            "min": 0,
+                            "max": 65000
+                        },
+                        {
+                            "title": "Gain",
+                            "address": "0x040C",
+                            "enum": [0, 1, 2, 4],
+                            "enum_titles": [ "auto" ],
+                            "default": 0
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Current",
+                            "type": "current",
+                            "scale": 1e-9,
+                            "reg_type": "input",
+                            "format": "s32",
+                            "error_value" : "0x7FFFFFFF",
+                            "address": "0x0500"
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "0-5 mA sensor",
+                "device_type": "0_5ma",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Type",
+                            "address": "0x0400",
+                            "value": 4864
                         },
                         {
                             "title": "Data rate",
@@ -769,71 +910,33 @@
                         {
                             "title": "Maximum value",
                             "address": "0x040A",
-                            "default": 1000
-                        },
-                        {
-                            "title": "Gain",
-                            "address": "0x040C",
-                            "enum": [0, 1, 2, 4],
-                            "enum_titles": [ "auto" ],
-                            "default": 0
+                            "default": 10000
                         }
                     ],
                     "channels": [
                         {
                             "name": "Current",
                             "type": "current",
-                            "scale": 0.00000001,
+                            "scale": 1E-9,
                             "reg_type": "input",
+                            "error_value" : "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
+                        },
+                        {
+                            "name": "Value",
+                            "reg_type": "input",
+                            "type" : "value",
+                            "format": "s16",
+                            "error_value" : "0x7fff",
+                            "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "current measurement 0 to 5 mA",
-                "device_type": "current_0_5",
-                "device": {
-                    "setup": [
-                        {
-                            "title": "Type",
-                            "address": "0x0400",
-                            "value": 4864
-                        },
-                        {
-                            "title": "Data rate",
-                            "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
-                        },
-                        {
-                            "title": "Number of measurements",
-                            "address": "0x0404",
-                            "min": 0,
-                            "max": 50
-                        },
-                        {
-                            "title": "Lowpass filter time, ms",
-                            "address": "0x0406",
-                            "min": 0,
-                            "max": 65000
-                        }
-                    ],
-                    "channels": [
-                        {
-                            "name": "Current",
-                            "type": "current",
-                            "scale": 0.00000001,
-                            "reg_type": "input",
-                            "format": "s32",
-                            "address": "0x0500"
-                        }
-                    ]
-                }
-            },
-            {
-                "title": "current measurement 0 to 20 mA",
-                "device_type": "current_0_20",
+                "title": "0-20 mA sensor",
+                "device_type": "0_20ma",
                 "device": {
                     "setup": [
                         {
@@ -857,23 +960,42 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408",
+                            "default": 0
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A",
+                            "default": 10000
                         }
                     ],
                     "channels": [
                         {
                             "name": "Current",
                             "type": "current",
-                            "scale": 0.00000001,
+                            "scale": 1E-9,
                             "reg_type": "input",
+                            "error_value" : "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
+                        },
+                        {
+                            "name": "Value",
+                            "reg_type": "input",
+                            "type" : "value",
+                            "format": "s16",
+                            "error_value" : "0x7fff",
+                            "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "current measurement 4 to 20 mA",
-                "device_type": "current_4_20",
+                "title": "4-20 mA sensor",
+                "device_type": "4_20ma",
                 "device": {
                     "setup": [
                         {
@@ -897,42 +1019,61 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408",
+                            "default": 0
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A",
+                            "default": 10000
                         }
                     ],
                     "channels": [
                         {
                             "name": "Current",
                             "type": "current",
-                            "scale": 0.00000001,
+                            "scale": 1E-9,
+                            "error_value" : "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
+                        },
+                        {
+                            "name": "Value",
+                            "reg_type": "input",
+                            "type" : "value",
+                            "format": "s16",
+                            "error_value" : "0x7fff",
+                            "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "IN_P: current measurement 4 to 20 mA",
-                "device_type": "2w_current_4_20",
+                "title": "IN_P: 4-20 mA sensor",
+                "device_type": "p_4_20ma",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "current_4_20"
+                            "device_type": "4_20ma"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "current_4_20",
-                                "current_0_20",
-                                "current_0_5",
-                                "current",
+                                "4_20ma",
+                                "0_20ma",
+                                "0_5ma",
+                                "generic_current",
                                 "disabled"
                             ],
-                            "device_type": "current_4_20"
+                            "device_type": "4_20ma"
                         }
                     ],
                     "ui_options": {
@@ -941,27 +1082,27 @@
                 }
             },
             {
-                "title": "IN_P: current measurement 0 to 5 mA",
-                "device_type": "2w_current_0_5",
+                "title": "IN_P: 0-5 mA sensor",
+                "device_type": "p_0_5ma",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "current_0_5"
+                            "device_type": "0_5ma"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "current_0_5",
-                                "current_4_20",
-                                "current_0_20",
-                                "current",
+                                "0_5ma",
+                                "4_20ma",
+                                "0_20ma",
+                                "generic_current",
                                 "disabled"
                             ],
-                            "device_type": "current_0_5"
+                            "device_type": "0_5ma"
                         }
                     ],
                     "ui_options": {
@@ -970,27 +1111,27 @@
                 }
             },
             {
-                "title": "IN_P: current measurement 0 to 20 mA",
-                "device_type": "2w_current_0_20",
+                "title": "IN_P: 0-20 mA sensor",
+                "device_type": "p_0_20ma",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "current_0_20"
+                            "device_type": "0_20ma"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "current_0_20",
-                                "current_0_5",
-                                "current_4_20",
-                                "current",
+                                "0_20ma",
+                                "0_5ma",
+                                "4_20ma",
+                                "generic_current",
                                 "disabled"
                             ],
-                            "device_type": "current_0_20"
+                            "device_type": "0_20ma"
                         }
                     ],
                     "ui_options": {
@@ -999,8 +1140,8 @@
                 }
             },
             {
-                "title": "two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
-                "device_type": "Pt50",
+                "title": "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                "device_type": "2w_pt50",
                 "device": {
                     "setup": [
                         {
@@ -1029,24 +1170,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
-                "device_type": "Pt100",
+                "title": "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                "device_type": "2w_pt100",
                 "device": {
                     "setup": [
                         {
@@ -1075,24 +1220,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
-                "device_type": "Pt500",
+                "title": "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                "device_type": "2w_pt500",
                 "device": {
                     "setup": [
                         {
@@ -1121,24 +1270,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
-                "device_type": "Pt1000",
+                "title": "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                "device_type": "2w_pt1000",
                 "device": {
                     "setup": [
                         {
@@ -1167,24 +1320,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
-                "device_type": "50P",
+                "title": "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                "device_type": "2w_50p",
                 "device": {
                     "setup": [
                         {
@@ -1213,24 +1370,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
-                "device_type": "100P",
+                "title": "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                "device_type": "2w_100p",
                 "device": {
                     "setup": [
                         {
@@ -1259,24 +1420,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
-                "device_type": "500P",
+                "title": "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                "device_type": "2w_500p",
                 "device": {
                     "setup": [
                         {
@@ -1305,24 +1470,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
-                "device_type": "1000P",
+                "title": "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                "device_type": "2w_1000p",
                 "device": {
                     "setup": [
                         {
@@ -1351,24 +1520,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
-                "device_type": "50M",
+                "title": "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                "device_type": "2w_50m",
                 "device": {
                     "setup": [
                         {
@@ -1397,24 +1570,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
-                "device_type": "100M",
+                "title": "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                "device_type": "2w_100m",
                 "device": {
                     "setup": [
                         {
@@ -1443,24 +1620,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
-                "device_type": "500M",
+                "title": "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                "device_type": "2w_500m",
                 "device": {
                     "setup": [
                         {
@@ -1489,24 +1670,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
-                "device_type": "1000M",
+                "title": "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                "device_type": "2w_1000m",
                 "device": {
                     "setup": [
                         {
@@ -1535,24 +1720,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
-                "device_type": "Ni100",
+                "title": "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                "device_type": "2w_ni100",
                 "device": {
                     "setup": [
                         {
@@ -1581,24 +1770,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
-                "device_type": "Ni500",
+                "title": "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                "device_type": "2w_ni500",
                 "device": {
                     "setup": [
                         {
@@ -1627,24 +1820,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
-                "device_type": "Ni1000",
+                "title": "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+                "device_type": "2w_ni1000",
                 "device": {
                     "setup": [
                         {
@@ -1673,16 +1870,20 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1719,14 +1920,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "State",
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -1734,7 +1938,7 @@
             },
             {
                 "title": "two-wire resistance measurement",
-                "device_type": "resistance",
+                "device_type": "generic_resistance",
                 "device": {
                     "setup": [
                         {
@@ -1760,16 +1964,6 @@
                             "max": 65000
                         },
                         {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
-                        },
-                        {
                             "title": "Gain",
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
@@ -1781,15 +1975,18 @@
                         {
                             "name": "Resistance",
                             "reg_type": "input",
+                            "type": "resistance",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "error_value" : "0x7FFFFFFF",
+                            "scale" : 0.01
                         }
                     ]
                 }
             },
             {
                 "title": "IN_P: dry contact sensor",
-                "device_type": "2w_dry_contact",
+                "device_type": "p_dry_contact",
                 "device": {
                     "channels": [
                         {
@@ -1803,22 +2000,22 @@
                             "id": "N",
                             "oneOf": [
                                 "dry_contact",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
-                                "resistance",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
+                                "generic_resistance",
                                 "disabled"
                             ],
                             "device_type": "dry_contact"
@@ -1830,40 +2027,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
-                "device_type": "2w_Pt50",
+                "title": "IN_P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                "device_type": "p_2w_pt50",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "Pt50"
+                            "device_type": "2w_pt50"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "Pt50"
+                            "device_type": "2w_pt50"
                         }
                     ],
                     "ui_options": {
@@ -1872,40 +2069,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
-                "device_type": "2w_Pt100",
+                "title": "IN_P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                "device_type": "p_2w_pt100",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "Pt100"
+                            "device_type": "2w_pt100"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "Pt100",
-                                "Pt50",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_pt100",
+                                "2w_pt50",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "Pt100"
+                            "device_type": "2w_pt100"
                         }
                     ],
                     "ui_options": {
@@ -1914,40 +2111,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
-                "device_type": "2w_Pt500",
+                "title": "IN_P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                "device_type": "p_2w_pt500",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "Pt500"
+                            "device_type": "2w_pt500"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "Pt500",
-                                "Pt50",
-                                "Pt100",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_pt500",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "Pt500"
+                            "device_type": "2w_pt500"
                         }
                     ],
                     "ui_options": {
@@ -1956,40 +2153,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
-                "device_type": "2w_Pt1000",
+                "title": "IN_P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                "device_type": "p_2w_pt1000",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "Pt1000"
+                            "device_type": "2w_pt1000"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "Pt1000",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_pt1000",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "Pt1000"
+                            "device_type": "2w_pt1000"
                         }
                     ],
                     "ui_options": {
@@ -1998,40 +2195,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
-                "device_type": "2w_50P",
+                "title": "IN_P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                "device_type": "p_2w_50p",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "50P"
+                            "device_type": "2w_50p"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "50P",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_50p",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "50P"
+                            "device_type": "2w_50p"
                         }
                     ],
                     "ui_options": {
@@ -2040,40 +2237,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
-                "device_type": "2w_100P",
+                "title": "IN_P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                "device_type": "p_2w_100p",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "100P"
+                            "device_type": "2w_100p"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "100P",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_100p",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "100P"
+                            "device_type": "2w_100p"
                         }
                     ],
                     "ui_options": {
@@ -2082,40 +2279,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
-                "device_type": "2w_500P",
+                "title": "IN_P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                "device_type": "p_2w_500p",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "500P"
+                            "device_type": "2w_500p"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "500P",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_500p",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "500P"
+                            "device_type": "2w_500p"
                         }
                     ],
                     "ui_options": {
@@ -2124,40 +2321,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
-                "device_type": "2w_1000P",
+                "title": "IN_P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                "device_type": "p_2w_1000p",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "1000P"
+                            "device_type": "2w_1000p"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "1000P",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_1000p",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "1000P"
+                            "device_type": "2w_1000p"
                         }
                     ],
                     "ui_options": {
@@ -2166,40 +2363,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
-                "device_type": "2w_50M",
+                "title": "IN_P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                "device_type": "p_2w_50m",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "50M"
+                            "device_type": "2w_50m"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "50M",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_50m",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "50M"
+                            "device_type": "2w_50m"
                         }
                     ],
                     "ui_options": {
@@ -2208,40 +2405,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
-                "device_type": "2w_100M",
+                "title": "IN_P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                "device_type": "p_2w_100m",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "100M"
+                            "device_type": "2w_100m"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "100M",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_100m",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "100M"
+                            "device_type": "2w_100m"
                         }
                     ],
                     "ui_options": {
@@ -2250,40 +2447,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
-                "device_type": "2w_500M",
+                "title": "IN_P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                "device_type": "p_2w_500m",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "500M"
+                            "device_type": "2w_500m"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "500M",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_500m",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "500M"
+                            "device_type": "2w_500m"
                         }
                     ],
                     "ui_options": {
@@ -2292,40 +2489,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
-                "device_type": "2w_1000M",
+                "title": "IN_P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                "device_type": "p_2w_1000m",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "1000M"
+                            "device_type": "2w_1000m"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "1000M",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_1000m",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "1000M"
+                            "device_type": "2w_1000m"
                         }
                     ],
                     "ui_options": {
@@ -2334,40 +2531,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
-                "device_type": "2w_Ni100",
+                "title": "IN_P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                "device_type": "p_2w_ni100",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "Ni100"
+                            "device_type": "2w_ni100"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "Ni100",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni500",
-                                "Ni1000",
+                                "2w_ni100",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "Ni100"
+                            "device_type": "2w_ni100"
                         }
                     ],
                     "ui_options": {
@@ -2376,40 +2573,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
-                "device_type": "2w_Ni500",
+                "title": "IN_P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                "device_type": "p_2w_ni500",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "Ni500"
+                            "device_type": "2w_ni500"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "Ni500",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni1000",
+                                "2w_ni500",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni1000",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "Ni500"
+                            "device_type": "2w_ni500"
                         }
                     ],
                     "ui_options": {
@@ -2418,40 +2615,40 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
-                "device_type": "2w_Ni1000",
+                "title": "IN_P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+                "device_type": "p_2w_ni1000",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "Ni1000"
+                            "device_type": "2w_ni1000"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "Ni1000",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
+                                "2w_ni1000",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
                                 "dry_contact",
-                                "resistance",
+                                "generic_resistance",
                                 "disabled"
                             ],
-                            "device_type": "Ni1000"
+                            "device_type": "2w_ni1000"
                         }
                     ],
                     "ui_options": {
@@ -2461,39 +2658,39 @@
             },
             {
                 "title": "IN_P: two-wire resistance measurement",
-                "device_type": "2w_resistance",
+                "device_type": "p_generic_2w_resistance",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "resistance"
+                            "device_type": "generic_resistance"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "resistance",
-                                "Pt50",
-                                "Pt100",
-                                "Pt500",
-                                "Pt1000",
-                                "50P",
-                                "100P",
-                                "500P",
-                                "1000P",
-                                "50M",
-                                "100M",
-                                "500M",
-                                "1000M",
-                                "Ni100",
-                                "Ni500",
-                                "Ni1000",
+                                "generic_resistance",
+                                "2w_pt50",
+                                "2w_pt100",
+                                "2w_pt500",
+                                "2w_pt1000",
+                                "2w_50p",
+                                "2w_100p",
+                                "2w_500p",
+                                "2w_1000p",
+                                "2w_50m",
+                                "2w_100m",
+                                "2w_500m",
+                                "2w_1000m",
+                                "2w_ni100",
+                                "2w_ni500",
+                                "2w_ni1000",
                                 "dry_contact",
                                 "disabled"
                             ],
-                            "device_type": "resistance"
+                            "device_type": "generic_resistance"
                         }
                     ],
                     "ui_options": {
@@ -2502,8 +2699,8 @@
                 }
             },
             {
-                "title": "three-wire resistance thermometer Pt 50 (α = 0.00385 °C⁻¹)",
-                "device_type": "3w_Pt50",
+                "title": "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                "device_type": "3w_pt50",
                 "device": {
                     "setup": [
                         {
@@ -2532,24 +2729,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer Pt 100 (α = 0.00385 °C⁻¹)",
-                "device_type": "3w_Pt100",
+                "title": "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                "device_type": "3w_pt100",
                 "device": {
                     "setup": [
                         {
@@ -2580,22 +2781,26 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "type" : "resistance",
+                            "scale" : 0.01,
+                            "error_value" : "0x7FFFFFFF"
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
-                            "address": "0x0504"
+                            "format": "s16",
+                            "address": "0x0504",
+                            "error_value" : "0x7FFF"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer Pt 500 (α = 0.00385 °C⁻¹)",
-                "device_type": "3w_Pt500",
+                "title": "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                "device_type": "3w_pt500",
                 "device": {
                     "setup": [
                         {
@@ -2624,24 +2829,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer Pt 1000 (α = 0.00385 °C⁻¹)",
-                "device_type": "3w_Pt1000",
+                "title": "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                "device_type": "3w_pt1000",
                 "device": {
                     "setup": [
                         {
@@ -2670,24 +2879,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer 50P (α = 0.00391 °C⁻¹)",
-                "device_type": "3w_50P",
+                "title": "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                "device_type": "3w_50p",
                 "device": {
                     "setup": [
                         {
@@ -2716,24 +2929,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer 100P (α = 0.00391 °C⁻¹)",
-                "device_type": "3w_100P",
+                "title": "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                "device_type": "3w_100p",
                 "device": {
                     "setup": [
                         {
@@ -2762,24 +2979,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer 500P (α = 0.00391 °C⁻¹)",
-                "device_type": "3w_500P",
+                "title": "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                "device_type": "3w_500p",
                 "device": {
                     "setup": [
                         {
@@ -2808,24 +3029,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer 1000P (α = 0.00391 °C⁻¹)",
-                "device_type": "3w_1000P",
+                "title": "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                "device_type": "3w_1000p",
                 "device": {
                     "setup": [
                         {
@@ -2854,24 +3079,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer 50M (α = 0.00428 °C⁻¹)",
-                "device_type": "3w_50M",
+                "title": "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                "device_type": "3w_50m",
                 "device": {
                     "setup": [
                         {
@@ -2900,24 +3129,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer 100M (α = 0.00428 °C⁻¹)",
-                "device_type": "3w_100M",
+                "title": "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                "device_type": "3w_100m",
                 "device": {
                     "setup": [
                         {
@@ -2946,24 +3179,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer 500M (α = 0.00428 °C⁻¹)",
-                "device_type": "3w_500M",
+                "title": "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                "device_type": "3w_500m",
                 "device": {
                     "setup": [
                         {
@@ -2992,24 +3229,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer 1000M (α = 0.00428 °C⁻¹)",
-                "device_type": "3w_1000M",
+                "title": "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                "device_type": "3w_1000m",
                 "device": {
                     "setup": [
                         {
@@ -3038,24 +3279,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer Ni 100 (α = 0.00617 °C⁻¹)",
-                "device_type": "3w_Ni100",
+                "title": "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                "device_type": "3w_ni100",
                 "device": {
                     "setup": [
                         {
@@ -3084,24 +3329,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer Ni 500 (α = 0.00617 °C⁻¹)",
-                "device_type": "3w_Ni500",
+                "title": "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                "device_type": "3w_ni500",
                 "device": {
                     "setup": [
                         {
@@ -3130,24 +3379,28 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
                 }
             },
             {
-                "title": "three-wire resistance thermometer Ni 1000 (α = 0.00617 °C⁻¹)",
-                "device_type": "3w_Ni1000",
+                "title": "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+                "device_type": "3w_ni1000",
                 "device": {
                     "setup": [
                         {
@@ -3176,16 +3429,20 @@
                     "channels": [
                         {
                             "name": "Resistance",
+                            "type" : "resistance",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
+                            "error_value" : "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "format": "s32",
+                            "format": "s16",
                             "address": "0x0504"
                         }
                     ]
@@ -3249,7 +3506,7 @@
             },
             {
                 "title": "IN_P: voltage measurement from ratiometric sensor",
-                "device_type": "2w_ratiometric",
+                "device_type": "p_ratiometric",
                 "device": {
                     "channels": [
                         {
@@ -3331,7 +3588,7 @@
             },
             {
                 "title": "single-ended voltage measurement from 0 to 2 V",
-                "device_type": "v_0_2",
+                "device_type": "generic_voltage",
                 "device": {
                     "setup": [
                         {
@@ -3357,16 +3614,6 @@
                             "max": 65000
                         },
                         {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
-                        },
-                        {
                             "title": "Gain",
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
@@ -3378,7 +3625,8 @@
                         {
                             "name": "Voltage",
                             "type": "voltage",
-                            "scale": 0.00001,
+                            "scale": 0.000001,
+                            "error_value" : "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3387,8 +3635,8 @@
                 }
             },
             {
-                "title": "single-ended voltage measurement from 0 to 1 V",
-                "device_type": "v_0_1",
+                "title": "0-1V sensor",
+                "device_type": "0_1v",
                 "device": {
                     "setup": [
                         {
@@ -3412,40 +3660,59 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408",
+                            "default": 0
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A",
+                            "default": 1000
                         }
                     ],
                     "channels": [
                         {
                             "name": "Voltage",
                             "type": "voltage",
-                            "scale": 0.00001,
+                            "scale": 0.000001,
                             "reg_type": "input",
                             "format": "s32",
+                            "error_value" : "0x7FFFFFFF",
                             "address": "0x0500"
+                        },
+                        {
+                            "name": "Value",
+                            "reg_type": "input",
+                            "type" : "value",
+                            "format": "s16",
+                            "error_value" : "0x7fff",
+                            "address": "0x0504"
                         }
                     ]
                 }
             },
             {
                 "title": "IN_P: single-ended voltage measurement from 0 to 2 V",
-                "device_type": "2w_v_0_2",
+                "device_type": "p_generic_voltage",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "v_0_2"
+                            "device_type": "generic_voltage"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "v_0_2",
-                                "v_0_1",
+                                "generic_voltage",
+                                "0_1v",
                                 "disabled"
                             ],
-                            "device_type": "v_0_2"
+                            "device_type": "generic_voltage"
                         }
                     ],
                     "ui_options": {
@@ -3454,25 +3721,25 @@
                 }
             },
             {
-                "title": "IN_P: single-ended voltage measurement from 0 to 1 V",
-                "device_type": "2w_v_0_1",
+                "title": "IN_P: 0-1V sensor",
+                "device_type": "p_0_1v",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "v_0_1"
+                            "device_type": "0_1v"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "v_0_1",
-                                "v_0_2",
+                                "0_1v",
+                                "generic_voltage",
                                 "disabled"
                             ],
-                            "device_type": "v_0_1"
+                            "device_type": "0_1v"
                         }
                     ],
                     "ui_options": {
@@ -3481,8 +3748,8 @@
                 }
             },
             {
-                "title": "voltage measurement in differential mode from -50 to 50 mV",
-                "device_type": "3w_v_50_50",
+                "title": "-50 to 50 mV sensor",
+                "device_type": "+-50mv",
                 "device": {
                     "setup": [
                         {
@@ -3506,23 +3773,41 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
+                        },
+                        {
+                            "title": "Minimum value",
+                            "address": "0x0408",
+                            "default": 0
+                        },
+                        {
+                            "title": "Maximum value",
+                            "address": "0x040A",
+                            "default": 1000
                         }
                     ],
                     "channels": [
                         {
                             "name": "Voltage",
                             "type": "voltage",
-                            "scale": 0.00001,
+                            "scale": 0.000001,
                             "reg_type": "input",
+                            "error_value" : "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
-                        }
-                    ]
+                        },
+                        {
+                            "name": "Value",
+                            "reg_type": "input",
+                            "type" : "value",
+                            "format": "s16",
+                            "error_value" : "0x7fff",
+                            "address": "0x0504"
+                        }                    ]
                 }
             },
             {
                 "title": "voltage measurement in differential mode from -2 to 2 V",
-                "device_type": "3w_v_2_2",
+                "device_type": "generic_diff_voltage",
                 "device": {
                     "setup": [
                         {
@@ -3548,16 +3833,6 @@
                             "max": 65000
                         },
                         {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
-                        },
-                        {
                             "title": "Gain",
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4, 8, 16, 32, 64, 128],
@@ -3569,8 +3844,9 @@
                         {
                             "name": "Voltage",
                             "type": "voltage",
-                            "scale": 0.00001,
+                            "scale": 0.000001,
                             "reg_type": "input",
+                            "error_value" : "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
                         }
@@ -3579,7 +3855,7 @@
             },
             {
                 "title": "three-wire resistance measurement",
-                "device_type": "3w_resistance",
+                "device_type": "generic_3w_resistance",
                 "device": {
                     "setup": [
                         {
@@ -3603,23 +3879,6 @@
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
-                        },
-                        {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
-                        },
-                        {
-                            "title": "Gain",
-                            "address": "0x040C",
-                            "enum": [0, 1, 2, 4],
-                            "enum_titles": [ "auto" ],
-                            "default": 0
                         }
                     ],
                     "channels": [
@@ -3627,6 +3886,8 @@
                             "name": "Resistance",
                             "type": "resistance",
                             "reg_type": "input",
+                            "type" : "resistance",
+                            "error_value" : "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500",
                             "scale": 0.01
@@ -3636,7 +3897,7 @@
             },
             {
                 "title": "resistance measurement using current measurement",
-                "device_type": "current_resistance",
+                "device_type": "generic_current_resistance",
                 "device": {
                     "setup": [
                         {
@@ -3662,16 +3923,6 @@
                             "max": 65000
                         },
                         {
-                            "title": "Minimum value",
-                            "address": "0x0408",
-                            "default": 0
-                        },
-                        {
-                            "title": "Maximum value",
-                            "address": "0x040A",
-                            "default": 1000
-                        },
-                        {
                             "title": "Gain",
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
@@ -3684,30 +3935,32 @@
                             "name": "Resistance",
                             "reg_type": "input",
                             "format": "s32",
-                            "address": "0x0500"
+                            "address": "0x0500",
+                            "scale" : 0.01
                         }
                     ]
                 }
             },
             {
                 "title": "IN_P: resistance measurement using current measurement",
-                "device_type": "2w_current_resistance",
+                "device_type": "p_generic_current_resistance",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "current_resistance"
+                            "device_type": "generic_current_resistance"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "current_resistance",
+                                "generic_current_resistance",
+                                "ntc_10k",
                                 "disabled"
                             ],
-                            "device_type": "current_resistance"
+                            "device_type": "generic_current_resistance"
                         }
                     ],
                     "ui_options": {
@@ -3716,27 +3969,54 @@
                 }
             },
             {
-                "title": "IN_P: current measurement",
-                "device_type": "2w_current",
+                "title": "IN_P: NTC thermistor 10k (B = 3988 K)",
+                "device_type": "p_ntc_10k",
                 "device": {
                     "channels": [
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "current"
+                            "device_type": "ntc_10k"
                         },
                         {
                             "stride": 1,
                             "name": "IN_N",
                             "id": "N",
                             "oneOf": [
-                                "current",
-                                "current_4_20",
-                                "current_0_20",
-                                "current_0_5",
+                                "ntc_10k",
+                                "generic_current_resistance",
                                 "disabled"
                             ],
-                            "device_type": "current"
+                            "device_type": "ntc_10k"
+                        }
+                    ],
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },            
+            {
+                "title": "IN_P: current measurement",
+                "device_type": "p_generic_current",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "IN_P",
+                            "id": "P",
+                            "device_type": "generic_current"
+                        },
+                        {
+                            "stride": 1,
+                            "name": "IN_N",
+                            "id": "N",
+                            "oneOf": [
+                                "generic_current",
+                                "4_20ma",
+                                "0_20ma",
+                                "0_5ma",
+                                "disabled"
+                            ],
+                            "device_type": "generic_current"
                         }
                     ],
                     "ui_options": {

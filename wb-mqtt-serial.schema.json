@@ -490,13 +490,19 @@
           "title": "Address",
           "description": "Register index (0-65535 in case of Modbus)",
           "propertyOrder": 2,
-          "$ref": "#/definitions/serial_int"
+          "$ref": "#/definitions/serial_int",
+          "options": {
+            "keep_oneof_values": false
+          }
         },
         "value": {
           "title": "Value",
           "description": "Value to be written",
           "propertyOrder": 3,
-          "$ref": "#/definitions/serial_int"
+          "$ref": "#/definitions/serial_int",
+          "options": {
+            "keep_oneof_values": false
+          }
         }
       },
       "options": {
@@ -591,7 +597,10 @@
         },
         "address": {
           "$ref": "#/definitions/address",
-          "propertyOrder": 6
+          "propertyOrder": 6,
+          "options": {
+            "keep_oneof_values": false
+          }
         },
         "format": {
           "$ref": "#/definitions/format",
@@ -600,7 +609,10 @@
         "max": {
           "title": "Maximum value",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 8
+          "propertyOrder": 8,
+          "options": {
+            "keep_oneof_values": false
+          }
         },
         "scale": {
           "type": "number",
@@ -641,7 +653,10 @@
           "title": "'On' value",
           "description": "Value corresponding to the 'On' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 13
+          "propertyOrder": 13,
+          "options": {
+            "keep_oneof_values": false
+          }
         },
         "poll_interval": {
           "type": "integer",
@@ -847,7 +862,10 @@
         },
         "address": {
           "$ref": "#/definitions/address",
-          "propertyOrder": 2
+          "propertyOrder": 2,
+          "options": {
+            "keep_oneof_values": false
+          }
         },
         "format": {
           "$ref": "#/definitions/format",
@@ -935,10 +953,6 @@
     "serial_int": {
       "oneOf": [
         {
-          "title": "Integer",
-          "type": "integer"
-        },
-        {
           "title": "Integer or hex",
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
@@ -947,6 +961,10 @@
           "title": "Bits",
           "type": "string",
           "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$"
+        },
+        {
+          "title": "Integer",
+          "type": "integer"
         }
       ]
     }
