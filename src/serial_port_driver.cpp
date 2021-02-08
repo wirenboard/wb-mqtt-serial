@@ -39,7 +39,6 @@ void TSerialPortDriver::SetUpDevices()
 
     try {
         auto tx = MqttDriver->BeginTx();
-        vector<TFuture<PControl>> futureControls;
 
         for (auto & deviceConfig: Config->DeviceConfigs) {
             auto device = SerialClient->CreateDevice(deviceConfig);
@@ -48,22 +47,20 @@ void TSerialPortDriver::SetUpDevices()
             Devices.push_back(device);
             // init channels' registers
             for (auto & channelConfig: deviceConfig->DeviceChannelConfigs) {
-
-                auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
-                futureControls.push_back(mqttDevice->CreateControl(tx, From(channel)));
-
-                for (auto & reg: channel->Registers) {
-                    RegisterToChannelStateMap.emplace(reg, TDeviceChannelState{channel, TRegisterHandler::UnknownErrorState});
-                    SerialClient->AddRegister(reg);
+                try {
+                    auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
+                    mqttDevice->CreateControl(tx, From(channel)).GetValue();
+                    for (auto & reg: channel->Registers) {
+                        RegisterToChannelStateMap.emplace(reg, TDeviceChannelState{channel, TRegisterHandler::UnknownErrorState});
+                        SerialClient->AddRegister(reg);
+                    }
+                } catch (const exception & e) {
+                    LOG(Error) << "unable to create control: '" << e.what() << "'";
                 }
             }
         }
-
-        for (auto & futureControl: futureControls) {
-            futureControl.GetValue();   // wait for control creation, receive exceptions if any
-        }
     } catch (const exception & e) {
-        LOG(Error) << "unable to create device or control: '" << e.what() << "' Cleaning.";
+        LOG(Error) << "unable to create device: '" << e.what() << "' Cleaning.";
         ClearDevices();
         throw;
     } catch (...) {
