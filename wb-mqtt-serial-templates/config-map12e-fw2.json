@@ -157,6 +157,7 @@
               "address": "0x1410",
               "type": "voltage",
               "format": "u32",
+              "error_value": "0xFFFFFFFF",
               "scale": 1.52588e-07,
               "round_to": 0.001
             },
@@ -167,6 +168,7 @@
               "address": "0x1810",
               "type": "voltage",
               "format": "s32",
+              "error_value": "0x7FFFFFFF",
               "scale": 0.01,
               "round_to": 0.01,
               "word_order": "little_endian"
@@ -178,6 +180,7 @@
               "address": "0x10fd",
               "type": "value",
               "format": "s16",
+              "error_value": "0x7FFF",
               "scale": 0.1,
               "round_to": 0.01
             }
@@ -195,6 +198,7 @@
               "address": "0x1410",
               "type": "voltage",
               "format": "u32",
+              "error_value": "0xFFFFFFFF",
               "scale": 1.52588e-07,
               "round_to": 0.001
             },
@@ -205,6 +209,7 @@
               "address": "0x1810",
               "type": "voltage",
               "format": "s32",
+              "error_value": "0x7FFFFFFF",
               "scale": 0.01,
               "round_to": 0.01,
               "word_order": "little_endian"
@@ -216,6 +221,7 @@
               "address": "0x10fd",
               "type": "value",
               "format": "s16",
+              "error_value": "0x7FFF",
               "scale": 0.1,
               "round_to": 0.01
             }
@@ -233,6 +239,7 @@
               "address": "0x1410",
               "type": "voltage",
               "format": "u32",
+              "error_value": "0xFFFFFFFF",
               "scale": 1.52588e-07,
               "round_to": 0.001
             },
@@ -243,6 +250,7 @@
               "address": "0x1810",
               "type": "voltage",
               "format": "s32",
+              "error_value": "0x7FFFFFFF",
               "scale": 0.01,
               "round_to": 0.01,
               "word_order": "little_endian"
@@ -254,6 +262,7 @@
               "address": "0x10fd",
               "type": "value",
               "format": "s16",
+              "error_value": "0x7FFF",
               "scale": 0.1,
               "round_to": 0.01
             }
