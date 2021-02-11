@@ -281,7 +281,11 @@ int main(int argc, char *argv[])
         );
 
         driver->StartLoop();
-        WBMQTT::SignalHandling::OnSignals({ SIGINT, SIGTERM },  [&]{ driver->StopLoop(); });
+        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, 
+                                          [&]{
+                                                driver->StopLoop();
+                                                driver->Close();
+                                            });
 
         driver->WaitForReady();
 

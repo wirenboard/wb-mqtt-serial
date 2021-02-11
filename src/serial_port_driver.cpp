@@ -47,19 +47,20 @@ void TSerialPortDriver::SetUpDevices()
             Devices.push_back(device);
             // init channels' registers
             for (auto & channelConfig: deviceConfig->DeviceChannelConfigs) {
-
-                auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
-                mqttDevice->CreateControl(tx, From(channel)).GetValue();
-
-                for (auto & reg: channel->Registers) {
-                    RegisterToChannelStateMap.emplace(reg, TDeviceChannelState{channel, TRegisterHandler::UnknownErrorState});
-                    SerialClient->AddRegister(reg);
+                try {
+                    auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
+                    mqttDevice->CreateControl(tx, From(channel)).GetValue();
+                    for (auto & reg: channel->Registers) {
+                        RegisterToChannelStateMap.emplace(reg, TDeviceChannelState{channel, TRegisterHandler::UnknownErrorState});
+                        SerialClient->AddRegister(reg);
+                    }
+                } catch (const exception & e) {
+                    LOG(Error) << "unable to create control: '" << e.what() << "'";
                 }
             }
-            mqttDevice->RemoveUnusedControls(tx).Sync();
         }
     } catch (const exception & e) {
-        LOG(Error) << "unable to create device or control: '" << e.what() << "' Cleaning.";
+        LOG(Error) << "unable to create device: '" << e.what() << "' Cleaning.";
         ClearDevices();
         throw;
     } catch (...) {
@@ -232,7 +233,9 @@ void TSerialPortDriver::ClearDevices() noexcept
 TLocalDeviceArgs TSerialPortDriver::From(const PSerialDevice & device)
 {
     return TLocalDeviceArgs{}.SetId(device->DeviceConfig()->Id)
-                             .SetTitle(device->DeviceConfig()->Name);
+                             .SetTitle(device->DeviceConfig()->Name)
+                             .SetIsVirtual(true)
+                             .SetDoLoadPrevious(true);
 }
 
 TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
