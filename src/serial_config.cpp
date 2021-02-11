@@ -328,7 +328,10 @@ namespace {
             }
         }
 
-        size_t baseAddress = device_base_address + Read(channel_data, "shift", 0);
+        size_t baseAddress = device_base_address;
+        if (channel_data.isMember("shift")) {
+            baseAddress += GetInt(channel_data, "shift");
+        }
         size_t stride = Read(channel_data, "stride", 0);
         if (channel_data.isMember("setup")) {
             for(const auto& setupItem: channel_data["setup"])

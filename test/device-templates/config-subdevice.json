@@ -13,7 +13,7 @@
             {
                 "name": "Sub",
                 "device_type": "subdevice1",
-                "shift": 100
+                "shift": "0x64"
             },
             {
                 "name": "Sub2",
