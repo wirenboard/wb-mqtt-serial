@@ -58,6 +58,7 @@ void TSerialPortDriver::SetUpDevices()
                     LOG(Error) << "unable to create control: '" << e.what() << "'";
                 }
             }
+            mqttDevice->RemoveUnusedControls(tx).Sync();
         }
     } catch (const exception & e) {
         LOG(Error) << "unable to create device: '" << e.what() << "' Cleaning.";
