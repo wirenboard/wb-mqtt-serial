@@ -7,6 +7,12 @@ wb-mqtt-serial (2.8.0) experimental; urgency=medium
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 11 Feb 2021 09:42:00 +0500
 
+wb-mqtt-serial (2.7.2) stable; urgency=medium
+
+  * Correct handling of little-endian register's error values.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 16 Feb 2021 20:05:00 +0500
+
 wb-mqtt-serial (2.7.1) stable; urgency=medium
 
   * Do not crash on duplicate channel names.

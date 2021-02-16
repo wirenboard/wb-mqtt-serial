@@ -1131,6 +1131,81 @@ TEST_F(TSerialClientIntegrationTest, SetupErrors)
     SerialDriver->LoopOnce();
 }
 
+TEST_F(TSerialClientIntegrationTest, ErrorValue)
+{
+    FilterConfig("ErrorValueTest");
+
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+
+    auto device = TFakeSerialDevice::GetDevice("0x96");
+
+    if (!device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    device->Registers[0]  = 0x7FFF;
+    device->Registers[1]  = 0x7FFF;
+    device->Registers[2]  = 0x7F;
+    device->Registers[3]  = 0x7F;
+    device->Registers[4]  = 0x7F;
+    device->Registers[5]  = 0xFFFF;
+    device->Registers[6]  = 0x7F;
+    device->Registers[7]  = 0xFFFF;
+    device->Registers[8]  = 0x7FFF;
+    device->Registers[9]  = 0xFFFF;
+    device->Registers[10] = 0x7FFF;
+    device->Registers[11] = 0xFFFF;
+    device->Registers[12] = 0x7FFF;
+    device->Registers[13] = 0xFFFF;
+    device->Registers[14] = 0xFFFF;
+    device->Registers[15] = 0xFFFF;
+    device->Registers[16] = 0x7FFF;
+    device->Registers[17] = 0xFFFF;
+    device->Registers[18] = 0xFFFF;
+    device->Registers[19] = 0xFFFF;
+    device->Registers[20] = 0x7FFF;
+    device->Registers[21] = 0xFFFF;
+    device->Registers[22] = 0xFFFF;
+    device->Registers[23] = 0xFFFF;
+    device->Registers[24] = 0x7FFF;
+    device->Registers[25] = 0xFFFF;
+
+    // fake little-endian
+    device->Registers[30] = 0x7FFF;
+    device->Registers[31] = 0x7FFF;
+    device->Registers[32] = 0x7F;
+    device->Registers[33] = 0x7F;
+    device->Registers[34] = 0xFFFF;
+    device->Registers[35] = 0x7F;
+    device->Registers[36] = 0xFFFF;
+    device->Registers[37] = 0x7F;
+    device->Registers[38] = 0xFFFF;
+    device->Registers[39] = 0x7FFF;
+    device->Registers[40] = 0xFFFF;
+    device->Registers[41] = 0x7FFF;
+    device->Registers[42] = 0xFFFF;
+    device->Registers[43] = 0xFFFF;
+    device->Registers[44] = 0xFFFF;
+    device->Registers[45] = 0x7FFF;
+    device->Registers[46] = 0xFFFF;
+    device->Registers[47] = 0xFFFF;
+    device->Registers[48] = 0xFFFF;
+    device->Registers[49] = 0x7FFF;
+    device->Registers[50] = 0xFFFF;
+    device->Registers[51] = 0xFFFF;
+    device->Registers[52] = 0xFFFF;
+    device->Registers[53] = 0x7FFF;
+    device->Registers[54] = 0xFFFF;
+    device->Registers[55] = 0x7FFF;
+
+    Note() << "LoopOnce() [all errors]";
+    SerialDriver->LoopOnce();
+}
+
+
 TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
