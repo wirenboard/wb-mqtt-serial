@@ -204,8 +204,10 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
     auto deviceTemplate = deviceTemplates.GetTemplate(dt);
     Json::Value newDev(config);
 
-    if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
-        newDev["slave_id"] = false;
+    if (nestingLevel == 1) {
+        if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
+            newDev["slave_id"] = false;
+        }
     }
 
     auto setupRegs = SplitSetupRegisters(config, deviceTemplate.Schema);
