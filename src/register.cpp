@@ -72,6 +72,9 @@ TRegisterRange::EStatus TSimpleRegisterRange::GetStatus() const
 std::string TRegisterConfig::ToString() const {
     std::stringstream s;
     s << TypeName << ": " << Address;
+    if (BitOffset != 0 || BitWidth != 0) {
+        s << ":" << (int)BitOffset << ":" << (int)BitWidth;
+    }
     return s.str();
 }
 

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.7.2) stable; urgency=medium
+
+  * Support for hex values in the first part of address of bit registers is added.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 19 Feb 2021 17:56:00 +0500
+ 
 wb-mqtt-serial (2.7.1) stable; urgency=medium
 
   * Do not crash on duplicate channel names.
