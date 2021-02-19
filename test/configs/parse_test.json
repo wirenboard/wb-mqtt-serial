@@ -240,22 +240,14 @@
                 {
                     "device_type" : "with subdevice",
                     "slave_id": 22,
+                    "garbage": 10,
+                    "s1": 15,
                     "enabled": true,
                     "channels": [
                         {
                             "name" : "Sub",
                             "device_type": "subdevice1",
-                            "setup": [
-                                {
-                                    "title": "s1",
-                                    "value": 100
-                                },
-                                {
-                                    "title": "override",
-                                    "address": 20000,
-                                    "value": 200
-                                }
-                            ]
+                            "s1": 63
                         },
                         {
                             "name" : "Sub2",
@@ -264,6 +256,7 @@
                                 {
                                     "name": "c3",
                                     "device_type": "subdevice2",
+                                    "s22": 111,
                                     "channels": [
                                         {
                                             "name": "c12",

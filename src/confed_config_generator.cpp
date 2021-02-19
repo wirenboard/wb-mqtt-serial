@@ -10,33 +10,6 @@ Json::Value FilterStandardChannels(const Json::Value& device,
                                    ITemplateMap& templates,
                                    const std::unordered_map<std::string, std::string>& subdeviceTypeHashes);
 
-void TransformSetupParams(Json::Value& device, const Json::Value& deviceTemplate)
-{
-    if (!deviceTemplate.isMember("setup")) {
-        return;
-    }
-    if (!device.isMember("setup")) {
-        device["setup"] = Json::Value(Json::arrayValue);
-    }
-    size_t i = 0;
-    for (const auto& setupItem : deviceTemplate["setup"]) {
-        if (!setupItem.isMember("value")) {
-            auto paramName = MakeSetupRegisterParameterName(i);
-            if (device.isMember(paramName)) {
-                Json::Value item;
-                item["title"] = setupItem["title"];
-                item["value"] = device[paramName];
-                device["setup"].append(item);
-                device.removeMember(paramName);
-            }
-            ++i;
-        }
-    }
-    if (device["setup"].empty()) {
-        device.removeMember("setup");
-    }
-}
-
 bool RemoveDeviceHash(Json::Value& device, const std::unordered_map<std::string, std::string>& deviceTypeHashes)
 {
     for (auto paramIt = device.begin(); paramIt != device.end(); ++paramIt) {
@@ -73,7 +46,8 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
         channel.removeMember("channels");
     }
 
-    TransformSetupParams(channel, deviceTemplate);
+    AppendParams(channel, channel["parameters"]);
+    channel.removeMember("parameters");
 
     return true;
 }
@@ -169,11 +143,8 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
                 device["channels"] = filteredChannels;
             }
 
-            if (device.isMember("standard_setup")) {
-                AppendParams(device, device["standard_setup"]);
-                device.removeMember("standard_setup");
-            }
-            TransformSetupParams(device, deviceTemplate);
+            AppendParams(device, device["parameters"]);
+            device.removeMember("parameters");
 
             if (dt == CUSTOM_DEVICE_TYPE) {
                 device.removeMember("device_type");

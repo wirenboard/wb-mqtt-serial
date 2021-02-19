@@ -888,7 +888,7 @@ bool IsSubdeviceChannel(const Json::Value& channelSchema)
 void AppendParams(Json::Value& dst, const Json::Value& src)
 {
     for (auto it = src.begin(); it != src.end(); ++it) {
-        dst[it.name()] = src[it.name()];
+        dst[it.name()] = *it;
     }
 }
 

@@ -25,11 +25,6 @@ std::string GetSubdeviceKey(const std::string& subDeviceType)
     return GetDeviceKey(subDeviceType) + "_e";
 }
 
-std::string MakeSetupRegisterParameterName(size_t registerIndex)
-{
-    return "set" + std::to_string(registerIndex);
-}
-
 Json::Value GetDefaultSetupRegisterValue(const Json::Value& setupRegisterSchema)
 {
     if (setupRegisterSchema.isMember("default")) {
@@ -92,11 +87,12 @@ Json::Value MakeHiddenNameObject(const std::string& name)
 //      "maximum": MAX,
 //      "enum": [ ... ],
 //      "options": {
-//          "enumTitles" : [ ... ]
+//          "enumTitles" : [ ... ],
+//          "show_opt_in": true
 //      },
 //      "propertyOrder": INDEX
 //  }
-Json::Value MakeSetupRegisterSchema(const Json::Value& setupRegister, int index)
+Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index)
 {
     Json::Value r;
     r["type"] = "integer";
@@ -108,6 +104,7 @@ Json::Value MakeSetupRegisterSchema(const Json::Value& setupRegister, int index)
     if (setupRegister.isMember("enum_titles")) {
         r["options"]["enum_titles"] = setupRegister["enum_titles"];
     }
+    r["options"]["show_opt_in"] = true;
     r["propertyOrder"] = index;
     return r;
 }
@@ -115,6 +112,9 @@ Json::Value MakeSetupRegisterSchema(const Json::Value& setupRegister, int index)
 //  {
 //      "$ref": "#/definitions/channelSettings",
 //      "headerTemplate": CHANNEL_NAME,
+//      "options": {
+//          "wb": { "disable_panel": true }
+//      },
 //      "default": {
 //        "name": CHANNEL_NAME,
 //        "enabled": CHANNEL_ENABLED,
@@ -127,6 +127,7 @@ Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate)
     r["$ref"] = "#/definitions/channelSettings";
     r["headerTemplate"] = channelTemplate["name"].asString();
     r["default"]["name"] = channelTemplate["name"].asString();
+    r["options"]["wb"]["disable_panel"] = true;
     SetIfExists(r["default"], "enabled", channelTemplate, "enabled");
     SetIfExists(r["default"], "poll_interval", channelTemplate, "poll_interval");
     return r;
@@ -135,7 +136,10 @@ Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate)
 //  {
 //      "headerTemplate": CHANNEL_NAME,
 //      "options": {
-//          "keep_oneof_values": false
+//          "keep_oneof_values": false,
+//          "wb": {
+//              "disable_title": true
+//          }
 //      },
 //      "allOf":[
 //          {
@@ -162,6 +166,7 @@ Json::Value MakeTabOneOfChannelSchema(const Json::Value& channel, const std::str
     Json::Value r;
     r["headerTemplate"] = channel["name"].asString();
     r["options"]["keep_oneof_values"] = false;
+    r["options"]["wb"]["disable_title"] = true;
     r["allOf"] = Json::Value(Json::arrayValue);
 
     Json::Value item;
@@ -196,14 +201,16 @@ Json::Value MakeTabOneOfChannelSchema(const Json::Value& channel, const std::str
 //          }
 //      ],
 //      "options": {
-//          "disable_properties": true
+//          "wb": {
+//              "disable_title": true
+//          }
 //      }
 //  }
 Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channel, const std::string& deviceDefinitionPrefix)
 {
     Json::Value r;
     r["headerTemplate"] = channel["name"].asString();
-    r["options"]["disable_properties"] = true;
+    r["options"]["wb"]["disable_title"] = true;
     r["allOf"] = Json::Value(Json::arrayValue);
     Json::Value item;
     // TODO: move to common function
@@ -227,11 +234,12 @@ Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& 
 //  Schema for tabs
 //  {
 //      "type": "array",
-//      "title": TITLE,
+//      "title": TITLE,                      // if any
 //      "options": {
 //          "disable_edit_json": true,
 //          "disable_array_reorder": true,
-//          "disable_collapse": true
+//          "disable_collapse": true,
+//          "compact": true                  // if no title
 //      },
 //      "propertyOrder": PROPERTY_ORDER,
 //      "minItems": CHANNELS_COUNT,
@@ -242,15 +250,19 @@ Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& 
 //      "_format": "tabs"
 //  }
 //
-//  Schema for table
+//  Schema for table or list
 //  {
 //      "type": "array",
-//      "title": TITLE,
+//      "title": TITLE,                      // if any
 //      "options": {
 //          "disable_edit_json": true,
 //          "disable_array_reorder": true,
-//          "disable_collapse": true,
-//          "grid_columns": 12
+//          "grid_columns": 12,
+//          "compact": true,                  // if no title
+//          "wb": {
+//              "disable_title": true,
+//              "disable_array_item_panel": true
+//          }
 //      },
 //      "propertyOrder": PROPERTY_ORDER,
 //      "items": { "$ref", "#/definitions/tableChannelSettings"},
@@ -264,7 +276,7 @@ Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& 
 //          },
 //          ...
 //      ],
-//      "_format": "table"
+//      "_format": "table"                   // if table
 //  }
 Json::Value MakeChannelsSchema(const Json::Value& channels,
                                const std::string& deviceDefinitionPrefix,
@@ -275,11 +287,17 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
 {
     Json::Value r;
     r["type"] = "array";
-    r["title"] = title;
-    r["options"]["disable_edit_json"] = true;
+    if (title.empty()) {
+        r["options"]["compact"] = true;
+    } else {
+        r["title"] = title;
+    }
     r["options"]["disable_array_reorder"] = true;
     if (!allowCollapse) {
-        r["options"]["disable_collapse"] = true;
+        r["options"]["wb"]["disable_title"] = true;
+        r["options"]["wb"]["disable_array_item_panel"] = true;
+    } else {
+        r["options"]["disable_edit_json"] = true;
     }
     r["propertyOrder"] = propertyOrder;
 
@@ -325,6 +343,18 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
     return r;
 }
 
+int MakeDeviceParametersUI(Json::Value& properties, const Json::Value& deviceTemplate, int firstParameterOrder)
+{
+    if (deviceTemplate.isMember("parameters")) {
+        const auto& params = deviceTemplate["parameters"];
+        for (Json::ValueConstIterator it = params.begin(); it != params.end(); ++it) {
+            properties[it.name()] = MakeParameterSchema(*it, firstParameterOrder);
+            ++firstParameterOrder;
+        }
+    }
+    return firstParameterOrder;
+}
+
 //  {
 //      "type": "object",
 //      "title": DEVICE_TYPE,
@@ -337,17 +367,17 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
 //      "properties": {
 //          "DEVICE_HASH": {
 //              "type": "object",
-//              "title": " ",
 //              "options": {
-//                  "disable_edit_json": true,
-//                  "disable_properties": true,
-//                  "disable_collapse": true
+//                  "wb": {
+//                      "disable_title": true
+//                  }
 //              },
 //              "properties": {
-//                  "set_0": { ... },
+//                  "parameter1": PARAMETER_SCHEMA,
 //                  ...
 //                  "standard_channels": STANDARD_CHANNELS_SCHEMA
-//              }
+//              },
+//              "_format": "grid"
 //          }
 //      }
 //  }
@@ -369,37 +399,25 @@ Json::Value MakeSubDeviceUISchema(const std::string&      deviceType,
     res["required"] = req;
 
     res["properties"][set]["type"] = "object";
-    res["properties"][set]["title"] = " ";
-    res["properties"][set]["options"]["disable_edit_json"] = true;
-    res["properties"][set]["options"]["disable_properties"] = true;
-    res["properties"][set]["options"]["disable_collapse"] = true;
+    res["properties"][set]["options"]["wb"]["disable_title"] = true;
 
     std::string channelsFormat("default");
-    std::string channelsTitle(" ");
-    std::string setupFormat("grid");
+    std::string channelsTitle;
     if (subdeviceTemplate.Schema.isMember("ui_options")) {
-        Get(subdeviceTemplate.Schema["ui_options"], "setup_format", setupFormat);
         Get(subdeviceTemplate.Schema["ui_options"], "channels_format", channelsFormat);
         Get(subdeviceTemplate.Schema["ui_options"], "channels_title", channelsTitle);
     }
-    if (setupFormat != "list") {
-        res["properties"][set]["_format"] = setupFormat;
-    }
+    res["properties"][set]["_format"] = "grid";
 
-    int i = 0;
-    if (subdeviceTemplate.Schema.isMember("setup")) {
-        for (const auto& setupRegister: subdeviceTemplate.Schema["setup"]) {
-            if (!setupRegister.isMember("value")) {
-                res["properties"][set]["properties"][MakeSetupRegisterParameterName(i)] = MakeSetupRegisterSchema(setupRegister, i);
-                ++i;
-            }
-        }
+    int order = 1;
+    if (subdeviceTemplate.Schema.isMember("parameters")) {
+        order = MakeDeviceParametersUI(res["properties"][set]["properties"], subdeviceTemplate.Schema, 1);
     }
 
     if (subdeviceTemplate.Schema.isMember("channels")) {
         res["properties"][set]["properties"]["standard_channels"] = MakeChannelsSchema(subdeviceTemplate.Schema["channels"],
                                                                                        devicePrefix,
-                                                                                       i,
+                                                                                       order,
                                                                                        channelsFormat,
                                                                                        channelsTitle);
     } else {
@@ -414,7 +432,7 @@ Json::Value MakeSubDeviceUISchema(const std::string&      deviceType,
 //      "type": "object",
 //      "title": "Device options",
 //      "properties": {
-//          "set_0": { ... },
+//          "parameter1": PARAMETER_SCHEMA,
 //          ...
 //      },
 //      "options": {
@@ -432,14 +450,7 @@ Json::Value MakeDeviceSettingsUI(const Json::Value& deviceTemplate, int property
     res["options"]["disable_edit_json"] = true;
     res["options"]["disable_properties"] = true;
     res["propertyOrder"] = propertyOrder;
-
-    size_t i = 0;
-    for (const auto& setupRegister: deviceTemplate["setup"]) {
-        if (!setupRegister.isMember("value")) {
-            res["properties"][MakeSetupRegisterParameterName(i)] = MakeSetupRegisterSchema(setupRegister, i);
-            ++i;
-        }
-    }
+    MakeDeviceParametersUI(res["properties"], deviceTemplate, 0);
     return res;
 }
 
@@ -447,13 +458,21 @@ Json::Value MakeDeviceSettingsUI(const Json::Value& deviceTemplate, int property
 //      "type": "object",
 //      "title": DEVICE_TITLE,
 //      "required": ["DEVICE_HASH"],
+//      "options": {
+//          "wb": {
+//              "disable_title": true
+//          }
+//      },
 //      "properties": {
 //          "DEVICE_HASH": {
-//              "title": " ",
 //              "type": "object",
 //              "propertyOrder": 9
 //              "options": {
 //                  "disable_edit_json": true,
+//                  "compact": true,
+//                  "wb": {
+//                      "disable_panel": true
+//                  }
 //              },
 //              "allOf": [
 //                  { "$ref": "#/definitions/deviceProperties" },
@@ -462,21 +481,16 @@ Json::Value MakeDeviceSettingsUI(const Json::Value& deviceTemplate, int property
 //              ],
 //              "properties": {
 //                  "standard_channels": STANDARD_CHANNELS_SCHEMA,
-//                  "standard_setup": STANDARD_SETUP_SCHEMA,
+//                  "parameters": PARAMETERS_SCHEMA,
 //                  "slave_id": {
-//                      "$ref": "#/definitions/slave_id",
-//                      "options": { "keep_oneof_values": false }    // we must to place it here due to a bug in json-editor
-//                  } 
-//                  or
-//                  "slave_id": {
-//                      "$ref": "#/definitions/slave_id_broadcast",
-//                      "options": { "keep_oneof_values": false }    // we must to place it here due to a bug in json-editor
+//                      "$ref": "#/definitions/slave_id",   // or "$ref": "#/definitions/slave_id_broadcast"
+//                      "propertyOrder": 2,
+//                      "title": "Slave id"
 //                  }
 //              },
-//              "defaultProperties": ["slave_id", "standard_channels", "standard_setup"],
+//              "defaultProperties": ["slave_id", "standard_channels", "parameters"],
 //              "required": ["slave_id"]
-//          },
-//          "_format": SETUP_FORMAT
+//          }
 //      }
 //  }
 std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& deviceTemplate, TSerialDeviceFactory& deviceFactory)
@@ -491,12 +505,15 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& de
     req.append(set);
     res["required"] = req;
 
+    res["options"]["wb"]["disable_title"] = true;
+
     Json::Value& pr = res["properties"][set];
 
     pr["type"] = "object";
-    pr["title"] = " ";
     pr["propertyOrder"] = 9;
     pr["options"]["disable_edit_json"] = true;
+    pr["options"]["compact"] = true;
+    pr["options"]["wb"]["disable_panel"] = true;
 
     Json::Value ar(Json::arrayValue);
     Json::Value ref;
@@ -513,17 +530,8 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& de
     std::string channelsFormat("default");
     std::string channelsTitle("Channels");
     if (deviceTemplate.Schema.isMember("ui_options")) {
-        SetIfExists(pr, "_format", deviceTemplate.Schema["ui_options"], "setup_format");
         Get(deviceTemplate.Schema["ui_options"], "channels_format", channelsFormat);
         Get(deviceTemplate.Schema["ui_options"], "channels_title", channelsTitle);
-    }
-
-    if (deviceTemplate.Schema.isMember("channels")) {
-        pr["properties"]["standard_channels"] = MakeChannelsSchema(deviceTemplate.Schema["channels"], set, 98, channelsFormat, channelsTitle, true);
-    }
-
-    if (deviceTemplate.Schema.isMember("setup")) {
-        pr["properties"]["standard_setup"] = MakeDeviceSettingsUI(deviceTemplate.Schema, 97);
     }
 
     if ((deviceTemplate.Type != CUSTOM_DEVICE_TYPE) && deviceFactory.GetProtocol(GetProtocolName(deviceTemplate.Schema))->SupportsBroadcast()) {
@@ -531,17 +539,20 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& de
     } else {
         pr["properties"]["slave_id"]["$ref"] = "#/definitions/slave_id";
     }
-    pr["properties"]["slave_id"]["options"]["keep_oneof_values"] = false;
+    pr["properties"]["slave_id"]["propertyOrder"] = 2;  // json-editor drops propertyOrder sometimes so we must to set it
+    pr["properties"]["slave_id"]["title"] = "Slave id"; // json-editor doesn't use title from $ref for titles in properties selection window
 
     req.clear();
     req.append("slave_id");
     pr["required"] = req;
 
     if (deviceTemplate.Schema.isMember("channels")) {
+        pr["properties"]["standard_channels"] = MakeChannelsSchema(deviceTemplate.Schema["channels"], set, 98, channelsFormat, channelsTitle, true);
         req.append("standard_channels");
     }
-    if (deviceTemplate.Schema.isMember("setup")) {
-        req.append("standard_setup");
+    if (deviceTemplate.Schema.isMember("parameters")) {
+        pr["properties"]["parameters"] = MakeDeviceSettingsUI(deviceTemplate.Schema, 97);
+        req.append("parameters");
     }
     pr["defaultProperties"] = req;
 

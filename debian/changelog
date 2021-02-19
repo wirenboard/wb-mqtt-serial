@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.9.0) experimental; urgency=medium
+
+  * Setup section descriptions schema is changed.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 19 Feb 2021 15:01:00 +0500
+
 wb-mqtt-serial (2.8.0) experimental; urgency=medium
 
   * Setup section descriptions for generating UI are added.

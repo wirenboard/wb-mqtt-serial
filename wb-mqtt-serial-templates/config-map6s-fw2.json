@@ -82,18 +82,20 @@
       {
         "device_type": "channel 1",
         "device": {
-            "setup": [
-              {
-                "title": "Turns",
-                "address": "0x1460",
-                "min": 0
-              },
-              {
-                "title": "Phi",
-                "address": "0x1463",
-                "min": 0
+          "parameters": {
+            "turns": {
+              "title": "Turns",
+              "order": 1,
+              "address": "0x1460",
+              "min": 0
+            },
+            "phi": {
+              "title": "Phi",
+              "order": 2,
+              "address": "0x1463",
+              "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Irms",
@@ -183,18 +185,20 @@
       {
         "device_type": "channel 2",
         "device": {
-            "setup": [
-              {
-                "title": "Turns",
-                "address": "0x1460",
-                "min": 0
-              },
-              {
-                "title": "Phi",
-                "address": "0x1463",
-                "min": 0
+          "parameters": {
+            "turns": {
+              "title": "Turns",
+              "order": 1,
+              "address": "0x1460",
+              "min": 0
+            },
+            "phi": {
+              "title": "Phi",
+              "order": 2,
+              "address": "0x1463",
+              "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Irms",
@@ -284,18 +288,20 @@
       {
         "device_type": "channel 3",
         "device": {
-            "setup": [
-              {
-                "title": "Turns",
-                "address": "0x1460",
-                "min": 0
-              },
-              {
-                "title": "Phi",
-                "address": "0x1463",
-                "min": 0
+          "parameters": {
+            "turns": {
+              "title": "Turns",
+              "order": 1,
+              "address": "0x1460",
+              "min": 0
+            },
+            "phi": {
+              "title": "Phi",
+              "order": 2,
+              "address": "0x1463",
+              "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Irms",
@@ -385,18 +391,20 @@
       {
         "device_type": "channel 4",
         "device": {
-            "setup": [
-              {
-                "title": "Turns",
-                "address": "0x1460",
-                "min": 0
-              },
-              {
-                "title": "Phi",
-                "address": "0x1463",
-                "min": 0
+          "parameters": {
+            "turns": {
+              "title": "Turns",
+              "order": 1,
+              "address": "0x1460",
+              "min": 0
+            },
+            "phi": {
+              "title": "Phi",
+              "order": 2,
+              "address": "0x1463",
+              "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Irms",
@@ -486,18 +494,20 @@
       {
         "device_type": "channel 5",
         "device": {
-            "setup": [
-              {
-                "title": "Turns",
-                "address": "0x1460",
-                "min": 0
-              },
-              {
-                "title": "Phi",
-                "address": "0x1463",
-                "min": 0
+          "parameters": {
+            "turns": {
+              "title": "Turns",
+              "order": 1,
+              "address": "0x1460",
+              "min": 0
+            },
+            "phi": {
+              "title": "Phi",
+              "order": 2,
+              "address": "0x1463",
+              "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Irms",
@@ -587,18 +597,20 @@
       {
         "device_type": "channel 6",
         "device": {
-            "setup": [
-              {
-                "title": "Turns",
-                "address": "0x1460",
-                "min": 0
-              },
-              {
-                "title": "Phi",
-                "address": "0x1463",
-                "min": 0
+            "parameters": {
+            "turns": {
+              "title": "Turns",
+              "order": 1,
+              "address": "0x1460",
+              "min": 0
+            },
+            "phi": {
+              "title": "Phi",
+              "order": 2,
+              "address": "0x1463",
+              "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Irms",

@@ -9,55 +9,42 @@ using namespace WBMQTT::JSON;
 
 void UpdateChannels(Json::Value& dst, const Json::Value& userConfig, ITemplateMap& channelTemplates, const std::string& logPrefix);
 
-void AppendSetupItems(Json::Value& dst, const Json::Value& src)
+void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config)
 {
-    if (!dst.isMember("setup")) {
-        dst["setup"] = Json::Value(Json::arrayValue);
+    if (!deviceTemplate.isMember("setup")) {
+        deviceTemplate["setup"] = Json::Value(Json::arrayValue);
     }
 
-    Json::Value newDst(Json::arrayValue);
+    auto& newSetup = deviceTemplate["setup"];
 
-    std::unordered_map<std::string, Json::Value> templateSetup;
-    for (auto& item: dst["setup"]) {
-        templateSetup.insert( {item["title"].asString(), item} );
-    }
-
-    if (src.isMember("setup")) {
-        for (auto& item: src["setup"]) {
-            if (item.isMember("title")) {
-                auto itTemplate = templateSetup.find(item["title"].asString());
-                if (itTemplate != templateSetup.end()) {
-                    Json::Value res;
-                    res["title"] = item["title"];
-                    res["address"] = itTemplate->second["address"];
-                    res["value"] = item["value"];
-                    newDst.append(res);
-                    templateSetup.erase(itTemplate);
-                    continue;
-                }
-            }
+    if (config.isMember("setup")) {
+        for (const auto& item: config["setup"]) {
             if (!item.isMember("address")) {
                 throw TConfigParserException("Setup command '" + item["title"].asString() + "' must have address");
             }
-            newDst.append(item);
+            newSetup.append(item);
         }
     }
 
-    if (dst.isMember("setup")) {
-        for (auto& item: dst["setup"]) {
-            auto itTemplate = templateSetup.find(item["title"].asString());
-            if (itTemplate != templateSetup.end()) {
-                if (item.isMember("value")) {
-                    newDst.append(item);
+    if (deviceTemplate.isMember("parameters")) {
+        for (auto it = deviceTemplate["parameters"].begin(); it != deviceTemplate["parameters"].end(); ++it) {
+            if (config.isMember(it.name())) {
+                auto& cfgItem = config[it.name()];
+                if (cfgItem.asInt()) {
+                    Json::Value item;
+                    item["value"] = cfgItem;
+                    item["address"] = (*it)["address"];
+                    item["title"] = (*it)["title"];
+                    newSetup.append(item);
+                } else {
+                    LOG(Warn) << it.name() << " is not an integer";
                 }
             }
         }
     }
 
-    if (newDst.empty()) {
-        dst.removeMember("setup");
-    } else {
-        dst["setup"] = newDst;
+    if (newSetup.empty()) {
+        deviceTemplate.removeMember("setup");
     }
 }
 
@@ -98,6 +85,23 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
 {
     CheckDeviceType(templateConfig, userConfig, logPrefix);
 
+    const std::vector<std::string> forbiddenOverrides({
+        "id",
+        "type",
+        "reg_type",
+        "address",
+        "format",
+        "max",
+        "scale",
+        "offset",
+        "round_to",
+        "on_value",
+        "error_value",
+        "unsupported_value",
+        "word_order",
+        "consists_of",
+        "oneOf"});
+
     for (auto itProp = userConfig.begin(); itProp != userConfig.end(); ++itProp) {
         if (itProp.name() == "poll_interval" || itProp.name() == "enabled") {
             SetPropertyWithNotification(templateConfig, itProp, logPrefix);
@@ -119,16 +123,12 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
             continue;
         }
 
-        if (itProp.name() == "channels") {
-            templateConfig["channels"] = *itProp;
-            continue;
-        }
-        if (itProp.name() == "setup") {
-            templateConfig["setup"] = *itProp;
+        if (std::find(forbiddenOverrides.begin(), forbiddenOverrides.end(), itProp.name()) != forbiddenOverrides.end()) {
+            LOG(Warn) << logPrefix << " can't override property \"" << itProp.name() << "\"";
             continue;
         }
 
-        LOG(Warn) << logPrefix << " can't override property \"" << itProp.name() << "\"";
+        templateConfig[itProp.name()] = *itProp;
     }
 }
 

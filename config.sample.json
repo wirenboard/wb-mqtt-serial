@@ -90,12 +90,7 @@
                 {
                     "device_type" : "WB-M1W2 DI",
                     "slave_id" : 3,
-                    "setup": [
-                        {
-                            "title": "Input 1 mode",
-                            "value": 1
-                        }
-                    ]
+                    "in1_mode": 1
                 },
                 {
                     "device_type": "WB-MAP3E fw2",
