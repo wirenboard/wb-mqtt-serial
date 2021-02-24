@@ -65,14 +65,14 @@ namespace {
         return defaultValue;
     }
 
-    int GetAddressFromString(const std::string& value, const std::string& errorPrefix)
+    int GetIntFromString(const std::string& value, const std::string& errorPrefix)
     {
         try {
             return std::stoi(value, /*pos= */ 0, /*base= */ 0);
-        } catch (const std::logic_error& e) {}
-
-        throw TConfigParserException(
-            errorPrefix + ": plain integer or '0x..' hex string expected instead of '" + value + "'");
+        } catch (const std::logic_error&) {
+            throw TConfigParserException(
+                errorPrefix + ": plain integer or '0x..' hex string expected instead of '" + value + "'");
+        }
     }
 
     int ToInt(const Json::Value& v, const std::string& title)
@@ -146,7 +146,7 @@ namespace {
                 } else {
                     auto pos2 = addressStr.find(':', pos1 + 1);
 
-                    address = GetAddressFromString(addressStr.substr(0, pos1), "address");
+                    address = GetIntFromString(addressStr.substr(0, pos1), "address");
                     bit_offset = stoi(addressStr.substr(pos1 + 1, pos2));
 
                     if (bit_offset < 0 || bit_offset > 255) {
