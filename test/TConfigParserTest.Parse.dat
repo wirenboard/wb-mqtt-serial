@@ -641,7 +641,7 @@ Ports:
             ReadOnly: 1
             Registers:
                 ------
-                Type and Address: holding: 0
+                Type and Address: holding: 17:2:5
                 Format: S32
                 Scale: 0.03125
                 Offset: -2.4
