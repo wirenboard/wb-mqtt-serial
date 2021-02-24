@@ -79,8 +79,10 @@ namespace {
     {
         if (v.isInt())
             return v.asInt();
-
-        return GetAddressFromString(v.asString(), title);
+        if (!v.isString()) {
+            throw TConfigParserException(title + ": plain integer or '0x..' hex string expected");
+        }
+        return GetIntFromString(v.asString(), title);
     }
 
     uint64_t ToUint64(const Json::Value& v, const string& title)
