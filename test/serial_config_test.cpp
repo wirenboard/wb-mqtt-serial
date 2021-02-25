@@ -76,7 +76,7 @@ TEST_F(TConfigParserTest, Parse)
                     for (auto reg: device_channel->RegisterConfigs) {
                         TTestLogIndent indent(*this);
                         Emit() << "------";
-                        Emit() << "Type and Address: " << reg->TypeName << ": " << reg->Address;
+                        Emit() << "Type and Address: " << reg;
                         Emit() << "Format: " << RegisterFormatName(reg->Format);
                         Emit() << "Scale: " << reg->Scale;
                         Emit() << "Offset: " << reg->Offset;
