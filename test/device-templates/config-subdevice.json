@@ -23,15 +23,23 @@
                 "stride": 1
             }
         ],
+        "parameters" : {
+            "s1": {
+                "title": "s1",
+                "address": 10
+            }
+        },
         "subdevices": [
             {
                 "device_type": "subdevice1",
                 "device": {
-                    "setup": [
-                        {
+                    "parameters": {
+                        "s1": {
                             "title": "s1",
                             "address": 20000
-                        },
+                        }
+                    },
+                    "setup": [
                         {
                             "title": "s2",
                             "address": 9992,
@@ -68,12 +76,14 @@
                             "title": "s21",
                             "address": 20000,
                             "value": "0xfff2"
-                        },
-                        {
+                        }
+                    ],
+                    "parameters": {
+                        "s22": {
                             "title": "s22",
                             "address": 9992
                         }
-                    ],
+                    },
                     "channels": [
                         {
                             "name": "c12",

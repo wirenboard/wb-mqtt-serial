@@ -3,8 +3,9 @@
  "device": {
   "name": "Siemens RDF302",
   "id": "siemens-rdf302",
-  "setup": [
-      {
+  "parameters": {
+      "plant_type": {
+          "order": 1,
           "title": "Plant type",
           "address": "0x006C",
           "enum": [ 0, 1, 2, 3, 4 ],
@@ -17,7 +18,7 @@
           ],
           "default": 0
       },       
-      {
+      "control": {
           "title": "P01. Control sequence. 2-pipe: [0…3], 4-pipe: [2…4]",
           "address": "0x0000",
           "enum": [ 0, 1, 2, 3, 4 ],
@@ -30,7 +31,7 @@
           ],
           "default": 1
       },
-      {
+      "fahrenheit": {
           "title": "P04. Selection of °C or °F",
           "address": "0x0003",
           "enum": [ 0, 1 ],
@@ -40,7 +41,7 @@
           ],
           "default": 0
       }
-  ],  
+    },  
   "channels": [
    {
     "name": "Room operating mode",

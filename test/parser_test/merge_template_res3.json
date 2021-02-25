@@ -27,21 +27,20 @@
     "setup" : 
     [
         {
+            "address" : 10000,
+            "title" : "IODIR",
+            "value" : "0xffff"
+        },
+        {
+            "address" : 9999,
+            "title" : "CONFIG-FLAG",
+            "value" : 1
+        },
+        {
                 "address" : 50000,
                 "title" : "new setup",
                 "value" : "0xffff"
-        },
-        {
-                "address" : 10000,
-                "title" : "IODIR",
-                "value" : "0xffff"
-        },
-        {
-                "address" : 9999,
-                "title" : "CONFIG-FLAG",
-                "value" : 1
         }
-
     ],
     "slave_id" : 2
 }

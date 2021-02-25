@@ -21,6 +21,20 @@
         "value": {
           "title": "Value",
           "$ref": "#/definitions/serial_int"
+        }
+      },
+      "required": ["title", "address", "value"]
+    },
+
+    "parameter": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "address": {
+          "title": "Address",
+          "$ref": "#/definitions/serial_int"
         },
         "enum": {
           "type": "array",
@@ -37,6 +51,9 @@
           "type": "integer"
         },
         "max": {
+          "type": "integer"
+        },
+        "order": {
           "type": "integer"
         }
       },
@@ -83,6 +100,10 @@
         "setup": {
           "type": "array",
           "items": { "$ref": "#/definitions/setup_item" }
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/parameter" }
         },
         "channels" : {
           "type": "array",

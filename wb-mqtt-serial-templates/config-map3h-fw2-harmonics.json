@@ -195,18 +195,20 @@
       {
         "device_type": "phase L1",
         "device": {
-          "setup": [
-            {
+          "parameters": {
+            "turns": {
               "title": "Turns",
+              "order": 1,
               "address": "0x1460",
               "min": 0
             },
-            {
+            "phi": {
               "title": "Phi",
+              "order": 2,
               "address": "0x1463",
               "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Urms",
@@ -637,18 +639,20 @@
       {
         "device_type": "phase L2",
         "device": {
-          "setup": [
-            {
+          "parameters": {
+            "turns": {
               "title": "Turns",
+              "order": 1,
               "address": "0x1460",
               "min": 0
             },
-            {
+            "phi": {
               "title": "Phi",
+              "order": 2,
               "address": "0x1463",
               "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Urms",
@@ -1079,18 +1083,20 @@
       {
         "device_type": "phase L3",
         "device": {
-          "setup": [
-            {
+          "parameters": {
+            "turns": {
               "title": "Turns",
+              "order": 1,
               "address": "0x1460",
               "min": 0
             },
-            {
+            "phi": {
               "title": "Phi",
+              "order": 2,
               "address": "0x1463",
               "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Urms",

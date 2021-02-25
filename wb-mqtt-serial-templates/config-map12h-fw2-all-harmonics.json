@@ -1664,18 +1664,20 @@
       {
         "device_type": "channel phase L1",
         "device": {
-          "setup": [
-            {
+          "parameters": {
+            "turns": {
               "title": "Turns",
+              "order": 1,
               "address": "0x1460",
               "min": 0
             },
-            {
+            "phi": {
               "title": "Phi",
+              "order": 2,
               "address": "0x1463",
               "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Irms",
@@ -2331,18 +2333,20 @@
       {
         "device_type": "channel phase L2",
         "device": {
-          "setup": [
-            {
+          "parameters": {
+            "turns": {
               "title": "Turns",
+              "order": 1,
               "address": "0x1461",
               "min": 0
             },
-            {
+            "phi": {
               "title": "Phi",
+              "order": 2,
               "address": "0x1462",
               "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Irms",
@@ -2998,18 +3002,20 @@
       {
         "device_type": "channel phase L3",
         "device": {
-          "setup": [
-            {
+          "parameters": {
+            "turns": {
               "title": "Turns",
+              "order": 1,
               "address": "0x1462",
               "min": 0
             },
-            {
+            "phi": {
               "title": "Phi",
+              "order": 2,
               "address": "0x1465",
               "min": 0
             }
-          ],
+          },
           "channels": [
             {
               "name": "Irms",
