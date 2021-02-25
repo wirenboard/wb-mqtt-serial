@@ -202,7 +202,7 @@ Json::Value MakeTabOneOfChannelSchema(const Json::Value& channel, const std::str
 //      ],
 //      "options": {
 //          "wb": {
-//              "disable_title": true
+//              "disable_panel": true
 //          }
 //      }
 //  }
@@ -210,7 +210,7 @@ Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channel, const s
 {
     Json::Value r;
     r["headerTemplate"] = channel["name"].asString();
-    r["options"]["wb"]["disable_title"] = true;
+    r["options"]["wb"]["disable_panel"] = true;
     r["allOf"] = Json::Value(Json::arrayValue);
     Json::Value item;
     // TODO: move to common function
@@ -287,14 +287,13 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
 {
     Json::Value r;
     r["type"] = "array";
-    if (title.empty()) {
-        r["options"]["compact"] = true;
-    } else {
+    if (!title.empty()) {
         r["title"] = title;
     }
     r["options"]["disable_array_reorder"] = true;
     if (!allowCollapse) {
         r["options"]["wb"]["disable_title"] = true;
+        r["options"]["disable_collapse"] = true;
         r["options"]["wb"]["disable_array_item_panel"] = true;
     } else {
         r["options"]["disable_edit_json"] = true;
@@ -337,8 +336,15 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
         r["maxItems"] = defaults.size();
         r["default"] = defaults;
     }
-    if ( format != "list" ) {
-        r["_format"] = (tabs ? "tabs" : "table");
+    if ( format == "list" ) {
+        r["options"]["compact"] = true;
+    } else {
+        if (tabs) {
+            r["_format"] = "tabs";
+        } else {
+            r["options"]["compact"] = true;
+            r["_format"] = "table";
+        }
     }
     return r;
 }
@@ -405,7 +411,6 @@ Json::Value MakeSubDeviceUISchema(const std::string&      deviceType,
     std::string channelsTitle;
     if (subdeviceTemplate.Schema.isMember("ui_options")) {
         Get(subdeviceTemplate.Schema["ui_options"], "channels_format", channelsFormat);
-        Get(subdeviceTemplate.Schema["ui_options"], "channels_title", channelsTitle);
     }
     res["properties"][set]["_format"] = "grid";
 
@@ -528,10 +533,8 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& de
     res["properties"][set]["allOf"] = ar;
 
     std::string channelsFormat("default");
-    std::string channelsTitle("Channels");
     if (deviceTemplate.Schema.isMember("ui_options")) {
         Get(deviceTemplate.Schema["ui_options"], "channels_format", channelsFormat);
-        Get(deviceTemplate.Schema["ui_options"], "channels_title", channelsTitle);
     }
 
     if ((deviceTemplate.Type != CUSTOM_DEVICE_TYPE) && deviceFactory.GetProtocol(GetProtocolName(deviceTemplate.Schema))->SupportsBroadcast()) {
@@ -547,7 +550,7 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& de
     pr["required"] = req;
 
     if (deviceTemplate.Schema.isMember("channels")) {
-        pr["properties"]["standard_channels"] = MakeChannelsSchema(deviceTemplate.Schema["channels"], set, 98, channelsFormat, channelsTitle, true);
+        pr["properties"]["standard_channels"] = MakeChannelsSchema(deviceTemplate.Schema["channels"], set, 98, channelsFormat, "Channels", true);
         req.append("standard_channels");
     }
     if (deviceTemplate.Schema.isMember("parameters")) {
