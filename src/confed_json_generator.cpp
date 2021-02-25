@@ -33,15 +33,12 @@ Json::Value MakeJsonFromChannelTemplate(const Json::Value& channelTemplate)
 
 Json::Value MakeJsonFromChannelConfig(const Json::Value& channelConfig)
 {
-    Json::Value res;
-    res["name"] = channelConfig["name"];
     if (channelConfig.isMember("device_type")) {
-        res["device_type"] = channelConfig["device_type"];
-        SetIfExists(res, "channels", channelConfig, "channels");
-        SetIfExists(res, "setup", channelConfig, "setup");
-        return res;
+        return channelConfig;
     }
 
+    Json::Value res;
+    res["name"] = channelConfig["name"];
     res["poll_interval"] = 20;
     SetIfExists(res, "poll_interval", channelConfig, "poll_interval");
     res["enabled"] = true;
@@ -97,44 +94,19 @@ bool IsCustomisableRegister(const Json::Value& registerTemplate)
     return !registerTemplate.isMember("value");
 }
 
-std::pair<Json::Value, Json::Value> SplitSetupRegisters(const Json::Value& configSchema, const Json::Value& deviceTemplateSchema)
+Json::Value GetSetupRegisters(const Json::Value& config, const Json::Value& deviceTemplateSchema)
 {
-    Json::Value setupParams;
-    Json::Value customSetupRegisters(Json::arrayValue);
-    std::unordered_map<std::string, Json::Value> configRegisters;
-    if (configSchema.isMember("setup")) {
-        for (const auto& r: configSchema["setup"]) {
-            configRegisters.insert({r["title"].asString(), r});
-        }
-    }
+    Json::Value setupRegisters;
 
-    if (deviceTemplateSchema.isMember("setup")) {
-        size_t i = 0;
-        for (const auto& r: deviceTemplateSchema["setup"]) {
-            if (IsCustomisableRegister(r)) {
-                auto it = configRegisters.find(r["title"].asString());
-                if (it != configRegisters.end()) {
-                    setupParams[MakeSetupRegisterParameterName(i)] = it->second["value"];
-                    configRegisters.erase(it);
-                } else {
-                    setupParams[MakeSetupRegisterParameterName(i)] = GetDefaultSetupRegisterValue(r);
-                }
-                ++i;
+    if (deviceTemplateSchema.isMember("parameters")) {
+        for (auto it = deviceTemplateSchema["parameters"].begin(); it != deviceTemplateSchema["parameters"].end(); ++it) {
+            if (config.isMember(it.name())) {
+                setupRegisters[it.name()] = *it;
             }
         }
     }
 
-    // Let's append custom registers in the order they are declared in config file
-    if (!configRegisters.empty()) {
-        for (const auto& r: configSchema["setup"]) {
-            auto it = configRegisters.find(r["title"].asString());
-            if (it != configRegisters.end()) {
-                customSetupRegisters.append(r);
-            }
-        }
-    }
-
-    return std::make_pair(setupParams, customSetupRegisters);
+    return setupRegisters;
 }
 
 Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, size_t nestingLevel);
@@ -153,6 +125,8 @@ void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, size_t 
 //      "name": ...
 //      "device_type": DT,
 //      COMMON_DEVICE_SETUP_PARAMS,
+//      "parameter1": PARAMETER1_VALUE,
+//      ...,
 //      "setup": [ ... ],
 //      "channels": [ ... ]
 //  }
@@ -162,8 +136,8 @@ void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, size_t 
 //      "s_DT_HASH": {
 //          "name": ...,
 //          COMMON_DEVICE_SETUP_PARAMS,
-//          "standard_setup": {
-//              "set_1": { ... },
+//          "parameters": {
+//              "parameter1": PARAMETER1_VALUE,
 //              ...
 //          },
 //          "setup": [ ... ],
@@ -176,6 +150,8 @@ void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, size_t 
 //  {
 //      "name": ...
 //      "device_type": CT,
+//      "parameter1": PARAMETER1_VALUE,
+//      ...,
 //      "setup": [ ... ],
 //      "channels": [ ... ]
 //  }
@@ -184,8 +160,8 @@ void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, size_t 
 //  {
 //      "name": ...,
 //      "s_CT_HASH": {
-//          "set_1": { ... },
-//          ...
+//          "parameter1": PARAMETER1_VALUE,
+//          ...,
 //          "setup": [ ... ],
 //          "channels": [ ... ],
 //          "standard_channels": [ ... ]
@@ -210,18 +186,12 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
         }
     }
 
-    auto setupRegs = SplitSetupRegisters(config, deviceTemplate.Schema);
-    if (setupRegs.second.empty()) {
-        newDev.removeMember("setup");
-    } else {
-        newDev["setup"] = setupRegs.second;
-    }
-
-    if (!setupRegs.first.empty()) {
-        if (nestingLevel == 1) {
-            AppendParams(newDev["standard_setup"], setupRegs.first);
-        } else {
-            AppendParams(newDev, setupRegs.first);
+    if ((nestingLevel == 1) && (deviceTemplate.Schema.isMember("parameters"))) {
+        for (auto it = deviceTemplate.Schema["parameters"].begin(); it != deviceTemplate.Schema["parameters"].end(); ++it) {
+            if (newDev.isMember(it.name())) {
+                newDev["parameters"][it.name()] = newDev[it.name()];
+                newDev.removeMember(it.name());
+            }
         }
     }
 

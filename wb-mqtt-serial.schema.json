@@ -46,7 +46,13 @@
           "type": "array",
           "title": "Devices attached to the port",
           "items": { "$ref": "#/definitions/device" },
-          "propertyOrder": 11
+          "propertyOrder": 11,
+          "options": {
+            "array_controls_top": true,
+            "wb": {
+              "disable_panel": true
+            }
+          }
         }
       }
     },
@@ -106,7 +112,12 @@
         }
       ],
       "defaultProperties": ["port_type", "path", "baud_rate", "parity", "data_bits", "stop_bits", "devices", "poll_interval"],
-      "_format": "grid"
+      "_format": "grid",
+      "options": {
+        "wb": {
+          "disable_panel": true
+        }
+      }
     },
     "commonTcpPortSettings": {
       "properties": {
@@ -151,52 +162,58 @@
     "modbusTcpPort": {
       "title": "MODBUS TCP port",
       "type": "object",
+      "properties": {
+        "port_type": {
+          "type": "string",
+          "title": "Port type",
+          "enum": ["modbus tcp"],
+          "default": "modbus tcp",
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true
+          }
+        }
+      },
+      "required": ["port_type"],
       "allOf": [
         { "$ref" : "#/definitions/commonTcpPortSettings"},
-        { "$ref" : "#/definitions/commonPortSettings"},
-        {
-          "properties": {
-            "port_type": {
-              "type": "string",
-              "title": "Port type",
-              "enum": ["modbus tcp"],
-              "default": "modbus tcp",
-              "propertyOrder": 1,
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "required": ["port_type"]
-        }
+        { "$ref" : "#/definitions/commonPortSettings"}
       ],
       "defaultProperties": ["port_type", "address", "port", "enabled", "devices", "poll_interval"],
-      "_format": "grid"
+      "_format": "grid",
+      "options": {
+        "wb": {
+          "disable_panel": true
+        }
+      }
     },
     "tcpPort": {
       "title": "TCP port (Serial over TCP)",
       "type": "object",
+      "properties": {
+        "port_type": {
+          "type": "string",
+          "title": "Port type",
+          "enum": ["tcp"],
+          "default": "tcp",
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true
+          }
+        }
+      },
+      "required": ["port_type"],
       "allOf": [
         { "$ref" : "#/definitions/commonTcpPortSettings"},
-        { "$ref" : "#/definitions/commonPortSettings"},
-        {
-          "properties": {
-            "port_type": {
-              "type": "string",
-              "title": "Port type",
-              "enum": ["tcp"],
-              "default": "tcp",
-              "propertyOrder": 1,
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "required": ["port_type"]
-        }
+        { "$ref" : "#/definitions/commonPortSettings"}
       ],
       "defaultProperties": ["port_type", "address", "port", "enabled", "devices", "poll_interval"],
-      "_format": "grid"
+      "_format": "grid",
+      "options": {
+        "wb": {
+          "disable_panel": true
+        }
+      }
     },
     "port": {
       "headerTemplate": "Port {{self.port_type| }}{{self.path}}{{self.address}} {{self.port}}",
@@ -264,7 +281,7 @@
     },
     "slave_id": {
       "title": "Slave id of the device",
-      "propertyOrder": 1,
+      "propertyOrder": 2,
       "oneOf": [
         {
           "title": "decimal (e.g. 123) or hex (e.g. 0xAF)",
@@ -275,11 +292,14 @@
           "title": "decimal (e.g. 123)",
           "type": "integer"
         }
-      ]
+      ],
+      "options": {
+        "keep_oneof_values": false
+      }
     },
     "slave_id_broadcast": {
       "title": "Slave id of the device or broadcast mode",
-      "propertyOrder": 1,
+      "propertyOrder": 2,
       "oneOf": [
         {
           "title": "decimal (e.g. 123) or hex (e.g. 0xAF) slave id",
@@ -300,13 +320,14 @@
             "enum_titles": ["Requests are sent without specifing exact id of the device. Use the mode if only one device is connected"]
           }
         }
-      ]
+      ],
+      "options": {
+        "keep_oneof_values": false
+      }
     },
     "device_name": {
       "description" : "Device name to be displayed in UI",
       "minLength" : 1,
-      "propertyOrder" : 2,
-      "title" : "Device name",
       "type" : "string"
     },
     "deviceProperties": {
@@ -319,9 +340,9 @@
           "propertyOrder": 1
         },
         "name" : {
-            "$ref" : "#/definitions/device_name",
-            "title" : "Device name",
-            "propertyOrder": 3
+          "$ref" : "#/definitions/device_name",
+          "title" : "Device name",
+          "propertyOrder": 3
         },
         "id": {
           "type": "string",
@@ -845,8 +866,8 @@
           "minimum": 0,
           "default": 20,
           "options": {
-            "enabled": {
-              "poll": true
+            "dependencies": {
+              "enabled": true
             }
           }
         }

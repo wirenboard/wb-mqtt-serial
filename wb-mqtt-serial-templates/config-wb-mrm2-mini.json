@@ -6,8 +6,8 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
-        "setup": [
-            {
+        "parameters": {
+            "in1_mode": {
                 "title": "Input 1 mode",
                 "address": 9,
                 "enum": [ 0, 1, 2, 3, 4, 5 ],
@@ -21,7 +21,7 @@
                     "operate according to mapping-matix, after 20 minutes re-simulate the input state"
                 ]
             },
-            {
+            "in2_mode": {
                 "title": "Input 2 mode",
                 "address": 10,
                 "enum": [ 0, 1, 2, 3, 4, 5 ],
@@ -35,7 +35,7 @@
                     "operate according to mapping-matix, after 20 minutes re-simulate the input state"
                 ]
             }
-        ],
+        },
         "channels": [
             {
                 "name": "Relay 1",
