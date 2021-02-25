@@ -4,15 +4,20 @@ wb-mqtt-serial (2.8.0) experimental; urgency=medium
   * Parameter "enabled" is added to channel's configuration. If false it excludes channel from polling.
   * Siemens RDF302 support is added.
   * UI allows to select broadcast mode only for devices with appropiate protocols in templates.
+  * Correct handling of little-endian register's error values.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 11 Feb 2021 09:42:00 +0500
 
 wb-mqtt-serial (2.7.2) stable; urgency=medium
 
-  * Correct handling of little-endian register's error values.
-
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 16 Feb 2021 20:05:00 +0500
 
+wb-mqtt-serial (2.7.2) stable; urgency=medium
+
+  * Support for hex values in the first part of address of bit registers is added.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 19 Feb 2021 17:56:00 +0500
+ 
 wb-mqtt-serial (2.7.1) stable; urgency=medium
 
   * Do not crash on duplicate channel names.

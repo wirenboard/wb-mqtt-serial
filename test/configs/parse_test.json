@@ -223,7 +223,7 @@
                             "name" : "Reg",
                             "type": "value",
                             "reg_type" : "holding",
-                            "address" : "0x00",
+                            "address" : "0x11:2:5",
                             "format": "s32",
                             "max": 200,
                             "scale": 3.125e-02,

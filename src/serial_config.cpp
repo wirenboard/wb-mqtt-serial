@@ -77,21 +77,24 @@ namespace {
         return defaultValue;
     }
 
+    int GetIntFromString(const std::string& value, const std::string& errorPrefix)
+    {
+        try {
+            return std::stoi(value, /*pos= */ 0, /*base= */ 0);
+        } catch (const std::logic_error&) {
+            throw TConfigParserException(
+                errorPrefix + ": plain integer or '0x..' hex string expected instead of '" + value + "'");
+        }
+    }
+
     int ToInt(const Json::Value& v, const std::string& title)
     {
         if (v.isInt())
             return v.asInt();
-
-        if (v.isString()) {
-            try {
-                return std::stoi(v.asString(), /*pos= */ 0, /*base= */ 0);
-            } catch (const std::logic_error& e) {}
+        if (!v.isString()) {
+            throw TConfigParserException(title + ": plain integer or '0x..' hex string expected");
         }
-
-        throw TConfigParserException(
-            title + ": plain integer or '0x..' hex string expected instead of '" + v.asString() +
-            "'");
-        // v.asString() should give a bit more information what config this exception came from
+        return GetIntFromString(v.asString(), title);
     }
 
     uint64_t ToUint64(const Json::Value& v, const string& title)
@@ -159,7 +162,7 @@ namespace {
                 } else {
                     auto pos2 = addressStr.find(':', pos1 + 1);
 
-                    address = stoi(addressStr.substr(0, pos1));
+                    address = GetIntFromString(addressStr.substr(0, pos1), "address");
                     bit_offset = stoi(addressStr.substr(pos1 + 1, pos2));
 
                     if (bit_offset < 0 || bit_offset > 255) {
