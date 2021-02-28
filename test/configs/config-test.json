@@ -156,6 +156,194 @@
                             "type": "value"
                         }
                     ]
+                },
+                {
+                    "name": "ErrorValueTest",
+                    "id": "ErrorValueTest",
+                    "slave_id": "0x96",
+                    "protocol": "fake",
+                    "channels": [
+                        {
+                            "name" : "s16",
+                            "reg_type" : "fake",
+                            "format" : "s16",
+                            "address" : 0,
+                            "error_value": "0x7FFF"
+                        },
+                        {
+                            "name" : "u16",
+                            "reg_type" : "fake",
+                            "format" : "u16",
+                            "address" : 1,
+                            "error_value": "0x7FFF"
+                        },
+                        {
+                            "name" : "s8",
+                            "reg_type" : "fake",
+                            "format" : "s8",
+                            "address" : 2,
+                            "error_value": "0x7F"
+                        },
+                        {
+                            "name" : "u8",
+                            "reg_type" : "fake",
+                            "format" : "u8",
+                            "address" : 3,
+                            "error_value": "0x7F"
+                        },
+                        {
+                            "name" : "s24",
+                            "reg_type" : "fake",
+                            "format" : "s24",
+                            "address" : 4,
+                            "error_value": "0x7FFFFF"
+                        },
+                        {
+                            "name" : "u24",
+                            "reg_type" : "fake",
+                            "format" : "u24",
+                            "address" : 6,
+                            "error_value": "0x7FFFFF"
+                        },
+                        {
+                            "name" : "s32",
+                            "reg_type" : "fake",
+                            "format" : "s32",
+                            "address" : 8,
+                            "error_value": "0x7FFFFFFF"
+                        },
+                        {
+                            "name" : "u32",
+                            "reg_type" : "fake",
+                            "format" : "u32",
+                            "address" : 10,
+                            "error_value": "0x7FFFFFFF"
+                        },
+                        {
+                            "name" : "s64",
+                            "reg_type" : "fake",
+                            "format" : "s64",
+                            "address" : 12,
+                            "error_value": "0x7FFFFFFFFFFFFFFF"
+                        },
+                        {
+                            "name" : "u64",
+                            "reg_type" : "fake",
+                            "format" : "u64",
+                            "address" : 16,
+                            "error_value": "0x7FFFFFFFFFFFFFFF"
+                        },
+                        {
+                            "name" : "double",
+                            "reg_type" : "fake",
+                            "format" : "double",
+                            "address" : 20,
+                            "error_value": "0x7FFFFFFFFFFFFFFF"
+                        },
+                        {
+                            "name" : "float",
+                            "reg_type" : "fake",
+                            "format" : "float",
+                            "address" : 24,
+                            "error_value": "0x7FFFFFFF"
+                        },
+                        {
+                            "name" : "s16_le",
+                            "reg_type" : "fake",
+                            "format" : "s16",
+                            "address" : 30,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7FFF"
+                        },
+                        {
+                            "name" : "u16_le",
+                            "reg_type" : "fake",
+                            "format" : "u16",
+                            "address" : 31,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7FFF"
+                        },
+                        {
+                            "name" : "s8_le",
+                            "reg_type" : "fake",
+                            "format" : "s8",
+                            "address" : 32,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7F"
+                        },
+                        {
+                            "name" : "u8_le",
+                            "reg_type" : "fake",
+                            "format" : "u8",
+                            "address" : 33,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7F"
+                        },
+                        {
+                            "name" : "s24_le",
+                            "reg_type" : "fake",
+                            "format" : "s24",
+                            "address" : 34,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7FFFFF"
+                        },
+                        {
+                            "name" : "u24_le",
+                            "reg_type" : "fake",
+                            "format" : "u24",
+                            "address" : 36,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7FFFFF"
+                        },
+                        {
+                            "name" : "s32_le",
+                            "reg_type" : "fake",
+                            "format" : "s32",
+                            "address" : 38,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7FFFFFFF"
+                        },
+                        {
+                            "name" : "u32_le",
+                            "reg_type" : "fake",
+                            "format" : "u32",
+                            "address" : 40,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7FFFFFFF"
+                        },
+                        {
+                            "name" : "s64_le",
+                            "reg_type" : "fake",
+                            "format" : "s64",
+                            "address" : 42,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7FFFFFFFFFFFFFFF"
+                        },
+                        {
+                            "name" : "u64_le",
+                            "reg_type" : "fake",
+                            "format" : "u64",
+                            "address" : 46,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7FFFFFFFFFFFFFFF"
+                        },
+                        {
+                            "name" : "double_le",
+                            "reg_type" : "fake",
+                            "format" : "double",
+                            "address" : 50,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7FFFFFFFFFFFFFFF"
+                        },
+                        {
+                            "name" : "float_le",
+                            "reg_type" : "fake",
+                            "format" : "float",
+                            "address" : 54,
+                            "word_order" : "little_endian",
+                            "error_value": "0x7FFFFFFF"
+                        }
+                    ]
                 }
             ]
         }

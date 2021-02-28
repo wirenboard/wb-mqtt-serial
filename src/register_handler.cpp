@@ -63,7 +63,7 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
     bool first_poll = !DidReadReg;
     DidReadReg = true;
 
-    if (Reg->ErrorValue && *Reg->ErrorValue == new_value) {
+    if (Reg->ErrorValue && InvertWordOrderIfNeeded(*Reg->ErrorValue) == new_value) {
         LOG(Debug) << "register " << Reg->ToString() << " contains error value";
         return UpdateReadError(true);
     }
