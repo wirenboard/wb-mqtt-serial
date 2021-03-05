@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.9.1) experimental; urgency=medium
+
+  * Error during reading from config maximum WB-MAI11 channel's value is fixed.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 05 Mar 2021 12:33:00 +0500
+
 wb-mqtt-serial (2.9.0) experimental; urgency=medium
 
   * Setup section descriptions schema is changed.
