@@ -85,7 +85,7 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
 {
     CheckDeviceType(templateConfig, userConfig, logPrefix);
 
-    const std::vector<std::string> forbiddenOverrides({
+    const std::vector<std::string> simpleChannelforbiddenOverrides({
         "id",
         "type",
         "reg_type",
@@ -99,8 +99,15 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
         "error_value",
         "unsupported_value",
         "word_order",
-        "consists_of",
+        "consists_of"});
+
+    const std::vector<std::string> subdeviceChannelforbiddenOverrides({
+        "id",
         "oneOf"});
+
+    const auto& forbiddenOverrides =   (templateConfig.isMember("device_type") || templateConfig.isMember("oneOf")) 
+                                     ? subdeviceChannelforbiddenOverrides
+                                     : simpleChannelforbiddenOverrides;
 
     for (auto itProp = userConfig.begin(); itProp != userConfig.end(); ++itProp) {
         if (itProp.name() == "poll_interval" || itProp.name() == "enabled") {
