@@ -11,15 +11,20 @@ namespace
     const size_t RESPONSE_BUF_LEN = 100;
     const size_t REQUEST_LEN = 7;
     const ptrdiff_t HEADER_SZ = 5;
+
+    const TRegisterTypes RegisterTypes {
+        { TMercury200Device::REG_PARAM_VALUE16, "param8",  "value", U8,    true },
+        { TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true },
+        { TMercury200Device::REG_PARAM_VALUE24, "param24", "value", BCD24, true },
+        { TMercury200Device::REG_PARAM_VALUE32, "param32", "value", BCD32, true }
+    };
 }
 
-REGISTER_UINT_SLAVE_ID_PROTOCOL("mercury200", TMercury200Device, TRegisterTypes(
-        {
-            { TMercury200Device::REG_PARAM_VALUE16, "param8", "value", U8, true },
-            { TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true },
-            { TMercury200Device::REG_PARAM_VALUE24, "param24", "value", BCD24, true },
-            { TMercury200Device::REG_PARAM_VALUE32, "param32", "value", BCD32, true }
-        }));
+void TMercury200Device::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("mercury200", RegisterTypes),
+                             new TBasicDeviceFactory<TMercury200Device>());
+}
 
 TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
@@ -57,8 +62,9 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
 
 uint64_t TMercury200Device::ReadRegister(PRegister reg)
 {
-    uint8_t cmd = (reg->Address & 0xFF00) >> 8;
-    uint8_t offset = (reg->Address & 0xFF);
+    auto addr = GetUint32RegisterAddress(*reg->Address);
+    uint8_t cmd = (addr & 0xFF00) >> 8;
+    uint8_t offset = (addr & 0xFF);
 
     WordSizes size;
     switch (reg->Type) {

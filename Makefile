@@ -9,112 +9,63 @@ ifeq ($(origin CXX),default)
 	CXX := $(CROSS_COMPILE)g++
 endif
 
+ifeq ($(DEBUG),)
+	BUILD_DIR ?= build/release
+else
+	BUILD_DIR ?= build/debug
+endif
+
+# extract Git revision and version number from debian/changelog
 GIT_REVISION:=$(shell git rev-parse HEAD)
 DEB_VERSION:=$(shell head -1 debian/changelog | awk '{ print $$2 }' | sed 's/[\(\)]//g')
 
-DEBUG_CFLAGS=-Wall -ggdb -std=c++14 -O0 -I./src
-NORMAL_CFLAGS=-Wall -Werror -std=c++14 -O3 -I./src
-CFLAGS=$(if $(or $(DEBUG)), $(DEBUG_CFLAGS),$(NORMAL_CFLAGS)) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)"
-LDFLAGS= -lpthread -ljsoncpp -lwbmqtt1
+SERIAL_BIN = wb-mqtt-serial
+SRC_DIRS = src
 
-SERIAL_BIN=wb-mqtt-serial
-SERIAL_SRCS= \
-  src/port.cpp                           \
-  src/register.cpp                       \
-  src/poll_plan.cpp                      \
-  src/serial_client.cpp                  \
-  src/register_handler.cpp               \
-  src/serial_config.cpp                  \
-  src/confed_schema_generator.cpp        \
-  src/confed_json_generator.cpp          \
-  src/confed_config_generator.cpp        \
-  src/config_merge_template.cpp          \
-  src/serial_port_driver.cpp             \
-  src/serial_driver.cpp                  \
-  src/serial_port.cpp                    \
-  src/serial_device.cpp                  \
-  src/crc16.cpp                          \
-  src/modbus_common.cpp                  \
-  src/iec_common.cpp                     \
-  src/bcd_utils.cpp                      \
-  src/log.cpp                            \
-  src/file_descriptor_port.cpp           \
-  src/tcp_port.cpp                       \
-  src/devices/mercury200_device.cpp      \
-  src/devices/uniel_device.cpp           \
-  src/devices/s2k_device.cpp             \
-  src/devices/ivtm_device.cpp            \
-  src/devices/pulsar_device.cpp          \
-  src/devices/modbus_device.cpp          \
-  src/devices/modbus_io_device.cpp       \
-  src/devices/milur_device.cpp           \
-  src/devices/mercury230_device.cpp      \
-  src/devices/lls_device.cpp             \
-  src/devices/em_device.cpp              \
-  src/devices/energomera_iec_device.cpp  \
-  src/devices/neva_device.cpp            \
-  src/file_utils.cpp                     \
+GURUX_SRC = thirdparty/gurux/development/src
+GURUX_INCLUDE = thirdparty/gurux/development/include
 
-SERIAL_OBJS=$(SERIAL_SRCS:.cpp=.o)
+COMMON_SRCS := $(shell find $(SRC_DIRS) $(GURUX_SRC) \( -name *.cpp -or -name *.c \) -and -not -name main.cpp)
+COMMON_OBJS := $(COMMON_SRCS:%=$(BUILD_DIR)/%.o)
 
-TEST_SRCS= \
-  $(TEST_DIR)/expector.o                              \
-  $(TEST_DIR)/poll_plan_test.o                        \
-  $(TEST_DIR)/serial_client_test.o                    \
-  $(TEST_DIR)/serial_config_test.o                    \
-  $(TEST_DIR)/modbus_expectations_base.o              \
-  $(TEST_DIR)/modbus_expectations.o                   \
-  $(TEST_DIR)/modbus_test.o                           \
-  $(TEST_DIR)/modbus_io_expectations.o                \
-  $(TEST_DIR)/modbus_io_test.o                        \
-  $(TEST_DIR)/modbus_tcp_test.o                       \
-  $(TEST_DIR)/uniel_expectations.o                    \
-  $(TEST_DIR)/uniel_test.o                            \
-  $(TEST_DIR)/s2k_expectations.o                      \
-  $(TEST_DIR)/s2k_test.o                              \
-  $(TEST_DIR)/em_test.o                               \
-  $(TEST_DIR)/em_integration.o                        \
-  $(TEST_DIR)/mercury200_expectations.o               \
-  $(TEST_DIR)/mercury200_test.o                       \
-  $(TEST_DIR)/lls_test.o                              \
-  $(TEST_DIR)/mercury230_expectations.o               \
-  $(TEST_DIR)/mercury230_test.o                       \
-  $(TEST_DIR)/milur_expectations.o                    \
-  $(TEST_DIR)/milur_test.o                            \
-  $(TEST_DIR)/ivtm_test.o                             \
-  $(TEST_DIR)/pulsar_test.o                           \
-  $(TEST_DIR)/fake_serial_port.o                      \
-  $(TEST_DIR)/fake_serial_device.o                    \
-  $(TEST_DIR)/device_templates_file_extension_test.o  \
-  $(TEST_DIR)/pty_based_fake_serial.o                 \
-  $(TEST_DIR)/serial_port_test.o                      \
-  $(TEST_DIR)/iec_test.o                              \
-  $(TEST_DIR)/neva_test.o                             \
-  $(TEST_DIR)/energomera_test.o                       \
-  $(TEST_DIR)/main.o                                  \
+LDFLAGS = -lpthread -ljsoncpp -lwbmqtt1
+CXXFLAGS = -std=c++14 -Wall -Werror -I$(SRC_DIRS) -I$(GURUX_INCLUDE) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)" -Wno-psabi
+CFLAGS = -Wall -I$(SRC_DIR) -I$(GURUX_INCLUDE)
 
-TEST_OBJS=$(TEST_SRCS:.cpp=.o)
-TEST_LIBS=-lgtest -lwbmqtt_test_utils
-TEST_DIR=test
-TEST_BIN=wb-homa-test
+ifeq ($(DEBUG),)
+	CXXFLAGS += -O3
+else
+	CXXFLAGS += -g -O0 -fprofile-arcs -ftest-coverage -ggdb
+	LDFLAGS += -lgcov
+endif
+
+TEST_DIR = test
+TEST_SRCS := $(shell find $(TEST_DIR) \( -name *.cpp -or -name *.c \))
+TEST_OBJS := $(TEST_SRCS:%=$(BUILD_DIR)/%.o)
+TEST_BIN = wb-homa-test
+TEST_LDFLAGS = -lgtest -lwbmqtt_test_utils
+
 SRCS=$(SERIAL_SRCS) $(TEST_SRCS)
 
 .PHONY: all clean test
 
 all : $(SERIAL_BIN)
 
-# Modbus
-%.o : %.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
+$(SERIAL_BIN): $(COMMON_OBJS) $(BUILD_DIR)/src/main.cpp.o
+	${CXX} -o $(BUILD_DIR)/$@ $^ $(LDFLAGS)
 
-test/%.o : test/%.cpp
-	${CXX} -c $< -o $@ ${CFLAGS}
+$(BUILD_DIR)/%.c.o: %.c
+	${CC} -c $< -o $@ ${CFLAGS}
 
-$(SERIAL_BIN) : src/main.o $(SERIAL_OBJS)
-	${CXX} $^ ${LDFLAGS} -o $@ 
+$(BUILD_DIR)/%.cpp.o: %.cpp
+	mkdir -p $(dir $@)
+	$(CXX) -c $(CXXFLAGS) -o $@ $^
 
-$(TEST_DIR)/$(TEST_BIN): $(SERIAL_OBJS) $(TEST_OBJS)
-	${CXX} $^ ${LDFLAGS} $(TEST_LIBS) -o $@ -fno-lto
+$(BUILD_DIR)/test/%.o: test/%.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $^
+
+$(TEST_DIR)/$(TEST_BIN): $(COMMON_OBJS) $(TEST_OBJS)
+	${CXX} $^ ${LDFLAGS} $(TEST_LDFLAGS) -o $@ -fno-lto
 
 test: $(TEST_DIR)/$(TEST_BIN)
 	rm -f $(TEST_DIR)/*.dat.out
@@ -129,9 +80,8 @@ test: $(TEST_DIR)/$(TEST_BIN)
 	fi
 
 clean :
-	-rm -rf src/*.o src/devices/*.o $(SERIAL_BIN)
-	-rm -f $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
-
+	rm -rf $(BUILD_DIR)
+	rm -rf $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
 
 install:
 	install -d $(DESTDIR)/usr/share/wb-mqtt-confed/schemas
@@ -151,4 +101,6 @@ install:
 	install -D -m 0644  wb-mqtt-serial-device-template.schema.json $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json
 	cp -r  wb-mqtt-serial-templates $(DESTDIR)/usr/share/wb-mqtt-serial/templates
 
-	install -D -m 0755  $(SERIAL_BIN) $(DESTDIR)/usr/bin/$(SERIAL_BIN)
+	install -D -m 0644  obis-hints.json $(DESTDIR)/usr/share/wb-mqtt-serial/obis-hints.json
+
+	install -D -m 0755  $(BUILD_DIR)/$(SERIAL_BIN) $(DESTDIR)/usr/bin/$(SERIAL_BIN)

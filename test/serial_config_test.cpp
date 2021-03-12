@@ -4,6 +4,7 @@
 #include "serial_config.h"
 #include "config_merge_template.h"
 #include "file_utils.h"
+#include "fake_serial_device.h"
 
 using namespace std;
 using namespace WBMQTT;
@@ -14,6 +15,12 @@ class TConfigParserTest: public TLoggedFixture
 {
     protected:
         TSerialDeviceFactory DeviceFactory;
+
+        void SetUp()
+        {
+            RegisterProtocols(DeviceFactory);
+            TFakeSerialDevice::Register(DeviceFactory);
+        }
 };
 
 TEST_F(TConfigParserTest, Parse)
@@ -39,12 +46,13 @@ TEST_F(TConfigParserTest, Parse)
         Emit() << "GuardInterval: " << port_config->RequestDelay.count();
         Emit() << "Response timeout: " << port_config->ResponseTimeout.count();
 
-        if (port_config->DeviceConfigs.empty()) {
+        if (port_config->Devices.empty()) {
             Emit() << "No device configs.";
             continue;
         }
         Emit() << "DeviceConfigs:";
-        for (auto device_config: port_config->DeviceConfigs) {
+        for (auto device: port_config->Devices) {
+            auto device_config = device->DeviceConfig();
             TTestLogIndent indent(*this);
             Emit() << "------";
             Emit() << "Id: " << device_config->Id;
@@ -115,19 +123,6 @@ TEST_F(TConfigParserTest, Parse)
     }
 }
 
-TEST_F(TConfigParserTest, ForceDebug)
-{
-    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    AddProtocolType(configSchema, "fake");
-    AddRegisterType(configSchema, "fake");
-    TTemplateMap t;
-    PHandlerConfig Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
-                                       DeviceFactory,
-                                       configSchema, 
-                                       t);
-    ASSERT_TRUE(Config->Debug);
-}
-
 TEST_F(TConfigParserTest, UnsuccessfulParse)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
@@ -159,7 +154,15 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
 
     for (auto i = 1 ; i <= 7; ++i) {
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
-        auto mergedConfig(MergeDeviceConfigWithTemplate(deviceConfig, templateMap));
+        std::string deviceType = deviceConfig.get("device_type", "").asString();
+        auto mergedConfig(MergeDeviceConfigWithTemplate(deviceConfig, deviceType, templateMap.GetTemplate(deviceType).Schema));
         ASSERT_EQ(JSON::Parse(GetDataFilePath("parser_test/merge_template_res" + to_string(i) + ".json")), mergedConfig) << i;
+    }
+}
+
+TEST_F(TConfigParserTest, ProtocolParametersSchemaRef)
+{
+    for( const auto& name: DeviceFactory.GetProtocolNames()) {
+        ASSERT_FALSE(DeviceFactory.GetProtocolParametersSchemaRef(name).empty()) << name;
     }
 }

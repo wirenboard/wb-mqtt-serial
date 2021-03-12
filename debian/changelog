@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.10.0) experimental; urgency=medium
+
+  * DLMS/COSEM support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 19 Feb 2021 15:01:00 +0500
+
 wb-mqtt-serial (2.9.1) experimental; urgency=medium
 
   * Error during reading from config maximum WB-MAI11 channel's value is fixed.

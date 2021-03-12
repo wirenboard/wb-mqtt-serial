@@ -83,7 +83,7 @@ namespace
         void SetUp()
         {
             TSerialDeviceTest::SetUp();
-            Dev = std::make_shared<TNevaDevice>(GetDeviceConfig(), SerialPort, TSerialDeviceFactory::GetProtocol("neva"));
+            Dev = std::make_shared<TNevaDevice>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("neva"));
             SerialPort->Open();
         }
 

@@ -6,9 +6,7 @@
 #include <cstdint>
 
 #include "em_device.h"
-
-class TMilurDevice;
-typedef TBasicProtocol<TMilurDevice> TMilurProtocol;
+#include "serial_config.h"
 
 class TMilurDevice: public TEMDevice
 {
@@ -25,6 +23,7 @@ public:
     uint64_t ReadRegister(PRegister reg);
     void Prepare();
 
+    static void Register(TSerialDeviceFactory& factory);
 
 protected:
     bool ConnectionSetup();

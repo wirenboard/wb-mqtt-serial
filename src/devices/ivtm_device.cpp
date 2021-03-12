@@ -14,7 +14,11 @@
 
 #include "ivtm_device.h"
 
-REGISTER_UINT_SLAVE_ID_PROTOCOL("ivtm", TIVTMDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
+void TIVTMDevice::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("ivtm", TRegisterTypes({{ 0, "default", "value", Float, true }})), 
+                             new TBasicDeviceFactory<TIVTMDevice>());
+}
 
 TIVTMDevice::TIVTMDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
@@ -123,7 +127,8 @@ uint64_t TIVTMDevice::ReadRegister(PRegister reg)
 {
     Port()->SkipNoise();
 
-    WriteCommand(SlaveId, reg->Address, reg->GetByteWidth());
+    auto addr = GetUint32RegisterAddress(*reg->Address);
+    WriteCommand(SlaveId, addr, reg->GetByteWidth());
     uint8_t response[4];
     ReadResponse(SlaveId, response, reg->GetByteWidth());
 

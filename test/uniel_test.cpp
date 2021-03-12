@@ -23,7 +23,7 @@ void TUnielDeviceTest::SetUp()
     Dev = std::make_shared<TUnielDevice>(
         std::make_shared<TDeviceConfig>("uniel", std::to_string(0x01), "uniel"),
         SerialPort,
-        TSerialDeviceFactory::GetProtocol("uniel"));
+        DeviceFactory.GetProtocol("uniel"));
 
     InputReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_INPUT, 0x0a, U8));
     RelayReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_RELAY, 0x1b, U8));

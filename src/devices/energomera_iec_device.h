@@ -1,6 +1,7 @@
 #pragma once
 
 #include "iec_common.h"
+#include "serial_config.h"
 
 class TEnergomeraIecDevice: public TIECDevice
 {
@@ -10,4 +11,6 @@ public:
     void WriteRegister(PRegister reg, uint64_t value);
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles = true) const override;
     std::list<PRegisterRange> ReadRegisterRange(PRegisterRange range) override;
+
+    static void Register(TSerialDeviceFactory& factory);
 };

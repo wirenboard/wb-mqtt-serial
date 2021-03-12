@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #include "serial_device.h"
+#include "serial_config.h"
 
 class TS2KDevice: public TSerialDevice, public TUInt32SlaveId
 {
@@ -21,6 +22,8 @@ public:
     TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     virtual uint64_t ReadRegister(PRegister reg);
     virtual void WriteRegister(PRegister reg, uint64_t value);
+
+    static void Register(TSerialDeviceFactory& factory);
 
 private:
     uint8_t CrcS2K(const uint8_t *array, int size);
