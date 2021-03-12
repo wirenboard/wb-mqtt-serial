@@ -16,7 +16,7 @@
         },
         "address": {
           "title": "Address",
-          "$ref": "#/definitions/serial_int"
+          "$ref": "#/definitions/address"
         },
         "value": {
           "title": "Value",
@@ -34,7 +34,7 @@
         },
         "address": {
           "title": "Address",
-          "$ref": "#/definitions/serial_int"
+          "$ref": "#/definitions/address"
         },
         "enum": {
           "type": "array",

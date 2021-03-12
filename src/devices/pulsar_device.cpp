@@ -5,10 +5,18 @@
 
 #include "pulsar_device.h"
 
-REGISTER_UINT_SLAVE_ID_PROTOCOL("pulsar", TPulsarDevice, TRegisterTypes({
-    { TPulsarDevice::REG_DEFAULT, "default", "value", Double, true },
-    { TPulsarDevice::REG_SYSTIME, "systime", "value", U64, true }
-}));
+namespace
+{
+    const TRegisterTypes RegisterTypes{
+        { TPulsarDevice::REG_DEFAULT, "default", "value", Double, true },
+        { TPulsarDevice::REG_SYSTIME, "systime", "value", U64,    true }
+    };
+}
+
+void TPulsarDevice::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("pulsar", RegisterTypes), new TBasicDeviceFactory<TPulsarDevice>());
+}
 
 TPulsarDevice::TPulsarDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
@@ -177,11 +185,12 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, u
 
 uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
 {
+    auto addr = GetUint32RegisterAddress(reg->GetAddress());
     // raw payload data
     uint8_t payload[sizeof (uint64_t)];
 
     // form register mask from address
-    uint32_t mask = 1 << reg->Address; // TODO: register range or something like this
+    uint32_t mask = 1 << addr; // TODO: register range or something like this
 
     // send data request and receive response
     WriteDataRequest(SlaveId, mask, RequestID);

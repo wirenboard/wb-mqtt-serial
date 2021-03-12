@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include "fake_serial_device.h"
+
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 
@@ -271,6 +273,8 @@ std::string TFakeSerialPort::GetDescription() const
 
 void TSerialDeviceTest::SetUp()
 {
+    RegisterProtocols(DeviceFactory);
+    TFakeSerialDevice::Register(DeviceFactory);
     SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
 }
 

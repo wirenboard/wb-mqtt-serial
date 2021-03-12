@@ -9,9 +9,7 @@
 #include <cstdint>
 
 #include "em_device.h"
-
-class TMercury230Device;
-typedef TBasicProtocol<TMercury230Device> TMercury230Protocol;
+#include "serial_config.h"
 
 class TMercury230Device: public TEMDevice
 {
@@ -29,6 +27,8 @@ public:
     TMercury230Device(PDeviceConfig, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void EndPollCycle();
+
+    static void Register(TSerialDeviceFactory& factory);
 
 protected:
     bool ConnectionSetup();

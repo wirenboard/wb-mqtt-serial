@@ -23,7 +23,7 @@ void TS2KDeviceTest::SetUp()
     Dev = std::make_shared<TS2KDevice>(
         std::make_shared<TDeviceConfig>("s2k", std::to_string(0x01), "s2k"),
         SerialPort,
-        TSerialDeviceFactory::GetProtocol("s2k"));
+        DeviceFactory.GetProtocol("s2k"));
 
     RelayReg1 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x01, U8));
     RelayReg2 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x02, U8));

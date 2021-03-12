@@ -14,42 +14,26 @@ namespace
 
 #define LOG(logger) ::logger.Log() << LOG_PREFIX
 
-class TNevaIecProtocol: public TBasicProtocol<TNevaDevice>
-{
-public:
-    TNevaIecProtocol(const TRegisterTypes& reg_types)
-        : TBasicProtocol<TNevaDevice>("neva", reg_types)
-    {}
-
-    bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
-    {
-        // Can be only one device with broadcast address
-        if (id1.empty() || id2.empty()) {
-            return true;
-        }
-        return id1 == id2;
-    }
-
-    bool SupportsBroadcast() const override
-    {
-        return true;
-    }
-};
-
-REGISTER_NEW_PROTOCOL(TNevaIecProtocol,
-    TRegisterTypes({
-        { 0, "obis_cdef", "value", Double, true },
-        { 1, "obis_cdef_pf", "value", Double, true },
-        { 2, "obis_cdef_temp", "value", Double, true },
-        { 3, "obis_cdef_1", "value", Double, true },
-        { 4, "obis_cdef_2", "value", Double, true },
-        { 5, "obis_cdef_3", "value", Double, true },
-        { 6, "obis_cdef_4", "value", Double, true },
-        { 7, "obis_cdef_5", "value", Double, true },
-    }));
-
 namespace
 {
+    const TRegisterTypes RegisterTypes{
+        { 0, "obis_cdef",      "value", Double, true },
+        { 1, "obis_cdef_pf",   "value", Double, true },
+        { 2, "obis_cdef_temp", "value", Double, true },
+        { 3, "obis_cdef_1",    "value", Double, true },
+        { 4, "obis_cdef_2",    "value", Double, true },
+        { 5, "obis_cdef_3",    "value", Double, true },
+        { 6, "obis_cdef_4",    "value", Double, true },
+        { 7, "obis_cdef_5",    "value", Double, true },
+    };
+
+    class TNevaIecProtocol: public TIECProtocol
+    {
+    public:
+        TNevaIecProtocol(): TIECProtocol("neva", RegisterTypes)
+        {}
+    };
+
     std::unordered_map<std::string, size_t> RegisterTypeValueIndices = {
         {"obis_cdef",      0},
         {"obis_cdef_pf",   0},
@@ -236,6 +220,12 @@ namespace
     }
 }
 
+void TNevaDevice::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TNevaIecProtocol(), 
+                             new TBasicDeviceFactory<TNevaDevice>("#/definitions/slave_id_broadcast"));
+}
+
 TNevaDevice::TNevaDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TIECDevice(device_config, port, protocol)
 {}
@@ -290,9 +280,10 @@ void TNevaDevice::EndPollCycle()
 
 uint64_t TNevaDevice::ReadRegister(PRegister reg)
 {
+    auto addr = GetUint32RegisterAddress(reg->GetAddress());
     Port()->SkipNoise();
     Port()->CheckPortOpen();
-    auto result = GetCachedOBISResponse(*Port(), reg->Address, *DeviceConfig(), CmdResultCache);
+    auto result = GetCachedOBISResponse(*Port(), addr, *DeviceConfig(), CmdResultCache);
 
     size_t val_index = RegisterTypeValueIndices[reg->TypeName];
     

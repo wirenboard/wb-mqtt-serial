@@ -13,6 +13,9 @@
 #include "confed_json_generator.h"
 #include "confed_config_generator.h"
 
+#include "device_template_generator.h"
+#include "serial_port.h"
+
 #define STR(x) #x
 #define XSTR(x) STR(x)
 
@@ -37,7 +40,7 @@ namespace
 {
     void PrintStartupInfo()
     {
-        std::string commit(XSTR(WBMQTT_COMMIT));
+        string commit(XSTR(WBMQTT_COMMIT));
         cout << APP_NAME << " " << XSTR(WBMQTT_VERSION);
         if (!commit.empty()) {
             cout << " git " << commit;
@@ -63,7 +66,8 @@ namespace
              << "  -T       prefix    MQTT topic prefix (optional)" << endl
              << "  -g                 Generate JSON Schema for wb-mqtt-confed" << endl
              << "  -j                 Make JSON for wb-mqtt-confed from /etc/wb-mqtt-serial.conf" << endl
-             << "  -J                 Make /etc/wb-mqtt-serial.conf from wb-mqtt-confed output" << endl;
+             << "  -J                 Make /etc/wb-mqtt-serial.conf from wb-mqtt-confed output" << endl
+             << "  -G       options   Generate device template. Type \"-G help\" for options description" << endl;
     }
 
     void ConfigToConfed()
@@ -78,10 +82,10 @@ namespace
             }
             Json::StreamWriterBuilder builder;
             builder["indentation"] = "";
-            std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-            writer->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, configSchema, templates), &std::cout);
-        } catch (const std::exception& e) {
-            std::cout << e.what() << std::endl;
+            unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+            writer->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, configSchema, templates), &cout);
+        } catch (const exception& e) {
+            cout << e.what() << endl;
         }
     }
 
@@ -97,10 +101,10 @@ namespace
             }
             Json::StreamWriterBuilder builder;
             builder["indentation"] = "    ";
-            std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-            writer->write(MakeConfigFromConfed(std::cin, templates), &std::cout);
-        } catch (const std::exception& e) {
-            std::cout << e.what() << std::endl;
+            unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+            writer->write(MakeConfigFromConfed(std::cin, templates), &cout);
+        } catch (const exception& e) {
+            cout << e.what() << endl;
         }
     }
 
@@ -118,22 +122,62 @@ namespace
             }
 
             TSerialDeviceFactory deviceFactory;
+            RegisterProtocols(deviceFactory);
 
             Json::StreamWriterBuilder builder;
             builder["indentation"] = "    ";
-            std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+            unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
             const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
             {
-                std::ofstream f(resultingSchemaFile);
+                ofstream f(resultingSchemaFile);
                 MakeSchemaForConfed(configSchema, templates, deviceFactory);
                 writer->write(configSchema, &f);
             }
-            std::ifstream  src(resultingSchemaFile, std::ios::binary);
-            std::ofstream  dst("/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json",   std::ios::binary);
+            ifstream  src(resultingSchemaFile, ios::binary);
+            ofstream  dst("/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json", ios::binary);
             dst << src.rdbuf();
-        } catch (const std::exception& e) {
+        } catch (const exception& e) {
             LOG(Error) << e.what();
         }
+    }
+
+    void SetDebugLevel(const char* optarg)
+    {
+        try {
+            auto debugLevel = stoi(optarg);
+            switch (debugLevel) {
+            case 0:
+                return;
+            case -1:
+                Info.SetEnabled(false);
+                return;
+
+            case -2:
+                WBMQTT::Info.SetEnabled(false);
+                return;
+
+            case -3:
+                WBMQTT::Info.SetEnabled(false);
+                Info.SetEnabled(false);
+                return;
+
+            case 1:
+                Debug.SetEnabled(true);
+                return;
+
+            case 2:
+                WBMQTT::Debug.SetEnabled(true);
+                return;
+
+            case 3:
+                WBMQTT::Debug.SetEnabled(true);
+                Debug.SetEnabled(true);
+                return;
+            }
+        } catch (...) {}
+        cout << "Invalid -d parameter value " << optarg << endl;
+        PrintUsage();
+        exit(2);
     }
 
     void ParseCommadLine(int                           argc,
@@ -141,13 +185,12 @@ namespace
                          WBMQTT::TMosquittoMqttConfig& mqttConfig,
                          string&                       customConfig)
     {
-        int debugLevel = 0;
         int c;
 
-        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:jJg")) != -1) {
+        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:jJgG:")) != -1) {
             switch (c) {
             case 'd':
-                debugLevel = stoi(optarg);
+                SetDebugLevel(optarg);
                 break;
             case 'c':
                 customConfig = optarg;
@@ -177,48 +220,15 @@ namespace
             case 'g':
                 SchemaForConfed();
                 exit(0);
+            case 'G':
+                GenerateDeviceTemplate(APP_NAME, USER_TEMPLATES_DIR, optarg);
+                exit(0);
             case '?':
             default:
                 PrintStartupInfo();
                 PrintUsage();
                 exit(2);
             }
-        }
-
-        switch (debugLevel) {
-        case 0:
-            break;
-        case -1:
-            Info.SetEnabled(false);
-            break;
-
-        case -2:
-            WBMQTT::Info.SetEnabled(false);
-            break;
-
-        case -3:
-            WBMQTT::Info.SetEnabled(false);
-            Info.SetEnabled(false);
-            break;
-
-        case 1:
-            Debug.SetEnabled(true);
-            break;
-
-        case 2:
-            WBMQTT::Debug.SetEnabled(true);
-            break;
-
-        case 3:
-            WBMQTT::Debug.SetEnabled(true);
-            Debug.SetEnabled(true);
-            break;
-
-        default:
-            PrintStartupInfo();
-            cout << "Invalid -d parameter value " << debugLevel << endl;
-            PrintUsage();
-            exit(2);
         }
 
         if (optind < argc) {
@@ -242,6 +252,7 @@ int main(int argc, char *argv[])
 
     PHandlerConfig handlerConfig;
     TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
     try {
         Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
         TTemplateMap templates(TEMPLATES_DIR,
@@ -257,7 +268,7 @@ int main(int argc, char *argv[])
                                   deviceFactory,
                                   configSchema,
                                   templates);
-    } catch (const std::exception& e) {
+    } catch (const exception& e) {
         LOG(Error) << e.what();
         return 0;
     }
@@ -300,7 +311,7 @@ int main(int argc, char *argv[])
         });
         WBMQTT::SignalHandling::Start();
         WBMQTT::SignalHandling::Wait();
-    } catch (const std::exception & e) {
+    } catch (const exception & e) {
         LOG(Error) << "FATAL: " << e.what();
         return 1;
     }

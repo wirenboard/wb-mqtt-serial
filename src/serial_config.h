@@ -20,6 +20,32 @@
 #include "port.h"
 #include "serial_device.h"
 
+namespace WBMQTT
+{
+    namespace JSON
+    {
+        template <> inline bool Is<std::chrono::milliseconds>(const Json::Value& value)
+        {
+            return value.isInt();
+        }
+
+        template <> inline std::chrono::milliseconds As<std::chrono::milliseconds>(const Json::Value& value)
+        {
+            return std::chrono::milliseconds(value.asInt());
+        }
+
+        template <> inline bool Is<std::chrono::microseconds>(const Json::Value& value)
+        {
+            return value.isInt();
+        }
+
+        template <> inline std::chrono::microseconds As<std::chrono::microseconds>(const Json::Value& value)
+        {
+            return std::chrono::microseconds(value.asInt());
+        }
+    }
+}
+
 struct TDeviceTemplate
 {
     std::string Type;
@@ -98,9 +124,9 @@ class TSubDevicesTemplateMap: public ITemplateMap
 struct TPortConfig 
 {
     PPort                      Port;
-    std::vector<PDeviceConfig> DeviceConfigs;
-    std::chrono::milliseconds  PollInterval          = DefaultPollInterval;
-    std::chrono::microseconds  RequestDelay          = std::chrono::microseconds::zero();
+    std::vector<PSerialDevice> Devices;
+    std::chrono::milliseconds  PollInterval = DefaultPollInterval;
+    std::chrono::microseconds  RequestDelay = std::chrono::microseconds::zero();
 
     /**
      * @brief Maximum allowed time from request to response for any device connected to the port.
@@ -111,7 +137,7 @@ struct TPortConfig
 
     bool IsModbusTcp = false;
 
-    void AddDeviceConfig(PDeviceConfig device_config, TSerialDeviceFactory& deviceFactory);
+    void AddDevice(PSerialDevice device);
 };
 
 typedef std::shared_ptr<TPortConfig> PPortConfig;
@@ -140,6 +166,129 @@ typedef std::function<std::pair<PPort, bool>(const Json::Value& config)> TPortFa
 std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data);
 
 Json::Value LoadConfigSchema(const std::string& schemaFileName);
+
+//! Register address
+struct TRegisterDesc
+{
+    std::shared_ptr<IRegisterAddress> Address;       //! Register address
+    uint8_t                           BitOffset = 0; //! Offset of data in register in bits
+    uint8_t                           BitWidth = 0;  //! Width of data in register in bits
+};
+
+class IDeviceFactory
+{
+    std::string ProtocolParametersSchemaRef;
+public:
+    IDeviceFactory(const std::string& ref = "#/definitions/slave_id"): ProtocolParametersSchemaRef(ref)
+    {}
+
+    virtual ~IDeviceFactory() = default;
+
+    /*! Create new device of given type */
+    virtual PSerialDevice CreateDevice(const Json::Value& deviceData,
+                                       PProtocol          protocol,
+                                       const std::string& defaultId,
+                                       PPortConfig        portConfig) const = 0;
+
+    /**
+     * @brief Load register address from config
+     * 
+     * @param regCfg JSON object representing register configuration
+     * @param device_base_address base address of device in glodal address space
+     * @param stride stride of device
+     * @param registerByteWidth width of register in bytes
+     */
+    virtual TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
+                                              const IRegisterAddress& device_base_address,
+                                              uint32_t                stride,
+                                              uint32_t                registerByteWidth) const = 0;
+
+    /**
+     * @brief Get the $ref value of JSONSchema of specific configuration parameters
+     * 
+     * @return JSONSchema $ref. It is used during generation of a JSON schema for wb-mqtt-confed and web UI.
+     */
+    const std::string& GetProtocolParametersSchemaRef() const;
+};
+
+struct TDeviceConfigLoadParams
+{
+    std::string                       DefaultId;
+    std::chrono::microseconds         DefaultRequestDelay;
+    std::chrono::milliseconds         PortResponseTimeout;
+    std::chrono::milliseconds         DefaultPollInterval;
+    std::unique_ptr<IRegisterAddress> BaseRegisterAddress;
+};
+
+PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             deviceData,
+                                   PProtocol                      protocol,
+                                   const IDeviceFactory&          factory,
+                                   const TDeviceConfigLoadParams& parameters);
+
+class TSerialDeviceFactory
+{
+    std::unordered_map<std::string, std::pair<PProtocol, std::shared_ptr<IDeviceFactory>>> Protocols;
+public:
+    void RegisterProtocol(PProtocol protocol, IDeviceFactory* deviceFactory);
+    PRegisterTypeMap GetRegisterTypes(const std::string& protocolName);
+    PSerialDevice CreateDevice(const Json::Value& device_config, const std::string& defaultId, PPortConfig PPortConfig, TTemplateMap& templates);
+    PProtocol GetProtocol(const std::string& name);
+    const std::string& GetProtocolParametersSchemaRef(const std::string& protocolName) const;
+    std::vector<std::string> GetProtocolNames() const;
+};
+
+void RegisterProtocols(TSerialDeviceFactory& deviceFactory);
+
+struct TRegisterBitsAddress
+{
+    uint32_t Address   = 0;
+    uint8_t  BitWidth  = 0;
+    uint8_t  BitOffset = 0;
+};
+
+TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& regCfg);
+
+/*!
+ * Basic device factory implementation
+ */
+template<class Dev> class TBasicDeviceFactory : public IDeviceFactory
+{
+public:
+    TBasicDeviceFactory() = default;
+    TBasicDeviceFactory(const std::string& ref): IDeviceFactory(ref)
+    {}
+
+    PSerialDevice CreateDevice(const Json::Value& deviceData,
+                               PProtocol          protocol,
+                               const std::string& defaultId,
+                               PPortConfig        portConfig) const override
+    {
+        TDeviceConfigLoadParams params;
+        params.BaseRegisterAddress = std::make_unique<TUint32RegisterAddress>(0);
+        params.DefaultId           = defaultId;
+        params.DefaultPollInterval = portConfig->PollInterval;
+        params.DefaultRequestDelay = portConfig->RequestDelay;
+        params.PortResponseTimeout = portConfig->ResponseTimeout;
+        auto deviceConfig = LoadBaseDeviceConfig(deviceData, protocol, *this, params);
+
+        auto dev = std::make_shared<Dev>(deviceConfig, portConfig->Port, protocol);
+        dev->InitSetupItems();
+        return dev;
+    }
+
+    TRegisterDesc LoadRegisterAddress(const Json::Value&     regCfg,
+                                     const IRegisterAddress& deviceBaseAddress,
+                                     uint32_t                stride,
+                                     uint32_t                registerByteWidth) const override
+    {
+        auto addr = LoadRegisterBitsAddress(regCfg);
+        TRegisterDesc res;
+        res.BitOffset = addr.BitOffset;
+        res.BitWidth = addr.BitWidth;
+        res.Address = std::shared_ptr<IRegisterAddress>(deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, 1));
+        return res;
+    }
+};
 
 PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,

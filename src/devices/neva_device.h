@@ -1,6 +1,7 @@
 #pragma once
 
 #include "iec_common.h"
+#include "serial_config.h"
 
 class TNevaDevice: public TIECDevice
 {
@@ -12,6 +13,8 @@ public:
     void EndPollCycle() override;
     void EndSession() override;
     void Prepare() override;
+
+    static void Register(TSerialDeviceFactory& factory);
 
 private:
     std::unordered_map<uint32_t, std::vector<double> > CmdResultCache;

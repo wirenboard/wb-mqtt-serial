@@ -2,16 +2,26 @@
 #include <iostream>
 #include "mercury230_device.h"
 #include "crc16.h"
+#include "serial_config.h"
 
-REGISTER_UINT_SLAVE_ID_PROTOCOL_WITH_BROADCAST("mercury230", TMercury230Device, TRegisterTypes({
-            { TMercury230Device::REG_VALUE_ARRAY, "array", "power_consumption", U32, true },
-            { TMercury230Device::REG_VALUE_ARRAY12, "array12", "power_consumption", U32, true },
-            { TMercury230Device::REG_PARAM, "param", "value", U24, true },
-            { TMercury230Device::REG_PARAM_SIGN_ACT, "param_sign_active", "value", S24, true },
-            { TMercury230Device::REG_PARAM_SIGN_REACT, "param_sign_reactive", "value", S24, true },
-            { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore", "value", U24, true },
-            { TMercury230Device::REG_PARAM_BE, "param_be", "value", S24, true }
-        }));
+namespace
+{
+    const TRegisterTypes RegisterTypes{
+        { TMercury230Device::REG_VALUE_ARRAY,       "array",               "power_consumption", U32, true },
+        { TMercury230Device::REG_VALUE_ARRAY12,     "array12",             "power_consumption", U32, true },
+        { TMercury230Device::REG_PARAM,             "param",               "value",             U24, true },
+        { TMercury230Device::REG_PARAM_SIGN_ACT,    "param_sign_active",   "value",             S24, true },
+        { TMercury230Device::REG_PARAM_SIGN_REACT,  "param_sign_reactive", "value",             S24, true },
+        { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore",   "value",             U24, true },
+        { TMercury230Device::REG_PARAM_BE,          "param_be",            "value",             S24, true }
+    };
+}
+
+void TMercury230Device::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("mercury230", RegisterTypes, true),
+                             new TBasicDeviceFactory<TMercury230Device>("#/definitions/slave_id_broadcast"));
+}
 
 TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TEMDevice(device_config, port, protocol)
@@ -164,17 +174,18 @@ uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_l
 
 uint64_t TMercury230Device::ReadRegister(PRegister reg)
 {
+    auto addr = GetUint32RegisterAddress(reg->GetAddress());
     switch (reg->Type) {
     case REG_VALUE_ARRAY:
-        return ReadValueArray(reg->Address, 4).values[reg->Address & 0x03];
+        return ReadValueArray(addr, 4).values[addr & 0x03];
     case REG_VALUE_ARRAY12:
-        return ReadValueArray(reg->Address, 3).values[reg->Address & 0x03];
+        return ReadValueArray(addr, 3).values[addr & 0x03];
     case REG_PARAM:
     case REG_PARAM_SIGN_ACT:
     case REG_PARAM_SIGN_REACT:
     case REG_PARAM_SIGN_IGNORE:
     case REG_PARAM_BE:
-        return ReadParam( reg->Address & 0xffff, reg->GetByteWidth(), (RegisterType) reg->Type);
+        return ReadParam( addr & 0xffff, reg->GetByteWidth(), (RegisterType) reg->Type);
     default:
         throw TSerialDeviceException("mercury230: invalid register type");
     }
