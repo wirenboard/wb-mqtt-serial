@@ -181,37 +181,38 @@ void UpdateChannels(Json::Value& channelsFromTemplate, const Json::Value& userCh
     }
 }
 
-Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData, ITemplateMap& templates)
+Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
+                                          const std::string& deviceType,
+                                          Json::Value deviceTemplate)
 {
-    if (!deviceData.isMember("device_type")) {
+
+    if (deviceTemplate.empty()) {
         return deviceData;
     }
 
-    auto deviceType = deviceData["device_type"].asString();
-    Json::Value res(templates.GetTemplate(deviceType).Schema);
-    TSubDevicesTemplateMap subDevicesTemplates(deviceType, res);
-    res.removeMember("subdevices");
+    TSubDevicesTemplateMap subDevicesTemplates(deviceType, deviceTemplate);
+    deviceTemplate.removeMember("subdevices");
 
     std::string deviceName;
     if (deviceData.isMember("name")) {
         deviceName = deviceData["name"].asString();
     } else {
-        deviceName = res["name"].asString() + DecorateIfNotEmpty(" ", deviceData["slave_id"].asString());
+        deviceName = deviceTemplate["name"].asString() + DecorateIfNotEmpty(" ", deviceData["slave_id"].asString());
     }
-    res["name"] = deviceName;
+    deviceTemplate["name"] = deviceName;
 
-    if (res.isMember("id")) {
-        res["id"] = res["id"].asString() + DecorateIfNotEmpty("_", deviceData["slave_id"].asString());
+    if (deviceTemplate.isMember("id")) {
+        deviceTemplate["id"] = deviceTemplate["id"].asString() + DecorateIfNotEmpty("_", deviceData["slave_id"].asString());
     }
 
     for (auto itProp = deviceData.begin(); itProp != deviceData.end(); ++itProp) {
         if (itProp.name() != "channels" && itProp.name() != "setup" && itProp.name() != "name") {
-            SetPropertyWithNotification(res, itProp, deviceName);
+            SetPropertyWithNotification(deviceTemplate, itProp, deviceName);
         }
     }
 
-    AppendSetupItems(res, deviceData);
-    UpdateChannels(res["channels"], deviceData["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
+    AppendSetupItems(deviceTemplate, deviceData);
+    UpdateChannels(deviceTemplate["channels"], deviceData["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
 
-    return res;
+    return deviceTemplate;
 }

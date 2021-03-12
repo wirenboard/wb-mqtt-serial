@@ -53,12 +53,11 @@ public:
 
 void TSerialClientTest::SetUp()
 {
+    RegisterProtocols(DeviceFactory);
+    TFakeSerialDevice::Register(DeviceFactory);
+
     TLoggedFixture::SetUp();
     Port = std::make_shared<TFakeSerialPort>(*this);
-    SerialClient = std::make_shared<TSerialClient>(Port);
-#if 0
-    SerialClient->SetModbusDebug(true);
-#endif
     auto config = std::make_shared<TDeviceConfig>("fake_sample", "1", "fake");
     config->MaxReadRegisters = 0;
 
@@ -74,7 +73,14 @@ void TSerialClientTest::SetUp()
     }
 
     config->FrameTimeout = std::chrono::milliseconds(100);
-    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(SerialClient->CreateDevice(config));
+    Device = std::make_shared<TFakeSerialDevice>(config, Port, DeviceFactory.GetProtocol("fake"));
+    Device->InitSetupItems();
+    std::vector<PSerialDevice> devices;
+    devices.push_back(Device);
+    SerialClient = std::make_shared<TSerialClient>(devices, Port);
+#if 0
+    SerialClient->SetModbusDebug(true);
+#endif
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             Emit() << "Read Callback: <"
                    << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->Address << "> becomes "
@@ -909,20 +915,20 @@ void TSerialClientIntegrationTest::TearDown()
 void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
 {
     for (auto port_config: Config->PortConfigs) {
-        LOG(Info) << "port devices: " << port_config->DeviceConfigs.size();
-        port_config->DeviceConfigs.erase(
-            remove_if(port_config->DeviceConfigs.begin(),
-                      port_config->DeviceConfigs.end(),
-                      [device_name](PDeviceConfig device_config) {
-                          return device_config->Name != device_name;
+        LOG(Info) << "port devices: " << port_config->Devices.size();
+        port_config->Devices.erase(
+            remove_if(port_config->Devices.begin(),
+                      port_config->Devices.end(),
+                      [device_name](auto device) {
+                          return device->DeviceConfig()->Name != device_name;
                       }),
-            port_config->DeviceConfigs.end());
+            port_config->Devices.end());
     }
     Config->PortConfigs.erase(
         remove_if(Config->PortConfigs.begin(),
                   Config->PortConfigs.end(),
                   [](PPortConfig port_config) {
-                      return port_config->DeviceConfigs.empty();
+                      return port_config->Devices.empty();
                   }),
         Config->PortConfigs.end());
     ASSERT_FALSE(Config->PortConfigs.empty()) << "device not found: " << device_name;
@@ -1264,7 +1270,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
                                             [=](const Json::Value&) {return std::make_pair(Port, false);});
 
     if (pollIntervalTest) {
-        Config->PortConfigs[0]->DeviceConfigs[0]->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval = chrono::seconds(100);
+        Config->PortConfigs[0]->Devices[0]->DeviceConfig()->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval = chrono::seconds(100);
     }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);

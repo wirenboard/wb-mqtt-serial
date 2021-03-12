@@ -482,7 +482,8 @@ Json::Value MakeDeviceSettingsUI(const Json::Value& deviceTemplate, int property
 //              "allOf": [
 //                  { "$ref": "#/definitions/deviceProperties" },
 //                  { "$ref": "#/definitions/deviceConfigParamsForUI" },
-//                  { "$ref": "#/definitions/customDevice" }    // for custom device only
+//                  { "$ref": "#/definitions/customDevice" }              // for custom device only
+//                  { "$ref": PROTOCOL_PARAMETERS }                       // if any
 //              ],
 //              "properties": {
 //                  "standard_channels": STANDARD_CHANNELS_SCHEMA,
@@ -530,6 +531,9 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& de
         ref["$ref"] = "#/definitions/customDevice";
         ar.append(ref);
     }
+    // TODO: сделать тест на то, что оно не пустое
+    ref["$ref"] = deviceFactory.GetProtocolParametersSchemaRef(GetProtocolName(deviceTemplate.Schema));
+    ar.append(ref);
     res["properties"][set]["allOf"] = ar;
 
     std::string channelsFormat("default");
@@ -537,13 +541,13 @@ std::pair<Json::Value, Json::Value> MakeDeviceUISchema(const TDeviceTemplate& de
         Get(deviceTemplate.Schema["ui_options"], "channels_format", channelsFormat);
     }
 
-    if ((deviceTemplate.Type != CUSTOM_DEVICE_TYPE) && deviceFactory.GetProtocol(GetProtocolName(deviceTemplate.Schema))->SupportsBroadcast()) {
-        pr["properties"]["slave_id"]["$ref"] = "#/definitions/slave_id_broadcast";
-    } else {
-        pr["properties"]["slave_id"]["$ref"] = "#/definitions/slave_id";
-    }
-    pr["properties"]["slave_id"]["propertyOrder"] = 2;  // json-editor drops propertyOrder sometimes so we must to set it
-    pr["properties"]["slave_id"]["title"] = "Slave id"; // json-editor doesn't use title from $ref for titles in properties selection window
+    // if ((deviceTemplate.Type != CUSTOM_DEVICE_TYPE) && deviceFactory.GetProtocol(GetProtocolName(deviceTemplate.Schema))->SupportsBroadcast()) {
+    //     pr["properties"]["slave_id"]["$ref"] = "#/definitions/slave_id_broadcast";
+    // } else {
+    //     pr["properties"]["slave_id"]["$ref"] = "#/definitions/slave_id";
+    // }
+    // pr["properties"]["slave_id"]["propertyOrder"] = 2;  // json-editor drops propertyOrder sometimes so we must to set it
+    // pr["properties"]["slave_id"]["title"] = "Slave id"; // json-editor doesn't use title from $ref for titles in properties selection window
 
     req.clear();
     req.append("slave_id");

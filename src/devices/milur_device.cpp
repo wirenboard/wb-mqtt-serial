@@ -13,15 +13,21 @@ namespace {
             return size >= n;
         };
     }
+
+    const TRegisterTypes RegisterTypes{
+        { TMilurDevice::REG_PARAM,       "param",        "value",             U24,   true },
+        { TMilurDevice::REG_POWER,       "power",        "power",             S32,   true },
+        { TMilurDevice::REG_ENERGY,      "energy",       "power_consumption", BCD32, true },
+        { TMilurDevice::REG_FREQ,        "freq",         "value",             U16,   true },
+        { TMilurDevice::REG_POWERFACTOR, "power_factor", "value",             S16,   true }
+    };
 }
 
-REGISTER_UINT_SLAVE_ID_PROTOCOL("milur", TMilurDevice, TRegisterTypes({
-            { TMilurDevice::REG_PARAM, "param", "value", U24, true },
-            { TMilurDevice::REG_POWER, "power", "power", S32, true },
-            { TMilurDevice::REG_ENERGY, "energy", "power_consumption", BCD32, true },
-            { TMilurDevice::REG_FREQ, "freq", "value", U16, true },
-            { TMilurDevice::REG_POWERFACTOR, "power_factor", "value", S16, true }
-        }));
+void TMilurDevice::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("milur", RegisterTypes),
+                             new TBasicDeviceFactory<TMilurDevice>());
+}
 
 TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
     : TEMDevice(device_config, port, protocol)
@@ -122,11 +128,11 @@ TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, co
 
 uint64_t TMilurDevice::ReadRegister(PRegister reg)
 {
+    uint8_t addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
     int size = GetExpectedSize(reg->Type);
-    uint8_t addr = static_cast<uint8_t>(reg->Address);
     uint8_t buf[MAX_LEN], *p = buf;
     Talk(0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(SlaveIdWidth, size + 5 + SlaveIdWidth));
-    if (*p++ != reg->Address)
+    if (*p++ != addr)
         throw TSerialDeviceTransientErrorException("bad register address in the response");
     if (*p != size)
         throw TSerialDeviceTransientErrorException("bad register size in the response");

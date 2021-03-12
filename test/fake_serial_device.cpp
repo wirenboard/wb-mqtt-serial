@@ -3,12 +3,6 @@
 
 using namespace std;
 
-REGISTER_UINT_SLAVE_ID_PROTOCOL("fake", TFakeSerialDevice, TRegisterTypes({
-    { TFakeSerialDevice::REG_FAKE, "fake", "text", U16 },
-}));
-
-std::list<TFakeSerialDevice*> TFakeSerialDevice::Devices;
-
 namespace //utility
 {
     uint64_t GetValue(uint16_t* src, int width)
@@ -30,6 +24,13 @@ namespace //utility
     }
 };  //utility
 
+std::list<TFakeSerialDevice*> TFakeSerialDevice::Devices;
+
+void TFakeSerialDevice::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("fake", TRegisterTypes({{ TFakeSerialDevice::REG_FAKE, "fake", "text", U16 }})),
+                             new TBasicDeviceFactory<TFakeSerialDevice>());
+}
 
 TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
@@ -53,11 +54,13 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        if(Blockings[reg->Address].first) {
+        auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+
+        if(Blockings[addr].first) {
             throw TSerialDeviceTransientErrorException("read blocked");
         }
 
-        if (reg->Address < 0 || reg->Address > 256) {
+        if (addr < 0 || addr > 256) {
             throw runtime_error("invalid register address");
         }
 
@@ -65,7 +68,7 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
             throw runtime_error("invalid register type");
         }
 
-        auto value = GetValue(&Registers[reg->Address], reg->Get16BitWidth());
+        auto value = GetValue(&Registers[addr], reg->Get16BitWidth());
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << value << "'";
 
@@ -88,11 +91,13 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        if(Blockings[reg->Address].second) {
+        auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+
+        if(Blockings[addr].second) {
             throw TSerialDeviceTransientErrorException("write blocked");
         }
 
-        if (reg->Address < 0 || reg->Address > 256) {
+        if (addr < 0 || addr > 256) {
             throw runtime_error("invalid register address");
         }
 
@@ -100,7 +105,7 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
             throw runtime_error("invalid register type");
         }
 
-        SetValue(&Registers[reg->Address], reg->Get16BitWidth(), value);
+        SetValue(&Registers[addr], reg->Get16BitWidth(), value);
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << value << "'";
     } catch (const exception & e) {
@@ -148,7 +153,9 @@ void TFakeSerialDevice::SetIsConnected(bool connected)
 }
 
 TFakeSerialDevice::~TFakeSerialDevice()
-{}
+{
+    Devices.erase(std::remove(Devices.begin(), Devices.end(), this), Devices.end());
+}
 
 TFakeSerialDevice* TFakeSerialDevice::GetDevice(const std::string& slaveId)
 {

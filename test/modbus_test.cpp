@@ -46,7 +46,7 @@ void TModbusTest::SetUp()
     auto modbusRtuTraits = std::make_unique<Modbus::TModbusRTUTraits>();
 
     ModbusDev = std::make_shared<TModbusDevice>(std::move(modbusRtuTraits), GetDeviceConfig(), SerialPort,
-                                TSerialDeviceFactory::GetProtocol("modbus"));
+                                DeviceFactory.GetProtocol("modbus"));
     ModbusCoil0 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 0, U8));
     ModbusCoil1 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 1, U8));
     ModbusDiscrete = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_DISCRETE, 20, U8));
@@ -86,11 +86,12 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
     for (auto range: ranges) {
         ModbusDev->ReadRegisterRange(range);
         for (auto& reg: range->RegisterList()) {
-            readAddresses.insert(reg->Address);
+            auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+            readAddresses.insert(addr);
             if (reg->GetError()) {
-                errorRegisters.insert(reg->Address);
+                errorRegisters.insert(addr);
             } else {
-                registerValues[reg->Address] = reg->GetValue();
+                registerValues[addr] = reg->GetValue();
             }
         }
     }
@@ -390,16 +391,16 @@ TEST_F(TModbusIntegrationTest, Errors)
 TEST_F(TModbusIntegrationTest, Holes)
 {
     // we check that driver issue long read request, reading registers 4-18 at once
-    Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
-    Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxBitHole = 80;
     InvalidateConfigPoll(TEST_HOLES);
 }
 
 TEST_F(TModbusIntegrationTest, HolesAutoDisable)
 {
     // we check that driver issue long read request, reading registers 4-18 at once
-    Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
-    Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxBitHole = 80;
     InvalidateConfigPoll(TEST_HOLES);
 
     EnqueueHoldingPackHoles10ReadResponse(0x3); // this must result in auto-disabling holes feature
@@ -437,13 +438,13 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
     // By limiting the max_read_registers to 3 we force driver to issue two requests
     //    for this register range instead of one
 
-    Config->PortConfigs[0]->DeviceConfigs[0]->MaxReadRegisters = 3;
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxReadRegisters = 3;
     InvalidateConfigPoll(TEST_MAX_READ_REGISTERS);
 }
 
 TEST_F(TModbusIntegrationTest, GuardInterval)
 {
-    Config->PortConfigs[0]->DeviceConfigs[0]->RequestDelay = chrono::microseconds(1000);
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->RequestDelay = chrono::microseconds(1000);
     InvalidateConfigPoll();
 }
 
@@ -596,8 +597,8 @@ protected:
 TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
 {
     // we check that driver disables holes feature and after that detects and excludes unavailable register
-    Config->PortConfigs[0]->DeviceConfigs[0]->MaxRegHole = 10;
-    Config->PortConfigs[0]->DeviceConfigs[0]->MaxBitHole = 80;
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxBitHole = 80;
 
     SerialDriver->ClearDevices();
     SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);

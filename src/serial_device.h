@@ -105,7 +105,7 @@ struct TDeviceConfig
 
 private:
     // map key is setup item address
-    std::unordered_map<int, std::string> SetupItemsByAddress;
+    std::unordered_map<std::string, std::string> SetupItemsByAddress;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
@@ -211,7 +211,7 @@ public:
     /*! Construct new protocol with given name and register types list */
     IProtocol(const std::string& name, const TRegisterTypes& reg_types);
 
-    virtual ~IProtocol();
+    virtual ~IProtocol() = default;
 
     /*! Get protocol name */
     virtual const std::string& GetName() const;
@@ -219,20 +219,12 @@ public:
     /*! Get map of register types */
     virtual PRegisterTypeMap GetRegTypes() const;
 
-    /*! Create new device of given type */
-    virtual PSerialDevice CreateDevice(PDeviceConfig config, PPort port) = 0;
-
     virtual bool IsSameSlaveId(const std::string& id1, const std::string& id2) const = 0;
 
     /*! The protocol is from MODBUS family. 
      *  We check it during config validation to pevent using non MODBUS devices on modbus-tcp port.
      */
-    virtual bool IsModbus() const = 0;
-
-    /*! Protocol supports broadcast messages.
-     *  We check it during generation of JSON schema for UI in wb-mqtt-confed.
-     */
-    virtual bool SupportsBroadcast() const = 0;
+    virtual bool IsModbus() const;
 
 private:
     std::string Name;
@@ -240,120 +232,14 @@ private:
 };
 
 /*!
- * Basic protocol implementation
- */
-template<class Dev> class TBasicProtocol : public IProtocol
-{
-public:
-    /*! Construct new protocol with given name and register types list */
-    TBasicProtocol(const std::string& name, const TRegisterTypes& reg_types) 
-        : IProtocol(name, reg_types)
-    {}
-
-public:
-    /*!
-     * New concrete device builder
-     *
-     * \param config    PDeviceConfig for device
-     * \param port      Serial port
-     * \return          Smart pointer to created device
-     */
-    PSerialDevice CreateDevice(PDeviceConfig config, PPort port) override
-    {
-        PSerialDevice dev = std::make_shared<Dev>(config, port, this);
-        dev->InitSetupItems();
-        return dev;
-    }
-
-    bool IsModbus() const
-    {
-        return false;
-    }
-
-    bool SupportsBroadcast() const
-    {
-        return false;
-    }
-};
-
-/*!
  * Basic protocol implementation with uint32_t slave ID without broadcast
  */
-template<class Dev> class TUint32SlaveIdProtocol : public TBasicProtocol<Dev>
+class TUint32SlaveIdProtocol : public IProtocol
 {
     bool AllowBroadcast;
 public:
     /*! Construct new protocol with given name and register types list */
-    TUint32SlaveIdProtocol(const std::string& name, const TRegisterTypes& reg_types, bool allowBroadcast) 
-        : TBasicProtocol<Dev>(name, reg_types), AllowBroadcast(allowBroadcast)
-    {}
+    TUint32SlaveIdProtocol(const std::string& name, const TRegisterTypes& reg_types, bool allowBroadcast = false);
 
-public:
-    bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
-    {
-        return (TUInt32SlaveId(id1, AllowBroadcast) == TUInt32SlaveId(id2, AllowBroadcast));
-    }
-
-    bool SupportsBroadcast() const override
-    {
-        return AllowBroadcast;
-    }
+    bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override;
 };
-
-class TSerialDeviceFactory
-{
-public:
-    static void RegisterProtocol(PProtocol protocol);
-    static PRegisterTypeMap GetRegisterTypes(PDeviceConfig device_config);
-    static PSerialDevice CreateDevice(PDeviceConfig device_config, PPort port);
-    static PProtocol GetProtocol(const std::string& name);
-
-private:
-    static const PProtocol GetProtocolEntry(PDeviceConfig device_config);
-    static std::unordered_map<std::string, PProtocol> Protocols;
-};
-
-class TProtocolRegistrator
-{
-public:
-    TProtocolRegistrator(PProtocol p)
-    {
-        TSerialDeviceFactory::RegisterProtocol(p);
-    }
-};
-
-#define REGISTER_UINT_SLAVE_ID_PROTOCOL(name, cls, regTypes) \
-    TProtocolRegistrator reg__##cls(new TUint32SlaveIdProtocol<cls>(name, regTypes, false))
-
-#define REGISTER_UINT_SLAVE_ID_PROTOCOL_WITH_BROADCAST(name, cls, regTypes) \
-    TProtocolRegistrator reg__##cls(new TUint32SlaveIdProtocol<cls>(name, regTypes, true))
-
-/* Usage:
- *
- * class MyProtocol : public IProtocol {
- *      ...
- * public:
- *      MyProtocol(int arg1, char arg2);
- *      ...
- * };
- *
- * REGISTER_NEW_PROTOCOL(MyProtocol, arg1, arg2);
- */
-#define REGISTER_NEW_PROTOCOL(prot, ...) \
-    TProtocolRegistrator reg__##prot(new prot(__VA_ARGS__))
-
-/* Usage:
- *
- * class MyProtocol : public IProtocol {
- *      ...
- * public:
- *      MyProtocol(int arg1, char arg2);
- *      ...
- * };
- *
- * MyProtocol my_proto_instance(arg1, arg2);
- *
- * REGISTER_PROTOCOL(my_proto_instance);
- */
-#define REGISTER_PROTOCOL(prot) \
-    TProtocolRegistrator reg__##prot(&prot)

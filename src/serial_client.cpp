@@ -20,8 +20,9 @@ namespace {
     typedef std::shared_ptr<TSerialPollEntry> PSerialPollEntry;
 };
 
-TSerialClient::TSerialClient(PPort port)
+TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices, PPort port)
     : Port(port),
+      Devices(devices),
       Active(false),
       ReadCallback([](PRegister, bool){}),
       ErrorCallback([](PRegister, bool){}),
@@ -35,24 +36,6 @@ TSerialClient::~TSerialClient()
 
     // remove all registered devices
     ClearDevices();
-}
-
-PSerialDevice TSerialClient::CreateDevice(PDeviceConfig device_config)
-{
-    if (Active)
-        throw TSerialDeviceException("can't add registers to the active client");
-    LOG(Debug) << "CreateDevice: " << device_config->Id <<
-            (device_config->DeviceType.empty() ? "" : " (" + device_config->DeviceType + ")") <<
-            " @ " << device_config->SlaveId << " -- protocol: " << device_config->Protocol;
-
-    try {
-        PSerialDevice dev = TSerialDeviceFactory::CreateDevice(device_config, Port);
-        DevicesList.push_back(dev);
-        return dev;
-    } catch (const TSerialDeviceException& e) {
-        Disconnect();
-        throw;
-    }
 }
 
 void TSerialClient::AddRegister(PRegister reg)
@@ -102,7 +85,7 @@ void TSerialClient::PrepareRegisterRanges()
         bool at_end = it == RegList.end();
         if ((at_end || (*it)->Device() != last_device) && !cur_regs.empty()) {
             cur_regs.sort([](const PRegister& a, const PRegister& b) {
-                    return a->Type < b->Type || (a->Type == b->Type && a->Address < b->Address);
+                    return a->Type < b->Type || (a->Type == b->Type && a->Address->IsLessThan(*b->Address));
                 });
             interval_map.clear();
 
@@ -255,6 +238,7 @@ void TSerialClient::Cycle()
                         LastAccessedDevice = device;
                     } catch ( const TSerialDeviceTransientErrorException& e) {
                         LOG(Warn) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
+                        statuses.insert(TRegisterRange::ST_UNKNOWN_ERROR);
                     }
 
                     if (device->HasSetupItems()) {
@@ -303,13 +287,13 @@ void TSerialClient::Cycle()
         }
     }
 
-    for (const auto& p: DevicesList) {
+    for (const auto& p: Devices) {
         p->EndPollCycle();
     }
 
     // Port status
     {
-        bool cycleFailed = std::all_of(DevicesList.begin(), DevicesList.end(),
+        bool cycleFailed = std::all_of(Devices.begin(), Devices.end(),
             [](const PSerialDevice & device){ return device->GetIsDisconnected(); }
         );
 
@@ -319,7 +303,7 @@ void TSerialClient::Cycle()
 
 void TSerialClient::ClearDevices()
 {
-    DevicesList.clear();
+    Devices.clear();
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)

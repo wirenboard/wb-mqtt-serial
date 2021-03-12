@@ -20,4 +20,6 @@ public:
     void WriteRegister(PRegister reg, uint64_t value) override;
     std::list<PRegisterRange> ReadRegisterRange(PRegisterRange range) override;
     bool WriteSetupRegisters() override;
+
+    static void Register(TSerialDeviceFactory& factory);
 };

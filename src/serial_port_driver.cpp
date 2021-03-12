@@ -20,7 +20,7 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConf
     : MqttDriver(mqttDriver),
       Config(portConfig)
 {
-    SerialClient = PSerialClient(new TSerialClient(Config->Port));
+    SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port));
 }
 
 TSerialPortDriver::~TSerialPortDriver()
@@ -40,13 +40,12 @@ void TSerialPortDriver::SetUpDevices()
     try {
         auto tx = MqttDriver->BeginTx();
 
-        for (auto & deviceConfig: Config->DeviceConfigs) {
-            auto device = SerialClient->CreateDevice(deviceConfig);
+        for (auto device: Config->Devices) {
             auto mqttDevice = tx->CreateDevice(From(device)).GetValue();
             assert(mqttDevice);
             Devices.push_back(device);
             // init channels' registers
-            for (auto & channelConfig: deviceConfig->DeviceChannelConfigs) {
+            for (auto & channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
                 try {
                     auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
                     mqttDevice->CreateControl(tx, From(channel)).GetValue();

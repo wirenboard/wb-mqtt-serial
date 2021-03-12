@@ -46,8 +46,7 @@ void TMilurTest::SetUp()
 {
 	TSerialDeviceTest::SetUp();
 
-	MilurDev = std::make_shared<TMilurDevice>(GetDeviceConfig(), SerialPort,
-	                            TSerialDeviceFactory::GetProtocol("milur"));
+	MilurDev = std::make_shared<TMilurDevice>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("milur"));
 
 	MilurPhaseAVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 100, U24));
 	MilurPhaseBVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 101, U24));
@@ -223,8 +222,7 @@ PDeviceConfig TMilur32Test::MilurConfig()
 void TMilur32Test::SetUp()
 {
     TSerialDeviceTest::SetUp();
-    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort,
-                            TSerialDeviceFactory::GetProtocol("milur"));
+    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort, DeviceFactory.GetProtocol("milur"));
     MilurTotalConsumptionReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
 
     SerialPort->Open();
