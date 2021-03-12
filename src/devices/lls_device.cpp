@@ -2,7 +2,11 @@
 
 #include <stddef.h>
 
-REGISTER_UINT_SLAVE_ID_PROTOCOL("lls", TLLSDevice, TRegisterTypes({{ 0, "default", "value", Float, true }}));
+void TLLSDevice::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("lls", TRegisterTypes({{ 0, "default", "value", Float, true }})), 
+                             new TBasicDeviceFactory<TLLSDevice>());
+}
 
 TLLSDevice::TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
@@ -84,11 +88,12 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
 
 uint64_t TLLSDevice::ReadRegister(PRegister reg)
 {
-    uint8_t cmd    = (reg->Address & 0xFF00) >> 8;
+    auto addr = GetUint32RegisterAddress(*reg->Address);
+    uint8_t cmd    = (addr & 0xFF00) >> 8;
     auto    result = ExecCommand(cmd);
 
     int result_buf[8] = {};
-    uint8_t offset = (reg->Address & 0x00FF);
+    uint8_t offset = (addr & 0x00FF);
 
     for (int i=0; i< reg->GetByteWidth(); ++i) {
         result_buf[i] = result[offset+i];

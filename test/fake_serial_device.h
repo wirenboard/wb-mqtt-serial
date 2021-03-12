@@ -1,6 +1,7 @@
 #pragma once
 
 #include "serial_device.h"
+#include "serial_config.h"
 
 #include <map>
 
@@ -27,6 +28,7 @@ public:
 
     static TFakeSerialDevice* GetDevice(const std::string& slaveId);
     static void ClearDevices();
+    static void Register(TSerialDeviceFactory& factory);
 
 private:
     PFakeSerialPort FakePort;

@@ -22,7 +22,7 @@ void TPulsarDeviceTest::SetUp()
     Dev = std::make_shared<TPulsarDevice>(
         std::make_shared<TDeviceConfig>("pulsar-heat", std::to_string(107080), "pulsar"),
         SerialPort,
-        TSerialDeviceFactory::GetProtocol("pulsar"));
+        DeviceFactory.GetProtocol("pulsar"));
 
     Heat_TempIn = TRegister::Intern(Dev, TRegisterConfig::Create(0, 2, Float));
     Heat_TempOut = TRegister::Intern(Dev, TRegisterConfig::Create(0, 3, Float));

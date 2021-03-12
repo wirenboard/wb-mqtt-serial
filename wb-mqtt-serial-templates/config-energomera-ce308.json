@@ -1,0 +1,787 @@
+{
+  "title": "Energomera CE308 Z",
+  "device_type": "energomera_ce308_dlms",
+  "device": {
+    "name": "Energomera CE308",
+    "id": "energomera308",
+    "protocol" : "dlms",
+    "dlms_auth": 1,
+    "dlms_client_address": 32,
+    "password": ["0x31", "0x32", "0x33", "0x34", "0x35", "0x36", "0x37", "0x38"],
+    "response_timeout_ms": 1000,
+    "frame_timeout_ms" : 20,
+    "channels" : 
+    [
+      {
+        "address" : "0.0.96.8.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Time of operation, total",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "0.0.96.9.0.255",
+        "name" : "Temperature",
+        "reg_type" : "default",
+        "type" : "temperature",
+        "round_to": 0.01
+      },
+      {
+        "address" : "0.0.135.21.1.255",
+        "enabled" : false,
+        "name" : "Manufacturer specific",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "0.0.135.21.2.255",
+        "enabled" : false,
+        "name" : "Manufacturer specific",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.0.6.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Nominal voltage",
+        "reg_type" : "default",
+        "type" : "voltage"
+      },
+      {
+        "address" : "1.0.0.6.1.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Basic/nominal current",
+        "reg_type" : "default",
+        "type" : "current"
+      },
+      {
+        "address" : "1.0.0.6.2.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Nominal frequency",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.0.6.3.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Maximum current",
+        "reg_type" : "default",
+        "type" : "current"
+      },
+      {
+        "address" : "1.0.0.6.4.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Reference voltage for power quality measurement",
+        "reg_type" : "default",
+        "type" : "voltage"
+      },
+      {
+        "address" : "1.0.1.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.8.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Time integral 1 Rate 0 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.8.1.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Time integral 1 Rate 1 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.8.2.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Time integral 1 Rate 2 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.8.3.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Time integral 1 Rate 3 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.8.4.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Time integral 1 Rate 4 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.8.5.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Time integral 1 Rate 5 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.8.6.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Time integral 1 Rate 6 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.8.7.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Time integral 1 Rate 7 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.8.8.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Time integral 1 Rate 8 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.8.128.255",
+        "enabled" : false,
+        "name" : "1.0.1.8.128.255",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.1.29.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power+ (QI+QIV) Time integral 5",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.8.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power- (QII+QIII) Time integral 1 Rate 0 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.8.1.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power- (QII+QIII) Time integral 1 Rate 1 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.8.2.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power- (QII+QIII) Time integral 1 Rate 2 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.8.3.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power- (QII+QIII) Time integral 1 Rate 3 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.8.4.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power- (QII+QIII) Time integral 1 Rate 4 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.8.5.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power- (QII+QIII) Time integral 1 Rate 5 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.8.6.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power- (QII+QIII) Time integral 1 Rate 6 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.8.7.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power- (QII+QIII) Time integral 1 Rate 7 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.8.8.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power- (QII+QIII) Time integral 1 Rate 8 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.8.128.255",
+        "enabled" : false,
+        "name" : "1.0.2.8.128.255",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.2.29.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power- (QII+QIII) Time integral 5",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.3.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.3.8.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 1 Rate 0 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.3.8.1.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 1 Rate 1 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.3.8.2.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 1 Rate 2 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.3.8.3.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 1 Rate 3 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.3.8.4.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 1 Rate 4 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.3.8.5.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 1 Rate 5 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.3.8.6.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 1 Rate 6 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.3.8.7.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 1 Rate 7 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.3.8.8.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 1 Rate 8 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.3.8.128.255",
+        "name" : "Total RP energy",
+        "reg_type" : "default",
+        "type" : "power_consumption",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.3.29.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 5",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.4.8.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 1 Rate 0 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.4.8.1.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 1 Rate 1 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.4.8.2.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 1 Rate 2 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.4.8.3.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 1 Rate 3 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.4.8.4.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 1 Rate 4 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.4.8.5.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 1 Rate 5 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.4.8.6.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 1 Rate 6 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.4.8.7.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 1 Rate 7 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.4.8.8.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 1 Rate 8 (0 is total)",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.4.8.128.255",
+        "name" : "Total RN energy",
+        "reg_type" : "default",
+        "type" : "power_consumption",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.4.29.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 5",
+        "reg_type" : "default",
+        "type" : "power_consumption"
+      },
+      {
+        "address" : "1.0.9.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Apparent power+ (QI+QIV) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.12.7.1.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Voltage: any phase Inst. value Harmonic 1",
+        "reg_type" : "default",
+        "type" : "voltage"
+      },
+      {
+        "address" : "1.0.12.7.2.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Voltage: any phase Inst. value Harmonic 2",
+        "reg_type" : "default",
+        "type" : "voltage"
+      },
+      {
+        "address" : "1.0.12.7.3.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Voltage: any phase Inst. value Harmonic 3",
+        "reg_type" : "default",
+        "type" : "voltage"
+      },
+      {
+        "address" : "1.0.12.31.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Voltage: any phase Under limit threshold Harmonic / Distortion factor 0 Threshold 255",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.12.35.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Voltage: any phase Over limit threshold Harmonic / Distortion factor 0 Threshold 255",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.12.39.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Voltage: any phase Missing threshold Harmonic / Distortion factor 0 Threshold 255",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.13.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Power factor Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.14.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Supply frequency Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.15.8.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)+abs(QII+QIII)) Time integral 1 Rate 0 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.15.8.1.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)+abs(QII+QIII)) Time integral 1 Rate 1 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.15.8.2.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)+abs(QII+QIII)) Time integral 1 Rate 2 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.15.8.3.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)+abs(QII+QIII)) Time integral 1 Rate 3 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.15.8.4.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)+abs(QII+QIII)) Time integral 1 Rate 4 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.15.8.5.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)+abs(QII+QIII)) Time integral 1 Rate 5 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.15.8.6.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)+abs(QII+QIII)) Time integral 1 Rate 6 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.15.8.7.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)+abs(QII+QIII)) Time integral 1 Rate 7 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.15.8.8.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)+abs(QII+QIII)) Time integral 1 Rate 8 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.16.8.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)-abs(QII+QIII)) Time integral 1 Rate 0 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.16.8.1.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)-abs(QII+QIII)) Time integral 1 Rate 1 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.16.8.2.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)-abs(QII+QIII)) Time integral 1 Rate 2 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.16.8.3.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)-abs(QII+QIII)) Time integral 1 Rate 3 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.16.8.4.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)-abs(QII+QIII)) Time integral 1 Rate 4 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.16.8.5.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)-abs(QII+QIII)) Time integral 1 Rate 5 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.16.8.6.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)-abs(QII+QIII)) Time integral 1 Rate 6 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.16.8.7.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)-abs(QII+QIII)) Time integral 1 Rate 7 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.16.8.8.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li Active power (abs(QI+QIV)-abs(QII+QIII)) Time integral 1 Rate 8 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.21.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L1 Active power+ (QI+QIV) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.23.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L1 Reactive power+ (QI+QII) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.29.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L1 Apparent power+ (QI+QIV) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.31.7.0.255",
+        "name" : "Irms L1",
+        "reg_type" : "default",
+        "type" : "current",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.32.7.0.255",
+        "name" : "Urms L1",
+        "reg_type" : "default",
+        "type" : "voltage",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.33.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L1 Power factor Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.41.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L2 Active power+ (QI+QIV) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.43.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L2 Reactive power+ (QI+QII) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.49.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L2 Apparent power+ (QI+QIV) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.51.7.0.255",
+        "name" : "Irms L2",
+        "reg_type" : "default",
+        "type" : "current",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.52.7.0.255",
+        "name" : "Urms L2",
+        "reg_type" : "default",
+        "type" : "voltage",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.53.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L2 Power factor Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.61.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L3 Active power+ (QI+QIV) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.63.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L3 Reactive power+ (QI+QII) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.69.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L3 Apparent power+ (QI+QIV) Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.71.7.0.255",
+        "name" : "Irms L3",
+        "reg_type" : "default",
+        "type" : "current",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.72.7.0.255",
+        "name" : "Urms L3",
+        "reg_type" : "default",
+        "type" : "voltage",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.73.7.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 L3 Power factor Inst. value",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.81.7.2.255",
+        "name" : "Voltage angle L3-L1",
+        "reg_type" : "default",
+        "type" : "value",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.81.7.4.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Angle of I(L1) - U(L1)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.81.7.10.255",
+        "name" : "Voltage angle L1-L2",
+        "reg_type" : "default",
+        "type" : "value",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.81.7.15.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Angle of I(L2) - U(L2)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.81.7.21.255",
+        "name" : "Voltage angle L2-L3",
+        "reg_type" : "default",
+        "type" : "value",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.81.7.26.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Angle of I(L3) - U(L3)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.88.8.0.255",
+        "enabled" : false,
+        "name" : "Ch. 0 Sum Li A2h QI+QII+QIII+QIV Time integral 1 Rate 0 (0 is total)",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.131.35.0.255",
+        "enabled" : false,
+        "name" : "1.0.131.35.0.255",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.140.35.0.255",
+        "enabled" : false,
+        "name" : "1.0.140.35.0.255",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.140.44.0.255",
+        "enabled" : false,
+        "name" : "1.0.140.44.0.255",
+        "reg_type" : "default",
+        "type" : "value"
+      }
+    ]
+  }
+}

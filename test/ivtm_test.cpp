@@ -21,7 +21,7 @@ void TIVTMDeviceTest::SetUp()
     Dev = std::make_shared<TIVTMDevice>(
         std::make_shared<TDeviceConfig>("ivtm", std::to_string(0x0001), "ivtm"),
         SerialPort,
-        TSerialDeviceFactory::GetProtocol("ivtm"));
+        DeviceFactory.GetProtocol("ivtm"));
 
     Dev1Temp = TRegister::Intern(Dev, TRegisterConfig::Create(0, 0, Float));
     Dev1Humidity = TRegister::Intern(Dev, TRegisterConfig::Create(0, 4, Float));

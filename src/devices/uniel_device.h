@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #include "serial_device.h"
+#include "serial_config.h"
 
 class TUnielDevice: public TSerialDevice, public TUInt32SlaveId
 {
@@ -20,6 +21,8 @@ public:
     TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
+
+    static void Register(TSerialDeviceFactory& factory);
 
 private:
     void WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3);

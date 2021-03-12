@@ -14,9 +14,6 @@ IProtocol::IProtocol(const std::string& name, const TRegisterTypes& reg_types)
         RegTypes->insert(std::make_pair(rt.Name, rt));
 }
 
-IProtocol::~IProtocol()
-{}
-
 const std::string& IProtocol::GetName() const
 { 
     return Name;
@@ -25,6 +22,20 @@ const std::string& IProtocol::GetName() const
 PRegisterTypeMap IProtocol::GetRegTypes() const
 {
     return RegTypes;
+}
+
+bool IProtocol::IsModbus() const
+{
+    return false;
+}
+
+TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name, const TRegisterTypes& reg_types, bool allowBroadcast) 
+    : IProtocol(name, reg_types), AllowBroadcast(allowBroadcast)
+{}
+
+bool TUint32SlaveIdProtocol::IsSameSlaveId(const std::string& id1, const std::string& id2) const
+{
+    return (TUInt32SlaveId(id1, AllowBroadcast) == TUInt32SlaveId(id2, AllowBroadcast));
 }
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
@@ -151,36 +162,6 @@ bool TSerialDevice::WriteSetupRegisters()
         }
     }
     return true;
-}
-
-std::unordered_map<std::string, PProtocol> TSerialDeviceFactory::Protocols;
-
-void TSerialDeviceFactory::RegisterProtocol(PProtocol protocol)
-{
-    Protocols.insert(std::make_pair(protocol->GetName(), protocol));
-}
-
-const PProtocol TSerialDeviceFactory::GetProtocolEntry(PDeviceConfig device_config)
-{
-    return TSerialDeviceFactory::GetProtocol(device_config->Protocol);
-}
-
-PProtocol TSerialDeviceFactory::GetProtocol(const std::string& name)
-{
-    auto it = Protocols.find(name);
-    if (it == Protocols.end())
-        throw TSerialDeviceException("unknown serial protocol: " + name);
-    return it->second;
-}
-
-PSerialDevice TSerialDeviceFactory::CreateDevice(PDeviceConfig device_config, PPort port)
-{
-    return GetProtocolEntry(device_config)->CreateDevice(device_config, port);
-}
-
-PRegisterTypeMap TSerialDeviceFactory::GetRegisterTypes(PDeviceConfig device_config)
-{
-    return GetProtocolEntry(device_config)->GetRegTypes();
 }
 
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)
