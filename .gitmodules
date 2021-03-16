@@ -1,0 +1,3 @@
+[submodule "thirdparty/gurux"]
+	path = thirdparty/gurux
+	url = git@github.com:wirenboard/Gurux.DLMS.cpp.git
