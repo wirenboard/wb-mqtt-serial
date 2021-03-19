@@ -127,7 +127,7 @@ uint64_t TIVTMDevice::ReadRegister(PRegister reg)
 {
     Port()->SkipNoise();
 
-    auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+    auto addr = GetUint32RegisterAddress(*reg->Address);
     WriteCommand(SlaveId, addr, reg->GetByteWidth());
     uint8_t response[4];
     ReadResponse(SlaveId, response, reg->GetByteWidth());

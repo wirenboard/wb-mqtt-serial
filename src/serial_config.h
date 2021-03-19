@@ -174,7 +174,7 @@ public:
      * @param registerByteWidth width of register in bytes
      */
     virtual TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
-                                              const IRegisterAddress* device_base_address,
+                                              const IRegisterAddress& device_base_address,
                                               uint32_t                stride,
                                               uint32_t                registerByteWidth) const = 0;
 
@@ -186,26 +186,31 @@ public:
     const std::string& GetProtocolParametersSchemaRef() const;
 };
 
-void LoadBaseDeviceConfig(TDeviceConfig*            device_config,
-                          const Json::Value&        device_data,
-                          Json::Value               device_template,
-                          PProtocol                 protocol,
-                          const std::string&        default_id,
-                          std::chrono::microseconds defaultRequestDelay,
-                          std::chrono::milliseconds portResponseTimeout,
-                          std::chrono::milliseconds defaultPollInterval,
-                          const IRegisterAddress*   base_register_address,
-                          const IDeviceFactory*     device_factory);
+struct TDeviceConfigLoadParams
+{
+    std::string                       DefaultId;
+    std::chrono::microseconds         DefaultRequestDelay;
+    std::chrono::milliseconds         PortResponseTimeout;
+    std::chrono::milliseconds         DefaultPollInterval;
+    std::unique_ptr<IRegisterAddress> BaseRegisterAddress;
+};
+
+PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             deviceData,
+                                   const Json::Value&             deviceTemplate,
+                                   PProtocol                      protocol,
+                                   const IDeviceFactory&          factory,
+                                   const TDeviceConfigLoadParams& parameters);
 
 class TSerialDeviceFactory
 {
-    std::unordered_map<std::string, std::pair<PProtocol, IDeviceFactory*>> Protocols;
+    std::unordered_map<std::string, std::pair<PProtocol, std::shared_ptr<IDeviceFactory>>> Protocols;
 public:
     void RegisterProtocol(PProtocol protocol, IDeviceFactory* deviceFactory);
     PRegisterTypeMap GetRegisterTypes(const std::string& protocolName);
     PSerialDevice CreateDevice(const Json::Value& device_config, const std::string& defaultId, PPortConfig PPortConfig, TTemplateMap& templates);
     PProtocol GetProtocol(const std::string& name);
     const std::string& GetProtocolParametersSchemaRef(const std::string& protocolName) const;
+    std::vector<std::string> GetProtocolNames() const;
 };
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory);
@@ -235,18 +240,13 @@ public:
                                const std::string& defaultId,
                                PPortConfig        portConfig) const override
     {
-        PDeviceConfig deviceConfig = std::make_shared<TDeviceConfig>();
-        TUint32RegisterAddress baseRegisterAddress(0);
-        LoadBaseDeviceConfig(deviceConfig.get(),
-                             deviceData,
-                             deviceTemplate,
-                             protocol,
-                             defaultId,
-                             portConfig->RequestDelay,
-                             portConfig->ResponseTimeout,
-                             portConfig->PollInterval,
-                             &baseRegisterAddress,
-                             this);
+        TDeviceConfigLoadParams params;
+        params.BaseRegisterAddress = std::make_unique<TUint32RegisterAddress>(0);
+        params.DefaultId           = defaultId;
+        params.DefaultPollInterval = portConfig->PollInterval;
+        params.DefaultRequestDelay = portConfig->RequestDelay;
+        params.PortResponseTimeout = portConfig->ResponseTimeout;
+        auto deviceConfig = LoadBaseDeviceConfig(deviceData, deviceTemplate, protocol, *this, params);
 
         auto dev = std::make_shared<Dev>(deviceConfig, portConfig->Port, protocol);
         dev->InitSetupItems();
@@ -254,7 +254,7 @@ public:
     }
 
     TRegisterDesc LoadRegisterAddress(const Json::Value&     regCfg,
-                                     const IRegisterAddress* deviceBaseAddress,
+                                     const IRegisterAddress& deviceBaseAddress,
                                      uint32_t                stride,
                                      uint32_t                registerByteWidth) const override
     {
@@ -262,7 +262,7 @@ public:
         TRegisterDesc res;
         res.BitOffset = addr.BitOffset;
         res.BitWidth = addr.BitWidth;
-        res.Address = std::shared_ptr<IRegisterAddress>(deviceBaseAddress->CalcNewAddress(addr.Address, stride, registerByteWidth, 1));
+        res.Address = std::shared_ptr<IRegisterAddress>(deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, 1));
         return res;
     }
 };

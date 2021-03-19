@@ -183,15 +183,17 @@ void UpdateChannels(Json::Value& channelsFromTemplate, const Json::Value& userCh
 
 Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
                                           const std::string& deviceType,
-                                          Json::Value deviceTemplate)
+                                          const Json::Value& deviceTemplate)
 {
 
     if (deviceTemplate.empty()) {
         return deviceData;
     }
 
+    auto res(deviceTemplate);
+
     TSubDevicesTemplateMap subDevicesTemplates(deviceType, deviceTemplate);
-    deviceTemplate.removeMember("subdevices");
+    res.removeMember("subdevices");
 
     std::string deviceName;
     if (deviceData.isMember("name")) {
@@ -199,20 +201,20 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
     } else {
         deviceName = deviceTemplate["name"].asString() + DecorateIfNotEmpty(" ", deviceData["slave_id"].asString());
     }
-    deviceTemplate["name"] = deviceName;
+    res["name"] = deviceName;
 
     if (deviceTemplate.isMember("id")) {
-        deviceTemplate["id"] = deviceTemplate["id"].asString() + DecorateIfNotEmpty("_", deviceData["slave_id"].asString());
+        res["id"] = deviceTemplate["id"].asString() + DecorateIfNotEmpty("_", deviceData["slave_id"].asString());
     }
 
     for (auto itProp = deviceData.begin(); itProp != deviceData.end(); ++itProp) {
         if (itProp.name() != "channels" && itProp.name() != "setup" && itProp.name() != "name") {
-            SetPropertyWithNotification(deviceTemplate, itProp, deviceName);
+            SetPropertyWithNotification(res, itProp, deviceName);
         }
     }
 
-    AppendSetupItems(deviceTemplate, deviceData);
-    UpdateChannels(deviceTemplate["channels"], deviceData["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
+    AppendSetupItems(res, deviceData);
+    UpdateChannels(res["channels"], deviceData["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
 
-    return deviceTemplate;
+    return res;
 }

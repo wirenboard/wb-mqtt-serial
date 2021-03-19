@@ -275,9 +275,9 @@ std::string TUint32RegisterAddress::ToString() const
     return std::to_string(Address);
 }
 
-bool TUint32RegisterAddress::IsLessThan(IRegisterAddress& addr) const
+bool TUint32RegisterAddress::IsLessThan(const IRegisterAddress& addr) const
 {
-    auto a = dynamic_cast<TUint32RegisterAddress&>(addr);
+    auto a = dynamic_cast<const TUint32RegisterAddress&>(addr);
     return Address < a.Address;
 }
 
@@ -292,4 +292,9 @@ IRegisterAddress* TUint32RegisterAddress::CalcNewAddress(uint32_t offset,
     }
     stride_offset = (stride_offset + addressByteStep - 1) / addressByteStep;
     return new TUint32RegisterAddress(Address + offset + stride_offset);
+}
+
+uint32_t GetUint32RegisterAddress(const IRegisterAddress& addr)
+{
+    return dynamic_cast<const TUint32RegisterAddress&>(addr).Get();
 }

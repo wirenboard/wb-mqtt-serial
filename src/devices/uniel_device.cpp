@@ -93,7 +93,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
 
 uint64_t TUnielDevice::ReadRegister(PRegister reg)
 {
-    auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+    auto addr = GetUint32RegisterAddress(*reg->Address);
     WriteCommand(READ_CMD, SlaveId, 0, uint8_t(addr), 0);
     uint8_t response[3] = {0};
     ReadResponse(READ_CMD, response);
@@ -107,7 +107,7 @@ uint64_t TUnielDevice::ReadRegister(PRegister reg)
 
 void TUnielDevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+    auto addr = GetUint32RegisterAddress(*reg->Address);
     uint8_t cmd;
     if (reg->Type == REG_BRIGHTNESS) {
         cmd = SET_BRIGHTNESS_CMD;

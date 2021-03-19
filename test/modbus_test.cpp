@@ -86,7 +86,7 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
     for (auto range: ranges) {
         ModbusDev->ReadRegisterRange(range);
         for (auto& reg: range->RegisterList()) {
-            auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+            auto addr = GetUint32RegisterAddress(*reg->Address);
             readAddresses.insert(addr);
             if (reg->GetError()) {
                 errorRegisters.insert(addr);

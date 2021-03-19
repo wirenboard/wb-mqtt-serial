@@ -43,18 +43,13 @@ namespace
                                    const std::string&    defaultId,
                                    PPortConfig           portConfig) const override
         {
-            PDeviceConfig deviceConfig = std::make_shared<TDeviceConfig>();
-            TUint32RegisterAddress baseRegisterAddress(0);
-            LoadBaseDeviceConfig(deviceConfig.get(),
-                                deviceData,
-                                deviceTemplate,
-                                protocol,
-                                defaultId,
-                                portConfig->RequestDelay,
-                                portConfig->ResponseTimeout,
-                                portConfig->PollInterval,
-                                &baseRegisterAddress,
-                                this);
+            TDeviceConfigLoadParams params;
+            params.BaseRegisterAddress = std::make_unique<TUint32RegisterAddress>(0);
+            params.DefaultId           = defaultId;
+            params.DefaultPollInterval = portConfig->PollInterval;
+            params.DefaultRequestDelay = portConfig->RequestDelay;
+            params.PortResponseTimeout = portConfig->ResponseTimeout;
+            auto deviceConfig = LoadBaseDeviceConfig(deviceData, deviceTemplate, protocol, *this, params);
 
             PSerialDevice dev = std::make_shared<TModbusDevice>(ModbusTraitsFactory->GetModbusTraits(portConfig->Port), deviceConfig, portConfig->Port, protocol);
             dev->InitSetupItems();
@@ -62,7 +57,7 @@ namespace
         }
 
         TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
-                                          const IRegisterAddress* deviceBaseAddress,
+                                          const IRegisterAddress& deviceBaseAddress,
                                           uint32_t                stride,
                                           uint32_t                registerByteWidth) const override
         {
@@ -70,7 +65,7 @@ namespace
             TRegisterDesc res;
             res.BitOffset = addr.BitOffset;
             res.BitWidth = addr.BitWidth;
-            res.Address = std::shared_ptr<IRegisterAddress>(deviceBaseAddress->CalcNewAddress(addr.Address, stride, registerByteWidth, 2));
+            res.Address = std::shared_ptr<IRegisterAddress>(deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, 2));
             return res;
         }
     };

@@ -185,7 +185,7 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, u
 
 uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
 {
-    auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+    auto addr = GetUint32RegisterAddress(*reg->Address);
     // raw payload data
     uint8_t payload[sizeof (uint64_t)];
 

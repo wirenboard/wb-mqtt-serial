@@ -92,7 +92,7 @@ public:
      * @return true - this address is less than addr
      * @return false - this address is not less than addr
      */
-    virtual bool IsLessThan(IRegisterAddress& addr) const = 0;
+    virtual bool IsLessThan(const IRegisterAddress& addr) const = 0;
 
     /**
      * @brief Calculate new address based on this
@@ -124,13 +124,16 @@ public:
 
     std::string ToString() const override;
 
-    bool IsLessThan(IRegisterAddress& addr) const;
+    bool IsLessThan(const IRegisterAddress& addr) const;
 
     IRegisterAddress* CalcNewAddress(uint32_t offset,
                                      uint32_t stride,
                                      uint32_t registerByteWidth,
                                      uint32_t addressByteStep) const override;
 };
+
+//! Casts addr to uint32_t and returns it. Throws std::bad_cast if cast is not possible.
+uint32_t GetUint32RegisterAddress(const IRegisterAddress& addr);
 
 struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 {

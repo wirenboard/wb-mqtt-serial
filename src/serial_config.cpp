@@ -152,9 +152,9 @@ namespace {
                                        const Json::Value&      register_data,
                                        std::string&            default_type_str,
                                        const std::string&      channel_name,
-                                       const IRegisterAddress* device_base_address,
+                                       const IRegisterAddress& device_base_address,
                                        size_t                  stride,
-                                       const IDeviceFactory*   deviceFactory)
+                                       const IDeviceFactory&   deviceFactory)
     {
         string reg_type_str = register_data["reg_type"].asString();
         default_type_str = "text";
@@ -190,7 +190,7 @@ namespace {
             unsupported_value = std::make_unique<uint64_t>(ToUint64(register_data["unsupported_value"], "unsupported_value"));
         }
 
-        auto address = deviceFactory->LoadRegisterAddress(register_data, device_base_address, stride, RegisterFormatByteWidth(format));
+        auto address = deviceFactory.LoadRegisterAddress(register_data, device_base_address, stride, RegisterFormatByteWidth(format));
 
         PRegisterConfig reg = TRegisterConfig::Create(
             it->second.Index, address.Address, format, scale, offset,
@@ -203,11 +203,11 @@ namespace {
 
     void LoadSimpleChannel(TDeviceConfig*          device_config,
                            const Json::Value&      channel_data,
-                           const IRegisterAddress* device_base_address,
+                           const IRegisterAddress& device_base_address,
                            size_t                  stride,
                            const std::string&      name_prefix,
                            const std::string&      mqtt_prefix,
-                           const IDeviceFactory*   device_factory)
+                           const IDeviceFactory&   device_factory)
     {
         std::string name(channel_data["name"].asString());
         std::string mqtt_channel_name(name);
@@ -270,25 +270,25 @@ namespace {
 
     void LoadChannel(TDeviceConfig*          device_config,
                      const Json::Value&      channel_data,
-                     const IRegisterAddress* device_base_address,
-                     const IDeviceFactory*   device_factory,
+                     const IRegisterAddress& device_base_address,
+                     const IDeviceFactory&   device_factory,
                      size_t                  stride              = 0,
                      const std::string&      name_prefix         = "",
                      const std::string&      mqtt_prefix         = "");
 
     void LoadSetupItem(TDeviceConfig*          device_config,
                        const Json::Value&      item_data,
-                       const IRegisterAddress* device_base_address,
+                       const IRegisterAddress& device_base_address,
                        size_t                  stride,
                        const std::string&      mqtt_prefix,
-                       const IDeviceFactory*   device_factory);
+                       const IDeviceFactory&   device_factory);
 
     void LoadSubdeviceChannel(TDeviceConfig*          device_config,
                               const Json::Value&      channel_data,
-                              const IRegisterAddress* device_base_address,
+                              const IRegisterAddress& device_base_address,
                               const std::string&      name_prefix,
                               const std::string&      mqtt_prefix,
-                              const IDeviceFactory*   device_factory)
+                              const IDeviceFactory&   device_factory)
     {
         std::string new_name_prefix(channel_data["name"].asString());
         if (!name_prefix.empty()) {
@@ -309,26 +309,26 @@ namespace {
         if (channel_data.isMember("shift")) {
             shift = GetInt(channel_data, "shift");
         }
-        std::unique_ptr<IRegisterAddress> baseAddress(device_base_address->CalcNewAddress(shift, 0, 0, 0));
+        std::unique_ptr<IRegisterAddress> baseAddress(device_base_address.CalcNewAddress(shift, 0, 0, 0));
 
         size_t stride = Read(channel_data, "stride", 0);
         if (channel_data.isMember("setup")) {
             for(const auto& setupItem: channel_data["setup"])
-                LoadSetupItem(device_config, setupItem, baseAddress.get(), stride, new_name_prefix, device_factory);
+                LoadSetupItem(device_config, setupItem, *baseAddress, stride, new_name_prefix, device_factory);
         }
 
 
         if (channel_data.isMember("channels")) {
             for (const auto& ch: channel_data["channels"]) {
-                LoadChannel(device_config, ch, baseAddress.get(), device_factory, stride, new_name_prefix, mqtt_channel_prefix);
+                LoadChannel(device_config, ch, *baseAddress, device_factory, stride, new_name_prefix, mqtt_channel_prefix);
             }
         }
     }
 
     void LoadChannel(TDeviceConfig*          device_config,
                      const Json::Value&      channel_data,
-                     const IRegisterAddress* device_base_address,
-                     const IDeviceFactory*   device_factory,
+                     const IRegisterAddress& device_base_address,
+                     const IDeviceFactory&   device_factory,
                      size_t                  stride,
                      const std::string&      name_prefix,
                      const std::string&      mqtt_prefix)
@@ -346,10 +346,10 @@ namespace {
 
     void LoadSetupItem(TDeviceConfig*          device_config,
                        const Json::Value&      item_data,
-                       const IRegisterAddress* device_base_address,
+                       const IRegisterAddress& device_base_address,
                        size_t                  stride,
                        const std::string&      name_prefix,
-                       const IDeviceFactory*   device_factory)
+                       const IDeviceFactory&   device_factory)
     {
         std::string reg_type_str = item_data["reg_type"].asString();
         int type = 0;
@@ -365,7 +365,7 @@ namespace {
             format = RegisterFormatFromName(item_data["format"].asString());
         }
 
-        auto address = device_factory->LoadRegisterAddress(item_data, device_base_address, stride, RegisterFormatByteWidth(format));
+        auto address = device_factory.LoadRegisterAddress(item_data, device_base_address, stride, RegisterFormatByteWidth(format));
 
         PRegisterConfig reg = TRegisterConfig::Create(
             type, address.Address, format, 1, 0, 0, true, true, "<unspec>");
@@ -381,8 +381,8 @@ namespace {
     void LoadDeviceTemplatableConfigPart(TDeviceConfig*          device_config,
                                          const Json::Value&      device_data,
                                          PRegisterTypeMap        registerTypes,
-                                         const IRegisterAddress* base_register_address,
-                                         const IDeviceFactory*   device_factory)
+                                         const IRegisterAddress& base_register_address,
+                                         const IDeviceFactory&   device_factory)
     {
         device_config->TypeMap  = registerTypes;
 
@@ -894,61 +894,69 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
     return it->second.second->CreateDevice(deviceConfig, deviceTemplate, it->second.first, defaultId, portConfig);
 }
 
+std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
+{
+    std::vector<std::string> res;
+    for(const auto& bucket: Protocols) {
+        res.emplace_back(bucket.first);
+    }
+    return res;
+}
+
 const std::string& IDeviceFactory::GetProtocolParametersSchemaRef() const
 {
     return ProtocolParametersSchemaRef;
 }
 
-void LoadBaseDeviceConfig(TDeviceConfig*            device_config,
-                          const Json::Value&        device_data,
-                          Json::Value               deviceTemplate,
-                          PProtocol                 protocol,
-                          const std::string&        default_id,
-                          std::chrono::microseconds default_request_delay,
-                          std::chrono::milliseconds port_response_timeout,
-                          std::chrono::milliseconds default_poll_interval,
-                          const IRegisterAddress*   base_register_address,
-                          const IDeviceFactory*     device_factory)
+
+PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             deviceData,
+                                   const Json::Value&             deviceTemplate,
+                                   PProtocol                      protocol,
+                                   const IDeviceFactory&          factory,
+                                   const TDeviceConfigLoadParams& parameters)
 {
-    Get(device_data, "device_type", device_config->DeviceType);
+    auto res = std::make_shared<TDeviceConfig>();
+
+    Get(deviceData, "device_type", res->DeviceType);
     
-    auto dev = MergeDeviceConfigWithTemplate(device_data, device_config->DeviceType, deviceTemplate);
+    auto dev = MergeDeviceConfigWithTemplate(deviceData, res->DeviceType, deviceTemplate);
     
-    device_config->Id = Read(dev, "id",  default_id);
-    Get(dev, "name",        device_config->Name);
+    res->Id = Read(dev, "id",  parameters.DefaultId);
+    Get(dev, "name", res->Name);
 
     if (dev.isMember("slave_id")) {
         if (dev["slave_id"].isString())
-            device_config->SlaveId = dev["slave_id"].asString();
+            res->SlaveId = dev["slave_id"].asString();
         else // legacy
-            device_config->SlaveId = std::to_string(dev["slave_id"].asInt());
+            res->SlaveId = std::to_string(dev["slave_id"].asInt());
     }
 
-    LoadDeviceTemplatableConfigPart(device_config, dev, protocol->GetRegTypes(), base_register_address, device_factory);
+    LoadDeviceTemplatableConfigPart(res.get(), dev, protocol->GetRegTypes(), *parameters.BaseRegisterAddress, factory);
 
-    if (device_config->DeviceChannelConfigs.empty())
-        throw TConfigParserException("the device has no channels: " + device_config->Name);
+    if (res->DeviceChannelConfigs.empty())
+        throw TConfigParserException("the device has no channels: " + res->Name);
 
-    if (device_config->RequestDelay.count() == 0) {
-        device_config->RequestDelay = default_request_delay;
+    if (res->RequestDelay.count() == 0) {
+        res->RequestDelay = parameters.DefaultRequestDelay;
     }
 
-    if (port_response_timeout > device_config->ResponseTimeout) {
-        device_config->ResponseTimeout = port_response_timeout;
+    if (parameters.PortResponseTimeout > res->ResponseTimeout) {
+        res->ResponseTimeout = parameters.PortResponseTimeout;
     }
-    if (device_config->ResponseTimeout.count() == -1) {
-        device_config->ResponseTimeout = DefaultResponseTimeout;
+    if (res->ResponseTimeout.count() == -1) {
+        res->ResponseTimeout = DefaultResponseTimeout;
     }
 
-    auto device_poll_interval = default_poll_interval;
-    Get(device_data, "poll_interval", device_poll_interval);
-    for (auto channel: device_config->DeviceChannelConfigs) {
+    auto device_poll_interval = parameters.DefaultPollInterval;
+    Get(deviceData, "poll_interval", device_poll_interval);
+    for (auto channel: res->DeviceChannelConfigs) {
         for (auto reg: channel->RegisterConfigs) {
             if (reg->PollInterval.count() < 0) {
                 reg->PollInterval = device_poll_interval;
             }
         }
     }
+    return res;
 }
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory)

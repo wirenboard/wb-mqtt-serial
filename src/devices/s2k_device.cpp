@@ -71,7 +71,7 @@ uint8_t TS2KDevice::CrcS2K(const uint8_t *array, int size)
 // and error handling into separate function
 void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+    auto addr = GetUint32RegisterAddress(*reg->Address);
     if (reg->Type != REG_RELAY) {
         throw TSerialDeviceException("S2K protocol: invalid register for writing");
     }
@@ -111,7 +111,7 @@ void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
 // and error handling into separate function
 uint64_t TS2KDevice::ReadRegister(PRegister reg)
 {
-    auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+    auto addr = GetUint32RegisterAddress(*reg->Address);
     /* We have no way to get current relay state from device. Thats why we save last
        successful write to relay register and return it when regiter is read */
     switch (reg->Type) {

@@ -202,7 +202,8 @@ namespace
         }
         try {
             TSerialPortSettings portSettings;
-            auto deviceConfig = std::make_shared<TDlmsDeviceConfig>();
+            TDlmsDeviceConfig deviceConfig;
+            deviceConfig.DeviceConfig = std::make_shared<TDeviceConfig>();
             PPort port;
             uint32_t mode;
 
@@ -234,24 +235,24 @@ namespace
             });
 
             handlers.push_back([&](const std::string& str) {
-                deviceConfig->ClientAddress = atoi(str.c_str());
+                deviceConfig.ClientAddress = atoi(str.c_str());
             });
 
             handlers.push_back([&](const std::string& str) {
                 switch (str[0])
                 {
-                    case '1': deviceConfig->Authentication = DLMS_AUTHENTICATION_LOW; break;
-                    case '2': deviceConfig->Authentication = DLMS_AUTHENTICATION_HIGH; break;
-                    case '3': deviceConfig->Authentication = DLMS_AUTHENTICATION_HIGH_MD5; break;
-                    case '4': deviceConfig->Authentication = DLMS_AUTHENTICATION_HIGH_SHA1; break;
-                    case '5': deviceConfig->Authentication = DLMS_AUTHENTICATION_HIGH_GMAC; break;
-                    case '6': deviceConfig->Authentication = DLMS_AUTHENTICATION_HIGH_SHA256; break;
-                    case '7': deviceConfig->Authentication = DLMS_AUTHENTICATION_HIGH_ECDSA; break;
+                    case '1': deviceConfig.Authentication = DLMS_AUTHENTICATION_LOW; break;
+                    case '2': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH; break;
+                    case '3': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH_MD5; break;
+                    case '4': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH_SHA1; break;
+                    case '5': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH_GMAC; break;
+                    case '6': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH_SHA256; break;
+                    case '7': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH_ECDSA; break;
                 }
             });
 
             handlers.push_back([&](const std::string& str) {
-                deviceConfig->Password.insert(deviceConfig->Password.begin(), str.begin(), str.end());
+                deviceConfig.DeviceConfig->Password.insert(deviceConfig.DeviceConfig->Password.begin(), str.begin(), str.end());
             });
 
             auto handlersIt = handlers.begin();
@@ -262,9 +263,9 @@ namespace
                 ++handlersIt;
             }
 
-            deviceConfig->SlaveId = phisycalDeviceAddress;
-            deviceConfig->ResponseTimeout = std::chrono::milliseconds(1000);
-            deviceConfig->FrameTimeout = std::chrono::milliseconds(20);
+            deviceConfig.DeviceConfig->SlaveId = phisycalDeviceAddress;
+            deviceConfig.DeviceConfig->ResponseTimeout = std::chrono::milliseconds(1000);
+            deviceConfig.DeviceConfig->FrameTimeout = std::chrono::milliseconds(20);
 
             TSerialDeviceFactory deviceFactory;
             TDlmsDevice::Register(deviceFactory);
@@ -278,7 +279,7 @@ namespace
             }
             std::cout << std::endl;
             for (const auto& ld: logicalDevices) {
-                deviceConfig->LogicalObjectAddress = ld.first;
+                deviceConfig.LogicalObjectAddress = ld.first;
                 TDlmsDevice d(deviceConfig, port, deviceFactory.GetProtocol("dlms"));
                 auto objs = d.ReadAllObjects(mode != 0);
                 TObisCodeHints obisHints = LoadObisCodeHints();
@@ -291,7 +292,7 @@ namespace
                         unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
                         auto templateFile = std::string(USER_TEMPLATES_DIR) + "/" + ld.second + ".conf";
                         ofstream f(templateFile);
-                        writer->write(GenerateDeviceTemplate(ld.second, deviceConfig->Authentication, objs, obisHints), &f);
+                        writer->write(GenerateDeviceTemplate(ld.second, deviceConfig, objs, obisHints), &f);
                         std::cout << templateFile << " is generated" << std::endl;
                 }
             }

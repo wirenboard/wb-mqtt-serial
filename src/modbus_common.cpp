@@ -546,7 +546,7 @@ namespace Modbus    // modbus protocol common utilities
             }
 
             for (auto reg: range.RegisterList()) {
-                auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+                auto addr = GetUint32RegisterAddress(*reg->Address);
                 reg->SetValue(range.GetBits()[addr - range.GetStart()]);
             }
             return;
@@ -568,7 +568,7 @@ namespace Modbus    // modbus protocol common utilities
 
             uint64_t r = 0;
 
-            auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+            auto addr = GetUint32RegisterAddress(*reg->Address);
             int wordIndex = (addr - range.GetStart());
             auto reverseWordIndex = w - 1;
 
@@ -635,7 +635,7 @@ namespace Modbus    // modbus protocol common utilities
 
         bool hasHoles = false;
         for (auto reg: reg_list) {
-            int addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+            int addr = GetUint32RegisterAddress(*reg->Address);
             int new_end = addr + reg->Get16BitWidth();
             if (!(prev_end >= 0 &&
                 reg->Type == prev_type &&
@@ -796,7 +796,7 @@ namespace Modbus    // modbus protocol common utilities
         PRegister lastReg;
         for (auto& reg: regs) {
             if (!l.empty()) {
-                auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+                auto addr = GetUint32RegisterAddress(*reg->Address);
                 auto lastAddr = dynamic_cast<TUint32RegisterAddress*>(lastReg->Address.get())->Get();
                 if (lastAddr + 1 != addr) {
                     newRanges.push_back(std::make_shared<Modbus::TModbusRegisterRange>(l, false));

@@ -54,7 +54,7 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+        auto addr = GetUint32RegisterAddress(*reg->Address);
 
         if(Blockings[addr].first) {
             throw TSerialDeviceTransientErrorException("read blocked");
@@ -91,7 +91,7 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+        auto addr = GetUint32RegisterAddress(*reg->Address);
 
         if(Blockings[addr].second) {
             throw TSerialDeviceTransientErrorException("write blocked");

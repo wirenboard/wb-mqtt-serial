@@ -88,7 +88,7 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
 
 uint64_t TLLSDevice::ReadRegister(PRegister reg)
 {
-    auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+    auto addr = GetUint32RegisterAddress(*reg->Address);
     uint8_t cmd    = (addr & 0xFF00) >> 8;
     auto    result = ExecCommand(cmd);
 

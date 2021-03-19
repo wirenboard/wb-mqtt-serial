@@ -159,3 +159,10 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
         ASSERT_EQ(JSON::Parse(GetDataFilePath("parser_test/merge_template_res" + to_string(i) + ".json")), mergedConfig) << i;
     }
 }
+
+TEST_F(TConfigParserTest, ProtocolParametersSchemaRef)
+{
+    for( const auto& name: DeviceFactory.GetProtocolNames()) {
+        ASSERT_FALSE(DeviceFactory.GetProtocolParametersSchemaRef(name).empty()) << name;
+    }
+}

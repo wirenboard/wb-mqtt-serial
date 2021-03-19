@@ -62,7 +62,7 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
 
 uint64_t TMercury200Device::ReadRegister(PRegister reg)
 {
-    auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get())->Get();
+    auto addr = GetUint32RegisterAddress(*reg->Address);
     uint8_t cmd = (addr & 0xFF00) >> 8;
     uint8_t offset = (addr & 0xFF);
 
