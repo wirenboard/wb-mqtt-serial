@@ -144,12 +144,12 @@ namespace Modbus    // modbus protocol common utilities
         }
 
         auto it = regs.begin();
-        Start = dynamic_cast<TUint32RegisterAddress*>((*it)->Address.get())->Get();
+        Start = GetUint32RegisterAddress(*(*it)->Address);
         int end = Start + (*it)->Get16BitWidth();
         while (++it != regs.end()) {
             if ((*it)->Type != Type())
                 throw std::runtime_error("registers of different type in the same range");
-            auto addr = dynamic_cast<TUint32RegisterAddress*>((*it)->Address.get())->Get();
+            auto addr = GetUint32RegisterAddress(*(*it)->Address);
             int new_end = addr + (*it)->Get16BitWidth();
             if (new_end > end)
                 end = new_end;
@@ -403,7 +403,7 @@ namespace Modbus    // modbus protocol common utilities
     void ComposeReadRequestPDU(uint8_t* pdu, TRegister& reg, int shift)
     {
         pdu[0] = GetFunction(reg, OperationType::OP_READ);
-        auto addr = dynamic_cast<TUint32RegisterAddress*>(reg.Address.get())->Get();
+        auto addr = GetUint32RegisterAddress(*reg.Address);
         WriteAs2Bytes(pdu + 1, addr + shift);
         WriteAs2Bytes(pdu + 3, GetQuantity(reg));
     }
@@ -423,7 +423,7 @@ namespace Modbus    // modbus protocol common utilities
 
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
-        auto addr = dynamic_cast<TUint32RegisterAddress*>(reg.Address.get())->Get();
+        auto addr = GetUint32RegisterAddress(*reg.Address);
         auto baseAddress = addr + shift;
         const auto bitWidth = reg.GetBitWidth();
 
@@ -484,7 +484,7 @@ namespace Modbus    // modbus protocol common utilities
         TAddress address;
 
         address.Type = reg.Type;
-        auto addr = dynamic_cast<TUint32RegisterAddress*>(reg.Address.get())->Get();
+        auto addr = GetUint32RegisterAddress(*reg.Address);
         address.Address = addr + shift + wordIndex;
 
         uint16_t cachedValue;
@@ -797,7 +797,7 @@ namespace Modbus    // modbus protocol common utilities
         for (auto& reg: regs) {
             if (!l.empty()) {
                 auto addr = GetUint32RegisterAddress(*reg->Address);
-                auto lastAddr = dynamic_cast<TUint32RegisterAddress*>(lastReg->Address.get())->Get();
+                auto lastAddr = GetUint32RegisterAddress(*lastReg->Address);
                 if (lastAddr + 1 != addr) {
                     newRanges.push_back(std::make_shared<Modbus::TModbusRegisterRange>(l, false));
                     l.clear();

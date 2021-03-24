@@ -27,20 +27,11 @@ namespace
         { 7, "obis_cdef_5",    "value", Double, true },
     };
 
-    class TNevaIecProtocol: public IProtocol
+    class TNevaIecProtocol: public TIECProtocol
     {
     public:
-        TNevaIecProtocol(): IProtocol("neva", RegisterTypes)
+        TNevaIecProtocol(): TIECProtocol("neva", RegisterTypes)
         {}
-
-        bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
-        {
-            // Can be only one device with broadcast address
-            if (id1.empty() || id2.empty()) {
-                return true;
-            }
-            return id1 == id2;
-        }
     };
 
     std::unordered_map<std::string, size_t> RegisterTypeValueIndices = {

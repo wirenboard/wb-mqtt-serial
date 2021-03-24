@@ -2,6 +2,7 @@
 
 #include "serial_device.h"
 #include "serial_config.h"
+#include "device_template_generator.h"
 
 #include "GXDLMSSecureClient.h"
 
@@ -46,9 +47,6 @@ public:
     void WriteRegister(PRegister reg, uint64_t value) override;
     void Prepare() override;
     void EndSession() override;
-    // virtual void EndPollCycle();
-
-    void ReadAllObjects() const;
 
     static void Register(TSerialDeviceFactory& factory);
 
@@ -56,17 +54,12 @@ public:
     std::map<int, std::string> GetLogicalDevices();
 };
 
-struct TObisCodeHint
+namespace DLMS
 {
-    std::string Description;
-    std::string MqttControl;
-};
-
-typedef std::unordered_map<std::string, TObisCodeHint> TObisCodeHints;
-
-void Print(const CGXDLMSObjectCollection& objs, bool printAttributes, const TObisCodeHints& obisHints);
-
-Json::Value GenerateDeviceTemplate(const std::string&             name,
-                                   const TDlmsDeviceConfig&       deviceConfig,
-                                   const CGXDLMSObjectCollection& objs,
-                                   const TObisCodeHints&          obisHints);
+    void PrintDeviceTemplateGenerationOptionsUsage();
+    void GenerateDeviceTemplate(TDeviceTemplateGenerationMode   mode, 
+                                PPort                           port,
+                                const std::string&              phisycalDeviceAddress,
+                                const std::string&              destinationDir, 
+                                const std::vector<std::string>& options);
+}

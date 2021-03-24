@@ -50,10 +50,10 @@ namespace
         {}
 
         PSerialDevice CreateDevice(const Json::Value& deviceData,
-                                   Json::Value           deviceTemplate,
-                                   PProtocol             protocol,
-                                   const std::string&    defaultId,
-                                   PPortConfig           portConfig) const override
+                                   const Json::Value& deviceTemplate,
+                                   PProtocol          protocol,
+                                   const std::string& defaultId,
+                                   PPortConfig        portConfig) const override
         {
             TDeviceConfigLoadParams params;
             params.BaseRegisterAddress = std::make_unique<TUint32RegisterAddress>(0);

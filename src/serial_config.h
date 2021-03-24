@@ -160,7 +160,7 @@ public:
 
     /*! Create new device of given type */
     virtual PSerialDevice CreateDevice(const Json::Value& deviceData,
-                                       Json::Value        deviceTemplate,
+                                       const Json::Value& deviceTemplate,
                                        PProtocol          protocol,
                                        const std::string& defaultId,
                                        PPortConfig        portConfig) const = 0;
@@ -235,7 +235,7 @@ public:
     {}
 
     PSerialDevice CreateDevice(const Json::Value& deviceData,
-                               Json::Value        deviceTemplate,
+                               const Json::Value& deviceTemplate,
                                PProtocol          protocol,
                                const std::string& defaultId,
                                PPortConfig        portConfig) const override

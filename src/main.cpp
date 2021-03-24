@@ -13,7 +13,7 @@
 #include "confed_json_generator.h"
 #include "confed_config_generator.h"
 
-#include "devices/dlms_device.h"
+#include "device_template_generator.h"
 #include "serial_port.h"
 
 #define STR(x) #x
@@ -32,7 +32,6 @@ const auto CONFIG_FULL_FILE_PATH                = "/etc/wb-mqtt-serial.conf";
 const auto TEMPLATES_DIR                        = "/usr/share/wb-mqtt-serial/templates";
 const auto USER_TEMPLATES_DIR                   = "/etc/wb-mqtt-serial.conf.d/templates";
 const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH    = "/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json";
-const auto OBIS_CODE_HINTS_FULL_FILE_PATH       = "/usr/share/wb-mqtt-serial/obis-hints.json";
 const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
 
 const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(60);
@@ -69,35 +68,6 @@ namespace
              << "  -j                 Make JSON for wb-mqtt-confed from /etc/wb-mqtt-serial.conf" << endl
              << "  -J                 Make /etc/wb-mqtt-serial.conf from wb-mqtt-confed output" << endl
              << "  -G       options   Generate device template. Type \"-G help\" for options description" << endl;
-    }
-
-    void PrintDenerateTemplateUsage()
-    {
-        cout << "Usage:" << endl
-             << " " << APP_NAME << " -G mode,path_to_device,port_settings,protocol[:device_id][,options]" << endl
-             << "Options:" << endl
-             << "  mode            generation mode:" << endl
-             << "                    0 - minimal information, no actual template generation" << endl
-             << "                    1 - extended information, no actual template generation" << endl
-             << "                    2 - template generation to /etc/wb-mqtt-serial.conf.d/templates" << endl
-             << "  path_to_device  path to device's file (example: /dev/ttyRS485-1)" << endl
-             << "  port_settings   baudrate, data bits, parity, stop bits, separated by '-' (example: 9600-8-N-1)" << endl
-             << "  protocol        one of:" << endl
-             << "                    dlms_hdlc - DLMS/COSEM with HDLC interface," << endl
-             << "                                optional device_id is an address of a Physical Device" << endl
-             << "  options         comma-separated list of protocol parameters:" << endl
-             << "dlms_hdlc protocol options:" << endl
-             << "  - client address" << endl
-             << "  - authentication mechanism:" << endl
-             << "     0 - lowest" << endl
-             << "     1 - low" << endl
-             << "     2 - high" << endl
-             << "     3 - high using MD5" << endl
-             << "     4 - high using SHA1" << endl
-             << "     5 - high using GMAC" << endl
-             << "     6 - high using SHA256" << endl
-             << "     7 - high using ECDSA" << endl
-             << "  - password" << endl;
     }
 
     void ConfigToConfed()
@@ -168,136 +138,6 @@ namespace
             dst << src.rdbuf();
         } catch (const exception& e) {
             LOG(Error) << e.what();
-        }
-    }
-
-    TObisCodeHints LoadObisCodeHints()
-    {
-        TObisCodeHints res;
-        try {
-            for (auto& c: WBMQTT::JSON::Parse(OBIS_CODE_HINTS_FULL_FILE_PATH)) {
-                if (c.isMember("obis")) {
-                        res.insert({c["obis"].asString(), {c["description"].asString(), c["control"].asString()}});
-                }
-            }
-        } catch (const std::exception& e) {
-            LOG(Warn) << e.what();
-        }
-        return res;
-    }
-
-    void GenerateDeviceTemplate(const char* options)
-    {
-        std::vector<std::function<void(const std::string&)>> handlers;
-        if (strncmp(options, "help", 4) == 0) {
-            PrintStartupInfo();
-            PrintDenerateTemplateUsage();
-            return;
-        }
-        auto params = WBMQTT::StringSplit(options, ",");
-        if (params.size() < 3) {
-            cout << "Not enough options" << endl;
-            PrintDenerateTemplateUsage();
-            return;
-        }
-        try {
-            TSerialPortSettings portSettings;
-            TDlmsDeviceConfig deviceConfig;
-            deviceConfig.DeviceConfig = std::make_shared<TDeviceConfig>();
-            PPort port;
-            uint32_t mode;
-
-            handlers.push_back([&](const std::string& str) {
-                mode = atoi(str.c_str());
-                if (mode < 0 || mode > 2) {
-                    throw std::runtime_error("Generation mode must be in range [0, 1, 2]");
-                }
-            });
-
-            handlers.push_back([&](const std::string& str) {
-                portSettings.Device = str;
-            });
-
-            handlers.push_back([&](const std::string& str) {
-                auto portParams = WBMQTT::StringSplit(str, "-");
-                portSettings.BaudRate = atoi(portParams[0].c_str());
-                portSettings.DataBits = atoi(portParams[1].c_str());
-                portSettings.Parity = portParams[2][0];
-                portSettings.StopBits = atoi(portParams[3].c_str());
-                port = std::make_shared<TSerialPort>(portSettings);
-            });
-
-            std::string phisycalDeviceAddress;
-
-            handlers.push_back([&](const std::string& str) {
-                auto protocolParams = WBMQTT::StringSplit(str, ":");
-                phisycalDeviceAddress = (protocolParams.size() == 1) ? std::string() : protocolParams[1];
-            });
-
-            handlers.push_back([&](const std::string& str) {
-                deviceConfig.ClientAddress = atoi(str.c_str());
-            });
-
-            handlers.push_back([&](const std::string& str) {
-                switch (str[0])
-                {
-                    case '1': deviceConfig.Authentication = DLMS_AUTHENTICATION_LOW; break;
-                    case '2': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH; break;
-                    case '3': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH_MD5; break;
-                    case '4': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH_SHA1; break;
-                    case '5': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH_GMAC; break;
-                    case '6': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH_SHA256; break;
-                    case '7': deviceConfig.Authentication = DLMS_AUTHENTICATION_HIGH_ECDSA; break;
-                }
-            });
-
-            handlers.push_back([&](const std::string& str) {
-                deviceConfig.DeviceConfig->Password.insert(deviceConfig.DeviceConfig->Password.begin(), str.begin(), str.end());
-            });
-
-            auto handlersIt = handlers.begin();
-            auto paramsIt = params.begin();
-            while (paramsIt != params.end() || handlersIt != handlers.end()) {
-                (*handlersIt)(*paramsIt);
-                ++paramsIt;
-                ++handlersIt;
-            }
-
-            deviceConfig.DeviceConfig->SlaveId = phisycalDeviceAddress;
-            deviceConfig.DeviceConfig->ResponseTimeout = std::chrono::milliseconds(1000);
-            deviceConfig.DeviceConfig->FrameTimeout = std::chrono::milliseconds(20);
-
-            TSerialDeviceFactory deviceFactory;
-            TDlmsDevice::Register(deviceFactory);
-            port->Open();
-            TDlmsDevice device(deviceConfig, port, deviceFactory.GetProtocol("dlms"));
-            std::cout << "Getting logical devices..." << std::endl;
-            auto logicalDevices = device.GetLogicalDevices();
-            std::cout << "Logical devices:" << std::endl;
-            for (const auto& ld: logicalDevices) {
-                std::cout << ld.first << ": " << ld.second << std::endl;
-            }
-            std::cout << std::endl;
-            for (const auto& ld: logicalDevices) {
-                deviceConfig.LogicalObjectAddress = ld.first;
-                TDlmsDevice d(deviceConfig, port, deviceFactory.GetProtocol("dlms"));
-                auto objs = d.ReadAllObjects(mode != 0);
-                TObisCodeHints obisHints = LoadObisCodeHints();
-                switch (mode) {
-                    case 0: Print(objs, false, obisHints); break;
-                    case 1: Print(objs, true, obisHints); break;
-                    case 2: 
-                        Json::StreamWriterBuilder builder;
-                        builder["indentation"] = "  ";
-                        unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-                        auto templateFile = std::string(USER_TEMPLATES_DIR) + "/" + ld.second + ".conf";
-                        ofstream f(templateFile);
-                        writer->write(GenerateDeviceTemplate(ld.second, deviceConfig, objs, obisHints), &f);
-                        std::cout << templateFile << " is generated" << std::endl;
-                }
-            }
-        } catch (const exception& e) {
-            cout << "[ERROR]" << e.what() << endl;
         }
     }
 
@@ -381,7 +221,7 @@ namespace
                 SchemaForConfed();
                 exit(0);
             case 'G':
-                GenerateDeviceTemplate(optarg);
+                GenerateDeviceTemplate(APP_NAME, USER_TEMPLATES_DIR, optarg);
                 exit(0);
             case '?':
             default:

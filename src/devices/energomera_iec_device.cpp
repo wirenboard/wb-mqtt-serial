@@ -11,21 +11,12 @@ namespace
 {
     const char* LOG_PREFIX = "[Energomera] ";
 
-    class TEnergomeraIecProtocol: public IProtocol
+    class TEnergomeraIecProtocol: public TIECProtocol
     {
     public:
         TEnergomeraIecProtocol()
-            : IProtocol("energomera_iec", {{ 0, "group_single", "value", Double, true }})
+            : TIECProtocol("energomera_iec", {{ 0, "group_single", "value", Double, true }})
         {}
-
-        bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
-        {
-            // Can be only one device with broadcast address
-            if (id1.empty() || id2.empty()) {
-                return true;
-            }
-            return id1 == id2;
-        }
     };
 }
 
@@ -44,14 +35,12 @@ namespace
 
     uint16_t GetParamId(const PRegister & reg)
     {
-        auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get());
-        return ((addr->Get() & 0xFFFF00) >> 8) & 0xFFFF;
+        return ((GetUint32RegisterAddress(*reg->Address) & 0xFFFF00) >> 8) & 0xFFFF;
     }
 
     uint8_t GetValueNum(const PRegister & reg)
     {
-        auto addr = dynamic_cast<TUint32RegisterAddress*>(reg->Address.get());
-        return addr->Get() & 0xFF;
+        return GetUint32RegisterAddress(*reg->Address) & 0xFF;
     }
 
     class TEnergomeraRegisterRange: public TSimpleRegisterRange
