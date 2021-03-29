@@ -133,7 +133,7 @@ public:
 };
 
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema);
-void AddProtocolType(Json::Value& configSchema, const std::string& protocolType);
+void AddFakeDeviceType(Json::Value& configSchema);
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
 
 typedef std::function<std::pair<PPort, bool>(const Json::Value& config)> TPortFactoryFn;
@@ -151,10 +151,11 @@ struct TRegisterDesc
 
 class IDeviceFactory
 {
-    std::string ProtocolParametersSchemaRef;
+    std::string CommonDeviceSchemaRef;
+    std::string CustomChannelSchemaRef;
 public:
-    IDeviceFactory(const std::string& ref = "#/definitions/slave_id"): ProtocolParametersSchemaRef(ref)
-    {}
+    IDeviceFactory(const std::string& commonDeviceSchemaRef,
+                   const std::string& customChannelSchemaRef);
 
     virtual ~IDeviceFactory() = default;
 
@@ -179,11 +180,18 @@ public:
                                               uint32_t                registerByteWidth) const = 0;
 
     /**
-     * @brief Get the $ref value of JSONSchema of specific configuration parameters
+     * @brief Get the $ref value of JSONSchema of common device parameters
      * 
      * @return JSONSchema $ref. It is used during generation of a JSON schema for wb-mqtt-confed and web UI.
      */
-    const std::string& GetProtocolParametersSchemaRef() const;
+    const std::string& GetCommonDeviceSchemaRef() const;
+
+    /**
+     * @brief Get the $ref value of JSONSchema of custom channel
+     * 
+     * @return JSONSchema $ref. It is used during generation of a JSON schema for wb-mqtt-confed and web UI.
+     */
+    const std::string& GetCustomChannelSchemaRef() const;
 };
 
 struct TDeviceConfigLoadParams
@@ -209,7 +217,8 @@ public:
     PRegisterTypeMap GetRegisterTypes(const std::string& protocolName);
     PSerialDevice CreateDevice(const Json::Value& device_config, const std::string& defaultId, PPortConfig PPortConfig, TTemplateMap& templates);
     PProtocol GetProtocol(const std::string& name);
-    const std::string& GetProtocolParametersSchemaRef(const std::string& protocolName) const;
+    const std::string& GetCommonDeviceSchemaRef(const std::string& protocolName) const;
+    const std::string& GetCustomChannelSchemaRef(const std::string& protocolName) const;
     std::vector<std::string> GetProtocolNames() const;
 };
 
@@ -230,8 +239,9 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& regCfg);
 template<class Dev> class TBasicDeviceFactory : public IDeviceFactory
 {
 public:
-    TBasicDeviceFactory() = default;
-    TBasicDeviceFactory(const std::string& ref): IDeviceFactory(ref)
+    TBasicDeviceFactory(const std::string& commonDeviceSchemaRef,
+                        const std::string& customChannelSchemaRef)
+        : IDeviceFactory(commonDeviceSchemaRef, customChannelSchemaRef)
     {}
 
     PSerialDevice CreateDevice(const Json::Value& deviceData,
@@ -267,17 +277,16 @@ public:
     }
 };
 
-PHandlerConfig LoadConfig(const std::string& configFileName,
+PHandlerConfig LoadConfig(const std::string&    configFileName,
                           TSerialDeviceFactory& deviceFactory,
-                          const Json::Value& configSchema,
-                          TTemplateMap& templates,
-                          TPortFactoryFn portFactory = DefaultPortFactory);
+                          const Json::Value&    baseConfigSchema,
+                          TTemplateMap&         templates,
+                          TPortFactoryFn        portFactory = DefaultPortFactory);
 
 bool IsSubdeviceChannel(const Json::Value& channelSchema);
 
 std::string GetDeviceKey(const std::string& deviceType);
 std::string GetSubdeviceSchemaKey(const std::string& deviceType, const std::string& subDeviceType);
-std::string GetSubdeviceKey(const std::string& subDeviceType);
 
 void AppendParams(Json::Value& dst, const Json::Value& src);
 void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value& src, const std::string& srcKey);

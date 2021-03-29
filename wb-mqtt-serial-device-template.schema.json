@@ -55,6 +55,9 @@
         },
         "order": {
           "type": "integer"
+        },
+        "mandatory": {
+          "type": "boolean"
         }
       },
       "required": ["title", "address"]
@@ -131,17 +134,101 @@
       },
       "additionalProperties": false,
       "required": ["device_type", "device"]
-    }
+    },
 
+    "dlms_device_template": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/dlms_device_properties" },
+        { "$ref": "#/definitions/dlms_channels" },
+        { "$ref": "#/definitions/no_setup" },
+        {
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["dlms"]
+            },
+            "parameters": { "not" : {} },
+            "subdevices": { "not" : {} }
+          },
+          "required": ["protocol"]
+        }
+      ]
+    },
+
+    "simple_device_template": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/common_channels" },
+        {
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec"]
+            },
+            "parameters": { "not" : {} },
+            "subdevices": { "not" : {} }
+          },
+          "required": ["protocol"]
+        }
+      ]
+    },
+
+    "simple_device_with_setup_template": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/common_channels" },
+        { "$ref": "#/definitions/common_setup" },
+        {
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["uniel", "s2k"]
+            }
+          },
+          "parameters": { "not" : {} },
+          "subdevices": { "not" : {} },
+          "required": ["protocol"]
+        }
+      ]
+    },
+
+    "modbus_device_template": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/subdevice_device" },
+        {
+          "anyOf": [
+            {
+              "not": {
+                "required": ["protocol"]
+              }
+            },
+            {
+              "properties": {
+                "protocol": {
+                  "type": "string",
+                  "enum": ["modbus",  "modbus_io"]
+                }
+              },
+              "required": ["protocol"]
+            }
+          ]
+        }
+      ]
+    }
   },
 
   "properties": {
     "device_type": { "$ref": "#/definitions/device_type" },
     "title": { "$ref": "#/definitions/device_type" },
     "device": {
-      "allOf": [
-        { "$ref": "#/definitions/deviceProperties" },
-        { "$ref": "#/definitions/subdevice_device" }
+      "oneOf": [
+        { "$ref": "#/definitions/modbus_device_template" },
+        { "$ref": "#/definitions/simple_device_template" },
+        { "$ref": "#/definitions/simple_device_with_setup_template"},
+        { "$ref": "#/definitions/dlms_device_template" }
       ]
     }
   },

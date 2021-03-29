@@ -10,6 +10,7 @@
 #include <fstream>
 
 #include "confed_schema_generator.h"
+#include "config_schema_generator.h"
 #include "confed_json_generator.h"
 #include "confed_config_generator.h"
 
@@ -33,6 +34,7 @@ const auto TEMPLATES_DIR                        = "/usr/share/wb-mqtt-serial/tem
 const auto USER_TEMPLATES_DIR                   = "/etc/wb-mqtt-serial.conf.d/templates";
 const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH    = "/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json";
 const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
+const auto CONFED_JSON_SCHEMA_FULL_FILE_PATH    = "/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json";
 
 const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(60);
 
@@ -70,71 +72,60 @@ namespace
              << "  -G       options   Generate device template. Type \"-G help\" for options description" << endl;
     }
 
+    unique_ptr<Json::StreamWriter> MakeJsonWriter(const std::string& indentation = "")
+    {
+        Json::StreamWriterBuilder builder;
+        builder["indentation"] = indentation;
+        return unique_ptr<Json::StreamWriter>(builder.newStreamWriter());
+    }
+
+    pair<shared_ptr<Json::Value>, shared_ptr<TTemplateMap>> LoadTemplates()
+    {
+        auto configSchema = make_shared<Json::Value>(std::move(LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH)));
+        auto templates = make_shared<TTemplateMap>(TEMPLATES_DIR,
+                                                   LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH,
+                                                                             *configSchema));
+        try {
+            templates->AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
+        } catch (const TConfigParserException& e) {}        // Pass exception if user templates dir doesn't exist
+        return {configSchema, templates};
+    }
+
     void ConfigToConfed()
     {
         try {
-            Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
-            TTemplateMap templates(TEMPLATES_DIR,
-                                    LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, configSchema));
-            try {
-                templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
-            } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
-            }
-            Json::StreamWriterBuilder builder;
-            builder["indentation"] = "";
-            unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-            writer->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, configSchema, templates), &cout);
+            TSerialDeviceFactory deviceFactory;
+            RegisterProtocols(deviceFactory);
+            auto t = LoadTemplates();
+            MakeJsonWriter()->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *t.first, *t.second, deviceFactory), &cout);
         } catch (const exception& e) {
-            cout << e.what() << endl;
+            LOG(Error) << e.what();
         }
     }
 
     void ConfedToConfig()
     {
         try {
-            Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
-            TTemplateMap templates(TEMPLATES_DIR,
-                                    LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, configSchema));
-            try {
-                templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
-            } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
-            }
-            Json::StreamWriterBuilder builder;
-            builder["indentation"] = "    ";
-            unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-            writer->write(MakeConfigFromConfed(std::cin, templates), &cout);
+            auto t = LoadTemplates();
+            MakeJsonWriter()->write(MakeConfigFromConfed(std::cin, *t.second), &cout);
         } catch (const exception& e) {
-            cout << e.what() << endl;
+            LOG(Error) << e.what();
         }
     }
 
     void SchemaForConfed()
     {
         try {
-            Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
-            TTemplateMap templates(TEMPLATES_DIR,
-                                LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, 
-                                                            configSchema));
-
-            try {
-                templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
-            } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
-            }
-
             TSerialDeviceFactory deviceFactory;
             RegisterProtocols(deviceFactory);
-
-            Json::StreamWriterBuilder builder;
-            builder["indentation"] = "    ";
-            unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+            auto t = LoadTemplates();
             const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
             {
                 ofstream f(resultingSchemaFile);
-                MakeSchemaForConfed(configSchema, templates, deviceFactory);
-                writer->write(configSchema, &f);
+                MakeJsonWriter("  ")->write(MakeSchemaForConfed(*t.first, *t.second, deviceFactory), &f);
             }
-            ifstream  src(resultingSchemaFile, ios::binary);
-            ofstream  dst("/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json", ios::binary);
+            ifstream src(resultingSchemaFile, ios::binary);
+            ofstream dst(CONFED_JSON_SCHEMA_FULL_FILE_PATH, ios::binary);
             dst << src.rdbuf();
         } catch (const exception& e) {
             LOG(Error) << e.what();

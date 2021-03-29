@@ -34,7 +34,9 @@ namespace
         std::unique_ptr<Modbus::IModbusTraitsFactory> ModbusTraitsFactory;
     public:
         TModbusDeviceFactory(std::unique_ptr<Modbus::IModbusTraitsFactory> modbusTraitsFactory)
-            : ModbusTraitsFactory(std::move(modbusTraitsFactory))
+            : IDeviceFactory("#/definitions/simple_device_with_setup",
+                             "#/definitions/common_channel"),
+              ModbusTraitsFactory(std::move(modbusTraitsFactory))
         {}
 
         PSerialDevice CreateDevice(const Json::Value& deviceData,
