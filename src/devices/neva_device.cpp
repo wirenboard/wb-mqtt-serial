@@ -242,6 +242,7 @@ void TNevaDevice::Prepare()
     size_t retryCount = 5;
     while (true) {
         try {
+            Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
             Port()->SkipNoise();
 
             // Send session start request
@@ -258,7 +259,7 @@ void TNevaDevice::Prepare()
             if (retryCount == 0) {
                 throw;
             }
-            LOG(Warn) << e.what();
+            LOG(Debug) << "TNevaDevice::Prepare(): " << e.what() << " [slave_id is " << ToString() + "]";
         }
     }
 }
@@ -272,7 +273,7 @@ void TNevaDevice::EndSession()
     IEC::WriteBytes(*Port(), (uint8_t*) req, sizeof(req), LOG_PREFIX);
 
     // A meter need some time to process the command
-    usleep(DeviceConfig()->FrameTimeout.count() * 1000);
+    std::this_thread::sleep_for(DeviceConfig()->FrameTimeout);
     TIECDevice::EndSession();
 }
 

@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <sstream>
+#include <iomanip>
 
 #include "serial_exc.h"
 #include "log.h"
@@ -19,7 +20,13 @@ namespace IEC
             case NAK:  ss << "<NAK>"; break;
             case '\r': ss << "<CR>"; break;
             case '\n': ss << "<LF>"; break;
-            default:   ss << c;
+            default: {
+                if (isprint(c)) {
+                    ss << c;
+                } else {
+                    ss << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << int(c);
+                }
+            }
         }
     }
 

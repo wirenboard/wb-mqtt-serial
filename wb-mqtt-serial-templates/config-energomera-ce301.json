@@ -4,7 +4,8 @@
     "name": "Energomera CE301/CE303",
     "id": "energomera301",
     "protocol" : "energomera_iec",
-    "frame_timeout_ms" : 100,
+    "frame_timeout_ms" : 1500,
+    "response_timeout_ms": 1500,
     "channels": [
       {
         "name": "Total A energy",
