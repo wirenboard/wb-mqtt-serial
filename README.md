@@ -577,7 +577,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             "max": 3,
 
                             // Этот параметр должен быть обязательно задан в wb-mqtt-serial.conf
-                            "mandatory": true
+                            "required": true
                         }
                     },
                     "channels": [

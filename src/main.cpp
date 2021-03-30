@@ -96,8 +96,10 @@ namespace
         try {
             TSerialDeviceFactory deviceFactory;
             RegisterProtocols(deviceFactory);
-            auto t = LoadTemplates();
-            MakeJsonWriter()->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *t.first, *t.second, deviceFactory), &cout);
+            shared_ptr<Json::Value> configSchema;
+            shared_ptr<TTemplateMap> templates;
+            std::tie(configSchema, templates) = LoadTemplates();
+            MakeJsonWriter()->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *configSchema, *templates, deviceFactory), &cout);
         } catch (const exception& e) {
             LOG(Error) << e.what();
         }
@@ -106,8 +108,9 @@ namespace
     void ConfedToConfig()
     {
         try {
-            auto t = LoadTemplates();
-            MakeJsonWriter()->write(MakeConfigFromConfed(std::cin, *t.second), &cout);
+            shared_ptr<TTemplateMap> templates;
+            std::tie(std::ignore, templates) = LoadTemplates();
+            MakeJsonWriter()->write(MakeConfigFromConfed(std::cin, *templates), &cout);
         } catch (const exception& e) {
             LOG(Error) << e.what();
         }
@@ -118,11 +121,13 @@ namespace
         try {
             TSerialDeviceFactory deviceFactory;
             RegisterProtocols(deviceFactory);
-            auto t = LoadTemplates();
+            shared_ptr<Json::Value> configSchema;
+            shared_ptr<TTemplateMap> templates;
+            std::tie(configSchema, templates) = LoadTemplates();
             const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
             {
                 ofstream f(resultingSchemaFile);
-                MakeJsonWriter("  ")->write(MakeSchemaForConfed(*t.first, *t.second, deviceFactory), &f);
+                MakeJsonWriter("  ")->write(MakeSchemaForConfed(*configSchema, *templates, deviceFactory), &f);
             }
             ifstream src(resultingSchemaFile, ios::binary);
             ofstream dst(CONFED_JSON_SCHEMA_FULL_FILE_PATH, ios::binary);

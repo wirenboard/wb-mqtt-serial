@@ -1,7 +1,7 @@
 wb-mqtt-serial (2.11.0) experimental; urgency=medium
 
   * Strict configs validation
-  * Mandatory parameters in device templates are added
+  * Required parameters in device templates are added
   * Errors in device templates don't lead to wrong homeui schema generation
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 19 Feb 2021 15:01:00 +0500

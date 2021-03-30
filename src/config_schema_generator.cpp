@@ -1,5 +1,6 @@
 #include "config_schema_generator.h"
 #include "confed_schema_generator.h"
+#include "json_common.h"
 #include "log.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
@@ -8,32 +9,6 @@ using namespace WBMQTT::JSON;
 
 namespace
 {
-    Json::Value MakeArray(const std::string& value)
-    {
-        Json::Value ar(Json::arrayValue);
-        ar.append(value);
-        return ar;
-    }
-
-    Json::Value MakeObject(const std::string& key, const std::string& value)
-    {
-        Json::Value res;
-        res[key] = value;
-        return res;
-    }
-
-    //  {
-    //      "type": "string",
-    //      "enum": [ VALUE ]
-    //  }
-    Json::Value MakeSingleValuePropery(const std::string& value)
-    {
-        Json::Value res;
-        res["type"] = "string";
-        res["enum"] = MakeArray(value);
-        return res;
-    }
-
     //  {
     //      "type": "integer",
     //      "minimum": MIN,
@@ -63,10 +38,9 @@ namespace
     Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate)
     {
         Json::Value r;
-        r["allOf"] = Json::Value(Json::arrayValue);
-        r["allOf"].append(MakeObject("$ref", "#/definitions/channelSettings"));
+        MakeArray("allOf", r).append(MakeObject("$ref", "#/definitions/channelSettings"));
         r["properties"]["name"] = MakeSingleValuePropery(channelTemplate["name"].asString());
-        r["required"] = MakeArray("name");
+        MakeArray("required", r).append("name");
         return r;
     }
 
@@ -87,16 +61,14 @@ namespace
     {
         Json::Value r;
         r["properties"]["name"] = MakeSingleValuePropery(channelTemplate["name"].asString());
-        Json::Value req(Json::arrayValue);
+        auto& req = MakeArray("required", r);
         req.append("name");
         req.append("device_type");
-        r["required"] = req;
 
-        Json::Value items(Json::arrayValue);
+        auto& items = MakeArray("oneOf", r);
         for (const auto& subDeviceName: channelTemplate["oneOf"]) {
             items.append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(deviceType, subDeviceName.asString())));
         }
-        r["oneOf"] = items;
 
         return r;
     }
@@ -114,10 +86,9 @@ namespace
     Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channelTemplate, const std::string& deviceType)
     {
         Json::Value r;
-        r["allOf"] = Json::Value(Json::arrayValue);
-        r["allOf"].append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(deviceType, channelTemplate["device_type"].asString())));
+        MakeArray("allOf", r).append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(deviceType, channelTemplate["device_type"].asString())));
         r["properties"]["name"] = MakeSingleValuePropery(channelTemplate["name"].asString());
-        r["required"] = MakeArray("name");
+        MakeArray("required", r).append("name");
         return r;
     }
 
@@ -149,17 +120,16 @@ namespace
     //  }
     Json::Value MakeCustomChannelsSchema(const std::vector<std::string>& names, const std::string& customChannelsSchemaRef)
     {
-        Json::Value r;
-        r["allOf"] = Json::Value(Json::arrayValue);
-        r["allOf"].append(MakeObject("$ref", customChannelsSchemaRef));
         Json::Value n;
         n["not"]["properties"]["name"]["type"] = "string";
-        Json::Value c(Json::arrayValue);
+        auto& en = MakeArray("enum", n["not"]["properties"]["name"]);
         for (const auto& name: names) {
-            c.append(name);
+            en.append(name);
         }
-        n["not"]["properties"]["name"]["enum"] = c;
-        r["allOf"].append(n);
+        Json::Value r;
+        auto& allOf = MakeArray("allOf", r);
+        allOf.append(MakeObject("$ref", customChannelsSchemaRef));
+        allOf.append(n);
         return r;
     }
 
@@ -176,7 +146,7 @@ namespace
     {
         Json::Value r;
         r["type"] = "array";
-        Json::Value items(Json::arrayValue);
+        auto& items = MakeArray("oneOf", r["items"]);
         std::vector<std::string> names;
         for (const auto& channel: channels) {
             auto channelSchema = MakeTabChannelSchema(channel, deviceType);
@@ -186,7 +156,6 @@ namespace
         if (!names.empty()) {
             items.append(MakeCustomChannelsSchema(names, customChannelsSchemaRef));
         }
-        r["items"]["oneOf"] = items;
         return r;
     }
 
@@ -196,7 +165,7 @@ namespace
             const auto& params = deviceTemplate["parameters"];
             for (Json::ValueConstIterator it = params.begin(); it != params.end(); ++it) {
                 properties[it.name()] = MakeParameterSchema(*it);
-                if (IsMandatorySetupRegister(*it)) {
+                if (IsRequiredSetupRegister(*it)) {
                     requiredArray.append(it.name());
                 }
             }
@@ -234,11 +203,10 @@ namespace
 
         if (subdeviceTemplate.Schema.isMember("channels")) {
             res["properties"]["channels"]["type"] = "array";
-            Json::Value items(Json::arrayValue);
+            auto& items = MakeArray("oneOf", res["properties"]["channels"]["items"]);
             for (const auto& channel: subdeviceTemplate.Schema["channels"]) {
                 items.append(MakeTabChannelSchema(channel, deviceType));
             }
-            res["properties"]["channels"]["items"]["oneOf"] = items;
         }
 
         return res;
@@ -260,12 +228,15 @@ namespace
     //      },
     //      "required": ["device_type", "slave_id"]
     //  }
-    std::pair<Json::Value, Json::Value> MakeDeviceSchema(const TDeviceTemplate& deviceTemplate, TSerialDeviceFactory& deviceFactory)
+    void AddDeviceSchema(const TDeviceTemplate& deviceTemplate,
+                         TSerialDeviceFactory& deviceFactory,
+                         Json::Value& devicesArray,
+                         Json::Value& definitions)
     {
         Json::Value res;
         res["type"] = "object";
 
-        Json::Value req(Json::arrayValue);
+        auto& req = MakeArray("required", res);
         req.append("device_type");
         req.append("slave_id");
 
@@ -282,33 +253,26 @@ namespace
             res["properties"]["channels"] = MakeDeviceChannelsSchema(deviceTemplate.Schema["channels"], deviceTemplate.Type, customChannelsSchemaRef);
         }
 
-        res["allOf"] = Json::Value(Json::arrayValue);
-        res["allOf"].append(MakeObject("$ref", deviceFactory.GetCommonDeviceSchemaRef(protocolName) + "_no_channels"));
-
-        res["required"] = req;
+        MakeArray("allOf", res).append(MakeObject("$ref", deviceFactory.GetCommonDeviceSchemaRef(protocolName) + "_no_channels"));
 
         TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
-        Json::Value definitions;
         if (deviceTemplate.Schema.isMember("subdevices")) {
             for (const auto& subDevice: deviceTemplate.Schema["subdevices"]) {
                 auto name = subDevice["device_type"].asString();
                 definitions[GetSubdeviceSchemaKey(deviceTemplate.Type, name)] = MakeSubDeviceSchema(name, subdeviceTemplates.GetTemplate(name), deviceTemplate.Type);
             }
         }
-        return std::make_pair(res, definitions);
+        devicesArray.append(res);
     }
 
     void AppendDeviceSchemas(const std::unordered_set<std::string>& deviceTypes,
-                             Json::Value& list,
+                             Json::Value& devicesArray,
                              Json::Value& definitions,
                              TTemplateMap& templates,
                              TSerialDeviceFactory& deviceFactory)
     {
         for (const auto& deviceType: deviceTypes) {
-            auto t = templates.GetTemplate(deviceType);
-            auto s = MakeDeviceSchema(t, deviceFactory);
-            list.append(s.first);
-            AppendParams(definitions, s.second);
+            AddDeviceSchema(templates.GetTemplate(deviceType), deviceFactory, devicesArray, definitions);
         }
     }
 }
@@ -345,13 +309,11 @@ TConfigValidationOptions GetValidationDeviceTypes(const Json::Value& config)
                 for(const auto& device: port["devices"]) {
                     if (device.isMember("device_type")) {
                         res.DeviceTypes.insert(device["device_type"].asString());
-                        continue;
-                    }
-                    if (device.isMember("protocol")) {
+                    } else if (device.isMember("protocol")) {
                         res.Protocols.insert(device["protocol"].asString());
-                        continue;
+                    } else {
+                        res.Protocols.insert("modbus");
                     }
-                    res.Protocols.insert("modbus");
                 }
             }
         }

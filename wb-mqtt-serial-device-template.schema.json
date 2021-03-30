@@ -56,7 +56,7 @@
         "order": {
           "type": "integer"
         },
-        "mandatory": {
+        "required": {
           "type": "boolean"
         }
       },

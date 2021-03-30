@@ -79,7 +79,7 @@
                         "s12": {
                             "title": "s12",
                             "address": 20000,
-                            "mandatory": true
+                            "required": true
                         }
                     },
                     "channels": [

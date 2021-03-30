@@ -6,7 +6,7 @@ std::string GetDeviceKey(const std::string& deviceType);
 std::string GetSubdeviceSchemaKey(const std::string& deviceType, const std::string& subDeviceType);
 std::string GetSubdeviceKey(const std::string& subDeviceType);
 
-bool IsMandatorySetupRegister(const Json::Value& setupRegister);
+bool IsRequiredSetupRegister(const Json::Value& setupRegister);
 
 Json::Value GetDefaultSetupRegisterValue(const Json::Value& setupRegisterSchema);
 
