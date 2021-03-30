@@ -234,7 +234,7 @@ std::list<PRegisterRange> TEnergomeraIecDevice::ReadRegisterRange(PRegisterRange
         ProcessResponse(*range, presp);
     } catch (TSerialDeviceTransientErrorException& e) {
         range->SetError();
-        LOG(Warn) << "TEnergomeraIecDevice::ReadRegisterRange(): " << e.what();
+        LOG(Warn) << "TEnergomeraIecDevice::ReadRegisterRange(): " << e.what() << " [slave_id is " << ToString() + "]";
     }
     return { abstract_range };
 }

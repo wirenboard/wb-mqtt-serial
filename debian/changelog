@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.7.4) stable; urgency=medium
+
+  * Timeouts for NEVA and Energomera CE301/CE303 energy meters are adjusted
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 30 Mar 2021 14:34:00 +0500
+
 wb-mqtt-serial (2.7.3) stable; urgency=medium
 
   * Correct handling of little-endian register's error values.
