@@ -39,32 +39,6 @@
 using namespace std;
 using namespace WBMQTT::JSON;
 
-namespace WBMQTT
-{
-    namespace JSON
-    {
-        template <> inline bool Is<std::chrono::milliseconds>(const Json::Value& value)
-        {
-            return value.isInt();
-        }
-
-        template <> inline std::chrono::milliseconds As<std::chrono::milliseconds>(const Json::Value& value)
-        {
-            return std::chrono::milliseconds(value.asInt());
-        }
-
-        template <> inline bool Is<std::chrono::microseconds>(const Json::Value& value)
-        {
-            return value.isInt();
-        }
-
-        template <> inline std::chrono::microseconds As<std::chrono::microseconds>(const Json::Value& value)
-        {
-            return std::chrono::microseconds(value.asInt());
-        }
-    }
-}
-
 namespace {
     const char* DefaultProtocol = "modbus";
 
@@ -870,15 +844,16 @@ const std::string& TSerialDeviceFactory::GetProtocolParametersSchemaRef(const st
 
 PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig, const std::string& defaultId, PPortConfig portConfig, TTemplateMap& templates)
 {
-    Json::Value deviceTemplate;
-    std::string protocolName = DefaultProtocol;
+    const auto* cfg = &deviceConfig;
+    unique_ptr<Json::Value> mergedConfig;
     if (deviceConfig.isMember("device_type")) {
         auto deviceType = deviceConfig["device_type"].asString();
-        deviceTemplate = templates.GetTemplate(deviceType).Schema;
-        Get(deviceTemplate, "protocol", protocolName);
-    } else {
-        Get(deviceConfig, "protocol", protocolName);
+        auto deviceTemplate = templates.GetTemplate(deviceType).Schema;
+        mergedConfig = std::make_unique<Json::Value>(MergeDeviceConfigWithTemplate(deviceConfig, deviceType, deviceTemplate));
+        cfg = mergedConfig.get();
     }
+    std::string protocolName = DefaultProtocol;
+    Get(*cfg, "protocol", protocolName);
 
     if (portConfig->IsModbusTcp) {
         if (!GetProtocol(protocolName)->IsModbus()) {
@@ -891,7 +866,8 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
     if (it == Protocols.end()) {
         throw TSerialDeviceException("unknown protocol: " + protocolName);
     }
-    return it->second.second->CreateDevice(deviceConfig, deviceTemplate, it->second.first, defaultId, portConfig);
+
+    return it->second.second->CreateDevice(*cfg, it->second.first, defaultId, portConfig);
 }
 
 std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
@@ -909,18 +885,15 @@ const std::string& IDeviceFactory::GetProtocolParametersSchemaRef() const
 }
 
 
-PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             deviceData,
-                                   const Json::Value&             deviceTemplate,
+PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
                                    PProtocol                      protocol,
                                    const IDeviceFactory&          factory,
                                    const TDeviceConfigLoadParams& parameters)
 {
     auto res = std::make_shared<TDeviceConfig>();
 
-    Get(deviceData, "device_type", res->DeviceType);
-    
-    auto dev = MergeDeviceConfigWithTemplate(deviceData, res->DeviceType, deviceTemplate);
-    
+    Get(dev, "device_type", res->DeviceType);
+
     res->Id = Read(dev, "id",  parameters.DefaultId);
     Get(dev, "name", res->Name);
 
@@ -948,7 +921,7 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             deviceData,
     }
 
     auto device_poll_interval = parameters.DefaultPollInterval;
-    Get(deviceData, "poll_interval", device_poll_interval);
+    Get(dev, "poll_interval", device_poll_interval);
     for (auto channel: res->DeviceChannelConfigs) {
         for (auto reg: channel->RegisterConfigs) {
             if (reg->PollInterval.count() < 0) {

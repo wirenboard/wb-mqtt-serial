@@ -234,8 +234,8 @@ void TSerialClient::Cycle()
 
                     // Force Prepare() (i.e. start session)
                     try {
-                        device->Prepare();
                         LastAccessedDevice = device;
+                        device->Prepare();
                     } catch ( const TSerialDeviceTransientErrorException& e) {
                         LOG(Warn) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
                         statuses.insert(TRegisterRange::ST_UNKNOWN_ERROR);

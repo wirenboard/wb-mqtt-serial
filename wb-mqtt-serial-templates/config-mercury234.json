@@ -6,6 +6,9 @@
     "id": "mercury234",
     "protocol" : "dlms",
     "dlms_auth": 1,
+    "dlms_client_address": 32,
+    "dlms_disconnect_retry_timeout_ms": 5000,
+    "password": ["0x31", "0x31", "0x31", "0x31", "0x31", "0x31"],
     "response_timeout_ms": 1000,
     "frame_timeout_ms" : 20,
     "channels" : [

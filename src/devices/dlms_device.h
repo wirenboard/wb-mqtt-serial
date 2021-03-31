@@ -11,19 +11,19 @@ const int PUBLIC_CLIENT_ADDRESS = 16;
 struct TDlmsDeviceConfig
 {
     PDeviceConfig       DeviceConfig;
-    int                 LogicalObjectAddress      = 1;
-    int                 ClientAddress             = PUBLIC_CLIENT_ADDRESS;
+    int                 LogicalDeviceAddress = 1;
+    int                 ClientAddress        = PUBLIC_CLIENT_ADDRESS;
 
-    // Use Logical name referencing by default as it is only option for SPODES
-    bool                UseLogicalNameReferencing = true;
-    DLMS_SECURITY       Security                  = DLMS_SECURITY_NONE;
-    DLMS_AUTHENTICATION Authentication            = DLMS_AUTHENTICATION_NONE;
-    DLMS_INTERFACE_TYPE InterfaceType             = DLMS_INTERFACE_TYPE_HDLC;
+    DLMS_SECURITY             Security                  = DLMS_SECURITY_NONE;
+    DLMS_AUTHENTICATION       Authentication            = DLMS_AUTHENTICATION_NONE;
+    DLMS_INTERFACE_TYPE       InterfaceType             = DLMS_INTERFACE_TYPE_HDLC;
+    std::chrono::milliseconds DisconnectRetryTimeout    = std::chrono::milliseconds::zero();
 };
 
 class TDlmsDevice: public TSerialDevice, public TUInt32SlaveId
 {
     std::unique_ptr<CGXDLMSSecureClient> Client;
+    std::chrono::milliseconds            DisconnectRetryTimeout;
 
     void InitializeConnection();
     void SendData(const uint8_t* data, size_t size);

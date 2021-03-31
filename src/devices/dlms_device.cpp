@@ -9,7 +9,7 @@
 #include "GXDLMSObject.h"
 #include "GXDLMSObjectFactory.h"
 
-#define LOG(logger) ::logger.Log() << "[DLMS] "
+#define LOG(logger) ::logger.Log() << "[" << DeviceConfig()->Name << " (" << ToString() << ")] "
 
 namespace
 {
@@ -81,7 +81,6 @@ namespace
         {}
 
         PSerialDevice CreateDevice(const Json::Value& data,
-                                   const Json::Value& deviceTemplate,
                                    PProtocol          protocol,
                                    const std::string& defaultId,
                                    PPortConfig        portConfig) const override
@@ -94,11 +93,12 @@ namespace
             params.DefaultPollInterval = portConfig->PollInterval;
             params.DefaultRequestDelay = portConfig->RequestDelay;
             params.PortResponseTimeout = portConfig->ResponseTimeout;
-            cfg.DeviceConfig = LoadBaseDeviceConfig(data, deviceTemplate, protocol, *this, params);
+            cfg.DeviceConfig = LoadBaseDeviceConfig(data, protocol, *this, params);
 
             WBMQTT::JSON::Get(data, "dlms_client_address", cfg.ClientAddress);
             cfg.Authentication = static_cast<DLMS_AUTHENTICATION>(data.get("dlms_auth", cfg.Authentication).asInt());
             cfg.InterfaceType  = static_cast<DLMS_INTERFACE_TYPE>(data.get("dlms_interface", cfg.InterfaceType).asInt());
+            WBMQTT::JSON::Get(data, "dlms_disconnect_retry_timeout_ms", cfg.DisconnectRetryTimeout);
 
             PSerialDevice dev = std::make_shared<TDlmsDevice>(cfg, portConfig->Port, protocol);
             dev->InitSetupItems();
@@ -316,7 +316,8 @@ void TDlmsDevice::Register(TSerialDeviceFactory& factory)
 
 TDlmsDevice::TDlmsDevice(const TDlmsDeviceConfig& config, PPort port, PProtocol protocol)
     : TSerialDevice(config.DeviceConfig, port, protocol),
-      TUInt32SlaveId(config.DeviceConfig->SlaveId)
+      TUInt32SlaveId(config.DeviceConfig->SlaveId),
+      DisconnectRetryTimeout(config.DisconnectRetryTimeout)
 {
     auto pwd = config.DeviceConfig->Password;
     if (pwd.empty() || pwd.back() != 0) {
@@ -324,7 +325,7 @@ TDlmsDevice::TDlmsDevice(const TDlmsDeviceConfig& config, PPort port, PProtocol 
         pwd.push_back(0);
     }
 
-    int serverAddress = config.LogicalObjectAddress;
+    int serverAddress = config.LogicalDeviceAddress;
     if (serverAddress < 0x80) {
         if (SlaveId > 0) {
             serverAddress <<= (SlaveId < 0x80 ? 7 : 14);
@@ -334,7 +335,8 @@ TDlmsDevice::TDlmsDevice(const TDlmsDeviceConfig& config, PPort port, PProtocol 
     }
     serverAddress += SlaveId;
 
-    Client = std::make_unique<CGXDLMSSecureClient>(config.UseLogicalNameReferencing,
+    // Use Logical name referencing as it is only option for SPODES
+    Client = std::make_unique<CGXDLMSSecureClient>(true,
                                                    config.ClientAddress,
                                                    serverAddress,
                                                    config.Authentication, 
@@ -350,13 +352,13 @@ void TDlmsDevice::CheckCycle(std::function<int(std::vector<CGXByteBuffer>&)> req
     CGXReplyData reply;
     auto res = requestsGenerator(data); 
     if (res != DLMS_ERROR_CODE_OK) { 
-        throw TSerialDeviceTransientErrorException(errorMsg + GetErrorMessage(res)); 
+        throw TSerialDeviceTransientErrorException(errorMsg + ". Can't generate request: " + GetErrorMessage(res)); 
     }
     for (auto& buf: data) { 
         try { 
             ReadDataBlock(buf.GetData(), buf.GetSize(), reply); 
         } catch (const std::exception& e) { 
-            throw TSerialDeviceTransientErrorException(errorMsg + e.what()); 
+            throw TSerialDeviceTransientErrorException(errorMsg + ". " + e.what()); 
         } 
     }
     res = responseParser(reply);
@@ -364,7 +366,7 @@ void TDlmsDevice::CheckCycle(std::function<int(std::vector<CGXByteBuffer>&)> req
         if (res == DLMS_ERROR_CODE_APPLICATION_CONTEXT_NAME_NOT_SUPPORTED) {
             throw TSerialDevicePermanentRegisterException("Logical Name referencing is not supported");
         }
-        throw TSerialDeviceTransientErrorException(errorMsg + GetErrorMessage(res)); 
+        throw TSerialDeviceTransientErrorException(errorMsg + ". Bad response: " + GetErrorMessage(res)); 
     }
 }
 
@@ -372,7 +374,7 @@ void TDlmsDevice::ReadAttribute(const std::string& addr, int attribute, CGXDLMSO
 {
     CheckCycle([&](auto& data)  { return Client->Read(&obj, attribute, data); },
                [&](auto& reply) { return Client->UpdateValue(obj, attribute, reply.GetValue()); },
-                "Getting " + addr + ":" + std::to_string(attribute) + " failed: ");
+                "Getting " + addr + ":" + std::to_string(attribute) + " failed");
 }
 
 uint64_t TDlmsDevice::ReadRegister(PRegister reg)
@@ -431,44 +433,35 @@ void TDlmsDevice::WriteRegister(PRegister reg, uint64_t value)
 
 void TDlmsDevice::Prepare()
 {
-    Disconnect();
+    try {
+        Disconnect();
+    } catch(...) {
+        if (DisconnectRetryTimeout == std::chrono::milliseconds::zero()) {
+            throw;
+        }
+        // If device doesn't respond, give it some time of silence on bus and try to disconnect again
+        Port()->SleepSinceLastInteraction(DisconnectRetryTimeout);
+        Disconnect();
+    }
     InitializeConnection();
 }
 
 void TDlmsDevice::Disconnect()
 {
-    int ret;
-    std::vector<CGXByteBuffer> data;
-    CGXReplyData reply;
     if (Client->GetInterfaceType() == DLMS_INTERFACE_TYPE_WRAPPER ||
         Client->GetCiphering()->GetSecurity() != DLMS_SECURITY_NONE)
     {
-        
-        if ((ret = Client->ReleaseRequest(data)) != 0) {
-            LOG(Warn) << "ReleaseRequest failed: " << GetErrorMessage(ret);
-        }
-        for (auto& buf: data) {
-            try {
-                ReadDataBlock(buf.GetData(), buf.GetSize(), reply);
-            } catch (const std::exception& e) {
-                LOG(Warn) << "ReleaseRequest failed: " << e.what();
-                break;
-            }
-        }
-    }
-
-    if ((ret = Client->DisconnectRequest(data, true)) != 0) {
-        LOG(Warn) << "DisconnectRequest failed: " << GetErrorMessage(ret);
-        return;
-    }
-    for (auto& buf: data) {
         try {
-            ReadDataBlock(buf.GetData(), buf.GetSize(), reply);
-        } catch (const std::exception& e) {
-            LOG(Warn) << "DisconnectRequest failed: " << e.what();
-            break;
+            CheckCycle([&](auto& data)  { return Client->ReleaseRequest(data); },
+                       [&](auto& reply) { return DLMS_ERROR_CODE_OK; },
+                       "ReleaseRequest failed");
+        } catch(const std::exception& e) {
+            LOG(Warn) << e.what();
         }
     }
+    CheckCycle([&](auto& data)  { return Client->DisconnectRequest(data, true); },
+                [&](auto& reply) { return DLMS_ERROR_CODE_OK; },
+                "DisconnectRequest failed");
 }
 
 void TDlmsDevice::EndSession()
@@ -483,17 +476,24 @@ void TDlmsDevice::InitializeConnection()
     //Get meter's send and receive buffers size.
     CheckCycle([&](auto& data)  { return Client->SNRMRequest(data); },
                [&](auto& reply) { return Client->ParseUAResponse(reply.GetData()); },
-                "SNRMRequest failed: ");
+               "SNRMRequest failed");
 
-    CheckCycle([&](auto& data)  { return Client->AARQRequest(data); },
-               [&](auto& reply) { return Client->ParseAAREResponse(reply.GetData()); },
-               "AARQRequest failed: ");
+    try {
+        CheckCycle([&](auto& data)  { return Client->AARQRequest(data); },
+                [&](auto& reply) { return Client->ParseAAREResponse(reply.GetData()); },
+                "AARQRequest failed");
 
-    // Get challenge if HLS authentication is used.
-    if (Client->GetAuthentication() > DLMS_AUTHENTICATION_LOW) {
-        CheckCycle([&](auto& data)  { return Client->GetApplicationAssociationRequest(data); },
-                   [&](auto& reply) { return Client->ParseApplicationAssociationResponse(reply.GetData()); },
-                   "Authentication failed: ");
+        // Get challenge if HLS authentication is used.
+        if (Client->GetAuthentication() > DLMS_AUTHENTICATION_LOW) {
+            CheckCycle([&](auto& data)  { return Client->GetApplicationAssociationRequest(data); },
+                    [&](auto& reply) { return Client->ParseApplicationAssociationResponse(reply.GetData()); },
+                    "Authentication failed");
+        }
+    } catch (const std::exception&) {
+        try {
+            Disconnect();
+        } catch(...) {}
+        throw;
     }
     LOG(Debug) << "Connection is initialized";
 }
@@ -581,7 +581,7 @@ void TDlmsDevice::GetAssociationView()
     LOG(Debug) << "Get association view ...";
     CheckCycle([&](auto& data)  { return Client->GetObjectsRequest(data); },
                [&](auto& reply) { return Client->ParseObjects(reply.GetData(), true); },
-               "Getting objects from association view failed: ");
+               "Getting objects from association view failed");
 }
 
 std::map<int, std::string> TDlmsDevice::GetLogicalDevices()
@@ -597,7 +597,7 @@ std::map<int, std::string> TDlmsDevice::GetLogicalDevices()
     const auto SAP_ASSIGNEMENT_LIST_ATTRIBUTE_INDEX = 2;
     CheckCycle([&](auto& data)  { return Client->Read(obj, SAP_ASSIGNEMENT_LIST_ATTRIBUTE_INDEX, data); },
                [&](auto& reply) { return Client->UpdateValue(*obj, SAP_ASSIGNEMENT_LIST_ATTRIBUTE_INDEX, reply.GetValue()); },
-               "SAP Assignment attribute read failed: ");
+               "SAP Assignment attribute read failed");
     auto res = static_cast<CGXDLMSSapAssignment*>(obj)->GetSapAssignmentList();
     Disconnect();
     return res;
@@ -701,7 +701,7 @@ void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode   mode,
     std::cout << std::endl;
     for (const auto& ld: logicalDevices) {
         std::cout << "Getting objects for " << ld.second << " ..." << std::endl;
-        deviceConfig.LogicalObjectAddress = ld.first;
+        deviceConfig.LogicalDeviceAddress = ld.first;
         TDlmsDevice d(deviceConfig, port, deviceFactory.GetProtocol("dlms"));
         auto objs = d.ReadAllObjects(mode != 0);
         TObisCodeHints obisHints = LoadObisCodeHints();

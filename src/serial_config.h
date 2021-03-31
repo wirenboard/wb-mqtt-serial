@@ -20,6 +20,32 @@
 #include "port.h"
 #include "serial_device.h"
 
+namespace WBMQTT
+{
+    namespace JSON
+    {
+        template <> inline bool Is<std::chrono::milliseconds>(const Json::Value& value)
+        {
+            return value.isInt();
+        }
+
+        template <> inline std::chrono::milliseconds As<std::chrono::milliseconds>(const Json::Value& value)
+        {
+            return std::chrono::milliseconds(value.asInt());
+        }
+
+        template <> inline bool Is<std::chrono::microseconds>(const Json::Value& value)
+        {
+            return value.isInt();
+        }
+
+        template <> inline std::chrono::microseconds As<std::chrono::microseconds>(const Json::Value& value)
+        {
+            return std::chrono::microseconds(value.asInt());
+        }
+    }
+}
+
 struct TDeviceTemplate
 {
     std::string Type;
@@ -160,7 +186,6 @@ public:
 
     /*! Create new device of given type */
     virtual PSerialDevice CreateDevice(const Json::Value& deviceData,
-                                       const Json::Value& deviceTemplate,
                                        PProtocol          protocol,
                                        const std::string& defaultId,
                                        PPortConfig        portConfig) const = 0;
@@ -196,7 +221,6 @@ struct TDeviceConfigLoadParams
 };
 
 PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             deviceData,
-                                   const Json::Value&             deviceTemplate,
                                    PProtocol                      protocol,
                                    const IDeviceFactory&          factory,
                                    const TDeviceConfigLoadParams& parameters);
@@ -235,7 +259,6 @@ public:
     {}
 
     PSerialDevice CreateDevice(const Json::Value& deviceData,
-                               const Json::Value& deviceTemplate,
                                PProtocol          protocol,
                                const std::string& defaultId,
                                PPortConfig        portConfig) const override
@@ -246,7 +269,7 @@ public:
         params.DefaultPollInterval = portConfig->PollInterval;
         params.DefaultRequestDelay = portConfig->RequestDelay;
         params.PortResponseTimeout = portConfig->ResponseTimeout;
-        auto deviceConfig = LoadBaseDeviceConfig(deviceData, deviceTemplate, protocol, *this, params);
+        auto deviceConfig = LoadBaseDeviceConfig(deviceData, protocol, *this, params);
 
         auto dev = std::make_shared<Dev>(deviceConfig, portConfig->Port, protocol);
         dev->InitSetupItems();

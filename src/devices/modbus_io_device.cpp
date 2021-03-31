@@ -50,7 +50,6 @@ namespace
         {}
 
         PSerialDevice CreateDevice(const Json::Value& deviceData,
-                                   const Json::Value& deviceTemplate,
                                    PProtocol          protocol,
                                    const std::string& defaultId,
                                    PPortConfig        portConfig) const override
@@ -61,7 +60,7 @@ namespace
             params.DefaultPollInterval = portConfig->PollInterval;
             params.DefaultRequestDelay = portConfig->RequestDelay;
             params.PortResponseTimeout = portConfig->ResponseTimeout;
-            auto deviceConfig = LoadBaseDeviceConfig(deviceData, deviceTemplate, protocol, *this, params);
+            auto deviceConfig = LoadBaseDeviceConfig(deviceData, protocol, *this, params);
 
             PSerialDevice dev = std::make_shared<TModbusIODevice>(ModbusTraitsFactory->GetModbusTraits(portConfig->Port), deviceConfig, portConfig->Port, protocol);
             dev->InitSetupItems();

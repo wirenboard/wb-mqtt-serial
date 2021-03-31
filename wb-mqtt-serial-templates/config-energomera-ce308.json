@@ -6,6 +6,8 @@
     "id": "energomera308",
     "protocol" : "dlms",
     "dlms_auth": 1,
+    "dlms_client_address": 32,
+    "password": ["0x31", "0x32", "0x33", "0x34", "0x35", "0x36", "0x37", "0x38"],
     "response_timeout_ms": 1000,
     "frame_timeout_ms" : 20,
     "channels" : 
