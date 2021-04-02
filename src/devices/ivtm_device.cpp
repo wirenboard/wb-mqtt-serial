@@ -17,7 +17,8 @@
 void TIVTMDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(new TUint32SlaveIdProtocol("ivtm", TRegisterTypes({{ 0, "default", "value", Float, true }})), 
-                             new TBasicDeviceFactory<TIVTMDevice>());
+                             new TBasicDeviceFactory<TIVTMDevice>("#/definitions/simple_device", 
+                                                                  "#/definitions/common_channel"));
 }
 
 TIVTMDevice::TIVTMDevice(PDeviceConfig config, PPort port, PProtocol protocol)

@@ -24,7 +24,9 @@ namespace
 
 void TS2KDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("s2k", RegisterTypes), new TBasicDeviceFactory<TS2KDevice>());
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("s2k", RegisterTypes),
+                             new TBasicDeviceFactory<TS2KDevice>("#/definitions/simple_device_with_setup",
+                                                                 "#/definitions/common_channel"));
 }
 
 TS2KDevice::TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol)

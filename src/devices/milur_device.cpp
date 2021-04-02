@@ -26,7 +26,8 @@ namespace {
 void TMilurDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(new TUint32SlaveIdProtocol("milur", RegisterTypes),
-                             new TBasicDeviceFactory<TMilurDevice>());
+                             new TBasicDeviceFactory<TMilurDevice>("#/definitions/simple_device", 
+                                                                   "#/definitions/common_channel"));
 }
 
 TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)

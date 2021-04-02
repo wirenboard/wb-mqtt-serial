@@ -5,7 +5,8 @@
 void TLLSDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(new TUint32SlaveIdProtocol("lls", TRegisterTypes({{ 0, "default", "value", Float, true }})), 
-                             new TBasicDeviceFactory<TLLSDevice>());
+                             new TBasicDeviceFactory<TLLSDevice>("#/definitions/simple_device", 
+                                                                 "#/definitions/common_channel"));
 }
 
 TLLSDevice::TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol)

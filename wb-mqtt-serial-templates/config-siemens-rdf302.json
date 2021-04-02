@@ -5,7 +5,6 @@
   "id": "siemens-rdf302",
   "parameters": {
     "plant_type": {
-        "order": 1,
         "title": "Plant type",
         "address": "0x006C",
         "enum": [ 0, 1, 2, 3, 4 ],

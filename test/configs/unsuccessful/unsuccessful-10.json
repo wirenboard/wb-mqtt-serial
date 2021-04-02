@@ -1,0 +1,21 @@
+// missing manadotory subdevice parameter
+{
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "devices" : [
+                {
+                    "device_type" : "subdevice",
+                    "slave_id": 2,
+                    "channels":
+                    [
+                        {
+                            "name" : "Sub2",
+                            "device_type" : "subdevice3"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
