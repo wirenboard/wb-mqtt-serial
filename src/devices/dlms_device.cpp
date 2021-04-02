@@ -77,7 +77,8 @@ namespace
     class TDlmsDeviceFactory: public IDeviceFactory
     {
     public:
-        TDlmsDeviceFactory(): IDeviceFactory("#/definitions/dlms_parameters")
+        TDlmsDeviceFactory()
+            : IDeviceFactory("#/definitions/dlms_device", "#/definitions/dlms_channel")
         {}
 
         PSerialDevice CreateDevice(const Json::Value& data,

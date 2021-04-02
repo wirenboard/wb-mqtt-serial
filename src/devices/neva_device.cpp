@@ -223,7 +223,8 @@ namespace
 void TNevaDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(new TNevaIecProtocol(), 
-                             new TBasicDeviceFactory<TNevaDevice>("#/definitions/slave_id_broadcast"));
+                             new TBasicDeviceFactory<TNevaDevice>("#/definitions/simple_device_with_broadcast",
+                                                                  "#/definitions/common_channel"));
 }
 
 TNevaDevice::TNevaDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)

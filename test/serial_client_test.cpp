@@ -892,7 +892,7 @@ void TSerialClientIntegrationTest::SetUp()
     Driver->StartLoop();
 
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    AddProtocolType(configSchema, "fake");
+    AddFakeDeviceType(configSchema);
     AddRegisterType(configSchema, "fake");
     TTemplateMap t;
     Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
@@ -1260,7 +1260,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool miss, bool pollIntervalTest)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    AddProtocolType(configSchema, "fake");
+    AddFakeDeviceType(configSchema);
     AddRegisterType(configSchema, "fake");
     TTemplateMap t;
     Config = LoadConfig(GetDataFilePath("configs/reconnect_test_1_device.json"), 
@@ -1362,7 +1362,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
 PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    AddProtocolType(configSchema, "fake");
+    AddFakeDeviceType(configSchema);
     AddRegisterType(configSchema, "fake");
     TTemplateMap t;
     Config = LoadConfig(GetDataFilePath("configs/reconnect_test_2_devices.json"), 
