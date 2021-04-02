@@ -3,6 +3,7 @@
 #include "serial_device.h"
 #include "serial_config.h"
 #include "config_merge_template.h"
+#include "config_schema_generator.h"
 #include "file_utils.h"
 #include "fake_serial_device.h"
 
@@ -163,6 +164,6 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
 TEST_F(TConfigParserTest, ProtocolParametersSchemaRef)
 {
     for( const auto& name: DeviceFactory.GetProtocolNames()) {
-        ASSERT_FALSE(DeviceFactory.GetProtocolParametersSchemaRef(name).empty()) << name;
+        ASSERT_FALSE(DeviceFactory.GetCommonDeviceSchemaRef(name).empty()) << name;
     }
 }

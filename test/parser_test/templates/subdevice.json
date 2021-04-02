@@ -17,7 +17,7 @@
             },
             {
                 "name": "Sub2",
-                "oneOf": [ "subdevice1", "subdevice2" ],
+                "oneOf": [ "subdevice1", "subdevice2", "subdevice3" ],
                 "device_type": "subdevice1",
                 "shift": 100
             }
@@ -68,6 +68,26 @@
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0506"
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "subdevice3",
+                "device": {
+                    "parameters": {
+                        "s12": {
+                            "title": "s12",
+                            "address": 20000,
+                            "required": true
+                        }
+                    },
+                    "channels": [
+                        {
+                            "name": "c12",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0502"
                         }
                     ]
                 }

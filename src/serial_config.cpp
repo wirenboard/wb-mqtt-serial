@@ -19,6 +19,7 @@
 #include "serial_port.h"
 
 #include "config_merge_template.h"
+#include "config_schema_generator.h"
 
 #include "devices/energomera_iec_device.h"
 #include "devices/ivtm_device.h"
@@ -590,7 +591,11 @@ std::vector<std::shared_ptr<TDeviceTemplate>> TTemplateMap::GetTemplatesOrderedB
 {
     std::vector<std::shared_ptr<TDeviceTemplate>> templates;
     for (const auto& file: TemplateFiles) {
-        templates.push_back(GetTemplatePtr(file.first));
+        try {
+            templates.push_back(GetTemplatePtr(file.first));
+        } catch (const std::exception& e) {
+            LOG(Error) << e.what();
+        }
     }
     std::sort(templates.begin(), templates.end(), [](auto p1, auto p2) {return p1->Title < p2->Title;});
     return templates;
@@ -661,9 +666,48 @@ Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName,
     return schema;
 }
 
-void AddProtocolType(Json::Value& configSchema, const std::string& protocolType)
+// {
+//   "allOf": [
+//     { "$ref": "#/definitions/deviceProperties" },
+//     { "$ref": "#/definitions/common_channels" },
+//     { "$ref": "#/definitions/common_setup" },
+//     { "$ref": "#/definitions/slave_id" }
+//   ],
+//   "properties": {
+//     "protocol": {
+//       "type": "string",
+//       "enum": ["fake"]
+//     }
+//   },
+//   "required": ["protocol", "slave_id"]
+// }
+void AddFakeDeviceType(Json::Value& configSchema)
 {
-    configSchema["definitions"]["deviceProtocol"]["enum"].append(protocolType);
+    Json::Value ar(Json::arrayValue);
+    Json::Value v;
+    v["$ref"] = "#/definitions/deviceProperties";
+    ar.append(v);
+    v["$ref"] = "#/definitions/common_channels";
+    ar.append(v);
+    v["$ref"] = "#/definitions/common_setup";
+    ar.append(v);
+    v["$ref"] = "#/definitions/slave_id";
+    ar.append(v);
+
+    Json::Value res;
+    res["allOf"] = ar;
+
+    res["properties"]["protocol"]["type"] = "string";
+    ar.clear();
+    ar.append("fake");
+    res["properties"]["protocol"]["enum"] = ar;
+
+    ar.clear();
+    ar.append("protocol");
+    ar.append("slave_id");
+    res["required"] = ar;
+
+    configSchema["definitions"]["device"]["oneOf"].append(res);
 }
 
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType)
@@ -676,14 +720,19 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName)
     return Parse(schemaFileName);
 }
 
-PHandlerConfig LoadConfig(const std::string& configFileName,
+PHandlerConfig LoadConfig(const std::string&    configFileName,
                           TSerialDeviceFactory& deviceFactory,
-                          const Json::Value& configSchema,
-                          TTemplateMap& templates,
-                          TPortFactoryFn portFactory)
+                          const Json::Value&    baseConfigSchema,
+                          TTemplateMap&         templates,
+                          TPortFactoryFn        portFactory)
 {
     PHandlerConfig handlerConfig(new THandlerConfig);
     Json::Value Root(Parse(configFileName));
+
+    auto configSchema = MakeSchemaForConfigValidation(baseConfigSchema,
+                                                      GetValidationDeviceTypes(Root),
+                                                      templates,
+                                                      deviceFactory);
 
     try {
         Validate(Root, configSchema);
@@ -711,15 +760,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
     }
 
     throw TConfigParserException("no devices defined in config. Nothing to do");
-}
-
-PHandlerConfig LoadConfig(const std::string& configFileName,
-                          TSerialDeviceFactory& deviceFactory,
-                          const Json::Value& configSchema,
-                          TPortFactoryFn portFactory)
-{
-    TTemplateMap t;
-    return LoadConfig(configFileName, deviceFactory, configSchema, t, portFactory);
 }
 
 void TPortConfig::AddDevice(PSerialDevice device)
@@ -834,12 +874,20 @@ PProtocol TSerialDeviceFactory::GetProtocol(const std::string& name)
     return it->second.first;
 }
 
-const std::string& TSerialDeviceFactory::GetProtocolParametersSchemaRef(const std::string& protocolName) const
+const std::string& TSerialDeviceFactory::GetCommonDeviceSchemaRef(const std::string& protocolName) const
 {
     auto it = Protocols.find(protocolName);
     if (it == Protocols.end())
         throw TSerialDeviceException("unknown protocol: " + protocolName);
-    return it->second.second->GetProtocolParametersSchemaRef();
+    return it->second.second->GetCommonDeviceSchemaRef();
+}
+
+const std::string& TSerialDeviceFactory::GetCustomChannelSchemaRef(const std::string& protocolName) const
+{
+    auto it = Protocols.find(protocolName);
+    if (it == Protocols.end())
+        throw TSerialDeviceException("unknown protocol: " + protocolName);
+    return it->second.second->GetCustomChannelSchemaRef();
 }
 
 PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig, const std::string& defaultId, PPortConfig portConfig, TTemplateMap& templates)
@@ -879,11 +927,21 @@ std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
     return res;
 }
 
-const std::string& IDeviceFactory::GetProtocolParametersSchemaRef() const
+IDeviceFactory::IDeviceFactory(const std::string& commonDeviceSchemaRef,
+                               const std::string& customChannelSchemaRef)
+    : CommonDeviceSchemaRef(commonDeviceSchemaRef),
+      CustomChannelSchemaRef(customChannelSchemaRef)
+{}
+
+const std::string& IDeviceFactory::GetCommonDeviceSchemaRef() const
 {
-    return ProtocolParametersSchemaRef;
+    return CommonDeviceSchemaRef;
 }
 
+const std::string& IDeviceFactory::GetCustomChannelSchemaRef() const
+{
+    return CustomChannelSchemaRef;
+}
 
 PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
                                    PProtocol                      protocol,
