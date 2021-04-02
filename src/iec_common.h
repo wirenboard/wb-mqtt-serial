@@ -41,3 +41,12 @@ public:
 protected:
     std::string SlaveId;
 };
+
+//! Base class for IEC protocol implementations with string slave ids and broarcast support.
+class TIECProtocol: public IProtocol
+{
+public:
+    TIECProtocol(const std::string& name, const TRegisterTypes& reg_types);
+
+    bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override;
+};

@@ -83,7 +83,7 @@ namespace
         void SetUp()
         {
             TSerialDeviceTest::SetUp();
-            Dev = std::make_shared<TNevaDevice>(GetDeviceConfig(), SerialPort, TSerialDeviceFactory::GetProtocol("neva"));
+            Dev = std::make_shared<TNevaDevice>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("neva"));
             SerialPort->Open();
         }
 
@@ -99,7 +99,6 @@ namespace
     {
     protected:
         const char* ConfigPath() const { return "configs/config-neva-test.json"; }
-        std::string GetTemplatePath() const override { return "../wb-mqtt-serial-templates"; }
     };
 }
 

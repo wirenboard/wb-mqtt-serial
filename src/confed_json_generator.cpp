@@ -1,5 +1,6 @@
 #include "confed_json_generator.h"
 #include "confed_schema_generator.h"
+#include "config_schema_generator.h"
 #include "log.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
@@ -231,16 +232,22 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
     return res;
 }
 
-Json::Value MakeJsonForConfed(const std::string& configFileName, const Json::Value& configSchema, TTemplateMap& templates)
+Json::Value MakeJsonForConfed(const std::string&    configFileName,
+                              const Json::Value&    baseConfigSchema,
+                              TTemplateMap&         templates,
+                              TSerialDeviceFactory& deviceFactory)
 {
     Json::Value root(Parse(configFileName));
+    auto configSchema = MakeSchemaForConfigValidation(baseConfigSchema,
+                                                      GetValidationDeviceTypes(root),
+                                                      templates,
+                                                      deviceFactory);
     Validate(root, configSchema);
     for (Json::Value& port : root["ports"]) {
         for (Json::Value& device : port["devices"]) {
-            if (!device.isMember("device_type")) {
-                device["device_type"] = CUSTOM_DEVICE_TYPE;
+            if (device.isMember("device_type")) {
+                device = MakeDeviceForConfed(device, templates, 1);
             }
-            device = MakeDeviceForConfed(device, templates, 1);
         }
     }
 

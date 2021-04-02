@@ -8,6 +8,9 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include "fake_serial_device.h"
+#include "config_schema_generator.h"
+
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 
@@ -271,6 +274,8 @@ std::string TFakeSerialPort::GetDescription() const
 
 void TSerialDeviceTest::SetUp()
 {
+    RegisterProtocols(DeviceFactory);
+    TFakeSerialDevice::Register(DeviceFactory);
     SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
 }
 
@@ -286,10 +291,23 @@ void TSerialDeviceTest::TearDown()
 }
 
 WBMQTT::TMap<std::string, TTemplateMap> TSerialDeviceIntegrationTest::Templates;
+Json::Value TSerialDeviceIntegrationTest::CommonConfigSchema;
+Json::Value TSerialDeviceIntegrationTest::CommonConfigTemplatesSchema;
 
 std::string TSerialDeviceIntegrationTest::GetTemplatePath() const 
 {
     return std::string();
+}
+
+void TSerialDeviceIntegrationTest::SetUpTestCase()
+{
+    if (CommonConfigSchema.empty()) {
+        CommonConfigSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    }
+    if (CommonConfigTemplatesSchema.empty()) {
+        CommonConfigTemplatesSchema = LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
+                                                                CommonConfigSchema);
+    }
 }
 
 void TSerialDeviceIntegrationTest::SetUp()
@@ -298,8 +316,6 @@ void TSerialDeviceIntegrationTest::SetUp()
     TSerialDeviceTest::SetUp();
     PortMakerCalled = false;
 
-    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-
     std::string path(GetTemplatePath());
 
     auto it = Templates.find(path);
@@ -307,18 +323,15 @@ void TSerialDeviceIntegrationTest::SetUp()
         if (path.empty()) {
             it = Templates.emplace(path, TTemplateMap()).first;
         } else {
-            it = Templates.emplace(path, 
-                                   TTemplateMap(GetDataFilePath(path),
-                                                LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
-                                                                          configSchema))).first;
+            it = Templates.emplace(path, TTemplateMap(GetDataFilePath(path), CommonConfigTemplatesSchema)).first;
         } 
     }
 
     Config = LoadConfig(GetDataFilePath(ConfigPath()), 
-                         DeviceFactory,
-                         configSchema,
-                         it->second,
-                         [=](const Json::Value&) {return std::make_pair(SerialPort, false);});
+                        DeviceFactory,
+                        CommonConfigSchema,
+                        it->second,
+                        [=](const Json::Value&) {return std::make_pair(SerialPort, false);});
 
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient("em-test");

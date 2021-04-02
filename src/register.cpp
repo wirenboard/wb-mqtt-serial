@@ -142,7 +142,7 @@ std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegSt
 std::mutex TRegister::Mutex;
 
 TRegisterConfig::TRegisterConfig(int type,
-                                 int address,
+                                 std::shared_ptr<IRegisterAddress> address,
                                  RegisterFormat format,
                                  double scale,
                                  double offset,
@@ -222,23 +222,79 @@ uint8_t TRegisterConfig::GetBitWidth() const
     return GetByteWidth() * 8;
 }
 
-PRegisterConfig TRegisterConfig::Create(int                       type,
-                                        int                       address,
-                                        RegisterFormat            format,
-                                        double                    scale,
-                                        double                    offset,
-                                        double                    round_to,
-                                        bool                      poll,
-                                        bool                      readonly,
-                                        const std::string&        type_name,
-                                        std::unique_ptr<uint64_t> error_value,
-                                        const EWordOrder          word_order,
-                                        uint8_t                   bit_offset,
-                                        uint8_t                   bit_width,
-                                        std::unique_ptr<uint64_t> unsupported_value)
+PRegisterConfig TRegisterConfig::Create(int                               type,
+                                        std::shared_ptr<IRegisterAddress> address,
+                                        RegisterFormat                    format,
+                                        double                            scale,
+                                        double                            offset,
+                                        double                            round_to,
+                                        bool                              poll,
+                                        bool                              readonly,
+                                        const std::string&                type_name,
+                                        std::unique_ptr<uint64_t>         error_value,
+                                        const EWordOrder                  word_order,
+                                        uint8_t                           bit_offset,
+                                        uint8_t                           bit_width,
+                                        std::unique_ptr<uint64_t>         unsupported_value)
 {
     return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
                                              type_name, std::move(error_value), word_order, bit_offset,
                                              bit_width, std::move(unsupported_value));
 }
 
+PRegisterConfig TRegisterConfig::Create(int type,
+                                        uint32_t address,
+                                        RegisterFormat format,
+                                        double scale,
+                                        double offset,
+                                        double round_to,
+                                        bool poll,
+                                        bool readonly,
+                                        const std::string& type_name,
+                                        std::unique_ptr<uint64_t> error_value,
+                                        const EWordOrder word_order,
+                                        uint8_t bit_offset,
+                                        uint8_t bit_width,
+                                        std::unique_ptr<uint64_t> unsupported_value)
+{
+    return Create(type, std::make_shared<TUint32RegisterAddress>(address), format, scale, offset, round_to, poll, readonly,
+                  type_name, std::move(error_value), word_order, bit_offset,
+                  bit_width, std::move(unsupported_value));
+}
+
+TUint32RegisterAddress::TUint32RegisterAddress(uint32_t address) : Address(address)
+{}
+
+uint32_t TUint32RegisterAddress::Get() const
+{
+    return Address;
+}
+
+std::string TUint32RegisterAddress::ToString() const
+{
+    return std::to_string(Address);
+}
+
+bool TUint32RegisterAddress::IsLessThan(const IRegisterAddress& addr) const
+{
+    auto a = dynamic_cast<const TUint32RegisterAddress&>(addr);
+    return Address < a.Address;
+}
+
+IRegisterAddress* TUint32RegisterAddress::CalcNewAddress(uint32_t offset,
+                                                         uint32_t stride,
+                                                         uint32_t registerByteWidth,
+                                                         uint32_t addressByteStep) const
+{
+    auto stride_offset = stride * registerByteWidth;
+    if (addressByteStep < 1) {
+        addressByteStep = 1;
+    }
+    stride_offset = (stride_offset + addressByteStep - 1) / addressByteStep;
+    return new TUint32RegisterAddress(Address + offset + stride_offset);
+}
+
+uint32_t GetUint32RegisterAddress(const IRegisterAddress& addr)
+{
+    return dynamic_cast<const TUint32RegisterAddress&>(addr).Get();
+}

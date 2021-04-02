@@ -1,0 +1,92 @@
+ [
+    {
+        "obis": "0.0.94.7.6.255",
+        "description": "Device characteristics"
+    },
+    {
+        "obis": "1.0.94.7.0.255",
+        "description": "Actual values"
+    },
+    {
+        "obis": "1.0.94.7.1.255",
+        "description": "Scale for month values"
+    },
+    {
+        "obis": "1.0.94.7.2.255",
+        "description": "Scale for day values"
+    },
+    {
+        "obis": "1.0.94.7.3.255",
+        "description": "Scale for actual values"
+    },
+    {
+        "obis": "1.0.94.7.4.255",
+        "description": "Scale for load profiles"
+    },
+    {
+        "obis": "1.0.94.7.5.255",
+        "description": "Measurements for telemechanics"
+    },
+    {
+        "obis": "1.0.94.7.5.255",
+        "description": "Signalling for telemechanics"
+    },
+    {
+        "obis": "1.0.3.8.128.255",
+        "description": "Total RP energy",
+        "control": "Total RP energy"
+    },
+    {
+        "obis": "1.0.4.8.128.255",
+        "description": "Total RN energy",
+        "control": "Total RN energy"
+    },
+    {
+        "obis": "1.0.32.7.0.255",
+        "control": "Urms L1"
+    },
+    {
+        "obis": "1.0.52.7.0.255",
+        "control": "Urms L2"
+    },
+    {
+        "obis": "1.0.72.7.0.255",
+        "control": "Urms L3"
+    },
+    {
+        "obis": "1.0.31.7.0.255",
+        "control": "Irms L1"
+    },
+    {
+        "obis": "1.0.51.7.0.255",
+        "control": "Irms L2"
+    },
+    {
+        "obis": "1.0.71.7.0.255",
+        "control": "Irms L3"
+    },
+    {
+        "obis": "1.0.81.7.1.255",
+        "control": "Voltage angle L2-L1"
+    },
+    {
+        "obis": "1.0.81.7.10.255",
+        "control": "Voltage angle L1-L2"
+    },
+    {
+        "obis": "1.0.81.7.2.255",
+        "control": "Voltage angle L3-L1"
+    },
+    {
+        "obis": "1.0.81.7.12.255",
+        "control": "Voltage angle L3-L2"
+    },
+    {
+        "obis": "1.0.81.7.21.255",
+        "control": "Voltage angle L2-L3"
+    },
+    {
+        "obis": "0.0.96.9.0.255",
+        "control": "Temperature"
+    }
+]

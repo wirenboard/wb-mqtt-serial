@@ -15,21 +15,29 @@
 
 #define LOG(logger) ::logger.Log() << "[uniel device] "
 
-namespace {
+namespace
+{
     enum {
         READ_CMD           = 0x05,
         WRITE_CMD          = 0x06,
         SET_BRIGHTNESS_CMD = 0x0a
     };
+
+    const TRegisterTypes RegisterTypes{
+        { TUnielDevice::REG_RELAY,      "relay",      "switch", U8 },
+        { TUnielDevice::REG_INPUT,      "input",      "text",   U8, true },
+        { TUnielDevice::REG_PARAM,      "param",      "value",  U8 },
+        // "value", not "range" because 'max' cannot be specified here.
+        { TUnielDevice::REG_BRIGHTNESS, "brightness", "value",  U8 }
+    };
 }
 
-REGISTER_UINT_SLAVE_ID_PROTOCOL("uniel", TUnielDevice, TRegisterTypes({
-            { TUnielDevice::REG_RELAY, "relay", "switch", U8 },
-            { TUnielDevice::REG_INPUT, "input", "text", U8, true },
-            { TUnielDevice::REG_PARAM, "param", "value", U8 },
-            // "value", not "range" because 'max' cannot be specified here.
-            { TUnielDevice::REG_BRIGHTNESS, "brightness", "value", U8 }
-        }));
+void TUnielDevice::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("uniel", RegisterTypes), 
+                             new TBasicDeviceFactory<TUnielDevice>("#/definitions/simple_device_with_setup",
+                                                                   "#/definitions/common_channel"));
+}
 
 TUnielDevice::TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
@@ -87,10 +95,11 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
 
 uint64_t TUnielDevice::ReadRegister(PRegister reg)
 {
-    WriteCommand(READ_CMD, SlaveId, 0, uint8_t(reg->Address), 0);
+    auto addr = GetUint32RegisterAddress(*reg->Address);
+    WriteCommand(READ_CMD, SlaveId, 0, uint8_t(addr), 0);
     uint8_t response[3] = {0};
     ReadResponse(READ_CMD, response);
-    if (response[1] != uint8_t(reg->Address))
+    if (response[1] != uint8_t(addr))
         throw TSerialDeviceTransientErrorException("register index mismatch");
 
     if (reg->Type == REG_RELAY)
@@ -100,13 +109,13 @@ uint64_t TUnielDevice::ReadRegister(PRegister reg)
 
 void TUnielDevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    uint8_t cmd, addr;
+    auto addr = GetUint32RegisterAddress(*reg->Address);
+    uint8_t cmd;
     if (reg->Type == REG_BRIGHTNESS) {
         cmd = SET_BRIGHTNESS_CMD;
-        addr = uint8_t(reg->Address >> 8);
+        addr >>= 8;
     } else {
         cmd = WRITE_CMD;
-        addr = uint8_t(reg->Address);
     }
     if (reg->Type == REG_RELAY && value != 0)
         value = 255;

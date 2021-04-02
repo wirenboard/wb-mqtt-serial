@@ -76,38 +76,97 @@ typedef std::shared_ptr<TRegisterConfig> PRegisterConfig;
 class TSerialDevice;
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
 
+//! Base class for register addresses
+class IRegisterAddress
+{
+public:
+    virtual ~IRegisterAddress() = default;
+
+    //! Get address in string representation. Used for debug messages
+    virtual std::string ToString() const = 0;
+
+    /**
+     * @brief Compares two addresses. Throws if addresses are not comparable
+     * 
+     * @param addr address to campare
+     * @return true - this address is less than addr
+     * @return false - this address is not less than addr
+     */
+    virtual bool IsLessThan(const IRegisterAddress& addr) const = 0;
+
+    /**
+     * @brief Calculate new address based on this
+     * 
+     * @param offset - offset in registers from this
+     * @param stride - stride in registers from this
+     * @param registerByteWidth - byte width of a register
+     * @param addressByteStep - bytes between consecutive registers
+     * @return IRegisterAddress* new address object. Life time of the object must be managed by function caller.
+     */
+    virtual IRegisterAddress* CalcNewAddress(uint32_t offset,
+                                             uint32_t stride,
+                                             uint32_t registerByteWidth,
+                                             uint32_t addressByteStep) const = 0;
+};
+
+inline ::std::ostream& operator<<(::std::ostream& os, std::shared_ptr<IRegisterAddress> addr) {
+    return os << addr->ToString();
+}
+
+//! Register address represented by uint32_t value
+class TUint32RegisterAddress: public IRegisterAddress
+{
+    uint32_t Address;
+public:
+    TUint32RegisterAddress(uint32_t address);
+
+    uint32_t Get() const;
+
+    std::string ToString() const override;
+
+    bool IsLessThan(const IRegisterAddress& addr) const;
+
+    IRegisterAddress* CalcNewAddress(uint32_t offset,
+                                     uint32_t stride,
+                                     uint32_t registerByteWidth,
+                                     uint32_t addressByteStep) const override;
+};
+
+//! Casts addr to uint32_t and returns it. Throws std::bad_cast if cast is not possible.
+uint32_t GetUint32RegisterAddress(const IRegisterAddress& addr);
+
 struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 {
-    int                       Type;
-    int                       Address;
-    RegisterFormat            Format;
-    double                    Scale;
-    double                    Offset;
-    double                    RoundTo;
-    bool                      Poll;
-    bool                      ReadOnly;
-    std::string               TypeName;
-    std::chrono::milliseconds PollInterval = std::chrono::milliseconds(-1);
-    std::unique_ptr<uint64_t> ErrorValue;
-    EWordOrder                WordOrder;
-    uint8_t                   BitOffset;
-    uint8_t                   BitWidth;
-    std::unique_ptr<uint64_t> UnsupportedValue;
+    int                               Type;
+    std::shared_ptr<IRegisterAddress> Address;
+    RegisterFormat                    Format;
+    double                            Scale;
+    double                            Offset;
+    double                            RoundTo;
+    bool                              Poll;
+    bool                              ReadOnly;
+    std::string                       TypeName;
+    std::chrono::milliseconds         PollInterval = std::chrono::milliseconds(-1);
+    std::unique_ptr<uint64_t>         ErrorValue;
+    EWordOrder                        WordOrder;
+    uint8_t                           BitOffset;
+    uint8_t                           BitWidth;
+    std::unique_ptr<uint64_t>         UnsupportedValue;
 
-    TRegisterConfig(int                       type,
-                    int                       address,
-                    RegisterFormat            format,
-                    double                    scale,
-                    double                    offset,
-                    double                    round_to,
-                    bool                      poll,
-                    bool                      readonly,
-                    const std::string&        type_name,
-                    std::unique_ptr<uint64_t> error_value,
-                    const EWordOrder          word_order,
-                    uint8_t                   bit_offset,
-                    uint8_t                   bit_width,
-                    std::unique_ptr<uint64_t> unsupported_value);
+    TRegisterConfig(int                               type,
+                    std::shared_ptr<IRegisterAddress> address,
+                    RegisterFormat                    format,
+                    double                            scale,
+                    double                            offset,
+                    double                            round_to,
+                    bool                              poll,
+                    bool                              readonly,
+                    const std::string&                type_name,
+                    std::unique_ptr<uint64_t>         error_value,
+                    const EWordOrder                  word_order,
+                    uint8_t                           bit_offset,
+                    uint8_t                           bit_width,
+                    std::unique_ptr<uint64_t>         unsupported_value);
 
     TRegisterConfig(const TRegisterConfig& config);
 
@@ -120,7 +179,23 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
     std::string ToString() const;
 
     static PRegisterConfig Create(int type                                     = 0,
-                                  int address                                  = 0,
+                                  std::shared_ptr<IRegisterAddress> address    = std::shared_ptr<IRegisterAddress>(),
+                                  RegisterFormat format                        = U16,
+                                  double scale                                 = 1,
+                                  double offset                                = 0,
+                                  double round_to                              = 0,
+                                  bool poll                                    = true,
+                                  bool readonly                                = false,
+                                  const std::string& type_name                 = "",
+                                  std::unique_ptr<uint64_t> error_value        = std::unique_ptr<uint64_t>(),
+                                  const EWordOrder word_order                  = EWordOrder::BigEndian,
+                                  uint8_t bit_offset                           = 0,
+                                  uint8_t bit_width                            = 0,
+                                  std::unique_ptr<uint64_t> unsupported_value  = std::unique_ptr<uint64_t>());
+
+    //! Create register with TUint32RegisterAddress
+    static PRegisterConfig Create(int type                                     = 0,
+                                  uint32_t address                             = 0,
                                   RegisterFormat format                        = U16,
                                   double scale                                 = 1,
                                   double offset                                = 0,
@@ -209,6 +284,10 @@ inline ::std::ostream& operator<<(::std::ostream& os, PRegisterConfig reg) {
 
 inline ::std::ostream& operator<<(::std::ostream& os, const TRegisterConfig& reg) {
     return os << reg.ToString();
+}
+
+inline ::std::ostream& operator<<(::std::ostream& os, PRegister reg) {
+    return os << reg->ToString();
 }
 
 inline const char* RegisterFormatName(RegisterFormat fmt) {

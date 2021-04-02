@@ -124,3 +124,16 @@ void TIECDevice::Prepare()
     TSerialPortByteFormat bf('E', 7, 1);
     Port()->SetSerialPortByteFormat(&bf);
 }
+
+TIECProtocol::TIECProtocol(const std::string& name, const TRegisterTypes& reg_types)
+    : IProtocol(name, reg_types)
+{}
+
+bool TIECProtocol::IsSameSlaveId(const std::string& id1, const std::string& id2) const
+{
+    // Can be only one device with broadcast address
+    if (id1.empty() || id2.empty()) {
+        return true;
+    }
+    return id1 == id2;
+}

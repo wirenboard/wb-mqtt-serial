@@ -12,13 +12,22 @@
 
 #include "s2k_device.h"
 
-REGISTER_UINT_SLAVE_ID_PROTOCOL("s2k", TS2KDevice, TRegisterTypes(
-        {
-            { TS2KDevice::REG_RELAY, "relay", "switch", U8 },
-            { TS2KDevice::REG_RELAY_MODE, "relay_mode", "value", U8, true },
-            { TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value", U8, true },
-            { TS2KDevice::REG_RELAY_DELAY, "relay_delay", "value", U8, true }
-        }));
+namespace
+{
+    const TRegisterTypes RegisterTypes{
+        { TS2KDevice::REG_RELAY,         "relay",         "switch", U8 },
+        { TS2KDevice::REG_RELAY_MODE,    "relay_mode",    "value",  U8, true },
+        { TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value",  U8, true },
+        { TS2KDevice::REG_RELAY_DELAY,   "relay_delay",   "value",  U8, true }
+    };
+}
+
+void TS2KDevice::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("s2k", RegisterTypes),
+                             new TBasicDeviceFactory<TS2KDevice>("#/definitions/simple_device_with_setup",
+                                                                 "#/definitions/common_channel"));
+}
 
 TS2KDevice::TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
@@ -64,11 +73,12 @@ uint8_t TS2KDevice::CrcS2K(const uint8_t *array, int size)
 // and error handling into separate function
 void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
 {
+    auto addr = GetUint32RegisterAddress(*reg->Address);
     if (reg->Type != REG_RELAY) {
         throw TSerialDeviceException("S2K protocol: invalid register for writing");
     }
 
-    if (reg->Address < 1 || reg->Address > 4) {
+    if (addr < 1 || addr > 4) {
         throw TSerialDeviceException("S2K protocol: invalid register address");
     }
 
@@ -78,7 +88,7 @@ void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
             /* Command length = */0x06,
             /* Key = */0x00,
             /* Command = */0x15,/* Relay control */
-            /* Relay No = */(uint8_t)reg->Address,
+            /* Relay No = */(uint8_t)addr,
             /* Relay program = */(uint8_t)(value ? 0x1/* ON */ : 0x2/* OFF */),
             /* CRC placeholder */0x0
         };
@@ -103,13 +113,14 @@ void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
 // and error handling into separate function
 uint64_t TS2KDevice::ReadRegister(PRegister reg)
 {
+    auto addr = GetUint32RegisterAddress(*reg->Address);
     /* We have no way to get current relay state from device. Thats why we save last
        successful write to relay register and return it when regiter is read */
     switch (reg->Type) {
     case REG_RELAY:
-        return RelayState[reg->Address] != 0 && RelayState[reg->Address] != 2;
+        return RelayState[addr] != 0 && RelayState[addr] != 2;
     case REG_RELAY_MODE:
-        return RelayState[reg->Address];
+        return RelayState[addr];
     case REG_RELAY_DEFAULT:
     case REG_RELAY_DELAY:
     {
@@ -121,8 +132,7 @@ uint64_t TS2KDevice::ReadRegister(PRegister reg)
                 /* Command length = */0x06,
                 /* Key = */0x00,
                 /* Command = */0x05,/* Read configutation */
-                /* Config No = */(uint8_t)(reg->Address +
-                                     (reg->Type == REG_RELAY_DELAY ? 4 : 0)),
+                /* Config No = */(uint8_t)(addr + (reg->Type == REG_RELAY_DELAY ? 4 : 0)),
                 /* Unused */0x0,
                 /* CRC placeholder */0x0
             };

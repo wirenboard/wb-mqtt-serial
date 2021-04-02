@@ -11,6 +11,7 @@
 #include <unordered_map>
 
 #include "serial_device.h"
+#include "serial_config.h"
 
 class TMercury200Device : public TSerialDevice, public TUInt32SlaveId
 {
@@ -28,6 +29,8 @@ public:
     virtual uint64_t ReadRegister(PRegister reg);
     virtual void WriteRegister(PRegister reg, uint64_t value);
     virtual void EndPollCycle();
+
+    static void Register(TSerialDeviceFactory& factory);
 
 private:
     std::vector<uint8_t> ExecCommand(uint8_t cmd);
