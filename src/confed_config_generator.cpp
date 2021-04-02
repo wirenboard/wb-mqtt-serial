@@ -123,32 +123,29 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
     for (Json::Value& port : root["ports"]) {
         for (Json::Value& device : port["devices"]) {
 
-            RemoveDeviceHash(device, deviceTypeHashes);
-            auto dt = device["device_type"].asString();
+            if (RemoveDeviceHash(device, deviceTypeHashes)) {
+                auto dt = device["device_type"].asString();
 
-            Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
-            TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
-            std::unordered_map<std::string, std::string> subdeviceTypeHashes;
-            for (const auto& dt: subdevices.GetDeviceTypes()) {
-                subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;
-            }
+                Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
+                TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
+                std::unordered_map<std::string, std::string> subdeviceTypeHashes;
+                for (const auto& dt: subdevices.GetDeviceTypes()) {
+                    subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;
+                }
 
-            Json::Value filteredChannels = FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes);
-            device.removeMember("standard_channels");
-            for (Json::Value& ch : device["channels"]) {
-                filteredChannels.append(ch);
-            }
-            device.removeMember("channels");
-            if (!filteredChannels.empty()) {
-                device["channels"] = filteredChannels;
+                Json::Value filteredChannels = FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes);
+                device.removeMember("standard_channels");
+                for (Json::Value& ch : device["channels"]) {
+                    filteredChannels.append(ch);
+                }
+                device.removeMember("channels");
+                if (!filteredChannels.empty()) {
+                    device["channels"] = filteredChannels;
+                }
             }
 
             AppendParams(device, device["parameters"]);
             device.removeMember("parameters");
-
-            if (dt == CUSTOM_DEVICE_TYPE) {
-                device.removeMember("device_type");
-            }
 
             if (device["slave_id"].isBool()) {
                 device["slave_id"] = "";

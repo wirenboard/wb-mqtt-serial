@@ -20,7 +20,8 @@ namespace
 void TMercury230Device::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(new TUint32SlaveIdProtocol("mercury230", RegisterTypes, true),
-                             new TBasicDeviceFactory<TMercury230Device>("#/definitions/slave_id_broadcast"));
+                             new TBasicDeviceFactory<TMercury230Device>("#/definitions/simple_device_with_broadcast",
+                                                                        "#/definitions/common_channel"));
 }
 
 TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
