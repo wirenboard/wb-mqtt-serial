@@ -34,7 +34,9 @@ namespace
 
 void TUnielDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("uniel", RegisterTypes), new TBasicDeviceFactory<TUnielDevice>());
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("uniel", RegisterTypes), 
+                             new TBasicDeviceFactory<TUnielDevice>("#/definitions/simple_device_with_setup",
+                                                                   "#/definitions/common_channel"));
 }
 
 TUnielDevice::TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol)

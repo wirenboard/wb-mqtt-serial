@@ -99,7 +99,6 @@ namespace
     {
     protected:
         const char* ConfigPath() const { return "configs/config-neva-test.json"; }
-        std::string GetTemplatePath() const override { return "../wb-mqtt-serial-templates"; }
     };
 }
 

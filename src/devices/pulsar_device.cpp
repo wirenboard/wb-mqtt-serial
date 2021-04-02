@@ -15,7 +15,9 @@ namespace
 
 void TPulsarDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("pulsar", RegisterTypes), new TBasicDeviceFactory<TPulsarDevice>());
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("pulsar", RegisterTypes),
+                             new TBasicDeviceFactory<TPulsarDevice>("#/definitions/simple_device", 
+                                                                    "#/definitions/common_channel"));
 }
 
 TPulsarDevice::TPulsarDevice(PDeviceConfig config, PPort port, PProtocol protocol)

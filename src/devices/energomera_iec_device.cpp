@@ -23,7 +23,8 @@ namespace
 void TEnergomeraIecDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(new TEnergomeraIecProtocol(),
-                             new TBasicDeviceFactory<TEnergomeraIecDevice>("#/definitions/slave_id_broadcast"));
+                             new TBasicDeviceFactory<TEnergomeraIecDevice>("#/definitions/simple_device_with_broadcast", 
+                                                                           "#/definitions/common_channel"));
 }
 
 namespace
