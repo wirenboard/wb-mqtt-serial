@@ -11,7 +11,7 @@ using namespace std;
 
 namespace
 {
-    const auto MANDATORY_PARAMS_COUNT = 4;
+    const auto REQUIRED_PARAMS_COUNT = 4;
 
     void PrintDeviceTemplateGenerationOptionsUsage(const std::string& appName)
     {
@@ -40,7 +40,7 @@ void GenerateDeviceTemplate(const std::string& appName, const std::string& desti
     }
 
     auto params = WBMQTT::StringSplit(options, ",");
-    if (params.size() < MANDATORY_PARAMS_COUNT) {
+    if (params.size() < REQUIRED_PARAMS_COUNT) {
         Error.Log() << "Not enough options";
         PrintDeviceTemplateGenerationOptionsUsage(appName);
         return;
@@ -75,7 +75,7 @@ void GenerateDeviceTemplate(const std::string& appName, const std::string& desti
         auto protocolParams = WBMQTT::StringSplit(params[3], ":");
         auto slaveId = (protocolParams.size() == 1) ? std::string() : protocolParams[1];
 
-        params.erase(params.begin(), params.begin() + MANDATORY_PARAMS_COUNT);
+        params.erase(params.begin(), params.begin() + REQUIRED_PARAMS_COUNT);
         if (protocolParams[0] == "dlms_hdlc") {
             DLMS::GenerateDeviceTemplate(static_cast<TDeviceTemplateGenerationMode>(mode), port, slaveId, destinationDir, params);
             return;
