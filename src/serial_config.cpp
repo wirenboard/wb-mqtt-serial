@@ -462,6 +462,23 @@ namespace {
 
         handlerConfig->AddPortConfig(port_config);
     }
+
+    void CheckNesting(const Json::Value& root, size_t nestingLevel, ITemplateMap& templates)
+    {
+        if (nestingLevel > 5) {
+            throw TConfigParserException("Too deep subdevices nesting");
+        }
+        for (const auto& ch: root["device"]["channels"]) {
+            if (ch.isMember("device_type")) {
+                CheckNesting(templates.GetTemplate(ch["device_type"].asString()).Schema, nestingLevel + 1, templates);
+            }
+            if (ch.isMember("oneOf")) {
+                for (const auto& subdeviceType: ch["oneOf"]) {
+                    CheckNesting(templates.GetTemplate(subdeviceType.asString()).Schema, nestingLevel + 1, templates);
+                }
+            }
+        }
+    }
 }
 
 std::string DecorateIfNotEmpty(const std::string& prefix, const std::string& str, const std::string& postfix)
@@ -541,19 +558,10 @@ Json::Value TTemplateMap::Validate(const std::string& deviceType, const std::str
     } catch (const std::runtime_error& e) {
         throw std::runtime_error("File: " + filePath + " error: " + e.what());
     }
-    //Check that channels refer to valid subdevices
+    //Check that channels refer to valid subdevices and they are not nested too deep
     if (root["device"].isMember("subdevices")) {
         TSubDevicesTemplateMap subdevices(deviceType, root["device"]);
-        for (const auto& ch: root["device"]["channels"]) {
-            if (ch.isMember("device_type")) {
-                subdevices.GetTemplate(ch["device_type"].asString());
-            }
-            if (ch.isMember("oneOf")) {
-                for (const auto& subdeviceType: ch["oneOf"]) {
-                    subdevices.GetTemplate(subdeviceType.asString());
-                }
-            }
-        }
+        CheckNesting(root, 0, subdevices);
     }
     return root;
 }

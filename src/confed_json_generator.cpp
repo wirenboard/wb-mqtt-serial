@@ -110,18 +110,18 @@ Json::Value GetSetupRegisters(const Json::Value& config, const Json::Value& devi
     return setupRegisters;
 }
 
-Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, size_t nestingLevel);
+Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, bool isSubdevice);
 
-void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, size_t nestingLevel)
+void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, bool isSubdevice)
 {
     for (Json::Value& device : devices) {
         if (device.isMember("device_type")) {
-            device = MakeDeviceForConfed(device, templates, nestingLevel);
+            device = MakeDeviceForConfed(device, templates, isSubdevice);
         }
     }
 }
 
-//  nestingLevel == 1
+//  Top level device
 //  {
 //      "name": ...
 //      "device_type": DT,
@@ -147,7 +147,7 @@ void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, size_t 
 //      }
 //  }
 
-//  nestingLevel > 1
+//  Subdevice
 //  {
 //      "name": ...
 //      "device_type": CT,
@@ -169,33 +169,11 @@ void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, size_t 
 //      }
 //  }
 
-Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, size_t nestingLevel)
+Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, bool isSubdevice)
 {
-    Json::Value ar(Json::arrayValue);
-    if (nestingLevel > 5){
-        LOG(Warn) << "Too deep nesting";
-        return Json::Value();
-    }
-
     auto dt = config["device_type"].asString();
     auto deviceTemplate = deviceTemplates.GetTemplate(dt);
     Json::Value newDev(config);
-
-    if (nestingLevel == 1) {
-        if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
-            newDev["slave_id"] = false;
-        }
-    }
-
-    if ((nestingLevel == 1) && (deviceTemplate.Schema.isMember("parameters"))) {
-        for (auto it = deviceTemplate.Schema["parameters"].begin(); it != deviceTemplate.Schema["parameters"].end(); ++it) {
-            if (newDev.isMember(it.name())) {
-                newDev["parameters"][it.name()] = newDev[it.name()];
-                newDev.removeMember(it.name());
-            }
-        }
-    }
-
     newDev.removeMember("device_type");
 
     Json::Value customChannels;
@@ -206,28 +184,35 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
         newDev["channels"] = customChannels;
     }
     if (!standardChannels.empty()) {
-        if (nestingLevel == 1) {
-            TSubDevicesTemplateMap templates(deviceTemplate.Type, deviceTemplate.Schema);
-            MakeDevicesForConfed(standardChannels, templates, nestingLevel + 1);
+        if (isSubdevice) {
+            MakeDevicesForConfed(standardChannels, deviceTemplates, true);
         } else {
-            MakeDevicesForConfed(standardChannels, deviceTemplates, nestingLevel + 1);
+            TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
+            MakeDevicesForConfed(standardChannels, subDeviceTemplates, true);
         } 
         newDev["standard_channels"] = standardChannels;
     }
 
     Json::Value res;
-
-    if (nestingLevel > 1) {
+    if (isSubdevice) {
         if (newDev.isMember("name")) {
             res["name"] = newDev["name"];
             newDev.removeMember("name");
         }
-    }
-
-    if (nestingLevel == 1) {
-        res[GetDeviceKey(dt)] = newDev;
-    } else {
         res[GetSubdeviceKey(dt)] = newDev;
+    } else {
+        if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
+            newDev["slave_id"] = false;
+        }
+        if ((deviceTemplate.Schema.isMember("parameters"))) {
+            for (auto it = deviceTemplate.Schema["parameters"].begin(); it != deviceTemplate.Schema["parameters"].end(); ++it) {
+                if (newDev.isMember(it.name())) {
+                    newDev["parameters"][it.name()] = newDev[it.name()];
+                    newDev.removeMember(it.name());
+                }
+            }
+        }
+        res[GetDeviceKey(dt)] = newDev;
     }
     return res;
 }
@@ -246,7 +231,7 @@ Json::Value MakeJsonForConfed(const std::string&    configFileName,
     for (Json::Value& port : root["ports"]) {
         for (Json::Value& device : port["devices"]) {
             if (device.isMember("device_type")) {
-                device = MakeDeviceForConfed(device, templates, 1);
+                device = MakeDeviceForConfed(device, templates, false);
             }
         }
     }
