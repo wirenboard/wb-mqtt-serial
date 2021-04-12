@@ -110,7 +110,7 @@ namespace
         try {
             shared_ptr<TTemplateMap> templates;
             std::tie(std::ignore, templates) = LoadTemplates();
-            MakeJsonWriter()->write(MakeConfigFromConfed(std::cin, *templates), &cout);
+            MakeJsonWriter("  ")->write(MakeConfigFromConfed(std::cin, *templates), &cout);
         } catch (const exception& e) {
             LOG(Error) << e.what();
         }
