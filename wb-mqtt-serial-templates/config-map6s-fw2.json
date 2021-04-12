@@ -85,13 +85,11 @@
           "parameters": {
             "turns": {
               "title": "Turns",
-              "order": 1,
               "address": "0x1460",
               "min": 0
             },
             "phi": {
               "title": "Phi",
-              "order": 2,
               "address": "0x1463",
               "min": 0
             }
@@ -188,13 +186,11 @@
           "parameters": {
             "turns": {
               "title": "Turns",
-              "order": 1,
               "address": "0x1460",
               "min": 0
             },
             "phi": {
               "title": "Phi",
-              "order": 2,
               "address": "0x1463",
               "min": 0
             }
@@ -291,13 +287,11 @@
           "parameters": {
             "turns": {
               "title": "Turns",
-              "order": 1,
               "address": "0x1460",
               "min": 0
             },
             "phi": {
               "title": "Phi",
-              "order": 2,
               "address": "0x1463",
               "min": 0
             }
@@ -394,13 +388,11 @@
           "parameters": {
             "turns": {
               "title": "Turns",
-              "order": 1,
               "address": "0x1460",
               "min": 0
             },
             "phi": {
               "title": "Phi",
-              "order": 2,
               "address": "0x1463",
               "min": 0
             }
@@ -497,13 +489,11 @@
           "parameters": {
             "turns": {
               "title": "Turns",
-              "order": 1,
               "address": "0x1460",
               "min": 0
             },
             "phi": {
               "title": "Phi",
-              "order": 2,
               "address": "0x1463",
               "min": 0
             }
@@ -600,13 +590,11 @@
             "parameters": {
             "turns": {
               "title": "Turns",
-              "order": 1,
               "address": "0x1460",
               "min": 0
             },
             "phi": {
               "title": "Phi",
-              "order": 2,
               "address": "0x1463",
               "min": 0
             }

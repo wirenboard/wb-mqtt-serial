@@ -723,20 +723,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -779,27 +776,23 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "gain": {
                             "title": "Gain",
-                            "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
                             "enum_titles": [ "auto" ],
@@ -855,27 +848,23 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "gain": {
                             "title": "Gain",
-                            "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
                             "enum_titles": [ "auto" ],
@@ -910,33 +899,28 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "min": {
                             "title": "Minimum value",
-                            "order": 5,
                             "address": "0x0408",
                             "default": 0
                         },
                         "max": {
                             "title": "Maximum value",
-                            "order": 6,
                             "address": "0x040A",
                             "default": 10000
                         }
@@ -977,33 +961,28 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "min": {
                             "title": "Minimum value",
-                            "order": 5,
                             "address": "0x0408",
                             "default": 0
                         },
                         "max": {
                             "title": "Maximum value",
-                            "order": 6,
                             "address": "0x040A",
                             "default": 10000
                         }
@@ -1044,33 +1023,28 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "min": {
                             "title": "Minimum value",
-                            "order": 5,
                             "address": "0x0408",
                             "default": 0
                         },
                         "max": {
                             "title": "Maximum value",
-                            "order": 6,
                             "address": "0x040A",
                             "default": 10000
                         }
@@ -1198,20 +1172,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1254,20 +1225,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1310,20 +1278,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1366,20 +1331,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1422,20 +1384,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1478,20 +1437,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1534,20 +1490,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1590,20 +1543,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1646,20 +1596,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1702,20 +1649,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1758,20 +1702,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1814,20 +1755,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1870,20 +1808,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1926,20 +1861,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -1982,20 +1914,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -2038,20 +1967,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -2091,27 +2017,23 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "gain": {
                             "title": "Gain",
-                            "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
                             "enum_titles": [ "auto" ],
@@ -2860,20 +2782,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -2916,20 +2835,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -2972,20 +2888,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3028,20 +2941,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3084,20 +2994,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3140,20 +3047,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3196,20 +3100,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3252,20 +3153,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3308,20 +3206,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3364,20 +3259,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3420,20 +3312,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3476,20 +3365,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3532,20 +3418,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3588,20 +3471,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3644,20 +3524,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -3700,39 +3577,33 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "min": {
                             "title": "Minimum value",
-                            "order": 5,
                             "address": "0x0408",
                             "default": 0
                         },
                         "max": {
                             "title": "Maximum value",
-                            "order": 6,
                             "address": "0x040A",
                             "default": 1000
                         },
                         "gain": {
                             "title": "Gain",
-                            "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
                             "enum_titles": [ "auto" ],
@@ -3791,39 +3662,33 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "min": {
                             "title": "Minimum value",
-                            "order": 5,
                             "address": "0x0408",
                             "default": 0
                         },
                         "max": {
                             "title": "Maximum value",
-                            "order": 6,
                             "address": "0x040A",
                             "default": 1000
                         },
                         "gain": {
                             "title": "Gain",
-                            "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
                             "enum_titles": [ "auto" ],
@@ -3856,27 +3721,23 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "gain": {
                             "title": "Gain",
-                            "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
                             "enum_titles": [ "auto" ],
@@ -3911,33 +3772,28 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "min": {
                             "title": "Minimum value",
-                            "order": 5,
                             "address": "0x0408",
                             "default": 0
                         },
                         "max": {
                             "title": "Maximum value",
-                            "order": 6,
                             "address": "0x040A",
                             "default": 1000
                         }
@@ -4032,33 +3888,28 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "min": {
                             "title": "Minimum value",
-                            "order": 5,
                             "address": "0x0408",
                             "default": 0
                         },
                         "max": {
                             "title": "Maximum value",
-                            "order": 6,
                             "address": "0x040A",
                             "default": 1000
                         }
@@ -4098,27 +3949,23 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "gain": {
                             "title": "Gain",
-                            "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4, 8, 16, 32, 64, 128],
                             "enum_titles": [ "auto" ],
@@ -4153,20 +4000,17 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
@@ -4200,27 +4044,23 @@
                         "data_rate": {
                             "required": true,
                             "title": "Data rate",
-                            "order": 1,
                             "address": "0x0402",
                             "enum": [20, 45, 90, 175, 330, 600, 1000]
                         },
                         "measurements": {
                             "title": "Number of measurements",
-                            "order": 2,
                             "address": "0x0404",
                             "min": 0,
                             "max": 50
                         },
                         "lowpass": {
                             "title": "Lowpass filter time, ms",
-                            "order": 3,
                             "address": "0x0406",
                             "min": 0,
                             "max": 65000
                         },
                         "gain": {
                             "title": "Gain",
-                            "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
                             "enum_titles": [ "auto" ],
