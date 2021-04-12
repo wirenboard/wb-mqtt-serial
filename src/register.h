@@ -92,7 +92,7 @@ public:
      * @return true - this address is less than addr
      * @return false - this address is not less than addr
      */
-    virtual bool IsLessThan(const IRegisterAddress& addr) const = 0;
+    virtual bool operator<(const IRegisterAddress& addr) const = 0;
 
     /**
      * @brief Calculate new address based on this
@@ -124,7 +124,7 @@ public:
 
     std::string ToString() const override;
 
-    bool IsLessThan(const IRegisterAddress& addr) const;
+    bool operator<(const IRegisterAddress& addr) const override;
 
     IRegisterAddress* CalcNewAddress(uint32_t offset,
                                      uint32_t stride,

@@ -60,7 +60,7 @@ namespace
             return LogicalName;
         }
 
-        bool IsLessThan(const IRegisterAddress& addr) const
+        bool operator<(const IRegisterAddress& addr) const override
         {
             const auto& a = dynamic_cast<const TObisRegisterAddress&>(addr);
             return LogicalName < a.LogicalName;

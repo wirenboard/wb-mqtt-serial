@@ -275,7 +275,7 @@ std::string TUint32RegisterAddress::ToString() const
     return std::to_string(Address);
 }
 
-bool TUint32RegisterAddress::IsLessThan(const IRegisterAddress& addr) const
+bool TUint32RegisterAddress::operator<(const IRegisterAddress& addr) const
 {
     auto a = dynamic_cast<const TUint32RegisterAddress&>(addr);
     return Address < a.Address;
