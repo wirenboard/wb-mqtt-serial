@@ -6,6 +6,12 @@
 
 using namespace WBMQTT::JSON;
 
+namespace
+{
+    //! json-editor has maximum 12 columns in grid layout, derived from Bootstrap's 12 columns layout
+    const auto MAX_GRID_COLUMNS = 12;
+}
+
 std::string GetHashedParam(const std::string& deviceType, const std::string& prefix)
 {
     return prefix + "_" + std::to_string(std::hash<std::string>()(deviceType));
@@ -329,7 +335,7 @@ Json::Value MakeChannelsSchema(const Json::Value& channels,
         r["minItems"] = items.size();
         r["maxItems"] = items.size();
     } else {
-        r["options"]["grid_columns"] = 12;
+        r["options"]["grid_columns"] = MAX_GRID_COLUMNS;
         r["items"]["$ref"] = "#/definitions/tableChannelSettings";
         auto& defaults = MakeArray("default", r);
         for (const auto& channel: channels) {
