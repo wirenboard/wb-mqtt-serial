@@ -116,7 +116,7 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
         }
         if (itProp.name() == "readonly") {
             if ((itProp ->asString() != "true") && (templateConfig.isMember(itProp.name())) && (templateConfig[itProp.name()].asString() == "true")) {
-                LOG(Warn) << logPrefix << " can't override property \"" << itProp.name() << "\"";
+                LOG(Warn) << logPrefix << " \"readonly\" is already set to \"true\" in template";
                 continue;
             }
             SetPropertyWithNotification(templateConfig, itProp, logPrefix);
