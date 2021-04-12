@@ -25,7 +25,7 @@ Json::Value MakeJsonFromChannelTemplate(const Json::Value& channelTemplate)
         }
         return res;
     }
-    res["poll_interval"] = 20;
+    res["poll_interval"] = static_cast<Json::Value::Int>(DefaultPollInterval.count());
     SetIfExists(res, "poll_interval", channelTemplate, "poll_interval");
     res["enabled"] = true;
     SetIfExists(res, "enabled", channelTemplate, "enabled");
@@ -40,7 +40,7 @@ Json::Value MakeJsonFromChannelConfig(const Json::Value& channelConfig)
 
     Json::Value res;
     res["name"] = channelConfig["name"];
-    res["poll_interval"] = 20;
+    res["poll_interval"] = static_cast<Json::Value::Int>(DefaultPollInterval.count());
     SetIfExists(res, "poll_interval", channelConfig, "poll_interval");
     res["enabled"] = true;
     SetIfExists(res, "enabled", channelConfig, "enabled");
