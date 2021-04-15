@@ -240,8 +240,8 @@ int main(int argc, char *argv[])
     WBMQTT::TMosquittoMqttConfig mqttConfig;
     string configFilename(CONFIG_FULL_FILE_PATH);
 
-    WBMQTT::SignalHandling::Handle({ SIGINT, SIGTERM });
-    WBMQTT::SignalHandling::OnSignals( {SIGINT, SIGTERM }, [&]{ WBMQTT::SignalHandling::Stop(); });
+    WBMQTT::SignalHandling::Handle({SIGINT, SIGTERM});
+    WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&]{ WBMQTT::SignalHandling::Stop(); });
     WBMQTT::SetThreadName(APP_NAME);
 
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
