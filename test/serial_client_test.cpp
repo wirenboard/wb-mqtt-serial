@@ -83,7 +83,7 @@ void TSerialClientTest::SetUp()
 #endif
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
             Emit() << "Read Callback: <"
-                   << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->Address << "> becomes "
+                   << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress() << "> becomes "
                    << SerialClient->GetTextValue(reg) << (changed ? "" : " [unchanged]");
         });
     SerialClient->SetErrorCallback(
@@ -102,7 +102,7 @@ void TSerialClientTest::SetUp()
             default:
                 what = "no error";
             }
-            Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->Address << ">: " << what;
+            Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress() << ">: " << what;
         });
 }
 

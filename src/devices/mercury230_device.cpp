@@ -175,7 +175,7 @@ uint32_t TMercury230Device::ReadParam( uint32_t address, unsigned resp_payload_l
 
 uint64_t TMercury230Device::ReadRegister(PRegister reg)
 {
-    auto addr = GetUint32RegisterAddress(*reg->Address);
+    auto addr = GetUint32RegisterAddress(reg->GetAddress());
     switch (reg->Type) {
     case REG_VALUE_ARRAY:
         return ReadValueArray(addr, 4).values[addr & 0x03];

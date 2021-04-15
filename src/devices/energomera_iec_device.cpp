@@ -36,12 +36,12 @@ namespace
 
     uint16_t GetParamId(const PRegister & reg)
     {
-        return ((GetUint32RegisterAddress(*reg->Address) & 0xFFFF00) >> 8) & 0xFFFF;
+        return ((GetUint32RegisterAddress(reg->GetAddress()) & 0xFFFF00) >> 8) & 0xFFFF;
     }
 
     uint8_t GetValueNum(const PRegister & reg)
     {
-        return GetUint32RegisterAddress(*reg->Address) & 0xFF;
+        return GetUint32RegisterAddress(reg->GetAddress()) & 0xFF;
     }
 
     class TEnergomeraRegisterRange: public TSimpleRegisterRange

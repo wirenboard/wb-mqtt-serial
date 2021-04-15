@@ -144,12 +144,12 @@ namespace Modbus    // modbus protocol common utilities
         }
 
         auto it = regs.begin();
-        Start = GetUint32RegisterAddress(*(*it)->Address);
+        Start = GetUint32RegisterAddress((*it)->GetAddress());
         int end = Start + (*it)->Get16BitWidth();
         while (++it != regs.end()) {
             if ((*it)->Type != Type())
                 throw std::runtime_error("registers of different type in the same range");
-            auto addr = GetUint32RegisterAddress(*(*it)->Address);
+            auto addr = GetUint32RegisterAddress((*it)->GetAddress());
             int new_end = addr + (*it)->Get16BitWidth();
             if (new_end > end)
                 end = new_end;
@@ -403,7 +403,7 @@ namespace Modbus    // modbus protocol common utilities
     void ComposeReadRequestPDU(uint8_t* pdu, TRegister& reg, int shift)
     {
         pdu[0] = GetFunction(reg, OperationType::OP_READ);
-        auto addr = GetUint32RegisterAddress(*reg.Address);
+        auto addr = GetUint32RegisterAddress(reg.GetAddress());
         WriteAs2Bytes(pdu + 1, addr + shift);
         WriteAs2Bytes(pdu + 3, GetQuantity(reg));
     }
@@ -423,7 +423,7 @@ namespace Modbus    // modbus protocol common utilities
 
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
-        auto addr = GetUint32RegisterAddress(*reg.Address);
+        auto addr = GetUint32RegisterAddress(reg.GetAddress());
         auto baseAddress = addr + shift;
         const auto bitWidth = reg.GetBitWidth();
 
@@ -484,7 +484,7 @@ namespace Modbus    // modbus protocol common utilities
         TAddress address;
 
         address.Type = reg.Type;
-        auto addr = GetUint32RegisterAddress(*reg.Address);
+        auto addr = GetUint32RegisterAddress(reg.GetAddress());
         address.Address = addr + shift + wordIndex;
 
         uint16_t cachedValue;
@@ -546,7 +546,7 @@ namespace Modbus    // modbus protocol common utilities
             }
 
             for (auto reg: range.RegisterList()) {
-                auto addr = GetUint32RegisterAddress(*reg->Address);
+                auto addr = GetUint32RegisterAddress(reg->GetAddress());
                 reg->SetValue(range.GetBits()[addr - range.GetStart()]);
             }
             return;
@@ -568,7 +568,7 @@ namespace Modbus    // modbus protocol common utilities
 
             uint64_t r = 0;
 
-            auto addr = GetUint32RegisterAddress(*reg->Address);
+            auto addr = GetUint32RegisterAddress(reg->GetAddress());
             int wordIndex = (addr - range.GetStart());
             auto reverseWordIndex = w - 1;
 
@@ -635,7 +635,7 @@ namespace Modbus    // modbus protocol common utilities
 
         bool hasHoles = false;
         for (auto reg: reg_list) {
-            int addr = GetUint32RegisterAddress(*reg->Address);
+            int addr = GetUint32RegisterAddress(reg->GetAddress());
             int new_end = addr + reg->Get16BitWidth();
             if (!(prev_end >= 0 &&
                 reg->Type == prev_type &&
@@ -700,7 +700,7 @@ namespace Modbus    // modbus protocol common utilities
 
         std::unique_ptr<TRegister, std::function<void(TRegister*)>> tmpCacheGuard(&reg, [](TRegister* reg){reg->Device()->DismissTmpCache();});
 
-        LOG(Debug) << "write " << reg.Get16BitWidth() << " " << reg.TypeName << "(s) @ " << reg.Address <<
+        LOG(Debug) << "write " << reg.Get16BitWidth() << " " << reg.TypeName << "(s) @ " << reg.GetAddress() <<
                 " of device " << reg.Device()->ToString();
 
         // 1 byte - function code, 2 bytes - register address, 2 bytes - value
@@ -796,8 +796,8 @@ namespace Modbus    // modbus protocol common utilities
         PRegister lastReg;
         for (auto& reg: regs) {
             if (!l.empty()) {
-                auto addr = GetUint32RegisterAddress(*reg->Address);
-                auto lastAddr = GetUint32RegisterAddress(*lastReg->Address);
+                auto addr = GetUint32RegisterAddress(reg->GetAddress());
+                auto lastAddr = GetUint32RegisterAddress(lastReg->GetAddress());
                 if (lastAddr + 1 != addr) {
                     newRanges.push_back(std::make_shared<Modbus::TModbusRegisterRange>(l, false));
                     l.clear();

@@ -818,12 +818,12 @@ void TDeviceConfig::AddChannel(PDeviceChannelConfig channel)
 
 void TDeviceConfig::AddSetupItem(PDeviceSetupItemConfig item) 
 {
-    auto addrIt = SetupItemsByAddress.find(item->RegisterConfig->Address->ToString());
+    auto addrIt = SetupItemsByAddress.find(item->RegisterConfig->GetAddress().ToString());
     if (addrIt != SetupItemsByAddress.end()) {
         LOG(Warn) << "Setup command \"" << item->Name << "\" will be ignored. It has the same address " 
-                  << item->RegisterConfig->Address << " as command \"" << addrIt->second << "\"";
+                  << item->RegisterConfig->GetAddress() << " as command \"" << addrIt->second << "\"";
     } else {
-        SetupItemsByAddress.insert({item->RegisterConfig->Address->ToString(), item->Name});
+        SetupItemsByAddress.insert({item->RegisterConfig->GetAddress().ToString(), item->Name});
         SetupItemConfigs.push_back(item);
     }
 }

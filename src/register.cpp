@@ -94,11 +94,16 @@ TRegisterRange::EStatus TSimpleRegisterRange::GetStatus() const
 
 std::string TRegisterConfig::ToString() const {
     std::stringstream s;
-    s << TypeName << ": " << Address;
+    s << TypeName << ": " << GetAddress();
     if (BitOffset != 0 || BitWidth != 0) {
         s << ":" << (int)BitOffset << ":" << (int)BitWidth;
     }
     return s.str();
+}
+
+const IRegisterAddress& TRegisterConfig::GetAddress() const
+{
+    return *Address;
 }
 
 std::string TRegister::ToString() const
@@ -155,8 +160,8 @@ TRegisterConfig::TRegisterConfig(int type,
                                  uint8_t bit_offset,
                                  uint8_t bit_width,
                                  std::unique_ptr<uint64_t> unsupported_value)
-    : Type(type),
-      Address(address),
+    : Address(address),
+      Type(type),
       Format(format),
       Scale(scale),
       Offset(offset),
@@ -175,6 +180,10 @@ TRegisterConfig::TRegisterConfig(int type,
 
     if (BitOffset >= 16) {
         throw TSerialDeviceException("bit offset must not exceed 16 bits");
+    }
+
+    if (!Address) {
+        throw TSerialDeviceException("register address is not defined");
     }
 }
 

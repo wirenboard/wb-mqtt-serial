@@ -307,6 +307,15 @@ namespace
         }
         return res;
     }
+
+    const TObisRegisterAddress& ToTObisRegisterAddress(PRegister reg)
+    {
+        try {
+            return dynamic_cast<const TObisRegisterAddress&>(reg->GetAddress());
+        } catch (const std::bad_cast&) {
+            throw TSerialDeviceTransientErrorException("Address of " + reg->ToString() + " can't be casted to TObisRegisterAddress");
+        }
+    }
 }
 
 void TDlmsDevice::Register(TSerialDeviceFactory& factory)
@@ -380,14 +389,8 @@ void TDlmsDevice::ReadAttribute(const std::string& addr, int attribute, CGXDLMSO
 
 uint64_t TDlmsDevice::ReadRegister(PRegister reg)
 {
-    auto obisReg = dynamic_cast<TObisRegisterAddress*>(reg->Address.get());
-    if (obisReg == nullptr) {
-        throw TSerialDeviceTransientErrorException("Address of " + reg->ToString() + " can't be casted to TObisRegisterAddress");
-    }
-
-    auto addr = obisReg->GetLogicalName();
-    
-    auto obj = Client->GetObjects().FindByLN(DLMS_OBJECT_TYPE_REGISTER, addr);
+    auto addr = ToTObisRegisterAddress(reg).GetLogicalName();
+    auto obj  = Client->GetObjects().FindByLN(DLMS_OBJECT_TYPE_REGISTER, addr);
     if (!obj) {
         obj = CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE_REGISTER, addr);
         if (!obj) {

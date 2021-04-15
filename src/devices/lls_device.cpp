@@ -89,7 +89,7 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
 
 uint64_t TLLSDevice::ReadRegister(PRegister reg)
 {
-    auto addr = GetUint32RegisterAddress(*reg->Address);
+    auto addr = GetUint32RegisterAddress(reg->GetAddress());
     uint8_t cmd    = (addr & 0xFF00) >> 8;
     auto    result = ExecCommand(cmd);
 

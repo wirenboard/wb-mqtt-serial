@@ -85,7 +85,7 @@ void TSerialClient::PrepareRegisterRanges()
         bool at_end = it == RegList.end();
         if ((at_end || (*it)->Device() != last_device) && !cur_regs.empty()) {
             cur_regs.sort([](const PRegister& a, const PRegister& b) {
-                    return a->Type < b->Type || (a->Type == b->Type && *a->Address < *b->Address);
+                    return a->Type < b->Type || (a->Type == b->Type && a->GetAddress() < b->GetAddress());
                 });
             interval_map.clear();
 

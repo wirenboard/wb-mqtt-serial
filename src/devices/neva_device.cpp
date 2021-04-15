@@ -281,7 +281,7 @@ void TNevaDevice::EndPollCycle()
 
 uint64_t TNevaDevice::ReadRegister(PRegister reg)
 {
-    auto addr = GetUint32RegisterAddress(*reg->Address);
+    auto addr = GetUint32RegisterAddress(reg->GetAddress());
     Port()->SkipNoise();
     Port()->CheckPortOpen();
     auto result = GetCachedOBISResponse(*Port(), addr, *DeviceConfig(), CmdResultCache);

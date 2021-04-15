@@ -116,7 +116,7 @@ TEST_F(TConfigParserTest, Parse)
                     TTestLogIndent indent(*this);
                     Emit() << "------";
                     Emit() << "Name: " << setup_item->Name;
-                    Emit() << "Address: " << setup_item->RegisterConfig->Address;
+                    Emit() << "Address: " << setup_item->RegisterConfig->GetAddress();
                     Emit() << "Value: " << setup_item->Value;
                 }
             }

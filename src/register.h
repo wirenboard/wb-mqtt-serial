@@ -109,8 +109,8 @@ public:
                                              uint32_t addressByteStep) const = 0;
 };
 
-inline ::std::ostream& operator<<(::std::ostream& os, std::shared_ptr<IRegisterAddress> addr) {
-    return os << addr->ToString();
+inline ::std::ostream& operator<<(::std::ostream& os, const IRegisterAddress& addr) {
+    return os << addr.ToString();
 }
 
 //! Register address represented by uint32_t value
@@ -135,10 +135,11 @@ public:
 //! Casts addr to uint32_t and returns it. Throws std::bad_cast if cast is not possible.
 uint32_t GetUint32RegisterAddress(const IRegisterAddress& addr);
 
-struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
+class TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 {
-    int                               Type;
     std::shared_ptr<IRegisterAddress> Address;
+public:
+    int                               Type;
     RegisterFormat                    Format;
     double                            Scale;
     double                            Offset;
@@ -208,6 +209,8 @@ struct TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
                                   uint8_t bit_offset                           = 0,
                                   uint8_t bit_width                            = 0,
                                   std::unique_ptr<uint64_t> unsupported_value  = std::unique_ptr<uint64_t>());
+
+    const IRegisterAddress& GetAddress() const;
 };
 
 struct TRegister;

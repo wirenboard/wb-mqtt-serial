@@ -55,7 +55,7 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        auto addr = GetUint32RegisterAddress(*reg->Address);
+        auto addr = GetUint32RegisterAddress(reg->GetAddress());
 
         if(Blockings[addr].first) {
             throw TSerialDeviceTransientErrorException("read blocked");
@@ -71,11 +71,11 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 
         auto value = GetValue(&Registers[addr], reg->Get16BitWidth());
 
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' value '" << value << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress() << "' value '" << value << "'";
 
         return value;
     } catch (const exception & e) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->Address << "' failed: '" << e.what() << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress() << "' failed: '" << e.what() << "'";
 
         throw;
     }
@@ -92,7 +92,7 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
             throw TSerialDeviceTransientErrorException("device disconnected");
         }
 
-        auto addr = GetUint32RegisterAddress(*reg->Address);
+        auto addr = GetUint32RegisterAddress(reg->GetAddress());
 
         if(Blockings[addr].second) {
             throw TSerialDeviceTransientErrorException("write blocked");
@@ -108,9 +108,9 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 
         SetValue(&Registers[addr], reg->Get16BitWidth(), value);
 
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->Address << "' value '" << value << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->GetAddress() << "' value '" << value << "'";
     } catch (const exception & e) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->Address << "' failed: '" << e.what() << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->GetAddress() << "' failed: '" << e.what() << "'";
 
         throw;
     }
