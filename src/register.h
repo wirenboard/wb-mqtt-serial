@@ -86,7 +86,7 @@ public:
     virtual std::string ToString() const = 0;
 
     /**
-     * @brief Compares two addresses. Throws if addresses are not comparable
+     * @brief Compare two addresses. Throws if addresses are not comparable
      * 
      * @param addr address to campare
      * @return true - this address is less than addr
