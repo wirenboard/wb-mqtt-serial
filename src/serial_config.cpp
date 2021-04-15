@@ -466,7 +466,7 @@ namespace {
     void CheckNesting(const Json::Value& root, size_t nestingLevel, ITemplateMap& templates)
     {
         if (nestingLevel > 5) {
-            throw TConfigParserException("Too deep subdevices nesting");
+            throw TConfigParserException("Too deep subdevices nesting. This could be caused by cyclic subdevice dependencies");
         }
         for (const auto& ch: root["device"]["channels"]) {
             if (ch.isMember("device_type")) {
