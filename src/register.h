@@ -88,7 +88,7 @@ public:
     /**
      * @brief Compare two addresses. Throws if addresses are not comparable
      * 
-     * @param addr address to campare
+     * @param addr address to compare
      * @return true - this address is less than addr
      * @return false - this address is not less than addr
      */
