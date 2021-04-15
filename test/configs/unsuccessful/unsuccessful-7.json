@@ -1,4 +1,4 @@
-// setup command without value
+// setup command without address
 {
     "ports": [
         {
