@@ -563,20 +563,13 @@ void TDlmsDevice::ReadDLMSPacket(const uint8_t* data, size_t size, CGXReplyData&
     if (size == 0) {
         return;
     }
-    int ret = DLMS_ERROR_CODE_FALSE;
     SendData(data, size);
-    // Loop until whole DLMS packet is received.
-    size_t retry = 0;
+    int ret = DLMS_ERROR_CODE_FALSE;
     CGXByteBuffer bb;
-    while ((ret == DLMS_ERROR_CODE_FALSE) && (retry != 3)) {
-        try {
-            ReadData(bb);
-            ret = Client->GetData(bb, reply);
-        } catch (const std::exception& e) {
-            ++retry;
-            LOG(Warn) << "Data send failed: " << e.what() << " Try to resend " << retry;
-            SendData(data, size);
-        }
+    // Loop until whole DLMS packet is received.
+    while (ret == DLMS_ERROR_CODE_FALSE) {
+        ReadData(bb);
+        ret = Client->GetData(bb, reply);
     }
     if (ret != DLMS_ERROR_CODE_OK) {
         throw std::runtime_error("Read DLMS packet failed: " + GetErrorMessage(ret));
