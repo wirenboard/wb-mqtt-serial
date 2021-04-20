@@ -1,4 +1,8 @@
-wb-mqtt-serial (2.7.5) stable; urgency=medium
+wb-mqtt-serial (2.7.6) stable; urgency=medium
+
+  * Add NEVA MT124T template for the current version of wb-mqtt-serial.
+ 
+ wb-mqtt-serial (2.7.5) stable; urgency=medium
 
   * Add WB-MAP3ET template for the current version of wb-mqtt-serial.
 
