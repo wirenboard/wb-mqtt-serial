@@ -4,17 +4,17 @@
     "name": "NEVA MT 124",
     "id": "neva124",
     "protocol" : "neva",
-    "frame_timeout_ms" : 50,
-    "response_timeout_ms" : 500,
+    "frame_timeout_ms" : 1500,
+    "response_timeout_ms" : 1500,
     "channels": [
       {
-        "name": "Current",
+        "name": "Irms",
         "reg_type": "obis_cdef_1",
         "type": "value",
         "address": "0x0B0700FF"
       },
       {
-        "name": "Voltage",
+        "name": "Urms",
         "reg_type": "obis_cdef_1",
         "type": "voltage",
         "address": "0x0C0700FF"
@@ -30,17 +30,17 @@
         "reg_type": "obis_cdef_1",
         "type": "power_consumption",
         "address": "0x0F088000",
-	"enabled" : false
+        "enabled" : false
       },
       {
         "name": "Active energy, 12 month ago",
         "reg_type": "obis_cdef_1",
         "type": "power_consumption",
         "address": "0x0F08800B",
-	"enabled" : false
+        "enabled" : false
       },
       {
-        "name": "Total P",
+        "name": "Active Power",
         "reg_type": "obis_cdef",
         "type": "power",
         "address": "0x100700FF"
@@ -50,24 +50,24 @@
         "reg_type": "obis_cdef",
         "type": "power",
         "address": "0x0F068000",
-	"scale": 1000,
-	"enabled" : false
+        "scale": 1000,
+        "enabled" : false
       },
       {
         "name": "Max. active power, 12 month ago",
         "reg_type": "obis_cdef",
         "type": "power",
         "address": "0x0F06800B",
-	"scale": 1000,
-	"enabled" : false
+        "scale": 1000,
+        "enabled" : false
       },
       {
         "name": "Max. active power, current month",
         "reg_type": "obis_cdef",
         "type": "power",
         "address": "0x0F0680FF",
-	"scale": 1000,
-	"enabled" : false
+        "scale": 1000,
+        "enabled" : false
       },
       {
         "name": "Frequency",
@@ -76,7 +76,7 @@
         "address": "0x0E0701FF"
       },
       {
-        "name": "Total PF",
+        "name": "Power Factor",
         "reg_type": "obis_cdef_pf",
         "type": "value",
         "address": "0x0D07FFFF"
