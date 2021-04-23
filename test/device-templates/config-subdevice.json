@@ -1,0 +1,106 @@
+{
+    "device_type": "with subdevice",
+    "device": {
+        "name": "with subdevice",
+        "id": "with subdevice",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            },
+            {
+                "name": "Sub",
+                "device_type": "subdevice1",
+                "shift": "0x64"
+            },
+            {
+                "name": "Sub2",
+                "id": "",
+                "oneOf": ["subdevice1", "subdevice2" ],
+                "shift": 200,
+                "stride": 1
+            }
+        ],
+        "parameters" : {
+            "s1": {
+                "title": "s1",
+                "address": 10
+            }
+        },
+        "subdevices": [
+            {
+                "device_type": "subdevice1",
+                "device": {
+                    "parameters": {
+                        "s1": {
+                            "title": "s1",
+                            "address": 20000
+                        }
+                    },
+                    "setup": [
+                        {
+                            "title": "s2",
+                            "address": 9992,
+                            "value": "0xfff2"
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "c1",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0501"
+                        },
+                        {
+                            "name": "c2",
+                            "id": "id",
+                            "device_type": "subdevice2",
+                            "shift": 200
+                        },
+                        {
+                            "name": "c3",
+                            "device_type": "subdevice2",
+                            "shift": 300,
+                            "stride": 2
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type": "subdevice2",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "s21",
+                            "address": 20000,
+                            "value": "0xfff2"
+                        }
+                    ],
+                    "parameters": {
+                        "s22": {
+                            "title": "s22",
+                            "address": 9992
+                        }
+                    },
+                    "channels": [
+                        {
+                            "name": "c12",
+                            "id": "sub id",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0502"
+                        },
+                        {
+                            "name": "c22",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0506"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

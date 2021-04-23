@@ -7,6 +7,12 @@ Publish: /devices/WordsLETest/controls/Voltage/meta/readonly: '0' (QoS 1, retain
 Publish: /devices/WordsLETest/controls/Voltage/meta/type: 'voltage' (QoS 1, retained)
 Publish: /devices/WordsLETest/controls/Voltage: '0' (QoS 1, retained)
 Subscribe: /devices/WordsLETest/controls/Voltage/on (QoS 0)
+Subscribe: /devices/WordsLETest/controls/# (QoS 0)
+(retain) -> /devices/WordsLETest/controls/Voltage: '0' (QoS 1, retained)
+(retain) -> /devices/WordsLETest/controls/Voltage/meta/order: '1' (QoS 1, retained)
+(retain) -> /devices/WordsLETest/controls/Voltage/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/WordsLETest/controls/Voltage/meta/type: 'voltage' (QoS 1, retained)
+Unsubscribe -- serial-client-integration-test: /devices/WordsLETest/controls/#
 >>> LoopOnce()
 Open()
 Sleep(100000)

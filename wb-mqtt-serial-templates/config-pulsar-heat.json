@@ -1,5 +1,6 @@
 {
     "device_type": "pulsar-heat",
+    "title": "Pulsar Heat Meter",
     "device": {
         "name": "Pulsar Heat Meter",
         "id": "pulsar-heat",

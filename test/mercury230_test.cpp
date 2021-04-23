@@ -51,8 +51,7 @@ void TMercury230Test::SetUp()
 {
 	TSerialDeviceTest::SetUp();
 
-	Mercury230Dev = std::make_shared<TMercury230Device>(GetDeviceConfig(), SerialPort,
-	                            TSerialDeviceFactory::GetProtocol("mercury230"));
+	Mercury230Dev = std::make_shared<TMercury230Device>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("mercury230"));
 	Mercury230TotalConsumptionReg =
 		TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32));
 	Mercury230TotalReactiveEnergyReg =

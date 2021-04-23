@@ -1,0 +1,4 @@
+{
+    "device_type" : "merge subdevice2",
+    "slave_id": 2
+}

@@ -20,7 +20,7 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConf
     : MqttDriver(mqttDriver),
       Config(portConfig)
 {
-    SerialClient = PSerialClient(new TSerialClient(Config->Port));
+    SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port));
 }
 
 TSerialPortDriver::~TSerialPortDriver()
@@ -40,13 +40,12 @@ void TSerialPortDriver::SetUpDevices()
     try {
         auto tx = MqttDriver->BeginTx();
 
-        for (auto & deviceConfig: Config->DeviceConfigs) {
-            auto device = SerialClient->CreateDevice(deviceConfig);
+        for (auto device: Config->Devices) {
             auto mqttDevice = tx->CreateDevice(From(device)).GetValue();
             assert(mqttDevice);
             Devices.push_back(device);
             // init channels' registers
-            for (auto & channelConfig: deviceConfig->DeviceChannelConfigs) {
+            for (auto & channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
                 try {
                     auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
                     mqttDevice->CreateControl(tx, From(channel)).GetValue();
@@ -58,6 +57,7 @@ void TSerialPortDriver::SetUpDevices()
                     LOG(Error) << "unable to create control: '" << e.what() << "'";
                 }
             }
+            mqttDevice->RemoveUnusedControls(tx).Sync();
         }
     } catch (const exception & e) {
         LOG(Error) << "unable to create device: '" << e.what() << "' Cleaning.";
@@ -157,7 +157,7 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
     LOG(Debug) << channel->Describe() << " <-- " << value;
 
     MqttDriver->AccessAsync([=](const PDriverTx & tx){
-        tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetRawValue(tx, value);
+        tx->GetDevice(channel->DeviceId)->GetControl(channel->MqttId)->SetRawValue(tx, value);
     });
 }
 
@@ -190,7 +190,7 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
 
     const char* errorFlags[] = {"", "w", "r", "rw"};
     MqttDriver->AccessAsync([=](const PDriverTx & tx){
-        tx->GetDevice(channel->DeviceId)->GetControl(channel->Name)->SetError(tx, errorFlags[errorMask]);
+        tx->GetDevice(channel->DeviceId)->GetControl(channel->MqttId)->SetError(tx, errorFlags[errorMask]);
     });
 }
 
@@ -240,7 +240,7 @@ TLocalDeviceArgs TSerialPortDriver::From(const PSerialDevice & device)
 
 TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
 {
-    auto args = TControlArgs{}.SetId(channel->Name)
+    auto args = TControlArgs{}.SetId(channel->MqttId)
                               .SetOrder(channel->Order)
                               .SetType(channel->Type)
                               .SetReadonly(channel->ReadOnly)

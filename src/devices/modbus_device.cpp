@@ -14,34 +14,71 @@ namespace
 
     class TModbusProtocol: public IProtocol
     {
-        std::unique_ptr<Modbus::IModbusTraitsFactory> ModbusTraitsFactory;
     public:
-        TModbusProtocol(const char* name, std::unique_ptr<Modbus::IModbusTraitsFactory> modbusTraitsFactory) 
-            : IProtocol(name, ModbusRegisterTypes),
-            ModbusTraitsFactory(std::move(modbusTraitsFactory))
+        TModbusProtocol(const char* name) : IProtocol(name, ModbusRegisterTypes)
         {}
-
-        PSerialDevice CreateDevice(PDeviceConfig config, PPort port) override
-        {
-            PSerialDevice dev = std::make_shared<TModbusDevice>(ModbusTraitsFactory->GetModbusTraits(port), config, port, this);
-            dev->InitSetupItems();
-            return dev;
-        }
 
         bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
         {
             return (TUInt32SlaveId(id1) == TUInt32SlaveId(id2));
         }
 
-        bool IsModbus() const
+        bool IsModbus() const override
         {
             return true;
         }
     };
+
+    class TModbusDeviceFactory: public IDeviceFactory
+    {
+        std::unique_ptr<Modbus::IModbusTraitsFactory> ModbusTraitsFactory;
+    public:
+        TModbusDeviceFactory(std::unique_ptr<Modbus::IModbusTraitsFactory> modbusTraitsFactory)
+            : IDeviceFactory("#/definitions/simple_device_with_setup",
+                             "#/definitions/common_channel"),
+              ModbusTraitsFactory(std::move(modbusTraitsFactory))
+        {}
+
+        PSerialDevice CreateDevice(const Json::Value& deviceData,
+                                   PProtocol          protocol,
+                                   const std::string& defaultId,
+                                   PPortConfig        portConfig) const override
+        {
+            TDeviceConfigLoadParams params;
+            params.BaseRegisterAddress = std::make_unique<TUint32RegisterAddress>(0);
+            params.DefaultId           = defaultId;
+            params.DefaultPollInterval = portConfig->PollInterval;
+            params.DefaultRequestDelay = portConfig->RequestDelay;
+            params.PortResponseTimeout = portConfig->ResponseTimeout;
+            auto deviceConfig = LoadBaseDeviceConfig(deviceData, protocol, *this, params);
+
+            PSerialDevice dev = std::make_shared<TModbusDevice>(ModbusTraitsFactory->GetModbusTraits(portConfig->Port), deviceConfig, portConfig->Port, protocol);
+            dev->InitSetupItems();
+            return dev;
+        }
+
+        TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
+                                          const IRegisterAddress& deviceBaseAddress,
+                                          uint32_t                stride,
+                                          uint32_t                registerByteWidth) const override
+        {
+            auto addr = LoadRegisterBitsAddress(regCfg);
+            TRegisterDesc res;
+            res.BitOffset = addr.BitOffset;
+            res.BitWidth = addr.BitWidth;
+            res.Address = std::shared_ptr<IRegisterAddress>(deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, 2));
+            return res;
+        }
+    };
 }
 
-TProtocolRegistrator reg__TModbusProtocol(new TModbusProtocol("modbus",        std::make_unique<Modbus::TModbusRTUTraitsFactory>()));
-TProtocolRegistrator reg__TModbusTCPProtocol(new TModbusProtocol("modbus-tcp", std::make_unique<Modbus::TModbusTCPTraitsFactory>()));
+void TModbusDevice::Register(TSerialDeviceFactory& factory)
+{
+    factory.RegisterProtocol(new TModbusProtocol("modbus"), 
+                             new TModbusDeviceFactory(std::make_unique<Modbus::TModbusRTUTraitsFactory>()));
+    factory.RegisterProtocol(new TModbusProtocol("modbus-tcp"), 
+                             new TModbusDeviceFactory(std::make_unique<Modbus::TModbusTCPTraitsFactory>()));
+}
 
 TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits, PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId), ModbusTraits(std::move(modbusTraits))

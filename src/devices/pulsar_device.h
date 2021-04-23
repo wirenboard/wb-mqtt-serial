@@ -5,7 +5,7 @@
 #include <memory>
 #include <stdint.h>
 #include "serial_device.h"
-
+#include "serial_config.h"
 
 class TPulsarDevice: public TSerialDevice, public TUInt32SlaveId
 {
@@ -19,6 +19,8 @@ public:
     TPulsarDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
     void WriteRegister(PRegister reg, uint64_t value);
+
+    static void Register(TSerialDeviceFactory& factory);
 
 private:
     void WriteBCD(uint64_t data, uint8_t *buffer, size_t size, bool big_endian = true);

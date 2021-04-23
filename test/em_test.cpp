@@ -41,10 +41,8 @@ PDeviceConfig TEMDeviceTest::Mercury230Config()
 void TEMDeviceTest::SetUp()
 {
     TSerialDeviceTest::SetUp();
-    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort, 
-                            TSerialDeviceFactory::GetProtocol("milur"));
-    Mercury230Dev = std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort, 
-                            TSerialDeviceFactory::GetProtocol("mercury230"));
+    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort, DeviceFactory.GetProtocol("milur"));
+    Mercury230Dev = std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort, DeviceFactory.GetProtocol("mercury230"));
     
     MilurPhaseCVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 102, U24));
     MilurPhaseCCurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 105, U24));

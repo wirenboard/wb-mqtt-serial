@@ -18,7 +18,7 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
     try {
         for (const auto& portConfig : config->PortConfigs) {
             
-            if (portConfig->DeviceConfigs.empty()) {
+            if (portConfig->Devices.empty()) {
                 LOG(Warn) << "no devices defined for port " << portConfig->Port->GetDescription() << ". Skipping.";
                 continue;
             }

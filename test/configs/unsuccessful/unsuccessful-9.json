@@ -1,0 +1,27 @@
+// channel with device_type, but in template it is without device_type
+{
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "devices" : [
+                {
+                    "device_type" : "subdevice",
+                    "slave_id": 2,
+                    "channels":
+                    [
+                        {
+                            "name" : "Sub1",
+                            "device_type" : "subdevice1",
+                            "channels": [
+                                {
+                                    "name": "c11",
+                                    "device_type" : "subdevice1"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

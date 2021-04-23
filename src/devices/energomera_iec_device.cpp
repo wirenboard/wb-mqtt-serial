@@ -5,31 +5,27 @@
 #include "iec_common.h"
 #include "log.h"
 
+#define LOG(logger) ::logger.Log() << LOG_PREFIX
+
 namespace
 {
     const char* LOG_PREFIX = "[Energomera] ";
+
+    class TEnergomeraIecProtocol: public TIECProtocol
+    {
+    public:
+        TEnergomeraIecProtocol()
+            : TIECProtocol("energomera_iec", {{ 0, "group_single", "value", Double, true }})
+        {}
+    };
 }
 
-#define LOG(logger) ::logger.Log() << LOG_PREFIX
-
-class TEnergomeraIecProtocol: public TBasicProtocol<TEnergomeraIecDevice>
+void TEnergomeraIecDevice::Register(TSerialDeviceFactory& factory)
 {
-public:
-    TEnergomeraIecProtocol()
-        : TBasicProtocol<TEnergomeraIecDevice>("energomera_iec", {{ 0, "group_single", "value", Double, true }})
-    {}
-
-    bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override
-    {
-        // Can be only one device with broadcast address
-        if (id1.empty() || id2.empty()) {
-            return true;
-        }
-        return id1 == id2;
-    }
-};
-
-REGISTER_NEW_PROTOCOL(TEnergomeraIecProtocol);
+    factory.RegisterProtocol(new TEnergomeraIecProtocol(),
+                             new TBasicDeviceFactory<TEnergomeraIecDevice>("#/definitions/simple_device_with_broadcast", 
+                                                                           "#/definitions/common_channel"));
+}
 
 namespace
 {
@@ -40,12 +36,12 @@ namespace
 
     uint16_t GetParamId(const PRegister & reg)
     {
-        return ((reg->Address & 0xFFFF00) >> 8) & 0xFFFF;
+        return ((GetUint32RegisterAddress(reg->GetAddress()) & 0xFFFF00) >> 8) & 0xFFFF;
     }
 
     uint8_t GetValueNum(const PRegister & reg)
     {
-        return reg->Address & 0xFF;
+        return GetUint32RegisterAddress(reg->GetAddress()) & 0xFF;
     }
 
     class TEnergomeraRegisterRange: public TSimpleRegisterRange

@@ -1,0 +1,31 @@
+// additional channels and setup registers, parameters overriding
+{
+    "device_type" : "merge subdevice",
+    "slave_id": 2,
+    "channels" : 
+    [
+        {
+            "name" : "Sub",
+            "device_type" : "subdevice1",
+            "channels" : 
+            [
+                {
+                    "name" : "c1",
+                    "poll_interval" : 100
+                },
+                {
+                    "enabled" : false,
+                    "name" : "c2"
+                }
+            ],
+            "setup" : 
+            [
+                {
+                    "address" : 20000,
+                    "title" : "31",
+                    "value" : "0xffff"
+                }
+            ]
+        }
+    ]
+}

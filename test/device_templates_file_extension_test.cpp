@@ -31,27 +31,9 @@ TEST_F(TDeviceTemplateFileExtensionTest, WrongExtension)
 
 TEST(TDeviceTemplatesTest, Validate)
 {
-    DIR *dir;
-    struct dirent *dirp;
-    struct stat filestat;
-
-    Json::Value configSchema(LoadConfigSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial.schema.json")));
-    Json::Value templatesSchema(LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), configSchema));
-
-    WBMQTT::JSON::TValidator validator(templatesSchema);
-
-    std::string templatesDir(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-templates"));
-
-    if ((dir = opendir(templatesDir.c_str())) == NULL)
-        throw TConfigParserException("Cannot open " + templatesDir + " directory");
-
-    while ((dirp = readdir(dir))) {
-        std::string filepath = templatesDir + "/" + dirp->d_name;
-
-        if (stat(filepath.c_str(), &filestat)) continue;
-        if (S_ISDIR(filestat.st_mode)) continue;
-
-        validator.Validate(WBMQTT::JSON::Parse(filepath));
-    }
-    closedir(dir);
+    Json::Value  configSchema(LoadConfigSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial.schema.json")));
+    Json::Value  templatesSchema(LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), configSchema));
+    std::string  templatesDir(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-templates"));
+    TTemplateMap templates(templatesDir, templatesSchema);
+    templates.GetTemplatesOrderedByName();
 }

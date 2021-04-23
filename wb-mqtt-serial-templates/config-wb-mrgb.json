@@ -53,6 +53,13 @@
                 "readonly": true,
                 "address": 33,
                 "type": "value"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
             }
         ]
     }

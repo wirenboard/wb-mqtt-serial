@@ -1,0 +1,26 @@
+// channel without device_type
+{
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "devices" : [
+                {
+                    "device_type" : "subdevice",
+                    "slave_id": 2,
+                    "channels":
+                    [
+                        {
+                            "name" : "Sub2",
+                            "setup": [
+                                {
+                                    "title": "bad",
+                                    "value": 10
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

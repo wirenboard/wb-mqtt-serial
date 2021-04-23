@@ -32,8 +32,7 @@ PDeviceConfig TMercury200Test::GetDeviceConfig()
 void TMercury200Test::SetUp()
 {
     TSerialDeviceTest::SetUp();
-    Mercury200Dev = std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort, 
-                            TSerialDeviceFactory::GetProtocol("mercury200"));
+    Mercury200Dev = std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("mercury200"));
 
     Mercury200RET1Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2700, BCD32));
     Mercury200RET2Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2704, BCD32));

@@ -1,7 +1,7 @@
 [Unit]
 Description=MQTT Driver for serial devices
-Wants=wb-hwconf-manager.service wb-modules.service
-After=network.target wb-hwconf-manager.service wb-modules.service
+Wants=wb-hwconf-manager.service wb-modules.service wb-mqtt-serial-templates.service
+After=network.target wb-hwconf-manager.service wb-modules.service wb-mqtt-serial-templates.service
 
 [Service]
 Type=simple

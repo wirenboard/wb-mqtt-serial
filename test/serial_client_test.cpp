@@ -53,12 +53,11 @@ public:
 
 void TSerialClientTest::SetUp()
 {
+    RegisterProtocols(DeviceFactory);
+    TFakeSerialDevice::Register(DeviceFactory);
+
     TLoggedFixture::SetUp();
     Port = std::make_shared<TFakeSerialPort>(*this);
-    SerialClient = std::make_shared<TSerialClient>(Port);
-#if 0
-    SerialClient->SetModbusDebug(true);
-#endif
     auto config = std::make_shared<TDeviceConfig>("fake_sample", "1", "fake");
     config->MaxReadRegisters = 0;
 
@@ -74,10 +73,18 @@ void TSerialClientTest::SetUp()
     }
 
     config->FrameTimeout = std::chrono::milliseconds(100);
-    Device = std::dynamic_pointer_cast<TFakeSerialDevice>(SerialClient->CreateDevice(config));
+    Device = std::make_shared<TFakeSerialDevice>(config, Port, DeviceFactory.GetProtocol("fake"));
+    Device->InitSetupItems();
+    std::vector<PSerialDevice> devices;
+    devices.push_back(Device);
+    SerialClient = std::make_shared<TSerialClient>(devices, Port);
+#if 0
+    SerialClient->SetModbusDebug(true);
+#endif
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
-            Emit() << "Read Callback: " << reg->ToString() << " becomes " <<
-                SerialClient->GetTextValue(reg) << (changed ? "" : " [unchanged]");
+            Emit() << "Read Callback: <"
+                   << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress() << "> becomes "
+                   << SerialClient->GetTextValue(reg) << (changed ? "" : " [unchanged]");
         });
     SerialClient->SetErrorCallback(
         [this](PRegister reg, TRegisterHandler::TErrorState errorState) {
@@ -95,7 +102,7 @@ void TSerialClientTest::SetUp()
             default:
                 what = "no error";
             }
-            Emit() << "Error Callback: " << reg->ToString() << ": " << what;
+            Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress() << ">: " << what;
         });
 }
 
@@ -885,11 +892,13 @@ void TSerialClientIntegrationTest::SetUp()
     Driver->StartLoop();
 
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    AddProtocolType(configSchema, "fake");
+    AddFakeDeviceType(configSchema);
     AddRegisterType(configSchema, "fake");
+    TTemplateMap t;
     Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
                         DeviceFactory,
                         configSchema,
+                        t,
                         [=](const Json::Value&) {return std::make_pair(Port, false);});
 }
 
@@ -906,20 +915,20 @@ void TSerialClientIntegrationTest::TearDown()
 void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
 {
     for (auto port_config: Config->PortConfigs) {
-        LOG(Info) << "port devices: " << port_config->DeviceConfigs.size();
-        port_config->DeviceConfigs.erase(
-            remove_if(port_config->DeviceConfigs.begin(),
-                      port_config->DeviceConfigs.end(),
-                      [device_name](PDeviceConfig device_config) {
-                          return device_config->Name != device_name;
+        LOG(Info) << "port devices: " << port_config->Devices.size();
+        port_config->Devices.erase(
+            remove_if(port_config->Devices.begin(),
+                      port_config->Devices.end(),
+                      [device_name](auto device) {
+                          return device->DeviceConfig()->Name != device_name;
                       }),
-            port_config->DeviceConfigs.end());
+            port_config->Devices.end());
     }
     Config->PortConfigs.erase(
         remove_if(Config->PortConfigs.begin(),
                   Config->PortConfigs.end(),
                   [](PPortConfig port_config) {
-                      return port_config->DeviceConfigs.empty();
+                      return port_config->Devices.empty();
                   }),
         Config->PortConfigs.end());
     ASSERT_FALSE(Config->PortConfigs.empty()) << "device not found: " << device_name;
@@ -1206,27 +1215,32 @@ TEST_F(TSerialClientIntegrationTest, ErrorValue)
 TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    TTemplateMap t;
 
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test.json"), 
                                         DeviceFactory,
                                         configSchema,
+                                        t,
                                         [=](const Json::Value&) {return std::make_pair(Port, false);}),
                     TConfigParserException);
 
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test2.json"), 
                                         DeviceFactory,
                                         configSchema,
+                                        t,
                                         [=](const Json::Value&) {return std::make_pair(Port, false);}),
                     TConfigParserException);
 
     EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"), 
                                         DeviceFactory,
                                         configSchema,
+                                        t,
                                         [=](const Json::Value&) {return std::make_pair(Port, false);}));
 
     EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test2.json"), 
                                         DeviceFactory,
                                         configSchema,
+                                        t,
                                         [=](const Json::Value&) {return std::make_pair(Port, false);}));
 }
 
@@ -1246,15 +1260,17 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool miss, bool pollIntervalTest)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    AddProtocolType(configSchema, "fake");
+    AddFakeDeviceType(configSchema);
     AddRegisterType(configSchema, "fake");
+    TTemplateMap t;
     Config = LoadConfig(GetDataFilePath("configs/reconnect_test_1_device.json"), 
                                             DeviceFactory,
                                             configSchema,
+                                            t,
                                             [=](const Json::Value&) {return std::make_pair(Port, false);});
 
     if (pollIntervalTest) {
-        Config->PortConfigs[0]->DeviceConfigs[0]->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval = chrono::seconds(100);
+        Config->PortConfigs[0]->Devices[0]->DeviceConfig()->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval = chrono::seconds(100);
     }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -1346,11 +1362,13 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
 PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    AddProtocolType(configSchema, "fake");
+    AddFakeDeviceType(configSchema);
     AddRegisterType(configSchema, "fake");
+    TTemplateMap t;
     Config = LoadConfig(GetDataFilePath("configs/reconnect_test_2_devices.json"), 
                                             DeviceFactory,
                                             configSchema,
+                                            t,
                                             [=](const Json::Value&) {return std::make_pair(Port, false);});
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
@@ -1560,136 +1578,3 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
         EXPECT_EQ(2, device->Registers[2]);
     }
 }
-
-
-class TConfigParserTest: public TLoggedFixture 
-{
-    protected:
-        TSerialDeviceFactory DeviceFactory;
-};
-
-TEST_F(TConfigParserTest, Parse)
-{
-    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    TTemplateMap templateMap(GetDataFilePath("device-templates/"),
-                             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), 
-                                                                             configSchema));
-
-    PHandlerConfig config = LoadConfig(GetDataFilePath("configs/parse_test.json"), 
-                                                       DeviceFactory,
-                                                       configSchema,
-                                                       templateMap);
-
-    Emit() << "Debug: " << config->Debug;
-    Emit() << "PublishParams: " << config->PublishParameters.Policy << " " << config->PublishParameters.PublishUnchangedInterval.count();
-    Emit() << "Ports:";
-    for (auto port_config: config->PortConfigs) {
-        TTestLogIndent indent(*this);
-        Emit() << "------";
-        Emit() << "ConnSettings: " << port_config->Port->GetDescription();
-        Emit() << "PollInterval: " << port_config->PollInterval.count();
-        Emit() << "GuardInterval: " << port_config->RequestDelay.count();
-        Emit() << "Response timeout: " << port_config->ResponseTimeout.count();
-
-        if (port_config->DeviceConfigs.empty()) {
-            Emit() << "No device configs.";
-            continue;
-        }
-        Emit() << "DeviceConfigs:";
-        for (auto device_config: port_config->DeviceConfigs) {
-            TTestLogIndent indent(*this);
-            Emit() << "------";
-            Emit() << "Id: " << device_config->Id;
-            Emit() << "Name: " << device_config->Name;
-            Emit() << "SlaveId: " << device_config->SlaveId;
-            Emit() << "MaxRegHole: " << device_config->MaxRegHole;
-            Emit() << "MaxBitHole: " << device_config->MaxBitHole;
-            Emit() << "MaxReadRegisters: " << device_config->MaxReadRegisters;
-            Emit() << "GuardInterval: " << device_config->RequestDelay.count();
-            Emit() << "DeviceTimeout: " << device_config->DeviceTimeout.count();
-            Emit() << "Response timeout: " << device_config->ResponseTimeout.count();
-            Emit() << "Frame timeout: " << device_config->FrameTimeout.count();
-            if (!device_config->DeviceChannelConfigs.empty()) {
-                Emit() << "DeviceChannels:";
-                for (auto device_channel: device_config->DeviceChannelConfigs) {
-                    TTestLogIndent indent(*this);
-                    Emit() << "------";
-                    Emit() << "Name: " << device_channel->Name;
-                    Emit() << "Type: " << device_channel->Type;
-                    Emit() << "DeviceId: " << device_channel->DeviceId;
-                    Emit() << "Order: " << device_channel->Order;
-                    Emit() << "OnValue: " << device_channel->OnValue;
-                    Emit() << "Max: " << device_channel->Max;
-                    Emit() << "ReadOnly: " << device_channel->ReadOnly;
-                    if (!device_channel->RegisterConfigs.empty()) {
-                        Emit() << "Registers:";
-                    }
-                    for (auto reg: device_channel->RegisterConfigs) {
-                        TTestLogIndent indent(*this);
-                        Emit() << "------";
-                        Emit() << "Type and Address: " << reg;
-                        Emit() << "Format: " << RegisterFormatName(reg->Format);
-                        Emit() << "Scale: " << reg->Scale;
-                        Emit() << "Offset: " << reg->Offset;
-                        Emit() << "RoundTo: " << reg->RoundTo;
-                        Emit() << "Poll: " << reg->Poll;
-                        Emit() << "ReadOnly: " << reg->ReadOnly;
-                        Emit() << "TypeName: " << reg->TypeName;
-                        Emit() << "PollInterval: " << reg->PollInterval.count();
-                        if (reg->ErrorValue) {
-                            Emit() << "ErrorValue: " << *reg->ErrorValue;
-                        } else {
-                            Emit() << "ErrorValue: not set";
-                        }
-                        if (reg->UnsupportedValue) {
-                            Emit() << "UnsupportedValue: " << *reg->UnsupportedValue;
-                        } else {
-                            Emit() << "UnsupportedValue: not set";
-                        }
-                        Emit() << "WordOrder: " << reg->WordOrder;
-                    }
-                }
-
-                if (device_config->SetupItemConfigs.empty())
-                    continue;
-
-                Emit() << "SetupItems:";
-                for (auto setup_item: device_config->SetupItemConfigs) {
-                    TTestLogIndent indent(*this);
-                    Emit() << "------";
-                    Emit() << "Name: " << setup_item->Name;
-                    Emit() << "Address: " << setup_item->RegisterConfig->Address;
-                    Emit() << "Value: " << setup_item->Value;
-                }
-            }
-        }
-    }
-}
-
-TEST_F(TConfigParserTest, ForceDebug)
-{
-    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    AddProtocolType(configSchema, "fake");
-    AddRegisterType(configSchema, "fake");
-    PHandlerConfig Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
-                                       DeviceFactory,
-                                       configSchema);
-    ASSERT_TRUE(Config->Debug);
-}
-
-TEST_F(TConfigParserTest, UnsuccessfulParse)
-{
-    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-    for (size_t i = 0; i < 4; ++i) {
-        auto fname = std::string("configs/unsuccessful/unsuccessful-") + to_string(i) +  ".json";
-        Emit() << "Parsing config " << fname;
-        try {
-            PHandlerConfig config = LoadConfig(GetDataFilePath(fname), 
-                                       DeviceFactory,
-                                       configSchema);
-        } catch (const std::exception& e) {
-            Emit() << e.what();
-        }
-    }
-}
-// TBD: the code must check mosquitto return values

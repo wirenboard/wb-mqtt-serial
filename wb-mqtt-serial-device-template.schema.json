@@ -1,14 +1,235 @@
 {
   "type": "object",
-  "properties": {
+  // valijson doesn't support loading external refs, so we add here definitions from wb-mqtt-serial.schema.json in c++ code
+  "definitions": {
+
     "device_type": {
       "type": "string",
       "minLength": 1
     },
+
+    "setup_item": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "address": {
+          "title": "Address",
+          "$ref": "#/definitions/address"
+        },
+        "value": {
+          "title": "Value",
+          "$ref": "#/definitions/serial_int"
+        }
+      },
+      "required": ["title", "address", "value"]
+    },
+
+    "parameter": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "address": {
+          "title": "Address",
+          "$ref": "#/definitions/address"
+        },
+        "enum": {
+          "type": "array",
+          "items": { "type": "integer" }
+        },
+        "enum_titles": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "default": {
+          "type": "integer"
+        },
+        "min": {
+          "type": "integer"
+        },
+        "max": {
+          "type": "integer"
+        },
+        "order": {
+          "type": "integer"
+        },
+        "required": {
+          "type": "boolean"
+        }
+      },
+      "required": ["title", "address"]
+    },
+
+    "subdevice_channel": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/channel_name"
+        },
+        "id": {
+          "type": "string"
+        },
+        "device_type": {
+          "type": "string"
+        },
+        "oneOf": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "shift": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
+            }
+          ]
+        },
+        "stride": {
+          "type": "integer"
+        }
+      },
+      "required": ["device_type", "name"]
+    },
+
+    "subdevice_device": {
+      "type": "object",
+      "properties": {
+        "setup": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/setup_item" }
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/parameter" }
+        },
+        "channels" : {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/registerChannel" },
+              { "$ref": "#/definitions/compoundRegisterChannel" },
+              { "$ref": "#/definitions/subdevice_channel" }
+            ]
+          }
+        },
+        "subdevices": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/subdevice" }
+        }
+      }
+    },
+
+    "subdevice": {
+      "type": "object",
+      "properties": {
+        "device_type": { "$ref": "#/definitions/device_type" },
+        "title": { "$ref": "#/definitions/device_type" },
+        "device": { "$ref": "#/definitions/subdevice_device" }
+      },
+      "additionalProperties": false,
+      "required": ["device_type", "device"]
+    },
+
+    "dlms_device_template": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/dlms_device_properties" },
+        { "$ref": "#/definitions/dlms_channels" },
+        { "$ref": "#/definitions/no_setup" },
+        {
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["dlms"]
+            },
+            "parameters": { "not" : {} },
+            "subdevices": { "not" : {} }
+          },
+          "required": ["protocol"]
+        }
+      ]
+    },
+
+    "simple_device_template": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/common_channels" },
+        {
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec"]
+            },
+            "parameters": { "not" : {} },
+            "subdevices": { "not" : {} }
+          },
+          "required": ["protocol"]
+        }
+      ]
+    },
+
+    "simple_device_with_setup_template": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/common_channels" },
+        { "$ref": "#/definitions/common_setup" },
+        {
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["uniel", "s2k"]
+            }
+          },
+          "parameters": { "not" : {} },
+          "subdevices": { "not" : {} },
+          "required": ["protocol"]
+        }
+      ]
+    },
+
+    "modbus_device_template": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/subdevice_device" },
+        {
+          "anyOf": [
+            {
+              "not": {
+                "required": ["protocol"]
+              }
+            },
+            {
+              "properties": {
+                "protocol": {
+                  "type": "string",
+                  "enum": ["modbus",  "modbus_io"]
+                }
+              },
+              "required": ["protocol"]
+            }
+          ]
+        }
+      ]
+    }
+  },
+
+  "properties": {
+    "device_type": { "$ref": "#/definitions/device_type" },
+    "title": { "$ref": "#/definitions/device_type" },
     "device": {
-      // must be "$ref": "wb-mqtt-serial.schema.json#/definitions/device" but valijson doesn't support loading external refs
-      // so we append definitions in c++ code
-      "$ref": "#/definitions/device"
+      "oneOf": [
+        { "$ref": "#/definitions/modbus_device_template" },
+        { "$ref": "#/definitions/simple_device_template" },
+        { "$ref": "#/definitions/simple_device_with_setup_template"},
+        { "$ref": "#/definitions/dlms_device_template" }
+      ]
     }
   },
   "required": ["device_type", "device"]

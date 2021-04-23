@@ -12,11 +12,6 @@ namespace
             return "configs/config-energomera-test.json";
         }
 
-        std::string GetTemplatePath() const override
-        {
-            return "../wb-mqtt-serial-templates";
-        }
-    
         void EnqueuePollRequests()
         {
             Expector()->Expect(
