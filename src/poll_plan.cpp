@@ -65,8 +65,6 @@ void TPollPlan::AddEntry(const PPollEntry& entry)
 void TPollPlan::ProcessPending(const TCallback& callback)
 {
     CurrentTime = ClockFunc();
-    while (!PendingItems.empty())
-        PendingItems.pop();
 #ifdef POLL_PLAN_DEBUG
     if (!Queue.empty())
         LOG(Info) << "top due at " <<
@@ -74,14 +72,14 @@ void TPollPlan::ProcessPending(const TCallback& callback)
             "; now is " <<
             std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime.time_since_epoch()).count();
 #endif
+    std::vector<PQueueItem> PendingItems;
     while (!Queue.empty() && Queue.top()->DueAt <= CurrentTime) {
-        PendingItems.push(Queue.top());
+        PendingItems.push_back(Queue.top());
         Queue.pop();
     }
     int n = 0;
     std::chrono::milliseconds avg_duration = std::chrono::milliseconds::zero();
-    while (!PendingItems.empty()) {
-        auto item = PendingItems.top();
+    for (auto item: PendingItems) {
         auto start = ClockFunc();
         callback(item->Entry);
         auto request_duration = std::chrono::duration_cast<std::chrono::milliseconds>(ClockFunc() - start);
@@ -92,7 +90,6 @@ void TPollPlan::ProcessPending(const TCallback& callback)
         avg_duration += request_duration;
         ++n;
         Queue.push(item);
-        PendingItems.pop();
     }
 
     if (n > 0)
@@ -120,8 +117,6 @@ TPollPlan::TTimePoint TPollPlan::GetNextPollTimePoint()
 void TPollPlan::Reset()
 {
     AvgRequestDuration = std::chrono::milliseconds::zero();
-    while (!PendingItems.empty())
-        PendingItems.pop();
     while (!Queue.empty())
         Queue.pop();
 }

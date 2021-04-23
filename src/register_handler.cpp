@@ -52,13 +52,8 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
 {
     *changed = false;
 
-    // don't poll write-only and dirty registers
-    if (!NeedToPoll())
-        return ErrorStateUnchanged;
-
     if (!ok)
         return UpdateReadError(true);
-
 
     bool first_poll = !DidReadReg;
     DidReadReg = true;

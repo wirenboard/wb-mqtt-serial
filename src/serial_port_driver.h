@@ -31,6 +31,7 @@ struct TDeviceChannel : public TDeviceChannelConfig
 
     PSerialDevice Device;
     std::vector<PRegister> Registers;
+    WBMQTT::PControl Control;
 };
 
 typedef std::shared_ptr<TDeviceChannel> PDeviceChannel;

@@ -56,19 +56,10 @@ private:
                 (a->DueAt == b->DueAt && a->Index > b->Index);
         }
     };
-    struct LessImportantThan {
-        bool operator () (const PQueueItem& a, const PQueueItem& b) const {
-            // Take Index into account to try to make sorting
-            // stable for more predictability (useful for testing)
-            return a->Importance() < b->Importance() ||
-                (a->Importance() == b->Importance() && a->Index > b->Index);
-        }
-    };
-
+    
     TClockFunc ClockFunc;
     TTimePoint CurrentTime;
     std::chrono::milliseconds AvgRequestDuration = std::chrono::milliseconds::zero();
-    std::priority_queue<PQueueItem, std::vector<PQueueItem>, LessImportantThan> PendingItems;
     std::priority_queue<PQueueItem, std::vector<PQueueItem>, LaterThan> Queue;
 };
 

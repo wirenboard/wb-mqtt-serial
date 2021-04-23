@@ -210,7 +210,7 @@ void TSerialClient::Cycle()
     std::map<PSerialDevice, std::set<TRegisterRange::EStatus>> devicesRangesStatuses;
 
     Plan->ProcessPending([&](const PPollEntry& entry) {
-        auto pollEntry = std::dynamic_pointer_cast<TSerialPollEntry>(entry);
+        auto pollEntry = dynamic_cast<TSerialPollEntry*>(entry.get());
         std::list<PRegisterRange> newRanges;
         for (auto range: pollEntry->Ranges) {
             auto device = range->Device();
