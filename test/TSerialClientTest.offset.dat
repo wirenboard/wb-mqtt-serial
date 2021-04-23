@@ -9,5 +9,3 @@ fake_serial_device '1': read address '24' value '65512'
 Read Callback: <fake:1:fake: 24> becomes -87
 fake_serial_device '1': Device cycle OK
 fake_serial_device '1': reconnected
-Port cycle OK
-Close()

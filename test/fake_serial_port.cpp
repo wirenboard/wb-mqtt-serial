@@ -197,11 +197,6 @@ TTimePoint TFakeSerialPort::CurrentTime() const
     return Time;
 }
 
-void TFakeSerialPort::CycleEnd(bool ok)
-{
-    Fixture.Emit() << (ok ? "Port cycle OK" : "Port cycle FAIL");
-}
-
 void TFakeSerialPort::DumpWhatWasRead()
 {
     assert(DumpPos <= RespPos);
@@ -267,7 +262,7 @@ std::chrono::milliseconds TFakeSerialPort::GetSendTime(double bytesNumber)
     return std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(ms));
 }
 
-std::string TFakeSerialPort::GetDescription() const
+std::string TFakeSerialPort::GetDescription(bool verbose) const
 {
     return "<TFakeSerialPort>";
 }

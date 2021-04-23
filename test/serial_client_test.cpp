@@ -25,6 +25,11 @@ using namespace WBMQTT::Testing;
 class TSerialClientTest: public TLoggedFixture
 {
 protected:
+    TSerialClientTest()
+    {
+        PortOpenCloseSettings.ReopenTimeout = std::chrono::milliseconds(0);
+    }
+
     void SetUp();
     void TearDown();
     PRegister Reg(int addr, RegisterFormat fmt = U16, double scale = 1,
@@ -40,6 +45,16 @@ protected:
     TSerialDeviceFactory DeviceFactory;
 
     bool HasSetupRegisters = false;
+    TPortOpenCloseLogic::TSettings PortOpenCloseSettings;
+};
+
+class TSerialClientReopenTest: public TSerialClientTest
+{
+public:
+    TSerialClientReopenTest()
+    {
+        PortOpenCloseSettings.ReopenTimeout = std::chrono::milliseconds(700);
+    }
 };
 
 class TSerialClientTestWithSetupRegisters: public TSerialClientTest
@@ -77,7 +92,7 @@ void TSerialClientTest::SetUp()
     Device->InitSetupItems();
     std::vector<PSerialDevice> devices;
     devices.push_back(Device);
-    SerialClient = std::make_shared<TSerialClient>(devices, Port);
+    SerialClient = std::make_shared<TSerialClient>(devices, Port, PortOpenCloseSettings);
 #if 0
     SerialClient->SetModbusDebug(true);
 #endif
@@ -108,7 +123,6 @@ void TSerialClientTest::SetUp()
 
 void TSerialClientTest::TearDown()
 {
-    SerialClient.reset();
     TLoggedFixture::TearDown();
     TRegister::DeleteIntern();
     TFakeSerialDevice::ClearDevices();
@@ -134,6 +148,32 @@ TEST_F(TSerialClientTest, PortOpenError)
     SerialClient->Cycle();
 
     Port->SetAllowOpen(true);
+
+    Note() << "Cycle() [successful port open]";
+    SerialClient->Cycle();
+}
+
+TEST_F(TSerialClientReopenTest, ReopenTimeout)
+{
+    // The test checks recovery logic after port opening failure
+    // TSerialClient must try to open port during every cycle and set /meta/error for controls
+
+    PRegister reg0 = Reg(0, U8);
+    PRegister reg1 = Reg(1, U8);
+
+    SerialClient->AddRegister(reg0);
+    SerialClient->AddRegister(reg1);
+
+    Port->SetAllowOpen(false);
+
+    Note() << "Cycle() [port open error]";
+    SerialClient->Cycle();
+
+    Port->SetAllowOpen(true);
+
+    // The open will be unsuccessful because of 700ms timeout since last failed open
+    Note() << "Cycle() [port open error2]";
+    SerialClient->Cycle();
 
     Note() << "Cycle() [successful port open]";
     SerialClient->Cycle();
@@ -909,7 +949,6 @@ void TSerialClientIntegrationTest::TearDown()
     }
     Driver->StopLoop();
     TSerialClientTest::TearDown();
-    TFakeSerialDevice::ClearDevices();
 }
 
 void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)

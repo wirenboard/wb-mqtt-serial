@@ -9,6 +9,7 @@
 #include <utility>
 #include <cmath>
 #include <iomanip>
+#include <unistd.h>
 
 #include <linux/serial.h>
 #include <sys/ioctl.h>
@@ -65,75 +66,74 @@ TSerialPort::TSerialPort(const TSerialPortSettings& settings)
 
 void TSerialPort::Open()
 {
-    if (IsOpen())
-        throw TSerialDeviceException("port already open");
+    try {
+        if (IsOpen())
+            throw std::runtime_error("port is already open");
 
-    Fd = open(Settings.Device.c_str(), O_RDWR | O_NOCTTY | O_EXCL | O_NDELAY);
-    if (Fd < 0)
-        throw TSerialDeviceException("cannot open serial port");
+        Fd = open(Settings.Device.c_str(), O_RDWR | O_NOCTTY | O_EXCL | O_NDELAY);
+        if (Fd < 0)
+            throw std::runtime_error("can't open serial port");
 
-    termios dev;
-    memset(&dev, 0, sizeof(termios));
-
-    auto baud_rate = ConvertBaudRate(Settings.BaudRate);
-    if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
-        auto error_code = errno;
-        Close();
-        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from cfsetospeed / cfsetispeed; baud rate is " + std::to_string(Settings.BaudRate));
-    }
-
-    if (Settings.StopBits == 1) {
-        dev.c_cflag &= ~CSTOPB;
-    } else {
-        dev.c_cflag |= CSTOPB;
-    }
-
-    switch (Settings.Parity) {
-    case 'N':
-        dev.c_cflag &= ~PARENB;
-        dev.c_iflag &= ~INPCK;
-        break;
-    case 'E':
-        dev.c_cflag |= PARENB;
-        dev.c_cflag &= ~PARODD;
-        dev.c_iflag |= INPCK;
-        break;
-    case 'O':
-        dev.c_cflag |= PARENB;
-        dev.c_cflag |= PARODD;
-        dev.c_iflag |= INPCK;
-        break;
-    default:
-        Close();
-        std::stringstream ss;
-        ss << "cannot open serial port: invalid parity value: ";
-        if (isprint(Settings.Parity)) {
-            ss << "'" << Settings.Parity << "'";
-        } else {
-            ss << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << int(Settings.Parity);
+        termios dev;
+        memset(&dev, 0, sizeof(termios));
+        auto baud_rate = ConvertBaudRate(Settings.BaudRate);
+        if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
+            throw std::runtime_error("can't set baud rate " + std::to_string(Settings.BaudRate) + " " + FormatErrno(errno));
         }
-        throw TSerialDeviceException(ss.str());
+
+        if (Settings.StopBits == 1) {
+            dev.c_cflag &= ~CSTOPB;
+        } else {
+            dev.c_cflag |= CSTOPB;
+        }
+
+        switch (Settings.Parity) {
+        case 'N':
+            dev.c_cflag &= ~PARENB;
+            dev.c_iflag &= ~INPCK;
+            break;
+        case 'E':
+            dev.c_cflag |= PARENB;
+            dev.c_cflag &= ~PARODD;
+            dev.c_iflag |= INPCK;
+            break;
+        case 'O':
+            dev.c_cflag |= PARENB;
+            dev.c_cflag |= PARODD;
+            dev.c_iflag |= INPCK;
+            break;
+        default:
+            std::stringstream ss;
+            ss << "invalid parity value: ";
+            if (isprint(Settings.Parity)) {
+                ss << "'" << Settings.Parity << "'";
+            } else {
+                ss << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << int(Settings.Parity);
+            }
+            throw std::runtime_error(ss.str());
+        }
+
+        dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(Settings.DataBits) | CREAD | CLOCAL;
+        dev.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+        dev.c_iflag &= ~(IXON | IXOFF | IXANY);
+        dev.c_oflag &=~ OPOST;
+        dev.c_cc[VMIN] = 0;
+        dev.c_cc[VTIME] = 0;
+
+        if (tcgetattr(Fd, &OldTermios) != 0) {
+            throw std::runtime_error("can't get termios attributes " + FormatErrno(errno));
+        }
+
+        if (tcsetattr (Fd, TCSANOW, &dev) != 0) {
+            throw std::runtime_error("can't set termios attributes" + FormatErrno(errno));
+        }
+    } catch (const std::runtime_error& e) {
+        if (Fd >= 0) {
+            close(Fd);
+            Fd = -1;
+        }
+        throw TSerialDeviceException(Settings.Device + ", " + e.what());
     }
-
-    dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(Settings.DataBits) | CREAD | CLOCAL;
-    dev.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-    dev.c_iflag &= ~(IXON | IXOFF | IXANY);
-    dev.c_oflag &=~ OPOST;
-    dev.c_cc[VMIN] = 0;
-    dev.c_cc[VTIME] = 0;
-
-    if (tcgetattr(Fd, &OldTermios) != 0) {
-        auto error_code = errno;
-        Close();
-        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcgetattr");
-    }
-
-    if (tcsetattr (Fd, TCSANOW, &dev) != 0) {
-        auto error_code = errno;
-        Close();
-        throw TSerialDeviceException("cannot open serial port: error " + std::to_string(error_code) + " from tcsetattr");
-    }
-
     LastInteraction = std::chrono::steady_clock::now();
     SkipNoise();    // flush data from previous instance if any
 }
@@ -181,9 +181,12 @@ void TSerialPort::WriteBytes(const uint8_t* buf, int count)
     LastInteraction = std::chrono::steady_clock::now();
 }
 
-std::string TSerialPort::GetDescription() const
+std::string TSerialPort::GetDescription(bool verbose) const
 {
-    return Settings.ToString();
+    if (verbose) {
+        return Settings.ToString();
+    }
+    return Settings.Device;
 }
 
 const TSerialPortSettings& TSerialPort::GetSettings() const
@@ -193,16 +196,6 @@ const TSerialPortSettings& TSerialPort::GetSettings() const
 
 TSerialPortWithIECHack::TSerialPortWithIECHack(PSerialPort port): Port(port), UseIECHack(false)
 {}
-
-void TSerialPortWithIECHack::CycleBegin()
-{
-    Port->CycleBegin();
-}
-
-void TSerialPortWithIECHack::CycleEnd(bool ok)
-{
-    Port->CycleEnd(ok);
-}
 
 void TSerialPortWithIECHack::Open()
 {
@@ -300,9 +293,9 @@ std::chrono::milliseconds TSerialPortWithIECHack::GetSendTime(double bytesNumber
     return Port->GetSendTime(bytesNumber);
 }
 
-std::string TSerialPortWithIECHack::GetDescription() const
+std::string TSerialPortWithIECHack::GetDescription(bool verbose) const
 {
-    return Port->GetDescription();
+    return Port->GetDescription(verbose);
 }
 
 void TSerialPortWithIECHack::SetSerialPortByteFormat(const TSerialPortByteFormat* params)

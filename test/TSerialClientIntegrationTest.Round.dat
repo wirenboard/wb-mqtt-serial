@@ -52,7 +52,6 @@ fake_serial_device '146': read address '4' value '0'
 fake_serial_device '146': read address '6' value '0'
 fake_serial_device '146': Device cycle OK
 fake_serial_device '146': reconnected
-Port cycle OK
 Publish: /devices/RoundTest/controls/Float_0_01/on: '12.345' (QoS 0, retained)
 Publish: /devices/RoundTest/controls/Float_0_01: '0' (QoS 1, retained)
 Publish: /devices/RoundTest/controls/Float_1: '0' (QoS 1, retained)
@@ -75,7 +74,6 @@ fake_serial_device '146': read address '2' value '1094713344'
 fake_serial_device '146': read address '4' value '1092616192'
 fake_serial_device '146': read address '6' value '1095132774'
 fake_serial_device '146': Device cycle OK
-Port cycle OK
 Publish: /devices/RoundTest/controls/Float_0_01: '12.35' (QoS 1, retained)
 Publish: /devices/RoundTest/controls/Float_1: '12' (QoS 1, retained)
 Publish: /devices/RoundTest/controls/Float_10: '10' (QoS 1, retained)

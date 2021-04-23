@@ -51,10 +51,11 @@ class TSerialPortDriver: public std::enable_shared_from_this<TSerialPortDriver>
 {
 public:
     TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig port_config);
-    ~TSerialPortDriver();
     void SetUpDevices();
     void Cycle();
     void ClearDevices() noexcept;
+
+    const std::string& GetShortDescription() const;
 
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event);
 
@@ -67,10 +68,11 @@ private:
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
     void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);
 
-    WBMQTT::PDeviceDriver MqttDriver;
-    PPortConfig Config;
-    PSerialClient SerialClient;
+    WBMQTT::PDeviceDriver      MqttDriver;
+    PPortConfig                Config;
+    PSerialClient              SerialClient;
     std::vector<PSerialDevice> Devices;
+    std::string                Description;
 
     std::unordered_map<PRegister, TDeviceChannelState> RegisterToChannelStateMap;
 };

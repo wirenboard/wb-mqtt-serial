@@ -93,7 +93,6 @@ EnqueueCoilReadResponse()
 Publish: /devices/modbus-io-1-2/controls/Coil 0: '1' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 1: '0' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Input 2: '0' (QoS 1, retained)
-Port cycle OK
 Publish: /devices/modbus-io-1-1/controls/Coil 0/on: '1' (QoS 0, retained)
 Publish: /devices/modbus-io-1-1/controls/Coil 0: '1' (QoS 1, retained)
 Publish: /devices/modbus-io-1-2/controls/Coil 0/on: '0' (QoS 0, retained)
@@ -116,7 +115,6 @@ Sleep(5000)
 EnqueueCoilReadResponse()
 >> 01 01 09 C4 00 03 3E 6A
 Publish: /devices/modbus-io-1-2/controls/Coil 0: '1' (QoS 1, retained)
-Port cycle OK
 << 01 01 01 01 90 48
 Close()
 Publish: /devices/modbus-io-1-1/controls/Input 2: '' (QoS 1, retained)

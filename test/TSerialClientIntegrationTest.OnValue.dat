@@ -20,13 +20,11 @@ fake_serial_device '144': read address '0' value '0'
 Publish: /devices/OnValueTest/controls/Relay 1: '0' (QoS 1, retained)
 fake_serial_device '144': Device cycle OK
 fake_serial_device '144': reconnected
-Port cycle OK
 Publish: /devices/OnValueTest/controls/Relay 1/on: '1' (QoS 0, retained)
 >>> LoopOnce()
 fake_serial_device '144': write to address '0' value '500'
 fake_serial_device '144': read address '0' value '500'
 fake_serial_device '144': Device cycle OK
-Port cycle OK
 Publish: /devices/OnValueTest/controls/Relay 1: '1' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/OnValueTest/controls/Relay 1/on
 Publish: /devices/OnValueTest/controls/Relay 1: '' (QoS 1, retained)

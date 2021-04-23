@@ -24,7 +24,8 @@ TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
     return ErrorState;
 }
 
-TRegisterHandler::TErrorState TRegisterHandler::UpdateWriteError(bool error) {
+TRegisterHandler::TErrorState TRegisterHandler::UpdateWriteError(bool error)
+{
     TErrorState newState;
     if (error) {
         newState = ErrorState == ReadError ||
@@ -95,7 +96,7 @@ bool TRegisterHandler::NeedToFlush()
     return Dirty;
 }
 
-TRegisterHandler::TErrorState TRegisterHandler::Flush()
+TRegisterHandler::TErrorState TRegisterHandler::Flush(TErrorState forcedError)
 {
     if (!NeedToFlush())
         return ErrorStateUnchanged;
@@ -103,6 +104,10 @@ TRegisterHandler::TErrorState TRegisterHandler::Flush()
     {
         std::lock_guard<std::mutex> lock(SetValueMutex);
         Dirty = false;
+    }
+
+    if (forcedError == WriteError) {
+        return UpdateWriteError(true);
     }
 
     try {

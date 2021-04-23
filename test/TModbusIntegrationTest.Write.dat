@@ -346,7 +346,6 @@ EnqueueHoldingSingleReadResponse()
 EnqueueHoldingMultiReadResponse()
 >> 01 03 00 5F 00 05 B5 DB
 << 01 03 0A 02 02 02 02 02 02 02 02 02 02 66 FE
-Port cycle OK
 Close()
 Publish: /devices/modbus-sample/controls/RGB: '10;20;30' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/White: '1' (QoS 1, retained)

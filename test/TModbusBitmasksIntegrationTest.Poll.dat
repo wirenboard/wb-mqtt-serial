@@ -75,7 +75,6 @@ Publish: /devices/modbus-sample/controls/U8:1: '0' (QoS 1, retained)
 EnqueueU8Shift2SingleBitHoldingReadResponse()
 >> 01 03 00 48 00 01 04 1C
 Publish: /devices/modbus-sample/controls/U8:2: '1' (QoS 1, retained)
-Port cycle OK
 << 01 03 02 00 05 78 47
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/U8:2/on
