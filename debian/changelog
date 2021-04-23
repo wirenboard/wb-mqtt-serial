@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.12.0) experimental; urgency=medium
+
+  * Do not show response errors as warnings for disconnected devices. They are now in debug channel.
+  * Thread names are set according to port parameters.
+  * "connection_timeout_ms" and "connection_max_fail_cycles" can be used for all port types.
+  * Port open errors are shown with 5 minutes interval, not every poll cycle.
+  * Devices on closed port are not polled and marked as disconnected with appropriate errors in /meta/error topics.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 23 Apr 2021 14:08:00 +0500
+
 wb-mqtt-serial (2.11.0) experimental; urgency=medium
 
   * Strict configs validation

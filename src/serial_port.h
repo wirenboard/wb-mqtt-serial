@@ -27,7 +27,7 @@ public:
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) override;
 
-    std::string GetDescription() const override;
+    std::string GetDescription(bool verbose = true) const override;
 
     const TSerialPortSettings& GetSettings() const;
 
@@ -44,9 +44,6 @@ class TSerialPortWithIECHack: public TPort
 public:
     TSerialPortWithIECHack(PSerialPort port);
     ~TSerialPortWithIECHack() = default;
-
-    void CycleBegin() override;
-    void CycleEnd(bool ok) override;
 
     void Open() override;
     void Close() override;
@@ -72,7 +69,7 @@ public:
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) override;
 
-    std::string GetDescription() const override;
+    std::string GetDescription(bool verbose = true) const override;
 
     void SetSerialPortByteFormat(const TSerialPortByteFormat* params) override;
 

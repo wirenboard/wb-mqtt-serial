@@ -27,7 +27,7 @@ public:
     bool NeedToPoll();
     TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
     bool NeedToFlush();
-    TErrorState Flush();
+    TErrorState Flush(TErrorState forcedError = NoError);
     std::string TextValue() const;
 
     void SetTextValue(const std::string& v);

@@ -3,6 +3,8 @@ PublishParams: 0 0
 Ports:
     ------
     ConnSettings: </dev/ttyNSC0 9600 8 N 2>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
     PollInterval: 10
     GuardInterval: 0
     Response timeout: -1
@@ -275,6 +277,8 @@ Ports:
                 WordOrder: BigEndian
     ------
     ConnSettings: </dev/ttyNSC1 9600 8 N 1>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
     PollInterval: 100
     GuardInterval: 105
     Response timeout: 222
@@ -933,13 +937,17 @@ Ports:
             Address: 10494
             Value: 111
     ------
-    ConnSettings: <192.168.0.1:3000  5000ms, 2>
+    ConnSettings: <192.168.0.1:3000>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
     PollInterval: 20
     GuardInterval: 0
     Response timeout: -1
     No device configs.
     ------
-    ConnSettings: <192.168.0.1:3000  10000ms, 2>
+    ConnSettings: <192.168.0.1:3000>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 10000
     PollInterval: 20
     GuardInterval: 0
     Response timeout: -1

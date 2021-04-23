@@ -11,8 +11,6 @@ public:
     TTcpPort(const TTcpPortSettings& settings);
     ~TTcpPort() = default;
 
-    void CycleBegin() override;
-    void CycleEnd(bool ok) override;
     void Open() override;
     void WriteBytes(const uint8_t * buf, int count) override;
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
@@ -21,16 +19,10 @@ public:
                      const std::chrono::microseconds& frameTimeout,
                      TFrameCompletePred frame_complete = 0) override;
 
-    std::string GetDescription() const override;
+    std::string GetDescription(bool verbose = true) const override;
 
 private:
-    void OpenTcpPort();
-    void Reset() noexcept;
-    void OnConnectionOk();
-
     void OnReadyEmptyFd() override;
 
     TTcpPortSettings                        Settings;
-    std::chrono::steady_clock::time_point   LastSuccessfulCycle;
-    int                                     RemainingFailCycles;
 };

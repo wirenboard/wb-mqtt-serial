@@ -9,6 +9,7 @@
 #include "serial_device.h"
 #include "register_handler.h"
 #include "binary_semaphore.h"
+#include "log.h"
 
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
@@ -16,14 +17,14 @@ public:
     typedef std::function<void(PRegister reg, bool changed)> TReadCallback;
     typedef std::function<void(PRegister reg, TRegisterHandler::TErrorState errorState)> TErrorCallback;
 
-    TSerialClient(const std::vector<PSerialDevice>& devices, PPort port);
+    TSerialClient(const std::vector<PSerialDevice>& devices,
+                  PPort port,
+                  const TPortOpenCloseLogic::TSettings& openCloseSettings);
     TSerialClient(const TSerialClient& client) = delete;
     TSerialClient& operator=(const TSerialClient&) = delete;
     ~TSerialClient();
 
     void AddRegister(PRegister reg);
-    void Connect();
-    void Disconnect();
     void Cycle();
     void SetTextValue(PRegister reg, const std::string& value);
     std::string GetTextValue(PRegister reg) const;
@@ -34,6 +35,8 @@ public:
     void ClearDevices();
 
 private:
+    void Activate();
+    void Connect();
     void PrepareRegisterRanges();
     void DoFlush();
     void WaitForPollAndFlush();
@@ -44,6 +47,8 @@ private:
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
     void PrepareToAccessDevice(PSerialDevice dev);
     void OnDeviceReconnect(PSerialDevice dev);
+    void ClosedPortCycle();
+    void OpenPortCycle();
 
     PPort Port;
     std::list<PRegister>       RegList;
@@ -60,6 +65,9 @@ private:
 
     const int MAX_REGS = 65536;
     const int MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
+
+    TPortOpenCloseLogic OpenCloseLogic;
+    TLoggerWithTimeout  ConnectLogger;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

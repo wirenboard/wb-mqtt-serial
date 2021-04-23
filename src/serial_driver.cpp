@@ -65,6 +65,7 @@ void TMQTTSerialDriver::Start()
 
     for (const auto& portDriver: PortDrivers) {
         PortLoops.emplace_back([&]{
+            WBMQTT::SetThreadName(portDriver->GetShortDescription());
             while (Active) {
                 portDriver->Cycle();
             }

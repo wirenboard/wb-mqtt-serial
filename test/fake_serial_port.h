@@ -34,7 +34,6 @@ public:
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
     bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
     TTimePoint CurrentTime() const override;
-    void CycleEnd(bool ok) override;
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) override;
 
@@ -45,7 +44,7 @@ public:
     bool GetDoSimulateDisconnect() const;
     WBMQTT::Testing::TLoggedFixture& GetFixture();
 
-    std::string GetDescription() const override;
+    std::string GetDescription(bool verbose = true) const override;
 
     void SetAllowOpen(bool allowOpen);
 

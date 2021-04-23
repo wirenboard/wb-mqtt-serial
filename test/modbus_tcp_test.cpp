@@ -43,7 +43,7 @@ namespace
         bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) { return true; }
         TTimePoint CurrentTime() const { return std::chrono::steady_clock::now(); }
 
-        std::string GetDescription() const { return std::string(); }
+        std::string GetDescription(bool verbose) const { return std::string(); }
     };
 }
 
