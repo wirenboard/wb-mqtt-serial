@@ -525,7 +525,8 @@ void  AddDeviceUISchema(const TDeviceTemplate& deviceTemplate,
 {
     auto set = GetDeviceKey(deviceTemplate.Type);
 
-    auto& res = Append(devicesArray);
+    Json::Value res;
+
     res["type"] = "object";
     res["title"] = deviceTemplate.Title;
     MakeArray("required", res).append(set);
@@ -567,6 +568,7 @@ void  AddDeviceUISchema(const TDeviceTemplate& deviceTemplate,
             MakeSubDeviceUISchema(name, subdeviceTemplates.GetTemplate(name), deviceTemplate.Type, definitions);
         }
     }
+    devicesArray.append(res);
 }
 
 void AppendDeviceSchemas(Json::Value& devicesArray, Json::Value& definitions, TTemplateMap& templates, TSerialDeviceFactory& deviceFactory)

@@ -180,10 +180,10 @@ namespace
                     reg->SetValue(value);
                 } else {
                     // consume error message instead
-                    reg->SetError();
                     int err_num;
                     ret = sscanf(presp, "(E%d)%n", &err_num, &nread);
                     if (ret >= 1) {
+                        reg->SetError(ST_DEVICE_ERROR);
                         presp += nread;
 
                         // just ignore error message if reg is unavailable
@@ -199,6 +199,7 @@ namespace
                             }
                         }
                     } else {
+                        reg->SetError(ST_UNKNOWN_ERROR);
                         throw TSerialDeviceTransientErrorException("Can't parse response");
                     }
                 }
@@ -229,7 +230,7 @@ std::list<PRegisterRange> TEnergomeraIecDevice::ReadRegisterRange(PRegisterRange
 
         ProcessResponse(*range, presp);
     } catch (TSerialDeviceTransientErrorException& e) {
-        range->SetError();
+        range->SetError(ST_UNKNOWN_ERROR);
         LOG(Warn) << "TEnergomeraIecDevice::ReadRegisterRange(): " << e.what() << " [slave_id is " << ToString() + "]";
     }
     return { abstract_range };

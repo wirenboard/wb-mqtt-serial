@@ -88,13 +88,17 @@ std::list<PRegisterRange> TSerialDevice::ReadRegisterRange(PRegisterRange range)
     	try {
             Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
             reg->SetValue(ReadRegister(reg));
+        } catch (const TSerialDeviceInternalErrorException& e) {
+            reg->SetError(ST_DEVICE_ERROR);
+            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
+                      << reg->Device()->ToString() + "]";
         } catch (const TSerialDeviceTransientErrorException& e) {
-            reg->SetError();
+            reg->SetError(ST_UNKNOWN_ERROR);
             LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "]";
         } catch (const TSerialDevicePermanentRegisterException& e) {
             reg->SetAvailable(false);
-            reg->SetError();
+            reg->SetError(ST_DEVICE_ERROR);
             LOG(Warn) << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
                   << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported";
         }

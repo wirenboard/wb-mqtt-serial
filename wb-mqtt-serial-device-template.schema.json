@@ -156,6 +156,26 @@
       ]
     },
 
+    "somfy_device_template": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/common_channels" },
+        { "$ref": "#/definitions/somfy_device_properties" },
+        {
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["somfy"]
+            },
+            "parameters": { "not" : {} },
+            "subdevices": { "not" : {} }
+          },
+          "required": ["protocol"]
+        }
+      ]
+    },
+
     "simple_device_template": {
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
@@ -165,7 +185,7 @@
           "properties": {
             "protocol": {
               "type": "string",
-              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec"]
+              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec", "windeco", "am82smart"]
             },
             "parameters": { "not" : {} },
             "subdevices": { "not" : {} }
@@ -228,7 +248,8 @@
         { "$ref": "#/definitions/modbus_device_template" },
         { "$ref": "#/definitions/simple_device_template" },
         { "$ref": "#/definitions/simple_device_with_setup_template"},
-        { "$ref": "#/definitions/dlms_device_template" }
+        { "$ref": "#/definitions/dlms_device_template" },
+        { "$ref": "#/definitions/somfy_device_template" }
       ]
     }
   },

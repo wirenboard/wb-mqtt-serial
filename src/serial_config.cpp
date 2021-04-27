@@ -34,6 +34,9 @@
 #include "devices/s2k_device.h"
 #include "devices/uniel_device.h"
 #include "devices/dlms_device.h"
+#include "devices/curtains/am82s_device.h"
+#include "devices/curtains/somfy_sdn_device.h"
+#include "devices/curtains/windeco_device.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
@@ -165,7 +168,7 @@ namespace {
             unsupported_value = std::make_unique<uint64_t>(ToUint64(register_data["unsupported_value"], "unsupported_value"));
         }
 
-        auto address = deviceFactory.LoadRegisterAddress(register_data, device_base_address, stride, RegisterFormatByteWidth(format));
+        auto address = deviceFactory.GetRegisterAddressFactory().LoadRegisterAddress(register_data, device_base_address, stride, RegisterFormatByteWidth(format));
 
         PRegisterConfig reg = TRegisterConfig::Create(
             it->second.Index, address.Address, format, scale, offset,
@@ -340,7 +343,7 @@ namespace {
             format = RegisterFormatFromName(item_data["format"].asString());
         }
 
-        auto address = device_factory.LoadRegisterAddress(item_data, device_base_address, stride, RegisterFormatByteWidth(format));
+        auto address = device_factory.GetRegisterAddressFactory().LoadRegisterAddress(item_data, device_base_address, stride, RegisterFormatByteWidth(format));
 
         PRegisterConfig reg = TRegisterConfig::Create(
             type, address.Address, format, 1, 0, 0, true, true, "<unspec>");
@@ -923,7 +926,17 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
         throw TSerialDeviceException("unknown protocol: " + protocolName);
     }
 
-    return it->second.second->CreateDevice(*cfg, it->second.first, defaultId, portConfig);
+    auto protocol = it->second.first;
+    const auto& deviceFactory = *it->second.second;
+
+    TDeviceConfigLoadParams params;
+    params.DefaultId           = defaultId;
+    params.DefaultPollInterval = portConfig->PollInterval;
+    params.DefaultRequestDelay = portConfig->RequestDelay;
+    params.PortResponseTimeout = portConfig->ResponseTimeout;
+    auto baseDeviceConfig = LoadBaseDeviceConfig(*cfg, protocol, deviceFactory, params);
+
+    return deviceFactory.CreateDevice(*cfg, baseDeviceConfig, portConfig->Port, protocol);
 }
 
 std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
@@ -935,10 +948,12 @@ std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
     return res;
 }
 
-IDeviceFactory::IDeviceFactory(const std::string& commonDeviceSchemaRef,
+IDeviceFactory::IDeviceFactory(std::unique_ptr<IRegisterAddressFactory> registerAddressFactory,
+                               const std::string& commonDeviceSchemaRef,
                                const std::string& customChannelSchemaRef)
     : CommonDeviceSchemaRef(commonDeviceSchemaRef),
-      CustomChannelSchemaRef(customChannelSchemaRef)
+      CustomChannelSchemaRef(customChannelSchemaRef),
+      RegisterAddressFactory(std::move(registerAddressFactory))
 {}
 
 const std::string& IDeviceFactory::GetCommonDeviceSchemaRef() const
@@ -949,6 +964,11 @@ const std::string& IDeviceFactory::GetCommonDeviceSchemaRef() const
 const std::string& IDeviceFactory::GetCustomChannelSchemaRef() const
 {
     return CustomChannelSchemaRef;
+}
+
+const IRegisterAddressFactory& IDeviceFactory::GetRegisterAddressFactory() const
+{
+    return *RegisterAddressFactory;
 }
 
 PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
@@ -970,7 +990,7 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
             res->SlaveId = std::to_string(dev["slave_id"].asInt());
     }
 
-    LoadDeviceTemplatableConfigPart(res.get(), dev, protocol->GetRegTypes(), *parameters.BaseRegisterAddress, factory);
+    LoadDeviceTemplatableConfigPart(res.get(), dev, protocol->GetRegTypes(), factory.GetRegisterAddressFactory().GetBaseRegisterAddress(), factory);
 
     if (res->DeviceChannelConfigs.empty())
         throw TConfigParserException("the device has no channels: " + res->Name);
@@ -1013,6 +1033,9 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     TS2KDevice::Register(deviceFactory);
     TUnielDevice::Register(deviceFactory);
     TDlmsDevice::Register(deviceFactory);
+    Am82Smart::TDevice::Register(deviceFactory);
+    WinDeco::TDevice::Register(deviceFactory);
+    Somfy::TDevice::Register(deviceFactory);
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data)
@@ -1047,4 +1070,27 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data)
         res.Address = GetInt(register_data, "address");
     }
     return res;
+}
+
+TUint32RegisterAddressFactory::TUint32RegisterAddressFactory(size_t bytesPerRegister)
+    : BaseRegisterAddress(0),
+      BytesPerRegister(bytesPerRegister)
+{}
+
+TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Value&      regCfg,
+                                                                 const IRegisterAddress& deviceBaseAddress,
+                                                                 uint32_t                stride,
+                                                                 uint32_t                registerByteWidth) const
+{
+    auto addr = LoadRegisterBitsAddress(regCfg);
+    TRegisterDesc res;
+    res.BitOffset = addr.BitOffset;
+    res.BitWidth = addr.BitWidth;
+    res.Address = std::shared_ptr<IRegisterAddress>(deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, BytesPerRegister));
+    return res;
+}
+
+const IRegisterAddress& TUint32RegisterAddressFactory::GetBaseRegisterAddress() const
+{
+    return BaseRegisterAddress;
 }

@@ -1,0 +1,54 @@
+{
+    "device_type": "AM82Smart",
+    "title": "AM82Smart curtain motor",
+    "device": {
+        "name": "AM82Smart",
+        "id": "am82smart",
+        "protocol": "am82smart",
+        "response_timeout_ms": 100,
+        "channels": [
+            {
+                "name": "Position",
+                "reg_type": "position",
+                "address": 0,
+                "max": 100,
+                "type": "range"
+            },
+            {
+                "name": "Stop",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x03"
+            },
+            {
+                "name": "Direction",
+                "reg_type": "param",
+                "address": 3,
+                "max": 1,
+                "type": "switch",
+                "enabled": false
+            },
+            {
+                "name": "Hand pulling",
+                "reg_type": "param",
+                "address": 4,
+                "max": 1,
+                "enabled": false
+            },
+            {
+                "name": "Passive switch",
+                "reg_type": "param",
+                "address": "0x27",
+                "max": 4,
+                "enabled": false
+            },
+            {
+                "name": "Voltage switch",
+                "reg_type": "param",
+                "address": "0x27",
+                "max": 1,
+                "enabled": false
+            }
+        ]
+    }
+}

@@ -1,0 +1,143 @@
+{
+    "device_type": "Somfy SDN",
+    "title": "Somfy curtain motor",
+    "device": {
+        "name": "Somfy SDN",
+        "id": "somfy",
+        "protocol": "somfy",
+        "response_timeout_ms": 255,
+        "frame_timeout_ms": 10,
+        "channels": [
+            {
+                "name": "Position",
+                "reg_type": "position",
+                "address": 0,
+                "max": 100,
+                "type": "range"
+            },
+            {
+                "name": "Status",
+                "type": "text",
+                "consists_of": [
+                    {
+                        "reg_type": "param",
+                        "address": "0x0E0F:0:8"
+                    },
+                    {
+                        "reg_type": "param",
+                        "address": "0x0E0F:8:8"
+                    },
+                    {
+                        "reg_type": "param",
+                        "address": "0x0E0F:16:8"
+                    },
+                    {
+                        "reg_type": "param",
+                        "address": "0x0E0F:24:8"
+                    }
+                ]
+            },
+            {
+                "name": "Stop",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x02",
+                "on_value": "0x0101"
+            },
+            {
+                "name": "Move down",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x04",
+                "on_value": "0x0A0204"
+            },
+            {
+                "name": "Move up",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x04",
+                "on_value": "0x0A0304"
+            },
+            {
+                "name": "Delete limits",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x11",
+                "on_value": "0x04"
+            },
+            {
+                "name": "Set up limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x11",
+                "on_value": "0x010104"
+            },
+            {
+                "name": "Set down limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x11",
+                "on_value": "0x0104"
+            },
+            {
+                "name": "Motor position",
+                "type": "text",
+                "consists_of": [
+                    {
+                        "reg_type": "param",
+                        "address": "0x0C0D:0:16"
+                    },
+                    {
+                        "reg_type": "param",
+                        "address": "0x0C0D:16:8"
+                    },
+                    {
+                        "reg_type": "param",
+                        "address": "0x0C0D:32:8"
+                    }
+                ],
+                "enabled": false
+            },
+            {
+                "name": "Limits",
+                "type": "text",
+                "consists_of": [
+                    {
+                        "reg_type": "param",
+                        "address": "0x2131:0:16"
+                    },
+                    {
+                        "reg_type": "param",
+                        "address": "0x2131:16:16"
+                    }
+                ],
+                "enabled": false
+            },
+            {
+                "name": "Direction",
+                "reg_type": "param",
+                "address": "0x2232",
+                "enabled": false
+            },
+            {
+                "name": "Rolling speed",
+                "type": "text",
+                "consists_of": [
+                    {
+                        "reg_type": "param",
+                        "address": "0x2333:0:8"
+                    },
+                    {
+                        "reg_type": "param",
+                        "address": "0x2333:8:8"
+                    },
+                    {
+                        "reg_type": "param",
+                        "address": "0x2333:16:8"
+                    }
+                ],
+                "enabled": false
+            }
+        ]
+    }
+}

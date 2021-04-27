@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.12.0) experimental; urgency=medium
+
+  * Support for WinDeco, Akko/Dooya/AM82Smart and Somfy SDN curtain motors is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 21 Apr 2021 11:53:00 +0500
+
 wb-mqtt-serial (2.11.1) experimental; urgency=medium
 
   * Errors in "WB-MAP3E" and "WB-MAP6S fw2" device templates are fixed

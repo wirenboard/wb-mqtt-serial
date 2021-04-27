@@ -73,10 +73,10 @@ std::chrono::milliseconds TRegisterRange::PollInterval() const
     return RegPollInterval;
 }
 
-void TRegisterRange::SetError()
+void TRegisterRange::SetError(EStatus error)
 {
     for (auto& r: RegList) {
-        r->SetError();
+        r->SetError(error);
     }
 }
 
@@ -84,12 +84,30 @@ TSimpleRegisterRange::TSimpleRegisterRange(const std::list<PRegister>& regs): TR
 
 TSimpleRegisterRange::TSimpleRegisterRange(PRegister reg): TRegisterRange(reg) {}
 
-TRegisterRange::EStatus TSimpleRegisterRange::GetStatus() const
+EStatus TSimpleRegisterRange::GetStatus() const
 {
-    if (std::all_of(RegisterList().begin(), RegisterList().end(), [](const PRegister& r) {return r->GetError();})) {
+    bool hasOk = false;
+    bool hasError = false;
+    for (const auto& r: RegisterList()) {
+        switch (r->GetError())
+        {
+        case ST_DEVICE_ERROR: return ST_DEVICE_ERROR;
+        case ST_OK: {
+            hasOk = true;
+            break;
+        }
+        case ST_UNKNOWN_ERROR:
+            hasError = true;
+            break;
+        }
+    }
+    if (!hasError) {
+        return ST_OK;
+    }
+    if(!hasOk) {
         return ST_UNKNOWN_ERROR;
     }
-    return ST_OK;
+    return ST_DEVICE_ERROR;
 }
 
 std::string TRegisterConfig::ToString() const {
@@ -121,14 +139,14 @@ void TRegister::SetAvailable(bool available)
     Available = available;
 }
 
-bool TRegister::GetError() const
+EStatus TRegister::GetError() const
 {
     return Error;
 }
 
-void TRegister::SetError()
+void TRegister::SetError(EStatus error)
 {
-    Error = true;
+    Error = error;
 }
 
 uint64_t TRegister::GetValue() const
@@ -139,7 +157,7 @@ uint64_t TRegister::GetValue() const
 void TRegister::SetValue(uint64_t value)
 {
     Value = value;
-    Error = false;
+    Error = ST_OK;
     Available = true;
 }
 
@@ -178,8 +196,10 @@ TRegisterConfig::TRegisterConfig(int type,
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
 
-    if (BitOffset >= 16) {
-        throw TSerialDeviceException("bit offset must not exceed 16 bits");
+    auto maxOffset = RegisterFormatByteWidth(Format)*8;
+
+    if (BitOffset >= maxOffset) {
+        throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
     }
 
     if (!Address) {

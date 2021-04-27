@@ -77,37 +77,13 @@ namespace
             return new TObisRegisterAddress(LogicalName);
         }
     };
-    class TDlmsDeviceFactory: public IDeviceFactory
+
+    class TObisRegisterAddressFactory: public IRegisterAddressFactory
     {
+        TObisRegisterAddress BaseRegisterAddress;
     public:
-        TDlmsDeviceFactory()
-            : IDeviceFactory("#/definitions/dlms_device", "#/definitions/dlms_channel")
+        TObisRegisterAddressFactory(): BaseRegisterAddress("0.0.0.0.0.0")
         {}
-
-        PSerialDevice CreateDevice(const Json::Value& data,
-                                   PProtocol          protocol,
-                                   const std::string& defaultId,
-                                   PPortConfig        portConfig) const override
-        {
-            TDlmsDeviceConfig cfg;
-
-            TDeviceConfigLoadParams params;
-            params.BaseRegisterAddress = std::make_unique<TUint32RegisterAddress>(0);
-            params.DefaultId           = defaultId;
-            params.DefaultPollInterval = portConfig->PollInterval;
-            params.DefaultRequestDelay = portConfig->RequestDelay;
-            params.PortResponseTimeout = portConfig->ResponseTimeout;
-            cfg.DeviceConfig = LoadBaseDeviceConfig(data, protocol, *this, params);
-
-            WBMQTT::JSON::Get(data, "dlms_client_address", cfg.ClientAddress);
-            cfg.Authentication = static_cast<DLMS_AUTHENTICATION>(data.get("dlms_auth", cfg.Authentication).asInt());
-            cfg.InterfaceType  = static_cast<DLMS_INTERFACE_TYPE>(data.get("dlms_interface", cfg.InterfaceType).asInt());
-            WBMQTT::JSON::Get(data, "dlms_disconnect_retry_timeout_ms", cfg.DisconnectRetryTimeout);
-
-            PSerialDevice dev = std::make_shared<TDlmsDevice>(cfg, portConfig->Port, protocol);
-            dev->InitSetupItems();
-            return dev;
-        }
 
         TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
                                           const IRegisterAddress& deviceBaseAddress,
@@ -117,6 +93,35 @@ namespace
             TRegisterDesc res;
             res.Address = std::make_shared<TObisRegisterAddress>(regCfg["address"].asString());
             return res;
+        }
+
+        const IRegisterAddress& GetBaseRegisterAddress() const override
+        {
+            return BaseRegisterAddress;
+        }
+    };
+
+    class TDlmsDeviceFactory: public IDeviceFactory
+    {
+    public:
+        TDlmsDeviceFactory()
+            : IDeviceFactory(std::make_unique<TObisRegisterAddressFactory>(),
+                             "#/definitions/dlms_device",
+                             "#/definitions/dlms_channel")
+        {}
+
+        PSerialDevice CreateDevice(const Json::Value& data,
+                                   PDeviceConfig      deviceConfig,
+                                   PPort              port,
+                                   PProtocol          protocol) const override
+        {
+            TDlmsDeviceConfig cfg;
+            WBMQTT::JSON::Get(data, "dlms_client_address", cfg.ClientAddress);
+            cfg.Authentication = static_cast<DLMS_AUTHENTICATION>(data.get("dlms_auth", cfg.Authentication).asInt());
+            cfg.InterfaceType  = static_cast<DLMS_INTERFACE_TYPE>(data.get("dlms_interface", cfg.InterfaceType).asInt());
+            WBMQTT::JSON::Get(data, "dlms_disconnect_retry_timeout_ms", cfg.DisconnectRetryTimeout);
+
+            return std::make_shared<TDlmsDevice>(cfg, port, protocol);
         }
     };
 

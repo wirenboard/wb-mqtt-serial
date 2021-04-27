@@ -175,22 +175,10 @@ struct TRegisterDesc
     uint8_t                           BitWidth = 0;  //! Width of data in register in bits
 };
 
-class IDeviceFactory
+class IRegisterAddressFactory
 {
-    std::string CommonDeviceSchemaRef;
-    std::string CustomChannelSchemaRef;
-public:
-    IDeviceFactory(const std::string& commonDeviceSchemaRef,
-                   const std::string& customChannelSchemaRef);
-
-    virtual ~IDeviceFactory() = default;
-
-    /*! Create new device of given type */
-    virtual PSerialDevice CreateDevice(const Json::Value& deviceData,
-                                       PProtocol          protocol,
-                                       const std::string& defaultId,
-                                       PPortConfig        portConfig) const = 0;
-
+    public:
+        virtual ~IRegisterAddressFactory() = default;
     /**
      * @brief Load register address from config
      * 
@@ -203,6 +191,44 @@ public:
                                               const IRegisterAddress& device_base_address,
                                               uint32_t                stride,
                                               uint32_t                registerByteWidth) const = 0;
+
+    virtual const IRegisterAddress& GetBaseRegisterAddress() const = 0;
+};
+
+class TUint32RegisterAddressFactory: public IRegisterAddressFactory
+{
+    TUint32RegisterAddress BaseRegisterAddress;
+    size_t                 BytesPerRegister;
+public:
+    TUint32RegisterAddressFactory(size_t bytesPerRegister = 1);
+
+    TRegisterDesc LoadRegisterAddress(const Json::Value&     regCfg,
+                                     const IRegisterAddress& deviceBaseAddress,
+                                     uint32_t                stride,
+                                     uint32_t                registerByteWidth) const override;
+
+    const IRegisterAddress& GetBaseRegisterAddress() const override;
+};
+
+class IDeviceFactory
+{
+    std::string                              CommonDeviceSchemaRef;
+    std::string                              CustomChannelSchemaRef;
+    std::unique_ptr<IRegisterAddressFactory> RegisterAddressFactory;
+public:
+    IDeviceFactory(std::unique_ptr<IRegisterAddressFactory> RegisterAddressFactory, 
+                   const std::string& commonDeviceSchemaRef,
+                   const std::string& customChannelSchemaRef = std::string());
+
+    virtual ~IDeviceFactory() = default;
+
+    /*! Create new device of given type */
+    virtual PSerialDevice CreateDevice(const Json::Value& data,
+                                       PDeviceConfig      deviceConfig,
+                                       PPort              port,
+                                       PProtocol          protocol) const = 0;
+
+    const IRegisterAddressFactory& GetRegisterAddressFactory() const;
 
     /**
      * @brief Get the $ref value of JSONSchema of common device parameters
@@ -221,11 +247,10 @@ public:
 
 struct TDeviceConfigLoadParams
 {
-    std::string                       DefaultId;
-    std::chrono::microseconds         DefaultRequestDelay;
-    std::chrono::milliseconds         PortResponseTimeout;
-    std::chrono::milliseconds         DefaultPollInterval;
-    std::unique_ptr<IRegisterAddress> BaseRegisterAddress;
+    std::string               DefaultId;
+    std::chrono::microseconds DefaultRequestDelay;
+    std::chrono::milliseconds PortResponseTimeout;
+    std::chrono::milliseconds DefaultPollInterval;
 };
 
 PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             deviceData,
@@ -258,45 +283,26 @@ struct TRegisterBitsAddress
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& regCfg);
 
 /*!
- * Basic device factory implementation
+ * Basic device factory implementation with uint32 register addresses
  */
-template<class Dev> class TBasicDeviceFactory : public IDeviceFactory
+template<class Dev> class TBasicDeviceFactory: public IDeviceFactory
 {
 public:
     TBasicDeviceFactory(const std::string& commonDeviceSchemaRef,
-                        const std::string& customChannelSchemaRef)
-        : IDeviceFactory(commonDeviceSchemaRef, customChannelSchemaRef)
+                        const std::string& customChannelSchemaRef = std::string())
+        : IDeviceFactory(std::make_unique<TUint32RegisterAddressFactory>(),
+                         commonDeviceSchemaRef,
+                         customChannelSchemaRef)
     {}
 
-    PSerialDevice CreateDevice(const Json::Value& deviceData,
-                               PProtocol          protocol,
-                               const std::string& defaultId,
-                               PPortConfig        portConfig) const override
+    PSerialDevice CreateDevice(const Json::Value& data,
+                               PDeviceConfig      deviceConfig,
+                               PPort              port,
+                               PProtocol          protocol) const override
     {
-        TDeviceConfigLoadParams params;
-        params.BaseRegisterAddress = std::make_unique<TUint32RegisterAddress>(0);
-        params.DefaultId           = defaultId;
-        params.DefaultPollInterval = portConfig->PollInterval;
-        params.DefaultRequestDelay = portConfig->RequestDelay;
-        params.PortResponseTimeout = portConfig->ResponseTimeout;
-        auto deviceConfig = LoadBaseDeviceConfig(deviceData, protocol, *this, params);
-
-        auto dev = std::make_shared<Dev>(deviceConfig, portConfig->Port, protocol);
+        auto dev = std::make_shared<Dev>(deviceConfig, port, protocol);
         dev->InitSetupItems();
         return dev;
-    }
-
-    TRegisterDesc LoadRegisterAddress(const Json::Value&     regCfg,
-                                     const IRegisterAddress& deviceBaseAddress,
-                                     uint32_t                stride,
-                                     uint32_t                registerByteWidth) const override
-    {
-        auto addr = LoadRegisterBitsAddress(regCfg);
-        TRegisterDesc res;
-        res.BitOffset = addr.BitOffset;
-        res.BitWidth = addr.BitWidth;
-        res.Address = std::shared_ptr<IRegisterAddress>(deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, 1));
-        return res;
     }
 };
 
