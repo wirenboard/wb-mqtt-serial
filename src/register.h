@@ -42,6 +42,12 @@ enum class EWordOrder {
     LittleEndian
 };
 
+enum EStatus {
+    ST_OK,
+    ST_UNKNOWN_ERROR, // response from device either not parsed or not received at all (crc error, timeout)
+    ST_DEVICE_ERROR // valid response from device, which reports error
+};
+
 inline ::std::ostream& operator<<(::std::ostream& os, EWordOrder val) {
     switch (val) {
         case EWordOrder::BigEndian:
@@ -254,8 +260,8 @@ struct TRegister : public TRegisterConfig
     //! Set register's availability
     void SetAvailable(bool available);
 
-    bool GetError() const;
-    void SetError();
+    EStatus GetError() const;
+    void SetError(EStatus error);
 
     uint64_t GetValue() const;
     void SetValue(uint64_t value);
@@ -263,7 +269,7 @@ struct TRegister : public TRegisterConfig
 private:
     std::weak_ptr<TSerialDevice> _Device;
     bool Available = true;
-    bool Error = true;
+    EStatus Error = ST_UNKNOWN_ERROR;
     uint64_t Value;
 
     // Intern() implementation for TRegister
@@ -399,16 +405,10 @@ inline EWordOrder WordOrderFromName(const std::string& name) {
         return EWordOrder::BigEndian;
 }
 
-
 class TRegisterRange {
 public:
     typedef std::function<void(PRegister reg, uint64_t new_value)> TValueCallback;
     typedef std::function<void(PRegister reg)> TErrorCallback;
-    enum EStatus {
-        ST_OK,
-        ST_UNKNOWN_ERROR, // response from device either not parsed or not received at all (crc error, timeout)
-        ST_DEVICE_ERROR // valid response from device, which reports error
-    };
 
     virtual ~TRegisterRange() = default;
 
@@ -422,7 +422,7 @@ public:
     /**
      * @brief Set error to all registers in range
      */
-    void SetError();
+    void SetError(EStatus error);
 
     virtual EStatus GetStatus() const = 0;
 

@@ -1,5 +1,6 @@
 #include "modbus_io_device.h"
 #include "modbus_common.h"
+#include "modbus_device.h"
 
 namespace 
 {
@@ -40,56 +41,14 @@ namespace
             return true;
         }
     };
-
-    class TModbusIODeviceFactory: public IDeviceFactory
-    {
-        std::unique_ptr<Modbus::IModbusTraitsFactory> ModbusTraitsFactory;
-    public:
-        TModbusIODeviceFactory(std::unique_ptr<Modbus::IModbusTraitsFactory> modbusTraitsFactory)
-            : IDeviceFactory("#/definitions/simple_device_with_setup",
-                             "#/definitions/common_channel"),
-              ModbusTraitsFactory(std::move(modbusTraitsFactory))
-        {}
-
-        PSerialDevice CreateDevice(const Json::Value& deviceData,
-                                   PProtocol          protocol,
-                                   const std::string& defaultId,
-                                   PPortConfig        portConfig) const override
-        {
-            TDeviceConfigLoadParams params;
-            params.BaseRegisterAddress = std::make_unique<TUint32RegisterAddress>(0);
-            params.DefaultId           = defaultId;
-            params.DefaultPollInterval = portConfig->PollInterval;
-            params.DefaultRequestDelay = portConfig->RequestDelay;
-            params.PortResponseTimeout = portConfig->ResponseTimeout;
-            auto deviceConfig = LoadBaseDeviceConfig(deviceData, protocol, *this, params);
-
-            PSerialDevice dev = std::make_shared<TModbusIODevice>(ModbusTraitsFactory->GetModbusTraits(portConfig->Port), deviceConfig, portConfig->Port, protocol);
-            dev->InitSetupItems();
-            return dev;
-        }
-
-        TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
-                                          const IRegisterAddress& deviceBaseAddress,
-                                          uint32_t                stride,
-                                          uint32_t                registerByteWidth) const override
-        {
-            auto addr = LoadRegisterBitsAddress(regCfg);
-            TRegisterDesc res;
-            res.BitOffset = addr.BitOffset;
-            res.BitWidth = addr.BitWidth;
-            res.Address = std::shared_ptr<IRegisterAddress>(deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, 2));
-            return res;
-        }
-    };
 }
 
 void TModbusIODevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(new TModbusIOProtocol("modbus_io"), 
-                             new TModbusIODeviceFactory(std::make_unique<Modbus::TModbusRTUTraitsFactory>()));
+                             new TModbusDeviceFactory<TModbusIODevice>(std::make_unique<Modbus::TModbusRTUTraitsFactory>()));
     factory.RegisterProtocol(new TModbusIOProtocol("modbus_io-tcp"), 
-                             new TModbusIODeviceFactory(std::make_unique<Modbus::TModbusTCPTraitsFactory>()));
+                             new TModbusDeviceFactory<TModbusIODevice>(std::make_unique<Modbus::TModbusTCPTraitsFactory>()));
 }
 
 TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits, PDeviceConfig config, PPort port, PProtocol protocol)
