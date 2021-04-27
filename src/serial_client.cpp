@@ -61,7 +61,7 @@ void TSerialClient::AddRegister(PRegister reg)
 void TSerialClient::Activate()
 {
     if (!Active) {
-        if (!Handlers.size())
+        if (Handlers.empty())
             throw TSerialDeviceException(Port->GetDescription() + " no registers defined");
         Active = true;
         PrepareRegisterRanges();
