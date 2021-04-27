@@ -101,9 +101,9 @@
               "reg_type": "input",
               "address": "0x1416",
               "type": "value",
-              "format": "u16",
-              "scale": 0.001,
-              "round_to": 0.01
+              "format": "u32",
+              "scale": 2.44141e-07,
+              "round_to": 0.0001
             },
             {
               "name": "P",
@@ -112,7 +112,7 @@
               "address": "0x1302",
               "type": "power",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -122,7 +122,7 @@
               "address": "0x130a",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -132,7 +132,7 @@
               "address": "0x1312",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -152,8 +152,8 @@
               "address": "0x1204",
               "type": "power_consumption",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -163,8 +163,8 @@
               "address": "0x1224",
               "type": "value",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -202,9 +202,9 @@
               "reg_type": "input",
               "address": "0x1416",
               "type": "value",
-              "format": "u16",
-              "scale": 0.001,
-              "round_to": 0.01
+              "format": "u32",
+              "scale": 2.44141e-07,
+              "round_to": 0.0001
             },
             {
               "name": "P",
@@ -213,7 +213,7 @@
               "address": "0x1302",
               "type": "power",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -223,7 +223,7 @@
               "address": "0x130a",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -233,7 +233,7 @@
               "address": "0x1312",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -253,8 +253,8 @@
               "address": "0x1204",
               "type": "power_consumption",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -264,8 +264,8 @@
               "address": "0x1224",
               "type": "value",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -303,9 +303,9 @@
               "reg_type": "input",
               "address": "0x1416",
               "type": "value",
-              "format": "u16",
-              "scale": 0.001,
-              "round_to": 0.01
+              "format": "u32",
+              "scale": 2.44141e-07,
+              "round_to": 0.0001
             },
             {
               "name": "P",
@@ -314,7 +314,7 @@
               "address": "0x1302",
               "type": "power",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -324,7 +324,7 @@
               "address": "0x130a",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -334,7 +334,7 @@
               "address": "0x1312",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -354,8 +354,8 @@
               "address": "0x1204",
               "type": "power_consumption",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -365,8 +365,8 @@
               "address": "0x1224",
               "type": "value",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -404,9 +404,9 @@
               "reg_type": "input",
               "address": "0x1416",
               "type": "value",
-              "format": "u16",
-              "scale": 0.001,
-              "round_to": 0.01
+              "format": "u32",
+              "scale": 2.44141e-07,
+              "round_to": 0.0001
             },
             {
               "name": "P",
@@ -415,7 +415,7 @@
               "address": "0x1302",
               "type": "power",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -425,7 +425,7 @@
               "address": "0x130a",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -435,7 +435,7 @@
               "address": "0x1312",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -455,8 +455,8 @@
               "address": "0x1204",
               "type": "power_consumption",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -466,8 +466,8 @@
               "address": "0x1224",
               "type": "value",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -505,9 +505,9 @@
               "reg_type": "input",
               "address": "0x1416",
               "type": "value",
-              "format": "u16",
-              "scale": 0.001,
-              "round_to": 0.01
+              "format": "u32",
+              "scale": 2.44141e-07,
+              "round_to": 0.0001
             },
             {
               "name": "P",
@@ -516,7 +516,7 @@
               "address": "0x1302",
               "type": "power",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -526,7 +526,7 @@
               "address": "0x130a",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -536,7 +536,7 @@
               "address": "0x1312",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -556,8 +556,8 @@
               "address": "0x1204",
               "type": "power_consumption",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -567,8 +567,8 @@
               "address": "0x1224",
               "type": "value",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -606,9 +606,9 @@
               "reg_type": "input",
               "address": "0x1416",
               "type": "value",
-              "format": "u16",
-              "scale": 0.001,
-              "round_to": 0.01
+              "format": "u32",
+              "scale": 2.44141e-07,
+              "round_to": 0.0001
             },
             {
               "name": "P",
@@ -617,7 +617,7 @@
               "address": "0x1302",
               "type": "power",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -627,7 +627,7 @@
               "address": "0x130a",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -637,7 +637,7 @@
               "address": "0x1312",
               "type": "value",
               "format": "s32",
-              "scale": 1.52588e-05,
+              "scale": 0.000244141,
               "round_to": 0.01
             },
             {
@@ -657,8 +657,8 @@
               "address": "0x1204",
               "type": "power_consumption",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {
@@ -668,8 +668,8 @@
               "address": "0x1224",
               "type": "value",
               "format": "u64",
-              "scale": 3.125e-05,
-              "round_to": 0.0001,
+              "scale": 1e-05,
+              "round_to": 1e-06,
               "word_order": "little_endian"
             },
             {

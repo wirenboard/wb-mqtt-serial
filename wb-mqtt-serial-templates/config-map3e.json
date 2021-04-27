@@ -30,7 +30,7 @@
         "address": "0x1300",
         "type": "power",
         "format": "s32",
-        "scale": 0.00512,
+        "scale": 0.00032,
         "round_to": 0.01
       },
       {
@@ -39,7 +39,7 @@
         "address": "0x1308",
         "type": "value",
         "format": "s32",
-        "scale": 0.00512,
+        "scale": 0.00032,
         "round_to": 0.01
       },
       {
@@ -48,16 +48,7 @@
         "address": "0x1310",
         "type": "value",
         "format": "s32",
-        "scale": 0.00512,
-        "round_to": 0.01
-      },
-      {
-        "name": "Total PF",
-        "reg_type": "input",
-        "address": "0x10bc",
-        "type": "value",
-        "format": "s16",
-        "scale": 0.001,
+        "scale": 0.00032,
         "round_to": 0.01
       },
       {
@@ -66,8 +57,8 @@
         "address": "0x1200",
         "type": "power_consumption",
         "format": "u64",
-        "scale": 1e-05,
-        "round_to": 1e-06,
+        "scale": 3.125e-06,
+        "round_to": 0.0001,
         "word_order": "little_endian"
       },
       {
@@ -76,8 +67,8 @@
         "address": "0x1220",
         "type": "value",
         "format": "u64",
-        "scale": 1e-05,
-        "round_to": 1e-06,
+        "scale": 3.125e-06,
+        "round_to": 0.0001,
         "word_order": "little_endian"
       },
       {
@@ -114,11 +105,11 @@
               "name": "Urms",
               "id": "Urms L1",
               "reg_type": "input",
-              "address": "0x1410",
+              "address": "0x10d9",
               "type": "voltage",
-              "format": "u32",
-              "scale": 1.52588e-07,
-              "round_to": 0.001
+              "format": "u16",
+              "scale": 0.01,
+              "round_to": 0.01
             },
             {
               "name": "Upeak",
@@ -145,11 +136,11 @@
               "name": "Irms",
               "id": "Irms L1",
               "reg_type": "input",
-              "address": "0x1416",
+              "address": "0x10dd",
               "type": "value",
-              "format": "u32",
-              "scale": 2.44141e-07,
-              "round_to": 0.0001
+              "format": "u16",
+              "scale": 0.001,
+              "round_to": 0.01
             },
             {
               "name": "Ipeak",
@@ -158,9 +149,9 @@
               "address": "0x1818",
               "type": "value",
               "format": "s32",
-              "scale": 0.016,
-              "round_to": 0.01,
-              "word_order": "little_endian"
+              "word_order": "little_endian",
+              "scale": 0.001,
+              "round_to": 0.001
             },
             {
               "name": "P",
@@ -169,7 +160,7 @@
               "address": "0x1302",
               "type": "power",
               "format": "s32",
-              "scale": 0.00512,
+              "scale": 0.00032,
               "round_to": 0.01
             },
             {
@@ -179,7 +170,7 @@
               "address": "0x130a",
               "type": "value",
               "format": "s32",
-              "scale": 0.00512,
+              "scale": 0.00032,
               "round_to": 0.01
             },
             {
@@ -189,7 +180,7 @@
               "address": "0x1312",
               "type": "value",
               "format": "s32",
-              "scale": 0.00512,
+              "scale": 0.00032,
               "round_to": 0.01
             },
             {
@@ -209,8 +200,8 @@
               "address": "0x1204",
               "type": "power_consumption",
               "format": "u64",
-              "scale": 1e-05,
-              "round_to": 1e-06,
+              "scale": 3.125e-06,
+              "round_to": 0.0001,
               "word_order": "little_endian"
             },
             {
@@ -220,8 +211,8 @@
               "address": "0x1224",
               "type": "value",
               "format": "u64",
-              "scale": 1e-05,
-              "round_to": 1e-06,
+              "scale": 3.125e-06,
+              "round_to": 0.0001,
               "word_order": "little_endian"
             },
             {
@@ -245,11 +236,11 @@
               "name": "Urms",
               "id": "Urms L2",
               "reg_type": "input",
-              "address": "0x1410",
+              "address": "0x10d9",
               "type": "voltage",
-              "format": "u32",
-              "scale": 1.52588e-07,
-              "round_to": 0.001
+              "format": "u16",
+              "scale": 0.01,
+              "round_to": 0.01
             },
             {
               "name": "Upeak",
@@ -276,11 +267,11 @@
               "name": "Irms",
               "id": "Irms L2",
               "reg_type": "input",
-              "address": "0x1416",
+              "address": "0x10dd",
               "type": "value",
-              "format": "u32",
-              "scale": 2.44141e-07,
-              "round_to": 0.0001
+              "format": "u16",
+              "scale": 0.001,
+              "round_to": 0.01
             },
             {
               "name": "Ipeak",
@@ -289,9 +280,9 @@
               "address": "0x1818",
               "type": "value",
               "format": "s32",
-              "scale": 0.016,
-              "round_to": 0.01,
-              "word_order": "little_endian"
+              "word_order": "little_endian",
+              "scale": 0.001,
+              "round_to": 0.001
             },
             {
               "name": "P",
@@ -300,7 +291,7 @@
               "address": "0x1302",
               "type": "power",
               "format": "s32",
-              "scale": 0.00512,
+              "scale": 0.00032,
               "round_to": 0.01
             },
             {
@@ -310,7 +301,7 @@
               "address": "0x130a",
               "type": "value",
               "format": "s32",
-              "scale": 0.00512,
+              "scale": 0.00032,
               "round_to": 0.01
             },
             {
@@ -320,7 +311,7 @@
               "address": "0x1312",
               "type": "value",
               "format": "s32",
-              "scale": 0.00512,
+              "scale": 0.00032,
               "round_to": 0.01
             },
             {
@@ -340,8 +331,8 @@
               "address": "0x1204",
               "type": "power_consumption",
               "format": "u64",
-              "scale": 1e-05,
-              "round_to": 1e-06,
+              "scale": 3.125e-06,
+              "round_to": 0.0001,
               "word_order": "little_endian"
             },
             {
@@ -351,8 +342,8 @@
               "address": "0x1224",
               "type": "value",
               "format": "u64",
-              "scale": 1e-05,
-              "round_to": 1e-06,
+              "scale": 3.125e-06,
+              "round_to": 0.0001,
               "word_order": "little_endian"
             },
             {
@@ -376,11 +367,11 @@
               "name": "Urms",
               "id": "Urms L3",
               "reg_type": "input",
-              "address": "0x1410",
+              "address": "0x10d9",
               "type": "voltage",
-              "format": "u32",
-              "scale": 1.52588e-07,
-              "round_to": 0.001
+              "format": "u16",
+              "scale": 0.01,
+              "round_to": 0.01
             },
             {
               "name": "Upeak",
@@ -407,11 +398,11 @@
               "name": "Irms",
               "id": "Irms L3",
               "reg_type": "input",
-              "address": "0x1416",
+              "address": "0x10dd",
               "type": "value",
-              "format": "u32",
-              "scale": 2.44141e-07,
-              "round_to": 0.0001
+              "format": "u16",
+              "scale": 0.001,
+              "round_to": 0.01
             },
             {
               "name": "Ipeak",
@@ -420,9 +411,9 @@
               "address": "0x1818",
               "type": "value",
               "format": "s32",
-              "scale": 0.016,
-              "round_to": 0.01,
-              "word_order": "little_endian"
+              "word_order": "little_endian",
+              "scale": 0.001,
+              "round_to": 0.001
             },
             {
               "name": "P",
@@ -431,7 +422,7 @@
               "address": "0x1302",
               "type": "power",
               "format": "s32",
-              "scale": 0.00512,
+              "scale": 0.00032,
               "round_to": 0.01
             },
             {
@@ -441,7 +432,7 @@
               "address": "0x130a",
               "type": "value",
               "format": "s32",
-              "scale": 0.00512,
+              "scale": 0.00032,
               "round_to": 0.01
             },
             {
@@ -451,7 +442,7 @@
               "address": "0x1312",
               "type": "value",
               "format": "s32",
-              "scale": 0.00512,
+              "scale": 0.00032,
               "round_to": 0.01
             },
             {
@@ -471,8 +462,8 @@
               "address": "0x1204",
               "type": "power_consumption",
               "format": "u64",
-              "scale": 1e-05,
-              "round_to": 1e-06,
+              "scale": 3.125e-06,
+              "round_to": 0.0001,
               "word_order": "little_endian"
             },
             {
@@ -482,8 +473,8 @@
               "address": "0x1224",
               "type": "value",
               "format": "u64",
-              "scale": 1e-05,
-              "round_to": 1e-06,
+              "scale": 3.125e-06,
+              "round_to": 0.0001,
               "word_order": "little_endian"
             },
             {
