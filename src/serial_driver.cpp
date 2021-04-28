@@ -23,7 +23,7 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
                 continue;
             }
 
-            PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig));
+            PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters));
             PortDrivers.back()->SetUpDevices();
         }
     } catch (const exception & e) {

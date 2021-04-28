@@ -16,9 +16,12 @@ using namespace WBMQTT;
 
 #define LOG(logger) ::logger.Log() << "[serial port driver] "
 
-TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConfig portConfig)
+TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver             mqttDriver,
+                                     PPortConfig                       portConfig,
+                                     const WBMQTT::TPublishParameters& publishPolicy)
     : MqttDriver(mqttDriver),
-      Config(portConfig)
+      Config(portConfig),
+      PublishPolicy(publishPolicy)
 {
     SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port));
 }
@@ -149,15 +152,49 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
                 value += ";";
             value += SerialClient->GetTextValue(reg);
         }
-        // check if there any errors in this Channel
     }
 
-    // Publish current value (make retained)
+    UpdateValue(*channel, value);
+}
+
+void TSerialPortDriver::UpdateValue(TDeviceChannel& channel, const std::string& value)
+{
+    if (!channel.ErrorFlg.empty()) {
+        PublishValue(channel, value);
+        return;
+    }
+    switch (PublishPolicy.Policy) {
+        case TPublishParameters::PublishOnlyOnChange: {
+            if (channel.CurrentValue != value) {
+                PublishValue(channel, value);
+            }
+            break;
+        }
+        case TPublishParameters::PublishAll: {
+            PublishValue(channel, value);
+            break;
+        }
+        case TPublishParameters::PublishSomeUnchanged: {
+            auto now = std::chrono::steady_clock::now();
+            if ((channel.CurrentValue != value) || 
+                (now - channel.LastControlUpdate >= PublishPolicy.PublishUnchangedInterval))
+            {
+                PublishValue(channel, value);
+            }
+            break;
+        }
+    }
+}
+
+void TSerialPortDriver::PublishValue(TDeviceChannel& channel, const std::string& value)
+{
     if (::Debug.IsEnabled()) {
-        LOG(Debug) << channel->Describe() << " <-- " << value;
+        LOG(Debug) << channel.Describe() << " <-- " << value;
     }
-
-    auto control = channel->Control;
+    channel.CurrentValue = value;
+    channel.ErrorFlg.clear();
+    channel.LastControlUpdate = std::chrono::steady_clock::now();
+    auto control = channel.Control;
     {
         auto tx = MqttDriver->BeginTx();
         control->SetRawValue(tx, value).Sync();
@@ -193,10 +230,14 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
 
     const std::array<const char*, 4> errorFlags = {"", "w", "r", "rw"};
     const auto flag = errorFlags[errorMask];
-    auto control = channel->Control;
-    {
-        auto tx = MqttDriver->BeginTx();
-        control->SetError(tx, flag).Sync();
+
+    if (channel->ErrorFlg.empty() || (channel->ErrorFlg != flag)) {
+        channel->ErrorFlg = flag;
+        auto control = channel->Control;
+        {
+            auto tx = MqttDriver->BeginTx();
+            control->SetError(tx, flag).Sync();
+        }
     }
 }
 
