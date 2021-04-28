@@ -29,18 +29,23 @@ struct TDeviceChannel : public TDeviceChannelConfig
         return "channel '" + Name + "' of device '" + DeviceId + "'";
     }
 
+    void UpdateError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& error);
+    void UpdateValue(WBMQTT::TDeviceDriver& deviceDriver, const WBMQTT::TPublishParameters& publishPolicy, const std::string& error);
+
     PSerialDevice Device;
     std::vector<PRegister> Registers;
     WBMQTT::PControl Control;
 
+private:
+    void PublishValue(WBMQTT::TDeviceDriver& deviceDriver, const std::string& value);
     /* Current value of a channel, error flag and last update time.
        They are used to prevent unnecessary calls to libwbmqtt1.
        Although libwbmqtt1 implements publishing control with TPublishParams,
        it is very expensive to call it on every channel update.
        So we implement publish control logic in wb-mqtt-serial until libwbmqtt1 is fixed.
     */
-    std::string                           CurrentValue;
-    std::string                           ErrorFlg;
+    std::string                           CachedCurrentValue;
+    std::string                           CachedErrorFlg;
     std::chrono::steady_clock::time_point LastControlUpdate;
 };
 
@@ -79,9 +84,6 @@ private:
     void OnValueRead(PRegister reg, bool changed);
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
     void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);
-
-    void UpdateValue(TDeviceChannel& channel, const std::string& value);
-    void PublishValue(TDeviceChannel& channel, const std::string& value);
 
     WBMQTT::PDeviceDriver MqttDriver;
     PPortConfig Config;

@@ -154,51 +154,7 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
         }
     }
 
-    UpdateValue(*channel, value);
-}
-
-void TSerialPortDriver::UpdateValue(TDeviceChannel& channel, const std::string& value)
-{
-    if (!channel.ErrorFlg.empty()) {
-        PublishValue(channel, value);
-        return;
-    }
-    switch (PublishPolicy.Policy) {
-        case TPublishParameters::PublishOnlyOnChange: {
-            if (channel.CurrentValue != value) {
-                PublishValue(channel, value);
-            }
-            break;
-        }
-        case TPublishParameters::PublishAll: {
-            PublishValue(channel, value);
-            break;
-        }
-        case TPublishParameters::PublishSomeUnchanged: {
-            auto now = std::chrono::steady_clock::now();
-            if ((channel.CurrentValue != value) || 
-                (now - channel.LastControlUpdate >= PublishPolicy.PublishUnchangedInterval))
-            {
-                PublishValue(channel, value);
-            }
-            break;
-        }
-    }
-}
-
-void TSerialPortDriver::PublishValue(TDeviceChannel& channel, const std::string& value)
-{
-    if (::Debug.IsEnabled()) {
-        LOG(Debug) << channel.Describe() << " <-- " << value;
-    }
-    channel.CurrentValue = value;
-    channel.ErrorFlg.clear();
-    channel.LastControlUpdate = std::chrono::steady_clock::now();
-    auto control = channel.Control;
-    {
-        auto tx = MqttDriver->BeginTx();
-        control->SetRawValue(tx, value).Sync();
-    }
+    channel->UpdateValue(*MqttDriver, PublishPolicy, value);
 }
 
 TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)
@@ -229,16 +185,7 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
     }
 
     const std::array<const char*, 4> errorFlags = {"", "w", "r", "rw"};
-    const auto flag = errorFlags[errorMask];
-
-    if (channel->ErrorFlg.empty() || (channel->ErrorFlg != flag)) {
-        channel->ErrorFlg = flag;
-        auto control = channel->Control;
-        {
-            auto tx = MqttDriver->BeginTx();
-            control->SetError(tx, flag).Sync();
-        }
-    }
+    channel->UpdateError(*MqttDriver, errorFlags[errorMask]);
 }
 
 void TSerialPortDriver::Cycle()
@@ -298,4 +245,58 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
     }
 
     return args;
+}
+
+void TDeviceChannel::UpdateError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& error)
+{
+    if (CachedErrorFlg.empty() || (CachedErrorFlg != error)) {
+        CachedErrorFlg = error;
+        {
+            auto tx = deviceDriver.BeginTx();
+            Control->SetError(tx, error).Sync();
+        }
+    }
+}
+
+void TDeviceChannel::UpdateValue(WBMQTT::TDeviceDriver& deviceDriver, const WBMQTT::TPublishParameters& publishPolicy, const std::string& value)
+{
+    if (!CachedErrorFlg.empty()) {
+        PublishValue(deviceDriver, value);
+        return;
+    }
+    switch (publishPolicy.Policy) {
+        case TPublishParameters::PublishOnlyOnChange: {
+            if (CachedCurrentValue != value) {
+                PublishValue(deviceDriver, value);
+            }
+            break;
+        }
+        case TPublishParameters::PublishAll: {
+            PublishValue(deviceDriver, value);
+            break;
+        }
+        case TPublishParameters::PublishSomeUnchanged: {
+            auto now = std::chrono::steady_clock::now();
+            if ((CachedCurrentValue != value) || 
+                (now - LastControlUpdate >= publishPolicy.PublishUnchangedInterval))
+            {
+                PublishValue(deviceDriver, value);
+            }
+            break;
+        }
+    }
+}
+
+void TDeviceChannel::PublishValue(WBMQTT::TDeviceDriver& deviceDriver, const std::string& value)
+{
+    if (::Debug.IsEnabled()) {
+        LOG(Debug) << Describe() << " <-- " << value;
+    }
+    CachedCurrentValue = value;
+    CachedErrorFlg.clear();
+    LastControlUpdate = std::chrono::steady_clock::now();
+    {
+        auto tx = deviceDriver.BeginTx();
+        Control->SetRawValue(tx, value).Sync();
+    }
 }

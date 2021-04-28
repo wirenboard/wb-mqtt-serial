@@ -73,15 +73,15 @@ namespace Modbus    // modbus protocol declarations
 
         const TRequest& GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift)
         {
-            if (!Request) {
+            if (Request.empty()) {
                 // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
                 const uint16_t REQUEST_PDU_SIZE = 5;
 
-                Request = std::make_shared<TRequest>(traits.GetPacketSize(REQUEST_PDU_SIZE));
-                Modbus::ComposeReadRequestPDU(traits.GetPDU(*Request), *this, shift);
-                traits.FinalizeRequest(*Request, slaveId);
+                Request.resize(traits.GetPacketSize(REQUEST_PDU_SIZE));
+                Modbus::ComposeReadRequestPDU(traits.GetPDU(Request), *this, shift);
+                traits.FinalizeRequest(Request, slaveId);
             }
-            return *Request;
+            return Request;
         }
 
         size_t GetResponseSize(IModbusTraits& traits)
@@ -93,15 +93,15 @@ namespace Modbus    // modbus protocol declarations
         }
 
     private:
-        bool                      ReadOneByOne    = false;
-        bool                      HasHolesFlg     = false;
-        int                       Start;
-        int                       Count;
-        uint8_t*                  Bits  = 0;
-        uint16_t*                 Words = 0;
-        EStatus                   Status = ST_UNKNOWN_ERROR;
-        std::shared_ptr<TRequest> Request;
-        size_t                    ResponseSize = 0;
+        bool      ReadOneByOne    = false;
+        bool      HasHolesFlg     = false;
+        int       Start;
+        int       Count;
+        uint8_t*  Bits  = 0;
+        uint16_t* Words = 0;
+        EStatus   Status = ST_UNKNOWN_ERROR;
+        TRequest  Request;
+        size_t    ResponseSize = 0;
     };
 
     using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
