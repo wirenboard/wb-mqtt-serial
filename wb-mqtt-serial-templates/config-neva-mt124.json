@@ -1,92 +1,242 @@
 {
-  "device_type": "NEVA MT 124",
-  "device": {
-    "name": "NEVA MT 124",
-    "id": "neva124",
-    "protocol" : "neva",
-    "frame_timeout_ms" : 1500,
-    "response_timeout_ms" : 1500,
-    "channels": [
-      {
-        "name": "Irms",
-        "reg_type": "obis_cdef_1",
-        "type": "value",
-        "address": "0x0B0700FF"
-      },
-      {
-        "name": "Urms",
-        "reg_type": "obis_cdef_1",
-        "type": "voltage",
-        "address": "0x0C0700FF"
-      },
-      {
-        "name": "Total A energy",
-        "reg_type": "obis_cdef_1",
-        "type": "power_consumption",
-        "address": "0x0F0880FF"
-      },
-      {
-        "name": "Active energy, prev. month",
-        "reg_type": "obis_cdef_1",
-        "type": "power_consumption",
-        "address": "0x0F088000",
-        "enabled" : false
-      },
-      {
-        "name": "Active energy, 12 month ago",
-        "reg_type": "obis_cdef_1",
-        "type": "power_consumption",
-        "address": "0x0F08800B",
-        "enabled" : false
-      },
-      {
-        "name": "Active Power",
-        "reg_type": "obis_cdef",
-        "type": "power",
-        "address": "0x100700FF"
-      },
-      {
-        "name": "Max. active power, prev. month",
-        "reg_type": "obis_cdef",
-        "type": "power",
-        "address": "0x0F068000",
-        "scale": 1000,
-        "enabled" : false
-      },
-      {
-        "name": "Max. active power, 12 month ago",
-        "reg_type": "obis_cdef",
-        "type": "power",
-        "address": "0x0F06800B",
-        "scale": 1000,
-        "enabled" : false
-      },
-      {
-        "name": "Max. active power, current month",
-        "reg_type": "obis_cdef",
-        "type": "power",
-        "address": "0x0F0680FF",
-        "scale": 1000,
-        "enabled" : false
-      },
-      {
-        "name": "Frequency",
-        "reg_type": "obis_cdef",
-        "type": "value",
-        "address": "0x0E0701FF"
-      },
-      {
-        "name": "Power Factor",
-        "reg_type": "obis_cdef_pf",
-        "type": "value",
-        "address": "0x0D07FFFF"
-      },
-      {
-        "name": "Temperature",
-        "reg_type": "obis_cdef_temp",
-        "type": "temperature",
-        "address": "0x600900FF"
-      }
-    ]
-  }
+    "device_type": "NEVA MT 124",
+    "device": {
+        "name": "NEVA MT 124",
+        "id": "neva124",
+        "protocol" : "neva",
+        "frame_timeout_ms" : 1500,
+        "response_timeout_ms" : 1500,
+        "channels": [
+            {
+                "name": "Current",
+                "reg_type": "obis_cdef_1",
+                "type": "value",
+                "address": "0x0B0700FF"
+            },
+            {
+                "name": "Voltage",
+                "reg_type": "obis_cdef_1",
+                "type": "voltage",
+                "address": "0x0C0700FF"
+            },
+            {
+                "name": "Total A energy",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F0880FF"
+            },
+            {
+                "name": "A energy, prev. month",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F088000",
+                "enabled" : true
+            },
+            {
+                "name": "A energy, 2 month month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F088001",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 3 month month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F088002",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 4 month month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F088003",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 5 month month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F088004",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 6 month month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F088005",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 7 month month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F088006",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 8 month month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F088007",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 9 month month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F088008",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 10 month month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F088009",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 11 month month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F08800A",
+                "enabled" : false
+            },
+            {
+                "name": "Active energy, 12 month ago",
+                "reg_type": "obis_cdef_1",
+                "type": "power_consumption",
+                "address": "0x0F08800B",
+                "enabled" : false
+            },
+            {
+                "name": "Total P",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x100700FF"
+            },
+            {
+                "name": "Max. P, prev. month",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F068000",
+                "scale": 1000,
+                "enabled" : true
+            },
+            {
+                "name": "Max. P, 2 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F068001",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, 3 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F068002",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, 4 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F068003",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, 5 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F068004",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, 6 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F068005",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, 7 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F068006",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, 8 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F068007",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, 9 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F068008",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, 10 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F068009",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, 11 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F06800A",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, 12 month ago",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F06800B",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max. P, current month",
+                "reg_type": "obis_cdef",
+                "type": "power",
+                "address": "0x0F0680FF",
+                "scale": 1000,
+                "enabled" : true
+            },
+            {
+                "name": "Frequency",
+                "reg_type": "obis_cdef",
+                "type": "value",
+                "address": "0x0E0701FF"
+            },
+            {
+                "name": "Total PF",
+                "reg_type": "obis_cdef_pf",
+                "type": "value",
+                "address": "0x0D07FFFF"
+            },
+            {
+                "name": "Temperature",
+                "reg_type": "obis_cdef_temp",
+                "type": "temperature",
+                "address": "0x600900FF"
+            }
+        ]
+    }
 }
