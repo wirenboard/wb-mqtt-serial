@@ -11,7 +11,7 @@ TEST(TWinDecoTest, MakeRequest)
 
 TEST(TWinDecoTest, ParsePositionResponse)
 {
-    ASSERT_NO_THROW(ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 2, 22}));
+    ASSERT_EQ(ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 2, 22}), 2);
 
     ASSERT_THROW(CheckExceptionMsg([](){ParsePositionResponse(1, 1, {1, 0, 0, 1, 1, 2, 21});}, 
                                    "Bad CRC"),

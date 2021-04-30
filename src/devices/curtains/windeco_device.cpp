@@ -12,7 +12,7 @@ namespace
     const TRegisterTypes RegTypes{
         { POSITION, "position", "value", U8 },
         { PARAM,    "param",    "value", U8, true },
-        { COMMAND,  "param",    "value", U8 }
+        { COMMAND,  "command",  "value", U8 }
     };
 
     const size_t PACKET_SIZE   = 7;
