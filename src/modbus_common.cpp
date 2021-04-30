@@ -452,7 +452,7 @@ namespace Modbus    // modbus protocol common utilities
 
             auto rBitPos = bitPosEnd - bitPos - bitCount;
 
-            auto mask = MersenneNumber(bitCount);
+            auto mask = GetLSBMask(bitCount);
 
             auto valuePart = mask & (value >> rBitPos);
 
@@ -495,7 +495,7 @@ namespace Modbus    // modbus protocol common utilities
 
         auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
 
-        auto mask = MersenneNumber(bitCount) << localBitOffset;
+        auto mask = GetLSBMask(bitCount) << localBitOffset;
 
         auto wordValue = (~mask & cachedValue) | (mask & (value << localBitOffset));
 
@@ -577,7 +577,7 @@ namespace Modbus    // modbus protocol common utilities
 
                 auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
 
-                auto mask = MersenneNumber(bitCount);
+                auto mask = GetLSBMask(bitCount);
 
                 r |= (mask & (data >> localBitOffset)) << bitsWritten;
 

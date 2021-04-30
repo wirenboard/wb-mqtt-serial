@@ -229,7 +229,7 @@ uint64_t Somfy::TDevice::GetCachedResponse(uint8_t requestHeader, uint8_t respon
         DataCache[requestHeader] = val;
     }
     if (bitOffset || bitWidth) {
-        return (val >> bitOffset) & MersenneNumber(bitWidth);
+        return (val >> bitOffset) & GetLSBMask(bitWidth);
     }
     return val;
 }

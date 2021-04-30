@@ -63,5 +63,11 @@ namespace BinUtils
         }
     }
 
-    uint64_t MersenneNumber(uint8_t bitCount);
+    /**
+     * @brief Get number with N least signficant bits set to one, other bits are set to zero
+     * 
+     * @param bitCount number of bits counting from LSB set to one
+     * @return uint64_t mask value
+     */
+    uint64_t GetLSBMask(uint8_t bitCount);
 }
