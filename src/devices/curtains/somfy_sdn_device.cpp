@@ -80,11 +80,65 @@ namespace
         return static_cast<size_t>(size) == ~GetLen(buf[1]);
     }
 
+    class TSomfyAddress: public TUint32RegisterAddress
+    {
+        uint8_t ResponseHeader;
+    public:
+        TSomfyAddress(uint8_t requestHeader, uint8_t responseHeader)
+            : TUint32RegisterAddress(requestHeader),
+              ResponseHeader(responseHeader)
+        {}
+
+        uint8_t GetResponseHeader() const
+        {
+            return ResponseHeader;
+        }
+    };
+
+    uint8_t GetResponseAddress(const Json::Value& regCfg)
+    {
+        const auto& rh = regCfg.get("response_header", Somfy::ACK);
+        if (rh.isUInt()) {
+            return rh.asUInt();
+        }
+        if (!rh.isString()) {
+            throw TConfigParserException("response_header: unsigned integer or '0x..' hex string expected");
+        }
+        auto str = rh.asString();
+        char* end;
+        auto res = strtoul(str.c_str(), &end, 16);
+        if (*end == 0 && end != str.c_str()) {
+            return res;
+        }
+        res = strtoul(str.c_str(), &end, 10);
+        if (*end == 0 && end != str.c_str()) {
+            return res;
+        }
+        throw TConfigParserException("response_header: unsigned integer or '0x..' hex string expected instead of '" + str + "'");
+    }
+
+    class TSomfyAddressFactory: public TUint32RegisterAddressFactory
+    {
+    public:
+        TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
+                                          const IRegisterAddress& deviceBaseAddress,
+                                          uint32_t                stride,
+                                          uint32_t                registerByteWidth) const override
+        {
+            auto addr = LoadRegisterBitsAddress(regCfg);
+            TRegisterDesc res;
+            res.BitOffset = addr.BitOffset;
+            res.BitWidth = addr.BitWidth;
+            res.Address = std::make_shared<TSomfyAddress>(addr.Address, GetResponseAddress(regCfg));
+            return res;
+        }
+    };
+
     class TSomfyDeviceFactory: public IDeviceFactory
     {
     public:
         TSomfyDeviceFactory() 
-            : IDeviceFactory(std::make_unique<TUint32RegisterAddressFactory>(), "#/definitions/somfy_device_no_channels")
+            : IDeviceFactory(std::make_unique<TSomfyAddressFactory>(), "#/definitions/somfy_device_no_channels")
         {}
 
         PSerialDevice CreateDevice(const Json::Value& data,
@@ -92,8 +146,7 @@ namespace
                                    PPort              port,
                                    PProtocol          protocol) const override
         {
-            // 2 - Sonesse 30 / 30 DC Serie is default
-            uint8_t nodeType = data.get("node_type", 2).asUInt();
+            uint8_t nodeType = data.get("node_type", Somfy::SONESSE_30).asUInt();
             return std::make_shared<Somfy::TDevice>(deviceConfig, nodeType, port, protocol);
         }
     };
@@ -151,7 +204,6 @@ void Somfy::TDevice::WriteRegister(PRegister reg, uint64_t value)
         return;
     }
     if (reg->Type == COMMAND) {
-        Info.Log() << "Command set " << value; 
         std::vector<uint8_t> data;
         size_t l = (value & 0xFF);
         for (; l != 0; --l) {
@@ -194,8 +246,8 @@ uint64_t Somfy::TDevice::ReadRegister(PRegister reg)
             return res;
         }    
         case PARAM: {
-            auto msg = GetUint32RegisterAddress(reg->GetAddress());
-            return GetCachedResponse((msg >> 8), (msg & 0xFF), reg->BitOffset, reg->BitWidth);
+            const auto& addr = dynamic_cast<const TSomfyAddress&>(reg->GetAddress());
+            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->BitOffset, reg->BitWidth);
         }
         case COMMAND: {
             return 1;

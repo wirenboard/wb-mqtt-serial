@@ -19,6 +19,16 @@ namespace Somfy
         ACK                 = 0x7F
     };
 
+    enum TNodeType
+    {
+        SONESSE_30      = 2, // Sonesse 30 / Ø30 DC Serie
+        RTS_TRANSMITTER = 5,
+        GLYDEA          = 6,
+        AC_50           = 7, // Ø50 AC Serie
+        DC_50           = 8, // Ø50 DC Serie
+        AC_40           = 9  // Ø40 AC Serie
+    };
+
     class TDevice : public TSerialDevice, public TUInt32SlaveId
     {
         std::vector<uint8_t> OpenCommand;
