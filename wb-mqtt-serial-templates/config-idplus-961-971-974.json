@@ -1,0 +1,758 @@
+{
+    "device_type": "IDPlus 961-971-974",
+    "device": {
+        "name": "IDPlus 961-971-974",
+        "id": "idplus_961-971-974",
+        "max_read_registers": 0,
+        "response_timeout_ms": 250,
+        "frame_timeout_ms": 250,
+        "channels": [
+            {
+                "name": "Control Setpoint",
+                "reg_type": "holding",
+                "address": 16416,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Activation differential",
+                "reg_type": "holding",
+                "address": 16386,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Maximum value the set point can be set to",
+                "reg_type": "holding",
+                "address": 16418,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Minimum value the set point can be set to",
+                "reg_type": "holding",
+                "address": 16420,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Setpoint offset",
+                "reg_type": "holding",
+                "address": 16388,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Operating mode (Heating or Cooling)",
+                "reg_type": "holding",
+                "address": 49212,
+                "type": "switch",
+                "format": "u8"
+            },
+            {
+                "name": "Compressor output ON time with faulty Pb1 probe",
+                "reg_type": "holding",
+                "address": 49217,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Compressor output OFF time with faulty Pb1 probe",
+                "reg_type": "holding",
+                "address": 49218,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Compressor output enabling delay from request",
+                "reg_type": "holding",
+                "address": 49219,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Compressor output enabling delay from shutdown",
+                "reg_type": "holding",
+                "address": 49220,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Delay between two consecutive starts of the compressor output",
+                "reg_type": "holding",
+                "address": 49221,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Delay output enabling from power-on",
+                "reg_type": "holding",
+                "address": 49222,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Deep cooling setpoint",
+                "reg_type": "holding",
+                "address": 16442,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Deep cooling duration",
+                "reg_type": "holding",
+                "address": 49291,
+                "type": "range",
+                "max": 255,
+                "format": "u8"
+            },
+            {
+                "name": "Defrost delay after deep cooling",
+                "reg_type": "holding",
+                "address": 49292,
+                "type": "range",
+                "max": 255,
+                "format": "u8"
+            },
+            {
+                "name": "Type of defrost",
+                "reg_type": "holding",
+                "address": 49223,
+                "type": "range",
+                "max": 2,
+                "format": "u8"
+            },
+            {
+                "name": "Interval between the start of two defrost cycles",
+                "reg_type": "holding",
+                "address": 49266,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Defrost interval count mode",
+                "reg_type": "holding",
+                "address": 49226,
+                "type": "range",
+                "max": 3,
+                "format": "u8"
+            },
+            {
+                "name": "Defrost cycle enabling delay from request",
+                "reg_type": "holding",
+                "address": 49227,
+                "type": "range",
+                "max": 59,
+                "format": "u8"
+            },
+            {
+                "name": "Defrost timeout. Determines the maximum defrost duration",
+                "reg_type": "holding",
+                "address": 49228,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Defrost end temperature (determined by probe Pb2)",
+                "reg_type": "holding",
+                "address": 16390,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Activate defrost request at power on, if the temperature measured by Pb2 allows it",
+                "reg_type": "holding",
+                "address": 49229,
+                "type": "switch",
+                "format": "u8"
+            },
+            {
+                "name": "Evaporator fans disabling temperature",
+                "reg_type": "holding",
+                "address": 16394,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Evaporator fans activation differential",
+                "reg_type": "holding",
+                "address": 16398,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Evaporator fans delay after defrost cycle",
+                "reg_type": "holding",
+                "address": 49232,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Coil drainage time",
+                "reg_type": "holding",
+                "address": 49233,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Evaporator fans disabling during defrost time",
+                "reg_type": "holding",
+                "address": 49234,
+                "type": "switch",
+                "format": "u8"
+            },
+            {
+                "name": "Evaporator fans status with compressor output OFF",
+                "reg_type": "holding",
+                "address": 49235,
+                "type": "range",
+                "max": 3,
+                "format": "u8"
+            },
+            {
+                "name": "Evaporator fans ON time in cyclic regulator mode",
+                "reg_type": "holding",
+                "address": 49237,
+                "type": "range",
+                "max": 99,
+                "format": "u8"
+            },
+            {
+                "name": "Evaporator fans OFF time in cyclic regulator mode",
+                "reg_type": "holding",
+                "address": 49238,
+                "type": "range",
+                "max": 99,
+                "format": "u8"
+            },
+            {
+                "name": "Evaporator fans ON time in duty cycle night mode",
+                "reg_type": "holding",
+                "address": 49278,
+                "type": "range",
+                "max": 99,
+                "format": "u8"
+            },
+            {
+                "name": "Evaporator fans OFF time in duty cycle night mode",
+                "reg_type": "holding",
+                "address": 49279,
+                "type": "range",
+                "max": 99,
+                "format": "u8"
+            },
+            {
+                "name": "Night activation mode",
+                "reg_type": "holding",
+                "address": 49280,
+                "type": "switch",
+                "format": "u8"
+            },
+            {
+                "name": "HAL and LAL parameter mode (absolute or relative)",
+                "reg_type": "holding",
+                "address": 49241,
+                "type": "switch",
+                "format": "u8"
+            },
+            {
+                "name": "Alarm activation differential",
+                "reg_type": "holding",
+                "address": 16400,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "max": 50
+            },
+            {
+                "name": "Maximum alarm threshold",
+                "reg_type": "holding",
+                "address": 16422,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Minimum alarm threshold",
+                "reg_type": "holding",
+                "address": 16424,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Alarm disabling after power-on",
+                "reg_type": "holding",
+                "address": 49242,
+                "type": "range",
+                "max": 10,
+                "format": "u8"
+            },
+            {
+                "name": "Temperature alarm disabling time after defrost cycle",
+                "reg_type": "holding",
+                "address": 16402,
+                "type": "range",
+                "max": 999,
+                "format": "u16"
+            },
+            {
+                "name": "High and low temperature alarms disabling time after door closing",
+                "reg_type": "holding",
+                "address": 49243,
+                "type": "range",
+                "max": 10,
+                "format": "u8"
+            },
+            {
+                "name": "Open door disabling time",
+                "reg_type": "holding",
+                "address": 49244,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Temperature alarms delay time",
+                "reg_type": "holding",
+                "address": 49245,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Alarm signalling end of defrost due to timeout",
+                "reg_type": "holding",
+                "address": 49246,
+                "type": "switch",
+                "format": "u8"
+            },
+            {
+                "name": "An external alarm blocks the regulators",
+                "reg_type": "holding",
+                "address": 49247,
+                "type": "switch",
+                "format": "u8"
+            },
+            {
+                "name": "Alarm setpoint for probe 3",
+                "reg_type": "holding",
+                "address": 16432,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Probe 3 alarm activation differential",
+                "reg_type": "holding",
+                "address": 16434,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Enable utility power-off on activation of door switch",
+                "reg_type": "holding",
+                "address": 49215,
+                "type": "range",
+                "max": 3,
+                "format": "u8"
+            },
+            {
+                "name": "Activation delay for digital inputs",
+                "reg_type": "holding",
+                "address": 49216,
+                "type": "range",
+                "max": 255,
+                "format": "u8"
+            },
+            {
+                "name": "Delay in deactivating compressor after door opened",
+                "reg_type": "holding",
+                "address": 49293,
+                "type": "range",
+                "max": 255,
+                "format": "u8"
+            },
+            {
+                "name": "Number of activations allowed per maximum or minimum pressure switch input",
+                "reg_type": "holding",
+                "address": 49274,
+                "type": "range",
+                "max": 15,
+                "format": "u8"
+            },
+            {
+                "name": "Minimum or maximum pressure switch error count interval",
+                "reg_type": "holding",
+                "address": 49275,
+                "type": "range",
+                "max": 99,
+                "format": "u8"
+            },
+            {
+                "name": "Delay in activating compressor after pressure switch deactivation",
+                "reg_type": "holding",
+                "address": 49276,
+                "type": "range",
+                "max": 255,
+                "format": "u8"
+            },
+            {
+                "name": "Analogue input 1",
+                "reg_type": "holding",
+                "address": 295,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true
+            },
+            {
+                "name": "Analogue input 2",
+                "reg_type": "holding",
+                "address": 297,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true
+            },
+            {
+                "name": "Analogue input 3",
+                "reg_type": "holding",
+                "address": 299,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true
+            },
+            {
+                "name": "Digital input 1",
+                "reg_type": "holding",
+                "address": "33056:7:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Digital input 2",
+                "reg_type": "holding",
+                "address": "33056:2:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Analogue input 1 fault",
+                "reg_type": "holding",
+                "address": "32876:1:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Analogue input 2 fault",
+                "reg_type": "holding",
+                "address": "32876:2:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Analogue input 3 fault",
+                "reg_type": "holding",
+                "address": "32877:0:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Critical pressure",
+                "reg_type": "holding",
+                "address": "32876:3:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Pressure switch",
+                "reg_type": "holding",
+                "address": "32878:5:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "External",
+                "reg_type": "holding",
+                "address": "32876:4:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Analogue input 1 high threshold exceeded",
+                "reg_type": "holding",
+                "address": "32876:5:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Analogue input 1 low threshold exceeded",
+                "reg_type": "holding",
+                "address": "32876:6:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Door open",
+                "reg_type": "holding",
+                "address": "32876:7:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "HACCP alarm",
+                "reg_type": "holding",
+                "address": "32877:1:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Over temperature alarm",
+                "reg_type": "holding",
+                "address": "32876:0:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Defrost timeout",
+                "reg_type": "holding",
+                "address": "32878:0:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Alarm",
+                "reg_type": "holding",
+                "address": "32891:5:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Compressor",
+                "reg_type": "holding",
+                "address": "32886:3:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Defrosting status",
+                "reg_type": "holding",
+                "address": "32886:5:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Evaporator fans",
+                "reg_type": "holding",
+                "address": "32888:7:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Door",
+                "reg_type": "holding",
+                "address": "32896:3:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Reduced set",
+                "reg_type": "holding",
+                "address": "32882:0:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Auxiliary relay control output",
+                "reg_type": "holding",
+                "address": "32882:4:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Parameters changed",
+                "reg_type": "holding",
+                "address": "32882:5:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "Standby",
+                "reg_type": "holding",
+                "address": "32882:1:1",
+                "type": "switch",
+                "format": "u8",
+                "readonly": true
+            },
+            {
+                "name": "°C or °F selection",
+                "reg_type": "holding",
+                "address": 49270,
+                "type": "switch",
+                "format": "u8"
+            },
+            {
+                "name": "Selection of main display value",
+                "reg_type": "holding",
+                "address": 49254,
+                "type": "range",
+                "max": 3,
+                "format": "u8"
+            },
+            {
+                "name": "Cell probe calibration",
+                "reg_type": "holding",
+                "address": 16404,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Evaporator probe calibration",
+                "reg_type": "holding",
+                "address": 16406,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Probe 3 calibration",
+                "reg_type": "holding",
+                "address": 16436,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Enable button pad lock",
+                "reg_type": "holding",
+                "address": 49250,
+                "type": "switch",
+                "format": "u8"
+            },
+            {
+                "name": "Display with decimal point",
+                "reg_type": "holding",
+                "address": 49251,
+                "type": "switch",
+                "format": "u8"
+            },
+            {
+                "name": "Resource locking after defrost end",
+                "reg_type": "holding",
+                "address": 49253,
+                "type": "range",
+                "max": 2,
+                "format": "u8"
+            },
+            {
+                "name": "Display lock timeout from defrost end",
+                "reg_type": "holding",
+                "address": 49277,
+                "type": "range",
+                "max": 255,
+                "format": "u8"
+            },
+            {
+                "name": "Maximum HACCP alarm threshold",
+                "reg_type": "holding",
+                "address": 164386,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Minimum HACCP alarm threshold",
+                "reg_type": "holding",
+                "address": 16440,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1
+            },
+            {
+                "name": "Minimum dwelling time in critical area before alarm signalling",
+                "reg_type": "holding",
+                "address": 49286,
+                "type": "range",
+                "max": 99,
+                "format": "u8"
+            },
+            {
+                "name": "HACCP alarm reset time from last manual reset",
+                "reg_type": "holding",
+                "address": 49287,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "Enable HACCP alarms storage with or without alarm relay enabling",
+                "reg_type": "holding",
+                "address": 49288,
+                "type": "range",
+                "max": 2,
+                "format": "u8"
+            },
+            {
+                "name": "HACCP alarms save exclusion time (button or digital input)",
+                "reg_type": "holding",
+                "address": 49289,
+                "type": "range",
+                "max": 250,
+                "format": "u8"
+            },
+            {
+                "name": "NTC or PTC analogue input type selection",
+                "reg_type": "holding",
+                "address": 49269,
+                "type": "range",
+                "max": 2,
+                "format": "u8"
+            }
+        ]
+    }
+}
