@@ -5,7 +5,7 @@
 #include "iec_common.h"
 #include "log.h"
 
-#define LOG(logger) ::logger.Log() << LOG_PREFIX
+#define LOG(logger) logger.Log() << LOG_PREFIX
 
 namespace
 {
@@ -230,7 +230,8 @@ std::list<PRegisterRange> TEnergomeraIecDevice::ReadRegisterRange(PRegisterRange
         ProcessResponse(*range, presp);
     } catch (TSerialDeviceTransientErrorException& e) {
         range->SetError();
-        LOG(Warn) << "TEnergomeraIecDevice::ReadRegisterRange(): " << e.what() << " [slave_id is " << ToString() + "]";
+        auto& logger = GetIsDisconnected() ? Debug : Warn;
+        LOG(logger) << "TEnergomeraIecDevice::ReadRegisterRange(): " << e.what() << " [slave_id is " << ToString() + "]";
     }
     return { abstract_range };
 }

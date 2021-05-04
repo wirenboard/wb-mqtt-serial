@@ -20,11 +20,14 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver, PPortConf
     : MqttDriver(mqttDriver),
       Config(portConfig)
 {
-    SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port));
+    Description = Config->Port->GetDescription(false);
+    SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port, Config->OpenCloseSettings));
 }
 
-TSerialPortDriver::~TSerialPortDriver()
-{}
+const std::string& TSerialPortDriver::GetShortDescription() const
+{
+    return Description;
+}
 
 void TSerialPortDriver::SetUpDevices()
 {

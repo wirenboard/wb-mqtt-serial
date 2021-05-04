@@ -63,7 +63,6 @@ fake_serial_device '12': Device cycle OK
 fake_serial_device '12': reconnected
 fake_serial_device '13': Device cycle OK
 fake_serial_device '13': reconnected
-Port cycle OK
 >>> LoopOnce()
 Sleep(150000)
 fake_serial_device '12': read address '1' value '42'
@@ -73,7 +72,6 @@ fake_serial_device '13': read address '1' value '32'
 fake_serial_device '13': read address '2' value '64'
 fake_serial_device '12': Device cycle OK
 fake_serial_device '13': Device cycle OK
-Port cycle OK
 >>> SimulateDisconnect(true)
 >>> LoopOnce()
 Sleep(150000)
@@ -84,7 +82,6 @@ fake_serial_device '13': read address '1' value '32'
 fake_serial_device '13': read address '2' value '64'
 fake_serial_device '12': Device cycle FAIL
 fake_serial_device '13': Device cycle OK
-Port cycle OK
 Publish: /devices/reconnect-test-1/controls/I1: '0.042' (QoS 1, retained)
 Publish: /devices/reconnect-test-1/controls/I2: '0.024' (QoS 1, retained)
 Publish: /devices/reconnect-test-2/controls/I1: '0.032' (QoS 1, retained)
@@ -100,7 +97,6 @@ fake_serial_device '13': read address '1' value '32'
 fake_serial_device '13': read address '2' value '64'
 fake_serial_device '12': Device cycle FAIL
 fake_serial_device '13': Device cycle OK
-Port cycle OK
 >>> LoopOnce()
 Sleep(150000)
 fake_serial_device '12': read address '1' failed: 'Serial protocol error: device disconnected'
@@ -111,7 +107,6 @@ fake_serial_device '13': read address '2' value '64'
 fake_serial_device '12': Device cycle FAIL
 fake_serial_device '12': disconnected
 fake_serial_device '13': Device cycle OK
-Port cycle OK
 >>> LoopOnce() (limited polling expected)
 Sleep(150000)
 fake_serial_device '12': write address '1' failed: 'Serial protocol error: device disconnected'
@@ -120,7 +115,6 @@ fake_serial_device '13': read address '1' value '1'
 fake_serial_device '13': read address '2' value '2'
 fake_serial_device '12': Device cycle FAIL
 fake_serial_device '13': Device cycle OK
-Port cycle OK
 >>> SimulateDisconnect(false)
 >>> LoopOnce()
 Sleep(150000)
@@ -134,7 +128,6 @@ fake_serial_device '13': read address '2' value '2'
 fake_serial_device '12': Device cycle OK
 fake_serial_device '12': reconnected
 fake_serial_device '13': Device cycle OK
-Port cycle OK
 Publish: /devices/reconnect-test-2/controls/I1: '0.001' (QoS 1, retained)
 Publish: /devices/reconnect-test-2/controls/I2: '0.002' (QoS 1, retained)
 Publish: /devices/reconnect-test-1/controls/I1/meta/error: '' (QoS 1, retained)

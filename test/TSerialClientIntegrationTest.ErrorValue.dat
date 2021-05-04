@@ -253,7 +253,6 @@ Publish: /devices/ErrorValueTest/controls/s24: '0' (QoS 1, retained)
 fake_serial_device '150': read address '54' value '0'
 fake_serial_device '150': Device cycle OK
 fake_serial_device '150': reconnected
-Port cycle OK
 >>> LoopOnce() [all errors]
 fake_serial_device '150': read address '0' value '32767'
 fake_serial_device '150': read address '1' value '32767'
@@ -284,7 +283,6 @@ fake_serial_device '150': read address '46' value '18446744073709518847'
 fake_serial_device '150': read address '50' value '18446744073709518847'
 fake_serial_device '150': read address '54' value '4294934527'
 fake_serial_device '150': Device cycle OK
-Port cycle OK
 Publish: /devices/ErrorValueTest/controls/u64: '0' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double: '0' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float: '0' (QoS 1, retained)

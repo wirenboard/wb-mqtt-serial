@@ -85,7 +85,6 @@ EnqueueSetupSectionWriteResponse()
 EnqueueCoilReadResponse()
 >> 01 01 09 C4 00 03 3E 6A
 << 01 01 01 01 90 48
-Port cycle OK
 >>> LoopOnce()
 Sleep(5000)
 EnqueueCoilReadResponse()
@@ -95,7 +94,6 @@ Sleep(5000)
 EnqueueCoilReadResponse()
 >> 01 01 09 C4 00 03 3E 6A
 << 01 01 01 01 90 48
-Port cycle OK
 Close()
 Publish: /devices/modbus-io-1-1/controls/Coil 0: '1' (QoS 1, retained)
 Publish: /devices/modbus-io-1-1/controls/Input 1: '0' (QoS 1, retained)

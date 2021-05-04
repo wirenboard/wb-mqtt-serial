@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include "log.h"
 
-#define LOG(logger) ::logger.Log() << "[serial device] "
+#define LOG(logger) logger.Log() << "[serial device] "
 
 IProtocol::IProtocol(const std::string& name, const TRegisterTypes& reg_types)
     : Name(name)
@@ -90,13 +90,14 @@ std::list<PRegisterRange> TSerialDevice::ReadRegisterRange(PRegisterRange range)
             reg->SetValue(ReadRegister(reg));
         } catch (const TSerialDeviceTransientErrorException& e) {
             reg->SetError();
-            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
-                      << reg->Device()->ToString() + "]";
+            auto& logger = GetIsDisconnected() ? Debug : Warn;
+            LOG(logger) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
+                        << reg->Device()->ToString() + "]";
         } catch (const TSerialDevicePermanentRegisterException& e) {
             reg->SetAvailable(false);
             reg->SetError();
-            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-                  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported";
+            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
+                  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now marked as unsupported";
         }
     }
     return std::list<PRegisterRange>{range};
@@ -114,18 +115,17 @@ void TSerialDevice::OnCycleEnd(bool ok)
         IsDisconnected = false;
         RemainingFailCycles = _DeviceConfig->DeviceMaxFailCycles;
     } else {
-        if (LastSuccessfulCycle == std::chrono::steady_clock::time_point()) {
-            LastSuccessfulCycle = std::chrono::steady_clock::now();
-        }
 
         if (RemainingFailCycles > 0) {
             --RemainingFailCycles;
         }
 
         if ((std::chrono::steady_clock::now() - LastSuccessfulCycle > _DeviceConfig->DeviceTimeout) &&
-            RemainingFailCycles == 0)
+            RemainingFailCycles == 0 &&
+            (!IsDisconnected || LastSuccessfulCycle == std::chrono::steady_clock::time_point()))
         {
             IsDisconnected = true;
+            LastSuccessfulCycle = std::chrono::steady_clock::now();
             LOG(Info) << "device " << ToString() << " is disconnected";
         }
     }
@@ -152,10 +152,10 @@ bool TSerialDevice::WriteSetupRegisters()
 {
     for (const auto& setup_item : SetupItems) {
         try {
-        	LOG(Info) << "Init: " << setup_item->Name 
+            WriteRegister(setup_item->Register, setup_item->Value);
+            LOG(Info) << "Init: " << setup_item->Name 
                       << ": setup register " << setup_item->Register->ToString()
                       << " <-- " << setup_item->Value;
-            WriteRegister(setup_item->Register, setup_item->Value);
         } catch (const TSerialDeviceException & e) {
             LOG(Warn) << "failed to write: " << setup_item->Register->ToString() << ": " << e.what();
             return false;

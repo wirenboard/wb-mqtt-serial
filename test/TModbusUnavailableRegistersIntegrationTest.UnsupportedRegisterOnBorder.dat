@@ -180,14 +180,12 @@ Publish: /devices/modbus-sample/controls/White1/meta/error: 'r' (QoS 1, retained
 Publish: /devices/modbus-sample/controls/Voltage: '1' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding2: '2' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding1/meta/error: 'r' (QoS 1, retained)
-Port cycle OK
 >>> LoopOnce() [new range]
 << 01 03 0C FF FE 00 14 FF FE 00 01 00 02 FF FE 00 35
 >> 01 03 00 08 00 04 C5 CB
 Publish: /devices/modbus-sample/controls/RGB_All: '21' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Voltage: '2' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding2: '3' (QoS 1, retained)
-Port cycle OK
 << 01 03 08 00 15 FF FE 00 02 00 03 0D 0C
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding1/on

@@ -10,7 +10,6 @@ Error Callback: <fake:1:fake: 30>: no error
 Read Callback: <fake:1:fake: 30> becomes 20
 fake_serial_device '1': Device cycle OK
 fake_serial_device '1': reconnected
-Port cycle OK
 >>> server -> client: -2, -3
 >>> Cycle()
 fake_serial_device '1': read address '20' value '254'
@@ -18,7 +17,6 @@ Read Callback: <fake:1:fake: 20> becomes -2
 fake_serial_device '1': read address '30' value '253'
 Read Callback: <fake:1:fake: 30> becomes -3
 fake_serial_device '1': Device cycle OK
-Port cycle OK
 >>> client -> server: 10
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '10'
@@ -27,7 +25,6 @@ Read Callback: <fake:1:fake: 20> becomes 10 [unchanged]
 fake_serial_device '1': read address '30' value '253'
 Read Callback: <fake:1:fake: 30> becomes -3 [unchanged]
 fake_serial_device '1': Device cycle OK
-Port cycle OK
 >>> client -> server: -2
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '254'
@@ -36,5 +33,3 @@ Read Callback: <fake:1:fake: 20> becomes -2 [unchanged]
 fake_serial_device '1': read address '30' value '253'
 Read Callback: <fake:1:fake: 30> becomes -3 [unchanged]
 fake_serial_device '1': Device cycle OK
-Port cycle OK
-Close()

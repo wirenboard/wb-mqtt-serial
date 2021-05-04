@@ -18,7 +18,6 @@ Error Callback: <fake:1:fake: 33>: no error
 Read Callback: <fake:1:fake: 33> becomes 0
 fake_serial_device '1': Device cycle OK
 fake_serial_device '1': reconnected
-Port cycle OK
 >>> Cycle()
 fake_serial_device '1': read address '0' value '0'
 Read Callback: <fake:1:fake: 0> becomes 0 [unchanged]
@@ -31,5 +30,3 @@ Read Callback: <fake:1:fake: 22> becomes 4242
 fake_serial_device '1': read address '33' value '42000'
 Read Callback: <fake:1:fake: 33> becomes 42000
 fake_serial_device '1': Device cycle OK
-Port cycle OK
-Close()

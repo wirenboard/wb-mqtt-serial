@@ -193,7 +193,6 @@ Publish: /devices/pseudo_s2k/controls/Relay delay 3: '60' (QoS 1, retained)
 EnqueueReadConfig8()
 >> 01 06 00 05 08 00 FC
 Publish: /devices/pseudo_s2k/controls/Relay delay 4: '60' (QoS 1, retained)
-Port cycle OK
 << 01 05 06 08 3C F6
 Publish: /devices/pseudo_s2k/controls/Relay 1/on: '1' (QoS 0, retained)
 Publish: /devices/pseudo_s2k/controls/Relay 2/on: '1' (QoS 0, retained)
@@ -237,7 +236,6 @@ EnqueueReadConfig7()
 << 01 05 06 07 3C EE
 EnqueueReadConfig8()
 >> 01 06 00 05 08 00 FC
-Port cycle OK
 << 01 05 06 08 3C F6
 Close()
 Publish: /devices/pseudo_s2k/controls/Relay delay 4: '' (QoS 1, retained)

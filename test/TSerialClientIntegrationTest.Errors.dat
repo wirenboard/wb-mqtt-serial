@@ -75,7 +75,6 @@ fake_serial_device '23': read address '18' value '0'
 Publish: /devices/ddl24/controls/Voltage: '0' (QoS 1, retained)
 fake_serial_device '23': Device cycle OK
 fake_serial_device '23': reconnected
-Port cycle OK
 fake_serial_device: block address '4' for reading
 fake_serial_device: block address '4' for writing
 fake_serial_device: block address '7' for reading
@@ -91,7 +90,6 @@ Publish: /devices/ddl24/controls/White/meta/error: 'r' (QoS 1, retained)
 fake_serial_device '23': read address '9' value '0'
 fake_serial_device '23': read address '18' value '0'
 fake_serial_device '23': Device cycle OK
-Port cycle OK
 Publish: /devices/ddl24/controls/RGB/on: '10;20;30' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White/on: '42' (QoS 0, retained)
@@ -111,7 +109,6 @@ fake_serial_device '23': read address '8' value '0'
 fake_serial_device '23': read address '9' value '0'
 fake_serial_device '23': read address '18' value '0'
 fake_serial_device '23': Device cycle OK
-Port cycle OK
 fake_serial_device: block address '4' for reading
 fake_serial_device: block address '4' for writing
 fake_serial_device: block address '7' for reading
@@ -131,7 +128,6 @@ fake_serial_device '23': read address '8' value '0'
 fake_serial_device '23': read address '9' value '0'
 fake_serial_device '23': read address '18' value '0'
 fake_serial_device '23': Device cycle OK
-Port cycle OK
 Publish: /devices/ddl24/controls/RGB/on: '10;20;30' (QoS 0, retained)
 Publish: /devices/ddl24/controls/White/on: '42' (QoS 0, retained)
 Publish: /devices/ddl24/controls/RGB: '10;20;30' (QoS 1, retained)
@@ -149,7 +145,6 @@ fake_serial_device '23': read address '8' value '0'
 fake_serial_device '23': read address '9' value '0'
 fake_serial_device '23': read address '18' value '0'
 fake_serial_device '23': Device cycle OK
-Port cycle OK
 >>> LoopOnce() [read, nothing blacklisted] (2)
 fake_serial_device '23': read address '4' value '10'
 fake_serial_device '23': read address '5' value '20'
@@ -159,7 +154,6 @@ fake_serial_device '23': read address '8' value '0'
 fake_serial_device '23': read address '9' value '0'
 fake_serial_device '23': read address '18' value '0'
 fake_serial_device '23': Device cycle OK
-Port cycle OK
 Unsubscribe -- serial-client-integration-test: /devices/ddl24/controls/Voltage/on
 Publish: /devices/ddl24/controls/Voltage: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/order: '' (QoS 1, retained)
