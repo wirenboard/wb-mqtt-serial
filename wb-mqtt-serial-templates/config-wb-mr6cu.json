@@ -6,42 +6,20 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
+
+        "setup": [
+            {
+                "title": "Set_Reg5_To_Zero",
+                "address": 5,
+                "value": 0
+            }
+        ],
+
         "channels": [
             {
-                "name": "K1",
-                "reg_type": "coil",
-                "address": 0,
-                "type": "switch"
-            },
-            {
-                "name": "K2",
-                "reg_type": "coil",
-                "address": 1,
-                "type": "switch"
-            },
-            {
-                "name": "K3",
-                "reg_type": "coil",
-                "address": 2,
-                "type": "switch"
-            },
-            {
-                "name": "K4",
-                "reg_type": "coil",
-                "address": 3,
-                "type": "switch"
-            },
-            {
-                "name": "K5",
-                "reg_type": "coil",
-                "address": 4,
-                "type": "switch"
-            },
-            {
-                "name": "K6",
-                "reg_type": "coil",
-                "address": 5,
-                "type": "switch"
+                "name": "Outputs 1-6",
+                "id": "",
+                "device_type": "outputs 1-6"
             },
             {
                 "name": "Safety Timer",
@@ -57,11 +35,11 @@
                 "scale": 0.001
             },
             {
-              "name": "Serial",
-              "type": "text",
-              "reg_type": "input",
-              "address": 270,
-              "format": "u32"
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32"
             },
             {
                 "name": "Uptime",
@@ -70,6 +48,69 @@
                 "format": "u32",
                 "enabled": false
             }
+        ],
+
+        "subdevices": [
+            {
+                "device_type": "outputs 1-6",
+                "device": {
+
+                    "parameters": {
+                        "Par_Outputs16_SaveState": {
+                            "title": "Outputs 1-6 state after power off",
+                            "address": 6,
+                            "enum": [ 0, 1],
+                            "default": 0,
+                            "enum_titles": [
+                            "turn off all relays after power off",
+                            "save last relay state after power off"
+                            ]
+
+                        }
+                    },
+
+                    "channels": [
+                        {
+                              "name": "K1",
+                              "reg_type": "coil",
+                              "address": 0,
+                              "type": "switch"
+                        },
+                        {
+                            "name": "K2",
+                            "reg_type": "coil",
+                            "address": 1,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "K3",
+                            "reg_type": "coil",
+                            "address": 2,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "K4",
+                            "reg_type": "coil",
+                            "address": 3,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "K5",
+                            "reg_type": "coil",
+                            "address": 4,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "K6",
+                            "reg_type": "coil",
+                            "address": 5,
+                            "type": "switch"
+                        }
+                    ]
+
+                }
+            }
         ]
+
     }
 }

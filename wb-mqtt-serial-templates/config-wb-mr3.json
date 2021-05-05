@@ -1,188 +1,65 @@
 {
-    "device_type" : "WB-MR3",
-    "device" : {
-        "name" : "WB-MR3",
-        "id" : "wb-mr3",
+    "device_type": "WB-MR3",
+    "device": {
+        "name": "WB-MR3",
+        "id": "wb-mr3",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
-        "parameters": {
-            "in0_mode": {
-                "title": "Input 0 mode",
-                "address": 16,
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
-                "default": 2,
-                "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn off all relays on activation",
-                    "disable communication between input and outputs",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, after 20 minutes re-simulate the input state"
-                ]
-            },
-            "in1_mode": {
-                "title": "Input 1 mode",
-                "address": 9,
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
-                "default": 2,
-                "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn off all relays on activation",
-                    "disable communication between input and outputs",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, after 20 minutes re-simulate the input state"
-                ]
-            },
-            "in2_mode": {
-                "title": "Input 2 mode",
-                "address": 10,
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
-                "default": 2,
-                "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn off all relays on activation",
-                    "disable communication between input and outputs",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, after 20 minutes re-simulate the input state"
-                ]
-            },
-            "in3_mode": {
-                "title": "Input 3 mode",
-                "address": 11,
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
-                "default": 2,
-                "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn off all relays on activation",
-                    "disable communication between input and outputs",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, after 20 minutes re-simulate the input state"
-                ]
+
+        "setup": [
+            {
+                "title": "Set_Reg5_To_Zero",
+                "address": 5,
+                "value": 0
             }
-        },
-        "channels" : [
+        ],
+
+        "channels": [
             {
-                "name" : "K1",
-                "reg_type" : "coil",
-                "address" : 0,
-                "type": "switch"
+                "name": "Input 0",
+                "id": "",
+                "device_type": "input 0"
             },
             {
-                "name" : "K2",
-                "reg_type" : "coil",
-                "address" : 1,
-                "type": "switch"
+                "name": "Input 1",
+                "id": "",
+                "device_type": "input 1"
             },
             {
-                "name" : "K3",
-                "reg_type" : "coil",
-                "address" : 2,
-                "type": "switch"
-            },
-//-----------------------------------------------------------------
-            {
-                "name" : "Safety Timer",
-                "reg_type" : "holding",
-                "address" : 8,
-                "type" : "range"
-            },
-//-----------------------------------------------------------------
-            {
-                "name" : "Input 1",
-                "reg_type" : "discrete",
-                "address" : 0,
-                "type" : "switch"
+                "name": "Input 2",
+                "id": "",
+                "device_type": "input 2"
             },
             {
-                "name" : "Input 2",
-                "reg_type" : "discrete",
-                "address" : 1,
-                "type" : "switch"
+                "name": "Input 3",
+                "id": "",
+                "device_type": "input 3"
             },
             {
-                "name" : "Input 3",
-                "reg_type" : "discrete",
-                "address" : 2,
-                "type" : "switch"
+                "name": "Outputs 1-3",
+                "id": "",
+                "device_type": "outputs 1-3"
             },
             {
-                "name" : "Input 0",
-                "reg_type" : "discrete",
-                "address" : 7,
-                "type" : "switch"
-            },
-//-----------------------------------------------------------------------------------------------
-            {
-                "name" : "Input 1 counter",
-                "reg_type" : "input",
-                "address" : 32,
-                "type" : "value"
+                "name": "Safety Timer",
+                "reg_type": "holding",
+                "address": 8,
+                "type": "range"
             },
             {
-                "name" : "Input 2 counter",
-                "reg_type" : "input",
-                "address" : 33,
-                "type" : "value"
-            },
-            {
-                "name" : "Input 3 counter",
-                "reg_type" : "input",
-                "address" : 34,
-                "type" : "value"
-            },
-            {
-                "name" : "Input 0 counter",
-                "reg_type" : "input",
-                "address" : 39,
-                "type" : "value"
-            },
-            {
-                "name": "Input 1 freq",
+                "name": "Supply voltage",
                 "reg_type": "input",
-                "address": 40,
-                "type": "value",
-                "format": "u32",
-                "scale": 1.52588e-05,
-                "round_to": 0.001
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001
             },
             {
-                "name": "Input 2 freq",
+                "name": "Serial",
+                "type": "text",
                 "reg_type": "input",
-                "address": 42,
-                "type": "value",
-                "format": "u32",
-                "scale": 1.52588e-05,
-                "round_to": 0.001
-            },
-            {
-                "name": "Input 3 freq",
-                "reg_type": "input",
-                "address": 44,
-                "type": "value",
-                "format": "u32",
-                "scale": 1.52588e-05,
-                "round_to": 0.001
-            },
-            {
-                "name": "Input 0 freq",
-                "reg_type": "input",
-                "address": 54,
-                "type": "value",
-                "format": "u32",
-                "scale": 1.52588e-05,
-                "round_to": 0.001
-            },
-//--------------------------------------------------------------------------------------
-            {
-                "name" : "Supply voltage",
-                "reg_type" : "input",
-                "address" : 121,
-                "type" : "voltage",
-                "scale" : 0.001
+                "address": 270,
+                "format": "u32"
             },
             {
                 "name": "Uptime",
@@ -191,6 +68,260 @@
                 "format": "u32",
                 "enabled": false
             }
+        ],
+
+        "subdevices": [
+            {
+                "device_type": "input 0",
+                "device": {
+
+                    "parameters": {
+                        "Par_Input0_Mode": {
+                            "title": "Input 0 mode",
+                            "address": 16,
+                            "enum": [ 2, 4],
+                            "default": 2,
+                            "enum_titles": [
+                                "turn off all relays on activation",
+                                "operate according to mapping-matix"
+                            ]
+                        },
+                        "Par_Input0_Debouncing": {
+                            "title": "Input 0 debouncing (ms)",
+                            "address": 27,
+                            "min": 0,
+                            "max": 100,
+                            "default": 50
+                        }
+                    },
+
+                    "channels": [
+                        {
+                            "name": "Input 0",
+                            "reg_type": "discrete",
+                            "address": 7,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "Input 0 counter",
+                            "reg_type": "input",
+                            "address": 39,
+                            "type": "value"
+                        },
+                        {
+                            "name": "Input 0 freq",
+                            "reg_type": "input",
+                            "address": 54,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-05,
+                            "round_to": 0.001
+                        }
+                    ]
+
+                }
+            },
+            {
+                "device_type": "input 1",
+                "device": {
+
+                    "parameters": {
+                        "Par_Input1_Mode": {
+                            "title": "Input 1 mode",
+                            "address": 9,
+                            "enum": [ 0, 1, 2, 3, 4 ],
+                            "default": 0,
+                            "enum_titles": [
+                                "push button",
+                                "latching switch",
+                                "turn off all relays on activation",
+                                "disable communication between input and outputs",
+                                "operate according to mapping-matix"
+                            ]
+                        },
+                        "Par_Input1_Debouncing": {
+                            "title": "Input 1 debouncing (ms)",
+                            "address": 20,
+                            "min": 0,
+                            "max": 100,
+                            "default": 50
+                        }
+                    },
+
+                    "channels": [
+                        {
+                            "name": "Input 1",
+                            "reg_type": "discrete",
+                            "address": 0,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "Input 1 counter",
+                            "reg_type": "input",
+                            "address": 32,
+                            "type": "value"
+                        },
+                        {
+                            "name": "Input 1 freq",
+                            "reg_type": "input",
+                            "address": 40,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-05,
+                            "round_to": 0.001
+                        }
+                    ]
+
+                }
+            },
+            {
+                "device_type": "input 2",
+                "device": {
+
+                    "parameters": {
+                        "Par_Input2_Mode": {
+                            "title": "Input 2 mode",
+                            "address": 10,
+                            "enum": [ 0, 1, 2, 3, 4 ],
+                            "default": 0,
+                            "enum_titles": [
+                                "push button",
+                                "latching switch",
+                                "turn off all relays on activation",
+                                "disable communication between input and outputs",
+                                "operate according to mapping-matix"
+                            ]
+                        },
+                        "Par_Input2_Debouncing": {
+                            "title": "Input 2 debouncing (ms)",
+                            "address": 21,
+                            "min": 0,
+                            "max": 100,
+                            "default": 50
+                        }
+                    },
+
+                    "channels": [
+                        {
+                            "name": "Input 2",
+                            "reg_type": "discrete",
+                            "address": 1,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "Input 2 counter",
+                            "reg_type": "input",
+                            "address": 33,
+                            "type": "value"
+                        },
+                        {
+                            "name": "Input 2 freq",
+                            "reg_type": "input",
+                            "address": 42,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-05,
+                            "round_to": 0.001
+                        }
+                    ]
+
+                }
+            },
+            {
+                "device_type": "input 3",
+                "device": {
+
+                    "parameters": {
+                        "Par_Input3_Mode": {
+                            "title": "Input 3 mode",
+                            "address": 11,
+                            "enum": [ 0, 1, 2, 3, 4 ],
+                            "default": 0,
+                            "enum_titles": [
+                                "push button",
+                                "latching switch",
+                                "turn off all relays on activation",
+                                "disable communication between input and outputs",
+                                "operate according to mapping-matix"
+                            ]
+                        },
+                        "Par_Input3_Debouncing": {
+                            "title": "Input 3 debouncing (ms)",
+                            "address": 22,
+                            "min": 0,
+                            "max": 100,
+                            "default": 50
+                        }
+                    },
+
+                    "channels": [
+                        {
+                            "name": "Input 3",
+                            "reg_type": "discrete",
+                            "address": 2,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "Input 3 counter",
+                            "reg_type": "input",
+                            "address": 34,
+                            "type": "value"
+                        },
+                        {
+                            "name": "Input 3 freq",
+                            "reg_type": "input",
+                            "address": 44,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-05,
+                            "round_to": 0.001
+                        }
+                    ]
+
+                }
+            },
+            {
+                "device_type": "outputs 1-3",
+                "device": {
+
+                    "parameters": {
+                        "Par_Outputs16_SaveState": {
+                            "title": "Outputs 1-6 state after power off",
+                            "address": 6,
+                            "enum": [ 0, 1],
+                            "default": 0,
+                            "enum_titles": [
+                            "turn off all relays after power off",
+                            "save last relay state after power off"
+                            ]
+
+                        }
+                    },
+
+                    "channels": [
+                        {
+                              "name": "K1",
+                              "reg_type": "coil",
+                              "address": 0,
+                              "type": "switch"
+                        },
+                        {
+                            "name": "K2",
+                            "reg_type": "coil",
+                            "address": 1,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "K3",
+                            "reg_type": "coil",
+                            "address": 2,
+                            "type": "switch"
+                        }                        
+                    ]
+
+                }
+            }
         ]
+
     }
 }
