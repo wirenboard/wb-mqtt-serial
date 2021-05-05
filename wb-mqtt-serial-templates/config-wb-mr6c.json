@@ -9,7 +9,7 @@
 
         "setup": [
             {
-                "title": "1_Set_Reg5_To_Zero",
+                "title": "Set_Reg5_To_Zero",
                 "address": 5,
                 "value": 0
             }
