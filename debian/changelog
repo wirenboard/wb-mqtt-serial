@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.13.0) experimental; urgency=medium
 
-  * Support for WinDeco, Dooya/AM82Smart and Somfy SDN curtain motors is added
+  * Support for WinDeco, Dooya and Somfy SDN curtain motors is added
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 21 Apr 2021 11:53:00 +0500
 

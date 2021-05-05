@@ -2,7 +2,7 @@
 
 #include "serial_config.h"
 
-namespace Am82Smart
+namespace Dooya
 {
     struct TRequest
     {

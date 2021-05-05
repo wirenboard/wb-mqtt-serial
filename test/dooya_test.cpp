@@ -1,9 +1,9 @@
-#include "devices/curtains/am82s_device.h"
+#include "devices/curtains/dooya_device.h"
 #include "test_utils.h"
 
-using namespace Am82Smart;
+using namespace Dooya;
 
-TEST(TAm82SmartTest, MakeRequest)
+TEST(TDooyaTest, MakeRequest)
 {
     ASSERT_TRUE(ArraysMatch(MakeRequest(1,      {3, 1}),       {0x55, 1, 0, 3, 1, 232,  192}));
     ASSERT_TRUE(ArraysMatch(MakeRequest(1,      {1, 2, 1}),    {0x55, 1, 0, 1, 2, 1,    160,  190}));
@@ -14,7 +14,7 @@ TEST(TAm82SmartTest, MakeRequest)
     ASSERT_TRUE(ArraysMatch(MakeRequest(1, {1, 1, 30}), {0x55, 1, 0, 1, 1, 30, 225, 134}));
 }
 
-TEST(TAm82SmartTest, ParsePositionResponse)
+TEST(TDooyaTest, ParsePositionResponse)
 {
     ASSERT_EQ(ParsePositionResponse(1, 1, 1, {0x55, 1, 0, 1, 1, 30, 225, 134}), 30);
 

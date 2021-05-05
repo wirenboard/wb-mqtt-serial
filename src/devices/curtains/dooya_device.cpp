@@ -1,4 +1,4 @@
-#include "am82s_device.h"
+#include "dooya_device.h"
 #include "crc16.h"
 #include "bin_utils.h"
 
@@ -48,9 +48,9 @@ namespace
     const size_t ADDRESS_POSITION = 1;
     const size_t ADDRESS_SIZE = sizeof(uint16_t);
 
-    Am82Smart::TRequest MakeSetPositionRequest(uint16_t address, uint8_t position)
+    Dooya::TRequest MakeSetPositionRequest(uint16_t address, uint8_t position)
     {
-        return {Am82Smart::MakeRequest(address, {CONTROL, SET_POSITION, position}), RESPONSE_SIZE};
+        return {Dooya::MakeRequest(address, {CONTROL, SET_POSITION, position}), RESPONSE_SIZE};
     }
 
     uint16_t CalcCrc(const uint8_t* data, size_t size)
@@ -85,13 +85,13 @@ namespace
     }
 }
 
-void Am82Smart::TDevice::Register(TSerialDeviceFactory& factory)
+void Dooya::TDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("am82smart", RegTypes), 
-                             new TBasicDeviceFactory<Am82Smart::TDevice>("#/definitions/simple_device_no_channels"));
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("dooya", RegTypes), 
+                             new TBasicDeviceFactory<Dooya::TDevice>("#/definitions/simple_device_no_channels"));
 }
 
-Am82Smart::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol) 
+Dooya::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol) 
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
       OpenCommand{MakeRequest(SlaveId, {CONTROL, OPEN}), CONTROL_RESPONSE_SIZE},
@@ -101,7 +101,7 @@ Am82Smart::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol
     config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
 }
 
-std::vector<uint8_t> Am82Smart::TDevice::ExecCommand(const TRequest& request)
+std::vector<uint8_t> Dooya::TDevice::ExecCommand(const TRequest& request)
 {
     Port()->WriteBytes(request.Data);
     std::vector<uint8_t> respBytes(request.ResponseSize);
@@ -110,7 +110,7 @@ std::vector<uint8_t> Am82Smart::TDevice::ExecCommand(const TRequest& request)
     return respBytes;
 }
 
-void Am82Smart::TDevice::WriteRegister(PRegister reg, uint64_t value)
+void Dooya::TDevice::WriteRegister(PRegister reg, uint64_t value)
 {
     switch (reg->Type)
     {
@@ -151,7 +151,7 @@ void Am82Smart::TDevice::WriteRegister(PRegister reg, uint64_t value)
     }
 }
 
-uint64_t Am82Smart::TDevice::ReadRegister(PRegister reg)
+uint64_t Dooya::TDevice::ReadRegister(PRegister reg)
 {
     switch (reg->Type)
     {
@@ -172,7 +172,7 @@ uint64_t Am82Smart::TDevice::ReadRegister(PRegister reg)
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-std::vector<uint8_t> Am82Smart::MakeRequest(uint16_t address, const std::vector<uint8_t>& data)
+std::vector<uint8_t> Dooya::MakeRequest(uint16_t address, const std::vector<uint8_t>& data)
 {
     std::vector<uint8_t> res{0x55};
     auto it = std::back_inserter(res);
@@ -182,7 +182,7 @@ std::vector<uint8_t> Am82Smart::MakeRequest(uint16_t address, const std::vector<
     return res;
 }
 
-size_t Am82Smart::ParsePositionResponse(uint16_t address, uint8_t fn, uint8_t dataAddress, const std::vector<uint8_t>& bytes)
+size_t Dooya::ParsePositionResponse(uint16_t address, uint8_t fn, uint8_t dataAddress, const std::vector<uint8_t>& bytes)
 {
     Check(address, RESPONSE_SIZE, fn, dataAddress, bytes);
     if (bytes[DATA_POSITION] == 0xFF) {

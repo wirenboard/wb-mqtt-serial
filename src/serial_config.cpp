@@ -34,7 +34,7 @@
 #include "devices/s2k_device.h"
 #include "devices/uniel_device.h"
 #include "devices/dlms_device.h"
-#include "devices/curtains/am82s_device.h"
+#include "devices/curtains/dooya_device.h"
 #include "devices/curtains/somfy_sdn_device.h"
 #include "devices/curtains/windeco_device.h"
 
@@ -1032,7 +1032,7 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     TS2KDevice::Register(deviceFactory);
     TUnielDevice::Register(deviceFactory);
     TDlmsDevice::Register(deviceFactory);
-    Am82Smart::TDevice::Register(deviceFactory);
+    Dooya::TDevice::Register(deviceFactory);
     WinDeco::TDevice::Register(deviceFactory);
     Somfy::TDevice::Register(deviceFactory);
 }

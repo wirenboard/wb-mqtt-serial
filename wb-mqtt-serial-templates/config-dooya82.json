@@ -1,10 +1,10 @@
 {
-    "device_type": "AM82Smart",
-    "title": "AM82Smart curtain motor",
+    "device_type": "Dooya 82",
+    "title": "Dooya 82 curtain motor",
     "device": {
-        "name": "AM82Smart",
-        "id": "am82smart",
-        "protocol": "am82smart",
+        "name": "Dooya 82",
+        "id": "dooya",
+        "protocol": "dooya",
         "response_timeout_ms": 100,
         "channels": [
             {
