@@ -285,8 +285,8 @@
                 "device": {
 
                     "parameters": {
-                        "Par_Outputs16_SaveState": {
-                            "title": "Outputs 1-6 state after power off",
+                        "Par_Outputs13_SaveState": {
+                            "title": "Outputs 1-3 state after power off",
                             "address": 6,
                             "enum": [ 0, 1],
                             "default": 0,

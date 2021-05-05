@@ -6,48 +6,30 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
-        "parameters": {
-            "in1_mode": {
-                "title": "Input 1 mode",
-                "address": 9,
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
-                "default": 1,
-                "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn off all relays on activation",
-                    "disable communication between input and outputs",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, after 20 minutes re-simulate the input state"
-                ]
-            },
-            "in2_mode": {
-                "title": "Input 2 mode",
-                "address": 10,
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
-                "default": 1,
-                "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn off all relays on activation",
-                    "disable communication between input and outputs",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, after 20 minutes re-simulate the input state"
-                ]
+
+        "setup": [
+            {
+                "title": "Set_Reg5_To_Zero",
+                "address": 5,
+                "value": 0
             }
-        },
+        ],
+
         "channels": [
             {
-                "name": "Relay 1",
-                "reg_type": "coil",
-                "address": 0,
-                "type": "switch"
+                "name": "Input 1",
+                "id": "",
+                "device_type": "input 1"
             },
             {
-                "name": "Relay 2",
-                "reg_type": "coil",
-                "address": 1,
-                "type": "switch"
+                "name": "Input 2",
+                "id": "",
+                "device_type": "input 2"
+            },
+            {
+                "name": "Outputs 1-2",
+                "id": "",
+                "device_type": "outputs 1-2"
             },
             {
                 "name": "Safety Timer",
@@ -56,57 +38,11 @@
                 "type": "range"
             },
             {
-                "name": "Button 1",
-                "reg_type": "discrete",
-                "readonly": true,
-                "address": 0,
-                "type": "switch"
-            },
-            {
-                "name": "Button 2",
-                "reg_type": "discrete",
-                "readonly": true,
-                "address": 1,
-                "type": "switch"
-            },
-            {
-                "name": "Button 1 counter",
-                "reg_type": "input",
-                "readonly": true,
-                "address": 32,
-                "type": "value"
-            },
-            {
-                "name": "Button 2 counter",
-                "reg_type": "input",
-                "readonly": true,
-                "address": 33,
-                "type": "value"
-            },
-            {
-                "name": "Button 1 freq",
-                "reg_type": "input",
-                "address": 40,
-                "type": "value",
-                "format": "u32",
-                "scale": 1.52588e-05,
-                "round_to": 0.001
-            },
-            {
-                "name": "Button 2 freq",
-                "reg_type": "input",
-                "address": 42,
-                "type": "value",
-                "format": "u32",
-                "scale": 1.52588e-05,
-                "round_to": 0.001
-            },
-            {
-                "name": "Input Voltage",
+                "name": "Supply voltage",
                 "reg_type": "input",
                 "address": 121,
-                "scale": 0.001,
-                "type": "voltage"
+                "type": "voltage",
+                "scale": 0.001
             },
             {
                 "name": "Serial",
@@ -122,6 +58,152 @@
                 "format": "u32",
                 "enabled": false
             }
+        ],
+
+        "subdevices": [
+            {
+                "device_type": "input 1",
+                "device": {
+
+                    "parameters": {
+                        "Par_Input1_Mode": {
+                            "title": "Button 1 mode",
+                            "address": 9,
+                            "enum": [ 0, 1, 2, 3, 4 ],
+                            "default": 0,
+                            "enum_titles": [
+                                "push button",
+                                "latching switch",
+                                "turn off all relays on activation",
+                                "disable communication between input and outputs",
+                                "operate according to mapping-matix"
+                            ]
+                        },
+                        "Par_Input1_Debouncing": {
+                            "title": "Button 1 debouncing (ms)",
+                            "address": 20,
+                            "min": 0,
+                            "max": 100,
+                            "default": 50
+                        }
+                    },
+
+                    "channels": [
+                        {
+                            "name": "Button 1",
+                            "reg_type": "discrete",
+                            "readonly": true,
+                            "address": 0,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "Button 1 counter",
+                            "reg_type": "input",
+                            "address": 32,
+                            "type": "value"
+                        },
+                        {
+                            "name": "Button 1 freq",
+                            "reg_type": "input",
+                            "address": 40,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-05,
+                            "round_to": 0.001
+                        }
+                    ]
+
+                }
+            },
+            {
+                "device_type": "input 2",
+                "device": {
+
+                    "parameters": {
+                        "Par_Input2_Mode": {
+                            "title": "Button 2 mode",
+                            "address": 10,
+                            "enum": [ 0, 1, 2, 3, 4 ],
+                            "default": 0,
+                            "enum_titles": [
+                                "push button",
+                                "latching switch",
+                                "turn off all relays on activation",
+                                "disable communication between input and outputs",
+                                "operate according to mapping-matix"
+                            ]
+                        },
+                        "Par_Input2_Debouncing": {
+                            "title": "Button 2 debouncing (ms)",
+                            "address": 21,
+                            "min": 0,
+                            "max": 100,
+                            "default": 50
+                        }
+                    },
+
+                    "channels": [
+                        {
+                            "name": "Button 2",
+                            "reg_type": "discrete",
+                            "address": 1,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "Button 2 counter",
+                            "reg_type": "input",
+                            "address": 33,
+                            "type": "value"
+                        },
+                        {
+                            "name": "Button 2 freq",
+                            "reg_type": "input",
+                            "address": 42,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-05,
+                            "round_to": 0.001
+                        }
+                    ]
+
+                }
+            },
+            {
+                "device_type": "outputs 1-2",
+                "device": {
+
+                    "parameters": {
+                        "Par_Outputs12_SaveState": {
+                            "title": "Outputs 1-2 state after power off",
+                            "address": 6,
+                            "enum": [ 0, 1],
+                            "default": 0,
+                            "enum_titles": [
+                            "turn off all relays after power off",
+                            "save last relay state after power off"
+                            ]
+
+                        }
+                    },
+
+                    "channels": [
+                        {
+                              "name": "Relay 1",
+                              "reg_type": "coil",
+                              "address": 0,
+                              "type": "switch"
+                        },
+                        {
+                            "name": "Relay 2",
+                            "reg_type": "coil",
+                            "address": 1,
+                            "type": "switch"
+                        }
+                    ]
+
+                }
+            }
         ]
+
     }
 }
