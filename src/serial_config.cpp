@@ -431,10 +431,6 @@ namespace {
     PPort OpenTcpPort(const Json::Value& port_data)
     {
         TTcpPortSettings settings(port_data["address"].asString(), GetInt(port_data, "port"));
-
-        Get(port_data, "connection_timeout_ms",      settings.ConnectionTimeout);
-        Get(port_data, "connection_max_fail_cycles", settings.ConnectionMaxFailCycles);
-
         return std::make_shared<TTcpPort>(settings);
     }
 
@@ -455,6 +451,9 @@ namespace {
         Get(port_data, "guard_interval_us",   port_config->RequestDelay);
 
         auto port_type = port_data.get("port_type", "serial").asString();
+
+        Get(port_data, "connection_timeout_ms",      port_config->OpenCloseSettings.MaxFailTime);
+        Get(port_data, "connection_max_fail_cycles", port_config->OpenCloseSettings.ConnectionMaxFailCycles);
 
         std::tie(port_config->Port, port_config->IsModbusTcp) = portFactory(port_data);
 

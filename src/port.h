@@ -18,9 +18,6 @@ public:
     TPort& operator=(const TPort &) = delete;
     virtual ~TPort() = default;
 
-    virtual void CycleBegin();
-    virtual void CycleEnd(bool ok);
-
     virtual void Open() = 0;
     virtual void Close() = 0;
     virtual void Reopen();
@@ -64,7 +61,7 @@ public:
      */
     virtual std::chrono::milliseconds GetSendTime(double bytesNumber);
 
-    virtual std::string GetDescription() const = 0;
+    virtual std::string GetDescription(bool verbose = true) const = 0;
 
     /**
      * @brief Set new byte parameters if it is a serial port.
@@ -75,3 +72,24 @@ public:
 };
 
 using PPort = std::shared_ptr<TPort>;
+
+class TPortOpenCloseLogic
+{
+public:
+    struct TSettings
+    {
+        std::chrono::milliseconds MaxFailTime             = std::chrono::milliseconds(5000);
+        int                       ConnectionMaxFailCycles = 2;
+        std::chrono::milliseconds ReopenTimeout           = std::chrono::milliseconds(5000);
+    };
+
+    TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings);
+
+    void OpenIfAllowed(PPort port);
+    void CloseIfNeeded(PPort port, bool allPreviousDataExchangeWasFailed);
+private:
+    TPortOpenCloseLogic::TSettings        Settings;
+    std::chrono::steady_clock::time_point LastSuccessfulCycle;
+    size_t                                RemainingFailCycles;
+    std::chrono::steady_clock::time_point NextOpenTryTime;
+};

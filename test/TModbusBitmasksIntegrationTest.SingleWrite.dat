@@ -75,7 +75,6 @@ Publish: /devices/modbus-sample/controls/U8:1: '0' (QoS 1, retained)
 EnqueueU8Shift2SingleBitHoldingReadResponse()
 >> 01 03 00 48 00 01 04 1C
 Publish: /devices/modbus-sample/controls/U8:2: '1' (QoS 1, retained)
-Port cycle OK
 Publish: /devices/modbus-sample/controls/U8:1/on: '1' (QoS 0, retained)
 >>> LoopOnce()
 << 01 03 02 00 05 78 47
@@ -96,7 +95,6 @@ EnqueueU8Shift1SingleBitHoldingReadResponse()
 << 01 03 02 00 07 F9 86
 EnqueueU8Shift2SingleBitHoldingReadResponse()
 >> 01 03 00 48 00 01 04 1C
-Port cycle OK
 << 01 03 02 00 07 F9 86
 Close()
 Publish: /devices/modbus-sample/controls/U8:1: '1' (QoS 1, retained)

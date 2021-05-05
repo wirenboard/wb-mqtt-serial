@@ -21,18 +21,15 @@ EnqueueHoldingSingleWriteU16Response()
 EnqueueHoldingReadU16Response()
 >> 01 03 00 46 00 01 65 DF
 << 01 03 02 00 15 79 8B
-Port cycle OK
 >>> LoopOnce() [on-line]
 EnqueueHoldingReadU16Response()
 >> 01 03 00 46 00 01 65 DF
 << 01 03 02 00 15 79 8B
-Port cycle OK
 Publish: /devices/modbus/controls/Ch 0: '21' (QoS 1, retained)
 Publish: /devices/modbus/controls/Ch 0: '21' (QoS 1, retained)
 >>> LoopOnce() [disconnected]
 EnqueueHoldingReadU16Response()
 >> 01 03 00 46 00 01 65 DF
-Port cycle FAIL
 >>> LoopOnce() [connected2]
 Sleep(5000)
 EnqueueHoldingSingleWriteU16Response()
@@ -41,7 +38,6 @@ EnqueueHoldingSingleWriteU16Response()
 EnqueueHoldingReadU16Response()
 >> 01 03 00 46 00 01 65 DF
 << 01 03 02 00 15 79 8B
-Port cycle OK
 Close()
 Publish: /devices/modbus/controls/Ch 0/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/modbus/controls/Ch 0/meta/error: '' (QoS 1, retained)

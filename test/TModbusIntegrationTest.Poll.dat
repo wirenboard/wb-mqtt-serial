@@ -325,7 +325,6 @@ EnqueueHoldingMultiReadResponse()
 >> 01 03 00 5F 00 05 B5 DB
 Publish: /devices/modbus-sample/controls/Holding U64 Multi: '144680345676153346' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding U16 Multi: '514' (QoS 1, retained)
-Port cycle OK
 << 01 03 0A 02 02 02 02 02 02 02 02 02 02 66 FE
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding U16 Multi/on

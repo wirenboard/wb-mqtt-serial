@@ -20,16 +20,16 @@ GIT_REVISION:=$(shell git rev-parse HEAD)
 DEB_VERSION:=$(shell head -1 debian/changelog | awk '{ print $$2 }' | sed 's/[\(\)]//g')
 
 SERIAL_BIN = wb-mqtt-serial
-SRC_DIRS = src
+SRC_DIR = src
 
 GURUX_SRC = thirdparty/gurux/development/src
 GURUX_INCLUDE = thirdparty/gurux/development/include
 
-COMMON_SRCS := $(shell find $(SRC_DIRS) $(GURUX_SRC) \( -name *.cpp -or -name *.c \) -and -not -name main.cpp)
+COMMON_SRCS := $(shell find $(SRC_DIR) $(GURUX_SRC) \( -name *.cpp -or -name *.c \) -and -not -name main.cpp)
 COMMON_OBJS := $(COMMON_SRCS:%=$(BUILD_DIR)/%.o)
 
 LDFLAGS = -lpthread -ljsoncpp -lwbmqtt1
-CXXFLAGS = -std=c++14 -Wall -Werror -I$(SRC_DIRS) -I$(GURUX_INCLUDE) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)" -Wno-psabi
+CXXFLAGS = -std=c++14 -Wall -Werror -I$(SRC_DIR) -I$(GURUX_INCLUDE) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)" -Wno-psabi
 CFLAGS = -Wall -I$(SRC_DIR) -I$(GURUX_INCLUDE)
 
 ifeq ($(DEBUG),)
@@ -82,6 +82,8 @@ test: $(TEST_DIR)/$(TEST_BIN)
 clean :
 	rm -rf $(BUILD_DIR)
 	rm -rf $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
+	find $(SRC_DIR) -name '*.o' -delete
+	rm -f $(SERIAL_BIN)
 
 install:
 	install -d $(DESTDIR)/usr/share/wb-mqtt-confed/schemas

@@ -123,10 +123,11 @@ class TSubDevicesTemplateMap: public ITemplateMap
 
 struct TPortConfig 
 {
-    PPort                      Port;
-    std::vector<PSerialDevice> Devices;
-    std::chrono::milliseconds  PollInterval = DefaultPollInterval;
-    std::chrono::microseconds  RequestDelay = std::chrono::microseconds::zero();
+    PPort                          Port;
+    std::vector<PSerialDevice>     Devices;
+    std::chrono::milliseconds      PollInterval = DefaultPollInterval;
+    std::chrono::microseconds      RequestDelay = std::chrono::microseconds::zero();
+    TPortOpenCloseLogic::TSettings OpenCloseSettings;
 
     /**
      * @brief Maximum allowed time from request to response for any device connected to the port.

@@ -15,7 +15,7 @@
 using namespace std;
 using namespace BinUtils;
 
-#define LOG(logger) ::logger.Log() << "[modbus] "
+#define LOG(logger) logger.Log() << "[modbus] "
 
 namespace Modbus    // modbus protocol declarations
 {
@@ -773,7 +773,8 @@ namespace Modbus    // modbus protocol common utilities
     void ProcessRangeException(TModbusRegisterRange& range, const char* msg, EStatus error)
     {
         range.SetError(error);
-        LOG(Warn) << "failed to read " << range << ": " << msg;
+        auto& logger = range.Device()->GetIsDisconnected() ? Debug : Warn;
+        LOG(logger) << "failed to read " << range << ": " << msg;
     }
 
     // Remove unsupported registers on borders
@@ -1041,7 +1042,7 @@ namespace Modbus    // modbus protocol common utilities
                 return rc;
             }
 
-            LOG(Warn) << "Transaction id mismatch";
+            LOG(Debug) << "Transaction id mismatch";
         }
         throw TSerialDeviceTransientErrorException("request timed out");
     }

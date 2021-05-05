@@ -1,30 +1,29 @@
 #pragma once
+
 #include <string>
 #include <stdexcept>
-#include <string.h>
 
-class TSerialDeviceException: public std::runtime_error {
+std::string FormatErrno(int errnoValue);
+
+class TSerialDeviceException: public std::runtime_error
+{
 public:
-    TSerialDeviceException(const std::string& message): std::runtime_error("Serial protocol error: " + message) {}
+    TSerialDeviceException(const std::string& message);
 };
 
-class TSerialDeviceErrnoException: public TSerialDeviceException {
+class TSerialDeviceErrnoException: public TSerialDeviceException
+{
     int ErrnoValue;
 public:
-    TSerialDeviceErrnoException(const std::string& message, int errnoValue): 
-        TSerialDeviceException(message + strerror(errnoValue) + " (" + std::to_string(errnoValue) + ")"),
-        ErrnoValue(errnoValue)
-    {}
+    TSerialDeviceErrnoException(const std::string& message, int errnoValue);
 
-    int GetErrnoValue() const
-    {
-        return ErrnoValue;
-    }
+    int GetErrnoValue() const;
 };
 
-class TSerialDeviceTransientErrorException: public TSerialDeviceException {
+class TSerialDeviceTransientErrorException: public TSerialDeviceException
+{
 public:
-    TSerialDeviceTransientErrorException(const std::string& message): TSerialDeviceException(message) {}
+    TSerialDeviceTransientErrorException(const std::string& message);
 };
 
 /** The exceptiona class should be used for indicating reception of a valid answer from device,
@@ -37,7 +36,8 @@ public:
     TSerialDeviceInternalErrorException(const std::string& message): TSerialDeviceTransientErrorException(message) {}
 };
 
-class TSerialDevicePermanentRegisterException: public TSerialDeviceException {
+class TSerialDevicePermanentRegisterException: public TSerialDeviceException
+{
 public:
-	TSerialDevicePermanentRegisterException(const std::string& message): TSerialDeviceException(message) {}
+	TSerialDevicePermanentRegisterException(const std::string& message);
 };

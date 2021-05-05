@@ -87,7 +87,6 @@ SkipNoise()
 EnqueeCmdFCResponse()
 >> 31 01 FC 66
 Sleep(6000)
-Port cycle OK
 << 3E 01 FC 54 57 00 00 B0 00 4F
 Close()
 Publish: /devices/escort-db-2_1/controls/Temperature: '28' (QoS 1, retained)
