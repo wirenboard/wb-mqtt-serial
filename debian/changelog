@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.12.1) experimental; urgency=medium
+
+  * Performace optimizations during register polling.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 23 Apr 2021 14:21:00 +0500
+
 wb-mqtt-serial (2.12.0) experimental; urgency=medium
 
   * Do not show response errors as warnings for disconnected devices. They are now in debug channel.
