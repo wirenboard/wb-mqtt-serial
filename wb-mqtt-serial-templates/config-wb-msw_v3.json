@@ -6,6 +6,65 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
+
+		"parameters": {
+	       	"Par_Buzzer": {
+				"title": "Buzzer",
+                "reg_type": "coil",
+                "enum":	[0,1],
+				"enum_titles": ["off", "on"],
+				"address": 0,
+                "default": 0
+			},
+            "Par_LED1_Red": {
+				"title": "Red LED",
+                "reg_type": "coil",
+				"enum":	[0,1],
+				"enum_titles": ["off", "on"],
+				"address": 10,
+				"default": 0
+			},
+            "Par_LED2_Green": {
+				"title": "Green LED",
+                "reg_type": "coil",
+				"enum":	[0,1],
+				"enum_titles": ["off", "on"],
+				"address": 11,
+				"default": 0
+			},
+            "Par_LED_Period": {
+				"title": "LED Period (s)",
+                "address": 97,
+				"default": 1,
+				"min": 0,
+				"max": 10
+            },
+            "Par_LED_Glow_Duration": {
+				"title": "LED Glow Duration (ms)",
+                "address": 98,
+                "default": 25,
+				"min": 0,
+				"max": 50
+            },
+            "Par_HDC1080 heater": {
+				"title": "HDC1080 heater",
+                "address": 2,
+                "reg_type": "coil",
+				"enum":	[0,1],
+				"enum_titles": ["off", "on"],
+				"default": 0
+			},
+            "Par_CO₂_sensor_enable": {
+				"title": "CO₂_sensor_enable",
+				"address": 3,
+                "reg_type": "coil",
+                "enum":	[0,1],
+				"enum_titles": ["off", "on"],
+				"default": 1,
+                "order": 5
+			}
+        },
+
         "channels": [
             {
                 "name": "Temperature",
@@ -202,20 +261,6 @@
                 "type": "pushbutton"
             },
             {
-                "name": "Input Voltage",
-                "reg_type": "input",
-                "address": 121,
-                "scale": 0.001,
-                "type": "voltage"
-            },
-            {
-                "name": "Serial",
-                "type": "text",
-                "reg_type": "input",
-                "address": 270,
-                "format": "u32"
-            },
-            {
                 "name": "Force CO₂ sensor calibration",
                 "reg_type": "coil",
                 "address": 1,
@@ -257,6 +302,20 @@
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "scale": 0.001,
+                "type": "voltage"
+            },
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32"
             },
             {
                 "name": "Uptime",
