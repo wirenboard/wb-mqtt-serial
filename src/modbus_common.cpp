@@ -51,6 +51,10 @@ namespace Modbus    // modbus protocol declarations
         };
     };
 
+    class TModbusRegisterRange;
+    void ComposeReadRequestPDU(uint8_t* pdu, TModbusRegisterRange& range, int shift);
+    size_t InferReadResponsePDUSize(TModbusRegisterRange& range);
+
     class TModbusRegisterRange: public TRegisterRange
     {
     public:
@@ -69,14 +73,37 @@ namespace Modbus    // modbus protocol declarations
         bool ShouldReadOneByOne() const { return ReadOneByOne; }
         void SetReadOneByOne(bool readOneByOne) { ReadOneByOne = readOneByOne; }
 
+        const TRequest& GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift)
+        {
+            if (Request.empty()) {
+                // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
+                const uint16_t REQUEST_PDU_SIZE = 5;
+
+                Request.resize(traits.GetPacketSize(REQUEST_PDU_SIZE));
+                Modbus::ComposeReadRequestPDU(traits.GetPDU(Request), *this, shift);
+                traits.FinalizeRequest(Request, slaveId);
+            }
+            return Request;
+        }
+
+        size_t GetResponseSize(IModbusTraits& traits)
+        {
+            if (ResponseSize == 0) {
+                ResponseSize = traits.GetPacketSize(InferReadResponsePDUSize(*this));
+            }
+            return ResponseSize;
+        }
+
     private:
-        bool            ReadOneByOne    = false;
-        bool            HasHolesFlg     = false;
-        int             Start;
-        int             Count;
-        uint8_t*        Bits  = 0;
-        uint16_t*       Words = 0;
-        EStatus         Status = ST_UNKNOWN_ERROR;
+        bool      ReadOneByOne    = false;
+        bool      HasHolesFlg     = false;
+        int       Start;
+        int       Count;
+        uint8_t*  Bits  = 0;
+        uint16_t* Words = 0;
+        EStatus   Status = ST_UNKNOWN_ERROR;
+        TRequest  Request;
+        size_t    ResponseSize = 0;
     };
 
     using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
@@ -741,15 +768,9 @@ namespace Modbus    // modbus protocol common utilities
     {
         range.SetStatus(ST_UNKNOWN_ERROR);
 
-        // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
-        const uint16_t REQUEST_PDU_SIZE = 5;
-
-        TRequest request(traits.GetPacketSize(REQUEST_PDU_SIZE));
-        TResponse response(traits.GetPacketSize(InferReadResponsePDUSize(range)));
-        Modbus::ComposeReadRequestPDU(traits.GetPDU(request), range, shift);
-        traits.FinalizeRequest(request, slaveId);
-
+        TResponse response(range.GetResponseSize(traits));
         try {
+            const auto& request = range.GetRequest(traits, slaveId, shift);
             auto pduSize = ProcessRequest(traits, port, request, response, *range.Device()->DeviceConfig());
             ParseReadResponse(traits.GetPDU(response), pduSize, range);
             range.SetStatus(ST_OK);
@@ -777,13 +798,23 @@ namespace Modbus    // modbus protocol common utilities
         LOG(logger) << "failed to read " << range << ": " << msg;
     }
 
+    struct TTruncatedRegisterList
+    {
+        bool                 IsValid = false;
+        std::list<PRegister> Regs;
+    };
+
     // Remove unsupported registers on borders
-    std::list<PRegister> RemoveUnsupportedFromBorders(std::list<PRegister> l) {
-        auto it = std::find_if(l.begin(), l.end(), [](auto& r) {return r->IsAvailable();});
-        l.erase(l.begin(), it);
-        auto it2 = std::find_if(l.rbegin(), l.rend(), [](auto& r) {return r->IsAvailable();});
-        l.erase(it2.base(), l.end());
-        return l;
+    TTruncatedRegisterList RemoveUnsupportedFromBorders(const std::list<PRegister>& l)
+    {
+        TTruncatedRegisterList res;
+        auto s = std::find_if(l.begin(), l.end(), [](auto& r) {return r->IsAvailable();});
+        auto e = std::find_if(l.rbegin(), std::make_reverse_iterator(s), [](auto& r) {return r->IsAvailable();});
+        if ((s != l.begin()) || (e != l.rbegin())) {
+            std::copy(s, e.base(), std::back_inserter(res.Regs));
+            res.IsValid = true;
+        }
+        return res;
     }
 
     std::list<PRegisterRange> SplitRangeByHoles(const std::list<PRegister>& regs, bool onlyAvailable)
@@ -816,11 +847,15 @@ namespace Modbus    // modbus protocol common utilities
         std::list<PRegisterRange> newRanges;
         try {
             ReadRange(traits, *range, port, slaveId, shift);
-            auto l = RemoveUnsupportedFromBorders(range->RegisterList());
-            if (!l.empty()) {
-                auto newRange = std::make_shared<Modbus::TModbusRegisterRange>(l, range->HasHoles());
-                newRange->SetStatus(range->GetStatus());
-                newRanges.push_back(newRange);
+            auto res = RemoveUnsupportedFromBorders(range->RegisterList());
+            if (res.IsValid) {
+                if (!res.Regs.empty()) {
+                    auto newRange = std::make_shared<Modbus::TModbusRegisterRange>(res.Regs, range->HasHoles());
+                    newRange->SetStatus(range->GetStatus());
+                    newRanges.push_back(newRange);
+                }
+            } else {
+                newRanges.push_back(range);
             }
         } catch (const TSerialDeviceTransientErrorException& e) {
             ProcessRangeException(*range, e.what(), ST_UNKNOWN_ERROR);
@@ -884,10 +919,10 @@ namespace Modbus    // modbus protocol common utilities
     {
         for (const auto& item : setupItems) {
             try {
+                WriteRegister(traits, port, slaveId, *item->Register, item->Value, shift);
                 LOG(Info) << "Init: " << item->Name 
                         << ": setup register " << item->Register->ToString()
                         << " <-- " << item->Value;
-                WriteRegister(traits, port, slaveId, *item->Register, item->Value, shift);
             } catch (const TSerialDevicePermanentRegisterException& e) {
                 WarnFailedRegisterSetup(item, e.what());
             } catch (const TSerialDeviceTransientErrorException& e) {
