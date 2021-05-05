@@ -45,13 +45,13 @@
           "items": { "type": "string" }
         },
         "default": {
-          "type": "integer"
+          "type": "number"
         },
         "min": {
-          "type": "integer"
+          "type": "number"
         },
         "max": {
-          "type": "integer"
+          "type": "number"
         },
         "order": {
           "type": "integer"

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.13.0) experimental; urgency=medium
+
+  * "reg_type", "format" and "order" fields are added to parameters in device templates.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 06 May 2021 10:46:00 +0500
+
 wb-mqtt-serial (2.12.2) experimental; urgency=medium
 
   * MAP12H and MAP3H templates are fixed

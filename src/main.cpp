@@ -76,6 +76,7 @@ namespace
     {
         Json::StreamWriterBuilder builder;
         builder["indentation"] = indentation;
+        builder.settings_["precision"] = 15;
         return unique_ptr<Json::StreamWriter>(builder.newStreamWriter());
     }
 

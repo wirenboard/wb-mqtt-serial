@@ -7,12 +7,8 @@
 #define LOG(logger) logger.Log() << "[serial device] "
 
 IProtocol::IProtocol(const std::string& name, const TRegisterTypes& reg_types)
-    : Name(name)
-{
-    RegTypes = std::make_shared<TRegisterTypeMap>();
-    for (const auto& rt : reg_types)
-        RegTypes->insert(std::make_pair(rt.Name, rt));
-}
+    : Name(name), RegTypes(std::make_shared<TRegisterTypeMap>(reg_types))
+{}
 
 const std::string& IProtocol::GetName() const
 { 
@@ -152,10 +148,10 @@ bool TSerialDevice::WriteSetupRegisters()
 {
     for (const auto& setup_item : SetupItems) {
         try {
-            WriteRegister(setup_item->Register, setup_item->Value);
+            WriteRegister(setup_item->Register, setup_item->RawValue);
             LOG(Info) << "Init: " << setup_item->Name 
                       << ": setup register " << setup_item->Register->ToString()
-                      << " <-- " << setup_item->Value;
+                      << " <-- " << setup_item->HumanReadableValue << " (0x" << std::hex << setup_item->RawValue << ")";
         } catch (const TSerialDeviceException & e) {
             LOG(Warn) << "failed to write: " << setup_item->Register->ToString() << ": " << e.what();
             return false;

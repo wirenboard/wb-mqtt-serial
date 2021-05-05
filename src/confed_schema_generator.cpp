@@ -92,9 +92,10 @@ bool IsRequiredSetupRegister(const Json::Value& setupRegister)
 }
 
 //  {
-//      "type": "integer",
+//      "type": "number", // or "type": "integer"
 //      "title": TITLE,
 //      "default": DEFAULT,
+//      "_format": "number"
 //      "minimum": MIN,
 //      "maximum": MAX,
 //      "enum": [ ... ],
@@ -106,7 +107,7 @@ bool IsRequiredSetupRegister(const Json::Value& setupRegister)
 Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index)
 {
     Json::Value r;
-    r["type"] = "integer";
+    r["type"] = setupRegister.isMember("scale") ? "number" : "integer";
     r["title"] = setupRegister["title"];
     r["default"] = GetDefaultSetupRegisterValue(setupRegister);
     SetIfExists(r, "enum",    setupRegister, "enum");
@@ -154,6 +155,8 @@ Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate)
     r["headerTemplate"] = channelTemplate["name"].asString();
     r["default"]["name"] = channelTemplate["name"].asString();
     r["options"]["wb"]["disable_panel"] = true;
+    r["default"]["enabled"] = true;
+    r["default"]["poll_interval"] = static_cast<Json::Int>(DefaultPollInterval.count());
     SetIfExists(r["default"], "enabled", channelTemplate, "enabled");
     SetIfExists(r["default"], "poll_interval", channelTemplate, "poll_interval");
     return r;
@@ -346,7 +349,9 @@ Json::Value MakeChannelsSchema(const TDeviceTemplate& deviceTemplate,
         for (const auto& channel: channels) {
             Json::Value& v = Append(defaults);
             v["name"] = channel["name"];
+            v["enabled"] = true;
             SetIfExists(v, "enabled", channel, "enabled");
+            v["poll_interval"] = static_cast<Json::Int>(DefaultPollInterval.count());
             SetIfExists(v, "poll_interval", channel, "poll_interval");
         }
         r["minItems"] = defaults.size();
@@ -374,20 +379,24 @@ int AddDeviceParametersUI(Json::Value&       properties,
                           const Json::Value& deviceTemplate,
                           int                firstParameterOrder)
 {
+    int maxOrder = 0;
     if (deviceTemplate.isMember("parameters")) {
         const auto& params = deviceTemplate["parameters"];
+        int n = 0;
         for (Json::ValueConstIterator it = params.begin(); it != params.end(); ++it) {
-            ++firstParameterOrder;
             auto& node = properties[it.name()];
-            node = MakeParameterSchema(*it, firstParameterOrder);
+            int order = it->get("order", n).asInt();
+            maxOrder = std::max(order, maxOrder);
+            node = MakeParameterSchema(*it, firstParameterOrder + order);
             if (IsRequiredSetupRegister(*it)) {
                 requiredArray.append(it.name());
             } else {
                 node["options"]["show_opt_in"] = true;
             }
+            ++n;
         }
     }
-    return firstParameterOrder;
+    return firstParameterOrder + maxOrder + 1;
 }
 
 //  {
