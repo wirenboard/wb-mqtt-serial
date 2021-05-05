@@ -374,20 +374,24 @@ int AddDeviceParametersUI(Json::Value&       properties,
                           const Json::Value& deviceTemplate,
                           int                firstParameterOrder)
 {
+    int maxOrder = 0;
     if (deviceTemplate.isMember("parameters")) {
         const auto& params = deviceTemplate["parameters"];
+        int n = 0;
         for (Json::ValueConstIterator it = params.begin(); it != params.end(); ++it) {
-            ++firstParameterOrder;
             auto& node = properties[it.name()];
-            node = MakeParameterSchema(*it, firstParameterOrder);
+            int order = it->get("order", n).asInt();
+            maxOrder = std::max(order, maxOrder);
+            node = MakeParameterSchema(*it, firstParameterOrder + order);
             if (IsRequiredSetupRegister(*it)) {
                 requiredArray.append(it.name());
             } else {
                 node["options"]["show_opt_in"] = true;
             }
+            ++n;
         }
     }
-    return firstParameterOrder;
+    return firstParameterOrder + maxOrder;
 }
 
 //  {

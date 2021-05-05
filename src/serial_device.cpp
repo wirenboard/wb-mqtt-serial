@@ -7,12 +7,8 @@
 #define LOG(logger) logger.Log() << "[serial device] "
 
 IProtocol::IProtocol(const std::string& name, const TRegisterTypes& reg_types)
-    : Name(name)
-{
-    RegTypes = std::make_shared<TRegisterTypeMap>();
-    for (const auto& rt : reg_types)
-        RegTypes->insert(std::make_pair(rt.Name, rt));
-}
+    : Name(name), RegTypes(std::make_shared<TRegisterTypeMap>(reg_types))
+{}
 
 const std::string& IProtocol::GetName() const
 { 

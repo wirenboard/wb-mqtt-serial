@@ -307,3 +307,38 @@ uint32_t GetUint32RegisterAddress(const IRegisterAddress& addr)
 {
     return dynamic_cast<const TUint32RegisterAddress&>(addr).Get();
 }
+
+TRegisterTypeMap::TRegisterTypeMap(const TRegisterTypes& types)
+{
+    if (types.empty()) {
+        throw std::runtime_error("Register types are not defined");
+    }
+    for (const auto& rt : types) {
+        RegTypes.insert(std::make_pair(rt.Name, rt));
+    }
+    DefaultType = types.front();
+}
+
+const TRegisterType& TRegisterTypeMap::Find(const std::string& typeName) const
+{
+    return RegTypes.at(typeName);
+}
+
+const TRegisterType& TRegisterTypeMap::GetDefaultType() const
+{
+    return DefaultType;
+}
+
+TRegisterType::TRegisterType(int                index, 
+                             const std::string& name,
+                             const std::string& defaultControlType,
+                             RegisterFormat     defaultFormat,
+                             bool               readOnly, 
+                             EWordOrder         defaultWordOrder):
+        Index(index), 
+        Name(name), 
+        DefaultControlType(defaultControlType),
+        DefaultFormat(defaultFormat), 
+        DefaultWordOrder(defaultWordOrder), 
+        ReadOnly(readOnly)
+{}

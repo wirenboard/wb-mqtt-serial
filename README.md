@@ -371,18 +371,26 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     // секция инициализации
                     "setup": [
                         {
-                            // название регистра (для отладки)
+                            // название регистра
                             // Выводится в случае включённой отладочной печати.
                             "title": "Input 0 type",
-                            // адрес holding-регистра
+                            
+                            // адрес регистра
                             "address": 1,
+                            
                             // значение для записи
-                            "value": 1
+                            "value": 1,
+
+                            // тип регистра, если не указан, то для Modbus используется "holding"
+                            "reg_type" : "input",
+
+                            // формат регистра, для Modbus по умолчанию u16
+                            "format": "s8"
                         },
                         {
                             "title": "Input 0 module",
                             "address": 3,
-                            "value": 3 // was: 11
+                            "value": 3
                         }
                     ],
                     "channels": [
@@ -558,8 +566,17 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     // Значение параметра можно задать в файле конфигурации или через web-конфигуратор
                     "parameters": {
                         "param1": {
+                            // Название параметра в web-конфигураторе
                             "title": "s22",
+
+                            // Адрес регистра параметра
                             "address": 9992,
+
+                            // Тип регистра
+                            "reg_type" : "input",
+
+                            // Формат регистра
+                            "format": "s8",
 
                             // Список возможных значений
                             "enum": [1, 2, 3],
@@ -577,7 +594,10 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             "max": 3,
 
                             // Этот параметр должен быть обязательно задан в wb-mqtt-serial.conf
-                            "required": true
+                            "required": true,
+
+                            // Порядок отображения параметра в web-конфигураторе
+                            "order": 1
                         }
                     },
                     "channels": [

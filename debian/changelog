@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.14.0) experimental; urgency=medium
+
+  * "reg_type", "format" and "order" fields are added to parameters in device templates.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 06 May 2021 10:46:00 +0500
+
 wb-mqtt-serial (2.12.1) experimental; urgency=medium
 
   * Performace optimizations during register polling.
