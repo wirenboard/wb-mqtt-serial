@@ -346,7 +346,9 @@ Json::Value MakeChannelsSchema(const TDeviceTemplate& deviceTemplate,
         for (const auto& channel: channels) {
             Json::Value& v = Append(defaults);
             v["name"] = channel["name"];
+            v["enabled"] = true;
             SetIfExists(v, "enabled", channel, "enabled");
+            v["poll_interval"] = static_cast<Json::Int>(DefaultPollInterval.count());
             SetIfExists(v, "poll_interval", channel, "poll_interval");
         }
         r["minItems"] = defaults.size();
