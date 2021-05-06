@@ -676,8 +676,8 @@
           "minimum": 0,
           "default": 20,
           "options": {
-            "enabled": {
-              "poll": true
+            "dependencies": {
+              "enabled": true
             }
           }
         }

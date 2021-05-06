@@ -154,6 +154,8 @@ Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate)
     r["headerTemplate"] = channelTemplate["name"].asString();
     r["default"]["name"] = channelTemplate["name"].asString();
     r["options"]["wb"]["disable_panel"] = true;
+    r["default"]["enabled"] = true;
+    r["default"]["poll_interval"] = static_cast<Json::Int>(DefaultPollInterval.count());
     SetIfExists(r["default"], "enabled", channelTemplate, "enabled");
     SetIfExists(r["default"], "poll_interval", channelTemplate, "poll_interval");
     return r;
