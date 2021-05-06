@@ -169,9 +169,7 @@
                             "title": "CO₂ autocalibration period (days)",
                             "address": 89,
                             "reg_type": "holding",
-                            "min": 400,
-                            "max": 1500,
-                            "default": 400,
+                            "default": 10,
                             "order": 5
                         },
                         "Par_CO₂_measurement_range": {
@@ -180,7 +178,6 @@
                             "reg_type": "holding",
                             "enum":	[2000, 5000, 10000],
                             "enum_titles": ["2000", "5000", "10000"],
-                            "default": 400,
                             "order": 6
                         },
                         "Par_HDC1080 heater": {
