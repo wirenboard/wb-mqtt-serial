@@ -120,6 +120,8 @@ TEST_F(TConfigParserTest, Parse)
                     Emit() << "Name: " << setup_item->Name;
                     Emit() << "Address: " << setup_item->RegisterConfig->GetAddress();
                     Emit() << "Value: " << setup_item->Value;
+                    Emit() << "Reg type: " <<  setup_item->RegisterConfig->TypeName << " (" << setup_item->RegisterConfig->Type << ")";
+                    Emit() << "Reg format: " << RegisterFormatName(setup_item->RegisterConfig->Format);
                 }
             }
         }
