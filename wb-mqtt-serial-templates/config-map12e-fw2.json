@@ -351,8 +351,8 @@
               "word_order": "little_endian"
             },
             {
-              "name": "RP energy1",
-              "id": "RP energy1 L1",
+              "name": "RP energy",
+              "id": "RP energy L1",
               "reg_type": "input",
               "address": "0x1224",
               "type": "value",
@@ -465,8 +465,8 @@
               "word_order": "little_endian"
             },
             {
-              "name": "RP energy1",
-              "id": "RP energy1 L2",
+              "name": "RP energy",
+              "id": "RP energy L2",
               "reg_type": "input",
               "address": "0x1224",
               "type": "value",
@@ -579,8 +579,8 @@
               "word_order": "little_endian"
             },
             {
-              "name": "RP energy1",
-              "id": "RP energy1 L3",
+              "name": "RP energy",
+              "id": "RP energy L3",
               "reg_type": "input",
               "address": "0x1224",
               "type": "value",

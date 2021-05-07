@@ -688,7 +688,9 @@
               "name": "Ufund",
               "id": "Ufund L2",
               "reg_type": "input",
-              "address": "0x1711",
+              // actual address 0x1713, base should be 0x1711, but it is occupied by Ifund L2
+              // so add 1 to address as it is used with stride = 1
+              "address": "0x1712",
               "type": "value",
               "format": "u16",
               "scale": 0.032656,
@@ -804,7 +806,9 @@
               "name": "Ifund",
               "id": "Ifund L2",
               "reg_type": "input",
-              "address": "0x1710",
+              // actual address 0x1712, base should be 0x1710, but it is occupied by Ufund L1
+              // so add 1 to address as it is used with stride = 1
+              "address": "0x1711",
               "type": "value",
               "format": "u16",
               "scale": 0.0522496,
@@ -939,7 +943,9 @@
               "name": "NP energy",
               "id": "NP energy L2",
               "reg_type": "input",
-              "address": "0x1506",
+              // actual address 0x150a, base should be 0x1506, but it is displaced by 4 not by 2
+              // so add 2 to address as it is used with stride = 1
+              "address": "0x1508",
               "type": "value",
               "format": "u32",
               "scale": 0.291271,
@@ -950,7 +956,9 @@
               "name": "NN energy",
               "id": "NN energy L2",
               "reg_type": "input",
-              "address": "0x1516",
+              // actual address 0x151a, base should be 0x1516, but it is displaced by 4 not by 2
+              // so add 2 to address as it is used with stride = 1
+              "address": "0x1518",
               "type": "value",
               "format": "u32",
               "scale": 0.291271,
@@ -1132,7 +1140,9 @@
               "name": "Ufund",
               "id": "Ufund L3",
               "reg_type": "input",
-              "address": "0x1711",
+              // actual address 0x1715, base should be 0x1711, but it non uniformely displaced
+              // so add 2 to address as it is used with stride = 2
+              "address": "0x1713",
               "type": "value",
               "format": "u16",
               "scale": 0.032656,
@@ -1248,7 +1258,9 @@
               "name": "Ifund",
               "id": "Ifund L3",
               "reg_type": "input",
-              "address": "0x1710",
+              // actual address 0x1714, base should be 0x1710, but it non uniformely displaced
+              // so add 2 to address as it is used with stride = 2
+              "address": "0x1712",
               "type": "value",
               "format": "u16",
               "scale": 0.0522496,
@@ -1383,7 +1395,9 @@
               "name": "NP energy",
               "id": "NP energy L3",
               "reg_type": "input",
-              "address": "0x1506",
+              // actual address 0x150e, base should be 0x1506, but it is displaced by 8 not by 4
+              // so add 4 to address as it is used with stride = 2
+              "address": "0x150a",
               "type": "value",
               "format": "u32",
               "scale": 0.291271,
@@ -1394,7 +1408,9 @@
               "name": "NN energy",
               "id": "NN energy L3",
               "reg_type": "input",
-              "address": "0x1516",
+              // actual address 0x151e, base should be 0x1516, but it is displaced by 8 not by 4
+              // so add 4 to address as it is used with stride = 2
+              "address": "0x151a",
               "type": "value",
               "format": "u32",
               "scale": 0.291271,
