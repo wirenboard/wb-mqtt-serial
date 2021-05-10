@@ -785,7 +785,7 @@ Error 46
   desc: Failed to validate against schema associated with property name 'ports'.
 
 Parsing config test/configs/unsuccessful/unsuccessful-6.json
-Error parsing config file: value: plain integer or '0x..' hex string expected
+Error parsing config file: "Sub1 bad" bad value ""
 Parsing config test/configs/unsuccessful/unsuccessful-7.json
 Error parsing config file: Setup command 'bad' must have address
 Parsing config test/configs/unsuccessful/unsuccessful-8.json

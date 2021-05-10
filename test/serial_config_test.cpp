@@ -117,11 +117,12 @@ TEST_F(TConfigParserTest, Parse)
                 for (auto setup_item: device_config->SetupItemConfigs) {
                     TTestLogIndent indent(*this);
                     Emit() << "------";
-                    Emit() << "Name: " << setup_item->Name;
-                    Emit() << "Address: " << setup_item->RegisterConfig->GetAddress();
-                    Emit() << "Value: " << setup_item->Value;
-                    Emit() << "Reg type: " <<  setup_item->RegisterConfig->TypeName << " (" << setup_item->RegisterConfig->Type << ")";
-                    Emit() << "Reg format: " << RegisterFormatName(setup_item->RegisterConfig->Format);
+                    Emit() << "Name: " << setup_item->GetName();
+                    Emit() << "Address: " << setup_item->GetRegisterConfig()->GetAddress();
+                    Emit() << "Value: " << setup_item->GetValue();
+                    Emit() << "RawValue: 0x" << std::setfill('0') << std::setw(2) << std::hex << setup_item->GetRawValue();
+                    Emit() << "Reg type: " <<  setup_item->GetRegisterConfig()->TypeName << " (" << setup_item->GetRegisterConfig()->Type << ")";
+                    Emit() << "Reg format: " << RegisterFormatName(setup_item->GetRegisterConfig()->Format);
                 }
             }
         }

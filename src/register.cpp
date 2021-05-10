@@ -1,5 +1,8 @@
 #include "register.h"
 #include "serial_device.h"
+#include "bcd_utils.h"
+#include <wblib/utils.h>
+#include <string.h>
 
 size_t RegisterFormatByteWidth(RegisterFormat format)
 {
@@ -342,3 +345,223 @@ TRegisterType::TRegisterType(int                index,
         DefaultWordOrder(defaultWordOrder), 
         ReadOnly(readOnly)
 {}
+
+template<typename T> T RoundValue(T val, double round_to)
+{
+    static_assert(std::is_floating_point<T>::value, "RoundValue accepts only floating point types");
+    return round_to > 0 ? std::round(val / round_to) * round_to : val;
+}
+
+uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value)
+{
+    if (reg.WordOrder == EWordOrder::BigEndian) {
+        return value;
+    }
+
+    uint64_t result = 0;
+    uint64_t cur_value = value;
+
+    for (int i = 0; i < reg.Get16BitWidth(); ++i) {
+        uint16_t last_word = (((uint64_t) cur_value) & 0xFFFF);
+        result <<= 16;
+        result |= last_word;
+        cur_value >>= 16;
+    }
+    return result;
+}
+
+template<class T> T GetScaledValue(const TRegisterConfig& reg, T rawValue)
+{
+    if (reg.Scale == 1) {
+        if (reg.Offset == 0) {
+            return rawValue;
+        }
+        if (std::is_unsigned<T>::value && reg.Offset > rawValue) {
+            throw std::out_of_range("");
+        }
+        return round(rawValue - reg.Offset);
+    }
+    if (reg.Offset == 0) {
+        return round(rawValue / reg.Scale);
+    }
+    if (std::is_unsigned<T>::value && reg.Offset > rawValue) {
+        throw std::out_of_range("");
+    }
+    return round((rawValue - reg.Offset) / reg.Scale);
+}
+
+template<class T> struct TConvertTraits
+{};
+
+template<> struct TConvertTraits<int64_t>
+{
+    static int64_t Convert(const char* str, char** end, int base)
+    {
+        return strtoull(str, end, base);
+    }
+};
+
+template<> struct TConvertTraits<uint64_t>
+{
+    static uint64_t Convert(const char* str, char** end, int base)
+    {
+        return strtoll(str, end, base);
+    }
+};
+
+template<typename T> T FromScaledTextValue(const TRegisterConfig& reg, const std::string& str)
+{
+    if (str.empty()) {
+        throw std::invalid_argument("");
+    }
+    char* end;
+    if (WBMQTT::StringStartsWith(str, "0x") || WBMQTT::StringStartsWith(str, "0X")) {
+        T res = TConvertTraits<T>::Convert(str.c_str(), &end, 16);
+        if (*end == 0) {
+            return GetScaledValue(reg, res);
+        }
+        throw std::invalid_argument("");
+    } 
+    T res = TConvertTraits<T>::Convert(str.c_str(), &end, 10);
+    if (*end == 0) {
+        return GetScaledValue(reg, res);
+    }
+    return round(FromScaledTextValue<double>(reg, str));
+}
+
+template<> double FromScaledTextValue(const TRegisterConfig& reg, const std::string& str)
+{
+    if (!str.empty()) {
+        char* end;
+        double resd = strtod(str.c_str(), &end);
+        if (*end == 0) {
+            return (RoundValue(resd, reg.RoundTo) - reg.Offset) / reg.Scale;
+        }
+    }
+    throw std::invalid_argument("");
+}
+
+uint64_t ConvertMasterValue(const TRegisterConfig& reg, const std::string& str)
+{
+    switch (reg.Format) {
+    case S8:
+        return FromScaledTextValue<int64_t>(reg, str) & 0xff;
+    case S16:
+        return FromScaledTextValue<int64_t>(reg, str) & 0xffff;
+    case S24:
+        return FromScaledTextValue<int64_t>(reg, str) & 0xffffff;
+    case S32:
+        return FromScaledTextValue<int64_t>(reg, str) & 0xffffffff;
+    case S64:
+        return FromScaledTextValue<int64_t>(reg, str);
+    case U8:
+        return FromScaledTextValue<uint64_t>(reg, str) & 0xff;
+    case U16:
+        return FromScaledTextValue<uint64_t>(reg, str) & 0xffff;
+    case U24:
+        return FromScaledTextValue<uint64_t>(reg, str) & 0xffffff;
+    case U32:
+        return FromScaledTextValue<uint64_t>(reg, str) & 0xffffffff;
+    case U64:
+        return FromScaledTextValue<uint64_t>(reg, str);
+    case Float:
+        {
+            float v = FromScaledTextValue<double>(reg, str);
+            uint64_t raw = 0;
+            memcpy(&raw, &v, sizeof(v));
+            return raw;
+        }
+    case Double:
+        {
+            double v = FromScaledTextValue<double>(reg, str);
+            uint64_t raw = 0;
+            memcpy(&raw, &v, sizeof(v));
+            return raw;
+        }
+    case Char8:
+        return str.empty() ? 0 : uint8_t(str[0]);
+    case BCD8:
+        return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFF, WordSizes::W8_SZ);
+    case BCD16:
+        return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFF, WordSizes::W16_SZ);
+    case BCD24:
+        return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFF, WordSizes::W24_SZ);
+    case BCD32:
+        return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ);
+    default:
+        return FromScaledTextValue<uint64_t>(reg, str);
+    }
+}
+
+uint64_t ConvertToRawValue(const TRegisterConfig& reg, const std::string& str)
+{
+    return InvertWordOrderIfNeeded(reg, ConvertMasterValue(reg, str));
+}
+
+template<typename T> std::string ToScaledTextValue(const TRegisterConfig& reg, T val)
+{
+    if (reg.Scale == 1 && reg.Offset == 0 && reg.RoundTo == 0) {
+        return std::to_string(val);
+    }
+    return WBMQTT::StringFormat("%.15g", RoundValue(reg.Scale * val + reg.Offset, reg.RoundTo));
+}
+
+template<> std::string ToScaledTextValue(const TRegisterConfig& reg, float val)
+{
+    return WBMQTT::StringFormat("%.7g", RoundValue(reg.Scale * val + reg.Offset, reg.RoundTo));
+}
+
+template<> std::string ToScaledTextValue(const TRegisterConfig& reg, double val)
+{
+    return WBMQTT::StringFormat("%.15g", RoundValue(reg.Scale * val + reg.Offset, reg.RoundTo));
+}
+
+std::string ConvertSlaveValue(const TRegisterConfig& reg, uint64_t value)
+{
+    switch (reg.Format) {
+    case S8:
+        return ToScaledTextValue(reg, int8_t(value & 0xff));
+    case S16:
+        return ToScaledTextValue(reg, int16_t(value & 0xffff));
+    case S24:
+        {
+            uint32_t v = value & 0xffffff;
+            if (v & 0x800000) // fix sign (TBD: test)
+                v |= 0xff000000;
+            return ToScaledTextValue(reg, int32_t(v));
+        }
+    case S32:
+        return ToScaledTextValue(reg, int32_t(value & 0xffffffff));
+    case S64:
+        return ToScaledTextValue(reg, int64_t(value));
+    case BCD8:
+        return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W8_SZ));
+    case BCD16:
+        return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W16_SZ));
+    case BCD24:
+        return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W24_SZ));
+    case BCD32:
+        return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W32_SZ));
+    case Float:
+        {
+            float v;
+            memcpy(&v, &value, sizeof(v));
+            return ToScaledTextValue(reg, v);
+        }
+    case Double:
+        {
+            double v;
+            memcpy(&v, &value, sizeof(v));
+            return ToScaledTextValue(reg, v);
+        }
+    case Char8:
+        return std::string(1, value & 0xff);
+    default:
+        return ToScaledTextValue(reg, value);
+    }
+}
+
+std::string ConvertFromRawValue(const TRegisterConfig& reg, uint64_t val)
+{
+    return ConvertSlaveValue(reg, InvertWordOrderIfNeeded(reg, val));
+}

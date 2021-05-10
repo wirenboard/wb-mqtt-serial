@@ -449,3 +449,29 @@ public:
 };
 
 typedef std::shared_ptr<TSimpleRegisterRange> PSimpleRegisterRange;
+
+uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value);
+
+/**
+ * @brief Tries to get a value from string and 
+ *        to convert it to raw bytes according to register config.
+ *        Performs scaling, rounding and byte order inversion of a parsed value,
+ *        if specified in config.
+ *        Accepts:
+ *        - signed and unsigned integers;
+ *        - floating point values with or without exponent;
+ *        - hex values.
+ *        Throws std::invalid_argument or std::out_of_range on conversion error.
+ * @param reg register config
+ * @param str string to convert
+ */
+uint64_t ConvertToRawValue(const TRegisterConfig& reg, const std::string& str);
+
+/**
+ * @brief Converts raw bytes to string according to register config
+ *        Performs scaling, rounding and byte order inversion of a value,
+ *        if specified in config.
+ * @param reg register config
+ * @param val raw bytes
+ */
+std::string ConvertFromRawValue(const TRegisterConfig& reg, uint64_t val);

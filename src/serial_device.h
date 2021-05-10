@@ -41,13 +41,19 @@ struct TDeviceChannelConfig
 
 typedef std::shared_ptr<TDeviceChannelConfig> PDeviceChannelConfig;
 
-struct TDeviceSetupItemConfig 
+class TDeviceSetupItemConfig 
 {
     std::string     Name;
     PRegisterConfig RegisterConfig;
-    int             Value;
+    std::string     Value;
+    uint64_t        RawValue;
+public:
+    TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value);
 
-    TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, int value);
+    const std::string& GetName() const;
+    const std::string& GetValue() const;
+    uint64_t GetRawValue() const;
+    PRegisterConfig GetRegisterConfig() const;
 };
 
 typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
@@ -114,15 +120,17 @@ typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
 class IProtocol;
 typedef IProtocol* PProtocol;
 
-struct TDeviceSetupItem : public TDeviceSetupItemConfig
+struct TDeviceSetupItem
 {
     TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
-        : TDeviceSetupItemConfig(*config)
+        : Name(config->GetName()), Value(config->GetRawValue())
     {
-        Register = TRegister::Intern(device, config->RegisterConfig);
+        Register = TRegister::Intern(device, config->GetRegisterConfig());
     }
 
-    PRegister Register;
+    std::string Name;
+    uint64_t    Value;
+    PRegister   Register;
 };
 
 typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
