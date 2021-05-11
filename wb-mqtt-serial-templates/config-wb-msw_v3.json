@@ -41,6 +41,10 @@
             {   "name": "HW Info",
                 "id": "",
                 "device_type": "hw_info"
+            },
+            {   "name": "Debug",
+                "id": "",
+                "device_type": "debug"
             }
         ],
 
@@ -97,22 +101,6 @@
                             "default": 1,
                             "order": 1
                         },
-                        "co2_force_calibration": {
-                            "title": "CO₂ Force Calibration",
-                            "address": 1,
-                            "reg_type": "coil",
-                            "enum":	[0,1],
-                            "enum_titles": ["off", "on"],
-                            "default": 0,
-                            "order": 2
-                        },
-                        "co2_manual_calibration": {
-                            "title": "CO₂ Manual Calibration (ppm)",
-                            "address": 88,
-                            "reg_type": "holding",
-                            "default": 10,
-                            "order": 3
-                        },
                         "co2_autocalibration_mode": {
                             "title": "CO₂ Autocalibration Mode",
                             "address": 95,
@@ -120,14 +108,7 @@
                             "enum":	[0,1],
                             "enum_titles": ["off", "on"],
                             "default": 1,
-                            "order": 4
-                        },
-                        "co2_autocalibration_period_d": {
-                            "title": "CO₂ Autocalibration Period (days)",
-                            "address": 89,
-                            "reg_type": "holding",
-                            "default": 10,
-                            "order": 5
+                            "order": 2
                         },
                         "co2_measurement_range": {
                             "title": "CO₂ Measurement Range (ppm)",
@@ -135,7 +116,7 @@
                             "reg_type": "holding",
                             "enum":	[2000, 5000, 10000],
                             "enum_titles": ["2000", "5000", "10000"],
-                            "order": 6
+                            "order": 3
                         },
                         "th_sensor_heater": {
                             "title": "TH Sensor Heater",
@@ -144,13 +125,14 @@
                             "enum":	[0,1],
                             "enum_titles": ["off", "on"],
                             "default": 0,
-                            "order": 7
+                            "order": 4
                         },
-                        "th_sensor_temperature_compensation": {
-                            "title": "TH Sensor Temperature Compensation (deg*100)",
+                        "th_compensation_deg": {
+                            "title": "TH Compensation (deg)",
                             "address": 245,
                             "reg_type": "holding",
-                            "order": 8
+                            "scale": 0.01,
+                            "order": 5
                         }
                     },
                     "channels": [
@@ -164,31 +146,12 @@
                             "error_value": "0x7FFF"
                         },
                         {
-                            "name": "Temperature*100",
-                            "reg_type": "input",
-                            "address": 4,
-                            "type": "temperature",
-                            "format": "s16",
-                            "scale": 1,
-                            "error_value": "0x7FFF",
-                            "enabled": false
-                        },
-                        {
                             "name": "Humidity",
                             "reg_type": "input",
                             "address": 1,
                             "type": "rel_humidity",
                             "scale": 0.1,
                             "error_value": "0xFFFF"
-                        },
-                        {
-                            "name": "Humidity*100",
-                            "reg_type": "input",
-                            "address": 1,
-                            "type": "rel_humidity",
-                            "scale": 1,
-                            "error_value": "0xFFFF",
-                            "enabled": false
                         },
                         {
                             "name": "CO2",
@@ -198,12 +161,25 @@
                             "error_value": "0xFFFF"
                         },
                         {
+                            "name": "CO2 Force Calibration",
+                            "reg_type": "coil",
+                            "address": 1,
+                            "type": "switch",
+                            "enabled": false
+                        },
+                        {
                             "name": "Air Quality (VOC)",
                             "reg_type": "input",
                             "address": 11,
                             "type": "concentration",
                             "scale": 1,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "name": "VOC Baseline",
+                            "reg_type": "input",
+                            "address": 106,
+                            "enabled": false
                         }
                      ]
                 }
@@ -672,11 +648,12 @@
                 "device_type": "sound_level",
                 "device": {
                     "parameters": {
-                        "noise_avrg_time_10ms": {
-                            "title": "Noise Averaging Time (*10 ms)",
+                        "avg_time_ms": {
+                            "title": "Averaging Time (ms)",
                             "address": 91,
                             "reg_type": "holding",
-                            "default": 20,
+                            "scale": 10,
+                            "default": 200,
                             "order": 1
                         }
                     },
@@ -711,8 +688,8 @@
                 "device_type": "motion",
                 "device": {
                     "parameters": {
-                        "motion_avrg_period_s": {
-                            "title": "Motion Averaging Period (s)",
+                        "avg_time_s": {
+                            "title": "Averaging Time (s)",
                             "address": 282,
                             "reg_type": "holding",
                             "min": 1,
@@ -726,13 +703,13 @@
                             "name": "Max Motion",
                             "type": "value",
                             "reg_type": "input",
-                            "address": "280"
+                            "address": 280
                         },
                         {
                             "name": "Current Motion",
                             "type": "value",
                             "reg_type": "input",
-                            "address": "283"
+                            "address": 283
                         }
                     ]
                 }
@@ -741,8 +718,8 @@
                 "device_type": "general",
                 "device": {
                     "parameters": {
-                        "packet_response_delay_ms": {
-                            "title": "RS485 Packet Response Delay (ms)",
+                        "rs485_response_delay_ms": {
+                            "title": "RS-485 Response Delay (ms)",
                             "address": 113,
                             "reg_type": "holding",
                             "default": 8,
@@ -781,7 +758,7 @@
                             "enabled": false
                         },
                         {
-                            "name": "Minimum voltage since startup",
+                            "name": "Minimum Voltage Since Startup",
                             "reg_type": "input",
                             "address": 122,
                             "scale": 0.001,
@@ -789,7 +766,7 @@
                             "enabled": false
                         },
                         {
-                            "name": "MCU voltage",
+                            "name": "MCU Voltage",
                             "reg_type": "input",
                             "address": 123,
                             "scale": 0.001,
@@ -797,54 +774,86 @@
                             "enabled": false
                         },
                         {
-                            "name": "MCU temperature",
+                            "name": "MCU Temperature",
                             "reg_type": "input",
                             "address": 124,
                             "type": "temperature",
                             "format": "s16",
                             "scale": 0.1,
                             "enabled": false
-                        },
+                        }
+                    ]
+                }
+            },
+            {
+                "device_type":"debug",
+                "device": {
+                    "channels": [
                         {
-                            "name": "Number of successful readings of temperature and humidity sensor",
+                            "name": "Sound Channel",
                             "reg_type": "input",
-                            "address": 101,
+                            "address": 86,
                             "enabled": false
                         },
                         {
-                            "name": "Number of erroneous readings of temperature and humidity sensor",
+                            "name": "Sound Raw",
                             "reg_type": "input",
-                            "address": 102,
+                            "address": 100,
                             "enabled": false
                         },
                         {
-                            "name": "Baseline of VOC sensor",
+                            "name": "Sound Highgain Raw",
                             "reg_type": "input",
-                            "address": 106,
+                            "address": 87,
                             "enabled": false
                         },
                         {
-                            "name": "VOC sensor raw reading",
+                            "name": "Sound Offset",
                             "reg_type": "input",
-                            "address": 107,
+                            "address": 93,
                             "enabled": false
                         },
                         {
-                            "name": "VOC sensor version",
+                            "name": "Sound Offset Raw",
+                            "reg_type": "input",
+                            "address": 92,
+                            "enabled": false
+                        },
+                        {
+                            "name": "VOC Version",
                             "reg_type": "input",
                             "address": 108,
                             "enabled": false
                         },
                         {
-                            "name": "Motion sensor raw reading",
+                            "name": "VOC Raw",
+                            "reg_type": "input",
+                            "address": 107,
+                            "enabled": false
+                        },
+                        {
+                            "name": "Motion Raw",
                             "reg_type": "input",
                             "address": 281,
                             "enabled": false
+                        },
+                        {
+                            "name": "Successful TH Readings",
+                            "reg_type": "input",
+                            "address": 101,
+                            "enabled": false
+                        },
+                        {
+                            "name": "Erroneous TH Readings",
+                            "reg_type": "input",
+                            "address": 102,
+                            "enabled": false
                         }
+                        
                     ]
                 }
             }
-
         ]        
+
     }
 }
