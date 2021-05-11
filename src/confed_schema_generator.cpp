@@ -395,7 +395,7 @@ int AddDeviceParametersUI(Json::Value&       properties,
             ++n;
         }
     }
-    return firstParameterOrder + maxOrder;
+    return firstParameterOrder + maxOrder + 1;
 }
 
 //  {
