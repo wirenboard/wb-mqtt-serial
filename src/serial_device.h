@@ -123,13 +123,16 @@ typedef IProtocol* PProtocol;
 struct TDeviceSetupItem
 {
     TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
-        : Name(config->GetName()), Value(config->GetRawValue())
+        : Name(config->GetName()),
+          RawValue(config->GetRawValue()),
+          HumanReadableValue(config->GetValue())
     {
         Register = TRegister::Intern(device, config->GetRegisterConfig());
     }
 
     std::string Name;
-    uint64_t    Value;
+    uint64_t    RawValue;
+    std::string HumanReadableValue;
     PRegister   Register;
 };
 

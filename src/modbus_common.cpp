@@ -923,10 +923,10 @@ namespace Modbus    // modbus protocol common utilities
     {
         for (const auto& item : setupItems) {
             try {
-                WriteRegister(traits, port, slaveId, *item->Register, item->Value, shift);
+                WriteRegister(traits, port, slaveId, *item->Register, item->RawValue, shift);
                 LOG(Info) << "Init: " << item->Name 
                         << ": setup register " << item->Register->ToString()
-                        << " <-- " << item->Value;
+                        << " <-- " << item->HumanReadableValue << " (0x" << std::hex << item->RawValue << ")";
             } catch (const TSerialDevicePermanentRegisterException& e) {
                 WarnFailedRegisterSetup(item, e.what());
             } catch (const TSerialDeviceTransientErrorException& e) {

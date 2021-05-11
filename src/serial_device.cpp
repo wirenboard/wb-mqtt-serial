@@ -148,10 +148,10 @@ bool TSerialDevice::WriteSetupRegisters()
 {
     for (const auto& setup_item : SetupItems) {
         try {
-            WriteRegister(setup_item->Register, setup_item->Value);
+            WriteRegister(setup_item->Register, setup_item->RawValue);
             LOG(Info) << "Init: " << setup_item->Name 
                       << ": setup register " << setup_item->Register->ToString()
-                      << " <-- " << setup_item->Value;
+                      << " <-- " << setup_item->HumanReadableValue << " (0x" << std::hex << setup_item->RawValue << ")";
         } catch (const TSerialDeviceException & e) {
             LOG(Warn) << "failed to write: " << setup_item->Register->ToString() << ": " << e.what();
             return false;

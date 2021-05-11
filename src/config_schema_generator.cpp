@@ -10,7 +10,7 @@ using namespace WBMQTT::JSON;
 namespace
 {
     //  {
-    //      "type": "integer",
+    //      "type": "number",
     //      "minimum": MIN,
     //      "maximum": MAX,
     //      "enum": [ ... ]
@@ -18,7 +18,7 @@ namespace
     Json::Value MakeParameterSchema(const Json::Value& setupRegister)
     {
         Json::Value r;
-        r["type"] = "integer";
+        r["type"] = "number";
         SetIfExists(r, "enum",    setupRegister, "enum");
         SetIfExists(r, "minimum", setupRegister, "min");
         SetIfExists(r, "maximum", setupRegister, "max");

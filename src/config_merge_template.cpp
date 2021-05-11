@@ -30,7 +30,7 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config)
         for (auto it = deviceTemplate["parameters"].begin(); it != deviceTemplate["parameters"].end(); ++it) {
             if (config.isMember(it.name())) {
                 auto& cfgItem = config[it.name()];
-                if (cfgItem.isInt()) {
+                if (cfgItem.isNumeric()) {
                     Json::Value item(*it);
                     item["value"] = cfgItem;
                     newSetup.append(item);

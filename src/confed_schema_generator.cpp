@@ -92,9 +92,10 @@ bool IsRequiredSetupRegister(const Json::Value& setupRegister)
 }
 
 //  {
-//      "type": "integer",
+//      "type": "number", // or "type": "integer"
 //      "title": TITLE,
 //      "default": DEFAULT,
+//      "_format": "number" // if not enum
 //      "minimum": MIN,
 //      "maximum": MAX,
 //      "enum": [ ... ],
@@ -106,12 +107,12 @@ bool IsRequiredSetupRegister(const Json::Value& setupRegister)
 Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index)
 {
     Json::Value r;
-    r["type"] = "integer";
+    r["type"] = setupRegister.isMember("scale") ? "number" : "integer";
     r["title"] = setupRegister["title"];
     r["default"] = GetDefaultSetupRegisterValue(setupRegister);
-    SetIfExists(r, "enum",    setupRegister, "enum");
-    SetIfExists(r, "minimum", setupRegister, "min");
-    SetIfExists(r, "maximum", setupRegister, "max");
+    SetIfExists(r, "enum",       setupRegister, "enum");
+    SetIfExists(r, "minimum",    setupRegister, "min");
+    SetIfExists(r, "maximum",    setupRegister, "max");
     r["propertyOrder"] = index;
     if (setupRegister.isMember("enum_titles")) {
         r["options"]["enum_titles"] = setupRegister["enum_titles"];

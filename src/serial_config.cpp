@@ -352,8 +352,9 @@ namespace {
                                       stride,
                                       device_factory,
                                       "Setup item \"" + name + "\"");
-
-        auto value = item_data["value"].asString();
+        const auto& valueItem = item_data["value"];
+        // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
+        auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
         device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg.RegisterConfig, value)));
     }
 
