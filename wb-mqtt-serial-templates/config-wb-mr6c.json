@@ -454,10 +454,10 @@
                     },
                     "channels": [
                         {
-                              "name": "K1",
-                              "reg_type": "coil",
-                              "address": 0,
-                              "type": "switch"
+                            "name": "K1",
+                            "reg_type": "coil",
+                            "address": 0,
+                            "type": "switch"
                         },
                         {
                             "name": "K2",
