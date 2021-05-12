@@ -435,6 +435,60 @@ TEST_F(TSerialClientTest, S32)
     EXPECT_EQ("-0.123", SerialClient->GetTextValue(reg24));
 }
 
+TEST_F(TSerialClientTest, S24)
+{
+    PRegister reg20 = Reg(20, S24);
+    PRegister reg30 = Reg(30, S24);
+    SerialClient->AddRegister(reg20);
+    SerialClient->AddRegister(reg30);
+
+    // create scaled register
+    PRegister reg24 = Reg(24, S24, 0.001);
+    SerialClient->AddRegister(reg24);
+
+    Note() << "server -> client: 10, 20";
+    Device->Registers[20] = 0x002A;
+    Device->Registers[21] = 0x00BB;
+    Device->Registers[30] = 0x00FF;
+    Device->Registers[31] = 0xFFFF;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0x002A00BB), SerialClient->GetTextValue(reg20));
+    EXPECT_EQ(to_string(-1), SerialClient->GetTextValue(reg30));
+
+    Note() << "client -> server: 10";
+    SerialClient->SetTextValue(reg20, "10");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), SerialClient->GetTextValue(reg20));
+    EXPECT_EQ(0, Device->Registers[20]);
+    EXPECT_EQ(10, Device->Registers[21]);
+
+    Note() << "client -> server: -2";
+    SerialClient->SetTextValue(reg20, "-2");
+    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
+    EXPECT_EQ(0x00FF, Device->Registers[20]);
+    EXPECT_EQ(0xFFFE, Device->Registers[21]);
+
+    Note() << "client -> server: -0.123 (scaled)";
+    SerialClient->SetTextValue(reg24, "-0.123");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ("-0.123", SerialClient->GetTextValue(reg24));
+    EXPECT_EQ(0x00FF, Device->Registers[24]);
+    EXPECT_EQ(0xFF85, Device->Registers[25]);
+
+    Note() << "server -> client: 0x00ff 0xff85 (scaled)";
+    Device->Registers[24] = 0x00FF;
+    Device->Registers[25] = 0xFF85;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ("-0.123", SerialClient->GetTextValue(reg24));
+}
+
 TEST_F(TSerialClientTest, WordSwap)
 {
     PRegister reg20 = Reg(20, S32, 1, 0, 0, EWordOrder::LittleEndian);
