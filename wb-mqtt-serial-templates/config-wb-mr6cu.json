@@ -37,14 +37,14 @@
                 "device_type": "outputs 1-6",
                 "device": {
                     "parameters": {
-                        "outputs_save_state": {
-                            "title": "State After Power Off",
+                        "restore_state": {
+                            "title": "Restore State After Power Off",
                             "address": 6,
                             "enum": [ 0, 1],
                             "default": 0,
                             "enum_titles": [
-                            "turn off all relays after power off",
-                            "save last relay state after power off"
+                            "no",
+                            "yes"
                             ],
                             "order": 1
                         }
