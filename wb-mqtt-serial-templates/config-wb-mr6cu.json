@@ -43,8 +43,8 @@
                             "enum": [ 0, 1],
                             "default": 0,
                             "enum_titles": [
-                            "no",
-                            "yes"
+                                "no",
+                                "yes"
                             ],
                             "order": 1
                         }
