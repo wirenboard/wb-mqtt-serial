@@ -92,7 +92,8 @@
                             "name": "Input 0 counter",
                             "reg_type": "input",
                             "address": 32,
-                            "type": "value"
+                            "type": "value",
+                            "enabled": false
                         },
                         {
                             "name": "Input 0 freq",
@@ -101,7 +102,8 @@
                             "type": "value",
                             "format": "u32",
                             "scale": 1.52588e-05,
-                            "round_to": 0.001
+                            "round_to": 0.001,
+                            "enabled": false
                         }
                     ]
                 }
@@ -144,7 +146,8 @@
                             "name": "Input 1 counter",
                             "reg_type": "input",
                             "address": 32,
-                            "type": "value"
+                            "type": "value",
+                            "enabled": false
                         },
                         {
                             "name": "Input 1 freq",
@@ -153,7 +156,8 @@
                             "type": "value",
                             "format": "u32",
                             "scale": 1.52588e-05,
-                            "round_to": 0.001
+                            "round_to": 0.001,
+                            "enabled": false
                         }
                     ]
                 }
@@ -196,7 +200,8 @@
                             "name": "Input 2 counter",
                             "reg_type": "input",
                             "address": 32,
-                            "type": "value"
+                            "type": "value",
+                            "enabled": false
                         },
                         {
                             "name": "Input 2 freq",
@@ -205,7 +210,8 @@
                             "type": "value",
                             "format": "u32",
                             "scale": 1.52588e-05,
-                            "round_to": 0.001
+                            "round_to": 0.001,
+                            "enabled": false
                         }
                     ]
                 }
@@ -248,7 +254,8 @@
                             "name": "Input 3 counter",
                             "reg_type": "input",
                             "address": 32,
-                            "type": "value"
+                            "type": "value",
+                            "enabled": false
                         },
                         {
                             "name": "Input 3 freq",
@@ -257,7 +264,8 @@
                             "type": "value",
                             "format": "u32",
                             "scale": 1.52588e-05,
-                            "round_to": 0.001
+                            "round_to": 0.001,
+                            "enabled": false
                         }
                     ]
                 }
