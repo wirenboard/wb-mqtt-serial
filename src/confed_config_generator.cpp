@@ -106,6 +106,37 @@ Json::Value FilterStandardChannels(const Json::Value& device,
     return channels;
 }
 
+// Move parameters and channels from channels representing groups to device's root
+void ExpandGroupChannels(Json::Value& device, const Json::Value& deviceTemplate)
+{
+    if (!deviceTemplate.isMember("groups")) {
+        return;
+    }
+    std::unordered_map<std::string, Json::Value> groups;
+    for (const auto& group: deviceTemplate["groups"]) {
+        groups.emplace(group["title"].asString(), group);
+    }
+
+    Json::Value newChannels(Json::arrayValue);
+    for (const auto& channel: device["channels"]) {
+        auto it = groups.find(channel["name"].asString());
+        if (it != groups.end()) {
+            for (const auto& subChannel: channel["channels"]) {
+                newChannels.append(subChannel);
+            }
+            for (const auto& param: it->second["parameters"]) {
+                auto paramName = param.asString();
+                if (channel.isMember(paramName)) {
+                    device[paramName] = channel[paramName];
+                }
+            }
+        } else {
+            newChannels.append(channel);
+        }
+    }
+    device["channels"] = newChannels;
+}
+
 Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 {
     Json::Value  root;
@@ -127,6 +158,7 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
                 auto dt = device["device_type"].asString();
 
                 Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
+                TransformGroupsToSubdevices(deviceTemplate, deviceTemplate["subdevices"]);
                 TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
                 std::unordered_map<std::string, std::string> subdeviceTypeHashes;
                 for (const auto& dt: subdevices.GetDeviceTypes()) {
@@ -142,6 +174,8 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
                 if (!filteredChannels.empty()) {
                     device["channels"] = filteredChannels;
                 }
+
+                ExpandGroupChannels(device, deviceTemplate);
             }
 
             AppendParams(device, device["parameters"]);

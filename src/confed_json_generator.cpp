@@ -121,6 +121,53 @@ void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, bool is
     }
 }
 
+Json::Value MakeChannelFromGroup(const Json::Value& group, Json::Value& config)
+{
+    Json::Value res;
+    res["name"] = group["title"];
+    res["device_type"] = group["title"];
+    if (group.isMember("parameters")) {
+        for (const auto& param: group["parameters"]) {
+            auto name = param.asString();
+            if (config.isMember(name)) {
+                res[name] = config[name];
+                config.removeMember(name);
+            }
+        }
+    }
+    if (group.isMember("channels")) {
+        for (const auto& channel: group["channels"]) {
+            auto name = channel.asString();
+            for(Json::ArrayIndex i = 0; i <config["channels"].size(); ++i) {
+                if (config["channels"][i]["name"] == name) {
+                    Json::Value item;
+                    config["channels"].removeIndex(i, &item);
+                    res["channels"].append(item);
+                    break;
+                }
+            }
+        }
+    }
+    return res;
+}
+
+/**
+ * @brief Creates channels for groups
+ *        Moves parameters and channels to newly created channels according to group declaration
+ */
+void JoinChannelsToGroups(Json::Value& config, const Json::Value& schema)
+{
+    if (!schema.isMember("groups")) {
+        return;
+    }
+    if (!config.isMember("channels")) {
+        config["channels"] = Json::Value(Json::arrayValue);
+    }
+    for (const auto& group: schema["groups"]) {
+        config["channels"].append(MakeChannelFromGroup(group, config));
+    }
+}
+
 //  Top level device
 //  {
 //      "name": ...
@@ -173,12 +220,19 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
 {
     auto dt = config["device_type"].asString();
     auto deviceTemplate = deviceTemplates.GetTemplate(dt);
+    Json::Value schema(deviceTemplate.Schema);
+    if (!schema.isMember("subdevices")) {
+        schema["subdevices"] = Json::Value(Json::arrayValue);
+    }
+    TransformGroupsToSubdevices(schema, schema["subdevices"]);
+
     Json::Value newDev(config);
+    JoinChannelsToGroups(newDev, schema);
     newDev.removeMember("device_type");
 
     Json::Value customChannels;
     Json::Value standardChannels;
-    std::tie(standardChannels, customChannels) = SplitChannels(config, deviceTemplate.Schema);
+    std::tie(standardChannels, customChannels) = SplitChannels(newDev, schema);
     newDev.removeMember("channels");
     if (!customChannels.empty()) {
         newDev["channels"] = customChannels;
@@ -187,7 +241,7 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
         if (isSubdevice) {
             MakeDevicesForConfed(standardChannels, deviceTemplates, true);
         } else {
-            TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
+            TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate.Type, schema);
             MakeDevicesForConfed(standardChannels, subDeviceTemplates, true);
         } 
         newDev["standard_channels"] = standardChannels;
@@ -204,8 +258,8 @@ Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceT
         if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
             newDev["slave_id"] = false;
         }
-        if ((deviceTemplate.Schema.isMember("parameters"))) {
-            for (auto it = deviceTemplate.Schema["parameters"].begin(); it != deviceTemplate.Schema["parameters"].end(); ++it) {
+        if ((schema.isMember("parameters"))) {
+            for (auto it = schema["parameters"].begin(); it != schema["parameters"].end(); ++it) {
                 if (newDev.isMember(it.name())) {
                     newDev["parameters"][it.name()] = newDev[it.name()];
                     newDev.removeMember(it.name());
