@@ -82,7 +82,8 @@
                             "name": "Button 1 counter",
                             "reg_type": "input",
                             "address": 32,
-                            "type": "value"
+                            "type": "value",
+                            "enabled": false
                         },
                         {
                             "name": "Button 1 freq",
@@ -91,7 +92,8 @@
                             "type": "value",
                             "format": "u32",
                             "scale": 1.52588e-05,
-                            "round_to": 0.001
+                            "round_to": 0.001,
+                            "enabled": false
                         }
                     ]
                 }
@@ -134,7 +136,8 @@
                             "name": "Button 2 counter",
                             "reg_type": "input",
                             "address": 32,
-                            "type": "value"
+                            "type": "value",
+                            "enabled": false
                         },
                         {
                             "name": "Button 2 freq",
@@ -143,7 +146,8 @@
                             "type": "value",
                             "format": "u32",
                             "scale": 1.52588e-05,
-                            "round_to": 0.001
+                            "round_to": 0.001,
+                            "enabled": false
                         }
                     ]
                 }
