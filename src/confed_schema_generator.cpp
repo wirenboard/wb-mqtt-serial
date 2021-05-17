@@ -499,34 +499,31 @@ Json::Value MakeDeviceSettingsUI(const Json::Value& deviceTemplate, int property
     return res;
 }
 
-Json::Value MakeSubdeviceFromGroup(const Json::Value& group, Json::Value& schema)
+std::vector<const Json::Value*> PartitionChannelsByGroups(const Json::Value& schema,
+                                                          std::unordered_map<std::string, Json::Value>& subdevicesForGroups)
 {
-    Json::Value res;
-    res["title"] = group["title"];
-    res["device_type"] = group["title"];
-    if (group.isMember("parameters")) {
-        for (const auto& param: group["parameters"]) {
-            auto name = param.asString();
-            if (schema["parameters"].isMember(name)) {
-                res["device"]["parameters"][name] = schema["parameters"][name];
-                schema["parameters"].removeMember(name);
-            }
+    std::vector<const Json::Value*> originalChannels;
+    for (const auto& channel: schema["channels"]) {
+        try {
+            subdevicesForGroups.at(channel["group"].asString())["device"]["channels"].append(channel);
+        } catch (...) {
+            originalChannels.emplace_back(&channel);
         }
     }
-    if (group.isMember("channels")) {
-        for (const auto& channel: group["channels"]) {
-            auto name = channel.asString();
-            for(Json::ArrayIndex i = 0; i <schema["channels"].size(); ++i) {
-                if (schema["channels"][i]["name"] == name) {
-                    Json::Value item;
-                    schema["channels"].removeIndex(i, &item);
-                    res["device"]["channels"].append(item);
-                    break;
-                }
-            }
-        }
+    return originalChannels;
+}
+
+std::vector<std::string> PartitionParametersByGroups(const Json::Value& schema,
+                                                     std::unordered_map<std::string, Json::Value>& subdevicesForGroups)
+{
+    std::vector<std::string> movedParameters;
+    for (auto it = schema["parameters"].begin(); it != schema["parameters"].end(); ++it) {
+        try {
+            subdevicesForGroups.at((*it)["group"].asString())["device"]["parameters"][it.name()] = *it;
+            movedParameters.emplace_back(it.name());
+        } catch (...) {}
     }
-    return res;
+    return movedParameters;
 }
 
 void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices)
@@ -535,19 +532,36 @@ void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices)
         return;
     }
 
-    auto newChannels = Json::Value(Json::arrayValue);
+    std::unordered_map<std::string, Json::Value> subdevicesForGroups;
+    auto channelsFromGroups = Json::Value(Json::arrayValue);
     for (const auto& group: schema["groups"]) {
-        subdevices.append(MakeSubdeviceFromGroup(group, schema));
-        auto& item = Append(newChannels);
+        Json::Value subdevice;
+        subdevice["title"] = group["title"];
+        subdevice["device_type"] = group["title"];
+        subdevicesForGroups.emplace(group["id"].asString(), subdevice);
+        auto& item = Append(channelsFromGroups);
         item["name"] = group["title"];
         item["device_type"] = group["title"];
     }
-    if (schema.isMember("channels")) {
-        for (const auto& channel: schema["channels"]) {
-            newChannels.append(channel);
-        }
+
+    auto channelsNotInGroups = PartitionChannelsByGroups(schema, subdevicesForGroups);
+    for (auto channel: channelsNotInGroups) {
+        channelsFromGroups.append(*channel);
     }
-    schema["channels"] = newChannels;
+    if (channelsFromGroups.empty()) {
+        schema.removeMember("channels");
+    } else {
+        schema["channels"].swap(channelsFromGroups);
+    }
+
+    auto movedParameters = PartitionParametersByGroups(schema, subdevicesForGroups);
+    for (const auto& param: movedParameters) {
+        schema["parameters"].removeMember(param);
+    }
+
+    for (const auto& subdevice: subdevicesForGroups) {
+        subdevices.append(subdevice.second);
+    }
 }
 
 //  {

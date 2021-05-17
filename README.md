@@ -638,12 +638,18 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
             {
                 "name": "Temperature",
                 "reg_type": "holding",
-                "address": 1
+                "address": 1,
+
+                // Идентификатор группы
+                "group": "group 1"
             },
             {
                 "name": "Pressure",
                 "reg_type": "holding",
-                "address": 2
+                "address": 2,
+
+                // Идентификатор группы
+                "group": "group 1"
             },
             {
                 "name": "Uptime",
@@ -655,10 +661,13 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
             "timeout": {
                 "title": "Timeout",
                 "address": 9992,
+
+                // Идентификатор группы
+                "group": "group 1"
             },
             "reaction": {
                 "title": "Reaction",
-                "address": 9993,
+                "address": 9993
             }
         },
 
@@ -669,11 +678,8 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                 // Уникальное имя группы, отображается в web-интерфейсе
                 "title": "Group 1",
 
-                // Список параметров, входящих в группу
-                "parameters": ["reaction"],
-
-                // Список имён каналов, входящих в группу
-                "channels": ["Temperature", "Pressure"]
+                // Идентификатор группы
+                "id": "group1"
             }
         ]
     }
