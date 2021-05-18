@@ -637,7 +637,7 @@ void  AddDeviceUISchema(const TDeviceTemplate& deviceTemplate,
                                                                    true);
         defaultProperties.append("standard_channels");
     }
-    if (schema.isMember("parameters")) {
+    if (schema.isMember("parameters") && !schema["parameters"].empty()) {
         pr["properties"]["parameters"] = MakeDeviceSettingsUI(schema, DEVICE_PARAMETERS_PROPERTY_ORDER);
         defaultProperties.append("parameters");
     }
