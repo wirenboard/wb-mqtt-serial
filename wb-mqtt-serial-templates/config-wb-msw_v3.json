@@ -14,8 +14,8 @@
                 "order": 1
             },
             {
-                "title": "Air Parameters",
-                "id": "air_parameters",
+                "title": "Air Quality",
+                "id": "air_quality",
                 "order": 2
             },
             {
@@ -60,52 +60,52 @@
                 "title": "CO₂ Sensor Enable",
                 "address": 3,
                 "reg_type": "coil",
-                "enum":	[0,1],
-                "enum_titles": ["off", "on"],
+                "enum":	[ 0, 1 ],
+                "enum_titles": [ "off", "on" ],
                 "default": 1,
-                "group": "air_parameters",
+                "group": "air_quality",
                 "order": 1
             },
-            "co2_autocalibration_mode": {
-                "title": "CO₂ Autocalibration Mode",
+            "co2_baseline_calibration": {
+                "title": "CO₂ Baseline Calibration",
                 "address": 95,
                 "reg_type": "holding",
-                "enum":	[0,1],
-                "enum_titles": ["off", "on"],
+                "enum":	[ 0, 1 ],
+                "enum_titles": [ "off", "automatic" ],
                 "default": 1,
-                "group": "air_parameters",
+                "group": "air_quality",
                 "order": 2
             },
             "co2_measurement_range": {
                 "title": "CO₂ Measurement Range (ppm)",
                 "address": 96,
                 "reg_type": "holding",
-                "enum":	[2000, 5000, 10000],
-                "enum_titles": ["2000", "5000", "10000"],
-                "default": 2000,
-                "group": "air_parameters",
+                "enum":	[ 2000, 5000, 10000 ],
+                "enum_titles": [ "2000", "5000", "10000" ],
+                "default": 5000,
+                "group": "air_quality",
                 "order": 3
             },
             "th_sensor_heater": {
                 "title": "TH Sensor Heater",
                 "address": 2,
                 "reg_type": "coil",
-                "enum":	[0,1],
-                "enum_titles": ["off", "on"],
+                "enum":	[ 0, 1 ],
+                "enum_titles": [ "off", "on" ],
                 "default": 0,
-                "group": "air_parameters",
+                "group": "air_quality",
                 "order": 4
             },
-            "th_compensation_deg": {
-                "title": "TH Compensation (deg)",
+            "selfheating_compensation_deg": {
+                "title": "Self-Heating Compensation (°C)",
                 "address": 245,
                 "reg_type": "holding",
                 "scale": 0.01,
-                "group": "air_parameters",
+                "group": "air_quality",
                 "order": 5
             },
-            "sound_avg_time_ms": {
-                "title": "Averaging Time (ms)",
+            "sound_filter_time_const_ms": {
+                "title": "Low-pass Filter Time Constant (ms)",
                 "address": 91,
                 "reg_type": "holding",
                 "scale": 10,
@@ -113,8 +113,8 @@
                 "group": "sound_level",
                 "order": 1
             },
-            "motion_avg_time_s": {
-                "title": "Averaging Time (s)",
+            "motion_filter_time_const_s": {
+                "title": "Low-pass Filter Time Constant (s)",
                 "address": 282,
                 "reg_type": "holding",
                 "min": 1,
@@ -179,7 +179,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "error_value": "0x7FFF",
-                "group": "air_parameters"
+                "group": "air_quality"
             },
             {
                 "name": "Humidity",
@@ -188,7 +188,7 @@
                 "type": "rel_humidity",
                 "scale": 0.1,
                 "error_value": "0xFFFF",
-                "group": "air_parameters"
+                "group": "air_quality"
             },
             {
                 "name": "CO2",
@@ -196,7 +196,7 @@
                 "address": 8,
                 "type": "concentration",
                 "error_value": "0xFFFF",
-                "group": "air_parameters"
+                "group": "air_quality"
             },
             {
                 "name": "CO2 Force Calibration",
@@ -204,7 +204,7 @@
                 "address": 1,
                 "type": "switch",
                 "enabled": false,
-                "group": "air_parameters"
+                "group": "air_quality"
             },
             {
                 "name": "Air Quality (VOC)",
@@ -213,14 +213,14 @@
                 "type": "concentration",
                 "scale": 1,
                 "error_value": "0xFFFF",
-                "group": "air_parameters"
+                "group": "air_quality"
             },
             {
                 "name": "VOC Baseline",
                 "reg_type": "input",
                 "address": 106,
                 "enabled": false,
-                "group": "air_parameters"
+                "group": "air_quality"
             },
             {
                 "name": "Learn to RAM",
@@ -810,15 +810,6 @@
                 "group": "hw_info"
             },
             {
-                "name": "MCU Voltage",
-                "reg_type": "input",
-                "address": 123,
-                "scale": 0.001,
-                "type": "voltage",
-                "enabled": false,
-                "group": "hw_info"
-            },
-            {
                 "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
@@ -827,6 +818,15 @@
                 "scale": 0.1,
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "debug"
             },
             {
                 "name": "Sound Channel",
