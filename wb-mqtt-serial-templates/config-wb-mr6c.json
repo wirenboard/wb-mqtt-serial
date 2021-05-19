@@ -7,13 +7,56 @@
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
 
+        "groups": [
+            {
+                "title": "Outputs",
+                "id": "outputs",
+                "order": 8
+            },
+            {
+                "title": "General Settings",
+                "id": "general",
+                "order": 9
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 10
+            }
+        ],
+
         "setup": [
             {
                 "title": "Reg5_Init",
                 "address": 5,
+                "reg_type": "holding",
                 "value": 0
             }
         ],
+
+        "parameters": {
+            "outputs_save_state": {
+                "title": "State After Power Off",
+                "address": 6,
+                "reg_type": "holding",
+                "enum": [ 0, 1],
+                "default": 0,
+                "enum_titles": [
+                "turn off all relays after power off",
+                "save last relay state after power off"
+                ],
+                "group": "outputs",
+                "order": 1
+            },
+            "safety_timer_s": {
+                "title": "Safety Timer (s)",
+                "address": 8,
+                "reg_type": "holding",
+                "default": 3600,
+                "group": "general",
+                "order": 1
+            }
+        },
 
         "channels": [
             {
@@ -58,18 +101,72 @@
                 "stride": 5
             },
             {
-                "name": "Outputs 1-6",
-                "id": "",
-                "device_type": "outputs 1-6"
+                "name": "K1",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "switch",
+                "group": "outputs"
             },
             {
-                "name": "General Settings",
-                "id": "",
-                "device_type": "general"
+                "name": "K2",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch",
+                "group": "outputs"
             },
-            {   "name": "HW Info",
-                "id": "",
-                "device_type": "hw_info"
+            {
+                "name": "K3",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch",
+                "group": "outputs"
+            },
+            {
+                "name": "K4",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch",
+                "group": "outputs"
+            },
+            {
+                "name": "K5",
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch",
+                "group": "outputs"
+            },
+            {
+                "name": "K6",
+                "reg_type": "coil",
+                "address": 5,
+                "type": "switch",
+                "group": "outputs"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
             }
         ],
 
@@ -81,6 +178,7 @@
                         "mode": {
                             "title": "Mode",
                             "address": 9,
+                            "reg_type": "holding",
                             "enum": [ 2, 3, 4 ],
                             "default": 2,
                             "enum_titles": [
@@ -93,6 +191,7 @@
                         "debounce_ms": {
                             "title": "Debounce (ms)",
                             "address": 20,
+                            "reg_type": "holding",
                             "min": 0,
                             "max": 100,
                             "default": 50,
@@ -133,6 +232,7 @@
                         "mode": {
                             "title": "Mode",
                             "address": 9,
+                            "reg_type": "holding",
                             "enum": [ 0, 1, 2, 3, 4 ],
                             "default": 0,
                             "enum_titles": [
@@ -147,6 +247,7 @@
                         "debounce_ms": {
                             "title": "Debounce (ms)",
                             "address": 20,
+                            "reg_type": "holding",
                             "min": 0,
                             "max": 100,
                             "default": 50,
@@ -187,6 +288,7 @@
                         "mode": {
                             "title": "Mode",
                             "address": 9,
+                            "reg_type": "holding",
                             "enum": [ 0, 1, 2, 3, 4 ],
                             "default": 0,
                             "enum_titles": [
@@ -201,6 +303,7 @@
                         "debounce_ms": {
                             "title": "Debounce (ms)",
                             "address": 20,
+                            "reg_type": "holding",
                             "min": 0,
                             "max": 100,
                             "default": 50,
@@ -241,6 +344,7 @@
                         "mode": {
                             "title": "Mode",
                             "address": 9,
+                            "reg_type": "holding",
                             "enum": [ 0, 1, 2, 3, 4 ],
                             "default": 0,
                             "enum_titles": [
@@ -255,6 +359,7 @@
                         "debounce_ms": {
                             "title": "Debounce (ms)",
                             "address": 20,
+                            "reg_type": "holding",
                             "min": 0,
                             "max": 100,
                             "default": 50,
@@ -295,6 +400,7 @@
                         "mode": {
                             "title": "Mode",
                             "address": 9,
+                            "reg_type": "holding",
                             "enum": [ 0, 1, 2, 3, 4 ],
                             "default": 0,
                             "enum_titles": [
@@ -309,6 +415,7 @@
                         "debounce_ms": {
                             "title": "Debounce (ms)",
                             "address": 20,
+                            "reg_type": "holding",
                             "min": 0,
                             "max": 100,
                             "default": 50,
@@ -349,6 +456,7 @@
                         "mode": {
                             "title": "Mode",
                             "address": 9,
+                            "reg_type": "holding",
                             "enum": [ 0, 1, 2, 3, 4 ],
                             "default": 0,
                             "enum_titles": [
@@ -363,6 +471,7 @@
                         "debounce_ms": {
                             "title": "Debounce (ms)",
                             "address": 20,
+                            "reg_type": "holding",
                             "min": 0,
                             "max": 100,
                             "default": 50,
@@ -403,6 +512,7 @@
                         "mode": {
                             "title": "Mode",
                             "address": 9,
+                            "reg_type": "holding",
                             "enum": [ 0, 1, 2, 3, 4 ],
                             "default": 0,
                             "enum_titles": [
@@ -417,6 +527,7 @@
                         "debounce_ms": {
                             "title": "Debounce (ms)",
                             "address": 20,
+                            "reg_type": "holding",
                             "min": 0,
                             "max": 100,
                             "default": 50,
@@ -445,108 +556,6 @@
                             "format": "u32",
                             "scale": 1.52588e-05,
                             "round_to": 0.001,
-                            "enabled": false
-                        }
-                    ]
-                }
-            },
-            {
-                "device_type": "outputs 1-6",
-                "device": {
-                    "parameters": {
-                        "restore_state": {
-                            "title": "Restore State After Power Off",
-                            "address": 6,
-                            "enum": [ 0, 1],
-                            "default": 0,
-                            "enum_titles": [
-                                "no",
-                                "yes"
-                            ],
-                            "order": 1
-                        }
-                    },
-                    "channels": [
-                        {
-                            "name": "K1",
-                            "reg_type": "coil",
-                            "address": 0,
-                            "type": "switch"
-                        },
-                        {
-                            "name": "K2",
-                            "reg_type": "coil",
-                            "address": 1,
-                            "type": "switch"
-                        },
-                        {
-                            "name": "K3",
-                            "reg_type": "coil",
-                            "address": 2,
-                            "type": "switch"
-                        },
-                        {
-                            "name": "K4",
-                            "reg_type": "coil",
-                            "address": 3,
-                            "type": "switch"
-                        },
-                        {
-                            "name": "K5",
-                            "reg_type": "coil",
-                            "address": 4,
-                            "type": "switch"
-                        },
-                        {
-                            "name": "K6",
-                            "reg_type": "coil",
-                            "address": 5,
-                            "type": "switch"
-                        }
-                    ]
-                }
-            },
-            {
-                "device_type":"general",
-                "device": {
-                    "parameters": {
-                        "safety_timer_s": {
-                            "title": "Safety Timer (s)",
-                            "address": 8,
-                            "reg_type": "holding",
-                            "default": 3600,
-                            "order": 1
-                        }
-                    },
-                    "channels": [
-                    ]
-                }
-            },
-            {
-                "device_type":"hw_info",
-                "device": {
-                    "channels": [
-                        {
-                            "name": "Supply Voltage",
-                            "reg_type": "input",
-                            "address": 121,
-                            "type": "voltage",
-                            "scale": 0.001,
-                            "enabled": false
-                        },
-                        {
-                            "name": "Serial",
-                            "type": "text",
-                            "reg_type": "input",
-                            "address": 270,
-                            "format": "u32",
-                            "enabled": false
-                        },
-                        {
-                            "name": "Uptime",
-                            "reg_type": "input",
-                            "address": 104,
-                            "format": "u32",
                             "enabled": false
                         }
                     ]
