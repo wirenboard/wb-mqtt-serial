@@ -526,35 +526,81 @@ std::vector<std::string> PartitionParametersByGroups(const Json::Value& schema,
     return movedParameters;
 }
 
+struct TGroup
+{
+    uint32_t    Order;
+    std::string Name;
+
+    TGroup(const Json::Value& group) 
+        : Order(group.get("order", 1).asUInt()), 
+            Name(group["title"].asString())
+    {}
+};
+
+/**
+ * @brief Merge channels according to they order.
+ * 
+ * @param channelsNotInGroups - channels not in groups
+ * @param groups - vector of groups sorted by Order
+ * @return Json::Value - merged channels array
+ */
+Json::Value MergeChannels(const std::vector<const Json::Value*>& channelsNotInGroups, 
+                            const std::vector<TGroup>&             groups)
+{
+    Json::Value res(Json::arrayValue);
+    uint32_t i = 1;
+    auto grIt = groups.begin();
+    auto notGrIt = channelsNotInGroups.begin();
+    while(grIt != groups.end() && notGrIt != channelsNotInGroups.end()) {
+        if (grIt->Order <= i) {
+            auto& item = Append(res);
+            item["name"] = grIt->Name;
+            item["device_type"] = grIt->Name;
+            ++grIt;
+        } else {
+            res.append(**notGrIt);
+            ++notGrIt;
+        }
+        ++i;
+    }
+    for (; grIt != groups.end(); ++ grIt) {
+        auto& item = Append(res);
+        item["name"] = grIt->Name;
+        item["device_type"] = grIt->Name;
+    }
+    for (; notGrIt != channelsNotInGroups.end(); ++notGrIt) {
+        res.append(**notGrIt);
+    }
+    return res;
+}
+
 void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices)
 {
     if (!schema.isMember("groups")) {
         return;
     }
 
-    std::unordered_map<std::string, Json::Value> subdevicesForGroups;
-    auto channelsFromGroups = Json::Value(Json::arrayValue);
+    std::unordered_map<std::string, Json::Value> subdevicesForGroups; // key - group id
+    std::vector<TGroup>                          groups;
     for (const auto& group: schema["groups"]) {
         Json::Value subdevice;
         subdevice["title"] = group["title"];
         subdevice["device_type"] = group["title"];
         subdevicesForGroups.emplace(group["id"].asString(), subdevice);
-        auto& item = Append(channelsFromGroups);
-        item["name"] = group["title"];
-        item["device_type"] = group["title"];
+        groups.emplace_back(group);
     }
 
-    auto channelsNotInGroups = PartitionChannelsByGroups(schema, subdevicesForGroups);
-    for (auto channel: channelsNotInGroups) {
-        channelsFromGroups.append(*channel);
-    }
-    if (channelsFromGroups.empty()) {
+    std::stable_sort(groups.begin(), groups.end(), [](const auto& v1, const auto& v2) {return v1.Order < v2.Order;});
+
+    auto channelsNotInGroups(PartitionChannelsByGroups(schema, subdevicesForGroups));
+    auto newChannels(MergeChannels(channelsNotInGroups, groups));
+    if (newChannels.empty()) {
         schema.removeMember("channels");
     } else {
-        schema["channels"].swap(channelsFromGroups);
+        schema["channels"].swap(newChannels);
     }
 
-    auto movedParameters = PartitionParametersByGroups(schema, subdevicesForGroups);
+    auto movedParameters(PartitionParametersByGroups(schema, subdevicesForGroups));
     for (const auto& param: movedParameters) {
         schema["parameters"].removeMember(param);
     }
