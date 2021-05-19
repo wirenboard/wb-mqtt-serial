@@ -679,11 +679,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                 "title": "Group 1",
 
                 // Идентификатор группы
-                "id": "group1",
-
-                // Позиция группы в списке каналов
-                // Если не задана, группа будет расположена перед остальными каналами
-                "order": 3
+                "id": "group1"
             }
         ]
     }
