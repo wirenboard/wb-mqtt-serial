@@ -26,6 +26,31 @@
       "required": ["title", "address", "value"]
     },
 
+    "group": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        }
+      },
+      "required": ["title", "id"]
+    },
+
+    "groups": {
+      "properties": {
+        "groups":{
+          "type": "array",
+          "items": { "$ref": "#/definitions/group" }
+        }
+      }
+    },
+
     "parameter": {
       "type": "object",
       "properties": {
@@ -142,6 +167,7 @@
         { "$ref": "#/definitions/dlms_device_properties" },
         { "$ref": "#/definitions/dlms_channels" },
         { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/groups" },
         {
           "properties": {
             "protocol": {
@@ -161,6 +187,7 @@
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },
         { "$ref": "#/definitions/common_channels" },
+        { "$ref": "#/definitions/groups" },
         {
           "properties": {
             "protocol": {
@@ -180,6 +207,7 @@
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/common_channels" },
         { "$ref": "#/definitions/common_setup" },
+        { "$ref": "#/definitions/groups" },
         {
           "properties": {
             "protocol": {
@@ -198,6 +226,7 @@
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/subdevice_device" },
+        { "$ref": "#/definitions/groups" },
         {
           "anyOf": [
             {
