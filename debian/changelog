@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.15.0) experimental; urgency=medium
+
+  * Support for minimum value in channels
+  * /meta/precision and /meta/min topics for controls are added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 05 May 2021 13:04:00 +0500
+
 wb-mqtt-serial (2.14.0) experimental; urgency=medium
 
   * Support for WinDeco, Dooya and Somfy SDN curtain motors is added
