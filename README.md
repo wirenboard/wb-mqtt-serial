@@ -371,18 +371,26 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     // секция инициализации
                     "setup": [
                         {
-                            // название регистра (для отладки)
+                            // название регистра
                             // Выводится в случае включённой отладочной печати.
                             "title": "Input 0 type",
-                            // адрес holding-регистра
+                            
+                            // адрес регистра
                             "address": 1,
+                            
                             // значение для записи
-                            "value": 1
+                            "value": 1,
+
+                            // тип регистра, если не указан, то для Modbus используется "holding"
+                            "reg_type" : "input",
+
+                            // формат регистра, для Modbus по умолчанию u16
+                            "format": "s8"
                         },
                         {
                             "title": "Input 0 module",
                             "address": 3,
-                            "value": 3 // was: 11
+                            "value": 3
                         }
                     ],
                     "channels": [
@@ -558,8 +566,17 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     // Значение параметра можно задать в файле конфигурации или через web-конфигуратор
                     "parameters": {
                         "param1": {
+                            // Название параметра в web-конфигураторе
                             "title": "s22",
+
+                            // Адрес регистра параметра
                             "address": 9992,
+
+                            // Тип регистра
+                            "reg_type" : "input",
+
+                            // Формат регистра
+                            "format": "s8",
 
                             // Список возможных значений
                             "enum": [1, 2, 3],
@@ -576,8 +593,17 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             // Максимально возможное значение
                             "max": 3,
 
+                            // коэффициент, на который делится значение параметра перед записью в регистр
+                            "scale": 2,
+
+                            // значение, которое вычитается из значения параметра перед записью в регистр
+                            "offset": 10,
+
                             // Этот параметр должен быть обязательно задан в wb-mqtt-serial.conf
-                            "required": true
+                            "required": true,
+
+                            // Порядок отображения параметра в web-конфигураторе
+                            "order": 1
                         }
                     },
                     "channels": [
@@ -598,6 +624,71 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 - `address` - адрес, заданный в описании регистра;
 - `stride` - номер шага, заданный в настройках канала;
 - `register_size` - размер регистра.
+
+
+## Группировка каналов и параметров в шаблонах устройств
+Каналы и параметры в шаблоне устройств могут быть объединены в группу. Группы используются для удобной организации web-интерфейса и не влияют на структуру конфигурационного файла.
+Пример описания групп.
+```jsonc
+{
+    "device_type": "Example",
+    "device": {
+        "name": "Example device",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "holding",
+                "address": 1,
+
+                // Идентификатор группы
+                "group": "group 1"
+            },
+            {
+                "name": "Pressure",
+                "reg_type": "holding",
+                "address": 2,
+
+                // Идентификатор группы
+                "group": "group 1"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "holding",
+                "address": 3
+            }
+        ],
+        "parameters": {
+            "timeout": {
+                "title": "Timeout",
+                "address": 9992,
+
+                // Идентификатор группы
+                "group": "group 1"
+            },
+            "reaction": {
+                "title": "Reaction",
+                "address": 9993
+            }
+        },
+
+        // Список групп
+        "groups": [
+            // Описание группы
+            {
+                // Уникальное имя группы, отображается в web-интерфейсе
+                "title": "Group 1",
+
+                // Идентификатор группы
+                "id": "group1",
+
+                // Позиция группы в списке каналов
+                // Если не задана, группа будет расположена перед остальными каналами
+                "order": 3
+            }
+        ]
+    }
+}
+```
 
 ## Подробнее о таймаутах и количестве неудачных циклов
 

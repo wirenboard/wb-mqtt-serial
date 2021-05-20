@@ -4,11 +4,11 @@
 namespace 
 {
     const TRegisterTypes ModbusRegisterTypes({
-            { Modbus::REG_COIL, "coil", "switch", U8 },
-            { Modbus::REG_DISCRETE, "discrete", "switch", U8, true },
             { Modbus::REG_HOLDING, "holding", "text", U16 },
             { Modbus::REG_HOLDING_SINGLE, "holding_single", "text", U16 },
             { Modbus::REG_HOLDING_MULTI, "holding_multi", "text", U16 },
+            { Modbus::REG_COIL, "coil", "switch", U8 },
+            { Modbus::REG_DISCRETE, "discrete", "switch", U8, true },
             { Modbus::REG_INPUT, "input", "text", U16, true }
         });
 
