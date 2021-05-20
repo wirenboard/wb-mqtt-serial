@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.20.0) experimental; urgency=medium
+
+  * Support for minimum value in channels
+  * /meta/precision and /meta/min topics for controls are added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 14 Jul 2021 16:34:31 +0500
+
 wb-mqtt-serial (2.19.2) stable; urgency=medium
 
   * Configs with comments are sent to web-interface correctly

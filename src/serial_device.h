@@ -24,7 +24,9 @@ struct TDeviceChannelConfig
     std::string                  DeviceId;
     int                          Order            = 0;
     std::string                  OnValue;
-    int                          Max              = -1;
+    double                       Max              =std::numeric_limits<double>::signaling_NaN();
+    double                       Min              =std::numeric_limits<double>::signaling_NaN();
+    double                       Precision        = 0;
     bool                         ReadOnly         = false;
     std::vector<PRegisterConfig> RegisterConfigs;
 
@@ -33,7 +35,6 @@ struct TDeviceChannelConfig
                          const std::string& deviceId             = "",
                          int                order                = 0,
                          const std::string& onValue              = "",
-                         int                max                  = - 1,
                          bool               readOnly             = false,
                          const std::string& mqttId               = "",
                          const std::vector<PRegisterConfig> regs = std::vector<PRegisterConfig>());
