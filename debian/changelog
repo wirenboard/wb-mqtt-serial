@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.16.0) experimental; urgency=medium
+
+  * Support for minimum value in channels
+  * /meta/precision and /meta/min topics for controls are added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 05 May 2021 13:04:00 +0500
+
 wb-mqtt-serial (2.15.1) stable; urgency=medium
 
   * Page titles are removed from JSON schema for homeui in tabbed channels representation.
@@ -9,7 +16,7 @@ wb-mqtt-serial (2.15.0) stable; urgency=medium
   * NEVA MT 113/123/124 support
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 01 Jun 2021 11:25:00 +0500
- 
+
 wb-mqtt-serial (2.14.0) experimental; urgency=medium
 
   * Support for WinDeco, Dooya and Somfy SDN curtain motors is added
