@@ -6,7 +6,171 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
+
+        "groups": [
+            {
+                "title": "Indication",
+                "id": "indication",
+                "order": 1
+            },
+            {
+                "title": "Air Quality",
+                "id": "air_quality",
+                "order": 2
+            },
+            {
+                "title": "IR Commands",
+                "id": "ir_commands",
+                "order": 3
+            },
+            {
+                "title": "Sound Level",
+                "id": "sound_level",
+                "order": 4
+            },
+            {
+                "title": "Illuminance",
+                "id": "illuminance",
+                "order": 5
+            },
+            {
+                "title": "Motion",
+                "id": "motion",
+                "order": 6
+            },
+            {
+                "title": "General Settings",
+                "id": "general",
+                "order": 7
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 8
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 9
+            }
+        ],
+
+        "parameters": {
+            "co2_sensor_enable": {
+                "title": "CO₂ Sensor Enable",
+                "address": 3,
+                "reg_type": "coil",
+                "enum":	[ 0, 1 ],
+                "enum_titles": [ "off", "on" ],
+                "default": 1,
+                "group": "air_quality",
+                "order": 1
+            },
+            "co2_baseline_calibration": {
+                "title": "CO₂ Baseline Calibration",
+                "address": 95,
+                "reg_type": "holding",
+                "enum":	[ 0, 1 ],
+                "enum_titles": [ "off", "automatic" ],
+                "default": 1,
+                "group": "air_quality",
+                "order": 2
+            },
+            "co2_measurement_range": {
+                "title": "CO₂ Measurement Range (ppm)",
+                "address": 96,
+                "reg_type": "holding",
+                "enum":	[ 2000, 5000, 10000 ],
+                "enum_titles": [ "2000", "5000", "10000" ],
+                "default": 5000,
+                "group": "air_quality",
+                "order": 3
+            },
+            "th_sensor_heater": {
+                "title": "TH Sensor Heater",
+                "address": 2,
+                "reg_type": "coil",
+                "enum":	[ 0, 1 ],
+                "enum_titles": [ "off", "on" ],
+                "default": 0,
+                "group": "air_quality",
+                "order": 4
+            },
+            "selfheating_compensation_deg": {
+                "title": "Self-Heating Compensation (°C)",
+                "address": 245,
+                "reg_type": "holding",
+                "scale": 0.01,
+                "group": "air_quality",
+                "order": 5
+            },
+            "sound_filter_time_const_ms": {
+                "title": "Low-pass Filter Time Constant (ms)",
+                "address": 91,
+                "reg_type": "holding",
+                "scale": 10,
+                "default": 200,
+                "group": "sound_level",
+                "order": 1
+            },
+            "motion_filter_time_const_s": {
+                "title": "Low-pass Filter Time Constant (s)",
+                "address": 282,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 60,
+                "default": 10,
+                "group": "motion",
+                "order": 1
+            },
+            "rs485_response_delay_ms": {
+                "title": "RS-485 Response Delay (ms)",
+                "address": 113,
+                "reg_type": "holding",
+                "default": 8,
+                "group": "general",
+                "order": 1
+            }
+        },
+
         "channels": [
+            {
+                "name": "Buzzer",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 0,
+                "group": "indication"
+            },
+            {
+                "name": "Red LED",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 10,
+                "group": "indication"
+            },
+            {
+                "name": "Green LED",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 11,
+                "group": "indication"
+            },
+            {
+                "name": "LED Period (s)",
+                "reg_type": "holding",
+                "address": 97,
+                "type": "range",
+                "max": 10,
+                "group": "indication"
+            },
+            {
+                "name": "LED Glow Duration (ms)",
+                "reg_type": "holding",
+                "address": 98,
+                "type": "range",
+                "max": 50,
+                "group": "indication"
+            },
             {
                 "name": "Temperature",
                 "reg_type": "input",
@@ -14,7 +178,8 @@
                 "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
-                "error_value": "0x7FFF"
+                "error_value": "0x7FFF",
+                "group": "air_quality"
             },
             {
                 "name": "Humidity",
@@ -22,7 +187,24 @@
                 "address": 1,
                 "type": "rel_humidity",
                 "scale": 0.1,
-                "error_value": "0xFFFF"
+                "error_value": "0xFFFF",
+                "group": "air_quality"
+            },
+            {
+                "name": "CO2",
+                "reg_type": "input",
+                "address": 8,
+                "type": "concentration",
+                "error_value": "0xFFFF",
+                "group": "air_quality"
+            },
+            {
+                "name": "CO2 Force Calibration",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch",
+                "enabled": false,
+                "group": "air_quality"
             },
             {
                 "name": "Air Quality (VOC)",
@@ -30,21 +212,543 @@
                 "address": 11,
                 "type": "concentration",
                 "scale": 1,
-                "error_value": "0xFFFF"
+                "error_value": "0xFFFF",
+                "group": "air_quality"
             },
             {
-                "name": "CO2",
+                "name": "VOC Baseline",
                 "reg_type": "input",
-                "address": 8,
-                "type": "concentration",
-                "error_value": "0xFFFF"
+                "address": 106,
+                "enabled": false,
+                "group": "air_quality"
+            },
+            {
+                "name": "Learn to RAM",
+                "reg_type": "coil",
+                "address": 5001,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from RAM",
+                "reg_type": "coil",
+                "address": 5002,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM1",
+                "reg_type": "coil",
+                "address": 5300,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM2",
+                "reg_type": "coil",
+                "address": 5301,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM3",
+                "reg_type": "coil",
+                "address": 5302,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM4",
+                "reg_type": "coil",
+                "address": 5303,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM5",
+                "reg_type": "coil",
+                "address": 5304,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM6",
+                "reg_type": "coil",
+                "address": 5305,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM7",
+                "reg_type": "coil",
+                "address": 5306,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM8",
+                "reg_type": "coil",
+                "address": 5307,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM9",
+                "reg_type": "coil",
+                "address": 5308,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM10",
+                "reg_type": "coil",
+                "address": 5309,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM11",
+                "reg_type": "coil",
+                "address": 5310,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM12",
+                "reg_type": "coil",
+                "address": 5311,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM13",
+                "reg_type": "coil",
+                "address": 5312,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM14",
+                "reg_type": "coil",
+                "address": 5313,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM15",
+                "reg_type": "coil",
+                "address": 5314,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM16",
+                "reg_type": "coil",
+                "address": 5315,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM17",
+                "reg_type": "coil",
+                "address": 5316,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM18",
+                "reg_type": "coil",
+                "address": 5317,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM19",
+                "reg_type": "coil",
+                "address": 5318,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM20",
+                "reg_type": "coil",
+                "address": 5319,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM21",
+                "reg_type": "coil",
+                "address": 5320,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM22",
+                "reg_type": "coil",
+                "address": 5321,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM23",
+                "reg_type": "coil",
+                "address": 5322,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM24",
+                "reg_type": "coil",
+                "address": 5323,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM25",
+                "reg_type": "coil",
+                "address": 5324,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM26",
+                "reg_type": "coil",
+                "address": 5325,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM27",
+                "reg_type": "coil",
+                "address": 5326,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM28",
+                "reg_type": "coil",
+                "address": 5327,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM29",
+                "reg_type": "coil",
+                "address": 5328,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM30",
+                "reg_type": "coil",
+                "address": 5329,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM31",
+                "reg_type": "coil",
+                "address": 5330,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Learn to ROM32",
+                "reg_type": "coil",
+                "address": 5331,
+                "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM1",
+                "reg_type": "coil",
+                "address": 5100,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM2",
+                "reg_type": "coil",
+                "address": 5101,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM3",
+                "reg_type": "coil",
+                "address": 5102,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM4",
+                "reg_type": "coil",
+                "address": 5103,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM5",
+                "reg_type": "coil",
+                "address": 5104,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM6",
+                "reg_type": "coil",
+                "address": 5105,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM7",
+                "reg_type": "coil",
+                "address": 5106,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM8",
+                "reg_type": "coil",
+                "address": 5107,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM9",
+                "reg_type": "coil",
+                "address": 5108,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM10",
+                "reg_type": "coil",
+                "address": 5109,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM11",
+                "reg_type": "coil",
+                "address": 5110,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM12",
+                "reg_type": "coil",
+                "address": 5111,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM13",
+                "reg_type": "coil",
+                "address": 5112,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM14",
+                "reg_type": "coil",
+                "address": 5113,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM15",
+                "reg_type": "coil",
+                "address": 5114,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM16",
+                "reg_type": "coil",
+                "address": 5115,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM17",
+                "reg_type": "coil",
+                "address": 5116,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM18",
+                "reg_type": "coil",
+                "address": 5117,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM19",
+                "reg_type": "coil",
+                "address": 5118,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM20",
+                "reg_type": "coil",
+                "address": 5119,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM21",
+                "reg_type": "coil",
+                "address": 5120,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM22",
+                "reg_type": "coil",
+                "address": 5121,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM23",
+                "reg_type": "coil",
+                "address": 5122,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM24",
+                "reg_type": "coil",
+                "address": 5123,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM25",
+                "reg_type": "coil",
+                "address": 5124,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM26",
+                "reg_type": "coil",
+                "address": 5125,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM27",
+                "reg_type": "coil",
+                "address": 5126,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM28",
+                "reg_type": "coil",
+                "address": 5127,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM29",
+                "reg_type": "coil",
+                "address": 5128,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM30",
+                "reg_type": "coil",
+                "address": 5129,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM31",
+                "reg_type": "coil",
+                "address": 5130,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from ROM32",
+                "reg_type": "coil",
+                "address": 5131,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "Reset all ROM",
+                "reg_type": "coil",
+                "address": 5000,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "ir_commands"
             },
             {
                 "name": "Sound Level",
                 "reg_type": "input",
                 "address": 3,
                 "scale": 0.01,
-                "type": "sound_level"
+                "type": "sound_level",
+                "group": "sound_level"
             },
             {
                 "name": "Illuminance",
@@ -53,218 +757,148 @@
                 "type": "lux",
                 "format": "u32",
                 "scale": 0.01,
-                "error_value": "0xFFFFFFFF"
+                "error_value": "0xFFFFFFFF",
+                "group": "illuminance"
             },
             {
                 "name": "Max Motion",
                 "type": "value",
                 "reg_type": "input",
-                "address": "280"
+                "address": 280,
+                "group": "motion"
             },
             {
                 "name": "Current Motion",
                 "type": "value",
                 "reg_type": "input",
-                "address": "283"
+                "address": 283,
+                "group": "motion"
             },
             {
-                "name": "Buzzer",
-                "type": "switch",
-                "reg_type": "coil",
-                "address": 0
-            },
-            {
-                "name": "Red LED",
-                "type": "switch",
-                "reg_type": "coil",
-                "address": 10
-            },
-            {
-                "name": "Green LED",
-                "type": "switch",
-                "reg_type": "coil",
-                "address": 11
-            },
-            {
-                "name": "LED Period (s)",
-                "reg_type": "holding",
-                "address": 97,
-                "type": "range",
-                "max": 10
-            },
-            {
-                "name": "LED Glow Duration (ms)",
-                "reg_type": "holding",
-                "address": 98,
-                "type": "range",
-                "max": 50
-            },
-            {
-                "name": "Learn to RAM",
-                "reg_type": "coil",
-                "address": 5001,
-                "type": "switch"
-            },
-            {
-                "name": "Play from RAM",
-                "reg_type": "coil",
-                "address": 5002,
-                "type": "pushbutton"
-            },
-            {
-                "name": "Learn to ROM1",
-                "reg_type": "coil",
-                "address": 5300,
-                "type": "switch"
-            },
-            {
-                "name": "Learn to ROM2",
-                "reg_type": "coil",
-                "address": 5301,
-                "type": "switch"
-            },
-            {
-                "name": "Learn to ROM3",
-                "reg_type": "coil",
-                "address": 5302,
-                "type": "switch"
-            },
-            {
-                "name": "Learn to ROM4",
-                "reg_type": "coil",
-                "address": 5303,
-                "type": "switch"
-            },
-            {
-                "name": "Learn to ROM5",
-                "reg_type": "coil",
-                "address": 5304,
-                "type": "switch"
-            },
-            {
-                "name": "Learn to ROM6",
-                "reg_type": "coil",
-                "address": 5305,
-                "type": "switch"
-            },
-            {
-                "name": "Learn to ROM7",
-                "reg_type": "coil",
-                "address": 5306,
-                "type": "switch"
-            },
-            {
-                "name": "Play from ROM1",
-                "reg_type": "coil",
-                "address": 5100,
-                "type": "pushbutton"
-            },
-            {
-                "name": "Play from ROM2",
-                "reg_type": "coil",
-                "address": 5101,
-                "type": "pushbutton"
-            },
-            {
-                "name": "Play from ROM3",
-                "reg_type": "coil",
-                "address": 5102,
-                "type": "pushbutton"
-            },
-            {
-                "name": "Play from ROM4",
-                "reg_type": "coil",
-                "address": 5103,
-                "type": "pushbutton"
-            },
-            {
-                "name": "Play from ROM5",
-                "reg_type": "coil",
-                "address": 5104,
-                "type": "pushbutton"
-            },
-            {
-                "name": "Play from ROM6",
-                "reg_type": "coil",
-                "address": 5105,
-                "type": "pushbutton"
-            },
-            {
-                "name": "Play from ROM7",
-                "reg_type": "coil",
-                "address": 5106,
-                "type": "pushbutton"
-            },
-            {
-                "name": "Reset all ROM",
-                "reg_type": "coil",
-                "address": 5000,
-                "type": "pushbutton"
-            },
-            {
-                "name": "Input Voltage",
+                "name": "Supply Voltage",
                 "reg_type": "input",
                 "address": 121,
                 "scale": 0.001,
-                "type": "voltage"
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
             },
             {
                 "name": "Serial",
                 "type": "text",
                 "reg_type": "input",
                 "address": 270,
-                "format": "u32"
-            },
-            {
-                "name": "Force CO₂ sensor calibration",
-                "reg_type": "coil",
-                "address": 1,
-                "enabled": false
-            },
-            {
-                "name": "HDC1080 heater",
-                "reg_type": "coil",
-                "address": 2,
-                "enabled": false
-            },
-            {
-                "name": "CO₂ sensor enable",
-                "reg_type": "coil",
-                "address": 3,
-                "enabled": false
-            },
-            {
-                "name": "Minimum voltage since startup",
-                "reg_type": "input",
-                "address": 122,
-                "scale": 0.001,
-                "type": "voltage",
-                "enabled": false
-            },
-            {
-                "name": "MCU voltage",
-                "reg_type": "coil",
-                "address": 123,
-                "scale": 0.001,
-                "type": "voltage",
-                "enabled": false
-            },
-            {
-                "name": "MCU temperature",
-                "reg_type": "coil",
-                "address": 124,
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.1,
-                "enabled": false
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
             },
             {
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
                 "format": "u32",
-                "enabled": false
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Minimum Voltage Since Startup",
+                "reg_type": "input",
+                "address": 122,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Sound Channel",
+                "reg_type": "input",
+                "address": 86,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Sound Raw",
+                "reg_type": "input",
+                "address": 100,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Sound Highgain Raw",
+                "reg_type": "input",
+                "address": 87,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Sound Offset",
+                "reg_type": "input",
+                "address": 93,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Sound Offset Raw",
+                "reg_type": "input",
+                "address": 92,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "VOC Version",
+                "reg_type": "input",
+                "address": 108,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "VOC Raw",
+                "reg_type": "input",
+                "address": 107,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Motion Raw",
+                "reg_type": "input",
+                "address": 281,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Successful TH Readings",
+                "reg_type": "input",
+                "address": 101,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Erroneous TH Readings",
+                "reg_type": "input",
+                "address": 102,
+                "enabled": false,
+                "group": "debug"
             }
         ]
+
     }
 }
