@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.13.1) stable; urgency=medium
+
+  * refactoring of WB-MSW v.3 templates using groups and parameters
+
+ -- Evgeny Boger <boger@contactless.ru>  Fri, 21 May 2021 14:26:00 +0300
+
 wb-mqtt-serial (2.13.0) experimental; urgency=medium
 
   * "reg_type", "format", "order", "scale" and "offset" fields are added to parameters in device templates
