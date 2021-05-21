@@ -57,77 +57,77 @@
                 "enabled" : false
             },
             {
-                "name": "A energy, 2 month ago",
+                "name": "A energy, 2 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F088001",
                 "enabled" : false
             },
             {
-                "name": "A energy, 3 month ago",
+                "name": "A energy, 3 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F088002",
                 "enabled" : false
             },
             {
-                "name": "A energy, 4 month ago",
+                "name": "A energy, 4 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F088003",
                 "enabled" : false
             },
             {
-                "name": "A energy, 5 month ago",
+                "name": "A energy, 5 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F088004",
                 "enabled" : false
             },
             {
-                "name": "A energy, 6 month ago",
+                "name": "A energy, 6 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F088005",
                 "enabled" : false
             },
             {
-                "name": "A energy, 7 month ago",
+                "name": "A energy, 7 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F088006",
                 "enabled" : false
             },
             {
-                "name": "A energy, 8 month ago",
+                "name": "A energy, 8 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F088007",
                 "enabled" : false
             },
             {
-                "name": "A energy, 9 month ago",
+                "name": "A energy, 9 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F088008",
                 "enabled" : false
             },
             {
-                "name": "A energy, 10 month ago",
+                "name": "A energy, 10 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F088009",
                 "enabled" : false
             },
             {
-                "name": "A energy, 11 month ago",
+                "name": "A energy, 11 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F08800A",
                 "enabled" : false
             },
             {
-                "name": "A energy, 12 month ago",
+                "name": "A energy, 12 months ago",
                 "reg_type": "obis_cdef_1",
                 "type": "power_consumption",
                 "address": "0x0F08800B",
@@ -156,7 +156,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 2 month ago",
+                "name": "Max P, 2 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F068001",
@@ -164,7 +164,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 3 month ago",
+                "name": "Max P, 3 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F068002",
@@ -172,7 +172,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 4 month ago",
+                "name": "Max P, 4 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F068003",
@@ -180,7 +180,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 5 month ago",
+                "name": "Max P, 5 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F068004",
@@ -188,7 +188,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 6 month ago",
+                "name": "Max P, 6 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F068005",
@@ -196,7 +196,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 7 month ago",
+                "name": "Max P, 7 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F068006",
@@ -204,7 +204,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 8 month ago",
+                "name": "Max P, 8 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F068007",
@@ -212,7 +212,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 9 month ago",
+                "name": "Max P, 9 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F068008",
@@ -220,7 +220,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 10 month ago",
+                "name": "Max P, 10 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F068009",
@@ -228,7 +228,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 11 month ago",
+                "name": "Max P, 11 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F06800A",
@@ -236,7 +236,7 @@
                 "enabled" : false
             },
             {
-                "name": "Max P, 12 month ago",
+                "name": "Max P, 12 months ago",
                 "reg_type": "obis_cdef",
                 "type": "power",
                 "address": "0x0F06800B",
@@ -267,7 +267,7 @@
                 "reg_type": "obis_cdef",
                 "type": "value",
                 "address": "0x600100FF",
-                "enabled" : false
+                "enabled" : true
             },
             {
                 "name": "Date",
