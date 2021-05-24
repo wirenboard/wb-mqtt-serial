@@ -784,7 +784,8 @@
                "brightness", "param", "relay_mode", "relay_default", "relay_delay", "energy", "array",
                "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
                "param24", "param32", "power", "freq", "power_factor", "group_single", 
-               "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5", "alarm"]
+               "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5", 
+               "alarm", "position", "command"]
     },
     "format": {
       "type": "string",
@@ -967,6 +968,37 @@
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/dlms_device_properties" },
+        { "$ref": "#/definitions/slave_id" },
+        { "$ref": "#/definitions/no_protocol" },
+        { "$ref": "#/definitions/no_setup" }
+      ]
+    },
+
+    "somfy_device_properties": {
+      "properties": {
+        "node_type": {
+          "title": "Motor type",
+          "type": "integer",
+          "enum": [2, 5, 6, 7, 8, 9],
+          "options": {
+            "enum_titles": [
+              "Ø30 DC Serie",
+              "RTS transmitter",
+              "Glydea",
+              "Ø50 AC Serie",
+              "Ø50 DC Serie",
+              "Ø40 AC Serie"
+            ]
+          },
+          "default": 2,
+          "propertyOrder": 12
+        }
+      }
+    },
+    "somfy_device_no_channels": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/somfy_device_properties" },
         { "$ref": "#/definitions/slave_id" },
         { "$ref": "#/definitions/no_protocol" },
         { "$ref": "#/definitions/no_setup" }

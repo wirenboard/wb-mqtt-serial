@@ -162,7 +162,7 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 void TSerialClient::SetReadError(PRegisterRange range)
 {
     for (auto reg: range->RegisterList()) {
-        reg->SetError();
+        reg->SetError(ST_UNKNOWN_ERROR);
         bool changed;
         auto handler = Handlers[reg];
 
@@ -204,7 +204,7 @@ void TSerialClient::OpenPortCycle()
     WaitForPollAndFlush();
 
     // devices whose registers were polled during this cycle and statues
-    std::map<PSerialDevice, std::set<TRegisterRange::EStatus>> devicesRangesStatuses;
+    std::map<PSerialDevice, std::set<EStatus>> devicesRangesStatuses;
 
     Plan->ProcessPending([&](const PPollEntry& entry) {
         auto pollEntry = dynamic_cast<TSerialPollEntry*>(entry.get());
@@ -236,16 +236,16 @@ void TSerialClient::OpenPortCycle()
                         device->Prepare();
                     } catch ( const TSerialDeviceTransientErrorException& e) {
                         LOG(Debug) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
-                        statuses.insert(TRegisterRange::ST_UNKNOWN_ERROR);
+                        statuses.insert(ST_UNKNOWN_ERROR);
                     }
 
                     if (device->HasSetupItems()) {
                         auto wrote = device->WriteSetupRegisters();
-                        statuses.insert(wrote ? TRegisterRange::ST_OK : TRegisterRange::ST_UNKNOWN_ERROR);
+                        statuses.insert(wrote ? ST_OK : ST_UNKNOWN_ERROR);
                     }
                 }
                 // Interaction with disconnected device that has only errors - still disconnected
-                if (!statuses.empty() && statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size()) {
+                if (!statuses.empty() && statuses.count(ST_UNKNOWN_ERROR) == statuses.size()) {
                     SetReadError(range);
                     newRanges.push_back(range);
                     continue;
@@ -256,7 +256,7 @@ void TSerialClient::OpenPortCycle()
                 statuses.insert(range->GetStatus());
             } catch (const TSerialDeviceException& e) {
                 LOG(Error) << e.what();
-                statuses.insert(TRegisterRange::ST_UNKNOWN_ERROR);
+                statuses.insert(ST_UNKNOWN_ERROR);
                 SetReadError(range);
                 newRanges.push_back(range);
             }
@@ -276,7 +276,7 @@ void TSerialClient::OpenPortCycle()
 
         bool deviceWasDisconnected = device->GetIsDisconnected(); // don't move after device->OnCycleEnd(...);
         {
-            bool cycleFailed = statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size();
+            bool cycleFailed = statuses.count(ST_UNKNOWN_ERROR) == statuses.size();
             device->OnCycleEnd(!cycleFailed);
         }
 
