@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.13.2) stable; urgency=medium
+
+  * refactoring of WB-MSW v.3 template: order of parameters and channels was changed in similar way like before adding parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru> Mon, 24 May 2021 11:05:00 +0300
+
+
 wb-mqtt-serial (2.13.1) stable; urgency=medium
 
   * refactoring of WB-MSW v.3 templates using groups and parameters
