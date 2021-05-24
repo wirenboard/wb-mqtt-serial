@@ -27,7 +27,7 @@
 
         "setup": [
             {
-                "title": "Reg5_Init",
+                "title": "disable legacy input mode control",
                 "address": 5,
                 "reg_type": "holding",
                 "value": 0
@@ -36,14 +36,14 @@
 
         "parameters": {
             "outputs_save_state": {
-                "title": "State After Power Off",
+                "title": "State After Power On",
                 "address": 6,
                 "reg_type": "holding",
                 "enum": [ 0, 1],
                 "default": 0,
                 "enum_titles": [
-                "turn off all relays after power off",
-                "save last relay state after power off"
+                "turn off all relays after power on",
+                "save last relay state after power on"
                 ],
                 "group": "outputs",
                 "order": 1
