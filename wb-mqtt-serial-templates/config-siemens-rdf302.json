@@ -5,6 +5,7 @@
   "id": "siemens-rdf302",
   "parameters": {
     "plant_type": {
+        "order": 1,
         "title": "Plant type",
         "address": "0x006C",
         "enum": [ 0, 1, 2, 3, 4 ],
@@ -18,6 +19,7 @@
         "default": 0
     },
     "control": {
+        "order": 2,
         "title": "P01. Control sequence. 2-pipe: [0…3], 4-pipe: [2…4]",
         "address": "0x0000",
         "enum": [ 0, 1, 2, 3, 4 ],
@@ -31,6 +33,7 @@
         "default": 1
     },
     "fahrenheit": {
+        "order": 3,
         "title": "P04. Selection of °C or °F",
         "address": "0x0003",
         "enum": [ 0, 1 ],

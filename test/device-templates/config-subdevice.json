@@ -44,6 +44,19 @@
                             "title": "s2",
                             "address": 9992,
                             "value": "0xfff2"
+                        },
+                        {
+                            "title": "s3",
+                            "address": 9994,
+                            "value": -2,
+                            "reg_type": "coil",
+                            "format": "s32"
+                        },
+                        {
+                            "title": "s4",
+                            "address": 9995,
+                            "value": 10,
+                            "scale": 2
                         }
                     ],
                     "channels": [

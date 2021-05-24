@@ -10,7 +10,7 @@ using namespace WBMQTT::JSON;
 namespace
 {
     //  {
-    //      "type": "integer",
+    //      "type": "number",
     //      "minimum": MIN,
     //      "maximum": MAX,
     //      "enum": [ ... ]
@@ -18,7 +18,7 @@ namespace
     Json::Value MakeParameterSchema(const Json::Value& setupRegister)
     {
         Json::Value r;
-        r["type"] = "integer";
+        r["type"] = "number";
         SetIfExists(r, "enum",    setupRegister, "enum");
         SetIfExists(r, "minimum", setupRegister, "min");
         SetIfExists(r, "maximum", setupRegister, "max");
@@ -153,7 +153,7 @@ namespace
             items.append(channelSchema);
             names.push_back(channel["name"].asString());
         }
-        if (!names.empty()) {
+        if (!names.empty() && !customChannelsSchemaRef.empty()) {
             items.append(MakeCustomChannelsSchema(names, customChannelsSchemaRef));
         }
         return r;
@@ -253,7 +253,12 @@ namespace
             res["properties"]["channels"] = MakeDeviceChannelsSchema(deviceTemplate.Schema["channels"], deviceTemplate.Type, customChannelsSchemaRef);
         }
 
-        MakeArray("allOf", res).append(MakeObject("$ref", deviceFactory.GetCommonDeviceSchemaRef(protocolName) + "_no_channels"));
+        auto deviceSchemaRef = deviceFactory.GetCommonDeviceSchemaRef(protocolName);
+        const auto NO_CHANNELS_SUFFIX = "_no_channels";
+        if (!WBMQTT::StringHasSuffix(deviceSchemaRef, NO_CHANNELS_SUFFIX)) {
+            deviceSchemaRef += NO_CHANNELS_SUFFIX;
+        }
+        MakeArray("allOf", res).append(MakeObject("$ref", deviceSchemaRef));
 
         TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
         if (deviceTemplate.Schema.isMember("subdevices")) {

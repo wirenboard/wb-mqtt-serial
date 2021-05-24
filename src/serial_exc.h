@@ -26,6 +26,16 @@ public:
     TSerialDeviceTransientErrorException(const std::string& message);
 };
 
+/** The exception class should be used for indicating reception of a valid answer from device,
+ *  but with information about internal device's error.
+ *  Polling of other registers of the device during current cycle is allowed, but current register read should be marked as read error.
+ *  Example: reading curtain motor position returns invalid position due to motor misconfiguration.
+ */
+class TSerialDeviceInternalErrorException: public TSerialDeviceTransientErrorException {
+public:
+    TSerialDeviceInternalErrorException(const std::string& message);
+};
+
 class TSerialDevicePermanentRegisterException: public TSerialDeviceException
 {
 public:
