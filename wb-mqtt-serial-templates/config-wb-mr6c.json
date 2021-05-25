@@ -42,8 +42,8 @@
                 "enum": [ 0, 1],
                 "default": 0,
                 "enum_titles": [
-                "turn off all relays after power on",
-                "save last relay state after power on"
+                "turn off all relays",
+                "restore last relay state"
                 ],
                 "group": "outputs",
                 "order": 1
@@ -61,43 +61,36 @@
         "channels": [
             {
                 "name": "Input 0",
-                "id": "",
                 "device_type": "input 0",
                 "stride": 7
             },
             {
                 "name": "Input 1",
-                "id": "",
-                "device_type": "input 1"
+                "device_type": "input"
             },
             {
                 "name": "Input 2",
-                "id": "",
-                "device_type": "input 2",
+                "device_type": "input",
                 "stride": 1
             },
             {
                 "name": "Input 3",
-                "id": "",
-                "device_type": "input 3",
+                "device_type": "input",
                 "stride": 2
             },
             {
                 "name": "Input 4",
-                "id": "",
-                "device_type": "input 4",
+                "device_type": "input",
                 "stride": 3
             },
             {
                 "name": "Input 5",
-                "id": "",
-                "device_type": "input 5",
+                "device_type": "input",
                 "stride": 4
             },
             {
                 "name": "Input 6",
-                "id": "",
-                "device_type": "input 6",
+                "device_type": "input",
                 "stride": 5
             },
             {
@@ -200,20 +193,21 @@
                     },
                     "channels": [
                         {
-                            "name": "Input 0",
+                            "name": "Input",
+                            "id": "",
                             "reg_type": "discrete",
                             "address": 0,
                             "type": "switch"
                         },
                         {
-                            "name": "Input 0 counter",
+                            "name": "counter",
                             "reg_type": "input",
                             "address": 32,
                             "type": "value",
                             "enabled": false
                         },
                         {
-                            "name": "Input 0 freq",
+                            "name": "freq",
                             "reg_type": "input",
                             "address": 40,
                             "type": "value",
@@ -226,7 +220,7 @@
                 }
             },
             {
-                "device_type": "input 1",
+                "device_type": "input",
                 "device": {
                     "parameters": {
                         "mode": {
@@ -256,300 +250,21 @@
                     },
                     "channels": [
                         {
-                            "name": "Input 1",
+                            "name": "Input",
+                            "id": "",
                             "reg_type": "discrete",
                             "address": 0,
                             "type": "switch"
                         },
                         {
-                            "name": "Input 1 counter",
+                            "name": "counter",
                             "reg_type": "input",
                             "address": 32,
                             "type": "value",
                             "enabled": false
                         },
                         {
-                            "name": "Input 1 freq",
-                            "reg_type": "input",
-                            "address": 40,
-                            "type": "value",
-                            "format": "u32",
-                            "scale": 1.52588e-05,
-                            "round_to": 0.001,
-                            "enabled": false
-                        }
-                    ]
-                }
-            },
-            {
-                "device_type": "input 2",
-                "device": {
-                    "parameters": {
-                        "mode": {
-                            "title": "Mode",
-                            "address": 9,
-                            "reg_type": "holding",
-                            "enum": [ 0, 1, 2, 3, 4 ],
-                            "default": 0,
-                            "enum_titles": [
-                                "push button",
-                                "latching switch",
-                                "turn off all relays on activation",
-                                "disable communication between input and outputs",
-                                "operate according to mapping-matix"
-                            ],
-                            "order": 1
-                        },
-                        "debounce_ms": {
-                            "title": "Debounce (ms)",
-                            "address": 20,
-                            "reg_type": "holding",
-                            "min": 0,
-                            "max": 100,
-                            "default": 50,
-                            "order": 2
-                        }
-                    },
-                    "channels": [
-                        {
-                            "name": "Input 2",
-                            "reg_type": "discrete",
-                            "address": 0,
-                            "type": "switch"
-                        },
-                        {
-                            "name": "Input 2 counter",
-                            "reg_type": "input",
-                            "address": 32,
-                            "type": "value",
-                            "enabled": false
-                        },
-                        {
-                            "name": "Input 2 freq",
-                            "reg_type": "input",
-                            "address": 40,
-                            "type": "value",
-                            "format": "u32",
-                            "scale": 1.52588e-05,
-                            "round_to": 0.001,
-                            "enabled": false
-                        }
-                    ]
-                }
-            },
-            {
-                "device_type": "input 3",
-                "device": {
-                    "parameters": {
-                        "mode": {
-                            "title": "Mode",
-                            "address": 9,
-                            "reg_type": "holding",
-                            "enum": [ 0, 1, 2, 3, 4 ],
-                            "default": 0,
-                            "enum_titles": [
-                                "push button",
-                                "latching switch",
-                                "turn off all relays on activation",
-                                "disable communication between input and outputs",
-                                "operate according to mapping-matix"
-                            ],
-                            "order": 1
-                        },
-                        "debounce_ms": {
-                            "title": "Debounce (ms)",
-                            "address": 20,
-                            "reg_type": "holding",
-                            "min": 0,
-                            "max": 100,
-                            "default": 50,
-                            "order": 2
-                        }
-                    },
-                    "channels": [
-                        {
-                            "name": "Input 3",
-                            "reg_type": "discrete",
-                            "address": 0,
-                            "type": "switch"
-                        },
-                        {
-                            "name": "Input 3 counter",
-                            "reg_type": "input",
-                            "address": 32,
-                            "type": "value",
-                            "enabled": false
-                        },
-                        {
-                            "name": "Input 3 freq",
-                            "reg_type": "input",
-                            "address": 40,
-                            "type": "value",
-                            "format": "u32",
-                            "scale": 1.52588e-05,
-                            "round_to": 0.001,
-                            "enabled": false
-                        }
-                    ]
-                }
-            },
-            {
-                "device_type": "input 4",
-                "device": {
-                    "parameters": {
-                        "mode": {
-                            "title": "Mode",
-                            "address": 9,
-                            "reg_type": "holding",
-                            "enum": [ 0, 1, 2, 3, 4 ],
-                            "default": 0,
-                            "enum_titles": [
-                                "push button",
-                                "latching switch",
-                                "turn off all relays on activation",
-                                "disable communication between input and outputs",
-                                "operate according to mapping-matix"
-                            ],
-                            "order": 1
-                        },
-                        "debounce_ms": {
-                            "title": "Debounce (ms)",
-                            "address": 20,
-                            "reg_type": "holding",
-                            "min": 0,
-                            "max": 100,
-                            "default": 50,
-                            "order": 2
-                        }
-                    },
-                    "channels": [
-                        {
-                            "name": "Input 4",
-                            "reg_type": "discrete",
-                            "address": 0,
-                            "type": "switch"
-                        },
-                        {
-                            "name": "Input 4 counter",
-                            "reg_type": "input",
-                            "address": 32,
-                            "type": "value",
-                            "enabled": false
-                        },
-                        {
-                            "name": "Input 4 freq",
-                            "reg_type": "input",
-                            "address": 40,
-                            "type": "value",
-                            "format": "u32",
-                            "scale": 1.52588e-05,
-                            "round_to": 0.001,
-                            "enabled": false
-                        }
-                    ]
-                }
-            },
-            {
-                "device_type": "input 5",
-                "device": {
-                    "parameters": {
-                        "mode": {
-                            "title": "Mode",
-                            "address": 9,
-                            "reg_type": "holding",
-                            "enum": [ 0, 1, 2, 3, 4 ],
-                            "default": 0,
-                            "enum_titles": [
-                                "push button",
-                                "latching switch",
-                                "turn off all relays on activation",
-                                "disable communication between input and outputs",
-                                "operate according to mapping-matix"
-                            ],
-                            "order": 1
-                        },
-                        "debounce_ms": {
-                            "title": "Debounce (ms)",
-                            "address": 20,
-                            "reg_type": "holding",
-                            "min": 0,
-                            "max": 100,
-                            "default": 50,
-                            "order": 2
-                        }
-                    },
-                    "channels": [
-                        {
-                            "name": "Input 5",
-                            "reg_type": "discrete",
-                            "address": 0,
-                            "type": "switch"
-                        },
-                        {
-                            "name": "Input 5 counter",
-                            "reg_type": "input",
-                            "address": 32,
-                            "type": "value",
-                            "enabled": false
-                        },
-                        {
-                            "name": "Input 5 freq",
-                            "reg_type": "input",
-                            "address": 40,
-                            "type": "value",
-                            "format": "u32",
-                            "scale": 1.52588e-05,
-                            "round_to": 0.001,
-                            "enabled": false
-                        }
-                    ]
-                }
-            },
-            {
-                "device_type": "input 6",
-                "device": {
-                    "parameters": {
-                        "mode": {
-                            "title": "Mode",
-                            "address": 9,
-                            "reg_type": "holding",
-                            "enum": [ 0, 1, 2, 3, 4 ],
-                            "default": 0,
-                            "enum_titles": [
-                                "push button",
-                                "latching switch",
-                                "turn off all relays on activation",
-                                "disable communication between input and outputs",
-                                "operate according to mapping-matix"
-                            ],
-                            "order": 1
-                        },
-                        "debounce_ms": {
-                            "title": "Debounce (ms)",
-                            "address": 20,
-                            "reg_type": "holding",
-                            "min": 0,
-                            "max": 100,
-                            "default": 50,
-                            "order": 2
-                        }
-                    },
-                    "channels": [
-                        {
-                            "name": "Input 6",
-                            "reg_type": "discrete",
-                            "address": 0,
-                            "type": "switch"
-                        },
-                        {
-                            "name": "Input 6 counter",
-                            "reg_type": "input",
-                            "address": 32,
-                            "type": "value",
-                            "enabled": false
-                        },
-                        {
-                            "name": "Input 6 freq",
+                            "name": "freq",
                             "reg_type": "input",
                             "address": 40,
                             "type": "value",
