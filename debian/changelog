@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.20.0) stable; urgency=medium
+
+  * Energomera CE102M support is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 14 Jul 2021 11:11:51 +0500
+
 wb-mqtt-serial (2.19.1) stable; urgency=medium
 
   * Config validation time is decreased

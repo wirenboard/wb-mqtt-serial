@@ -182,7 +182,7 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
             device.removeMember("parameters");
 
             if (device["slave_id"].isBool()) {
-                device["slave_id"] = "";
+                device.removeMember("slave_id");
             }
         }
     }

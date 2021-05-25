@@ -237,6 +237,12 @@ public:
      */
     virtual bool IsModbus() const;
 
+    /** Check if protocol supports broadcast requests.
+     *  It is used during generation of a schema for confed and during config validation.
+     *  For protocols with broadcast support "slave_id" is not required.
+     */
+    virtual bool SupportsBroadcast() const;
+
 private:
     std::string Name;
     PRegisterTypeMap RegTypes;
@@ -253,4 +259,6 @@ public:
     TUint32SlaveIdProtocol(const std::string& name, const TRegisterTypes& reg_types, bool allowBroadcast = false);
 
     bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override;
+
+    bool SupportsBroadcast() const override;
 };

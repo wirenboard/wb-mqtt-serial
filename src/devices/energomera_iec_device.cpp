@@ -10,21 +10,13 @@
 namespace
 {
     const char* LOG_PREFIX = "[Energomera] ";
-
-    class TEnergomeraIecProtocol: public TIECProtocol
-    {
-    public:
-        TEnergomeraIecProtocol()
-            : TIECProtocol("energomera_iec", {{ 0, "group_single", "value", Double, true }})
-        {}
-    };
 }
 
-void TEnergomeraIecDevice::Register(TSerialDeviceFactory& factory)
+void TEnergomeraIecWithFastReadDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TEnergomeraIecProtocol(),
-                             new TBasicDeviceFactory<TEnergomeraIecDevice>("#/definitions/simple_device_with_broadcast", 
-                                                                           "#/definitions/common_channel"));
+    factory.RegisterProtocol(new TIEC61107Protocol("energomera_iec", {{ 0, "group_single", "value", Double, true }}),
+                             new TBasicDeviceFactory<TEnergomeraIecWithFastReadDevice>("#/definitions/simple_device_with_broadcast", 
+                                                                                       "#/definitions/common_channel"));
 }
 
 namespace
@@ -75,21 +67,12 @@ namespace
         std::map<uint16_t, std::list<PRegister> > RegsByParam;
     };
 
-    uint8_t GetChecksum(const uint8_t* data, size_t size)
-    {
-        uint8_t crc = 0;
-        for (size_t i = 0; i < size; ++i) {
-            crc = (crc + data[i]) & 0x7F;
-        }
-        return crc;
-    }
-
     void CheckStripChecksum(uint8_t* resp, size_t len) 
     {
         if (len < 2) {
             throw TSerialDeviceTransientErrorException("empty response");
         }
-        uint8_t checksum = GetChecksum(resp+1, len-2);
+        uint8_t checksum = IEC::Get7BitSum(resp+1, len-2);
         if (resp[len-1] != checksum) {
             throw TSerialDeviceTransientErrorException("invalid response checksum (" + std::to_string(resp[len-1]) + " != " + std::to_string(checksum) + ")");
         }
@@ -125,7 +108,7 @@ namespace
         snprintf(cmd_part, sizeof(cmd_part), "R1\x02GROUP(%s)\x03", query_part);
         snprintf(buf, sizeof(buf), "/?%s!\x01%s", slaveId.data(), cmd_part);
         // place checksum in place of trailing null byte
-        buf[strlen(buf)] = GetChecksum((uint8_t*) (&cmd_part[0]), strlen(cmd_part));
+        buf[strlen(buf)] = IEC::Get7BitSum((uint8_t*) (&cmd_part[0]), strlen(cmd_part));
         IEC::WriteBytes(port, (uint8_t*) buf, strlen(buf), LOG_PREFIX);
     }
 
@@ -141,7 +124,7 @@ namespace
 
         // Proper response (inc. error) must start with STX, and end with ETX
         if ((buf[0] != IEC::STX) || (buf[len-2] != IEC::ETX)) {
-            throw TSerialDeviceTransientErrorException("Malformed response");
+            throw TSerialDeviceTransientErrorException("malformed response");
         }
 
         // strip STX and ETX
@@ -208,11 +191,11 @@ namespace
     }
 }
 
-TEnergomeraIecDevice::TEnergomeraIecDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TIECDevice(config, port, protocol)
+TEnergomeraIecWithFastReadDevice::TEnergomeraIecWithFastReadDevice(PDeviceConfig config, PPort port, PProtocol protocol)
+    : TIEC61107Device(config, port, protocol)
 {}
 
-std::list<PRegisterRange> TEnergomeraIecDevice::ReadRegisterRange(PRegisterRange abstract_range)
+std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract_range)
 {
     auto range  = std::dynamic_pointer_cast<TEnergomeraRegisterRange>(abstract_range);
     if (!range) {
@@ -232,17 +215,17 @@ std::list<PRegisterRange> TEnergomeraIecDevice::ReadRegisterRange(PRegisterRange
     } catch (TSerialDeviceTransientErrorException& e) {
         range->SetError(ST_UNKNOWN_ERROR);
         auto& logger = GetIsDisconnected() ? Debug : Warn;
-        LOG(logger) << "TEnergomeraIecDevice::ReadRegisterRange(): " << e.what() << " [slave_id is " << ToString() + "]";
+        LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is " << ToString() + "]";
     }
     return { abstract_range };
 }
 
-void TEnergomeraIecDevice::WriteRegister(PRegister, uint64_t)
+void TEnergomeraIecWithFastReadDevice::WriteRegister(PRegister, uint64_t)
 {
     throw TSerialDeviceException("Energomera protocol: writing register is not supported");
 }
 
-std::list<PRegisterRange> TEnergomeraIecDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
+std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
 {
     std::list<PRegisterRange> r;
     if (reg_list.empty())

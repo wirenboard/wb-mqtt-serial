@@ -805,7 +805,7 @@
                "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
                "param24", "param32", "power", "freq", "power_factor", "group_single", 
                "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5", 
-               "alarm", "position", "command"]
+               "alarm", "position", "command", "date", "time"]
     },
     "format": {
       "type": "string",
@@ -1036,6 +1036,36 @@
       ]
     },
 
+    "string_address": {
+      "properties": {
+        "address": {
+          "title": "Parameter",
+          "type": "string",
+          "propertyOrder": 6
+        }
+      },
+      "required": ["address"]
+    },
+    "channel_with_string_address": {
+      "headerTemplate": "{{self.name}}",
+      "title": "Channel",
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        { "$ref": "#/definitions/string_address" }
+      ]
+    },
+    "channels_with_string_addresses": {
+      "properties": {
+        "channels": {
+          "type": "array",
+          "title": "Custom channels",
+          "items": { "$ref": "#/definitions/channel_with_string_address" },
+          "propertyOrder": 99,
+          "_format": "tabs"
+        }
+      }
+    },
+
     "common_channels": {
       "properties": {
         "channels": {
@@ -1074,6 +1104,16 @@
         { "$ref": "#/definitions/slave_id" },
         { "$ref": "#/definitions/no_protocol" },
         { "$ref": "#/definitions/no_setup" }
+      ]
+    },
+
+    "enrgomera_iec_mode_c_device": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/channels_with_string_addresses" },
+        { "$ref": "#/definitions/slave_id_broadcast" },
+        { "$ref": "#/definitions/no_protocol" }
       ]
     },
 
@@ -1195,7 +1235,7 @@
               }
             }
           },
-          "required": ["protocol", "slave_id"],
+          "required": ["protocol"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
         {
@@ -1315,11 +1355,11 @@
               }
             }
           },
-          "required": ["protocol", "slave_id"],
+          "required": ["protocol"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
         {
-          "title": "Custom Energomera device",
+          "title": "Custom Energomera device with IEC 61107 fast read support",
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/no_setup" },
@@ -1335,7 +1375,27 @@
               }
             }
           },
-          "required": ["protocol", "slave_id"],
+          "required": ["protocol"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Energomera device with IEC 61107 Mode C protocol",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/channels_with_string_addresses" },
+            { "$ref": "#/definitions/slave_id_broadcast" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["energomera_iec_mode_c"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
         {

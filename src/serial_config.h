@@ -86,16 +86,20 @@ class TTemplateMap: public ITemplateMap
          * 
          * @param templatesDirs directory with templates
          * @param templateSchema JSON Schema for template file validation
+         * @param passInvalidTemplates false - throw exception if a folder contains json without device_type parameter
+         *                             true - print log message and continue folder processing
          */
-        TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema);
+        TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema, bool passInvalidTemplates = true);
 
         /**
          * @brief Add templates from templatesDir to map.
          *        Throws TConfigParserException if can't open templatesDir.
          * 
          * @param templatesDir directory with templates
+         * @param passInvalidTemplates false - throw exception if a folder contains json without device_type parameter
+         *                             true - print log message and continue folder processing
          */
-        void AddTemplatesDir(const std::string& templatesDir);
+        void AddTemplatesDir(const std::string& templatesDir, bool passInvalidTemplates = true);
 
         const TDeviceTemplate& GetTemplate(const std::string& deviceType) override;
 

@@ -21,8 +21,10 @@
 
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
+#include "file_utils.h"
 
 #include "devices/energomera_iec_device.h"
+#include "devices/energomera_iec_mode_c_device.h"
 #include "devices/ivtm_device.h"
 #include "devices/lls_device.h"
 #include "devices/mercury200_device.h"
@@ -522,10 +524,10 @@ std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data)
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }
 
-TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema): 
+TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema, bool passInvalidTemplates): 
     Validator(new  WBMQTT::JSON::TValidator(templateSchema)) 
 {
-    AddTemplatesDir(templatesDir);
+    AddTemplatesDir(templatesDir, passInvalidTemplates);
 }
 
 std::string TTemplateMap::GetDeviceType(const std::string& templatePath) const
@@ -553,36 +555,30 @@ std::string TTemplateMap::GetDeviceType(const std::string& templatePath) const
     throw std::runtime_error(templatePath + " doesn't contain device type declaration");
 }
 
-void TTemplateMap::AddTemplatesDir(const std::string& templatesDir)
+void TTemplateMap::AddTemplatesDir(const std::string& templatesDir, bool passInvalidTemplates)
 {
-    DIR *dir;
-    struct dirent *dirp;
-    struct stat filestat;
-
-    if ((dir = opendir(templatesDir.c_str())) == NULL)
-        throw TConfigParserException("Cannot open " + templatesDir + " directory");
-
-    while ((dirp = readdir(dir))) {
-        std::string dname = dirp->d_name;
-        if(!EndsWith(dname, ".json"))
-            continue;
-
-        std::string filepath = templatesDir + "/" + dname;
-        if (stat(filepath.c_str(), &filestat)) {
-            continue;
-        }
-        if (S_ISDIR(filestat.st_mode)) {
-            continue;
-        }
-
-        try {
-            TemplateFiles[GetDeviceType(filepath)] = filepath;
-        } catch (const std::exception& e) {
-            LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
-            continue;
-        }
-    }
-    closedir(dir);
+    IterateDir(templatesDir, [&](const std::string& fname)
+        {
+            if(!EndsWith(fname, ".json")) {
+                return false;
+            }
+            std::string filepath = templatesDir + "/" + fname;
+            struct stat filestat;
+            if (stat(filepath.c_str(), &filestat) || S_ISDIR(filestat.st_mode)) {
+                return false;
+            }
+            try {
+                Json::Value root = WBMQTT::JSON::Parse(filepath);
+                TemplateFiles[root["device_type"].asString()] = filepath;
+            } catch (const std::exception& e) {
+                if (passInvalidTemplates) {
+                    LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
+                    return false;
+                }
+                throw;
+            }
+            return false;
+        });
 }
 
 Json::Value TTemplateMap::Validate(const std::string& deviceType, const std::string& filePath)
@@ -1078,7 +1074,8 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
 {
-    TEnergomeraIecDevice::Register(deviceFactory);
+    TEnergomeraIecWithFastReadDevice::Register(deviceFactory);
+    TEnergomeraIecModeCDevice::Register(deviceFactory);
     TIVTMDevice::Register(deviceFactory);
     TLLSDevice::Register(deviceFactory);
     TMercury200Device::Register(deviceFactory);

@@ -25,6 +25,11 @@ bool IProtocol::IsModbus() const
     return false;
 }
 
+bool IProtocol::SupportsBroadcast() const
+{
+    return false;
+}
+
 TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name, const TRegisterTypes& reg_types, bool allowBroadcast) 
     : IProtocol(name, reg_types), AllowBroadcast(allowBroadcast)
 {}
@@ -32,6 +37,11 @@ TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name, const TR
 bool TUint32SlaveIdProtocol::IsSameSlaveId(const std::string& id1, const std::string& id2) const
 {
     return (TUInt32SlaveId(id1, AllowBroadcast) == TUInt32SlaveId(id2, AllowBroadcast));
+}
+
+bool TUint32SlaveIdProtocol::SupportsBroadcast() const
+{
+    return AllowBroadcast;
 }
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)

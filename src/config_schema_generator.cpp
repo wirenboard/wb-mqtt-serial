@@ -245,12 +245,16 @@ namespace
                          Json::Value& devicesArray,
                          Json::Value& definitions)
     {
+        auto protocolName = GetProtocolName(deviceTemplate.Schema);
+    
         Json::Value res;
         res["type"] = "object";
 
         auto& req = MakeArray("required", res);
         req.append("device_type");
-        req.append("slave_id");
+        if (!deviceFactory.GetProtocol(protocolName)->SupportsBroadcast()) {
+            req.append("slave_id");
+        }
 
         res["properties"]["device_type"] = MakeSingleValuePropery(deviceTemplate.Type);
 
@@ -258,7 +262,6 @@ namespace
             MakeDeviceParametersSchema(res["properties"], req, deviceTemplate.Schema);
         }
 
-        auto protocolName = GetProtocolName(deviceTemplate.Schema);
 
         if (deviceTemplate.Schema.isMember("channels")) {
             auto customChannelsSchemaRef = deviceFactory.GetCustomChannelSchemaRef(protocolName);

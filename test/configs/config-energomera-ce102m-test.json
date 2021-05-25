@@ -1,0 +1,41 @@
+{
+  "ports": [
+    {
+      "port_type" : "serial",
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "poll_interval": 100,
+      "devices" : [
+        {
+          "slave_id": "141628345",
+          "name": "Reduced Energomera CE102M registers set",
+          "id": "reduced_energomera_ce102m",
+          "protocol": "energomera_iec_mode_c",
+          "frame_timeout_ms": 0,
+          "password": ["0x77", "0x77", "0x77"],
+          "channels": [
+            {
+              "name": "Urms",
+              "reg_type": "default",
+              "type": "voltage",
+              "address": "VOLTA()"
+            },
+            {
+              "name": "Irms",
+              "reg_type": "default",
+              "address": "CURRE()"
+            },
+            {
+              "name": "Frequency",
+              "reg_type": "default",
+              "address": "FREQU()"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
