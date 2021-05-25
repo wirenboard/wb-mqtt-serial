@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.21.0) stable; urgency=medium
+
+  * Energomera CE102M support is added
+  * obis_* register types are deprecated, use item_*, temperature and power_factor
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 16 Jul 2021 12:14:00 +0500
+
 wb-mqtt-serial (2.20.0) experimental; urgency=medium
 
   * Support for minimum value in channels

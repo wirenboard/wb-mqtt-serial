@@ -431,12 +431,7 @@ uint64_t TDlmsDevice::ReadRegister(PRegister reg)
         throw TSerialDevicePermanentRegisterException(addr + " value is not a number");
     }
 
-    auto resp_val = r->GetValue().ToDouble();
-    uint64_t value = 0;
-    memcpy(&value, &resp_val, sizeof(resp_val));
-    static_assert((sizeof(value) >= sizeof(resp_val)), "Can't fit double into uint64_t");
-
-    return value;
+    return CopyDoubleToUint64(r->GetValue().ToDouble());
 }
 
 void TDlmsDevice::WriteRegister(PRegister reg, uint64_t value)
