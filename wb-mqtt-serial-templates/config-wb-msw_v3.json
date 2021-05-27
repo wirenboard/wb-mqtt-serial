@@ -109,8 +109,8 @@
                 "title": "Low-pass Filter Time Constant (ms)",
                 "address": 91,
                 "reg_type": "holding",
-                "scale": 10,
-                "default": 200,
+                "scale": 0.1,
+                "default": 20,
                 "group": "sound_level",
                 "order": 1
             },
@@ -150,6 +150,7 @@
                 "reg_type": "input",
                 "address": 1,
                 "type": "rel_humidity",
+                "format": "s16",
                 "scale": 0.1,
                 "error_value": "0xFFFF",
                 "group": "air_quality"
