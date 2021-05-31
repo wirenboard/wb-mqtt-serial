@@ -54,7 +54,7 @@
                 "enum_titles": [
                     "push button",
                     "latching switch",
-                    "turn off all outputs on activation",
+                    "turn off all outputs when activated",
                     "disable communication between input and outputs",
                     "operate according to mapping-matix"
                 ],
@@ -80,7 +80,7 @@
                 "enum_titles": [
                     "push button",
                     "latching switch",
-                    "turn off all outputs on activation",
+                    "turn off all outputs when activated",
                     "disable communication between input and outputs",
                     "operate according to mapping-matix"
                 ],
