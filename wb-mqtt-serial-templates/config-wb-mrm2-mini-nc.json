@@ -1,0 +1,221 @@
+{
+    "device_type": "WB-MRM2-mini-NC",
+    "device": {
+        "name": "WB-MRM2-mini-NC",
+        "id": "wb-mrm2-mini-nc",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+
+        "groups": [
+            {
+                "title": "Button 1",
+                "id": "button_1",
+                "order": 1
+            },
+            {
+                "title": "Button 2",
+                "id": "button_2",
+                "order": 2
+            },
+            {
+                "title": "Outputs",
+                "id": "outputs",
+                "order": 3
+            },
+            {
+                "title": "General Settings",
+                "id": "general",
+                "order": 4
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 5
+            }
+        ],
+
+        "setup": [
+            {
+                "title": "disable legacy input mode control",
+                "address": 5,
+                "reg_type": "holding",
+                "value": 0
+            }
+        ],
+
+        "parameters": {
+            "button1_mode": {
+                "title": "Button 1 Mode",
+                "address": 9,
+                "reg_type": "holding",
+                "enum": [ 0, 1, 2, 3, 4 ],
+                "default": 0,
+                "enum_titles": [
+                    "push button",
+                    "latching switch",
+                    "turn on all outputs when activated",
+                    "disable communication between input and outputs",
+                    "operate according to mapping-matix"
+                ],
+                "group": "button_1",
+                "order": 1
+            },
+            "button1_debounce_ms": {
+                "title": "Button 1 Debounce (ms)",
+                "address": 20,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 50,
+                "group": "button_1",
+                "order": 2
+            },
+            "button2_mode": {
+                "title": "Button 2 Mode",
+                "address": 10,
+                "reg_type": "holding",
+                "enum": [ 0, 1, 2, 3, 4 ],
+                "default": 0,
+                "enum_titles": [
+                    "push button",
+                    "latching switch",
+                    "turn on all outputs when activated",
+                    "disable communication between input and outputs",
+                    "operate according to mapping-matix"
+                ],
+                "group": "button_2",
+                "order": 1
+            },
+            "button2_debounce_ms": {
+                "title": "Button 2 Debounce (ms)",
+                "address": 21,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 50,
+                "group": "button_2",
+                "order": 2
+            },
+            "outputs_restore_state": {
+                "title": "Restore Last Outputs State After Power On",
+                "address": 6,
+                "reg_type": "holding",
+                "enum": [ 0, 1 ],
+                "default": 0,
+                "enum_titles": [
+                    "no",
+                    "yes"
+                ],
+                "group": "outputs",
+                "order": 1
+            },
+            "safety_timer_s": {
+                "title": "Safety Timer (s)",
+                "address": 8,
+                "reg_type": "holding",
+                "default": 3600,
+                "group": "general",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {
+                "name": "Button 1",
+                "reg_type": "discrete",
+                "address": 0,
+                "type": "switch",
+                "group": "button_1"
+            },
+            {
+                "name": "Button 1 counter",
+                "reg_type": "input",
+                "address": 32,
+                "type": "value",
+                "group": "button_1"
+            },
+            {
+                "name": "Button 1 freq",
+                "reg_type": "input",
+                "address": 40,
+                "type": "value",
+                "format": "u32",
+                "scale": 1.52588e-05,
+                "round_to": 0.001,
+                "enabled": false,
+                "group": "button_1"
+            },
+            {
+                "name": "Button 2",
+                "reg_type": "discrete",
+                "address": 1,
+                "type": "switch",
+                "group": "button_2"
+            },
+            {
+                "name": "Button 2 counter",
+                "reg_type": "input",
+                "address": 33,
+                "type": "value",
+                "group": "button_2"
+            },
+            {
+                "name": "Button 2 freq",
+                "reg_type": "input",
+                "address": 42,
+                "type": "value",
+                "format": "u32",
+                "scale": 1.52588e-05,
+                "round_to": 0.001,
+                "enabled": false,
+                "group": "button_2"
+            },
+            {
+                "name": "Relay 1",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "switch",
+                "scale": -1,
+                "offset": 1,
+                "group": "outputs"
+            },
+            {
+                "name": "Relay 2",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch",
+                "scale": -1,
+                "offset": 1,
+                "group": "outputs"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ]        
+
+    }
+}
