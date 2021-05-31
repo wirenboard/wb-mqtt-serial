@@ -286,7 +286,6 @@
                 "reg_type": "input",
                 "address": 39,
                 "type": "value",
-                "enabled": false,
                 "group": "input_0"
             },
             {
@@ -312,7 +311,6 @@
                 "reg_type": "input",
                 "address": 32,
                 "type": "value",
-                "enabled": false,
                 "group": "input_1"
             },
             {
@@ -338,7 +336,6 @@
                 "reg_type": "input",
                 "address": 33,
                 "type": "value",
-                "enabled": false,
                 "group": "input_2"
             },
             {
@@ -364,7 +361,6 @@
                 "reg_type": "input",
                 "address": 34,
                 "type": "value",
-                "enabled": false,
                 "group": "input_3"
             },
             {
@@ -390,7 +386,6 @@
                 "reg_type": "input",
                 "address": 35,
                 "type": "value",
-                "enabled": false,
                 "group": "input_4"
             },
             {
@@ -416,7 +411,6 @@
                 "reg_type": "input",
                 "address": 36,
                 "type": "value",
-                "enabled": false,
                 "group": "input_5"
             },
             {
@@ -442,7 +436,6 @@
                 "reg_type": "input",
                 "address": 37,
                 "type": "value",
-                "enabled": false,
                 "group": "input_6"
             },
             {
