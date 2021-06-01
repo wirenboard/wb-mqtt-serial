@@ -26,6 +26,31 @@
       "required": ["title", "address", "value"]
     },
 
+    "group": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        }
+      },
+      "required": ["title", "id"]
+    },
+
+    "groups": {
+      "properties": {
+        "groups":{
+          "type": "array",
+          "items": { "$ref": "#/definitions/group" }
+        }
+      }
+    },
+
     "parameter": {
       "type": "object",
       "properties": {
@@ -45,13 +70,13 @@
           "items": { "type": "string" }
         },
         "default": {
-          "type": "integer"
+          "type": "number"
         },
         "min": {
-          "type": "integer"
+          "type": "number"
         },
         "max": {
-          "type": "integer"
+          "type": "number"
         },
         "order": {
           "type": "integer"
@@ -142,6 +167,7 @@
         { "$ref": "#/definitions/dlms_device_properties" },
         { "$ref": "#/definitions/dlms_channels" },
         { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/groups" },
         {
           "properties": {
             "protocol": {
@@ -156,16 +182,37 @@
       ]
     },
 
+    "somfy_device_template": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/common_channels" },
+        { "$ref": "#/definitions/somfy_device_properties" },
+        {
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["somfy"]
+            },
+            "parameters": { "not" : {} },
+            "subdevices": { "not" : {} }
+          },
+          "required": ["protocol"]
+        }
+      ]
+    },
+
     "simple_device_template": {
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },
         { "$ref": "#/definitions/common_channels" },
+        { "$ref": "#/definitions/groups" },
         {
           "properties": {
             "protocol": {
               "type": "string",
-              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec"]
+              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec", "windeco", "dooya"]
             },
             "parameters": { "not" : {} },
             "subdevices": { "not" : {} }
@@ -180,6 +227,7 @@
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/common_channels" },
         { "$ref": "#/definitions/common_setup" },
+        { "$ref": "#/definitions/groups" },
         {
           "properties": {
             "protocol": {
@@ -198,6 +246,7 @@
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/subdevice_device" },
+        { "$ref": "#/definitions/groups" },
         {
           "anyOf": [
             {
@@ -228,7 +277,8 @@
         { "$ref": "#/definitions/modbus_device_template" },
         { "$ref": "#/definitions/simple_device_template" },
         { "$ref": "#/definitions/simple_device_with_setup_template"},
-        { "$ref": "#/definitions/dlms_device_template" }
+        { "$ref": "#/definitions/dlms_device_template" },
+        { "$ref": "#/definitions/somfy_device_template" }
       ]
     }
   },

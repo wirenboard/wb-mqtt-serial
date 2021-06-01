@@ -29,3 +29,7 @@ TSerialDeviceTransientErrorException::TSerialDeviceTransientErrorException(const
 TSerialDevicePermanentRegisterException::TSerialDevicePermanentRegisterException(const std::string& message)
     : TSerialDeviceException(message)
 {}
+
+TSerialDeviceInternalErrorException::TSerialDeviceInternalErrorException(const std::string& message)
+    : TSerialDeviceTransientErrorException(message)
+{}

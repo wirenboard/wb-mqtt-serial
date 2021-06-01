@@ -1,0 +1,44 @@
+{
+    "device_type": "WinDeco",
+    "title": "WinDeco curtain motor",
+    "device": {
+        "name": "WinDeco",
+        "id": "windeco",
+        "protocol": "windeco",
+        "response_timeout_ms": 200,
+        "frame_timeout_ms": 20,
+        "channels": [
+            {
+                "name": "Position",
+                "reg_type": "position",
+                "address": 0,
+                "max": 100,
+                "type": "range",
+                "readonly": false
+            },
+            {
+                "name": "Status",
+                "reg_type": "param",
+                "address": "0x07"
+            },
+            {
+                "name": "Stop",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x03"
+            },
+            {
+                "name": "Move up",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x08"
+            },
+            {
+                "name": "Move down",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x09"
+            }
+        ]
+    }
+}
