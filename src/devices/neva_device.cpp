@@ -105,6 +105,17 @@ namespace
         }, LOG_PREFIX);
     } 
 
+    void WriteBytes(TPort& port, const uint8_t* buf, size_t count, std::chrono::milliseconds timeout)
+    {
+        port.SleepSinceLastInteraction(timeout);
+        IEC::WriteBytes(port, buf, count, LOG_PREFIX);
+    }
+
+    void WriteBytes(TPort& port, const std::string& data, std::chrono::milliseconds timeout)
+    {
+        WriteBytes(port, reinterpret_cast<const uint8_t*>(data.c_str()), data.size(), timeout);
+    }
+
     void SendPassword(TPort& port, const TDeviceConfig& deviceConfig)
     {
         uint8_t buf[RESPONSE_BUF_LEN] = {};
@@ -120,7 +131,7 @@ namespace
             password[0], password[1], password[2], password[3]);
         SetCRC(password_buf, sizeof(password_buf));
 
-        IEC::WriteBytes(port, password_buf, sizeof(password_buf) / sizeof(password_buf[0]), LOG_PREFIX);
+        WriteBytes(port, password_buf, sizeof(password_buf) / sizeof(password_buf[0]), deviceConfig.FrameTimeout);
         auto nread = ReadFrameProgMode(port, buf, RESPONSE_BUF_LEN, deviceConfig);
 
         if ((nread != 1) || (buf[0] != IEC::ACK)) {
@@ -133,7 +144,7 @@ namespace
         uint8_t buf[RESPONSE_BUF_LEN] = {};
 
         // We expect mode C protocol and 9600 baudrate. Send ACK for entering into progamming mode
-        IEC::WriteBytes(port, "\006" "051\r\n", LOG_PREFIX);
+        WriteBytes(port, "\006" "051\r\n", deviceConfig.FrameTimeout);
         auto nread = ReadFrameProgMode(port, buf, RESPONSE_BUF_LEN, deviceConfig, IEC::SOH);
         CheckStripCRC(buf, nread);
 
@@ -169,7 +180,7 @@ namespace
         // place XOR-CRC in place of trailing null byte
         buf[sizeof(buf) - 1] = GetXorCRC(&buf[1], sizeof(buf) - 2);
 
-        IEC::WriteBytes(port, buf, sizeof(buf), LOG_PREFIX);
+        WriteBytes(port, buf, sizeof(buf), deviceConfig.FrameTimeout);
 
         uint8_t resp[RESPONSE_BUF_LEN] = {};
         auto len = ReadFrameProgMode(port, resp, RESPONSE_BUF_LEN, deviceConfig);
@@ -238,11 +249,10 @@ void TNevaDevice::Prepare()
     size_t retryCount = 5;
     while (true) {
         try {
-            Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
             Port()->SkipNoise();
 
             // Send session start request
-            IEC::WriteBytes(*Port(), "/?" + SlaveId + "!\r\n", LOG_PREFIX);
+            WriteBytes(*Port(), "/?" + SlaveId + "!\r\n", DeviceConfig()->FrameTimeout);
             // Pass identification response
             ReadFrameCRLF(*Port(), buf, RESPONSE_BUF_LEN, *DeviceConfig());
 
@@ -266,7 +276,7 @@ void TNevaDevice::EndSession()
 
     char req[] = "\001" "B0" "\003" ; // trailing NUL byte will be replaced by CRC
     SetCRC((uint8_t*) req, sizeof(req));
-    IEC::WriteBytes(*Port(), (uint8_t*) req, sizeof(req), LOG_PREFIX);
+    WriteBytes(*Port(), (uint8_t*) req, sizeof(req), DeviceConfig()->FrameTimeout);
 
     // A meter need some time to process the command
     std::this_thread::sleep_for(DeviceConfig()->FrameTimeout);
