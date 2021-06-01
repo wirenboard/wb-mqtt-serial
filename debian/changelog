@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.14.2) stable; urgency=medium
+
+  * Remake of templates Modbus relay modules WB-MRxx using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru> Tue, 01 June 2021 09:05:00 +0300
+
 wb-mqtt-serial (2.14.0) experimental; urgency=medium
 
   * Support for WinDeco, Dooya and Somfy SDN curtain motors is added
