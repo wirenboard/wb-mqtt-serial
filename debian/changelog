@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.14.3) stable; urgency=medium
+
+  * Remake of WB-MWAC template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 02 Jun 2021 13:12:32 +0300
+
 wb-mqtt-serial (2.14.0) experimental; urgency=medium
 
   * Support for WinDeco, Dooya and Somfy SDN curtain motors is added
