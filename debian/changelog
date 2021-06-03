@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.15.1) stable; urgency=medium
+
+  * Page titles are removed from JSON schema for homeui in tabbed channels representation.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 02 Jun 2021 19:12:00 +0500
+
 wb-mqtt-serial (2.15.0) stable; urgency=medium
 
   * NEVA MT 113/123/124 support
