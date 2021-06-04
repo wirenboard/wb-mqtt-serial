@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.15.2) stable; urgency=medium
+
+  * Corrections in MSWv3 template: channels and parameters names, scales, format types, error values according to remarks and documentation
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru> Mon, 24 May 2021 11:05:00 +0300
+
 wb-mqtt-serial (2.15.1) stable; urgency=medium
 
   * Page titles are removed from JSON schema for homeui in tabbed channels representation.
