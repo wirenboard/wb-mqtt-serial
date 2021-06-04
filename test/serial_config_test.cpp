@@ -79,12 +79,12 @@ TEST_F(TConfigParserTest, Parse)
                     Emit() << "DeviceId: " << device_channel->DeviceId;
                     Emit() << "Order: " << device_channel->Order;
                     Emit() << "OnValue: " << device_channel->OnValue;
-                    if (device_channel->Max == std::numeric_limits<double>::max()) {
+                    if (isnan(device_channel->Max)) {
                         Emit() << "Max: not set";
                     } else {
                         Emit() << "Max: " << device_channel->Max;
                     }
-                    if (device_channel->Min == std::numeric_limits<double>::min()) {
+                    if (isnan(device_channel->Min)) {
                         Emit() << "Min: not set";
                     } else {
                         Emit() << "Min: " << device_channel->Min;

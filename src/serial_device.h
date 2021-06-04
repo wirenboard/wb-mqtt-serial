@@ -24,8 +24,8 @@ struct TDeviceChannelConfig
     std::string                  DeviceId;
     int                          Order            = 0;
     std::string                  OnValue;
-    double                       Max              =std::numeric_limits<double>::max();
-    double                       Min              =std::numeric_limits<double>::min();
+    double                       Max              =std::numeric_limits<double>::signaling_NaN();
+    double                       Min              =std::numeric_limits<double>::signaling_NaN();
     double                       Precision        = 0;
     bool                         ReadOnly         = false;
     std::vector<PRegisterConfig> RegisterConfigs;

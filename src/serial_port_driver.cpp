@@ -243,7 +243,7 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
                               .SetReadonly(channel->ReadOnly)
                               .SetUserData(TControlLinkData{ shared_from_this(), channel });
 
-    if (channel->Max == std::numeric_limits<double>::max()) {
+    if (isnan(channel->Max)) {
         if (channel->Type == "range" || channel->Type == "dimmer") {
             args.SetMax(65535);
         }
@@ -251,7 +251,7 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
         args.SetMax(channel->Max);
     }
 
-    if (channel->Min != std::numeric_limits<double>::min()) {
+    if (!isnan(channel->Min)) {
         args.SetMin(channel->Min);
     }
 
