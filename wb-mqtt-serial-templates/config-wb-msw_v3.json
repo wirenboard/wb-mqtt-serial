@@ -830,7 +830,7 @@
                 "group": "debug"
             },
             {
-                "name": "Sound Current Channel",
+                "name": "Sound ADC Channel",
                 "reg_type": "input",
                 "address": 86,
                 "enabled": false,
