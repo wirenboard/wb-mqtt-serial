@@ -4,7 +4,7 @@
     "name": "NEVA MT 32x",
     "id": "neva32x",
     "protocol" : "neva",
-    "frame_timeout_ms" : 1500,
+    "frame_timeout_ms" : 20,
     "response_timeout_ms" : 1500,
     "channels": [
       {
