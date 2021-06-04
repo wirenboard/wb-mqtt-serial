@@ -1100,4 +1100,3 @@ wb-homa-modbus (1.9) stable; urgency=medium
   * report errors via controls/<control>/meta/error
 
  -- Evgeny Boger <boger@contactless.ru>  Fri, 15 May 2015 10:52:29 +0000
- 
