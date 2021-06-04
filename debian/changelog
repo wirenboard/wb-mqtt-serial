@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.15.3) stable; urgency=medium
+
+  * Remake of templates Modbus relay modules WB-MRxx using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 04 Jun 2021 10:58:13 +0300
+
 wb-mqtt-serial (2.15.1) stable; urgency=medium
 
   * Page titles are removed from JSON schema for homeui in tabbed channels representation.
