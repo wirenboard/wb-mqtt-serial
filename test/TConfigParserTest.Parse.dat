@@ -591,7 +591,7 @@ Ports:
         DeviceChannels:
             ------
             Name: Input
-            Type: text
+            Type: value
             MqttId: Input
             DeviceId: TestDeviceOverride2:template_7
             Order: 1
@@ -616,7 +616,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Holding
-            Type: text
+            Type: value
             MqttId: Holding
             DeviceId: TestDeviceOverride2:template_7
             Order: 2
@@ -641,7 +641,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Holding readonly
-            Type: text
+            Type: value
             MqttId: Holding readonly
             DeviceId: TestDeviceOverride2:template_7
             Order: 3
@@ -716,7 +716,7 @@ Ports:
         DeviceChannels:
             ------
             Name: Temperature
-            Type: text
+            Type: value
             MqttId: Temperature
             DeviceId: with subdevice_22
             Order: 1
@@ -741,7 +741,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c1
-            Type: text
+            Type: value
             MqttId: Sub c1
             DeviceId: with subdevice_22
             Order: 2
@@ -766,7 +766,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c2 c12
-            Type: text
+            Type: value
             MqttId: Sub id sub id
             DeviceId: with subdevice_22
             Order: 3
@@ -791,7 +791,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c2 c22
-            Type: text
+            Type: value
             MqttId: Sub id c22
             DeviceId: with subdevice_22
             Order: 4
@@ -816,7 +816,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c3 c12
-            Type: text
+            Type: value
             MqttId: Sub c3 sub id
             DeviceId: with subdevice_22
             Order: 5
@@ -841,7 +841,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c3 c22
-            Type: text
+            Type: value
             MqttId: Sub c3 c22
             DeviceId: with subdevice_22
             Order: 6
@@ -866,7 +866,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub2 c1
-            Type: text
+            Type: value
             MqttId: c1
             DeviceId: with subdevice_22
             Order: 7
@@ -891,7 +891,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub2 c2 c12
-            Type: text
+            Type: value
             MqttId: id sub id
             DeviceId: with subdevice_22
             Order: 8
@@ -916,7 +916,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub2 c2 c22
-            Type: text
+            Type: value
             MqttId: id c22
             DeviceId: with subdevice_22
             Order: 9
@@ -941,7 +941,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub2 c3 c22
-            Type: text
+            Type: value
             MqttId: c3 c22
             DeviceId: with subdevice_22
             Order: 10

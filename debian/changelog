@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.23.0) stable; urgency=medium
+
+  * "value" instead of "text" is set as default control type for Modbus devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 06 Aug 2021 12:09:07 +0500
+
 wb-mqtt-serial (2.22.3) stable; urgency=medium
 
   * IDPAS parameter is added to Energomera CE102M device template
