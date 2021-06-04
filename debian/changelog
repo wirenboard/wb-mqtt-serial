@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.14.2) stable; urgency=medium
+wb-mqtt-serial (2.15.3) stable; urgency=medium
 
   * Remake of templates Modbus relay modules WB-MRxx using groups and parameters
 
