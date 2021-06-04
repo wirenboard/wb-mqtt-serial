@@ -1,9 +1,15 @@
-wb-mqtt-serial (2.15.3) stable; urgency=medium
+wb-mqtt-serial (2.15.1) stable; urgency=medium
 
-  * Remake of templates Modbus relay modules WB-MRxx using groups and parameters
+  * Page titles are removed from JSON schema for homeui in tabbed channels representation.
 
- -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 04 Jun 2021 10:29:02 +0300
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 02 Jun 2021 19:12:00 +0500
 
+wb-mqtt-serial (2.15.0) stable; urgency=medium
+
+  * NEVA MT 113/123/124 support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 01 Jun 2021 11:25:00 +0500
+ 
 wb-mqtt-serial (2.14.0) experimental; urgency=medium
 
   * Support for WinDeco, Dooya and Somfy SDN curtain motors is added
