@@ -116,7 +116,7 @@ namespace
     //      ],
     //      "headerTemplate": CHANNEL_NAME,
     //      "options": {
-    //          "wb": { "disable_panel": true }
+    //          "wb": { "disable_title": true }
     //      },
     //      "default": {
     //        "name": CHANNEL_NAME,
@@ -132,7 +132,7 @@ namespace
         allOf.append(MakeHiddenNameObject(channelTemplate["name"].asString()));
         r["headerTemplate"] = channelTemplate["name"].asString();
         r["default"]["name"] = channelTemplate["name"].asString();
-        r["options"]["wb"]["disable_panel"] = true;
+        r["options"]["wb"]["disable_title"] = true;
         r["default"]["enabled"] = true;
         r["default"]["poll_interval"] = static_cast<Json::Int>(DefaultPollInterval.count());
         SetIfExists(r["default"], "enabled", channelTemplate, "enabled");
@@ -202,7 +202,7 @@ namespace
     //      ],
     //      "options": {
     //          "wb": {
-    //              "disable_panel": true
+    //              "disable_title": true
     //          }
     //      }
     //  }
@@ -210,7 +210,7 @@ namespace
     {
         Json::Value r;
         r["headerTemplate"] = channel["name"].asString();
-        r["options"]["wb"]["disable_panel"] = true;
+        r["options"]["wb"]["disable_title"] = true;
         auto& allOf = MakeArray("allOf", r);
         Append(allOf)["$ref"] = "#/definitions/" + GetSubdeviceSchemaKey(deviceType, channel["device_type"].asString());
         allOf.append(MakeHiddenNameObject(channel["name"].asString()));
