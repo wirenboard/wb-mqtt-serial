@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.15.4) stable; urgency=medium
+
+  * Human readable error messages for config editor in wb-mqtt-homeui are added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 03 Jun 2021 18:58:00 +0500
+
 wb-mqtt-serial (2.15.3) stable; urgency=medium
 
   * Enabled parameters in Mercury 234 D and Energomera CE308 Z templates are moved to top of a channel list
@@ -20,7 +26,7 @@ wb-mqtt-serial (2.15.0) stable; urgency=medium
 
   * NEVA MT 113/123/124 support
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 01 Jun 2021 11:25:00 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 01 Jun 2021 11:25:00 +0500
  
 wb-mqtt-serial (2.14.0) experimental; urgency=medium
 
