@@ -13,11 +13,46 @@
     "channels" : 
     [
       {
-        "address" : "0.0.96.8.0.255",
-        "enabled" : false,
-        "name" : "Ch. 0 Time of operation, total",
+        "address" : "1.0.31.7.0.255",
+        "name" : "Irms L1",
         "reg_type" : "default",
-        "type" : "value"
+        "type" : "current",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.32.7.0.255",
+        "name" : "Urms L1",
+        "reg_type" : "default",
+        "type" : "voltage",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.51.7.0.255",
+        "name" : "Irms L2",
+        "reg_type" : "default",
+        "type" : "current",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.52.7.0.255",
+        "name" : "Urms L2",
+        "reg_type" : "default",
+        "type" : "voltage",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.71.7.0.255",
+        "name" : "Irms L3",
+        "reg_type" : "default",
+        "type" : "current",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.72.7.0.255",
+        "name" : "Urms L3",
+        "reg_type" : "default",
+        "type" : "voltage",
+        "round_to": 0.01
       },
       {
         "address" : "0.0.96.9.0.255",
@@ -27,16 +62,44 @@
         "round_to": 0.01
       },
       {
-        "address" : "0.0.135.21.1.255",
-        "enabled" : false,
-        "name" : "Manufacturer specific",
+        "address" : "1.0.3.8.128.255",
+        "name" : "Total RP energy",
         "reg_type" : "default",
-        "type" : "value"
+        "type" : "power_consumption",
+        "round_to": 0.01
       },
       {
-        "address" : "0.0.135.21.2.255",
+        "address" : "1.0.4.8.128.255",
+        "name" : "Total RN energy",
+        "reg_type" : "default",
+        "type" : "power_consumption",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.81.7.10.255",
+        "name" : "Voltage angle L1-L2",
+        "reg_type" : "default",
+        "type" : "value",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.81.7.21.255",
+        "name" : "Voltage angle L2-L3",
+        "reg_type" : "default",
+        "type" : "value",
+        "round_to": 0.01
+      },
+      {
+        "address" : "1.0.81.7.2.255",
+        "name" : "Voltage angle L3-L1",
+        "reg_type" : "default",
+        "type" : "value",
+        "round_to": 0.01
+      },
+      {
+        "address" : "0.0.96.8.0.255",
         "enabled" : false,
-        "name" : "Manufacturer specific",
+        "name" : "Ch. 0 Time of operation, total",
         "reg_type" : "default",
         "type" : "value"
       },
@@ -307,13 +370,6 @@
         "type" : "power_consumption"
       },
       {
-        "address" : "1.0.3.8.128.255",
-        "name" : "Total RP energy",
-        "reg_type" : "default",
-        "type" : "power_consumption",
-        "round_to": 0.01
-      },
-      {
         "address" : "1.0.3.29.0.255",
         "enabled" : false,
         "name" : "Ch. 0 Sum Li Reactive power+ (QI+QII) Time integral 5",
@@ -382,13 +438,6 @@
         "name" : "Ch. 0 Sum Li Reactive power- (QIII+QIV) Time integral 1 Rate 8 (0 is total)",
         "reg_type" : "default",
         "type" : "power_consumption"
-      },
-      {
-        "address" : "1.0.4.8.128.255",
-        "name" : "Total RN energy",
-        "reg_type" : "default",
-        "type" : "power_consumption",
-        "round_to": 0.01
       },
       {
         "address" : "1.0.4.29.0.255",
@@ -608,20 +657,6 @@
         "type" : "value"
       },
       {
-        "address" : "1.0.31.7.0.255",
-        "name" : "Irms L1",
-        "reg_type" : "default",
-        "type" : "current",
-        "round_to": 0.01
-      },
-      {
-        "address" : "1.0.32.7.0.255",
-        "name" : "Urms L1",
-        "reg_type" : "default",
-        "type" : "voltage",
-        "round_to": 0.01
-      },
-      {
         "address" : "1.0.33.7.0.255",
         "enabled" : false,
         "name" : "Ch. 0 L1 Power factor Inst. value",
@@ -648,20 +683,6 @@
         "name" : "Ch. 0 L2 Apparent power+ (QI+QIV) Inst. value",
         "reg_type" : "default",
         "type" : "value"
-      },
-      {
-        "address" : "1.0.51.7.0.255",
-        "name" : "Irms L2",
-        "reg_type" : "default",
-        "type" : "current",
-        "round_to": 0.01
-      },
-      {
-        "address" : "1.0.52.7.0.255",
-        "name" : "Urms L2",
-        "reg_type" : "default",
-        "type" : "voltage",
-        "round_to": 0.01
       },
       {
         "address" : "1.0.53.7.0.255",
@@ -692,32 +713,11 @@
         "type" : "value"
       },
       {
-        "address" : "1.0.71.7.0.255",
-        "name" : "Irms L3",
-        "reg_type" : "default",
-        "type" : "current",
-        "round_to": 0.01
-      },
-      {
-        "address" : "1.0.72.7.0.255",
-        "name" : "Urms L3",
-        "reg_type" : "default",
-        "type" : "voltage",
-        "round_to": 0.01
-      },
-      {
         "address" : "1.0.73.7.0.255",
         "enabled" : false,
         "name" : "Ch. 0 L3 Power factor Inst. value",
         "reg_type" : "default",
         "type" : "value"
-      },
-      {
-        "address" : "1.0.81.7.2.255",
-        "name" : "Voltage angle L3-L1",
-        "reg_type" : "default",
-        "type" : "value",
-        "round_to": 0.01
       },
       {
         "address" : "1.0.81.7.4.255",
@@ -727,25 +727,11 @@
         "type" : "value"
       },
       {
-        "address" : "1.0.81.7.10.255",
-        "name" : "Voltage angle L1-L2",
-        "reg_type" : "default",
-        "type" : "value",
-        "round_to": 0.01
-      },
-      {
         "address" : "1.0.81.7.15.255",
         "enabled" : false,
         "name" : "Ch. 0 Angle of I(L2) - U(L2)",
         "reg_type" : "default",
         "type" : "value"
-      },
-      {
-        "address" : "1.0.81.7.21.255",
-        "name" : "Voltage angle L2-L3",
-        "reg_type" : "default",
-        "type" : "value",
-        "round_to": 0.01
       },
       {
         "address" : "1.0.81.7.26.255",
@@ -779,6 +765,20 @@
         "address" : "1.0.140.44.0.255",
         "enabled" : false,
         "name" : "1.0.140.44.0.255",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "0.0.135.21.1.255",
+        "enabled" : false,
+        "name" : "0.0.135.21.1.255",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "0.0.135.21.2.255",
+        "enabled" : false,
+        "name" : "0.0.135.21.2.255",
         "reg_type" : "default",
         "type" : "value"
       }
