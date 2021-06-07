@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.15.4) stable; urgency=medium
+
+  * remove old wb-homa-modbus metapackage
+  * fix debian files to make lintian happier
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 08 Jun 2021 01:11:02 +0300
+
 wb-mqtt-serial (2.15.3) stable; urgency=medium
 
   * Enabled parameters in Mercury 234 D and Energomera CE308 Z templates are moved to top of a channel list
