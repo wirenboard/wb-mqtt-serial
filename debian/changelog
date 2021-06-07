@@ -32,7 +32,7 @@ wb-mqtt-serial (2.13.2) stable; urgency=medium
 
   * refactoring of WB-MSW v.3 template: order of parameters and channels was changed in similar way like before adding parameters
 
- -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru> Mon, 24 May 2021 11:05:00 +0300
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Mon, 24 May 2021 11:05:00 +0300
 
 wb-mqtt-serial (2.13.1) stable; urgency=medium
 
@@ -416,13 +416,13 @@ wb-mqtt-serial (1.49.2) stable; urgency=medium
 
   * add ddm845r template 
 
- -- Alexander Kilpio <kilpio@wirenboard.ru> Mon, 25 Mar 2019 15:05:00 +0300
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Mon, 25 Mar 2019 15:05:00 +0300
 
 wb-mqtt-serial (1.49.1) stable; urgency=medium
 
   * add  wb-mrm2-mini template 
 
- -- Alexander Kilpio <kilpio@wirenboard.ru> Mon, 14 Mar 2019 18:22:00 +0300
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Mon, 14 Mar 2019 18:22:00 +0300
 
 wb-mqtt-serial (1.49.0) stable; urgency=medium
 
@@ -463,7 +463,7 @@ wb-mqtt-serial (1.46) stable; urgency=medium
 
 wb-mqtt-serial (1.45) stable; urgency=medium
 
-* add template for WB-MSW v.3
+  * add template for WB-MSW v.3
 
  -- Evgeny Boger <boger@contactless.ru>  Wed, 03 Oct 2018 22:09:51 +0300
 
@@ -892,6 +892,8 @@ wb-mqtt-serial (1.16) stable; urgency=medium
 wb-mqtt-serial (1.15.3) stable; urgency=medium
 
   * fixes incorrect Mercury 230 readings
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 27 Jun 2016 15:36:47 +0300
 
 wb-mqtt-serial (1.15.2) stable; urgency=medium
 
