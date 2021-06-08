@@ -11,9 +11,9 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libjsoncpp0 | libjsoncpp1, ucf, bsdutils (>= 2.29), libwbmqtt1 (>= 1.1.0)
 Replaces: wb-homa-modbus (<< 1.14.1)
 Breaks: wb-homa-modbus (<< 1.14.1), wb-mqtt-confed (<< 1.2.5), wb-mqtt-homeui (<< 2.1.0)
-Description: Wiren Board Smart Home MQTT serial protocol driver.
- wb-mqtt-serial is a service which communicates with devices on RS-485 bus
- via Modbus or other supported protocols. You can add your devices by
- creating new templates and configure each register poll settings
- individually if you need to. Also it contains advanced templates
+Description: Wiren Board Smart Home MQTT serial protocol driver
+ wb-mqtt-serial is a service which communicates with devices on RS-485
+ via Modbus or other supported protocols. Modbus TCP is also supported.
+ You can add your devices by creating new templates and configure each
+ register poll settings individually. Also it contains advanced templates
  to configure parameters of Wiren Board peripheral devices.
