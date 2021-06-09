@@ -5,146 +5,482 @@
         "id": "wb-mdm3",
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
+
+        "groups": [
+            {
+                "title": "Channel 1",
+                "id": "channel_1",
+                "order": 1
+            },
+            {
+                "title": "Channel 2",
+                "id": "channel_2",
+                "order": 2
+            },
+            {
+                "title": "Channel 3",
+                "id": "channel_3",
+                "order": 3
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 4
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 5
+            }
+        ],
+
+        "parameters": {
+            "channel1_inputs_mode": {
+                "title": "Channel 1 Inputs Mode",
+                "address": 16,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": [
+                    "disable communication between input and outputs",
+                    "1-button mode",
+                    "2-button mode"
+                ],
+                "group": "channel_1",
+                "order": 1
+            },
+            "channel1_load_type": {
+                "title": "Channel 1 Load Type",
+                "address": 50,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": [
+                    "LED lamp or incandescent lamp",
+                    "resistive load",
+                    "switching mode"
+                ],
+                "group": "channel_1",
+                "order": 2
+            },
+            "channel1_control_type": {
+                "title": "Channel 1 Control Type",
+                "address": 60,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "leading edge",
+                    "trailing edge"
+                ],
+                "group": "channel_1",
+                "order": 3
+            },
+            "channel1_min_value": {
+                "title": "Channel 1 Min Value",
+                "address": 70,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 9999,
+                "default": 1000,
+                "group": "channel_1",
+                "order": 4
+            },
+            "channel1_max_value": {
+                "title": "Channel 1 Max Value",
+                "address": 80,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 9999,
+                "default": 9999,
+                "group": "channel_1",
+                "order": 5
+            },
+            "channel1_slew_rate": {
+                "title": "Channel 1 Slew Rate (ms/%)",
+                "address": 140,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 10,
+                "group": "channel_1",
+                "order": 6
+            },
+            "channel1_decay_rate": {
+                "title": "Channel 1 Decay Rate (ms/%)",
+                "address": 150,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 10,
+                "group": "channel_1",
+                "order": 7
+            },
+            "channel2_inputs_mode": {
+                "title": "Channel 2 Inputs Mode",
+                "address": 17,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": [
+                    "disable communication between input and outputs",
+                    "1-button mode",
+                    "2-button mode"
+                ],
+                "group": "channel_2",
+                "order": 1
+            },
+            "channel2_load_type": {
+                "title": "Channel 2 Load Type",
+                "address": 51,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": [
+                    "LED lamp or incandescent lamp",
+                    "resistive load",
+                    "switching mode"
+                ],
+                "group": "channel_2",
+                "order": 2
+            },
+            "channel2_control_type": {
+                "title": "Channel 2 Control Type",
+                "address": 61,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "leading edge",
+                    "trailing edge"
+                ],
+                "group": "channel_2",
+                "order": 3
+            },
+            "channel2_min_value": {
+                "title": "Channel 2 Min Value",
+                "address": 71,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 9999,
+                "default": 1000,
+                "group": "channel_2",
+                "order": 4
+            },
+            "channel2_max_value": {
+                "title": "Channel 2 Max Value",
+                "address": 81,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 9999,
+                "default": 9999,
+                "group": "channel_2",
+                "order": 5
+            },
+            "channel2_slew_rate": {
+                "title": "Channel 2 Slew Rate (ms/%)",
+                "address": 141,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 10,
+                "group": "channel_2",
+                "order": 6
+            },
+            "channel2_decay_rate": {
+                "title": "Channel 2 Decay Rate (ms/%)",
+                "address": 151,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 10,
+                "group": "channel_2",
+                "order": 7
+            },
+            "channel3_inputs_mode": {
+                "title": "Channel 3 Inputs Mode",
+                "address": 18,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": [
+                    "disable communication between input and outputs",
+                    "1-button mode",
+                    "2-button mode"
+                ],
+                "group": "channel_3",
+                "order": 1
+            },
+            "channel3_load_type": {
+                "title": "Channel 3 Load Type",
+                "address": 52,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": [
+                    "LED lamp or incandescent lamp",
+                    "resistive load",
+                    "switching mode"
+                ],
+                "group": "channel_3",
+                "order": 2
+            },
+            "channel3_control_type": {
+                "title": "Channel 3 Control Type",
+                "address": 62,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "leading edge",
+                    "trailing edge"
+                ],
+                "group": "channel_3",
+                "order": 3
+            },
+            "channel3_min_value": {
+                "title": "Channel 3 Min Value",
+                "address": 72,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 9999,
+                "default": 1000,
+                "group": "channel_3",
+                "order": 4
+            },
+            "channel3_max_value": {
+                "title": "Channel 3 Max Value",
+                "address": 82,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 9999,
+                "default": 9999,
+                "group": "channel_3",
+                "order": 5
+            },
+            "channel3_slew_rate": {
+                "title": "Channel 3 Slew Rate (ms/%)",
+                "address": 142,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 10,
+                "group": "channel_3",
+                "order": 6
+            },
+            "channel3_decay_rate": {
+                "title": "Channel 3 Decay Rate (ms/%)",
+                "address": 152,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 10,
+                "group": "channel_3",
+                "order": 7
+            }
+        },
+
         "channels": [
+            {
+                "name": "Input 1",
+                "reg_type": "discrete",
+                "address": 0,
+                "type": "switch",
+                "group": "channel_1"
+            },
+            {
+                "name": "Input 1 counter",
+                "reg_type": "input",
+                "address": 32,
+                "type": "value",
+                "group": "channel_1"
+            },
+            {
+                "name": "Input 2",
+                "reg_type": "discrete",
+                "address": 1,
+                "type": "switch",
+                "group": "channel_1"
+            },
+            {
+                "name": "Input 2 counter",
+                "reg_type": "input",
+                "address": 33,
+                "type": "value",
+                "group": "channel_1"
+            },
             {
                 "name": "K1",
                 "reg_type": "coil",
                 "address": 0,
-                "type": "switch"
-            },
-            {
-                "name": "K2",
-                "reg_type": "coil",
-                "address": 1,
-                "type": "switch"
-            },
-            {
-                "name": "K3",
-                "reg_type": "coil",
-                "address": 2,
-                "type": "switch"
+                "type": "switch",
+                "group": "channel_1"
             },
             {
                 "name": "Channel 1",
                 "reg_type": "holding",
                 "address": 0,
                 "type": "range",
-                "max": 100
+                "max": 100,
+                "group": "channel_1"
+            },
+            {
+                "name": "Input 3",
+                "reg_type": "discrete",
+                "address": 2,
+                "type": "switch",
+                "group": "channel_2"
+            },
+            {
+                "name": "Input 3 counter",
+                "reg_type": "input",
+                "address": 34,
+                "type": "value",
+                "group": "channel_2"
+            },
+            {
+                "name": "Input 4",
+                "reg_type": "discrete",
+                "address": 3,
+                "type": "switch",
+                "group": "channel_2"
+            },
+            {
+                "name": "Input 4 counter",
+                "reg_type": "input",
+                "address": 35,
+                "type": "value",
+                "group": "channel_2"
+            },
+            {
+                "name": "K2",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch",
+                "group": "channel_2"
             },
             {
                 "name": "Channel 2",
                 "reg_type": "holding",
                 "address": 1,
                 "type": "range",
-                "max": 100
+                "max": 100,
+                "group": "channel_2"
+            },
+            {
+                "name": "Input 5",
+                "reg_type": "discrete",
+                "address": 4,
+                "type": "switch",
+                "group": "channel_3"
+            },
+            {
+                "name": "Input 5 counter",
+                "reg_type": "input",
+                "address": 36,
+                "type": "value",
+                "group": "channel_3"
+            },
+            {
+                "name": "Input 6",
+                "reg_type": "discrete",
+                "address": 5,
+                "type": "switch",
+                "group": "channel_3"
+            },
+            {
+                "name": "Input 6 counter",
+                "reg_type": "input",
+                "address": 37,
+                "type": "value",
+                "group": "channel_3"
+            },
+            {
+                "name": "K3",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch",
+                "group": "channel_3"
             },
             {
                 "name": "Channel 3",
                 "reg_type": "holding",
                 "address": 2,
                 "type": "range",
-                "max": 100
-            },
-            {
-                "name": "Input 1",
-                "reg_type": "discrete",
-                "address": 0,
-                "type": "switch"
-            },
-            {
-                "name": "Input 2",
-                "reg_type": "discrete",
-                "address": 1,
-                "type": "switch"
-            },
-            {
-                "name": "Input 3",
-                "reg_type": "discrete",
-                "address": 2,
-                "type": "switch"
-            },
-            {
-                "name": "Input 4",
-                "reg_type": "discrete",
-                "address": 3,
-                "type": "switch"
-            },
-            {
-                "name": "Input 5",
-                "reg_type": "discrete",
-                "address": 4,
-                "type": "switch"
-            },
-            {
-                "name": "Input 6",
-                "reg_type": "discrete",
-                "address": 5,
-                "type": "switch"
-            },
-            {
-                "name": "Input 1 counter",
-                "reg_type": "input",
-                "address": 32,
-                "type": "value"
-            },
-            {
-                "name": "Input 2 counter",
-                "reg_type": "input",
-                "address": 33,
-                "type": "value"
-            },
-            {
-                "name": "Input 3 counter",
-                "reg_type": "input",
-                "address": 34,
-                "type": "value"
-            },
-            {
-                "name": "Input 4 counter",
-                "reg_type": "input",
-                "address": 35,
-                "type": "value"
-            },
-            {
-                "name": "Input 5 counter",
-                "reg_type": "input",
-                "address": 36,
-                "type": "value"
-            },
-            {
-                "name": "Input 6 counter",
-                "reg_type": "input",
-                "address": 37,
-                "type": "value"
+                "max": 100,
+                "group": "channel_3"
             },
             {
                 "name": "Supply voltage",
                 "reg_type": "input",
                 "address": 121,
                 "type": "voltage",
-                "scale": 0.001
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
             },
             {
                 "name": "Serial",
                 "type": "text",
-                "reg_type": "holding",
-                "address": 270,
-                "format": "u32"
-            },
-            {
-                "name": "AC on L-N",
                 "reg_type": "input",
-                "address": 97,
-                "enabled": false
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
             },
             {
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
+                "type": "text",
                 "format": "u32",
-                "enabled": false
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Channel 1 Actual Value",
+                "reg_type": "holding",
+                "address": 90,
+                "readonly": true,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Channel 2 Actual Value",
+                "reg_type": "holding",
+                "address": 91,
+                "readonly": true,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Channel 3 Actual Value",
+                "reg_type": "holding",
+                "address": 92,
+                "readonly": true,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "AC on L-N",
+                "reg_type": "input",
+                "address": 97,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Zero-cross Offset",
+                "reg_type": "input",
+                "address": 98,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "AC Voltage Period (us)",
+                "reg_type": "input",
+                "address": 99,
+                "enabled": false,
+                "group": "debug"
             }
         ]
     }
 }
-
