@@ -42,7 +42,7 @@
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "disable communication between input and outputs",
+                    "disable communication between inputs and output",
                     "1-button mode",
                     "2-button mode"
                 ],
@@ -96,8 +96,8 @@
                 "group": "channel_1",
                 "order": 5
             },
-            "channel1_slew_rate": {
-                "title": "Channel 1 Slew Rate (ms/%)",
+            "channel1_increase_rate": {
+                "title": "Channel 1 Increase Rate (ms/%)",
                 "address": 140,
                 "reg_type": "holding",
                 "min": 0,
@@ -106,8 +106,8 @@
                 "group": "channel_1",
                 "order": 6
             },
-            "channel1_decay_rate": {
-                "title": "Channel 1 Decay Rate (ms/%)",
+            "channel1_decrease_rate": {
+                "title": "Channel 1 Decrease Rate (ms/%)",
                 "address": 150,
                 "reg_type": "holding",
                 "min": 0,
@@ -123,7 +123,7 @@
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "disable communication between input and outputs",
+                    "disable communication between inputs and output",
                     "1-button mode",
                     "2-button mode"
                 ],
@@ -177,8 +177,8 @@
                 "group": "channel_2",
                 "order": 5
             },
-            "channel2_slew_rate": {
-                "title": "Channel 2 Slew Rate (ms/%)",
+            "channel2_increase_rate": {
+                "title": "Channel 2 Increase Rate (ms/%)",
                 "address": 141,
                 "reg_type": "holding",
                 "min": 0,
@@ -187,8 +187,8 @@
                 "group": "channel_2",
                 "order": 6
             },
-            "channel2_decay_rate": {
-                "title": "Channel 2 Decay Rate (ms/%)",
+            "channel2_decrease_rate": {
+                "title": "Channel 2 Decrease Rate (ms/%)",
                 "address": 151,
                 "reg_type": "holding",
                 "min": 0,
@@ -204,7 +204,7 @@
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "disable communication between input and outputs",
+                    "disable communication between inputs and output",
                     "1-button mode",
                     "2-button mode"
                 ],
@@ -258,8 +258,8 @@
                 "group": "channel_3",
                 "order": 5
             },
-            "channel3_slew_rate": {
-                "title": "Channel 3 Slew Rate (ms/%)",
+            "channel3_increase_rate": {
+                "title": "Channel 3 Increase Rate (ms/%)",
                 "address": 142,
                 "reg_type": "holding",
                 "min": 0,
@@ -268,8 +268,8 @@
                 "group": "channel_3",
                 "order": 6
             },
-            "channel3_decay_rate": {
-                "title": "Channel 3 Decay Rate (ms/%)",
+            "channel3_decrease_rate": {
+                "title": "Channel 3 Decrease Rate (ms/%)",
                 "address": 152,
                 "reg_type": "holding",
                 "min": 0,
@@ -475,7 +475,7 @@
                 "group": "debug"
             },
             {
-                "name": "AC Voltage Period (us)",
+                "name": "Last AC Voltage Period (us)",
                 "reg_type": "input",
                 "address": 99,
                 "enabled": false,
