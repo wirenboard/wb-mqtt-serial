@@ -42,7 +42,7 @@
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "disable communication between inputs and output",
+                    "control disabled",
                     "1-button mode",
                     "2-button mode"
                 ],
@@ -77,7 +77,7 @@
                 "order": 3
             },
             "channel1_min_value": {
-                "title": "Channel 1 Min Value",
+                "title": "Channel 1 Min Value (us)",
                 "address": 70,
                 "reg_type": "holding",
                 "min": 0,
@@ -87,7 +87,7 @@
                 "order": 4
             },
             "channel1_max_value": {
-                "title": "Channel 1 Max Value",
+                "title": "Channel 1 Max Value (us)",
                 "address": 80,
                 "reg_type": "holding",
                 "min": 0,
@@ -123,7 +123,7 @@
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "disable communication between inputs and output",
+                    "control disabled",
                     "1-button mode",
                     "2-button mode"
                 ],
@@ -158,7 +158,7 @@
                 "order": 3
             },
             "channel2_min_value": {
-                "title": "Channel 2 Min Value",
+                "title": "Channel 2 Min Value (us)",
                 "address": 71,
                 "reg_type": "holding",
                 "min": 0,
@@ -168,7 +168,7 @@
                 "order": 4
             },
             "channel2_max_value": {
-                "title": "Channel 2 Max Value",
+                "title": "Channel 2 Max Value (us)",
                 "address": 81,
                 "reg_type": "holding",
                 "min": 0,
@@ -204,7 +204,7 @@
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "disable communication between inputs and output",
+                    "control disabled",
                     "1-button mode",
                     "2-button mode"
                 ],
@@ -239,7 +239,7 @@
                 "order": 3
             },
             "channel3_min_value": {
-                "title": "Channel 3 Min Value",
+                "title": "Channel 3 Min Value (us)",
                 "address": 72,
                 "reg_type": "holding",
                 "min": 0,
@@ -249,7 +249,7 @@
                 "order": 4
             },
             "channel3_max_value": {
-                "title": "Channel 3 Max Value",
+                "title": "Channel 3 Max Value (us)",
                 "address": 82,
                 "reg_type": "holding",
                 "min": 0,
@@ -437,7 +437,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Channel 1 Actual Value",
+                "name": " Channel 1 Raw Duty (us)",
                 "reg_type": "holding",
                 "address": 90,
                 "readonly": true,
@@ -445,7 +445,7 @@
                 "group": "debug"
             },
             {
-                "name": "Channel 2 Actual Value",
+                "name": " Channel 2 Raw Duty (us)",
                 "reg_type": "holding",
                 "address": 91,
                 "readonly": true,
@@ -453,7 +453,7 @@
                 "group": "debug"
             },
             {
-                "name": "Channel 3 Actual Value",
+                "name": " Channel 3 Raw Duty (us)",
                 "reg_type": "holding",
                 "address": 92,
                 "readonly": true,
@@ -468,7 +468,7 @@
                 "group": "debug"
             },
             {
-                "name": "Zero-cross Offset",
+                "name": "Zero-cross Offset (us)",
                 "reg_type": "input",
                 "address": 98,
                 "enabled": false,
