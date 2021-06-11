@@ -8,46 +8,79 @@
 
         "groups": [
             {
+                "title": "Inputs",
+                "id": "inputs",
+                "order": 1
+            },
+            {
                 "title": "Channel 1",
                 "id": "channel_1",
-                "order": 1
+                "order": 2
             },
             {
                 "title": "Channel 2",
                 "id": "channel_2",
-                "order": 2
+                "order": 3
             },
             {
                 "title": "Channel 3",
                 "id": "channel_3",
-                "order": 3
+                "order": 4
             },
             {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 4
+                "order": 5
             },
             {
                 "title": "Debug",
                 "id": "debug",
-                "order": 5
+                "order": 6
             }
         ],
 
         "parameters": {
-            "channel1_inputs_mode": {
-                "title": "Channel 1 Inputs Mode",
+            "inputs12_mode": {
+                "title": "Inputs 1-2 Mode",
                 "address": 16,
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
                     "control disabled",
-                    "1-button mode",
-                    "2-button mode"
+                    "channel 1: 1-button control",
+                    "channel 1: 2-button control"
                 ],
-                "group": "channel_1",
+                "group": "inputs",
                 "order": 1
+            },
+            "inputs34_mode": {
+                "title": "Inputs 3-4 Mode",
+                "address": 17,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": [
+                    "control disabled",
+                    "channel 2: 1-button control",
+                    "channel 2: 2-button control"
+                ],
+                "group": "inputs",
+                "order": 2
+            },
+            "inputs56_mode": {
+                "title": "Inputs 5-6 Mode",
+                "address": 18,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": [
+                    "control disabled",
+                    "channel 3: 1-button control",
+                    "channel 3: 2-button control"
+                ],
+                "group": "inputs",
+                "order": 3
             },
             "channel1_load_type": {
                 "title": "Channel 1 Load Type",
@@ -61,7 +94,7 @@
                     "switching mode"
                 ],
                 "group": "channel_1",
-                "order": 2
+                "order": 1
             },
             "channel1_control_type": {
                 "title": "Channel 1 Control Type",
@@ -74,7 +107,7 @@
                     "trailing edge"
                 ],
                 "group": "channel_1",
-                "order": 3
+                "order": 2
             },
             "channel1_min_value": {
                 "title": "Channel 1 Min Value (us)",
@@ -84,7 +117,7 @@
                 "max": 9999,
                 "default": 1000,
                 "group": "channel_1",
-                "order": 4
+                "order": 3
             },
             "channel1_max_value": {
                 "title": "Channel 1 Max Value (us)",
@@ -94,7 +127,7 @@
                 "max": 9999,
                 "default": 9999,
                 "group": "channel_1",
-                "order": 5
+                "order": 4
             },
             "channel1_increase_rate": {
                 "title": "Channel 1 Increase Rate (ms/%)",
@@ -104,7 +137,7 @@
                 "max": 100,
                 "default": 10,
                 "group": "channel_1",
-                "order": 6
+                "order": 5
             },
             "channel1_decrease_rate": {
                 "title": "Channel 1 Decrease Rate (ms/%)",
@@ -114,21 +147,7 @@
                 "max": 100,
                 "default": 10,
                 "group": "channel_1",
-                "order": 7
-            },
-            "channel2_inputs_mode": {
-                "title": "Channel 2 Inputs Mode",
-                "address": 17,
-                "reg_type": "holding",
-                "enum": [0, 1, 2],
-                "default": 0,
-                "enum_titles": [
-                    "control disabled",
-                    "1-button mode",
-                    "2-button mode"
-                ],
-                "group": "channel_2",
-                "order": 1
+                "order": 6
             },
             "channel2_load_type": {
                 "title": "Channel 2 Load Type",
@@ -142,7 +161,7 @@
                     "switching mode"
                 ],
                 "group": "channel_2",
-                "order": 2
+                "order": 1
             },
             "channel2_control_type": {
                 "title": "Channel 2 Control Type",
@@ -155,7 +174,7 @@
                     "trailing edge"
                 ],
                 "group": "channel_2",
-                "order": 3
+                "order": 2
             },
             "channel2_min_value": {
                 "title": "Channel 2 Min Value (us)",
@@ -165,7 +184,7 @@
                 "max": 9999,
                 "default": 1000,
                 "group": "channel_2",
-                "order": 4
+                "order": 3
             },
             "channel2_max_value": {
                 "title": "Channel 2 Max Value (us)",
@@ -175,7 +194,7 @@
                 "max": 9999,
                 "default": 9999,
                 "group": "channel_2",
-                "order": 5
+                "order": 4
             },
             "channel2_increase_rate": {
                 "title": "Channel 2 Increase Rate (ms/%)",
@@ -185,7 +204,7 @@
                 "max": 100,
                 "default": 10,
                 "group": "channel_2",
-                "order": 6
+                "order": 5
             },
             "channel2_decrease_rate": {
                 "title": "Channel 2 Decrease Rate (ms/%)",
@@ -195,21 +214,7 @@
                 "max": 100,
                 "default": 10,
                 "group": "channel_2",
-                "order": 7
-            },
-            "channel3_inputs_mode": {
-                "title": "Channel 3 Inputs Mode",
-                "address": 18,
-                "reg_type": "holding",
-                "enum": [0, 1, 2],
-                "default": 0,
-                "enum_titles": [
-                    "control disabled",
-                    "1-button mode",
-                    "2-button mode"
-                ],
-                "group": "channel_3",
-                "order": 1
+                "order": 6
             },
             "channel3_load_type": {
                 "title": "Channel 3 Load Type",
@@ -223,7 +228,7 @@
                     "switching mode"
                 ],
                 "group": "channel_3",
-                "order": 2
+                "order": 1
             },
             "channel3_control_type": {
                 "title": "Channel 3 Control Type",
@@ -236,7 +241,7 @@
                     "trailing edge"
                 ],
                 "group": "channel_3",
-                "order": 3
+                "order": 2
             },
             "channel3_min_value": {
                 "title": "Channel 3 Min Value (us)",
@@ -246,7 +251,7 @@
                 "max": 9999,
                 "default": 1000,
                 "group": "channel_3",
-                "order": 4
+                "order": 3
             },
             "channel3_max_value": {
                 "title": "Channel 3 Max Value (us)",
@@ -256,7 +261,7 @@
                 "max": 9999,
                 "default": 9999,
                 "group": "channel_3",
-                "order": 5
+                "order": 4
             },
             "channel3_increase_rate": {
                 "title": "Channel 3 Increase Rate (ms/%)",
@@ -266,7 +271,7 @@
                 "max": 100,
                 "default": 10,
                 "group": "channel_3",
-                "order": 6
+                "order": 5
             },
             "channel3_decrease_rate": {
                 "title": "Channel 3 Decrease Rate (ms/%)",
@@ -276,7 +281,7 @@
                 "max": 100,
                 "default": 10,
                 "group": "channel_3",
-                "order": 7
+                "order": 6
             }
         },
 
@@ -286,28 +291,84 @@
                 "reg_type": "discrete",
                 "address": 0,
                 "type": "switch",
-                "group": "channel_1"
+                "group": "inputs"
             },
             {
                 "name": "Input 1 counter",
                 "reg_type": "input",
                 "address": 32,
                 "type": "value",
-                "group": "channel_1"
+                "group": "inputs"
             },
             {
                 "name": "Input 2",
                 "reg_type": "discrete",
                 "address": 1,
                 "type": "switch",
-                "group": "channel_1"
+                "group": "inputs"
             },
             {
                 "name": "Input 2 counter",
                 "reg_type": "input",
                 "address": 33,
                 "type": "value",
-                "group": "channel_1"
+                "group": "inputs"
+            },
+            {
+                "name": "Input 3",
+                "reg_type": "discrete",
+                "address": 2,
+                "type": "switch",
+                "group": "inputs"
+            },
+            {
+                "name": "Input 3 counter",
+                "reg_type": "input",
+                "address": 34,
+                "type": "value",
+                "group": "inputs"
+            },
+            {
+                "name": "Input 4",
+                "reg_type": "discrete",
+                "address": 3,
+                "type": "switch",
+                "group": "inputs"
+            },
+            {
+                "name": "Input 4 counter",
+                "reg_type": "input",
+                "address": 35,
+                "type": "value",
+                "group": "inputs"
+            },
+            {
+                "name": "Input 5",
+                "reg_type": "discrete",
+                "address": 4,
+                "type": "switch",
+                "group": "inputs"
+            },
+            {
+                "name": "Input 5 counter",
+                "reg_type": "input",
+                "address": 36,
+                "type": "value",
+                "group": "inputs"
+            },
+            {
+                "name": "Input 6",
+                "reg_type": "discrete",
+                "address": 5,
+                "type": "switch",
+                "group": "inputs"
+            },
+            {
+                "name": "Input 6 counter",
+                "reg_type": "input",
+                "address": 37,
+                "type": "value",
+                "group": "inputs"
             },
             {
                 "name": "K1",
@@ -325,34 +386,6 @@
                 "group": "channel_1"
             },
             {
-                "name": "Input 3",
-                "reg_type": "discrete",
-                "address": 2,
-                "type": "switch",
-                "group": "channel_2"
-            },
-            {
-                "name": "Input 3 counter",
-                "reg_type": "input",
-                "address": 34,
-                "type": "value",
-                "group": "channel_2"
-            },
-            {
-                "name": "Input 4",
-                "reg_type": "discrete",
-                "address": 3,
-                "type": "switch",
-                "group": "channel_2"
-            },
-            {
-                "name": "Input 4 counter",
-                "reg_type": "input",
-                "address": 35,
-                "type": "value",
-                "group": "channel_2"
-            },
-            {
                 "name": "K2",
                 "reg_type": "coil",
                 "address": 1,
@@ -366,34 +399,6 @@
                 "type": "range",
                 "max": 100,
                 "group": "channel_2"
-            },
-            {
-                "name": "Input 5",
-                "reg_type": "discrete",
-                "address": 4,
-                "type": "switch",
-                "group": "channel_3"
-            },
-            {
-                "name": "Input 5 counter",
-                "reg_type": "input",
-                "address": 36,
-                "type": "value",
-                "group": "channel_3"
-            },
-            {
-                "name": "Input 6",
-                "reg_type": "discrete",
-                "address": 5,
-                "type": "switch",
-                "group": "channel_3"
-            },
-            {
-                "name": "Input 6 counter",
-                "reg_type": "input",
-                "address": 37,
-                "type": "value",
-                "group": "channel_3"
             },
             {
                 "name": "K3",
