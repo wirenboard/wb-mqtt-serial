@@ -79,10 +79,10 @@
                 "enum_titles": [
                     "push button",
                     "latching switch",
-                    "turn off all outputs when activated",
-                    "disable communication between input and outputs",
+                    "turn off all outputs",
+                    "control disabled",
                     "operate according to mapping-matix",
-                    "operate according to mapping-matix, turn off outputs in 20 min if still active"
+                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_s1",
                 "order": 1
@@ -106,10 +106,10 @@
                 "enum_titles": [
                     "push button",
                     "latching switch",
-                    "turn off all outputs when activated",
-                    "disable communication between input and outputs",
+                    "turn off all outputs",
+                    "control disabled",
                     "operate according to mapping-matix",
-                    "operate according to mapping-matix, turn off outputs in 20 min if still active"
+                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_s2",
                 "order": 1
@@ -133,10 +133,10 @@
                 "enum_titles": [
                     "push button",
                     "latching switch",
-                    "turn off all outputs when activated",
-                    "disable communication between input and outputs",
+                    "turn off all outputs",
+                    "control disabled",
                     "operate according to mapping-matix",
-                    "operate according to mapping-matix, turn off outputs in 20 min if still active"
+                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_s3",
                 "order": 1
@@ -160,10 +160,10 @@
                 "enum_titles": [
                     "push button",
                     "latching switch",
-                    "turn off all outputs when activated",
-                    "disable communication between input and outputs",
+                    "turn off all outputs",
+                    "control disabled",
                     "operate according to mapping-matix",
-                    "operate according to mapping-matix, turn off outputs in 20 min if still active"
+                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_f1",
                 "order": 1
@@ -187,10 +187,10 @@
                 "enum_titles": [
                     "push button",
                     "latching switch",
-                    "turn off all outputs when activated",
-                    "disable communication between input and outputs",
+                    "turn off all outputs",
+                    "control disabled",
                     "operate according to mapping-matix",
-                    "operate according to mapping-matix, turn off outputs in 20 min if still active"
+                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_f2",
                 "order": 1
@@ -214,10 +214,10 @@
                 "enum_titles": [
                     "push button",
                     "latching switch",
-                    "turn off all outputs when activated",
-                    "disable communication between input and outputs",
+                    "turn off all outputs",
+                    "control disabled",
                     "operate according to mapping-matix",
-                    "operate according to mapping-matix, turn off outputs in 20 min if still active"
+                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_f3",
                 "order": 1
