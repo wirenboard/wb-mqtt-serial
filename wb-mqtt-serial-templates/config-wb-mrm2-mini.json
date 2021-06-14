@@ -186,20 +186,20 @@
                 "group": "outputs"
             },
             {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
                 "name": "Supply Voltage",
                 "reg_type": "input",
                 "address": 121,
                 "type": "voltage",
                 "scale": 0.001,
                 "enabled": false,
-                "group": "hw_info"
-            },
-            {
-                "name": "Serial",
-                "reg_type": "input",
-                "address": 270,
-                "type": "text",
-                "format": "u32",
                 "group": "hw_info"
             },
             {
