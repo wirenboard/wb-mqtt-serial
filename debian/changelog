@@ -1,8 +1,20 @@
-wb-mqtt-serial (2.15.4) stable; urgency=medium
+wb-mqtt-serial (2.15.7) stable; urgency=medium
 
   * Remake of WB-MWAC template using groups and parameters
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 02 Jun 2021 13:12:32 +0300
+
+wb-mqtt-serial (2.15.5) stable; urgency=medium
+
+  * Human readable error messages for config editor in wb-mqtt-homeui are added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 03 Jun 2021 18:58:00 +0500
+
+wb-mqtt-serial (2.15.4) stable; urgency=medium
+
+  * Response timeout for MSW v.3 is changed to 150 ms to make it compatible with firmware 4.16.9
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 07 Jun 2021 18:12:57 +0500
 
 wb-mqtt-serial (2.15.3) stable; urgency=medium
 
@@ -26,7 +38,7 @@ wb-mqtt-serial (2.15.0) stable; urgency=medium
 
   * NEVA MT 113/123/124 support
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 01 Jun 2021 11:25:00 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 01 Jun 2021 11:25:00 +0500
  
 wb-mqtt-serial (2.14.0) experimental; urgency=medium
 

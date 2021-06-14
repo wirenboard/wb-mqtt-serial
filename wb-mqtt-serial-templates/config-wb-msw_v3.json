@@ -4,7 +4,7 @@
         "name": "WB-MSW v.3",
         "id": "wb-msw-v3",
         "max_read_registers": 0,
-        "response_timeout_ms": 1,
+        "response_timeout_ms": 150,
         "frame_timeout_ms": 12,
 
         "groups": [
