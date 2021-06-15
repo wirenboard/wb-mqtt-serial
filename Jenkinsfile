@@ -1,1 +1,2 @@
-buildDebSbuild defaultTargets: 'wb6'
+buildDebSbuild defaultTargets: 'wb6',
+               defaultRunLintian: true
