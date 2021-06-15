@@ -4,7 +4,7 @@
         "name": "WB-MSW v.3",
         "id": "wb-msw-v3",
         "max_read_registers": 0,
-        "response_timeout_ms": 1,
+        "response_timeout_ms": 150,
         "frame_timeout_ms": 12,
 
         "groups": [
@@ -56,12 +56,12 @@
         ],
 
         "parameters": {
-            "co2_sensor_enable": {
-                "title": "CO₂ Sensor Enable",
+            "co2_sensor_enabled": {
+                "title": "CO₂ Sensor Enabled",
                 "address": 3,
                 "reg_type": "coil",
                 "enum":	[ 0, 1 ],
-                "enum_titles": [ "off", "on" ],
+                "enum_titles": [ "no", "yes" ],
                 "default": 1,
                 "group": "air_quality",
                 "order": 1
@@ -86,12 +86,12 @@
                 "group": "air_quality",
                 "order": 3
             },
-            "th_sensor_heater": {
-                "title": "TH Sensor Heater",
+            "th_sensor_heater_enabled": {
+                "title": "TH Sensor Heater Enabled",
                 "address": 2,
                 "reg_type": "coil",
                 "enum":	[ 0, 1 ],
-                "enum_titles": [ "off", "on" ],
+                "enum_titles": [ "no", "yes" ],
                 "default": 0,
                 "group": "air_quality",
                 "order": 4
@@ -100,6 +100,7 @@
                 "title": "Self-Heating Compensation (°C)",
                 "address": 245,
                 "reg_type": "holding",
+                "format": "s16",
                 "scale": 0.01,
                 "group": "air_quality",
                 "order": 5
@@ -108,8 +109,8 @@
                 "title": "Low-pass Filter Time Constant (ms)",
                 "address": 91,
                 "reg_type": "holding",
-                "scale": 10,
-                "default": 200,
+                "scale": 0.1,
+                "default": 20,
                 "group": "sound_level",
                 "order": 1
             },
@@ -149,6 +150,7 @@
                 "reg_type": "input",
                 "address": 1,
                 "type": "rel_humidity",
+                "format": "s16",
                 "scale": 0.1,
                 "error_value": "0xFFFF",
                 "group": "air_quality"
@@ -789,7 +791,6 @@
                 "reg_type": "input",
                 "address": 270,
                 "format": "u32",
-                "enabled": false,
                 "group": "hw_info"
             },
             {
@@ -829,37 +830,46 @@
                 "group": "debug"
             },
             {
-                "name": "Sound Channel",
+                "name": "Sound ADC Channel",
                 "reg_type": "input",
                 "address": 86,
                 "enabled": false,
                 "group": "debug"
             },
             {
-                "name": "Sound Raw",
+                "name": "Sound Low Gain ADC Raw",
                 "reg_type": "input",
                 "address": 100,
+                "scale": 0.0625,
                 "enabled": false,
                 "group": "debug"
             },
             {
-                "name": "Sound Highgain Raw",
+                "name": "Sound High Gain ADC Raw",
                 "reg_type": "input",
                 "address": 87,
+                "scale": 0.0625,
                 "enabled": false,
                 "group": "debug"
             },
             {
-                "name": "Sound Offset",
-                "reg_type": "input",
+                "name": "Sound dB Offset",
+                "reg_type": "holding",
                 "address": 93,
+                "format": "s16",
+                "scale": 0.1,
+                "type": "sound_level",
+                "readonly": true,
                 "enabled": false,
                 "group": "debug"
             },
             {
-                "name": "Sound Offset Raw",
-                "reg_type": "input",
+                "name": "Sound ADC Offset",
+                "reg_type": "holding",
                 "address": 92,
+                "format": "s16",
+                "scale": 16,
+                "readonly": true,
                 "enabled": false,
                 "group": "debug"
             },
@@ -867,6 +877,7 @@
                 "name": "VOC Version",
                 "reg_type": "input",
                 "address": 108,
+                "error_value": "0xFFFF",
                 "enabled": false,
                 "group": "debug"
             },
@@ -874,6 +885,7 @@
                 "name": "VOC Raw",
                 "reg_type": "input",
                 "address": 107,
+                "error_value": "0xFFFF",
                 "enabled": false,
                 "group": "debug"
             },

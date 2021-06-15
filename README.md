@@ -1,7 +1,7 @@
 # wb-mqtt-serial
 
 Serial device <==> MQTT bridge which follows [Wiren Board MQTT Conventions](https://github.com/contactless/homeui/blob/master/conventions.md).
-It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of programmable automation controllers (PACs), although there is nothing that prevents it from running on a arbitrary Linux machine.
+It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of programmable automation controllers.
 
 Драйвер master-slave протоколов для устройств, работающих через
 последовательный порт. В драйвере wb-mqtt-serial реализована
@@ -242,6 +242,9 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     // используется для обмена с счётчиками электроэнергии
                     "access_level": 1,
 
+                    // Параметр, заданный в шаблоне устройства
+                    "param1": 10,
+
                     // список каналов устройства
                     "channels": [
                         {
@@ -470,6 +473,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 - у пятого отключен опрос канала вложенного устройства.
 
 ## Вложенные устройства в шаблонах конфигурации
+Вложенные устройства рекомендуется использовать в тех случаях, когда в зависимости от настройки меняется структура каналов или параметров. Использование вложенных устройств влияет на структуру конфигурационного файла. Для организации удобного представления настроек в web-конфигураторе без изменения структуры конфигурационного файла рекомендуется использовать группировку, описанную в следующем разделе.
 Пример описания вложенных устройств.
 ```jsonc
 {

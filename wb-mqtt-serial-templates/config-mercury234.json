@@ -13,6 +13,66 @@
     "frame_timeout_ms" : 20,
     "channels" : [
       {
+        "address" : "1.0.31.7.0.255",
+        "name" : "Irms L1",
+        "reg_type" : "default",
+        "type" : "current"
+      },
+      {
+        "address" : "1.0.51.7.0.255",
+        "name" : "Irms L2",
+        "reg_type" : "default",
+        "type" : "current"
+      },
+      {
+        "address" : "1.0.71.7.0.255",
+        "name" : "Irms L3",
+        "reg_type" : "default",
+        "type" : "current"
+      },
+      {
+        "address" : "1.0.32.7.0.255",
+        "name" : "Urms L1",
+        "reg_type" : "default",
+        "type" : "voltage"
+      },
+      {
+        "address" : "1.0.52.7.0.255",
+        "name" : "Urms L2",
+        "reg_type" : "default",
+        "type" : "voltage"
+      },
+      {
+        "address" : "1.0.72.7.0.255",
+        "name" : "Urms L3",
+        "reg_type" : "default",
+        "type" : "voltage"
+      },
+      {
+        "address" : "1.0.81.7.1.255",
+        "name" : "Voltage angle L2-L1",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.81.7.2.255",
+        "name" : "Voltage angle L3-L1",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "1.0.81.7.12.255",
+        "name" : "Voltage angle L3-L2",
+        "reg_type" : "default",
+        "type" : "value"
+      },
+      {
+        "address" : "0.0.96.9.0.255",
+        "name" : "Temperature",
+        "reg_type" : "default",
+        "type" : "temperature"
+      },
+      {
         "address" : "1.0.0.6.0.255",
         "enabled" : false,
         "name" : "Ch. 0 Nominal voltage",
@@ -116,42 +176,6 @@
         "name" : "1.0.133.35.0.255",
         "reg_type" : "default",
         "type" : "value"
-      },
-      {
-        "address" : "1.0.31.7.0.255",
-        "name" : "Irms L1",
-        "reg_type" : "default",
-        "type" : "current"
-      },
-      {
-        "address" : "1.0.51.7.0.255",
-        "name" : "Irms L2",
-        "reg_type" : "default",
-        "type" : "current"
-      },
-      {
-        "address" : "1.0.71.7.0.255",
-        "name" : "Irms L3",
-        "reg_type" : "default",
-        "type" : "current"
-      },
-      {
-        "address" : "1.0.32.7.0.255",
-        "name" : "Urms L1",
-        "reg_type" : "default",
-        "type" : "voltage"
-      },
-      {
-        "address" : "1.0.52.7.0.255",
-        "name" : "Urms L2",
-        "reg_type" : "default",
-        "type" : "voltage"
-      },
-      {
-        "address" : "1.0.72.7.0.255",
-        "name" : "Urms L3",
-        "reg_type" : "default",
-        "type" : "voltage"
       },
       {
         "address" : "1.0.12.7.1.255",
@@ -308,33 +332,9 @@
         "type" : "value"
       },
       {
-        "address" : "0.0.96.9.0.255",
-        "name" : "Temperature",
-        "reg_type" : "default",
-        "type" : "temperature"
-      },
-      {
         "address" : "0.0.96.8.0.255",
         "enabled" : false,
         "name" : "Ch. 0 Time of operation, total",
-        "reg_type" : "default",
-        "type" : "value"
-      },
-      {
-        "address" : "1.0.81.7.1.255",
-        "name" : "Voltage angle L2-L1",
-        "reg_type" : "default",
-        "type" : "value"
-      },
-      {
-        "address" : "1.0.81.7.2.255",
-        "name" : "Voltage angle L3-L1",
-        "reg_type" : "default",
-        "type" : "value"
-      },
-      {
-        "address" : "1.0.81.7.12.255",
-        "name" : "Voltage angle L3-L2",
         "reg_type" : "default",
         "type" : "value"
       },
