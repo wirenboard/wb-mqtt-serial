@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.16.1) stable; urgency=medium
+
+  * Remake MRGBW-D template using groups, parameters and subdevices
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 15 Jun 2021 17:06:09 +0300
+
 wb-mqtt-serial (2.15.6) stable; urgency=medium
 
   * remove old wb-homa-modbus metapackage
