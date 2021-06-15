@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.16.2) stable; urgency=medium
+
+  * Remake MAI2-mini-CC template using groups
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 08:13:08 +0300
+
 wb-mqtt-serial (2.16.1) stable; urgency=medium
 
   * Remake MAO4 template using groups and parameters
