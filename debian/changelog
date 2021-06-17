@@ -1,8 +1,45 @@
-wb-mqtt-serial (2.15.6) stable; urgency=medium
+wb-mqtt-serial (2.16.5) stable; urgency=medium
 
   * Remake of templates Modbus relay modules WB-MRxx using groups and parameters
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 04 Jun 2021 10:58:13 +0300
+
+wb-mqtt-serial (2.16.4) stable; urgency=medium
+
+  * Revert: Remake MCM8 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 11:57:11 +0300
+
+wb-mqtt-serial (2.16.3) stable; urgency=medium
+
+  * Remake MCM8 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 11:57:11 +0300
+
+wb-mqtt-serial (2.16.2) stable; urgency=medium
+
+  * Remake MAI2-mini-CC template using groups
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 08:13:08 +0300
+
+wb-mqtt-serial (2.16.1) stable; urgency=medium
+
+  * Remake MAO4 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 08 Jun 2021 16:00:19 +0300
+
+wb-mqtt-serial (2.16.0) stable; urgency=medium
+
+  * WBE2-I-OPENTHERM template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 11 Jun 2021 16:06:39 +0300
+
+wb-mqtt-serial (2.15.6) stable; urgency=medium
+
+  * remove old wb-homa-modbus metapackage
+  * fix debian files to make lintian happier
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 08 Jun 2021 01:11:02 +0300
 
 wb-mqtt-serial (2.15.5) stable; urgency=medium
 
@@ -50,7 +87,7 @@ wb-mqtt-serial (2.13.2) stable; urgency=medium
 
   * refactoring of WB-MSW v.3 template: order of parameters and channels was changed in similar way like before adding parameters
 
- -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru> Mon, 24 May 2021 11:05:00 +0300
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Mon, 24 May 2021 11:05:00 +0300
 
 wb-mqtt-serial (2.13.1) stable; urgency=medium
 
@@ -434,13 +471,13 @@ wb-mqtt-serial (1.49.2) stable; urgency=medium
 
   * add ddm845r template 
 
- -- Alexander Kilpio <kilpio@wirenboard.ru> Mon, 25 Mar 2019 15:05:00 +0300
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Mon, 25 Mar 2019 15:05:00 +0300
 
 wb-mqtt-serial (1.49.1) stable; urgency=medium
 
   * add  wb-mrm2-mini template 
 
- -- Alexander Kilpio <kilpio@wirenboard.ru> Mon, 14 Mar 2019 18:22:00 +0300
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Mon, 14 Mar 2019 18:22:00 +0300
 
 wb-mqtt-serial (1.49.0) stable; urgency=medium
 
@@ -481,7 +518,7 @@ wb-mqtt-serial (1.46) stable; urgency=medium
 
 wb-mqtt-serial (1.45) stable; urgency=medium
 
-* add template for WB-MSW v.3
+  * add template for WB-MSW v.3
 
  -- Evgeny Boger <boger@contactless.ru>  Wed, 03 Oct 2018 22:09:51 +0300
 
@@ -910,6 +947,8 @@ wb-mqtt-serial (1.16) stable; urgency=medium
 wb-mqtt-serial (1.15.3) stable; urgency=medium
 
   * fixes incorrect Mercury 230 readings
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 27 Jun 2016 15:36:47 +0300
 
 wb-mqtt-serial (1.15.2) stable; urgency=medium
 

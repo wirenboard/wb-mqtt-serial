@@ -1,9 +1,11 @@
 #!/bin/bash
 
+set -e
+
 CONFFILE=/etc/wb-mqtt-serial.conf
 
 if [ "$1" = "purge" ]; then
-    if [ -x /usr/bin/ucf ]; then
+    if which ucf >/dev/null; then
         ucf  --purge $CONFFILE
         rm -f $CONFFILE
         rm -f $CONFFILE.simple

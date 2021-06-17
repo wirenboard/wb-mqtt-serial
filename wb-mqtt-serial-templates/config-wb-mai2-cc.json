@@ -6,6 +6,20 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
+
+        "groups": [
+            {
+                "title": "Inputs",
+                "id": "inputs",
+                "order": 1
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 2
+            }
+        ],
+
         "channels": [
             {
                 "name": "Current input 1 (mA)", 
@@ -13,7 +27,8 @@
                 "reg_type": "input", 
                 "address": "246", 
                 "format": "s16", 
-                "scale": 3.125e-02
+                "scale": 3.125e-02,
+                "group": "inputs"
             }, 
             {
                 "name": "Current input 2 (mA)", 
@@ -21,30 +36,37 @@
                 "reg_type": "input", 
                 "address": "247", 
                 "format": "s16", 
-                "scale": 3.125e-02
+                "scale": 3.125e-02,
+                "group": "inputs"
             }, 
             {
                 "name": "Input Voltage", 
-                "reg_type": "input", 
-                "address": 121, 
-                "scale": 0.001, 
-                "type": "voltage"
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
             }, 
             {
                 "name": "Serial NO", 
-                "type": "text", 
-                "reg_type": "input", 
-                "address": 270, 
-                "format": "u32"
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
             },
             {
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
+                "type": "text",
                 "format": "u32",
-                "enabled": false
+                "enabled": false,
+                "group": "hw_info"
             }
         ]
+        
     }
 }
 
