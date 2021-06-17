@@ -49,14 +49,9 @@
                 "order": 8
             },
             {
-                "title": "General Settings",
-                "id": "general",
-                "order": 9
-            },
-            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 10
+                "order": 9
             }
         ],
 
@@ -70,7 +65,7 @@
         ],
 
         "parameters": {
-            "input_s1_mode": {
+            "in1_mode": {
                 "title": "Input S1 Mode",
                 "address": 9,
                 "reg_type": "holding",
@@ -87,7 +82,7 @@
                 "group": "input_s1",
                 "order": 1
             },
-            "input_s1_debounce_ms": {
+            "in1_debounce_ms": {
                 "title": "Input S1 Debounce (ms)",
                 "address": 20,
                 "reg_type": "holding",
@@ -97,7 +92,7 @@
                 "group": "input_s1",
                 "order": 2
             },
-            "input_s2_mode": {
+            "in2_mode": {
                 "title": "Input S2 Mode",
                 "address": 10,
                 "reg_type": "holding",
@@ -114,7 +109,7 @@
                 "group": "input_s2",
                 "order": 1
             },
-            "input_s2_debounce_ms": {
+            "in2_debounce_ms": {
                 "title": "Input S2 Debounce (ms)",
                 "address": 21,
                 "reg_type": "holding",
@@ -124,7 +119,7 @@
                 "group": "input_s2",
                 "order": 2
             },
-            "input_s3_mode": {
+            "in3_mode": {
                 "title": "Input S3 Mode",
                 "address": 11,
                 "reg_type": "holding",
@@ -141,7 +136,7 @@
                 "group": "input_s3",
                 "order": 1
             },
-            "input_s3_debounce_ms": {
+            "in3_debounce_ms": {
                 "title": "Input S3 Debounce (ms)",
                 "address": 22,
                 "reg_type": "holding",
@@ -151,7 +146,7 @@
                 "group": "input_s3",
                 "order": 2
             },
-            "input_f1_mode": {
+            "in4_mode": {
                 "title": "Input F1 Mode",
                 "address": 12,
                 "reg_type": "holding",
@@ -168,7 +163,7 @@
                 "group": "input_f1",
                 "order": 1
             },
-            "input_f1_debounce_ms": {
+            "in4_debounce_ms": {
                 "title": "Input F1 Debounce (ms)",
                 "address": 23,
                 "reg_type": "holding",
@@ -178,7 +173,7 @@
                 "group": "input_f1",
                 "order": 2
             },
-            "input_f2_mode": {
+            "in5_mode": {
                 "title": "Input F2 Mode",
                 "address": 13,
                 "reg_type": "holding",
@@ -195,7 +190,7 @@
                 "group": "input_f2",
                 "order": 1
             },
-            "input_f2_debounce_ms": {
+            "in5_debounce_ms": {
                 "title": "Input F2 Debounce (ms)",
                 "address": 24,
                 "reg_type": "holding",
@@ -205,7 +200,7 @@
                 "group": "input_f2",
                 "order": 2
             },
-            "input_f3_mode": {
+            "in6_mode": {
                 "title": "Input F3 Mode",
                 "address": 14,
                 "reg_type": "holding",
@@ -222,7 +217,7 @@
                 "group": "input_f3",
                 "order": 1
             },
-            "input_f3_debounce_ms": {
+            "in6_debounce_ms": {
                 "title": "Input F3 Debounce (ms)",
                 "address": 25,
                 "reg_type": "holding",
@@ -250,7 +245,7 @@
                 "address": 8,
                 "reg_type": "holding",
                 "default": 3600,
-                "group": "general",
+                "group": "outputs",
                 "order": 1
             }
         },
