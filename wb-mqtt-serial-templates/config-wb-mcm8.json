@@ -61,7 +61,7 @@
         ],
 
         "parameters": {
-            "input1_debounce_ms": {
+            "in1_debounce_ms": {
                 "title": "Input 1 Debounce (ms)",
                 "address": 20,
                 "reg_type": "holding",
@@ -71,7 +71,7 @@
                 "group": "input_1",
                 "order": 1
             },
-            "input2_debounce_ms": {
+            "in2_debounce_ms": {
                 "title": "Input 2 Debounce (ms)",
                 "address": 21,
                 "reg_type": "holding",
@@ -81,7 +81,7 @@
                 "group": "input_2",
                 "order": 1
             },
-            "input3_debounce_ms": {
+            "in3_debounce_ms": {
                 "title": "Input 3 Debounce (ms)",
                 "address": 22,
                 "reg_type": "holding",
@@ -91,7 +91,7 @@
                 "group": "input_3",
                 "order": 1
             },
-            "input4_debounce_ms": {
+            "in4_debounce_ms": {
                 "title": "Input 4 Debounce (ms)",
                 "address": 23,
                 "reg_type": "holding",
@@ -101,7 +101,7 @@
                 "group": "input_4",
                 "order": 1
             },
-            "input5_debounce_ms": {
+            "in5_debounce_ms": {
                 "title": "Input 5 Debounce (ms)",
                 "address": 24,
                 "reg_type": "holding",
@@ -111,7 +111,7 @@
                 "group": "input_5",
                 "order": 1
             },
-            "input6_debounce_ms": {
+            "in6_debounce_ms": {
                 "title": "Input 6 Debounce (ms)",
                 "address": 25,
                 "reg_type": "holding",
@@ -121,7 +121,7 @@
                 "group": "input_6",
                 "order": 1
             },
-            "input7_debounce_ms": {
+            "in7_debounce_ms": {
                 "title": "Input 7 Debounce (ms)",
                 "address": 26,
                 "reg_type": "holding",
@@ -131,7 +131,7 @@
                 "group": "input_7",
                 "order": 1
             },
-            "input8_debounce_ms": {
+            "in8_debounce_ms": {
                 "title": "Input 8 Debounce (ms)",
                 "address": 27,
                 "reg_type": "holding",
@@ -360,20 +360,20 @@
                 "group": "general"
             },
             {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
                 "name": "Supply voltage",
                 "reg_type": "input",
                 "address": 121,
                 "type": "voltage",
                 "scale": 0.001,
                 "enabled": false,
-                "group": "hw_info"
-            },
-            {
-                "name": "Serial",
-                "reg_type": "input",
-                "address": 270,
-                "type": "text",
-                "format": "u32",
                 "group": "hw_info"
             },
             {
