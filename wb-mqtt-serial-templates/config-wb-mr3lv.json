@@ -34,14 +34,9 @@
                 "order": 5
             },
             {
-                "title": "General Settings",
-                "id": "general",
-                "order": 6
-            },
-            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 7
+                "order": 6
             }
         ],
 
@@ -55,7 +50,7 @@
         ],
 
         "parameters": {
-            "input0_mode": {
+            "in0_mode": {
                 "title": "Input 0 Mode",
                 "address": 16,
                 "reg_type": "holding",
@@ -69,7 +64,7 @@
                 "group": "input_0",
                 "order": 1
             },
-            "input0_debounce_ms": {
+            "in0_debounce_ms": {
                 "title": "Input 0 Debounce (ms)",
                 "address": 27,
                 "reg_type": "holding",
@@ -79,7 +74,7 @@
                 "group": "input_0",
                 "order": 2
             },
-            "input1_mode": {
+            "in1_mode": {
                 "title": "Input 1 Mode",
                 "address": 9,
                 "reg_type": "holding",
@@ -95,7 +90,7 @@
                 "group": "input_1",
                 "order": 1
             },
-            "input1_debounce_ms": {
+            "in1_debounce_ms": {
                 "title": "Input 1 Debounce (ms)",
                 "address": 20,
                 "reg_type": "holding",
@@ -105,7 +100,7 @@
                 "group": "input_1",
                 "order": 2
             },
-            "input2_mode": {
+            "in2_mode": {
                 "title": "Input 2 Mode",
                 "address": 10,
                 "reg_type": "holding",
@@ -121,7 +116,7 @@
                 "group": "input_2",
                 "order": 1
             },
-            "input2_debounce_ms": {
+            "in2_debounce_ms": {
                 "title": "Input 2 Debounce (ms)",
                 "address": 21,
                 "reg_type": "holding",
@@ -131,7 +126,7 @@
                 "group": "input_2",
                 "order": 2
             },
-            "input3_mode": {
+            "in3_mode": {
                 "title": "Input 3 Mode",
                 "address": 11,
                 "reg_type": "holding",
@@ -147,7 +142,7 @@
                 "group": "input_3",
                 "order": 1
             },
-            "input3_debounce_ms": {
+            "in3_debounce_ms": {
                 "title": "Input 3 Debounce (ms)",
                 "address": 22,
                 "reg_type": "holding",
@@ -175,8 +170,8 @@
                 "address": 8,
                 "reg_type": "holding",
                 "default": 3600,
-                "group": "general",
-                "order": 1
+                "group": "outputs",
+                "order": 2
             }
         },
 

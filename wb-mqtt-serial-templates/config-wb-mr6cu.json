@@ -14,14 +14,9 @@
                 "order": 1
             },
             {
-                "title": "General Settings",
-                "id": "general",
-                "order": 2
-            },
-            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 3
+                "order": 2
             }
         ],
 
@@ -53,8 +48,8 @@
                 "address": 8,
                 "reg_type": "holding",
                 "default": 3600,
-                "group": "general",
-                "order": 1
+                "group": "outputs",
+                "order": 2
             }
         },
 

@@ -24,14 +24,9 @@
                 "order": 3
             },
             {
-                "title": "General Settings",
-                "id": "general",
-                "order": 4
-            },
-            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 5
+                "order": 4
             }
         ],
 
@@ -45,7 +40,7 @@
         ],
 
         "parameters": {
-            "button1_mode": {
+            "in1_mode": {
                 "title": "Button 1 Mode",
                 "address": 9,
                 "reg_type": "holding",
@@ -61,7 +56,7 @@
                 "group": "button_1",
                 "order": 1
             },
-            "button1_debounce_ms": {
+            "in1_debounce_ms": {
                 "title": "Button 1 Debounce (ms)",
                 "address": 20,
                 "reg_type": "holding",
@@ -71,7 +66,7 @@
                 "group": "button_1",
                 "order": 2
             },
-            "button2_mode": {
+            "in2_mode": {
                 "title": "Button 2 Mode",
                 "address": 10,
                 "reg_type": "holding",
@@ -87,7 +82,7 @@
                 "group": "button_2",
                 "order": 1
             },
-            "button2_debounce_ms": {
+            "in2_debounce_ms": {
                 "title": "Button 2 Debounce (ms)",
                 "address": 21,
                 "reg_type": "holding",
@@ -115,8 +110,8 @@
                 "address": 8,
                 "reg_type": "holding",
                 "default": 3600,
-                "group": "general",
-                "order": 1
+                "group": "outputs",
+                "order": 2
             }
         },
 
