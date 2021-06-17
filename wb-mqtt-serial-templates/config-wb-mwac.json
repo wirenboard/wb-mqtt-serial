@@ -246,7 +246,7 @@
                 "reg_type": "holding",
                 "default": 3600,
                 "group": "outputs",
-                "order": 1
+                "order": 2
             }
         },
 
