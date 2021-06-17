@@ -1,0 +1,351 @@
+{
+    "device_type": "WBE2-I-OPENTHERM",
+    "device": {
+        "name": "WBE2-I-OPENTHERM",
+        "id": "wbe2-i-opentherm",
+
+        "groups": [
+            {
+                "title": "Boiler State",
+                "id": "boiler_state",
+                "order": 1
+            },
+            {
+                "title": "Hot Water Settings",
+                "id": "hot_water_settings",
+                "order": 2
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 4
+            }
+        ],
+
+        "channels": [
+            {
+                "name": "Boiler Status",
+                "address": 205,
+                "reg_type": "input",
+                "type": "value",
+                "format": "u16",
+                "group": "boiler_state"
+            },
+            {
+                "name": "Error Code",
+                "address": 206,
+                "reg_type": "input",
+                "type": "value",
+                "format": "u16",
+                "group": "boiler_state"
+            },
+            {
+                "name": "Hot Water Temperature",
+                "address": 208,
+                "reg_type": "input",
+                "type": "temperature",
+                "format": "u16",
+                "group": "boiler_state"
+            },
+            {
+                "name": "Heating Temperature",
+                "address": 207,
+                "reg_type": "input",
+                "type": "temperature",
+                "format": "u16",
+                "group": "boiler_state"
+            },
+            {
+                "name": "Burner Modulation Level (%)",
+                "address": 209,
+                "reg_type": "input",
+                "type": "value",
+                "format": "u16",
+                "group": "boiler_state",
+                "enabled": false
+            },
+            {
+                "name": "Water Pressure",
+                "address": 210,
+                "reg_type": "input",
+                "type": "pressure",
+                "format": "u16",
+                "scale": 0.1,
+                "offset": -100,
+                "group": "boiler_state"
+            },
+            {
+                "name": "Boiler Outdoor Temperature Sensor",
+                "address": 211,
+                "reg_type": "input",
+                "type": "temperature",
+                "format": "u16",
+                "scale": 0.1,
+                "offset": -100,
+                "group": "boiler_state",
+                "enabled": false
+            },
+            {
+                "name": "Hot Water Setpoint Max",
+                "address": 212,
+                "reg_type": "input",
+                "type": "temperature",
+                "format": "u16",
+                "group": "boiler_state",
+                "enabled": false
+            },
+            {
+                "name": "Hot Water Setpoint Min",
+                "address": 213,
+                "reg_type": "input",
+                "type": "temperature",
+                "format": "u16",
+                "group": "boiler_state",
+                "enabled": false
+            },
+            {
+                "name": "Heating Setpoint Max",
+                "address": 214,
+                "reg_type": "input",
+                "type": "temperature",
+                "format": "u16",
+                "group": "boiler_state",
+                "enabled": false
+            },
+            {
+                "name": "Heating Setpoint Min",
+                "address": 215,
+                "reg_type": "input",
+                "type": "temperature",
+                "format": "u16",
+                "group": "boiler_state",
+                "enabled": false
+            },
+            {
+                "name": "Hot Water Setpoint",
+                "address": 204,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "u16",
+                "min": 0,
+                "max": 80,
+                "group": "hot_water_settings"
+            },
+            {
+                "name": "Heating Settings",
+                "id": "",
+                "oneOf": [
+                    "room_sensor",
+                    "outdoor_sensor",
+                    "direct_heating_control",
+                    "heating_off"
+                ],
+                "device_type": "room_sensor"
+            },
+            {
+                "name": "FW Version",
+                "address": 204,
+                "reg_type": "input",
+                "type": "value",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "hw_info"
+            }
+        ],
+
+        "subdevices": [
+            {
+                "title": "Room Temperature Sensor",
+                "device_type": "room_sensor",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "disable direct heating control",
+                            "address": 203,
+                            "reg_type": "holding",
+                            "value": 0
+                        },
+                        {
+                            "title": "enable room sensor",
+                            "address": 207,
+                            "reg_type": "holding",
+                            "value": 0
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Temperature Sensor Type",
+                            "address": 207,
+                            "reg_type": "holding",
+                            "type": "value",
+                            "readonly": true
+                        },
+                        {
+                            "name": "Heating Setpoint",
+                            "address": 203,
+                            "reg_type": "holding",
+                            "type": "temperature",
+                            "format": "u16",
+                            "min": 0,
+                            "max": 80,
+                            "readonly": true
+                        },
+                        {
+                            "name": "Room Temperature",
+                            "address": 208,
+                            "reg_type": "holding",
+                            "type": "temperature",
+                            "format": "s16",
+                            "scale": 0.1,
+                            "offset": -100,
+                            "min": -50,
+                            "max": 60
+                        },
+                        {
+                            "name": "Room Temperature Setpoint",
+                            "address": 205,
+                            "reg_type": "holding",
+                            "type": "temperature",
+                            "format": "u16",
+                            "min": 0,
+                            "max": 35
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Outdoor Temperature Sensor",
+                "device_type": "outdoor_sensor",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "disable direct heating control",
+                            "address": 203,
+                            "reg_type": "holding",
+                            "value": 0
+                        },
+                        {
+                            "title": "enable heating control by sensor",
+                            "address": 205,
+                            "reg_type": "holding",
+                            "value": 20
+                        },
+                        {
+                            "title": "enable outdoor sensor",
+                            "address": 207,
+                            "reg_type": "holding",
+                            "value": 1
+                        }
+                    ],
+                    "parameters": {
+                        "climate_curve_number": {
+                            "title": "Climate Curve Number",
+                            "address": 206,
+                            "reg_type": "holding",
+                            "enum": [
+                                1, 2, 3, 4, 5,
+                                6, 7, 8, 9, 10,
+                                11, 12, 13, 14, 15,
+                                16, 17, 18, 19
+                            ],
+                            "enum_titles": [
+                                "1", "2", "3", "4", "5",
+                                "6", "7", "8", "9", "10",
+                                "11", "12", "13", "14", "15",
+                                "16", "17", "18", "19"
+                            ],
+                            "default": 1
+                        }
+                    },
+                    "channels": [
+                        {
+                            "name": "Temperature Sensor Type",
+                            "address": 207,
+                            "reg_type": "holding",
+                            "type": "value",
+                            "readonly": true
+                        },
+                        {
+                            "name": "Heating Setpoint",
+                            "address": 203,
+                            "reg_type": "holding",
+                            "type": "temperature",
+                            "format": "u16",
+                            "min": 0,
+                            "max": 80,
+                            "readonly": true
+                        },
+                        {
+                            "name": "Outdoor Temperature",
+                            "address": 208,
+                            "reg_type": "holding",
+                            "type": "temperature",
+                            "format": "s16",
+                            "scale": 0.1,
+                            "offset": -100,
+                            "min": -50,
+                            "max": 60
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Direct Heating Setpoint Control",
+                "device_type": "direct_heating_control",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "enable direct heating control",
+                            "address": 205,
+                            "reg_type": "holding",
+                            "value": 0
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Heating Setpoint",
+                            "address": 203,
+                            "reg_type": "holding",
+                            "type": "temperature",
+                            "format": "u16",
+                            "min": 0,
+                            "max": 80
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Heating Off",
+                "device_type": "heating_off",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "enable direct heating control",
+                            "address": 205,
+                            "reg_type": "holding",
+                            "value": 0
+                        },
+                        {
+                            "title": "disable heating",
+                            "address": 203,
+                            "reg_type": "holding",
+                            "value": 0
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Heating Setpoint",
+                            "address": 203,
+                            "reg_type": "holding",
+                            "type": "temperature",
+                            "format": "u16",
+                            "min": 0,
+                            "max": 80,
+                            "readonly": true
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
