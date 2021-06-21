@@ -19,24 +19,19 @@
                 "order": 2
             },
             {
-                "title": "Inputs",
-                "id": "inputs",
-                "order": 3
-            },
-            {
-                "title": "General Settings",
+                "title": "General",
                 "id": "general",
-                "order": 4
+                "order": 5
             },
             {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 5
+                "order": 6
             },
             {
                 "title": "Debug",
                 "id": "debug",
-                "order": 6
+                "order": 7
             }
         ],
 
@@ -45,8 +40,8 @@
                 "title": "TH Sensor Heater Enabled",
                 "address": 2,
                 "reg_type": "coil",
-                "enum":	[ 0, 1 ],
-                "enum_titles": [ "no", "yes" ],
+                "enum": [0, 1],
+                "enum_titles": ["no", "yes"],
                 "default": 0,
                 "group": "air_quality",
                 "order": 1
@@ -69,34 +64,14 @@
                 "group": "illuminance",
                 "order": 1
             },
-            "in1_mode": {
-                "title": "Input 1 Mode",
-                "address": 275,
-                "reg_type": "holding",
-                "enum": [ 0, 1 ],
-                "enum_titles": [ "1-Wire", "discrete input"],
-                "default": 0,
-                "group": "inputs",
-                "order": 1
-            },
-            "in2_mode": {
-                "title": "Input 2 Mode",
-                "address": 276,
-                "reg_type": "holding",
-                "enum": [ 0, 1 ],
-                "enum_titles": [ "1-Wire", "discrete input"],
-                "default": 0,
-                "group": "inputs",
-                "order": 2
-            },
             "temperature_readings_filter_deg": {
-                "title": "Erroneous Temperature Readings Filter (°C)",
+                "title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
                 "address": 99,
                 "reg_type": "holding",
                 "scale": 0.0625,
                 "default": 1,
-                "group": "inputs",
-                "order": 3
+                "group": "general",
+                "order": 1
             },
             "rs485_response_delay_ms": {
                 "title": "RS-485 Response Delay (ms)",
@@ -104,7 +79,7 @@
                 "reg_type": "holding",
                 "default": 8,
                 "group": "general",
-                "order": 1
+                "order": 2
             }
         },
 
@@ -152,56 +127,24 @@
                 "group": "illuminance"
             },
             {
-                "name": "External Sensor 1",
-                "reg_type": "input",
-                "address": "6",
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.0625,
-                "error_value": "0x7FFF",
-                "group": "inputs"
-            },
-            {
-                "name": "External Sensor 2",
-                "reg_type": "input",
-                "address": "7",
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.0625,
-                "error_value": "0x7FFF",
-                "group": "inputs"
-            },
-            {
                 "name": "Input 1",
-                "reg_type": "discrete",
-                "address": 0,
-                "type": "switch",
-                "enabled": false,
-                "group": "inputs"
-            },
-            {
-                "name": "Input 1 Counter",
-                "reg_type": "input",
-                "address": 277,
-                "type": "value",
-                "enabled": false,
-                "group": "inputs"
+                "id": "",
+                "oneOf": [
+                    "input1_1wire",
+                    "input1_discrete",
+                    "input_disabled"
+                ],
+                "device_type": "input1_1wire"
             },
             {
                 "name": "Input 2",
-                "reg_type": "discrete",
-                "address": 1,
-                "type": "switch",
-                "enabled": false,
-                "group": "inputs"
-            },
-            {
-                "name": "Input 2 Counter",
-                "reg_type": "input",
-                "address": 278,
-                "type": "value",
-                "enabled": false,
-                "group": "inputs"
+                "id": "",
+                "oneOf": [
+                    "input2_1wire",
+                    "input2_discrete",
+                    "input_disabled"
+                ],
+                "device_type": "input2_1wire"
             },
             {
                 "name": "Serial",
@@ -294,7 +237,120 @@
                 "enabled": false,
                 "group": "debug"
             }
+        ],
+        "subdevices": [
+            {
+                "title": "1-Wire",
+                "device_type": "input1_1wire",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "set input 1 to 1-wire",
+                            "address": 275,
+                            "reg_type": "holding",
+                            "value": 0
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "External Sensor 1",
+                            "reg_type": "input",
+                            "address": "6",
+                            "type": "temperature",
+                            "format": "s16",
+                            "scale": 0.0625,
+                            "error_value": "0x7FFF"
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Discrete Input",
+                "device_type": "input1_discrete",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "set input1 to descrete",
+                            "address": 275,
+                            "reg_type": "holding",
+                            "value": 1
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Input 1",
+                            "reg_type": "discrete",
+                            "address": 0,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "Input 1 Counter",
+                            "reg_type": "input",
+                            "address": 277,
+                            "type": "value"
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "1-Wire",
+                "device_type": "input2_1wire",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "set input2 to 1-wire",
+                            "address": 276,
+                            "reg_type": "holding",
+                            "value": 0
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "External Sensor 2",
+                            "reg_type": "input",
+                            "address": "7",
+                            "type": "temperature",
+                            "format": "s16",
+                            "scale": 0.0625,
+                            "error_value": "0x7FFF"
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Discrete Input",
+                "device_type": "input2_discrete",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "set input2 to descrete",
+                            "address": 276,
+                            "reg_type": "holding",
+                            "value": 1
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "Input 2",
+                            "reg_type": "discrete",
+                            "address": 1,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "Input 2 Counter",
+                            "reg_type": "input",
+                            "address": 278,
+                            "type": "value"
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Disabled",
+                "device_type": "input_disabled",
+                "device": {
+                }
+            }
         ]
-
     }
 }
