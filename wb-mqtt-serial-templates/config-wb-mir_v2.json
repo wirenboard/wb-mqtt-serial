@@ -612,7 +612,8 @@
                 "id": "",
                 "oneOf": [
                     "input1_1wire",
-                    "input1_discrete"
+                    "input1_discrete",
+                    "input_disabled"
                 ],
                 "device_type": "input1_1wire"
             },
@@ -716,6 +717,12 @@
                             "format": "u16"
                         }
                     ]
+                }
+            },
+            {
+                "title": "Disabled",
+                "device_type": "input_disabled",
+                "device": {
                 }
             }
         ]
