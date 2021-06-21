@@ -19,7 +19,7 @@
                 "order": 2
             },
             {
-                "title": "General Settings",
+                "title": "General",
                 "id": "general",
                 "order": 3
             },
@@ -40,7 +40,7 @@
                 "group": "inputs",
                 "order": 1
             },
-            "input1_mode": {
+            "in1_mode": {
                 "title": "Input 1 Mode",
                 "address": 275,
                 "reg_type": "holding",
@@ -669,20 +669,20 @@
                 "group": "inputs"
             }, 
             {
+                "name": "Serial NO", 
+                "type": "text", 
+                "reg_type": "input", 
+                "address": 270, 
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
                 "name": "Input Voltage", 
                 "reg_type": "input", 
                 "address": 121, 
                 "scale": 0.001, 
                 "type": "voltage",
                 "enabled": false,
-                "group": "hw_info"
-            },
-            {
-                "name": "Serial NO", 
-                "type": "text", 
-                "reg_type": "input", 
-                "address": 270, 
-                "format": "u32",
                 "group": "hw_info"
             },
             {
