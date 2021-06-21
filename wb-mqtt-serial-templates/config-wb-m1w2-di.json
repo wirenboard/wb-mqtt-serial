@@ -39,8 +39,8 @@
                 "title": "Input 1 Mode",
                 "address": 275,
                 "reg_type": "holding",
-                "enum": [ 0, 1 ],
-                "enum_titles": [ "1-Wire", "discrete input"],
+                "enum": [0, 1],
+                "enum_titles": ["1-Wire", "discrete input"],
                 "default": 0,
                 "group": "inputs",
                 "order": 2
@@ -49,8 +49,8 @@
                 "title": "Input 2 Mode",
                 "address": 276,
                 "reg_type": "holding",
-                "enum": [ 0, 1 ],
-                "enum_titles": [ "1-Wire", "discrete input"],
+                "enum": [0, 1],
+                "enum_titles": ["1-Wire", "discrete input"],
                 "default": 0,
                 "group": "inputs",
                 "order": 3
@@ -179,6 +179,5 @@
                 "group": "hw_info"
             }
         ]
-
     }
 }
