@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.16.6) stable; urgency=medium
+
+  * Module WBE2-I-OPENTHERM register 211 (input) format was changed from
+    u16 to s16
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 23 Jun 2021 15:26:00 +0300
+
 wb-mqtt-serial (2.16.5) stable; urgency=medium
 
   * Remake of templates Modbus relay modules WB-MRxx using groups and parameters
