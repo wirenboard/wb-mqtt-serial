@@ -79,7 +79,7 @@
                 "address": 211,
                 "reg_type": "input",
                 "type": "temperature",
-                "format": "u16",
+                "format": "s16",
                 "scale": 0.1,
                 "offset": -100,
                 "group": "boiler_state",
