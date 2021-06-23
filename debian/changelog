@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.16.6) stable; urgency=medium
+
+  * WBE2-I-EBUS template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 23 Jun 2021 14:54:27 +0300
+
 wb-mqtt-serial (2.16.5) stable; urgency=medium
 
   * Remake of templates Modbus relay modules WB-MRxx using groups and parameters
