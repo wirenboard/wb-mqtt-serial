@@ -416,20 +416,20 @@
                 "group": "channel_3"
             },
             {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
                 "name": "Supply voltage",
                 "reg_type": "input",
                 "address": 121,
                 "type": "voltage",
                 "scale": 0.001,
                 "enabled": false,
-                "group": "hw_info"
-            },
-            {
-                "name": "Serial",
-                "type": "text",
-                "reg_type": "input",
-                "address": 270,
-                "format": "u32",
                 "group": "hw_info"
             },
             {
@@ -440,6 +440,13 @@
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "AC on L-N",
+                "reg_type": "input",
+                "address": 97,
+                "type": "switch",
+                "group": "debug"
             },
             {
                 "name": " Channel 1 Raw Duty (us)",
@@ -463,13 +470,6 @@
                 "address": 92,
                 "readonly": true,
                 "enabled": false,
-                "group": "debug"
-            },
-            {
-                "name": "AC on L-N",
-                "reg_type": "input",
-                "address": 97,
-                "type": "switch",
                 "group": "debug"
             },
             {
