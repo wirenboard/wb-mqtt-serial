@@ -469,6 +469,7 @@
                 "name": "AC on L-N",
                 "reg_type": "input",
                 "address": 97,
+                "type": "switch",
                 "enabled": false,
                 "group": "debug"
             },
