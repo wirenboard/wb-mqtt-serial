@@ -473,7 +473,7 @@
                 "group": "debug"
             },
             {
-                "name": "Zero-cross Offset (us)",
+                "name": "Zero-Сross Offset (us)",
                 "reg_type": "input",
                 "address": 98,
                 "enabled": false,
