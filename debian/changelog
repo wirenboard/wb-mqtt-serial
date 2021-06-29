@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.16.7) stable; urgency=medium
+
+  * Remake of MAP3ET template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 29 Jun 2021 16:59:37 +0300
+
 wb-mqtt-serial (2.16.6) stable; urgency=medium
 
   * Module WBE2-I-OPENTHERM register 211 (input) format was changed from
