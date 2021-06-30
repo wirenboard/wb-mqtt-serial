@@ -55,7 +55,7 @@
                 "order": 2
             },
             "l1_phase": {
-                "title": "Phase L1",
+                "title": "Actual Phase L1",
                 "address": "0x14A0",
                 "reg_type": "holding",
                 "format": "u16",
@@ -84,7 +84,7 @@
                 "order": 2
             },
             "l2_phase": {
-                "title": "Phase L2",
+                "title": "Actual Phase L2",
                 "address": "0x14A1",
                 "reg_type": "holding",
                 "format": "u16",
@@ -113,7 +113,7 @@
                 "order": 2
             },
             "l3_phase": {
-                "title": "Phase L3",
+                "title": "Actual Phase L3",
                 "address": "0x14A2",
                 "reg_type": "holding",
                 "format": "u16",
@@ -123,8 +123,8 @@
                 "group": "l3",
                 "order": 3
             },
-            "peak_values_reset_period_s": {
-                "title": "Peak Values Reset Period (s)",
+            "peaks_measurement_period_s": {
+                "title": "Peaks Measurement Period (s)",
                 "address": "0x10F0",
                 "reg_type": "holding",
                 "format": "u16",
