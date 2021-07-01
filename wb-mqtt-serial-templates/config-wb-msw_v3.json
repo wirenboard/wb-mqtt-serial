@@ -210,6 +210,7 @@
                 "type": "value",
                 "reg_type": "input",
                 "address": 280,
+                "error_value": "0xFFFF",
                 "group": "motion"
             },
             {
@@ -217,6 +218,7 @@
                 "type": "value",
                 "reg_type": "input",
                 "address": 283,
+                "error_value": "0xFFFF",
                 "group": "motion"
             },
             {

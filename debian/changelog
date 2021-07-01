@@ -1,8 +1,22 @@
-wb-mqtt-serial (2.16.6) stable; urgency=medium
+wb-mqtt-serial (2.17.0) stable; urgency=medium
 
   * WBE2-I-EBUS template was added
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 23 Jun 2021 14:54:27 +0300
+
+wb-mqtt-serial (2.16.7) stable; urgency=medium
+
+  * Adding error_value for current motion and max motion in template
+    MSWv3
+
+ -- Dmitry Orlov <dmitry.orlov@wirenboard.ru>  Thu, 01 Jul 2021 14:22:25 +0300
+
+wb-mqtt-serial (2.16.6) stable; urgency=medium
+
+  * Module WBE2-I-OPENTHERM register 211 (input) format was changed from
+    u16 to s16
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 23 Jun 2021 15:26:00 +0300
 
 wb-mqtt-serial (2.16.5) stable; urgency=medium
 
