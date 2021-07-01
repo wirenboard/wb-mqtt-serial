@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.16.7) stable; urgency=medium
+
+  * Adding error_value for current motion and max motion in template
+    MSWv3
+
+ -- Dmitry Orlov <dmitry.orlov@wirenboard.ru>  Thu, 01 Jul 2021 14:22:25 +0300
+
 wb-mqtt-serial (2.16.6) stable; urgency=medium
 
   * Module WBE2-I-OPENTHERM register 211 (input) format was changed from
