@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.17.0) stable; urgency=medium
+
+  * WBE2-I-EBUS template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 23 Jun 2021 14:54:27 +0300
+
 wb-mqtt-serial (2.16.7) stable; urgency=medium
 
   * Adding error_value for current motion and max motion in template
