@@ -49,7 +49,7 @@
                 "title": "Phi L1",
                 "address": "0x1463",
                 "reg_type": "holding",
-                "format": "u16",
+                "format": "s16",
                 "min": 0,
                 "group": "l1",
                 "order": 2
@@ -78,7 +78,7 @@
                 "title": "Phi L2",
                 "address": "0x1464",
                 "reg_type": "holding",
-                "format": "u16",
+                "format": "s16",
                 "min": 0,
                 "group": "l2",
                 "order": 2
@@ -107,7 +107,7 @@
                 "title": "Phi L3",
                 "address": "0x1465",
                 "reg_type": "holding",
-                "format": "u16",
+                "format": "s16",
                 "min": 0,
                 "group": "l3",
                 "order": 2
