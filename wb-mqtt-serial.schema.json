@@ -3,12 +3,6 @@
   "title": "Serial Device Driver Configuration",
 
   "definitions": {
-    "deviceProtocol": {
-      "type": "string",
-      "title": "Device protocol",
-      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k", "modbus_io", "pulsar", "mercury200", "lls", "neva", "energomera_iec", "dlms"],
-      "default": "modbus"
-    },
     "commonPortSettings": {
       "properties": {
         "enabled": {

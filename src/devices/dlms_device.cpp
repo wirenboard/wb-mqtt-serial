@@ -116,6 +116,7 @@ namespace
                                    PProtocol          protocol) const override
         {
             TDlmsDeviceConfig cfg;
+            cfg.DeviceConfig = deviceConfig;
             WBMQTT::JSON::Get(data, "dlms_client_address", cfg.ClientAddress);
             cfg.Authentication = static_cast<DLMS_AUTHENTICATION>(data.get("dlms_auth", cfg.Authentication).asInt());
             cfg.InterfaceType  = static_cast<DLMS_INTERFACE_TYPE>(data.get("dlms_interface", cfg.InterfaceType).asInt());
