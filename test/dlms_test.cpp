@@ -59,7 +59,4 @@ TEST_F(TDlmsIntegrationTest, Poll)
 
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
-    // SerialPort->DumpWhatWasRead();
-
-    // SerialPort->Close();
 }
