@@ -62,6 +62,7 @@
                 "enum": [1, 2, 3],
                 "default": 1,
                 "enum_titles": ["L1", "L2", "L3"],
+                "description": "Firmware v2.3.0 or newer is required",
                 "group": "l1",
                 "order": 3
             },
@@ -91,6 +92,7 @@
                 "enum": [1, 2, 3],
                 "default": 2,
                 "enum_titles": ["L1", "L2", "L3"],
+                "description": "Firmware v2.3.0 or newer is required",
                 "group": "l2",
                 "order": 3
             },
@@ -120,6 +122,7 @@
                 "enum": [1, 2, 3],
                 "default": 3,
                 "enum_titles": ["L1", "L2", "L3"],
+                "description": "Firmware v2.3.0 or newer is required",
                 "group": "l3",
                 "order": 3
             },
@@ -144,6 +147,7 @@
                 "format": "u32",
                 "scale": 1.52588e-7,
                 "round_to": 0.001,
+                "error_value": "0xFFFFFFFF",
                 "group": "l1"
             },
             {
@@ -155,6 +159,7 @@
                 "scale": 0.01,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
                 "group": "l1"
             },
             {
@@ -165,6 +170,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "round_to": 0.01,
+                "error_value": "0x7FFF",
                 "group": "l1"
             },
             {
@@ -268,6 +274,7 @@
                 "format": "u32",
                 "scale": 1.52588e-7,
                 "round_to": 0.001,
+                "error_value": "0xFFFFFFFF",
                 "group": "l2"
             },
             {
@@ -279,6 +286,7 @@
                 "scale": 0.01,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
                 "group": "l2"
             },
             {
@@ -289,6 +297,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "round_to": 0.01,
+                "error_value": "0x7FFF",
                 "group": "l2"
             },
             {
@@ -392,6 +401,7 @@
                 "format": "u32",
                 "scale": 1.52588e-7,
                 "round_to": 0.001,
+                "error_value": "0xFFFFFFFF",
                 "group": "l3"
             },
             {
@@ -403,6 +413,7 @@
                 "scale": 0.01,
                 "round_to": 0.01,
                 "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
                 "group": "l3"
             },
             {
@@ -413,6 +424,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "round_to": 0.01,
+                "error_value": "0x7FFF",
                 "group": "l3"
             },
             {
