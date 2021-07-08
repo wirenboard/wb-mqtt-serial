@@ -51,7 +51,7 @@
         ],
 
         "parameters": {
-            "turns1": {
+            "channel1_turns": {
                 "title": "Turns 1",
                 "address": "0x1462",
                 "reg_type": "holding",
@@ -60,7 +60,7 @@
                 "group": "channel_1",
                 "order": 1
             },
-            "phi1": {
+            "channel1_phi": {
                 "title": "Phi 1",
                 "address": "0x1465",
                 "reg_type": "holding",
@@ -69,7 +69,7 @@
                 "group": "channel_1",
                 "order": 2
             },
-            "turns2": {
+            "channel2_turns": {
                 "title": "Turns 2",
                 "address": "0x1461",
                 "reg_type": "holding",
@@ -78,7 +78,7 @@
                 "group": "channel_2",
                 "order": 1
             },
-            "phi2": {
+            "channel2_phi": {
                 "title": "Phi 2",
                 "address": "0x1464",
                 "reg_type": "holding",
@@ -87,7 +87,7 @@
                 "group": "channel_2",
                 "order": 2
             },
-            "turns3": {
+            "channel3_turns": {
                 "title": "Turns 3",
                 "address": "0x1460",
                 "reg_type": "holding",
@@ -96,7 +96,7 @@
                 "group": "channel_3",
                 "order": 1
             },
-            "phi3": {
+            "channel3_phi": {
                 "title": "Phi 3",
                 "address": "0x1463",
                 "reg_type": "holding",
@@ -105,7 +105,7 @@
                 "group": "channel_3",
                 "order": 2
             },
-            "turns4": {
+            "channel4_turns": {
                 "title": "Turns 4",
                 "address": "0x2462",
                 "reg_type": "holding",
@@ -114,7 +114,7 @@
                 "group": "channel_4",
                 "order": 1
             },
-            "phi4": {
+            "channel4_phi": {
                 "title": "Phi 4",
                 "address": "0x2465",
                 "reg_type": "holding",
@@ -123,7 +123,7 @@
                 "group": "channel_4",
                 "order": 2
             },
-            "turns5": {
+            "channel5_turns": {
                 "title": "Turns 5",
                 "address": "0x2461",
                 "reg_type": "holding",
@@ -132,7 +132,7 @@
                 "group": "channel_5",
                 "order": 1
             },
-            "phi5": {
+            "channel5_phi": {
                 "title": "Phi 5",
                 "address": "0x2464",
                 "reg_type": "holding",
@@ -141,7 +141,7 @@
                 "group": "channel_5",
                 "order": 2
             },
-            "turns6": {
+            "channel6_turns": {
                 "title": "Turns 6",
                 "address": "0x2460",
                 "reg_type": "holding",
@@ -150,7 +150,7 @@
                 "group": "channel_6",
                 "order": 1
             },
-            "phi6": {
+            "channel6_phi": {
                 "title": "Phi 6",
                 "address": "0x2463",
                 "reg_type": "holding",
