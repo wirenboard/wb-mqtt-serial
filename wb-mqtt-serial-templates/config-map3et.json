@@ -24,14 +24,19 @@
                 "order": 3
             },
             {
+                "title": "Total",
+                "id": "total",
+                "order": 4
+            },
+            {
                 "title": "General",
                 "id": "general",
-                "order": 4
+                "order": 5
             },
             {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 5
+                "order": 6
             }
         ],
 
@@ -528,7 +533,7 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
-                "group": "general"
+                "group": "total"
             },
             {
                 "name": "Total Q",
@@ -538,7 +543,7 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
-                "group": "general"
+                "group": "total"
             },
             {
                 "name": "Total S",
@@ -548,7 +553,7 @@
                 "format": "s32",
                 "scale": 0.00512,
                 "round_to": 0.01,
-                "group": "general"
+                "group": "total"
             },
             {
                 "name": "Total PF",
@@ -558,7 +563,7 @@
                 "format": "s16",
                 "scale": 0.001,
                 "round_to": 0.01,
-                "group": "general"
+                "group": "total"
             },
             {
                 "name": "Total AP energy",
@@ -569,7 +574,7 @@
                 "scale": 1e-5,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
-                "group": "general"
+                "group": "total"
             },
             {
                 "name": "Total RP energy",
@@ -580,7 +585,7 @@
                 "scale": 1e-5,
                 "round_to": 1e-6,
                 "word_order": "little_endian",
-                "group": "general"
+                "group": "total"
             },
             {
                 "name": "Frequency",
