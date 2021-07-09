@@ -21,15 +21,6 @@
         ],
 
         "parameters": {
-            "selfheating_compensation_deg": {
-                "title": "Self-Heating Compensation (°C)",
-                "address": 245,
-                "reg_type": "holding",
-                "format": "s16",
-                "scale": 0.01,
-                "group": "general",
-                "order": 1
-            },
             "temperature_readings_filter_deg": {
                 "title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
                 "address": 99,
@@ -69,16 +60,6 @@
                     "input_disabled"
                 ],
                 "device_type": "input2_1wire"
-            },
-            {
-                "name": "Internal Temperature",
-                "reg_type": "input",
-                "address": "6",
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.0625,
-                "error_value": "0x7FFF",
-                "group": "general"
             },
             {
                 "name": "Serial NO",
