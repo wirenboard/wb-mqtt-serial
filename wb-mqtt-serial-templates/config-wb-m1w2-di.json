@@ -28,7 +28,7 @@
                 "scale": 0.0625,
                 "default": 1,
                 "group": "general",
-                "order": 2
+                "order": 1
             },
             "rs485_response_delay_ms": {
                 "title": "RS-485 Response Delay (ms)",
@@ -36,7 +36,7 @@
                 "reg_type": "holding",
                 "default": 8,
                 "group": "general",
-                "order": 3
+                "order": 2
             }
         },
 
