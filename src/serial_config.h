@@ -76,6 +76,7 @@ class TTemplateMap: public ITemplateMap
 
         Json::Value Validate(const std::string& deviceType, const std::string& filePath);
         std::shared_ptr<TDeviceTemplate> GetTemplatePtr(const std::string& deviceType);
+        std::string GetDeviceType(const std::string& templatePath) const;
     public:
         TTemplateMap() = default;
 
