@@ -196,8 +196,6 @@ Publish: /devices/pseudo_s2k/controls/Relay delay 4: '60' (QoS 1, retained)
 << 01 05 06 08 3C F6
 Publish: /devices/pseudo_s2k/controls/Relay 1/on: '1' (QoS 0, retained)
 Publish: /devices/pseudo_s2k/controls/Relay 2/on: '1' (QoS 0, retained)
-Publish: /devices/pseudo_s2k/controls/Relay 1: '1' (QoS 1, retained)
-Publish: /devices/pseudo_s2k/controls/Relay 2: '1' (QoS 1, retained)
 Publish: /devices/pseudo_s2k/controls/Relay 3/on: '2' (QoS 0, retained)
 >>> LoopOnce()
 EnqueueSetRelayOnResponse()
@@ -208,10 +206,6 @@ EnqueueSetRelay2On()
 << 01 05 16 02 01 18
 EnqueueSetRelay3On2()
 >> 01 06 00 15 03 01 DF
-Publish: /devices/pseudo_s2k/controls/Relay 3: '1' (QoS 1, retained)
-Publish: /devices/pseudo_s2k/controls/Relay multi 1: '1' (QoS 1, retained)
-Publish: /devices/pseudo_s2k/controls/Relay multi 2: '1' (QoS 1, retained)
-Publish: /devices/pseudo_s2k/controls/Relay multi 3: '1' (QoS 1, retained)
 << 01 05 16 03 01 DC
 EnqueueReadConfig1()
 >> 01 06 00 05 01 00 5A
@@ -238,6 +232,13 @@ EnqueueReadConfig8()
 >> 01 06 00 05 08 00 FC
 << 01 05 06 08 3C F6
 Close()
+Publish: /devices/pseudo_s2k/controls/Relay 1: '1' (QoS 1, retained)
+Publish: /devices/pseudo_s2k/controls/Relay 2: '1' (QoS 1, retained)
+Publish: /devices/pseudo_s2k/controls/Relay 3: '2' (QoS 1, retained)
+Publish: /devices/pseudo_s2k/controls/Relay 3: '1' (QoS 1, retained)
+Publish: /devices/pseudo_s2k/controls/Relay multi 1: '1' (QoS 1, retained)
+Publish: /devices/pseudo_s2k/controls/Relay multi 2: '1' (QoS 1, retained)
+Publish: /devices/pseudo_s2k/controls/Relay multi 3: '1' (QoS 1, retained)
 Publish: /devices/pseudo_s2k/controls/Relay delay 4: '' (QoS 1, retained)
 Publish: /devices/pseudo_s2k/controls/Relay delay 4/meta/order: '' (QoS 1, retained)
 Publish: /devices/pseudo_s2k/controls/Relay delay 4/meta/readonly: '' (QoS 1, retained)

@@ -128,7 +128,11 @@ void TSerialClient::DoFlush()
         if (!handler->NeedToFlush())
             continue;
         PrepareToAccessDevice(handler->Device());
-        MaybeUpdateErrorState(reg, handler->Flush());
+        auto flushRes = handler->Flush();
+        if (handler->CurrentErrorState() != TRegisterHandler::WriteError && handler->CurrentErrorState() != TRegisterHandler::ReadWriteError) {
+            ReadCallback(reg, flushRes.ValueIsChanged);
+        }
+        MaybeUpdateErrorState(reg, flushRes.Error);
     }
 }
 
@@ -147,6 +151,17 @@ void TSerialClient::WaitForPollAndFlush()
         if (Plan->PollIsDue()) {
             MaybeFlushAvoidingPollStarvationButDontWait();
             return;
+        }
+    }
+}
+
+void TSerialClient::UpdateFlushNeeded()
+{
+    for (const auto& reg: RegList) {
+        auto handler = Handlers[reg];
+        if (handler->NeedToFlush()) {
+            FlushNeeded->Signal();
+            break;
         }
     }
 }
@@ -265,6 +280,8 @@ void TSerialClient::OpenPortCycle()
         pollEntry->Ranges.swap(newRanges);
     });
 
+    UpdateFlushNeeded();
+
     for (const auto & deviceRangesStatuses: devicesRangesStatuses) {
         const auto & device = deviceRangesStatuses.first;
         const auto & statuses = deviceRangesStatuses.second;
@@ -316,7 +333,7 @@ void TSerialClient::ClosedPortCycle()
         auto handler = Handlers[reg];
         if (!handler->NeedToFlush())
             continue;
-        MaybeUpdateErrorState(reg, handler->Flush(TRegisterHandler::WriteError));
+        MaybeUpdateErrorState(reg, handler->Flush(TRegisterHandler::WriteError).Error);
     }
 }
 
