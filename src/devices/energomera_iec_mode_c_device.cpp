@@ -22,55 +22,6 @@ namespace
         { RegisterType::TIME,    "time",    "value", U32,    true }
     };
 
-    class TStringRegisterAddress: public IRegisterAddress
-    {
-        std::string Addr;
-    public:
-        TStringRegisterAddress() = default;
-
-        TStringRegisterAddress(const std::string& addr) : Addr(addr)
-        {}
-
-        std::string ToString() const override
-        {
-            return Addr;
-        }
-
-        bool operator<(const IRegisterAddress& addr) const override
-        {
-            const auto& a = dynamic_cast<const TStringRegisterAddress&>(addr);
-            return Addr < a.Addr;
-        }
-
-        IRegisterAddress* CalcNewAddress(uint32_t /*offset*/,
-                                         uint32_t /*stride*/,
-                                         uint32_t /*registerByteWidth*/,
-                                         uint32_t /*addressByteStep*/) const override
-        {
-            return new TStringRegisterAddress(Addr);
-        }
-    };
-
-    class TStringRegisterAddressFactory: public IRegisterAddressFactory
-    {
-        TStringRegisterAddress BaseRegisterAddress;
-    public:
-        TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
-                                          const IRegisterAddress& deviceBaseAddress,
-                                          uint32_t                stride,
-                                          uint32_t                registerByteWidth) const override
-        {
-            TRegisterDesc res;
-            res.Address = std::make_shared<TStringRegisterAddress>(regCfg["address"].asString());
-            return res;
-        }
-
-        const IRegisterAddress& GetBaseRegisterAddress() const override
-        {
-            return BaseRegisterAddress;
-        }
-    };
-
     class TEnergomeraIecModeCDeviceFactory: public IDeviceFactory
     {
     public:

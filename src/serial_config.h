@@ -210,6 +210,18 @@ public:
     const IRegisterAddress& GetBaseRegisterAddress() const override;
 };
 
+class TStringRegisterAddressFactory: public IRegisterAddressFactory
+{
+    TStringRegisterAddress BaseRegisterAddress;
+public:
+    TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
+                                      const IRegisterAddress& deviceBaseAddress,
+                                      uint32_t                stride,
+                                      uint32_t                registerByteWidth) const override;
+
+    const IRegisterAddress& GetBaseRegisterAddress() const override;
+};
+
 class IDeviceFactory
 {
     std::string                              CommonDeviceSchemaRef;

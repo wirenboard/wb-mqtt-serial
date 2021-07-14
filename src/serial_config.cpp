@@ -1149,3 +1149,18 @@ const IRegisterAddress& TUint32RegisterAddressFactory::GetBaseRegisterAddress() 
 {
     return BaseRegisterAddress;
 }
+
+TRegisterDesc TStringRegisterAddressFactory::LoadRegisterAddress(const Json::Value&      regCfg,
+                                                                const IRegisterAddress& deviceBaseAddress,
+                                                                uint32_t                stride,
+                                                                uint32_t                registerByteWidth) const
+{
+    TRegisterDesc res;
+    res.Address = std::make_shared<TStringRegisterAddress>(regCfg["address"].asString());
+    return res;
+}
+
+const IRegisterAddress& TStringRegisterAddressFactory::GetBaseRegisterAddress() const
+{
+    return BaseRegisterAddress;
+}
