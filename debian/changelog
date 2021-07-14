@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.19.1) stable; urgency=medium
+
+  * Config validation time is decreased
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 13 Jul 2021 18:38:17 +0500
+
 wb-mqtt-serial (2.19.0) stable; urgency=medium
 
   * Retry of failed registers writes for "on" topic messages is added

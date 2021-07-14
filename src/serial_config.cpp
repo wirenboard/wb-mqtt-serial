@@ -1,5 +1,6 @@
 #include "serial_config.h"
 #include "log.h"
+#include "file_utils.h"
 
 #include <set>
 #include <fstream>
@@ -527,6 +528,31 @@ TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& t
     AddTemplatesDir(templatesDir);
 }
 
+std::string TTemplateMap::GetDeviceType(const std::string& templatePath) const
+{
+    const char deviceTypeKey[] = "\"device_type\"";
+    std::ifstream file;
+    OpenWithException(file, templatePath);
+    std::string line;
+    // Search device type declaration in first 5 lines
+    for (auto n = 0; n < 5; ++n) {
+        std::getline(file, line);
+        auto pos = line.find(deviceTypeKey);
+        if (pos != std::string::npos) {
+            pos += sizeof(deviceTypeKey);
+            pos = line.find("\"", pos);
+            if (pos != std::string::npos) {
+                ++pos;
+                auto end = line.find("\"", pos);
+                if (end != std::string::npos) {
+                    return line.substr(pos, end - pos);
+                }
+            }
+        }
+    }
+    throw std::runtime_error(templatePath + " doesn't contain device type declaration");
+}
+
 void TTemplateMap::AddTemplatesDir(const std::string& templatesDir)
 {
     DIR *dir;
@@ -550,8 +576,7 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir)
         }
 
         try {
-            Json::Value root = WBMQTT::JSON::Parse(filepath);
-            TemplateFiles[root["device_type"].asString()] = filepath;
+            TemplateFiles[GetDeviceType(filepath)] = filepath;
         } catch (const std::exception& e) {
             LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
             continue;
