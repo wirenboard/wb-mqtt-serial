@@ -11,12 +11,22 @@ namespace
 
     enum RegisterType
     {
-        DEFAULT = 0,
+        ITEM_1 = 0,
+        ITEM_2,
+        ITEM_3,
+        ITEM_4,
+        ITEM_5,
+        DEFAULT,
         DATE,
         TIME
     };
 
     const TRegisterTypes RegisterTypes {
+        { RegisterType::ITEM_1,  "item_1",  "value", Double, true },
+        { RegisterType::ITEM_2,  "item_2",  "value", Double, true },
+        { RegisterType::ITEM_3,  "item_3",  "value", Double, true },
+        { RegisterType::ITEM_4,  "item_4",  "value", Double, true },
+        { RegisterType::ITEM_5,  "item_5",  "value", Double, true },
         { RegisterType::DEFAULT, "default", "value", Double, true },
         { RegisterType::DATE,    "date",    "value", U32,    true },
         { RegisterType::TIME,    "time",    "value", U32,    true }
@@ -77,7 +87,7 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
             v.erase(std::remove(v.begin(), v.end(), ':'), v.end());
             return strtoull(v.c_str(), nullptr, 10);
         }
-        default:
+        case RegisterType::DEFAULT:
         {
             if (reg.Format == U64) {
                 return strtoull(value.c_str(), nullptr, 10);
@@ -87,6 +97,18 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
             static_assert((sizeof(res) >= sizeof(val)), "Can't fit double into uint64_t");
             memcpy(&res, &val, sizeof(val));
             return res;
+        }
+        default:
+        {
+            auto items = WBMQTT::StringSplit(value, ")\r\n(");
+            if (items.size() > static_cast<unsigned int>(reg.Type)) {
+                double val = strtod(items[reg.Type].c_str(), nullptr);
+                uint64_t res = 0;
+                static_assert((sizeof(res) >= sizeof(val)), "Can't fit double into uint64_t");
+                memcpy(&res, &val, sizeof(val));
+                return res;
+            }
+            throw TSerialDeviceTransientErrorException("malformed response");
         }
     }
 }

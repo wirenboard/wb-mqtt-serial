@@ -11,6 +11,7 @@ namespace
     const char* LOG_PREFIX = "[NEVA] ";
 
     const TRegisterTypes RegisterTypes{
+        // Deprecated. For backward compatibility
         { 0, "obis_cdef",      "value", Double, true },
         { 1, "obis_cdef_pf",   "value", Double, true },
         { 2, "obis_cdef_temp", "value", Double, true },
@@ -19,9 +20,19 @@ namespace
         { 5, "obis_cdef_3",    "value", Double, true },
         { 6, "obis_cdef_4",    "value", Double, true },
         { 7, "obis_cdef_5",    "value", Double, true },
+        // Actual register types
+        { 8,  "default"     ,   "value", Double, true },
+        { 9,  "power_factor",   "value", Double, true },
+        { 10, "temperature",    "value", Double, true },
+        { 11, "item_1",         "value", Double, true },
+        { 12, "item_2",         "value", Double, true },
+        { 13, "item_3",         "value", Double, true },
+        { 14, "item_4",         "value", Double, true },
+        { 15, "item_5",         "value", Double, true }
     };
 
     std::unordered_map<std::string, size_t> RegisterTypeValueIndices = {
+        // Deprecated. For backward compatibility
         {"obis_cdef",      0},
         {"obis_cdef_pf",   0},
         {"obis_cdef_temp", 0},
@@ -30,6 +41,14 @@ namespace
         {"obis_cdef_3",    2},
         {"obis_cdef_4",    3},
         {"obis_cdef_5",    4},
+        // Actual register types
+        {"item_1",         0},
+        {"power_factor",   0},
+        {"temperature",    0},
+        {"item_2",         1},
+        {"item_3",         2},
+        {"item_4",         3},
+        {"item_5",         4}
     };
 
     uint8_t GetXorCRC(const uint8_t* data, size_t size)
@@ -75,14 +94,14 @@ uint64_t TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& 
 
     auto val = result[val_index];
 
-    if (reg.TypeName == "obis_cdef_pf") {
+    if (reg.TypeName == "power_factor" || reg.TypeName == "obis_cdef_pf") {
         // Y: 0, 1 or 2     (C, L or ?)	YХ.ХХХ
         if (val >= 20) {
             val-=20;
         } else if (val >= 10) {
             val = -(val-10);
         }
-    } else if (reg.TypeName == "obis_cdef_temp") {
+    } else if (reg.TypeName == "temperature" || reg.TypeName == "obis_cdef_temp") {
         if (val >= 100.0) {
             val = -(val - 100.0);
         }

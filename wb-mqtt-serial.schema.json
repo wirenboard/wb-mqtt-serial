@@ -804,8 +804,9 @@
                "brightness", "param", "relay_mode", "relay_default", "relay_delay", "energy", "array",
                "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
                "param24", "param32", "power", "freq", "power_factor", "group_single", 
-               "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5", 
-               "alarm", "position", "command", "date", "time"]
+               "temperature", "item_1", "item_2", "item_3", "item_4", "item_5", 
+               "alarm", "position", "command", "date", "time",
+               "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5"]
     },
     "format": {
       "type": "string",

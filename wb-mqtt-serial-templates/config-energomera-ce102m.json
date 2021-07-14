@@ -48,33 +48,33 @@
       },
       {
         "name": "A energy",
-        "reg_type": "default",
+        "reg_type": "item_1",
         "type": "power_consumption",
-        "address": "ET0PE(1)"
+        "address": "ET0PE()"
       },
       {
         "name": "A energy T1",
-        "reg_type": "default",
+        "reg_type": "item_2",
         "type": "power_consumption",
-        "address": "ET0PE(2)"
+        "address": "ET0PE()"
       },
       {
         "name": "A energy T2",
-        "reg_type": "default",
+        "reg_type": "item_3",
         "type": "power_consumption",
-        "address": "ET0PE(3)"
+        "address": "ET0PE()"
       },
       {
         "name": "A energy T3",
-        "reg_type": "default",
+        "reg_type": "item_4",
         "type": "power_consumption",
-        "address": "ET0PE(4)"
+        "address": "ET0PE()"
       },
       {
         "name": "A energy T4",
-        "reg_type": "default",
+        "reg_type": "item_5",
         "type": "power_consumption",
-        "address": "ET0PE(5)"
+        "address": "ET0PE()"
       },
       {
       "name": "A energy, 1 month ago",
