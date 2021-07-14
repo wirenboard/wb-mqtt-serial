@@ -28,7 +28,9 @@ Ports:
             DeviceId: msu34tlp_2
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -51,7 +53,9 @@ Ports:
             DeviceId: msu34tlp_2
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -74,7 +78,9 @@ Ports:
             DeviceId: msu34tlp_2
             Order: 3
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -109,7 +115,9 @@ Ports:
             DeviceId: OnValueTest
             Order: 1
             OnValue: 500
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -144,7 +152,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -167,7 +177,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -190,7 +202,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 3
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -213,7 +227,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 4
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -236,7 +252,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 5
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -259,7 +277,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 6
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -302,7 +322,9 @@ Ports:
             DeviceId: lc103
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -325,7 +347,9 @@ Ports:
             DeviceId: lc103
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -348,7 +372,9 @@ Ports:
             DeviceId: lc103
             Order: 3
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -371,7 +397,9 @@ Ports:
             DeviceId: lc103
             Order: 4
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -406,7 +434,9 @@ Ports:
             DeviceId: wb-mrgb
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -455,7 +485,9 @@ Ports:
             DeviceId: wb-mrgb
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -490,7 +522,9 @@ Ports:
             DeviceId: TestDeviceOverride:config
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -525,7 +559,9 @@ Ports:
             DeviceId: TestDeviceOverride:template_6
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -560,7 +596,9 @@ Ports:
             DeviceId: TestDeviceOverride2:template_7
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -583,7 +621,9 @@ Ports:
             DeviceId: TestDeviceOverride2:template_7
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -606,7 +646,9 @@ Ports:
             DeviceId: TestDeviceOverride2:template_7
             Order: 3
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -642,6 +684,8 @@ Ports:
             Order: 1
             OnValue: 500
             Max: 200
+            Min: -10.2
+            Precision: 0.001
             ReadOnly: 1
             Registers:
                 ------
@@ -649,7 +693,7 @@ Ports:
                 Format: S32
                 Scale: 0.03125
                 Offset: -2.4
-                RoundTo: 125.5
+                RoundTo: 0.001
                 Poll: 1
                 ReadOnly: 1
                 TypeName: holding
@@ -676,7 +720,9 @@ Ports:
             DeviceId: with subdevice_22
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -699,7 +745,9 @@ Ports:
             DeviceId: with subdevice_22
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -722,7 +770,9 @@ Ports:
             DeviceId: with subdevice_22
             Order: 3
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -745,7 +795,9 @@ Ports:
             DeviceId: with subdevice_22
             Order: 4
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -768,7 +820,9 @@ Ports:
             DeviceId: with subdevice_22
             Order: 5
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -791,7 +845,9 @@ Ports:
             DeviceId: with subdevice_22
             Order: 6
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -814,7 +870,9 @@ Ports:
             DeviceId: with subdevice_22
             Order: 7
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -837,7 +895,9 @@ Ports:
             DeviceId: with subdevice_22
             Order: 8
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -860,7 +920,9 @@ Ports:
             DeviceId: with subdevice_22
             Order: 9
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -883,7 +945,9 @@ Ports:
             DeviceId: with subdevice_22
             Order: 10
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------

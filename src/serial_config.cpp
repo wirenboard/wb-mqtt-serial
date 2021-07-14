@@ -80,6 +80,16 @@ namespace {
         return GetIntFromString(v.asString(), title);
     }
 
+    double ToDouble(const Json::Value& v, const std::string& title)
+    {
+        if (v.isNumeric())
+            return v.asDouble();
+        if (!v.isString()) {
+            throw TConfigParserException(title + ": number or '0x..' hex string expected");
+        }
+        return GetIntFromString(v.asString(), title);
+    }
+
     uint64_t ToUint64(const Json::Value& v, const string& title)
     {
         if (v.isUInt())
@@ -109,6 +119,11 @@ namespace {
     int GetInt(const Json::Value& obj, const std::string& key)
     {
         return ToInt(obj[key], key);
+    }
+
+    double GetDouble(const Json::Value& obj, const std::string& key)
+    {
+        return ToDouble(obj[key], key);
     }
 
     bool ReadChannelsReadonlyProperty(const Json::Value& register_data,
@@ -255,14 +270,21 @@ namespace {
             on_value = std::to_string(GetInt(channel_data, "on_value"));
         }
 
-        int max = -1;
-        if (channel_data.isMember("max"))
-            max = GetInt(channel_data, "max");
 
         int order        = device_config->NextOrderValue();
         PDeviceChannelConfig channel(new TDeviceChannelConfig(name, type_str, device_config->Id, order,
-                                                on_value, max, registers[0]->ReadOnly, mqtt_channel_name,
+                                                on_value, registers[0]->ReadOnly, mqtt_channel_name,
                                                 registers));
+        if (channel_data.isMember("max")) {
+            channel->Max = GetDouble(channel_data, "max");
+        }
+        if (channel_data.isMember("min")) {
+            channel->Min = GetDouble(channel_data, "min");
+        }
+        if (registers.size() == 1) {
+            channel->Precision = registers[0]->RoundTo;
+        }
+
         device_config->AddChannel(channel);
     }
 
@@ -824,12 +846,11 @@ TDeviceChannelConfig::TDeviceChannelConfig(const std::string& name,
                                            const std::string& deviceId,
                                            int                order,
                                            const std::string& onValue,
-                                           int                max,
                                            bool               readOnly,
                                            const std::string& mqttId,
                                            const std::vector<PRegisterConfig> regs)
     : Name(name), MqttId(mqttId), Type(type), DeviceId(deviceId),
-      Order(order), OnValue(onValue), Max(max),
+      Order(order), OnValue(onValue),
       ReadOnly(readOnly), RegisterConfigs(regs) 
 {}
 
