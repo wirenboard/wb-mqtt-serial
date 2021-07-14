@@ -80,8 +80,12 @@ std::string TNevaDevice::GetParameterRequest(const TRegister& reg) const
     return ss.str();
 }
 
-uint64_t TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& value)
+uint64_t TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& v)
 {
+    if (v.size() < 3 || v.front() != '(' || v.back() != ')') {
+        throw TSerialDeviceTransientErrorException("malformed response");
+    }
+    std::string value(v.substr(1, v.size() - 2));
     std::vector<double> result(5);
     int ret = sscanf(value.c_str(), "%lf,%lf,%lf,%lf,%lf", &result[0], &result[1], &result[2], &result[3], &result[4]);
     result.resize(ret);
@@ -106,10 +110,5 @@ uint64_t TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& 
             val = -(val - 100.0);
         }
     }
-
-    uint64_t res = 0;
-    static_assert((sizeof(res) >= sizeof(val)), "Can't fit double into uint64_t");
-    memcpy(&res, &val, sizeof(val));
-
-    return res;
+    return CopyDoubleToUint64(val);
 }

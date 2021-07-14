@@ -70,12 +70,17 @@ std::string TEnergomeraIecModeCDevice::GetParameterRequest(const TRegister& reg)
 
 uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const std::string& value)
 {
+    // Data in response starts from '(' and ends with ")\r\n"
+    if (value.size() < 5 || value.front() != '(' || !WBMQTT::StringHasSuffix(value, ")\r\n") ) {
+        throw TSerialDeviceTransientErrorException("malformed response");
+    }
+    // Remove '(' and ")\r\n"
+    auto v(value.substr(1, value.size() - 4));
     switch (reg.Type)
     {
         case RegisterType::DATE:
         {
             // ww.dd.mm.yy
-            auto v(value);
             v.erase(0, 3); // remove day of a week
             v.erase(std::remove(v.begin(), v.end(), '.'), v.end());
             return strtoull(v.c_str(), nullptr, 10);
@@ -83,30 +88,25 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
         case RegisterType::TIME:
         {
             // HH:MM:SS
-            auto v(value);
             v.erase(std::remove(v.begin(), v.end(), ':'), v.end());
             return strtoull(v.c_str(), nullptr, 10);
         }
         case RegisterType::DEFAULT:
         {
             if (reg.Format == U64) {
-                return strtoull(value.c_str(), nullptr, 10);
+                return strtoull(v.c_str(), nullptr, 10);
             }
-            double val = strtod(value.c_str(), nullptr);
-            uint64_t res = 0;
-            static_assert((sizeof(res) >= sizeof(val)), "Can't fit double into uint64_t");
-            memcpy(&res, &val, sizeof(val));
-            return res;
+            return CopyDoubleToUint64(strtod(v.c_str(), nullptr));
         }
         default:
         {
-            auto items = WBMQTT::StringSplit(value, ")\r\n(");
+            // An example of a response with a list of values
+            // <STX>ET0PE(68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF><ETX>0x07
+            // so we have here
+            // 68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00
+            auto items = WBMQTT::StringSplit(v, ")\r\n(");
             if (items.size() > static_cast<unsigned int>(reg.Type)) {
-                double val = strtod(items[reg.Type].c_str(), nullptr);
-                uint64_t res = 0;
-                static_assert((sizeof(res) >= sizeof(val)), "Can't fit double into uint64_t");
-                memcpy(&res, &val, sizeof(val));
-                return res;
+                return CopyDoubleToUint64(strtod(items[reg.Type].c_str(), nullptr));
             }
             throw TSerialDeviceTransientErrorException("malformed response");
         }

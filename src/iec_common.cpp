@@ -293,18 +293,7 @@ std::string TIEC61107ModeCDevice::GetCachedResponse(const std::string& paramRequ
 
     // Check that response starts from requested parameter name
     if (memcmp(presp, paramName.data(), paramName.size()) == 0) {
-        presp += paramName.size();
-        // check for parenthesis
-        if (presp[0] != '(') {
-            throw TSerialDeviceTransientErrorException("malformed response");
-        }
-        // pass '('
-        ++presp;
-        auto end = std::find(presp, presp + strlen(presp), ')');
-        if (end == presp + len) {
-            throw TSerialDeviceTransientErrorException("malformed response");
-        }
-        std::string data(presp, end - presp);
+        std::string data(presp + paramName.size(), len - 3 - paramName.size());
         CmdResultCache.insert({paramRequest, data});
         return data;
     }

@@ -157,10 +157,7 @@ namespace
                 ret = sscanf(presp, "(%lf)%n", &resp_val, &nread);
                 if (ret >= 1) {
                     presp += nread;
-                    uint64_t value = 0;
-                    static_assert((sizeof(value) >= sizeof(resp_val)), "Can't fit double into uint64_t");
-                    memcpy(&value, &resp_val, sizeof(resp_val));
-                    reg->SetValue(value);
+                    reg->SetValue(CopyDoubleToUint64(resp_val));
                 } else {
                     // consume error message instead
                     int err_num;

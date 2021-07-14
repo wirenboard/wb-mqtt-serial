@@ -262,3 +262,6 @@ public:
 
     bool SupportsBroadcast() const override;
 };
+
+//! Copies bits from double to uint64_t with size checking
+uint64_t CopyDoubleToUint64(double value);

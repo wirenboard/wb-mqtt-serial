@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <string.h>
 #include "log.h"
 
 #define LOG(logger) logger.Log() << "[serial device] "
@@ -195,4 +196,12 @@ bool TUInt32SlaveId::operator==(const TUInt32SlaveId& id) const
         return true;
     }
     return SlaveId == id.SlaveId;
+}
+
+uint64_t CopyDoubleToUint64(double value)
+{
+    uint64_t res = 0;
+    static_assert((sizeof(res) >= sizeof(value)), "Can't fit double into uint64_t");
+    memcpy(&res, &value, sizeof(value));
+    return res;
 }
