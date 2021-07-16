@@ -232,6 +232,26 @@
         {
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/channels_with_string_addresses" },
+            { "$ref": "#/definitions/groups" },
+            {
+              "properties": {
+                "protocol": {
+                  "type": "string",
+                  "enum": ["energomera_iec_mode_c"]
+                },
+                "parameters": { "not" : {} },
+                "subdevices": { "not" : {} }
+              },
+              "required": ["protocol"]
+            }
+          ]
+        },
+
+        {
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/dlms_device_properties" },
             { "$ref": "#/definitions/dlms_channels" },
             { "$ref": "#/definitions/no_setup" },
