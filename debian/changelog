@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.21.1) stable; urgency=medium
+
+  * guard_interval_us description for web-interface is updated
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Sun, 18 Jul 2021 14:52:49 +0500
+
 wb-mqtt-serial (2.21.0) stable; urgency=medium
 
   * Energomera CE102M support is added
