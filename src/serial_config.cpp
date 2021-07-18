@@ -264,18 +264,9 @@ namespace {
                 reg->Poll = false;
         }
 
-        std::string on_value;
-        if (channel_data.isMember("on_value")) {
-            if (registers.size() != 1)
-                throw TConfigParserException("can only use on_value for single-valued controls -- " +
-                                            device_config->DeviceType);
-            on_value = std::to_string(GetInt(channel_data, "on_value"));
-        }
-
-
         int order        = device_config->NextOrderValue();
         PDeviceChannelConfig channel(new TDeviceChannelConfig(name, type_str, device_config->Id, order,
-                                                on_value, registers[0]->ReadOnly, mqtt_channel_name,
+                                                registers[0]->ReadOnly, mqtt_channel_name,
                                                 registers));
         if (channel_data.isMember("max")) {
             channel->Max = GetDouble(channel_data, "max");
@@ -283,6 +274,19 @@ namespace {
         if (channel_data.isMember("min")) {
             channel->Min = GetDouble(channel_data, "min");
         }
+        if (channel_data.isMember("on_value")) {
+            if (registers.size() != 1)
+                throw TConfigParserException("on_value is allowed only for single-valued controls -- " +
+                                            device_config->DeviceType);
+            channel->OnValue = std::to_string(GetInt(channel_data, "on_value"));
+        }
+        if (channel_data.isMember("off_value")) {
+            if (registers.size() != 1)
+                throw TConfigParserException("off_value is allowed only for single-valued controls -- " +
+                                            device_config->DeviceType);
+            channel->OffValue = std::to_string(GetInt(channel_data, "off_value"));
+        }
+
         if (registers.size() == 1) {
             channel->Precision = registers[0]->RoundTo;
         }
@@ -841,12 +845,11 @@ TDeviceChannelConfig::TDeviceChannelConfig(const std::string& name,
                                            const std::string& type,
                                            const std::string& deviceId,
                                            int                order,
-                                           const std::string& onValue,
                                            bool               readOnly,
                                            const std::string& mqttId,
                                            const std::vector<PRegisterConfig> regs)
     : Name(name), MqttId(mqttId), Type(type), DeviceId(deviceId),
-      Order(order), OnValue(onValue),
+      Order(order),
       ReadOnly(readOnly), RegisterConfigs(regs) 
 {}
 

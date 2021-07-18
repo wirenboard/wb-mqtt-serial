@@ -526,18 +526,27 @@
             "keep_oneof_values": false
           }
         },
+        "off_value": {
+          "title": "'Off' value",
+          "description": "Value corresponding to the 'Off' state of the switch",
+          "$ref": "#/definitions/serial_int",
+          "propertyOrder": 14,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
         "poll_interval": {
           "type": "integer",
           "title": "Desired poll interval (ms)",
           "description" : "This option specifies the desired interval between two consecutive polls of the channel",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 14
+          "propertyOrder": 15
         },
         "error_value": {
           "title": "Error value",
           "description": "Value which should be treated as read error",
-          "propertyOrder": 15,
+          "propertyOrder": 16,
           "oneOf": [
             {
               "title": "Integer or hex",
@@ -561,7 +570,7 @@
         "unsupported_value": {
           "title": "Unsupported register value",
           "description": "Value which should be treated as 'register is unsupported by device'",
-          "propertyOrder": 16,
+          "propertyOrder": 17,
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+)$",
           "options": {
@@ -573,7 +582,7 @@
         },
         "word_order": {
           "$ref": "#/definitions/word_order",
-          "propertyOrder": 17
+          "propertyOrder": 18
         },
         "consists_of": {
           "not": {},

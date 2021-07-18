@@ -1082,6 +1082,30 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
     ASSERT_EQ(500, device->Registers[0]);
 }
 
+TEST_F(TSerialClientIntegrationTest, OffValue)
+{
+    FilterConfig("OnValueTest");
+
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+
+    auto device = TFakeSerialDevice::GetDevice("0x90");
+
+    if (!device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    device->Registers[0] = 500;
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    PublishWaitOnValue("/devices/OnValueTest/controls/Relay 1/on", "0", 0, true);
+
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+    ASSERT_EQ(200, device->Registers[0]);
+}
+
+
 TEST_F(TSerialClientIntegrationTest, OnValueError)
 {
     FilterConfig("OnValueTest");

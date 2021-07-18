@@ -79,6 +79,9 @@ TEST_F(TConfigParserTest, Parse)
                     Emit() << "DeviceId: " << device_channel->DeviceId;
                     Emit() << "Order: " << device_channel->Order;
                     Emit() << "OnValue: " << device_channel->OnValue;
+                    if (!device_channel->OffValue.empty()) {
+                        Emit() << "OffValue: " << device_channel->OffValue;
+                    }
                     if (isnan(device_channel->Max)) {
                         Emit() << "Max: not set";
                     } else {

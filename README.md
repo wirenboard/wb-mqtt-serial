@@ -310,12 +310,6 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             //  "little_endian":  [0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB
                             "word_order" : "big_endian",
 
-                            // для регистров типа coil и discrete
-                            // с типом отображения switch/wo-swich
-                            // также допускается задание on_value -
-                            // числового значения, соответствующего
-                            // состоянию "on" (см. ниже)
-
                             // минимальный интервал опроса данного регистра в миллисекундах
                             "poll_interval": 10,
 
@@ -340,6 +334,9 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 
                             // значение, которое будет записано в регистр, при записи единицы в on-топик в MQTT
                             "on_value": "0xFF",
+
+                            // значение, которое будет записано в регистр, при записи нуля в on-топик в MQTT
+                            "off_value": "0xAA",
 
                             // значение регистра, полученное от устройства, которое обозначает ошибку
                             "error_value": "0xAA"
@@ -418,7 +415,6 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             "reg_type" : "input",
                             "address" : 1,
                             "type": "switch",
-                            // значение, соответствующее состоянию "on"
                             "on_value": 101
                         },
                         {
