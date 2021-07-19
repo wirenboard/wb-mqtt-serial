@@ -683,6 +683,7 @@ Ports:
             DeviceId: AllRegisterParams
             Order: 1
             OnValue: 500
+            OffValue: 100
             Max: 200
             Min: -10.2
             Precision: 0.001

@@ -93,7 +93,8 @@
                             "reg_type" : "fake",
                             "address" : "0x00",
                             "type": "switch",
-                            "on_value" : 500
+                            "on_value" : 500,
+                            "off_value": 200
                         }
 
                     ]

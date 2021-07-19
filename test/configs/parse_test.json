@@ -234,7 +234,8 @@
                             "error_value": 11,
                             "unsupported_value": "0xAA",
                             "word_order": "little_endian",
-                            "on_value" : 500
+                            "on_value" : 500,
+                            "off_value" : 100
                         }
                     ]
                 },

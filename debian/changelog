@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.22.0) stable; urgency=medium
+
+  * off_value is added to channel's config. 
+    It defines a value written to register after receiving of "0" in "on" topic
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Sun, 18 Jul 2021 16:33:03 +0500
+
 wb-mqtt-serial (2.21.0) stable; urgency=medium
 
   * Energomera CE102M support is added
