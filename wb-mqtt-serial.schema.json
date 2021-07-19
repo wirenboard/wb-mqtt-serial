@@ -364,8 +364,7 @@
         },
         "guard_interval_us": {
           "type": "integer",
-          "title": "Interval between register reads",
-          "description" : "Additional delay before writing to port",
+          "title": "Additional delay before each writing to port (us)",
           "minimum": 0,
           "default": 0,
           "propertyOrder": 106
