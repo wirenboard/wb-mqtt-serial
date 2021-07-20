@@ -22,31 +22,31 @@
           "channels": [
             {
               "name": "Total A energy",
-              "reg_type": "obis_cdef_1",
+              "reg_type": "item_1",
               "type": "power_consumption",
               "address": "0x0F0880FF"
             },
             {
               "name": "Total RP energy",
-              "reg_type": "obis_cdef_1",
+              "reg_type": "item_1",
               "type": "power_consumption",
               "address": "0x030880FF"
             },
             {
               "name": "Total P",
-              "reg_type": "obis_cdef",
+              "reg_type": "default",
               "type": "power",
               "address": "0x100700FF"
             },
             {
               "name": "PF L1",
-              "reg_type": "obis_cdef_pf",
+              "reg_type": "power_factor",
               "type": "value",
               "address": "0x2107FFFF"
             },
             {
               "name": "Temperature",
-              "reg_type": "obis_cdef_temp",
+              "reg_type": "temperature",
               "type": "temperature",
               "address": "0x600900FF"
             }

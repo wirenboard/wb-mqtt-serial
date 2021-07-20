@@ -1,0 +1,31 @@
+{
+  "debug": false,
+  "ports": [
+    {
+      "port_type" : "serial",
+      "path" : "/dev/ttyNSC1",
+      "poll_interval": 10,
+      "devices" : [
+        {
+          "name": "DLMS",
+          "id": "dlms",
+          "slave_id": 20,
+          "dlms_auth": 1,
+          "dlms_client_address": 32,
+          "password": ["0x31", "0x31", "0x31", "0x31", "0x31", "0x31"],
+          "response_timeout_ms": 1000,
+          "frame_timeout_ms" : 20,
+          "protocol": "dlms",
+          "channels": [
+            {
+              "address" : "0.0.96.9.0.255",
+              "name" : "Temperature",
+              "reg_type" : "default",
+              "type" : "temperature"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
