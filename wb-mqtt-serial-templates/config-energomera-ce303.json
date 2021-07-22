@@ -1,8 +1,8 @@
 {
-  "device_type": "Energomera CE301",
+  "device_type": "Energomera CE303",
   "device": {
-    "name": "Energomera CE301",
-    "id": "energomera301",
+    "name": "Energomera CE303",
+    "id": "energomera303",
     "protocol" : "energomera_iec",
     "frame_timeout_ms" : 1500,
     "response_timeout_ms": 1500,
@@ -12,6 +12,18 @@
         "reg_type": "group_single",
         "type": "power_consumption",
         "address": "0x100101"
+      },
+      {
+        "name": "Total RP energy",
+        "reg_type": "group_single",
+        "type": "power_consumption",
+        "address": "0x100401"
+      },
+      {
+        "name": "Total RN energy",
+        "reg_type": "group_single",
+        "type": "power_consumption",
+        "address": "0x100801"
       },
       {
         "name": "Total P",

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.22.2) stable; urgency=medium
+
+  * Separate Energomera CE301 and CE303 templates
+
+ -- Gennadiy Grebenyuk <gennadiy.grebenyuk@wirenboard.ru>  Thu, 22 Jul 2021 12:57:44 +0300
+
 wb-mqtt-serial (2.22.1) stable; urgency=medium
 
   * guard_interval_us description for web-interface is updated
