@@ -11,23 +11,23 @@ namespace
 
     enum RegisterType
     {
-        ITEM_1 = 0,
+        DEFAULT = 0,
+        ITEM_1,
         ITEM_2,
         ITEM_3,
         ITEM_4,
         ITEM_5,
-        DEFAULT,
         DATE,
         TIME
     };
 
     const TRegisterTypes RegisterTypes {
+        { RegisterType::DEFAULT, "default", "value", Double, true },
         { RegisterType::ITEM_1,  "item_1",  "value", Double, true },
         { RegisterType::ITEM_2,  "item_2",  "value", Double, true },
         { RegisterType::ITEM_3,  "item_3",  "value", Double, true },
         { RegisterType::ITEM_4,  "item_4",  "value", Double, true },
         { RegisterType::ITEM_5,  "item_5",  "value", Double, true },
-        { RegisterType::DEFAULT, "default", "value", Double, true },
         { RegisterType::DATE,    "date",    "value", U32,    true },
         { RegisterType::TIME,    "time",    "value", U32,    true }
     };
@@ -37,7 +37,7 @@ namespace
     public:
         TEnergomeraIecModeCDeviceFactory()
             : IDeviceFactory(std::make_unique<TStringRegisterAddressFactory>(),
-                             "#/definitions/simple_device_with_broadcast",
+                             "#/definitions/enrgomera_iec_mode_c_device",
                              "#/definitions/channel_with_string_address")
         {}
 
@@ -98,17 +98,23 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
             }
             return CopyDoubleToUint64(strtod(v.c_str(), nullptr));
         }
-        default:
+        case RegisterType::ITEM_1:
+        case RegisterType::ITEM_2:
+        case RegisterType::ITEM_3:
+        case RegisterType::ITEM_4:
+        case RegisterType::ITEM_5:
         {
             // An example of a response with a list of values
             // <STX>ET0PE(68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF><ETX>0x07
             // so we have here
             // 68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00
             auto items = WBMQTT::StringSplit(v, ")\r\n(");
-            if (items.size() > static_cast<unsigned int>(reg.Type)) {
-                return CopyDoubleToUint64(strtod(items[reg.Type].c_str(), nullptr));
+            auto itemIndex = reg.Type - RegisterType::ITEM_1;
+            if (items.size() > static_cast<unsigned int>(itemIndex)) {
+                return CopyDoubleToUint64(strtod(items[itemIndex].c_str(), nullptr));
             }
             throw TSerialDeviceTransientErrorException("malformed response");
         }
     }
+    throw TSerialDevicePermanentRegisterException("unsupported register type: " + std::to_string(reg.Type));
 }
