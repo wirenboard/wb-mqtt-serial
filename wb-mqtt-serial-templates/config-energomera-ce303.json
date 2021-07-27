@@ -1,5 +1,6 @@
 {
   "device_type": "Energomera CE303",
+  "title": "Energomera CE303",
   "device": {
     "name": "Energomera CE303",
     "id": "energomera303",
