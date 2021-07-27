@@ -1,14 +1,10 @@
-wb-mqtt-serial (2.22.3) stable; urgency=medium
 
-  * Keep templates stable for existing user configurations
-
- -- Gennadiy Grebenyuk <gennadiy.grebenyuk@wirenboard.ru>  Tue, 27 Jul 2021 11:20:39 +0300
-
-wb-mqtt-serial (2.22.2) stable; urgency=medium
+ wb-mqtt-serial (2.22.2) stable; urgency=medium
 
   * Separate Energomera CE301 and CE303 templates
+  * Keep Energomera CE301 device_type for existing user configurations
 
- -- Gennadiy Grebenyuk <gennadiy.grebenyuk@wirenboard.ru>  Thu, 22 Jul 2021 12:57:44 +0300
+ -- Gennadiy Grebenyuk <gennadiy.grebenyuk@wirenboard.ru>  Tue, 27 Jul 2021 11:20:39 +0300
 
 wb-mqtt-serial (2.22.1) stable; urgency=medium
 
