@@ -193,7 +193,7 @@ TEST_F(TSerialPortTest, TestImxBug)
     FakeSerial->SetDumpForwardingLogs(false); // exact data dump is not stable
 
     SecondarySerial->FloodThread.Start();
-    usleep(10);
+    usleep(100);
     SecondarySerial->SkipNoise();
     SecondarySerial->FloodThread.Stop();
     // If flood thread is expired then skip noise was stuck forever
@@ -208,7 +208,7 @@ TEST_F(TSerialPortTest, TestImxBug)
     // in case reconnect won't help with cont. data flow, exception must be raised
     SecondarySerial->StopFloodOnReconnect = false;
     SecondarySerial->FloodThread.Start();
-    usleep(10);
+    usleep(100);
     EXPECT_THROW(SecondarySerial->SkipNoise(), TSerialDeviceTransientErrorException);
     SecondarySerial->FloodThread.Stop();
 
