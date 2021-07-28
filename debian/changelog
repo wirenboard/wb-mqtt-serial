@@ -1,5 +1,11 @@
+wb-mqtt-serial (2.22.3) stable; urgency=medium
 
- wb-mqtt-serial (2.22.2) stable; urgency=medium
+  * IDPAS parameter is added to Energomera CE102M device template
+  * Validation of custom channel's register addresses is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 28 Jul 2021 10:18:36 +0500
+
+wb-mqtt-serial (2.22.2) stable; urgency=medium
 
   * Separate Energomera CE301 and CE303 templates
   * Keep Energomera CE301 device_type for existing user configurations

@@ -171,6 +171,12 @@
         "reg_type": "time",
         "address": "TIME_()",
         "enabled" : false
+      },
+      {
+        "name": "Address",
+        "reg_type": "default",
+        "address": "IDPAS()",
+        "enabled" : false
       }
     ]
   }
