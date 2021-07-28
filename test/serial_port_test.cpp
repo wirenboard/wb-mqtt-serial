@@ -30,6 +30,7 @@ public:
             auto diff = std::chrono::steady_clock::now() - start;
             if (diff > Duration) {
                 Expired = true;
+                std::cout << "Expired" << std::endl;
                 return;
             }
             try {
@@ -42,6 +43,7 @@ public:
                 if (e.GetErrnoValue() != EAGAIN) { // We write too fast. Let's give some time to a reader
                     throw;
                 }
+                std::cout << "EAGAIN" << std::endl;
             }
             usleep(1);
         }
@@ -195,7 +197,6 @@ TEST_F(TSerialPortTest, TestImxBug)
     SecondarySerial->FloodThread.Start();
     usleep(100);
     SecondarySerial->SkipNoise();
-    SecondarySerial->FloodThread.Stop();
     // If flood thread is expired then skip noise was stuck forever
     ASSERT_FALSE(SecondarySerial->FloodThread.IsExpired());
     usleep(100);
