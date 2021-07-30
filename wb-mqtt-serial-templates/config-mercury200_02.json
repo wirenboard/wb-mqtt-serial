@@ -12,7 +12,7 @@
                 "address": "0x2700",
                 "format": "bcd32",
                 "type": "power_consumption",
-                "scale": 0.001
+                "scale": 0.01
             },
             {
                 "name": "Power consumption tariff 2",
@@ -20,7 +20,7 @@
                 "address": "0x2704",
                 "format": "bcd32",
                 "type": "power_consumption",
-                "scale": 0.001
+                "scale": 0.01
             },
             {
                 "name": "Power consumption tariff 3",
@@ -28,7 +28,7 @@
                 "address": "0x2708",
                 "format": "bcd32",
                 "type": "power_consumption",
-                "scale": 0.001
+                "scale": 0.01
             },
             {
                 "name": "Power consumption tariff 4",
@@ -36,7 +36,7 @@
                 "address": "0x270C",
                 "format": "bcd32",
                 "type": "power_consumption",
-                "scale": 0.001
+                "scale": 0.01
             },
             {
                 "name": "Voltage",

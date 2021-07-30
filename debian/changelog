@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.22.4) stable; urgency=medium
+
+  * Fix Mercury 200.02 template - wrong scale for Power Consumption tariffs
+
+ -- Gennadiy Grebenyuk <gennadiy.grebenyuk@wirenboard.ru>  Fri, 30 Jul 2021 18:58:21 +0300
+
 wb-mqtt-serial (2.22.3) stable; urgency=medium
 
   * IDPAS parameter is added to Energomera CE102M device template
