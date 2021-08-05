@@ -1,9 +1,9 @@
 {
-    "title": "Danfoss FC51",
-    "device_type": "danfoss_fc51",
+    "title": "Danfoss FC 51",
+    "device_type": "danfoss_fc_51",
     "device": {
-        "name": "Danfoss FC51",
-        "id": "danfoss-fc51",
+        "name": "Danfoss FC 51",
+        "id": "danfoss-fc-51",
         "max_read_registers": 0,
         "response_timeout_ms": 100,
         "frame_timeout_ms": 15,
