@@ -139,10 +139,11 @@ void ExpandGroupChannels(Json::Value& device, const Json::Value& deviceTemplate)
 Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 {
     Json::Value  root;
-    Json::Reader reader;
+    Json::CharReaderBuilder readerBuilder;
+    Json::String errs;
 
-    if (!reader.parse(stream, root, false)) {
-        throw std::runtime_error("Failed to parse JSON:" + reader.getFormattedErrorMessages());
+    if (!Json::parseFromStream(readerBuilder, stream, &root, &errs)) {
+        throw std::runtime_error("Failed to parse JSON:" + errs);
     }
 
     std::unordered_map<std::string, std::string> deviceTypeHashes;
@@ -181,7 +182,7 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
             device.removeMember("parameters");
 
             if (device["slave_id"].isBool()) {
-                device["slave_id"] = "";
+                device.removeMember("slave_id");
             }
         }
     }

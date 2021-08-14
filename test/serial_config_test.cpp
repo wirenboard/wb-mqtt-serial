@@ -79,7 +79,20 @@ TEST_F(TConfigParserTest, Parse)
                     Emit() << "DeviceId: " << device_channel->DeviceId;
                     Emit() << "Order: " << device_channel->Order;
                     Emit() << "OnValue: " << device_channel->OnValue;
-                    Emit() << "Max: " << device_channel->Max;
+                    if (!device_channel->OffValue.empty()) {
+                        Emit() << "OffValue: " << device_channel->OffValue;
+                    }
+                    if (isnan(device_channel->Max)) {
+                        Emit() << "Max: not set";
+                    } else {
+                        Emit() << "Max: " << device_channel->Max;
+                    }
+                    if (isnan(device_channel->Min)) {
+                        Emit() << "Min: not set";
+                    } else {
+                        Emit() << "Min: " << device_channel->Min;
+                    }
+                    Emit() << "Precision: " << device_channel->Precision;
                     Emit() << "ReadOnly: " << device_channel->ReadOnly;
                     if (!device_channel->RegisterConfigs.empty()) {
                         Emit() << "Registers:";

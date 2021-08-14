@@ -156,6 +156,25 @@ public:
 //! Casts addr to uint32_t and returns it. Throws std::bad_cast if cast is not possible.
 uint32_t GetUint32RegisterAddress(const IRegisterAddress& addr);
 
+//! Register address represented by a string
+class TStringRegisterAddress: public IRegisterAddress
+{
+    std::string Addr;
+public:
+    TStringRegisterAddress() = default;
+
+    TStringRegisterAddress(const std::string& addr);
+
+    std::string ToString() const override;
+
+    bool operator<(const IRegisterAddress& addr) const override;
+
+    IRegisterAddress* CalcNewAddress(uint32_t /*offset*/,
+                                     uint32_t /*stride*/,
+                                     uint32_t /*registerByteWidth*/,
+                                     uint32_t /*addressByteStep*/) const override;
+};
+
 class TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 {
     std::shared_ptr<IRegisterAddress> Address;

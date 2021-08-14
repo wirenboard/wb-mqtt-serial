@@ -130,7 +130,10 @@ const IRegisterAddress& TRegisterConfig::GetAddress() const
 
 std::string TRegister::ToString() const
 {
-    return TRegisterConfig::ToString() + " of device " + Device()->ToString();
+    if (Device()) {
+        return "<" + Device()->ToString() + ":" + TRegisterConfig::ToString() + ">";
+    }
+    return "<unknown device:" + TRegisterConfig::ToString() + ">";
 }
 
 bool TRegister::IsAvailable() const
@@ -330,6 +333,28 @@ IRegisterAddress* TUint32RegisterAddress::CalcNewAddress(uint32_t offset,
 uint32_t GetUint32RegisterAddress(const IRegisterAddress& addr)
 {
     return dynamic_cast<const TUint32RegisterAddress&>(addr).Get();
+}
+
+TStringRegisterAddress::TStringRegisterAddress(const std::string& addr) : Addr(addr)
+{}
+
+std::string TStringRegisterAddress::ToString() const
+{
+    return Addr;
+}
+
+bool TStringRegisterAddress::operator<(const IRegisterAddress& addr) const
+{
+    const auto& a = dynamic_cast<const TStringRegisterAddress&>(addr);
+    return Addr < a.Addr;
+}
+
+IRegisterAddress* TStringRegisterAddress::CalcNewAddress(uint32_t /*offset*/,
+                                                         uint32_t /*stride*/,
+                                                         uint32_t /*registerByteWidth*/,
+                                                         uint32_t /*addressByteStep*/) const
+{
+    return new TStringRegisterAddress(Addr);
 }
 
 TRegisterTypeMap::TRegisterTypeMap(const TRegisterTypes& types)
