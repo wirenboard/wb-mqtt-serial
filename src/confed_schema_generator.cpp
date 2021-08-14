@@ -77,6 +77,7 @@ namespace
     //      "minimum": MIN,
     //      "maximum": MAX,
     //      "enum": [ ... ],
+    //      "description": DESCRIPTION,
     //      "propertyOrder": INDEX
     //      "options": {
     //          "enumTitles" : [ ... ],
@@ -91,6 +92,7 @@ namespace
         SetIfExists(r, "enum",    setupRegister, "enum");
         SetIfExists(r, "minimum", setupRegister, "min");
         SetIfExists(r, "maximum", setupRegister, "max");
+        SetIfExists(r, "description", setupRegister, "description");
         r["propertyOrder"] = index;
         if (setupRegister.isMember("enum_titles")) {
             r["options"]["enum_titles"] = setupRegister["enum_titles"];
@@ -535,9 +537,12 @@ namespace
         pr["options"]["wb"]["disable_panel"] = true;
 
         auto& allOf = MakeArray("allOf", pr);
-        Append(allOf)["$ref"] = deviceFactory.GetCommonDeviceSchemaRef(GetProtocolName(schema));
+        auto protocol = GetProtocolName(schema);
+        Append(allOf)["$ref"] = deviceFactory.GetCommonDeviceSchemaRef(protocol);
 
-        MakeArray("required", pr).append("slave_id");
+        if (!deviceFactory.GetProtocol(protocol)->SupportsBroadcast()) {
+            MakeArray("required", pr).append("slave_id");
+        }
 
         auto& defaultProperties = MakeArray("defaultProperties", pr);
         defaultProperties.append("slave_id");
