@@ -28,7 +28,9 @@ Ports:
             DeviceId: msu34tlp_2
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -51,7 +53,9 @@ Ports:
             DeviceId: msu34tlp_2
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -74,7 +78,9 @@ Ports:
             DeviceId: msu34tlp_2
             Order: 3
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -109,7 +115,9 @@ Ports:
             DeviceId: OnValueTest
             Order: 1
             OnValue: 500
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -144,7 +152,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -167,7 +177,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -190,7 +202,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 3
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -213,7 +227,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 4
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -236,7 +252,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 5
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -259,7 +277,9 @@ Ports:
             DeviceId: ErrorValueTest
             Order: 6
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -302,7 +322,9 @@ Ports:
             DeviceId: lc103
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -325,7 +347,9 @@ Ports:
             DeviceId: lc103
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -348,7 +372,9 @@ Ports:
             DeviceId: lc103
             Order: 3
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -371,7 +397,9 @@ Ports:
             DeviceId: lc103
             Order: 4
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -406,7 +434,9 @@ Ports:
             DeviceId: wb-mrgb
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 0
             Registers:
                 ------
@@ -455,7 +485,9 @@ Ports:
             DeviceId: wb-mrgb
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -490,7 +522,9 @@ Ports:
             DeviceId: TestDeviceOverride:config
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -525,7 +559,9 @@ Ports:
             DeviceId: TestDeviceOverride:template_6
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -555,12 +591,14 @@ Ports:
         DeviceChannels:
             ------
             Name: Input
-            Type: text
+            Type: value
             MqttId: Input
             DeviceId: TestDeviceOverride2:template_7
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -578,12 +616,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Holding
-            Type: text
+            Type: value
             MqttId: Holding
             DeviceId: TestDeviceOverride2:template_7
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -601,12 +641,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Holding readonly
-            Type: text
+            Type: value
             MqttId: Holding readonly
             DeviceId: TestDeviceOverride2:template_7
             Order: 3
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -641,7 +683,10 @@ Ports:
             DeviceId: AllRegisterParams
             Order: 1
             OnValue: 500
+            OffValue: 100
             Max: 200
+            Min: -10.2
+            Precision: 0.001
             ReadOnly: 1
             Registers:
                 ------
@@ -649,7 +694,7 @@ Ports:
                 Format: S32
                 Scale: 0.03125
                 Offset: -2.4
-                RoundTo: 125.5
+                RoundTo: 0.001
                 Poll: 1
                 ReadOnly: 1
                 TypeName: holding
@@ -671,12 +716,14 @@ Ports:
         DeviceChannels:
             ------
             Name: Temperature
-            Type: text
+            Type: value
             MqttId: Temperature
             DeviceId: with subdevice_22
             Order: 1
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -694,12 +741,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c1
-            Type: text
+            Type: value
             MqttId: Sub c1
             DeviceId: with subdevice_22
             Order: 2
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -717,12 +766,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c2 c12
-            Type: text
+            Type: value
             MqttId: Sub id sub id
             DeviceId: with subdevice_22
             Order: 3
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -740,12 +791,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c2 c22
-            Type: text
+            Type: value
             MqttId: Sub id c22
             DeviceId: with subdevice_22
             Order: 4
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -763,12 +816,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c3 c12
-            Type: text
+            Type: value
             MqttId: Sub c3 sub id
             DeviceId: with subdevice_22
             Order: 5
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -786,12 +841,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c3 c22
-            Type: text
+            Type: value
             MqttId: Sub c3 c22
             DeviceId: with subdevice_22
             Order: 6
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -809,12 +866,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub2 c1
-            Type: text
+            Type: value
             MqttId: c1
             DeviceId: with subdevice_22
             Order: 7
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -832,12 +891,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub2 c2 c12
-            Type: text
+            Type: value
             MqttId: id sub id
             DeviceId: with subdevice_22
             Order: 8
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -855,12 +916,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub2 c2 c22
-            Type: text
+            Type: value
             MqttId: id c22
             DeviceId: with subdevice_22
             Order: 9
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
@@ -878,12 +941,14 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub2 c3 c22
-            Type: text
+            Type: value
             MqttId: c3 c22
             DeviceId: with subdevice_22
             Order: 10
             OnValue: 
-            Max: -1
+            Max: not set
+            Min: not set
+            Precision: 0
             ReadOnly: 1
             Registers:
                 ------
