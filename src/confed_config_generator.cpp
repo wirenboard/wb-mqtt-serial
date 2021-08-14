@@ -33,14 +33,14 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
     }
 
     Json::Value deviceTemplate(templates.GetTemplate(channel["device_type"].asString()).Schema);
-    Json::Value filteredChannels = FilterStandardChannels(channel, deviceTemplate, templates, subdeviceTypeHashes);
+    Json::Value filteredChannels(FilterStandardChannels(channel, deviceTemplate, templates, subdeviceTypeHashes));
     channel.removeMember("standard_channels");
     if ( channel.isMember("channels") ) {
         for (Json::Value& ch : filteredChannels) {
             channel["channels"].append(ch);
         }
     } else {
-        channel["channels"] = filteredChannels;
+        channel["channels"].swap(filteredChannels);
     }
     if (channel["channels"].empty()) {
         channel.removeMember("channels");
@@ -106,13 +106,44 @@ Json::Value FilterStandardChannels(const Json::Value& device,
     return channels;
 }
 
+// Move parameters and channels from channels representing groups to device's root
+void ExpandGroupChannels(Json::Value& device, const Json::Value& deviceTemplate)
+{
+    if (!deviceTemplate.isMember("groups")) {
+        return;
+    }
+    std::unordered_set<std::string> groups;
+    for (const auto& group: deviceTemplate["groups"]) {
+        groups.emplace(group["title"].asString());
+    }
+
+    Json::Value newChannels(Json::arrayValue);
+    for (const auto& channel: device["channels"]) {
+        if (groups.count(channel["name"].asString())) {
+            for (const auto& subChannel: channel["channels"]) {
+                newChannels.append(subChannel);
+            }
+            const std::unordered_set<std::string> notParameters{"channels", "name", "device_type"};
+            for (auto it = channel.begin() ; it != channel.end(); ++it) {
+                if (!notParameters.count(it.name())) {
+                    device[it.name()] = *it;
+                }
+            }
+        } else {
+            newChannels.append(channel);
+        }
+    }
+    device["channels"].swap(newChannels);
+}
+
 Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 {
     Json::Value  root;
-    Json::Reader reader;
+    Json::CharReaderBuilder readerBuilder;
+    Json::String errs;
 
-    if (!reader.parse(stream, root, false)) {
-        throw std::runtime_error("Failed to parse JSON:" + reader.getFormattedErrorMessages());
+    if (!Json::parseFromStream(readerBuilder, stream, &root, &errs)) {
+        throw std::runtime_error("Failed to parse JSON:" + errs);
     }
 
     std::unordered_map<std::string, std::string> deviceTypeHashes;
@@ -127,20 +158,23 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
                 auto dt = device["device_type"].asString();
 
                 Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
+                TransformGroupsToSubdevices(deviceTemplate, deviceTemplate["subdevices"]);
                 TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
                 std::unordered_map<std::string, std::string> subdeviceTypeHashes;
                 for (const auto& dt: subdevices.GetDeviceTypes()) {
                     subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;
                 }
 
-                Json::Value filteredChannels = FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes);
+                Json::Value filteredChannels(FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes));
                 device.removeMember("standard_channels");
                 for (Json::Value& ch : device["channels"]) {
                     filteredChannels.append(ch);
                 }
-                device.removeMember("channels");
-                if (!filteredChannels.empty()) {
-                    device["channels"] = filteredChannels;
+                device["channels"].swap(filteredChannels);
+
+                ExpandGroupChannels(device, deviceTemplate);
+                if (device["channels"].empty()) {
+                    device.removeMember("channels");
                 }
             }
 
@@ -148,7 +182,7 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
             device.removeMember("parameters");
 
             if (device["slave_id"].isBool()) {
-                device["slave_id"] = "";
+                device.removeMember("slave_id");
             }
         }
     }

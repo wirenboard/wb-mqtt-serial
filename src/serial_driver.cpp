@@ -23,7 +23,7 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
                 continue;
             }
 
-            PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig));
+            PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters));
             PortDrivers.back()->SetUpDevices();
         }
     } catch (const exception & e) {
@@ -65,6 +65,7 @@ void TMQTTSerialDriver::Start()
 
     for (const auto& portDriver: PortDrivers) {
         PortLoops.emplace_back([&]{
+            WBMQTT::SetThreadName(portDriver->GetShortDescription());
             while (Active) {
                 portDriver->Cycle();
             }

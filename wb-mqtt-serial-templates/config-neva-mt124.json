@@ -1,0 +1,288 @@
+{
+    "device_type": "NEVA MT 113/123/124",
+    "device": {
+        "name": "NEVA MT 113/123/124",
+        "id": "neva124",
+        "protocol" : "neva",
+        "frame_timeout_ms" : 20,
+        "response_timeout_ms" : 1500,
+        "channels": [
+            {
+                "name": "Irms",
+                "reg_type": "item_1",
+                "type": "current",
+                "address": "0x0B0700FF"
+            },
+            {
+                "name": "Urms",
+                "reg_type": "item_1",
+                "type": "voltage",
+                "address": "0x0C0700FF"
+            },
+            {
+                "name": "A energy",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F0880FF"
+            },
+            {
+                "name": "A energy T1",
+                "reg_type": "item_2",
+                "type": "power_consumption",
+                "address": "0x0F0880FF"
+            },
+            {
+                "name": "A energy T2",
+                "reg_type": "item_3",
+                "type": "power_consumption",
+                "address": "0x0F0880FF"
+            },
+            {
+                "name": "A energy T3",
+                "reg_type": "item_4",
+                "type": "power_consumption",
+                "address": "0x0F0880FF"
+            },
+            {
+                "name": "A energy T4",
+                "reg_type": "item_5",
+                "type": "power_consumption",
+                "address": "0x0F0880FF"
+            },
+            {
+                "name": "A energy, 1 month ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F088000",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 2 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F088001",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 3 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F088002",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 4 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F088003",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 5 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F088004",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 6 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F088005",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 7 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F088006",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 8 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F088007",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 9 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F088008",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 10 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F088009",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 11 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F08800A",
+                "enabled" : false
+            },
+            {
+                "name": "A energy, 12 months ago",
+                "reg_type": "item_1",
+                "type": "power_consumption",
+                "address": "0x0F08800B",
+                "enabled" : false
+            },
+            {
+                "name": "P",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x100700FF"
+            },
+            {
+                "name": "Max P, current month",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F0680FF",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 1 month ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F068000",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 2 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F068001",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 3 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F068002",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 4 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F068003",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 5 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F068004",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 6 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F068005",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 7 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F068006",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 8 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F068007",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 9 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F068008",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 10 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F068009",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 11 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F06800A",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Max P, 12 months ago",
+                "reg_type": "default",
+                "type": "power",
+                "address": "0x0F06800B",
+                "scale": 1000,
+                "enabled" : false
+            },
+            {
+                "name": "Frequency",
+                "reg_type": "default",
+                "type": "value",
+                "address": "0x0E0701FF"
+            },
+            {
+                "name": "PF",
+                "reg_type": "power_factor",
+                "type": "value",
+                "address": "0x0D07FFFF"
+            },
+            {
+                "name": "Temperature",
+                "reg_type": "temperature",
+                "type": "temperature",
+                "address": "0x600900FF",
+                "enabled" : false
+            },
+            {
+                "name": "Serial",
+                "reg_type": "default",
+                "type": "value",
+                "address": "0x600100FF",
+                "enabled" : true
+            },
+            {
+                "name": "Date",
+                "reg_type": "default",
+                "type": "value",
+                "address": "0x000902FF",
+                "enabled" : false
+            },
+            {
+                "name": "Time",
+                "reg_type": "default",
+                "type": "value",
+                "address": "0x000901FF",
+                "enabled" : false
+            }
+        ]
+    }
+}

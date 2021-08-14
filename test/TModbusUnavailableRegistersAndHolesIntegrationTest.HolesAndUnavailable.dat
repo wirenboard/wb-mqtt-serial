@@ -157,7 +157,6 @@ Publish: /devices/modbus-sample/controls/RGB_All/meta/error: 'r' (QoS 1, retaine
 Publish: /devices/modbus-sample/controls/White1/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding2/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding1/meta/error: 'r' (QoS 1, retained)
-Port cycle OK
 >>> LoopOnce() [disable holes]
 << 01 83 03 01 31
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
@@ -169,7 +168,6 @@ Publish: /devices/modbus-sample/controls/Holding2/meta/error: '' (QoS 1, retaine
 Publish: /devices/modbus-sample/controls/Holding2: '20' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding1/meta/error: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding1: '30' (QoS 1, retained)
-Port cycle OK
 >>> LoopOnce() [one by one]
 << 01 03 04 00 14 00 1E 3A 3F
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
@@ -187,7 +185,6 @@ Publish: /devices/modbus-sample/controls/RGB_All: '10' (QoS 1, retained)
 << 01 83 03 01 31
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
 >> 01 03 00 0B 00 02 B5 C9
-Port cycle OK
 >>> LoopOnce() [new ranges]
 << 01 03 04 00 14 00 1E 3A 3F
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
@@ -196,7 +193,6 @@ Publish: /devices/modbus-sample/controls/RGB_All: '20' (QoS 1, retained)
 << 01 03 04 00 0A 00 14 DA 3E
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
 >> 01 03 00 0B 00 02 B5 C9
-Port cycle OK
 << 01 03 04 00 14 00 1E 3A 3F
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding1/on

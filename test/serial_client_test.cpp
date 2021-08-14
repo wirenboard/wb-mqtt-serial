@@ -25,6 +25,11 @@ using namespace WBMQTT::Testing;
 class TSerialClientTest: public TLoggedFixture
 {
 protected:
+    TSerialClientTest()
+    {
+        PortOpenCloseSettings.ReopenTimeout = std::chrono::milliseconds(0);
+    }
+
     void SetUp();
     void TearDown();
     PRegister Reg(int addr, RegisterFormat fmt = U16, double scale = 1,
@@ -40,6 +45,16 @@ protected:
     TSerialDeviceFactory DeviceFactory;
 
     bool HasSetupRegisters = false;
+    TPortOpenCloseLogic::TSettings PortOpenCloseSettings;
+};
+
+class TSerialClientReopenTest: public TSerialClientTest
+{
+public:
+    TSerialClientReopenTest()
+    {
+        PortOpenCloseSettings.ReopenTimeout = std::chrono::milliseconds(700);
+    }
 };
 
 class TSerialClientTestWithSetupRegisters: public TSerialClientTest
@@ -63,13 +78,13 @@ void TSerialClientTest::SetUp()
 
     if (HasSetupRegisters) {
         PRegisterConfig reg1 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 100);
-        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup1", reg1, 10)));
+        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup1", reg1, "10")));
 
         PRegisterConfig reg2 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 101);
-        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup2", reg2, 11)));
+        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup2", reg2, "11")));
 
         PRegisterConfig reg3 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 102);
-        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup3", reg3, 12)));
+        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup3", reg3, "12")));
     }
 
     config->FrameTimeout = std::chrono::milliseconds(100);
@@ -77,7 +92,7 @@ void TSerialClientTest::SetUp()
     Device->InitSetupItems();
     std::vector<PSerialDevice> devices;
     devices.push_back(Device);
-    SerialClient = std::make_shared<TSerialClient>(devices, Port);
+    SerialClient = std::make_shared<TSerialClient>(devices, Port, PortOpenCloseSettings);
 #if 0
     SerialClient->SetModbusDebug(true);
 #endif
@@ -108,7 +123,6 @@ void TSerialClientTest::SetUp()
 
 void TSerialClientTest::TearDown()
 {
-    SerialClient.reset();
     TLoggedFixture::TearDown();
     TRegister::DeleteIntern();
     TFakeSerialDevice::ClearDevices();
@@ -134,6 +148,32 @@ TEST_F(TSerialClientTest, PortOpenError)
     SerialClient->Cycle();
 
     Port->SetAllowOpen(true);
+
+    Note() << "Cycle() [successful port open]";
+    SerialClient->Cycle();
+}
+
+TEST_F(TSerialClientReopenTest, ReopenTimeout)
+{
+    // The test checks recovery logic after port opening failure
+    // TSerialClient must try to open port during every cycle and set /meta/error for controls
+
+    PRegister reg0 = Reg(0, U8);
+    PRegister reg1 = Reg(1, U8);
+
+    SerialClient->AddRegister(reg0);
+    SerialClient->AddRegister(reg1);
+
+    Port->SetAllowOpen(false);
+
+    Note() << "Cycle() [port open error]";
+    SerialClient->Cycle();
+
+    Port->SetAllowOpen(true);
+
+    // The open will be unsuccessful because of 700ms timeout since last failed open
+    Note() << "Cycle() [port open error2]";
+    SerialClient->Cycle();
 
     Note() << "Cycle() [successful port open]";
     SerialClient->Cycle();
@@ -372,7 +412,6 @@ TEST_F(TSerialClientTest, S32)
 
     Note() << "client -> server: -2";
     SerialClient->SetTextValue(reg20, "-2");
-    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
@@ -395,6 +434,59 @@ TEST_F(TSerialClientTest, S32)
     EXPECT_EQ("-0.123", SerialClient->GetTextValue(reg24));
 }
 
+TEST_F(TSerialClientTest, S24)
+{
+    PRegister reg20 = Reg(20, S24);
+    PRegister reg30 = Reg(30, S24);
+    SerialClient->AddRegister(reg20);
+    SerialClient->AddRegister(reg30);
+
+    // create scaled register
+    PRegister reg24 = Reg(24, S24, 0.001);
+    SerialClient->AddRegister(reg24);
+
+    Note() << "server -> client: 10, 20";
+    Device->Registers[20] = 0x002A;
+    Device->Registers[21] = 0x00BB;
+    Device->Registers[30] = 0x00FF;
+    Device->Registers[31] = 0xFFFF;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0x002A00BB), SerialClient->GetTextValue(reg20));
+    EXPECT_EQ(to_string(-1), SerialClient->GetTextValue(reg30));
+
+    Note() << "client -> server: 10";
+    SerialClient->SetTextValue(reg20, "10");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), SerialClient->GetTextValue(reg20));
+    EXPECT_EQ(0, Device->Registers[20]);
+    EXPECT_EQ(10, Device->Registers[21]);
+
+    Note() << "client -> server: -2";
+    SerialClient->SetTextValue(reg20, "-2");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
+    EXPECT_EQ(0x00FF, Device->Registers[20]);
+    EXPECT_EQ(0xFFFE, Device->Registers[21]);
+
+    Note() << "client -> server: -0.123 (scaled)";
+    SerialClient->SetTextValue(reg24, "-0.123");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ("-0.123", SerialClient->GetTextValue(reg24));
+    EXPECT_EQ(0x00FF, Device->Registers[24]);
+    EXPECT_EQ(0xFF85, Device->Registers[25]);
+
+    Note() << "server -> client: 0x00ff 0xff85 (scaled)";
+    Device->Registers[24] = 0x00FF;
+    Device->Registers[25] = 0xFF85;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ("-0.123", SerialClient->GetTextValue(reg24));
+}
+
 TEST_F(TSerialClientTest, WordSwap)
 {
     PRegister reg20 = Reg(20, S32, 1, 0, 0, EWordOrder::LittleEndian);
@@ -411,7 +503,6 @@ TEST_F(TSerialClientTest, WordSwap)
 
     Note() << "client -> server: -2";
     SerialClient->SetTextValue(reg20, "-2");
-    EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ(to_string(-2), SerialClient->GetTextValue(reg20));
@@ -909,7 +1000,6 @@ void TSerialClientIntegrationTest::TearDown()
     }
     Driver->StopLoop();
     TSerialClientTest::TearDown();
-    TFakeSerialDevice::ClearDevices();
 }
 
 void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
@@ -992,6 +1082,63 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
     ASSERT_EQ(500, device->Registers[0]);
 }
 
+TEST_F(TSerialClientIntegrationTest, OffValue)
+{
+    FilterConfig("OnValueTest");
+
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+
+    auto device = TFakeSerialDevice::GetDevice("0x90");
+
+    if (!device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    device->Registers[0] = 500;
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    PublishWaitOnValue("/devices/OnValueTest/controls/Relay 1/on", "0", 0, true);
+
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+    ASSERT_EQ(200, device->Registers[0]);
+}
+
+
+TEST_F(TSerialClientIntegrationTest, OnValueError)
+{
+    FilterConfig("OnValueTest");
+
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+
+    auto device = TFakeSerialDevice::GetDevice("0x90");
+
+    if (!device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    device->Registers[0] = 0;
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    device->BlockWriteFor(0, true);
+
+    PublishWaitOnValue("/devices/OnValueTest/controls/Relay 1/on", "1", 0, true);
+
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    device->BlockWriteFor(0, false);
+
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
+
+    ASSERT_EQ(500, device->Registers[0]);
+}
 
 TEST_F(TSerialClientIntegrationTest, WordSwap)
 {

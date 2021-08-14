@@ -1,5 +1,6 @@
 #include "serial_config.h"
 #include "log.h"
+#include "file_utils.h"
 
 #include <set>
 #include <fstream>
@@ -20,8 +21,10 @@
 
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
+#include "file_utils.h"
 
 #include "devices/energomera_iec_device.h"
+#include "devices/energomera_iec_mode_c_device.h"
 #include "devices/ivtm_device.h"
 #include "devices/lls_device.h"
 #include "devices/mercury200_device.h"
@@ -34,6 +37,9 @@
 #include "devices/s2k_device.h"
 #include "devices/uniel_device.h"
 #include "devices/dlms_device.h"
+#include "devices/curtains/dooya_device.h"
+#include "devices/curtains/somfy_sdn_device.h"
+#include "devices/curtains/windeco_device.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
@@ -76,6 +82,16 @@ namespace {
         return GetIntFromString(v.asString(), title);
     }
 
+    double ToDouble(const Json::Value& v, const std::string& title)
+    {
+        if (v.isNumeric())
+            return v.asDouble();
+        if (!v.isString()) {
+            throw TConfigParserException(title + ": number or '0x..' hex string expected");
+        }
+        return GetIntFromString(v.asString(), title);
+    }
+
     uint64_t ToUint64(const Json::Value& v, const string& title)
     {
         if (v.isUInt())
@@ -107,53 +123,72 @@ namespace {
         return ToInt(obj[key], key);
     }
 
+    double GetDouble(const Json::Value& obj, const std::string& key)
+    {
+        return ToDouble(obj[key], key);
+    }
+
     bool ReadChannelsReadonlyProperty(const Json::Value& register_data,
                                       const std::string& key,
                                       bool templateReadonly,
-                                      const std::string& channel_name,
+                                      const std::string& override_error_message_prefix,
                                       const std::string& register_type)
     {
         bool readonly = templateReadonly;
         if (Get(register_data, key, readonly)) {
             if (templateReadonly && !readonly) {
-                LOG(Warn) << "Channel \"" << channel_name << "\" unable to make register of type \"" << register_type << "\" writable";
+                LOG(Warn) << override_error_message_prefix << " unable to make register of type \"" << register_type << "\" writable";
                 return true;
             }
         }
         return readonly;
     }
 
-    PRegisterConfig LoadRegisterConfig(TDeviceConfig*          device_config,
-                                       const Json::Value&      register_data,
-                                       std::string&            default_type_str,
-                                       const std::string&      channel_name,
-                                       const IRegisterAddress& device_base_address,
-                                       size_t                  stride,
-                                       const IDeviceFactory&   deviceFactory)
+    const TRegisterType& GetRegisterType(const Json::Value& itemData, const TDeviceConfig& deviceConfig)
     {
-        string reg_type_str = register_data["reg_type"].asString();
-        default_type_str = "text";
-        auto it = device_config->TypeMap->find(reg_type_str);
-        if (it == device_config->TypeMap->end())
-            throw TConfigParserException("invalid register type: " + reg_type_str + " -- " + device_config->DeviceType);
-        if (!it->second.DefaultControlType.empty())
-            default_type_str = it->second.DefaultControlType;
+        if (itemData.isMember("reg_type")) {
+            std::string type = itemData["reg_type"].asString();
+            try {
+                return deviceConfig.TypeMap->Find(type);
+            } catch (...) {
+                throw TConfigParserException("invalid setup register type: " + type + " -- " + deviceConfig.DeviceType);
+            }
+        }
+        return deviceConfig.TypeMap->GetDefaultType();
+    }
 
-        RegisterFormat format = register_data.isMember("format") ?
-            RegisterFormatFromName(register_data["format"].asString()) :
-            it->second.DefaultFormat;
+    struct TLoadRegisterConfigResult
+    {
+        PRegisterConfig RegisterConfig;
+        std::string     DefaultControlType;
+    };
 
-        EWordOrder word_order = register_data.isMember("word_order") ?
-            WordOrderFromName(register_data["word_order"].asString()) :
-            it->second.DefaultWordOrder;
+    TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value&      register_data,
+                                                 const TDeviceConfig&    device_config,
+                                                 const IRegisterAddress& device_base_address,
+                                                 size_t                  stride,
+                                                 const IDeviceFactory&   deviceFactory,
+                                                 const std::string&      readonly_override_error_message_prefix)
+    {
+        TLoadRegisterConfigResult res;
+        TRegisterType regType = GetRegisterType(register_data, device_config);
+        res.DefaultControlType = regType.DefaultControlType.empty() ? "text" : regType.DefaultControlType;
+
+        if (register_data.isMember("format")) {
+            regType.DefaultFormat = RegisterFormatFromName(register_data["format"].asString());
+        }
+
+        if (register_data.isMember("word_order")) {
+            regType.DefaultWordOrder = WordOrderFromName(register_data["word_order"].asString());
+        }
 
         double scale    = Read(register_data, "scale",    1.0); // TBD: check for zero, too
         double offset   = Read(register_data, "offset",   0.0);
         double round_to = Read(register_data, "round_to", 0.0);
 
-        bool readonly = ReadChannelsReadonlyProperty(register_data, "readonly", it->second.ReadOnly, channel_name, it->second.Name);
+        bool readonly = ReadChannelsReadonlyProperty(register_data, "readonly", regType.ReadOnly, readonly_override_error_message_prefix, regType.Name);
         // For comptibility with old configs
-        readonly = ReadChannelsReadonlyProperty(register_data, "channel_readonly", readonly, channel_name, it->second.Name);
+        readonly = ReadChannelsReadonlyProperty(register_data, "channel_readonly", readonly, readonly_override_error_message_prefix, regType.Name);
 
         std::unique_ptr<uint64_t> error_value;
         if (register_data.isMember("error_value")) {
@@ -165,15 +200,18 @@ namespace {
             unsupported_value = std::make_unique<uint64_t>(ToUint64(register_data["unsupported_value"], "unsupported_value"));
         }
 
-        auto address = deviceFactory.LoadRegisterAddress(register_data, device_base_address, stride, RegisterFormatByteWidth(format));
+        auto address = deviceFactory.GetRegisterAddressFactory().LoadRegisterAddress(register_data,
+                                                                                     device_base_address,
+                                                                                     stride, 
+                                                                                     RegisterFormatByteWidth(regType.DefaultFormat));
 
-        PRegisterConfig reg = TRegisterConfig::Create(
-            it->second.Index, address.Address, format, scale, offset,
-            round_to, true, readonly, it->second.Name, std::move(error_value),
-            word_order, address.BitOffset, address.BitWidth, std::move(unsupported_value));
+        res.RegisterConfig = TRegisterConfig::Create(
+            regType.Index, address.Address, regType.DefaultFormat, scale, offset,
+            round_to, true, readonly, regType.Name, std::move(error_value),
+            regType.DefaultWordOrder, address.BitOffset, address.BitWidth, std::move(unsupported_value));
         
-        Get(register_data, "poll_interval", reg->PollInterval);
-        return reg;
+        Get(register_data, "poll_interval", res.RegisterConfig->PollInterval);
+        return res;
     }
 
     void LoadSimpleChannel(TDeviceConfig*          device_config,
@@ -193,6 +231,7 @@ namespace {
         if (!name_prefix.empty()) {
             name = name_prefix + " " + name;
         }
+        auto errorMsgPrefix = "Channel \"" + mqtt_channel_name + "\"";
         std::string default_type_str;
         std::vector<PRegisterConfig> registers;
         if (channel_data.isMember("consists_of")) {
@@ -201,20 +240,21 @@ namespace {
 
             const Json::Value& reg_data = channel_data["consists_of"];
             for(Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
-                std::string def_type;
-                auto reg = LoadRegisterConfig(device_config, reg_data[i], def_type, mqtt_channel_name, device_base_address, stride, device_factory);
+                auto reg = LoadRegisterConfig(reg_data[i], *device_config, device_base_address, stride, device_factory, errorMsgPrefix);
                 /* the poll_interval specified for the specific register has a precedence over the one specified for the compound channel */
-                if ((reg->PollInterval.count() < 0) && (poll_interval.count() >= 0))
-                    reg->PollInterval = poll_interval;
-                registers.push_back(reg);
+                if ((reg.RegisterConfig->PollInterval.count() < 0) && (poll_interval.count() >= 0))
+                    reg.RegisterConfig->PollInterval = poll_interval;
+                registers.push_back(reg.RegisterConfig);
                 if (!i)
-                    default_type_str = def_type;
+                    default_type_str = reg.DefaultControlType;
                 else if (registers[i]->ReadOnly != registers[0]->ReadOnly)
                     throw TConfigParserException(("can't mix read-only and writable registers "
                                                 "in one channel -- ") + device_config->DeviceType);
             }
         } else {
-            registers.push_back(LoadRegisterConfig(device_config, channel_data, default_type_str, mqtt_channel_name, device_base_address, stride, device_factory));
+            auto reg = LoadRegisterConfig(channel_data, *device_config, device_base_address, stride, device_factory, errorMsgPrefix);
+            default_type_str = reg.DefaultControlType;
+            registers.push_back(reg.RegisterConfig);
         }
 
         std::string type_str(Read(channel_data, "type", default_type_str));
@@ -224,22 +264,33 @@ namespace {
                 reg->Poll = false;
         }
 
-        std::string on_value;
-        if (channel_data.isMember("on_value")) {
-            if (registers.size() != 1)
-                throw TConfigParserException("can only use on_value for single-valued controls -- " +
-                                            device_config->DeviceType);
-            on_value = std::to_string(GetInt(channel_data, "on_value"));
-        }
-
-        int max = -1;
-        if (channel_data.isMember("max"))
-            max = GetInt(channel_data, "max");
-
         int order        = device_config->NextOrderValue();
         PDeviceChannelConfig channel(new TDeviceChannelConfig(name, type_str, device_config->Id, order,
-                                                on_value, max, registers[0]->ReadOnly, mqtt_channel_name,
+                                                registers[0]->ReadOnly, mqtt_channel_name,
                                                 registers));
+        if (channel_data.isMember("max")) {
+            channel->Max = GetDouble(channel_data, "max");
+        }
+        if (channel_data.isMember("min")) {
+            channel->Min = GetDouble(channel_data, "min");
+        }
+        if (channel_data.isMember("on_value")) {
+            if (registers.size() != 1)
+                throw TConfigParserException("on_value is allowed only for single-valued controls -- " +
+                                            device_config->DeviceType);
+            channel->OnValue = std::to_string(GetInt(channel_data, "on_value"));
+        }
+        if (channel_data.isMember("off_value")) {
+            if (registers.size() != 1)
+                throw TConfigParserException("off_value is allowed only for single-valued controls -- " +
+                                            device_config->DeviceType);
+            channel->OffValue = std::to_string(GetInt(channel_data, "off_value"));
+        }
+
+        if (registers.size() == 1) {
+            channel->Precision = registers[0]->RoundTo;
+        }
+
         device_config->AddChannel(channel);
     }
 
@@ -255,7 +306,7 @@ namespace {
                        const Json::Value&      item_data,
                        const IRegisterAddress& device_base_address,
                        size_t                  stride,
-                       const std::string&      mqtt_prefix,
+                       const std::string&      name_prefix,
                        const IDeviceFactory&   device_factory);
 
     void LoadSubdeviceChannel(TDeviceConfig*          device_config,
@@ -326,31 +377,20 @@ namespace {
                        const std::string&      name_prefix,
                        const IDeviceFactory&   device_factory)
     {
-        std::string reg_type_str = item_data["reg_type"].asString();
-        int type = 0;
-        if (!reg_type_str.empty()) {
-            auto it = device_config->TypeMap->find(reg_type_str);
-            if (it == device_config->TypeMap->end())
-                throw TConfigParserException("invalid setup register type: " +
-                                            reg_type_str + " -- " + device_config->DeviceType);
-            type = it->second.Index;
-        }
-        RegisterFormat format = U16;
-        if (item_data.isMember("format")) {
-            format = RegisterFormatFromName(item_data["format"].asString());
-        }
-
-        auto address = device_factory.LoadRegisterAddress(item_data, device_base_address, stride, RegisterFormatByteWidth(format));
-
-        PRegisterConfig reg = TRegisterConfig::Create(
-            type, address.Address, format, 1, 0, 0, true, true, "<unspec>");
-
-        int value = GetInt(item_data, "value");
         std::string name(Read(item_data, "title", std::string("<unnamed>")));
         if (!name_prefix.empty()) {
             name = name_prefix + " " + name;
         }
-        device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg, value)));
+        auto reg = LoadRegisterConfig(item_data,
+                                      *device_config,
+                                      device_base_address,
+                                      stride,
+                                      device_factory,
+                                      "Setup item \"" + name + "\"");
+        const auto& valueItem = item_data["value"];
+        // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
+        auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
+        device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg.RegisterConfig, value)));
     }
 
     void LoadDeviceTemplatableConfigPart(TDeviceConfig*          device_config,
@@ -428,10 +468,6 @@ namespace {
     PPort OpenTcpPort(const Json::Value& port_data)
     {
         TTcpPortSettings settings(port_data["address"].asString(), GetInt(port_data, "port"));
-
-        Get(port_data, "connection_timeout_ms",      settings.ConnectionTimeout);
-        Get(port_data, "connection_max_fail_cycles", settings.ConnectionMaxFailCycles);
-
         return std::make_shared<TTcpPort>(settings);
     }
 
@@ -452,6 +488,9 @@ namespace {
         Get(port_data, "guard_interval_us",   port_config->RequestDelay);
 
         auto port_type = port_data.get("port_type", "serial").asString();
+
+        Get(port_data, "connection_timeout_ms",      port_config->OpenCloseSettings.MaxFailTime);
+        Get(port_data, "connection_max_fail_cycles", port_config->OpenCloseSettings.ConnectionMaxFailCycles);
 
         std::tie(port_config->Port, port_config->IsModbusTcp) = portFactory(port_data);
 
@@ -511,43 +550,61 @@ std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data)
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }
 
-TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema): 
+TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema, bool passInvalidTemplates): 
     Validator(new  WBMQTT::JSON::TValidator(templateSchema)) 
 {
-    AddTemplatesDir(templatesDir);
+    AddTemplatesDir(templatesDir, passInvalidTemplates);
 }
 
-void TTemplateMap::AddTemplatesDir(const std::string& templatesDir)
+std::string TTemplateMap::GetDeviceType(const std::string& templatePath) const
 {
-    DIR *dir;
-    struct dirent *dirp;
-    struct stat filestat;
-
-    if ((dir = opendir(templatesDir.c_str())) == NULL)
-        throw TConfigParserException("Cannot open " + templatesDir + " directory");
-
-    while ((dirp = readdir(dir))) {
-        std::string dname = dirp->d_name;
-        if(!EndsWith(dname, ".json"))
-            continue;
-
-        std::string filepath = templatesDir + "/" + dname;
-        if (stat(filepath.c_str(), &filestat)) {
-            continue;
-        }
-        if (S_ISDIR(filestat.st_mode)) {
-            continue;
-        }
-
-        try {
-            Json::Value root = WBMQTT::JSON::Parse(filepath);
-            TemplateFiles[root["device_type"].asString()] = filepath;
-        } catch (const std::exception& e) {
-            LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
-            continue;
+    const char deviceTypeKey[] = "\"device_type\"";
+    std::ifstream file;
+    OpenWithException(file, templatePath);
+    std::string line;
+    // Search device type declaration in first 5 lines
+    for (auto n = 0; n < 5; ++n) {
+        std::getline(file, line);
+        auto pos = line.find(deviceTypeKey);
+        if (pos != std::string::npos) {
+            pos += sizeof(deviceTypeKey);
+            pos = line.find("\"", pos);
+            if (pos != std::string::npos) {
+                ++pos;
+                auto end = line.find("\"", pos);
+                if (end != std::string::npos) {
+                    return line.substr(pos, end - pos);
+                }
+            }
         }
     }
-    closedir(dir);
+    throw std::runtime_error(templatePath + " doesn't contain device type declaration");
+}
+
+void TTemplateMap::AddTemplatesDir(const std::string& templatesDir, bool passInvalidTemplates)
+{
+    IterateDir(templatesDir, [&](const std::string& fname)
+        {
+            if(!EndsWith(fname, ".json")) {
+                return false;
+            }
+            std::string filepath = templatesDir + "/" + fname;
+            struct stat filestat;
+            if (stat(filepath.c_str(), &filestat) || S_ISDIR(filestat.st_mode)) {
+                return false;
+            }
+            try {
+                Json::Value root = WBMQTT::JSON::Parse(filepath);
+                TemplateFiles[root["device_type"].asString()] = filepath;
+            } catch (const std::exception& e) {
+                if (passInvalidTemplates) {
+                    LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
+                    return false;
+                }
+                throw;
+            }
+            return false;
+        });
 }
 
 Json::Value TTemplateMap::Validate(const std::string& deviceType, const std::string& filePath)
@@ -788,19 +845,43 @@ TDeviceChannelConfig::TDeviceChannelConfig(const std::string& name,
                                            const std::string& type,
                                            const std::string& deviceId,
                                            int                order,
-                                           const std::string& onValue,
-                                           int                max,
                                            bool               readOnly,
                                            const std::string& mqttId,
                                            const std::vector<PRegisterConfig> regs)
     : Name(name), MqttId(mqttId), Type(type), DeviceId(deviceId),
-      Order(order), OnValue(onValue), Max(max),
+      Order(order),
       ReadOnly(readOnly), RegisterConfigs(regs) 
 {}
 
-TDeviceSetupItemConfig::TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, int value)
-        : Name(name), RegisterConfig(reg), Value(value)
-{}
+TDeviceSetupItemConfig::TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value)
+    : Name(name), RegisterConfig(reg), Value(value)
+{
+    try {
+        RawValue = ConvertToRawValue(*reg, Value);
+    } catch(const std::exception& e) {
+        throw TConfigParserException("\"" + name +"\" bad value \"" + value + "\"");
+    }
+}
+
+const std::string& TDeviceSetupItemConfig::GetName() const
+{
+    return Name;
+}
+
+const std::string& TDeviceSetupItemConfig::GetValue() const
+{
+    return Value;
+}
+
+uint64_t TDeviceSetupItemConfig::GetRawValue() const
+{
+    return RawValue;
+}
+
+PRegisterConfig TDeviceSetupItemConfig::GetRegisterConfig() const
+{
+    return RegisterConfig;
+}
 
 TDeviceConfig::TDeviceConfig(const std::string& name, const std::string& slave_id, const std::string& protocol)
         : Name(name), SlaveId(slave_id), Protocol(protocol)
@@ -818,12 +899,12 @@ void TDeviceConfig::AddChannel(PDeviceChannelConfig channel)
 
 void TDeviceConfig::AddSetupItem(PDeviceSetupItemConfig item) 
 {
-    auto addrIt = SetupItemsByAddress.find(item->RegisterConfig->GetAddress().ToString());
+    auto addrIt = SetupItemsByAddress.find(item->GetRegisterConfig()->GetAddress().ToString());
     if (addrIt != SetupItemsByAddress.end()) {
-        LOG(Warn) << "Setup command \"" << item->Name << "\" will be ignored. It has the same address " 
-                  << item->RegisterConfig->GetAddress() << " as command \"" << addrIt->second << "\"";
+        LOG(Warn) << "Setup command \"" << item->GetName() << "\" will be ignored. It has the same address " 
+                  << item->GetRegisterConfig()->GetAddress() << " as command \"" << addrIt->second << "\"";
     } else {
-        SetupItemsByAddress.insert({item->RegisterConfig->GetAddress().ToString(), item->Name});
+        SetupItemsByAddress.insert({item->GetRegisterConfig()->GetAddress().ToString(), item->GetName()});
         SetupItemConfigs.push_back(item);
     }
 }
@@ -923,7 +1004,17 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
         throw TSerialDeviceException("unknown protocol: " + protocolName);
     }
 
-    return it->second.second->CreateDevice(*cfg, it->second.first, defaultId, portConfig);
+    auto protocol = it->second.first;
+    const auto& deviceFactory = *it->second.second;
+
+    TDeviceConfigLoadParams params;
+    params.DefaultId           = defaultId;
+    params.DefaultPollInterval = portConfig->PollInterval;
+    params.DefaultRequestDelay = portConfig->RequestDelay;
+    params.PortResponseTimeout = portConfig->ResponseTimeout;
+    auto baseDeviceConfig = LoadBaseDeviceConfig(*cfg, protocol, deviceFactory, params);
+
+    return deviceFactory.CreateDevice(*cfg, baseDeviceConfig, portConfig->Port, protocol);
 }
 
 std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
@@ -935,10 +1026,12 @@ std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
     return res;
 }
 
-IDeviceFactory::IDeviceFactory(const std::string& commonDeviceSchemaRef,
+IDeviceFactory::IDeviceFactory(std::unique_ptr<IRegisterAddressFactory> registerAddressFactory,
+                               const std::string& commonDeviceSchemaRef,
                                const std::string& customChannelSchemaRef)
     : CommonDeviceSchemaRef(commonDeviceSchemaRef),
-      CustomChannelSchemaRef(customChannelSchemaRef)
+      CustomChannelSchemaRef(customChannelSchemaRef),
+      RegisterAddressFactory(std::move(registerAddressFactory))
 {}
 
 const std::string& IDeviceFactory::GetCommonDeviceSchemaRef() const
@@ -949,6 +1042,11 @@ const std::string& IDeviceFactory::GetCommonDeviceSchemaRef() const
 const std::string& IDeviceFactory::GetCustomChannelSchemaRef() const
 {
     return CustomChannelSchemaRef;
+}
+
+const IRegisterAddressFactory& IDeviceFactory::GetRegisterAddressFactory() const
+{
+    return *RegisterAddressFactory;
 }
 
 PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
@@ -970,7 +1068,7 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
             res->SlaveId = std::to_string(dev["slave_id"].asInt());
     }
 
-    LoadDeviceTemplatableConfigPart(res.get(), dev, protocol->GetRegTypes(), *parameters.BaseRegisterAddress, factory);
+    LoadDeviceTemplatableConfigPart(res.get(), dev, protocol->GetRegTypes(), factory.GetRegisterAddressFactory().GetBaseRegisterAddress(), factory);
 
     if (res->DeviceChannelConfigs.empty())
         throw TConfigParserException("the device has no channels: " + res->Name);
@@ -1000,7 +1098,8 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
 {
-    TEnergomeraIecDevice::Register(deviceFactory);
+    TEnergomeraIecWithFastReadDevice::Register(deviceFactory);
+    TEnergomeraIecModeCDevice::Register(deviceFactory);
     TIVTMDevice::Register(deviceFactory);
     TLLSDevice::Register(deviceFactory);
     TMercury200Device::Register(deviceFactory);
@@ -1013,6 +1112,9 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     TS2KDevice::Register(deviceFactory);
     TUnielDevice::Register(deviceFactory);
     TDlmsDevice::Register(deviceFactory);
+    Dooya::TDevice::Register(deviceFactory);
+    WinDeco::TDevice::Register(deviceFactory);
+    Somfy::TDevice::Register(deviceFactory);
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data)
@@ -1047,4 +1149,42 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data)
         res.Address = GetInt(register_data, "address");
     }
     return res;
+}
+
+TUint32RegisterAddressFactory::TUint32RegisterAddressFactory(size_t bytesPerRegister)
+    : BaseRegisterAddress(0),
+      BytesPerRegister(bytesPerRegister)
+{}
+
+TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Value&      regCfg,
+                                                                 const IRegisterAddress& deviceBaseAddress,
+                                                                 uint32_t                stride,
+                                                                 uint32_t                registerByteWidth) const
+{
+    auto addr = LoadRegisterBitsAddress(regCfg);
+    TRegisterDesc res;
+    res.BitOffset = addr.BitOffset;
+    res.BitWidth = addr.BitWidth;
+    res.Address = std::shared_ptr<IRegisterAddress>(deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, BytesPerRegister));
+    return res;
+}
+
+const IRegisterAddress& TUint32RegisterAddressFactory::GetBaseRegisterAddress() const
+{
+    return BaseRegisterAddress;
+}
+
+TRegisterDesc TStringRegisterAddressFactory::LoadRegisterAddress(const Json::Value&      regCfg,
+                                                                const IRegisterAddress& deviceBaseAddress,
+                                                                uint32_t                stride,
+                                                                uint32_t                registerByteWidth) const
+{
+    TRegisterDesc res;
+    res.Address = std::make_shared<TStringRegisterAddress>(regCfg["address"].asString());
+    return res;
+}
+
+const IRegisterAddress& TStringRegisterAddressFactory::GetBaseRegisterAddress() const
+{
+    return BaseRegisterAddress;
 }

@@ -80,7 +80,6 @@ SkipNoise()
 EnqueuePollRequests()
 >> 01 52 31 02 30 46 30 38 38 30 46 46 28 29 03 15
 << 02 30 46 30 38 38 30 46 46 28 30 30 30 30 34 36 2E 32 34 2C 30 30 30 30 33 31 2E 31 34 2C 30 30 30 30 31 35 2E 31 30 2C 30 30 30 30 30 30 2E 30 30 2C 30 30 30 30 30 30 2E 30 30 29 03 5C
-Port cycle OK
 Publish: /devices/reduced_neva/controls/Total P: '5.3' (QoS 1, retained)
 Publish: /devices/reduced_neva/controls/PF L1: '0.717' (QoS 1, retained)
 Publish: /devices/reduced_neva/controls/Temperature: '29' (QoS 1, retained)

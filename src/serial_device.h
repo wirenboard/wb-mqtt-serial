@@ -24,7 +24,10 @@ struct TDeviceChannelConfig
     std::string                  DeviceId;
     int                          Order            = 0;
     std::string                  OnValue;
-    int                          Max              = -1;
+    std::string                  OffValue;
+    double                       Max              =std::numeric_limits<double>::signaling_NaN();
+    double                       Min              =std::numeric_limits<double>::signaling_NaN();
+    double                       Precision        = 0;
     bool                         ReadOnly         = false;
     std::vector<PRegisterConfig> RegisterConfigs;
 
@@ -32,8 +35,6 @@ struct TDeviceChannelConfig
                          const std::string& type                 = "text",
                          const std::string& deviceId             = "",
                          int                order                = 0,
-                         const std::string& onValue              = "",
-                         int                max                  = - 1,
                          bool               readOnly             = false,
                          const std::string& mqttId               = "",
                          const std::vector<PRegisterConfig> regs = std::vector<PRegisterConfig>());
@@ -41,13 +42,19 @@ struct TDeviceChannelConfig
 
 typedef std::shared_ptr<TDeviceChannelConfig> PDeviceChannelConfig;
 
-struct TDeviceSetupItemConfig 
+class TDeviceSetupItemConfig 
 {
     std::string     Name;
     PRegisterConfig RegisterConfig;
-    int             Value;
+    std::string     Value;
+    uint64_t        RawValue;
+public:
+    TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value);
 
-    TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, int value);
+    const std::string& GetName() const;
+    const std::string& GetValue() const;
+    uint64_t GetRawValue() const;
+    PRegisterConfig GetRegisterConfig() const;
 };
 
 typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
@@ -114,15 +121,20 @@ typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
 class IProtocol;
 typedef IProtocol* PProtocol;
 
-struct TDeviceSetupItem : public TDeviceSetupItemConfig
+struct TDeviceSetupItem
 {
     TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
-        : TDeviceSetupItemConfig(*config)
+        : Name(config->GetName()),
+          RawValue(config->GetRawValue()),
+          HumanReadableValue(config->GetValue())
     {
-        Register = TRegister::Intern(device, config->RegisterConfig);
+        Register = TRegister::Intern(device, config->GetRegisterConfig());
     }
 
-    PRegister Register;
+    std::string Name;
+    uint64_t    RawValue;
+    std::string HumanReadableValue;
+    PRegister   Register;
 };
 
 typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
@@ -226,6 +238,12 @@ public:
      */
     virtual bool IsModbus() const;
 
+    /** Check if protocol supports broadcast requests.
+     *  It is used during generation of a schema for confed and during config validation.
+     *  For protocols with broadcast support "slave_id" is not required.
+     */
+    virtual bool SupportsBroadcast() const;
+
 private:
     std::string Name;
     PRegisterTypeMap RegTypes;
@@ -242,4 +260,9 @@ public:
     TUint32SlaveIdProtocol(const std::string& name, const TRegisterTypes& reg_types, bool allowBroadcast = false);
 
     bool IsSameSlaveId(const std::string& id1, const std::string& id2) const override;
+
+    bool SupportsBroadcast() const override;
 };
+
+//! Copy bits from double to uint64_t with size checking
+uint64_t CopyDoubleToUint64(double value);

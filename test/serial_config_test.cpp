@@ -43,6 +43,8 @@ TEST_F(TConfigParserTest, Parse)
         TTestLogIndent indent(*this);
         Emit() << "------";
         Emit() << "ConnSettings: " << port_config->Port->GetDescription();
+        Emit() << "ConnectionMaxFailCycles: " << port_config->OpenCloseSettings.ConnectionMaxFailCycles;
+        Emit() << "MaxFailTime: " << port_config->OpenCloseSettings.MaxFailTime.count();
         Emit() << "PollInterval: " << port_config->PollInterval.count();
         Emit() << "GuardInterval: " << port_config->RequestDelay.count();
         Emit() << "Response timeout: " << port_config->ResponseTimeout.count();
@@ -77,7 +79,20 @@ TEST_F(TConfigParserTest, Parse)
                     Emit() << "DeviceId: " << device_channel->DeviceId;
                     Emit() << "Order: " << device_channel->Order;
                     Emit() << "OnValue: " << device_channel->OnValue;
-                    Emit() << "Max: " << device_channel->Max;
+                    if (!device_channel->OffValue.empty()) {
+                        Emit() << "OffValue: " << device_channel->OffValue;
+                    }
+                    if (isnan(device_channel->Max)) {
+                        Emit() << "Max: not set";
+                    } else {
+                        Emit() << "Max: " << device_channel->Max;
+                    }
+                    if (isnan(device_channel->Min)) {
+                        Emit() << "Min: not set";
+                    } else {
+                        Emit() << "Min: " << device_channel->Min;
+                    }
+                    Emit() << "Precision: " << device_channel->Precision;
                     Emit() << "ReadOnly: " << device_channel->ReadOnly;
                     if (!device_channel->RegisterConfigs.empty()) {
                         Emit() << "Registers:";
@@ -115,9 +130,12 @@ TEST_F(TConfigParserTest, Parse)
                 for (auto setup_item: device_config->SetupItemConfigs) {
                     TTestLogIndent indent(*this);
                     Emit() << "------";
-                    Emit() << "Name: " << setup_item->Name;
-                    Emit() << "Address: " << setup_item->RegisterConfig->GetAddress();
-                    Emit() << "Value: " << setup_item->Value;
+                    Emit() << "Name: " << setup_item->GetName();
+                    Emit() << "Address: " << setup_item->GetRegisterConfig()->GetAddress();
+                    Emit() << "Value: " << setup_item->GetValue();
+                    Emit() << "RawValue: 0x" << std::setfill('0') << std::setw(2) << std::hex << setup_item->GetRawValue();
+                    Emit() << "Reg type: " <<  setup_item->GetRegisterConfig()->TypeName << " (" << setup_item->GetRegisterConfig()->Type << ")";
+                    Emit() << "Reg format: " << RegisterFormatName(setup_item->GetRegisterConfig()->Format);
                 }
             }
         }

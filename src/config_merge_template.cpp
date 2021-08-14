@@ -30,11 +30,9 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config)
         for (auto it = deviceTemplate["parameters"].begin(); it != deviceTemplate["parameters"].end(); ++it) {
             if (config.isMember(it.name())) {
                 auto& cfgItem = config[it.name()];
-                if (cfgItem.asInt()) {
-                    Json::Value item;
+                if (cfgItem.isNumeric()) {
+                    Json::Value item(*it);
                     item["value"] = cfgItem;
-                    item["address"] = (*it)["address"];
-                    item["title"] = (*it)["title"];
                     newSetup.append(item);
                 } else {
                     LOG(Warn) << it.name() << " is not an integer";
@@ -96,6 +94,7 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
         "offset",
         "round_to",
         "on_value",
+        "off_value",
         "error_value",
         "unsupported_value",
         "word_order",

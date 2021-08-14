@@ -1,13 +1,15 @@
 #include "serial_client.h"
-#include "log.h"
 
 #include <unistd.h>
 #include <unordered_map>
 #include <iostream>
 
-#define LOG(logger) ::logger.Log() << "[serial client] "
+#define LOG(logger) logger.Log() << "[serial client] "
 
-namespace {
+namespace
+{
+    const std::chrono::minutes PORT_OPEN_ERROR_NOTIFICATION_INTERVAL(5);
+
     struct TSerialPollEntry: public TPollEntry {
         TSerialPollEntry(PRegisterRange range) {
             Ranges.push_back(range);
@@ -20,19 +22,26 @@ namespace {
     typedef std::shared_ptr<TSerialPollEntry> PSerialPollEntry;
 };
 
-TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices, PPort port)
+TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
+                             PPort port,
+                             const TPortOpenCloseLogic::TSettings& openCloseSettings)
     : Port(port),
       Devices(devices),
       Active(false),
       ReadCallback([](PRegister, bool){}),
       ErrorCallback([](PRegister, bool){}),
       FlushNeeded(new TBinarySemaphore),
-      Plan(std::make_shared<TPollPlan>([this]() { return Port->CurrentTime(); })) {}
+      Plan(std::make_shared<TPollPlan>([this]() { return Port->CurrentTime(); })),
+      OpenCloseLogic(openCloseSettings),
+      ConnectLogger(std::chrono::minutes(5), "[serial client] ")
+{}
 
 TSerialClient::~TSerialClient()
 {
-    if (Active)
-        Disconnect();
+    Active = false;
+    if (Port->IsOpen()) {
+        Port->Close();
+    }
 
     // remove all registered devices
     ClearDevices();
@@ -49,27 +58,19 @@ void TSerialClient::AddRegister(PRegister reg)
     LOG(Debug) << "AddRegister: " << reg;
 }
 
-void TSerialClient::Connect()
+void TSerialClient::Activate()
 {
-    if (Active)
-        return;
-    if (!Handlers.size())
-        throw TSerialDeviceException("no registers defined");
-    try {
-        Port->Open();
+    if (!Active) {
+        if (Handlers.empty())
+            throw TSerialDeviceException(Port->GetDescription() + " no registers defined");
         Active = true;
-    } catch (const TSerialDeviceException& e) {
-        LOG(Warn) << e.what();
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        PrepareRegisterRanges();
     }
-    PrepareRegisterRanges();
 }
 
-void TSerialClient::Disconnect()
+void TSerialClient::Connect()
 {
-    if (Port->IsOpen())
-        Port->Close();
-    Active = false;
+    OpenCloseLogic.OpenIfAllowed(Port);
 }
 
 void TSerialClient::PrepareRegisterRanges()
@@ -127,7 +128,11 @@ void TSerialClient::DoFlush()
         if (!handler->NeedToFlush())
             continue;
         PrepareToAccessDevice(handler->Device());
-        MaybeUpdateErrorState(reg, handler->Flush());
+        auto flushRes = handler->Flush();
+        if (handler->CurrentErrorState() != TRegisterHandler::WriteError && handler->CurrentErrorState() != TRegisterHandler::ReadWriteError) {
+            ReadCallback(reg, flushRes.ValueIsChanged);
+        }
+        MaybeUpdateErrorState(reg, flushRes.Error);
     }
 }
 
@@ -150,6 +155,17 @@ void TSerialClient::WaitForPollAndFlush()
     }
 }
 
+void TSerialClient::UpdateFlushNeeded()
+{
+    for (const auto& reg: RegList) {
+        auto handler = Handlers[reg];
+        if (handler->NeedToFlush()) {
+            FlushNeeded->Signal();
+            break;
+        }
+    }
+}
+
 void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 {
     // avoid poll starvation
@@ -161,7 +177,7 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 void TSerialClient::SetReadError(PRegisterRange range)
 {
     for (auto reg: range->RegisterList()) {
-        reg->SetError();
+        reg->SetError(ST_UNKNOWN_ERROR);
         bool changed;
         auto handler = Handlers[reg];
 
@@ -198,19 +214,15 @@ std::list<PRegisterRange> TSerialClient::PollRange(PRegisterRange range)
     return newRanges;
 }
 
-void TSerialClient::Cycle()
+void TSerialClient::OpenPortCycle()
 {
-    Connect();
-
-    Port->CycleBegin();
-
     WaitForPollAndFlush();
 
     // devices whose registers were polled during this cycle and statues
-    std::map<PSerialDevice, std::set<TRegisterRange::EStatus>> devicesRangesStatuses;
+    std::map<PSerialDevice, std::set<EStatus>> devicesRangesStatuses;
 
     Plan->ProcessPending([&](const PPollEntry& entry) {
-        auto pollEntry = std::dynamic_pointer_cast<TSerialPollEntry>(entry);
+        auto pollEntry = dynamic_cast<TSerialPollEntry*>(entry.get());
         std::list<PRegisterRange> newRanges;
         for (auto range: pollEntry->Ranges) {
             auto device = range->Device();
@@ -229,7 +241,8 @@ void TSerialClient::Cycle()
                             LastAccessedDevice->EndSession();
                         }
                     } catch ( const TSerialDeviceTransientErrorException& e) {
-                        LOG(Warn) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
+                        auto& logger = LastAccessedDevice->GetIsDisconnected() ? Debug : Warn;
+                        LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
                     }
 
                     // Force Prepare() (i.e. start session)
@@ -237,17 +250,17 @@ void TSerialClient::Cycle()
                         LastAccessedDevice = device;
                         device->Prepare();
                     } catch ( const TSerialDeviceTransientErrorException& e) {
-                        LOG(Warn) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
-                        statuses.insert(TRegisterRange::ST_UNKNOWN_ERROR);
+                        LOG(Debug) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
+                        statuses.insert(ST_UNKNOWN_ERROR);
                     }
 
                     if (device->HasSetupItems()) {
                         auto wrote = device->WriteSetupRegisters();
-                        statuses.insert(wrote ? TRegisterRange::ST_OK : TRegisterRange::ST_UNKNOWN_ERROR);
+                        statuses.insert(wrote ? ST_OK : ST_UNKNOWN_ERROR);
                     }
                 }
                 // Interaction with disconnected device that has only errors - still disconnected
-                if (!statuses.empty() && statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size()) {
+                if (!statuses.empty() && statuses.count(ST_UNKNOWN_ERROR) == statuses.size()) {
                     SetReadError(range);
                     newRanges.push_back(range);
                     continue;
@@ -258,7 +271,7 @@ void TSerialClient::Cycle()
                 statuses.insert(range->GetStatus());
             } catch (const TSerialDeviceException& e) {
                 LOG(Error) << e.what();
-                statuses.insert(TRegisterRange::ST_UNKNOWN_ERROR);
+                statuses.insert(ST_UNKNOWN_ERROR);
                 SetReadError(range);
                 newRanges.push_back(range);
             }
@@ -266,6 +279,8 @@ void TSerialClient::Cycle()
         MaybeFlushAvoidingPollStarvationButDontWait();
         pollEntry->Ranges.swap(newRanges);
     });
+
+    UpdateFlushNeeded();
 
     for (const auto & deviceRangesStatuses: devicesRangesStatuses) {
         const auto & device = deviceRangesStatuses.first;
@@ -278,7 +293,7 @@ void TSerialClient::Cycle()
 
         bool deviceWasDisconnected = device->GetIsDisconnected(); // don't move after device->OnCycleEnd(...);
         {
-            bool cycleFailed = statuses.count(TRegisterRange::ST_UNKNOWN_ERROR) == statuses.size();
+            bool cycleFailed = statuses.count(ST_UNKNOWN_ERROR) == statuses.size();
             device->OnCycleEnd(!cycleFailed);
         }
 
@@ -291,13 +306,53 @@ void TSerialClient::Cycle()
         p->EndPollCycle();
     }
 
-    // Port status
-    {
-        bool cycleFailed = std::all_of(Devices.begin(), Devices.end(),
-            [](const PSerialDevice & device){ return device->GetIsDisconnected(); }
-        );
+    bool cycleFailed = std::all_of(Devices.begin(), Devices.end(),
+        [](const PSerialDevice & device){ return device->GetIsDisconnected(); }
+    );
 
-        Port->CycleEnd(!cycleFailed);
+    OpenCloseLogic.CloseIfNeeded(Port, cycleFailed);
+}
+
+void TSerialClient::ClosedPortCycle()
+{
+    std::unordered_set<PSerialDevice> polledDevices;
+    Plan->ProcessPending([&](const PPollEntry& entry) {
+        auto pollEntry = std::dynamic_pointer_cast<TSerialPollEntry>(entry);
+        for (auto range: pollEntry->Ranges) {
+            polledDevices.insert(range->Device());
+            SetReadError(range);
+        }
+    });
+
+    for (const auto& p: polledDevices) {
+        p->OnCycleEnd(false);
+        p->EndPollCycle();
+    }
+
+    for (const auto& reg: RegList) {
+        auto handler = Handlers[reg];
+        if (!handler->NeedToFlush())
+            continue;
+        MaybeUpdateErrorState(reg, handler->Flush(TRegisterHandler::WriteError).Error);
+    }
+}
+
+void TSerialClient::Cycle()
+{
+    Activate();
+
+    try {
+        OpenCloseLogic.OpenIfAllowed(Port);
+    } catch (const std::exception& e) {
+        ConnectLogger.Log(e.what(), Debug, Error);
+    }
+
+    if (Port->IsOpen()) {
+        ConnectLogger.DropTimeout();
+        OpenPortCycle();
+    } else {
+        ClosedPortCycle();
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
 
@@ -351,14 +406,16 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
             try {
                 LastAccessedDevice->EndSession();
             } catch ( const TSerialDeviceTransientErrorException& e) {
-                LOG(Warn) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
+                auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
+                LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
             }
         }
         LastAccessedDevice = dev;
         try {
             dev->Prepare();
         } catch ( const TSerialDeviceTransientErrorException& e) {
-            LOG(Warn) << "TSerialDevice::Prepare(): warning: " << e.what() << " [slave_id is " << dev->ToString() + "]";
+            auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
+            LOG(logger) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << dev->ToString() + "]";
         }
     }
 }

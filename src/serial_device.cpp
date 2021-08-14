@@ -2,17 +2,14 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <string.h>
 #include "log.h"
 
-#define LOG(logger) ::logger.Log() << "[serial device] "
+#define LOG(logger) logger.Log() << "[serial device] "
 
 IProtocol::IProtocol(const std::string& name, const TRegisterTypes& reg_types)
-    : Name(name)
-{
-    RegTypes = std::make_shared<TRegisterTypeMap>();
-    for (const auto& rt : reg_types)
-        RegTypes->insert(std::make_pair(rt.Name, rt));
-}
+    : Name(name), RegTypes(std::make_shared<TRegisterTypeMap>(reg_types))
+{}
 
 const std::string& IProtocol::GetName() const
 { 
@@ -29,6 +26,11 @@ bool IProtocol::IsModbus() const
     return false;
 }
 
+bool IProtocol::SupportsBroadcast() const
+{
+    return false;
+}
+
 TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name, const TRegisterTypes& reg_types, bool allowBroadcast) 
     : IProtocol(name, reg_types), AllowBroadcast(allowBroadcast)
 {}
@@ -36,6 +38,11 @@ TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name, const TR
 bool TUint32SlaveIdProtocol::IsSameSlaveId(const std::string& id1, const std::string& id2) const
 {
     return (TUInt32SlaveId(id1, AllowBroadcast) == TUInt32SlaveId(id2, AllowBroadcast));
+}
+
+bool TUint32SlaveIdProtocol::SupportsBroadcast() const
+{
+    return AllowBroadcast;
 }
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
@@ -88,15 +95,20 @@ std::list<PRegisterRange> TSerialDevice::ReadRegisterRange(PRegisterRange range)
     	try {
             Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
             reg->SetValue(ReadRegister(reg));
-        } catch (const TSerialDeviceTransientErrorException& e) {
-            reg->SetError();
+        } catch (const TSerialDeviceInternalErrorException& e) {
+            reg->SetError(ST_DEVICE_ERROR);
             LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "]";
+        } catch (const TSerialDeviceTransientErrorException& e) {
+            reg->SetError(ST_UNKNOWN_ERROR);
+            auto& logger = GetIsDisconnected() ? Debug : Warn;
+            LOG(logger) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
+                        << reg->Device()->ToString() + "]";
         } catch (const TSerialDevicePermanentRegisterException& e) {
             reg->SetAvailable(false);
-            reg->SetError();
-            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): warning: " << e.what() << " [slave_id is "
-                  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now counts as unsupported";
+            reg->SetError(ST_DEVICE_ERROR);
+            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
+                  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now marked as unsupported";
         }
     }
     return std::list<PRegisterRange>{range};
@@ -114,18 +126,17 @@ void TSerialDevice::OnCycleEnd(bool ok)
         IsDisconnected = false;
         RemainingFailCycles = _DeviceConfig->DeviceMaxFailCycles;
     } else {
-        if (LastSuccessfulCycle == std::chrono::steady_clock::time_point()) {
-            LastSuccessfulCycle = std::chrono::steady_clock::now();
-        }
 
         if (RemainingFailCycles > 0) {
             --RemainingFailCycles;
         }
 
         if ((std::chrono::steady_clock::now() - LastSuccessfulCycle > _DeviceConfig->DeviceTimeout) &&
-            RemainingFailCycles == 0)
+            RemainingFailCycles == 0 &&
+            (!IsDisconnected || LastSuccessfulCycle == std::chrono::steady_clock::time_point()))
         {
             IsDisconnected = true;
+            LastSuccessfulCycle = std::chrono::steady_clock::now();
             LOG(Info) << "device " << ToString() << " is disconnected";
         }
     }
@@ -152,10 +163,10 @@ bool TSerialDevice::WriteSetupRegisters()
 {
     for (const auto& setup_item : SetupItems) {
         try {
-        	LOG(Info) << "Init: " << setup_item->Name 
+            WriteRegister(setup_item->Register, setup_item->RawValue);
+            LOG(Info) << "Init: " << setup_item->Name 
                       << ": setup register " << setup_item->Register->ToString()
-                      << " <-- " << setup_item->Value;
-            WriteRegister(setup_item->Register, setup_item->Value);
+                      << " <-- " << setup_item->HumanReadableValue << " (0x" << std::hex << setup_item->RawValue << ")";
         } catch (const TSerialDeviceException & e) {
             LOG(Warn) << "failed to write: " << setup_item->Register->ToString() << ": " << e.what();
             return false;
@@ -185,4 +196,12 @@ bool TUInt32SlaveId::operator==(const TUInt32SlaveId& id) const
         return true;
     }
     return SlaveId == id.SlaveId;
+}
+
+uint64_t CopyDoubleToUint64(double value)
+{
+    uint64_t res = 0;
+    static_assert((sizeof(res) >= sizeof(value)), "Can't fit double into uint64_t");
+    memcpy(&res, &value, sizeof(value));
+    return res;
 }

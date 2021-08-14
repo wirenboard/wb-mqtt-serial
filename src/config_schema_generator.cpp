@@ -10,7 +10,7 @@ using namespace WBMQTT::JSON;
 namespace
 {
     //  {
-    //      "type": "integer",
+    //      "type": "number",
     //      "minimum": MIN,
     //      "maximum": MAX,
     //      "enum": [ ... ]
@@ -18,7 +18,7 @@ namespace
     Json::Value MakeParameterSchema(const Json::Value& setupRegister)
     {
         Json::Value r;
-        r["type"] = "integer";
+        r["type"] = "number";
         SetIfExists(r, "enum",    setupRegister, "enum");
         SetIfExists(r, "minimum", setupRegister, "min");
         SetIfExists(r, "maximum", setupRegister, "max");
@@ -46,7 +46,16 @@ namespace
 
     //  {
     //      "oneOf": [
-    //          { "$ref": "#/definitions/DEVICE_SCHEMA_NAME" },
+    //          {
+    //              "allOf": [ { "$ref": "#/definitions/DEVICE_SCHEMA_NAME" } ],
+    //              "properties": {
+    //                  "device_type": {
+    //                      "type": "string",
+    //                      "enum": [ DEVICE_TYPE ]
+    //                  }
+    //              },
+    //              "required": [ "device_type" ]
+    //          },
     //          ...
     //      ],
     //      "properties": {
@@ -55,19 +64,22 @@ namespace
     //              "enum": [ CHANNEL_NAME ]
     //          }
     //      },
-    //      "required": ["name", "device_type"]
+    //      "required": ["name"]
     //  }
     Json::Value MakeTabOneOfChannelSchema(const Json::Value& channelTemplate, const std::string& deviceType)
     {
         Json::Value r;
         r["properties"]["name"] = MakeSingleValuePropery(channelTemplate["name"].asString());
-        auto& req = MakeArray("required", r);
-        req.append("name");
-        req.append("device_type");
+        MakeArray("required", r).append("name");
 
         auto& items = MakeArray("oneOf", r);
         for (const auto& subDeviceName: channelTemplate["oneOf"]) {
-            items.append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(deviceType, subDeviceName.asString())));
+            auto name(subDeviceName.asString());
+            Json::Value i;
+            i["properties"]["device_type"] = MakeSingleValuePropery(name);
+            MakeArray("required", i).append("device_type");
+            MakeArray("allOf", i).append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(deviceType, name)));
+            items.append(i);
         }
 
         return r;
@@ -105,7 +117,6 @@ namespace
 
     //  {
     //      "allOf": [
-    //          { "$ref": CUSTOM_CHANNEL_SCHEMA },
     //          {
     //              "not": {
     //                  "properties": {
@@ -115,7 +126,8 @@ namespace
     //                      }
     //                  }
     //              }
-    //          }
+    //          },
+    //          { "$ref": CUSTOM_CHANNEL_SCHEMA }
     //      ]
     //  }
     Json::Value MakeCustomChannelsSchema(const std::vector<std::string>& names, const std::string& customChannelsSchemaRef)
@@ -128,8 +140,8 @@ namespace
         }
         Json::Value r;
         auto& allOf = MakeArray("allOf", r);
-        allOf.append(MakeObject("$ref", customChannelsSchemaRef));
         allOf.append(n);
+        allOf.append(MakeObject("$ref", customChannelsSchemaRef));
         return r;
     }
 
@@ -153,7 +165,7 @@ namespace
             items.append(channelSchema);
             names.push_back(channel["name"].asString());
         }
-        if (!names.empty()) {
+        if (!names.empty() && !customChannelsSchemaRef.empty()) {
             items.append(MakeCustomChannelsSchema(names, customChannelsSchemaRef));
         }
         return r;
@@ -233,12 +245,16 @@ namespace
                          Json::Value& devicesArray,
                          Json::Value& definitions)
     {
+        auto protocolName = GetProtocolName(deviceTemplate.Schema);
+
         Json::Value res;
         res["type"] = "object";
 
         auto& req = MakeArray("required", res);
         req.append("device_type");
-        req.append("slave_id");
+        if (!deviceFactory.GetProtocol(protocolName)->SupportsBroadcast()) {
+            req.append("slave_id");
+        }
 
         res["properties"]["device_type"] = MakeSingleValuePropery(deviceTemplate.Type);
 
@@ -246,14 +262,18 @@ namespace
             MakeDeviceParametersSchema(res["properties"], req, deviceTemplate.Schema);
         }
 
-        auto protocolName = GetProtocolName(deviceTemplate.Schema);
 
         if (deviceTemplate.Schema.isMember("channels")) {
             auto customChannelsSchemaRef = deviceFactory.GetCustomChannelSchemaRef(protocolName);
             res["properties"]["channels"] = MakeDeviceChannelsSchema(deviceTemplate.Schema["channels"], deviceTemplate.Type, customChannelsSchemaRef);
         }
 
-        MakeArray("allOf", res).append(MakeObject("$ref", deviceFactory.GetCommonDeviceSchemaRef(protocolName) + "_no_channels"));
+        auto deviceSchemaRef = deviceFactory.GetCommonDeviceSchemaRef(protocolName);
+        const auto NO_CHANNELS_SUFFIX = "_no_channels";
+        if (!WBMQTT::StringHasSuffix(deviceSchemaRef, NO_CHANNELS_SUFFIX)) {
+            deviceSchemaRef += NO_CHANNELS_SUFFIX;
+        }
+        MakeArray("allOf", res).append(MakeObject("$ref", deviceSchemaRef));
 
         TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
         if (deviceTemplate.Schema.isMember("subdevices")) {

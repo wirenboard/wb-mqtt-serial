@@ -1,8 +1,234 @@
+
 wb-mqtt-serial (2.23.1) stable; urgency=medium
 
   * Template for Eliwell-IDPlus-9xx was added
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Sat, 14 Aug 2021 14:06:34 +0300
+
+wb-mqtt-serial (2.23.0) stable; urgency=medium
+
+  * "value" instead of "text" is set as default control type for Modbus devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 06 Aug 2021 12:09:07 +0500
+
+wb-mqtt-serial (2.22.3) stable; urgency=medium
+
+  * IDPAS parameter is added to Energomera CE102M device template
+  * Validation of custom channel's register addresses is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 28 Jul 2021 10:18:36 +0500
+
+wb-mqtt-serial (2.22.2) stable; urgency=medium
+
+  * Separate Energomera CE301 and CE303 templates
+  * Keep Energomera CE301 device_type for existing user configurations
+
+ -- Gennadiy Grebenyuk <gennadiy.grebenyuk@wirenboard.ru>  Tue, 27 Jul 2021 11:20:39 +0300
+
+wb-mqtt-serial (2.22.1) stable; urgency=medium
+
+  * guard_interval_us description for web-interface is updated
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 19 Jul 2021 15:57:34 +0500
+
+wb-mqtt-serial (2.22.0) stable; urgency=medium
+
+  * off_value is added to channel's config. 
+    It defines a value written to register after receiving of "0" in "on" topic
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Sun, 18 Jul 2021 16:33:03 +0500
+
+wb-mqtt-serial (2.21.0) stable; urgency=medium
+
+  * Energomera CE102M support is added
+  * obis_* register types are deprecated, use item_*, temperature and power_factor
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 16 Jul 2021 12:14:00 +0500
+
+wb-mqtt-serial (2.20.0) experimental; urgency=medium
+
+  * Support for minimum value in channels
+  * /meta/precision and /meta/min topics for controls are added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 14 Jul 2021 16:34:31 +0500
+
+wb-mqtt-serial (2.19.2) stable; urgency=medium
+
+  * Configs with comments are sent to web-interface correctly
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 14 Jul 2021 12:10:34 +0500
+
+wb-mqtt-serial (2.19.1) stable; urgency=medium
+
+  * Config validation time is decreased
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 13 Jul 2021 18:38:17 +0500
+
+wb-mqtt-serial (2.19.0) stable; urgency=medium
+
+  * Retry of failed registers writes for "on" topic messages is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 08 Jun 2021 14:21:45 +0500
+
+wb-mqtt-serial (2.18.0) stable; urgency=medium
+
+  * Support for parameter description in device templates is added.
+    Description is shown near parameter editor in web-interface. 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 06 Jul 2021 13:47:59 +0500
+
+wb-mqtt-serial (2.17.1) stable; urgency=medium
+
+  * A crush during DLMS device config parsing is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 06 Jul 2021 09:58:34 +0500
+
+wb-mqtt-serial (2.17.0) stable; urgency=medium
+
+  * WBE2-I-EBUS template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 23 Jun 2021 14:54:27 +0300
+
+wb-mqtt-serial (2.16.7) stable; urgency=medium
+
+  * Adding error_value for current motion and max motion in template
+    MSWv3
+
+ -- Dmitry Orlov <dmitry.orlov@wirenboard.ru>  Thu, 01 Jul 2021 14:22:25 +0300
+
+wb-mqtt-serial (2.16.6) stable; urgency=medium
+
+  * Module WBE2-I-OPENTHERM register 211 (input) format was changed from
+    u16 to s16
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 23 Jun 2021 15:26:00 +0300
+
+wb-mqtt-serial (2.16.5) stable; urgency=medium
+
+  * Remake of templates Modbus relay modules WB-MRxx using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 04 Jun 2021 10:58:13 +0300
+
+wb-mqtt-serial (2.16.4) stable; urgency=medium
+
+  * Revert: Remake MCM8 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 11:57:11 +0300
+
+wb-mqtt-serial (2.16.3) stable; urgency=medium
+
+  * Remake MCM8 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 11:57:11 +0300
+
+wb-mqtt-serial (2.16.2) stable; urgency=medium
+
+  * Remake MAI2-mini-CC template using groups
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 08:13:08 +0300
+
+wb-mqtt-serial (2.16.1) stable; urgency=medium
+
+  * Remake MAO4 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 08 Jun 2021 16:00:19 +0300
+
+wb-mqtt-serial (2.16.0) stable; urgency=medium
+
+  * WBE2-I-OPENTHERM template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 11 Jun 2021 16:06:39 +0300
+
+wb-mqtt-serial (2.15.6) stable; urgency=medium
+
+  * remove old wb-homa-modbus metapackage
+  * fix debian files to make lintian happier
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 08 Jun 2021 01:11:02 +0300
+
+wb-mqtt-serial (2.15.5) stable; urgency=medium
+
+  * Human readable error messages for config editor in wb-mqtt-homeui are added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 03 Jun 2021 18:58:00 +0500
+
+wb-mqtt-serial (2.15.4) stable; urgency=medium
+
+  * Response timeout for MSW v.3 is changed to 150 ms to make it compatible with firmware 4.16.9
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 07 Jun 2021 18:12:57 +0500
+
+wb-mqtt-serial (2.15.3) stable; urgency=medium
+
+  * Enabled parameters in Mercury 234 D and Energomera CE308 Z templates are moved to top of a channel list
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 04 Jun 2021 20:21:00 +0500
+
+wb-mqtt-serial (2.15.2) stable; urgency=medium
+
+  * Corrections in MSWv3 template: channels and parameters names, scales, format types, error values according to remarks and documentation
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Mon, 24 May 2021 11:05:00 +0300
+
+wb-mqtt-serial (2.15.1) stable; urgency=medium
+
+  * Page titles are removed from JSON schema for homeui in tabbed channels representation.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 02 Jun 2021 19:12:00 +0500
+
+wb-mqtt-serial (2.15.0) stable; urgency=medium
+
+  * NEVA MT 113/123/124 support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 01 Jun 2021 11:25:00 +0500
+ 
+wb-mqtt-serial (2.14.0) experimental; urgency=medium
+
+  * Support for WinDeco, Dooya and Somfy SDN curtain motors is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 21 Apr 2021 11:53:00 +0500
+
+wb-mqtt-serial (2.13.2) stable; urgency=medium
+
+  * refactoring of WB-MSW v.3 template: order of parameters and channels was changed in similar way like before adding parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Mon, 24 May 2021 11:05:00 +0300
+
+wb-mqtt-serial (2.13.1) stable; urgency=medium
+
+  * refactoring of WB-MSW v.3 templates using groups and parameters
+
+ -- Evgeny Boger <boger@contactless.ru>  Fri, 21 May 2021 14:26:00 +0300
+
+wb-mqtt-serial (2.13.0) experimental; urgency=medium
+
+  * "reg_type", "format", "order", "scale" and "offset" fields are added to parameters in device templates
+  * Floating point numbers support in parameters
+  * Channels and parameters in device templates can be organized in groups for displaying in web-interface.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 06 May 2021 10:46:00 +0500
+
+wb-mqtt-serial (2.12.2) experimental; urgency=medium
+
+  * MAP12H and MAP3H templates are fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 05 May 2021 13:04:00 +0500
+
+wb-mqtt-serial (2.12.1) experimental; urgency=medium
+
+  * Performace optimizations during register polling.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 23 Apr 2021 14:21:00 +0500
+
+wb-mqtt-serial (2.12.0) experimental; urgency=medium
+
+  * Do not show response errors as warnings for disconnected devices. They are now in debug channel.
+  * Thread names are set according to port parameters.
+  * "connection_timeout_ms" and "connection_max_fail_cycles" can be used for all port types.
+  * Port open errors are shown with 5 minutes interval, not every poll cycle.
+  * Devices on closed port are not polled and marked as disconnected with appropriate errors in /meta/error topics.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 23 Apr 2021 14:08:00 +0500
 
 wb-mqtt-serial (2.11.1) experimental; urgency=medium
 
@@ -159,13 +385,13 @@ wb-mqtt-serial (2.4.0) experimental; urgency=medium
   * NEVA energy meters support
   * Energomera CE301/CE303 energy meters support
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 21 Oct 2020 09:34:12 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 21 Oct 2020 09:34:12 +0500
 
 wb-mqtt-serial (2.3.0) experimental; urgency=medium
 
   * Modbus TCP support
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 30 Sep 2020 10:19:22 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 30 Sep 2020 10:19:22 +0500
 
 wb-mqtt-serial (2.2.2) experimental; urgency=medium
 
@@ -208,7 +434,7 @@ wb-mqtt-serial (2.1.0) experimental; urgency=medium
   * interframe timeouts are calculated according to port speeds for modbus, modbus_io, milur, mercury200, mercury 230 and lls protocols
   * frame_timeout_ms and response_timeout_ms are set in all device templates
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 11 Sep 2020 11:38:01 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 11 Sep 2020 11:38:01 +0500
 
 wb-mqtt-serial (2.0.3) experimental; urgency=medium
 
@@ -350,13 +576,13 @@ wb-mqtt-serial (1.49.2) stable; urgency=medium
 
   * add ddm845r template 
 
- -- Alexander Kilpio <kilpio@wirenboard.ru> Mon, 25 Mar 2019 15:05:00 +0300
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Mon, 25 Mar 2019 15:05:00 +0300
 
 wb-mqtt-serial (1.49.1) stable; urgency=medium
 
   * add  wb-mrm2-mini template 
 
- -- Alexander Kilpio <kilpio@wirenboard.ru> Mon, 14 Mar 2019 18:22:00 +0300
+ -- Alexander Kilpio <kilpio@wirenboard.ru>  Mon, 14 Mar 2019 18:22:00 +0300
 
 wb-mqtt-serial (1.49.0) stable; urgency=medium
 
@@ -397,7 +623,7 @@ wb-mqtt-serial (1.46) stable; urgency=medium
 
 wb-mqtt-serial (1.45) stable; urgency=medium
 
-* add template for WB-MSW v.3
+  * add template for WB-MSW v.3
 
  -- Evgeny Boger <boger@contactless.ru>  Wed, 03 Oct 2018 22:09:51 +0300
 
@@ -826,6 +1052,8 @@ wb-mqtt-serial (1.16) stable; urgency=medium
 wb-mqtt-serial (1.15.3) stable; urgency=medium
 
   * fixes incorrect Mercury 230 readings
+
+ -- Evgeny Boger <boger@contactless.ru>  Mon, 27 Jun 2016 15:36:47 +0300
 
 wb-mqtt-serial (1.15.2) stable; urgency=medium
 

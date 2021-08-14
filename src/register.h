@@ -42,6 +42,12 @@ enum class EWordOrder {
     LittleEndian
 };
 
+enum EStatus {
+    ST_OK,
+    ST_UNKNOWN_ERROR, // response from device either not parsed or not received at all (crc error, timeout)
+    ST_DEVICE_ERROR // valid response from device, which reports error
+};
+
 inline ::std::ostream& operator<<(::std::ostream& os, EWordOrder val) {
     switch (val) {
         case EWordOrder::BigEndian:
@@ -53,21 +59,36 @@ inline ::std::ostream& operator<<(::std::ostream& os, EWordOrder val) {
     return os;
 }
 
-struct TRegisterType {
-    TRegisterType(int index, const std::string& name, const std::string& defaultControlType,
-                  RegisterFormat defaultFormat = U16,
-                  bool read_only = false, EWordOrder defaultWordOrder = EWordOrder::BigEndian):
-        Index(index), Name(name), DefaultControlType(defaultControlType),
-        DefaultFormat(defaultFormat), DefaultWordOrder(defaultWordOrder), ReadOnly(read_only) {}
-    int Index;
+struct TRegisterType
+{
+    TRegisterType() = default;
+    TRegisterType(int                index,
+                  const std::string& name,
+                  const std::string& defaultControlType,
+                  RegisterFormat     defaultFormat = U16,
+                  bool               readOnly = false, 
+                  EWordOrder         defaultWordOrder = EWordOrder::BigEndian);
+
+    int Index = 0;
     std::string Name, DefaultControlType;
-    RegisterFormat DefaultFormat;
-    EWordOrder DefaultWordOrder;
-    bool ReadOnly;
+    RegisterFormat DefaultFormat = U16;
+    EWordOrder DefaultWordOrder = EWordOrder::BigEndian;
+    bool ReadOnly = false;
 };
 
 typedef std::vector<TRegisterType> TRegisterTypes;
-typedef std::map<std::string, TRegisterType> TRegisterTypeMap;
+
+class TRegisterTypeMap
+{
+    std::unordered_map<std::string, TRegisterType> RegTypes;
+    TRegisterType                                  DefaultType;
+public:
+    TRegisterTypeMap(const TRegisterTypes& types);
+
+    const TRegisterType& Find(const std::string& typeName) const;
+    const TRegisterType& GetDefaultType() const;
+};
+
 typedef std::shared_ptr<TRegisterTypeMap> PRegisterTypeMap;
 
 struct TRegisterConfig;
@@ -134,6 +155,25 @@ public:
 
 //! Casts addr to uint32_t and returns it. Throws std::bad_cast if cast is not possible.
 uint32_t GetUint32RegisterAddress(const IRegisterAddress& addr);
+
+//! Register address represented by a string
+class TStringRegisterAddress: public IRegisterAddress
+{
+    std::string Addr;
+public:
+    TStringRegisterAddress() = default;
+
+    TStringRegisterAddress(const std::string& addr);
+
+    std::string ToString() const override;
+
+    bool operator<(const IRegisterAddress& addr) const override;
+
+    IRegisterAddress* CalcNewAddress(uint32_t /*offset*/,
+                                     uint32_t /*stride*/,
+                                     uint32_t /*registerByteWidth*/,
+                                     uint32_t /*addressByteStep*/) const override;
+};
 
 class TRegisterConfig : public std::enable_shared_from_this<TRegisterConfig>
 {
@@ -239,8 +279,8 @@ struct TRegister : public TRegisterConfig
     //! Set register's availability
     void SetAvailable(bool available);
 
-    bool GetError() const;
-    void SetError();
+    EStatus GetError() const;
+    void SetError(EStatus error);
 
     uint64_t GetValue() const;
     void SetValue(uint64_t value);
@@ -248,7 +288,7 @@ struct TRegister : public TRegisterConfig
 private:
     std::weak_ptr<TSerialDevice> _Device;
     bool Available = true;
-    bool Error = true;
+    EStatus Error = ST_UNKNOWN_ERROR;
     uint64_t Value;
 
     // Intern() implementation for TRegister
@@ -384,16 +424,10 @@ inline EWordOrder WordOrderFromName(const std::string& name) {
         return EWordOrder::BigEndian;
 }
 
-
 class TRegisterRange {
 public:
     typedef std::function<void(PRegister reg, uint64_t new_value)> TValueCallback;
     typedef std::function<void(PRegister reg)> TErrorCallback;
-    enum EStatus {
-        ST_OK,
-        ST_UNKNOWN_ERROR, // response from device either not parsed or not received at all (crc error, timeout)
-        ST_DEVICE_ERROR // valid response from device, which reports error
-    };
 
     virtual ~TRegisterRange() = default;
 
@@ -407,7 +441,7 @@ public:
     /**
      * @brief Set error to all registers in range
      */
-    void SetError();
+    void SetError(EStatus error);
 
     virtual EStatus GetStatus() const = 0;
 
@@ -434,3 +468,29 @@ public:
 };
 
 typedef std::shared_ptr<TSimpleRegisterRange> PSimpleRegisterRange;
+
+uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value);
+
+/**
+ * @brief Tries to get a value from string and 
+ *        to convert it to raw bytes according to register config.
+ *        Performs scaling, rounding and byte order inversion of a parsed value,
+ *        if specified in config.
+ *        Accepts:
+ *        - signed and unsigned integers;
+ *        - floating point values with or without exponent;
+ *        - hex values.
+ *        Throws std::invalid_argument or std::out_of_range on conversion error.
+ * @param reg register config
+ * @param str string to convert
+ */
+uint64_t ConvertToRawValue(const TRegisterConfig& reg, const std::string& str);
+
+/**
+ * @brief Converts raw bytes to string according to register config
+ *        Performs scaling, rounding and byte order inversion of a value,
+ *        if specified in config.
+ * @param reg register config
+ * @param val raw bytes
+ */
+std::string ConvertFromRawValue(const TRegisterConfig& reg, uint64_t val);

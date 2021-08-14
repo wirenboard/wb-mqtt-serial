@@ -2,6 +2,7 @@
 #include "serial_device.h"
 #include "crc16.h"
 #include "log.h"
+#include "bin_utils.h"
 
 #include <cmath>
 #include <array>
@@ -12,8 +13,9 @@
 #include <math.h>
 
 using namespace std;
+using namespace BinUtils;
 
-#define LOG(logger) ::logger.Log() << "[modbus] "
+#define LOG(logger) logger.Log() << "[modbus] "
 
 namespace Modbus    // modbus protocol declarations
 {
@@ -49,6 +51,10 @@ namespace Modbus    // modbus protocol declarations
         };
     };
 
+    class TModbusRegisterRange;
+    void ComposeReadRequestPDU(uint8_t* pdu, TModbusRegisterRange& range, int shift);
+    size_t InferReadResponsePDUSize(TModbusRegisterRange& range);
+
     class TModbusRegisterRange: public TRegisterRange
     {
     public:
@@ -67,14 +73,37 @@ namespace Modbus    // modbus protocol declarations
         bool ShouldReadOneByOne() const { return ReadOneByOne; }
         void SetReadOneByOne(bool readOneByOne) { ReadOneByOne = readOneByOne; }
 
+        const TRequest& GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift)
+        {
+            if (Request.empty()) {
+                // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
+                const uint16_t REQUEST_PDU_SIZE = 5;
+
+                Request.resize(traits.GetPacketSize(REQUEST_PDU_SIZE));
+                Modbus::ComposeReadRequestPDU(traits.GetPDU(Request), *this, shift);
+                traits.FinalizeRequest(Request, slaveId);
+            }
+            return Request;
+        }
+
+        size_t GetResponseSize(IModbusTraits& traits)
+        {
+            if (ResponseSize == 0) {
+                ResponseSize = traits.GetPacketSize(InferReadResponsePDUSize(*this));
+            }
+            return ResponseSize;
+        }
+
     private:
-        bool            ReadOneByOne    = false;
-        bool            HasHolesFlg     = false;
-        int             Start;
-        int             Count;
-        uint8_t*        Bits  = 0;
-        uint16_t*       Words = 0;
-        EStatus         Status = ST_UNKNOWN_ERROR;
+        bool      ReadOneByOne    = false;
+        bool      HasHolesFlg     = false;
+        int       Start;
+        int       Count;
+        uint8_t*  Bits  = 0;
+        uint16_t* Words = 0;
+        EStatus   Status = ST_UNKNOWN_ERROR;
+        TRequest  Request;
+        size_t    ResponseSize = 0;
     };
 
     using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
@@ -105,12 +134,6 @@ namespace   // general utilities
     inline bool IsSingleBitType(int type)
     {
         return (type == Modbus::REG_COIL) || (type == Modbus::REG_DISCRETE);
-    }
-
-    inline uint64_t MersenneNumber(uint8_t bitCount)
-    {
-        assert(bitCount <= 64);
-        return (uint64_t(1) << bitCount) - 1;
     }
 }   // general utilities
 
@@ -159,11 +182,11 @@ namespace Modbus    // modbus protocol common utilities
             throw std::runtime_error("Modbus register range too large");
     }
 
-    void TModbusRegisterRange::SetStatus(TRegisterRange::EStatus status) {
+    void TModbusRegisterRange::SetStatus(EStatus status) {
         Status = status;
     }
 
-    TRegisterRange::EStatus TModbusRegisterRange::GetStatus() const
+    EStatus TModbusRegisterRange::GetStatus() const
     {
         return Status;
     }
@@ -456,7 +479,7 @@ namespace Modbus    // modbus protocol common utilities
 
             auto rBitPos = bitPosEnd - bitPos - bitCount;
 
-            auto mask = MersenneNumber(bitCount);
+            auto mask = GetLSBMask(bitCount);
 
             auto valuePart = mask & (value >> rBitPos);
 
@@ -499,7 +522,7 @@ namespace Modbus    // modbus protocol common utilities
 
         auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
 
-        auto mask = MersenneNumber(bitCount) << localBitOffset;
+        auto mask = GetLSBMask(bitCount) << localBitOffset;
 
         auto wordValue = (~mask & cachedValue) | (mask & (value << localBitOffset));
 
@@ -581,7 +604,7 @@ namespace Modbus    // modbus protocol common utilities
 
                 auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
 
-                auto mask = MersenneNumber(bitCount);
+                auto mask = GetLSBMask(bitCount);
 
                 r |= (mask & (data >> localBitOffset)) << bitsWritten;
 
@@ -592,7 +615,7 @@ namespace Modbus    // modbus protocol common utilities
 
             }
             if ((reg->UnsupportedValue) && (*reg->UnsupportedValue == r)) {
-                reg->SetError();
+                reg->SetError(ST_DEVICE_ERROR);
                 reg->SetAvailable(false);
             } else {
                 reg->SetValue(r);
@@ -743,50 +766,55 @@ namespace Modbus    // modbus protocol common utilities
 
     void ReadRange(IModbusTraits& traits, TModbusRegisterRange& range, TPort& port, uint8_t slaveId, int shift)
     {
-        range.SetStatus(TRegisterRange::ST_UNKNOWN_ERROR);
+        range.SetStatus(ST_UNKNOWN_ERROR);
 
-        // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
-        const uint16_t REQUEST_PDU_SIZE = 5;
-
-        TRequest request(traits.GetPacketSize(REQUEST_PDU_SIZE));
-        TResponse response(traits.GetPacketSize(InferReadResponsePDUSize(range)));
-        Modbus::ComposeReadRequestPDU(traits.GetPDU(request), range, shift);
-        traits.FinalizeRequest(request, slaveId);
-
+        TResponse response(range.GetResponseSize(traits));
         try {
+            const auto& request = range.GetRequest(traits, slaveId, shift);
             auto pduSize = ProcessRequest(traits, port, request, response, *range.Device()->DeviceConfig());
             ParseReadResponse(traits.GetPDU(response), pduSize, range);
-            range.SetStatus(TRegisterRange::ST_OK);
+            range.SetStatus(ST_OK);
         } catch (const TMalformedResponseError &) {
             try {
                 port.SkipNoise();
             } catch (const std::exception & e) {
                 LOG(Warn) << "SkipNoise failed: " << e.what();
             }
-            range.SetStatus(TRegisterRange::ST_UNKNOWN_ERROR);
+            range.SetStatus(ST_UNKNOWN_ERROR);
             throw;
         } catch (const TSerialDevicePermanentRegisterException&) {
-            range.SetStatus(TRegisterRange::ST_DEVICE_ERROR);
+            range.SetStatus(ST_DEVICE_ERROR);
             throw;
         } catch (const TSerialDeviceTransientErrorException&) {
-            range.SetStatus(TRegisterRange::ST_UNKNOWN_ERROR);
+            range.SetStatus(ST_UNKNOWN_ERROR);
             throw;
         }
     }
 
-    void ProcessRangeException(TModbusRegisterRange& range, const char* msg)
+    void ProcessRangeException(TModbusRegisterRange& range, const char* msg, EStatus error)
     {
-        range.SetError();
-        LOG(Warn) << "failed to read " << range << ": " << msg;
+        range.SetError(error);
+        auto& logger = range.Device()->GetIsDisconnected() ? Debug : Warn;
+        LOG(logger) << "failed to read " << range << ": " << msg;
     }
 
+    struct TTruncatedRegisterList
+    {
+        bool                 IsValid = false;
+        std::list<PRegister> Regs;
+    };
+
     // Remove unsupported registers on borders
-    std::list<PRegister> RemoveUnsupportedFromBorders(std::list<PRegister> l) {
-        auto it = std::find_if(l.begin(), l.end(), [](auto& r) {return r->IsAvailable();});
-        l.erase(l.begin(), it);
-        auto it2 = std::find_if(l.rbegin(), l.rend(), [](auto& r) {return r->IsAvailable();});
-        l.erase(it2.base(), l.end());
-        return l;
+    TTruncatedRegisterList RemoveUnsupportedFromBorders(const std::list<PRegister>& l)
+    {
+        TTruncatedRegisterList res;
+        auto s = std::find_if(l.begin(), l.end(), [](auto& r) {return r->IsAvailable();});
+        auto e = std::find_if(l.rbegin(), std::make_reverse_iterator(s), [](auto& r) {return r->IsAvailable();});
+        if ((s != l.begin()) || (e != l.rbegin())) {
+            std::copy(s, e.base(), std::back_inserter(res.Regs));
+            res.IsValid = true;
+        }
+        return res;
     }
 
     std::list<PRegisterRange> SplitRangeByHoles(const std::list<PRegister>& regs, bool onlyAvailable)
@@ -819,17 +847,21 @@ namespace Modbus    // modbus protocol common utilities
         std::list<PRegisterRange> newRanges;
         try {
             ReadRange(traits, *range, port, slaveId, shift);
-            auto l = RemoveUnsupportedFromBorders(range->RegisterList());
-            if (!l.empty()) {
-                auto newRange = std::make_shared<Modbus::TModbusRegisterRange>(l, range->HasHoles());
-                newRange->SetStatus(range->GetStatus());
-                newRanges.push_back(newRange);
+            auto res = RemoveUnsupportedFromBorders(range->RegisterList());
+            if (res.IsValid) {
+                if (!res.Regs.empty()) {
+                    auto newRange = std::make_shared<Modbus::TModbusRegisterRange>(res.Regs, range->HasHoles());
+                    newRange->SetStatus(range->GetStatus());
+                    newRanges.push_back(newRange);
+                }
+            } else {
+                newRanges.push_back(range);
             }
         } catch (const TSerialDeviceTransientErrorException& e) {
-            ProcessRangeException(*range, e.what());
+            ProcessRangeException(*range, e.what(), ST_UNKNOWN_ERROR);
             newRanges.push_back(range);
         } catch (const TSerialDevicePermanentRegisterException& e) {
-            ProcessRangeException(*range, e.what());
+            ProcessRangeException(*range, e.what(), ST_DEVICE_ERROR);
             if (range->HasHoles()) {
                 LOG(Debug) << "Disabling holes feature for " << *range;
                 return SplitRangeByHoles(range->RegisterList(), false);
@@ -842,7 +874,7 @@ namespace Modbus    // modbus protocol common utilities
 
     std::list<PRegisterRange> ReadOneByOne(Modbus::IModbusTraits& traits, Modbus::PModbusRegisterRange& range, TPort& port, uint8_t slaveId, int shift)
     {
-        range->SetStatus(TRegisterRange::ST_UNKNOWN_ERROR);
+        range->SetStatus(ST_UNKNOWN_ERROR);
         std::list<Modbus::PModbusRegisterRange> subRanges;
         for (auto& reg: range->RegisterList()) {
             subRanges.push_back(std::make_shared<Modbus::TModbusRegisterRange>(std::list<PRegister>{ reg }, false));
@@ -851,15 +883,15 @@ namespace Modbus    // modbus protocol common utilities
             try {
                 ReadRange(traits, *r, port, slaveId, shift);
             } catch (const TSerialDeviceTransientErrorException& e) {
-                ProcessRangeException(*range, e.what());
+                ProcessRangeException(*range, e.what(), ST_UNKNOWN_ERROR);
                 return std::list<PRegisterRange>{range};
             } catch (const TSerialDevicePermanentRegisterException& e) {
                 r->RegisterList().front()->SetAvailable(false);
-                r->RegisterList().front()->SetError();
+                r->RegisterList().front()->SetError(ST_DEVICE_ERROR);
                 LOG(Warn) << "Register " << r->RegisterList().front()->ToString() << " is not supported";
             }
         }
-        range->SetStatus(TRegisterRange::ST_OK);
+        range->SetStatus(ST_OK);
         return SplitRangeByHoles(range->RegisterList(), true);;
     }
 
@@ -887,10 +919,10 @@ namespace Modbus    // modbus protocol common utilities
     {
         for (const auto& item : setupItems) {
             try {
+                WriteRegister(traits, port, slaveId, *item->Register, item->RawValue, shift);
                 LOG(Info) << "Init: " << item->Name 
                         << ": setup register " << item->Register->ToString()
-                        << " <-- " << item->Value;
-                WriteRegister(traits, port, slaveId, *item->Register, item->Value, shift);
+                        << " <-- " << item->HumanReadableValue << " (0x" << std::hex << item->RawValue << ")";
             } catch (const TSerialDevicePermanentRegisterException& e) {
                 WarnFailedRegisterSetup(item, e.what());
             } catch (const TSerialDeviceTransientErrorException& e) {
@@ -1045,7 +1077,7 @@ namespace Modbus    // modbus protocol common utilities
                 return rc;
             }
 
-            LOG(Warn) << "Transaction id mismatch";
+            LOG(Debug) << "Transaction id mismatch";
         }
         throw TSerialDeviceTransientErrorException("request timed out");
     }
