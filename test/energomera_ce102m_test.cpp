@@ -44,11 +44,6 @@ namespace
         void EnqueuePollRequests()
         {
             Expector()->Expect(
-                    ExpectVectorFromString("\x01R1\x02""ET0PE()\x03\x37"),
-                    ExpectVectorFromString("\x02""ET0PE(68.42)\r\n(45.54)\r\n(22.88)\r\n(0.00)\r\n(0.00)\r\n(0.00)\r\n\x03\x0f"),
-                    __func__);
-
-            Expector()->Expect(
                     ExpectVectorFromString("\x01R1\x02""CURRE()\x03\x5a"),
                     ExpectVectorFromString("\x02""CURRE(0.402)\r\n\x03\x60"),
                     __func__);
@@ -61,6 +56,11 @@ namespace
             Expector()->Expect(
                     ExpectVectorFromString("\x01R1\x02""VOLTA()\x03\x5f"),
                     ExpectVectorFromString("\x02""VOLTA(237.58)\r\n\x03\x28"),
+                    __func__);
+
+            Expector()->Expect(
+                    ExpectVectorFromString("\x01R1\x02""ET0PE()\x03\x37"),
+                    ExpectVectorFromString("\x02""ET0PE(68.42)\r\n(45.54)\r\n(22.88)\r\n(0.00)\r\n(0.00)\r\n(0.00)\r\n\x03\x0f"),
                     __func__);
         }
     };

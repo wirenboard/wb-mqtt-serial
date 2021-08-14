@@ -1,8 +1,34 @@
-wb-mqtt-serial (2.22.2) stable; urgency=medium
+wb-mqtt-serial (2.25.0) stable; urgency=medium
 
   * Remake M1W2 template using groups and parameters
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 08 Jun 2021 09:23:50 +0300
+
+wb-mqtt-serial (2.24.0) stable; urgency=medium
+
+  * Template for Danfoss FC 51 was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 04 Aug 2021 15:58:53 +0300
+
+wb-mqtt-serial (2.23.0) stable; urgency=medium
+
+  * "value" instead of "text" is set as default control type for Modbus devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 06 Aug 2021 12:09:07 +0500
+
+wb-mqtt-serial (2.22.3) stable; urgency=medium
+
+  * IDPAS parameter is added to Energomera CE102M device template
+  * Validation of custom channel's register addresses is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 28 Jul 2021 10:18:36 +0500
+
+wb-mqtt-serial (2.22.2) stable; urgency=medium
+
+  * Separate Energomera CE301 and CE303 templates
+  * Keep Energomera CE301 device_type for existing user configurations
+
+ -- Gennadiy Grebenyuk <gennadiy.grebenyuk@wirenboard.ru>  Tue, 27 Jul 2021 11:20:39 +0300
 
 wb-mqtt-serial (2.22.1) stable; urgency=medium
 
