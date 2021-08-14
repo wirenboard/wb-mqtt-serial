@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.22.4) stable; urgency=medium
 
-  * Template for DANFOSS-FC51 was added
+  * Template for Danfoss FC 51 was added
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 04 Aug 2021 15:58:53 +0300
 
