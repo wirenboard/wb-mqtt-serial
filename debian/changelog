@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.28.0) stable; urgency=medium
+
+  * Remake of MAP12E-fw2 template using groups and parameters
+  * Remake of MAP6S-fw2 template using groups and parameters
+  * Remake of MAP3ET template using groups and parameters
+  * Remake of MAP3E fw2 template using groups and parameters
+  * Remake of MAP3EV template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 07 Jul 2021 15:50:11 +0300
+
 wb-mqtt-serial (2.27.0) stable; urgency=medium
 
   * Remake MCM8 template using groups and parameters
