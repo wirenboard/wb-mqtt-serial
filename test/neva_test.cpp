@@ -41,6 +41,14 @@ namespace
                 __func__);
         }
 
+        void EnqueueEndSession()
+        {
+            Expector()->Expect(
+                ExpectVectorFromString("\x01" "B0\x03\x71"),
+                {},
+                __func__);
+        }
+
         void EnqueuePollRequests()
         {
             // Total P
@@ -127,6 +135,7 @@ TEST_F(TNevaTest, SwitchToProgModeError)
     for (size_t i = 0; i < 5; ++i) {
         EnqueueStartSession();
         EnqueueGoToProgMode(true);
+        EnqueueEndSession();
     }
     ASSERT_THROW(Dev->Prepare(), TSerialDeviceTransientErrorException);
     SerialPort->Close();
@@ -138,6 +147,7 @@ TEST_F(TNevaTest, SendPasswordError)
         EnqueueStartSession();
         EnqueueGoToProgMode();
         EnqueueSendPassword(true);
+        EnqueueEndSession();
     }
 
     ASSERT_THROW(Dev->Prepare(), TSerialDeviceTransientErrorException);
