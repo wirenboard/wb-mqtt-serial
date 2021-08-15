@@ -11,7 +11,9 @@ fake_serial_device '1': Device cycle OK
 fake_serial_device '1': reconnected
 >>> Cycle()
 fake_serial_device '1': write to address '1' value '1'
+Read Callback: <fake:1:fake: 1> becomes 1
 fake_serial_device '1': write to address '20' value '4242'
+Read Callback: <fake:1:fake: 20> becomes 4242
 fake_serial_device '1': read address '1' value '1'
 Read Callback: <fake:1:fake: 1> becomes 1 [unchanged]
 fake_serial_device '1': read address '20' value '4242'
