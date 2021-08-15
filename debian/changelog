@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.28.1) stable; urgency=medium
+
+  * BHT-6000-Series template was added
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 12 Jul 2021 20:56:52 +0400 
+ 
 wb-mqtt-serial (2.28.0) stable; urgency=medium
 
   * BAC-6000-Series template was added
