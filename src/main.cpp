@@ -72,11 +72,18 @@ namespace
              << "  -G       options   Generate device template. Type \"-G help\" for options description" << endl;
     }
 
-    unique_ptr<Json::StreamWriter> MakeJsonWriter(const std::string& indentation = "")
+    /**
+     * @brief Create Json::StreamWriter with defined parameters
+     * 
+     * @param indentation - a string that is added before lines as indentation, "" - no indentation
+     * @param commentStyle - "All" (write comments) or "None" (do not write comments)
+     */
+    unique_ptr<Json::StreamWriter> MakeJsonWriter(const std::string& indentation, const std::string& commentStyle)
     {
         Json::StreamWriterBuilder builder;
+        builder["commentStyle"] = commentStyle;
         builder["indentation"] = indentation;
-        builder.settings_["precision"] = 15;
+        builder["precision"] = 15;
         return unique_ptr<Json::StreamWriter>(builder.newStreamWriter());
     }
 
@@ -100,7 +107,7 @@ namespace
             shared_ptr<Json::Value> configSchema;
             shared_ptr<TTemplateMap> templates;
             std::tie(configSchema, templates) = LoadTemplates();
-            MakeJsonWriter()->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *configSchema, *templates, deviceFactory), &cout);
+            MakeJsonWriter("", "None")->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *configSchema, *templates, deviceFactory), &cout);
         } catch (const exception& e) {
             LOG(Error) << e.what();
         }
@@ -111,7 +118,7 @@ namespace
         try {
             shared_ptr<TTemplateMap> templates;
             std::tie(std::ignore, templates) = LoadTemplates();
-            MakeJsonWriter("  ")->write(MakeConfigFromConfed(std::cin, *templates), &cout);
+            MakeJsonWriter("  ", "None")->write(MakeConfigFromConfed(std::cin, *templates), &cout);
         } catch (const exception& e) {
             LOG(Error) << e.what();
         }
@@ -128,7 +135,7 @@ namespace
             const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
             {
                 ofstream f(resultingSchemaFile);
-                MakeJsonWriter("  ")->write(MakeSchemaForConfed(*configSchema, *templates, deviceFactory), &f);
+                MakeJsonWriter("  ", "All")->write(MakeSchemaForConfed(*configSchema, *templates, deviceFactory), &f);
             }
             ifstream src(resultingSchemaFile, ios::binary);
             ofstream dst(CONFED_JSON_SCHEMA_FULL_FILE_PATH, ios::binary);

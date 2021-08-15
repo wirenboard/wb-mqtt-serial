@@ -65,3 +65,4 @@ debian/wb-mqtt-serial
 debian/*.substvars
 debhelper-build-stamp
 .clang-format
+build
