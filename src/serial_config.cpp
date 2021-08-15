@@ -1,5 +1,6 @@
 #include "serial_config.h"
 #include "log.h"
+#include "file_utils.h"
 
 #include <set>
 #include <fstream>
@@ -20,8 +21,10 @@
 
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
+#include "file_utils.h"
 
 #include "devices/energomera_iec_device.h"
+#include "devices/energomera_iec_mode_c_device.h"
 #include "devices/ivtm_device.h"
 #include "devices/lls_device.h"
 #include "devices/mercury200_device.h"
@@ -79,6 +82,16 @@ namespace {
         return GetIntFromString(v.asString(), title);
     }
 
+    double ToDouble(const Json::Value& v, const std::string& title)
+    {
+        if (v.isNumeric())
+            return v.asDouble();
+        if (!v.isString()) {
+            throw TConfigParserException(title + ": number or '0x..' hex string expected");
+        }
+        return GetIntFromString(v.asString(), title);
+    }
+
     uint64_t ToUint64(const Json::Value& v, const string& title)
     {
         if (v.isUInt())
@@ -108,6 +121,11 @@ namespace {
     int GetInt(const Json::Value& obj, const std::string& key)
     {
         return ToInt(obj[key], key);
+    }
+
+    double GetDouble(const Json::Value& obj, const std::string& key)
+    {
+        return ToDouble(obj[key], key);
     }
 
     bool ReadChannelsReadonlyProperty(const Json::Value& register_data,
@@ -246,22 +264,33 @@ namespace {
                 reg->Poll = false;
         }
 
-        std::string on_value;
-        if (channel_data.isMember("on_value")) {
-            if (registers.size() != 1)
-                throw TConfigParserException("can only use on_value for single-valued controls -- " +
-                                            device_config->DeviceType);
-            on_value = std::to_string(GetInt(channel_data, "on_value"));
-        }
-
-        int max = -1;
-        if (channel_data.isMember("max"))
-            max = GetInt(channel_data, "max");
-
         int order        = device_config->NextOrderValue();
         PDeviceChannelConfig channel(new TDeviceChannelConfig(name, type_str, device_config->Id, order,
-                                                on_value, max, registers[0]->ReadOnly, mqtt_channel_name,
+                                                registers[0]->ReadOnly, mqtt_channel_name,
                                                 registers));
+        if (channel_data.isMember("max")) {
+            channel->Max = GetDouble(channel_data, "max");
+        }
+        if (channel_data.isMember("min")) {
+            channel->Min = GetDouble(channel_data, "min");
+        }
+        if (channel_data.isMember("on_value")) {
+            if (registers.size() != 1)
+                throw TConfigParserException("on_value is allowed only for single-valued controls -- " +
+                                            device_config->DeviceType);
+            channel->OnValue = std::to_string(GetInt(channel_data, "on_value"));
+        }
+        if (channel_data.isMember("off_value")) {
+            if (registers.size() != 1)
+                throw TConfigParserException("off_value is allowed only for single-valued controls -- " +
+                                            device_config->DeviceType);
+            channel->OffValue = std::to_string(GetInt(channel_data, "off_value"));
+        }
+
+        if (registers.size() == 1) {
+            channel->Precision = registers[0]->RoundTo;
+        }
+
         device_config->AddChannel(channel);
     }
 
@@ -521,43 +550,61 @@ std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data)
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }
 
-TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema): 
+TTemplateMap::TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema, bool passInvalidTemplates): 
     Validator(new  WBMQTT::JSON::TValidator(templateSchema)) 
 {
-    AddTemplatesDir(templatesDir);
+    AddTemplatesDir(templatesDir, passInvalidTemplates);
 }
 
-void TTemplateMap::AddTemplatesDir(const std::string& templatesDir)
+std::string TTemplateMap::GetDeviceType(const std::string& templatePath) const
 {
-    DIR *dir;
-    struct dirent *dirp;
-    struct stat filestat;
-
-    if ((dir = opendir(templatesDir.c_str())) == NULL)
-        throw TConfigParserException("Cannot open " + templatesDir + " directory");
-
-    while ((dirp = readdir(dir))) {
-        std::string dname = dirp->d_name;
-        if(!EndsWith(dname, ".json"))
-            continue;
-
-        std::string filepath = templatesDir + "/" + dname;
-        if (stat(filepath.c_str(), &filestat)) {
-            continue;
-        }
-        if (S_ISDIR(filestat.st_mode)) {
-            continue;
-        }
-
-        try {
-            Json::Value root = WBMQTT::JSON::Parse(filepath);
-            TemplateFiles[root["device_type"].asString()] = filepath;
-        } catch (const std::exception& e) {
-            LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
-            continue;
+    const char deviceTypeKey[] = "\"device_type\"";
+    std::ifstream file;
+    OpenWithException(file, templatePath);
+    std::string line;
+    // Search device type declaration in first 5 lines
+    for (auto n = 0; n < 5; ++n) {
+        std::getline(file, line);
+        auto pos = line.find(deviceTypeKey);
+        if (pos != std::string::npos) {
+            pos += sizeof(deviceTypeKey);
+            pos = line.find("\"", pos);
+            if (pos != std::string::npos) {
+                ++pos;
+                auto end = line.find("\"", pos);
+                if (end != std::string::npos) {
+                    return line.substr(pos, end - pos);
+                }
+            }
         }
     }
-    closedir(dir);
+    throw std::runtime_error(templatePath + " doesn't contain device type declaration");
+}
+
+void TTemplateMap::AddTemplatesDir(const std::string& templatesDir, bool passInvalidTemplates)
+{
+    IterateDir(templatesDir, [&](const std::string& fname)
+        {
+            if(!EndsWith(fname, ".json")) {
+                return false;
+            }
+            std::string filepath = templatesDir + "/" + fname;
+            struct stat filestat;
+            if (stat(filepath.c_str(), &filestat) || S_ISDIR(filestat.st_mode)) {
+                return false;
+            }
+            try {
+                Json::Value root = WBMQTT::JSON::Parse(filepath);
+                TemplateFiles[root["device_type"].asString()] = filepath;
+            } catch (const std::exception& e) {
+                if (passInvalidTemplates) {
+                    LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
+                    return false;
+                }
+                throw;
+            }
+            return false;
+        });
 }
 
 Json::Value TTemplateMap::Validate(const std::string& deviceType, const std::string& filePath)
@@ -798,13 +845,11 @@ TDeviceChannelConfig::TDeviceChannelConfig(const std::string& name,
                                            const std::string& type,
                                            const std::string& deviceId,
                                            int                order,
-                                           const std::string& onValue,
-                                           int                max,
                                            bool               readOnly,
                                            const std::string& mqttId,
                                            const std::vector<PRegisterConfig> regs)
     : Name(name), MqttId(mqttId), Type(type), DeviceId(deviceId),
-      Order(order), OnValue(onValue), Max(max),
+      Order(order),
       ReadOnly(readOnly), RegisterConfigs(regs) 
 {}
 
@@ -1053,7 +1098,8 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
 {
-    TEnergomeraIecDevice::Register(deviceFactory);
+    TEnergomeraIecWithFastReadDevice::Register(deviceFactory);
+    TEnergomeraIecModeCDevice::Register(deviceFactory);
     TIVTMDevice::Register(deviceFactory);
     TLLSDevice::Register(deviceFactory);
     TMercury200Device::Register(deviceFactory);
@@ -1124,6 +1170,21 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
 }
 
 const IRegisterAddress& TUint32RegisterAddressFactory::GetBaseRegisterAddress() const
+{
+    return BaseRegisterAddress;
+}
+
+TRegisterDesc TStringRegisterAddressFactory::LoadRegisterAddress(const Json::Value&      regCfg,
+                                                                const IRegisterAddress& deviceBaseAddress,
+                                                                uint32_t                stride,
+                                                                uint32_t                registerByteWidth) const
+{
+    TRegisterDesc res;
+    res.Address = std::make_shared<TStringRegisterAddress>(regCfg["address"].asString());
+    return res;
+}
+
+const IRegisterAddress& TStringRegisterAddressFactory::GetBaseRegisterAddress() const
 {
     return BaseRegisterAddress;
 }

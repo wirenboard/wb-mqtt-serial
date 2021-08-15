@@ -78,7 +78,7 @@ void TSerialPortDriver::SetUpDevices()
 
 void TSerialPortDriver::HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event)
 {
-    const auto & value = event.Control->GetRawValue();
+    const auto & value = event.RawValue;
     const auto & linkData = event.Control->GetUserData().As<TControlLinkData>();
 
     const auto & portDriver = linkData.PortDriver.lock();
@@ -115,10 +115,13 @@ void TSerialPortDriver::SetValueToChannel(const PDeviceChannel & channel, const 
         LOG(Debug) << "setting device register: " << reg->ToString() << " <- " << valueItems[i];
 
         try {
-            SerialClient->SetTextValue(reg,
-                channel->OnValue.empty() ? valueItems[i]
-                                       : (valueItems[i] == "1" ?  channel->OnValue : "0")
-            );
+            auto valueToSet = valueItems[i];
+            if (!channel->OnValue.empty() && valueItems[i] == "1") {
+                valueToSet = channel->OnValue;
+            } else if (!channel->OffValue.empty() && valueItems[i] == "0") {
+                valueToSet = channel->OffValue;
+            }
+            SerialClient->SetTextValue(reg, valueToSet);
 
         } catch (std::exception& err) {
             LOG(Warn) << "invalid value for " << channel->Describe() << ": '" << value << "' : " << err.what();
@@ -142,9 +145,12 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
     }
 
     std::string value;
-    if (!channel->OnValue.empty()) {
-        value = SerialClient->GetTextValue(reg) == channel->OnValue ? "1" : "0";
+    if (!channel->OnValue.empty() && SerialClient->GetTextValue(reg) == channel->OnValue) {
+        value = "1";
         LOG(Debug) << "OnValue: " << channel->OnValue << "; value: " << value;
+    } else if (!channel->OffValue.empty() && SerialClient->GetTextValue(reg) == channel->OffValue) {
+        value = "0";
+        LOG(Debug) << "OffValue: " << channel->OffValue << "; value: " << value;
     } else {
         for (size_t i = 0; i < registers.size(); ++i) {
             PRegister reg = registers[i];
@@ -243,8 +249,20 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
                               .SetReadonly(channel->ReadOnly)
                               .SetUserData(TControlLinkData{ shared_from_this(), channel });
 
-    if (channel->Type == "range" || channel->Type == "dimmer") {
-        args.SetMax(channel->Max < 0 ? 65535 : channel->Max);
+    if (isnan(channel->Max)) {
+        if (channel->Type == "range" || channel->Type == "dimmer") {
+            args.SetMax(65535);
+        }
+    } else {
+        args.SetMax(channel->Max);
+    }
+
+    if (!isnan(channel->Min)) {
+        args.SetMin(channel->Min);
+    }
+
+    if (channel->Precision != 0.0) {
+        args.SetPrecision(channel->Precision);
     }
 
     return args;

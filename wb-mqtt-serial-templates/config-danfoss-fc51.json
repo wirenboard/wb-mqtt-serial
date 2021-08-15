@@ -1,0 +1,311 @@
+{
+    "title": "Danfoss FC 51",
+    "device_type": "danfoss_fc_51",
+    "device": {
+        "name": "Danfoss FC 51",
+        "id": "danfoss-fc-51",
+        "max_read_registers": 0,
+        "response_timeout_ms": 100,
+        "frame_timeout_ms": 15,
+        "guard_interval_us": 5000,
+
+        "groups": [
+            {
+                "title": "Drive Status",
+                "id": "drive_status",
+                "order": 1
+            },
+            {
+                "title": "Drive Commands",
+                "id": "drive_commands",
+                "order": 2
+            },
+            {
+                "title": "Diagnostics",
+                "id": "diagnostics",
+                "order": 3
+            }
+        ],
+
+        "setup": [
+            {
+                "title": "set up drive control word for remote control",
+                "address": 49999,
+                "reg_type": "holding",
+                "format": "u16",
+                "value": 1084
+            }
+        ],
+
+        "channels": [
+            {
+                "name": "Frequency Reference (Hz)",
+                "reg_type": "holding",
+                "address": "16009",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.001,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Frequency Reference (%)",
+                "reg_type": "holding",
+                "address": "16019",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Output Frequency (Hz)",
+                "reg_type": "holding",
+                "address": "16129",
+                "type": "value",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Output Frequency (%)",
+                "reg_type": "holding",
+                "address": "16149",
+                "type": "value",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Output Current (A)",
+                "reg_type": "holding",
+                "address": "16139",
+                "type": "value",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Output Power",
+                "reg_type": "holding",
+                "address": "16099",
+                "type": "power",
+                "format": "u16",
+                "group": "drive_status",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Motor Voltage",
+                "reg_type": "holding",
+                "address": "16119",
+                "type": "voltage",
+                "format": "u16",
+                "group": "drive_status",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "DC Link Voltage",
+                "reg_type": "holding",
+                "address": 16299,
+                "type": "voltage",
+                "format": "u16",
+                "group": "drive_status",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Motor Thermal Status (%)",
+                "reg_type": "holding",
+                "address": 16179,
+                "type": "value",
+                "format": "u8",
+                "group": "drive_status",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Invertor Thermal Status (%)",
+                "reg_type": "holding",
+                "address": 16349,
+                "type": "value",
+                "format": "u8",
+                "group": "drive_status",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Heatsink Temperature",
+                "reg_type": "holding",
+                "address": 16339,
+                "format": "u8",
+                "type": "temperature",
+                "group": "drive_status",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Remote Control Active",
+                "reg_type": "holding",
+                "address": "50199:9:1",
+                "type": "switch",
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Control Ready",
+                "reg_type": "holding",
+                "address": "50199:0:1",
+                "type": "switch",
+                "format": "u16",
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Drive Ready",
+                "reg_type": "holding",
+                "address": "50199:1:1",
+                "type": "switch",
+                "format": "u16",
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Drive Running",
+                "reg_type": "holding",
+                "address": "50199:11:1",
+                "type": "switch",
+                "format": "u16",
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Drive Alarm",
+                "reg_type": "holding",
+                "address": "50199:3:1",
+                "type": "switch",
+                "format": "u16",
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Alarm Word",
+                "reg_type": "holding",
+                "address": "16899",
+                "type": "value",
+                "format": "u32",
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Operating Time",
+                "reg_type": "holding",
+                "address": 14999,
+                "type": "value",
+                "format": "u32",
+                "group": "drive_status",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Running Hours",
+                "reg_type": "holding",
+                "address": 15009,
+                "type": "value",
+                "format": "u32",
+                "group": "drive_status",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Consumed Energy",
+                "reg_type": "holding",
+                "address": 15019,
+                "type": "power_consumption",
+                "format": "u32",
+                "group": "drive_status",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Frequency Setpoint (%)",
+                "reg_type": "holding",
+                "address": "50009",
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 100,
+                "scale": 0.0061035,
+                "group": "drive_commands"
+            },
+            {
+                "name": "Reversing On",
+                "reg_type": "holding",
+                "address": "49999:15:1",
+                "type": "switch",
+                "format": "u16",
+                "group": "drive_commands"
+            },
+            {
+                "name": "Drive Start",
+                "reg_type": "holding",
+                "address": "49999:6:1",
+                "type": "switch",
+                "format": "u16",
+                "group": "drive_commands"
+            },
+            {
+                "name": "Reset Fault",
+                "reg_type": "holding",
+                "address": "49999:7:1",
+                "type": "switch",
+                "format": "u16",
+                "group": "drive_commands"
+            },
+            {
+                "name": "Drive Status Word",
+                "reg_type": "holding",
+                "address": 50199,
+                "type": "value",
+                "format": "u16",
+                "group": "diagnostics",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Drive Control Word",
+                "reg_type": "holding",
+                "address": 49999,
+                "type": "value",
+                "format": "u16",
+                "group": "diagnostics",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Extended Status Word",
+                "reg_type": "holding",
+                "address": 16939,
+                "type": "value",
+                "format": "u32",
+                "group": "diagnostics",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Warning Word",
+                "reg_type": "holding",
+                "address": 16919,
+                "type": "value",
+                "format": "u32",
+                "group": "diagnostics",
+                "readonly": true,
+                "enabled": false
+            }
+        ]
+    }
+}
