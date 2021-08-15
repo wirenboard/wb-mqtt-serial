@@ -461,45 +461,16 @@
                 "group": "channel4_l3",
                 "order": 3
             },
-            "channel1_peaks_measurement_period_s": {
-                "title": "Channel 1 Peaks Measurement Period (s)",
+            "peaks_measurement_period_s": {
+                "title": "Peaks Measurement Period (s)",
                 "address": "0x10F0",
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 1,
                 "default": 60,
                 "group": "general",
+                "description": "Firmware v2.3.0 or newer is required",
                 "order": 1
-            },
-            "channel2_peaks_measurement_period_s": {
-                "title": "Channel 2 Peaks Measurement Period (s)",
-                "address": "0x20F0",
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 1,
-                "default": 60,
-                "group": "general",
-                "order": 2
-            },
-            "channel3_peaks_measurement_period_s": {
-                "title": "Channel 3 Peaks Measurement Period (s)",
-                "address": "0x30F0",
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 1,
-                "default": 60,
-                "group": "general",
-                "order": 3
-            },
-            "channel4_peaks_measurement_period_s": {
-                "title": "Channel 4 Peaks Measurement Period (s)",
-                "address": "0x40F0",
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 1,
-                "default": 60,
-                "group": "general",
-                "order": 4
             }
         },
 
