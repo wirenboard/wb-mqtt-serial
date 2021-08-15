@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.28.0) stable; urgency=medium
+
+  * BAC-6000-Series template was added
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Tue, 13 Jul 2021 13:58:25 +0400 
+
 wb-mqtt-serial (2.27.1) stable; urgency=medium
 
   * Change Somfy Enums
