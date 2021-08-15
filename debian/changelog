@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.27.0) stable; urgency=medium
+
+  * Remake MCM8 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 11:57:11 +0300
+
 wb-mqtt-serial (2.26.0) stable; urgency=medium
 
   * Remake of WB-MWAC template using groups and parameters
