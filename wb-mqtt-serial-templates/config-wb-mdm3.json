@@ -82,35 +82,36 @@
                 "group": "inputs",
                 "order": 3
             },
-            "channel1_load_type": {
-                "title": "Channel 1 Load Type",
+            "channel1_dimming_curve": {
+                "title": "Channel 1 Dimming Curve",
                 "address": 50,
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "LED lamp or incandescent lamp",
-                    "resistive load",
-                    "switching mode"
+                    "LED lamp or incandescent lamp (logarithmic)",
+                    "resistive load (linear)",
+                    "switching mode (on/off)"
                 ],
                 "group": "channel_1",
                 "order": 1
             },
-            "channel1_control_type": {
-                "title": "Channel 1 Control Type",
+            "channel1_dimming_type": {
+                "title": "Channel 1 Dimming Type",
                 "address": 60,
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "leading edge",
-                    "trailing edge"
+                    "leading edge (motors, fans, incandescent lamps)",
+                    "trailing edge (LED lamps)"
                 ],
                 "group": "channel_1",
                 "order": 2
             },
             "channel1_min_value": {
                 "title": "Channel 1 Min Value (us)",
+                "description" : "Raw dimmer value corresponding to minimum brightness (1%)",
                 "address": 70,
                 "reg_type": "holding",
                 "min": 0,
@@ -121,6 +122,7 @@
             },
             "channel1_max_value": {
                 "title": "Channel 1 Max Value (us)",
+                "description" : "Raw dimmer value corresponding to maximum brightness (100%)",
                 "address": 80,
                 "reg_type": "holding",
                 "min": 0,
@@ -149,35 +151,36 @@
                 "group": "channel_1",
                 "order": 6
             },
-            "channel2_load_type": {
-                "title": "Channel 2 Load Type",
+            "channel2_dimming_curve": {
+                "title": "Channel 2 Dimming Curve",
                 "address": 51,
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "LED lamp or incandescent lamp",
-                    "resistive load",
-                    "switching mode"
+                    "LED lamp or incandescent lamp (logarithmic)",
+                    "resistive load (linear)",
+                    "switching mode (on/off)"
                 ],
                 "group": "channel_2",
                 "order": 1
             },
-            "channel2_control_type": {
-                "title": "Channel 2 Control Type",
+            "channel2_dimming_type": {
+                "title": "Channel 2 Dimming Type",
                 "address": 61,
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "leading edge",
-                    "trailing edge"
+                    "leading edge (motors, fans, incandescent lamps)",
+                    "trailing edge (LED lamps)"
                 ],
                 "group": "channel_2",
                 "order": 2
             },
             "channel2_min_value": {
                 "title": "Channel 2 Min Value (us)",
+                "description" : "Raw dimmer value corresponding to minimum brightness (1%)",
                 "address": 71,
                 "reg_type": "holding",
                 "min": 0,
@@ -188,6 +191,7 @@
             },
             "channel2_max_value": {
                 "title": "Channel 2 Max Value (us)",
+                "description" : "Raw dimmer value corresponding to maximum brightness (100%)",
                 "address": 81,
                 "reg_type": "holding",
                 "min": 0,
@@ -216,35 +220,36 @@
                 "group": "channel_2",
                 "order": 6
             },
-            "channel3_load_type": {
-                "title": "Channel 3 Load Type",
+            "channel3_dimming_curve": {
+                "title": "Channel 3 Dimming Curve",
                 "address": 52,
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "LED lamp or incandescent lamp",
-                    "resistive load",
-                    "switching mode"
+                    "LED lamp or incandescent lamp (logarithmic)",
+                    "resistive load (linear)",
+                    "switching mode (on/off)"
                 ],
                 "group": "channel_3",
                 "order": 1
             },
-            "channel3_control_type": {
-                "title": "Channel 3 Control Type",
+            "channel3_dimming_type": {
+                "title": "Channel 3 Dimming Type",
                 "address": 62,
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "leading edge",
-                    "trailing edge"
+                    "leading edge (motors, fans, incandescent lamps)",
+                    "trailing edge (LED lamps)"
                 ],
                 "group": "channel_3",
                 "order": 2
             },
             "channel3_min_value": {
                 "title": "Channel 3 Min Value (us)",
+                "description" : "Raw dimmer value corresponding to minimum brightness (1%)",
                 "address": 72,
                 "reg_type": "holding",
                 "min": 0,
@@ -255,6 +260,7 @@
             },
             "channel3_max_value": {
                 "title": "Channel 3 Max Value (us)",
+                "description" : "Raw dimmer value corresponding to maximum brightness (100%)",
                 "address": 82,
                 "reg_type": "holding",
                 "min": 0,
