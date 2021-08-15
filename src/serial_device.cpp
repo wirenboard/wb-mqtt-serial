@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <string.h>
 #include "log.h"
 
 #define LOG(logger) logger.Log() << "[serial device] "
@@ -25,6 +26,11 @@ bool IProtocol::IsModbus() const
     return false;
 }
 
+bool IProtocol::SupportsBroadcast() const
+{
+    return false;
+}
+
 TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name, const TRegisterTypes& reg_types, bool allowBroadcast) 
     : IProtocol(name, reg_types), AllowBroadcast(allowBroadcast)
 {}
@@ -32,6 +38,11 @@ TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name, const TR
 bool TUint32SlaveIdProtocol::IsSameSlaveId(const std::string& id1, const std::string& id2) const
 {
     return (TUInt32SlaveId(id1, AllowBroadcast) == TUInt32SlaveId(id2, AllowBroadcast));
+}
+
+bool TUint32SlaveIdProtocol::SupportsBroadcast() const
+{
+    return AllowBroadcast;
 }
 
 TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
@@ -185,4 +196,12 @@ bool TUInt32SlaveId::operator==(const TUInt32SlaveId& id) const
         return true;
     }
     return SlaveId == id.SlaveId;
+}
+
+uint64_t CopyDoubleToUint64(double value)
+{
+    uint64_t res = 0;
+    static_assert((sizeof(res) >= sizeof(value)), "Can't fit double into uint64_t");
+    memcpy(&res, &value, sizeof(value));
+    return res;
 }

@@ -3,12 +3,6 @@
   "title": "Serial Device Driver Configuration",
 
   "definitions": {
-    "deviceProtocol": {
-      "type": "string",
-      "title": "Device protocol",
-      "enum": ["modbus", "uniel", "milur", "mercury230", "ivtm", "s2k", "modbus_io", "pulsar", "mercury200", "lls", "neva", "energomera_iec", "dlms"],
-      "default": "modbus"
-    },
     "commonPortSettings": {
       "properties": {
         "enabled": {
@@ -60,7 +54,6 @@
       "title": "Serial port",
       "type": "object",
       "allOf": [
-        { "$ref" : "#/definitions/commonPortSettings"},
         {
           "properties": {
             "port_type": {
@@ -109,7 +102,8 @@
             }
           },
           "required": ["path"]
-        }
+        },
+        { "$ref" : "#/definitions/commonPortSettings"}
       ],
       "defaultProperties": ["port_type", "path", "baud_rate", "parity", "data_bits", "stop_bits", "devices", "poll_interval"],
       "_format": "grid",
@@ -370,8 +364,7 @@
         },
         "guard_interval_us": {
           "type": "integer",
-          "title": "Interval between register reads",
-          "description" : "Additional delay before writing to port",
+          "title": "Additional delay before each writing to port (us)",
           "minimum": 0,
           "default": 0,
           "propertyOrder": 106
@@ -532,18 +525,27 @@
             "keep_oneof_values": false
           }
         },
+        "off_value": {
+          "title": "'Off' value",
+          "description": "Value corresponding to the 'Off' state of the switch",
+          "$ref": "#/definitions/serial_int",
+          "propertyOrder": 14,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
         "poll_interval": {
           "type": "integer",
           "title": "Desired poll interval (ms)",
           "description" : "This option specifies the desired interval between two consecutive polls of the channel",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 14
+          "propertyOrder": 15
         },
         "error_value": {
           "title": "Error value",
           "description": "Value which should be treated as read error",
-          "propertyOrder": 15,
+          "propertyOrder": 16,
           "oneOf": [
             {
               "title": "Integer or hex",
@@ -567,7 +569,7 @@
         "unsupported_value": {
           "title": "Unsupported register value",
           "description": "Value which should be treated as 'register is unsupported by device'",
-          "propertyOrder": 16,
+          "propertyOrder": 17,
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+)$",
           "options": {
@@ -579,7 +581,7 @@
         },
         "word_order": {
           "$ref": "#/definitions/word_order",
-          "propertyOrder": 17
+          "propertyOrder": 18
         },
         "consists_of": {
           "not": {},
@@ -810,8 +812,10 @@
                "brightness", "param", "relay_mode", "relay_default", "relay_delay", "energy", "array",
                "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
                "param24", "param32", "power", "freq", "power_factor", "group_single", 
-               "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5", 
-               "alarm", "position", "command"]
+               "temperature", "item_1", "item_2", "item_3", "item_4", "item_5", 
+               "alarm", "position", "command", "date", "time",
+               // obis_* are deprecated, use item_*, temperature and power_factor
+               "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5"]
     },
     "format": {
       "type": "string",
@@ -1019,12 +1023,12 @@
           "enum": [2, 5, 6, 7, 8, 9],
           "options": {
             "enum_titles": [
-              "Ø30 DC Serie",
+              "Sonesse 30 DC",
               "RTS transmitter",
               "Glydea",
-              "Ø50 AC Serie",
-              "Ø50 DC Serie",
-              "Ø40 AC Serie"
+              "Sonesse 50 AC",
+              "Sonesse 50 DC",
+              "Sonesse 40 AC"
             ]
           },
           "default": 2,
@@ -1040,6 +1044,36 @@
         { "$ref": "#/definitions/no_protocol" },
         { "$ref": "#/definitions/no_setup" }
       ]
+    },
+
+    "string_address": {
+      "properties": {
+        "address": {
+          "title": "Parameter",
+          "type": "string",
+          "propertyOrder": 6
+        }
+      },
+      "required": ["address"]
+    },
+    "channel_with_string_address": {
+      "headerTemplate": "{{self.name}}",
+      "title": "Channel",
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        { "$ref": "#/definitions/string_address" }
+      ]
+    },
+    "channels_with_string_addresses": {
+      "properties": {
+        "channels": {
+          "type": "array",
+          "title": "Custom channels",
+          "items": { "$ref": "#/definitions/channel_with_string_address" },
+          "propertyOrder": 99,
+          "_format": "tabs"
+        }
+      }
     },
 
     "common_channels": {
@@ -1080,6 +1114,16 @@
         { "$ref": "#/definitions/slave_id" },
         { "$ref": "#/definitions/no_protocol" },
         { "$ref": "#/definitions/no_setup" }
+      ]
+    },
+
+    "enrgomera_iec_mode_c_device": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/channels_with_string_addresses" },
+        { "$ref": "#/definitions/slave_id_broadcast" },
+        { "$ref": "#/definitions/no_protocol" }
       ]
     },
 
@@ -1201,7 +1245,7 @@
               }
             }
           },
-          "required": ["protocol", "slave_id"],
+          "required": ["protocol"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
         {
@@ -1321,11 +1365,11 @@
               }
             }
           },
-          "required": ["protocol", "slave_id"],
+          "required": ["protocol"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
         {
-          "title": "Custom Energomera device",
+          "title": "Custom Energomera device with IEC 61107 fast read support",
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/no_setup" },
@@ -1341,7 +1385,27 @@
               }
             }
           },
-          "required": ["protocol", "slave_id"],
+          "required": ["protocol"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Energomera device with IEC 61107 Mode C protocol",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/channels_with_string_addresses" },
+            { "$ref": "#/definitions/slave_id_broadcast" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["energomera_iec_mode_c"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
         {
