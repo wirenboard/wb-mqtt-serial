@@ -8,12 +8,6 @@
 
 #include "register.h"
 
-#if defined(__APPLE__) || defined(__APPLE_CC__)
-#   include <json/json.h>
-#else
-#   include <jsoncpp/json/json.h>
-#endif
-
 #include <wblib/json_utils.h>
 #include <wblib/driver_args.h>
 
@@ -82,6 +76,7 @@ class TTemplateMap: public ITemplateMap
 
         Json::Value Validate(const std::string& deviceType, const std::string& filePath);
         std::shared_ptr<TDeviceTemplate> GetTemplatePtr(const std::string& deviceType);
+        std::string GetDeviceType(const std::string& templatePath) const;
     public:
         TTemplateMap() = default;
 
@@ -91,16 +86,20 @@ class TTemplateMap: public ITemplateMap
          * 
          * @param templatesDirs directory with templates
          * @param templateSchema JSON Schema for template file validation
+         * @param passInvalidTemplates false - throw exception if a folder contains json without device_type parameter
+         *                             true - print log message and continue folder processing
          */
-        TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema);
+        TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema, bool passInvalidTemplates = true);
 
         /**
          * @brief Add templates from templatesDir to map.
          *        Throws TConfigParserException if can't open templatesDir.
          * 
          * @param templatesDir directory with templates
+         * @param passInvalidTemplates false - throw exception if a folder contains json without device_type parameter
+         *                             true - print log message and continue folder processing
          */
-        void AddTemplatesDir(const std::string& templatesDir);
+        void AddTemplatesDir(const std::string& templatesDir, bool passInvalidTemplates = true);
 
         const TDeviceTemplate& GetTemplate(const std::string& deviceType) override;
 
@@ -207,6 +206,18 @@ public:
                                      const IRegisterAddress& deviceBaseAddress,
                                      uint32_t                stride,
                                      uint32_t                registerByteWidth) const override;
+
+    const IRegisterAddress& GetBaseRegisterAddress() const override;
+};
+
+class TStringRegisterAddressFactory: public IRegisterAddressFactory
+{
+    TStringRegisterAddress BaseRegisterAddress;
+public:
+    TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
+                                      const IRegisterAddress& deviceBaseAddress,
+                                      uint32_t                stride,
+                                      uint32_t                registerByteWidth) const override;
 
     const IRegisterAddress& GetBaseRegisterAddress() const override;
 };

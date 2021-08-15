@@ -94,6 +94,7 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
         "offset",
         "round_to",
         "on_value",
+        "off_value",
         "error_value",
         "unsupported_value",
         "word_order",

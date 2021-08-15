@@ -16,6 +16,7 @@ fake_serial_device '1': reconnected
 >>> client -> server: 10
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '4622382011247397490'
+Read Callback: <fake:1:fake: 20> becomes 10.9999
 fake_serial_device '1': read address '20' value '4622382011247397490'
 Read Callback: <fake:1:fake: 20> becomes 10.9999 [unchanged]
 fake_serial_device '1': read address '24' value '0'
@@ -26,6 +27,7 @@ fake_serial_device '1': Device cycle OK
 >>> client -> server: -0.00123
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '13786687233556383447'
+Read Callback: <fake:1:fake: 20> becomes -0.00123
 fake_serial_device '1': read address '20' value '13786687233556383447'
 Read Callback: <fake:1:fake: 20> becomes -0.00123 [unchanged]
 fake_serial_device '1': read address '24' value '0'
@@ -36,6 +38,7 @@ fake_serial_device '1': Device cycle OK
 >>> client -> server: -0.123 (scaled)
 >>> Cycle()
 fake_serial_device '1': write to address '24' value '13786687233556383447'
+Read Callback: <fake:1:fake: 24> becomes -0.123
 fake_serial_device '1': read address '20' value '13786687233556383447'
 Read Callback: <fake:1:fake: 20> becomes -0.00123 [unchanged]
 fake_serial_device '1': read address '24' value '13786687233556383447'

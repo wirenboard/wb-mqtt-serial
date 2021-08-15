@@ -3,20 +3,17 @@ Maintainer: Evgeny Boger <boger@contactless.ru>
 Section: misc
 Priority: optional
 Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 10), pkg-config, libjsoncpp-dev, libwbmqtt1-dev (>= 1.1.0), libwbmqtt1-test-utils (>= 1.1.0)
+Build-Depends: debhelper (>= 10), pkg-config, libwbmqtt1-2-dev (>= 2.2.2), libwbmqtt1-2-test-utils (>= 2.2.2)
 Homepage: https://github.com/wirenboard/wb-mqtt-serial
 
 Package: wb-mqtt-serial
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libjsoncpp0 | libjsoncpp1, ucf, bsdutils, libwbmqtt1 (>= 1.1.0)
+Depends: ${shlibs:Depends}, ${misc:Depends}, ucf, bsdutils (>= 2.29), libwbmqtt1-2 (>= 2.2.2)
 Replaces: wb-homa-modbus (<< 1.14.1)
 Breaks: wb-homa-modbus (<< 1.14.1), wb-mqtt-confed (<< 1.2.5), wb-mqtt-homeui (<< 2.1.0)
-Description: Wiren Board Smart Home MQTT serial protocol driver.
-
-Package: wb-homa-modbus
-Depends: wb-mqtt-serial, ${misc:Depends}
-Architecture: all
-Priority: extra
-Section: oldlibs
-Description: transitional dummy package
- This is a transitional dummy package. It can safely be removed.
+Description: Wiren Board Smart Home MQTT serial protocol driver
+ wb-mqtt-serial is a service which communicates with devices on RS-485
+ via Modbus or other supported protocols. Modbus TCP is also supported.
+ You can add your devices by creating new templates and configure each
+ register poll settings individually. Also it contains advanced templates
+ to configure parameters of Wiren Board peripheral devices.

@@ -6,6 +6,8 @@ EnqueueStartSession()
 EnqueueGoToProgMode()
 >> 06 30 35 31 0D 0A
 << 01 50 30 02 28 30 30 30 30 30 30 30 30 29 03 61
+EnqueueEndSession()
+>> 01 42 30 03 71
 SkipNoise()
 EnqueueStartSession()
 >> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
@@ -13,6 +15,8 @@ EnqueueStartSession()
 EnqueueGoToProgMode()
 >> 06 30 35 31 0D 0A
 << 01 50 30 02 28 30 30 30 30 30 30 30 30 29 03 61
+EnqueueEndSession()
+>> 01 42 30 03 71
 SkipNoise()
 EnqueueStartSession()
 >> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
@@ -20,6 +24,8 @@ EnqueueStartSession()
 EnqueueGoToProgMode()
 >> 06 30 35 31 0D 0A
 << 01 50 30 02 28 30 30 30 30 30 30 30 30 29 03 61
+EnqueueEndSession()
+>> 01 42 30 03 71
 SkipNoise()
 EnqueueStartSession()
 >> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
@@ -27,6 +33,8 @@ EnqueueStartSession()
 EnqueueGoToProgMode()
 >> 06 30 35 31 0D 0A
 << 01 50 30 02 28 30 30 30 30 30 30 30 30 29 03 61
+EnqueueEndSession()
+>> 01 42 30 03 71
 SkipNoise()
 EnqueueStartSession()
 >> 2F 3F 30 30 30 30 30 32 30 31 21 0D 0A
@@ -34,4 +42,6 @@ EnqueueStartSession()
 EnqueueGoToProgMode()
 >> 06 30 35 31 0D 0A
 << 01 50 30 02 28 30 30 30 30 30 30 30 30 29 03 61
+EnqueueEndSession()
+>> 01 42 30 03 71
 Close()
