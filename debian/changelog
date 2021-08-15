@@ -4,6 +4,12 @@ wb-mqtt-serial (2.30.0) stable; urgency=medium
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 15 Jun 2021 17:06:09 +0300
 
+wb-mqtt-serial (2.29.0) stable; urgency=medium
+
+  * Remake MDM3 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 16:59:53 +0300
+
 wb-mqtt-serial (2.28.1) stable; urgency=medium
 
   * BHT-6000-Series template was added
