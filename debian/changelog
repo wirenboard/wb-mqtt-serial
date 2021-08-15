@@ -2,7 +2,7 @@ wb-mqtt-serial (2.27.1) stable; urgency=medium
 
   * Change Somfy Enums
 
- -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Пн, 21 Jun 2021 10:44:05 +0400
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 21 Jun 2021 10:44:05 +0400
  
 wb-mqtt-serial (2.27.0) stable; urgency=medium
 
