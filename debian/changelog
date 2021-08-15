@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.26.0) stable; urgency=medium
+
+  * Remake of WB-MWAC template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 02 Jun 2021 13:12:32 +0300
+
 wb-mqtt-serial (2.25.2) stable; urgency=medium
 
   * Remake MIR v2 template using groups and parameters
