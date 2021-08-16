@@ -4,9 +4,9 @@
     "device": {
         "name": "Eliwell IDPlus 9xx",
         "id": "eliwell-idplus-9xx",
-        "max_read_registers": 0,
-        "response_timeout_ms": 250,
-        "frame_timeout_ms": 250,
+        "max_read_registers": 15,
+        "response_timeout_ms": 100,
+        "frame_timeout_ms": 5,
 
         "groups": [
             {
