@@ -1045,7 +1045,7 @@
                 "order": 7
             },
             "buzzer_enabled": {
-                "title": "Buzzer enabled (H25)",
+                "title": "Buzzer Enabled (H25)",
                 "reg_type": "holding",
                 "address": 49260,
                 "format": "u8",
@@ -1134,7 +1134,7 @@
 
         "channels": [
             {
-                "name": "Analogue input 1",
+                "name": "Analogue Input 1",
                 "reg_type": "holding",
                 "address": 295,
                 "type": "temperature",
@@ -1145,7 +1145,7 @@
                 "group": "status"
             },
             {
-                "name": "Analogue input 2",
+                "name": "Analogue Input 2",
                 "reg_type": "holding",
                 "address": 297,
                 "type": "temperature",
@@ -1156,7 +1156,7 @@
                 "group": "status"
             },
             {
-                "name": "Analogue input 3",
+                "name": "Analogue Input 3",
                 "reg_type": "holding",
                 "address": 299,
                 "type": "temperature",
@@ -1167,7 +1167,7 @@
                 "group": "status"
             },
             {
-                "name": "Digital input 1",
+                "name": "Digital Input 1",
                 "reg_type": "holding",
                 "address": "33056:7:1",
                 "type": "switch",
@@ -1176,7 +1176,7 @@
                 "group": "status"
             },
             {
-                "name": "Digital input 2",
+                "name": "Digital Input 2",
                 "reg_type": "holding",
                 "address": "33056:2:1",
                 "type": "switch",
@@ -1185,7 +1185,7 @@
                 "group": "status"
             },
             {
-                "name": "Analogue input 1 fault",
+                "name": "Analogue Input 1 Fault",
                 "reg_type": "holding",
                 "address": "32876:1:1",
                 "type": "switch",
@@ -1194,7 +1194,7 @@
                 "group": "status"
             },
             {
-                "name": "Analogue input 2 fault",
+                "name": "Analogue Input 2 Fault",
                 "reg_type": "holding",
                 "address": "32876:2:1",
                 "type": "switch",
@@ -1203,7 +1203,7 @@
                 "group": "status"
             },
             {
-                "name": "Analogue input 3 fault",
+                "name": "Analogue Input 3 Fault",
                 "reg_type": "holding",
                 "address": "32877:0:1",
                 "type": "switch",
@@ -1212,7 +1212,7 @@
                 "group": "status"
             },
             {
-                "name": "Critical pressure",
+                "name": "Critical Pressure",
                 "reg_type": "holding",
                 "address": "32876:3:1",
                 "type": "switch",
@@ -1221,7 +1221,7 @@
                 "group": "status"
             },
             {
-                "name": "Pressure switch",
+                "name": "Pressure Switch",
                 "reg_type": "holding",
                 "address": "32878:5:1",
                 "type": "switch",
@@ -1239,7 +1239,7 @@
                 "group": "status"
             },
             {
-                "name": "Analog input 1 high threshold",
+                "name": "Analog Input 1 High Threshold",
                 "reg_type": "holding",
                 "address": "32876:5:1",
                 "type": "switch",
@@ -1248,7 +1248,7 @@
                 "group": "status"
             },
             {
-                "name": "Analog input 1 low threshold",
+                "name": "Analog Input 1 Low Threshold",
                 "reg_type": "holding",
                 "address": "32876:6:1",
                 "type": "switch",
@@ -1257,7 +1257,7 @@
                 "group": "status"
             },
             {
-                "name": "Alarm door opened",
+                "name": "Door Opened Alarm",
                 "reg_type": "holding",
                 "address": "32876:7:1",
                 "type": "switch",
@@ -1266,7 +1266,7 @@
                 "group": "status"
             },
             {
-                "name": "HACCP alarm",
+                "name": "HACCP Alarm",
                 "reg_type": "holding",
                 "address": "32877:1:1",
                 "type": "switch",
@@ -1275,7 +1275,7 @@
                 "group": "status"
             },
             {
-                "name": "Overtemperature alarm",
+                "name": "Overtemperature Alarm",
                 "reg_type": "holding",
                 "address": "32876:0:1",
                 "type": "switch",
@@ -1284,7 +1284,7 @@
                 "group": "status"
             },
             {
-                "name": "Defrost timeout",
+                "name": "Defrost Timeout",
                 "reg_type": "holding",
                 "address": "32878:0:1",
                 "type": "switch",
@@ -1329,7 +1329,7 @@
                 "group": "status"
             },
             {
-                "name": "Door status",
+                "name": "Door Status",
                 "reg_type": "holding",
                 "address": "32896:3:1",
                 "type": "switch",
@@ -1338,7 +1338,7 @@
                 "group": "status"
             },
             {
-                "name": "Reduced set",
+                "name": "Reduced Set",
                 "reg_type": "holding",
                 "address": "32882:0:1",
                 "type": "switch",
@@ -1347,7 +1347,7 @@
                 "group": "status"
             },
             {
-                "name": "Auxiliary relay output",
+                "name": "Auxiliary Relay Output",
                 "reg_type": "holding",
                 "address": "32882:4:1",
                 "type": "switch",
@@ -1356,7 +1356,7 @@
                 "group": "status"
             },
             {
-                "name": "Parameters changed",
+                "name": "Parameters Changed",
                 "reg_type": "holding",
                 "address": "32882:5:1",
                 "type": "switch",
@@ -1423,7 +1423,7 @@
                 "group": "control"
             },
             {
-                "name": "Reset Changed Parameters Indicator",
+                "name": "Reset Parameters Changed Indicator",
                 "reg_type": "holding",
                 "address": "32865:3:1",
                 "type": "switch",
@@ -1452,6 +1452,7 @@
                 "address": 115,
                 "type": "value",
                 "format": "u16",
+                "min": 0,
                 "group": "control"
             }
         ]
