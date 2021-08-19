@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.22.1-wb1) stable; urgency=medium
+
+  * WB-MAP templates are reverted to v2.7.1 state. They will be updated in future releases.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 19 Aug 2021 15:40:06 +0500
+
 wb-mqtt-serial (2.22.1) stable; urgency=medium
 
   * guard_interval_us description for web-interface is updated
