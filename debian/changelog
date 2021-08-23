@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.28.0) stable; urgency=medium
+wb-mqtt-serial (2.31.0) stable; urgency=medium
 
   * Remake of MAP12E-fw2 template using groups and parameters
   * Remake of MAP6S-fw2 template using groups and parameters
@@ -25,6 +25,36 @@ wb-mqtt-serial (2.28.0) stable; urgency=medium
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 07 Jul 2021 15:50:11 +0300
 
+wb-mqtt-serial (2.30.0) stable; urgency=medium
+
+  * Remake MRGBW-D template using groups, parameters and subdevices
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 15 Jun 2021 17:06:09 +0300
+
+wb-mqtt-serial (2.29.0) stable; urgency=medium
+
+  * Remake MDM3 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 16:59:53 +0300
+
+wb-mqtt-serial (2.28.1) stable; urgency=medium
+
+  * BHT-6000-Series template was added
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 12 Jul 2021 20:56:52 +0400 
+ 
+wb-mqtt-serial (2.28.0) stable; urgency=medium
+
+  * BAC-6000-Series template was added
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Tue, 13 Jul 2021 13:58:25 +0400 
+
+wb-mqtt-serial (2.27.1) stable; urgency=medium
+
+  * Change Somfy Enums
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 21 Jun 2021 10:44:05 +0400
+ 
 wb-mqtt-serial (2.27.0) stable; urgency=medium
 
   * Remake MCM8 template using groups and parameters
