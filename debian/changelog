@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.22.1-wb2) stable; urgency=medium
+
+  * WB-MS v2 template is reverted to v2.7.1 state. It will be updated in future releases.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 23 Aug 2021 16:39:33 +0500
+
 wb-mqtt-serial (2.22.1-wb1) stable; urgency=medium
 
   * WB-MAP templates are reverted to v2.7.1 state. They will be updated in future releases.
