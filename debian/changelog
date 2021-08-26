@@ -1,9 +1,101 @@
-
-wb-mqtt-serial (2.23.1) stable; urgency=medium
+wb-mqtt-serial (2.32.0) stable; urgency=medium
 
   * Template for Eliwell-IDPlus-9xx was added
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Sat, 14 Aug 2021 14:06:34 +0300
+
+wb-mqtt-serial (2.31.0) stable; urgency=medium
+
+  * Remake of MAP12E-fw2 template using groups and parameters
+  * Remake of MAP6S-fw2 template using groups and parameters
+  * Remake of MAP3ET template using groups and parameters
+  * Remake of MAP3E fw2 template using groups and parameters
+  * Remake of MAP3EV template using groups and parameters
+  * Remake of MAP12H fw2 (+ all harmonics) template using groups and parameters
+  * Remake of MAP12H fw2 (+ harmonics) template using groups and parameters
+  * Remake of MAP12H fw2 (basic) template using groups and parameters
+  * Remake of WB-MAP12H fw2 template using groups and parameters
+  * Remake of WB-MAP12H (+ harmonics) template using groups and parameters
+  * Remake of MAP12H template using groups and parameters
+  * Remake of MAP12H (basic) template using groups and parameters
+  * Remake of WB-MAP12H (basic div2) template using groups and parameters
+  * Remake of MAP3H fw2 (+ harmonics) template using groups and parameters
+  * Remake of WB-MAP3H fw2 (basic) template using groups and parameters
+  * Remake of MAP3H fw2 template using groups and parameters
+  * Remake of MAP3H (basic) template using groups and parameters
+  * Remake of MAP3H (+ harmonics) template using groups and parameters
+  * Remake of MAP3H template using groups and parameters
+  * Remake of MAP12H (+ all-harmonics) template using groups and parameters
+  * Remake of MAP3E template using groups and parameters
+  * Remake of MAP6S template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 07 Jul 2021 15:50:11 +0300
+
+wb-mqtt-serial (2.30.0) stable; urgency=medium
+
+  * Remake MRGBW-D template using groups, parameters and subdevices
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 15 Jun 2021 17:06:09 +0300
+
+wb-mqtt-serial (2.29.0) stable; urgency=medium
+
+  * Remake MDM3 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 16:59:53 +0300
+
+wb-mqtt-serial (2.28.1) stable; urgency=medium
+
+  * BHT-6000-Series template was added
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 12 Jul 2021 20:56:52 +0400 
+ 
+wb-mqtt-serial (2.28.0) stable; urgency=medium
+
+  * BAC-6000-Series template was added
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Tue, 13 Jul 2021 13:58:25 +0400 
+
+wb-mqtt-serial (2.27.1) stable; urgency=medium
+
+  * Change Somfy Enums
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 21 Jun 2021 10:44:05 +0400
+ 
+wb-mqtt-serial (2.27.0) stable; urgency=medium
+
+  * Remake MCM8 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 09 Jun 2021 11:57:11 +0300
+
+wb-mqtt-serial (2.26.0) stable; urgency=medium
+
+  * Remake of WB-MWAC template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 02 Jun 2021 13:12:32 +0300
+
+wb-mqtt-serial (2.25.2) stable; urgency=medium
+
+  * Remake MIR v2 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 08 Jun 2021 11:33:39 +0300
+
+wb-mqtt-serial (2.25.1) stable; urgency=medium
+
+  * Remake MSv2 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 08 Jun 2021 16:42:13 +0300
+
+wb-mqtt-serial (2.25.0) stable; urgency=medium
+
+  * Remake M1W2 template using groups and parameters
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 08 Jun 2021 09:23:50 +0300
+
+wb-mqtt-serial (2.24.0) stable; urgency=medium
+
+  * Template for Danfoss FC 51 was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 04 Aug 2021 15:58:53 +0300
 
 wb-mqtt-serial (2.23.0) stable; urgency=medium
 

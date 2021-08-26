@@ -1,105 +1,169 @@
 {
- "device_type": "WB-MAP3EV",
- "device": {
-  "name": "WB-MAP3EV",
-  "id": "wb-map3ev",
-  "max_read_registers": 60,
-  "response_timeout_ms": 1,
-  "frame_timeout_ms": 15,
-  "channels": [
-   {
-    "name": "Urms L1",
-    "reg_type": "input",
-    "address": "0x1410",
-    "type": "voltage",
-    "format": "u32",
-    "scale": 1.52588e-07,
-    "round_to": 0.001
-   },
-   {
-    "name": "Upeak L1",
-    "reg_type": "input",
-    "address": "0x1810",
-    "type": "voltage",
-    "format": "s32",
-    "scale": 0.01,
-    "round_to": 0.01,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "Urms L2",
-    "reg_type": "input",
-    "address": "0x1412",
-    "type": "voltage",
-    "format": "u32",
-    "scale": 1.52588e-07,
-    "round_to": 0.001
-   },
-   {
-    "name": "Upeak L2",
-    "reg_type": "input",
-    "address": "0x1812",
-    "type": "voltage",
-    "format": "s32",
-    "scale": 0.01,
-    "round_to": 0.01,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "Urms L3",
-    "reg_type": "input",
-    "address": "0x1414",
-    "type": "voltage",
-    "format": "u32",
-    "scale": 1.52588e-07,
-    "round_to": 0.001
-   },
-   {
-    "name": "Upeak L3",
-    "reg_type": "input",
-    "address": "0x1814",
-    "type": "voltage",
-    "format": "s32",
-    "scale": 0.01,
-    "round_to": 0.01,
-    "word_order": "little_endian"
-   },
-   {
-    "name": "Frequency",
-    "reg_type": "input",
-    "address": "0x10f8",
-    "type": "value",
-    "format": "u16",
-    "scale": 0.01,
-    "round_to": 0.01
-   },
-   {
-    "name": "Voltage angle L1",
-    "reg_type": "input",
-    "address": "0x10fd",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.1,
-    "round_to": 0.01
-   },
-   {
-    "name": "Voltage angle L2",
-    "reg_type": "input",
-    "address": "0x10fe",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.1,
-    "round_to": 0.01
-   },
-   {
-    "name": "Voltage angle L3",
-    "reg_type": "input",
-    "address": "0x10ff",
-    "type": "value",
-    "format": "s16",
-    "scale": 0.1,
-    "round_to": 0.01
-   }
-  ]
- }
+    "device_type": "WB-MAP3EV",
+    "device": {
+        "name": "WB-MAP3EV",
+        "id": "wb-map3ev",
+        "max_read_registers": 60,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 15,
+
+        "groups": [
+            {
+                "title": "Measured Values",
+                "id": "measured_values",
+                "order": 1
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 2
+            }
+        ],
+
+        "parameters": {
+            "peaks_measurement_period_s": {
+                "title": "Peaks Measurement Period (s)",
+                "address": "0x10F0",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 1,
+                "default": 60,
+                "group": "measured_values",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {
+                "name": "Urms L1",
+                "reg_type": "input",
+                "address": "0x1410",
+                "type": "voltage",
+                "format": "u32",
+                "scale": 1.52588e-7,
+                "round_to": 0.001,
+                "group": "measured_values"
+            },
+            {
+                "name": "Upeak L1",
+                "reg_type": "input",
+                "address": "0x1810",
+                "type": "voltage",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "measured_values"
+            },
+            {
+                "name": "Urms L2",
+                "reg_type": "input",
+                "address": "0x1412",
+                "type": "voltage",
+                "format": "u32",
+                "scale": 1.52588e-7,
+                "round_to": 0.001,
+                "group": "measured_values"
+            },
+            {
+                "name": "Upeak L2",
+                "reg_type": "input",
+                "address": "0x1812",
+                "type": "voltage",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "measured_values"
+            },
+            {
+                "name": "Urms L3",
+                "reg_type": "input",
+                "address": "0x1414",
+                "type": "voltage",
+                "format": "u32",
+                "scale": 1.52588e-7,
+                "round_to": 0.001,
+                "group": "measured_values"
+            },
+            {
+                "name": "Upeak L3",
+                "reg_type": "input",
+                "address": "0x1814",
+                "type": "voltage",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "measured_values"
+            },
+            {
+                "name": "Frequency",
+                "reg_type": "input",
+                "address": "0x10f8",
+                "type": "value",
+                "format": "u16",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "group": "measured_values"
+            },
+            {
+                "name": "Voltage angle L1",
+                "reg_type": "input",
+                "address": "0x10fd",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.01,
+                "group": "measured_values"
+            },
+            {
+                "name": "Voltage angle L2",
+                "reg_type": "input",
+                "address": "0x10fe",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.01,
+                "group": "measured_values"
+            },
+            {
+                "name": "Voltage angle L3",
+                "reg_type": "input",
+                "address": "0x10ff",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.01,
+                "group": "measured_values"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "offset": -4261412864,
+                "group": "hw_info"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ]
+    }
 }

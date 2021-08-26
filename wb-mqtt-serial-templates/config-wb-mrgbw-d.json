@@ -1,94 +1,238 @@
 {
-    "device_type": "WB-MRGBW-D", 
+    "device_type": "WB-MRGBW-D",
     "device": {
-        "name": "WB-MRGBW-D", 
-        "id": "wb-mrgbw-d", 
+        "name": "WB-MRGBW-D",
+        "id": "wb-mrgbw-d",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
+
+        "groups": [
+            {
+                "title": "Inputs",
+                "id": "inputs",
+                "order": 1
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 3
+            }
+        ],
+
+        "parameters": {
+            "inputs_mode": {
+                "title": "Inputs Mode",
+                "address": 5,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "control enabled",
+                    "control disabled"
+                ],
+                "group": "inputs",
+                "order": 1
+            }
+        },
+
         "channels": [
             {
-                "name": "RGB", 
-                "type": "rgb", 
-                "consists_of": [
-                    {
-                        "reg_type": "holding", 
-                        "address": 1
-                    }, 
-                    {
-                        "reg_type": "holding", 
-                        "address": 0
-                    }, 
-                    {
-                        "reg_type": "holding", 
-                        "address": 2
-                    }
-                ]
-            }, 
+                "name": "Button 1",
+                "reg_type": "input",
+                "address": 6,
+                "type": "switch",
+                "group": "inputs"
+            },
             {
-                "name": "White", 
-                "reg_type": "holding", 
-                "address": 3, 
-                "type": "range", 
-                "max": 255
-            }, 
+                "name": "Button 1 counter",
+                "reg_type": "input",
+                "address": 32,
+                "type": "value",
+                "group": "inputs"
+            },
             {
-                "name": "Button 1", 
-                "reg_type": "input", 
-                "readonly": true, 
-                "address": 6, 
-                "type": "switch"
-            }, 
+                "name": "Button 2",
+                "reg_type": "input",
+                "address": 7,
+                "type": "switch",
+                "group": "inputs"
+            },
             {
-                "name": "Button 2", 
-                "reg_type": "input", 
-                "readonly": true, 
-                "address": 7, 
-                "type": "switch"
-            }, 
+                "name": "Button 2 counter",
+                "reg_type": "input",
+                "address": 33,
+                "type": "value",
+                "group": "inputs"
+            },
             {
-                "name": "Button 3", 
-                "reg_type": "input", 
-                "readonly": true, 
-                "address": 8, 
-                "type": "switch"
-            }, 
+                "name": "Button 3",
+                "reg_type": "input",
+                "address": 8,
+                "type": "switch",
+                "group": "inputs"
+            },
             {
-                "name": "Button 1 counter", 
-                "reg_type": "input", 
-                "readonly": true, 
-                "address": 32, 
-                "type": "value"
-            }, 
+                "name": "Button 3 counter",
+                "reg_type": "input",
+                "address": 34,
+                "type": "value",
+                "group": "inputs"
+            },
             {
-                "name": "Button 2 counter", 
-                "reg_type": "input", 
-                "readonly": true, 
-                "address": 33, 
-                "type": "value"
-            }, 
+                "name": "Channels",
+                "id": "",
+                "oneOf": [
+                    "rgb_w",
+                    "independent_channels"
+                ],
+                "device_type": "rgb_w"
+            },
             {
-                "name": "Button 3 counter", 
-                "reg_type": "input", 
-                "readonly": true, 
-                "address": 34, 
-                "type": "value"
-            }, 
+                "name": "Serial NO",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
             {
-                "name": "Serial NO", 
-                "type": "text", 
-                "reg_type": "input", 
-                "address": 270, 
-                "format": "u32"
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
             },
             {
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
+                "type": "text",
                 "format": "u32",
-                "enabled": false
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+
+        "subdevices": [
+            {
+                "title": "RGB+W",
+                "device_type": "rgb_w",
+                "device": {
+                    "parameters": {
+                        "pwm_frequency_factor": {
+                            "title": "PWM Frequency Factor: 24 kHz / (value + 1)",
+                            "address": 9,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 239,
+                            "default": 0,
+                            "order": 1
+                        },
+                        "on_off_time_ms": {
+                            "title": "On/Off Time (ms)",
+                            "address": 13,
+                            "reg_type": "holding",
+                            "scale": 10,
+                            "min": 20,
+                            "max": 5000,
+                            "default": 1000,
+                            "order": 2
+                        }
+                    },
+                    "channels": [
+                        {
+                            "name": "RGB",
+                            "type": "rgb",
+                            "consists_of": [
+                                {
+                                    "reg_type": "holding",
+                                    "address": 1
+                                },
+                                {
+                                    "reg_type": "holding",
+                                    "address": 0
+                                },
+                                {
+                                    "reg_type": "holding",
+                                    "address": 2
+                                }
+                            ]
+                        },
+                        {
+                            "name": "White",
+                            "reg_type": "holding",
+                            "address": 3,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Independent Channels",
+                "device_type": "independent_channels",
+                "device": {
+                    "parameters": {
+                        "pwm_frequency_factor": {
+                            "title": "PWM Frequency Factor: 24 kHz / (value + 1)",
+                            "address": 9,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 239,
+                            "default": 0,
+                            "order": 1
+                        },
+                        "on_off_time_ms": {
+                            "title": "On/Off Time (ms)",
+                            "address": 13,
+                            "reg_type": "holding",
+                            "scale": 10,
+                            "min": 20,
+                            "max": 5000,
+                            "default": 1000,
+                            "order": 2
+                        }
+                    },
+                    "channels": [
+                        {
+                            "name": "Channel B",
+                            "reg_type": "holding",
+                            "address": 2,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        },
+                        {
+                            "name": "Channel R",
+                            "reg_type": "holding",
+                            "address": 1,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        },
+                        {
+                            "name": "Channel G",
+                            "reg_type": "holding",
+                            "address": 0,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        },
+                        {
+                            "name": "Channel W",
+                            "reg_type": "holding",
+                            "address": 3,
+                            "type": "range",
+                            "min": 0,
+                            "max": 255
+                        }
+                    ]
+                }
             }
         ]
     }
 }
-
