@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.32.0) stable; urgency=medium
+
+  * Template for Eliwell-IDPlus-9xx was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Sat, 14 Aug 2021 14:06:34 +0300
+
 wb-mqtt-serial (2.31.0) stable; urgency=medium
 
   * Remake of MAP12E-fw2 template using groups and parameters
