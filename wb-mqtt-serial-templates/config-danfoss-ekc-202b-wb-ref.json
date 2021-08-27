@@ -1,6 +1,6 @@
 {
-    "title": "Danfoss EKC 202B",
-    "device_type": "danfoss_ekc_202b",
+    "title": "Danfoss EKC 202B (WB-REF-DF-178A)",
+    "device_type": "danfoss_ekc_202b_wb_ref",
     "device": {
         "name": "Danfoss EKC 202B",
         "id": "danfoss-ekc-202b",
@@ -693,10 +693,8 @@
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "normal operation",
-                    "cleaning with fans operating",
-                    "all other outputs are off",
-                    "cleaning with stopped fans",
-                    "all other outputs are off"
+                    "cleaning with fans operating, all other outputs are off",
+                    "cleaning with stopped fans, all other outputs are off"
                 ],
                 "group": "miscellaneous",
                 "order": 5
@@ -1020,7 +1018,7 @@
                 "group": "control"
             },
             {
-                "name": "SW Version",
+                "name": "Controller SW Version",
                 "address": 12003,
                 "reg_type": "holding",
                 "type": "value",
@@ -1030,12 +1028,39 @@
                 "enabled": false
             },
             {
-                "name": "Order Number",
+                "name": "Controller Order Number",
                 "address": 12011,
                 "reg_type": "holding",
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
+                "group": "hw_info",
+                "enabled": false
+            },
+            {
+                "name": "Card Serial",
+                "address": 270,
+                "reg_type": "input",
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "Card Supply Voltage",
+                "address": 121,
+                "reg_type": "input",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.001,
+                "group": "hw_info",
+                "enabled": false
+            },
+            {
+                "name": "Card Uptime",
+                "address": 104,
+                "reg_type": "input",
+                "type": "text",
+                "format": "u32",
                 "group": "hw_info",
                 "enabled": false
             }
