@@ -54,9 +54,14 @@
                 "order": 9
             },
             {
-                "title": "HW Info",
-                "id": "hw_info",
+                "title": "Controller Info",
+                "id": "controller_info",
                 "order": 10
+            },
+            {
+                "title": "Card Info",
+                "id": "card_info",
+                "order": 11
             }
         ],
         "parameters": {
@@ -1024,7 +1029,7 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                "group": "hw_info",
+                "group": "controller_info",
                 "enabled": false
             },
             {
@@ -1034,34 +1039,35 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                "group": "hw_info",
+                "group": "controller_info",
                 "enabled": false
             },
             {
-                "name": "Card Serial",
+                "name": "Serial",
                 "address": 270,
                 "reg_type": "input",
                 "type": "text",
                 "format": "u32",
-                "group": "hw_info"
+                "group": "card_info",
+                "enabled": false
             },
             {
-                "name": "Card Supply Voltage",
+                "name": "Supply Voltage",
                 "address": 121,
                 "reg_type": "input",
                 "type": "voltage",
                 "format": "u16",
                 "scale": 0.001,
-                "group": "hw_info",
+                "group": "card_info",
                 "enabled": false
             },
             {
-                "name": "Card Uptime",
+                "name": "Uptime",
                 "address": 104,
                 "reg_type": "input",
                 "type": "text",
                 "format": "u32",
-                "group": "hw_info",
+                "group": "card_info",
                 "enabled": false
             }
         ]
