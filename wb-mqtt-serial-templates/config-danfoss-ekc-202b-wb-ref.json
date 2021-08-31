@@ -4,8 +4,8 @@
     "device": {
         "name": "Danfoss EKC 202B",
         "id": "danfoss-ekc-202b",
-        "response_timeout_ms": 100,
-        "frame_timeout_ms": 15,
+        "response_timeout_ms": 10,
+        "frame_timeout_ms": 5,
 
         "groups": [
             {
@@ -728,20 +728,16 @@
                 "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -200,
-                "max": 200,
                 "readonly": true,
                 "group": "status"
             },
             {
-                "name": "Display Air",
+                "name": "Displayed Air Temperature",
                 "address": 12576,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -200,
-                "max": 200,
                 "readonly": true,
                 "group": "status"
             },
@@ -752,8 +748,6 @@
                 "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -200,
-                "max": 200,
                 "readonly": true,
                 "group": "status"
             },
@@ -764,16 +758,14 @@
                 "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -200,
-                "max": 200,
                 "readonly": true,
                 "group": "status"
             },
             {
-                "name": "Controller On",
+                "name": "Controller State",
                 "address": 12007,
                 "reg_type": "holding",
-                "type": "switch",
+                "type": "value",
                 "format": "u16",
                 "readonly": true,
                 "group": "status"
@@ -806,15 +798,6 @@
                 "group": "status"
             },
             {
-                "name": "DI1 Status",
-                "address": 12002,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "readonly": true,
-                "group": "status"
-            },
-            {
                 "name": "Night Mode Active",
                 "address": 12533,
                 "reg_type": "holding",
@@ -824,7 +807,25 @@
                 "group": "status"
             },
             {
-                "name": "Cooling Relay On",
+                "name": "Case Cleaning Active",
+                "address": 30011,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "DI1 Status",
+                "address": 12002,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Cooling Relay Status",
                 "address": 12510,
                 "reg_type": "holding",
                 "type": "switch",
@@ -833,7 +834,7 @@
                 "group": "status"
             },
             {
-                "name": "Fan Relay On",
+                "name": "Fan Relay Status",
                 "address": 12511,
                 "reg_type": "holding",
                 "type": "switch",
@@ -842,7 +843,7 @@
                 "group": "status"
             },
             {
-                "name": "Defrost Relay On",
+                "name": "Defrost Relay Status",
                 "address": 12512,
                 "reg_type": "holding",
                 "type": "switch",
@@ -900,7 +901,7 @@
                 "enabled": false
             },
             {
-                "name": "High Temp Alarm",
+                "name": "High Temperature Alarm",
                 "address": 30004,
                 "reg_type": "holding",
                 "type": "switch",
@@ -910,7 +911,7 @@
                 "enabled": false
             },
             {
-                "name": "Low Temp Alarm",
+                "name": "Low Temperature Alarm",
                 "address": 30005,
                 "reg_type": "holding",
                 "type": "switch",
@@ -970,24 +971,12 @@
                 "enabled": false
             },
             {
-                "name": "Case Cleaning Status",
-                "address": 30011,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "readonly": true,
-                "group": "status",
-                "enabled": false
-            },
-            {
                 "name": "Temperature Setpoint",
                 "address": 10100,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -50,
-                "max": 50,
                 "group": "control"
             },
             {
