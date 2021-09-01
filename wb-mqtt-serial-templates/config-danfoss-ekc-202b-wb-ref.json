@@ -4,8 +4,8 @@
     "device": {
         "name": "Danfoss EKC 202B",
         "id": "danfoss-ekc-202b",
-        "response_timeout_ms": 10,
-        "frame_timeout_ms": 5,
+        "response_timeout_ms": 100,
+        "frame_timeout_ms": 12,
 
         "groups": [
             {
