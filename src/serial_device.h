@@ -106,13 +106,13 @@ struct TDeviceConfig
 
     int NextOrderValue() const;
     void AddChannel(PDeviceChannelConfig channel);
-    void AddSetupItem(PDeviceSetupItemConfig item);
+    void AddSetupItem(PDeviceSetupItemConfig item, const std::string& deviceTemplateTitle = std::string());
 
     std::string GetDescription() const;
 
 private:
     // map key is setup item address
-    std::unordered_map<std::string, std::string> SetupItemsByAddress;
+    std::unordered_map<std::string, PDeviceSetupItemConfig> SetupItemsByAddress;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
