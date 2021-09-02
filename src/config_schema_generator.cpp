@@ -26,21 +26,6 @@ namespace
     }
 
     //  {
-    //      "properties": {
-    //          "protocol": {
-    //              "type": "string",
-    //              "enum": [ PROTOCOL_NAME ]
-    //          }
-    //      }
-    //  }
-    Json::Value MakeProtocolProperty(const std::string& protocolName)
-    {
-        Json::Value r;
-        r["properties"]["protocol"] = MakeSingleValuePropery(protocolName);
-        return r;
-    }
-
-    //  {
     //      "allOf": [ {"$ref": "#/definitions/channelSettings"} ],
     //      "properties": {
     //          "name": {
@@ -242,8 +227,7 @@ namespace
     //  {
     //      "type": "object",
     //      "allOf": [
-    //          { "$ref": COMMON_DEVICE_SCHEMA },
-    //          { PROTOCOL_SCHEMA }                // allow to set the same protocol as in device template
+    //          { "$ref": COMMON_DEVICE_SCHEMA }
     //      ],
     //      "properties": {
     //          "device_type": {
@@ -289,9 +273,7 @@ namespace
         if (!WBMQTT::StringHasSuffix(deviceSchemaRef, NO_CHANNELS_SUFFIX)) {
             deviceSchemaRef += NO_CHANNELS_SUFFIX;
         }
-        auto& allOf = MakeArray("allOf", res);
-        allOf.append(MakeObject("$ref", deviceSchemaRef));
-        allOf.append(MakeProtocolProperty(protocolName));
+        MakeArray("allOf", res).append(MakeObject("$ref", deviceSchemaRef));
 
         TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
         if (deviceTemplate.Schema.isMember("subdevices")) {

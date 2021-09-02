@@ -206,8 +206,13 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
         res["id"] = deviceTemplate["id"].asString() + DecorateIfNotEmpty("_", deviceData["slave_id"].asString());
     }
 
+    if (deviceData.isMember("protocol")) {
+        LOG(Warn) << "\"" << deviceName << "\" has \"protocol\" property set in config. It is ignored. Protocol from device template will be used.";
+    }
+
+    const std::unordered_set<std::string> specialProperties({"channels", "setup", "name", "protocol"});
     for (auto itProp = deviceData.begin(); itProp != deviceData.end(); ++itProp) {
-        if (itProp.name() != "channels" && itProp.name() != "setup" && itProp.name() != "name") {
+        if (!specialProperties.count(itProp.name())) {
             SetPropertyWithNotification(res, itProp, deviceName);
         }
     }
