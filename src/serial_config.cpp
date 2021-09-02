@@ -161,12 +161,14 @@ namespace {
     {
         std::string             name_prefix;
         std::string             mqtt_prefix;
+        const std::string&      device_template_title;
         const IDeviceFactory&   factory;
         const IRegisterAddress& device_base_address;
         size_t                  stride = 0;
 
-        TLoadingContext(const IDeviceFactory& f, const IRegisterAddress& base_address)
-            : factory(f),
+        TLoadingContext(const std::string& template_title, const IDeviceFactory& f, const IRegisterAddress& base_address)
+            : device_template_title(template_title),
+              factory(f),
               device_base_address(base_address)
         {}
     };
@@ -320,7 +322,7 @@ namespace {
         }
         std::unique_ptr<IRegisterAddress> baseAddress(context.device_base_address.CalcNewAddress(shift, 0, 0, 0));
 
-        TLoadingContext newContext(context.factory, *baseAddress);
+        TLoadingContext newContext(context.device_template_title, context.factory, *baseAddress);
         newContext.name_prefix = channel_data["name"].asString();
         if (!context.name_prefix.empty()) {
             newContext.name_prefix = context.name_prefix + " " + newContext.name_prefix;
@@ -380,7 +382,7 @@ namespace {
         const auto& valueItem = item_data["value"];
         // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
         auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
-        device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg.RegisterConfig, value)));
+        device_config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg.RegisterConfig, value)), context.device_template_title);
     }
 
     void LoadDeviceTemplatableConfigPart(TDeviceConfig*          device_config,
@@ -886,14 +888,29 @@ void TDeviceConfig::AddChannel(PDeviceChannelConfig channel)
     DeviceChannelConfigs.push_back(channel); 
 }
 
-void TDeviceConfig::AddSetupItem(PDeviceSetupItemConfig item) 
+void TDeviceConfig::AddSetupItem(PDeviceSetupItemConfig item, const std::string& deviceTemplateName) 
 {
     auto addrIt = SetupItemsByAddress.find(item->GetRegisterConfig()->GetAddress().ToString());
     if (addrIt != SetupItemsByAddress.end()) {
-        LOG(Warn) << "Setup command \"" << item->GetName() << "\" will be ignored. It has the same address " 
-                  << item->GetRegisterConfig()->GetAddress() << " as command \"" << addrIt->second << "\"";
+        std::stringstream ss;
+        ss << "Setup command \"" << item->GetName() << "\" with address " << item->GetRegisterConfig()->GetAddress();
+        if (!deviceTemplateName.empty()) {
+            ss << " from device template \"" << deviceTemplateName << "\"";
+        }
+        ss << " has a duplicate command \"" << addrIt->second->GetName() << "\" ";
+        if (item->GetValue() == addrIt->second->GetValue()) {
+            ss << "with the same register value.";
+        } else {
+            ss << "with different register value. ";
+            if (deviceTemplateName.empty()) {
+                ss << "It could lead to unexpected device operation";
+            } else {
+                ss << "IT WILL BREAK TEMPLATE OPERATION";
+            }
+        }
+        LOG(Warn) << ss.str();
     } else {
-        SetupItemsByAddress.insert({item->GetRegisterConfig()->GetAddress().ToString(), item->GetName()});
+        SetupItemsByAddress.insert({item->GetRegisterConfig()->GetAddress().ToString(), item});
         SetupItemConfigs.push_back(item);
     }
 }
@@ -970,12 +987,15 @@ const std::string& TSerialDeviceFactory::GetCustomChannelSchemaRef(const std::st
 
 PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig, const std::string& defaultId, PPortConfig portConfig, TTemplateMap& templates)
 {
+    TDeviceConfigLoadParams params;
+
     const auto* cfg = &deviceConfig;
     unique_ptr<Json::Value> mergedConfig;
     if (deviceConfig.isMember("device_type")) {
         auto deviceType = deviceConfig["device_type"].asString();
-        auto deviceTemplate = templates.GetTemplate(deviceType).Schema;
-        mergedConfig = std::make_unique<Json::Value>(MergeDeviceConfigWithTemplate(deviceConfig, deviceType, deviceTemplate));
+        const auto& deviceTemplate = templates.GetTemplate(deviceType);
+        params.DeviceTemplateTitle = deviceTemplate.Title;
+        mergedConfig = std::make_unique<Json::Value>(MergeDeviceConfigWithTemplate(deviceConfig, deviceType, deviceTemplate.Schema));
         cfg = mergedConfig.get();
     }
     std::string protocolName = DefaultProtocol;
@@ -996,7 +1016,6 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
     auto protocol = it->second.first;
     const auto& deviceFactory = *it->second.second;
 
-    TDeviceConfigLoadParams params;
     params.DefaultId           = defaultId;
     params.DefaultPollInterval = portConfig->PollInterval;
     params.DefaultRequestDelay = portConfig->RequestDelay;
@@ -1057,7 +1076,7 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
             res->SlaveId = std::to_string(dev["slave_id"].asInt());
     }
 
-    TLoadingContext context(factory, factory.GetRegisterAddressFactory().GetBaseRegisterAddress());
+    TLoadingContext context(parameters.DeviceTemplateTitle, factory, factory.GetRegisterAddressFactory().GetBaseRegisterAddress());
     LoadDeviceTemplatableConfigPart(res.get(), dev, protocol->GetRegTypes(), context);
 
     if (res->DeviceChannelConfigs.empty())
