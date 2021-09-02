@@ -37,6 +37,11 @@
             "setup" : 
             [
                 {
+                    "address" : 20000,
+                    "title" : "31",
+                    "value" : "0xffff"
+                },
+                {
                     "address" : 10000,
                     "title" : "s1",
                     "value" : "0xffff"
@@ -45,11 +50,6 @@
                     "address" : 9999,
                     "title" : "s2",
                     "value" : 1
-                },
-                {
-                        "address" : 20000,
-                        "title" : "31",
-                        "value" : "0xffff"
                 }
 
             ]

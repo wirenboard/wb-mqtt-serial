@@ -1,0 +1,21 @@
+{
+    "debug": false,
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "devices" : [
+                {
+                    "device_type" : "with setup",
+                    "slave_id": 2,
+                    "setup": [
+                        {
+                            "title" : "s2 override",
+                            "address": 9992,
+                            "value": 100
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
