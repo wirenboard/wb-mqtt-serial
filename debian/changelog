@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.22.1-wb3) stable; urgency=medium
+
+  * Config's setup section priority is raised. Setup registers in config have higher priority than 
+    setup registers with same addresses from device templates.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 02 Sep 2021 10:23:01 +0500
+
 wb-mqtt-serial (2.22.1-wb2) stable; urgency=medium
 
   * WB-MS v2 template is reverted to v2.7.1 state. It will be updated in future releases.

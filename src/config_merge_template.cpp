@@ -11,11 +11,7 @@ void UpdateChannels(Json::Value& dst, const Json::Value& userConfig, ITemplateMa
 
 void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config)
 {
-    if (!deviceTemplate.isMember("setup")) {
-        deviceTemplate["setup"] = Json::Value(Json::arrayValue);
-    }
-
-    auto& newSetup = deviceTemplate["setup"];
+    Json::Value newSetup(Json::arrayValue);
 
     if (config.isMember("setup")) {
         for (const auto& item: config["setup"]) {
@@ -41,8 +37,16 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config)
         }
     }
 
+    if (deviceTemplate.isMember("setup")) {
+        for (const auto& item: deviceTemplate["setup"]) {
+            newSetup.append(item);
+        }
+    }
+
     if (newSetup.empty()) {
         deviceTemplate.removeMember("setup");
+    } else {
+        deviceTemplate["setup"] = newSetup;
     }
 }
 
