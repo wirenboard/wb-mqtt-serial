@@ -891,14 +891,6 @@
       ]
     },
 
-    "no_protocol": {
-      "properties": {
-        "protocol": {
-          "not": {},
-          "options": { "hidden": true }
-        }
-      }
-    },
     "no_setup": {
       "properties": {
         "setup": {
@@ -1001,8 +993,7 @@
         { "$ref": "#/definitions/dlms_device_properties" },
         { "$ref": "#/definitions/dlms_channels" },
         { "$ref": "#/definitions/slave_id" },
-        { "$ref": "#/definitions/no_setup" },
-        { "$ref": "#/definitions/no_protocol" }
+        { "$ref": "#/definitions/no_setup" }
       ]
     },
     "dlms_device_no_channels": {
@@ -1010,7 +1001,6 @@
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/dlms_device_properties" },
         { "$ref": "#/definitions/slave_id" },
-        { "$ref": "#/definitions/no_protocol" },
         { "$ref": "#/definitions/no_setup" }
       ]
     },
@@ -1041,7 +1031,6 @@
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/somfy_device_properties" },
         { "$ref": "#/definitions/slave_id" },
-        { "$ref": "#/definitions/no_protocol" },
         { "$ref": "#/definitions/no_setup" }
       ]
     },
@@ -1104,15 +1093,13 @@
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },
         { "$ref": "#/definitions/common_channels" },
-        { "$ref": "#/definitions/slave_id" },
-        { "$ref": "#/definitions/no_protocol" }
+        { "$ref": "#/definitions/slave_id" }
       ]
     },
     "simple_device_no_channels": {
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/slave_id" },
-        { "$ref": "#/definitions/no_protocol" },
         { "$ref": "#/definitions/no_setup" }
       ]
     },
@@ -1122,8 +1109,7 @@
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },
         { "$ref": "#/definitions/channels_with_string_addresses" },
-        { "$ref": "#/definitions/slave_id_broadcast" },
-        { "$ref": "#/definitions/no_protocol" }
+        { "$ref": "#/definitions/slave_id_broadcast" }
       ]
     },
 
@@ -1132,16 +1118,14 @@
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },
         { "$ref": "#/definitions/common_channels" },
-        { "$ref": "#/definitions/slave_id_broadcast" },
-        { "$ref": "#/definitions/no_protocol" }
+        { "$ref": "#/definitions/slave_id_broadcast" }
       ]
     },
     "simple_device_with_broadcast_no_channels": {
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },
-        { "$ref": "#/definitions/slave_id_broadcast" },
-        { "$ref": "#/definitions/no_protocol" }
+        { "$ref": "#/definitions/slave_id_broadcast" }
       ]
     },
 
@@ -1149,8 +1133,7 @@
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/common_setup" },
-        { "$ref": "#/definitions/slave_id" },
-        { "$ref": "#/definitions/no_protocol" }
+        { "$ref": "#/definitions/slave_id" }
       ]
     },
     "simple_device_with_setup": {
@@ -1158,8 +1141,7 @@
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/common_channels" },
         { "$ref": "#/definitions/common_setup" },
-        { "$ref": "#/definitions/slave_id" },
-        { "$ref": "#/definitions/no_protocol" }
+        { "$ref": "#/definitions/slave_id" }
       ]
     },
 

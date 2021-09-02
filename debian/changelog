@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.22.1-wb3) stable; urgency=medium
+
+  * Compatibility with old configs is improved. Config validator will not raise an error if 
+    protocol property set simultaneously with device_type is same as defined in template.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 02 Sep 2021 12:38:17 +0500
+
 wb-mqtt-serial (2.22.1-wb2) stable; urgency=medium
 
   * WB-MS v2 template is reverted to v2.7.1 state. It will be updated in future releases.
