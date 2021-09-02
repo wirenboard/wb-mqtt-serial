@@ -227,6 +227,7 @@ namespace
         }
 
         Json::Value newDev(config);
+        newDev.removeMember("protocol");
         JoinChannelsToGroups(newDev, schema);
         newDev.removeMember("device_type");
 
