@@ -781,9 +781,10 @@
                 "address": 12057,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2, 3],
+                "default": 1,
+                "enum": [1, 2, 3],
                 "enum_titles": [
-                    "bakclight is on during day operation",
+                    "backlight is on during day operation",
                     "controlled via data communication",
                     "controlled by door switch"
                 ],
