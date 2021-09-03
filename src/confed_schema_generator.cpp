@@ -38,7 +38,7 @@ namespace
     //  {
     //      "type": "string",
     //      "enum": [ VALUE ],
-    //      "default": VALUE
+    //      "default": VALUE,
     //      "options": { "hidden": true }
     //  }
     Json::Value MakeHiddenPropery(const std::string& value)
@@ -67,6 +67,24 @@ namespace
         Json::Value r;
         r["properties"]["name"] = MakeHiddenPropery(name);
         MakeArray("required", r).append("name");
+        return r;
+    }
+
+    //  {
+    //      "properties": {
+    //          "protocol": {
+    //              "type": "string",
+    //              "options": {
+    //                  "hidden": true
+    //              }
+    //          }
+    //      }
+    //  }
+    Json::Value MakeProtocolProperty()
+    {
+        Json::Value r;
+        r["properties"]["protocol"]["type"] = "string";
+        r["properties"]["protocol"]["options"]["hidden"] = true;
         return r;
     }
 
@@ -499,7 +517,8 @@ namespace
     //                  }
     //              },
     //              "allOf": [
-    //                  { "$ref": PROTOCOL_PARAMETERS }
+    //                  { "$ref": PROTOCOL_PARAMETERS },
+    //                  { HIDDEN_PROTOCOL }
     //              ],
     //              "properties": {
     //                  "standard_channels": STANDARD_CHANNELS_SCHEMA,
@@ -539,6 +558,7 @@ namespace
         auto& allOf = MakeArray("allOf", pr);
         auto protocol = GetProtocolName(schema);
         Append(allOf)["$ref"] = deviceFactory.GetCommonDeviceSchemaRef(protocol);
+        allOf.append(MakeProtocolProperty());
 
         if (!deviceFactory.GetProtocol(protocol)->SupportsBroadcast()) {
             MakeArray("required", pr).append("slave_id");
