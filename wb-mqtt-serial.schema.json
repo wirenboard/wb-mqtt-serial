@@ -330,7 +330,10 @@
           "description": "Contains password for devices that support it",
           "items": { "$ref": "#/definitions/serial_int" },
           "_format": "table",
-          "propertyOrder": 101
+          "propertyOrder": 101,
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         },
         "access_level": {
           "type": "integer",
