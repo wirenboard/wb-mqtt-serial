@@ -43,6 +43,7 @@
           "propertyOrder": 11,
           "options": {
             "array_controls_top": true,
+            "disable_array_delete_last_row": true,
             "wb": {
               "disable_panel": true
             }
@@ -329,7 +330,10 @@
           "description": "Contains password for devices that support it",
           "items": { "$ref": "#/definitions/serial_int" },
           "_format": "table",
-          "propertyOrder": 101
+          "propertyOrder": 101,
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         },
         "access_level": {
           "type": "integer",
@@ -932,7 +936,10 @@
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/dlms_channel" },
           "propertyOrder": 99,
-          "_format": "tabs"
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         }
       }
     },
@@ -1060,7 +1067,10 @@
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/channel_with_string_address" },
           "propertyOrder": 99,
-          "_format": "tabs"
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         }
       }
     },
@@ -1072,7 +1082,10 @@
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/common_channel" },
           "propertyOrder": 99,
-          "_format": "tabs"
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         }
       }
     },
@@ -1083,7 +1096,10 @@
           "title": "Custom setup commands",
           "items": { "$ref": "#/definitions/setup_cmd" },
           "propertyOrder": 100,
-          "_format": "tabs"
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         }
       }
     },
@@ -1471,7 +1487,8 @@
       "_format": "tabs",
       "propertyOrder": 2,
       "options" : {
-          "disable_collapse" : true
+          "disable_collapse" : true,
+          "disable_array_delete_last_row": true
       }
     },
     "max_unchanged_interval" : {

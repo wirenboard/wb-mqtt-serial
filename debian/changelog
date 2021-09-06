@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.31.3) stable; urgency=medium
+
+  * "Delete last array item" buttons are removed from homeui interface
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 06 Sep 2021 16:32:23 +0500
+
 wb-mqtt-serial (2.31.2) stable; urgency=medium
 
   * Validation error of config containing Energomera CE102M device is fixed.
