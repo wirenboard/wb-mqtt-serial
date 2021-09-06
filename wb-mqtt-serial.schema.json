@@ -154,7 +154,7 @@
       "required": ["address", "port"]
     },
     "modbusTcpPort": {
-      "title": "MODBUS TCP port",
+      "title": "MODBUS TCP",
       "type": "object",
       "properties": {
         "port_type": {
@@ -182,7 +182,7 @@
       }
     },
     "tcpPort": {
-      "title": "TCP port (Serial over TCP)",
+      "title": "Serial over TCP",
       "type": "object",
       "properties": {
         "port_type": {
