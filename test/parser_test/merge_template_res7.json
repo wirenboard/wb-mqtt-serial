@@ -39,6 +39,11 @@
                                         "setup" : 
                                         [
                                                 {
+                                                        "address" : 25000,
+                                                        "title" : "31",
+                                                        "value" : "0xffff"
+                                                },
+                                                {
                                                         "address" : 20000,
                                                         "title" : "s12",
                                                         "value" : "0xfff2"
@@ -47,11 +52,6 @@
                                                         "address" : 9992,
                                                         "title" : "s22",
                                                         "value" : 2
-                                                },
-                                                {
-                                                        "address" : 25000,
-                                                        "title" : "31",
-                                                        "value" : "0xffff"
                                                 }
                                         ],
                                         "shift" : 200
