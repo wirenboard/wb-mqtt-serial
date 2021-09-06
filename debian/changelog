@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.31.2) stable; urgency=medium
+
+  * Validation error of config containing Energomera CE102M device is fixed.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 06 Sep 2021 15:14:08 +0500
+
 wb-mqtt-serial (2.31.1) stable; urgency=medium
 
   * Compatibility with old configs is improved. Config validator will not raise an error if 
