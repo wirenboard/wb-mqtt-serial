@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.31.2) stable; urgency=medium
+
+  * Port type names are replaced by shorter versions
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 07 Sep 2021 19:44:03 +0500
+
 wb-mqtt-serial (2.31.5) stable; urgency=medium
 
   * More accurate port parameters editors layout for homeui
