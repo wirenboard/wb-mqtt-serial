@@ -512,9 +512,9 @@
                 "group": "defrost",
                 "order": 12
             },
-            "maximal_time_between_defrosts": {
-                "title": "Maximal Time Between Defrosts (d18)",
-                "description": "units: hours",
+            "compressor_working_time_between_defrosts": {
+                "title": "Compressor Working Time Between Defrosts (d18)",
+                "description": "units: hours; 0 = off",
                 "address": 11020,
                 "reg_type": "holding",
                 "format": "u16",
@@ -524,9 +524,9 @@
                 "group": "defrost",
                 "order": 13
             },
-            "temperature_deviation_for_defrost_start": {
-                "title": "Temperature Deviation For Defrost Start (d19)",
-                "description": "units: °C; 20 C = off",
+            "defrost_on_demand": {
+                "title": "Defrost On Demand (d19)",
+                "description": "units: °C; 20 °C = off; S5 temperature’s permitted variation during frost build-up",
                 "address": 11021,
                 "reg_type": "holding",
                 "format": "u16",
