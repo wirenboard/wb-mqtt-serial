@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.31.2) stable; urgency=medium
 
-  * An error that leads to servcice crush after failed writing to a port is fixed.
+  * An error that leads to service crash after failed writing to a port is fixed.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 07 Sep 2021 12:10:01 +0500
 
