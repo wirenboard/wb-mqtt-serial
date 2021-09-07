@@ -60,6 +60,14 @@
                 "order": 10
             }
         ],
+        "setup": [
+            {
+                "title": "set temperature units Celsius degrees",
+                "address": 104,
+                "reg_type": "holding",
+                "value": 0
+            }
+        ],
         "parameters": {
             "differential": {
                 "title": "Differential (r01)",
@@ -112,17 +120,6 @@
                 "default": 0,
                 "group": "thermostat",
                 "order": 4
-            },
-            "temperature_units": {
-                "title": "Temperature Indication Units (r05)",
-                "address": 104,
-                "reg_type": "holding",
-                "format": "u16",
-                "default": 0,
-                "enum": [0, 1],
-                "enum_titles": ["°C", "°F"],
-                "group": "thermostat",
-                "order": 5
             },
             "sair_temperature_adjustment": {
                 "title": "Sair Temperature Adjustment (r09)",
