@@ -118,14 +118,8 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
-                "enum": [
-                    0,
-                    1
-                ],
-                "enum_titles": [
-                    "°C",
-                    "°F"
-                ],
+                "enum": [0, 1],
+                "enum_titles": ["°C", "°F"],
                 "group": "thermostat",
                 "order": 5
             },
@@ -186,14 +180,8 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
-                "enum": [
-                    0,
-                    1
-                ],
-                "enum_titles": [
-                    "no",
-                    "yes"
-                ],
+                "enum": [0, 1],
+                "enum_titles": ["no", "yes"],
                 "group": "thermostat",
                 "order": 10
             },
@@ -338,14 +326,8 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
-                "enum": [
-                    0,
-                    1
-                ],
-                "enum_titles": [
-                    "no",
-                    "yes"
-                ],
+                "enum": [0, 1],
+                "enum_titles": ["no", "yes"],
                 "group": "compressor",
                 "order": 3
             },
@@ -355,16 +337,8 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 1,
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "enum_titles": [
-                    "no",
-                    "electrical",
-                    "gas"
-                ],
+                "enum": [0, 1, 2],
+                "enum_titles": ["no", "electrical", "gas"],
                 "group": "defrost",
                 "order": 1
             },
@@ -460,11 +434,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 1,
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
+                "enum": [0, 1, 2],
                 "enum_titles": [
                     "stopped",
                     "running",
@@ -479,16 +449,8 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "enum_titles": [
-                    "time",
-                    "S5",
-                    "Sair"
-                ],
+                "enum": [0, 1, 2],
+                "enum_titles": ["time", "S5", "Sair"],
                 "group": "defrost",
                 "order": 10
             },
@@ -535,14 +497,8 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
-                "enum": [
-                    0,
-                    1
-                ],
-                "enum_titles": [
-                    "no",
-                    "yes"
-                ],
+                "enum": [0, 1],
+                "enum_titles": ["no", "yes"],
                 "group": "fans",
                 "order": 1
             },
@@ -734,18 +690,7 @@
                 "format": "u16",
                 "default": 0,
                 "enum": [
-                    0,
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6,
-                    7,
-                    8,
-                    9,
-                    10,
-                    11
+                    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
                 ],
                 "enum_titles": [
                     "not used",
@@ -770,16 +715,8 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "enum_titles": [
-                    "Pt",
-                    "PTC",
-                    "NTC"
-                ],
+                "enum": [0, 1, 2],
+                "enum_titles": ["Pt", "PTC", "NTC"],
                 "group": "miscellaneous",
                 "order": 3
             },
@@ -814,19 +751,7 @@
                 "format": "u16",
                 "default": 0,
                 "enum": [
-                    0,
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6,
-                    7,
-                    8,
-                    9,
-                    10,
-                    11,
-                    12
+                    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
                 ],
                 "enum_titles": [
                     "not used",
@@ -853,11 +778,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 1,
-                "enum": [
-                    1,
-                    2,
-                    3
-                ],
+                "enum": [1, 2, 3],
                 "enum_titles": [
                     "backlight is on during day operation",
                     "controlled via data communication",
@@ -908,11 +829,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
+                "enum": [0, 1, 2],
                 "enum_titles": [
                     "normal operation",
                     "cleaning with fans operating, all other outputs are off",
