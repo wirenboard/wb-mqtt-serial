@@ -1112,6 +1112,13 @@
         { "$ref": "#/definitions/slave_id_broadcast" }
       ]
     },
+    "enrgomera_iec_mode_c_device_no_channels": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/slave_id_broadcast" }
+      ]
+    },
 
     "simple_device_with_broadcast": {
       "allOf": [
