@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.31.2) stable; urgency=medium
+wb-mqtt-serial (2.31.6) stable; urgency=medium
 
   * Port type names are replaced by shorter versions
 
