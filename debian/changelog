@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.31.5) stable; urgency=medium
+
+  * More accurate port parameters editors layout for homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 07 Sep 2021 19:34:52 +0500
+
 wb-mqtt-serial (2.31.4) stable; urgency=medium
 
   * Config's setup section priority is raised. Setup registers in config have higher priority than 

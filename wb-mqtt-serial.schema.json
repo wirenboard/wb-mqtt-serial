@@ -10,7 +10,10 @@
           "title": "Enable port",
           "default": true,
           "_format": "checkbox",
-          "propertyOrder": 2
+          "propertyOrder": 2,
+          "options": {
+            "grid_columns": 12
+          }
         },
         "response_timeout_ms": {
           "type": "integer",
@@ -18,7 +21,10 @@
           "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
           "minimum": 0,
           "default": 500,
-          "propertyOrder": 8
+          "propertyOrder": 8,
+          "options": {
+            "grid_columns": 4
+          }
         },
         "guard_interval_us": {
           "type": "integer",
@@ -26,7 +32,10 @@
           "description": "Specifies the delay in microseconds between reads / writes to port",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 9
+          "propertyOrder": 9,
+          "options": {
+            "grid_columns": 4
+          }
         },
         "poll_interval": {
           "type": "integer",
@@ -34,7 +43,10 @@
           "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 10
+          "propertyOrder": 10,
+          "options": {
+            "grid_columns": 4
+          }
         },
         "devices": {
           "type": "array",
@@ -71,35 +83,50 @@
               "type": "string",
               "title": "Path to device",
               "minLength": 1,
-              "propertyOrder": 3
+              "propertyOrder": 3,
+              "options": {
+                "grid_columns": 4
+              }    
             },
             "baud_rate": {
               "type": "integer",
               "title": "Baud rate",
               "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200],
               "default": 9600,
-              "propertyOrder": 4
+              "propertyOrder": 4,
+              "options": {
+                "grid_columns": 2
+              }    
             },
             "parity": {
               "type": "string",
               "title": "Parity",
               "enum": ["N", "E", "O"],
               "default": "N",
-              "propertyOrder": 5
+              "propertyOrder": 5,
+              "options": {
+                "grid_columns": 2
+              }    
             },
             "data_bits": {
               "type": "integer",
               "title": "Data bits",
               "enum": [5, 6, 7, 8],
               "default": 8,
-              "propertyOrder": 6
+              "propertyOrder": 6,
+              "options": {
+                "grid_columns": 2
+              }    
             },
             "stop_bits": {
               "type": "integer",
               "title": "Stop bits",
               "enum": [1, 2],
               "default": 1,
-              "propertyOrder": 7
+              "propertyOrder": 7,
+              "options": {
+                "grid_columns": 2
+              }    
             }
           },
           "required": ["path"]
