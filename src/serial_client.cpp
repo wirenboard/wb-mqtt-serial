@@ -240,7 +240,7 @@ void TSerialClient::OpenPortCycle()
                         if (LastAccessedDevice && LastAccessedDevice != device ) {
                             LastAccessedDevice->EndSession();
                         }
-                    } catch ( const TSerialDeviceTransientErrorException& e) {
+                    } catch ( const TSerialDeviceException& e) {
                         auto& logger = LastAccessedDevice->GetIsDisconnected() ? Debug : Warn;
                         LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
                     }
@@ -249,7 +249,7 @@ void TSerialClient::OpenPortCycle()
                     try {
                         LastAccessedDevice = device;
                         device->Prepare();
-                    } catch ( const TSerialDeviceTransientErrorException& e) {
+                    } catch ( const TSerialDeviceException& e) {
                         LOG(Debug) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
                         statuses.insert(ST_UNKNOWN_ERROR);
                     }

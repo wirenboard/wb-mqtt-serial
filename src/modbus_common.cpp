@@ -928,6 +928,9 @@ namespace Modbus    // modbus protocol common utilities
             } catch (const TSerialDeviceTransientErrorException& e) {
                 WarnFailedRegisterSetup(item, e.what());
                 return false;
+            } catch (const TSerialDeviceException& e) {
+                WarnFailedRegisterSetup(item, e.what());
+                return false;
             }
         }
         return true;
