@@ -925,7 +925,7 @@ namespace Modbus    // modbus protocol common utilities
                         << " <-- " << item->HumanReadableValue << " (0x" << std::hex << item->RawValue << ")";
             } catch (const TSerialDevicePermanentRegisterException& e) {
                 WarnFailedRegisterSetup(item, e.what());
-            } catch (const TSerialDeviceTransientErrorException& e) {
+            } catch (const TSerialDeviceException& e) {
                 WarnFailedRegisterSetup(item, e.what());
                 return false;
             }

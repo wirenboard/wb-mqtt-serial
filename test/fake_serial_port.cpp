@@ -15,7 +15,7 @@ using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
-    : Fixture(fixture), AllowOpen(true), IsPortOpen(false), DoSimulateDisconnect(false), ReqPos(0), RespPos(0), DumpPos(0) {}
+    : Fixture(fixture), AllowOpen(true), IsPortOpen(false), DisconnectType(NoDisconnect), ReqPos(0), RespPos(0), DumpPos(0) {}
 
 void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
 {
@@ -63,9 +63,14 @@ bool TFakeSerialPort::IsOpen() const
 }
 
 void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
-    if (DoSimulateDisconnect) {
-        return;
-    }
+    switch (DisconnectType) {
+        case NoDisconnect:                    break;
+        case SilentReadAndWriteFailure:       return;
+        case BadFileDescriptorOnWriteAndRead: {
+            Fixture.Emit() << "write error EBADF";
+            throw TSerialDeviceErrnoException("write error ", EBADF);
+        }
+    };
 
     SkipFrameBoundary();
     DumpWhatWasRead();
@@ -111,9 +116,15 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count) {
 
 uint8_t TFakeSerialPort::ReadByte(const std::chrono::microseconds& /*timeout*/)
 {
-    if (DoSimulateDisconnect) {
-        return 0xff;
-    }
+    switch (DisconnectType) {
+        case NoDisconnect:                    break;
+        case SilentReadAndWriteFailure:       return 0xFF;
+        case BadFileDescriptorOnWriteAndRead: {
+            Fixture.Emit() << "read error EBADF";
+            throw TSerialDeviceErrnoException("read error ", EBADF);
+        }
+    };
+
     CheckPortOpen();
 
     while (RespPos < Resp.size() && Resp[RespPos] == FRAME_BOUNDARY)
@@ -131,9 +142,15 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
                                   const std::chrono::microseconds& frameTimeout,
                                   TFrameCompletePred frame_complete)
 {
-    if (DoSimulateDisconnect) {
-        return 0;
-    }
+    switch (DisconnectType) {
+        case NoDisconnect:                    break;
+        case SilentReadAndWriteFailure:       return 0;
+        case BadFileDescriptorOnWriteAndRead: {
+            Fixture.Emit() << "read frame error EBADF";
+            throw TSerialDeviceErrnoException("read frame error ", EBADF);
+        }
+    };
+
     if (ExpectedFrameTimeout.count() >= 0 && frameTimeout != ExpectedFrameTimeout) {
         DumpWhatWasRead();
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " +
@@ -224,14 +241,9 @@ void TFakeSerialPort::Elapse(const std::chrono::milliseconds& ms)
     Time += ms;
 }
 
-void TFakeSerialPort::SimulateDisconnect(bool simulate)
+void TFakeSerialPort::SimulateDisconnect(TFakeSerialPort::TDisconnectType simulate)
 {
-    DoSimulateDisconnect = simulate;
-}
-
-bool TFakeSerialPort::GetDoSimulateDisconnect() const
-{
-    return DoSimulateDisconnect;
+    DisconnectType = simulate;
 }
 
 void TFakeSerialPort::Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func)
