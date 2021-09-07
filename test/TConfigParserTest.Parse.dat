@@ -980,6 +980,13 @@ Ports:
             Reg type: holding (0)
             Reg format: U16
             ------
+            Name: Sub s1
+            Address: 20100
+            Value: 63
+            RawValue: 0x3f
+            Reg type: holding (0)
+            Reg format: U16
+            ------
             Name: Sub s2
             Address: 10092
             Value: 0xfff2
@@ -998,13 +1005,6 @@ Ports:
             Address: 10095
             Value: 10
             RawValue: 0x05
-            Reg type: holding (0)
-            Reg format: U16
-            ------
-            Name: Sub s1
-            Address: 20100
-            Value: 63
-            RawValue: 0x3f
             Reg type: holding (0)
             Reg format: U16
             ------
@@ -1036,17 +1036,17 @@ Ports:
             Reg type: coil (2)
             Reg format: S32
             ------
-            Name: Sub2 c3 s21
-            Address: 20502
-            Value: 0xfff2
-            RawValue: 0xfff2
-            Reg type: holding (0)
-            Reg format: U16
-            ------
             Name: Sub2 c3 s22
             Address: 10494
             Value: 111
             RawValue: 0x6f
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: Sub2 c3 s21
+            Address: 20502
+            Value: 0xfff2
+            RawValue: 0xfff2
             Reg type: holding (0)
             Reg format: U16
     ------
