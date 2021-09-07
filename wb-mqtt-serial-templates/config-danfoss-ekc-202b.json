@@ -1,5 +1,5 @@
 {
-    "title": "Danfoss EKC 202B",
+    "title": "Danfoss EKC 202B (EKA 178A)",
     "device_type": "danfoss_ekc_202b",
     "device": {
         "name": "Danfoss EKC 202B",
