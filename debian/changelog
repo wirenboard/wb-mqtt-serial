@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.31.7) stable; urgency=medium
+
+  * Uniform captions for addresses is added 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 08 Sep 2021 11:56:58 +0500
+
 wb-mqtt-serial (2.31.6) stable; urgency=medium
 
   * Port type names are replaced by shorter versions

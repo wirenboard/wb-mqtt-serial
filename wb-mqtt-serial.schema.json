@@ -258,18 +258,18 @@
           "propertyOrder": 2,
           "oneOf": [
             {
-              "title": "decimal (e.g. 123) or hex (e.g. 0xAF)",
+              "title": "decimal or hex",
               "type": "string",
               "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
               "options": {
                 "inputAttributes": {
-                  "placeholder":  "decimal or hex with prefix '0x'"
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
-                "patternmessage": "Should be decimal or hex with prefix '0x'"
+                "patternmessage": "Should be decimal or hex"
               }
             },
             {
-              "title": "decimal (e.g. 123)",
+              "title": "decimal",
               "type": "integer"
             }
           ],
@@ -286,18 +286,18 @@
           "propertyOrder": 2,
           "oneOf": [
             {
-              "title": "decimal (e.g. 123) or hex (e.g. 0xAF) slave id",
+              "title": "decimal or hex slave id",
               "type": "string",
               "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
               "options": {
                 "inputAttributes": {
-                  "placeholder":  "decimal or hex with prefix '0x'"
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
-                "patternmessage": "Should be decimal or hex with prefix '0x'"
+                "patternmessage": "Should be decimal or hex"
               }
             },
             {
-              "title": "decimal (e.g. 123) slave id",
+              "title": "decimal slave id",
               "type": "integer"
             },
             {
@@ -579,18 +579,18 @@
           "propertyOrder": 16,
           "oneOf": [
             {
-              "title": "Integer or hex",
+              "title": "decimal or hex",
               "type": "string",
               "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
               "options": {
                 "inputAttributes": {
-                  "placeholder":  "integer or hex with prefix '0x'"
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
-                "patternmessage": "Should be integer or hex with prefix '0x'"
+                "patternmessage": "Should be decimal or hex"
               }
             },
             {
-              "title": "Integer",
+              "title": "decimal",
               "type": "integer",
               "minimum": 0,
               "maximum": 4294967295
@@ -875,14 +875,14 @@
       "description": "Register index (0-65535 in case of Modbus)",
       "oneOf": [
         {
-          "title": "Integer or hex",
+          "title": "decimal or hex",
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
             "inputAttributes": {
-              "placeholder":  "integer or hex with prefix '0x'"
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
             },
-            "patternmessage": "Should be integer or hex with prefix '0x'"
+            "patternmessage": "Should be decimal or hex"
           }
         },
         {
@@ -893,11 +893,11 @@
             "inputAttributes": {
               "placeholder":  "address:offset:bitwidth"
             },
-            "patternmessage": "Should be integer or hex with prefix '0x', offset and bitwidth separated by ':'"
+            "patternmessage": "Address should be decimal or hex, offset and bitwidth separated by ':'"
           }
         },
         {
-          "title": "Integer",
+          "title": "decimal",
           "type": "integer"
         }
       ],
@@ -908,15 +908,15 @@
     "serial_int": {
       "oneOf": [
         {
-          "title": "Integer or hex",
+          "title": "decimal or hex",
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
-            "patternmessage": "Should be integer or hex with prefix '0x'"
+            "patternmessage": "Should be decimal or hex"
           }
         },
         {
-          "title": "Integer",
+          "title": "decimal",
           "type": "integer"
         }
       ]
