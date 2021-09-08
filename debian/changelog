@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.31.7) stable; urgency=medium
+
+  * Uniform name is set for all poll interval properties
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 08 Sep 2021 11:53:18 +0500
+
 wb-mqtt-serial (2.31.6) stable; urgency=medium
 
   * Port type names are replaced by shorter versions
