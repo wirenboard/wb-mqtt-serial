@@ -354,7 +354,6 @@
         "password": {
           "type": "array",
           "title": "Password as a list of bytes",
-          "description": "Contains password for devices that support it",
           "items": { "$ref": "#/definitions/serial_int" },
           "_format": "table",
           "propertyOrder": 101,
@@ -365,7 +364,6 @@
         "access_level": {
           "type": "integer",
           "title": "Access level",
-          "description": "Device specific access level value",
           "minimum": 0,
           "maximum": 2,
           "default": 1,
@@ -387,8 +385,7 @@
         },
         "max_read_registers": {
           "type": "integer",
-          "title": "Max read registers",
-          "description" : " Maximum number of registers in a single bulk read request",
+          "title": "Maximum number of registers in a single bulk read request",
           "minimum": 0,
           "default": 1,
           "propertyOrder": 105
@@ -456,7 +453,6 @@
         },
         "value": {
           "title": "Value",
-          "description": "Value to be written",
           "propertyOrder": 3,
           "$ref": "#/definitions/serial_int",
           "options": {
@@ -886,7 +882,7 @@
           }
         },
         {
-          "title": "Bits",
+          "title": "bits",
           "type": "string",
           "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$",
           "options": {
@@ -1261,7 +1257,7 @@
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
         {
-          "title": "Custom Mercury 230",
+          "title": "Custom Mercury 230 device",
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/no_setup" },

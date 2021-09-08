@@ -1,3 +1,10 @@
+
+wb-mqtt-serial (2.31.8) stable; urgency=medium
+
+  * Properties titles for homeui are adjusted
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 08 Sep 2021 12:08:49 +0500
+
 wb-mqtt-serial (2.31.7) stable; urgency=medium
 
   * Uniform name is set for all poll interval properties
