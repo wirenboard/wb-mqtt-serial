@@ -1053,15 +1053,6 @@
                 "group": "status"
             },
             {
-                "name": "Defrosting Active",
-                "address": 11036,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "readonly": true,
-                "group": "status"
-            },
-            {
                 "name": "Hold After Defrost Active",
                 "address": 12022,
                 "reg_type": "holding",
