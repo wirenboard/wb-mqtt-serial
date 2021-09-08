@@ -258,8 +258,8 @@
                 "group": "alarm",
                 "order": 7
             },
-            "compressor_minimal_on_time": {
-                "title": "Compressor Minimal On Time (c01)",
+            "compressor_minimum_on_time": {
+                "title": "Compressor Minimum On Time (c01)",
                 "description": "units: minutes",
                 "address": 499,
                 "reg_type": "holding",
@@ -270,8 +270,8 @@
                 "group": "compressor",
                 "order": 1
             },
-            "compressor_minimal_off_time": {
-                "title": "Compressor Minimal Off Time (c02)",
+            "compressor_minimum_off_time": {
+                "title": "Compressor Minimum Off Time (c02)",
                 "description": "units: minutes",
                 "address": 500,
                 "reg_type": "holding",
@@ -329,8 +329,8 @@
                 "group": "defrost",
                 "order": 3
             },
-            "defrost_maximal_duration": {
-                "title": "Defrost Maximal Duration (d04)",
+            "defrost_maximum_duration": {
+                "title": "Defrost Maximum Duration (d04)",
                 "description": "units: minutes",
                 "address": 1002,
                 "reg_type": "holding",
@@ -670,8 +670,8 @@
                 "group": "miscellaneous",
                 "order": 3
             },
-            "maximal_standby_time_after_defrost": {
-                "title": "Maximal Standby Time After Defrost (o16)",
+            "maximum_standby_time_after_defrost": {
+                "title": "Maximum Standby Time After Defrost (o16)",
                 "description": "units: minutes",
                 "address": 2019,
                 "reg_type": "holding",
@@ -944,7 +944,7 @@
                 "enabled": false
             },
             {
-                "name": "Maximal Defrost Time Alarm",
+                "name": "Maximum Defrost Time Alarm",
                 "address": 20008,
                 "reg_type": "holding",
                 "type": "switch",
@@ -954,7 +954,7 @@
                 "enabled": false
             },
             {
-                "name": "Maximal Hold Time Alarm",
+                "name": "Maximum Hold Time Alarm",
                 "address": 20009,
                 "reg_type": "holding",
                 "type": "switch",
