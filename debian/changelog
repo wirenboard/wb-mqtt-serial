@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.32.0) stable; urgency=medium
+
+  * Move JSON std::chrono utils to libwbmqtt1
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Thu, 09 Sep 2021 13:59:25 +0300
+
 wb-mqtt-serial (2.31.9) stable; urgency=medium
 
   * Uniform captions for addresses is added 
