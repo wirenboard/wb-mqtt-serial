@@ -1,4 +1,10 @@
-wb-mqtt-serial (2.31.1) stable; urgency=medium
+wb-mqtt-serial (2.32.2) stable; urgency=medium
+
+  * Minimum value for max_unchanged_interval setting is set to 5 seconds.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 10 Sep 2021 20:43:09 +0500
+
+wb-mqtt-serial (2.32.1) stable; urgency=medium
 
   * An error that leads to service crash after failed writing to a port is fixed.
 
