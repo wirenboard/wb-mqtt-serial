@@ -800,10 +800,12 @@ PHandlerConfig LoadConfig(const std::string&    configFileName,
 
     int32_t maxUnchangedInterval = -1;
     Get(Root, "max_unchanged_interval", maxUnchangedInterval);
-    if (maxUnchangedInterval >= 0 && maxUnchangedInterval < MinUnchangedInterval) {
-        LOG(Warn) << "\"max_unchanged_interval\" is set to " << MinUnchangedInterval 
-                  << " instead of "<< maxUnchangedInterval;
-        maxUnchangedInterval = MinUnchangedInterval;
+    if (maxUnchangedInterval >= 0) {
+        const auto limit = std::chrono::duration_cast<std::chrono::seconds>(MinUnchangedInterval).count();
+        if (maxUnchangedInterval < limit) {
+            LOG(Warn) << "\"max_unchanged_interval\" is set to " << limit << " instead of "<< maxUnchangedInterval;
+            maxUnchangedInterval = limit;
+        }
     }
     handlerConfig->PublishParameters.Set(maxUnchangedInterval);
 

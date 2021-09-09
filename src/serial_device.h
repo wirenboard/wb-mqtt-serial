@@ -66,7 +66,7 @@ const std::chrono::milliseconds DefaultPollInterval(20);
 const std::chrono::milliseconds DefaultFrameTimeout(20);
 const std::chrono::milliseconds DefaultResponseTimeout(500);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
-const int32_t                   MinUnchangedInterval = 5;
+const std::chrono::seconds      MinUnchangedInterval(5);
 
 struct TDeviceConfig 
 {
