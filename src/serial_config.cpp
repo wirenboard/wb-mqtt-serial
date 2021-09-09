@@ -798,16 +798,14 @@ PHandlerConfig LoadConfig(const std::string&    configFileName,
 
     Get(Root, "debug", handlerConfig->Debug);
 
-    int32_t maxUnchangedInterval = -1;
+    auto maxUnchangedInterval = DefaultMaxUnchangedInterval;
     Get(Root, "max_unchanged_interval", maxUnchangedInterval);
-    if (maxUnchangedInterval >= 0) {
-        const auto limit = std::chrono::duration_cast<std::chrono::seconds>(MinUnchangedInterval).count();
-        if (maxUnchangedInterval < limit) {
-            LOG(Warn) << "\"max_unchanged_interval\" is set to " << limit << " instead of "<< maxUnchangedInterval;
-            maxUnchangedInterval = limit;
-        }
+    if (maxUnchangedInterval.count() >= 0 && maxUnchangedInterval < MaxUnchangedIntervalLowLimit) {
+        LOG(Warn) << "\"max_unchanged_interval\" is set to " << MaxUnchangedIntervalLowLimit.count()
+                  << " instead of "<< maxUnchangedInterval.count();
+        maxUnchangedInterval = MaxUnchangedIntervalLowLimit;
     }
-    handlerConfig->PublishParameters.Set(maxUnchangedInterval);
+    handlerConfig->PublishParameters.Set(maxUnchangedInterval.count());
 
     const Json::Value& array = Root["ports"];
     for(Json::Value::ArrayIndex index = 0; index < array.size(); ++index) {
