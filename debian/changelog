@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.31.10) stable; urgency=medium
+
+  * Minimum value for max_unchanged_interval setting is set to 5 seconds.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 09 Sep 2021 15:14:47 +0500
+
 wb-mqtt-serial (2.31.9) stable; urgency=medium
 
   * Uniform captions for addresses is added 
