@@ -14,32 +14,6 @@
 #include "port.h"
 #include "serial_device.h"
 
-namespace WBMQTT
-{
-    namespace JSON
-    {
-        template <> inline bool Is<std::chrono::milliseconds>(const Json::Value& value)
-        {
-            return value.isInt();
-        }
-
-        template <> inline std::chrono::milliseconds As<std::chrono::milliseconds>(const Json::Value& value)
-        {
-            return std::chrono::milliseconds(value.asInt());
-        }
-
-        template <> inline bool Is<std::chrono::microseconds>(const Json::Value& value)
-        {
-            return value.isInt();
-        }
-
-        template <> inline std::chrono::microseconds As<std::chrono::microseconds>(const Json::Value& value)
-        {
-            return std::chrono::microseconds(value.asInt());
-        }
-    }
-}
-
 struct TDeviceTemplate
 {
     std::string Type;
@@ -263,6 +237,7 @@ struct TDeviceConfigLoadParams
     std::chrono::microseconds DefaultRequestDelay;
     std::chrono::milliseconds PortResponseTimeout;
     std::chrono::milliseconds DefaultPollInterval;
+    std::string               DeviceTemplateTitle;
 };
 
 PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             deviceData,

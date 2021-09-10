@@ -1,0 +1,63 @@
+Debug: 0
+PublishParams: 0 0
+Ports:
+    ------
+    ConnSettings: </dev/ttyNSC0 9600 8 N 1>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
+    PollInterval: 20
+    GuardInterval: 0
+    Response timeout: -1
+    DeviceConfigs:
+        ------
+        Id: with setup_2
+        Name: with setup 2
+        SlaveId: 2
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 0
+        DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temperature
+            Type: value
+            MqttId: Temperature
+            DeviceId: with setup_2
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1284
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                PollInterval: 20
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+        SetupItems:
+            ------
+            Name: s2 override
+            Address: 9992
+            Value: 100
+            RawValue: 0x64
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: s3
+            Address: 9995
+            Value: 10
+            RawValue: 0x05
+            Reg type: holding (0)
+            Reg format: U16

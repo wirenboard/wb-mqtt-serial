@@ -10,7 +10,10 @@
           "title": "Enable port",
           "default": true,
           "_format": "checkbox",
-          "propertyOrder": 2
+          "propertyOrder": 2,
+          "options": {
+            "grid_columns": 12
+          }
         },
         "response_timeout_ms": {
           "type": "integer",
@@ -18,7 +21,10 @@
           "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
           "minimum": 0,
           "default": 500,
-          "propertyOrder": 8
+          "propertyOrder": 8,
+          "options": {
+            "grid_columns": 4
+          }
         },
         "guard_interval_us": {
           "type": "integer",
@@ -26,15 +32,21 @@
           "description": "Specifies the delay in microseconds between reads / writes to port",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 9
+          "propertyOrder": 9,
+          "options": {
+            "grid_columns": 4
+          }
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Desired poll interval (ms)",
+          "title": "Poll interval (ms)",
           "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
           "minimum": 0,
           "default": 20,
-          "propertyOrder": 10
+          "propertyOrder": 10,
+          "options": {
+            "grid_columns": 4
+          }
         },
         "devices": {
           "type": "array",
@@ -43,6 +55,7 @@
           "propertyOrder": 11,
           "options": {
             "array_controls_top": true,
+            "disable_array_delete_last_row": true,
             "wb": {
               "disable_panel": true
             }
@@ -70,35 +83,50 @@
               "type": "string",
               "title": "Path to device",
               "minLength": 1,
-              "propertyOrder": 3
+              "propertyOrder": 3,
+              "options": {
+                "grid_columns": 4
+              }    
             },
             "baud_rate": {
               "type": "integer",
               "title": "Baud rate",
               "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200],
               "default": 9600,
-              "propertyOrder": 4
+              "propertyOrder": 4,
+              "options": {
+                "grid_columns": 2
+              }    
             },
             "parity": {
               "type": "string",
               "title": "Parity",
               "enum": ["N", "E", "O"],
               "default": "N",
-              "propertyOrder": 5
+              "propertyOrder": 5,
+              "options": {
+                "grid_columns": 2
+              }    
             },
             "data_bits": {
               "type": "integer",
               "title": "Data bits",
               "enum": [5, 6, 7, 8],
               "default": 8,
-              "propertyOrder": 6
+              "propertyOrder": 6,
+              "options": {
+                "grid_columns": 2
+              }    
             },
             "stop_bits": {
               "type": "integer",
               "title": "Stop bits",
               "enum": [1, 2],
               "default": 1,
-              "propertyOrder": 7
+              "propertyOrder": 7,
+              "options": {
+                "grid_columns": 2
+              }    
             }
           },
           "required": ["path"]
@@ -154,7 +182,7 @@
       "required": ["address", "port"]
     },
     "modbusTcpPort": {
-      "title": "MODBUS TCP port",
+      "title": "MODBUS TCP",
       "type": "object",
       "properties": {
         "port_type": {
@@ -182,7 +210,7 @@
       }
     },
     "tcpPort": {
-      "title": "TCP port (Serial over TCP)",
+      "title": "Serial over TCP",
       "type": "object",
       "properties": {
         "port_type": {
@@ -230,18 +258,18 @@
           "propertyOrder": 2,
           "oneOf": [
             {
-              "title": "decimal (e.g. 123) or hex (e.g. 0xAF)",
+              "title": "decimal or hex",
               "type": "string",
               "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
               "options": {
                 "inputAttributes": {
-                  "placeholder":  "decimal or hex with prefix '0x'"
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
-                "patternmessage": "Should be decimal or hex with prefix '0x'"
+                "patternmessage": "Should be decimal or hex"
               }
             },
             {
-              "title": "decimal (e.g. 123)",
+              "title": "decimal",
               "type": "integer"
             }
           ],
@@ -258,18 +286,18 @@
           "propertyOrder": 2,
           "oneOf": [
             {
-              "title": "decimal (e.g. 123) or hex (e.g. 0xAF) slave id",
+              "title": "decimal or hex slave id",
               "type": "string",
               "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
               "options": {
                 "inputAttributes": {
-                  "placeholder":  "decimal or hex with prefix '0x'"
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
-                "patternmessage": "Should be decimal or hex with prefix '0x'"
+                "patternmessage": "Should be decimal or hex"
               }
             },
             {
-              "title": "decimal (e.g. 123) slave id",
+              "title": "decimal slave id",
               "type": "integer"
             },
             {
@@ -317,7 +345,7 @@
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Desired poll interval (ms)",
+          "title": "Poll interval (ms)",
           "description" : "This option specifies the desired interval between two consecutive polls of the channel",
           "minimum": 0,
           "default": 20,
@@ -326,15 +354,16 @@
         "password": {
           "type": "array",
           "title": "Password as a list of bytes",
-          "description": "Contains password for devices that support it",
           "items": { "$ref": "#/definitions/serial_int" },
           "_format": "table",
-          "propertyOrder": 101
+          "propertyOrder": 101,
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         },
         "access_level": {
           "type": "integer",
           "title": "Access level",
-          "description": "Device specific access level value",
           "minimum": 0,
           "maximum": 2,
           "default": 1,
@@ -356,8 +385,7 @@
         },
         "max_read_registers": {
           "type": "integer",
-          "title": "Max read registers",
-          "description" : " Maximum number of registers in a single bulk read request",
+          "title": "Maximum number of registers in a single bulk read request",
           "minimum": 0,
           "default": 1,
           "propertyOrder": 105
@@ -425,7 +453,6 @@
         },
         "value": {
           "title": "Value",
-          "description": "Value to be written",
           "propertyOrder": 3,
           "$ref": "#/definitions/serial_int",
           "options": {
@@ -536,7 +563,7 @@
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Desired poll interval (ms)",
+          "title": "Poll interval (ms)",
           "description" : "This option specifies the desired interval between two consecutive polls of the channel",
           "minimum": 0,
           "default": 20,
@@ -548,18 +575,18 @@
           "propertyOrder": 16,
           "oneOf": [
             {
-              "title": "Integer or hex",
+              "title": "decimal or hex",
               "type": "string",
               "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
               "options": {
                 "inputAttributes": {
-                  "placeholder":  "integer or hex with prefix '0x'"
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
-                "patternmessage": "Should be integer or hex with prefix '0x'"
+                "patternmessage": "Should be decimal or hex"
               }
             },
             {
-              "title": "Integer",
+              "title": "decimal",
               "type": "integer",
               "minimum": 0,
               "maximum": 4294967295
@@ -664,7 +691,7 @@
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Desired poll interval (ms)",
+          "title": "Poll interval (ms)",
           "description" : "This option specifies the desired interval between two consecutive polls of the channel",
           "minimum": 0,
           "default": 20,
@@ -844,29 +871,29 @@
       "description": "Register index (0-65535 in case of Modbus)",
       "oneOf": [
         {
-          "title": "Integer or hex",
+          "title": "decimal or hex",
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
             "inputAttributes": {
-              "placeholder":  "integer or hex with prefix '0x'"
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
             },
-            "patternmessage": "Should be integer or hex with prefix '0x'"
+            "patternmessage": "Should be decimal or hex"
           }
         },
         {
-          "title": "Bits",
+          "title": "bits",
           "type": "string",
           "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$",
           "options": {
             "inputAttributes": {
               "placeholder":  "address:offset:bitwidth"
             },
-            "patternmessage": "Should be integer or hex with prefix '0x', offset and bitwidth separated by ':'"
+            "patternmessage": "Address should be decimal or hex, offset and bitwidth separated by ':'"
           }
         },
         {
-          "title": "Integer",
+          "title": "decimal",
           "type": "integer"
         }
       ],
@@ -877,15 +904,15 @@
     "serial_int": {
       "oneOf": [
         {
-          "title": "Integer or hex",
+          "title": "decimal or hex",
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
-            "patternmessage": "Should be integer or hex with prefix '0x'"
+            "patternmessage": "Should be decimal or hex"
           }
         },
         {
-          "title": "Integer",
+          "title": "decimal",
           "type": "integer"
         }
       ]
@@ -932,7 +959,10 @@
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/dlms_channel" },
           "propertyOrder": 99,
-          "_format": "tabs"
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         }
       }
     },
@@ -1060,7 +1090,10 @@
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/channel_with_string_address" },
           "propertyOrder": 99,
-          "_format": "tabs"
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         }
       }
     },
@@ -1072,7 +1105,10 @@
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/common_channel" },
           "propertyOrder": 99,
-          "_format": "tabs"
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         }
       }
     },
@@ -1083,7 +1119,10 @@
           "title": "Custom setup commands",
           "items": { "$ref": "#/definitions/setup_cmd" },
           "propertyOrder": 100,
-          "_format": "tabs"
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         }
       }
     },
@@ -1109,6 +1148,13 @@
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },
         { "$ref": "#/definitions/channels_with_string_addresses" },
+        { "$ref": "#/definitions/slave_id_broadcast" }
+      ]
+    },
+    "enrgomera_iec_mode_c_device_no_channels": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
         { "$ref": "#/definitions/slave_id_broadcast" }
       ]
     },
@@ -1211,7 +1257,7 @@
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
         {
-          "title": "Custom Mercury 230",
+          "title": "Custom Mercury 230 device",
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/no_setup" },
@@ -1464,7 +1510,8 @@
       "_format": "tabs",
       "propertyOrder": 2,
       "options" : {
-          "disable_collapse" : true
+          "disable_collapse" : true,
+          "disable_array_delete_last_row": true
       }
     },
     "max_unchanged_interval" : {

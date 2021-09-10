@@ -1,8 +1,63 @@
-wb-mqtt-serial (2.31.2) stable; urgency=medium
+wb-mqtt-serial (2.32.1) stable; urgency=medium
 
   * An error that leads to service crash after failed writing to a port is fixed.
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 07 Sep 2021 12:10:01 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 10 Sep 2021 12:58:29 +0500
+
+wb-mqtt-serial (2.32.0) stable; urgency=medium
+
+  * Move JSON std::chrono utils to libwbmqtt1
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Thu, 09 Sep 2021 13:59:25 +0300
+
+wb-mqtt-serial (2.31.9) stable; urgency=medium
+
+  * Uniform captions for addresses is added 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 08 Sep 2021 20:07:06 +0500
+
+wb-mqtt-serial (2.31.8) stable; urgency=medium
+
+  * Properties titles for homeui are adjusted
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 08 Sep 2021 12:08:49 +0500
+
+wb-mqtt-serial (2.31.7) stable; urgency=medium
+
+  * Uniform name is set for all poll interval properties
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 08 Sep 2021 11:53:18 +0500
+
+wb-mqtt-serial (2.31.6) stable; urgency=medium
+
+  * Port type names are replaced by shorter versions
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 07 Sep 2021 19:44:03 +0500
+
+wb-mqtt-serial (2.31.5) stable; urgency=medium
+
+  * More accurate port parameters editors layout for homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 07 Sep 2021 19:34:52 +0500
+
+wb-mqtt-serial (2.31.4) stable; urgency=medium
+
+  * Config's setup section priority is raised. Setup registers in config have higher priority than 
+    setup registers with same addresses from device templates.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 07 Sep 2021 17:56:45 +0500
+
+wb-mqtt-serial (2.31.3) stable; urgency=medium
+
+  * "Delete last array item" buttons are removed from homeui interface
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 06 Sep 2021 16:32:23 +0500
+
+wb-mqtt-serial (2.31.2) stable; urgency=medium
+
+  * Validation error of config containing Energomera CE102M device is fixed.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 06 Sep 2021 15:14:08 +0500
 
 wb-mqtt-serial (2.31.1) stable; urgency=medium
 
