@@ -1728,7 +1728,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
 
 TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
 {
-    // The test simulates reeconnection on EBADF error after writing first setup register
+    // The test simulates reconnection on EBADF error after writing first setup register
     // The behavior is a result of bad hwconf setup
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     TTemplateMap t;
@@ -1753,4 +1753,28 @@ TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
         Note() << "LoopOnce()";
         mqttDriver->LoopOnce();
     }
+}
+
+TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
+{
+    // The test simulates EBADF error during register write after receiving a message from /on topic
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    TTemplateMap t;
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_ebadf.json"), 
+                                            DeviceFactory,
+                                            configSchema,
+                                            t,
+                                            [=](const Json::Value&) {return std::make_pair(Port, false);});
+
+    PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+
+    Port->SimulateDisconnect(TFakeSerialPort::BadFileDescriptorOnWriteAndRead);
+
+    Note() << "LoopOnce()";
+    mqttDriver->LoopOnce();
+
+    PublishWaitOnValue("/devices/test/controls/I1/on", "42", 1, true);
+
+    Note() << "LoopOnce()";
+    mqttDriver->LoopOnce();
 }
