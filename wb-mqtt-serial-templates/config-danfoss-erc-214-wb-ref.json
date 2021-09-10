@@ -1,9 +1,9 @@
 {
-    "title": "Danfoss ERC 213 (WB-REF-DF-ERC21)",
-    "device_type": "danfoss_erc_213_wb_ref",
+    "title": "Danfoss ERC 214 (WB-REF-DF-ERC21)",
+    "device_type": "danfoss_erc_214_wb_ref",
     "device": {
-        "name": "Danfoss ERC 213",
-        "id": "danfoss-erc-213",
+        "name": "Danfoss ERC 214",
+        "id": "danfoss-erc-214",
         "response_timeout_ms": 100,
         "frame_timeout_ms": 12,
         "guard_interval_us": 5000,
@@ -160,7 +160,7 @@
                 "order": 7
             },
             "pulldown_duration": {
-                "title": "Pulldown Duration (r96)",
+                "title": "Pulldown duration (r96)",
                 "description": "units: minutes",
                 "address": 213,
                 "reg_type": "holding",
@@ -172,7 +172,7 @@
                 "order": 8
             },
             "pulldown_limit_temperature": {
-                "title": "Pulldown Limit Temperature (r97)",
+                "title": "Pulldown limit temperature (r97)",
                 "description": "units: °C",
                 "address": 214,
                 "reg_type": "holding",
@@ -667,6 +667,17 @@
                 "group": "others",
                 "order": 4
             },
+            "do4_config": {
+                "title": "DO4 Config (o36)",
+                "address": 2044,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": ["alarm", "light"],
+                "group": "others",
+                "order": 5
+            },
             "di2_config": {
                 "title": "DI2 Config (o37)",
                 "address": 2054,
@@ -707,17 +718,6 @@
                 "group": "others",
                 "order": 7
             },
-            "do2_config": {
-                "title": "DO2 Config (o71)",
-                "address": 2083,
-                "reg_type": "holding",
-                "format": "u16",
-                "default": 0,
-                "enum": [0, 1],
-                "enum_titles": ["defrost", "alarm"],
-                "group": "others",
-                "order": 8
-            },
             "display_at_defrost": {
                 "title": "Display At Defrost (o91)",
                 "address": 2121,
@@ -731,7 +731,7 @@
                     "-d- is displayed"
                 ],
                 "group": "others",
-                "order": 9
+                "order": 8
             },
             "di1_input_polarity": {
                 "title": "DI1 Input Polarity (P73)",
@@ -902,6 +902,15 @@
                 "group": "status"
             },
             {
+                "name": "Light Relay Status",
+                "address": 2583,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
                 "name": "Relay 1 Turn On Counter",
                 "address": 2034,
                 "reg_type": "holding",
@@ -926,6 +935,17 @@
             {
                 "name": "Relay 3 Turn On Counter",
                 "address": 2036,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "scale": 100,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Relay 4 Turn On Counter",
+                "address": 2037,
                 "reg_type": "holding",
                 "type": "value",
                 "format": "u16",

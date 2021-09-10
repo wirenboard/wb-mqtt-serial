@@ -1,9 +1,9 @@
 {
-    "title": "Danfoss ERC 213 (WB-REF-DF-ERC21)",
-    "device_type": "danfoss_erc_213_wb_ref",
+    "title": "Danfoss ERC 211 (WB-REF-DF-ERC21)",
+    "device_type": "danfoss_erc_211_wb_ref",
     "device": {
-        "name": "Danfoss ERC 213",
-        "id": "danfoss-erc-213",
+        "name": "Danfoss ERC 211",
+        "id": "danfoss-erc-211",
         "response_timeout_ms": 100,
         "frame_timeout_ms": 12,
         "guard_interval_us": 5000,
@@ -34,29 +34,24 @@
                 "order": 5
             },
             {
-                "title": "Fans",
-                "id": "fans",
-                "order": 6
-            },
-            {
                 "title": "Compressor",
                 "id": "compressor",
-                "order": 7
+                "order": 6
             },
             {
                 "title": "Others",
                 "id": "others",
-                "order": 8
+                "order": 7
             },
             {
                 "title": "Polarity",
                 "id": "polarity",
-                "order": 9
+                "order": 8
             },
             {
                 "title": "Controller Info",
                 "id": "controller_info",
-                "order": 10
+                "order": 9
             }
         ],
         "setup": [
@@ -246,18 +241,6 @@
                 "group": "alarm",
                 "order": 5
             },
-            "di2_delay": {
-                "title": "DI2 Delay (A28)",
-                "description": "units: minutes",
-                "address": 10028,
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 0,
-                "max": 240,
-                "default": 30,
-                "group": "alarm",
-                "order": 6
-            },
             "condenser_alarm_temperature_limit": {
                 "title": "Condenser Alarm Temperature Limit (A37)",
                 "description": "units: °C",
@@ -269,7 +252,7 @@
                 "max": 200,
                 "default": 80,
                 "group": "alarm",
-                "order": 7
+                "order": 6
             },
             "condenser_stop_temperature_limit": {
                 "title": "Condenser Stop Temperature Limit (A54)",
@@ -282,7 +265,7 @@
                 "max": 200,
                 "default": 85,
                 "group": "alarm",
-                "order": 8
+                "order": 7
             },
             "voltage_protection_enabled": {
                 "title": "Voltage Protection Enabled (A72)",
@@ -293,7 +276,7 @@
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "group": "alarm",
-                "order": 9
+                "order": 8
             },
             "compressor_minimum_start_voltage": {
                 "title": "Compressor Minimum Start Voltage (A73)",
@@ -305,7 +288,7 @@
                 "max": 270,
                 "default": 0,
                 "group": "alarm",
-                "order": 10
+                "order": 9
             },
             "compressor_minimum_stop_voltage": {
                 "title": "Compressor Minimum Stop Voltage (A74)",
@@ -317,7 +300,7 @@
                 "max": 270,
                 "default": 0,
                 "group": "alarm",
-                "order": 11
+                "order": 10
             },
             "compressor_maximum_voltage": {
                 "title": "Compressor Maximum Voltage (A75)",
@@ -329,7 +312,7 @@
                 "max": 270,
                 "default": 270,
                 "group": "alarm",
-                "order": 12
+                "order": 11
             },
             "defrost_type": {
                 "title": "Defrost Type (d01)",
@@ -408,45 +391,6 @@
                 "group": "defrost",
                 "order": 6
             },
-            "fan_delay_after_defrost": {
-                "title": "Fan Delay After Defrost (d07)",
-                "description": "units: minutes",
-                "address": 1006,
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 0,
-                "max": 60,
-                "default": 0,
-                "group": "defrost",
-                "order": 7
-            },
-            "fan_start_temperature_after_defrost": {
-                "title": "Fan Start Temperature After Defrost (d08)",
-                "description": "units: °C",
-                "address": 1005,
-                "reg_type": "holding",
-                "format": "s16",
-                "min": -50,
-                "max": 0,
-                "default": -5,
-                "group": "defrost",
-                "order": 8
-            },
-            "fan_mode_during_defrost": {
-                "title": "Fan Mode During Defrost (d09)",
-                "address": 1007,
-                "reg_type": "holding",
-                "format": "u16",
-                "default": 1,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "stopped",
-                    "running (stopped during fan delay D07)",
-                    "running during pump down and defrost, stopped after that"
-                ],
-                "group": "defrost",
-                "order": 9
-            },
             "defrost_stop_sensor": {
                 "title": "Defrost Stop Sensor (d10)",
                 "address": 1008,
@@ -456,7 +400,7 @@
                 "enum": [0, 1, 2],
                 "enum_titles": ["time", "S5", "S4"],
                 "group": "defrost",
-                "order": 10
+                "order": 7
             },
             "compressor_working_time_between_defrosts": {
                 "title": "Compressor Working Time Between Defrosts (d18)",
@@ -468,7 +412,7 @@
                 "max": 96,
                 "default": 0,
                 "group": "defrost",
-                "order": 11
+                "order": 8
             },
             "defrost_on_demand": {
                 "title": "Defrost On Demand (d19)",
@@ -481,7 +425,7 @@
                 "max": 20,
                 "default": 20,
                 "group": "defrost",
-                "order": 12
+                "order": 9
             },
             "continous_cycle_defrost_delay": {
                 "title": "Defrost Delay After Continous Cycle (d30)",
@@ -493,61 +437,7 @@
                 "max": 960,
                 "default": 0,
                 "group": "defrost",
-                "order": 13
-            },
-            "fan_mode_when_compressor_off": {
-                "title": "Fan Mode When Compressor Is Off (F01)",
-                "address": 1499,
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 0,
-                "max": 2,
-                "default": 1,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "fan follow compressor",
-                    "fan always on",
-                    "fan pulsating"
-                ],
-                "group": "fans",
-                "order": 1
-            },
-            "fan_stop_evaporator_temperature": {
-                "title": "Fan Stop Evaporator Temperature (F04)",
-                "description": "units: °C",
-                "address": 1504,
-                "reg_type": "holding",
-                "format": "s16",
-                "scale": 0.01,
-                "min": -50,
-                "max": 50,
-                "default": 50,
-                "group": "fans",
-                "order": 2
-            },
-            "fan_on_cycle": {
-                "title": "Fan On Cycle Time (F07)",
-                "description": "units: minutes",
-                "address": 1507,
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 0,
-                "max": 15,
-                "default": 2,
-                "group": "fans",
-                "order": 3
-            },
-            "fan_off_cycle": {
-                "title": "Fan Off Cycle Time (F08)",
-                "description": "units: minutes",
-                "address": 1508,
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 0,
-                "max": 15,
-                "default": 2,
-                "group": "fans",
-                "order": 4
+                "order": 10
             },
             "compressor_minimum_on_time": {
                 "title": "Compressor Minimum On Time (C01)",
@@ -652,6 +542,17 @@
                 "group": "others",
                 "order": 3
             },
+            "working_mode": {
+                "title": "Controller Working Mode: Cooling Or Heating  (o07)",
+                "address": 2023,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": ["cooling", "heating"],
+                "group": "others",
+                "order": 4
+            },
             "display_temperature_resolution": {
                 "title": "Display Temperature Resolution (o15)",
                 "address": 2018,
@@ -665,29 +566,7 @@
                     "1.0 °C"
                 ],
                 "group": "others",
-                "order": 4
-            },
-            "di2_config": {
-                "title": "DI2 Config (o37)",
-                "address": 2054,
-                "reg_type": "holding",
-                "format": "u16",
-                "default": 0,
-                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                "enum_titles": [
-                    "not used",
-                    "status display output",
-                    "door alarm with resumption",
-                    "door alarm with resumption",
-                    "controller start",
-                    "day/night mode switch",
-                    "reference displacement",
-                    "external alarm",
-                    "defrost start",
-                    "pull down"
-                ],
-                "group": "others",
-                "order": 6
+                "order": 5
             },
             "predefined_applications": {
                 "title": "Predefined Applications (o61)",
@@ -705,18 +584,7 @@
                     "low temperature; electrical defrost by temperature"
                 ],
                 "group": "others",
-                "order": 7
-            },
-            "do2_config": {
-                "title": "DO2 Config (o71)",
-                "address": 2083,
-                "reg_type": "holding",
-                "format": "u16",
-                "default": 0,
-                "enum": [0, 1],
-                "enum_titles": ["defrost", "alarm"],
-                "group": "others",
-                "order": 8
+                "order": 6
             },
             "display_at_defrost": {
                 "title": "Display At Defrost (o91)",
@@ -731,7 +599,7 @@
                     "-d- is displayed"
                 ],
                 "group": "others",
-                "order": 9
+                "order": 7
             },
             "di1_input_polarity": {
                 "title": "DI1 Input Polarity (P73)",
@@ -745,35 +613,7 @@
                     "normally closed = activated when input is open circuit"
                 ],
                 "group": "polarity",
-                "order": 1
-            },
-            "di2_input_polarity": {
-                "title": "DI2 Input Polarity (P74)",
-                "address": 2187,
-                "reg_type": "holding",
-                "format": "u16",
-                "default": 1,
-                "enum": [0, 1],
-                "enum_titles": [
-                    "normally opened = activated when input is short circuit",
-                    "normally closed = activated when input is open circuit"
-                ],
-                "group": "polarity",
-                "order": 2
-            },
-            "invert_alarm_relay": {
-                "title": "Invert Alarm Relay (P75)",
-                "address": 2188,
-                "reg_type": "holding",
-                "format": "u16",
-                "default": 0,
-                "enum": [0, 1],
-                "enum_titles": [
-                    "normal",
-                    "invert relay action"
-                ],
-                "group": "polarity",
-                "order": 3
+                "order": 8
             },
             "key_board_lock": {
                 "title": "Key Board Lock (P76)",
@@ -785,7 +625,7 @@
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "group": "polarity",
-                "order": 4
+                "order": 9
             }
         },
         "channels": [
@@ -812,16 +652,6 @@
             {
                 "name": "Defrost Temperature Sensor ",
                 "address": 1010,
-                "reg_type": "holding",
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.01,
-                "readonly": true,
-                "group": "status"
-            },
-            {
-                "name": "Condencer Temperature Sensor ",
-                "address": 2646,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -857,15 +687,6 @@
                 "group": "status"
             },
             {
-                "name": "DI2 Status",
-                "address": 2555,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "readonly": true,
-                "group": "status"
-            },
-            {
                 "name": "Compressor Relay Status",
                 "address": 2509,
                 "reg_type": "holding",
@@ -875,57 +696,8 @@
                 "group": "status"
             },
             {
-                "name": "Fan Relay Status",
-                "address": 2510,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "readonly": true,
-                "group": "status"
-            },
-            {
-                "name": "Defrost Relay Status",
-                "address": 2511,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "readonly": true,
-                "group": "status"
-            },
-            {
-                "name": "Alarm Relay Status",
-                "address": 2582,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "readonly": true,
-                "group": "status"
-            },
-            {
                 "name": "Relay 1 Turn On Counter",
                 "address": 2034,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "scale": 100,
-                "readonly": true,
-                "group": "status",
-                "enabled": false
-            },
-            {
-                "name": "Relay 2 Turn On Counter",
-                "address": 2035,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "scale": 100,
-                "readonly": true,
-                "group": "status",
-                "enabled": false
-            },
-            {
-                "name": "Relay 3 Turn On Counter",
-                "address": 2036,
                 "reg_type": "holding",
                 "type": "value",
                 "format": "u16",
