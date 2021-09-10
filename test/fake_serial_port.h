@@ -16,6 +16,13 @@ using WBMQTT::Testing::TLoggedFixture;
 
 class TFakeSerialPort: public TPort, public TExpector {
 public:
+    enum TDisconnectType
+    {
+        NoDisconnect,                   //! All operations are successful
+        SilentReadAndWriteFailure,      //! Port can be successfully open, but all operations do nothing
+        BadFileDescriptorOnWriteAndRead //! Port can be successfully open, but all operations fail with EBADF
+    };
+
     TFakeSerialPort(WBMQTT::Testing::TLoggedFixture& fixture);
 
     void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
@@ -40,8 +47,7 @@ public:
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     void DumpWhatWasRead();
     void Elapse(const std::chrono::milliseconds& ms);
-    void SimulateDisconnect(bool simulate);
-    bool GetDoSimulateDisconnect() const;
+    void SimulateDisconnect(TDisconnectType simulate);
     WBMQTT::Testing::TLoggedFixture& GetFixture();
 
     std::string GetDescription(bool verbose = true) const override;
@@ -55,7 +61,7 @@ private:
     WBMQTT::Testing::TLoggedFixture& Fixture;
     bool AllowOpen;
     bool IsPortOpen;
-    bool DoSimulateDisconnect;
+    TDisconnectType DisconnectType;
     std::deque<const char*> PendingFuncs;
     std::vector<int> Req;
     std::vector<int> Resp;
