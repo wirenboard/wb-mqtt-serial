@@ -118,7 +118,15 @@ TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
         changed = (OldValue != tempValue);
         OldValue = tempValue;
         Reg->SetValue(OldValue);
-    } catch (const TSerialDeviceTransientErrorException& e) {
+    } catch (const TSerialDevicePermanentRegisterException& e) {
+        LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
+        {
+            std::lock_guard<std::mutex> lock(SetValueMutex);
+            Dirty = (tempValue != ValueToSet);
+            WriteFail = false;
+        }
+        return { UpdateWriteError(true), false };
+    } catch (const TSerialDeviceException& e) {
         LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
@@ -130,14 +138,6 @@ TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
                 Dirty = (tempValue != ValueToSet);
                 WriteFail = false;
             }
-        }
-        return { UpdateWriteError(true), false };
-    } catch (const TSerialDevicePermanentRegisterException& e) {
-        LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
-        {
-            std::lock_guard<std::mutex> lock(SetValueMutex);
-            Dirty = (tempValue != ValueToSet);
-            WriteFail = false;
         }
         return { UpdateWriteError(true), false };
     }

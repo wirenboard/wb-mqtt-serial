@@ -405,7 +405,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
         if (LastAccessedDevice) {
             try {
                 LastAccessedDevice->EndSession();
-            } catch ( const TSerialDeviceTransientErrorException& e) {
+            } catch ( const TSerialDeviceException& e) {
                 auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
                 LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
             }
@@ -413,7 +413,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
         LastAccessedDevice = dev;
         try {
             dev->Prepare();
-        } catch ( const TSerialDeviceTransientErrorException& e) {
+        } catch ( const TSerialDeviceException& e) {
             auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
             LOG(logger) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << dev->ToString() + "]";
         }
