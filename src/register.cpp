@@ -168,6 +168,11 @@ void TRegister::SetValue(uint64_t value)
     Available = true;
 }
 
+const std::string& TRegister::GetChannelName() const
+{
+    return ChannelName;
+}
+
 std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;
 std::mutex TRegister::Mutex;
 

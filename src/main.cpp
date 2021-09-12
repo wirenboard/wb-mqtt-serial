@@ -3,6 +3,7 @@
 #include "log.h"
 
 #include <wblib/wbmqtt.h>
+#include <wblib/rpc.h>
 #include <wblib/signal_handling.h>
 
 #include <getopt.h>
@@ -295,6 +296,8 @@ int main(int argc, char *argv[])
             handlerConfig->PublishParameters
         );
 
+        auto rpcServer(WBMQTT::NewMqttRpcServer(mqtt, APP_NAME));
+
         driver->StartLoop();
         WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, 
                                           [&]{
@@ -304,11 +307,16 @@ int main(int argc, char *argv[])
 
         driver->WaitForReady();
 
-        auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
+        auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig, rpcServer);
 
         serialDriver->Start();
+        rpcServer->Start();
 
-        WBMQTT::SignalHandling::OnSignals({ SIGINT, SIGTERM }, [&]{ serialDriver->Stop(); });
+        WBMQTT::SignalHandling::OnSignals({ SIGINT, SIGTERM },
+                                          [&]{ 
+                                              rpcServer->Stop();
+                                              serialDriver->Stop();
+                                          });
         WBMQTT::SignalHandling::SetOnTimeout(SERIAL_DRIVER_STOP_TIMEOUT_S, [&]{
             LOG(Error) << "Driver takes too long to stop. Exiting.";
             exit(1);
