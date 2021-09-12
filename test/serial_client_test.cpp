@@ -43,6 +43,7 @@ protected:
     PSerialClient SerialClient;
     PFakeSerialDevice Device;
     TSerialDeviceFactory DeviceFactory;
+    Metrics::TMetrics Metrics;
 
     bool HasSetupRegisters = false;
     TPortOpenCloseLogic::TSettings PortOpenCloseSettings;
@@ -92,7 +93,7 @@ void TSerialClientTest::SetUp()
     Device->InitSetupItems();
     std::vector<PSerialDevice> devices;
     devices.push_back(Device);
-    SerialClient = std::make_shared<TSerialClient>(devices, Port, PortOpenCloseSettings);
+    SerialClient = std::make_shared<TSerialClient>(devices, Port, PortOpenCloseSettings, Metrics);
 #if 0
     SerialClient->SetModbusDebug(true);
 #endif

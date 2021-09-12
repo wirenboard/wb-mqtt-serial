@@ -17,7 +17,7 @@ struct TDeviceChannel : public TDeviceChannelConfig
         , Device(device)
     {
         for (const auto &reg_config: config->RegisterConfigs) {
-            Registers.push_back(TRegister::Intern(device, reg_config));
+            Registers.push_back(TRegister::Intern(device, reg_config, config->MqttId));
         }
     }
 
@@ -68,7 +68,8 @@ class TSerialPortDriver: public std::enable_shared_from_this<TSerialPortDriver>
 public:
     TSerialPortDriver(WBMQTT::PDeviceDriver             mqttDriver,
                       PPortConfig                       port_config, 
-                      const WBMQTT::TPublishParameters& publishPolicy);
+                      const WBMQTT::TPublishParameters& publishPolicy,
+                      Metrics::TMetrics&                metrics);
 
     void SetUpDevices();
     void Cycle();
