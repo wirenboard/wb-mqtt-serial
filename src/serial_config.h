@@ -238,6 +238,7 @@ struct TDeviceConfigLoadParams
     std::chrono::milliseconds PortResponseTimeout;
     std::chrono::milliseconds DefaultPollInterval;
     std::string               DeviceTemplateTitle;
+    const Json::Value*        Translations = nullptr;
 };
 
 PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             deviceData,

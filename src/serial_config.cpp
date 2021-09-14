@@ -165,8 +165,12 @@ namespace {
         const IDeviceFactory&   factory;
         const IRegisterAddress& device_base_address;
         size_t                  stride = 0;
+        TTitleTranslations      translated_name_prefixes;
+        const Json::Value*      translations = nullptr;
 
-        TLoadingContext(const std::string& template_title, const IDeviceFactory& f, const IRegisterAddress& base_address)
+        TLoadingContext(const std::string&      template_title,
+                        const IDeviceFactory&   f,
+                        const IRegisterAddress& base_address)
             : device_template_title(template_title),
               factory(f),
               device_base_address(base_address)
@@ -228,6 +232,43 @@ namespace {
         return res;
     }
 
+    TTitleTranslations Translate(const std::string& name, const TLoadingContext& context)
+    {
+        TTitleTranslations res;
+        if (context.translations) {
+            for (auto it = context.translations->begin(); it != context.translations->end(); ++it) {
+                auto translatedName = (*it)[name];
+                auto trIt           = context.translated_name_prefixes.find(it.name());
+                if (!translatedName.isNull()) {
+                    if (trIt != context.translated_name_prefixes.end()) {
+                        res[it.name()] = trIt->second + " " + translatedName.asString();
+                        continue;
+                    }
+                    if (it.name() != "en") {
+                        trIt = context.translated_name_prefixes.find("en");
+                        if (trIt != context.translated_name_prefixes.end()) {
+                            res[it.name()] = trIt->second + " " + translatedName.asString();
+                            continue;
+                        }
+                    }
+                    res[it.name()] = translatedName.asString();
+                }
+            }
+
+            for (const auto& it: context.translated_name_prefixes) {
+                if (!res.count(it.first)) {
+                    res[it.first] = it.second + " " + name;
+                }
+            }
+        }
+
+        if (!res.count("en")) {
+            res["en"] = name;
+        }
+
+        return res;
+    }
+
     void LoadSimpleChannel(TDeviceConfig*          device_config,
                            const Json::Value&      channel_data,
                            const TLoadingContext&  context)
@@ -278,6 +319,11 @@ namespace {
         PDeviceChannelConfig channel(new TDeviceChannelConfig(name, type_str, device_config->Id, order,
                                                 registers[0]->ReadOnly, mqtt_channel_name,
                                                 registers));
+
+        for (const auto& it: Translate(channel_data["name"].asString(), context)) {
+            channel->SetTitle(it.second, it.first);
+        }
+
         if (channel_data.isMember("max")) {
             channel->Max = GetDouble(channel_data, "max");
         }
@@ -323,6 +369,7 @@ namespace {
         std::unique_ptr<IRegisterAddress> baseAddress(context.device_base_address.CalcNewAddress(shift, 0, 0, 0));
 
         TLoadingContext newContext(context.device_template_title, context.factory, *baseAddress);
+        newContext.translations = context.translations;
         newContext.name_prefix = channel_data["name"].asString();
         if (!context.name_prefix.empty()) {
             newContext.name_prefix = context.name_prefix + " " + newContext.name_prefix;
@@ -344,8 +391,8 @@ namespace {
                 LoadSetupItem(device_config, setupItem, newContext);
         }
 
-
         if (channel_data.isMember("channels")) {
+            newContext.translated_name_prefixes = Translate(channel_data["name"].asString(), context);
             for (const auto& ch: channel_data["channels"]) {
                 LoadChannel(device_config, ch, newContext);
             }
@@ -843,11 +890,30 @@ TDeviceChannelConfig::TDeviceChannelConfig(const std::string& name,
                                            int                order,
                                            bool               readOnly,
                                            const std::string& mqttId,
-                                           const std::vector<PRegisterConfig> regs)
-    : Name(name), MqttId(mqttId), Type(type), DeviceId(deviceId),
+                                           const std::vector<PRegisterConfig>& regs)
+    : MqttId(mqttId), Type(type), DeviceId(deviceId),
       Order(order),
       ReadOnly(readOnly), RegisterConfigs(regs) 
-{}
+{
+    Titles["en"] = name;
+}
+
+const std::string& TDeviceChannelConfig::GetName() const
+{
+    return Titles.at("en");
+}
+
+const TTitleTranslations& TDeviceChannelConfig::GetTitles() const
+{
+    return Titles;
+}
+
+void TDeviceChannelConfig::SetTitle(const std::string& name, const std::string& lang)
+{
+    if (!lang.empty()) {
+        Titles[lang] = name;
+    }
+}
 
 TDeviceSetupItemConfig::TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value)
     : Name(name), RegisterConfig(reg), Value(value)
@@ -961,6 +1027,7 @@ std::string GetProtocolName(const Json::Value& deviceDescription)
 TDeviceTemplate::TDeviceTemplate(const std::string& type, const std::string title, const Json::Value& schema)
     : Type(type), Title(title), Schema(schema)
 {}
+
 void TSerialDeviceFactory::RegisterProtocol(PProtocol protocol, IDeviceFactory* deviceFactory)
 {
     Protocols.insert(std::make_pair(protocol->GetName(), std::make_pair(protocol, deviceFactory)));
@@ -1002,6 +1069,7 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
         params.DeviceTemplateTitle = deviceTemplate.Title;
         mergedConfig = std::make_unique<Json::Value>(MergeDeviceConfigWithTemplate(deviceConfig, deviceType, deviceTemplate.Schema));
         cfg = mergedConfig.get();
+        params.Translations = &deviceTemplate.Schema["translations"];
     }
     std::string protocolName = DefaultProtocol;
     Get(*cfg, "protocol", protocolName);
@@ -1082,6 +1150,7 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value&             dev,
     }
 
     TLoadingContext context(parameters.DeviceTemplateTitle, factory, factory.GetRegisterAddressFactory().GetBaseRegisterAddress());
+    context.translations = parameters.Translations;
     LoadDeviceTemplatableConfigPart(res.get(), dev, protocol->GetRegTypes(), context);
 
     if (res->DeviceChannelConfigs.empty())

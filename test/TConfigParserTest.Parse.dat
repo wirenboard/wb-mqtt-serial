@@ -716,6 +716,7 @@ Ports:
         DeviceChannels:
             ------
             Name: Temperature
+            Name ru: Температура
             Type: value
             MqttId: Temperature
             DeviceId: with subdevice_22
@@ -741,6 +742,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c1
+            Name ru: Русский Sub c1
             Type: value
             MqttId: Sub c1
             DeviceId: with subdevice_22
@@ -766,6 +768,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c2 c12
+            Name ru: Русский Sub c2 c12
             Type: value
             MqttId: Sub id sub id
             DeviceId: with subdevice_22
@@ -791,6 +794,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c2 c22
+            Name ru: Русский Sub c2 русский c22
             Type: value
             MqttId: Sub id c22
             DeviceId: with subdevice_22
@@ -816,6 +820,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c3 c12
+            Name ru: Русский Sub c3 c12
             Type: value
             MqttId: Sub c3 sub id
             DeviceId: with subdevice_22
@@ -841,6 +846,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub c3 c22
+            Name ru: Русский Sub c3 русский c22
             Type: value
             MqttId: Sub c3 c22
             DeviceId: with subdevice_22
@@ -916,6 +922,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub2 c2 c22
+            Name ru: Sub2 c2 русский c22
             Type: value
             MqttId: id c22
             DeviceId: with subdevice_22
@@ -941,6 +948,7 @@ Ports:
                 WordOrder: BigEndian
             ------
             Name: Sub2 c3 c22
+            Name ru: Sub2 c3 русский c22
             Type: value
             MqttId: c3 c22
             DeviceId: with subdevice_22

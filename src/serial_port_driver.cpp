@@ -265,6 +265,12 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
         args.SetPrecision(channel->Precision);
     }
 
+    for (const auto& tr: channel->GetTitles()) {
+        if (tr.first != "en" || tr.second != channel->MqttId) {
+            args.SetTitle(tr.second, tr.first);
+        }
+    }
+
     return args;
 }
 

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.33.0) stable; urgency=medium
+
+  * Support for channel and device names translation is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 14 Sep 2021 11:58:08 +0500
+
 wb-mqtt-serial (2.32.2) stable; urgency=medium
 
   * Minimum value for max_unchanged_interval setting is set to 5 seconds.

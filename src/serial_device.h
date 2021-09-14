@@ -15,10 +15,10 @@
 #include "serial_exc.h"
 #include "port.h"
 
+typedef std::unordered_map<std::string, std::string> TTitleTranslations;
 
 struct TDeviceChannelConfig 
 {
-    std::string                  Name;
     std::string                  MqttId; // MQTT topic name. If empty Name is used
     std::string                  Type;
     std::string                  DeviceId;
@@ -37,7 +37,15 @@ struct TDeviceChannelConfig
                          int                order                = 0,
                          bool               readOnly             = false,
                          const std::string& mqttId               = "",
-                         const std::vector<PRegisterConfig> regs = std::vector<PRegisterConfig>());
+                         const std::vector<PRegisterConfig>& regs = std::vector<PRegisterConfig>());
+
+    //! Will be published in /devices/+/meta/name and used in log messages
+    const std::string& GetName() const;
+
+    const TTitleTranslations& GetTitles() const;
+    void SetTitle(const std::string& name, const std::string& lang);
+private:
+    TTitleTranslations Titles;
 };
 
 typedef std::shared_ptr<TDeviceChannelConfig> PDeviceChannelConfig;
