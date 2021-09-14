@@ -1,8 +1,26 @@
-wb-mqtt-serial (2.32.0) stable; urgency=medium
+wb-mqtt-serial (2.33.0) stable; urgency=medium
 
   * Translations support is added to device templates
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 09 Sep 2021 09:48:01 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 14 Sep 2021 14:31:38 +0500
+
+wb-mqtt-serial (2.32.2) stable; urgency=medium
+
+  * Minimum value for max_unchanged_interval setting is set to 5 seconds.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 10 Sep 2021 20:43:09 +0500
+
+wb-mqtt-serial (2.32.1) stable; urgency=medium
+
+  * An error that leads to service crash after failed writing to a port is fixed.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 10 Sep 2021 20:31:05 +0500
+
+wb-mqtt-serial (2.32.0) stable; urgency=medium
+
+  * Move JSON std::chrono utils to libwbmqtt1
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Thu, 09 Sep 2021 13:59:25 +0300
 
 wb-mqtt-serial (2.31.9) stable; urgency=medium
 
