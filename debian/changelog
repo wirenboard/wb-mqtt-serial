@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.33.0) stable; urgency=medium
+
+  * Support for channel and device names translation is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 17 Sep 2021 15:55:47 +0500
+
 wb-mqtt-serial (2.32.3) stable; urgency=medium
 
   * Russian translation of JSON schema
