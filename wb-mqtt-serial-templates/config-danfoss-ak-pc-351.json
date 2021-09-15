@@ -1,0 +1,748 @@
+{
+    "title": "Danfoss AK-PC 351",
+    "device_type": "danfoss_ak-pc_351",
+    "device": {
+        "name": "Danfoss AK-PC 351",
+        "id": "danfoss-ak-pc-351",
+        "response_timeout_ms": 100,
+        "frame_timeout_ms": 12,
+        "guard_interval_us": 5000,
+        "groups": [
+            {
+                "title": "Status",
+                "id": "status",
+                "order": 1
+            },
+            {
+                "title": "Control",
+                "id": "control",
+                "order": 2
+            }
+        ],
+        "channels": [
+            {
+                "name": "Compressor Actual Pressure",
+                "address": 3016,
+                "reg_type": "holding",
+                "type": "pressure",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor Actual Temperature",
+                "address": 3018,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Compressor Reference Pressure ",
+                "address": 3020,
+                "reg_type": "holding",
+                "type": "pressure",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor Reference Temperature",
+                "address": 3022,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Condencer Actual Pressure",
+                "address": 3113,
+                "reg_type": "holding",
+                "type": "pressure",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Condencer Actual Temperature",
+                "address": 3115,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Condencer Reference Pressure",
+                "address": 3117,
+                "reg_type": "holding",
+                "type": "pressure",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Condencer Reference Temperature",
+                "address": 3119,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Compressor Control Status",
+                "address": 3014,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Condencer Control Status",
+                "address": 3112,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "External Main Switch",
+                "address": 3001,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Alarm",
+                "address": 3207,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Actual Regulating Zone",
+                "address": 3015,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Plant Type",
+                "address": 3002,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor Capacity",
+                "address": 3024,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor Requested Capacity",
+                "address": 3025,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressors Quantity",
+                "address": 3068,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Running Compressors Quantity",
+                "address": 3026,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Unloaders Quantity",
+                "address": 3081,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Po Pressure",
+                "address": 3027,
+                "reg_type": "holding",
+                "type": "pressure",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "To Saturated Temperature",
+                "address": 3029,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Pc Pressure",
+                "address": 3126,
+                "reg_type": "holding",
+                "type": "pressure",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Tc Saturated Temperature",
+                "address": 3124,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Sensor S4 Temperature",
+                "address": 3031,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Sensor S7 Temperature",
+                "address": 3128,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Sensor Sc3 Temperature",
+                "address": 3130,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Compressor Low Pressure",
+                "address": 3034,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Compressor High Pressure",
+                "address": 3035,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Compressor Night Mode Active",
+                "address": 3033,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Injection On Signal Status",
+                "address": 3036,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor Control Sensor Type",
+                "address": 3062,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor Mode",
+                "address": 3066,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Lead Compressor Size",
+                "address": 3069,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Other Compressors Size",
+                "address": 3070,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor 1 Sd Temperature",
+                "address": 3093,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Compressor 1 Status",
+                "address": 3095,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Compressor 2 Status",
+                "address": 3096,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor 3 Status",
+                "address": 3097,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor 4 Status",
+                "address": 3098,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor 1 Capacity",
+                "address": 3099,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": true
+            },
+            {
+                "name": "Compressor 2 Capacity",
+                "address": 3100,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor 3 Capacity",
+                "address": 3101,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor 4 Capacity",
+                "address": 3102,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor 1 Runtime",
+                "address": 3104,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": true
+            },
+            {
+                "name": "Compressor 2 Runtime",
+                "address": 3105,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor 3 Runtime",
+                "address": 3106,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor 4 Runtime",
+                "address": 3107,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Condencer Running Capacity",
+                "address": 3121,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Condencer Requested Capacity",
+                "address": 3122,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Condencer Night Mode Active",
+                "address": 3133,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Condencer High Pressure",
+                "address": 3132,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Fan Control Sensor",
+                "address": 3145,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Fan Mode",
+                "address": 3150,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Fan Speed",
+                "address": 3159,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Fan 1 Status",
+                "address": 3160,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Fan 2 Status",
+                "address": 3161,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Fan 3 Status",
+                "address": 3162,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Fan 4 Status",
+                "address": 3163,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Running Fans Quantity",
+                "address": 3123,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Tc Max Limit",
+                "address": 3170,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "u16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "DI7 Config",
+                "address": 3177,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "DI8 Config",
+                "address": 3178,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "MC Tc Mean",
+                "address": 3204,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "u16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "MC Database Synch",
+                "address": 3206,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "MC Injection ON",
+                "address": 3212,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Alarm Register 1",
+                "address": 1900,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Alarm Register 2",
+                "address": 1901,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Alarm Register 3",
+                "address": 1902,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Compressor Pressure Setpoint",
+                "address": 3039,
+                "reg_type": "holding",
+                "type": "pressure",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "control",
+                "enabled": false
+            },
+            {
+                "name": "Compressor Temperature Setpoint",
+                "address": 3040,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "control"
+            },
+            {
+                "name": "Condencer Pressure Setpoint",
+                "address": 3136,
+                "reg_type": "holding",
+                "type": "pressure",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "control",
+                "enabled": false
+            },
+            {
+                "name": "Condencer Temperature Setpoint",
+                "address": 3137,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "control"
+            },
+            {
+                "name": "Regulation Start",
+                "address": 3000,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "control"
+            }
+        ]
+    }
+}
