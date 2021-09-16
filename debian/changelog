@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.35.0) stable; urgency=medium
+
+  * Update dependency on libwbmqtt1 to support fixed libmosquitto facade
+    (required for newer mosquitto backports)
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 21 Sep 2021 19:49:26 +0300
+
 wb-mqtt-serial (2.34.1) stable; urgency=medium
 
   * Error message about duplicate device addresses is updated
