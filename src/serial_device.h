@@ -31,8 +31,7 @@ struct TDeviceChannelConfig
     bool                         ReadOnly         = false;
     std::vector<PRegisterConfig> RegisterConfigs;
 
-    TDeviceChannelConfig(const std::string& name                 = "",
-                         const std::string& type                 = "text",
+    TDeviceChannelConfig(const std::string& type                 = "text",
                          const std::string& deviceId             = "",
                          int                order                = 0,
                          bool               readOnly             = false,
