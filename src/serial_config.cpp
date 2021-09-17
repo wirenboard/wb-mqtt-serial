@@ -907,7 +907,11 @@ void TPortConfig::AddDevice(PSerialDevice device)
     for (auto dev : Devices) {
         if (dev->Protocol() == device->Protocol()) {
             if (dev->Protocol()->IsSameSlaveId(dev->DeviceConfig()->SlaveId, device->DeviceConfig()->SlaveId)) {
-                throw TConfigParserException("device redefinition: " + device->Protocol()->GetName() + ":" + device->DeviceConfig()->SlaveId);
+                stringstream ss;
+                ss << "id \"" << device->DeviceConfig()->SlaveId
+                   << "\" of device \"" << device->DeviceConfig()->Name 
+                   << "\" is already set to device \"" + device->DeviceConfig()->Name + "\"";
+                throw TConfigParserException(ss.str());
             }
         }
     }
