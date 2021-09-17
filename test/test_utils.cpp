@@ -17,3 +17,19 @@
     res << ss.str();
     return res;
 }
+
+
+::testing::AssertionResult JsonsMatch(const Json::Value& v1, const Json::Value& v2)
+{
+    if (v1 == v2) {
+        return ::testing::AssertionSuccess();
+    }
+    auto res = ::testing::AssertionFailure();
+    auto writer = WBMQTT::JSON::MakeWriter("  ");
+    std::stringstream ss;
+    writer->write(v1, &ss);
+    ss << std::endl << "!= " << std::endl;
+    writer->write(v2, &ss);
+    res << std::endl << ss.str();
+    return res;
+}

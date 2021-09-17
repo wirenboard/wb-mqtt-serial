@@ -80,7 +80,8 @@ test: $(TEST_DIR)/$(TEST_BIN)
 	fi
 
 clean :
-	rm -rf $(BUILD_DIR)
+	rm -rf build/release
+	rm -rf build/debug
 	rm -rf $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
 	find $(SRC_DIR) -name '*.o' -delete
 	rm -f $(SERIAL_BIN)

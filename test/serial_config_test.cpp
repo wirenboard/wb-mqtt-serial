@@ -5,6 +5,7 @@
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
 #include "file_utils.h"
+#include "test_utils.h"
 #include "fake_serial_device.h"
 
 using namespace std;
@@ -62,7 +63,12 @@ class TConfigParserTest: public TLoggedFixture
                         for (auto device_channel: device_config->DeviceChannelConfigs) {
                             TTestLogIndent indent(*this);
                             Emit() << "------";
-                            Emit() << "Name: " << device_channel->Name;
+                            Emit() << "Name: " << device_channel->GetName();
+                            for (const auto it: device_channel->GetTitles()) {
+                                if (it.first != "en") {
+                                    Emit() << "Name " << it.first << ": " << it.second;
+                                }
+                            }
                             Emit() << "Type: " << device_channel->Type;
                             Emit() << "MqttId: " << device_channel->MqttId;
                             Emit() << "DeviceId: " << device_channel->DeviceId;
@@ -186,7 +192,8 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
         auto mergedConfig(MergeDeviceConfigWithTemplate(deviceConfig, deviceType, templateMap.GetTemplate(deviceType).Schema));
-        ASSERT_EQ(JSON::Parse(GetDataFilePath("parser_test/merge_template_res" + to_string(i) + ".json")), mergedConfig) << i;
+        auto res(JSON::Parse(GetDataFilePath("parser_test/merge_template_res" + to_string(i) + ".json"))); 
+        ASSERT_TRUE(JsonsMatch(res, mergedConfig)) << i;
     }
 }
 
