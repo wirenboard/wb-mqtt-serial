@@ -42,7 +42,7 @@
                 "group": "status"
             },
             {
-                "name": "Compressor Reference Pressure ",
+                "name": "Compressor Reference Pressure",
                 "address": 3020,
                 "reg_type": "holding",
                 "type": "pressure",
@@ -63,7 +63,7 @@
                 "group": "status"
             },
             {
-                "name": "Condencer Actual Pressure",
+                "name": "Condenser Actual Pressure",
                 "address": 3113,
                 "reg_type": "holding",
                 "type": "pressure",
@@ -74,7 +74,7 @@
                 "enabled": false
             },
             {
-                "name": "Condencer Actual Temperature",
+                "name": "Condenser Actual Temperature",
                 "address": 3115,
                 "reg_type": "holding",
                 "type": "temperature",
@@ -84,7 +84,7 @@
                 "group": "status"
             },
             {
-                "name": "Condencer Reference Pressure",
+                "name": "Condenser Reference Pressure",
                 "address": 3117,
                 "reg_type": "holding",
                 "type": "pressure",
@@ -95,7 +95,7 @@
                 "enabled": false
             },
             {
-                "name": "Condencer Reference Temperature",
+                "name": "Condenser Reference Temperature",
                 "address": 3119,
                 "reg_type": "holding",
                 "type": "temperature",
@@ -114,7 +114,7 @@
                 "group": "status"
             },
             {
-                "name": "Condencer Control Status",
+                "name": "Condenser Control Status",
                 "address": 3112,
                 "reg_type": "holding",
                 "type": "value",
@@ -489,7 +489,7 @@
                 "enabled": false
             },
             {
-                "name": "Condencer Running Capacity",
+                "name": "Condenser Running Capacity",
                 "address": 3121,
                 "reg_type": "holding",
                 "type": "value",
@@ -499,7 +499,7 @@
                 "enabled": false
             },
             {
-                "name": "Condencer Requested Capacity",
+                "name": "Condenser Requested Capacity",
                 "address": 3122,
                 "reg_type": "holding",
                 "type": "value",
@@ -509,7 +509,7 @@
                 "enabled": false
             },
             {
-                "name": "Condencer Night Mode Active",
+                "name": "Condenser Night Mode Active",
                 "address": 3133,
                 "reg_type": "holding",
                 "type": "switch",
@@ -518,7 +518,7 @@
                 "group": "status"
             },
             {
-                "name": "Condencer High Pressure",
+                "name": "Condenser High Pressure",
                 "address": 3132,
                 "reg_type": "holding",
                 "type": "switch",
@@ -717,7 +717,7 @@
                 "group": "control"
             },
             {
-                "name": "Condencer Pressure Setpoint",
+                "name": "Condenser Pressure Setpoint",
                 "address": 3136,
                 "reg_type": "holding",
                 "type": "pressure",
@@ -727,7 +727,7 @@
                 "enabled": false
             },
             {
-                "name": "Condencer Temperature Setpoint",
+                "name": "Condenser Temperature Setpoint",
                 "address": 3137,
                 "reg_type": "holding",
                 "type": "temperature",
