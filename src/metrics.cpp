@@ -6,7 +6,7 @@ using namespace chrono;
 
 namespace
 {
-    const microseconds IntervalDuration(60000000);
+    const seconds IntervalDuration(60);
 
     const size_t MaxBusLoadChunks       = 15;
     const size_t MaxPollIntervalsChunks = 2;
@@ -63,9 +63,12 @@ void Metrics::TPollIntervalMetric::Poll(steady_clock::time_point time)
     }
     if (time >= LastPoll) {
         // Add mising intervals if channel poll start time is after last measured time interval
-        while (IntervalStartTime + IntervalDuration < time) {
+        for (size_t n = 0; IntervalStartTime + IntervalDuration < time; ++n) {
             IntervalStartTime += IntervalDuration;
             RotateChunks();
+            if (n >= MaxPollIntervalsChunks) {
+                IntervalStartTime += ((time - IntervalStartTime) / IntervalDuration) * IntervalDuration;
+            }
         }
         AddIntervals(Intervals.front(), duration_cast<milliseconds>(time - LastPoll), 1);
         LastPoll = time;
@@ -91,7 +94,7 @@ void Metrics::TBusLoadMetric::AddInterval(microseconds interval)
 void Metrics::TBusLoadMetric::StartPoll(const string& channel, steady_clock::time_point time)
 {
     // First call
-    if (!IntervalStartTime.time_since_epoch().count()) {
+    if (IntervalStartTime == steady_clock::time_point()) {
         IntervalStartTime = time;
         ChannelStartPollTime = time;
         Channel = channel;

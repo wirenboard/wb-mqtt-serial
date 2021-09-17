@@ -144,9 +144,9 @@ void TSerialClient::DoFlush()
         if (!handler->NeedToFlush())
             continue;
         PrepareToAccessDevice(handler->Device());
-        Metrics.StartPoll(handler->Device()->DeviceConfig()->Id + "/Command", std::chrono::steady_clock::now());
+        Metrics.StartPoll(handler->Device()->DeviceConfig()->Id + "/Command");
         auto flushRes = handler->Flush();
-        Metrics.StartPoll("wb-mqtt-serial", std::chrono::steady_clock::now());
+        Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
         if (handler->CurrentErrorState() != TRegisterHandler::WriteError && handler->CurrentErrorState() != TRegisterHandler::ReadWriteError) {
             ReadCallback(reg, flushRes.ValueIsChanged);
         }
@@ -209,9 +209,9 @@ std::list<PRegisterRange> TSerialClient::PollRange(PRegisterRange range)
 {
     PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
-    Metrics.StartPoll(dev->DeviceConfig()->Id + "/" + MakeChannelNamesString(range->RegisterList()), std::chrono::steady_clock::now());
+    Metrics.StartPoll(dev->DeviceConfig()->Id + "/" + MakeChannelNamesString(range->RegisterList()));
     std::list<PRegisterRange> newRanges = dev->ReadRegisterRange(range);
-    Metrics.StartPoll("wb-mqtt-serial", std::chrono::steady_clock::now());
+    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
     for (auto& reg: range->RegisterList()) {
         bool changed;
         auto handler = Handlers[reg];
@@ -258,7 +258,7 @@ void TSerialClient::OpenPortCycle()
                     //       The whole EndSession/GetIsDisconnected logic should be revised
                     try {
                         if (LastAccessedDevice && LastAccessedDevice != device ) {
-                            Metrics.StartPoll(LastAccessedDevice->DeviceConfig()->Id, std::chrono::steady_clock::now());
+                            Metrics.StartPoll(LastAccessedDevice->DeviceConfig()->Id);
                             LastAccessedDevice->EndSession();
                         }
                     } catch ( const TSerialDeviceException& e) {
@@ -269,7 +269,7 @@ void TSerialClient::OpenPortCycle()
                     // Force Prepare() (i.e. start session)
                     try {
                         LastAccessedDevice = device;
-                        Metrics.StartPoll(LastAccessedDevice->DeviceConfig()->Id, std::chrono::steady_clock::now());
+                        Metrics.StartPoll(LastAccessedDevice->DeviceConfig()->Id);
                         device->Prepare();
                     } catch ( const TSerialDeviceException& e) {
                         LOG(Debug) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
@@ -277,7 +277,7 @@ void TSerialClient::OpenPortCycle()
                     }
 
                     if (device->HasSetupItems()) {
-                        Metrics.StartPoll(device->DeviceConfig()->Id + "/Setup items", std::chrono::steady_clock::now());
+                        Metrics.StartPoll(device->DeviceConfig()->Id + "/Setup items");
                         auto wrote = device->WriteSetupRegisters();
                         statuses.insert(wrote ? ST_OK : ST_UNKNOWN_ERROR);
                     }
@@ -303,7 +303,7 @@ void TSerialClient::OpenPortCycle()
         pollEntry->Ranges.swap(newRanges);
     });
 
-    Metrics.StartPoll("wb-mqtt-serial", std::chrono::steady_clock::now());
+    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
 
     UpdateFlushNeeded();
 
@@ -337,7 +337,7 @@ void TSerialClient::OpenPortCycle()
     );
 
     OpenCloseLogic.CloseIfNeeded(Port, cycleFailed);
-    Metrics.StartPoll("idle", std::chrono::steady_clock::now());
+    Metrics.StartPoll(Metrics::BUS_IDLE);
 }
 
 void TSerialClient::ClosedPortCycle()
@@ -431,7 +431,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
     if (dev != LastAccessedDevice) {
         if (LastAccessedDevice) {
             try {
-                Metrics.StartPoll(LastAccessedDevice->DeviceConfig()->Id, std::chrono::steady_clock::now());
+                Metrics.StartPoll(LastAccessedDevice->DeviceConfig()->Id);
                 LastAccessedDevice->EndSession();
             } catch ( const TSerialDeviceException& e) {
                 auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
@@ -440,7 +440,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
         }
         LastAccessedDevice = dev;
         try {
-            Metrics.StartPoll(dev->DeviceConfig()->Id, std::chrono::steady_clock::now());
+            Metrics.StartPoll(dev->DeviceConfig()->Id);
             dev->Prepare();
         } catch ( const TSerialDeviceException& e) {
             auto& logger = dev->GetIsDisconnected() ? Debug : Warn;

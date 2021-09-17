@@ -43,7 +43,7 @@ TEST(TMetricsTest, BusLoad)
 
     // More than 15 minutes
     m.StartPoll("test4", t);
-    t += std::chrono::seconds(15*60);
+    t += std::chrono::minutes(15);
     bl = m.GetBusLoad(t);
     ASSERT_EQ(bl.size(), 1);
     ASSERT_DOUBLE_EQ(bl["test4"].Minute, 1);

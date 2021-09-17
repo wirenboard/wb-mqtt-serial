@@ -9,6 +9,9 @@
 
 namespace Metrics
 {
+    const std::string BUS_IDLE              = "idle";
+    const std::string NON_BUS_POLLING_TASKS = "wb-mqtt-serial";
+
     struct TPollIntervalHist
     {
         //! Maximum poll interval of 50% of requests during last 1-2 minutes
@@ -75,7 +78,8 @@ namespace Metrics
             TBusLoad          BusLoad;
         };
 
-        void StartPoll(const std::string& channel, std::chrono::steady_clock::time_point time);
+        void StartPoll(const std::string&                    channel,
+                       std::chrono::steady_clock::time_point time = std::chrono::steady_clock::now());
 
         std::map<std::string, TResult> GetBusLoad(std::chrono::steady_clock::time_point time);
     };
