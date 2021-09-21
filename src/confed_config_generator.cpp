@@ -56,14 +56,9 @@ bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemp
 {
     bool ok = false;
     if (ch.isMember("poll_interval")) {
-        int pollIntervalToErase = DefaultPollInterval.count();
-        if (channelTemplate.isMember("poll_interval")) {
-            pollIntervalToErase = channelTemplate["poll_interval"].asInt();
-        }
-        if (ch["poll_interval"].asInt() != pollIntervalToErase) {
+        if(!channelTemplate.isMember("poll_interval") ||
+           (ch["poll_interval"].asInt() != channelTemplate["poll_interval"].asInt())) {
             ok = true;
-        } else {
-            ch.removeMember("poll_interval");
         }
     }
     if (ch.isMember("enabled")) {

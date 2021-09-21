@@ -154,7 +154,6 @@ namespace
         r["default"]["name"] = channelTemplate["name"].asString();
         r["options"]["wb"]["disable_title"] = true;
         r["default"]["enabled"] = true;
-        r["default"]["poll_interval"] = static_cast<Json::Int>(DefaultPollInterval.count());
         SetIfExists(r["default"], "enabled", channelTemplate, "enabled");
         SetIfExists(r["default"], "poll_interval", channelTemplate, "poll_interval");
         return r;
@@ -349,7 +348,6 @@ namespace
                 v["name"] = channel["name"];
                 v["enabled"] = true;
                 SetIfExists(v, "enabled", channel, "enabled");
-                v["poll_interval"] = static_cast<Json::Int>(DefaultPollInterval.count());
                 SetIfExists(v, "poll_interval", channel, "poll_interval");
             }
             r["minItems"] = defaults.size();
