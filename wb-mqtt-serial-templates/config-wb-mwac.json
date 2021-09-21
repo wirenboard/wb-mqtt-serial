@@ -1,4 +1,5 @@
 {
+    "title": "WB-MWAC (Water consumption and leak monitoring Modbus-module)",
     "device_type": "WB-MWAC",
     "device": {
         "name": "WB-MWAC",
@@ -69,7 +70,7 @@
                 "title": "Input S1 Mode",
                 "address": 9,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 4,
                 "enum_titles": [
                     "push button",
@@ -96,7 +97,7 @@
                 "title": "Input S2 Mode",
                 "address": 10,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 4,
                 "enum_titles": [
                     "push button",
@@ -123,7 +124,7 @@
                 "title": "Input S3 Mode",
                 "address": 11,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 4,
                 "enum_titles": [
                     "push button",
@@ -150,7 +151,7 @@
                 "title": "Input F1 Mode",
                 "address": 12,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 5,
                 "enum_titles": [
                     "push button",
@@ -177,7 +178,7 @@
                 "title": "Input F2 Mode",
                 "address": 13,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 5,
                 "enum_titles": [
                     "push button",
@@ -204,7 +205,7 @@
                 "title": "Input F3 Mode",
                 "address": 14,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 5,
                 "enum_titles": [
                     "push button",
@@ -231,12 +232,9 @@
                 "title": "Restore Last Outputs State After Power On",
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [ 0, 1 ],
+                "enum": [0, 1],
                 "default": 0,
-                "enum_titles": [
-                    "no",
-                    "yes"
-                ],
+                "enum_titles": ["no", "yes"],
                 "group": "outputs",
                 "order": 1
             },
@@ -250,7 +248,7 @@
             }
         },
 
-        "channels": [  
+        "channels": [
             {
                 "name": "P1 Counter",
                 "reg_type": "input",
@@ -265,6 +263,7 @@
                 "address": 312,
                 "type": "value",
                 "format": "u32",
+                "min": 0,
                 "enabled": false,
                 "group": "counters"
             },
@@ -282,6 +281,7 @@
                 "address": 314,
                 "type": "value",
                 "format": "u32",
+                "min": 0,
                 "enabled": false,
                 "group": "counters"
             },
@@ -305,7 +305,7 @@
                 "address": 40,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_s1"
@@ -316,7 +316,6 @@
                 "address": 1,
                 "type": "switch",
                 "group": "input_s2"
-                
             },
             {
                 "name": "S2 Counter",
@@ -331,7 +330,7 @@
                 "address": 42,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_s2"
@@ -342,7 +341,6 @@
                 "address": 2,
                 "type": "switch",
                 "group": "input_s3"
-                
             },
             {
                 "name": "S3 Counter",
@@ -357,7 +355,7 @@
                 "address": 44,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_s3"
@@ -382,7 +380,7 @@
                 "address": 46,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_f1"
@@ -407,7 +405,7 @@
                 "address": 48,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_f2"
@@ -432,7 +430,7 @@
                 "address": 50,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_f3"
@@ -484,7 +482,62 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
-        
+        ],
+        "translations": {
+            "ru": {
+                "WB-MWAC (Water consumption and leak monitoring Modbus-module)": "WB-MWAC (Modbus-модуль контроля протечек и расхода воды )",
+                "Counters": "Счетчики",
+                "Input S1": "Вход S1",
+                "Input S2": "Вход S2",
+                "Input S3": "Вход S3",
+                "Input F1": "Вход F1",
+                "Input F2": "Вход F2",
+                "Input F3": "Вход F3",
+                "Outputs": "Выходы",
+                "HW Info": "Данные Модуля",
+                "Input S1 Mode": "Вход S1: Режим Работы",
+                "Input S2 Mode": "Вход S2: Режим Работы",
+                "Input S3 Mode": "Вход S3: Режим Работы",
+                "Input F1 Mode": "Вход F1: Режим Работы",
+                "Input F2 Mode": "Вход F2: Режим Работы",
+                "Input F3 Mode": "Вход F3: Режим Работы",
+                "push button": "кнопка без фиксации",
+                "latching switch": "переключатель с фиксацией",
+                "turn off all outputs": "отключить все выходы",
+                "control disabled": "управление отключено",
+                "operate according to mapping-matix": "управлять согласно mapping-матрицы",
+                "operate according to mapping-matix, repeat action in 20 min if input still activated": "управлять согласно mapping-матрицы; повторить действие через 20 мин., если вход все еще активирован",
+                "Input S1 Debounce (ms)": "Вход S1: Время Защиты От Дребезга (мс)",
+                "Input S2 Debounce (ms)": "Вход S2: Время Защиты От Дребезга (мс)",
+                "Input S3 Debounce (ms)": "Вход S3: Время Защиты От Дребезга (мс)",
+                "Input F1 Debounce (ms)": "Вход F1: Время Защиты От Дребезга (мс)",
+                "Input F2 Debounce (ms)": "Вход F2: Время Защиты От Дребезга (мс)",
+                "Input F3 Debounce (ms)": "Вход F3: Время Защиты От Дребезга (мс)",
+                "Restore Last Outputs State After Power On": "Восстанавливать Состояния Выходов При Включении",
+                "no": "нет",
+                "yes": "да",
+                "Safety Timer (s)": "Таймаут Безопасного Режима (сек.)",
+                "P1 Counter": "Счетчик P1",
+                "P1 Counter Offset": "Начальное Значение P1",
+                "P2 Counter": "Счетчик P2",
+                "P2 Counter Offset": "Начальное Значение P2",
+                "S1 Counter": "S1 Счетчик",
+                "S2 Counter": "S2 Счетчик",
+                "S3 Counter": "S3 Счетчик",
+                "F1 Counter": "F1 Счетчик",
+                "F2 Counter": "F2 Счетчик",
+                "F3 Counter": "F3 Счетчик",
+                "S1 Freq": "S1 Частота",
+                "S2 Freq": "S2 Частота",
+                "S3 Freq": "S3 Частота",
+                "F4 Freq": "F4 Частота",
+                "F5 Freq": "F5 Частота",
+                "F6 Freq": "F6 Частота",
+                "Alarm": "Авария",
+                "Serial": "Серийный номер",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы (сек.)"
+            }
+        }
     }
 }
