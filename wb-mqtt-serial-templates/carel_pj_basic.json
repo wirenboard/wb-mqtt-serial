@@ -38,6 +38,11 @@
                 "title": "Setpoint",
                 "id": "setpoint",
                 "order": 6
+            },
+            {
+                "title": "Control",
+                "id": "control",
+                "order": 7
             }
         ],
 
@@ -64,7 +69,6 @@
                 "address": 426,
                 "reg_type": "holding",
                 "description": " unit: hours",
-                "type": "value",
                 "default": 8,
                 "min": 0,
                 "max": 24
@@ -74,7 +78,6 @@
                 "title": "Maximum Defrost Duration (dP)",
                 "reg_type": "holding",
                 "address": 430,
-                "type": "value",
                 "default": 30,
                 "min": 1,
                 "max": 99,
@@ -85,7 +88,6 @@
                 "title": "Dripping Time After Defrost (dd)",
                 "reg_type": "holding",
                 "address": 431,
-                "type": "value",
                 "description": "unit: minutes",
                 "min": 0,
                 "max": 15,
@@ -153,7 +155,6 @@
                 "title": "Minimum Compressor Off Time (c2)",
                 "reg_type": "holding",
                 "address": 419,
-                "type": "value",
                 "description": "unit: minutes",
                 "min": 0,
                 "max": 99,
@@ -247,7 +248,6 @@
                 "reg_type": "holding",
                 "group": "alarms",
                 "address": 423,
-                "type": "value",
                 "format": "s16",
                 "description": "unit: minute. Indicates after how many minutes the temperature alarm is signalled from when it is detected. If the temperature, after the delay Ad, is within the allowed limits, the alarm is not signalled.",
                 "min": 0,
@@ -302,7 +302,6 @@
                 "reg_type": "holding",
                 "group": "compressor_fan",
                 "address": 424,
-                "type": "value",
                 "format": "u16",
                 "min": 1,
                 "max": 99,
@@ -314,7 +313,6 @@
                 "title": "Evaporator Fan On Time (F5)",
                 "reg_type": "holding",
                 "address": 418,
-                "type": "value",
                 "group": "compressor_fan",
                 "format": "u16",
                 "min": 1,
@@ -328,7 +326,6 @@
                 "reg_type": "holding",
                 "group": "compressor_fan",
                 "address": 417,
-                "type": "value",
                 "format": "u16",
                 "min": 1,
                 "max": 99,
@@ -445,30 +442,33 @@
                 "address": 27,
                 "type": "switch"
             },
-
+            {
+                "name": "Carel serial address",
+                "reg_type": "input",
+                "group": "status",
+                "address": 420,
+                "type": "value"
+            },
             {
                 "name": "Defrost command",
                 "reg_type": "coil",
+                "group": "control",
                 "address": 24,
                 "type": "switch"
             },
             {
-                "name": "ON-OFF command",
+                "name": "OFF-ON command",
                 "reg_type": "coil",
+                "group": "control",
                 "address": 31,
                 "type": "switch"
             },
             {
                 "name": "Continuous cycle command",
                 "reg_type": "coil",
+                "group": "control",
                 "address": 20,
                 "type": "switch"
-            },
-            {
-                "name": "Serial address",
-                "reg_type": "input",
-                "address": 420,
-                "type": "value"
             },
 
             {
@@ -505,7 +505,7 @@
                 "address": 410,
                 "type": "temperature",
                 "scale": 0.1,
-                "precision": 0.1,
+                "round_to": 0.1,
                 "format": "s16"
             }
         ]
