@@ -347,7 +347,9 @@
                 "group": "control",
                 "reg_type": "coil",
                 "address": 36,
-                "type": "switch"
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1
             },
             {
                 "name": "Buzzer Inhibition",
