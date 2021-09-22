@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.34.2) stable; urgency=medium
+
+  * Fixed the description Poll interval
+  * Changed the caption Enable poll
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Wed, 22 Sep 2021 23:27:00 +0400
+ 
 wb-mqtt-serial (2.34.1) stable; urgency=medium
 
   * Error message about duplicate device addresses is updated
