@@ -75,7 +75,7 @@
                 "enum_titles": [
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_0",
                 "order": 1
@@ -101,7 +101,7 @@
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_1",
                 "order": 1
@@ -127,7 +127,7 @@
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_2",
                 "order": 1
@@ -153,7 +153,7 @@
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_3",
                 "order": 1
@@ -179,7 +179,7 @@
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_4",
                 "order": 1
@@ -205,7 +205,7 @@
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_5",
                 "order": 1
@@ -231,7 +231,7 @@
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_6",
                 "order": 1
@@ -538,7 +538,7 @@
                 "latching switch": "переключатель с фиксацией",
                 "turn off all outputs": "отключить все выходы",
                 "control disabled": "управление отключено",
-                "operate according to mapping-matix": "управлять согласно mapping-матрицы",
+                "operate according to mapping-matrix": "управлять согласно mapping-матрицы",
                 "Input 0 Debounce (ms)": "Время защиты от дребезга входа 0 (мс)",
                 "Input 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",
                 "Input 2 Debounce (ms)": "Время защиты от дребезга входа 2 (мс)",
@@ -549,21 +549,21 @@
                 "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
                 "no": "нет",
                 "yes": "да",
-                "Safety Timer (s)": "Таймаут безопасного режима (сек.)",
-                "Input 0 counter": "Счетчик входа 0",
-                "Input 1 counter": "Счетчик входа 1",
-                "Input 2 counter": "Счетчик входа 2",
-                "Input 3 counter": "Счетчик входа 3",
-                "Input 4 counter": "Счетчик входа 4",
-                "Input 5 counter": "Счетчик входа 5",
-                "Input 6 counter": "Счетчик входа 6",
-                "Input 0 freq": "Частота входа 0",
-                "Input 1 freq": "Частота входа 1",
-                "Input 2 freq": "Частота входа 2",
-                "Input 3 freq": "Частота входа 3",
-                "Input 4 freq": "Частота входа 4",
-                "Input 5 freq": "Частота входа 5",
-                "Input 6 freq": "Частота входа 6",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "Input 0 counter": "Счетчик срабатываний входа 0",
+                "Input 1 counter": "Счетчик срабатываний входа 1",
+                "Input 2 counter": "Счетчик срабатываний входа 2",
+                "Input 3 counter": "Счетчик срабатываний входа 3",
+                "Input 4 counter": "Счетчик срабатываний входа 4",
+                "Input 5 counter": "Счетчик срабатываний входа 5",
+                "Input 6 counter": "Счетчик срабатываний входа 6",
+                "Input 0 freq": "Частота срабатываний входа 0",
+                "Input 1 freq": "Частота срабатываний входа 1",
+                "Input 2 freq": "Частота срабатываний входа 2",
+                "Input 3 freq": "Частота срабатываний входа 3",
+                "Input 4 freq": "Частота срабатываний входа 4",
+                "Input 5 freq": "Частота срабатываний входа 5",
+                "Input 6 freq": "Частота срабатываний входа 6",
                 "Serial": "Уникальный идентификатор",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)"
