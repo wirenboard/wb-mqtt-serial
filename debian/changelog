@@ -1,6 +1,8 @@
 wb-mqtt-serial (2.32.0) stable; urgency=medium
 
+  * Templates for refrigerator controllers:
   * Template for Eliwell-IDPlus-9xx was added
+  * Add template for Carel PJ Easy and Carel PJ Basic
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Sat, 14 Aug 2021 14:06:34 +0300
 
