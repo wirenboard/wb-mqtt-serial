@@ -513,7 +513,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MR6C_template_title": "WB-MR6C (v.1, v.2), WB-MR6LV/x, WB-MR6HV/x (6-channel relay Modbus-module)",
+                "WB-MR6C_template_title": "WB-MR6C (v.1, v.2), WB-MR6LV/x, WB-MR6HV/x (6-channel relay Modbus module)",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
