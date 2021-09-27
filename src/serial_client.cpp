@@ -21,18 +21,14 @@ namespace
     };
     typedef std::shared_ptr<TSerialPollEntry> PSerialPollEntry;
 
-    std::string MakeChannelNamesString(const std::list<PRegister>& regs)
+    Metrics::TPollItem ToMetricsPollItem(const std::string& device, const std::list<PRegister>& regs)
     {
-        std::stringstream ss;
-        bool addComma = false;
+        Metrics::TPollItem res;
+        res.Device = device;
         for (const auto& reg: regs) {
-            if (addComma) {
-                ss << ", ";
-            }
-            ss << reg->GetChannelName();
-            addComma = true;
+            res.Controls.push_back(reg->GetChannelName());
         }
-        return ss.str();
+        return res;
     }
 };
 
@@ -144,7 +140,7 @@ void TSerialClient::DoFlush()
         if (!handler->NeedToFlush())
             continue;
         PrepareToAccessDevice(handler->Device());
-        Metrics.StartPoll(handler->Device()->DeviceConfig()->Id + "/Command");
+        Metrics.StartPoll({handler->Device()->DeviceConfig()->Id, "Command"});
         auto flushRes = handler->Flush();
         Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
         if (handler->CurrentErrorState() != TRegisterHandler::WriteError && handler->CurrentErrorState() != TRegisterHandler::ReadWriteError) {
@@ -209,7 +205,7 @@ std::list<PRegisterRange> TSerialClient::PollRange(PRegisterRange range)
 {
     PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
-    Metrics.StartPoll(dev->DeviceConfig()->Id + "/" + MakeChannelNamesString(range->RegisterList()));
+    Metrics.StartPoll(ToMetricsPollItem(dev->DeviceConfig()->Id, range->RegisterList()));
     std::list<PRegisterRange> newRanges = dev->ReadRegisterRange(range);
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
     for (auto& reg: range->RegisterList()) {
@@ -277,7 +273,7 @@ void TSerialClient::OpenPortCycle()
                     }
 
                     if (device->HasSetupItems()) {
-                        Metrics.StartPoll(device->DeviceConfig()->Id + "/Setup items");
+                        Metrics.StartPoll({device->DeviceConfig()->Id, "Setup items"});
                         auto wrote = device->WriteSetupRegisters();
                         statuses.insert(wrote ? ST_OK : ST_UNKNOWN_ERROR);
                     }

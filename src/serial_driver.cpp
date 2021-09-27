@@ -14,10 +14,17 @@ using namespace WBMQTT;
 
 namespace
 {
-    Json::Value MakeLoadItem(const std::string& channel, const Metrics::TMetrics::TResult& value)
+    Json::Value MakeLoadItem(const Metrics::TPollItem& pollItem, const Metrics::TMetrics::TResult& value)
     {
         Json::Value item;
-        item["name"] = channel;
+        auto& names = item["names"];
+        if (pollItem.Controls.empty()) {
+            names.append(pollItem.Device);
+        } else {
+            for (const auto& c: pollItem.Controls) {
+                names.append(pollItem.Device + "/" + c);
+            }
+        }
         item["bl"] = StringFormat("%.2f", value.BusLoad.Minute * 100.0);
         item["bl15"] = StringFormat("%.2f", value.BusLoad.FifteenMinutes * 100.0);
         item["i50"] = value.Histogram.P50.count();

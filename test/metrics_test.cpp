@@ -11,52 +11,52 @@ TEST(TMetricsTest, BusLoad)
     ASSERT_TRUE(m.GetBusLoad(t).empty());
 
     // Unfinished request
-    m.StartPoll("test", t);
+    m.StartPoll({"test"}, t);
     t += std::chrono::seconds(6);
     auto bl = m.GetBusLoad(t);
     ASSERT_EQ(bl.size(), 1);
-    ASSERT_EQ(bl.begin()->first, "test");
+    ASSERT_EQ(bl.begin()->first.Device, "test");
     ASSERT_DOUBLE_EQ(bl.begin()->second.Minute, 1);
     ASSERT_DOUBLE_EQ(bl.begin()->second.FifteenMinutes, 1);
 
     // Second request
-    m.StartPoll("test2", t);
+    m.StartPoll({"test2"}, t);
     t += std::chrono::seconds(6);
     bl = m.GetBusLoad(t);
     ASSERT_EQ(bl.size(), 2);
-    ASSERT_DOUBLE_EQ(bl["test"].Minute, 0.5);
-    ASSERT_DOUBLE_EQ(bl["test"].FifteenMinutes, 0.5);
-    ASSERT_DOUBLE_EQ(bl["test2"].Minute, 0.5);
-    ASSERT_DOUBLE_EQ(bl["test2"].FifteenMinutes, 0.5);
+    ASSERT_DOUBLE_EQ(bl[{"test"}].Minute, 0.5);
+    ASSERT_DOUBLE_EQ(bl[{"test"}].FifteenMinutes, 0.5);
+    ASSERT_DOUBLE_EQ(bl[{"test2"}].Minute, 0.5);
+    ASSERT_DOUBLE_EQ(bl[{"test2"}].FifteenMinutes, 0.5);
 
     // 2 chunks
-    m.StartPoll("test3", t);
+    m.StartPoll({"test3"}, t);
     t += std::chrono::seconds(60);
     bl = m.GetBusLoad(t);
     ASSERT_EQ(bl.size(), 3);
-    ASSERT_DOUBLE_EQ(bl["test"].Minute, 6.0/72.0);
-    ASSERT_DOUBLE_EQ(bl["test"].FifteenMinutes, 6.0/72.0);
-    ASSERT_DOUBLE_EQ(bl["test2"].Minute, 6.0/72.0);
-    ASSERT_DOUBLE_EQ(bl["test2"].FifteenMinutes, 6.0/72.0);
-    ASSERT_DOUBLE_EQ(bl["test3"].Minute, 60.0/72.0);
-    ASSERT_DOUBLE_EQ(bl["test3"].FifteenMinutes, 60.0/72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test"}].Minute, 6.0/72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test"}].FifteenMinutes, 6.0/72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test2"}].Minute, 6.0/72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test2"}].FifteenMinutes, 6.0/72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test3"}].Minute, 60.0/72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test3"}].FifteenMinutes, 60.0/72.0);
 
     // More than 15 minutes
-    m.StartPoll("test4", t);
+    m.StartPoll({"test4"}, t);
     t += std::chrono::minutes(15);
     bl = m.GetBusLoad(t);
     ASSERT_EQ(bl.size(), 1);
-    ASSERT_DOUBLE_EQ(bl["test4"].Minute, 1);
-    ASSERT_DOUBLE_EQ(bl["test4"].FifteenMinutes, 1);
+    ASSERT_DOUBLE_EQ(bl[{"test4"}].Minute, 1);
+    ASSERT_DOUBLE_EQ(bl[{"test4"}].FifteenMinutes, 1);
 
-    m.StartPoll("test", t);
+    m.StartPoll({"test"}, t);
     t += std::chrono::seconds(12);
     bl = m.GetBusLoad(t);
     ASSERT_EQ(bl.size(), 2);
-    ASSERT_DOUBLE_EQ(bl["test"].Minute, 12.0/(60.0 + 12.0 + 12.0));
-    ASSERT_DOUBLE_EQ(bl["test"].FifteenMinutes, 12.0/(14 * 60.0 + 12.0 + 12.0));
-    ASSERT_DOUBLE_EQ(bl["test4"].Minute, (60.0 + 12.0) / (60.0 + 12.0 + 12.0));
-    ASSERT_DOUBLE_EQ(bl["test4"].FifteenMinutes, (14 * 60.0 + 12.0) / (14 * 60.0 + 12.0 + 12.0));
+    ASSERT_DOUBLE_EQ(bl[{"test"}].Minute, 12.0/(60.0 + 12.0 + 12.0));
+    ASSERT_DOUBLE_EQ(bl[{"test"}].FifteenMinutes, 12.0/(14 * 60.0 + 12.0 + 12.0));
+    ASSERT_DOUBLE_EQ(bl[{"test4"}].Minute, (60.0 + 12.0) / (60.0 + 12.0 + 12.0));
+    ASSERT_DOUBLE_EQ(bl[{"test4"}].FifteenMinutes, (14 * 60.0 + 12.0) / (14 * 60.0 + 12.0 + 12.0));
 }
 
 TEST(TMetricsTest, PollInterval)

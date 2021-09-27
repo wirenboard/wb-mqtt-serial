@@ -12,6 +12,23 @@ namespace
     const size_t MaxPollIntervalsChunks = 2;
 }
 
+Metrics::TPollItem::TPollItem(const std::string& device): Device(device)
+{}
+
+Metrics::TPollItem::TPollItem(const std::string& device, const std::string& control)
+    : Device(device)
+{
+    Controls.push_back(control);
+}
+
+bool Metrics::TPollItem::operator<(const Metrics::TPollItem& item) const
+{
+    if (Device == item.Device) {
+        return Controls < item.Controls;
+    }
+    return Device < item.Device;
+}
+
 void Metrics::TPollIntervalMetric::RotateChunks()
 {
     Intervals.emplace_front();
@@ -85,48 +102,48 @@ void Metrics::TBusLoadMetric::RotateChunks()
 
 void Metrics::TBusLoadMetric::AddInterval(microseconds interval)
 {
-    auto res = Intervals.front().emplace(Channel, interval);
+    auto res = Intervals.front().emplace(PollItem, interval);
     if (!res.second) {
         res.first->second += interval;
     }
 }
 
-void Metrics::TBusLoadMetric::StartPoll(const string& channel, steady_clock::time_point time)
+void Metrics::TBusLoadMetric::StartPoll(const TPollItem& pollItem, steady_clock::time_point time)
 {
     // First call
     if (IntervalStartTime == steady_clock::time_point()) {
         IntervalStartTime = time;
-        ChannelStartPollTime = time;
-        Channel = channel;
+        StartPollTime     = time;
+        PollItem          = pollItem;
         Intervals.emplace_front();
         return;
     }
 
     // Add mising intervals if channel poll start time is after last measured time interval
     while (IntervalStartTime + IntervalDuration < time) {
-        AddInterval(IntervalDuration - duration_cast<microseconds>(ChannelStartPollTime - IntervalStartTime));
+        AddInterval(IntervalDuration - duration_cast<microseconds>(StartPollTime - IntervalStartTime));
         IntervalStartTime += IntervalDuration;
-        ChannelStartPollTime = IntervalStartTime;
+        StartPollTime      = IntervalStartTime;
         RotateChunks();
     }
 
-    if (time >= ChannelStartPollTime) {
-        AddInterval(duration_cast<microseconds>(time - ChannelStartPollTime));
-        ChannelStartPollTime = time;
-        Channel = channel;
+    if (time >= StartPollTime) {
+        AddInterval(duration_cast<microseconds>(time - StartPollTime));
+        StartPollTime = time;
+        PollItem = pollItem;
     }
 }
 
-map<string, Metrics::TBusLoad> Metrics::TBusLoadMetric::GetBusLoad(steady_clock::time_point time)
+map<Metrics::TPollItem, Metrics::TBusLoad> Metrics::TBusLoadMetric::GetBusLoad(steady_clock::time_point time)
 {
-    map<string, TBusLoad> res;
+    map<TPollItem, TBusLoad> res;
     if (Intervals.empty()) {
         return res;
     }
 
-    StartPoll(Channel, time); // Adjust intervals
+    StartPoll(PollItem, time); // Adjust intervals
 
-    auto lastInterval = duration_cast<microseconds>(ChannelStartPollTime - IntervalStartTime);
+    auto lastInterval = duration_cast<microseconds>(StartPollTime - IntervalStartTime);
     auto fullInterval = (Intervals.size() - 1) * IntervalDuration + lastInterval;
     if (Intervals.size() > 1) {
         lastInterval += IntervalDuration;
@@ -143,16 +160,16 @@ map<string, Metrics::TBusLoad> Metrics::TBusLoadMetric::GetBusLoad(steady_clock:
     return res;
 }
 
-void Metrics::TMetrics::StartPoll(const string& channel, chrono::steady_clock::time_point time)
+void Metrics::TMetrics::StartPoll(const Metrics::TPollItem& pollItem, chrono::steady_clock::time_point time)
 {
     unique_lock<mutex> lk(Mutex);
-    BusLoad.StartPoll(channel, time);
-    PollIntervals[channel].Poll(time);
+    BusLoad.StartPoll(pollItem, time);
+    PollIntervals[pollItem].Poll(time);
 }
 
-map<string, Metrics::TMetrics::TResult> Metrics::TMetrics::GetBusLoad(chrono::steady_clock::time_point time)
+map<Metrics::TPollItem, Metrics::TMetrics::TResult> Metrics::TMetrics::GetBusLoad(chrono::steady_clock::time_point time)
 {
-    map<string, TResult> res;
+    map<TPollItem, TResult> res;
     unique_lock<mutex> lk(Mutex);
     auto bl = BusLoad.GetBusLoad(time);
     for (auto it = PollIntervals.begin(); it != PollIntervals.end(); ++it) {
