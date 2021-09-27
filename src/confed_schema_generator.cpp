@@ -154,7 +154,6 @@ namespace
         r["default"]["name"] = channelTemplate["name"].asString();
         r["options"]["wb"]["disable_title"] = true;
         r["default"]["enabled"] = true;
-        r["default"]["poll_interval"] = static_cast<Json::Int>(DefaultPollInterval.count());
         SetIfExists(r["default"], "enabled", channelTemplate, "enabled");
         SetIfExists(r["default"], "poll_interval", channelTemplate, "poll_interval");
         return r;
@@ -349,7 +348,6 @@ namespace
                 v["name"] = channel["name"];
                 v["enabled"] = true;
                 SetIfExists(v, "enabled", channel, "enabled");
-                v["poll_interval"] = static_cast<Json::Int>(DefaultPollInterval.count());
                 SetIfExists(v, "poll_interval", channel, "poll_interval");
             }
             r["minItems"] = defaults.size();
@@ -589,11 +587,24 @@ namespace
         }
     }
 
-    void AppendDeviceSchemas(Json::Value& devicesArray, Json::Value& definitions, TTemplateMap& templates, TSerialDeviceFactory& deviceFactory)
+    void AddTranslations(Json::Value& translations, const Json::Value& deviceSchema)
+    {
+        const auto& tr = deviceSchema["translations"];
+        for (auto it = tr.begin(); it != tr.end(); ++ it) {
+            AppendParams(translations[it.name()], *it);
+        }
+    }
+
+    void AppendDeviceSchemas(Json::Value& devicesArray,
+                             Json::Value& definitions,
+                             Json::Value& translations,
+                             TTemplateMap& templates,
+                             TSerialDeviceFactory& deviceFactory)
     {
         for (const auto& t: templates.GetTemplatesOrderedByName()) {
             try {
                 AddDeviceUISchema(*t, deviceFactory, devicesArray, definitions);
+                AddTranslations(translations, t->Schema);
             } catch (const std::exception& e) {
                 LOG(Error) << "Can't load template for '" << t->Title << "': " << e.what();
             }
@@ -681,7 +692,7 @@ Json::Value MakeSchemaForConfed(const Json::Value& configSchema, TTemplateMap& t
     // Let's add to #/definitions/device/oneOf a list of devices generated from templates
     if (res["definitions"]["device"].isMember("oneOf")) {
         Json::Value newArray(Json::arrayValue);
-        AppendDeviceSchemas(newArray, res["definitions"], templates, deviceFactory);
+        AppendDeviceSchemas(newArray, res["definitions"], res["translations"], templates, deviceFactory);
         for (auto& item: res["definitions"]["device"]["oneOf"]) {
             newArray.append(item);
         }

@@ -23,10 +23,11 @@ struct TDeviceChannel : public TDeviceChannelConfig
 
     std::string Describe() const
     {
-        if (Name != MqttId) {
-            return "channel '" + Name + "' (MQTT control '" + MqttId + "') of device '" + DeviceId + "'";
+        const auto& name = GetName();
+        if (name != MqttId) {
+            return "channel '" + name + "' (MQTT control '" + MqttId + "') of device '" + DeviceId + "'";
         }
-        return "channel '" + Name + "' of device '" + DeviceId + "'";
+        return "channel '" + name + "' of device '" + DeviceId + "'";
     }
 
     void UpdateError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& error);

@@ -266,6 +266,10 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
         args.SetPrecision(channel->Precision);
     }
 
+    for (const auto& tr: channel->GetTitles()) {
+        args.SetTitle(tr.second, tr.first);
+    }
+
     return args;
 }
 

@@ -1,0 +1,36 @@
+{
+    "device_type": "with translations",
+    "device": {
+        "name": "with translations",
+        "id": "with translations",
+        "channels": [
+            {
+                "name": "English temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "setup": [
+            {
+                "title": "s2",
+                "address": 9992,
+                "value": "0xfff2"
+            },
+            {
+                "title": "s3",
+                "address": 9995,
+                "value": 10,
+                "scale": 2
+            }
+        ],
+        "translations": {
+            "en": {
+                "with translations": "English translations"
+            },
+            "ru": {
+                "English temperature": "Температура"
+            }
+        }
+    }
+}

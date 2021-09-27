@@ -29,7 +29,7 @@
         "guard_interval_us": {
           "type": "integer",
           "title": "Guard interval (us)",
-          "description": "Specifies the delay in microseconds between reads / writes to port",
+          "description": "guard_interval_description",
           "minimum": 0,
           "default": 0,
           "propertyOrder": 9,
@@ -40,7 +40,7 @@
         "poll_interval": {
           "type": "integer",
           "title": "Poll interval (ms)",
-          "description" : "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
+          "description" : "poll_interval_description",
           "minimum": 0,
           "default": 20,
           "propertyOrder": 10,
@@ -165,7 +165,7 @@
         "connection_timeout_ms": {
           "type": "integer",
           "title": "Connection timeout (ms)",
-          "description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
+          "description": "connection_timeout_description",
           "minimum": -1,
           "default": 5000,
           "propertyOrder": 5
@@ -238,7 +238,7 @@
       }
     },
     "port": {
-      "headerTemplate": "Port {{self.port_type| }}{{self.path}}{{self.address}} {{self.port}}",
+      "headerTemplate": "port_header_template",
       "title": "Port",
       "oneOf": [
         { "$ref": "#/definitions/serialPort" },
@@ -307,7 +307,7 @@
               "default": false,
               "readOnly": true,
               "options": {
-                "enum_titles": ["Requests are sent without specifing exact id of the device. Use the mode if only one device is connected"]
+                "enum_titles": ["broadcast_description"]
               }
             }
           ],
@@ -346,7 +346,7 @@
         "poll_interval": {
           "type": "integer",
           "title": "Poll interval (ms)",
-          "description" : "This option specifies the desired interval between two consecutive polls of the channel",
+          "description" : "poll_interval_description",
           "minimum": 0,
           "default": 20,
           "propertyOrder": 7
@@ -400,7 +400,7 @@
         "frame_timeout_ms": {
           "type": "integer",
           "title": "Frame timeout (ms)",
-          "description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
+          "description": "frame_timeout_description",
           "minimum": -1,
           "default": -1,
           "propertyOrder": 107
@@ -408,7 +408,7 @@
         "response_timeout_ms": {
           "type": "integer",
           "title": "Response timeout (ms)",
-          "description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
+          "description": "response_timeout_description",
           "minimum": -1,
           "default": -1,
           "propertyOrder": 108
@@ -416,7 +416,7 @@
         "device_timeout_ms": {
           "type": "integer",
           "title": "Device timeout (ms)",
-          "description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
+          "description": "device_timeout_description",
           "minimum": -1,
           "default": 3000,
           "propertyOrder": 109
@@ -424,7 +424,7 @@
         "device_max_fail_cycles": {
           "type": "integer",
           "title": "Device max fail cycles",
-          "description": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
+          "description": "device_max_fail_cycles_desc",
           "minimum": -1,
           "default": 2,
           "propertyOrder": 110
@@ -564,7 +564,7 @@
         "poll_interval": {
           "type": "integer",
           "title": "Poll interval (ms)",
-          "description" : "This option specifies the desired interval between two consecutive polls of the channel",
+          "description" : "poll_interval_description",
           "minimum": 0,
           "default": 20,
           "propertyOrder": 15
@@ -692,7 +692,7 @@
         "poll_interval": {
           "type": "integer",
           "title": "Poll interval (ms)",
-          "description" : "This option specifies the desired interval between two consecutive polls of the channel",
+          "description" : "poll_interval_description",
           "minimum": 0,
           "default": 20,
           "propertyOrder": 7
@@ -761,12 +761,16 @@
           "type": "integer",
           "title": "Poll interval (ms)",
           "minimum": 0,
-          "default": 20,
+          "default": -1,
           "options": {
+            "inputAttributes": {
+              "placeholder": "inherited from device and port"
+            },
             "dependencies": {
               "enabled": true
             }
-          }
+          },
+          "_format": "siWb"
         }
       }
     },
@@ -1517,7 +1521,7 @@
     "max_unchanged_interval" : {
       "type" : "integer",
       "title" : "Unchanged value posting interval",
-      "description" : "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
+      "description" : "max_unchanged_interval_desc",
       "default" : -1,
       "propertyOrder" : 3
     }
@@ -1535,5 +1539,168 @@
     "toJSON": ["wb-mqtt-serial", "-j"],
     "fromJSON": ["wb-mqtt-serial", "-J"],
     "validate": false
+  },
+
+  "translations": {
+    "en": {
+      "poll_interval_description": "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
+      "guard_interval_description": "Specifies the delay in microseconds before writing to the port",
+      "connection_timeout_description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
+      "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
+      "port_header_template": "{{if self.port_type==\"serial\"}}Serial port{{endif}}{{if self.port_type==undefined}}Serial port{{endif}}{{if self.port_type==\"tcp\"}}Port TCP{{endif}}{{if self.port_type==\"modbus tcp\"}}Port MODBUS TCP{{endif}} {{self.path}}{{self.address}} {{self.port}}",
+      "broadcast_description": "Requests are sent without specifying exact id of the device. Use the mode if only one device is connected",
+      "frame_timeout_description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
+      "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
+      "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
+      "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
+      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
+    },
+    "ru": {
+      "Enable port": "Включить порт",
+      "Response timeout (ms)": "Таймаут ответа (мс)",
+      "Zero means no timeout. If not set, the default timeout (500ms) is used.": "Ноль - без таймаута. Таймаут по умолчанию 500мс",
+      "Guard interval (us)": "Задержка перед записью в порт (мкс)",
+      "guard_interval_description": "",
+      "Poll interval (ms)": "Период опроса (мс)",
+      "poll_interval_description": "Задаёт задержку в микросекундах между последовательными опросами канала. Не влияет на запись в порт. Запись производится сразу как только возможно",
+      "Devices attached to the port": "Устройства, подключенные к порту",
+      "Serial port": "Последовательный порт",
+      "Port type": "Тип порта",
+      "serial": "последовательный",
+      "Path to device": "Путь до устройства",
+      "Baud rate": "Скорость обмена",
+      "Parity": "Контроль чётности",
+      "Data bits": "Число бит данных",
+      "Stop bits": "Стоп биты",
+      "IPv4 address or hostname of device": "IPv4 адрес или доменное имя устройства",
+      "TCP port number": "Номер TCP порта",
+      "Connection timeout (ms)": "Таймаут подключения (мс)",
+      "connection_timeout_description": "Используется для определения потери связи. По умолчанию 5000мс. -1 запрещает автоматическое переподключение при потере связи.",
+      "Connection max fail cycles": "Максимальное число неудачных переподключений",
+      "connection_max_fail_description": "Задаёт максимальное число неудачных переподключений для всех устройств, после которого будет произведён сброс соединения. По умолчанию 2. -1 запрещает переподключения.",
+      "Serial over TCP": "Передача пакетов через TCP",
+      "port_header_template": "{{if self.port_type==\"serial\"}}Последовательный порт{{endif}}{{if self.port_type==undefined}}Последовательный порт{{endif}}{{if self.port_type==\"tcp\"}}Порт TCP{{endif}}{{if self.port_type==\"modbus tcp\"}}Порт MODBUS TCP{{endif}} {{self.path}}{{self.address}} {{self.port}}",
+      "Port": "Порт",
+      "Slave id of the device": "Адрес устройства",
+      "decimal or hex": "десятичное или шестнадцатеричное значение",
+      "decimal (e.g. 123) or hex (e.g. 0xAF)": "десятичное (например, 123) или шестнадцатеричное (например, 0xAF)",
+      "Should be decimal or hex": "Должно быть задано десятичное или шестнадцатеричное значение",
+      "decimal": "десятичное значение",
+      "Slave id of the device or broadcast mode": "Адрес устройства или широковещательный режим",
+      "decimal or hex slave id": "адрес в десятичном или шестнадцатеричном виде",
+      "decimal slave id": "адрес в десятичном виде",
+      "broadcast": "широковещательные сообщения",
+      "broadcast_description": "Запросы будут отправляться без указания адреса устройства. Используйте этот режим, если подключено только одно устройство",
+      "Device name to be displayed in UI": "",
+      "Device name": "Название устройства",
+      "Enable device": "Опрашивать устройство",
+      "MQTT id of the device": "Идентификатор устройства в MQTT",
+      "Used as part of the topic": "Используется как часть топика в MQTT",
+      "Password as a list of bytes": "Пароль в виде массива байт",
+      "Access level": "Уровень доступа",
+      "Max dummy read register count": "Максимальное число считываемых промежуточных регистров",
+      "Max dummy read bit count": "Максимальное число считываемых промежуточных бит",
+      "Maximum number of registers in a single bulk read request": "Максимальное число регистров, считываемых за один запрос",
+      "Additional delay before each writing to port (us)": "Дополнительная задержка перед записью в порт (мкс)",
+      "Frame timeout (ms)": "Задержка между сообщениями (мс)",
+      "Device timeout (ms)": "Время ожидания устройства (мс)",
+      "Device max fail cycles": "Максимальное число неудачных циклов опроса",
+      "frame_timeout_description": "Задаёт минимальную задержку между сообщениями. В некоторых протоколах это значение используется для определения границ сообщений.",
+      "response_timeout_description": "Задаёт максимальное время ответа устройства. По умолчанию 500 мс. Если соответствующий параметр порта больше, то используется значение порта.",
+      "device_timeout_description": "Задаёт время ожидания устройства. По умолчанию 3000 мс. Запрещает переподключение, если установлено -1.",
+      "device_max_fail_cycles_desc": "Число неудачных циклов опроса устройства после которых оно считается отключенным. По умолчанию 2. Запрещает переподключение, если установлено -1.",
+      "Setup command": "Команда настройки",
+      "Command name": "Название команды",
+      "Used for logging/debugging purposes only": "Используется только для диагностических сообщений",
+      "Address": "Адрес",
+      "Register index (0-65535 in case of Modbus)": "Номер регистра (0-65535 для Modbus)",
+      "Value": "Значение",
+      "Enabled": "Включено",
+      "MQTT id of the channel": " Идентификатор канала в MQTT",
+      "Scale (value multiplier)": "Множитель",
+      "Value offset": "Смещение",
+      "Round to": "Точность",
+      "Read-only": "Только для чтения",
+      "'On' value": "Значение включенного состояния",
+      "Value corresponding to the 'On' state of the switch": "Значение, которое соответствует включенному состоянию переключателя",
+      "'Off' value": "Значение выключенного состояния",
+      "Value corresponding to the 'Off' state of the switch": "Значение, которое соответствует выключенному состоянию переключателя",
+      "Value displayed = round((value read * scale) + offset) / round_to) * round_to": "Отображаемое значение = округление((прочитанное значение * множитель) + смещение) / точность) * точность",
+      "Error value": "Значение ошибки",
+      "Value which should be treated as read error": "Значение, которое сигнализирует об ошибке в устройстве",
+      "Unsupported register value": "Признак неподдерживаемого регистра",
+      "Value which should be treated as 'register is unsupported by device'": "Значение сигнализирующее о том, что устройство не поддерживает данный регистр",
+      "Compound register": "Составной регистр",
+      "A list of subregisters": "Список вложенных регистров",
+      "Channel": "Канал",
+      "Channels": "Каналы",
+      "Enable poll": "Включить опрос",
+      "Parameter": "Параметр",
+      "Subregister": "Вложенный регистр",
+      "Control name": "Название канала",
+      "This name is displayed both in UI and used as part of MQTT topic": "Отображается в интерфейсе и используется как часть топика в MQTT",
+      "Control type": "Тип канала",
+      "Defaults to 'switch' for coils and discrete inputs, 'text' for others": "По умолчанию используется switch для дискретных выходов и входов, для остальных - текст",
+      "Register type": "Тип регистра",
+      "Format": "Формат",
+      "Signed 16-bit integer": "16-битное целое со знаком",
+      "Unsigned 16-bit integer": "16-битное целое без знака", 
+      "Signed 8-bit integer": "8-битное целое со знаком",
+      "Unsigned 8-bit integer": "8-битное целое без знака",
+      "Signed 24-bit integer": "24-битное целое со знаком",
+      "Unsigned 24-bit integer": "24-битное целое без знака",
+      "Signed 32-bit integer": "32-битное целое со знаком",
+      "Unsigned 32-bit integer": "32-битное целое без знака",
+      "Signed 64-bit integer": "64-битное целое со знаком",
+      "Unsigned 64-bit integer": "64-битное целое без знака",
+      "IEEE754 32-bit float": "32-битное число с плавающей запятой (IEEE754)",
+      "IEEE754 64-bit float (double)": "64-битное число с плавающей запятой (IEEE754)",
+      "8-bit ASCII char": "8-битный символ ASCII",
+      "16-bit Word Order": "Порядок 16-битных слов",
+      "bits": "биты",
+      "address:offset:bitwidth": "адрес:смещение:число бит",
+      "Address should be decimal or hex, offset and bitwidth separated by ':'": "Адрес должен быть задан в десятичном или шестнадцатеричном виде. Смещение и число бит отделены двоеточием",
+      "OBIS code": "Код OBIS",
+      "OBIS code should contain 6 numbers separated by dots (X.X.X.X.X.X)": "Код OBIS должен состоять из 6 чисел, разделённых точками",
+      "Custom channels": "Каналы, заданные пользователем",
+      "DLMS client address": "Адрес клиента DLMS",
+      "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator": "16 - публичный клиент (по умолчанию), 32 - считыватель показаний СПОДЭС, 48 - конфигуратор СПОДЭС", 
+      "Unchanged value posting interval": "Интервал публикации неизменившихся значений",
+      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
+      "List of ports": "Список портов",
+      "Enable debug logging": "Включить отладочные сообщения",
+      "Custom Modbus IO device": "Произвольное устройство с протоколом Modbus IO",
+      "Custom Modbus device": "Произвольное устройство с протоколом Modbus",
+      "Custom Energomera device with IEC 61107 Mode C protocol": "Произвольный счётчик Энергомера с протоколом IEC 61107 Mode C",
+      "Custom Energomera device with IEC 61107 fast read support": "Произвольный счётчик Энергомера с поддержкой быстрого чтения по протоколу IEC 61107",
+      "Custom Neva device": "Произвольный счётчик Нева",
+      "Custom LLS device": "Произвольное устройство с протоколом LLS",
+      "Custom Mercury 200 device": "Произвольное устройство с протоколом счётчика Меркурий 200",
+      "Custom Pulsar device": "Произвольное устройство с протоколом Пульсар",
+      "Custom S2K device": "Произвольное устройство с протоколом С2000",
+      "Custom IVTM device": "Произвольное устройство с протоколом ИВТМ",
+      "Custom Mercury 230 device": "Произвольное устройство с протоколом счётчика Меркурий 230",
+      "Custom Milur device": "Произвольное устройство с протоколом счётчика Милур",
+      "Custom UNIEL device": "Произвольное устройство с протоколом UNIEL",
+      "Custom DLMS device": "Произвольное устройство с протоколом DLMS/СПОДЭС",
+      "Custom setup commands": "Произвольные команды настройки",
+      "Motor type": "Тип двигателя",
+      "DLMS authentication mode": "Режим аутентификации DLMS",
+      "no authentication": "без аутентификации",
+      "low": "слабый",
+      "high": "сильный",
+      "high, password is hashed with MD5": "сильный с хэшированием MD5",
+      "high, password is hashed with SHA1": "сильный с хэшированием SHA1",
+      "high, password is hashed with GMAC": "сильный с хэшированием GMAC",
+      "high, password is hashed with SHA-256": "сильный с хэшированием SHA-256",
+      "high, password is hashed with ECDSA": "сильный с хэшированием ECDSA",
+      "DLMS interface": "Интерфейс DLMS",
+      "TCP/IP or UDP wrapper, can be used with devices that support IEC 62056-47": "TCP/IP или UDP, может использоваться с устройствами, поддерживающими IEC 62056-47",
+      "plain PDU": "PDU без модификации",
+      "Wi-SUN FAN mesh network": "Wi-SUN FAN mesh-сеть",
+      "Device": "Устройство",
+      "Byte": "Байт",
+      "inherited from device and port": "из настроек устройства и порта"
+    }
   }
 }

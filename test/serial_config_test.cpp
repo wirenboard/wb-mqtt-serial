@@ -4,7 +4,9 @@
 #include "serial_config.h"
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
+#include "confed_schema_generator.h"
 #include "file_utils.h"
+#include "test_utils.h"
 #include "fake_serial_device.h"
 
 using namespace std;
@@ -62,7 +64,12 @@ class TConfigParserTest: public TLoggedFixture
                         for (auto device_channel: device_config->DeviceChannelConfigs) {
                             TTestLogIndent indent(*this);
                             Emit() << "------";
-                            Emit() << "Name: " << device_channel->Name;
+                            Emit() << "Name: " << device_channel->GetName();
+                            for (const auto it: device_channel->GetTitles()) {
+                                if (it.first != "en") {
+                                    Emit() << "Name " << it.first << ": " << it.second;
+                                }
+                            }
                             Emit() << "Type: " << device_channel->Type;
                             Emit() << "MqttId: " << device_channel->MqttId;
                             Emit() << "DeviceId: " << device_channel->DeviceId;
@@ -186,7 +193,8 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
         auto mergedConfig(MergeDeviceConfigWithTemplate(deviceConfig, deviceType, templateMap.GetTemplate(deviceType).Schema));
-        ASSERT_EQ(JSON::Parse(GetDataFilePath("parser_test/merge_template_res" + to_string(i) + ".json")), mergedConfig) << i;
+        auto res(JSON::Parse(GetDataFilePath("parser_test/merge_template_res" + to_string(i) + ".json"))); 
+        ASSERT_TRUE(JsonsMatch(res, mergedConfig)) << i;
     }
 }
 
@@ -195,4 +203,46 @@ TEST_F(TConfigParserTest, ProtocolParametersSchemaRef)
     for( const auto& name: DeviceFactory.GetProtocolNames()) {
         ASSERT_FALSE(DeviceFactory.GetCommonDeviceSchemaRef(name).empty()) << name;
     }
+}
+
+class TConfedSchemaTest: public TLoggedFixture 
+{
+    protected:
+        TSerialDeviceFactory DeviceFactory;
+        Json::Value          ConfigSchema;
+
+        void SetUp()
+        {
+            ConfigSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+            RegisterProtocols(DeviceFactory);
+        }
+
+        bool IncludesParameters(const Json::Value& v1, const Json::Value& v2)
+        {
+            for (auto lvl1 = v2.begin(); lvl1 != v2.end(); ++lvl1) {
+                for (auto lvl2 = lvl1->begin(); lvl2 != lvl1->end(); ++lvl2) {
+                    if (v1[lvl1.name()][lvl2.name()] != *lvl2) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+};
+
+TEST_F(TConfedSchemaTest, MergeTranslations)
+{
+    TTemplateMap templateMap(GetDataFilePath("device-templates/"),
+                             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
+                                                       ConfigSchema));
+
+    ConfigSchema["translations"]["en"]["test translation"] = "test";
+    ConfigSchema["translations"]["ru"]["test translation"] = "Тест";
+
+    auto schema = MakeSchemaForConfed(ConfigSchema, templateMap, DeviceFactory);
+    ASSERT_TRUE(IncludesParameters(schema["translations"], ConfigSchema["translations"]));
+
+    auto deviceTemplate = WBMQTT::JSON::Parse(GetDataFilePath("device-templates/config-translations.json"));
+    ASSERT_FALSE(deviceTemplate["device"]["translations"].empty());
+    ASSERT_TRUE(IncludesParameters(schema["translations"], deviceTemplate["device"]["translations"]));
 }
