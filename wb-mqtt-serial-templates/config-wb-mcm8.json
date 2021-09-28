@@ -1,4 +1,5 @@
 {
+    "title": "WB-MCM8_template_title",
     "device_type": "WB-MCM8",
     "device": {
         "name": "WB-MCM8",
@@ -368,7 +369,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Supply voltage",
+                "name": "Supply Voltage",
                 "reg_type": "input",
                 "address": 121,
                 "type": "voltage",
@@ -384,6 +385,65 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-MCM8_template_title": "WB-MCM8 (8-channel pulse counter Modbus module)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MCM8_template_title": "WB-MCM8 (8-канальный Modbus-модуль счетных входов)",
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "Input 3": "Вход 3",
+                "Input 4": "Вход 4",
+                "Input 5": "Вход 5",
+                "Input 6": "Вход 6",
+                "Input 7": "Вход 7",
+                "Input 8": "Вход 8",
+                "General": "Общие настройки",
+                "HW Info": "Данные модуля",
+                "Input 0 Mode": "Режим работы входа 0",
+                "Input 1 Mode": "Режим работы входа 1",
+                "Input 2 Mode": "Режим работы входа 2",
+                "Input 3 Mode": "Режим работы входа 3",
+                "Input 4 Mode": "Режим работы входа 4",
+                "Input 5 Mode": "Режим работы входа 5",
+                "Input 6 Mode": "Режим работы входа 6",
+                "push button": "кнопка без фиксации",
+                "latching switch": "переключатель с фиксацией",
+                "turn off all outputs": "отключить все выходы",
+                "control disabled": "управление отключено",
+                "operate according to mapping-matrix": "управлять согласно mapping-матрицы",
+                "Input 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",
+                "Input 2 Debounce (ms)": "Время защиты от дребезга входа 2 (мс)",
+                "Input 3 Debounce (ms)": "Время защиты от дребезга входа 3 (мс)",
+                "Input 4 Debounce (ms)": "Время защиты от дребезга входа 4 (мс)",
+                "Input 5 Debounce (ms)": "Время защиты от дребезга входа 5 (мс)",
+                "Input 6 Debounce (ms)": "Время защиты от дребезга входа 6 (мс)",
+                "Input 7 Debounce (ms)": "Время защиты от дребезга входа 7 (мс)",
+                "Input 8 Debounce (ms)": "Время защиты от дребезга входа 8 (мс)",
+                "Input 1 counter": "Счетчик срабатываний входа 1",
+                "Input 2 counter": "Счетчик срабатываний входа 2",
+                "Input 3 counter": "Счетчик срабатываний входа 3",
+                "Input 4 counter": "Счетчик срабатываний входа 4",
+                "Input 5 counter": "Счетчик срабатываний входа 5",
+                "Input 6 counter": "Счетчик срабатываний входа 6",
+                "Input 7 counter": "Счетчик срабатываний входа 7",
+                "Input 8 counter": "Счетчик срабатываний входа 8",
+                "Input 1 freq": "Частота срабатываний входа 1",
+                "Input 2 freq": "Частота срабатываний входа 2",
+                "Input 3 freq": "Частота срабатываний входа 3",
+                "Input 4 freq": "Частота срабатываний входа 4",
+                "Input 5 freq": "Частота срабатываний входа 5",
+                "Input 6 freq": "Частота срабатываний входа 6",
+                "Input 7 freq": "Частота срабатываний входа 7",
+                "Input 8 freq": "Частота срабатываний входа 8",
+                "Reset all counters": "Сбросить все счетчики",
+                "Serial": "Уникальный идентификатор",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }
