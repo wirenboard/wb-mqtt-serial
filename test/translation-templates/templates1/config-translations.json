@@ -1,0 +1,17 @@
+//no translations
+{
+    "device_type": "with translations",
+    "title": "with translations",
+    "device": {
+        "name": "with translations",
+        "id": "with translations",
+        "channels": [
+            {
+                "name": "English temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ]
+    }
+}
