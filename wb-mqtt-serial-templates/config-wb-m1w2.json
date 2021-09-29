@@ -1,4 +1,5 @@
 {
+    "title": "WB-M1W2_template_title",
     "device_type": "WB-M1W2",
     "device": {
         "name": "WB-M1W2",
@@ -22,7 +23,8 @@
 
         "parameters": {
             "temperature_readings_filter_deg": {
-                "title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
+                "title": "temperature_readings_filter_deg_title",
+                "description": "temperature_readings_filter_deg_description",
                 "address": 99,
                 "reg_type": "holding",
                 "scale": 0.0625,
@@ -115,7 +117,7 @@
                             "reg_type": "discrete",
                             "address": 16,
                             "type": "switch",
-                            "enabled": false                            
+                            "enabled": false
                         }
                     ]
                 }
@@ -213,9 +215,40 @@
             {
                 "title": "Disabled",
                 "device_type": "input_disabled",
-                "device": {
-                }
+                "device": {}
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-M1W2_template_title": "WB-M1W2 (2-channel temperature measurement Modbus module)",
+                "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
+                "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-M1W2_template_title": "WB-M1W2 (2-канальный Modbus-преобразователь для термометров 1-Wire)",
+                "General": "Общие настройки",
+                "HW Info": "Данные модуля",
+                "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
+                "temperature_readings_filter_deg_description": "Новое значение отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр",
+                "RS-485 Response Delay (ms)": "Задержка перед отправкой ответного пакета по RS-485 (мс)",
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "1-Wire": "Датчик 1-Wire",
+                "External Sensor 1": "Датчик температуры 1",
+                "External Sensor 1 OK": "Датчик температуры 1 исправен",
+                "External Sensor 2": "Датчик температуры 2",
+                "External Sensor 2 OK": "Датчик температуры 2 исправен",
+                "Discrete Input": "Дискретный вход",
+                "Discrete Input 1": "Дискретный вход 1",
+                "Counter 1": "Счетчик срабатываний входа 1",
+                "Discrete Input 2": "Дискретный вход 2",
+                "Counter 2": "Счетчик срабатываний входа 2",
+                "Serial NO": "Уникальный идентификатор",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "Disabled": "Отключен"
+            }
+        }
     }
 }
