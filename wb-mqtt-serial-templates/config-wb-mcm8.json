@@ -369,7 +369,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Supply Voltage",
+                "name": "Supply voltage",
                 "reg_type": "input",
                 "address": 121,
                 "type": "voltage",
