@@ -1,0 +1,61 @@
+//translated title and channel name
+{
+    "device_type": "with translations",
+    "title": "with translations",
+    "device": {
+        "name": "with translations",
+        "id": "with translations",
+        "channels": [
+            {
+                "name": "English temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": {
+            "param1": {
+                "title": "p22",
+                "address": 9992,
+                "enum": [1, 2],
+                "enum_titles": ["one", "two" ]
+            }
+        },
+        "groups": [
+            {
+                "title": "Group 1",
+                "id": "group1"
+            }
+        ],
+        "subdevices": [
+            {
+                "device_type": "subdevice1",
+                "title": "Sub1",
+                "device": {
+                    "channels": [
+                        {
+                            "name": "c11",
+                            "reg_type": "input",
+                            "format": "s32",
+                            "address": "0x0501"
+                        }
+                    ]
+                }
+            }
+        ],
+        "translations": {
+            "en": {
+                "with translations": "English title translation",
+                "English temperature": "English temperature tr"
+            },
+            "ru": {
+                "with translations": "Перевод",
+                "English temperature": "Температура",
+                "p22": "Параметр",
+                "one": "Один",
+                "Group 1": "Группа 1",
+                "Sub1": "Часть 1"
+            }
+        }
+    }
+}

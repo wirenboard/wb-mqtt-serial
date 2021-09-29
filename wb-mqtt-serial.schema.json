@@ -747,15 +747,23 @@
       "type": "object",
       "properties": {
         "name": {
+          "type": "string",
+          "options": {
+            "hidden": true
+          }
+        },
+        "title": {
           "title": "Parameter",
           "type": "string",
-          "readOnly": true
+          "_format": "info",
+          "propertyOrder": 2
         },
         "enabled": {
           "type": "boolean",
           "title": "Enable poll",
           "default": true,
-          "_format": "checkbox"
+          "_format": "checkbox",
+          "propertyOrder": 1
         },
         "poll_interval": {
           "type": "integer",
@@ -770,7 +778,8 @@
               "enabled": true
             }
           },
-          "_format": "siWb"
+          "_format": "siWb",
+          "propertyOrder": 3
         }
       }
     },
