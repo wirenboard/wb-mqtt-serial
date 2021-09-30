@@ -34,12 +34,12 @@ TEST(TMetricsTest, BusLoad)
     t += std::chrono::seconds(60);
     bl = m.GetBusLoad(t);
     ASSERT_EQ(bl.size(), 3);
-    ASSERT_DOUBLE_EQ(bl[{"test"}].Minute, 6.0/72.0);
-    ASSERT_DOUBLE_EQ(bl[{"test"}].FifteenMinutes, 6.0/72.0);
-    ASSERT_DOUBLE_EQ(bl[{"test2"}].Minute, 6.0/72.0);
-    ASSERT_DOUBLE_EQ(bl[{"test2"}].FifteenMinutes, 6.0/72.0);
-    ASSERT_DOUBLE_EQ(bl[{"test3"}].Minute, 60.0/72.0);
-    ASSERT_DOUBLE_EQ(bl[{"test3"}].FifteenMinutes, 60.0/72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test"}].Minute, 6.0 / 72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test"}].FifteenMinutes, 6.0 / 72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test2"}].Minute, 6.0 / 72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test2"}].FifteenMinutes, 6.0 / 72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test3"}].Minute, 60.0 / 72.0);
+    ASSERT_DOUBLE_EQ(bl[{"test3"}].FifteenMinutes, 60.0 / 72.0);
 
     // More than 15 minutes
     m.StartPoll({"test4"}, t);
@@ -53,10 +53,26 @@ TEST(TMetricsTest, BusLoad)
     t += std::chrono::seconds(12);
     bl = m.GetBusLoad(t);
     ASSERT_EQ(bl.size(), 2);
-    ASSERT_DOUBLE_EQ(bl[{"test"}].Minute, 12.0/(60.0 + 12.0 + 12.0));
-    ASSERT_DOUBLE_EQ(bl[{"test"}].FifteenMinutes, 12.0/(14 * 60.0 + 12.0 + 12.0));
+    ASSERT_DOUBLE_EQ(bl[{"test"}].Minute, 12.0 / (60.0 + 12.0 + 12.0));
+    ASSERT_DOUBLE_EQ(bl[{"test"}].FifteenMinutes, 12.0 / (14 * 60.0 + 12.0 + 12.0));
     ASSERT_DOUBLE_EQ(bl[{"test4"}].Minute, (60.0 + 12.0) / (60.0 + 12.0 + 12.0));
     ASSERT_DOUBLE_EQ(bl[{"test4"}].FifteenMinutes, (14 * 60.0 + 12.0) / (14 * 60.0 + 12.0 + 12.0));
+
+    // Several controls
+    Metrics::TPollItem pi("test3");
+    for (size_t i = 0; i < 3; ++i) {
+        pi.Controls.push_back("control" + std::to_string(i));
+    }
+    m.StartPoll(pi, t);
+    t += std::chrono::minutes(14);
+    bl = m.GetBusLoad(t);
+    ASSERT_EQ(bl.size(), 3);
+    ASSERT_DOUBLE_EQ(bl[{"test"}].Minute, 0.0);
+    ASSERT_DOUBLE_EQ(bl[{"test"}].FifteenMinutes, 12.0 / (14 * 60.0 + 12.0 + 12.0));
+    ASSERT_DOUBLE_EQ(bl[{"test4"}].Minute, 0.0);
+    ASSERT_DOUBLE_EQ(bl[{"test4"}].FifteenMinutes, 12.0 / (14 * 60.0 + 12.0 + 12.0));
+    ASSERT_DOUBLE_EQ(bl[pi].Minute, 1);
+    ASSERT_DOUBLE_EQ(bl[pi].FifteenMinutes, (14 * 60.0) / (14 * 60.0 + 12.0 + 12.0));
 }
 
 TEST(TMetricsTest, PollInterval)
