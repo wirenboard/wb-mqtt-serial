@@ -1,7 +1,7 @@
 wb-mqtt-serial (2.38.0) stable; urgency=medium
 
   * Device template translations are made unique.
-    Translations from one template will note be used for strings from other template.
+    Translations from one template will not be used for strings from other template.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 05 Oct 2021 11:05:36 +0500
 
