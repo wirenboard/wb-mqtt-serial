@@ -10,6 +10,7 @@
 #include "register_handler.h"
 #include "binary_semaphore.h"
 #include "log.h"
+#include "metrics.h"
 
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
@@ -19,7 +20,8 @@ public:
 
     TSerialClient(const std::vector<PSerialDevice>& devices,
                   PPort port,
-                  const TPortOpenCloseLogic::TSettings& openCloseSettings);
+                  const TPortOpenCloseLogic::TSettings& openCloseSettings,
+                  Metrics::TMetrics& metrics);
     TSerialClient(const TSerialClient& client) = delete;
     TSerialClient& operator=(const TSerialClient&) = delete;
     ~TSerialClient();
@@ -69,6 +71,7 @@ private:
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout  ConnectLogger;
+    Metrics::TMetrics&  Metrics;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;
