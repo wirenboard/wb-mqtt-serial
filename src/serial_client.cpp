@@ -254,7 +254,7 @@ void TSerialClient::OpenPortCycle()
                     //       The whole EndSession/GetIsDisconnected logic should be revised
                     try {
                         if (LastAccessedDevice && LastAccessedDevice != device ) {
-                            Metrics.StartPoll(LastAccessedDevice->DeviceConfig()->Id);
+                            Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "End session"});
                             LastAccessedDevice->EndSession();
                         }
                     } catch ( const TSerialDeviceException& e) {
@@ -265,7 +265,7 @@ void TSerialClient::OpenPortCycle()
                     // Force Prepare() (i.e. start session)
                     try {
                         LastAccessedDevice = device;
-                        Metrics.StartPoll(LastAccessedDevice->DeviceConfig()->Id);
+                        Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "Start session"});
                         device->Prepare();
                     } catch ( const TSerialDeviceException& e) {
                         LOG(Debug) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
@@ -427,7 +427,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
     if (dev != LastAccessedDevice) {
         if (LastAccessedDevice) {
             try {
-                Metrics.StartPoll(LastAccessedDevice->DeviceConfig()->Id);
+                Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "End session"});
                 LastAccessedDevice->EndSession();
             } catch ( const TSerialDeviceException& e) {
                 auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
@@ -436,7 +436,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
         }
         LastAccessedDevice = dev;
         try {
-            Metrics.StartPoll(dev->DeviceConfig()->Id);
+            Metrics.StartPoll({dev->DeviceConfig()->Id, "Start session"});
             dev->Prepare();
         } catch ( const TSerialDeviceException& e) {
             auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
