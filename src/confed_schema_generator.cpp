@@ -28,6 +28,13 @@ namespace
         const std::string& DeviceType;
         Json::Value&       Translations;
 
+        /**
+         * @brief Calculate hash from msg and DeviceType.
+         *        Add msg in "en" translations list with calculated hash as key
+         * 
+         * @param msg message to add to translations list
+         * @return std::string key of msg in translations list
+         */
         std::string AddHashedTranslation(const std::string& msg)
         {
             auto hash = GetTranslationHash(DeviceType, msg);
