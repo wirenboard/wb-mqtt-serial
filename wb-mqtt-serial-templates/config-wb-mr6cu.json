@@ -1,4 +1,5 @@
 {
+    "title": "WB-MR6CU_template_title",
     "device_type": "WB-MR6CU",
     "device": {
         "name": "WB-MR6CU",
@@ -34,12 +35,9 @@
                 "title": "Restore Last Outputs State After Power On",
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [ 0, 1 ],
+                "enum": [0, 1],
                 "default": 0,
-                "enum_titles": [
-                    "no",
-                    "yes"
-                ],
+                "enum_titles": ["no", "yes"],
                 "group": "outputs",
                 "order": 1
             },
@@ -121,8 +119,46 @@
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
             }
-        ]        
-
+        ],
+        "translations": {
+            "en": {
+                "WB-MR6CU_template_title": "WB-MR6CU v.2, WB-MRPS6 (6-channel relay)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MR6CU_template_title": "WB-MR6CU v.2, WB-MRPS6 (6-канальный модуль реле)",
+                "Outputs": "Выходы",
+                "HW Info": "Данные модуля",
+                "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
+                "no": "нет",
+                "yes": "да",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК"
+            }
+        }
     }
 }

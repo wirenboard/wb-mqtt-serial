@@ -1,4 +1,5 @@
 {
+    "title": "WB-MAP6S-fw2_template_title",
     "device_type": "WB-MAP6S fw2",
     "device": {
         "name": "WB-MAP6S fw2",
@@ -701,6 +702,58 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel enegry meter)",
+                "Supply voltage": "5V Supply",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (многоканальный счетчик электроэнергии)",
+                "Channel 1": "Канал 1",
+                "Channel 2": "Канал 2",
+                "Channel 3": "Канал 3",
+                "Channel 4": "Канал 4",
+                "Channel 5": "Канал 5",
+                "Channel 6": "Канал 6",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Turns 1": "Коэффициент трансформации 1",
+                "Phi 1": "Фазовая задержка 1",
+                "Turns 2": "Коэффициент трансформации 2",
+                "Phi 2": "Фазовая задержка 2",
+                "Turns 3": "Коэффициент трансформации 3",
+                "Phi 3": "Фазовая задержка 3",
+                "Turns 4": "Коэффициент трансформации 4",
+                "Phi 4": "Фазовая задержка 4",
+                "Turns 5": "Коэффициент трансформации 5",
+                "Phi 5": "Фазовая задержка 5",
+                "Turns 6": "Коэффициент трансформации 6",
+                "Phi 6": "Фазовая задержка 6",
+                "AP energy 1": "Энергия AP 1",
+                "RP energy 1": "Энергия RP 1",
+                "Phase angle 1": "Угол фазового сдвига 1",
+                "AP energy 2": "Энергия AP 2",
+                "RP energy 2": "Энергия RP 2",
+                "Phase angle 2": "Угол фазового сдвига 2",
+                "AP energy 3": "Энергия AP 3",
+                "RP energy 3": "Энергия RP 3",
+                "Phase angle 3": "Угол фазового сдвига 3",
+                "AP energy 4": "Энергия AP 4",
+                "RP energy 4": "Энергия RP 4",
+                "Phase angle 4": "Угол фазового сдвига 4",
+                "AP energy 5": "Энергия AP 5",
+                "RP energy 5": "Энергия RP 5",
+                "Phase angle 5": "Угол фазового сдвига 5",
+                "AP energy 6": "Энергия AP 6",
+                "RP energy 6": "Энергия RP 6",
+                "Phase angle 6": "Угол фазового сдвига 6",
+                "Frequency": "Частота",
+                "Serial": "Серийный номер",
+                "Supply voltage": "Напряжение 5 В",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }

@@ -1,7 +1,8 @@
 {
+    "title": "WB-MRM2-mini-NC_template_title",
     "device_type": "WB-MRM2-mini-NC",
     "device": {
-        "name": "WB-MRM2-mini-NC",
+        "name": "WB-MRM2-mini/NC",
         "id": "wb-mrm2-mini-nc",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
@@ -44,14 +45,14 @@
                 "title": "Button 1 Mode",
                 "address": 9,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn on all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "button_1",
                 "order": 1
@@ -70,14 +71,14 @@
                 "title": "Button 2 Mode",
                 "address": 10,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn on all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "button_2",
                 "order": 1
@@ -96,12 +97,9 @@
                 "title": "Restore Last Outputs State After Power On",
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [ 0, 1 ],
+                "enum": [0, 1],
                 "default": 0,
-                "enum_titles": [
-                    "no",
-                    "yes"
-                ],
+                "enum_titles": ["no", "yes"],
                 "group": "outputs",
                 "order": 1
             },
@@ -136,7 +134,7 @@
                 "address": 40,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "button_1"
@@ -161,7 +159,7 @@
                 "address": 42,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "button_2"
@@ -209,8 +207,63 @@
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
             }
-        ]        
-
+        ],
+        "translations": {
+            "en": {
+                "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-channel relay)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-канальный модуль реле)",
+                "Button 1": "Вход 1",
+                "Button 2": "Вход 2",
+                "Outputs": "Выходы",
+                "HW Info": "Данные модуля",
+                "Button 1 Mode": "Режим работы входа 1",
+                "Button 2 Mode": "Режим работы входа 2",
+                "push button": "кнопка без фиксации",
+                "latching switch": "переключатель с фиксацией",
+                "turn off all outputs": "отключить все выходы",
+                "control disabled": "управление отключено",
+                "operate according to mapping-matrix": "управлять по mapping-матрице",
+                "Button 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",
+                "Button 2 Debounce (ms)": "Время защиты от дребезга входа 2 (мс)",
+                "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
+                "no": "нет",
+                "yes": "да",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "Button 1 counter": "Счетчик срабатываний входа 1",
+                "Button 2 counter": "Счетчик срабатываний входа 2",
+                "Button 1 freq": "Частота срабатываний входа 1",
+                "Button 2 freq": "Частота срабатываний входа 2",
+                "Relay 1": "K1",
+                "Relay 2": "K2",
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК"
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 {
+    "title": "WB-MS-v2_template_title",
     "device_type": "WB-MS v.2",
     "device": {
         "name": "WB-MS v.2",
@@ -48,6 +49,7 @@
             },
             "selfheating_compensation_deg": {
                 "title": "Self-Heating Compensation (°C)",
+                "description": "selfheating_compensation_deg_description",
                 "address": 245,
                 "reg_type": "holding",
                 "format": "s16",
@@ -65,7 +67,8 @@
                 "order": 1
             },
             "temperature_readings_filter_deg": {
-                "title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
+                "title": "temperature_readings_filter_deg_title",
+                "description": "temperature_readings_filter_deg_description",
                 "address": 99,
                 "reg_type": "holding",
                 "scale": 0.0625,
@@ -110,13 +113,6 @@
                 "address": 11,
                 "type": "concentration",
                 "error_value": "0xFFFF",
-                "group": "air_quality"
-            },
-            {
-                "name": "VOC Baseline",
-                "reg_type": "input",
-                "address": 106,
-                "enabled": false,
                 "group": "air_quality"
             },
             {
@@ -212,6 +208,13 @@
                 "reg_type": "input",
                 "address": 107,
                 "error_value": "0xFFFF",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "VOC Baseline",
+                "reg_type": "input",
+                "address": 106,
                 "enabled": false,
                 "group": "debug"
             },
@@ -348,9 +351,58 @@
             {
                 "title": "Disabled",
                 "device_type": "input_disabled",
-                "device": {
-                }
+                "device": {}
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-MS-v2_template_title": "WB-MS v.2 (Modbus sensor)",
+                "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
+                "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",
+                "selfheating_compensation_deg_description": "Compensation value is subtracted from measured temperature",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MS-v2_template_title": "WB-MS v.2 (универсальный Modbus-датчик)",
+                "Air Quality": "Параметры воздуха",
+                "Illuminance": "Освещенность",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "TH Sensor Heater Enabled": "Включить подогрев датчика TH",
+                "no": "нет",
+                "yes": "да",
+                "Self-Heating Compensation (°C)": "Компенсация самонагрева (°C)",
+                "selfheating_compensation_deg_description": "Значение компенсации вычитается из измеренной температуры",
+                "Low-pass Filter Time Constant (ms)": "Время усреднения освещенности (мс)",
+                "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
+                "temperature_readings_filter_deg_description": "Новое значение отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр",
+                "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Temperature": "Температура",
+                "Humidity": "Влажность",
+                "Air Quality (VOC)": "Качество воздуха (VOC)",
+                "VOC Baseline": "Смещение уровня VOC",
+                "Serial": "Серийный номер",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "Disabled": "Отключен",
+                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "VOC Version": "Версия датчика VOC",
+                "VOC Raw": "Сырое значение датчика VOC",
+                "Illuminance Mode": "Режим измерения освещенности",
+                "Successful TH Readings": "Успешные запросы к датчику TH",
+                "Erroneous TH Readings": "Ошибочные запросы к датчику TH",
+                "1-Wire": "Датчик 1-Wire",
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "External Sensor 1": "Датчик температуры 1",
+                "External Sensor 2": "Датчик температуры 2",
+                "Discrete Input": "Дискретный вход",
+                "Input 1 Counter": "Счетчик срабатываний входа 1",
+                "Input 2 Counter": "Счетчик срабатываний входа 2"
+            }
+        }
     }
 }
