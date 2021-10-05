@@ -11,21 +11,21 @@
 			"reg_type": "coil",
 			"address": "0x2",
 			"type": "switch",
-			"channel_readonly": 1
+			"channel_readonly": true
 		},
 		{
 			"name": "Preheater",
 			"reg_type": "coil",
 			"address": "0xC",
 			"type": "switch",
-			"channel_readonly": 1
+			"channel_readonly": true
 		},
 		{
 			"name": "Heater",
 			"reg_type": "coil",
 			"address": "0xE",
 			"type": "switch",
-			"channel_readonly": 1
+			"channel_readonly": true
 		},
 		{
 			"name": "Speed",
@@ -102,7 +102,7 @@
 			"reg_type": "coil",
 			"address": "0xD",
 			"type": "switch",
-			"channel_readonly": 1
+			"channel_readonly": true
 		}
 		]
 	}
