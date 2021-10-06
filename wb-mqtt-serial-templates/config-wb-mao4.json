@@ -198,7 +198,7 @@
         "translations": {
             "en": {
                 "WB-MAO4_template_title": "WB-MAO4 (4-channel analog outputs Modbus module)",
-                "pwm_frequency_factor_description": "Used in PWM mode to adjust the modulation frequency by the formula: 24 kHz / Factor ",
+                "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / Factor ",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -217,7 +217,7 @@
                 "PWM 10 V": "ШИМ с амплитудой 10 В",
                 "Analog 0-10 V": "аналоговый режим 0-10 В",
                 "PWM Frequency Factor": "Делитель частоты ШИМ",
-                "pwm_frequency_factor_description": "Применяется в ШИМ режиме для настройки частоты модуляции по формуле: 24 кГц / делитель",
+                "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / Делитель",
                 "Input 1 counter": "Счетчик срабатываний входа 1",
                 "Input 2 counter": "Счетчик срабатываний входа 2",
                 "Input 3 counter": "Счетчик срабатываний входа 3",
