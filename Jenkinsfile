@@ -1,2 +1,3 @@
 buildDebSbuild defaultTargets: 'wb6',
-               defaultRunLintian: true
+               defaultRunLintian: true,
+               defaultStyleCheckDirs: 'src test'
