@@ -1,4 +1,5 @@
 {
+    "title": "WB-MAI11_template_title",
     "device_type": "WB-MAI11",
     "device": {
         "name": "WB-MAI11",
@@ -687,16 +688,16 @@
                 "name": "5V Output",
                 "reg_type": "input",
                 "address": "0x0600",
-                "type" : "voltage",
-                "scale" : 0.001,
+                "type": "voltage",
+                "scale": 0.001,
                 "format": "s16"
             },
             {
                 "name": "Internal Temperature",
                 "reg_type": "input",
                 "address": "0x0601",
-                "type" : "temperature",
-                "scale" : 0.01,
+                "type": "temperature",
+                "scale": 0.01,
                 "format": "s16"
             },
             {
@@ -725,7 +726,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -749,7 +753,7 @@
                             "scale": 0.000001,
                             "reg_type": "input",
                             "format": "s32",
-                            "error_value":"0x7FFFFFFF",
+                            "error_value": "0x7FFFFFFF",
                             "address": "0x0500"
                         },
                         {
@@ -757,7 +761,7 @@
                             "type": "temperature",
                             "scale": 0.1,
                             "reg_type": "input",
-                            "error_value" : "0x7fff",
+                            "error_value": "0x7fff",
                             "format": "s16",
                             "address": "0x0504"
                         }
@@ -781,7 +785,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -802,19 +809,19 @@
                             "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
-                            "enum_titles": [ "auto" ],
+                            "enum_titles": ["auto"],
                             "default": 0
                         }
                     },
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
@@ -822,7 +829,7 @@
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "address": "0x0504"
                         }
                     ]
@@ -857,7 +864,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -878,7 +888,7 @@
                             "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
-                            "enum_titles": [ "auto" ],
+                            "enum_titles": ["auto"],
                             "default": 0
                         }
                     },
@@ -889,7 +899,7 @@
                             "scale": 1e-9,
                             "reg_type": "input",
                             "format": "s32",
-                            "error_value" : "0x7FFFFFFF",
+                            "error_value": "0x7FFFFFFF",
                             "address": "0x0500"
                         }
                     ]
@@ -912,7 +922,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -945,18 +958,18 @@
                         {
                             "name": "Current",
                             "type": "current",
-                            "scale": 1E-9,
+                            "scale": 1e-9,
                             "reg_type": "input",
-                            "error_value" : "0x7FFFFFFF",
+                            "error_value": "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
                             "name": "Value",
                             "reg_type": "input",
-                            "type" : "value",
+                            "type": "value",
                             "format": "s16",
-                            "error_value" : "0x7fff",
+                            "error_value": "0x7fff",
                             "address": "0x0504"
                         }
                     ]
@@ -979,7 +992,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1012,18 +1028,18 @@
                         {
                             "name": "Current",
                             "type": "current",
-                            "scale": 1E-9,
+                            "scale": 1e-9,
                             "reg_type": "input",
-                            "error_value" : "0x7FFFFFFF",
+                            "error_value": "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
                             "name": "Value",
                             "reg_type": "input",
-                            "type" : "value",
+                            "type": "value",
                             "format": "s16",
-                            "error_value" : "0x7fff",
+                            "error_value": "0x7fff",
                             "address": "0x0504"
                         }
                     ]
@@ -1046,7 +1062,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1079,8 +1098,8 @@
                         {
                             "name": "Current",
                             "type": "current",
-                            "scale": 1E-9,
-                            "error_value" : "0x7FFFFFFF",
+                            "scale": 1e-9,
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -1088,9 +1107,9 @@
                         {
                             "name": "Value",
                             "reg_type": "input",
-                            "type" : "value",
+                            "type": "value",
                             "format": "s16",
-                            "error_value" : "0x7fff",
+                            "error_value": "0x7fff",
                             "address": "0x0504"
                         }
                     ]
@@ -1200,7 +1219,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1220,17 +1242,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1256,7 +1278,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1276,17 +1301,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1312,7 +1337,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1332,17 +1360,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1368,7 +1396,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1388,17 +1419,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1424,7 +1455,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1444,17 +1478,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1480,7 +1514,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1500,17 +1537,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1536,7 +1573,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1556,17 +1596,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1592,7 +1632,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1612,17 +1655,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1648,7 +1691,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1668,17 +1714,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1704,7 +1750,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1724,17 +1773,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1760,7 +1809,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1780,17 +1832,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1816,7 +1868,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1836,17 +1891,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1872,7 +1927,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1892,17 +1950,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1928,7 +1986,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -1948,17 +2009,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -1984,7 +2045,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -2004,17 +2068,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2040,7 +2104,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -2060,12 +2127,12 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "State",
@@ -2093,7 +2160,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -2114,7 +2184,7 @@
                             "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
-                            "enum_titles": [ "auto" ],
+                            "enum_titles": ["auto"],
                             "default": 0
                         }
                     },
@@ -2125,8 +2195,8 @@
                             "type": "resistance",
                             "format": "s32",
                             "address": "0x0500",
-                            "error_value" : "0x7FFFFFFF",
-                            "scale" : 0.01
+                            "error_value": "0x7FFFFFFF",
+                            "scale": 0.01
                         }
                     ]
                 }
@@ -2862,7 +2932,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -2882,17 +2955,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -2918,7 +2991,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -2941,9 +3017,9 @@
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "type" : "resistance",
-                            "scale" : 0.01,
-                            "error_value" : "0x7FFFFFFF"
+                            "type": "resistance",
+                            "scale": 0.01,
+                            "error_value": "0x7FFFFFFF"
                         },
                         {
                             "name": "Temperature",
@@ -2952,7 +3028,7 @@
                             "reg_type": "input",
                             "format": "s16",
                             "address": "0x0504",
-                            "error_value" : "0x7FFF"
+                            "error_value": "0x7FFF"
                         }
                     ]
                 }
@@ -2974,7 +3050,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -2994,17 +3073,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3030,7 +3109,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3050,17 +3132,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3086,7 +3168,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3106,17 +3191,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3142,7 +3227,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3162,17 +3250,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3198,7 +3286,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3218,17 +3309,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3254,7 +3345,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3274,17 +3368,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3310,7 +3404,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3330,17 +3427,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3366,7 +3463,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3386,17 +3486,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3422,7 +3522,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3442,17 +3545,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3478,7 +3581,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3498,17 +3604,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3534,7 +3640,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3554,17 +3663,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3590,7 +3699,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3610,17 +3722,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3646,7 +3758,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3666,17 +3781,17 @@
                     "channels": [
                         {
                             "name": "Resistance",
-                            "type" : "resistance",
+                            "type": "resistance",
                             "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         },
                         {
                             "name": "Temperature",
                             "type": "temperature",
-                            "error_value" : "0x7FFF",
+                            "error_value": "0x7FFF",
                             "scale": 0.1,
                             "reg_type": "input",
                             "format": "s16",
@@ -3702,7 +3817,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3735,7 +3853,7 @@
                             "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
-                            "enum_titles": [ "auto" ],
+                            "enum_titles": ["auto"],
                             "default": 0
                         }
                     },
@@ -3793,7 +3911,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3826,7 +3947,7 @@
                             "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
-                            "enum_titles": [ "auto" ],
+                            "enum_titles": ["auto"],
                             "default": 0
                         }
                     },
@@ -3858,7 +3979,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3879,7 +4003,7 @@
                             "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
-                            "enum_titles": [ "auto" ],
+                            "enum_titles": ["auto"],
                             "default": 0
                         }
                     },
@@ -3888,7 +4012,7 @@
                             "name": "Voltage",
                             "type": "voltage",
                             "scale": 0.000001,
-                            "error_value" : "0x7FFFFFFF",
+                            "error_value": "0x7FFFFFFF",
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500"
@@ -3913,7 +4037,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -3949,15 +4076,15 @@
                             "scale": 0.000001,
                             "reg_type": "input",
                             "format": "s32",
-                            "error_value" : "0x7FFFFFFF",
+                            "error_value": "0x7FFFFFFF",
                             "address": "0x0500"
                         },
                         {
                             "name": "Value",
                             "reg_type": "input",
-                            "type" : "value",
+                            "type": "value",
                             "format": "s16",
-                            "error_value" : "0x7fff",
+                            "error_value": "0x7fff",
                             "address": "0x0504"
                         }
                     ]
@@ -4034,7 +4161,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -4069,18 +4199,19 @@
                             "type": "voltage",
                             "scale": 0.000001,
                             "reg_type": "input",
-                            "error_value" : "0x7FFFFFFF",
+                            "error_value": "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
                         },
                         {
                             "name": "Value",
                             "reg_type": "input",
-                            "type" : "value",
+                            "type": "value",
                             "format": "s16",
-                            "error_value" : "0x7fff",
+                            "error_value": "0x7fff",
                             "address": "0x0504"
-                        }                    ]
+                        }
+                    ]
                 }
             },
             {
@@ -4100,7 +4231,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -4120,8 +4254,11 @@
                             "title": "Gain",
                             "order": 4,
                             "address": "0x040C",
-                            "enum": [0, 1, 2, 4, 8, 16, 32, 64, 128],
-                            "enum_titles": [ "auto" ],
+                            "enum": [
+                                0, 1, 2, 4, 8, 16, 32, 64,
+                                128
+                            ],
+                            "enum_titles": ["auto"],
                             "default": 0
                         }
                     },
@@ -4131,7 +4268,7 @@
                             "type": "voltage",
                             "scale": 0.000001,
                             "reg_type": "input",
-                            "error_value" : "0x7FFFFFFF",
+                            "error_value": "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500"
                         }
@@ -4155,7 +4292,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -4177,7 +4317,7 @@
                             "name": "Resistance",
                             "type": "resistance",
                             "reg_type": "input",
-                            "error_value" : "0x7FFFFFFF",
+                            "error_value": "0x7FFFFFFF",
                             "format": "s32",
                             "address": "0x0500",
                             "scale": 0.01
@@ -4202,7 +4342,10 @@
                             "title": "Data rate",
                             "order": 1,
                             "address": "0x0402",
-                            "enum": [20, 45, 90, 175, 330, 600, 1000]
+                            "enum": [
+                                20, 45, 90, 175, 330, 600,
+                                1000
+                            ]
                         },
                         "measurements": {
                             "title": "Number of measurements",
@@ -4223,7 +4366,7 @@
                             "order": 4,
                             "address": "0x040C",
                             "enum": [0, 1, 2, 4],
-                            "enum_titles": [ "auto" ],
+                            "enum_titles": ["auto"],
                             "default": 0
                         }
                     },
@@ -4233,7 +4376,7 @@
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale" : 0.01
+                            "scale": 0.01
                         }
                     ]
                 }
@@ -4291,7 +4434,7 @@
                         "channels_format": "list"
                     }
                 }
-            },            
+            },
             {
                 "title": "IN_P: current measurement",
                 "device_type": "p_generic_current",
@@ -4321,6 +4464,118 @@
                     }
                 }
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-MAI11_template_title": "WB-MAI11 (11-channel analog input Modbus module)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MAI11_template_title": "WB-MAI11 (11-канальный Modbus-модуль аналоговых входов)",
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "Input 3": "Вход 3",
+                "Input 4": "Вход 4",
+                "Input 5": "Вход 5",
+                "Input 6": "Вход 6",
+                "Input 7": "Вход 7",
+                "Input 8": "Вход 8",
+                "Input 9": "Вход 9",
+                "Input 10": "Вход 10",
+                "Input 11": "Вход 11",
+                "disabled": "отключен",
+                "Thermocouple type K (ТХА)": "Термопара типа K (ТХА)",
+                "NTC thermistor 10k (B = 3988 K)": "термистор NTC 10 кОм (B = 3988 K)",
+                "0-5 mA sensor": "измерение тока 0-5 мА",
+                "0-20 mA sensor": "измерение тока 0-20 мА",
+                "4-20 mA sensor": "измерение тока 4-20 мА",
+                "IN_P: 4-20 mA sensor": "Вх. P: измерение тока 4-20 мА",
+                "IN_P: 0-5 mA sensor": "Вх. P: измерение тока 0-5 мА",
+                "IN_P: 0-20 mA sensor": "Вх. P: измерение тока 0-20 мА",
+                "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "2-проводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "2-проводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "2-проводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "2-проводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD 50P (α = 0.00391 °C⁻¹)": "2-проводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 100P (α = 0.00391 °C⁻¹)": "2-проводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 500P (α = 0.00391 °C⁻¹)": "2-проводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 1000P (α = 0.00391 °C⁻¹)": "2-проводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 50M (α = 0.00428 °C⁻¹)": "2-проводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD 100M (α = 0.00428 °C⁻¹)": "2-проводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD 500M (α = 0.00428 °C⁻¹)": "2-проводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD 1000M (α = 0.00428 °C⁻¹)": "2-проводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "2-проводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
+                "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "2-проводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
+                "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "2-проводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
+                "dry contact sensor": "датчик с выходом «сухой контакт»",
+                "two-wire resistance measurement": "2-проводная схема измерение сопротивления",
+                "IN_P: dry contact sensor": "Вх. P: датчик с выходом «сухой контакт»",
+                "IN_P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
+                "IN_P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
+                "IN_P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
+                "IN_P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
+                "IN_P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
+                "IN_P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
+                "IN_P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
+                "IN_P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
+                "IN_P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
+                "IN_P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
+                "IN_P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
+                "IN_P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
+                "IN_P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
+                "IN_P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
+                "IN_P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "Вх. P: 2-проводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
+                "IN_P: two-wire resistance measurement": "Вх. P: 2-проводная схема измерения сопротивления",
+                "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "3-проводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "3-проводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "3-проводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "3-проводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD 50P (α = 0.00391 °C⁻¹)": "3-проводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 100P (α = 0.00391 °C⁻¹)": "3-проводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 500P (α = 0.00391 °C⁻¹)": "3-проводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 1000P (α = 0.00391 °C⁻¹)": "3-проводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 50M (α = 0.00428 °C⁻¹)": "3-проводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD 100M (α = 0.00428 °C⁻¹)": "3-проводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD 500M (α = 0.00428 °C⁻¹)": "3-проводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD 1000M (α = 0.00428 °C⁻¹)": "3-проводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "3-проводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
+                "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "3-проводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
+                "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "3-проводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
+                "voltage measurement from ratiometric sensor": "измерение напряжения с ратиометрического датчика",
+                "IN_P: voltage measurement from ratiometric sensor": "Вх. P: измерение напряжения с ратиометрического датчика",
+                "differential voltage measurement from ratiometric sensor": "дифф-й режим измерения напряжения с ратиометрического датчика",
+                "single-ended voltage measurement from 0 to 2 V": "измерение положительного напряжения 0-2 В",
+                "0-1V sensor": "измерение напряжения 0-1 В",
+                "IN_P: single-ended voltage measurement from 0 to 2 V": "Вх. P: измерение положительного напряжения 0-2 В",
+                "IN_P: 0-1V sensor": "Вх. P: измерение напряжения 0-1 В",
+                "-50 to 50 mV sensor": "измерение напряжения от -50 до 50 мВ",
+                "voltage measurement in differential mode from -2 to 2 V": "дифф-й режим измерения напряжения от -2 до 2 В",
+                "three-wire resistance measurement": "трехпроводная схема измерения сопротивления",
+                "resistance measurement using current measurement": "измерение сопротивления через измерение тока",
+                "IN_P: resistance measurement using current measurement": "Вх. P: измерение сопротивления через измерение тока",
+                "IN_P: NTC thermistor 10k (B = 3988 K)": "Вх. P: термистор NTC 10 кОм (B = 3988 K)",
+                "IN_P: current measurement": "Вх. P: измерение тока от 0 до 20 мА",
+                "IN_P": "Вх. P",
+                "IN_N": "Вх. N",
+                "Data rate": "Количество измерений в секунду",
+                "Number of measurements": "Количество измерений подряд",
+                "Lowpass filter time, ms": "Время усреднения сигнала (мс)",
+                "Gain": "Коэффициент усиления",
+                "Voltage": "Напряжение",
+                "Temperature": "Температура",
+                "Resistance": "Сопротивление",
+                "current measurement": "измерение тока",
+                "Current": "Ток",
+                "Percent": "Процентное значение",
+                "State": "Состояние входа",
+                "Minimum value": "Максимальное пересчитанное значение",
+                "Maximum value": "Минимальное пересчитанное значение",
+                "Value": "Пересчитанное значение",
+                "5V Output": "Напряжение на клемме 5V",
+                "Internal Temperature": "Температура внутри модуля",
+                "Serial": "Серийный номер",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }
