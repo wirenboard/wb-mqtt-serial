@@ -397,8 +397,11 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": ["time", "S5", "S4"],
+                "enum": [0, 1],
+                "enum_titles": [
+                    "non (time)",
+                    "Air (air temperature)"
+                ],
                 "group": "defrost",
                 "order": 7
             },
