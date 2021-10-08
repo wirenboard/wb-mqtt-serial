@@ -29,14 +29,30 @@ namespace IEC
     void DumpASCIIChar(std::stringstream& ss, char c)
     {
         switch (c) {
-            case SOH: ss << "<SOH>"; break;
-            case STX: ss << "<STX>"; break;
-            case ETX: ss << "<ETX>"; break;
-            case EOT: ss << "<EOT>"; break;
-            case ACK: ss << "<ACK>"; break;
-            case NAK: ss << "<NAK>"; break;
-            case '\r': ss << "<CR>"; break;
-            case '\n': ss << "<LF>"; break;
+            case SOH:
+                ss << "<SOH>";
+                break;
+            case STX:
+                ss << "<STX>";
+                break;
+            case ETX:
+                ss << "<ETX>";
+                break;
+            case EOT:
+                ss << "<EOT>";
+                break;
+            case ACK:
+                ss << "<ACK>";
+                break;
+            case NAK:
+                ss << "<NAK>";
+                break;
+            case '\r':
+                ss << "<CR>";
+                break;
+            case '\n':
+                ss << "<LF>";
+                break;
             default: {
                 if (isprint(c)) {
                     ss << c;
@@ -204,11 +220,11 @@ bool TIEC61107Protocol::SupportsBroadcast() const
     return true;
 }
 
-TIEC61107ModeCDevice::TIEC61107ModeCDevice(PDeviceConfig      device_config,
-                                           PPort              port,
-                                           PProtocol          protocol,
+TIEC61107ModeCDevice::TIEC61107ModeCDevice(PDeviceConfig device_config,
+                                           PPort port,
+                                           PProtocol protocol,
                                            const std::string& logPrefix,
-                                           IEC::TCrcFn        crcFn)
+                                           IEC::TCrcFn crcFn)
     : TIEC61107Device(device_config, port, protocol),
       CrcFn(crcFn),
       LogPrefix(logPrefix)
@@ -294,7 +310,7 @@ std::string TIEC61107ModeCDevice::GetCachedResponse(const std::string& paramRequ
 
     // strip STX and ETX
     resp[len - 2] = '\000';
-    char* presp   = (char*)resp + 1;
+    char* presp = (char*)resp + 1;
 
     // parameter name is the a part of a request before '('
     std::string paramName(paramRequest.substr(0, paramRequest.find('(')));

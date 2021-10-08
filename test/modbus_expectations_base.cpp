@@ -41,8 +41,10 @@ void TModbusExpectationsBase::SetModbusRTUSlaveId(uint8_t slaveId)
 std::vector<int> TModbusExpectationsBase::WrapPDU(const std::vector<int>& pdu, uint8_t slaveId)
 {
     switch (SelectedModbusType) {
-        case MODBUS_RTU: return WrapAsRTU(pdu, slaveId);
-        default: throw std::runtime_error("unsupported modbus type " + std::to_string(SelectedModbusType));
+        case MODBUS_RTU:
+            return WrapAsRTU(pdu, slaveId);
+        default:
+            throw std::runtime_error("unsupported modbus type " + std::to_string(SelectedModbusType));
     }
 }
 

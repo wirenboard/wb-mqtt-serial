@@ -8,7 +8,7 @@ namespace
 {
     const seconds IntervalDuration(60);
 
-    const size_t MaxBusLoadChunks       = 15;
+    const size_t MaxBusLoadChunks = 15;
     const size_t MaxPollIntervalsChunks = 2;
 }
 
@@ -36,9 +36,9 @@ void Metrics::TPollIntervalMetric::RotateChunks()
     }
 }
 
-void Metrics::TPollIntervalMetric::AddIntervals(TPollIntervalsMap&        intervals,
+void Metrics::TPollIntervalMetric::AddIntervals(TPollIntervalsMap& intervals,
                                                 std::chrono::milliseconds interval,
-                                                size_t                    count) const
+                                                size_t count) const
 {
     auto res = intervals.emplace(interval, count);
     if (!res.second) {
@@ -114,8 +114,8 @@ void Metrics::TBusLoadMetric::StartPoll(const TPollItem& pollItem, steady_clock:
     // First call
     if (IntervalStartTime == steady_clock::time_point()) {
         IntervalStartTime = time;
-        StartPollTime     = time;
-        PollItem          = pollItem;
+        StartPollTime = time;
+        PollItem = pollItem;
         Intervals.emplace_front();
         return;
     }

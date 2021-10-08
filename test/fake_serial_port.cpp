@@ -72,8 +72,10 @@ bool TFakeSerialPort::IsOpen() const
 void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count)
 {
     switch (DisconnectType) {
-        case NoDisconnect: break;
-        case SilentReadAndWriteFailure: return;
+        case NoDisconnect:
+            break;
+        case SilentReadAndWriteFailure:
+            return;
         case BadFileDescriptorOnWriteAndRead: {
             Fixture.Emit() << "write error EBADF";
             throw TSerialDeviceErrnoException("write error ", EBADF);
@@ -118,8 +120,10 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count)
 uint8_t TFakeSerialPort::ReadByte(const std::chrono::microseconds& /*timeout*/)
 {
     switch (DisconnectType) {
-        case NoDisconnect: break;
-        case SilentReadAndWriteFailure: return 0xFF;
+        case NoDisconnect:
+            break;
+        case SilentReadAndWriteFailure:
+            return 0xFF;
         case BadFileDescriptorOnWriteAndRead: {
             Fixture.Emit() << "read error EBADF";
             throw TSerialDeviceErrnoException("read error ", EBADF);
@@ -137,15 +141,17 @@ uint8_t TFakeSerialPort::ReadByte(const std::chrono::microseconds& /*timeout*/)
     return Resp[RespPos++];
 }
 
-size_t TFakeSerialPort::ReadFrame(uint8_t*                         buf,
-                                  size_t                           count,
+size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
+                                  size_t count,
                                   const std::chrono::microseconds& responseTimeout,
                                   const std::chrono::microseconds& frameTimeout,
                                   TFrameCompletePred               frame_complete)
 {
     switch (DisconnectType) {
-        case NoDisconnect: break;
-        case SilentReadAndWriteFailure: return 0;
+        case NoDisconnect:
+            break;
+        case SilentReadAndWriteFailure:
+            return 0;
         case BadFileDescriptorOnWriteAndRead: {
             Fixture.Emit() << "read frame error EBADF";
             throw TSerialDeviceErrnoException("read frame error ", EBADF);
@@ -345,13 +351,13 @@ void TSerialDeviceIntegrationTest::SetUp()
     MqttBroker   = NewFakeMqttBroker(*this);
     MqttClient   = MqttBroker->MakeClient("em-test");
     auto backend = NewDriverBackend(MqttClient);
-    Driver       = NewDriver(TDriverArgs{}
-                                 .SetId("em-test")
-                                 .SetBackend(backend)
-                                 .SetIsTesting(true)
-                                 .SetReownUnknownDevices(true)
-                                 .SetUseStorage(true)
-                                 .SetStoragePath("/tmp/wb-mqtt-serial-test.db"));
+    Driver = NewDriver(TDriverArgs{}
+                           .SetId("em-test")
+                           .SetBackend(backend)
+                           .SetIsTesting(true)
+                           .SetReownUnknownDevices(true)
+                           .SetUseStorage(true)
+                           .SetStoragePath("/tmp/wb-mqtt-serial-test.db"));
 
     Driver->StartLoop();
 
@@ -367,16 +373,16 @@ void TSerialDeviceIntegrationTest::TearDown()
 
 void TSerialDeviceIntegrationTest::Publish(const std::string& topic,
                                            const std::string& payload,
-                                           uint8_t            qos,
-                                           bool               retain)
+                                           uint8_t qos,
+                                           bool retain)
 {
     MqttBroker->Publish("em-test-other", {TMqttMessage{topic, payload, qos, retain}});
 }
 
 void TSerialDeviceIntegrationTest::PublishWaitOnValue(const std::string& topic,
                                                       const std::string& payload,
-                                                      uint8_t            qos,
-                                                      bool               retain)
+                                                      uint8_t qos,
+                                                      bool retain)
 {
     auto done = std::make_shared<WBMQTT::TPromise<void>>();
     Driver->On<WBMQTT::TControlOnValueEvent>([=](const WBMQTT::TControlOnValueEvent& event) {

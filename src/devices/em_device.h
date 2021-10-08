@@ -37,12 +37,12 @@ protected:
 
     bool ReadResponse(int expectedByte1, uint8_t* payload, int len, TPort::TFrameCompletePred frame_complete = 0);
 
-    void Talk(uint8_t                   cmd,
-              uint8_t*                  payload,
-              int                       payload_len,
-              int                       expected_byte1,
-              uint8_t*                  resp_payload,
-              int                       resp_payload_len,
+    void Talk(uint8_t cmd,
+              uint8_t* payload,
+              int payload_len,
+              int expected_byte1,
+              uint8_t* resp_payload,
+              int resp_payload_len,
               TPort::TFrameCompletePred frame_complete = 0);
 
     uint8_t SlaveIdWidth = 1;

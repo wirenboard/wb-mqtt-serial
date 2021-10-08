@@ -16,8 +16,8 @@ namespace BinUtils
      */
     template<class ResultType, class Iterator> ResultType Get(Iterator begin, Iterator end)
     {
-        ResultType sum   = 0;
-        size_t     shift = 0;
+        ResultType sum = 0;
+        size_t shift = 0;
         for (; begin != end; ++begin) {
             ResultType t = (*begin);
             sum += (t << shift);

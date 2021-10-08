@@ -144,7 +144,7 @@ namespace
 
         // strip STX and ETX
         buf[len - 2] = '\000';
-        char* presp  = (char*)buf + 1;
+        char* presp = (char*)buf + 1;
         return presp;
     }
 
@@ -152,8 +152,8 @@ namespace
     {
         int nread;
         for (const auto& kv: range.RegsByParam) {
-            auto& regs     = kv.second;
-            auto  param_id = kv.first;
+            auto& regs = kv.second;
+            auto param_id = kv.first;
 
             // consume param
             uint16_t resp_param_id;

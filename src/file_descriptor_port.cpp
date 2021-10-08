@@ -154,8 +154,8 @@ size_t TFileDescriptorPort::ReadAvailableData(uint8_t* buf, size_t max_read)
 }
 
 // Reading becomes unstable when using timeout less than default because of bufferization
-size_t TFileDescriptorPort::ReadFrame(uint8_t*                         buf,
-                                      size_t                           size,
+size_t TFileDescriptorPort::ReadFrame(uint8_t* buf,
+                                      size_t size,
                                       const std::chrono::microseconds& responseTimeout,
                                       const std::chrono::microseconds& frameTimeout,
                                       TFrameCompletePred               frame_complete)

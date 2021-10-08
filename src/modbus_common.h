@@ -38,13 +38,13 @@ namespace Modbus // modbus protocol common utilities
          *
          * @return size_t PDU size in bytes
          */
-        virtual size_t ReadFrame(TPort&                           port,
+        virtual size_t ReadFrame(TPort& port,
                                  const std::chrono::milliseconds& responseTimeout,
                                  const std::chrono::milliseconds& frameTimeout,
-                                 const TRequest&                  req,
-                                 TResponse&                       resp) const = 0;
+                                 const TRequest& req,
+                                 TResponse& resp) const = 0;
 
-        virtual uint8_t*       GetPDU(std::vector<uint8_t>& frame) const       = 0;
+        virtual uint8_t* GetPDU(std::vector<uint8_t>& frame) const = 0;
         virtual const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const = 0;
     };
 
@@ -59,13 +59,13 @@ namespace Modbus // modbus protocol common utilities
 
         void FinalizeRequest(TRequest& request, uint8_t slaveId) override;
 
-        size_t ReadFrame(TPort&                           port,
+        size_t ReadFrame(TPort& port,
                          const std::chrono::milliseconds& responseTimeout,
                          const std::chrono::milliseconds& frameTimeout,
-                         const TRequest&                  req,
-                         TResponse&                       resp) const override;
+                         const TRequest& req,
+                         TResponse& resp) const override;
 
-        uint8_t*       GetPDU(std::vector<uint8_t>& frame) const;
+        uint8_t* GetPDU(std::vector<uint8_t>& frame) const;
         const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const;
     };
 
@@ -75,7 +75,7 @@ namespace Modbus // modbus protocol common utilities
 
         std::shared_ptr<uint16_t> TransactionId;
 
-        void     SetMBAP(TRequest& req, uint16_t transactionId, size_t pduSize, uint8_t slaveId) const;
+        void SetMBAP(TRequest& req, uint16_t transactionId, size_t pduSize, uint8_t slaveId) const;
         uint16_t GetLengthFromMBAP(const TResponse& buf) const;
 
     public:
@@ -85,20 +85,20 @@ namespace Modbus // modbus protocol common utilities
 
         void FinalizeRequest(TRequest& request, uint8_t slaveId) override;
 
-        size_t ReadFrame(TPort&                           port,
+        size_t ReadFrame(TPort& port,
                          const std::chrono::milliseconds& responseTimeout,
                          const std::chrono::milliseconds& frameTimeout,
-                         const TRequest&                  req,
-                         TResponse&                       resp) const override;
+                         const TRequest& req,
+                         TResponse& resp) const override;
 
-        uint8_t*       GetPDU(std::vector<uint8_t>& frame) const;
+        uint8_t* GetPDU(std::vector<uint8_t>& frame) const;
         const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const;
     };
 
     class IModbusTraitsFactory
     {
     public:
-        virtual ~IModbusTraitsFactory()                                            = default;
+        virtual ~IModbusTraitsFactory() = default;
         virtual std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) = 0;
     };
 
@@ -117,27 +117,27 @@ namespace Modbus // modbus protocol common utilities
     };
 
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                const TDeviceConfig&        deviceConfig,
-                                                bool                        enableHoles);
+                                                const TDeviceConfig& deviceConfig,
+                                                bool enableHoles);
 
     void WriteRegister(IModbusTraits& traits,
-                       TPort&         port,
-                       uint8_t        slaveId,
-                       TRegister&     reg,
-                       uint64_t       value,
-                       int            shift = 0);
+                       TPort& port,
+                       uint8_t slaveId,
+                       TRegister& reg,
+                       uint64_t value,
+                       int shift = 0);
 
     std::list<PRegisterRange> ReadRegisterRange(IModbusTraits& traits,
-                                                TPort&         port,
-                                                uint8_t        slaveId,
+                                                TPort& port,
+                                                uint8_t slaveId,
                                                 PRegisterRange range,
-                                                int            shift = 0);
+                                                int shift = 0);
 
-    bool WriteSetupRegisters(IModbusTraits&                       traits,
-                             TPort&                               port,
-                             uint8_t                              slaveId,
+    bool WriteSetupRegisters(IModbusTraits& traits,
+                             TPort& port,
+                             uint8_t slaveId,
                              const std::vector<PDeviceSetupItem>& setupItems,
-                             int                                  shift = 0);
+                             int shift = 0);
 
     class TMalformedResponseError: public TSerialDeviceTransientErrorException
     {

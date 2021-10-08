@@ -45,15 +45,15 @@ void TModbusTest::SetUp()
 
     auto modbusRtuTraits = std::make_unique<Modbus::TModbusRTUTraits>();
 
-    ModbusDev        = std::make_shared<TModbusDevice>(std::move(modbusRtuTraits),
+    ModbusDev = std::make_shared<TModbusDevice>(std::move(modbusRtuTraits),
                                                 GetDeviceConfig(),
                                                 SerialPort,
                                                 DeviceFactory.GetProtocol("modbus"));
-    ModbusCoil0      = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 0, U8));
-    ModbusCoil1      = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 1, U8));
-    ModbusDiscrete   = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_DISCRETE, 20, U8));
-    ModbusHolding    = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 70, U16));
-    ModbusInput      = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_INPUT, 40, U16));
+    ModbusCoil0 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 0, U8));
+    ModbusCoil1 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 1, U8));
+    ModbusDiscrete = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_DISCRETE, 20, U8));
+    ModbusHolding = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 70, U16));
+    ModbusInput = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_INPUT, 40, U16));
     ModbusHoldingS64 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 30, S64));
 
     ModbusHoldingU64Single = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 90, U64));
@@ -103,13 +103,26 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
         auto value   = to_string(registerValue.second);
 
         switch (address) {
-            case 0: EXPECT_EQ(to_string(0x0), value); break;
-            case 1: EXPECT_EQ(to_string(0x1), value); break;
-            case 20: EXPECT_EQ(to_string(0x1), value); break;
-            case 30: EXPECT_EQ(to_string(0x0102030405060708), value); break;
-            case 40: EXPECT_EQ(to_string(0x66), value); break;
-            case 70: EXPECT_EQ(to_string(0x15), value); break;
-            default: throw runtime_error("register with wrong address " + to_string(address) + " in range");
+            case 0:
+                EXPECT_EQ(to_string(0x0), value);
+                break;
+            case 1:
+                EXPECT_EQ(to_string(0x1), value);
+                break;
+            case 20:
+                EXPECT_EQ(to_string(0x1), value);
+                break;
+            case 30:
+                EXPECT_EQ(to_string(0x0102030405060708), value);
+                break;
+            case 40:
+                EXPECT_EQ(to_string(0x66), value);
+                break;
+            case 70:
+                EXPECT_EQ(to_string(0x15), value);
+                break;
+            default:
+                throw runtime_error("register with wrong address " + to_string(address) + " in range");
         }
     }
 
@@ -152,7 +165,7 @@ TEST_F(TModbusTest, Errors)
     EnqueueHoldingReadS64Response();
 
     set<int> expectedAddresses{0, 1, 20}; // errors in 2 coils and 1 input
-    auto     errorAddresses = VerifyQuery();
+    auto errorAddresses = VerifyQuery();
 
     ASSERT_EQ(expectedAddresses, errorAddresses);
     SerialPort->Close();
@@ -255,8 +268,8 @@ protected:
         TEST_MAX_READ_REGISTERS
     };
 
-    void        SetUp();
-    void        TearDown();
+    void SetUp();
+    void TearDown();
     const char* ConfigPath() const override
     {
         return "configs/config-modbus-test.json";
@@ -281,10 +294,16 @@ void TModbusIntegrationTest::TearDown()
 void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 {
     switch (mode) {
-        case TEST_HOLES: EnqueueHoldingPackHoles10ReadResponse(); break;
-        case TEST_MAX_READ_REGISTERS: EnqueueHoldingPackMax3ReadResponse(); break;
+        case TEST_HOLES:
+            EnqueueHoldingPackHoles10ReadResponse();
+            break;
+        case TEST_MAX_READ_REGISTERS:
+            EnqueueHoldingPackMax3ReadResponse();
+            break;
         case TEST_DEFAULT:
-        default: EnqueueHoldingPackReadResponse(); break;
+        default:
+            EnqueueHoldingPackReadResponse();
+            break;
     }
     // test different lengths and register types
     EnqueueHoldingReadS64Response();

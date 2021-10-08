@@ -37,7 +37,7 @@ void TEMDevice::WriteCommand(uint8_t cmd, uint8_t* payload, int len)
 bool TEMDevice::ReadResponse(int expectedByte1, uint8_t* payload, int len, TPort::TFrameCompletePred frame_complete)
 {
     uint8_t buf[MAX_LEN], *p = buf;
-    int     nread =
+    int nread =
         Port()->ReadFrame(buf, MAX_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout, frame_complete);
     if (nread < 3 + SlaveIdWidth)
         throw TSerialDeviceTransientErrorException("frame too short");
@@ -75,12 +75,12 @@ bool TEMDevice::ReadResponse(int expectedByte1, uint8_t* payload, int len, TPort
     return true;
 }
 
-void TEMDevice::Talk(uint8_t                   cmd,
-                     uint8_t*                  payload,
-                     int                       payload_len,
-                     int                       expected_byte1,
-                     uint8_t*                  resp_payload,
-                     int                       resp_payload_len,
+void TEMDevice::Talk(uint8_t cmd,
+                     uint8_t* payload,
+                     int payload_len,
+                     int expected_byte1,
+                     uint8_t* resp_payload,
+                     int resp_payload_len,
                      TPort::TFrameCompletePred frame_complete)
 {
     EnsureSlaveConnected();

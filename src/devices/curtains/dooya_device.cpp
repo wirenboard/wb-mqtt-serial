@@ -21,15 +21,15 @@ namespace
 
     enum TCommands
     {
-        READ    = 1,
-        WRITE   = 2,
+        READ = 1,
+        WRITE = 2,
         CONTROL = 3
     };
 
     enum TControlCommandDataAddresses
     {
-        OPEN         = 1,
-        CLOSE        = 2,
+        OPEN = 1,
+        CLOSE = 2,
         SET_POSITION = 4
     };
 
@@ -106,10 +106,10 @@ std::vector<uint8_t> Dooya::TDevice::ExecCommand(const TRequest& request)
 {
     Port()->WriteBytes(request.Data);
     std::vector<uint8_t> respBytes(request.ResponseSize);
-    auto                 bytesRead = Port()->ReadFrame(respBytes.data(),
-                                                       respBytes.size(),
-                                                       DeviceConfig()->ResponseTimeout,
-                                                       DeviceConfig()->FrameTimeout);
+    auto bytesRead = Port()->ReadFrame(respBytes.data(),
+                                       respBytes.size(),
+                                       DeviceConfig()->ResponseTimeout,
+                                       DeviceConfig()->FrameTimeout);
     respBytes.resize(bytesRead);
     return respBytes;
 }
@@ -187,9 +187,9 @@ std::vector<uint8_t> Dooya::MakeRequest(uint16_t address, const std::vector<uint
     return res;
 }
 
-size_t Dooya::ParsePositionResponse(uint16_t                    address,
-                                    uint8_t                     fn,
-                                    uint8_t                     dataAddress,
+size_t Dooya::ParsePositionResponse(uint16_t address,
+                                    uint8_t fn,
+                                    uint8_t dataAddress,
                                     const std::vector<uint8_t>& bytes)
 {
     Check(address, RESPONSE_SIZE, fn, dataAddress, bytes);

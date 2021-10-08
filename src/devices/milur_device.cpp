@@ -79,20 +79,47 @@ TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, co
     }
 
     switch (frame[2]) {
-        case 0x01: *message = "Illegal function"; break;
-        case 0x02: *message = "Illegal data address"; break;
-        case 0x03: *message = "Illegal data value"; break;
-        case 0x04: *message = "Slave device failure"; break;
-        case 0x05: *message = "Acknowledge"; break;
-        case 0x06: *message = "Slave device busy"; break;
-        case 0x07: *message = "EEPROM access error"; break;
-        case 0x08: *message = "Session closed"; return TEMDevice::NO_OPEN_SESSION;
-        case 0x09: *message = "Access denied"; break;
-        case 0x0a: *message = "CRC error"; break;
-        case 0x0b: *message = "Frame incorrect"; break;
-        case 0x0c: *message = "Jumper absent"; break;
-        case 0x0d: *message = "Passwd incorrect"; break;
-        default: *message = "Unknown error";
+        case 0x01:
+            *message = "Illegal function";
+            break;
+        case 0x02:
+            *message = "Illegal data address";
+            break;
+        case 0x03:
+            *message = "Illegal data value";
+            break;
+        case 0x04:
+            *message = "Slave device failure";
+            break;
+        case 0x05:
+            *message = "Acknowledge";
+            break;
+        case 0x06:
+            *message = "Slave device busy";
+            break;
+        case 0x07:
+            *message = "EEPROM access error";
+            break;
+        case 0x08:
+            *message = "Session closed";
+            return TEMDevice::NO_OPEN_SESSION;
+        case 0x09:
+            *message = "Access denied";
+            break;
+        case 0x0a:
+            *message = "CRC error";
+            break;
+        case 0x0b:
+            *message = "Frame incorrect";
+            break;
+        case 0x0c:
+            *message = "Jumper absent";
+            break;
+        case 0x0d:
+            *message = "Passwd incorrect";
+            break;
+        default:
+            *message = "Unknown error";
     }
     return TEMDevice::OTHER_ERROR;
 }
@@ -109,12 +136,17 @@ uint64_t TMilurDevice::ReadRegister(PRegister reg)
         throw TSerialDeviceTransientErrorException("bad register size in the response");
 
     switch (reg->Type) {
-        case TMilurDevice::REG_PARAM: return BuildIntVal(buf + 2, 3);
-        case TMilurDevice::REG_POWER: return BuildIntVal(buf + 2, 4);
-        case TMilurDevice::REG_ENERGY: return BuildBCB32(buf + 2);
+        case TMilurDevice::REG_PARAM:
+            return BuildIntVal(buf + 2, 3);
+        case TMilurDevice::REG_POWER:
+            return BuildIntVal(buf + 2, 4);
+        case TMilurDevice::REG_ENERGY:
+            return BuildBCB32(buf + 2);
         case TMilurDevice::REG_POWERFACTOR:
-        case TMilurDevice::REG_FREQ: return BuildIntVal(buf + 2, 2);
-        default: throw TSerialDeviceTransientErrorException("bad register type");
+        case TMilurDevice::REG_FREQ:
+            return BuildIntVal(buf + 2, 2);
+        default:
+            throw TSerialDeviceTransientErrorException("bad register type");
     }
 }
 
@@ -146,7 +178,7 @@ uint64_t TMilurDevice::BuildIntVal(uint8_t* p, int sz) const
 // that is decimal value 87654321 comes as {0x12, 0x34, 0x56, 0x78} and becomes {0x21, 0x43, 0x65, 0x87}.
 uint64_t TMilurDevice::BuildBCB32(uint8_t* psrc) const
 {
-    uint32_t r    = 0;
+    uint32_t r = 0;
     uint8_t* pdst = reinterpret_cast<uint8_t*>(&r);
     for (int i = 0; i < 4; ++i) {
         auto t  = psrc[i];
@@ -159,12 +191,16 @@ int TMilurDevice::GetExpectedSize(int type) const
 {
     auto t = static_cast<TMilurDevice::RegisterType>(type);
     switch (t) {
-        case TMilurDevice::REG_PARAM: return 3;
+        case TMilurDevice::REG_PARAM:
+            return 3;
         case TMilurDevice::REG_POWER:
-        case TMilurDevice::REG_ENERGY: return 4;
+        case TMilurDevice::REG_ENERGY:
+            return 4;
         case TMilurDevice::REG_FREQ:
-        case TMilurDevice::REG_POWERFACTOR: return 2;
-        default: throw TSerialDeviceTransientErrorException("bad register type");
+        case TMilurDevice::REG_POWERFACTOR:
+            return 2;
+        default:
+            throw TSerialDeviceTransientErrorException("bad register type");
     }
 }
 

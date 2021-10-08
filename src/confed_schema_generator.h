@@ -6,8 +6,8 @@ std::string GetSubdeviceKey(const std::string& subDeviceType);
 
 bool IsRequiredSetupRegister(const Json::Value& setupRegister);
 
-Json::Value MakeSchemaForConfed(const Json::Value&    configSchema,
-                                TTemplateMap&         templates,
+Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
+                                TTemplateMap& templates,
                                 TSerialDeviceFactory& deviceFactory);
 
 /**

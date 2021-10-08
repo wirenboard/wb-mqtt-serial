@@ -12,7 +12,7 @@ public:
     {
         std::unique_lock<std::mutex> lock(Mutex);
 
-        bool r    = Cond.wait_until(lock, until, [this]() { return _Signaled; });
+        bool r = Cond.wait_until(lock, until, [this]() { return _Signaled; });
         _Signaled = false;
         return r;
     }
@@ -20,7 +20,7 @@ public:
     {
         std::unique_lock<std::mutex> lock(Mutex);
 
-        bool r    = _Signaled;
+        bool r = _Signaled;
         _Signaled = false;
         return r;
     }

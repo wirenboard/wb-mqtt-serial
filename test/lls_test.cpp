@@ -5,8 +5,8 @@
 class TLLSIntegrationTest: public TSerialDeviceIntegrationTest
 {
 protected:
-    void        SetUp();
-    void        TearDown();
+    void SetUp();
+    void TearDown();
     const char* ConfigPath() const
     {
         return "configs/config-lls-test.json";

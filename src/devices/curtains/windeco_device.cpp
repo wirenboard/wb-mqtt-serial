@@ -13,9 +13,9 @@ namespace
                                   {PARAM, "param", "value", U8, true},
                                   {COMMAND, "command", "value", U8}};
 
-    const size_t PACKET_SIZE   = 7;
-    const size_t DATA_BYTE     = 5;
-    const size_t OPEN_COMMAND  = 0x02;
+    const size_t PACKET_SIZE = 7;
+    const size_t DATA_BYTE = 5;
+    const size_t OPEN_COMMAND = 0x02;
     const size_t CLOSE_COMMAND = 0x04;
 
     uint8_t CalcCrc(const std::vector<uint8_t>& bytes, size_t size)
@@ -83,7 +83,7 @@ std::vector<uint8_t> WinDeco::TDevice::ExecCommand(const std::vector<uint8_t>& r
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
     Port()->WriteBytes(request);
     std::vector<uint8_t> respBytes(PACKET_SIZE);
-    auto                 bytesRead =
+    auto bytesRead =
         Port()->ReadFrame(respBytes.data(), PACKET_SIZE, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
     respBytes.resize(bytesRead);
     return respBytes;
@@ -112,9 +112,12 @@ void WinDeco::TDevice::WriteRegister(PRegister reg, uint64_t value)
 uint64_t WinDeco::TDevice::ReadRegister(PRegister reg)
 {
     switch (reg->Type) {
-        case POSITION: return ParsePositionResponse(ZoneId, CurtainId, ExecCommand(GetPositionCommand));
-        case PARAM: return ParseStateResponse(ZoneId, CurtainId, ExecCommand(GetStateCommand));
-        case COMMAND: return 1;
+        case POSITION:
+            return ParsePositionResponse(ZoneId, CurtainId, ExecCommand(GetPositionCommand));
+        case PARAM:
+            return ParseStateResponse(ZoneId, CurtainId, ExecCommand(GetStateCommand));
+        case COMMAND:
+            return 1;
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }

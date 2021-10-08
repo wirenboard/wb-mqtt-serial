@@ -12,8 +12,8 @@ struct TSerialPortByteFormat
     {}
 
     char Parity;
-    int  DataBits;
-    int  StopBits;
+    int DataBits;
+    int StopBits;
 };
 
 struct TSerialPortSettings: public TSerialPortByteFormat
@@ -36,5 +36,5 @@ struct TSerialPortSettings: public TSerialPortByteFormat
     }
 
     std::string Device;
-    int         BaudRate;
+    int BaudRate;
 };

@@ -32,9 +32,9 @@ bool IProtocol::SupportsBroadcast() const
     return false;
 }
 
-TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string&    name,
+TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name,
                                                const TRegisterTypes& reg_types,
-                                               bool                  allowBroadcast)
+                                               bool allowBroadcast)
     : IProtocol(name, reg_types),
       AllowBroadcast(allowBroadcast)
 {}

@@ -64,7 +64,7 @@ void IterateDir(const std::string& dirName, std::function<bool(const std::string
  * @param fn The function calls fn with matching folder entry. If fn returns true, iteration stops.
  * @return std::string Folder entry for which fn returned true or empty string
  */
-std::string IterateDirByPattern(const std::string&                      dirName,
-                                const std::string&                      pattern,
+std::string IterateDirByPattern(const std::string& dirName,
+                                const std::string& pattern,
                                 std::function<bool(const std::string&)> fn,
                                 bool                                    sort = false);

@@ -85,10 +85,10 @@ namespace
         TObisRegisterAddressFactory(): BaseRegisterAddress("0.0.0.0.0.0")
         {}
 
-        TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
+        TRegisterDesc LoadRegisterAddress(const Json::Value& regCfg,
                                           const IRegisterAddress& deviceBaseAddress,
-                                          uint32_t                stride,
-                                          uint32_t                registerByteWidth) const override
+                                          uint32_t stride,
+                                          uint32_t registerByteWidth) const override
         {
             TRegisterDesc res;
             res.Address = std::make_shared<TObisRegisterAddress>(regCfg["address"].asString());
@@ -111,9 +111,9 @@ namespace
         {}
 
         PSerialDevice CreateDevice(const Json::Value& data,
-                                   PDeviceConfig      deviceConfig,
-                                   PPort              port,
-                                   PProtocol          protocol) const override
+                                   PDeviceConfig deviceConfig,
+                                   PPort port,
+                                   PProtocol protocol) const override
         {
             TDlmsDeviceConfig cfg;
             cfg.DeviceConfig = deviceConfig;
@@ -138,9 +138,9 @@ namespace
         return name + std::string(6 * 4 - 1 - name.size(), ' ');
     }
 
-    std::string GetDescription(const std::string&    logicalName,
-                               CGXDLMSObject*        obj,
-                               CGXDLMSConverter*     cnv,
+    std::string GetDescription(const std::string& logicalName,
+                               CGXDLMSObject* obj,
+                               CGXDLMSConverter* cnv,
                                const TObisCodeHints& obisHints)
     {
         std::string res;
@@ -184,8 +184,8 @@ namespace
         return res;
     }
 
-    std::string GetChannelName(const std::string&    logicalName,
-                               const std::string&    description,
+    std::string GetChannelName(const std::string& logicalName,
+                               const std::string& description,
                                const TObisCodeHints& obisHints)
     {
         auto it = obisHints.find(logicalName);
@@ -205,15 +205,24 @@ namespace
             return "value";
         }
         switch (reg->GetUnit()) {
-            case 9: return "temperature";
-            case 22: return "power";
-            case 23: return "pressure";
-            case 25: return "power";
-            case 32: return "power_consumption";
-            case 33: return "current";
-            case 35: return "voltage";
-            case 38: return "resistance";
-            case 46: return "power_consumption";
+            case 9:
+                return "temperature";
+            case 22:
+                return "power";
+            case 23:
+                return "pressure";
+            case 25:
+                return "power";
+            case 32:
+                return "power_consumption";
+            case 33:
+                return "current";
+            case 35:
+                return "voltage";
+            case 38:
+                return "resistance";
+            case 46:
+                return "power_consumption";
         }
         return "value";
     }
@@ -285,10 +294,10 @@ namespace
         }
     }
 
-    Json::Value GenerateDlmsDeviceTemplate(const std::string&             name,
-                                           const TDlmsDeviceConfig&       deviceConfig,
+    Json::Value GenerateDlmsDeviceTemplate(const std::string& name,
+                                           const TDlmsDeviceConfig& deviceConfig,
                                            const CGXDLMSObjectCollection& objs,
-                                           const TObisCodeHints&          obisHints)
+                                           const TObisCodeHints& obisHints)
     {
         CGXDLMSConverter cnv;
         Json::Value      res;
@@ -367,12 +376,12 @@ TDlmsDevice::TDlmsDevice(const TDlmsDeviceConfig& config, PPort port, PProtocol 
 }
 
 void TDlmsDevice::CheckCycle(std::function<int(std::vector<CGXByteBuffer>&)> requestsGenerator,
-                             std::function<int(CGXReplyData&)>               responseParser,
-                             const std::string&                              errorMsg)
+                             std::function<int(CGXReplyData&)> responseParser,
+                             const std::string& errorMsg)
 {
     std::vector<CGXByteBuffer> data;
-    CGXReplyData               reply;
-    auto                       res = requestsGenerator(data);
+    CGXReplyData reply;
+    auto res = requestsGenerator(data);
     if (res != DLMS_ERROR_CODE_OK) {
         throw TSerialDeviceTransientErrorException(errorMsg + ". Can't generate request: " + GetErrorMessage(res));
     }
@@ -402,7 +411,7 @@ void TDlmsDevice::ReadAttribute(const std::string& addr, int attribute, CGXDLMSO
 uint64_t TDlmsDevice::ReadRegister(PRegister reg)
 {
     auto addr = ToTObisRegisterAddress(reg).GetLogicalName();
-    auto obj  = Client->GetObjects().FindByLN(DLMS_OBJECT_TYPE_REGISTER, addr);
+    auto obj = Client->GetObjects().FindByLN(DLMS_OBJECT_TYPE_REGISTER, addr);
     if (!obj) {
         obj = CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE_REGISTER, addr);
         if (!obj) {
@@ -559,11 +568,11 @@ void TDlmsDevice::Read(unsigned char eop, CGXByteBuffer& reply)
     };
 
     uint8_t buf[MAX_PACKET_SIZE];
-    auto    bytesRead = Port()->ReadFrame(buf,
-                                          sizeof(buf),
-                                          DeviceConfig()->ResponseTimeout,
-                                          DeviceConfig()->FrameTimeout,
-                                          frameCompleteFn);
+    auto bytesRead = Port()->ReadFrame(buf,
+                                       sizeof(buf),
+                                       DeviceConfig()->ResponseTimeout,
+                                       DeviceConfig()->FrameTimeout,
+                                       frameCompleteFn);
     reply.Set(buf, bytesRead);
 }
 
@@ -659,10 +668,10 @@ void DLMS::PrintDeviceTemplateGenerationOptionsUsage()
               << "  - password" << std::endl;
 }
 
-void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode   mode,
-                                  PPort                           port,
-                                  const std::string&              phisycalDeviceAddress,
-                                  const std::string&              destinationDir,
+void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode mode,
+                                  PPort port,
+                                  const std::string& phisycalDeviceAddress,
+                                  const std::string& destinationDir,
                                   const std::vector<std::string>& options)
 {
     TDlmsDeviceConfig deviceConfig;
@@ -673,7 +682,7 @@ void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode   mode,
     }
 
     if (options.size() > 1) {
-        const std::unordered_map<std::string, DLMS_AUTHENTICATION> auths  = {{"lowest", DLMS_AUTHENTICATION_NONE},
+        const std::unordered_map<std::string, DLMS_AUTHENTICATION> auths = {{"lowest", DLMS_AUTHENTICATION_NONE},
                                                                             {"low", DLMS_AUTHENTICATION_LOW},
                                                                             {"high", DLMS_AUTHENTICATION_HIGH},
                                                                             {"MD5", DLMS_AUTHENTICATION_HIGH_MD5},
@@ -681,7 +690,7 @@ void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode   mode,
                                                                             {"GMAC", DLMS_AUTHENTICATION_HIGH_GMAC},
                                                                             {"SHA256", DLMS_AUTHENTICATION_HIGH_SHA256},
                                                                             {"ECDSA", DLMS_AUTHENTICATION_HIGH_ECDSA}};
-        auto                                                       modeIt = auths.find(options[1]);
+        auto modeIt = auths.find(options[1]);
         if (modeIt == auths.end()) {
             throw std::runtime_error("Unknown authentication mode: " + options[1]);
         }

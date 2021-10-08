@@ -5,9 +5,9 @@
 using namespace std;
 using namespace WBMQTT::JSON;
 
-Json::Value FilterStandardChannels(const Json::Value&                                  device,
-                                   const Json::Value&                                  deviceTemplate,
-                                   ITemplateMap&                                       templates,
+Json::Value FilterStandardChannels(const Json::Value& device,
+                                   const Json::Value& deviceTemplate,
+                                   ITemplateMap& templates,
                                    const std::unordered_map<std::string, std::string>& subdeviceTypeHashes);
 
 bool RemoveDeviceHash(Json::Value& device, const std::unordered_map<std::string, std::string>& deviceTypeHashes)
@@ -74,9 +74,9 @@ bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemp
     return ok;
 }
 
-Json::Value FilterStandardChannels(const Json::Value&                                  device,
-                                   const Json::Value&                                  deviceTemplate,
-                                   ITemplateMap&                                       templates,
+Json::Value FilterStandardChannels(const Json::Value& device,
+                                   const Json::Value& deviceTemplate,
+                                   ITemplateMap& templates,
                                    const std::unordered_map<std::string, std::string>& subdeviceTypeHashes)
 {
     Json::Value channels(Json::arrayValue);
@@ -134,7 +134,7 @@ void ExpandGroupChannels(Json::Value& device, const Json::Value& deviceTemplate)
 
 Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 {
-    Json::Value             root;
+    Json::Value root;
     Json::CharReaderBuilder readerBuilder;
     Json::String            errs;
 

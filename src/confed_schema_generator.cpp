@@ -26,7 +26,7 @@ namespace
     struct TContext
     {
         const std::string& DeviceType;
-        Json::Value&       Translations;
+        Json::Value& Translations;
 
         /**
          * @brief Calculate hash from msg and DeviceType.
@@ -259,7 +259,7 @@ namespace
         Json::Value r;
         r["headerTemplate"]                 = context.AddHashedTranslation(channel["name"].asString());
         r["options"]["wb"]["disable_title"] = true;
-        auto& allOf                         = MakeArray("allOf", r);
+        auto& allOf = MakeArray("allOf", r);
         Append(allOf)["$ref"] =
             "#/definitions/" + GetSubdeviceSchemaKey(context.DeviceType, channel["device_type"].asString());
         allOf.append(MakeHiddenNameObject(channel["name"].asString()));
@@ -325,10 +325,10 @@ namespace
     //      "_format": "table"                   // if table
     //  }
     Json::Value MakeChannelsSchema(const Json::Value& deviceTemplate,
-                                   int                propertyOrder,
+                                   int propertyOrder,
                                    const std::string& title,
-                                   TContext&          context,
-                                   bool               allowCollapse = false)
+                                   TContext& context,
+                                   bool allowCollapse = false)
     {
         const auto& channels = deviceTemplate["channels"];
         Json::Value r;
@@ -401,11 +401,11 @@ namespace
         return r;
     }
 
-    int AddDeviceParametersUI(Json::Value&       properties,
-                              Json::Value&       requiredArray,
+    int AddDeviceParametersUI(Json::Value& properties,
+                              Json::Value& requiredArray,
                               const Json::Value& deviceTemplate,
-                              int                firstParameterOrder,
-                              TContext&          context)
+                              int firstParameterOrder,
+                              TContext& context)
     {
         int maxOrder = 0;
         if (deviceTemplate.isMember("parameters")) {
@@ -454,10 +454,10 @@ namespace
     //          }
     //      }
     //  }
-    void MakeSubDeviceUISchema(const std::string&     subDeviceType,
+    void MakeSubDeviceUISchema(const std::string& subDeviceType,
                                const TDeviceTemplate& subdeviceTemplate,
-                               Json::Value&           definitions,
-                               TContext&              context)
+                               Json::Value& definitions,
+                               TContext& context)
     {
         Json::Value& res                     = definitions[GetSubdeviceSchemaKey(context.DeviceType, subDeviceType)];
         res["type"]                          = "object";
@@ -562,10 +562,10 @@ namespace
     //          }
     //      }
     void AddDeviceUISchema(const TDeviceTemplate& deviceTemplate,
-                           TSerialDeviceFactory&  deviceFactory,
-                           Json::Value&           devicesArray,
-                           Json::Value&           definitions,
-                           Json::Value&           translations)
+                           TSerialDeviceFactory& deviceFactory,
+                           Json::Value& devicesArray,
+                           Json::Value& definitions,
+                           Json::Value& translations)
     {
         Json::Value schema(deviceTemplate.Schema);
         if (!schema.isMember("subdevices")) {
@@ -647,7 +647,7 @@ namespace
     }
 
     std::vector<const Json::Value*> PartitionChannelsByGroups(
-        const Json::Value&                            schema,
+        const Json::Value& schema,
         std::unordered_map<std::string, Json::Value>& subdevicesForGroups)
     {
         std::vector<const Json::Value*> originalChannels;
@@ -662,7 +662,7 @@ namespace
     }
 
     std::vector<std::string> PartitionParametersByGroups(
-        const Json::Value&                            schema,
+        const Json::Value& schema,
         std::unordered_map<std::string, Json::Value>& subdevicesForGroups)
     {
         std::vector<std::string> movedParameters;
@@ -677,7 +677,7 @@ namespace
     }
     struct TGroup
     {
-        uint32_t    Order;
+        uint32_t Order;
         std::string Name;
 
         TGroup(const Json::Value& group): Order(group.get("order", 1).asUInt()), Name(group["title"].asString())
@@ -692,12 +692,12 @@ namespace
      * @return Json::Value - merged channels array
      */
     Json::Value MergeChannels(const std::vector<const Json::Value*>& channelsNotInGroups,
-                              const std::vector<TGroup>&             groups)
+                              const std::vector<TGroup>& groups)
     {
         Json::Value res(Json::arrayValue);
-        uint32_t    i       = 1;
-        auto        grIt    = groups.begin();
-        auto        notGrIt = channelsNotInGroups.begin();
+        uint32_t i = 1;
+        auto grIt = groups.begin();
+        auto notGrIt = channelsNotInGroups.begin();
         while (grIt != groups.end() && notGrIt != channelsNotInGroups.end()) {
             if (grIt->Order <= i) {
                 auto& item          = Append(res);
@@ -711,8 +711,8 @@ namespace
             ++i;
         }
         for (; grIt != groups.end(); ++grIt) {
-            auto& item          = Append(res);
-            item["name"]        = grIt->Name;
+            auto& item = Append(res);
+            item["name"] = grIt->Name;
             item["device_type"] = grIt->Name;
         }
         for (; notGrIt != channelsNotInGroups.end(); ++notGrIt) {
@@ -722,8 +722,8 @@ namespace
     }
 }
 
-Json::Value MakeSchemaForConfed(const Json::Value&    configSchema,
-                                TTemplateMap&         templates,
+Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
+                                TTemplateMap& templates,
                                 TSerialDeviceFactory& deviceFactory)
 {
     Json::Value res(configSchema);
@@ -748,7 +748,7 @@ void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices)
     }
 
     std::unordered_map<std::string, Json::Value> subdevicesForGroups; // key - group id
-    std::vector<TGroup>                          groups;
+    std::vector<TGroup> groups;
     for (const auto& group: schema["groups"]) {
         Json::Value subdevice;
         subdevice["title"]       = group["title"];

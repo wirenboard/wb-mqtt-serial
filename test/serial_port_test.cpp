@@ -75,10 +75,10 @@ public:
         }
     }
 
-    bool                      IsRunning = false;
-    std::thread               FloodThread;
-    bool                      Expired = false;
-    PPort                     Serial;
+    bool IsRunning = false;
+    std::thread FloodThread;
+    bool Expired = false;
+    PPort Serial;
     std::chrono::milliseconds Duration;
 };
 
@@ -125,7 +125,7 @@ protected:
     };
 
     TLoggedFixture& Fixture;
-    PPort           OtherEndPort;
+    PPort OtherEndPort;
 
 public:
     TImxFloodThread FloodThread;

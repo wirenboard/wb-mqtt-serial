@@ -46,7 +46,7 @@ protected:
             }
             Emit() << "DeviceConfigs:";
             for (auto device: port_config->Devices) {
-                auto           device_config = device->DeviceConfig();
+                auto device_config = device->DeviceConfig();
                 TTestLogIndent indent(*this);
                 Emit() << "------";
                 Emit() << "Id: " << device_config->Id;
@@ -142,7 +142,7 @@ protected:
 
     PHandlerConfig GetConfig(const std::string& filePath)
     {
-        Json::Value  configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+        Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
         TTemplateMap templateMap(
             GetDataFilePath("device-templates/"),
             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), configSchema));
@@ -164,7 +164,7 @@ TEST_F(TConfigParserTest, SameSetupItems)
 
 TEST_F(TConfigParserTest, UnsuccessfulParse)
 {
-    Json::Value  configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     TTemplateMap templateMap(
         GetDataFilePath("parser_test/templates/"),
         LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), configSchema));
@@ -186,7 +186,7 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
 
 TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
 {
-    Json::Value  configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     TTemplateMap templateMap(
         GetDataFilePath("parser_test/templates/"),
         LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), configSchema));
@@ -194,8 +194,8 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
     for (auto i = 1; i <= 7; ++i) {
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
-        auto        mergedConfig(
-                   MergeDeviceConfigWithTemplate(deviceConfig, deviceType, templateMap.GetTemplate(deviceType).Schema));
+        auto mergedConfig(
+            MergeDeviceConfigWithTemplate(deviceConfig, deviceType, templateMap.GetTemplate(deviceType).Schema));
         auto res(JSON::Parse(GetDataFilePath("parser_test/merge_template_res" + to_string(i) + ".json")));
         ASSERT_TRUE(JsonsMatch(res, mergedConfig)) << i;
     }
@@ -212,7 +212,7 @@ class TConfedSchemaTest: public TLoggedFixture
 {
 protected:
     TSerialDeviceFactory DeviceFactory;
-    Json::Value          ConfigSchema;
+    Json::Value ConfigSchema;
 
     void SetUp()
     {

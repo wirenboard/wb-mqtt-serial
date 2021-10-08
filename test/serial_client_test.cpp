@@ -30,14 +30,14 @@ protected:
         PortOpenCloseSettings.ReopenTimeout = std::chrono::milliseconds(0);
     }
 
-    void      SetUp();
-    void      TearDown();
-    PRegister Reg(int            addr,
-                  RegisterFormat fmt        = U16,
-                  double         scale      = 1,
-                  double         offset     = 0,
-                  double         round_to   = 0,
-                  EWordOrder     word_order = EWordOrder::BigEndian)
+    void SetUp();
+    void TearDown();
+    PRegister Reg(int addr,
+                  RegisterFormat fmt = U16,
+                  double scale = 1,
+                  double offset = 0,
+                  double round_to = 0,
+                  EWordOrder word_order = EWordOrder::BigEndian)
     {
         return TRegister::Intern(Device,
                                  TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE,
@@ -117,10 +117,17 @@ void TSerialClientTest::SetUp()
     SerialClient->SetErrorCallback([this](PRegister reg, TRegisterHandler::TErrorState errorState) {
         const char* what;
         switch (errorState) {
-            case TRegisterHandler::WriteError: what = "write error"; break;
-            case TRegisterHandler::ReadError: what = "read error"; break;
-            case TRegisterHandler::ReadWriteError: what = "read+write error"; break;
-            default: what = "no error";
+            case TRegisterHandler::WriteError:
+                what = "write error";
+                break;
+            case TRegisterHandler::ReadError:
+                what = "read error";
+                break;
+            case TRegisterHandler::ReadWriteError:
+                what = "read+write error";
+                break;
+            default:
+                what = "no error";
         }
         Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress()
                << ">: " << what;
@@ -949,7 +956,7 @@ protected:
     static void DeviceMaxFailCyclesOnly(const PSerialDevice& device, int cycleCount);
     static void DeviceTimeoutAndMaxFailCycles(const PSerialDevice& device,
                                               chrono::milliseconds timeout,
-                                              int                  cycleCount);
+                                              int cycleCount);
 
     PMQTTSerialDriver StartReconnectTest1Device(bool miss = false, bool pollIntervalTest = false);
     PMQTTSerialDriver StartReconnectTest2Devices();
@@ -957,17 +964,17 @@ protected:
     void ReconnectTest1Device(function<void()>&& thunk, bool pollIntervalTest = false);
     void ReconnectTest2Devices(function<void()>&& thunk);
 
-    PFakeMqttBroker   MqttBroker;
-    PFakeMqttClient   MqttClient;
-    PDeviceDriver     Driver;
+    PFakeMqttBroker MqttBroker;
+    PFakeMqttClient MqttClient;
+    PDeviceDriver Driver;
     PMQTTSerialDriver SerialDriver;
-    PHandlerConfig    Config;
+    PHandlerConfig Config;
 
     static const char* const Name;
     static const char* const OtherName;
 };
 
-const char* const TSerialClientIntegrationTest::Name      = "serial-client-integration-test";
+const char* const TSerialClientIntegrationTest::Name = "serial-client-integration-test";
 const char* const TSerialClientIntegrationTest::OtherName = "serial-client-integration-test-other";
 
 void TSerialClientIntegrationTest::SetUp()
@@ -978,13 +985,13 @@ void TSerialClientIntegrationTest::SetUp()
     MqttBroker   = NewFakeMqttBroker(*this);
     MqttClient   = MqttBroker->MakeClient(Name);
     auto backend = NewDriverBackend(MqttClient);
-    Driver       = NewDriver(TDriverArgs{}
-                                 .SetId(Name)
-                                 .SetBackend(backend)
-                                 .SetIsTesting(true)
-                                 .SetReownUnknownDevices(true)
-                                 .SetUseStorage(true)
-                                 .SetStoragePath("/tmp/wb-mqtt-serial-test.db"));
+    Driver = NewDriver(TDriverArgs{}
+                           .SetId(Name)
+                           .SetBackend(backend)
+                           .SetIsTesting(true)
+                           .SetReownUnknownDevices(true)
+                           .SetUseStorage(true)
+                           .SetStoragePath("/tmp/wb-mqtt-serial-test.db"));
 
     Driver->StartLoop();
 
@@ -1039,7 +1046,7 @@ void TSerialClientIntegrationTest::DeviceMaxFailCyclesOnly(const PSerialDevice& 
 
 void TSerialClientIntegrationTest::DeviceTimeoutAndMaxFailCycles(const PSerialDevice& device,
                                                                  chrono::milliseconds timeout,
-                                                                 int                  cycleCount)
+                                                                 int cycleCount)
 {
     device->DeviceConfig()->DeviceTimeout       = timeout;
     device->DeviceConfig()->DeviceMaxFailCycles = cycleCount;
@@ -1047,16 +1054,16 @@ void TSerialClientIntegrationTest::DeviceTimeoutAndMaxFailCycles(const PSerialDe
 
 void TSerialClientIntegrationTest::Publish(const std::string& topic,
                                            const std::string& payload,
-                                           uint8_t            qos,
-                                           bool               retain)
+                                           uint8_t qos,
+                                           bool retain)
 {
     MqttBroker->Publish("em-test-other", {TMqttMessage{topic, payload, qos, retain}});
 }
 
 void TSerialClientIntegrationTest::PublishWaitOnValue(const std::string& topic,
                                                       const std::string& payload,
-                                                      uint8_t            qos,
-                                                      bool               retain)
+                                                      uint8_t qos,
+                                                      bool retain)
 {
     auto done = std::make_shared<WBMQTT::TPromise<void>>();
     Driver->On<WBMQTT::TControlOnValueEvent>([=](const WBMQTT::TControlOnValueEvent& event) {
@@ -1308,16 +1315,16 @@ TEST_F(TSerialClientIntegrationTest, ErrorValue)
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
-    device->Registers[0]  = 0x7FFF;
-    device->Registers[1]  = 0x7FFF;
-    device->Registers[2]  = 0x7F;
-    device->Registers[3]  = 0x7F;
-    device->Registers[4]  = 0x7F;
-    device->Registers[5]  = 0xFFFF;
-    device->Registers[6]  = 0x7F;
-    device->Registers[7]  = 0xFFFF;
-    device->Registers[8]  = 0x7FFF;
-    device->Registers[9]  = 0xFFFF;
+    device->Registers[0] = 0x7FFF;
+    device->Registers[1] = 0x7FFF;
+    device->Registers[2] = 0x7F;
+    device->Registers[3] = 0x7F;
+    device->Registers[4] = 0x7F;
+    device->Registers[5] = 0xFFFF;
+    device->Registers[6] = 0x7F;
+    device->Registers[7] = 0xFFFF;
+    device->Registers[8] = 0x7FFF;
+    device->Registers[9] = 0xFFFF;
     device->Registers[10] = 0x7FFF;
     device->Registers[11] = 0xFFFF;
     device->Registers[12] = 0x7FFF;

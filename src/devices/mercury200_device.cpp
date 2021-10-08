@@ -8,9 +8,9 @@
 
 namespace
 {
-    const size_t    RESPONSE_BUF_LEN = 100;
-    const size_t    REQUEST_LEN      = 7;
-    const ptrdiff_t HEADER_SZ        = 5;
+    const size_t RESPONSE_BUF_LEN = 100;
+    const size_t REQUEST_LEN = 7;
+    const ptrdiff_t HEADER_SZ = 5;
 
     const TRegisterTypes RegisterTypes{{TMercury200Device::REG_PARAM_VALUE16, "param8", "value", U8, true},
                                        {TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true},
@@ -43,7 +43,7 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
     }
 
     uint8_t buf[100] = {0x00};
-    auto    readn    = RequestResponse(SlaveId, cmd, buf);
+    auto readn = RequestResponse(SlaveId, cmd, buf);
     if (readn < 4) { // fixme 4
         throw TSerialDeviceTransientErrorException("mercury200: read frame too short for command response");
     }
@@ -67,11 +67,20 @@ uint64_t TMercury200Device::ReadRegister(PRegister reg)
 
     WordSizes size;
     switch (reg->Type) {
-        case REG_PARAM_VALUE32: size = WordSizes::W32_SZ; break;
-        case REG_PARAM_VALUE24: size = WordSizes::W24_SZ; break;
-        case REG_PARAM_VALUE16: size = WordSizes::W16_SZ; break;
-        case REG_PARAM_VALUE8: size = WordSizes::W8_SZ; break;
-        default: throw TSerialDeviceException("mercury200: invalid register type");
+        case REG_PARAM_VALUE32:
+            size = WordSizes::W32_SZ;
+            break;
+        case REG_PARAM_VALUE24:
+            size = WordSizes::W24_SZ;
+            break;
+        case REG_PARAM_VALUE16:
+            size = WordSizes::W16_SZ;
+            break;
+        case REG_PARAM_VALUE8:
+            size = WordSizes::W8_SZ;
+            break;
+        default:
+            throw TSerialDeviceException("mercury200: invalid register type");
     }
 
     auto result = ExecCommand(cmd);
@@ -95,8 +104,8 @@ void TMercury200Device::EndPollCycle()
 
 bool TMercury200Device::IsCrcValid(uint8_t* buf, int sz) const
 {
-    auto     actual_crc = CRC16::CalculateCRC16(buf, static_cast<uint16_t>(sz));
-    uint16_t sent_crc   = ((uint16_t)buf[sz] << 8) | ((uint16_t)buf[sz + 1]);
+    auto actual_crc = CRC16::CalculateCRC16(buf, static_cast<uint16_t>(sz));
+    uint16_t sent_crc = ((uint16_t)buf[sz] << 8) | ((uint16_t)buf[sz + 1]);
     return actual_crc != sent_crc;
 }
 

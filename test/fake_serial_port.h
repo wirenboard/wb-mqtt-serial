@@ -33,15 +33,15 @@ public:
     bool    IsOpen() const;
     void    WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte(const std::chrono::microseconds& timeout);
-    size_t  ReadFrame(uint8_t*                         buf,
-                      size_t                           count,
-                      const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
-                      const std::chrono::microseconds& frameTimeout    = std::chrono::microseconds(-1),
-                      TFrameCompletePred               frame_complete  = 0);
-    void    SkipNoise();
+    size_t ReadFrame(uint8_t* buf,
+                     size_t count,
+                     const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
+                     const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
+                     TFrameCompletePred frame_complete = 0);
+    void SkipNoise();
 
-    void       SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
-    bool       Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
+    void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
+    bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
     TTimePoint CurrentTime() const override;
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) override;
@@ -97,7 +97,7 @@ protected:
 
     WBMQTT::Testing::PFakeMqttBroker MqttBroker;
     WBMQTT::Testing::PFakeMqttClient MqttClient;
-    WBMQTT::PDeviceDriver            Driver;
+    WBMQTT::PDeviceDriver Driver;
 
     PMQTTSerialDriver SerialDriver;
     PHandlerConfig    Config;

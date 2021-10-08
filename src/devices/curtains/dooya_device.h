@@ -7,7 +7,7 @@ namespace Dooya
     struct TRequest
     {
         std::vector<uint8_t> Data;
-        size_t               ResponseSize = 0;
+        size_t ResponseSize = 0;
     };
 
     class TDevice: public TSerialDevice, public TUInt32SlaveId

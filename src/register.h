@@ -64,12 +64,12 @@ inline ::std::ostream& operator<<(::std::ostream& os, EWordOrder val)
 struct TRegisterType
 {
     TRegisterType() = default;
-    TRegisterType(int                index,
+    TRegisterType(int index,
                   const std::string& name,
                   const std::string& defaultControlType,
-                  RegisterFormat     defaultFormat    = U16,
-                  bool               readOnly         = false,
-                  EWordOrder         defaultWordOrder = EWordOrder::BigEndian);
+                  RegisterFormat defaultFormat = U16,
+                  bool readOnly = false,
+                  EWordOrder defaultWordOrder = EWordOrder::BigEndian);
 
     int            Index = 0;
     std::string    Name, DefaultControlType;
@@ -83,7 +83,7 @@ typedef std::vector<TRegisterType> TRegisterTypes;
 class TRegisterTypeMap
 {
     std::unordered_map<std::string, TRegisterType> RegTypes;
-    TRegisterType                                  DefaultType;
+    TRegisterType DefaultType;
 
 public:
     TRegisterTypeMap(const TRegisterTypes& types);
@@ -186,35 +186,35 @@ class TRegisterConfig: public std::enable_shared_from_this<TRegisterConfig>
     std::shared_ptr<IRegisterAddress> Address;
 
 public:
-    int                       Type;
-    RegisterFormat            Format;
-    double                    Scale;
-    double                    Offset;
-    double                    RoundTo;
-    bool                      Poll;
-    bool                      ReadOnly;
-    std::string               TypeName;
+    int Type;
+    RegisterFormat Format;
+    double Scale;
+    double Offset;
+    double RoundTo;
+    bool Poll;
+    bool ReadOnly;
+    std::string TypeName;
     std::chrono::milliseconds PollInterval = std::chrono::milliseconds(-1);
     std::unique_ptr<uint64_t> ErrorValue;
-    EWordOrder                WordOrder;
-    uint8_t                   BitOffset;
-    uint8_t                   BitWidth;
+    EWordOrder WordOrder;
+    uint8_t BitOffset;
+    uint8_t BitWidth;
     std::unique_ptr<uint64_t> UnsupportedValue;
 
-    TRegisterConfig(int                               type,
+    TRegisterConfig(int type,
                     std::shared_ptr<IRegisterAddress> address,
-                    RegisterFormat                    format,
-                    double                            scale,
-                    double                            offset,
-                    double                            round_to,
-                    bool                              poll,
-                    bool                              readonly,
-                    const std::string&                type_name,
-                    std::unique_ptr<uint64_t>         error_value,
-                    const EWordOrder                  word_order,
-                    uint8_t                           bit_offset,
-                    uint8_t                           bit_width,
-                    std::unique_ptr<uint64_t>         unsupported_value);
+                    RegisterFormat format,
+                    double scale,
+                    double offset,
+                    double round_to,
+                    bool poll,
+                    bool readonly,
+                    const std::string& type_name,
+                    std::unique_ptr<uint64_t> error_value,
+                    const EWordOrder word_order,
+                    uint8_t bit_offset,
+                    uint8_t bit_width,
+                    std::unique_ptr<uint64_t> unsupported_value);
 
     TRegisterConfig(const TRegisterConfig& config);
 
@@ -226,35 +226,35 @@ public:
 
     std::string ToString() const;
 
-    static PRegisterConfig Create(int                               type        = 0,
-                                  std::shared_ptr<IRegisterAddress> address     = std::shared_ptr<IRegisterAddress>(),
-                                  RegisterFormat                    format      = U16,
-                                  double                            scale       = 1,
-                                  double                            offset      = 0,
-                                  double                            round_to    = 0,
-                                  bool                              poll        = true,
-                                  bool                              readonly    = false,
-                                  const std::string&                type_name   = "",
-                                  std::unique_ptr<uint64_t>         error_value = std::unique_ptr<uint64_t>(),
-                                  const EWordOrder                  word_order  = EWordOrder::BigEndian,
-                                  uint8_t                           bit_offset  = 0,
-                                  uint8_t                           bit_width   = 0,
-                                  std::unique_ptr<uint64_t>         unsupported_value = std::unique_ptr<uint64_t>());
+    static PRegisterConfig Create(int type = 0,
+                                  std::shared_ptr<IRegisterAddress> address = std::shared_ptr<IRegisterAddress>(),
+                                  RegisterFormat format = U16,
+                                  double scale = 1,
+                                  double offset = 0,
+                                  double round_to = 0,
+                                  bool poll = true,
+                                  bool readonly = false,
+                                  const std::string& type_name = "",
+                                  std::unique_ptr<uint64_t> error_value = std::unique_ptr<uint64_t>(),
+                                  const EWordOrder word_order = EWordOrder::BigEndian,
+                                  uint8_t bit_offset = 0,
+                                  uint8_t bit_width = 0,
+                                  std::unique_ptr<uint64_t> unsupported_value = std::unique_ptr<uint64_t>());
 
     //! Create register with TUint32RegisterAddress
-    static PRegisterConfig Create(int                       type              = 0,
-                                  uint32_t                  address           = 0,
-                                  RegisterFormat            format            = U16,
-                                  double                    scale             = 1,
-                                  double                    offset            = 0,
-                                  double                    round_to          = 0,
-                                  bool                      poll              = true,
-                                  bool                      readonly          = false,
-                                  const std::string&        type_name         = "",
-                                  std::unique_ptr<uint64_t> error_value       = std::unique_ptr<uint64_t>(),
-                                  const EWordOrder          word_order        = EWordOrder::BigEndian,
-                                  uint8_t                   bit_offset        = 0,
-                                  uint8_t                   bit_width         = 0,
+    static PRegisterConfig Create(int type = 0,
+                                  uint32_t address = 0,
+                                  RegisterFormat format = U16,
+                                  double scale = 1,
+                                  double offset = 0,
+                                  double round_to = 0,
+                                  bool poll = true,
+                                  bool readonly = false,
+                                  const std::string& type_name = "",
+                                  std::unique_ptr<uint64_t> error_value = std::unique_ptr<uint64_t>(),
+                                  const EWordOrder word_order = EWordOrder::BigEndian,
+                                  uint8_t bit_offset = 0,
+                                  uint8_t bit_width = 0,
                                   std::unique_ptr<uint64_t> unsupported_value = std::unique_ptr<uint64_t>());
 
     const IRegisterAddress& GetAddress() const;
@@ -309,8 +309,8 @@ private:
     static std::mutex                                                      Mutex;
 
 public:
-    static PRegister Intern(PSerialDevice      device,
-                            PRegisterConfig    config,
+    static PRegister Intern(PSerialDevice device,
+                            PRegisterConfig config,
                             const std::string& channelName = std::string())
     {
         std::unique_lock<std::mutex>               lock(Mutex); // thread-safe
@@ -352,25 +352,44 @@ inline ::std::ostream& operator<<(::std::ostream& os, PRegister reg)
 inline const char* RegisterFormatName(RegisterFormat fmt)
 {
     switch (fmt) {
-        case AUTO: return "AUTO";
-        case U8: return "U8";
-        case S8: return "S8";
-        case U16: return "U16";
-        case S16: return "S16";
-        case S24: return "S24";
-        case U24: return "U24";
-        case U32: return "U32";
-        case S32: return "S32";
-        case S64: return "S64";
-        case U64: return "U64";
-        case BCD8: return "BCD8";
-        case BCD16: return "BCD16";
-        case BCD24: return "BCD24";
-        case BCD32: return "BCD32";
-        case Float: return "Float";
-        case Double: return "Double";
-        case Char8: return "Char8";
-        default: return "<unknown register type>";
+        case AUTO:
+            return "AUTO";
+        case U8:
+            return "U8";
+        case S8:
+            return "S8";
+        case U16:
+            return "U16";
+        case S16:
+            return "S16";
+        case S24:
+            return "S24";
+        case U24:
+            return "U24";
+        case U32:
+            return "U32";
+        case S32:
+            return "S32";
+        case S64:
+            return "S64";
+        case U64:
+            return "U64";
+        case BCD8:
+            return "BCD8";
+        case BCD16:
+            return "BCD16";
+        case BCD24:
+            return "BCD24";
+        case BCD32:
+            return "BCD32";
+        case Float:
+            return "Float";
+        case Double:
+            return "Double";
+        case Char8:
+            return "Char8";
+        default:
+            return "<unknown register type>";
     }
 }
 

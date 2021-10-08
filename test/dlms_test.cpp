@@ -51,7 +51,7 @@ protected:
 class TDlmsIntegrationTest: public TSerialDeviceIntegrationTest, public TDlmsDeviceExpectations
 {
 protected:
-    void        TearDown();
+    void TearDown();
     const char* ConfigPath() const
     {
         return "configs/config-dlms-test.json";

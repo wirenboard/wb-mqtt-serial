@@ -18,16 +18,21 @@ void ParseCommadLine(int argc, char** argv)
     }
 
     switch (debugLevel) {
-        case 1: Debug.SetEnabled(true); break;
+        case 1:
+            Debug.SetEnabled(true);
+            break;
 
-        case 2: WBMQTT::Debug.SetEnabled(true); break;
+        case 2:
+            WBMQTT::Debug.SetEnabled(true);
+            break;
 
         case 3:
             WBMQTT::Debug.SetEnabled(true);
             Debug.SetEnabled(true);
             break;
 
-        default: break;
+        default:
+            break;
     }
 }
 

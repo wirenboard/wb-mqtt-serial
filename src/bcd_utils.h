@@ -6,7 +6,7 @@
 
 enum class WordSizes
 {
-    W8_SZ  = 1,
+    W8_SZ = 1,
     W16_SZ = 2,
     W24_SZ = 3,
     W32_SZ = 4,

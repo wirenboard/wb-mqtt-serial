@@ -19,30 +19,30 @@ typedef std::unordered_map<std::string, std::string> TTitleTranslations;
 
 struct TDeviceChannelConfig
 {
-    std::string                  MqttId; // MQTT topic name. If empty Name is used
-    std::string                  Type;
-    std::string                  DeviceId;
-    int                          Order = 0;
-    std::string                  OnValue;
-    std::string                  OffValue;
-    double                       Max       = std::numeric_limits<double>::signaling_NaN();
-    double                       Min       = std::numeric_limits<double>::signaling_NaN();
-    double                       Precision = 0;
-    bool                         ReadOnly  = false;
+    std::string MqttId; // MQTT topic name. If empty Name is used
+    std::string Type;
+    std::string DeviceId;
+    int Order = 0;
+    std::string OnValue;
+    std::string OffValue;
+    double Max = std::numeric_limits<double>::signaling_NaN();
+    double Min = std::numeric_limits<double>::signaling_NaN();
+    double Precision = 0;
+    bool ReadOnly = false;
     std::vector<PRegisterConfig> RegisterConfigs;
 
-    TDeviceChannelConfig(const std::string&                  type     = "text",
-                         const std::string&                  deviceId = "",
-                         int                                 order    = 0,
-                         bool                                readOnly = false,
-                         const std::string&                  mqttId   = "",
-                         const std::vector<PRegisterConfig>& regs     = std::vector<PRegisterConfig>());
+    TDeviceChannelConfig(const std::string& type = "text",
+                         const std::string& deviceId = "",
+                         int order = 0,
+                         bool readOnly = false,
+                         const std::string& mqttId = "",
+                         const std::vector<PRegisterConfig>& regs = std::vector<PRegisterConfig>());
 
     //! Will be published in /devices/+/meta/name and used in log messages
     const std::string& GetName() const;
 
     const TTitleTranslations& GetTitles() const;
-    void                      SetTitle(const std::string& name, const std::string& lang);
+    void SetTitle(const std::string& name, const std::string& lang);
 
 private:
     TTitleTranslations Titles;
@@ -52,10 +52,10 @@ typedef std::shared_ptr<TDeviceChannelConfig> PDeviceChannelConfig;
 
 class TDeviceSetupItemConfig
 {
-    std::string     Name;
+    std::string Name;
     PRegisterConfig RegisterConfig;
-    std::string     Value;
-    uint64_t        RawValue;
+    std::string Value;
+    uint64_t RawValue;
 
 public:
     TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value);
@@ -68,15 +68,15 @@ public:
 
 typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
 
-const int DEFAULT_ACCESS_LEVEL       = 1;
+const int DEFAULT_ACCESS_LEVEL = 1;
 const int DEFAULT_DEVICE_FAIL_CYCLES = 2;
 
 const std::chrono::milliseconds DefaultPollInterval(20);
 const std::chrono::milliseconds DefaultFrameTimeout(20);
 const std::chrono::milliseconds DefaultResponseTimeout(500);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
-const std::chrono::seconds      MaxUnchangedIntervalLowLimit(5);
-const std::chrono::seconds      DefaultMaxUnchangedInterval(-1);
+const std::chrono::seconds MaxUnchangedIntervalLowLimit(5);
+const std::chrono::seconds DefaultMaxUnchangedInterval(-1);
 
 struct TDeviceConfig
 {
@@ -84,13 +84,13 @@ struct TDeviceConfig
     std::string Id;
 
     //! Will be published in /devices/+/meta/name and used in log messages
-    std::string                         Name;
-    std::string                         SlaveId;
-    std::string                         DeviceType;
-    std::string                         Protocol;
-    std::vector<PDeviceChannelConfig>   DeviceChannelConfigs;
+    std::string Name;
+    std::string SlaveId;
+    std::string DeviceType;
+    std::string Protocol;
+    std::vector<PDeviceChannelConfig> DeviceChannelConfigs;
     std::vector<PDeviceSetupItemConfig> SetupItemConfigs;
-    std::vector<uint8_t>                Password;
+    std::vector<uint8_t> Password;
 
     //! Maximum allowed time from request to response. -1 if not set, DefaultResponseTimeout will be used.
     std::chrono::milliseconds ResponseTimeout = std::chrono::milliseconds(-1);
@@ -104,20 +104,20 @@ struct TDeviceConfig
     //! Delay before sending any request
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
 
-    int              AccessLevel         = DEFAULT_ACCESS_LEVEL;
-    int              MaxRegHole          = 0;
-    int              MaxBitHole          = 0;
-    int              MaxReadRegisters    = 1;
-    int              Stride              = 0;
-    int              Shift               = 0;
-    PRegisterTypeMap TypeMap             = 0;
-    int              DeviceMaxFailCycles = DEFAULT_DEVICE_FAIL_CYCLES;
+    int AccessLevel = DEFAULT_ACCESS_LEVEL;
+    int MaxRegHole = 0;
+    int MaxBitHole = 0;
+    int MaxReadRegisters = 1;
+    int Stride = 0;
+    int Shift = 0;
+    PRegisterTypeMap TypeMap = 0;
+    int DeviceMaxFailCycles = DEFAULT_DEVICE_FAIL_CYCLES;
 
-    explicit TDeviceConfig(const std::string& name     = "",
+    explicit TDeviceConfig(const std::string& name = "",
                            const std::string& slave_id = "",
                            const std::string& protocol = "");
 
-    int  NextOrderValue() const;
+    int NextOrderValue() const;
     void AddChannel(PDeviceChannelConfig channel);
     void AddSetupItem(PDeviceSetupItemConfig item, const std::string& deviceTemplateTitle = std::string());
 
@@ -144,9 +144,9 @@ struct TDeviceSetupItem
     }
 
     std::string Name;
-    uint64_t    RawValue;
+    uint64_t RawValue;
     std::string HumanReadableValue;
-    PRegister   Register;
+    PRegister Register;
 };
 
 typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
@@ -154,7 +154,7 @@ typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
 struct TUInt32SlaveId
 {
     uint32_t SlaveId;
-    bool     HasBroadcastSlaveId;
+    bool HasBroadcastSlaveId;
 
     TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast = false);
 
@@ -169,7 +169,7 @@ public:
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice();
     virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                        bool                        enableHoles = true) const;
+                                                        bool enableHoles = true) const;
 
     // Prepare to access device (pauses for configured delay by default)
     // i.e. "StartSession". Called before any read/write/etc after communicating with another device

@@ -16,10 +16,10 @@ using namespace WBMQTT;
 
 #define LOG(logger) ::logger.Log() << "[serial port driver] "
 
-TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver             mqttDriver,
-                                     PPortConfig                       portConfig,
+TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
+                                     PPortConfig portConfig,
                                      const WBMQTT::TPublishParameters& publishPolicy,
-                                     Metrics::TMetrics&                metrics)
+                                     Metrics::TMetrics& metrics)
     : MqttDriver(mqttDriver),
       Config(portConfig),
       PublishPolicy(publishPolicy)
@@ -78,11 +78,11 @@ void TSerialPortDriver::SetUpDevices()
 
 void TSerialPortDriver::HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent& event)
 {
-    const auto& value    = event.RawValue;
+    const auto& value = event.RawValue;
     const auto& linkData = event.Control->GetUserData().As<TControlLinkData>();
 
     const auto& portDriver = linkData.PortDriver.lock();
-    const auto& channel    = linkData.DeviceChannel.lock();
+    const auto& channel = linkData.DeviceChannel.lock();
 
     if (!portDriver || !channel) {
         if (!portDriver) {
@@ -139,7 +139,7 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
         LOG(Warn) << "got unexpected register from serial client";
         return;
     }
-    const auto& channel   = it->second.Channel;
+    const auto& channel = it->second.Channel;
     const auto& registers = channel->Registers;
 
     if (changed && ::Debug.IsEnabled()) {
@@ -183,7 +183,7 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
         LOG(Warn) << "got unexpected register from serial client";
         return;
     }
-    const auto& channel   = it->second.Channel;
+    const auto& channel = it->second.Channel;
     const auto& registers = channel->Registers;
 
     it->second.ErrorState = errorState;
@@ -287,9 +287,9 @@ void TDeviceChannel::UpdateError(WBMQTT::TDeviceDriver& deviceDriver, const std:
     }
 }
 
-void TDeviceChannel::UpdateValue(WBMQTT::TDeviceDriver&            deviceDriver,
+void TDeviceChannel::UpdateValue(WBMQTT::TDeviceDriver& deviceDriver,
                                  const WBMQTT::TPublishParameters& publishPolicy,
-                                 const std::string&                value)
+                                 const std::string& value)
 {
     if (!CachedErrorFlg.empty()) {
         PublishValue(deviceDriver, value);

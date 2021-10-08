@@ -58,7 +58,7 @@ void TMilurTest::SetUp()
     MilurPhaseAActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 106, S32));
     MilurPhaseBActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 107, S32));
     MilurPhaseCActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 108, S32));
-    MilurTotalActivePowerReg  = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 109, S32));
+    MilurTotalActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 109, S32));
 
     MilurPhaseAReactivePowerReg =
         TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 110, S32));
@@ -151,8 +151,8 @@ TEST_F(TMilurCustomPasswordTest, Test)
 class TMilurIntegrationTest: public TSerialDeviceIntegrationTest, public TMilurExpectations
 {
 protected:
-    void        SetUp();
-    void        TearDown();
+    void SetUp();
+    void TearDown();
     const char* ConfigPath() const
     {
         return "configs/config-milur-test.json";

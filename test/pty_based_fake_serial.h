@@ -17,10 +17,10 @@ public:
     void        Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     std::string GetPrimaryPtsName() const;
     std::string GetSecondaryPtsName() const;
-    void        StartExpecting();
-    void        StartForwarding();
-    void        Flush();
-    void        SetDumpForwardingLogs(bool val)
+    void StartExpecting();
+    void StartForwarding();
+    void Flush();
+    void SetDumpForwardingLogs(bool val)
     {
         DumpForwardingLogs = val;
     };
@@ -38,7 +38,7 @@ private:
     {
         Expectation(const std::vector<uint8_t> expectedRequest,
                     const std::vector<uint8_t> responseToSend,
-                    const char*                func)
+                    const char* func)
             : ExpectedRequest(expectedRequest),
               ResponseToSend(responseToSend),
               Func(func)

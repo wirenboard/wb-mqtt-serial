@@ -53,9 +53,9 @@ private:
     void                      OpenPortCycle();
     void                      UpdateFlushNeeded();
 
-    PPort                                           Port;
-    std::list<PRegister>                            RegList;
-    std::vector<PSerialDevice>                      Devices; /* for EndPollCycle */
+    PPort Port;
+    std::list<PRegister> RegList;
+    std::vector<PSerialDevice> Devices; /* for EndPollCycle */
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
     bool             Active;
@@ -70,8 +70,8 @@ private:
     const int MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
 
     TPortOpenCloseLogic OpenCloseLogic;
-    TLoggerWithTimeout  ConnectLogger;
-    Metrics::TMetrics&  Metrics;
+    TLoggerWithTimeout ConnectLogger;
+    Metrics::TMetrics& Metrics;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

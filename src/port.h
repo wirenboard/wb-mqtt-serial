@@ -14,10 +14,10 @@ class TPort: public std::enable_shared_from_this<TPort>
 public:
     using TFrameCompletePred = std::function<bool(uint8_t* buf, int size)>;
 
-    TPort()             = default;
+    TPort() = default;
     TPort(const TPort&) = delete;
     TPort& operator=(const TPort&) = delete;
-    virtual ~TPort()               = default;
+    virtual ~TPort() = default;
 
     virtual void Open()  = 0;
     virtual void Close() = 0;
@@ -43,17 +43,17 @@ public:
      * @param frame_complete
      * @return size_t received byte count
      */
-    virtual size_t ReadFrame(uint8_t*                         buf,
-                             size_t                           count,
+    virtual size_t ReadFrame(uint8_t* buf,
+                             size_t count,
                              const std::chrono::microseconds& responseTimeout,
                              const std::chrono::microseconds& frameTimeout,
                              TFrameCompletePred               frame_complete = 0) = 0;
 
     virtual void SkipNoise() = 0;
 
-    virtual void       SleepSinceLastInteraction(const std::chrono::microseconds& us)   = 0;
-    virtual bool       Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) = 0;
-    virtual TTimePoint CurrentTime() const                                              = 0;
+    virtual void SleepSinceLastInteraction(const std::chrono::microseconds& us) = 0;
+    virtual bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) = 0;
+    virtual TTimePoint CurrentTime() const = 0;
 
     /**
      * @brief Calculate sending time for bytesNumber bytes
@@ -79,9 +79,9 @@ class TPortOpenCloseLogic
 public:
     struct TSettings
     {
-        std::chrono::milliseconds MaxFailTime             = std::chrono::milliseconds(5000);
-        int                       ConnectionMaxFailCycles = 2;
-        std::chrono::milliseconds ReopenTimeout           = std::chrono::milliseconds(5000);
+        std::chrono::milliseconds MaxFailTime = std::chrono::milliseconds(5000);
+        int ConnectionMaxFailCycles = 2;
+        std::chrono::milliseconds ReopenTimeout = std::chrono::milliseconds(5000);
     };
 
     TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings);
@@ -90,8 +90,8 @@ public:
     void CloseIfNeeded(PPort port, bool allPreviousDataExchangeWasFailed);
 
 private:
-    TPortOpenCloseLogic::TSettings        Settings;
+    TPortOpenCloseLogic::TSettings Settings;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
-    size_t                                RemainingFailCycles;
+    size_t RemainingFailCycles;
     std::chrono::steady_clock::time_point NextOpenTryTime;
 };

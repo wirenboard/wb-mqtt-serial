@@ -73,11 +73,11 @@ public:
 class TIEC61107ModeCDevice: public TIEC61107Device
 {
 public:
-    TIEC61107ModeCDevice(PDeviceConfig      device_config,
-                         PPort              port,
-                         PProtocol          protocol,
+    TIEC61107ModeCDevice(PDeviceConfig device_config,
+                         PPort port,
+                         PProtocol protocol,
                          const std::string& logPrefix,
-                         IEC::TCrcFn        crcFn);
+                         IEC::TCrcFn crcFn);
 
     uint64_t ReadRegister(PRegister reg) override;
     void     WriteRegister(PRegister reg, uint64_t value) override;
@@ -92,12 +92,12 @@ protected:
      *    ETOPE(1)
      *    0011223344()
      */
-    virtual std::string GetParameterRequest(const TRegister& reg) const                  = 0;
-    virtual uint64_t    GetRegisterValue(const TRegister& reg, const std::string& value) = 0;
+    virtual std::string GetParameterRequest(const TRegister& reg) const = 0;
+    virtual uint64_t GetRegisterValue(const TRegister& reg, const std::string& value) = 0;
 
 private:
-    IEC::TCrcFn                                  CrcFn;
-    std::string                                  LogPrefix;
+    IEC::TCrcFn CrcFn;
+    std::string LogPrefix;
     std::unordered_map<std::string, std::string> CmdResultCache;
 
     std::string GetCachedResponse(const std::string& paramAddress);

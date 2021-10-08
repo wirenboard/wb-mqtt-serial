@@ -28,14 +28,14 @@ public:
     {
         return Reg;
     }
-    bool        NeedToPoll();
+    bool NeedToPoll();
     TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
     bool        NeedToFlush();
 
     struct TFlushResult
     {
         TErrorState Error;
-        bool        ValueIsChanged;
+        bool ValueIsChanged;
     };
 
     /**

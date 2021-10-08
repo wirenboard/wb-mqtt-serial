@@ -39,9 +39,9 @@ void TModbusDevice::Register(TSerialDeviceFactory& factory)
 }
 
 TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
-                             PDeviceConfig                          config,
-                             PPort                                  port,
-                             PProtocol                              protocol)
+                             PDeviceConfig config,
+                             PPort port,
+                             PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
       ModbusTraits(std::move(modbusTraits))

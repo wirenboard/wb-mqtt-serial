@@ -16,5 +16,5 @@ struct TTcpPortSettings
     }
 
     std::string Address;
-    uint16_t    Port;
+    uint16_t Port;
 };

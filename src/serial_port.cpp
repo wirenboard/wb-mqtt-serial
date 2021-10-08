@@ -23,29 +23,48 @@ namespace
     int ConvertBaudRate(int rate)
     {
         switch (rate) {
-            case 110: return B110;
-            case 300: return B300;
-            case 600: return B600;
-            case 1200: return B1200;
-            case 2400: return B2400;
-            case 4800: return B4800;
-            case 9600: return B9600;
-            case 19200: return B19200;
-            case 38400: return B38400;
-            case 57600: return B57600;
-            case 115200: return B115200;
-            default: LOG(Warn) << "unsupported baud rate " << rate << " defaulting to 9600"; return B9600;
+            case 110:
+                return B110;
+            case 300:
+                return B300;
+            case 600:
+                return B600;
+            case 1200:
+                return B1200;
+            case 2400:
+                return B2400;
+            case 4800:
+                return B4800;
+            case 9600:
+                return B9600;
+            case 19200:
+                return B19200;
+            case 38400:
+                return B38400;
+            case 57600:
+                return B57600;
+            case 115200:
+                return B115200;
+            default:
+                LOG(Warn) << "unsupported baud rate " << rate << " defaulting to 9600";
+                return B9600;
         }
     }
 
     int ConvertDataBits(int data_bits)
     {
         switch (data_bits) {
-            case 5: return CS5;
-            case 6: return CS6;
-            case 7: return CS7;
-            case 8: return CS8;
-            default: LOG(Warn) << "unsupported data bits count " << data_bits << " defaulting to 8"; return CS8;
+            case 5:
+                return CS5;
+            case 6:
+                return CS6;
+            case 7:
+                return CS7;
+            case 8:
+                return CS8;
+            default:
+                LOG(Warn) << "unsupported data bits count " << data_bits << " defaulting to 8";
+                return CS8;
         }
     }
 
@@ -115,7 +134,7 @@ void TSerialPort::Open()
         dev.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
         dev.c_iflag &= ~(IXON | IXOFF | IXANY);
         dev.c_oflag &= ~OPOST;
-        dev.c_cc[VMIN]  = 0;
+        dev.c_cc[VMIN] = 0;
         dev.c_cc[VTIME] = 0;
 
         if (tcgetattr(Fd, &OldTermios) != 0) {
@@ -159,11 +178,11 @@ uint8_t TSerialPort::ReadByte(const std::chrono::microseconds& timeout)
     return Base::ReadByte(timeout + GetLinuxLag(Settings.BaudRate));
 }
 
-size_t TSerialPort::ReadFrame(uint8_t*                         buf,
-                              size_t                           count,
+size_t TSerialPort::ReadFrame(uint8_t* buf,
+                              size_t count,
                               const std::chrono::microseconds& responseTimeout,
                               const std::chrono::microseconds& frameTimeout,
-                              TFrameCompletePred               frameComplete)
+                              TFrameCompletePred frameComplete)
 {
     return Base::ReadFrame(buf,
                            count,
@@ -239,11 +258,11 @@ uint8_t TSerialPortWithIECHack::ReadByte(const std::chrono::microseconds& timeou
     return c;
 }
 
-size_t TSerialPortWithIECHack::ReadFrame(uint8_t*                         buf,
-                                         size_t                           count,
+size_t TSerialPortWithIECHack::ReadFrame(uint8_t* buf,
+                                         size_t count,
                                          const std::chrono::microseconds& responseTimeout,
                                          const std::chrono::microseconds& frameTimeout,
-                                         TFrameCompletePred               frameComplete)
+                                         TFrameCompletePred frameComplete)
 {
     if (UseIECHack) {
         auto wrappedFrameComplete = [=](uint8_t* buf, size_t count) {

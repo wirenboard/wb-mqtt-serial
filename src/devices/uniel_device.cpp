@@ -19,8 +19,8 @@ namespace
 {
     enum
     {
-        READ_CMD           = 0x05,
-        WRITE_CMD          = 0x06,
+        READ_CMD = 0x05,
+        WRITE_CMD = 0x06,
         SET_BRIGHTNESS_CMD = 0x0a
     };
 

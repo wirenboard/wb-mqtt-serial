@@ -25,15 +25,15 @@ public:
     void       ProcessPending(const TCallback& callback);
     bool       PollIsDue();
     TTimePoint GetNextPollTimePoint();
-    void       Reset();
+    void Reset();
 
 private:
     struct TQueueItem
     {
-        TQueueItem(TTimePoint*                current_time,
+        TQueueItem(TTimePoint* current_time,
                    std::chrono::milliseconds* avg_request_duration,
-                   const PPollEntry&          entry,
-                   int                        index)
+                   const PPollEntry& entry,
+                   int index)
             : CurrentTime(current_time),
               AvgRequestDuration(avg_request_duration),
               Entry(entry),
@@ -41,23 +41,23 @@ private:
               DueAt(*current_time),
               Index(index)
         {}
-        TTimePoint*                CurrentTime;
+        TTimePoint* CurrentTime;
         std::chrono::milliseconds* AvgRequestDuration;
-        PPollEntry                 Entry;
-        std::chrono::milliseconds  PollInterval;
-        std::chrono::milliseconds  PollIntervalSum = std::chrono::milliseconds::zero();
-        std::chrono::milliseconds  AvgPollInterval = std::chrono::milliseconds::zero();
-        std::chrono::milliseconds  RequestDuration = std::chrono::milliseconds::zero();
-        TTimePoint                 DueAt;
-        TTimePoint                 LastPollAt;
-        int                        Index;
-        int                        PollCountAtLeast = 0;
+        PPollEntry Entry;
+        std::chrono::milliseconds PollInterval;
+        std::chrono::milliseconds PollIntervalSum = std::chrono::milliseconds::zero();
+        std::chrono::milliseconds AvgPollInterval = std::chrono::milliseconds::zero();
+        std::chrono::milliseconds RequestDuration = std::chrono::milliseconds::zero();
+        TTimePoint DueAt;
+        TTimePoint LastPollAt;
+        int Index;
+        int PollCountAtLeast = 0;
         // NOTE: PollIntervalAveragingWindow of 1 is not supported!
         // (must alter TPollPlan::TQueueItem::Update() to support it)
         static const int PollIntervalAveragingWindow = 10;
 
         void Update(const std::chrono::milliseconds& new_interval, const std::chrono::milliseconds& request_duration);
-        int  Importance() const;
+        int Importance() const;
     };
     typedef std::shared_ptr<TQueueItem> PQueueItem;
     struct LaterThan

@@ -13,10 +13,14 @@ uint32_t PackBytes(uint8_t* bytes, WordSizes size)
     the execution will propagate to the very end of
     the switch statement*/
     switch (size) {
-        case WordSizes::W32_SZ: ret |= (*bytes++ << 24);
-        case WordSizes::W24_SZ: ret |= (*bytes++ << 16);
-        case WordSizes::W16_SZ: ret |= (*bytes++ << 8);
-        case WordSizes::W8_SZ: ret |= (*bytes << 0);
+        case WordSizes::W32_SZ:
+            ret |= (*bytes++ << 24);
+        case WordSizes::W24_SZ:
+            ret |= (*bytes++ << 16);
+        case WordSizes::W16_SZ:
+            ret |= (*bytes++ << 8);
+        case WordSizes::W8_SZ:
+            ret |= (*bytes << 0);
     }
     return ret;
 }

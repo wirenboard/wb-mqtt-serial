@@ -135,7 +135,7 @@ namespace
     //      ]
     //  }
     Json::Value MakeCustomChannelsSchema(const std::vector<std::string>& names,
-                                         const std::string&              customChannelsSchemaRef)
+                                         const std::string& customChannelsSchemaRef)
     {
         Json::Value n;
         n["not"]["properties"]["name"]["type"] = "string";
@@ -164,10 +164,10 @@ namespace
                                          const std::string& deviceType,
                                          const std::string& customChannelsSchemaRef)
     {
-        Json::Value              r;
+        Json::Value r;
         std::vector<std::string> names;
 
-        r["type"]   = "array";
+        r["type"] = "array";
         auto& items = MakeArray("oneOf", r["items"]);
         for (const auto& channel: channels) {
             auto channelSchema = MakeTabChannelSchema(channel, deviceType);
@@ -180,8 +180,8 @@ namespace
         return r;
     }
 
-    void MakeDeviceParametersSchema(Json::Value&       properties,
-                                    Json::Value&       requiredArray,
+    void MakeDeviceParametersSchema(Json::Value& properties,
+                                    Json::Value& requiredArray,
                                     const Json::Value& deviceTemplate)
     {
         if (deviceTemplate.isMember("parameters")) {
@@ -208,9 +208,9 @@ namespace
     //      },
     //      "required": [ "parameter1", ... ]
     //  }
-    Json::Value MakeSubDeviceSchema(const std::string&     subDeviceType,
+    Json::Value MakeSubDeviceSchema(const std::string& subDeviceType,
                                     const TDeviceTemplate& subdeviceTemplate,
-                                    const std::string&     deviceType)
+                                    const std::string& deviceType)
     {
         Json::Value res;
         res["type"]                      = "object";
@@ -274,7 +274,7 @@ namespace
         }
 
         if (deviceTemplate.Schema.isMember("channels")) {
-            auto customChannelsSchemaRef  = deviceFactory.GetCustomChannelSchemaRef(protocolName);
+            auto customChannelsSchemaRef = deviceFactory.GetCustomChannelSchemaRef(protocolName);
             res["properties"]["channels"] = MakeDeviceChannelsSchema(deviceTemplate.Schema["channels"],
                                                                      deviceTemplate.Type,
                                                                      customChannelsSchemaRef);
@@ -310,10 +310,10 @@ namespace
     }
 }
 
-Json::Value MakeSchemaForConfigValidation(const Json::Value&              baseConfigSchema,
+Json::Value MakeSchemaForConfigValidation(const Json::Value& baseConfigSchema,
                                           const TConfigValidationOptions& options,
-                                          TTemplateMap&                   templates,
-                                          TSerialDeviceFactory&           deviceFactory)
+                                          TTemplateMap& templates,
+                                          TSerialDeviceFactory& deviceFactory)
 {
     Json::Value res(baseConfigSchema);
     // Let's add to #/definitions/device/oneOf a list of devices generated from templates

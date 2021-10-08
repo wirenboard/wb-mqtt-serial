@@ -92,8 +92,8 @@ TEST_F(TUnielDeviceTest, TestSetBrightness)
 class TUnielIntegrationTest: public TSerialDeviceIntegrationTest, public TUnielDeviceExpectations
 {
 protected:
-    void        SetUp();
-    void        TearDown();
+    void SetUp();
+    void TearDown();
     const char* ConfigPath() const
     {
         return "configs/config-uniel-test.json";

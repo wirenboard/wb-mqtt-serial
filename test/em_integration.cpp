@@ -8,8 +8,8 @@
 class TEMIntegrationTest: public TSerialDeviceIntegrationTest, public TMilurExpectations, public TMercury230Expectations
 {
 protected:
-    void        SetUp();
-    void        TearDown();
+    void SetUp();
+    void TearDown();
     const char* ConfigPath() const
     {
         return "configs/config-em-test.json";

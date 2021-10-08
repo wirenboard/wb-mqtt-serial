@@ -42,7 +42,7 @@ void TPollPlanTest::SetUp()
 {
     Plan        = std::make_shared<TPollPlan>([this]() { return CurrentTime; });
     CurrentTime = StartTime;
-    Entries     = {std::make_shared<TFakePollEntry>("33ms", 33),
+    Entries = {std::make_shared<TFakePollEntry>("33ms", 33),
                std::make_shared<TFakePollEntry>("100ms-1", 100),
                std::make_shared<TFakePollEntry>("100ms-2", 100),
                std::make_shared<TFakePollEntry>("300ms", 300),

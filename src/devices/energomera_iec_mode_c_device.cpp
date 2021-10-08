@@ -44,9 +44,9 @@ namespace
         {}
 
         PSerialDevice CreateDevice(const Json::Value& data,
-                                   PDeviceConfig      deviceConfig,
-                                   PPort              port,
-                                   PProtocol          protocol) const override
+                                   PDeviceConfig deviceConfig,
+                                   PPort port,
+                                   PProtocol protocol) const override
         {
             auto dev = std::make_shared<TEnergomeraIecModeCDevice>(deviceConfig, port, protocol);
             dev->InitSetupItems();

@@ -64,13 +64,13 @@ void GenerateDeviceTemplate(const std::string& appName, const std::string& desti
         }
 
         TSerialPortSettings portSettings;
-        auto                portParams = WBMQTT::StringSplit(params[2], "-");
-        portSettings.Device            = params[1];
-        portSettings.BaudRate          = atoi(portParams[0].c_str());
-        portSettings.DataBits          = atoi(portParams[1].c_str());
-        portSettings.Parity            = portParams[2][0];
-        portSettings.StopBits          = atoi(portParams[3].c_str());
-        auto port                      = std::make_shared<TSerialPort>(portSettings);
+        auto portParams = WBMQTT::StringSplit(params[2], "-");
+        portSettings.Device = params[1];
+        portSettings.BaudRate = atoi(portParams[0].c_str());
+        portSettings.DataBits = atoi(portParams[1].c_str());
+        portSettings.Parity = portParams[2][0];
+        portSettings.StopBits = atoi(portParams[3].c_str());
+        auto port = std::make_shared<TSerialPort>(portSettings);
 
         auto protocolParams = WBMQTT::StringSplit(params[3], ":");
         auto slaveId        = (protocolParams.size() == 1) ? std::string() : protocolParams[1];

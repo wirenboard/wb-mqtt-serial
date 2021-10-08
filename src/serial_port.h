@@ -33,7 +33,7 @@ public:
 
 private:
     TSerialPortSettings Settings;
-    termios             OldTermios;
+    termios OldTermios;
 };
 
 using PSerialPort = std::shared_ptr<TSerialPort>;
@@ -56,16 +56,16 @@ public:
 
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
 
-    size_t ReadFrame(uint8_t*                         buf,
-                     size_t                           count,
+    size_t ReadFrame(uint8_t* buf,
+                     size_t count,
                      const std::chrono::microseconds& responseTimeout,
                      const std::chrono::microseconds& frameTimeout,
                      TFrameCompletePred               frame_complete = 0) override;
 
     void SkipNoise() override;
 
-    void       SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
-    bool       Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
+    void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
+    bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
     TTimePoint CurrentTime() const override;
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) override;

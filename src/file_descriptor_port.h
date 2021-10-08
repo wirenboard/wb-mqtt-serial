@@ -31,7 +31,7 @@ protected:
     bool         Select(const std::chrono::microseconds& us);
     virtual void OnReadyEmptyFd();
 
-    int                                                Fd;
+    int Fd;
     std::chrono::time_point<std::chrono::steady_clock> LastInteraction;
 
 private:

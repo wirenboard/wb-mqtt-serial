@@ -27,7 +27,7 @@ namespace
     // Additional timeout for reading from tcp port. It is caused by intermediate hardware and internal Linux processing
     // Values are taken from old default timeouts
     const std::chrono::microseconds ResponseTCPLag = std::chrono::microseconds(500000);
-    const std::chrono::microseconds FrameTCPLag    = std::chrono::microseconds(150000);
+    const std::chrono::microseconds FrameTCPLag = std::chrono::microseconds(150000);
 }
 
 TTcpPort::TTcpPort(const TTcpPortSettings& settings): Settings(settings)
@@ -117,8 +117,8 @@ uint8_t TTcpPort::ReadByte(const std::chrono::microseconds& timeout)
     return Base::ReadByte(timeout + ResponseTCPLag);
 }
 
-size_t TTcpPort::ReadFrame(uint8_t*                         buf,
-                           size_t                           count,
+size_t TTcpPort::ReadFrame(uint8_t* buf,
+                           size_t count,
                            const std::chrono::microseconds& responseTimeout,
                            const std::chrono::microseconds& frameTimeout,
                            TFrameCompletePred               frame_complete)

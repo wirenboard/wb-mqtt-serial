@@ -60,10 +60,10 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     Port()->SkipNoise();
 
     uint8_t buf[RESPONSE_BUF_LEN] = {};
-    buf[0]                        = REQUEST_PREFIX;
-    buf[1]                        = SlaveId;
-    buf[2]                        = cmd;
-    buf[3]                        = dallas_crc8(buf, REQUEST_LEN - 1);
+    buf[0] = REQUEST_PREFIX;
+    buf[1] = SlaveId;
+    buf[2] = cmd;
+    buf[3] = dallas_crc8(buf, REQUEST_LEN - 1);
     Port()->WriteBytes(buf, REQUEST_LEN);
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
 
@@ -89,9 +89,9 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
 
 uint64_t TLLSDevice::ReadRegister(PRegister reg)
 {
-    auto    addr   = GetUint32RegisterAddress(reg->GetAddress());
-    uint8_t cmd    = (addr & 0xFF00) >> 8;
-    auto    result = ExecCommand(cmd);
+    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+    uint8_t cmd = (addr & 0xFF00) >> 8;
+    auto result = ExecCommand(cmd);
 
     int     result_buf[8] = {};
     uint8_t offset        = (addr & 0x00FF);

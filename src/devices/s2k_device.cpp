@@ -91,10 +91,10 @@ void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
                           /* Relay No = */ (uint8_t)addr,
                           /* Relay program = */ (uint8_t)(value ? 0x1 /* ON */ : 0x2 /* OFF */),
                           /* CRC placeholder */ 0x0};
-    command[6]         = CrcS2K(command, 6);
+    command[6] = CrcS2K(command, 6);
     Port()->WriteBytes(command, 7);
     uint8_t response[256];
-    int     size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
+    int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
     if (size != 6 || response[0] != (uint8_t)SlaveId || response[1] != 5 || response[2] != 0x16) {
         throw TSerialDeviceTransientErrorException("incorrect response for 0x15 command");
     }
@@ -112,8 +112,10 @@ uint64_t TS2KDevice::ReadRegister(PRegister reg)
     /* We have no way to get current relay state from device. Thats why we save last
        successful write to relay register and return it when regiter is read */
     switch (reg->Type) {
-        case REG_RELAY: return RelayState[addr] != 0 && RelayState[addr] != 2;
-        case REG_RELAY_MODE: return RelayState[addr];
+        case REG_RELAY:
+            return RelayState[addr] != 0 && RelayState[addr] != 2;
+        case REG_RELAY_MODE:
+            return RelayState[addr];
         case REG_RELAY_DEFAULT:
         case REG_RELAY_DELAY: {
             Port()->CheckPortOpen();
@@ -126,7 +128,7 @@ uint64_t TS2KDevice::ReadRegister(PRegister reg)
                                   /* Config No = */ (uint8_t)(addr + (reg->Type == REG_RELAY_DELAY ? 4 : 0)),
                                   /* Unused */ 0x0,
                                   /* CRC placeholder */ 0x0};
-            command[6]         = CrcS2K(command, 6);
+            command[6] = CrcS2K(command, 6);
             Port()->WriteBytes(command, 7);
             uint8_t response[256];
             int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
@@ -138,6 +140,7 @@ uint64_t TS2KDevice::ReadRegister(PRegister reg)
             }
             return response[4];
         }
-        default: throw TSerialDeviceException("S2K protocol: invalid register for reading");
+        default:
+            throw TSerialDeviceException("S2K protocol: invalid register for reading");
     }
 }

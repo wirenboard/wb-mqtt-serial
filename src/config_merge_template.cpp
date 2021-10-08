@@ -7,9 +7,9 @@
 using namespace std;
 using namespace WBMQTT::JSON;
 
-void UpdateChannels(Json::Value&       dst,
+void UpdateChannels(Json::Value& dst,
                     const Json::Value& userConfig,
-                    ITemplateMap&      channelTemplates,
+                    ITemplateMap& channelTemplates,
                     const std::string& logPrefix);
 
 void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config)
@@ -154,7 +154,7 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
 }
 
 Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig,
-                                           ITemplateMap&      templates,
+                                           ITemplateMap& templates,
                                            const std::string& logPrefix)
 {
     if (!channelConfig.isMember("device_type")) {
@@ -175,9 +175,9 @@ Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig,
     return res;
 }
 
-void UpdateChannels(Json::Value&       channelsFromTemplate,
+void UpdateChannels(Json::Value& channelsFromTemplate,
                     const Json::Value& userChannels,
-                    ITemplateMap&      channelTemplates,
+                    ITemplateMap& channelTemplates,
                     const std::string& logPrefix)
 {
     std::unordered_map<std::string, Json::ArrayIndex> channelNames;

@@ -31,15 +31,15 @@ namespace Modbus // modbus protocol declarations
 
     enum Error : uint8_t
     {
-        ERR_NONE                                    = 0x0,
-        ERR_ILLEGAL_FUNCTION                        = 0x1,
-        ERR_ILLEGAL_DATA_ADDRESS                    = 0x2,
-        ERR_ILLEGAL_DATA_VALUE                      = 0x3,
-        ERR_SERVER_DEVICE_FAILURE                   = 0x4,
-        ERR_ACKNOWLEDGE                             = 0x5,
-        ERR_SERVER_DEVICE_BUSY                      = 0x6,
-        ERR_MEMORY_PARITY_ERROR                     = 0x8,
-        ERR_GATEWAY_PATH_UNAVAILABLE                = 0xA,
+        ERR_NONE = 0x0,
+        ERR_ILLEGAL_FUNCTION = 0x1,
+        ERR_ILLEGAL_DATA_ADDRESS = 0x2,
+        ERR_ILLEGAL_DATA_VALUE = 0x3,
+        ERR_SERVER_DEVICE_FAILURE = 0x4,
+        ERR_ACKNOWLEDGE = 0x5,
+        ERR_SERVER_DEVICE_BUSY = 0x6,
+        ERR_MEMORY_PARITY_ERROR = 0x8,
+        ERR_GATEWAY_PATH_UNAVAILABLE = 0xA,
         ERR_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND = 0xB
     };
 
@@ -63,8 +63,8 @@ namespace Modbus // modbus protocol declarations
         TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles);
         ~TModbusRegisterRange();
         EStatus GetStatus() const override;
-        void    SetStatus(EStatus status);
-        int     GetStart() const
+        void SetStatus(EStatus status);
+        int GetStart() const
         {
             return Start;
         }
@@ -72,7 +72,7 @@ namespace Modbus // modbus protocol declarations
         {
             return Count;
         }
-        uint8_t*  GetBits();
+        uint8_t* GetBits();
         uint16_t* GetWords();
 
         bool HasHoles() const
@@ -112,15 +112,15 @@ namespace Modbus // modbus protocol declarations
         }
 
     private:
-        bool      ReadOneByOne = false;
-        bool      HasHolesFlg  = false;
-        int       Start;
-        int       Count;
-        uint8_t*  Bits   = 0;
-        uint16_t* Words  = 0;
-        EStatus   Status = ST_UNKNOWN_ERROR;
-        TRequest  Request;
-        size_t    ResponseSize = 0;
+        bool ReadOneByOne = false;
+        bool HasHolesFlg = false;
+        int Start;
+        int Count;
+        uint8_t* Bits = 0;
+        uint16_t* Words = 0;
+        EStatus Status = ST_UNKNOWN_ERROR;
+        TRequest Request;
+        size_t ResponseSize = 0;
     };
 
     using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
@@ -245,13 +245,13 @@ namespace Modbus // modbus protocol common utilities
 
     enum ModbusFunction : uint8_t
     {
-        FN_READ_COILS               = 0x1,
-        FN_READ_DISCRETE            = 0x2,
-        FN_READ_HOLDING             = 0x3,
-        FN_READ_INPUT               = 0x4,
-        FN_WRITE_SINGLE_COIL        = 0x5,
-        FN_WRITE_SINGLE_REGISTER    = 0x6,
-        FN_WRITE_MULTIPLE_COILS     = 0xF,
+        FN_READ_COILS = 0x1,
+        FN_READ_DISCRETE = 0x2,
+        FN_READ_HOLDING = 0x3,
+        FN_READ_INPUT = 0x4,
+        FN_WRITE_SINGLE_COIL = 0x5,
+        FN_WRITE_SINGLE_REGISTER = 0x6,
+        FN_WRITE_MULTIPLE_COILS = 0xF,
         FN_WRITE_MULTIPLE_REGISTERS = 0x10,
     };
 
@@ -283,37 +283,51 @@ namespace Modbus // modbus protocol common utilities
             case REG_HOLDING_MULTI:
             case REG_HOLDING:
                 switch (op) {
-                    case OperationType::OP_READ: return FN_READ_HOLDING;
-                    case OperationType::OP_WRITE: return many ? FN_WRITE_MULTIPLE_REGISTERS : FN_WRITE_SINGLE_REGISTER;
-                    default: break;
+                    case OperationType::OP_READ:
+                        return FN_READ_HOLDING;
+                    case OperationType::OP_WRITE:
+                        return many ? FN_WRITE_MULTIPLE_REGISTERS : FN_WRITE_SINGLE_REGISTER;
+                    default:
+                        break;
                 }
                 break;
             case REG_INPUT:
                 switch (op) {
-                    case OperationType::OP_READ: return FN_READ_INPUT;
-                    default: break;
+                    case OperationType::OP_READ:
+                        return FN_READ_INPUT;
+                    default:
+                        break;
                 }
                 break;
             case REG_COIL:
                 switch (op) {
-                    case OperationType::OP_READ: return FN_READ_COILS;
-                    case OperationType::OP_WRITE: return many ? FN_WRITE_MULTIPLE_COILS : FN_WRITE_SINGLE_COIL;
-                    default: break;
+                    case OperationType::OP_READ:
+                        return FN_READ_COILS;
+                    case OperationType::OP_WRITE:
+                        return many ? FN_WRITE_MULTIPLE_COILS : FN_WRITE_SINGLE_COIL;
+                    default:
+                        break;
                 }
                 break;
             case REG_DISCRETE:
                 switch (op) {
-                    case OperationType::OP_READ: return FN_READ_DISCRETE;
-                    default: break;
+                    case OperationType::OP_READ:
+                        return FN_READ_DISCRETE;
+                    default:
+                        break;
                 }
                 break;
-            default: break;
+            default:
+                break;
         }
 
         switch (op) {
-            case OperationType::OP_READ: throw TSerialDeviceException("can't read from " + typeName);
-            case OperationType::OP_WRITE: throw TSerialDeviceException("can't write to " + typeName);
-            default: throw TSerialDeviceException("invalid operation type");
+            case OperationType::OP_READ:
+                throw TSerialDeviceException("can't read from " + typeName);
+            case OperationType::OP_WRITE:
+                throw TSerialDeviceException("can't write to " + typeName);
+            default:
+                throw TSerialDeviceException("invalid operation type");
         }
     }
 
@@ -449,8 +463,8 @@ namespace Modbus // modbus protocol common utilities
     // fills pdu with write request data according to Modbus specification
     void ComposeMultipleWriteRequestPDU(uint8_t* pdu, const TRegister& reg, uint64_t value, int shift)
     {
-        auto&       tmpCache = reg.Device()->ModbusTmpCache;
-        const auto& cache    = reg.Device()->ModbusCache;
+        auto& tmpCache = reg.Device()->ModbusTmpCache;
+        const auto& cache = reg.Device()->ModbusCache;
 
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
@@ -503,8 +517,8 @@ namespace Modbus // modbus protocol common utilities
 
     void ComposeSingleWriteRequestPDU(uint8_t* pdu, const TRegister& reg, uint16_t value, int shift, uint8_t wordIndex)
     {
-        auto&       tmpCache = reg.Device()->ModbusTmpCache;
-        const auto& cache    = reg.Device()->ModbusCache;
+        auto& tmpCache = reg.Device()->ModbusTmpCache;
+        const auto& cache = reg.Device()->ModbusCache;
 
         if (reg.Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8 : 0x00;
@@ -548,8 +562,8 @@ namespace Modbus // modbus protocol common utilities
 
         address.Type = range.Type();
 
-        auto& cache       = range.Device()->ModbusCache;
-        auto  baseAddress = range.GetStart();
+        auto& cache = range.Device()->ModbusCache;
+        auto baseAddress = range.GetStart();
 
         ThrowIfModbusException(GetExceptionCode(pdu));
 
@@ -642,8 +656,8 @@ namespace Modbus // modbus protocol common utilities
     }
 
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                const TDeviceConfig&        deviceConfig,
-                                                bool                        enableHoles)
+                                                const TDeviceConfig& deviceConfig,
+                                                bool enableHoles)
     {
         std::list<PRegisterRange> r;
         if (reg_list.empty())
@@ -652,9 +666,9 @@ namespace Modbus // modbus protocol common utilities
         std::list<PRegister>      l;
         int                       prev_start = -1, prev_type = -1, prev_end = -1;
         std::chrono::milliseconds prev_interval;
-        int                       max_hole =
+        int max_hole =
             enableHoles ? (IsSingleBitType(reg_list.front()->Type) ? deviceConfig.MaxBitHole : deviceConfig.MaxRegHole)
-                                              : 0;
+                        : 0;
         int max_regs;
 
         if (IsSingleBitType(reg_list.front()->Type)) {
@@ -702,10 +716,10 @@ namespace Modbus // modbus protocol common utilities
     IModbusTraits::~IModbusTraits()
     {}
 
-    size_t ProcessRequest(IModbusTraits&       traits,
-                          TPort&               port,
-                          const TRequest&      request,
-                          TResponse&           response,
+    size_t ProcessRequest(IModbusTraits& traits,
+                          TPort& port,
+                          const TRequest& request,
+                          TResponse& response,
                           const TDeviceConfig& config)
     {
         port.SleepSinceLastInteraction(config.RequestDelay);
@@ -814,7 +828,7 @@ namespace Modbus // modbus protocol common utilities
 
     struct TTruncatedRegisterList
     {
-        bool                 IsValid = false;
+        bool IsValid = false;
         std::list<PRegister> Regs;
     };
 
@@ -822,7 +836,7 @@ namespace Modbus // modbus protocol common utilities
     TTruncatedRegisterList RemoveUnsupportedFromBorders(const std::list<PRegister>& l)
     {
         TTruncatedRegisterList res;
-        auto                   s = std::find_if(l.begin(), l.end(), [](auto& r) { return r->IsAvailable(); });
+        auto s = std::find_if(l.begin(), l.end(), [](auto& r) { return r->IsAvailable(); });
         auto e = std::find_if(l.rbegin(), std::make_reverse_iterator(s), [](auto& r) { return r->IsAvailable(); });
         if ((s != l.begin()) || (e != l.rbegin())) {
             std::copy(s, e.base(), std::back_inserter(res.Regs));
@@ -856,11 +870,11 @@ namespace Modbus // modbus protocol common utilities
         return newRanges;
     }
 
-    std::list<PRegisterRange> ReadWholeRange(Modbus::IModbusTraits&        traits,
+    std::list<PRegisterRange> ReadWholeRange(Modbus::IModbusTraits& traits,
                                              Modbus::PModbusRegisterRange& range,
-                                             TPort&                        port,
-                                             uint8_t                       slaveId,
-                                             int                           shift)
+                                             TPort& port,
+                                             uint8_t slaveId,
+                                             int shift)
     {
         std::list<PRegisterRange> newRanges;
         try {
@@ -890,11 +904,11 @@ namespace Modbus // modbus protocol common utilities
         return newRanges;
     }
 
-    std::list<PRegisterRange> ReadOneByOne(Modbus::IModbusTraits&        traits,
+    std::list<PRegisterRange> ReadOneByOne(Modbus::IModbusTraits& traits,
                                            Modbus::PModbusRegisterRange& range,
-                                           TPort&                        port,
-                                           uint8_t                       slaveId,
-                                           int                           shift)
+                                           TPort& port,
+                                           uint8_t slaveId,
+                                           int shift)
     {
         range->SetStatus(ST_UNKNOWN_ERROR);
         std::list<Modbus::PModbusRegisterRange> subRanges;
@@ -919,10 +933,10 @@ namespace Modbus // modbus protocol common utilities
     }
 
     std::list<PRegisterRange> ReadRegisterRange(Modbus::IModbusTraits& traits,
-                                                TPort&                 port,
-                                                uint8_t                slaveId,
-                                                PRegisterRange         range,
-                                                int                    shift)
+                                                TPort& port,
+                                                uint8_t slaveId,
+                                                PRegisterRange range,
+                                                int shift)
     {
         auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
         if (!modbus_range) {
@@ -942,11 +956,11 @@ namespace Modbus // modbus protocol common utilities
         LOG(Warn) << "failed to write: " << item->Register->ToString() << ": " << msg;
     }
 
-    bool WriteSetupRegisters(Modbus::IModbusTraits&               traits,
-                             TPort&                               port,
-                             uint8_t                              slaveId,
+    bool WriteSetupRegisters(Modbus::IModbusTraits& traits,
+                             TPort& port,
+                             uint8_t slaveId,
                              const std::vector<PDeviceSetupItem>& setupItems,
-                             int                                  shift)
+                             int shift)
     {
         for (const auto& item: setupItems) {
             try {

@@ -52,7 +52,7 @@ TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PP
         1600 ms - 300
     */
     const std::chrono::milliseconds minTimeout(150);
-    auto timeout                   = std::max(minTimeout, std::chrono::milliseconds(115) + port->GetSendTime(35));
+    auto timeout = std::max(minTimeout, std::chrono::milliseconds(115) + port->GetSendTime(35));
     device_config->ResponseTimeout = std::max(device_config->FrameTimeout, timeout);
 }
 
@@ -85,12 +85,23 @@ TEMDevice::ErrorType TMercury230Device::CheckForException(uint8_t* frame, int le
     if (len != 4 || (frame[1] & 0x0f) == 0)
         return TEMDevice::NO_ERROR;
     switch (frame[1] & 0x0f) {
-        case 1: *message = "Invalid command or parameter"; return TEMDevice::PERMANENT_ERROR;
-        case 2: *message = "Internal meter error"; break;
-        case 3: *message = "Insufficient access level"; break;
-        case 4: *message = "Can't correct the clock more than once per day"; break;
-        case 5: *message = "Connection closed"; return TEMDevice::NO_OPEN_SESSION;
-        default: *message = "Unknown error";
+        case 1:
+            *message = "Invalid command or parameter";
+            return TEMDevice::PERMANENT_ERROR;
+        case 2:
+            *message = "Internal meter error";
+            break;
+        case 3:
+            *message = "Insufficient access level";
+            break;
+        case 4:
+            *message = "Can't correct the clock more than once per day";
+            break;
+        case 5:
+            *message = "Connection closed";
+            return TEMDevice::NO_OPEN_SESSION;
+        default:
+            *message = "Unknown error";
     }
     return TEMDevice::OTHER_ERROR;
 }
@@ -130,7 +141,7 @@ uint32_t TMercury230Device::ReadParam(uint32_t address, unsigned resp_payload_le
             (reg_type == REG_PARAM_SIGN_IGNORE)) {
             uint32_t magnitude = (((uint32_t)buf[0] & 0x3f) << 16) + ((uint32_t)buf[2] << 8) + (uint32_t)buf[1];
 
-            int active_power_sign   = (buf[0] & (1 << 7)) ? -1 : 1;
+            int active_power_sign = (buf[0] & (1 << 7)) ? -1 : 1;
             int reactive_power_sign = (buf[0] & (1 << 6)) ? -1 : 1;
 
             int sign = 1;
@@ -158,14 +169,18 @@ uint64_t TMercury230Device::ReadRegister(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     switch (reg->Type) {
-        case REG_VALUE_ARRAY: return ReadValueArray(addr, 4).values[addr & 0x03];
-        case REG_VALUE_ARRAY12: return ReadValueArray(addr, 3).values[addr & 0x03];
+        case REG_VALUE_ARRAY:
+            return ReadValueArray(addr, 4).values[addr & 0x03];
+        case REG_VALUE_ARRAY12:
+            return ReadValueArray(addr, 3).values[addr & 0x03];
         case REG_PARAM:
         case REG_PARAM_SIGN_ACT:
         case REG_PARAM_SIGN_REACT:
         case REG_PARAM_SIGN_IGNORE:
-        case REG_PARAM_BE: return ReadParam(addr & 0xffff, reg->GetByteWidth(), (RegisterType)reg->Type);
-        default: throw TSerialDeviceException("mercury230: invalid register type");
+        case REG_PARAM_BE:
+            return ReadParam(addr & 0xffff, reg->GetByteWidth(), (RegisterType)reg->Type);
+        default:
+            throw TSerialDeviceException("mercury230: invalid register type");
     }
 }
 

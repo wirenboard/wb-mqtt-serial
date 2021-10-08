@@ -15,7 +15,7 @@ protected:
 void TDeviceTemplateFileExtensionTest::VerifyTemplates(const std::string& directory, const std::string& bad_device_type)
 {
     try {
-        Json::Value  configSchema = LoadConfigSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial.schema.json"));
+        Json::Value configSchema = LoadConfigSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial.schema.json"));
         TTemplateMap templates(
             directory,
             LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
@@ -37,7 +37,7 @@ TEST(TDeviceTemplatesTest, Validate)
     Json::Value templatesSchema(
         LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                   configSchema));
-    std::string  templatesDir(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-templates"));
+    std::string templatesDir(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-templates"));
     TTemplateMap templates(templatesDir, templatesSchema, false);
     for (const auto& dt: templates.GetDeviceTypes()) {
         templates.GetTemplate(dt);

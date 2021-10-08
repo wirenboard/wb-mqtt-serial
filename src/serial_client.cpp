@@ -246,7 +246,7 @@ void TSerialClient::OpenPortCycle()
         auto                      pollEntry = dynamic_cast<TSerialPollEntry*>(entry.get());
         std::list<PRegisterRange> newRanges;
         for (auto range: pollEntry->Ranges) {
-            auto  device   = range->Device();
+            auto device = range->Device();
             auto& statuses = devicesRangesStatuses[device];
 
             if (device->GetIsDisconnected()) {
@@ -311,7 +311,7 @@ void TSerialClient::OpenPortCycle()
     UpdateFlushNeeded();
 
     for (const auto& deviceRangesStatuses: devicesRangesStatuses) {
-        const auto& device   = deviceRangesStatuses.first;
+        const auto& device = deviceRangesStatuses.first;
         const auto& statuses = deviceRangesStatuses.second;
 
         if (statuses.empty()) {

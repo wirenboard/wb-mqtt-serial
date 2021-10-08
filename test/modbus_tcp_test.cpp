@@ -31,11 +31,11 @@ namespace
             return 0;
         }
 
-        size_t ReadFrame(uint8_t*                         buf,
-                         size_t                           count,
+        size_t ReadFrame(uint8_t* buf,
+                         size_t count,
                          const std::chrono::microseconds& responseTimeout,
                          const std::chrono::microseconds& frameTimeout,
-                         TFrameCompletePred               frame_complete = 0)
+                         TFrameCompletePred frame_complete = 0)
         {
             if (Pointer == Stream.size()) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(15));
@@ -116,9 +116,9 @@ TEST_F(TModbusTCPTraitsTest, FinalizeRequest)
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameGood)
 {
-    std::vector<uint8_t>      r = {0, 1, 0, 0, 0, 2, 100, 17};
-    TPortMock                 port(r);
-    Modbus::TModbusTCPTraits  traits(std::make_shared<uint16_t>(10));
+    std::vector<uint8_t> r = {0, 1, 0, 0, 0, 2, 100, 17};
+    TPortMock port(r);
+    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
     Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
@@ -131,8 +131,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameGood)
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAP)
 {
-    TPortMock                 port({0, 1, 0, 0});
-    Modbus::TModbusTCPTraits  traits(std::make_shared<uint16_t>(10));
+    TPortMock port({0, 1, 0, 0});
+    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
     Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
@@ -143,8 +143,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAP)
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAPLength)
 {
-    TPortMock                 port({0, 1, 0, 0, 0, 0, 100, 7, 8, 9});
-    Modbus::TModbusTCPTraits  traits(std::make_shared<uint16_t>(10));
+    TPortMock port({0, 1, 0, 0, 0, 0, 100, 7, 8, 9});
+    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
     Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
@@ -155,8 +155,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAPLength)
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallPDU)
 {
-    TPortMock                 port({0, 1, 0, 0, 0, 4, 100, 7});
-    Modbus::TModbusTCPTraits  traits(std::make_shared<uint16_t>(10));
+    TPortMock port({0, 1, 0, 0, 0, 4, 100, 7});
+    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
     Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
@@ -167,8 +167,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallPDU)
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameWrongUnitId)
 {
-    TPortMock                 port({0, 1, 0, 0, 0, 4, 101, 7, 8, 9});
-    Modbus::TModbusTCPTraits  traits(std::make_shared<uint16_t>(10));
+    TPortMock port({0, 1, 0, 0, 0, 4, 101, 7, 8, 9});
+    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
     Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
@@ -184,7 +184,7 @@ TEST_F(TModbusTCPTraitsTest, ReadFramePassWrongTransactionId)
     r.insert(r.end(), goodResp.begin(), goodResp.end());
     TPortMock port(r);
 
-    Modbus::TModbusTCPTraits  traits(std::make_shared<uint16_t>(10));
+    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
     Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
@@ -197,8 +197,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFramePassWrongTransactionId)
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameTimeout)
 {
-    TPortMock                 port({0, 2, 0, 0, 0, 4, 101, 7, 8, 9});
-    Modbus::TModbusTCPTraits  traits(std::make_shared<uint16_t>(10));
+    TPortMock port({0, 2, 0, 0, 0, 4, 101, 7, 8, 9});
+    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
     Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};

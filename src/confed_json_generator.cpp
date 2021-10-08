@@ -116,8 +116,8 @@ namespace
     }
 
     std::vector<std::string> PartitionParametersByGroups(
-        const Json::Value&                            config,
-        const Json::Value&                            schema,
+        const Json::Value& config,
+        const Json::Value& schema,
         std::unordered_map<std::string, Json::Value>& channelsFromGroups)
     {
         std::unordered_map<std::string, Json::Value*> parametersToGroups;
@@ -278,13 +278,13 @@ namespace
     }
 }
 
-Json::Value MakeJsonForConfed(const std::string&    configFileName,
-                              const Json::Value&    baseConfigSchema,
-                              TTemplateMap&         templates,
+Json::Value MakeJsonForConfed(const std::string& configFileName,
+                              const Json::Value& baseConfigSchema,
+                              TTemplateMap& templates,
                               TSerialDeviceFactory& deviceFactory)
 {
     Json::Value root(Parse(configFileName));
-    auto        configSchema =
+    auto configSchema =
         MakeSchemaForConfigValidation(baseConfigSchema, GetValidationDeviceTypes(root), templates, deviceFactory);
     Validate(root, configSchema);
     for (Json::Value& port: root["ports"]) {

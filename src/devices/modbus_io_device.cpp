@@ -53,9 +53,9 @@ void TModbusIODevice::Register(TSerialDeviceFactory& factory)
 }
 
 TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
-                                 PDeviceConfig                          config,
-                                 PPort                                  port,
-                                 PProtocol                              protocol)
+                                 PDeviceConfig config,
+                                 PPort port,
+                                 PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
       ModbusTraits(std::move(modbusTraits))
@@ -66,7 +66,7 @@ TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTr
 }
 
 std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                             bool                        enableHoles) const
+                                                             bool enableHoles) const
 {
     return Modbus::SplitRegisterList(reg_list, *DeviceConfig(), enableHoles);
 }

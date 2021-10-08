@@ -26,13 +26,13 @@ TPulsarDevice::TPulsarDevice(PDeviceConfig config, PPort port, PProtocol protoco
 
 uint16_t TPulsarDevice::CalculateCRC16(const uint8_t* buffer, size_t size)
 {
-    uint16_t       w;
-    uint16_t       shift_cnt, f;
+    uint16_t w;
+    uint16_t shift_cnt, f;
     const uint8_t* ptrByte;
 
     uint16_t byte_cnt = size;
-    ptrByte           = buffer;
-    w                 = (uint16_t)0xFFFF;
+    ptrByte = buffer;
+    w = (uint16_t)0xFFFF;
 
     for (; byte_cnt > 0; byte_cnt--) {
         w = (uint16_t)(w ^ (uint16_t)(*ptrByte++));
@@ -224,9 +224,12 @@ uint64_t TPulsarDevice::ReadRegister(PRegister reg)
     Port()->SkipNoise();
 
     switch (reg->Type) {
-        case REG_DEFAULT: return ReadDataRegister(reg);
-        case REG_SYSTIME: return ReadSysTimeRegister(reg); // TODO: think about return value
-        default: throw TSerialDeviceException("Pulsar protocol: wrong register type");
+        case REG_DEFAULT:
+            return ReadDataRegister(reg);
+        case REG_SYSTIME: // TODO: think about return value
+            return ReadSysTimeRegister(reg);
+        default:
+            throw TSerialDeviceException("Pulsar protocol: wrong register type");
     }
 }
 

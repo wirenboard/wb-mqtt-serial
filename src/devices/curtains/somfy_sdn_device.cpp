@@ -17,17 +17,17 @@ namespace
                                   {PARAM, "param", "value", U64, true},
                                   {COMMAND, "command", "value", U64}};
 
-    const size_t   CRC_SIZE          = 2;
-    const uint32_t HOST_ADDRESS      = 0x0000FFFF;
-    const size_t   ADDRESS_SIZE      = 3;
-    const size_t   SOURCE_START      = 3;
-    const size_t   SOURCE_END        = SOURCE_START + ADDRESS_SIZE;
-    const size_t   DESTINATION_START = SOURCE_END;
-    const size_t   DESTINATION_END   = DESTINATION_START + ADDRESS_SIZE;
-    const size_t   DATA_POS          = DESTINATION_END;
+    const size_t CRC_SIZE = 2;
+    const uint32_t HOST_ADDRESS = 0x0000FFFF;
+    const size_t ADDRESS_SIZE = 3;
+    const size_t SOURCE_START = 3;
+    const size_t SOURCE_END = SOURCE_START + ADDRESS_SIZE;
+    const size_t DESTINATION_START = SOURCE_END;
+    const size_t DESTINATION_END = DESTINATION_START + ADDRESS_SIZE;
+    const size_t DATA_POS = DESTINATION_END;
 
     const size_t MAX_RESPONSE_SIZE = 32;
-    const size_t LEN_MASK          = 0x1F; // 5 bits are reserved for packet length
+    const size_t LEN_MASK = 0x1F; // 5 bits are reserved for packet length
 
     size_t GetLen(uint8_t data)
     {
@@ -51,7 +51,7 @@ namespace
         }
 
         auto calculatedCrc = CalcCrc(bytes.begin(), bytes.end() - CRC_SIZE);
-        auto crc           = GetBigEndian<uint16_t>(bytes.end() - CRC_SIZE, bytes.end());
+        auto crc = GetBigEndian<uint16_t>(bytes.end() - CRC_SIZE, bytes.end());
 
         if (crc != calculatedCrc) {
             throw TSerialDeviceTransientErrorException("Bad CRC");
@@ -120,10 +120,10 @@ namespace
     class TSomfyAddressFactory: public TUint32RegisterAddressFactory
     {
     public:
-        TRegisterDesc LoadRegisterAddress(const Json::Value&      regCfg,
+        TRegisterDesc LoadRegisterAddress(const Json::Value& regCfg,
                                           const IRegisterAddress& deviceBaseAddress,
-                                          uint32_t                stride,
-                                          uint32_t                registerByteWidth) const override
+                                          uint32_t stride,
+                                          uint32_t registerByteWidth) const override
         {
             auto          addr = LoadRegisterBitsAddress(regCfg);
             TRegisterDesc res;
@@ -142,9 +142,9 @@ namespace
         {}
 
         PSerialDevice CreateDevice(const Json::Value& data,
-                                   PDeviceConfig      deviceConfig,
-                                   PPort              port,
-                                   PProtocol          protocol) const override
+                                   PDeviceConfig deviceConfig,
+                                   PPort port,
+                                   PProtocol protocol) const override
         {
             uint8_t nodeType = data.get("node_type", Somfy::SONESSE_30).asUInt();
             return std::make_shared<Somfy::TDevice>(deviceConfig, nodeType, port, protocol);
@@ -181,11 +181,11 @@ std::vector<uint8_t> Somfy::TDevice::ExecCommand(const std::vector<uint8_t>& req
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
     Port()->WriteBytes(request);
     std::vector<uint8_t> respBytes(MAX_RESPONSE_SIZE);
-    auto                 bytesRead = Port()->ReadFrame(respBytes.data(),
-                                                       respBytes.size(),
-                                                       DeviceConfig()->ResponseTimeout,
-                                                       DeviceConfig()->FrameTimeout,
-                                                       FrameComplete);
+    auto bytesRead = Port()->ReadFrame(respBytes.data(),
+                                       respBytes.size(),
+                                       DeviceConfig()->ResponseTimeout,
+                                       DeviceConfig()->FrameTimeout,
+                                       FrameComplete);
     respBytes.resize(bytesRead);
     FixReceivedFrame(respBytes);
     PrintDebugDump(respBytes, "Frame read: ");
@@ -222,8 +222,8 @@ void Somfy::TDevice::WriteRegister(PRegister reg, uint64_t value)
 
 uint64_t Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
                                            uint8_t responseHeader,
-                                           size_t  bitOffset,
-                                           size_t  bitWidth)
+                                           size_t bitOffset,
+                                           size_t bitWidth)
 {
     uint64_t val;
     auto     it = DataCache.find(requestHeader);
@@ -266,9 +266,9 @@ void Somfy::TDevice::EndPollCycle()
     DataCache.clear();
 }
 
-std::vector<uint8_t> Somfy::MakeRequest(uint8_t                     msg,
-                                        uint32_t                    address,
-                                        uint8_t                     nodeType,
+std::vector<uint8_t> Somfy::MakeRequest(uint8_t msg,
+                                        uint32_t address,
+                                        uint8_t nodeType,
                                         const std::vector<uint8_t>& data)
 {
     std::vector<uint8_t> res{msg, 0x00, 0x00, 0xFF, 0xFF, 0x00};
