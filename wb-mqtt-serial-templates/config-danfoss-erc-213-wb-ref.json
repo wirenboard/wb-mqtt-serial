@@ -454,7 +454,11 @@
                 "format": "u16",
                 "default": 0,
                 "enum": [0, 1, 2],
-                "enum_titles": ["time", "S5", "S4"],
+                "enum_titles": [
+                    "none (defrost is based on time)",
+                    "air temperature sensor",
+                    "defrost sensor"
+                ],
                 "group": "defrost",
                 "order": 10
             },
@@ -631,7 +635,7 @@
                     "external alarm",
                     "defrost start",
                     "pull down",
-                    "condencer sensor"
+                    "condenser sensor"
                 ],
                 "group": "others",
                 "order": 2
