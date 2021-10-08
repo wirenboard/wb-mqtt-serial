@@ -4550,7 +4550,7 @@
                 "IN_P: 0-1V sensor": "Вх. P: измерение напряжения 0-1 В",
                 "-50 to 50 mV sensor": "измерение напряжения от -50 до 50 мВ",
                 "voltage measurement in differential mode from -2 to 2 V": "дифф-й режим измерения напряжения от -2 до 2 В",
-                "three-wire resistance measurement": "трехпроводная схема измерения сопротивления",
+                "three-wire resistance measurement": "3-проводная схема измерения сопротивления",
                 "resistance measurement using current measurement": "измерение сопротивления через измерение тока",
                 "IN_P: resistance measurement using current measurement": "Вх. P: измерение сопротивления через измерение тока",
                 "IN_P: NTC thermistor 10k (B = 3988 K)": "Вх. P: термистор NTC 10 кОм (B = 3988 K)",
