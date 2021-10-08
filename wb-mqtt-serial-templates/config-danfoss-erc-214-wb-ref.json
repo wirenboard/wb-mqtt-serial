@@ -455,9 +455,9 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "non (time)",
-                    "Air (air temperature)",
-                    "dEF (defrost sensor)"
+                    "none (defrost is based on time)",
+                    "air temperature sensor",
+                    "defrost sensor"
                 ],
                 "group": "defrost",
                 "order": 10
@@ -635,7 +635,7 @@
                     "external alarm",
                     "defrost start",
                     "pull down",
-                    "condencer sensor"
+                    "condenser sensor"
                 ],
                 "group": "others",
                 "order": 2
