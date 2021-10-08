@@ -1,4 +1,5 @@
 {
+    "title": "WB-MAP3E-fw2_template_title",
     "device_type": "WB-MAP3E fw2",
     "device": {
         "name": "WB-MAP3E fw2",
@@ -624,6 +625,64 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase Modbus enegry meter)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-фазный Modbus-счетчик электроэнергии)",
+                "Total": "Cуммарные показатели",
+                "Illuminance": "Освещенность",
+                "General": "Общие настройки",
+                "HW Info": "Данные модуля",
+                "Turns L1": "Коэффициент трансформации L1",
+                "Phi L1": "Фазовая задержка L1",
+                "Actual Phase L1": "Реальная фаза на клемме L1",
+                "Turns L2": "Коэффициент трансформации L2",
+                "Phi L2": "Фазовая задержка L2",
+                "Actual Phase L2": "Реальная фаза на клемме L2",
+                "Turns L3": "Коэффициент трансформации L3",
+                "Phi L3": "Фазовая задержка L3",
+                "Actual Phase L3": "Реальная фаза на клемме L3",
+                "Peaks Measurement Period (s)": "Период таймера сброса пиковых значений (с)",
+                "Urms L1": "Uскз L1",
+                "Upeak L1": "Uпиковое L1",
+                "Voltage angle L1": "Фазовый угол L1",
+                "Irms L1": "Iскз L1",
+                "Ipeak L1": "Iпиковый L1",
+                "AP energy L1": "Энергия AP L1",
+                "RP energy L1": "Энергия RP L1",
+                "Phase angle L1": "Угол фазового сдвига L1",
+                "Urms L2": "Uскз L2",
+                "Upeak L2": "Uпиковое L2",
+                "Voltage angle L2": "Фазовый угол L2",
+                "Irms L2": "Iскз L2",
+                "Ipeak L2": "Iпиковый L2",
+                "AP energy L2": "Энергия AP L2",
+                "RP energy L2": "Энергия RP L2",
+                "Phase angle L2": "Угол фазового сдвига L2",
+                "Urms L3": "Uскз L3",
+                "Upeak L3": "Uпиковое L3",
+                "Voltage angle L3": "Фазовый угол L3",
+                "Irms L3": "Iскз L3",
+                "Ipeak L3": "Iпиковый L3",
+                "AP energy L3": "Энергия AP L3",
+                "RP energy L3": "Энергия RP L3",
+                "Phase angle L3": "Угол фазового сдвига L3",
+                "Total P": "Суммарная P",
+                "Total Q": "Суммарная Q",
+                "Total S": "Суммарная S",
+                "Total PF": "Суммарная PF",
+                "Total AP energy": "Суммарная энергия AP",
+                "Total RP energy": "Суммарная энегргия RP",
+                "Frequency": "Частота",
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее"
+            }
+        }
     }
 }
