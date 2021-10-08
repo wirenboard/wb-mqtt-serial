@@ -13,18 +13,19 @@
 
 using namespace WBMQTT::Testing;
 
-class TImxFloodThread {
+class TImxFloodThread
+{
 public:
-    TImxFloodThread(PPort serial, std::chrono::milliseconds duration) : Serial(serial), Duration(duration)
+    TImxFloodThread(PPort serial, std::chrono::milliseconds duration): Serial(serial), Duration(duration)
     {}
 
-    void Run(WBMQTT::TPromise<void>& started) 
+    void Run(WBMQTT::TPromise<void>& started)
     {
         uint8_t buf[8] = {};
         memset(buf, 0xFF, sizeof(buf));
 
-        IsRunning = true;
-        auto start = std::chrono::steady_clock::now();
+        IsRunning          = true;
+        auto start         = std::chrono::steady_clock::now();
         bool sentSomething = false;
         while (IsRunning) {
             auto diff = std::chrono::steady_clock::now() - start;
@@ -49,7 +50,7 @@ public:
             throw std::runtime_error("TImxFloodThread sent nothing");
         }
     }
-    
+
     bool IsExpired()
     {
         return Expired;
@@ -58,10 +59,10 @@ public:
     void Start()
     {
         if (!IsRunning) {
-            Expired = false;
+            Expired   = false;
             IsRunning = true;
             WBMQTT::TPromise<void> initialized;
-            FloodThread = std::thread([&]() {this->Run(initialized);});
+            FloodThread = std::thread([&]() { this->Run(initialized); });
             initialized.GetFuture().Wait();
         }
     }
@@ -73,22 +74,22 @@ public:
             FloodThread.join();
         }
     }
-    
-    bool IsRunning = false;
-    std::thread FloodThread;
-    bool Expired = false;
-    PPort Serial;
+
+    bool                      IsRunning = false;
+    std::thread               FloodThread;
+    bool                      Expired = false;
+    PPort                     Serial;
     std::chrono::milliseconds Duration;
 };
 
-class TSerialPortTestWrapper: public TSerialPort {
+class TSerialPortTestWrapper: public TSerialPort
+{
 public:
-    TSerialPortTestWrapper(const TSerialPortSettings& settings, TLoggedFixture& fixture, PPort other_port) 
-        : TSerialPort(settings)
-        , Fixture(fixture)
-        , OtherEndPort(other_port)
-        , FloodThread(OtherEndPort, std::chrono::milliseconds(3000))
-         {};
+    TSerialPortTestWrapper(const TSerialPortSettings& settings, TLoggedFixture& fixture, PPort other_port)
+        : TSerialPort(settings),
+          Fixture(fixture),
+          OtherEndPort(other_port),
+          FloodThread(OtherEndPort, std::chrono::milliseconds(3000)){};
 
     void SkipNoise() override
     {
@@ -112,6 +113,7 @@ public:
             }
         }
     }
+
 protected:
     void Reopen() override
     {
@@ -123,19 +125,21 @@ protected:
     };
 
     TLoggedFixture& Fixture;
-    PPort OtherEndPort;
+    PPort           OtherEndPort;
+
 public:
     TImxFloodThread FloodThread;
-    bool StopFloodOnReconnect = true;
+    bool            StopFloodOnReconnect = true;
 };
 
-class TSerialPortTest: public TLoggedFixture {
+class TSerialPortTest: public TLoggedFixture
+{
 protected:
     void SetUp();
     void TearDown();
 
-    PPtyBasedFakeSerial FakeSerial;
-    PPort Serial;
+    PPtyBasedFakeSerial                     FakeSerial;
+    PPort                                   Serial;
     std::shared_ptr<TSerialPortTestWrapper> SecondarySerial;
 };
 
@@ -149,12 +153,8 @@ void TSerialPortTest::SetUp()
 
     FakeSerial->StartForwarding();
     TSerialPortSettings secondary_settings(FakeSerial->GetSecondaryPtsName(), 9600, 'N', 8, 1);
-    SecondarySerial = std::shared_ptr<TSerialPortTestWrapper>(
-        new TSerialPortTestWrapper(
-            secondary_settings,
-            *this,
-            Serial
-        ));
+    SecondarySerial =
+        std::shared_ptr<TSerialPortTestWrapper>(new TSerialPortTestWrapper(secondary_settings, *this, Serial));
     SecondarySerial->Open();
 }
 
@@ -167,10 +167,9 @@ void TSerialPortTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
-
 TEST_F(TSerialPortTest, TestSkipNoise)
 {
-    uint8_t buf[] = {1,2,3};
+    uint8_t buf[] = {1, 2, 3};
     Serial->WriteBytes(buf, sizeof(buf));
     usleep(300);
     SecondarySerial->SkipNoise();
@@ -184,8 +183,8 @@ TEST_F(TSerialPortTest, TestSkipNoise)
     FakeSerial->Flush(); // shouldn't change anything here, but shouldn't hang either
 }
 
-/* on imx6, a glitch with precise timing can trigger a bug in UART IP. This will result 
-in continously reception of FF bytes until either UART is reset or a couple of valid UART frames 
+/* on imx6, a glitch with precise timing can trigger a bug in UART IP. This will result
+in continously reception of FF bytes until either UART is reset or a couple of valid UART frames
 are received */
 // !!!! The test is not stable on build server
 // TEST_F(TSerialPortTest, TestImxBug)

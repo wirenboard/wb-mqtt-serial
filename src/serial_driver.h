@@ -9,7 +9,9 @@
 class TMQTTSerialDriver
 {
 public:
-    TMQTTSerialDriver(WBMQTT::PDeviceDriver mqtt_driver, PHandlerConfig handler_config, WBMQTT::PMqttRpcServer rpc = nullptr);
+    TMQTTSerialDriver(WBMQTT::PDeviceDriver  mqtt_driver,
+                      PHandlerConfig         handler_config,
+                      WBMQTT::PMqttRpcServer rpc = nullptr);
     void LoopOnce();
     void ClearDevices();
 

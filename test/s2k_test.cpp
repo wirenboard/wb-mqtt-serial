@@ -4,10 +4,11 @@
 #include "devices/s2k_device.h"
 #include "s2k_expectations.h"
 
-class TS2KDeviceTest: public TSerialDeviceTest, public TS2KDeviceExpectations {
+class TS2KDeviceTest: public TSerialDeviceTest, public TS2KDeviceExpectations
+{
 protected:
-    void SetUp();
-    void TearDown();
+    void       SetUp();
+    void       TearDown();
     PS2KDevice Dev;
 
     PRegister RelayReg1;
@@ -20,10 +21,9 @@ void TS2KDeviceTest::SetUp()
 {
     TSerialDeviceTest::SetUp();
 
-    Dev = std::make_shared<TS2KDevice>(
-        std::make_shared<TDeviceConfig>("s2k", std::to_string(0x01), "s2k"),
-        SerialPort,
-        DeviceFactory.GetProtocol("s2k"));
+    Dev = std::make_shared<TS2KDevice>(std::make_shared<TDeviceConfig>("s2k", std::to_string(0x01), "s2k"),
+                                       SerialPort,
+                                       DeviceFactory.GetProtocol("s2k"));
 
     RelayReg1 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x01, U8));
     RelayReg2 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x02, U8));
@@ -50,11 +50,15 @@ TEST_F(TS2KDeviceTest, TestSetRelayState)
     Dev->WriteRegister(RelayReg1, 0);
 }
 
-class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDeviceExpectations {
+class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDeviceExpectations
+{
 protected:
-    void SetUp();
-    void TearDown();
-    const char* ConfigPath() const { return "configs/config-s2k-test.json"; }
+    void        SetUp();
+    void        TearDown();
+    const char* ConfigPath() const
+    {
+        return "configs/config-s2k-test.json";
+    }
 };
 
 void TS2KIntegrationTest::SetUp()
@@ -92,7 +96,6 @@ TEST_F(TS2KIntegrationTest, Poll)
     PublishWaitOnValue("/devices/pseudo_s2k/controls/Relay 2/on", "1");
     PublishWaitOnValue("/devices/pseudo_s2k/controls/Relay 3/on", "2");
     SerialPort->DumpWhatWasRead();
-
 
     EnqueueReadConfig1();
     EnqueueReadConfig2();

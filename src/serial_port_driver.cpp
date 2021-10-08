@@ -24,7 +24,7 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver             mqttDrive
       Config(portConfig),
       PublishPolicy(publishPolicy)
 {
-    Description = Config->Port->GetDescription(false);
+    Description  = Config->Port->GetDescription(false);
     SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port, Config->OpenCloseSettings, metrics));
 }
 
@@ -35,12 +35,9 @@ const std::string& TSerialPortDriver::GetShortDescription() const
 
 void TSerialPortDriver::SetUpDevices()
 {
-    SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
-        OnValueRead(reg, changed);
-    });
-    SerialClient->SetErrorCallback([this](PRegister reg, TRegisterHandler::TErrorState state) {
-        UpdateError(reg, state);
-    });
+    SerialClient->SetReadCallback([this](PRegister reg, bool changed) { OnValueRead(reg, changed); });
+    SerialClient->SetErrorCallback(
+        [this](PRegister reg, TRegisterHandler::TErrorState state) { UpdateError(reg, state); });
 
     LOG(Debug) << "setting up devices at " << Config->Port->GetDescription();
 
@@ -52,21 +49,23 @@ void TSerialPortDriver::SetUpDevices()
             assert(mqttDevice);
             Devices.push_back(device);
             // init channels' registers
-            for (auto & channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
+            for (auto& channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
                 try {
-                    auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
+                    auto channel     = std::make_shared<TDeviceChannel>(device, channelConfig);
                     channel->Control = mqttDevice->CreateControl(tx, From(channel)).GetValue();
-                    for (auto & reg: channel->Registers) {
-                        RegisterToChannelStateMap.emplace(reg, TDeviceChannelState{channel, TRegisterHandler::UnknownErrorState});
+                    for (auto& reg: channel->Registers) {
+                        RegisterToChannelStateMap.emplace(
+                            reg,
+                            TDeviceChannelState{channel, TRegisterHandler::UnknownErrorState});
                         SerialClient->AddRegister(reg);
                     }
-                } catch (const exception & e) {
+                } catch (const exception& e) {
                     LOG(Error) << "unable to create control: '" << e.what() << "'";
                 }
             }
             mqttDevice->RemoveUnusedControls(tx).Sync();
         }
-    } catch (const exception & e) {
+    } catch (const exception& e) {
         LOG(Error) << "unable to create device: '" << e.what() << "' Cleaning.";
         ClearDevices();
         throw;
@@ -77,21 +76,23 @@ void TSerialPortDriver::SetUpDevices()
     }
 }
 
-void TSerialPortDriver::HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent & event)
+void TSerialPortDriver::HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent& event)
 {
-    const auto & value = event.RawValue;
-    const auto & linkData = event.Control->GetUserData().As<TControlLinkData>();
+    const auto& value    = event.RawValue;
+    const auto& linkData = event.Control->GetUserData().As<TControlLinkData>();
 
-    const auto & portDriver = linkData.PortDriver.lock();
-    const auto & channel = linkData.DeviceChannel.lock();
+    const auto& portDriver = linkData.PortDriver.lock();
+    const auto& channel    = linkData.DeviceChannel.lock();
 
     if (!portDriver || !channel) {
         if (!portDriver) {
-            LOG(Error) << "event for non existent port driver from control '" << event.Control->GetDevice()->GetId() << "/" << event.Control->GetId() << "' value: '" << value << "'";
+            LOG(Error) << "event for non existent port driver from control '" << event.Control->GetDevice()->GetId()
+                       << "/" << event.Control->GetId() << "' value: '" << value << "'";
         }
 
         if (!channel) {
-            LOG(Error) << "event for non existent device channel from control '" << event.Control->GetDevice()->GetId() << "/" << event.Control->GetId() << "' value: '" << value << "'";
+            LOG(Error) << "event for non existent device channel from control '" << event.Control->GetDevice()->GetId()
+                       << "/" << event.Control->GetId() << "' value: '" << value << "'";
         }
 
         return;
@@ -100,9 +101,9 @@ void TSerialPortDriver::HandleControlOnValueEvent(const WBMQTT::TControlOnValueE
     portDriver->SetValueToChannel(channel, value);
 }
 
-void TSerialPortDriver::SetValueToChannel(const PDeviceChannel & channel, const string & value)
+void TSerialPortDriver::SetValueToChannel(const PDeviceChannel& channel, const string& value)
 {
-    const auto & registers = channel->Registers;
+    const auto& registers = channel->Registers;
 
     std::vector<std::string> valueItems = StringSplit(value, ';');
 
@@ -138,8 +139,8 @@ void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
         LOG(Warn) << "got unexpected register from serial client";
         return;
     }
-    const auto & channel = it->second.Channel;
-    const auto & registers = channel->Registers;
+    const auto& channel   = it->second.Channel;
+    const auto& registers = channel->Registers;
 
     if (changed && ::Debug.IsEnabled()) {
         LOG(Debug) << "register value change: " << reg->ToString() << " <- " << SerialClient->GetTextValue(reg);
@@ -182,11 +183,11 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
         LOG(Warn) << "got unexpected register from serial client";
         return;
     }
-    const auto & channel = it->second.Channel;
-    const auto & registers = channel->Registers;
+    const auto& channel   = it->second.Channel;
+    const auto& registers = channel->Registers;
 
     it->second.ErrorState = errorState;
-    size_t errorMask = 0;
+    size_t errorMask      = 0;
     for (auto r: registers) {
         auto error = RegErrorState(r);
         if (error <= TRegisterHandler::ReadWriteError) {
@@ -214,11 +215,11 @@ void TSerialPortDriver::ClearDevices() noexcept
         {
             auto tx = MqttDriver->BeginTx();
 
-            for (const auto & device: Devices) {
+            for (const auto& device: Devices) {
                 try {
                     tx->RemoveDeviceById(device->DeviceConfig()->Id).Sync();
                     LOG(Debug) << "device " << device->DeviceConfig()->Id << " removed successfully";
-                } catch (const exception & e) {
+                } catch (const exception& e) {
                     LOG(Warn) << "exception during device removal: " << e.what();
                 } catch (...) {
                     LOG(Warn) << "unknown exception during device removal";
@@ -227,28 +228,30 @@ void TSerialPortDriver::ClearDevices() noexcept
         }
         Devices.clear();
         SerialClient->ClearDevices();
-    } catch (const exception & e) {
+    } catch (const exception& e) {
         LOG(Warn) << "TSerialPortDriver::ClearDevices(): " << e.what();
     } catch (...) {
         LOG(Warn) << "TSerialPortDriver::ClearDevices(): unknown exception";
     }
 }
 
-TLocalDeviceArgs TSerialPortDriver::From(const PSerialDevice & device)
+TLocalDeviceArgs TSerialPortDriver::From(const PSerialDevice& device)
 {
-    return TLocalDeviceArgs{}.SetId(device->DeviceConfig()->Id)
-                             .SetTitle(device->DeviceConfig()->Name)
-                             .SetIsVirtual(true)
-                             .SetDoLoadPrevious(true);
+    return TLocalDeviceArgs{}
+        .SetId(device->DeviceConfig()->Id)
+        .SetTitle(device->DeviceConfig()->Name)
+        .SetIsVirtual(true)
+        .SetDoLoadPrevious(true);
 }
 
-TControlArgs TSerialPortDriver::From(const PDeviceChannel & channel)
+TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
 {
-    auto args = TControlArgs{}.SetId(channel->MqttId)
-                              .SetOrder(channel->Order)
-                              .SetType(channel->Type)
-                              .SetReadonly(channel->ReadOnly)
-                              .SetUserData(TControlLinkData{ shared_from_this(), channel });
+    auto args = TControlArgs{}
+                    .SetId(channel->MqttId)
+                    .SetOrder(channel->Order)
+                    .SetType(channel->Type)
+                    .SetReadonly(channel->ReadOnly)
+                    .SetUserData(TControlLinkData{shared_from_this(), channel});
 
     if (isnan(channel->Max)) {
         if (channel->Type == "range" || channel->Type == "dimmer") {
@@ -284,7 +287,9 @@ void TDeviceChannel::UpdateError(WBMQTT::TDeviceDriver& deviceDriver, const std:
     }
 }
 
-void TDeviceChannel::UpdateValue(WBMQTT::TDeviceDriver& deviceDriver, const WBMQTT::TPublishParameters& publishPolicy, const std::string& value)
+void TDeviceChannel::UpdateValue(WBMQTT::TDeviceDriver&            deviceDriver,
+                                 const WBMQTT::TPublishParameters& publishPolicy,
+                                 const std::string&                value)
 {
     if (!CachedErrorFlg.empty()) {
         PublishValue(deviceDriver, value);
@@ -303,9 +308,7 @@ void TDeviceChannel::UpdateValue(WBMQTT::TDeviceDriver& deviceDriver, const WBMQ
         }
         case TPublishParameters::PublishSomeUnchanged: {
             auto now = std::chrono::steady_clock::now();
-            if ((CachedCurrentValue != value) || 
-                (now - LastControlUpdate >= publishPolicy.PublishUnchangedInterval))
-            {
+            if ((CachedCurrentValue != value) || (now - LastControlUpdate >= publishPolicy.PublishUnchangedInterval)) {
                 PublishValue(deviceDriver, value);
             }
             break;

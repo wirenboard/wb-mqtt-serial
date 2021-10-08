@@ -9,7 +9,6 @@
 using namespace std;
 using namespace WBMQTT;
 
-
 #define LOG(logger) ::logger.Log() << "[serial] "
 
 namespace
@@ -17,7 +16,7 @@ namespace
     Json::Value MakeLoadItem(const Metrics::TPollItem& pollItem, const Metrics::TMetrics::TResult& value)
     {
         Json::Value item;
-        auto& names = item["names"];
+        auto&       names = item["names"];
         if (pollItem.Controls.empty()) {
             names.append(pollItem.Device);
         } else {
@@ -25,10 +24,10 @@ namespace
                 names.append(pollItem.Device + "/" + c);
             }
         }
-        item["bl"] = StringFormat("%.2f", value.BusLoad.Minute * 100.0);
+        item["bl"]   = StringFormat("%.2f", value.BusLoad.Minute * 100.0);
         item["bl15"] = StringFormat("%.2f", value.BusLoad.FifteenMinutes * 100.0);
-        item["i50"] = value.Histogram.P50.count();
-        item["i95"] = value.Histogram.P95.count();
+        item["i50"]  = value.Histogram.P50.count();
+        item["i95"]  = value.Histogram.P95.count();
         return item;
     }
 }
@@ -37,8 +36,8 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
     : Active(false)
 {
     try {
-        for (const auto& portConfig : config->PortConfigs) {
-            
+        for (const auto& portConfig: config->PortConfigs) {
+
             if (portConfig->Devices.empty()) {
                 LOG(Warn) << "no devices defined for port " << portConfig->Port->GetDescription() << ". Skipping.";
                 continue;
@@ -48,7 +47,7 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
             PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters, m));
             PortDrivers.back()->SetUpDevices();
         }
-    } catch (const exception & e) {
+    } catch (const exception& e) {
         LOG(Error) << "unable to create port driver: '" << e.what() << "'. Cleaning.";
         ClearDevices();
         throw;
@@ -66,13 +65,13 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
 
 void TMQTTSerialDriver::LoopOnce()
 {
-    for (const auto & portDriver: PortDrivers)
+    for (const auto& portDriver: PortDrivers)
         portDriver->Cycle();
 }
 
 void TMQTTSerialDriver::ClearDevices()
 {
-    for (const auto & portDriver : PortDrivers) {
+    for (const auto& portDriver: PortDrivers) {
         portDriver->ClearDevices();
     }
 }
@@ -89,7 +88,7 @@ void TMQTTSerialDriver::Start()
     }
 
     for (const auto& portDriver: PortDrivers) {
-        PortLoops.emplace_back([&]{
+        PortLoops.emplace_back([&] {
             WBMQTT::SetThreadName(portDriver->GetShortDescription());
             while (Active) {
                 portDriver->Cycle();
@@ -109,7 +108,7 @@ void TMQTTSerialDriver::Stop()
         Active = false;
     }
 
-    for (auto & loopThread : PortLoops) {
+    for (auto& loopThread: PortLoops) {
         if (loopThread.joinable()) {
             loopThread.join();
         }
@@ -120,7 +119,7 @@ void TMQTTSerialDriver::Stop()
 
 Json::Value TMQTTSerialDriver::LoadMetrics(const Json::Value& request)
 {
-    auto time = std::chrono::steady_clock::now();
+    auto        time = std::chrono::steady_clock::now();
     Json::Value res(Json::arrayValue);
     for (auto& port: Metrics) {
         Json::Value item;

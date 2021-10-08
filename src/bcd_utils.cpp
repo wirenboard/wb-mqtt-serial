@@ -13,14 +13,10 @@ uint32_t PackBytes(uint8_t* bytes, WordSizes size)
     the execution will propagate to the very end of
     the switch statement*/
     switch (size) {
-    case WordSizes::W32_SZ:
-        ret |= (*bytes++ << 24);
-    case WordSizes::W24_SZ:
-        ret |= (*bytes++ << 16);
-    case WordSizes::W16_SZ:
-        ret |= (*bytes++ << 8);
-    case WordSizes::W8_SZ:
-        ret |= (*bytes << 0);
+        case WordSizes::W32_SZ: ret |= (*bytes++ << 24);
+        case WordSizes::W24_SZ: ret |= (*bytes++ << 16);
+        case WordSizes::W16_SZ: ret |= (*bytes++ << 8);
+        case WordSizes::W8_SZ: ret |= (*bytes << 0);
     }
     return ret;
 }
@@ -28,7 +24,7 @@ uint32_t PackBytes(uint8_t* bytes, WordSizes size)
 uint64_t PackedBCD2Int(uint64_t packed, WordSizes size)
 {
     uint32_t result = 0;
-    int exp = 1;
+    int      exp    = 1;
     for (unsigned i = 0; i < static_cast<unsigned>(size); ++i) {
         auto tmp = static_cast<uint8_t>(packed >> (i * 8));
         result += ((tmp & 0x0f) * exp);

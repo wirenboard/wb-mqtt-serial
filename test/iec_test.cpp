@@ -6,10 +6,10 @@
 
 namespace
 {
-    class TSerialPortMock: public TSerialPort {
+    class TSerialPortMock: public TSerialPort
+    {
     public:
-        TSerialPortMock(const TSerialPortSettings& settings) 
-            : TSerialPort(settings)
+        TSerialPortMock(const TSerialPortSettings& settings): TSerialPort(settings)
         {}
 
         uint8_t ReadByte(const std::chrono::microseconds& timeout) override
@@ -24,14 +24,14 @@ namespace
                 ASSERT_EQ(buf[i], ExpectWrite[i]) << i;
         }
 
-        size_t ReadFrame(uint8_t* buf,
-                         size_t count,
+        size_t ReadFrame(uint8_t*                         buf,
+                         size_t                           count,
                          const std::chrono::microseconds& responseTimeout,
                          const std::chrono::microseconds& frameTimeout,
-                         TFrameCompletePred frame_complete) override
+                         TFrameCompletePred               frame_complete) override
         {
             const uint8_t b[] = {0x81, 0x82, 0x03, 0x84};
-            auto l = std::min(count, sizeof(b));
+            auto          l   = std::min(count, sizeof(b));
             memcpy(buf, b, l);
             return l;
         }
@@ -39,28 +39,31 @@ namespace
         std::vector<uint8_t> ExpectWrite;
     };
 
-    void CheckWriteRead(std::shared_ptr<TSerialPortMock> port,
+    void CheckWriteRead(std::shared_ptr<TSerialPortMock>        port,
                         std::shared_ptr<TSerialPortWithIECHack> iecPort,
-                        const std::vector<uint8_t>& writeArray,
-                        const std::vector<uint8_t>& expectWriteArray,
-                        uint8_t expectReadByte,
-                        const std::vector<uint8_t>& expectReadArray)
+                        const std::vector<uint8_t>&             writeArray,
+                        const std::vector<uint8_t>&             expectWriteArray,
+                        uint8_t                                 expectReadByte,
+                        const std::vector<uint8_t>&             expectReadArray)
     {
         port->ExpectWrite = expectWriteArray;
         iecPort->WriteBytes(writeArray.data(), writeArray.size());
         ASSERT_EQ(iecPort->ReadByte(std::chrono::microseconds::zero()), expectReadByte);
         {
             std::vector<uint8_t> readBuf(expectReadArray.size(), 0);
-            iecPort->ReadFrame(readBuf.data(), readBuf.size(), std::chrono::microseconds::zero(), std::chrono::microseconds::zero());
+            iecPort->ReadFrame(readBuf.data(),
+                               readBuf.size(),
+                               std::chrono::microseconds::zero(),
+                               std::chrono::microseconds::zero());
             ASSERT_EQ(readBuf.size(), expectReadArray.size());
             for (size_t i = 0; i < readBuf.size(); ++i)
                 ASSERT_EQ(readBuf[i], expectReadArray[i]) << i;
         }
     }
 
-     void CheckSetSerialPortByteFormat(const TSerialPortSettings& portSettings)
+    void CheckSetSerialPortByteFormat(const TSerialPortSettings& portSettings)
     {
-        auto port = std::make_shared<TSerialPortMock>(portSettings);
+        auto port    = std::make_shared<TSerialPortMock>(portSettings);
         auto iecPort = std::make_shared<TSerialPortWithIECHack>(port);
 
         {
@@ -122,8 +125,8 @@ TEST(TIECTest, SetSerialPortByteFormat)
 TEST(TIECTest, WriteReadHack)
 {
     TSerialPortSettings portSettings("/dev/null", 9600, 'N', 8, 1);
-    auto port = std::make_shared<TSerialPortMock>(portSettings);
-    auto iecPort = std::make_shared<TSerialPortWithIECHack>(port);
+    auto                port    = std::make_shared<TSerialPortMock>(portSettings);
+    auto                iecPort = std::make_shared<TSerialPortWithIECHack>(port);
 
     std::vector<uint8_t> b({0x1, 0x2, 0x3, 0x4});
     std::vector<uint8_t> bWithParity({0x81, 0x82, 0x3, 0x84});

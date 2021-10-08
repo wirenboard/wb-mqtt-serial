@@ -25,17 +25,18 @@ using namespace std;
 
 #define LOG(logger) ::logger.Log() << "[serial] "
 
-const auto driverName      = "wb-modbus";
+const auto driverName = "wb-modbus";
 
-const auto APP_NAME        = "wb-mqtt-serial";
+const auto APP_NAME = "wb-mqtt-serial";
 
-const auto LIBWBMQTT_DB_FULL_FILE_PATH          = "/var/lib/wb-mqtt-serial/libwbmqtt.db";
-const auto CONFIG_FULL_FILE_PATH                = "/etc/wb-mqtt-serial.conf";
-const auto TEMPLATES_DIR                        = "/usr/share/wb-mqtt-serial/templates";
-const auto USER_TEMPLATES_DIR                   = "/etc/wb-mqtt-serial.conf.d/templates";
-const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH    = "/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json";
-const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
-const auto CONFED_JSON_SCHEMA_FULL_FILE_PATH    = "/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json";
+const auto LIBWBMQTT_DB_FULL_FILE_PATH       = "/var/lib/wb-mqtt-serial/libwbmqtt.db";
+const auto CONFIG_FULL_FILE_PATH             = "/etc/wb-mqtt-serial.conf";
+const auto TEMPLATES_DIR                     = "/usr/share/wb-mqtt-serial/templates";
+const auto USER_TEMPLATES_DIR                = "/etc/wb-mqtt-serial.conf.d/templates";
+const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json";
+const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
+const auto CONFED_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json";
 
 const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(60);
 
@@ -75,7 +76,7 @@ namespace
 
     /**
      * @brief Create Json::StreamWriter with defined parameters
-     * 
+     *
      * @param indentation - a string that is added before lines as indentation, "" - no indentation
      * @param commentStyle - "All" (write comments) or "None" (do not write comments)
      */
@@ -83,20 +84,21 @@ namespace
     {
         Json::StreamWriterBuilder builder;
         builder["commentStyle"] = commentStyle;
-        builder["indentation"] = indentation;
-        builder["precision"] = 15;
+        builder["indentation"]  = indentation;
+        builder["precision"]    = 15;
         return unique_ptr<Json::StreamWriter>(builder.newStreamWriter());
     }
 
     pair<shared_ptr<Json::Value>, shared_ptr<TTemplateMap>> LoadTemplates()
     {
         auto configSchema = make_shared<Json::Value>(std::move(LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH)));
-        auto templates = make_shared<TTemplateMap>(TEMPLATES_DIR,
-                                                   LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH,
-                                                                             *configSchema));
+        auto templates =
+            make_shared<TTemplateMap>(TEMPLATES_DIR,
+                                      LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, *configSchema));
         try {
             templates->AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
-        } catch (const TConfigParserException& e) {}        // Pass exception if user templates dir doesn't exist
+        } catch (const TConfigParserException& e) {
+        } // Pass exception if user templates dir doesn't exist
         return {configSchema, templates};
     }
 
@@ -105,10 +107,11 @@ namespace
         try {
             TSerialDeviceFactory deviceFactory;
             RegisterProtocols(deviceFactory);
-            shared_ptr<Json::Value> configSchema;
+            shared_ptr<Json::Value>  configSchema;
             shared_ptr<TTemplateMap> templates;
             std::tie(configSchema, templates) = LoadTemplates();
-            MakeJsonWriter("", "None")->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *configSchema, *templates, deviceFactory), &cout);
+            MakeJsonWriter("", "None")
+                ->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *configSchema, *templates, deviceFactory), &cout);
         } catch (const exception& e) {
             LOG(Error) << e.what();
         }
@@ -130,10 +133,10 @@ namespace
         try {
             TSerialDeviceFactory deviceFactory;
             RegisterProtocols(deviceFactory);
-            shared_ptr<Json::Value> configSchema;
+            shared_ptr<Json::Value>  configSchema;
             shared_ptr<TTemplateMap> templates;
             std::tie(configSchema, templates) = LoadTemplates();
-            const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
+            const char* resultingSchemaFile   = "/tmp/wb-mqtt-serial.schema.json";
             {
                 ofstream f(resultingSchemaFile);
                 MakeJsonWriter("  ", "All")->write(MakeSchemaForConfed(*configSchema, *templates, deviceFactory), &f);
@@ -151,88 +154,61 @@ namespace
         try {
             auto debugLevel = stoi(optarg);
             switch (debugLevel) {
-            case 0:
-                return;
-            case -1:
-                Info.SetEnabled(false);
-                return;
+                case 0: return;
+                case -1: Info.SetEnabled(false); return;
 
-            case -2:
-                WBMQTT::Info.SetEnabled(false);
-                return;
+                case -2: WBMQTT::Info.SetEnabled(false); return;
 
-            case -3:
-                WBMQTT::Info.SetEnabled(false);
-                Info.SetEnabled(false);
-                return;
+                case -3:
+                    WBMQTT::Info.SetEnabled(false);
+                    Info.SetEnabled(false);
+                    return;
 
-            case 1:
-                Debug.SetEnabled(true);
-                return;
+                case 1: Debug.SetEnabled(true); return;
 
-            case 2:
-                WBMQTT::Debug.SetEnabled(true);
-                return;
+                case 2: WBMQTT::Debug.SetEnabled(true); return;
 
-            case 3:
-                WBMQTT::Debug.SetEnabled(true);
-                Debug.SetEnabled(true);
-                return;
+                case 3:
+                    WBMQTT::Debug.SetEnabled(true);
+                    Debug.SetEnabled(true);
+                    return;
             }
-        } catch (...) {}
+        } catch (...) {
+        }
         cout << "Invalid -d parameter value " << optarg << endl;
         PrintUsage();
         exit(2);
     }
 
-    void ParseCommadLine(int                           argc,
-                         char*                         argv[],
-                         WBMQTT::TMosquittoMqttConfig& mqttConfig,
-                         string&                       customConfig)
+    void ParseCommadLine(int argc, char* argv[], WBMQTT::TMosquittoMqttConfig& mqttConfig, string& customConfig)
     {
         int c;
 
         while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:jJgG:")) != -1) {
             switch (c) {
-            case 'd':
-                SetDebugLevel(optarg);
-                break;
-            case 'c':
-                customConfig = optarg;
-                break;
-            case 'p':
-                mqttConfig.Port = stoi(optarg);
-                break;
-            case 'h':
-            case 'H': // backward compatibility
-                mqttConfig.Host = optarg;
-                break;
-            case 'T':
-                mqttConfig.Prefix = optarg;
-                break;
-            case 'u':
-                mqttConfig.User = optarg;
-                break;
-            case 'P':
-                mqttConfig.Password = optarg;
-                break;
-            case 'j': // make JSON for confed from config's JSON
-                ConfigToConfed();
-                exit(0);
-            case 'J': // make config JSON from confed's JSON
-                ConfedToConfig();
-                exit(0);
-            case 'g':
-                SchemaForConfed();
-                exit(0);
-            case 'G':
-                GenerateDeviceTemplate(APP_NAME, USER_TEMPLATES_DIR, optarg);
-                exit(0);
-            case '?':
-            default:
-                PrintStartupInfo();
-                PrintUsage();
-                exit(2);
+                case 'd': SetDebugLevel(optarg); break;
+                case 'c': customConfig = optarg; break;
+                case 'p': mqttConfig.Port = stoi(optarg); break;
+                case 'h':
+                case 'H': // backward compatibility
+                    mqttConfig.Host = optarg;
+                    break;
+                case 'T': mqttConfig.Prefix = optarg; break;
+                case 'u': mqttConfig.User = optarg; break;
+                case 'P': mqttConfig.Password = optarg; break;
+                case 'j': // make JSON for confed from config's JSON
+                    ConfigToConfed();
+                    exit(0);
+                case 'J': // make config JSON from confed's JSON
+                    ConfedToConfig();
+                    exit(0);
+                case 'g': SchemaForConfed(); exit(0);
+                case 'G': GenerateDeviceTemplate(APP_NAME, USER_TEMPLATES_DIR, optarg); exit(0);
+                case '?':
+                default:
+                    PrintStartupInfo();
+                    PrintUsage();
+                    exit(2);
             }
         }
 
@@ -244,35 +220,31 @@ namespace
     }
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     WBMQTT::TMosquittoMqttConfig mqttConfig;
-    string configFilename(CONFIG_FULL_FILE_PATH);
+    string                       configFilename(CONFIG_FULL_FILE_PATH);
 
     WBMQTT::SignalHandling::Handle({SIGINT, SIGTERM});
-    WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&]{ WBMQTT::SignalHandling::Stop(); });
+    WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] { WBMQTT::SignalHandling::Stop(); });
     WBMQTT::SetThreadName(APP_NAME);
 
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
 
-    PHandlerConfig handlerConfig;
+    PHandlerConfig       handlerConfig;
     TSerialDeviceFactory deviceFactory;
     RegisterProtocols(deviceFactory);
     try {
-        Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
+        Json::Value  configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
         TTemplateMap templates(TEMPLATES_DIR,
-                               LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, 
-                                                         configSchema));
+                               LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, configSchema));
 
         try {
             templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
         } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
         }
 
-        handlerConfig = LoadConfig(configFilename,
-                                  deviceFactory,
-                                  configSchema,
-                                  templates);
+        handlerConfig = LoadConfig(configFilename, deviceFactory, configSchema, templates);
     } catch (const exception& e) {
         LOG(Error) << e.what();
         return 0;
@@ -285,25 +257,23 @@ int main(int argc, char *argv[])
         if (mqttConfig.Id.empty())
             mqttConfig.Id = driverName;
 
-        auto mqtt = WBMQTT::NewMosquittoMqttClient(mqttConfig);
+        auto mqtt    = WBMQTT::NewMosquittoMqttClient(mqttConfig);
         auto backend = WBMQTT::NewDriverBackend(mqtt);
-        auto driver = WBMQTT::NewDriver(WBMQTT::TDriverArgs{}
-            .SetId(driverName)
-            .SetBackend(backend)
-            .SetUseStorage(true)
-            .SetReownUnknownDevices(true)
-            .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH),
-            handlerConfig->PublishParameters
-        );
+        auto driver  = WBMQTT::NewDriver(WBMQTT::TDriverArgs{}
+                                             .SetId(driverName)
+                                             .SetBackend(backend)
+                                             .SetUseStorage(true)
+                                             .SetReownUnknownDevices(true)
+                                             .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH),
+                                         handlerConfig->PublishParameters);
 
         auto rpcServer(WBMQTT::NewMqttRpcServer(mqtt, APP_NAME));
 
         driver->StartLoop();
-        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, 
-                                          [&]{
-                                                driver->StopLoop();
-                                                driver->Close();
-                                            });
+        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
+            driver->StopLoop();
+            driver->Close();
+        });
 
         driver->WaitForReady();
 
@@ -312,22 +282,21 @@ int main(int argc, char *argv[])
         serialDriver->Start();
         rpcServer->Start();
 
-        WBMQTT::SignalHandling::OnSignals({ SIGINT, SIGTERM },
-                                          [&]{ 
-                                              rpcServer->Stop();
-                                              serialDriver->Stop();
-                                          });
-        WBMQTT::SignalHandling::SetOnTimeout(SERIAL_DRIVER_STOP_TIMEOUT_S, [&]{
+        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
+            rpcServer->Stop();
+            serialDriver->Stop();
+        });
+        WBMQTT::SignalHandling::SetOnTimeout(SERIAL_DRIVER_STOP_TIMEOUT_S, [&] {
             LOG(Error) << "Driver takes too long to stop. Exiting.";
             exit(1);
         });
         WBMQTT::SignalHandling::Start();
         WBMQTT::SignalHandling::Wait();
-    } catch (const exception & e) {
+    } catch (const exception& e) {
         LOG(Error) << "FATAL: " << e.what();
         return 1;
     }
-	return 0;
+    return 0;
 }
 // TBD: fix race condition that occurs after modbus error on startup
 // (slave not active)

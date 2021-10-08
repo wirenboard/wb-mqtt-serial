@@ -13,11 +13,9 @@ namespace
         COMMAND
     };
 
-    const TRegisterTypes RegTypes{
-        { POSITION, "position", "value", U8 },
-        { PARAM,    "param",    "value", U64, true },
-        { COMMAND,  "command",  "value", U64 }
-    };
+    const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
+                                  {PARAM, "param", "value", U64, true},
+                                  {COMMAND, "command", "value", U64}};
 
     const size_t   CRC_SIZE          = 2;
     const uint32_t HOST_ADDRESS      = 0x0000FFFF;
@@ -28,8 +26,8 @@ namespace
     const size_t   DESTINATION_END   = DESTINATION_START + ADDRESS_SIZE;
     const size_t   DATA_POS          = DESTINATION_END;
 
-    const size_t   MAX_RESPONSE_SIZE = 32;
-    const size_t   LEN_MASK          = 0x1F; // 5 bits are reserved for packet length
+    const size_t MAX_RESPONSE_SIZE = 32;
+    const size_t LEN_MASK          = 0x1F; // 5 bits are reserved for packet length
 
     size_t GetLen(uint8_t data)
     {
@@ -39,7 +37,7 @@ namespace
     uint16_t CalcCrc(std::vector<uint8_t>::const_iterator begin, std::vector<uint8_t>::const_iterator end)
     {
         uint16_t sum = 0;
-        for(; begin != end; ++begin) {
+        for (; begin != end; ++begin) {
             sum += ((~(*begin)) & 0xFF);
         }
         return sum;
@@ -65,7 +63,7 @@ namespace
             throw TSerialDeviceTransientErrorException("Bad header");
         }
         if (Get<uint32_t>(bytes.begin() + DESTINATION_START, bytes.begin() + DESTINATION_END) != HOST_ADDRESS) {
-             TSerialDeviceTransientErrorException("Bad destination address");
+            TSerialDeviceTransientErrorException("Bad destination address");
         }
         if (Get<uint32_t>(bytes.begin() + SOURCE_START, bytes.begin() + SOURCE_END) != address) {
             throw TSerialDeviceTransientErrorException("Bad source address");
@@ -74,7 +72,7 @@ namespace
 
     bool FrameComplete(uint8_t* buf, int size)
     {
-        if (static_cast<size_t>(size) < 2 + CRC_SIZE + 2*ADDRESS_SIZE) {
+        if (static_cast<size_t>(size) < 2 + CRC_SIZE + 2 * ADDRESS_SIZE) {
             return false;
         }
         return static_cast<size_t>(size) == ~GetLen(buf[1]);
@@ -83,6 +81,7 @@ namespace
     class TSomfyAddress: public TUint32RegisterAddress
     {
         uint8_t ResponseHeader;
+
     public:
         TSomfyAddress(uint8_t requestHeader, uint8_t responseHeader)
             : TUint32RegisterAddress(requestHeader),
@@ -104,9 +103,9 @@ namespace
         if (!rh.isString()) {
             throw TConfigParserException("response_header: unsigned integer or '0x..' hex string expected");
         }
-        auto str = rh.asString();
+        auto  str = rh.asString();
         char* end;
-        auto res = strtoul(str.c_str(), &end, 16);
+        auto  res = strtoul(str.c_str(), &end, 16);
         if (*end == 0 && end != str.c_str()) {
             return res;
         }
@@ -114,7 +113,8 @@ namespace
         if (*end == 0 && end != str.c_str()) {
             return res;
         }
-        throw TConfigParserException("response_header: unsigned integer or '0x..' hex string expected instead of '" + str + "'");
+        throw TConfigParserException("response_header: unsigned integer or '0x..' hex string expected instead of '" +
+                                     str + "'");
     }
 
     class TSomfyAddressFactory: public TUint32RegisterAddressFactory
@@ -125,11 +125,11 @@ namespace
                                           uint32_t                stride,
                                           uint32_t                registerByteWidth) const override
         {
-            auto addr = LoadRegisterBitsAddress(regCfg);
+            auto          addr = LoadRegisterBitsAddress(regCfg);
             TRegisterDesc res;
             res.BitOffset = addr.BitOffset;
-            res.BitWidth = addr.BitWidth;
-            res.Address = std::make_shared<TSomfyAddress>(addr.Address, GetResponseAddress(regCfg));
+            res.BitWidth  = addr.BitWidth;
+            res.Address   = std::make_shared<TSomfyAddress>(addr.Address, GetResponseAddress(regCfg));
             return res;
         }
     };
@@ -137,7 +137,7 @@ namespace
     class TSomfyDeviceFactory: public IDeviceFactory
     {
     public:
-        TSomfyDeviceFactory() 
+        TSomfyDeviceFactory()
             : IDeviceFactory(std::make_unique<TSomfyAddressFactory>(), "#/definitions/somfy_device_no_channels")
         {}
 
@@ -165,11 +165,10 @@ namespace
 
 void Somfy::TDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("somfy", RegTypes), 
-                             new TSomfyDeviceFactory());
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("somfy", RegTypes), new TSomfyDeviceFactory());
 }
 
-Somfy::TDevice::TDevice(PDeviceConfig config, uint8_t nodeType, PPort port, PProtocol protocol) 
+Somfy::TDevice::TDevice(PDeviceConfig config, uint8_t nodeType, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
       OpenCommand{MakeRequest(Somfy::CTRL_MOVETO, SlaveId, nodeType, {0, 0, 0, 0})},
@@ -182,7 +181,11 @@ std::vector<uint8_t> Somfy::TDevice::ExecCommand(const std::vector<uint8_t>& req
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
     Port()->WriteBytes(request);
     std::vector<uint8_t> respBytes(MAX_RESPONSE_SIZE);
-    auto bytesRead = Port()->ReadFrame(respBytes.data(), respBytes.size(), DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout, FrameComplete);
+    auto                 bytesRead = Port()->ReadFrame(respBytes.data(),
+                                                       respBytes.size(),
+                                                       DeviceConfig()->ResponseTimeout,
+                                                       DeviceConfig()->FrameTimeout,
+                                                       FrameComplete);
     respBytes.resize(bytesRead);
     FixReceivedFrame(respBytes);
     PrintDebugDump(respBytes, "Frame read: ");
@@ -205,7 +208,7 @@ void Somfy::TDevice::WriteRegister(PRegister reg, uint64_t value)
     }
     if (reg->Type == COMMAND) {
         std::vector<uint8_t> data;
-        size_t l = (value & 0xFF);
+        size_t               l = (value & 0xFF);
         for (; l != 0; --l) {
             value >>= 8;
             data.push_back(value & 0xFF);
@@ -217,15 +220,18 @@ void Somfy::TDevice::WriteRegister(PRegister reg, uint64_t value)
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-uint64_t Somfy::TDevice::GetCachedResponse(uint8_t requestHeader, uint8_t responseHeader, size_t bitOffset, size_t bitWidth)
+uint64_t Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
+                                           uint8_t responseHeader,
+                                           size_t  bitOffset,
+                                           size_t  bitWidth)
 {
     uint64_t val;
-    auto it = DataCache.find(requestHeader);
+    auto     it = DataCache.find(requestHeader);
     if (it != DataCache.end()) {
         val = it->second;
     } else {
-        auto req = MakeRequest(requestHeader, SlaveId, NodeType);
-        val = ParseStatusReport(SlaveId, responseHeader, ExecCommand(req));
+        auto req                 = MakeRequest(requestHeader, SlaveId, NodeType);
+        val                      = ParseStatusReport(SlaveId, responseHeader, ExecCommand(req));
         DataCache[requestHeader] = val;
     }
     if (bitOffset || bitWidth) {
@@ -236,15 +242,14 @@ uint64_t Somfy::TDevice::GetCachedResponse(uint8_t requestHeader, uint8_t respon
 
 uint64_t Somfy::TDevice::ReadRegister(PRegister reg)
 {
-    switch (reg->Type)
-    {
+    switch (reg->Type) {
         case POSITION: {
-            auto res = GetCachedResponse(GET_MOTOR_POSITION, POST_MOTOR_POSITION, 2*8, 8);
+            auto res = GetCachedResponse(GET_MOTOR_POSITION, POST_MOTOR_POSITION, 2 * 8, 8);
             if (res > 100) {
                 throw TSerialDeviceInternalErrorException("Unknown position");
             }
             return res;
-        }    
+        }
         case PARAM: {
             const auto& addr = dynamic_cast<const TSomfyAddress&>(reg->GetAddress());
             return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->BitOffset, reg->BitWidth);
@@ -261,14 +266,17 @@ void Somfy::TDevice::EndPollCycle()
     DataCache.clear();
 }
 
-std::vector<uint8_t> Somfy::MakeRequest(uint8_t msg, uint32_t address, uint8_t nodeType, const std::vector<uint8_t>& data)
+std::vector<uint8_t> Somfy::MakeRequest(uint8_t                     msg,
+                                        uint32_t                    address,
+                                        uint8_t                     nodeType,
+                                        const std::vector<uint8_t>& data)
 {
     std::vector<uint8_t> res{msg, 0x00, 0x00, 0xFF, 0xFF, 0x00};
-    res[2] = (nodeType & 0x0F);
+    res[2]  = (nodeType & 0x0F);
     auto it = std::back_inserter(res);
     Append(it, address, ADDRESS_SIZE);
     std::copy(data.begin(), data.end(), it);
-    res[1] = (res.size() + CRC_SIZE) | 0x80; // MSB - ACK request
+    res[1]   = (res.size() + CRC_SIZE) | 0x80; // MSB - ACK request
     auto crc = CalcCrc(res.begin(), res.end());
     res.push_back(crc >> 8);
     res.push_back(crc);
@@ -279,7 +287,10 @@ std::vector<uint8_t> Somfy::MakeRequest(uint8_t msg, uint32_t address, uint8_t n
 
 std::vector<uint8_t> Somfy::MakeSetPositionRequest(uint32_t address, uint8_t nodeType, uint32_t position)
 {
-    return MakeRequest(Somfy::CTRL_MOVETO, address, nodeType, {0x04, static_cast<uint8_t>(position & 0xFF), 0x00, 0x00});
+    return MakeRequest(Somfy::CTRL_MOVETO,
+                       address,
+                       nodeType,
+                       {0x04, static_cast<uint8_t>(position & 0xFF), 0x00, 0x00});
 }
 
 uint64_t Somfy::ParseStatusReport(uint32_t address, uint8_t header, const std::vector<uint8_t>& bytes)

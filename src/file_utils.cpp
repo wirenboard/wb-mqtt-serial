@@ -5,11 +5,12 @@
 #include <iomanip>
 #include <algorithm>
 
-TNoDirError::TNoDirError(const std::string& msg) : std::runtime_error(msg) {}
+TNoDirError::TNoDirError(const std::string& msg): std::runtime_error(msg)
+{}
 
 bool TryOpen(const std::vector<std::string>& fnames, std::ifstream& file)
 {
-    for (auto& fname : fnames) {
+    for (auto& fname: fnames) {
         file.open(fname);
         if (file.is_open()) {
             return true;

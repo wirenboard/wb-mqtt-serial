@@ -13,6 +13,7 @@ class TLoggerWithTimeout
     std::chrono::steady_clock::time_point LastErrorNotificationTime;
     std::chrono::milliseconds             NotificationInterval;
     std::string                           Prefix;
+
 public:
     TLoggerWithTimeout(const std::chrono::milliseconds& notificationInterval, const std::string& prefix);
 

@@ -4,8 +4,8 @@
 
 #include <stdexcept>
 
-
-namespace { //utility
+namespace
+{ // utility
     std::vector<int> WrapAsRTU(const std::vector<int>& pdu, uint8_t slave_id)
     {
         std::vector<uint8_t> adu;
@@ -17,8 +17,7 @@ namespace { //utility
         adu.push_back(crc & 0x00FF);
         return std::vector<int>(adu.begin(), adu.end());
     }
-}   //utility
-
+} // utility
 
 TModbusExpectationsBase::ModbusType TModbusExpectationsBase::GetSelectedModbusType() const
 {
@@ -42,8 +41,8 @@ void TModbusExpectationsBase::SetModbusRTUSlaveId(uint8_t slaveId)
 std::vector<int> TModbusExpectationsBase::WrapPDU(const std::vector<int>& pdu, uint8_t slaveId)
 {
     switch (SelectedModbusType) {
-    case MODBUS_RTU: return WrapAsRTU(pdu, slaveId);
-    default: throw std::runtime_error("unsupported modbus type " + std::to_string(SelectedModbusType));
+        case MODBUS_RTU: return WrapAsRTU(pdu, slaveId);
+        default: throw std::runtime_error("unsupported modbus type " + std::to_string(SelectedModbusType));
     }
 }
 

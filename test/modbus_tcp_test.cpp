@@ -1,31 +1,41 @@
 #include "fake_serial_port.h"
 #include "modbus_common.h"
 
-namespace 
+namespace
 {
     class TPortMock: public TPort
     {
-        size_t Pointer = 0;
+        size_t               Pointer = 0;
         std::vector<uint8_t> Stream;
 
     public:
         TPortMock(const std::vector<uint8_t>& stream): Stream(stream)
         {}
 
-        void Open() override {}
-        void Close() override {}
-        bool IsOpen() const { return false; }
-        void CheckPortOpen() const {}
+        void Open() override
+        {}
+        void Close() override
+        {}
+        bool IsOpen() const
+        {
+            return false;
+        }
+        void CheckPortOpen() const
+        {}
 
-        void WriteBytes(const uint8_t* buf, int count) {}
+        void WriteBytes(const uint8_t* buf, int count)
+        {}
 
-        uint8_t ReadByte(const std::chrono::microseconds& timeout) { return 0; }
+        uint8_t ReadByte(const std::chrono::microseconds& timeout)
+        {
+            return 0;
+        }
 
-        size_t ReadFrame(uint8_t* buf,
-                        size_t count,
-                        const std::chrono::microseconds& responseTimeout,
-                        const std::chrono::microseconds& frameTimeout,
-                        TFrameCompletePred frame_complete = 0)
+        size_t ReadFrame(uint8_t*                         buf,
+                         size_t                           count,
+                         const std::chrono::microseconds& responseTimeout,
+                         const std::chrono::microseconds& frameTimeout,
+                         TFrameCompletePred               frame_complete = 0)
         {
             if (Pointer == Stream.size()) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(15));
@@ -37,27 +47,38 @@ namespace
             return l;
         }
 
-        void SkipNoise() {}
+        void SkipNoise()
+        {}
 
-        void SleepSinceLastInteraction(const std::chrono::microseconds& us) {}
-        bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) { return true; }
-        TTimePoint CurrentTime() const { return std::chrono::steady_clock::now(); }
+        void SleepSinceLastInteraction(const std::chrono::microseconds& us)
+        {}
+        bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until)
+        {
+            return true;
+        }
+        TTimePoint CurrentTime() const
+        {
+            return std::chrono::steady_clock::now();
+        }
 
-        std::string GetDescription(bool verbose) const { return std::string(); }
+        std::string GetDescription(bool verbose) const
+        {
+            return std::string();
+        }
     };
 }
 
 class TModbusTCPTraitsTest: public testing::Test
 {
-    public:
-        void TestEqual(const std::vector<uint8_t>& b1, const std::vector<uint8_t>& b2) const
-        {
-            ASSERT_EQ(b1.size(), b2.size());
+public:
+    void TestEqual(const std::vector<uint8_t>& b1, const std::vector<uint8_t>& b2) const
+    {
+        ASSERT_EQ(b1.size(), b2.size());
 
-            for (size_t i = 0; i < b1.size(); ++i) {
-                ASSERT_EQ(b1[i],  b2[i]) << i;
-            }
+        for (size_t i = 0; i < b1.size(); ++i) {
+            ASSERT_EQ(b1[i], b2[i]) << i;
         }
+    }
 };
 
 TEST_F(TModbusTCPTraitsTest, PacketSize)
@@ -70,7 +91,7 @@ TEST_F(TModbusTCPTraitsTest, GetPDU)
 {
     Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
 
-    Modbus::TRequest r = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    Modbus::TRequest       r  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     const Modbus::TRequest r2 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 
     ASSERT_EQ(*traits.GetPDU(r), 7);
@@ -81,12 +102,12 @@ TEST_F(TModbusTCPTraitsTest, FinalizeRequest)
 {
     Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
 
-    Modbus::TRequest r = {0,  1, 2, 3, 4, 5,   6, 7, 8, 9};
+    Modbus::TRequest r = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     Modbus::TRequest p = {0, 11, 0, 0, 0, 4, 100, 7, 8, 9};
     traits.FinalizeRequest(r, 100);
 
-    Modbus::TRequest r2 = {10, 11, 12, 13, 14, 15,  16, 17, 18, 19, 20};
-    Modbus::TRequest p2 = { 0, 12,  0,  0,  0,  5, 200, 17, 18, 19, 20};
+    Modbus::TRequest r2 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+    Modbus::TRequest p2 = {0, 12, 0, 0, 0, 5, 200, 17, 18, 19, 20};
     traits.FinalizeRequest(r2, 200);
 
     TestEqual(r, p);
@@ -158,8 +179,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameWrongUnitId)
 
 TEST_F(TModbusTCPTraitsTest, ReadFramePassWrongTransactionId)
 {
-    Modbus::TResponse goodResp = {0, 1, 0, 0, 0, 4, 100, 17, 18, 19};
-    std::vector<uint8_t> r = {0, 2, 0, 0, 0, 8, 101, 7, 8, 9, 10, 11, 12, 13};
+    Modbus::TResponse    goodResp = {0, 1, 0, 0, 0, 4, 100, 17, 18, 19};
+    std::vector<uint8_t> r        = {0, 2, 0, 0, 0, 8, 101, 7, 8, 9, 10, 11, 12, 13};
     r.insert(r.end(), goodResp.begin(), goodResp.end());
     TPortMock port(r);
 

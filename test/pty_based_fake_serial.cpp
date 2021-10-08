@@ -8,14 +8,15 @@
 
 #include "pty_based_fake_serial.h"
 
-namespace {
+namespace
+{
     const int SELECT_PERIOD_MS = 50;
 }
 
 void TPtyBasedFakeSerial::PtyPair::Init()
 {
     MasterFd = posix_openpt(O_RDWR | O_NOCTTY);
-    if (MasterFd < 0){
+    if (MasterFd < 0) {
         std::stringstream ss;
         ss << "posix_openpt() failed: " << errno;
         throw std::runtime_error(ss.str());
@@ -57,8 +58,11 @@ TPtyBasedFakeSerial::PtyPair::~PtyPair()
     }
 }
 
-TPtyBasedFakeSerial::TPtyBasedFakeSerial(WBMQTT::Testing::TLoggedFixture& fixture):
-    Fixture(fixture), Stop(false), ForceFlush(false), ForwardingFromPrimary(false)
+TPtyBasedFakeSerial::TPtyBasedFakeSerial(WBMQTT::Testing::TLoggedFixture& fixture)
+    : Fixture(fixture),
+      Stop(false),
+      ForceFlush(false),
+      ForwardingFromPrimary(false)
 {
     Primary.Init();
 }
@@ -95,7 +99,7 @@ void TPtyBasedFakeSerial::Run()
 {
     for (;;) {
         std::unique_lock<std::mutex> lk(Mutex);
-        Cond.wait(lk, [this]{ return Stop || !Expectations.empty(); });
+        Cond.wait(lk, [this] { return Stop || !Expectations.empty(); });
 
         if (Stop)
             break;
@@ -148,16 +152,16 @@ void TPtyBasedFakeSerial::Forward()
                 FlushCond.notify_one();
             }
         }
-        fd_set rfds;
+        fd_set         rfds;
         struct timeval tv, *tvp = 0;
 
         FD_ZERO(&rfds);
         FD_SET(Primary.MasterFd, &rfds);
         FD_SET(Secondary.MasterFd, &rfds);
 
-        tv.tv_sec = SELECT_PERIOD_MS / 1000;
+        tv.tv_sec  = SELECT_PERIOD_MS / 1000;
         tv.tv_usec = (SELECT_PERIOD_MS % 1000) * 1000;
-        tvp = &tv;
+        tvp        = &tv;
 
         int r = select(std::max(Primary.MasterFd, Secondary.MasterFd) + 1, &rfds, NULL, NULL, tvp);
         if (r < 0)
@@ -171,20 +175,20 @@ void TPtyBasedFakeSerial::Forward()
             if (!ForwardingFromPrimary)
                 FlushForwardingLogs();
             ForwardingFromPrimary = true;
-            read_from = Primary.MasterFd;
-            write_to = Secondary.MasterFd;
+            read_from             = Primary.MasterFd;
+            write_to              = Secondary.MasterFd;
         } else if (FD_ISSET(Secondary.MasterFd, &rfds)) {
             if (ForwardingFromPrimary)
                 FlushForwardingLogs();
             ForwardingFromPrimary = false;
-            read_from = Secondary.MasterFd;
-            write_to = Primary.MasterFd;
+            read_from             = Secondary.MasterFd;
+            write_to              = Primary.MasterFd;
         } else {
-            continue; //should not happen
+            continue; // should not happen
         }
 
         uint8_t b;
-        int n = read(read_from, &b, 1);
+        int     n = read(read_from, &b, 1);
         if (n < 0) {
             if (errno == EIO) // terminal closed
                 break;

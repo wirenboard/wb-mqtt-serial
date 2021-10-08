@@ -9,6 +9,7 @@ public:
     TEnergomeraIecModeCDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
 
     static void Register(TSerialDeviceFactory& factory);
+
 private:
     std::string GetParameterRequest(const TRegister& reg) const override;
     uint64_t    GetRegisterValue(const TRegister& reg, const std::string& value) override;

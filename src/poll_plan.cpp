@@ -20,12 +20,13 @@ void TPollPlan::TQueueItem::Update(const std::chrono::milliseconds& new_interval
     RequestDuration = request_duration;
 
 #ifdef POLL_PLAN_DEBUG
-    LOG(Info) << "Poll interval " << PollInterval.count() << ": CurrentTime is " <<
-        std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime->time_since_epoch()).count() <<
-        ". Was scheduled at " <<
-        std::chrono::duration_cast<std::chrono::milliseconds>(DueAt.time_since_epoch()).count() <<
-        ". Rescheduling to " <<
-        std::chrono::duration_cast<std::chrono::milliseconds>((*CurrentTime + PollInterval).time_since_epoch()).count();
+    LOG(Info) << "Poll interval " << PollInterval.count() << ": CurrentTime is "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime->time_since_epoch()).count()
+              << ". Was scheduled at "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(DueAt.time_since_epoch()).count()
+              << ". Rescheduling to "
+              << std::chrono::duration_cast<std::chrono::milliseconds>((*CurrentTime + PollInterval).time_since_epoch())
+                     .count();
 #endif
     DueAt = *CurrentTime + PollInterval;
 }
@@ -69,25 +70,26 @@ void TPollPlan::ProcessPending(const TCallback& callback)
         PendingItems.pop();
 #ifdef POLL_PLAN_DEBUG
     if (!Queue.empty())
-        LOG(Info) << "top due at " <<
-            std::chrono::duration_cast<std::chrono::milliseconds>(Queue.top()->DueAt.time_since_epoch()).count() <<
-            "; now is " <<
-            std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime.time_since_epoch()).count();
+        LOG(Info)
+            << "top due at "
+            << std::chrono::duration_cast<std::chrono::milliseconds>(Queue.top()->DueAt.time_since_epoch()).count()
+            << "; now is "
+            << std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime.time_since_epoch()).count();
 #endif
     while (!Queue.empty() && Queue.top()->DueAt <= CurrentTime) {
         PendingItems.push(Queue.top());
         Queue.pop();
     }
-    int n = 0;
+    int                       n            = 0;
     std::chrono::milliseconds avg_duration = std::chrono::milliseconds::zero();
     while (!PendingItems.empty()) {
-        auto item = PendingItems.top();
+        auto item  = PendingItems.top();
         auto start = ClockFunc();
         callback(item->Entry);
         auto request_duration = std::chrono::duration_cast<std::chrono::milliseconds>(ClockFunc() - start);
-        item->Update(item->PollCountAtLeast > 1 ?
-                     std::chrono::duration_cast<std::chrono::milliseconds>(start - item->LastPollAt) :
-                     std::chrono::milliseconds(0),
+        item->Update(item->PollCountAtLeast > 1
+                         ? std::chrono::duration_cast<std::chrono::milliseconds>(start - item->LastPollAt)
+                         : std::chrono::milliseconds(0),
                      request_duration);
         avg_duration += request_duration;
         ++n;

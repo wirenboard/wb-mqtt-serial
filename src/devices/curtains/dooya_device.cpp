@@ -14,9 +14,9 @@ namespace
     };
 
     const TRegisterTypes RegTypes{
-        { POSITION, "position", "value", U8 },
-        { PARAM,    "param",    "value", U8 },
-        { COMMAND,  "command",  "value", U8 },
+        {POSITION, "position", "value", U8},
+        {PARAM, "param", "value", U8},
+        {COMMAND, "command", "value", U8},
     };
 
     enum TCommands
@@ -40,13 +40,13 @@ namespace
 
     const uint8_t GET_POSITION_DATA_LENGTH = 1;
 
-    const size_t CRC_SIZE = sizeof(uint16_t);
+    const size_t CRC_SIZE              = sizeof(uint16_t);
     const size_t CONTROL_RESPONSE_SIZE = 7;
-    const size_t RESPONSE_SIZE = 8;
-    const size_t DATA_POSITION = 5;
+    const size_t RESPONSE_SIZE         = 8;
+    const size_t DATA_POSITION         = 5;
 
     const size_t ADDRESS_POSITION = 1;
-    const size_t ADDRESS_SIZE = sizeof(uint16_t);
+    const size_t ADDRESS_SIZE     = sizeof(uint16_t);
 
     Dooya::TRequest MakeSetPositionRequest(uint16_t address, uint8_t position)
     {
@@ -70,7 +70,8 @@ namespace
         if (Get<uint16_t>(bytes.cend() - CRC_SIZE, bytes.cend()) != CalcCrc(&bytes[0], bytes.size() - CRC_SIZE)) {
             throw TSerialDeviceTransientErrorException("Bad CRC");
         }
-        if (Get<uint16_t>(bytes.cbegin() + ADDRESS_POSITION, bytes.cbegin() + ADDRESS_POSITION + ADDRESS_SIZE) != address) {
+        if (Get<uint16_t>(bytes.cbegin() + ADDRESS_POSITION, bytes.cbegin() + ADDRESS_POSITION + ADDRESS_SIZE) !=
+            address) {
             throw TSerialDeviceTransientErrorException("Bad address");
         }
         if ((bytes[3] != fn) || (bytes[4] != dataAddress)) {
@@ -87,11 +88,11 @@ namespace
 
 void Dooya::TDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("dooya", RegTypes), 
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("dooya", RegTypes),
                              new TBasicDeviceFactory<Dooya::TDevice>("#/definitions/simple_device_no_channels"));
 }
 
-Dooya::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol) 
+Dooya::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
       OpenCommand{MakeRequest(SlaveId, {CONTROL, OPEN}), CONTROL_RESPONSE_SIZE},
@@ -105,15 +106,17 @@ std::vector<uint8_t> Dooya::TDevice::ExecCommand(const TRequest& request)
 {
     Port()->WriteBytes(request.Data);
     std::vector<uint8_t> respBytes(request.ResponseSize);
-    auto bytesRead = Port()->ReadFrame(respBytes.data(), respBytes.size(), DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
+    auto                 bytesRead = Port()->ReadFrame(respBytes.data(),
+                                                       respBytes.size(),
+                                                       DeviceConfig()->ResponseTimeout,
+                                                       DeviceConfig()->FrameTimeout);
     respBytes.resize(bytesRead);
     return respBytes;
 }
 
 void Dooya::TDevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    switch (reg->Type)
-    {
+    switch (reg->Type) {
         case POSITION: {
             if (value == 0) {
                 if (CloseCommand.Data != ExecCommand(CloseCommand)) {
@@ -124,14 +127,17 @@ void Dooya::TDevice::WriteRegister(PRegister reg, uint64_t value)
                     throw TSerialDeviceTransientErrorException("Bad response");
                 }
             } else {
-                ParsePositionResponse(SlaveId, CONTROL, SET_POSITION, ExecCommand(MakeSetPositionRequest(SlaveId, value)));
+                ParsePositionResponse(SlaveId,
+                                      CONTROL,
+                                      SET_POSITION,
+                                      ExecCommand(MakeSetPositionRequest(SlaveId, value)));
             }
             return;
         }
         case PARAM: {
-            uint8_t dataAddress = GetUint32RegisterAddress(reg->GetAddress());
+            uint8_t  dataAddress = GetUint32RegisterAddress(reg->GetAddress());
             TRequest req;
-            req.Data = MakeRequest(SlaveId, {WRITE, dataAddress, 1, static_cast<uint8_t>(value)});
+            req.Data         = MakeRequest(SlaveId, {WRITE, dataAddress, 1, static_cast<uint8_t>(value)});
             req.ResponseSize = RESPONSE_SIZE;
             if (ParseReadResponse(SlaveId, WRITE, dataAddress, ExecCommand(req)) != 1) {
                 throw TSerialDeviceTransientErrorException("Bad response");
@@ -139,9 +145,9 @@ void Dooya::TDevice::WriteRegister(PRegister reg, uint64_t value)
             return;
         }
         case COMMAND: {
-            uint8_t dataAddress = GetUint32RegisterAddress(reg->GetAddress());
+            uint8_t  dataAddress = GetUint32RegisterAddress(reg->GetAddress());
             TRequest req;
-            req.Data = MakeRequest(SlaveId, {CONTROL, dataAddress});
+            req.Data         = MakeRequest(SlaveId, {CONTROL, dataAddress});
             req.ResponseSize = CONTROL_RESPONSE_SIZE;
             if (req.Data != ExecCommand(req)) {
                 throw TSerialDeviceTransientErrorException("Bad response");
@@ -153,15 +159,14 @@ void Dooya::TDevice::WriteRegister(PRegister reg, uint64_t value)
 
 uint64_t Dooya::TDevice::ReadRegister(PRegister reg)
 {
-    switch (reg->Type)
-    {
+    switch (reg->Type) {
         case POSITION: {
             return ParsePositionResponse(SlaveId, READ, GET_POSITION_DATA_LENGTH, ExecCommand(GetPositionCommand));
         }
         case PARAM: {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            auto     addr = GetUint32RegisterAddress(reg->GetAddress());
             TRequest req;
-            req.Data = MakeRequest(SlaveId, {READ, static_cast<uint8_t>(addr & 0xFF), 1});
+            req.Data         = MakeRequest(SlaveId, {READ, static_cast<uint8_t>(addr & 0xFF), 1});
             req.ResponseSize = RESPONSE_SIZE;
             return ParseReadResponse(SlaveId, READ, 1, ExecCommand(req));
         }
@@ -175,14 +180,17 @@ uint64_t Dooya::TDevice::ReadRegister(PRegister reg)
 std::vector<uint8_t> Dooya::MakeRequest(uint16_t address, const std::vector<uint8_t>& data)
 {
     std::vector<uint8_t> res{0x55};
-    auto it = std::back_inserter(res);
+    auto                 it = std::back_inserter(res);
     Append(it, address);
     std::copy(data.begin(), data.end(), it);
     Append(it, CalcCrc(res.data(), res.size()));
     return res;
 }
 
-size_t Dooya::ParsePositionResponse(uint16_t address, uint8_t fn, uint8_t dataAddress, const std::vector<uint8_t>& bytes)
+size_t Dooya::ParsePositionResponse(uint16_t                    address,
+                                    uint8_t                     fn,
+                                    uint8_t                     dataAddress,
+                                    const std::vector<uint8_t>& bytes)
 {
     Check(address, RESPONSE_SIZE, fn, dataAddress, bytes);
     if (bytes[DATA_POSITION] == 0xFF) {

@@ -9,7 +9,7 @@ using namespace std;
 using namespace WBMQTT::JSON;
 
 namespace
-    {
+{
     Json::Value MakeJsonFromChannelTemplate(const Json::Value& channelTemplate)
     {
         Json::Value res;
@@ -49,8 +49,8 @@ namespace
 
     std::pair<Json::Value, Json::Value> SplitChannels(const Json::Value& device, const Json::Value& deviceTemplate)
     {
-        Json::Value channels(Json::arrayValue);
-        Json::Value customChannels(Json::arrayValue);
+        Json::Value                                  channels(Json::arrayValue);
+        Json::Value                                  customChannels(Json::arrayValue);
         std::unordered_map<std::string, Json::Value> regs;
         if (device.isMember("channels")) {
             for (const Json::Value& channel: device["channels"]) {
@@ -85,50 +85,55 @@ namespace
 
     void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, bool isSubdevice)
     {
-        for (Json::Value& device : devices) {
+        for (Json::Value& device: devices) {
             if (device.isMember("device_type")) {
                 device = MakeDeviceForConfed(device, templates, isSubdevice);
             }
         }
     }
 
-    Json::Value PartitionChannelsByGroups(const Json::Value& config,
-                                          const Json::Value& schema,
+    Json::Value PartitionChannelsByGroups(const Json::Value&                            config,
+                                          const Json::Value&                            schema,
                                           std::unordered_map<std::string, Json::Value>& channelsFromGroups)
     {
         std::unordered_map<std::string, Json::Value*> channelsToGroups;
         for (const auto& channel: schema["channels"]) {
             try {
-                channelsToGroups.emplace(channel["name"].asString(), &channelsFromGroups.at(channel["group"].asString()));
-            } catch (...) {}
+                channelsToGroups.emplace(channel["name"].asString(),
+                                         &channelsFromGroups.at(channel["group"].asString()));
+            } catch (...) {
+            }
         }
         Json::Value originalChannels(Json::arrayValue);
         for (const auto& channel: config["channels"]) {
             try {
                 (*channelsToGroups.at(channel["name"].asString()))["channels"].append(channel);
-            } catch(...) {
+            } catch (...) {
                 originalChannels.append(channel);
             }
         }
         return originalChannels;
     }
 
-    std::vector<std::string> PartitionParametersByGroups(const Json::Value& config,
-                                                            const Json::Value& schema,
-                                                            std::unordered_map<std::string, Json::Value>& channelsFromGroups)
+    std::vector<std::string> PartitionParametersByGroups(
+        const Json::Value&                            config,
+        const Json::Value&                            schema,
+        std::unordered_map<std::string, Json::Value>& channelsFromGroups)
     {
         std::unordered_map<std::string, Json::Value*> parametersToGroups;
         for (Json::ValueConstIterator it = schema["parameters"].begin(); it != schema["parameters"].end(); ++it) {
             try {
                 parametersToGroups.emplace(it.name(), &channelsFromGroups.at((*it)["group"].asString()));
-            } catch(...) {}
+            } catch (...) {
+            }
         }
         std::vector<std::string> movedParameters;
         for (Json::ValueConstIterator it = config.begin(); it != config.end(); ++it) {
             try {
                 (*parametersToGroups.at(it.name()))[it.name()] = *it;
                 movedParameters.emplace_back(it.name());
-            } catch(...) {}
+            } catch (...) {
+            }
         }
         return movedParameters;
     }
@@ -146,7 +151,7 @@ namespace
         std::unordered_map<std::string, Json::Value> channelsFromGroups;
         for (const auto& group: schema["groups"]) {
             Json::Value item;
-            item["name"] = group["title"];
+            item["name"]        = group["title"];
             item["device_type"] = group["title"];
             channelsFromGroups.emplace(group["id"].asString(), item);
         }
@@ -217,8 +222,8 @@ namespace
 
     Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, bool isSubdevice)
     {
-        auto dt = config["device_type"].asString();
-        auto deviceTemplate = deviceTemplates.GetTemplate(dt);
+        auto        dt             = config["device_type"].asString();
+        auto        deviceTemplate = deviceTemplates.GetTemplate(dt);
         Json::Value schema(deviceTemplate.Schema);
         if (!schema.isMember("subdevices")) {
             schema["subdevices"] = Json::Value(Json::arrayValue);
@@ -243,7 +248,7 @@ namespace
             } else {
                 TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate.Type, schema);
                 MakeDevicesForConfed(standardChannels, subDeviceTemplates, true);
-            } 
+            }
             newDev["standard_channels"] = standardChannels;
         }
 
@@ -255,7 +260,8 @@ namespace
             }
             res[GetSubdeviceKey(dt)] = newDev;
         } else {
-            if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
+            if (!newDev.isMember("slave_id") ||
+                (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
                 newDev["slave_id"] = false;
             }
             if ((schema.isMember("parameters"))) {
@@ -278,13 +284,11 @@ Json::Value MakeJsonForConfed(const std::string&    configFileName,
                               TSerialDeviceFactory& deviceFactory)
 {
     Json::Value root(Parse(configFileName));
-    auto configSchema = MakeSchemaForConfigValidation(baseConfigSchema,
-                                                      GetValidationDeviceTypes(root),
-                                                      templates,
-                                                      deviceFactory);
+    auto        configSchema =
+        MakeSchemaForConfigValidation(baseConfigSchema, GetValidationDeviceTypes(root), templates, deviceFactory);
     Validate(root, configSchema);
-    for (Json::Value& port : root["ports"]) {
-        for (Json::Value& device : port["devices"]) {
+    for (Json::Value& port: root["ports"]) {
+        for (Json::Value& device: port["devices"]) {
             if (device.isMember("device_type")) {
                 device = MakeDeviceForConfed(device, templates, false);
             }

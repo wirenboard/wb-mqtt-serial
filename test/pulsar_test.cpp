@@ -3,14 +3,13 @@
 #include "fake_serial_port.h"
 #include "devices/pulsar_device.h"
 
-
 class TPulsarDeviceTest: public TSerialDeviceTest
 {
 protected:
-    void SetUp();
+    void          SetUp();
     PPulsarDevice Dev;
-    PRegister Heat_TempIn;
-    PRegister Heat_TempOut;
+    PRegister     Heat_TempIn;
+    PRegister     Heat_TempOut;
     // TODO: time register
 };
 
@@ -24,7 +23,7 @@ void TPulsarDeviceTest::SetUp()
         SerialPort,
         DeviceFactory.GetProtocol("pulsar"));
 
-    Heat_TempIn = TRegister::Intern(Dev, TRegisterConfig::Create(0, 2, Float));
+    Heat_TempIn  = TRegister::Intern(Dev, TRegisterConfig::Create(0, 2, Float));
     Heat_TempOut = TRegister::Intern(Dev, TRegisterConfig::Create(0, 3, Float));
 
     SerialPort->Open();
@@ -36,13 +35,8 @@ TEST_F(TPulsarDeviceTest, PulsarHeatMeterFloatQuery)
     // << 00 10 70 80 01 0E 5A B3 C5 41 00 00 18 DB
     // temperature == 24.71257
 
-    SerialPort->Expect(
-            {
-                0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7c, 0xa7
-            },
-            {
-                0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x5a, 0xb3, 0xc5, 0x41, 0x00, 0x00, 0x18, 0xdb
-            });
+    SerialPort->Expect({0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7c, 0xa7},
+                       {0x00, 0x10, 0x70, 0x80, 0x01, 0x0e, 0x5a, 0xb3, 0xc5, 0x41, 0x00, 0x00, 0x18, 0xdb});
 
     ASSERT_EQ(0x41C5B35A, Dev->ReadRegister(Heat_TempIn));
 

@@ -5,26 +5,26 @@
 
 using namespace std::chrono;
 
-namespace 
+namespace
 {
-    const size_t MAX_WRITE_FAILS = 10;
+    const size_t  MAX_WRITE_FAILS = 10;
     const seconds MAX_WRITE_FAIL_TIME(600); // 10 minutes
 }
 
 TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed)
-    : Dev(dev), Reg(reg), FlushNeeded(flush_needed), WriteFail(false)
+    : Dev(dev),
+      Reg(reg),
+      FlushNeeded(flush_needed),
+      WriteFail(false)
 {}
 
-TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error) {
+TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error)
+{
     TErrorState newState;
     if (error) {
-        newState = ErrorState == WriteError ||
-            ErrorState == ReadWriteError ?
-            ReadWriteError : ReadError;
+        newState = ErrorState == WriteError || ErrorState == ReadWriteError ? ReadWriteError : ReadError;
     } else {
-        newState = ErrorState == ReadWriteError ||
-            ErrorState == WriteError ?
-            WriteError : NoError;
+        newState = ErrorState == ReadWriteError || ErrorState == WriteError ? WriteError : NoError;
     }
 
     if (ErrorState == newState)
@@ -37,13 +37,9 @@ TRegisterHandler::TErrorState TRegisterHandler::UpdateWriteError(bool error)
 {
     TErrorState newState;
     if (error) {
-        newState = ErrorState == ReadError ||
-            ErrorState == ReadWriteError ?
-            ReadWriteError : WriteError;
+        newState = ErrorState == ReadError || ErrorState == ReadWriteError ? ReadWriteError : WriteError;
     } else {
-        newState = ErrorState == ReadWriteError ||
-            ErrorState == ReadError ?
-            ReadError : NoError;
+        newState = ErrorState == ReadWriteError || ErrorState == ReadError ? ReadError : NoError;
     }
 
     if (ErrorState == newState)
@@ -58,7 +54,7 @@ bool TRegisterHandler::NeedToPoll()
     return Reg->Poll;
 }
 
-TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_value, bool ok, bool *changed)
+TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed)
 {
     *changed = false;
 
@@ -66,7 +62,7 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
         return UpdateReadError(true);
 
     bool first_poll = !DidReadReg;
-    DidReadReg = true;
+    DidReadReg      = true;
 
     if (Reg->ErrorValue && InvertWordOrderIfNeeded(*Reg, *Reg->ErrorValue) == new_value) {
         LOG(Debug) << "register " << Reg->ToString() << " contains error value";
@@ -99,10 +95,10 @@ bool TRegisterHandler::NeedToFlush()
 TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
 {
     if (forcedError == WriteError) {
-        return { UpdateWriteError(true), false };
+        return {UpdateWriteError(true), false};
     }
 
-    bool changed = false;
+    bool              changed = false;
     volatile uint64_t tempValue;
     try {
         {
@@ -112,20 +108,20 @@ TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
         Device()->WriteRegister(Reg, tempValue);
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
-            Dirty = (tempValue != ValueToSet);
+            Dirty     = (tempValue != ValueToSet);
             WriteFail = false;
         }
-        changed = (OldValue != tempValue);
+        changed  = (OldValue != tempValue);
         OldValue = tempValue;
         Reg->SetValue(OldValue);
     } catch (const TSerialDevicePermanentRegisterException& e) {
         LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
-            Dirty = (tempValue != ValueToSet);
+            Dirty     = (tempValue != ValueToSet);
             WriteFail = false;
         }
-        return { UpdateWriteError(true), false };
+        return {UpdateWriteError(true), false};
     } catch (const TSerialDeviceException& e) {
         LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
         {
@@ -135,13 +131,13 @@ TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
             }
             WriteFail = true;
             if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) > MAX_WRITE_FAIL_TIME) {
-                Dirty = (tempValue != ValueToSet);
+                Dirty     = (tempValue != ValueToSet);
                 WriteFail = false;
             }
         }
-        return { UpdateWriteError(true), false };
+        return {UpdateWriteError(true), false};
     }
-    return { UpdateWriteError(false), changed };
+    return {UpdateWriteError(false), changed};
 }
 
 std::string TRegisterHandler::TextValue() const
@@ -154,7 +150,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
     {
         // don't hold the lock while notifying the client below
         std::lock_guard<std::mutex> lock(SetValueMutex);
-        Dirty = true;
+        Dirty      = true;
         ValueToSet = ConvertToRawValue(*Reg, v);
     }
     FlushNeeded->Signal();

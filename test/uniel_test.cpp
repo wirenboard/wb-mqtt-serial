@@ -4,10 +4,11 @@
 #include "devices/uniel_device.h"
 #include "uniel_expectations.h"
 
-class TUnielDeviceTest: public TSerialDeviceTest, public TUnielDeviceExpectations {
+class TUnielDeviceTest: public TSerialDeviceTest, public TUnielDeviceExpectations
+{
 protected:
-    void SetUp();
-    void TearDown();
+    void         SetUp();
+    void         TearDown();
     PUnielDevice Dev;
 
     PRegister InputReg;
@@ -20,14 +21,13 @@ void TUnielDeviceTest::SetUp()
 {
     TSerialDeviceTest::SetUp();
 
-    Dev = std::make_shared<TUnielDevice>(
-        std::make_shared<TDeviceConfig>("uniel", std::to_string(0x01), "uniel"),
-        SerialPort,
-        DeviceFactory.GetProtocol("uniel"));
+    Dev = std::make_shared<TUnielDevice>(std::make_shared<TDeviceConfig>("uniel", std::to_string(0x01), "uniel"),
+                                         SerialPort,
+                                         DeviceFactory.GetProtocol("uniel"));
 
-    InputReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_INPUT, 0x0a, U8));
-    RelayReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_RELAY, 0x1b, U8));
-    ThresholdReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_PARAM, 0x02, U8));
+    InputReg      = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_INPUT, 0x0a, U8));
+    RelayReg      = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_RELAY, 0x1b, U8));
+    ThresholdReg  = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_PARAM, 0x02, U8));
     BrightnessReg = TRegister::Intern(Dev, TRegisterConfig::Create(TUnielDevice::REG_BRIGHTNESS, 0x141, U8));
 
     SerialPort->Open();
@@ -89,11 +89,15 @@ TEST_F(TUnielDeviceTest, TestSetBrightness)
     Dev->WriteRegister(BrightnessReg, 0x42);
 }
 
-class TUnielIntegrationTest: public TSerialDeviceIntegrationTest, public TUnielDeviceExpectations {
+class TUnielIntegrationTest: public TSerialDeviceIntegrationTest, public TUnielDeviceExpectations
+{
 protected:
-    void SetUp();
-    void TearDown();
-    const char* ConfigPath() const { return "configs/config-uniel-test.json"; }
+    void        SetUp();
+    void        TearDown();
+    const char* ConfigPath() const
+    {
+        return "configs/config-uniel-test.json";
+    }
 };
 
 void TUnielIntegrationTest::SetUp()

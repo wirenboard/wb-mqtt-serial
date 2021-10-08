@@ -11,7 +11,8 @@
 class TUnielDevice: public TSerialDevice, public TUInt32SlaveId
 {
 public:
-    enum RegisterType {
+    enum RegisterType
+    {
         REG_RELAY = 0,
         REG_INPUT,
         REG_PARAM,
@@ -20,7 +21,7 @@ public:
 
     TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
-    void WriteRegister(PRegister reg, uint64_t value);
+    void     WriteRegister(PRegister reg, uint64_t value);
 
     static void Register(TSerialDeviceFactory& factory);
 

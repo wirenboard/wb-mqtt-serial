@@ -3,7 +3,6 @@
 #include "milur_expectations.h"
 #include "devices/milur_device.h"
 
-
 class TMilurTest: public TSerialDeviceTest, public TMilurExpectations
 {
 protected:
@@ -20,57 +19,63 @@ protected:
 
     PRegister MilurPhaseACurrentReg;
     PRegister MilurPhaseBCurrentReg;
-	PRegister MilurPhaseCCurrentReg;
+    PRegister MilurPhaseCCurrentReg;
 
-	PRegister MilurPhaseAActivePowerReg;
-	PRegister MilurPhaseBActivePowerReg;
-	PRegister MilurPhaseCActivePowerReg;
-	PRegister MilurTotalActivePowerReg;
+    PRegister MilurPhaseAActivePowerReg;
+    PRegister MilurPhaseBActivePowerReg;
+    PRegister MilurPhaseCActivePowerReg;
+    PRegister MilurTotalActivePowerReg;
 
-	PRegister MilurPhaseAReactivePowerReg;
-	PRegister MilurPhaseBReactivePowerReg;
-	PRegister MilurPhaseCReactivePowerReg;
-	PRegister MilurTotalReactivePowerReg;
+    PRegister MilurPhaseAReactivePowerReg;
+    PRegister MilurPhaseBReactivePowerReg;
+    PRegister MilurPhaseCReactivePowerReg;
+    PRegister MilurTotalReactivePowerReg;
 
-	PRegister MilurTotalConsumptionReg;
-	PRegister MilurTotalReactiveEnergyReg;
-	PRegister MilurFrequencyReg;
+    PRegister MilurTotalConsumptionReg;
+    PRegister MilurTotalReactiveEnergyReg;
+    PRegister MilurFrequencyReg;
 };
 
 PDeviceConfig TMilurTest::GetDeviceConfig()
 {
-	return std::make_shared<TDeviceConfig>("milur", std::to_string(0xff), "milur");
+    return std::make_shared<TDeviceConfig>("milur", std::to_string(0xff), "milur");
 }
 
 void TMilurTest::SetUp()
 {
-	TSerialDeviceTest::SetUp();
+    TSerialDeviceTest::SetUp();
 
-	MilurDev = std::make_shared<TMilurDevice>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("milur"));
+    MilurDev = std::make_shared<TMilurDevice>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("milur"));
 
-	MilurPhaseAVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 100, U24));
-	MilurPhaseBVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 101, U24));
-	MilurPhaseCVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 102, U24));
+    MilurPhaseAVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 100, U24));
+    MilurPhaseBVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 101, U24));
+    MilurPhaseCVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 102, U24));
 
-	MilurPhaseACurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 103, S24));
-	MilurPhaseBCurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 104, S24));
-	MilurPhaseCCurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 105, S24));
+    MilurPhaseACurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 103, S24));
+    MilurPhaseBCurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 104, S24));
+    MilurPhaseCCurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 105, S24));
 
-	MilurPhaseAActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 106, S32));
-	MilurPhaseBActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 107, S32));
-	MilurPhaseCActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 108, S32));
-	MilurTotalActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 109, S32));
+    MilurPhaseAActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 106, S32));
+    MilurPhaseBActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 107, S32));
+    MilurPhaseCActivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 108, S32));
+    MilurTotalActivePowerReg  = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 109, S32));
 
-	MilurPhaseAReactivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 110, S32));
-	MilurPhaseBReactivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 111, S32));
-	MilurPhaseCReactivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 112, S32));
-	MilurTotalReactivePowerReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 113, S32));
+    MilurPhaseAReactivePowerReg =
+        TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 110, S32));
+    MilurPhaseBReactivePowerReg =
+        TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 111, S32));
+    MilurPhaseCReactivePowerReg =
+        TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 112, S32));
+    MilurTotalReactivePowerReg =
+        TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_POWER, 113, S32));
 
-	MilurTotalConsumptionReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
-	MilurTotalReactiveEnergyReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 127, BCD32));
-	MilurFrequencyReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_FREQ, 9, U16));
+    MilurTotalConsumptionReg =
+        TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
+    MilurTotalReactiveEnergyReg =
+        TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 127, BCD32));
+    MilurFrequencyReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_FREQ, 9, U16));
 
-	SerialPort->Open();
+    SerialPort->Open();
 }
 
 void TMilurTest::VerifyParamQuery()
@@ -120,7 +125,8 @@ TEST_F(TMilurTest, Exception)
     }
 }
 
-class TMilurCustomPasswordTest : public TMilurTest {
+class TMilurCustomPasswordTest: public TMilurTest
+{
 public:
     PDeviceConfig GetDeviceConfig();
 };
@@ -128,8 +134,8 @@ public:
 PDeviceConfig TMilurCustomPasswordTest::GetDeviceConfig()
 {
     PDeviceConfig device_config = TMilurTest::GetDeviceConfig();
-    device_config->Password = {0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
-    device_config->AccessLevel = 2;
+    device_config->Password     = {0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+    device_config->AccessLevel  = 2;
     return device_config;
 }
 
@@ -142,14 +148,19 @@ TEST_F(TMilurCustomPasswordTest, Test)
     SerialPort->Close();
 }
 
-
 class TMilurIntegrationTest: public TSerialDeviceIntegrationTest, public TMilurExpectations
 {
 protected:
-    void SetUp();
-    void TearDown();
-    const char* ConfigPath() const { return "configs/config-milur-test.json"; }
-    std::string GetTemplatePath() const override { return "../wb-mqtt-serial-templates"; }
+    void        SetUp();
+    void        TearDown();
+    const char* ConfigPath() const
+    {
+        return "configs/config-milur-test.json";
+    }
+    std::string GetTemplatePath() const override
+    {
+        return "../wb-mqtt-serial-templates";
+    }
     void ExpectQueries(bool firstPoll);
 };
 
@@ -169,7 +180,7 @@ void TMilurIntegrationTest::TearDown()
 void TMilurIntegrationTest::ExpectQueries(bool firstPoll)
 {
     if (firstPoll) {
-    	EnqueueMilurIgnoredPacketWorkaround();
+        EnqueueMilurIgnoredPacketWorkaround();
         EnqueueMilurSessionSetupResponse();
     }
     EnqueueMilurPhaseAVoltageResponse();
@@ -198,7 +209,7 @@ void TMilurIntegrationTest::ExpectQueries(bool firstPoll)
 
 TEST_F(TMilurIntegrationTest, Poll)
 {
-	ExpectQueries(true);
+    ExpectQueries(true);
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 }
@@ -206,10 +217,10 @@ TEST_F(TMilurIntegrationTest, Poll)
 class TMilur32Test: public TSerialDeviceTest, public TMilurExpectations
 {
 protected:
-    void SetUp();
-    void VerifyMilurQuery();
+    void                  SetUp();
+    void                  VerifyMilurQuery();
     virtual PDeviceConfig MilurConfig();
-    PMilurDevice MilurDev;
+    PMilurDevice          MilurDev;
 
     PRegister MilurTotalConsumptionReg;
 };
@@ -223,7 +234,8 @@ void TMilur32Test::SetUp()
 {
     TSerialDeviceTest::SetUp();
     MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort, DeviceFactory.GetProtocol("milur"));
-    MilurTotalConsumptionReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
+    MilurTotalConsumptionReg =
+        TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
 
     SerialPort->Open();
 }
@@ -242,4 +254,4 @@ TEST_F(TMilur32Test, MilurQuery)
     SerialPort->Close();
 }
 
-//FIXME: ExpectNBytes() in Milur code isn't covered by tests here
+// FIXME: ExpectNBytes() in Milur code isn't covered by tests here

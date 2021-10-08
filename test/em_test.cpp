@@ -8,24 +8,24 @@
 class TEMDeviceTest: public TSerialDeviceTest, public TMilurExpectations, public TMercury230Expectations
 {
 protected:
-    void SetUp();
-    void VerifyMilurQuery();
-    void VerifyMercuryParamQuery();
+    void                  SetUp();
+    void                  VerifyMilurQuery();
+    void                  VerifyMercuryParamQuery();
     virtual PDeviceConfig MilurConfig();
     virtual PDeviceConfig Mercury230Config();
-    PMilurDevice MilurDev;
-    PMercury230Device Mercury230Dev;
-    PRegister MilurPhaseCVoltageReg;
-    PRegister MilurPhaseCCurrentReg;
-    PRegister MilurTotalConsumptionReg;
-    PRegister MilurFrequencyReg;
-    PRegister Mercury230TotalReactiveEnergyReg;
-    PRegister Mercury230TotalConsumptionReg;
-    PRegister Mercury230U1Reg;
-    PRegister Mercury230I1Reg;
-    PRegister Mercury230U2Reg;
-    PRegister Mercury230TempReg;
-    PRegister Mercury230PReg;
+    PMilurDevice          MilurDev;
+    PMercury230Device     Mercury230Dev;
+    PRegister             MilurPhaseCVoltageReg;
+    PRegister             MilurPhaseCCurrentReg;
+    PRegister             MilurTotalConsumptionReg;
+    PRegister             MilurFrequencyReg;
+    PRegister             Mercury230TotalReactiveEnergyReg;
+    PRegister             Mercury230TotalConsumptionReg;
+    PRegister             Mercury230U1Reg;
+    PRegister             Mercury230I1Reg;
+    PRegister             Mercury230U2Reg;
+    PRegister             Mercury230TempReg;
+    PRegister             Mercury230PReg;
 };
 
 PDeviceConfig TEMDeviceTest::MilurConfig()
@@ -42,22 +42,29 @@ void TEMDeviceTest::SetUp()
 {
     TSerialDeviceTest::SetUp();
     MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort, DeviceFactory.GetProtocol("milur"));
-    Mercury230Dev = std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort, DeviceFactory.GetProtocol("mercury230"));
-    
+    Mercury230Dev =
+        std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort, DeviceFactory.GetProtocol("mercury230"));
+
     MilurPhaseCVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 102, U24));
     MilurPhaseCCurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 105, U24));
-    MilurTotalConsumptionReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
+    MilurTotalConsumptionReg =
+        TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
     MilurFrequencyReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_FREQ, 9, U16));
     Mercury230TotalConsumptionReg =
         TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32));
     Mercury230TotalReactiveEnergyReg =
         TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32));
-    Mercury230U1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1111, U24));
-    Mercury230I1Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1121, U24));
-    Mercury230U2Reg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1112, U24));
-    Mercury230TempReg = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_BE, 0x1170, S16));
-    Mercury230PReg  = TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24));
-    
+    Mercury230U1Reg =
+        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1111, U24));
+    Mercury230I1Reg =
+        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1121, U24));
+    Mercury230U2Reg =
+        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1112, U24));
+    Mercury230TempReg =
+        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_BE, 0x1170, S16));
+    Mercury230PReg =
+        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24));
+
     SerialPort->Open();
 }
 
@@ -124,7 +131,8 @@ TEST_F(TEMDeviceTest, Combined)
     SerialPort->Close();
 }
 
-class TEMCustomPasswordTest : public TEMDeviceTest {
+class TEMCustomPasswordTest: public TEMDeviceTest
+{
 public:
     PDeviceConfig MilurConfig();
 
@@ -134,16 +142,16 @@ public:
 PDeviceConfig TEMCustomPasswordTest::MilurConfig()
 {
     PDeviceConfig device_config = TEMDeviceTest::MilurConfig();
-    device_config->Password = {0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
-    device_config->AccessLevel = 2;
+    device_config->Password     = {0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+    device_config->AccessLevel  = 2;
     return device_config;
 }
 
 PDeviceConfig TEMCustomPasswordTest::Mercury230Config()
 {
     PDeviceConfig device_config = TEMDeviceTest::Mercury230Config();
-    device_config->Password = {0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
-    device_config->AccessLevel = 2;
+    device_config->Password     = {0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
+    device_config->AccessLevel  = 2;
     return device_config;
 }
 
@@ -159,4 +167,3 @@ TEST_F(TEMCustomPasswordTest, Combined)
 
     SerialPort->Close();
 }
-

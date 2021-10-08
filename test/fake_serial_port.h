@@ -14,7 +14,8 @@
 
 using WBMQTT::Testing::TLoggedFixture;
 
-class TFakeSerialPort: public TPort, public TExpector {
+class TFakeSerialPort: public TPort, public TExpector
+{
 public:
     enum TDisconnectType
     {
@@ -25,21 +26,22 @@ public:
 
     TFakeSerialPort(WBMQTT::Testing::TLoggedFixture& fixture);
 
-    void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
-    void CheckPortOpen() const;
-    void Open();
-    void Close();
-    bool IsOpen() const;
-    void WriteBytes(const uint8_t* buf, int count);
+    void    SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
+    void    CheckPortOpen() const;
+    void    Open();
+    void    Close();
+    bool    IsOpen() const;
+    void    WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte(const std::chrono::microseconds& timeout);
-    size_t ReadFrame(uint8_t* buf, size_t count,
-                     const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
-                     const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
-                     TFrameCompletePred frame_complete = 0);
-    void SkipNoise();
+    size_t  ReadFrame(uint8_t*                         buf,
+                      size_t                           count,
+                      const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
+                      const std::chrono::microseconds& frameTimeout    = std::chrono::microseconds(-1),
+                      TFrameCompletePred               frame_complete  = 0);
+    void    SkipNoise();
 
-    void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
-    bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
+    void       SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
+    bool       Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
     TTimePoint CurrentTime() const override;
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) override;
@@ -55,39 +57,41 @@ public:
     void SetAllowOpen(bool allowOpen);
 
 private:
-    void SkipFrameBoundary();
+    void      SkipFrameBoundary();
     const int FRAME_BOUNDARY = -1;
 
     WBMQTT::Testing::TLoggedFixture& Fixture;
-    bool AllowOpen;
-    bool IsPortOpen;
-    TDisconnectType DisconnectType;
-    std::deque<const char*> PendingFuncs;
-    std::vector<int> Req;
-    std::vector<int> Resp;
-    size_t ReqPos, RespPos, DumpPos;
-    std::chrono::microseconds ExpectedFrameTimeout = std::chrono::microseconds(-1);
-    TPollPlan::TTimePoint Time = TPollPlan::TTimePoint(std::chrono::milliseconds(0));
+    bool                             AllowOpen;
+    bool                             IsPortOpen;
+    TDisconnectType                  DisconnectType;
+    std::deque<const char*>          PendingFuncs;
+    std::vector<int>                 Req;
+    std::vector<int>                 Resp;
+    size_t                           ReqPos, RespPos, DumpPos;
+    std::chrono::microseconds        ExpectedFrameTimeout = std::chrono::microseconds(-1);
+    TPollPlan::TTimePoint            Time                 = TPollPlan::TTimePoint(std::chrono::milliseconds(0));
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
 
-class TSerialDeviceTest: public WBMQTT::Testing::TLoggedFixture, public virtual TExpectorProvider {
+class TSerialDeviceTest: public WBMQTT::Testing::TLoggedFixture, public virtual TExpectorProvider
+{
 protected:
-    void SetUp();
-    void TearDown();
+    void      SetUp();
+    void      TearDown();
     PExpector Expector() const;
 
-    PFakeSerialPort SerialPort;
+    PFakeSerialPort      SerialPort;
     TSerialDeviceFactory DeviceFactory;
 };
 
-class TSerialDeviceIntegrationTest: public virtual TSerialDeviceTest {
+class TSerialDeviceIntegrationTest: public virtual TSerialDeviceTest
+{
 protected:
     void SetUp();
     void TearDown();
-    void Publish(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
-    void PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
+    void Publish(const std::string& topic, const std::string& payload, uint8_t qos = 0, bool retain = true);
+    void PublishWaitOnValue(const std::string& topic, const std::string& payload, uint8_t qos = 0, bool retain = true);
     virtual const char* ConfigPath() const = 0;
     virtual std::string GetTemplatePath() const;
 
@@ -96,11 +100,11 @@ protected:
     WBMQTT::PDeviceDriver            Driver;
 
     PMQTTSerialDriver SerialDriver;
-    PHandlerConfig Config;
-    bool PortMakerCalled;
+    PHandlerConfig    Config;
+    bool              PortMakerCalled;
 
     static WBMQTT::TMap<std::string, TTemplateMap> Templates; // Key - path to folder, value - loaded templates map
-    static Json::Value CommonConfigSchema;
-    static Json::Value CommonConfigTemplatesSchema;
-    static void SetUpTestCase();
+    static Json::Value                             CommonConfigSchema;
+    static Json::Value                             CommonConfigTemplatesSchema;
+    static void                                    SetUpTestCase();
 };

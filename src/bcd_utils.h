@@ -6,7 +6,10 @@
 
 enum class WordSizes
 {
-    W8_SZ = 1, W16_SZ = 2, W24_SZ = 3, W32_SZ = 4,
+    W8_SZ  = 1,
+    W16_SZ = 2,
+    W24_SZ = 3,
+    W32_SZ = 4,
 };
 
 // Alignment independent cast of up to four bytes to uint32_t.
@@ -22,4 +25,4 @@ uint64_t PackedBCD2Int(uint64_t packed, WordSizes size);
 std::vector<uint8_t> IntToBCDArray(uint64_t value, WordSizes size);
 
 uint32_t IntToPackedBCD(uint32_t value, WordSizes size);
-#endif //WB_MQTT_SERIAL_BCD_UTILS_H
+#endif // WB_MQTT_SERIAL_BCD_UTILS_H

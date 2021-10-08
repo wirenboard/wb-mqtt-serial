@@ -5,20 +5,22 @@
 #include <memory>
 #include <condition_variable>
 
-class TBinarySemaphore {
+class TBinarySemaphore
+{
 public:
-    template<class Clock, class Duration>
-    bool Wait(const std::chrono::time_point<Clock, Duration>& until)
+    template<class Clock, class Duration> bool Wait(const std::chrono::time_point<Clock, Duration>& until)
     {
         std::unique_lock<std::mutex> lock(Mutex);
-        bool r = Cond.wait_until(lock, until, [this](){ return _Signaled; });
+
+        bool r    = Cond.wait_until(lock, until, [this]() { return _Signaled; });
         _Signaled = false;
         return r;
     }
     bool TryWait()
     {
         std::unique_lock<std::mutex> lock(Mutex);
-        bool r = _Signaled;
+
+        bool r    = _Signaled;
         _Signaled = false;
         return r;
     }
@@ -28,9 +30,10 @@ public:
         _Signaled = true;
         Cond.notify_all();
     }
+
 private:
-    bool _Signaled = false;
-    std::mutex Mutex;
+    bool                    _Signaled = false;
+    std::mutex              Mutex;
     std::condition_variable Cond;
 };
 

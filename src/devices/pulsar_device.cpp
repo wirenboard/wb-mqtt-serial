@@ -7,48 +7,47 @@
 
 namespace
 {
-    const TRegisterTypes RegisterTypes{
-        { TPulsarDevice::REG_DEFAULT, "default", "value", Double, true },
-        { TPulsarDevice::REG_SYSTIME, "systime", "value", U64,    true }
-    };
+    const TRegisterTypes RegisterTypes{{TPulsarDevice::REG_DEFAULT, "default", "value", Double, true},
+                                       {TPulsarDevice::REG_SYSTIME, "systime", "value", U64, true}};
 }
 
 void TPulsarDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("pulsar", RegisterTypes),
-                             new TBasicDeviceFactory<TPulsarDevice>("#/definitions/simple_device", 
-                                                                    "#/definitions/common_channel"));
+    factory.RegisterProtocol(
+        new TUint32SlaveIdProtocol("pulsar", RegisterTypes),
+        new TBasicDeviceFactory<TPulsarDevice>("#/definitions/simple_device", "#/definitions/common_channel"));
 }
 
 TPulsarDevice::TPulsarDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
-    , RequestID(0)
+    : TSerialDevice(config, port, protocol),
+      TUInt32SlaveId(config->SlaveId),
+      RequestID(0)
 {}
 
-uint16_t TPulsarDevice::CalculateCRC16(const uint8_t *buffer, size_t size)
+uint16_t TPulsarDevice::CalculateCRC16(const uint8_t* buffer, size_t size)
 {
-    uint16_t w;
-    uint16_t shift_cnt, f;
-    const uint8_t *ptrByte;
+    uint16_t       w;
+    uint16_t       shift_cnt, f;
+    const uint8_t* ptrByte;
 
     uint16_t byte_cnt = size;
-    ptrByte = buffer;
-    w = (uint16_t) 0xFFFF;
+    ptrByte           = buffer;
+    w                 = (uint16_t)0xFFFF;
 
     for (; byte_cnt > 0; byte_cnt--) {
-        w = (uint16_t) (w ^ (uint16_t) (*ptrByte++));
+        w = (uint16_t)(w ^ (uint16_t)(*ptrByte++));
         for (shift_cnt = 0; shift_cnt < 8; shift_cnt++) {
-            f = (uint8_t) ((w) & 0x01);
+            f = (uint8_t)((w)&0x01);
             w >>= 1;
             if (f)
-                w = (uint16_t) (w ^ 0xa001);
+                w = (uint16_t)(w ^ 0xa001);
         }
     }
 
     return w;
 }
 
-void TPulsarDevice::WriteBCD(uint64_t value, uint8_t *buffer, size_t size, bool big_endian)
+void TPulsarDevice::WriteBCD(uint64_t value, uint8_t* buffer, size_t size, bool big_endian)
 {
     for (size_t i = 0; i < size; i++) {
         // form byte from the end of value
@@ -61,7 +60,7 @@ void TPulsarDevice::WriteBCD(uint64_t value, uint8_t *buffer, size_t size, bool 
     }
 }
 
-void TPulsarDevice::WriteHex(uint64_t value, uint8_t *buffer, size_t size, bool big_endian)
+void TPulsarDevice::WriteHex(uint64_t value, uint8_t* buffer, size_t size, bool big_endian)
 {
     for (size_t i = 0; i < size; i++) {
         buffer[big_endian ? size - i - 1 : i] = value & 0xFF;
@@ -69,7 +68,7 @@ void TPulsarDevice::WriteHex(uint64_t value, uint8_t *buffer, size_t size, bool 
     }
 }
 
-uint64_t TPulsarDevice::ReadBCD(const uint8_t *buffer, size_t size, bool big_endian)
+uint64_t TPulsarDevice::ReadBCD(const uint8_t* buffer, size_t size, bool big_endian)
 {
     uint64_t result = 0;
 
@@ -85,7 +84,7 @@ uint64_t TPulsarDevice::ReadBCD(const uint8_t *buffer, size_t size, bool big_end
     return result;
 }
 
-uint64_t TPulsarDevice::ReadHex(const uint8_t *buffer, size_t size, bool big_endian)
+uint64_t TPulsarDevice::ReadHex(const uint8_t* buffer, size_t size, bool big_endian)
 {
     uint64_t result = 0;
 
@@ -104,21 +103,21 @@ void TPulsarDevice::WriteDataRequest(uint32_t addr, uint32_t mask, uint16_t id)
     uint8_t buf[14];
 
     /* header = device address in big-endian BCD */
-    WriteBCD(addr, buf, sizeof (uint32_t), true);
+    WriteBCD(addr, buf, sizeof(uint32_t), true);
 
     /* data request => F == 1, L == 14 */
     buf[4] = 1;
     buf[5] = 14;
 
     /* data mask in little-endian */
-    WriteHex(mask, &buf[6], sizeof (uint32_t), false);
+    WriteHex(mask, &buf[6], sizeof(uint32_t), false);
 
     /* request ID */
-    WriteHex(id, &buf[10], sizeof (uint16_t), false);
+    WriteHex(id, &buf[10], sizeof(uint16_t), false);
 
     /* CRC16 */
     uint16_t crc = CalculateCRC16(buf, 12);
-    WriteHex(crc, &buf[12], sizeof (uint16_t), false);
+    WriteHex(crc, &buf[12], sizeof(uint16_t), false);
 
     Port()->WriteBytes(buf, 14);
 }
@@ -130,31 +129,32 @@ void TPulsarDevice::WriteSysTimeRequest(uint32_t addr, uint16_t id)
     uint8_t buf[10];
 
     /* header = device address in big-endian BCD */
-    WriteBCD(addr, buf, sizeof (uint32_t), true);
+    WriteBCD(addr, buf, sizeof(uint32_t), true);
 
     /* sys time request => F == 4, L == 10 */
     buf[4] = 1;
     buf[5] = 10;
 
     /* request ID */
-    WriteHex(id, &buf[6], sizeof (uint16_t), false);
+    WriteHex(id, &buf[6], sizeof(uint16_t), false);
 
     /* CRC16 */
     uint16_t crc = CalculateCRC16(buf, 8);
-    WriteHex(crc, &buf[8], sizeof (uint16_t), false);
+    WriteHex(crc, &buf[8], sizeof(uint16_t), false);
 
     Port()->WriteBytes(buf, 10);
 }
 
-void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, uint16_t id)
+void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t* payload, size_t size, uint16_t id)
 {
     const int exp_size = size + 10; /* payload size + service bytes */
-    uint8_t response[exp_size];
+    uint8_t   response[exp_size];
 
-    int nread = Port()->ReadFrame(response, exp_size, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout,
-            [] (uint8_t *buf, int size) {
-                    return size >= 6 && size == buf[5];
-            });
+    int nread = Port()->ReadFrame(response,
+                                  exp_size,
+                                  DeviceConfig()->ResponseTimeout,
+                                  DeviceConfig()->FrameTimeout,
+                                  [](uint8_t* buf, int size) { return size >= 6 && size == buf[5]; });
 
     /* check size */
     if (nread < 6)
@@ -167,17 +167,17 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t *payload, size_t size, u
         throw TSerialDeviceTransientErrorException("unexpected frame length");
 
     /* check CRC16 */
-    uint16_t crc_recv = ReadHex(&response[nread - 2], sizeof (uint16_t), false);
+    uint16_t crc_recv = ReadHex(&response[nread - 2], sizeof(uint16_t), false);
     if (crc_recv != CalculateCRC16(response, nread - 2))
         throw TSerialDeviceTransientErrorException("CRC mismatch");
 
     /* check address */
-    uint32_t addr_recv = ReadBCD(response, sizeof (uint32_t), true);
+    uint32_t addr_recv = ReadBCD(response, sizeof(uint32_t), true);
     if (addr_recv != addr)
         throw TSerialDeviceTransientErrorException("slave address mismatch");
 
     /* check request ID */
-    uint16_t id_recv = ReadHex(&response[nread - 4], sizeof (uint16_t), false);
+    uint16_t id_recv = ReadHex(&response[nread - 4], sizeof(uint16_t), false);
     if (id_recv != id)
         throw TSerialDeviceTransientErrorException("request ID mismatch");
 
@@ -189,7 +189,7 @@ uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     // raw payload data
-    uint8_t payload[sizeof (uint64_t)];
+    uint8_t payload[sizeof(uint64_t)];
 
     // form register mask from address
     uint32_t mask = 1 << addr; // TODO: register range or something like this
@@ -211,12 +211,12 @@ uint64_t TPulsarDevice::ReadSysTimeRegister(PRegister reg)
 
     // send system time request and receive response
     WriteSysTimeRequest(SlaveId, RequestID);
-    ReadResponse(SlaveId, payload, sizeof (payload), RequestID);
+    ReadResponse(SlaveId, payload, sizeof(payload), RequestID);
 
     ++RequestID;
 
     // decode little-endian double64_t value
-    return ReadHex(payload, sizeof (payload), false);
+    return ReadHex(payload, sizeof(payload), false);
 }
 
 uint64_t TPulsarDevice::ReadRegister(PRegister reg)
@@ -224,12 +224,9 @@ uint64_t TPulsarDevice::ReadRegister(PRegister reg)
     Port()->SkipNoise();
 
     switch (reg->Type) {
-    case REG_DEFAULT:
-        return ReadDataRegister(reg);
-    case REG_SYSTIME: // TODO: think about return value
-        return ReadSysTimeRegister(reg);   
-    default:
-        throw TSerialDeviceException("Pulsar protocol: wrong register type");
+        case REG_DEFAULT: return ReadDataRegister(reg);
+        case REG_SYSTIME: return ReadSysTimeRegister(reg); // TODO: think about return value
+        default: throw TSerialDeviceException("Pulsar protocol: wrong register type");
     }
 }
 

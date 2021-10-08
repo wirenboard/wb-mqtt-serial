@@ -15,8 +15,7 @@ namespace
 Metrics::TPollItem::TPollItem(const std::string& device): Device(device)
 {}
 
-Metrics::TPollItem::TPollItem(const std::string& device, const std::string& control)
-    : Device(device)
+Metrics::TPollItem::TPollItem(const std::string& device, const std::string& control): Device(device)
 {
     Controls.push_back(control);
 }
@@ -37,7 +36,9 @@ void Metrics::TPollIntervalMetric::RotateChunks()
     }
 }
 
-void Metrics::TPollIntervalMetric::AddIntervals(TPollIntervalsMap& intervals, std::chrono::milliseconds interval, size_t count) const
+void Metrics::TPollIntervalMetric::AddIntervals(TPollIntervalsMap&        intervals,
+                                                std::chrono::milliseconds interval,
+                                                size_t                    count) const
 {
     auto res = intervals.emplace(interval, count);
     if (!res.second) {
@@ -48,7 +49,7 @@ void Metrics::TPollIntervalMetric::AddIntervals(TPollIntervalsMap& intervals, st
 Metrics::TPollIntervalHist Metrics::TPollIntervalMetric::GetHist() const
 {
     TPollIntervalsMap intervals;
-    size_t n = 0;
+    size_t            n = 0;
     for (const auto& chunk: Intervals) {
         for (const auto& interval: chunk) {
             AddIntervals(intervals, interval.first, interval.second);
@@ -59,16 +60,16 @@ Metrics::TPollIntervalHist Metrics::TPollIntervalMetric::GetHist() const
     if (intervals.empty() || n == 0) {
         return res;
     }
-    auto it = intervals.rbegin();
+    auto   it    = intervals.rbegin();
     size_t count = 0;
     for (; count < n / 20 && it != intervals.rend(); ++it) {
         count += it->second;
     }
-    res.P95 = (count == n / 20) ? it->first :  (it--)->first;
+    res.P95 = (count == n / 20) ? it->first : (it--)->first;
     for (; count < n / 2 && it != intervals.rend(); ++it) {
         count += it->second;
     }
-    res.P50 = (count == n / 2) ? it->first :  (it--)->first;
+    res.P50 = (count == n / 2) ? it->first : (it--)->first;
     return res;
 }
 
@@ -123,14 +124,14 @@ void Metrics::TBusLoadMetric::StartPoll(const TPollItem& pollItem, steady_clock:
     while (IntervalStartTime + IntervalDuration < time) {
         AddInterval(IntervalDuration - duration_cast<microseconds>(StartPollTime - IntervalStartTime));
         IntervalStartTime += IntervalDuration;
-        StartPollTime      = IntervalStartTime;
+        StartPollTime = IntervalStartTime;
         RotateChunks();
     }
 
     if (time >= StartPollTime) {
         AddInterval(duration_cast<microseconds>(time - StartPollTime));
         StartPollTime = time;
-        PollItem = pollItem;
+        PollItem      = pollItem;
     }
 }
 
@@ -170,8 +171,8 @@ void Metrics::TMetrics::StartPoll(const Metrics::TPollItem& pollItem, chrono::st
 map<Metrics::TPollItem, Metrics::TMetrics::TResult> Metrics::TMetrics::GetBusLoad(chrono::steady_clock::time_point time)
 {
     map<TPollItem, TResult> res;
-    unique_lock<mutex> lk(Mutex);
-    auto bl = BusLoad.GetBusLoad(time);
+    unique_lock<mutex>      lk(Mutex);
+    auto                    bl = BusLoad.GetBusLoad(time);
     for (auto it = PollIntervals.begin(); it != PollIntervals.end(); ++it) {
         res.emplace(it->first, TResult{it->second.GetHist(), bl[it->first]});
     }

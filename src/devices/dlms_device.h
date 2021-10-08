@@ -10,14 +10,14 @@ const int PUBLIC_CLIENT_ADDRESS = 16;
 
 struct TDlmsDeviceConfig
 {
-    PDeviceConfig       DeviceConfig;
-    int                 LogicalDeviceAddress = 1;
-    int                 ClientAddress        = PUBLIC_CLIENT_ADDRESS;
+    PDeviceConfig DeviceConfig;
+    int           LogicalDeviceAddress = 1;
+    int           ClientAddress        = PUBLIC_CLIENT_ADDRESS;
 
-    DLMS_SECURITY             Security                  = DLMS_SECURITY_NONE;
-    DLMS_AUTHENTICATION       Authentication            = DLMS_AUTHENTICATION_NONE;
-    DLMS_INTERFACE_TYPE       InterfaceType             = DLMS_INTERFACE_TYPE_HDLC;
-    std::chrono::milliseconds DisconnectRetryTimeout    = std::chrono::milliseconds::zero();
+    DLMS_SECURITY             Security               = DLMS_SECURITY_NONE;
+    DLMS_AUTHENTICATION       Authentication         = DLMS_AUTHENTICATION_NONE;
+    DLMS_INTERFACE_TYPE       InterfaceType          = DLMS_INTERFACE_TYPE_HDLC;
+    std::chrono::milliseconds DisconnectRetryTimeout = std::chrono::milliseconds::zero();
 };
 
 class TDlmsDevice: public TSerialDevice, public TUInt32SlaveId
@@ -44,22 +44,22 @@ public:
     TDlmsDevice(const TDlmsDeviceConfig& config, PPort port, PProtocol protocol);
 
     uint64_t ReadRegister(PRegister reg) override;
-    void WriteRegister(PRegister reg, uint64_t value) override;
-    void Prepare() override;
-    void EndSession() override;
+    void     WriteRegister(PRegister reg, uint64_t value) override;
+    void     Prepare() override;
+    void     EndSession() override;
 
     static void Register(TSerialDeviceFactory& factory);
 
     const CGXDLMSObjectCollection& ReadAllObjects(bool readAttributes);
-    std::map<int, std::string> GetLogicalDevices();
+    std::map<int, std::string>     GetLogicalDevices();
 };
 
 namespace DLMS
 {
     void PrintDeviceTemplateGenerationOptionsUsage();
-    void GenerateDeviceTemplate(TDeviceTemplateGenerationMode   mode, 
+    void GenerateDeviceTemplate(TDeviceTemplateGenerationMode   mode,
                                 PPort                           port,
                                 const std::string&              phisycalDeviceAddress,
-                                const std::string&              destinationDir, 
+                                const std::string&              destinationDir,
                                 const std::vector<std::string>& options);
 }

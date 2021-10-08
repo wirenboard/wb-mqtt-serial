@@ -17,37 +17,38 @@
 
 namespace
 {
-    enum {
+    enum
+    {
         READ_CMD           = 0x05,
         WRITE_CMD          = 0x06,
         SET_BRIGHTNESS_CMD = 0x0a
     };
 
-    const TRegisterTypes RegisterTypes{
-        { TUnielDevice::REG_RELAY,      "relay",      "switch", U8 },
-        { TUnielDevice::REG_INPUT,      "input",      "value",  U8, true },
-        { TUnielDevice::REG_PARAM,      "param",      "value",  U8 },
-        // "value", not "range" because 'max' cannot be specified here.
-        { TUnielDevice::REG_BRIGHTNESS, "brightness", "value",  U8 }
-    };
+    const TRegisterTypes RegisterTypes{{TUnielDevice::REG_RELAY, "relay", "switch", U8},
+                                       {TUnielDevice::REG_INPUT, "input", "value", U8, true},
+                                       {TUnielDevice::REG_PARAM, "param", "value", U8},
+                                       // "value", not "range" because 'max' cannot be specified here.
+                                       {TUnielDevice::REG_BRIGHTNESS, "brightness", "value", U8}};
 }
 
 void TUnielDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("uniel", RegisterTypes), 
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("uniel", RegisterTypes),
                              new TBasicDeviceFactory<TUnielDevice>("#/definitions/simple_device_with_setup",
                                                                    "#/definitions/common_channel"));
 }
 
 TUnielDevice::TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
+    : TSerialDevice(config, port, protocol),
+      TUInt32SlaveId(config->SlaveId)
 {}
 
 void TUnielDevice::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
 {
     Port()->CheckPortOpen();
     uint8_t buf[8];
-    buf[0] = buf[1] = 0xff;
+    buf[0] = 0xff;
+    buf[1] = 0xff;
     buf[2] = cmd;
     buf[3] = mod;
     buf[4] = b1;
@@ -70,7 +71,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         if (second == 0xff) {
             second = Port()->ReadByte(DeviceConfig()->FrameTimeout);
         }
-        buf[0] = second;
+        buf[0]    = second;
         uint8_t s = second;
         for (int i = 1; i < 5; ++i) {
             buf[i] = Port()->ReadByte(DeviceConfig()->FrameTimeout);
@@ -109,7 +110,7 @@ uint64_t TUnielDevice::ReadRegister(PRegister reg)
 
 void TUnielDevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+    auto    addr = GetUint32RegisterAddress(reg->GetAddress());
     uint8_t cmd;
     if (reg->Type == REG_BRIGHTNESS) {
         cmd = SET_BRIGHTNESS_CMD;

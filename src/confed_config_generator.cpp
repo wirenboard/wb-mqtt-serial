@@ -5,9 +5,9 @@
 using namespace std;
 using namespace WBMQTT::JSON;
 
-Json::Value FilterStandardChannels(const Json::Value& device, 
-                                   const Json::Value& deviceTemplate,
-                                   ITemplateMap& templates,
+Json::Value FilterStandardChannels(const Json::Value&                                  device,
+                                   const Json::Value&                                  deviceTemplate,
+                                   ITemplateMap&                                       templates,
                                    const std::unordered_map<std::string, std::string>& subdeviceTypeHashes);
 
 bool RemoveDeviceHash(Json::Value& device, const std::unordered_map<std::string, std::string>& deviceTypeHashes)
@@ -24,8 +24,8 @@ bool RemoveDeviceHash(Json::Value& device, const std::unordered_map<std::string,
     return false;
 }
 
-bool TryToTransformSubDeviceChannel(Json::Value& channel,
-                                    ITemplateMap& templates,
+bool TryToTransformSubDeviceChannel(Json::Value&                                        channel,
+                                    ITemplateMap&                                       templates,
                                     const std::unordered_map<std::string, std::string>& subdeviceTypeHashes)
 {
     if (!RemoveDeviceHash(channel, subdeviceTypeHashes)) {
@@ -35,8 +35,8 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
     Json::Value deviceTemplate(templates.GetTemplate(channel["device_type"].asString()).Schema);
     Json::Value filteredChannels(FilterStandardChannels(channel, deviceTemplate, templates, subdeviceTypeHashes));
     channel.removeMember("standard_channels");
-    if ( channel.isMember("channels") ) {
-        for (Json::Value& ch : filteredChannels) {
+    if (channel.isMember("channels")) {
+        for (Json::Value& ch: filteredChannels) {
             channel["channels"].append(ch);
         }
     } else {
@@ -56,15 +56,16 @@ bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemp
 {
     bool ok = false;
     if (ch.isMember("poll_interval")) {
-        if(!channelTemplate.isMember("poll_interval") ||
-           (ch["poll_interval"].asInt() != channelTemplate["poll_interval"].asInt())) {
+        if (!channelTemplate.isMember("poll_interval") ||
+            (ch["poll_interval"].asInt() != channelTemplate["poll_interval"].asInt()))
+        {
             ok = true;
         }
     }
     if (ch.isMember("enabled")) {
         bool enabledInTemplate = true;
         Get(channelTemplate, "enabled", enabledInTemplate);
-        if ( ch["enabled"].asBool() == enabledInTemplate) {
+        if (ch["enabled"].asBool() == enabledInTemplate) {
             ch.removeMember("enabled");
         } else {
             ok = true;
@@ -73,9 +74,9 @@ bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemp
     return ok;
 }
 
-Json::Value FilterStandardChannels(const Json::Value& device, 
-                                   const Json::Value& deviceTemplate,
-                                   ITemplateMap& templates,
+Json::Value FilterStandardChannels(const Json::Value&                                  device,
+                                   const Json::Value&                                  deviceTemplate,
+                                   ITemplateMap&                                       templates,
                                    const std::unordered_map<std::string, std::string>& subdeviceTypeHashes)
 {
     Json::Value channels(Json::arrayValue);
@@ -91,8 +92,8 @@ Json::Value FilterStandardChannels(const Json::Value& device,
     for (Json::Value ch: device["standard_channels"]) {
         auto it = regs.find(ch["name"].asString());
         if (it != regs.end()) {
-            if (   TryToTransformSubDeviceChannel(ch, templates, subdeviceTypeHashes)
-                || TryToTransformSimpleChannel(ch, it->second)) {
+            if (TryToTransformSubDeviceChannel(ch, templates, subdeviceTypeHashes) ||
+                TryToTransformSimpleChannel(ch, it->second)) {
                 channels.append(ch);
             }
         }
@@ -119,7 +120,7 @@ void ExpandGroupChannels(Json::Value& device, const Json::Value& deviceTemplate)
                 newChannels.append(subChannel);
             }
             const std::unordered_set<std::string> notParameters{"channels", "name", "device_type"};
-            for (auto it = channel.begin() ; it != channel.end(); ++it) {
+            for (auto it = channel.begin(); it != channel.end(); ++it) {
                 if (!notParameters.count(it.name())) {
                     device[it.name()] = *it;
                 }
@@ -133,9 +134,9 @@ void ExpandGroupChannels(Json::Value& device, const Json::Value& deviceTemplate)
 
 Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 {
-    Json::Value  root;
+    Json::Value             root;
     Json::CharReaderBuilder readerBuilder;
-    Json::String errs;
+    Json::String            errs;
 
     if (!Json::parseFromStream(readerBuilder, stream, &root, &errs)) {
         throw std::runtime_error("Failed to parse JSON:" + errs);
@@ -146,23 +147,24 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
         deviceTypeHashes[GetDeviceKey(dt)] = dt;
     }
 
-    for (Json::Value& port : root["ports"]) {
-        for (Json::Value& device : port["devices"]) {
+    for (Json::Value& port: root["ports"]) {
+        for (Json::Value& device: port["devices"]) {
 
             if (RemoveDeviceHash(device, deviceTypeHashes)) {
                 auto dt = device["device_type"].asString();
 
                 Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
                 TransformGroupsToSubdevices(deviceTemplate, deviceTemplate["subdevices"]);
-                TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
+                TSubDevicesTemplateMap                       subdevices(dt, deviceTemplate);
                 std::unordered_map<std::string, std::string> subdeviceTypeHashes;
                 for (const auto& dt: subdevices.GetDeviceTypes()) {
                     subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;
                 }
 
-                Json::Value filteredChannels(FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes));
+                Json::Value filteredChannels(
+                    FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes));
                 device.removeMember("standard_channels");
-                for (Json::Value& ch : device["channels"]) {
+                for (Json::Value& ch: device["channels"]) {
                     filteredChannels.append(ch);
                 }
                 device["channels"].swap(filteredChannels);

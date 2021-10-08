@@ -14,14 +14,14 @@ using namespace std;
 
 #define LOG(logger) ::logger.Log() << "[port] "
 
-namespace {
+namespace
+{
     const chrono::milliseconds NoiseTimeout(10);
     const chrono::milliseconds ContinuousNoiseTimeout(100);
-    const int ContinuousNoiseReopenNumber = 3;
+    const int                  ContinuousNoiseReopenNumber = 3;
 }
 
-TFileDescriptorPort::TFileDescriptorPort()
-    : Fd(-1)
+TFileDescriptorPort::TFileDescriptorPort(): Fd(-1)
 {}
 
 TFileDescriptorPort::~TFileDescriptorPort()
@@ -50,14 +50,15 @@ void TFileDescriptorPort::CheckPortOpen() const
     }
 }
 
-void TFileDescriptorPort::WriteBytes(const uint8_t * buf, int count) {
+void TFileDescriptorPort::WriteBytes(const uint8_t* buf, int count)
+{
     auto res = write(Fd, buf, count);
     if (res < count) {
         if (res < 0) {
             throw TSerialDeviceErrnoException("serial write failed: ", errno);
         }
         stringstream ss;
-        ss << "serial write failed: " << res << " bytes of " << count <<" is written";
+        ss << "serial write failed: " << res << " bytes of " << count << " is written";
         throw TSerialDeviceException(ss.str());
     }
 
@@ -76,15 +77,15 @@ void TFileDescriptorPort::WriteBytes(const uint8_t * buf, int count) {
 
 bool TFileDescriptorPort::Select(const chrono::microseconds& us)
 {
-    fd_set rfds;
+    fd_set         rfds;
     struct timeval tv, *tvp = 0;
 
     FD_ZERO(&rfds);
     FD_SET(Fd, &rfds);
     if (us.count() > 0) {
-        tv.tv_sec = us.count() / 1000000;
+        tv.tv_sec  = us.count() / 1000000;
         tv.tv_usec = us.count() % 1000000;
-        tvp = &tv;
+        tvp        = &tv;
     }
 
     int r = select(Fd + 1, &rfds, NULL, NULL, tvp);
@@ -118,7 +119,7 @@ uint8_t TFileDescriptorPort::ReadByte(const chrono::microseconds& timeout)
     return b;
 }
 
-size_t TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
+size_t TFileDescriptorPort::ReadAvailableData(uint8_t* buf, size_t max_read)
 {
     // We don't want to use non-blocking IO in general
     // (e.g. we want blocking writes), but we don't want
@@ -153,11 +154,11 @@ size_t TFileDescriptorPort::ReadAvailableData(uint8_t * buf, size_t max_read)
 }
 
 // Reading becomes unstable when using timeout less than default because of bufferization
-size_t TFileDescriptorPort::ReadFrame(uint8_t * buf, 
-                                      size_t size,
+size_t TFileDescriptorPort::ReadFrame(uint8_t*                         buf,
+                                      size_t                           size,
                                       const std::chrono::microseconds& responseTimeout,
                                       const std::chrono::microseconds& frameTimeout,
-                                      TFrameCompletePred frame_complete)
+                                      TFrameCompletePred               frame_complete)
 {
     CheckPortOpen();
     size_t nread = 0;
@@ -207,12 +208,12 @@ size_t TFileDescriptorPort::ReadFrame(uint8_t * buf,
 void TFileDescriptorPort::SkipNoise()
 {
     uint8_t buf[255] = {};
-    auto start = std::chrono::steady_clock::now();
-    int ntries = 0;
+    auto    start    = std::chrono::steady_clock::now();
+    int     ntries   = 0;
 
     while (Select(NoiseTimeout)) {
         size_t nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
-        auto diff = std::chrono::steady_clock::now() - start;
+        auto   diff  = std::chrono::steady_clock::now() - start;
 
         if (::Debug.IsEnabled()) {
             // TBD: move this to libwbmqtt (HexDump?)
@@ -229,7 +230,7 @@ void TFileDescriptorPort::SkipNoise()
             LastInteraction = std::chrono::steady_clock::now();
 
             if (diff > ContinuousNoiseTimeout) {
-                if (ntries < ContinuousNoiseReopenNumber)  {
+                if (ntries < ContinuousNoiseReopenNumber) {
                     LOG(Debug) << "continuous unsolicited data flow detected, reopen the port";
                     Reopen();
                     ntries += 1;
@@ -244,18 +245,16 @@ void TFileDescriptorPort::SkipNoise()
 
 void TFileDescriptorPort::SleepSinceLastInteraction(const chrono::microseconds& us)
 {
-    auto now = chrono::steady_clock::now();
+    auto now   = chrono::steady_clock::now();
     auto delta = chrono::duration_cast<chrono::microseconds>(now - LastInteraction);
     std::this_thread::sleep_for(us - delta);
     LOG(Debug) << "Sleep " << us.count() << " us";
 }
 
-bool TFileDescriptorPort::Wait(const PBinarySemaphore & semaphore, const TTimePoint & until)
+bool TFileDescriptorPort::Wait(const PBinarySemaphore& semaphore, const TTimePoint& until)
 {
-    LOG(Debug) << chrono::duration_cast<chrono::milliseconds>(
-        chrono::steady_clock::now().time_since_epoch()).count() <<
-        ": Wait until " <<
-        chrono::duration_cast<chrono::milliseconds>(until.time_since_epoch()).count();
+    LOG(Debug) << chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now().time_since_epoch()).count()
+               << ": Wait until " << chrono::duration_cast<chrono::milliseconds>(until.time_since_epoch()).count();
 
     return semaphore->Wait(until);
 }
