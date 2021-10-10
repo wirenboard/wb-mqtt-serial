@@ -12,7 +12,7 @@ class TModbusTest: public TSerialDeviceTest, public TModbusExpectations
     typedef shared_ptr<TModbusDevice> PModbusDevice;
 
 protected:
-    void     SetUp();
+    void SetUp();
     set<int> VerifyQuery(list<PRegister> registerList = list<PRegister>());
 
     virtual PDeviceConfig GetDeviceConfig();
@@ -58,8 +58,8 @@ void TModbusTest::SetUp()
 
     ModbusHoldingU64Single = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 90, U64));
     ModbusHoldingU16Single = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 94, U16));
-    ModbusHoldingU64Multi  = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64));
-    ModbusHoldingU16Multi  = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
+    ModbusHoldingU64Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64));
+    ModbusHoldingU16Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
 
     SerialPort->Open();
 }
@@ -79,8 +79,8 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
     } else {
         ranges = ModbusDev->SplitRegisterList(registerList);
     }
-    set<int>           readAddresses;
-    set<int>           errorRegisters;
+    set<int> readAddresses;
+    set<int> errorRegisters;
     map<int, uint64_t> registerValues;
 
     for (auto range: ranges) {
@@ -100,7 +100,7 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
 
     for (auto registerValue: registerValues) {
         auto address = registerValue.first;
-        auto value   = to_string(registerValue.second);
+        auto value = to_string(registerValue.second);
 
         switch (address) {
             case 0:

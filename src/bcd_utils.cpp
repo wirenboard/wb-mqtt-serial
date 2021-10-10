@@ -28,7 +28,7 @@ uint32_t PackBytes(uint8_t* bytes, WordSizes size)
 uint64_t PackedBCD2Int(uint64_t packed, WordSizes size)
 {
     uint32_t result = 0;
-    int      exp    = 1;
+    int exp = 1;
     for (unsigned i = 0; i < static_cast<unsigned>(size); ++i) {
         auto tmp = static_cast<uint8_t>(packed >> (i * 8));
         result += ((tmp & 0x0f) * exp);

@@ -19,8 +19,8 @@ struct TFakePollEntry: public TPollEntry
         return std::chrono::milliseconds(Interval);
     }
     std::string Name;
-    int         Interval;
-    int         NumPolls = 0;
+    int Interval;
+    int NumPolls = 0;
 };
 
 typedef std::shared_ptr<TFakePollEntry> PFakePollEntry;
@@ -33,14 +33,14 @@ protected:
     void Verify();
     void VerifyPollPeriod(int count, int loop_interval, int request_time, bool expect_poll_to_be_due = false);
 
-    TPollPlan::TTimePoint       StartTime = TPollPlan::TTimePoint(std::chrono::milliseconds(0)), CurrentTime;
-    PPollPlan                   Plan;
+    TPollPlan::TTimePoint StartTime = TPollPlan::TTimePoint(std::chrono::milliseconds(0)), CurrentTime;
+    PPollPlan Plan;
     std::vector<PFakePollEntry> Entries;
 };
 
 void TPollPlanTest::SetUp()
 {
-    Plan        = std::make_shared<TPollPlan>([this]() { return CurrentTime; });
+    Plan = std::make_shared<TPollPlan>([this]() { return CurrentTime; });
     CurrentTime = StartTime;
     Entries = {std::make_shared<TFakePollEntry>("33ms", 33),
                std::make_shared<TFakePollEntry>("100ms-1", 100),

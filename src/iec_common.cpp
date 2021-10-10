@@ -137,13 +137,13 @@ namespace IEC
         return res;
     }
 
-    size_t ReadFrame(TPort&                           port,
-                     uint8_t*                         buf,
-                     size_t                           count,
+    size_t ReadFrame(TPort& port,
+                     uint8_t* buf,
+                     size_t count,
                      const std::chrono::microseconds& responseTimeout,
                      const std::chrono::microseconds& frameTimeout,
-                     TPort::TFrameCompletePred        frame_complete,
-                     const std::string&               logPrefix)
+                     TPort::TFrameCompletePred frame_complete,
+                     const std::string& logPrefix)
     {
         size_t nread = port.ReadFrame(buf, count, responseTimeout, frameTimeout, frame_complete);
         if (Debug.IsEnabled()) {
@@ -234,8 +234,8 @@ void TIEC61107ModeCDevice::Prepare()
 {
     TIEC61107Device::Prepare();
     uint8_t buf[IEC::RESPONSE_BUF_LEN] = {};
-    size_t  retryCount                 = 5;
-    bool    sessionIsOpen;
+    size_t retryCount = 5;
+    bool sessionIsOpen;
     while (true) {
         try {
             sessionIsOpen = false;
@@ -302,7 +302,7 @@ std::string TIEC61107ModeCDevice::GetCachedResponse(const std::string& paramRequ
     WriteBytes(IEC::MakeRequest("R1", paramRequest, CrcFn));
 
     uint8_t resp[IEC::RESPONSE_BUF_LEN] = {};
-    auto    len                         = ReadFrameProgMode(resp, sizeof(resp), IEC::STX);
+    auto len = ReadFrameProgMode(resp, sizeof(resp), IEC::STX);
     // Proper response (inc. error) must start with STX, and end with ETX
     if ((resp[0] != IEC::STX) || (resp[len - 2] != IEC::ETX)) {
         throw TSerialDeviceTransientErrorException("malformed response");
@@ -349,8 +349,8 @@ void TIEC61107ModeCDevice::SwitchToProgMode()
 
 void TIEC61107ModeCDevice::SendPassword()
 {
-    uint8_t              buf[IEC::RESPONSE_BUF_LEN] = {};
-    std::vector<uint8_t> password                   = {0x00, 0x00, 0x00, 0x00};
+    uint8_t buf[IEC::RESPONSE_BUF_LEN] = {};
+    std::vector<uint8_t> password = {0x00, 0x00, 0x00, 0x00};
     if (DeviceConfig()->Password.size()) {
         password = DeviceConfig()->Password;
     }

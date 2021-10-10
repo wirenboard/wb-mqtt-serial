@@ -24,8 +24,8 @@ public:
         uint8_t buf[8] = {};
         memset(buf, 0xFF, sizeof(buf));
 
-        IsRunning          = true;
-        auto start         = std::chrono::steady_clock::now();
+        IsRunning = true;
+        auto start = std::chrono::steady_clock::now();
         bool sentSomething = false;
         while (IsRunning) {
             auto diff = std::chrono::steady_clock::now() - start;
@@ -59,7 +59,7 @@ public:
     void Start()
     {
         if (!IsRunning) {
-            Expired   = false;
+            Expired = false;
             IsRunning = true;
             WBMQTT::TPromise<void> initialized;
             FloodThread = std::thread([&]() { this->Run(initialized); });
@@ -129,7 +129,7 @@ protected:
 
 public:
     TImxFloodThread FloodThread;
-    bool            StopFloodOnReconnect = true;
+    bool StopFloodOnReconnect = true;
 };
 
 class TSerialPortTest: public TLoggedFixture
@@ -138,8 +138,8 @@ protected:
     void SetUp();
     void TearDown();
 
-    PPtyBasedFakeSerial                     FakeSerial;
-    PPort                                   Serial;
+    PPtyBasedFakeSerial FakeSerial;
+    PPort Serial;
     std::shared_ptr<TSerialPortTestWrapper> SecondarySerial;
 };
 

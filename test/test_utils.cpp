@@ -5,7 +5,7 @@
     if (v1 == v2) {
         return ::testing::AssertionSuccess();
     }
-    auto              res = ::testing::AssertionFailure();
+    auto res = ::testing::AssertionFailure();
     std::stringstream ss;
     for (auto i: v1) {
         ss << std::hex << std::setw(2) << std::setfill('0') << int(i) << " ";
@@ -23,8 +23,8 @@
     if (v1 == v2) {
         return ::testing::AssertionSuccess();
     }
-    auto              res    = ::testing::AssertionFailure();
-    auto              writer = WBMQTT::JSON::MakeWriter("  ");
+    auto res = ::testing::AssertionFailure();
+    auto writer = WBMQTT::JSON::MakeWriter("  ");
     std::stringstream ss;
     writer->write(v1, &ss);
     ss << std::endl << "!= " << std::endl;

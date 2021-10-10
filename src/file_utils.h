@@ -67,4 +67,4 @@ void IterateDir(const std::string& dirName, std::function<bool(const std::string
 std::string IterateDirByPattern(const std::string& dirName,
                                 const std::string& pattern,
                                 std::function<bool(const std::string&)> fn,
-                                bool                                    sort = false);
+                                bool sort = false);

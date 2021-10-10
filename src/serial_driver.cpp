@@ -16,7 +16,7 @@ namespace
     Json::Value MakeLoadItem(const Metrics::TPollItem& pollItem, const Metrics::TMetrics::TResult& value)
     {
         Json::Value item;
-        auto&       names = item["names"];
+        auto& names = item["names"];
         if (pollItem.Controls.empty()) {
             names.append(pollItem.Device);
         } else {
@@ -24,10 +24,10 @@ namespace
                 names.append(pollItem.Device + "/" + c);
             }
         }
-        item["bl"]   = StringFormat("%.2f", value.BusLoad.Minute * 100.0);
+        item["bl"] = StringFormat("%.2f", value.BusLoad.Minute * 100.0);
         item["bl15"] = StringFormat("%.2f", value.BusLoad.FifteenMinutes * 100.0);
-        item["i50"]  = value.Histogram.P50.count();
-        item["i95"]  = value.Histogram.P95.count();
+        item["i50"] = value.Histogram.P50.count();
+        item["i95"] = value.Histogram.P95.count();
         return item;
     }
 }
@@ -119,7 +119,7 @@ void TMQTTSerialDriver::Stop()
 
 Json::Value TMQTTSerialDriver::LoadMetrics(const Json::Value& request)
 {
-    auto        time = std::chrono::steady_clock::now();
+    auto time = std::chrono::steady_clock::now();
     Json::Value res(Json::arrayValue);
     for (auto& port: Metrics) {
         Json::Value item;

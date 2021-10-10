@@ -133,7 +133,7 @@ namespace
 
     bool ReadChannelsReadonlyProperty(const Json::Value& register_data,
                                       const std::string& key,
-                                      bool               templateReadonly,
+                                      bool templateReadonly,
                                       const std::string& override_error_message_prefix,
                                       const std::string& register_type)
     {
@@ -193,8 +193,8 @@ namespace
                                                  const TLoadingContext& context)
     {
         TLoadRegisterConfigResult res;
-        TRegisterType             regType = GetRegisterType(register_data, device_config);
-        res.DefaultControlType            = regType.DefaultControlType.empty() ? "text" : regType.DefaultControlType;
+        TRegisterType regType = GetRegisterType(register_data, device_config);
+        res.DefaultControlType = regType.DefaultControlType.empty() ? "text" : regType.DefaultControlType;
 
         if (register_data.isMember("format")) {
             regType.DefaultFormat = RegisterFormatFromName(register_data["format"].asString());
@@ -325,16 +325,16 @@ namespace
                            const TLoadingContext& context)
     {
         std::string mqtt_channel_name(channel_data["name"].asString());
-        bool        idIsDefined = false;
+        bool idIsDefined = false;
         if (channel_data.isMember("id")) {
             mqtt_channel_name = channel_data["id"].asString();
-            idIsDefined       = true;
+            idIsDefined = true;
         }
         if (!context.mqtt_prefix.empty()) {
             mqtt_channel_name = context.mqtt_prefix + " " + mqtt_channel_name;
         }
-        auto                         errorMsgPrefix = "Channel \"" + mqtt_channel_name + "\"";
-        std::string                  default_type_str;
+        auto errorMsgPrefix = "Channel \"" + mqtt_channel_name + "\"";
+        std::string default_type_str;
         std::vector<PRegisterConfig> registers;
         if (channel_data.isMember("consists_of")) {
 
@@ -356,7 +356,7 @@ namespace
                                                  device_config->DeviceType);
             }
         } else {
-            auto reg         = LoadRegisterConfig(channel_data, *device_config, errorMsgPrefix, context);
+            auto reg = LoadRegisterConfig(channel_data, *device_config, errorMsgPrefix, context);
             default_type_str = reg.DefaultControlType;
             registers.push_back(reg.RegisterConfig);
         }
@@ -422,16 +422,16 @@ namespace
 
         TLoadingContext newContext(context.device_template_title, context.factory, *baseAddress);
         newContext.translations = context.translations;
-        newContext.name_prefix  = channel_data["name"].asString();
+        newContext.name_prefix = channel_data["name"].asString();
         if (!context.name_prefix.empty()) {
             newContext.name_prefix = context.name_prefix + " " + newContext.name_prefix;
         }
 
         newContext.mqtt_prefix = channel_data["name"].asString();
-        bool idIsDefined       = false;
+        bool idIsDefined = false;
         if (channel_data.isMember("id")) {
             newContext.mqtt_prefix = channel_data["id"].asString();
-            idIsDefined            = true;
+            idIsDefined = true;
         }
         if (!context.mqtt_prefix.empty()) {
             if (newContext.mqtt_prefix.empty()) {
@@ -559,12 +559,12 @@ namespace
         return std::make_shared<TTcpPort>(settings);
     }
 
-    void LoadPort(PHandlerConfig        handlerConfig,
-                  const Json::Value&    port_data,
-                  const std::string&    id_prefix,
-                  TTemplateMap&         templates,
+    void LoadPort(PHandlerConfig handlerConfig,
+                  const Json::Value& port_data,
+                  const std::string& id_prefix,
+                  TTemplateMap& templates,
                   TSerialDeviceFactory& deviceFactory,
-                  TPortFactoryFn        portFactory)
+                  TPortFactoryFn portFactory)
     {
         if (port_data.isMember("enabled") && !port_data["enabled"].asBool())
             return;
@@ -648,7 +648,7 @@ TTemplateMap::TTemplateMap(const std::string& templatesDir,
 
 std::string TTemplateMap::GetDeviceType(const std::string& templatePath) const
 {
-    const char    deviceTypeKey[] = "\"device_type\"";
+    const char deviceTypeKey[] = "\"device_type\"";
     std::ifstream file;
     OpenWithException(file, templatePath);
     std::string line;
@@ -882,7 +882,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TPortFactoryFn portFactory)
 {
     PHandlerConfig handlerConfig(new THandlerConfig);
-    Json::Value    Root(Parse(configFileName));
+    Json::Value Root(Parse(configFileName));
 
     auto configSchema =
         MakeSchemaForConfigValidation(baseConfigSchema, GetValidationDeviceTypes(Root), templates, deviceFactory);
@@ -1131,10 +1131,10 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
 {
     TDeviceConfigLoadParams params;
 
-    const auto*             cfg = &deviceConfig;
+    const auto* cfg = &deviceConfig;
     unique_ptr<Json::Value> mergedConfig;
     if (deviceConfig.isMember("device_type")) {
-        auto        deviceType     = deviceConfig["device_type"].asString();
+        auto deviceType = deviceConfig["device_type"].asString();
         const auto& deviceTemplate = templates.GetTemplate(deviceType);
         params.DeviceTemplateTitle = deviceTemplate.Title;
         mergedConfig = std::make_unique<Json::Value>(
@@ -1157,14 +1157,14 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
         throw TSerialDeviceException("unknown protocol: " + protocolName);
     }
 
-    auto        protocol      = it->second.first;
+    auto protocol = it->second.first;
     const auto& deviceFactory = *it->second.second;
 
     params.DefaultId = defaultId;
     params.DefaultPollInterval = portConfig->PollInterval;
     params.DefaultRequestDelay = portConfig->RequestDelay;
     params.PortResponseTimeout = portConfig->ResponseTimeout;
-    auto baseDeviceConfig      = LoadBaseDeviceConfig(*cfg, protocol, deviceFactory, params);
+    auto baseDeviceConfig = LoadBaseDeviceConfig(*cfg, protocol, deviceFactory, params);
 
     return deviceFactory.CreateDevice(*cfg, baseDeviceConfig, portConfig->Port, protocol);
 }
@@ -1179,8 +1179,8 @@ std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
 }
 
 IDeviceFactory::IDeviceFactory(std::unique_ptr<IRegisterAddressFactory> registerAddressFactory,
-                               const std::string&                       commonDeviceSchemaRef,
-                               const std::string&                       customChannelSchemaRef)
+                               const std::string& commonDeviceSchemaRef,
+                               const std::string& customChannelSchemaRef)
     : CommonDeviceSchemaRef(commonDeviceSchemaRef),
       CustomChannelSchemaRef(customChannelSchemaRef),
       RegisterAddressFactory(std::move(registerAddressFactory))
@@ -1285,7 +1285,7 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data)
         } else {
             auto pos2 = addressStr.find(':', pos1 + 1);
 
-            res.Address    = GetIntFromString(addressStr.substr(0, pos1), "address");
+            res.Address = GetIntFromString(addressStr.substr(0, pos1), "address");
             auto bitOffset = stoul(addressStr.substr(pos1 + 1, pos2));
 
             if (bitOffset > 255) {
@@ -1319,7 +1319,7 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
                                                                  uint32_t stride,
                                                                  uint32_t registerByteWidth) const
 {
-    auto          addr = LoadRegisterBitsAddress(regCfg);
+    auto addr = LoadRegisterBitsAddress(regCfg);
     TRegisterDesc res;
     res.BitOffset = addr.BitOffset;
     res.BitWidth = addr.BitWidth;

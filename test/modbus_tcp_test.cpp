@@ -5,7 +5,7 @@ namespace
 {
     class TPortMock: public TPort
     {
-        size_t               Pointer = 0;
+        size_t Pointer = 0;
         std::vector<uint8_t> Stream;
 
     public:
@@ -91,7 +91,7 @@ TEST_F(TModbusTCPTraitsTest, GetPDU)
 {
     Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
 
-    Modbus::TRequest       r  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    Modbus::TRequest r = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     const Modbus::TRequest r2 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 
     ASSERT_EQ(*traits.GetPDU(r), 7);
@@ -179,8 +179,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameWrongUnitId)
 
 TEST_F(TModbusTCPTraitsTest, ReadFramePassWrongTransactionId)
 {
-    Modbus::TResponse    goodResp = {0, 1, 0, 0, 0, 4, 100, 17, 18, 19};
-    std::vector<uint8_t> r        = {0, 2, 0, 0, 0, 8, 101, 7, 8, 9, 10, 11, 12, 13};
+    Modbus::TResponse goodResp = {0, 1, 0, 0, 0, 4, 100, 17, 18, 19};
+    std::vector<uint8_t> r = {0, 2, 0, 0, 0, 8, 101, 7, 8, 9, 10, 11, 12, 13};
     r.insert(r.end(), goodResp.begin(), goodResp.end());
     TPortMock port(r);
 

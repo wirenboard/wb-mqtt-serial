@@ -21,7 +21,7 @@ public:
 
     TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     virtual uint64_t ReadRegister(PRegister reg);
-    virtual void     WriteRegister(PRegister reg, uint64_t value);
+    virtual void WriteRegister(PRegister reg, uint64_t value);
 
     static void Register(TSerialDeviceFactory& factory);
 
@@ -29,7 +29,7 @@ private:
     uint8_t CrcS2K(const uint8_t* array, int size);
 
     static uint8_t CrcTable[];
-    uint8_t        RelayState[5];
+    uint8_t RelayState[5];
 };
 
 typedef std::shared_ptr<TS2KDevice> PS2KDevice;

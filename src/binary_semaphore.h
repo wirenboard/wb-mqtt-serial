@@ -32,8 +32,8 @@ public:
     }
 
 private:
-    bool                    _Signaled = false;
-    std::mutex              Mutex;
+    bool _Signaled = false;
+    std::mutex Mutex;
     std::condition_variable Cond;
 };
 

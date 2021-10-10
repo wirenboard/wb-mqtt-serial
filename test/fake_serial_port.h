@@ -26,12 +26,12 @@ public:
 
     TFakeSerialPort(WBMQTT::Testing::TLoggedFixture& fixture);
 
-    void    SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
-    void    CheckPortOpen() const;
-    void    Open();
-    void    Close();
-    bool    IsOpen() const;
-    void    WriteBytes(const uint8_t* buf, int count);
+    void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
+    void CheckPortOpen() const;
+    void Open();
+    void Close();
+    bool IsOpen() const;
+    void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte(const std::chrono::microseconds& timeout);
     size_t ReadFrame(uint8_t* buf,
                      size_t count,
@@ -57,19 +57,19 @@ public:
     void SetAllowOpen(bool allowOpen);
 
 private:
-    void      SkipFrameBoundary();
+    void SkipFrameBoundary();
     const int FRAME_BOUNDARY = -1;
 
     WBMQTT::Testing::TLoggedFixture& Fixture;
-    bool                             AllowOpen;
-    bool                             IsPortOpen;
-    TDisconnectType                  DisconnectType;
-    std::deque<const char*>          PendingFuncs;
-    std::vector<int>                 Req;
-    std::vector<int>                 Resp;
-    size_t                           ReqPos, RespPos, DumpPos;
-    std::chrono::microseconds        ExpectedFrameTimeout = std::chrono::microseconds(-1);
-    TPollPlan::TTimePoint            Time                 = TPollPlan::TTimePoint(std::chrono::milliseconds(0));
+    bool AllowOpen;
+    bool IsPortOpen;
+    TDisconnectType DisconnectType;
+    std::deque<const char*> PendingFuncs;
+    std::vector<int> Req;
+    std::vector<int> Resp;
+    size_t ReqPos, RespPos, DumpPos;
+    std::chrono::microseconds ExpectedFrameTimeout = std::chrono::microseconds(-1);
+    TPollPlan::TTimePoint Time = TPollPlan::TTimePoint(std::chrono::milliseconds(0));
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
@@ -77,11 +77,11 @@ typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
 class TSerialDeviceTest: public WBMQTT::Testing::TLoggedFixture, public virtual TExpectorProvider
 {
 protected:
-    void      SetUp();
-    void      TearDown();
+    void SetUp();
+    void TearDown();
     PExpector Expector() const;
 
-    PFakeSerialPort      SerialPort;
+    PFakeSerialPort SerialPort;
     TSerialDeviceFactory DeviceFactory;
 };
 
@@ -100,11 +100,11 @@ protected:
     WBMQTT::PDeviceDriver Driver;
 
     PMQTTSerialDriver SerialDriver;
-    PHandlerConfig    Config;
-    bool              PortMakerCalled;
+    PHandlerConfig Config;
+    bool PortMakerCalled;
 
     static WBMQTT::TMap<std::string, TTemplateMap> Templates; // Key - path to folder, value - loaded templates map
-    static Json::Value                             CommonConfigSchema;
-    static Json::Value                             CommonConfigTemplatesSchema;
-    static void                                    SetUpTestCase();
+    static Json::Value CommonConfigSchema;
+    static Json::Value CommonConfigTemplatesSchema;
+    static void SetUpTestCase();
 };

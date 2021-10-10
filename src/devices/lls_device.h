@@ -9,8 +9,8 @@ public:
     TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol);
 
     uint64_t ReadRegister(PRegister reg) override;
-    void     WriteRegister(PRegister reg, uint64_t value) override;
-    void     EndPollCycle() override;
+    void WriteRegister(PRegister reg, uint64_t value) override;
+    void EndPollCycle() override;
 
     static void Register(TSerialDeviceFactory& factory);
 

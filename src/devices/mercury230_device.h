@@ -21,18 +21,18 @@ public:
         REG_PARAM_SIGN_ACT = 2,
         REG_PARAM_SIGN_REACT = 3,
         REG_PARAM_SIGN_IGNORE = 4,
-        REG_PARAM_BE          = 5,
-        REG_VALUE_ARRAY12     = 6
+        REG_PARAM_BE = 5,
+        REG_VALUE_ARRAY12 = 6
     };
 
     TMercury230Device(PDeviceConfig, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
-    void     EndPollCycle();
+    void EndPollCycle();
 
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    bool      ConnectionSetup();
+    bool ConnectionSetup();
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
 
 private:

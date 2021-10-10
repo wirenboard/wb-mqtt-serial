@@ -62,8 +62,8 @@ public:
 
     const std::string& GetName() const;
     const std::string& GetValue() const;
-    uint64_t           GetRawValue() const;
-    PRegisterConfig    GetRegisterConfig() const;
+    uint64_t GetRawValue() const;
+    PRegisterConfig GetRegisterConfig() const;
 };
 
 typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
@@ -190,8 +190,8 @@ public:
     virtual std::string ToString() const;
 
     // Initialize setup items' registers
-    void         InitSetupItems();
-    bool         HasSetupItems() const;
+    void InitSetupItems();
+    bool HasSetupItems() const;
     virtual bool WriteSetupRegisters();
 
     PPort Port() const
@@ -208,7 +208,7 @@ public:
     }
 
     virtual void OnCycleEnd(bool ok);
-    bool         GetIsDisconnected() const;
+    bool GetIsDisconnected() const;
 
     std::map<int64_t, uint16_t> ModbusCache, ModbusTmpCache;
 
@@ -227,12 +227,12 @@ protected:
     std::vector<PDeviceSetupItem> SetupItems;
 
 private:
-    PPort                                 SerialPort;
-    PDeviceConfig                         _DeviceConfig;
-    PProtocol                             _Protocol;
+    PPort SerialPort;
+    PDeviceConfig _DeviceConfig;
+    PProtocol _Protocol;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
-    bool                                  IsDisconnected;
-    int                                   RemainingFailCycles;
+    bool IsDisconnected;
+    int RemainingFailCycles;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
@@ -268,7 +268,7 @@ public:
     virtual bool SupportsBroadcast() const;
 
 private:
-    std::string      Name;
+    std::string Name;
     PRegisterTypeMap RegTypes;
 };
 

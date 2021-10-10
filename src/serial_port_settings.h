@@ -18,11 +18,11 @@ struct TSerialPortByteFormat
 
 struct TSerialPortSettings: public TSerialPortByteFormat
 {
-    TSerialPortSettings(const std::string& device   = "/dev/ttyS0",
-                        int                baudRate = 9600,
-                        char               parity   = 'N',
-                        int                dataBits = 8,
-                        int                stopBits = 1)
+    TSerialPortSettings(const std::string& device = "/dev/ttyS0",
+                        int baudRate = 9600,
+                        char parity = 'N',
+                        int dataBits = 8,
+                        int stopBits = 1)
         : TSerialPortByteFormat(parity, dataBits, stopBits),
           Device(device),
           BaudRate(baudRate)

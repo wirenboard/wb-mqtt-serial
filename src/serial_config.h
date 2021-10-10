@@ -136,8 +136,8 @@ public:
 };
 
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema);
-void        AddFakeDeviceType(Json::Value& configSchema);
-void        AddRegisterType(Json::Value& configSchema, const std::string& registerType);
+void AddFakeDeviceType(Json::Value& configSchema);
+void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
 
 typedef std::function<std::pair<PPort, bool>(const Json::Value& config)> TPortFactoryFn;
 

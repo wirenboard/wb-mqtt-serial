@@ -35,10 +35,10 @@ namespace
     }
 };
 
-TSerialClient::TSerialClient(const std::vector<PSerialDevice>&     devices,
-                             PPort                                 port,
+TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
+                             PPort port,
                              const TPortOpenCloseLogic::TSettings& openCloseSettings,
-                             Metrics::TMetrics&                    metrics)
+                             Metrics::TMetrics& metrics)
     : Port(port),
       Devices(devices),
       Active(false),
@@ -92,10 +92,10 @@ void TSerialClient::PrepareRegisterRanges()
 {
     // all of this is seemingly slow but it's actually only done once
     Plan->Reset();
-    PSerialDevice                                   last_device(0);
-    std::list<PRegister>                            cur_regs;
-    auto                                            it = RegList.begin();
-    std::list<PSerialPollEntry>                     entries;
+    PSerialDevice last_device(0);
+    std::list<PRegister> cur_regs;
+    auto it = RegList.begin();
+    std::list<PSerialPollEntry> entries;
     std::unordered_map<long long, PSerialPollEntry> interval_map;
     for (;;) {
         bool at_end = it == RegList.end();
@@ -112,10 +112,10 @@ void TSerialClient::PrepareRegisterRanges()
             // though.
             for (auto range: last_device->SplitRegisterList(cur_regs)) {
                 PSerialPollEntry entry;
-                long long        interval = range->PollInterval().count();
-                auto             it       = interval_map.find(interval);
+                long long interval = range->PollInterval().count();
+                auto it = interval_map.find(interval);
                 if (it == interval_map.end()) {
-                    entry                  = std::make_shared<TSerialPollEntry>(range);
+                    entry = std::make_shared<TSerialPollEntry>(range);
                     interval_map[interval] = entry;
                     Plan->AddEntry(entry);
                 } else
@@ -243,7 +243,7 @@ void TSerialClient::OpenPortCycle()
     std::map<PSerialDevice, std::set<EStatus>> devicesRangesStatuses;
 
     Plan->ProcessPending([&](const PPollEntry& entry) {
-        auto                      pollEntry = dynamic_cast<TSerialPollEntry*>(entry.get());
+        auto pollEntry = dynamic_cast<TSerialPollEntry*>(entry.get());
         std::list<PRegisterRange> newRanges;
         for (auto range: pollEntry->Ranges) {
             auto device = range->Device();

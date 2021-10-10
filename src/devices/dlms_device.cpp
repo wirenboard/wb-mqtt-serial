@@ -144,12 +144,12 @@ namespace
                                const TObisCodeHints& obisHints)
     {
         std::string res;
-        auto        it = obisHints.find(logicalName);
+        auto it = obisHints.find(logicalName);
         if (it != obisHints.end() && !it->second.Description.empty()) {
             res = it->second.Description;
         }
         std::vector<std::string> descriptions;
-        auto                     tmp = logicalName;
+        auto tmp = logicalName;
         cnv->GetDescription(tmp, obj->GetObjectType(), descriptions);
         if (descriptions.empty()) {
             return res;
@@ -173,7 +173,7 @@ namespace
             std::string dummy;
             codes.push_back(new CGXStandardObisCode(GXHelpers::Split(code, ".", false), dummy, dummy, dummy));
         }
-        bool                              res = false;
+        bool res = false;
         std::vector<CGXStandardObisCode*> list;
         if (DLMS_ERROR_CODE_OK == codes.Find(logicalName, DLMS_OBJECT_TYPE_NONE, list) && !list.empty()) {
             res = (list.front()->GetDescription() != "Invalid");
@@ -232,13 +232,13 @@ namespace
         std::string logicalName;
         obj->GetLogicalName(logicalName);
 
-        auto        description = GetDescription(logicalName, obj, cnv, obisHints);
-        auto        channelName = GetChannelName(logicalName, description, obisHints);
+        auto description = GetDescription(logicalName, obj, cnv, obisHints);
+        auto channelName = GetChannelName(logicalName, description, obisHints);
         Json::Value res;
-        res["name"]     = channelName;
+        res["name"] = channelName;
         res["reg_type"] = "default";
-        res["address"]  = logicalName;
-        res["type"]     = GetType(obj);
+        res["address"] = logicalName;
+        res["type"] = GetType(obj);
         if (!IsChannelEnabled(logicalName, obisHints)) {
             res["enabled"] = false;
         }
@@ -300,12 +300,12 @@ namespace
                                            const TObisCodeHints& obisHints)
     {
         CGXDLMSConverter cnv;
-        Json::Value      res;
-        res["device_type"]            = name;
-        auto& device                  = res["device"];
-        device["name"]                = name;
-        device["id"]                  = name;
-        device["dlms_auth"]           = deviceConfig.Authentication;
+        Json::Value res;
+        res["device_type"] = name;
+        auto& device = res["device"];
+        device["name"] = name;
+        device["id"] = name;
+        device["dlms_auth"] = deviceConfig.Authentication;
         device["dlms_client_address"] = deviceConfig.ClientAddress;
         if (!deviceConfig.DeviceConfig->Password.empty()) {
             Json::Value ar(Json::arrayValue);
@@ -314,11 +314,11 @@ namespace
             }
             device["password"] = ar;
         }
-        device["protocol"]            = "dlms";
+        device["protocol"] = "dlms";
         device["response_timeout_ms"] = static_cast<Json::Int>(DEFAULT_RESPONSE_TIMEOUT.count());
-        device["frame_timeout_ms"]    = static_cast<Json::Int>(DEFAULT_FRAME_TIMEOUT.count());
-        device["channels"]            = Json::Value(Json::arrayValue);
-        auto& channels                = device["channels"];
+        device["frame_timeout_ms"] = static_cast<Json::Int>(DEFAULT_FRAME_TIMEOUT.count());
+        device["channels"] = Json::Value(Json::arrayValue);
+        auto& channels = device["channels"];
         for (auto obj: objs) {
             if (obj->GetObjectType() == DLMS_OBJECT_TYPE_REGISTER) {
                 channels.append(MakeChannelDescription(obj, &cnv, obisHints));
@@ -422,7 +422,7 @@ uint64_t TDlmsDevice::ReadRegister(PRegister reg)
 
     bool forceValueRead = true;
 
-    const auto       REGISTER_VALUE_ATTRIBUTE_INDEX = 2;
+    const auto REGISTER_VALUE_ATTRIBUTE_INDEX = 2;
     std::vector<int> attributes;
     obj->GetAttributeIndexToRead(false, attributes);
     for (auto pos: attributes) {
@@ -537,7 +537,7 @@ void TDlmsDevice::ReadDataBlock(const uint8_t* data, size_t size, CGXReplyData& 
     }
     ReadDLMSPacket(data, size, reply);
     while (reply.IsMoreData()) {
-        int           ret;
+        int ret;
         CGXByteBuffer bb;
         if ((ret = Client->ReceiverReady(reply.GetMoreData(), bb)) != 0) {
             throw std::runtime_error("Read block failed: " + GetErrorMessage(ret));
@@ -553,8 +553,8 @@ void TDlmsDevice::ReadData(CGXByteBuffer& reply)
 
 void TDlmsDevice::Read(unsigned char eop, CGXByteBuffer& reply)
 {
-    size_t lastReadIndex   = 0;
-    auto   frameCompleteFn = [&](uint8_t* buf, size_t size) {
+    size_t lastReadIndex = 0;
+    auto frameCompleteFn = [&](uint8_t* buf, size_t size) {
         if (size > 5) {
             auto pos = size - 1;
             for (; pos != lastReadIndex; --pos) {
@@ -582,7 +582,7 @@ void TDlmsDevice::ReadDLMSPacket(const uint8_t* data, size_t size, CGXReplyData&
         return;
     }
     SendData(data, size);
-    int           ret = DLMS_ERROR_CODE_FALSE;
+    int ret = DLMS_ERROR_CODE_FALSE;
     CGXByteBuffer bb;
     // Loop until whole DLMS packet is received.
     while (ret == DLMS_ERROR_CODE_FALSE) {
@@ -703,9 +703,9 @@ void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode mode,
                                                    options[2].end());
     }
 
-    deviceConfig.DeviceConfig->SlaveId         = phisycalDeviceAddress;
+    deviceConfig.DeviceConfig->SlaveId = phisycalDeviceAddress;
     deviceConfig.DeviceConfig->ResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
-    deviceConfig.DeviceConfig->FrameTimeout    = DEFAULT_FRAME_TIMEOUT;
+    deviceConfig.DeviceConfig->FrameTimeout = DEFAULT_FRAME_TIMEOUT;
 
     TSerialDeviceFactory deviceFactory;
     TDlmsDevice::Register(deviceFactory);
@@ -721,8 +721,8 @@ void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode mode,
     for (const auto& ld: logicalDevices) {
         std::cout << "Getting objects for " << ld.second << " ..." << std::endl;
         deviceConfig.LogicalDeviceAddress = ld.first;
-        TDlmsDevice    d(deviceConfig, port, deviceFactory.GetProtocol("dlms"));
-        auto           objs      = d.ReadAllObjects(mode != 0);
+        TDlmsDevice d(deviceConfig, port, deviceFactory.GetProtocol("dlms"));
+        auto objs = d.ReadAllObjects(mode != 0);
         TObisCodeHints obisHints = LoadObisCodeHints();
         switch (mode) {
             case PRINT: {
@@ -737,8 +737,8 @@ void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode mode,
                 Json::StreamWriterBuilder builder;
                 builder["indentation"] = "  ";
                 std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-                auto                                templateFile = destinationDir + "/" + ld.second + ".conf";
-                std::ofstream                       f(templateFile);
+                auto templateFile = destinationDir + "/" + ld.second + ".conf";
+                std::ofstream f(templateFile);
                 writer->write(GenerateDlmsDeviceTemplate(ld.second, deviceConfig, objs, obisHints), &f);
                 std::cout << templateFile << " is generated" << std::endl;
                 break;

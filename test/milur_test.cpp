@@ -134,8 +134,8 @@ public:
 PDeviceConfig TMilurCustomPasswordTest::GetDeviceConfig()
 {
     PDeviceConfig device_config = TMilurTest::GetDeviceConfig();
-    device_config->Password     = {0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
-    device_config->AccessLevel  = 2;
+    device_config->Password = {0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+    device_config->AccessLevel = 2;
     return device_config;
 }
 
@@ -217,10 +217,10 @@ TEST_F(TMilurIntegrationTest, Poll)
 class TMilur32Test: public TSerialDeviceTest, public TMilurExpectations
 {
 protected:
-    void                  SetUp();
-    void                  VerifyMilurQuery();
+    void SetUp();
+    void VerifyMilurQuery();
     virtual PDeviceConfig MilurConfig();
-    PMilurDevice          MilurDev;
+    PMilurDevice MilurDev;
 
     PRegister MilurTotalConsumptionReg;
 };

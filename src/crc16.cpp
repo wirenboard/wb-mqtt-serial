@@ -68,8 +68,8 @@ uint16_t CRC16::CalculateCRC16(const uint8_t* buffer, uint16_t len)
     uint8_t crch = 0xff, crcl = 0xff;
     while (len--) {
         uint8_t i = crch ^ *buffer++;
-        crch      = crcl ^ crcHi[i];
-        crcl      = crcLo[i];
+        crch = crcl ^ crcHi[i];
+        crcl = crcLo[i];
     }
 
     return crch << 8 | crcl;

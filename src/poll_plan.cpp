@@ -80,10 +80,10 @@ void TPollPlan::ProcessPending(const TCallback& callback)
         PendingItems.push(Queue.top());
         Queue.pop();
     }
-    int                       n            = 0;
+    int n = 0;
     std::chrono::milliseconds avg_duration = std::chrono::milliseconds::zero();
     while (!PendingItems.empty()) {
-        auto item  = PendingItems.top();
+        auto item = PendingItems.top();
         auto start = ClockFunc();
         callback(item->Entry);
         auto request_duration = std::chrono::duration_cast<std::chrono::milliseconds>(ClockFunc() - start);

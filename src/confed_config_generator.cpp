@@ -24,8 +24,8 @@ bool RemoveDeviceHash(Json::Value& device, const std::unordered_map<std::string,
     return false;
 }
 
-bool TryToTransformSubDeviceChannel(Json::Value&                                        channel,
-                                    ITemplateMap&                                       templates,
+bool TryToTransformSubDeviceChannel(Json::Value& channel,
+                                    ITemplateMap& templates,
                                     const std::unordered_map<std::string, std::string>& subdeviceTypeHashes)
 {
     if (!RemoveDeviceHash(channel, subdeviceTypeHashes)) {
@@ -136,7 +136,7 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 {
     Json::Value root;
     Json::CharReaderBuilder readerBuilder;
-    Json::String            errs;
+    Json::String errs;
 
     if (!Json::parseFromStream(readerBuilder, stream, &root, &errs)) {
         throw std::runtime_error("Failed to parse JSON:" + errs);
@@ -155,7 +155,7 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
 
                 Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
                 TransformGroupsToSubdevices(deviceTemplate, deviceTemplate["subdevices"]);
-                TSubDevicesTemplateMap                       subdevices(dt, deviceTemplate);
+                TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
                 std::unordered_map<std::string, std::string> subdeviceTypeHashes;
                 for (const auto& dt: subdevices.GetDeviceTypes()) {
                     subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;

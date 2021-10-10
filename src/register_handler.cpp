@@ -7,7 +7,7 @@ using namespace std::chrono;
 
 namespace
 {
-    const size_t  MAX_WRITE_FAILS = 10;
+    const size_t MAX_WRITE_FAILS = 10;
     const seconds MAX_WRITE_FAIL_TIME(600); // 10 minutes
 }
 
@@ -62,7 +62,7 @@ TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_v
         return UpdateReadError(true);
 
     bool first_poll = !DidReadReg;
-    DidReadReg      = true;
+    DidReadReg = true;
 
     if (Reg->ErrorValue && InvertWordOrderIfNeeded(*Reg, *Reg->ErrorValue) == new_value) {
         LOG(Debug) << "register " << Reg->ToString() << " contains error value";
@@ -98,7 +98,7 @@ TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
         return {UpdateWriteError(true), false};
     }
 
-    bool              changed = false;
+    bool changed = false;
     volatile uint64_t tempValue;
     try {
         {
@@ -108,17 +108,17 @@ TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
         Device()->WriteRegister(Reg, tempValue);
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
-            Dirty     = (tempValue != ValueToSet);
+            Dirty = (tempValue != ValueToSet);
             WriteFail = false;
         }
-        changed  = (OldValue != tempValue);
+        changed = (OldValue != tempValue);
         OldValue = tempValue;
         Reg->SetValue(OldValue);
     } catch (const TSerialDevicePermanentRegisterException& e) {
         LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
-            Dirty     = (tempValue != ValueToSet);
+            Dirty = (tempValue != ValueToSet);
             WriteFail = false;
         }
         return {UpdateWriteError(true), false};
@@ -131,7 +131,7 @@ TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
             }
             WriteFail = true;
             if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) > MAX_WRITE_FAIL_TIME) {
-                Dirty     = (tempValue != ValueToSet);
+                Dirty = (tempValue != ValueToSet);
                 WriteFail = false;
             }
         }
@@ -150,7 +150,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
     {
         // don't hold the lock while notifying the client below
         std::lock_guard<std::mutex> lock(SetValueMutex);
-        Dirty      = true;
+        Dirty = true;
         ValueToSet = ConvertToRawValue(*Reg, v);
     }
     FlushNeeded->Signal();

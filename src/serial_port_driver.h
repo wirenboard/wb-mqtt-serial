@@ -32,9 +32,9 @@ struct TDeviceChannel: public TDeviceChannelConfig
                      const WBMQTT::TPublishParameters& publishPolicy,
                      const std::string& error);
 
-    PSerialDevice          Device;
+    PSerialDevice Device;
     std::vector<PRegister> Registers;
-    WBMQTT::PControl       Control;
+    WBMQTT::PControl Control;
 
 private:
     void PublishValue(WBMQTT::TDeviceDriver& deviceDriver, const std::string& value);
@@ -85,7 +85,7 @@ private:
     void SetValueToChannel(const PDeviceChannel& channel, const std::string& value);
     void OnValueRead(PRegister reg, bool changed);
     TRegisterHandler::TErrorState RegErrorState(PRegister reg);
-    void                          UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);
+    void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);
 
     WBMQTT::PDeviceDriver MqttDriver;
     PPortConfig Config;

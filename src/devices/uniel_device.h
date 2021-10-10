@@ -21,7 +21,7 @@ public:
 
     TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg);
-    void     WriteRegister(PRegister reg, uint64_t value);
+    void WriteRegister(PRegister reg, uint64_t value);
 
     static void Register(TSerialDeviceFactory& factory);
 

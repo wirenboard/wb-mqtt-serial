@@ -66,13 +66,13 @@ void TTcpPort::Open()
                 throw std::runtime_error("connect error: " + FormatErrno(errno));
             }
             timeval tv = {CONNECTION_TIMEOUT_S, 0};
-            fd_set  myset;
+            fd_set myset;
             FD_ZERO(&myset);
             FD_SET(Fd, &myset);
             auto res = select(Fd + 1, NULL, &myset, NULL, &tv);
             if (res > 0) {
                 socklen_t lon = sizeof(int);
-                int       valopt;
+                int valopt;
                 getsockopt(Fd, SOL_SOCKET, SO_ERROR, (void*)(&valopt), &lon);
                 if (valopt) {
                     throw std::runtime_error("connect error: " + FormatErrno(valopt));
@@ -121,7 +121,7 @@ size_t TTcpPort::ReadFrame(uint8_t* buf,
                            size_t count,
                            const std::chrono::microseconds& responseTimeout,
                            const std::chrono::microseconds& frameTimeout,
-                           TFrameCompletePred               frame_complete)
+                           TFrameCompletePred frame_complete)
 {
     if (IsOpen()) {
         return Base::ReadFrame(buf,

@@ -145,7 +145,7 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
                                   size_t count,
                                   const std::chrono::microseconds& responseTimeout,
                                   const std::chrono::microseconds& frameTimeout,
-                                  TFrameCompletePred               frame_complete)
+                                  TFrameCompletePred frame_complete)
 {
     switch (DisconnectType) {
         case NoDisconnect:
@@ -163,8 +163,8 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " + std::to_string(frameTimeout.count()) +
                                  " instead of " + std::to_string(ExpectedFrameTimeout.count()));
     }
-    size_t   nread = 0;
-    uint8_t* p     = buf;
+    size_t nread = 0;
+    uint8_t* p = buf;
     for (; nread < count; ++nread) {
         if (RespPos == Resp.size())
             break;
@@ -305,8 +305,8 @@ void TSerialDeviceTest::TearDown()
 }
 
 WBMQTT::TMap<std::string, TTemplateMap> TSerialDeviceIntegrationTest::Templates;
-Json::Value                             TSerialDeviceIntegrationTest::CommonConfigSchema;
-Json::Value                             TSerialDeviceIntegrationTest::CommonConfigTemplatesSchema;
+Json::Value TSerialDeviceIntegrationTest::CommonConfigSchema;
+Json::Value TSerialDeviceIntegrationTest::CommonConfigTemplatesSchema;
 
 std::string TSerialDeviceIntegrationTest::GetTemplatePath() const
 {
@@ -348,8 +348,8 @@ void TSerialDeviceIntegrationTest::SetUp()
                         it->second,
                         [=](const Json::Value&) { return std::make_pair(SerialPort, false); });
 
-    MqttBroker   = NewFakeMqttBroker(*this);
-    MqttClient   = MqttBroker->MakeClient("em-test");
+    MqttBroker = NewFakeMqttBroker(*this);
+    MqttClient = MqttBroker->MakeClient("em-test");
     auto backend = NewDriverBackend(MqttClient);
     Driver = NewDriver(TDriverArgs{}
                            .SetId("em-test")

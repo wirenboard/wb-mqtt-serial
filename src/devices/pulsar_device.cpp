@@ -148,7 +148,7 @@ void TPulsarDevice::WriteSysTimeRequest(uint32_t addr, uint16_t id)
 void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t* payload, size_t size, uint16_t id)
 {
     const int exp_size = size + 10; /* payload size + service bytes */
-    uint8_t   response[exp_size];
+    uint8_t response[exp_size];
 
     int nread = Port()->ReadFrame(response,
                                   exp_size,

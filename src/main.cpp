@@ -84,8 +84,8 @@ namespace
     {
         Json::StreamWriterBuilder builder;
         builder["commentStyle"] = commentStyle;
-        builder["indentation"]  = indentation;
-        builder["precision"]    = 15;
+        builder["indentation"] = indentation;
+        builder["precision"] = 15;
         return unique_ptr<Json::StreamWriter>(builder.newStreamWriter());
     }
 
@@ -107,7 +107,7 @@ namespace
         try {
             TSerialDeviceFactory deviceFactory;
             RegisterProtocols(deviceFactory);
-            shared_ptr<Json::Value>  configSchema;
+            shared_ptr<Json::Value> configSchema;
             shared_ptr<TTemplateMap> templates;
             std::tie(configSchema, templates) = LoadTemplates();
             MakeJsonWriter("", "None")
@@ -133,10 +133,10 @@ namespace
         try {
             TSerialDeviceFactory deviceFactory;
             RegisterProtocols(deviceFactory);
-            shared_ptr<Json::Value>  configSchema;
+            shared_ptr<Json::Value> configSchema;
             shared_ptr<TTemplateMap> templates;
             std::tie(configSchema, templates) = LoadTemplates();
-            const char* resultingSchemaFile   = "/tmp/wb-mqtt-serial.schema.json";
+            const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
             {
                 ofstream f(resultingSchemaFile);
                 MakeJsonWriter("  ", "All")->write(MakeSchemaForConfed(*configSchema, *templates, deviceFactory), &f);
@@ -248,7 +248,7 @@ namespace
 int main(int argc, char* argv[])
 {
     WBMQTT::TMosquittoMqttConfig mqttConfig;
-    string                       configFilename(CONFIG_FULL_FILE_PATH);
+    string configFilename(CONFIG_FULL_FILE_PATH);
 
     WBMQTT::SignalHandling::Handle({SIGINT, SIGTERM});
     WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] { WBMQTT::SignalHandling::Stop(); });
@@ -256,11 +256,11 @@ int main(int argc, char* argv[])
 
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
 
-    PHandlerConfig       handlerConfig;
+    PHandlerConfig handlerConfig;
     TSerialDeviceFactory deviceFactory;
     RegisterProtocols(deviceFactory);
     try {
-        Json::Value  configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
+        Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
         TTemplateMap templates(TEMPLATES_DIR,
                                LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, configSchema));
 
@@ -282,7 +282,7 @@ int main(int argc, char* argv[])
         if (mqttConfig.Id.empty())
             mqttConfig.Id = driverName;
 
-        auto mqtt    = WBMQTT::NewMosquittoMqttClient(mqttConfig);
+        auto mqtt = WBMQTT::NewMosquittoMqttClient(mqttConfig);
         auto backend = WBMQTT::NewDriverBackend(mqtt);
         auto driver = WBMQTT::NewDriver(WBMQTT::TDriverArgs{}
                                             .SetId(driverName)

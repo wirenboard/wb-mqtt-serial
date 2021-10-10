@@ -49,7 +49,7 @@ void Metrics::TPollIntervalMetric::AddIntervals(TPollIntervalsMap& intervals,
 Metrics::TPollIntervalHist Metrics::TPollIntervalMetric::GetHist() const
 {
     TPollIntervalsMap intervals;
-    size_t            n = 0;
+    size_t n = 0;
     for (const auto& chunk: Intervals) {
         for (const auto& interval: chunk) {
             AddIntervals(intervals, interval.first, interval.second);
@@ -60,7 +60,7 @@ Metrics::TPollIntervalHist Metrics::TPollIntervalMetric::GetHist() const
     if (intervals.empty() || n == 0) {
         return res;
     }
-    auto   it    = intervals.rbegin();
+    auto it = intervals.rbegin();
     size_t count = 0;
     for (; count < n / 20 && it != intervals.rend(); ++it) {
         count += it->second;
@@ -131,7 +131,7 @@ void Metrics::TBusLoadMetric::StartPoll(const TPollItem& pollItem, steady_clock:
     if (time >= StartPollTime) {
         AddInterval(duration_cast<microseconds>(time - StartPollTime));
         StartPollTime = time;
-        PollItem      = pollItem;
+        PollItem = pollItem;
     }
 }
 
@@ -171,8 +171,8 @@ void Metrics::TMetrics::StartPoll(const Metrics::TPollItem& pollItem, chrono::st
 map<Metrics::TPollItem, Metrics::TMetrics::TResult> Metrics::TMetrics::GetBusLoad(chrono::steady_clock::time_point time)
 {
     map<TPollItem, TResult> res;
-    unique_lock<mutex>      lk(Mutex);
-    auto                    bl = BusLoad.GetBusLoad(time);
+    unique_lock<mutex> lk(Mutex);
+    auto bl = BusLoad.GetBusLoad(time);
     for (auto it = PollIntervals.begin(); it != PollIntervals.end(); ++it) {
         res.emplace(it->first, TResult{it->second.GetHist(), bl[it->first]});
     }

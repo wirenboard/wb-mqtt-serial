@@ -48,7 +48,7 @@ namespace Metrics
 
     public:
         TPollIntervalHist GetHist() const;
-        void              Poll(std::chrono::steady_clock::time_point time);
+        void Poll(std::chrono::steady_clock::time_point time);
     };
 
     struct TBusLoad

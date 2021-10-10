@@ -13,7 +13,7 @@ TLLSDevice::TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId)
 {
-    auto timeout         = port->GetSendTime(3.5) + std::chrono::milliseconds(1);
+    auto timeout = port->GetSendTime(3.5) + std::chrono::milliseconds(1);
     config->FrameTimeout = std::max(config->FrameTimeout, timeout);
 }
 
@@ -42,11 +42,11 @@ void TLLSDevice::EndPollCycle()
 
 namespace
 {
-    const size_t    RESPONSE_BUF_LEN = 100;
-    const size_t    REQUEST_LEN      = 4;
-    const ptrdiff_t HEADER_SZ        = 3;
-    const uint8_t   REQUEST_PREFIX   = 0x31;
-    const uint8_t   RESPONSE_PREFIX  = 0x3E;
+    const size_t RESPONSE_BUF_LEN = 100;
+    const size_t REQUEST_LEN = 4;
+    const ptrdiff_t HEADER_SZ = 3;
+    const uint8_t REQUEST_PREFIX = 0x31;
+    const uint8_t RESPONSE_PREFIX = 0x3E;
 }
 
 std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
@@ -81,8 +81,8 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
         throw TSerialDeviceTransientErrorException("invalid response crc");
     }
 
-    uint8_t*             payload = buf + HEADER_SZ;
-    std::vector<uint8_t> result  = {0};
+    uint8_t* payload = buf + HEADER_SZ;
+    std::vector<uint8_t> result = {0};
     result.assign(payload, payload + len - HEADER_SZ);
     return CmdResultCache.insert({cmd, result}).first->second;
 }
@@ -93,8 +93,8 @@ uint64_t TLLSDevice::ReadRegister(PRegister reg)
     uint8_t cmd = (addr & 0xFF00) >> 8;
     auto result = ExecCommand(cmd);
 
-    int     result_buf[8] = {};
-    uint8_t offset        = (addr & 0x00FF);
+    int result_buf[8] = {};
+    uint8_t offset = (addr & 0x00FF);
 
     for (int i = 0; i < reg->GetByteWidth(); ++i) {
         result_buf[i] = result[offset + i];

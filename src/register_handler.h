@@ -30,7 +30,7 @@ public:
     }
     bool NeedToPoll();
     TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
-    bool        NeedToFlush();
+    bool NeedToFlush();
 
     struct TFlushResult
     {
@@ -42,7 +42,7 @@ public:
      * @brief Write pending register value. NeedToFlush must be checked before call.
      */
     TFlushResult Flush(TErrorState forcedError = NoError);
-    std::string  TextValue() const;
+    std::string TextValue() const;
 
     void SetTextValue(const std::string& v);
     bool DidRead() const
@@ -62,16 +62,16 @@ private:
     TErrorState UpdateReadError(bool error);
     TErrorState UpdateWriteError(bool error);
 
-    std::weak_ptr<TSerialDevice>          Dev;
-    uint64_t                              OldValue   = 0;
-    uint64_t                              ValueToSet = 0;
-    PRegister                             Reg;
-    volatile bool                         Dirty      = false;
-    bool                                  DidReadReg = false;
-    std::mutex                            SetValueMutex;
-    TErrorState                           ErrorState = UnknownErrorState;
-    PBinarySemaphore                      FlushNeeded;
-    bool                                  WriteFail;
+    std::weak_ptr<TSerialDevice> Dev;
+    uint64_t OldValue = 0;
+    uint64_t ValueToSet = 0;
+    PRegister Reg;
+    volatile bool Dirty = false;
+    bool DidReadReg = false;
+    std::mutex SetValueMutex;
+    TErrorState ErrorState = UnknownErrorState;
+    PBinarySemaphore FlushNeeded;
+    bool WriteFail;
     std::chrono::steady_clock::time_point WriteFirstTryTime;
 };
 

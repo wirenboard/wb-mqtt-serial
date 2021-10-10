@@ -19,15 +19,15 @@ public:
     TPort& operator=(const TPort&) = delete;
     virtual ~TPort() = default;
 
-    virtual void Open()  = 0;
+    virtual void Open() = 0;
     virtual void Close() = 0;
     virtual void Reopen();
-    virtual bool IsOpen() const        = 0;
+    virtual bool IsOpen() const = 0;
     virtual void CheckPortOpen() const = 0;
 
     virtual void WriteBytes(const uint8_t* buf, int count) = 0;
-    void         WriteBytes(const std::vector<uint8_t>& buf);
-    void         WriteBytes(const std::string& buf);
+    void WriteBytes(const std::vector<uint8_t>& buf);
+    void WriteBytes(const std::string& buf);
 
     virtual uint8_t ReadByte(const std::chrono::microseconds& timeout) = 0;
 
@@ -47,7 +47,7 @@ public:
                              size_t count,
                              const std::chrono::microseconds& responseTimeout,
                              const std::chrono::microseconds& frameTimeout,
-                             TFrameCompletePred               frame_complete = 0) = 0;
+                             TFrameCompletePred frame_complete = 0) = 0;
 
     virtual void SkipNoise() = 0;
 

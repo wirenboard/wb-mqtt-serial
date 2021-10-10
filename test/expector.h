@@ -14,7 +14,7 @@ typedef std::shared_ptr<TExpector> PExpector;
 class TExpectorProvider
 {
 public:
-    virtual ~TExpectorProvider()       = default;
+    virtual ~TExpectorProvider() = default;
     virtual PExpector Expector() const = 0;
 };
 

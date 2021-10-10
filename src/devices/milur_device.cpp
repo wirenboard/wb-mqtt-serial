@@ -127,7 +127,7 @@ TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, co
 uint64_t TMilurDevice::ReadRegister(PRegister reg)
 {
     uint8_t addr = GetUint32RegisterAddress(reg->GetAddress());
-    int     size = GetExpectedSize(reg->Type);
+    int size = GetExpectedSize(reg->Type);
     uint8_t buf[MAX_LEN], *p = buf;
     Talk(0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(SlaveIdWidth, size + 5 + SlaveIdWidth));
     if (*p++ != addr)
@@ -181,7 +181,7 @@ uint64_t TMilurDevice::BuildBCB32(uint8_t* psrc) const
     uint32_t r = 0;
     uint8_t* pdst = reinterpret_cast<uint8_t*>(&r);
     for (int i = 0; i < 4; ++i) {
-        auto t  = psrc[i];
+        auto t = psrc[i];
         pdst[i] = (t >> 4) | (t << 4);
     }
     return r;

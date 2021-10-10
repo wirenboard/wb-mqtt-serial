@@ -15,7 +15,7 @@ TLoggerWithTimeout::TLoggerWithTimeout(const std::chrono::milliseconds& notifica
 void TLoggerWithTimeout::Log(const std::string& msg, WBMQTT::TLogger& debugLogger, WBMQTT::TLogger& errorLogger)
 {
     auto currentTime = std::chrono::steady_clock::now();
-    auto delta       = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - LastErrorNotificationTime);
+    auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - LastErrorNotificationTime);
     if (delta < NotificationInterval) {
         debugLogger.Log() << Prefix << msg;
     } else {

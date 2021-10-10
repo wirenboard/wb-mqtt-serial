@@ -71,7 +71,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         if (second == 0xff) {
             second = Port()->ReadByte(DeviceConfig()->FrameTimeout);
         }
-        buf[0]    = second;
+        buf[0] = second;
         uint8_t s = second;
         for (int i = 1; i < 5; ++i) {
             buf[i] = Port()->ReadByte(DeviceConfig()->FrameTimeout);
@@ -110,7 +110,7 @@ uint64_t TUnielDevice::ReadRegister(PRegister reg)
 
 void TUnielDevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    auto    addr = GetUint32RegisterAddress(reg->GetAddress());
+    auto addr = GetUint32RegisterAddress(reg->GetAddress());
     uint8_t cmd;
     if (reg->Type == REG_BRIGHTNESS) {
         cmd = SET_BRIGHTNESS_CMD;

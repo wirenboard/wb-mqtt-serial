@@ -53,16 +53,16 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
     if (IsCrcValid(buf, readn)) {
         throw TSerialDeviceTransientErrorException("mercury200: bad CRC for command");
     }
-    uint8_t*             payload = buf + HEADER_SZ;
-    std::vector<uint8_t> result  = {0};
+    uint8_t* payload = buf + HEADER_SZ;
+    std::vector<uint8_t> result = {0};
     result.assign(payload, payload + readn - HEADER_SZ);
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
 uint64_t TMercury200Device::ReadRegister(PRegister reg)
 {
-    auto    addr   = GetUint32RegisterAddress(reg->GetAddress());
-    uint8_t cmd    = (addr & 0xFF00) >> 8;
+    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+    uint8_t cmd = (addr & 0xFF00) >> 8;
     uint8_t offset = (addr & 0xFF);
 
     WordSizes size;
@@ -121,14 +121,14 @@ int TMercury200Device::RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* res
 
 void TMercury200Device::FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) const
 {
-    buf[0]   = static_cast<uint8_t>(id >> 24);
-    buf[1]   = static_cast<uint8_t>(id >> 16);
-    buf[2]   = static_cast<uint8_t>(id >> 8);
-    buf[3]   = static_cast<uint8_t>(id);
-    buf[4]   = cmd;
+    buf[0] = static_cast<uint8_t>(id >> 24);
+    buf[1] = static_cast<uint8_t>(id >> 16);
+    buf[2] = static_cast<uint8_t>(id >> 8);
+    buf[3] = static_cast<uint8_t>(id);
+    buf[4] = cmd;
     auto crc = CRC16::CalculateCRC16(buf, 5);
-    buf[5]   = static_cast<uint8_t>(crc >> 8);
-    buf[6]   = static_cast<uint8_t>(crc);
+    buf[5] = static_cast<uint8_t>(crc >> 8);
+    buf[6] = static_cast<uint8_t>(crc);
 }
 
 bool TMercury200Device::IsBadHeader(uint32_t slave_expected, uint8_t cmd_expected, uint8_t* response) const

@@ -12,7 +12,7 @@
 class TModbusIODevice: public TSerialDevice, public TUInt32SlaveId
 {
     std::unique_ptr<Modbus::IModbusTraits> ModbusTraits;
-    int                                    Shift = 0;
+    int Shift = 0;
 
 public:
     TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
@@ -24,7 +24,7 @@ public:
                                                 bool enableHoles = true) const override;
     void WriteRegister(PRegister reg, uint64_t value) override;
     std::list<PRegisterRange> ReadRegisterRange(PRegisterRange range) override;
-    bool                      WriteSetupRegisters() override;
+    bool WriteSetupRegisters() override;
 
     static void Register(TSerialDeviceFactory& factory);
 };

@@ -74,7 +74,7 @@ namespace
 
         auto& items = MakeArray("oneOf", r);
         for (const auto& subDeviceName: channelTemplate["oneOf"]) {
-            auto        name(subDeviceName.asString());
+            auto name(subDeviceName.asString());
             Json::Value i;
             i["properties"]["device_type"] = MakeSingleValuePropery(name);
             MakeArray("required", i).append("device_type");
@@ -145,7 +145,7 @@ namespace
             en.append(name);
         }
         Json::Value r;
-        auto&       allOf = MakeArray("allOf", r);
+        auto& allOf = MakeArray("allOf", r);
         allOf.append(n);
         allOf.append(MakeObject("$ref", customChannelsSchemaRef));
         return r;
@@ -213,7 +213,7 @@ namespace
                                     const std::string& deviceType)
     {
         Json::Value res;
-        res["type"]                      = "object";
+        res["type"] = "object";
         res["properties"]["device_type"] = MakeSingleValuePropery(subDeviceType);
 
         if (subdeviceTemplate.Schema.isMember("parameters")) {
@@ -226,7 +226,7 @@ namespace
 
         if (subdeviceTemplate.Schema.isMember("channels")) {
             res["properties"]["channels"]["type"] = "array";
-            auto& items                           = MakeArray("oneOf", res["properties"]["channels"]["items"]);
+            auto& items = MakeArray("oneOf", res["properties"]["channels"]["items"]);
             for (const auto& channel: subdeviceTemplate.Schema["channels"]) {
                 items.append(MakeTabChannelSchema(channel, deviceType));
             }
@@ -252,9 +252,9 @@ namespace
     //      "required": ["device_type", "slave_id"]
     //  }
     void AddDeviceSchema(const TDeviceTemplate& deviceTemplate,
-                         TSerialDeviceFactory&  deviceFactory,
-                         Json::Value&           devicesArray,
-                         Json::Value&           definitions)
+                         TSerialDeviceFactory& deviceFactory,
+                         Json::Value& devicesArray,
+                         Json::Value& definitions)
     {
         auto protocolName = GetProtocolName(deviceTemplate.Schema);
 
@@ -280,7 +280,7 @@ namespace
                                                                      customChannelsSchemaRef);
         }
 
-        auto       deviceSchemaRef    = deviceFactory.GetCommonDeviceSchemaRef(protocolName);
+        auto deviceSchemaRef = deviceFactory.GetCommonDeviceSchemaRef(protocolName);
         const auto NO_CHANNELS_SUFFIX = "_no_channels";
         if (!WBMQTT::StringHasSuffix(deviceSchemaRef, NO_CHANNELS_SUFFIX)) {
             deviceSchemaRef += NO_CHANNELS_SUFFIX;
@@ -299,10 +299,10 @@ namespace
     }
 
     void AppendDeviceSchemas(const std::unordered_set<std::string>& deviceTypes,
-                             Json::Value&                           devicesArray,
-                             Json::Value&                           definitions,
-                             TTemplateMap&                          templates,
-                             TSerialDeviceFactory&                  deviceFactory)
+                             Json::Value& devicesArray,
+                             Json::Value& definitions,
+                             TTemplateMap& templates,
+                             TSerialDeviceFactory& deviceFactory)
     {
         for (const auto& deviceType: deviceTypes) {
             AddDeviceSchema(templates.GetTemplate(deviceType), deviceFactory, devicesArray, definitions);

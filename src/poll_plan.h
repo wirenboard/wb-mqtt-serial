@@ -17,13 +17,13 @@ typedef std::shared_ptr<TPollEntry> PPollEntry;
 class TPollPlan
 {
 public:
-    typedef std::chrono::steady_clock::time_point        TTimePoint;
-    typedef std::function<TTimePoint()>                  TClockFunc;
+    typedef std::chrono::steady_clock::time_point TTimePoint;
+    typedef std::function<TTimePoint()> TClockFunc;
     typedef std::function<void(const PPollEntry& entry)> TCallback;
     TPollPlan(TClockFunc clock_func = std::chrono::steady_clock::now);
-    void       AddEntry(const PPollEntry& entry);
-    void       ProcessPending(const TCallback& callback);
-    bool       PollIsDue();
+    void AddEntry(const PPollEntry& entry);
+    void ProcessPending(const TCallback& callback);
+    bool PollIsDue();
     TTimePoint GetNextPollTimePoint();
     void Reset();
 
@@ -79,11 +79,11 @@ private:
         }
     };
 
-    TClockFunc                ClockFunc;
-    TTimePoint                CurrentTime;
+    TClockFunc ClockFunc;
+    TTimePoint CurrentTime;
     std::chrono::milliseconds AvgRequestDuration = std::chrono::milliseconds::zero();
     std::priority_queue<PQueueItem, std::vector<PQueueItem>, LessImportantThan> PendingItems;
-    std::priority_queue<PQueueItem, std::vector<PQueueItem>, LaterThan>         Queue;
+    std::priority_queue<PQueueItem, std::vector<PQueueItem>, LaterThan> Queue;
 };
 
 typedef std::shared_ptr<TPollPlan> PPollPlan;

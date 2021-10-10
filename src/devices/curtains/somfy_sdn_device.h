@@ -44,9 +44,9 @@ namespace Somfy
     public:
         TDevice(PDeviceConfig config, uint8_t nodeType, PPort port, PProtocol protocol);
 
-        void     WriteRegister(PRegister reg, uint64_t value);
+        void WriteRegister(PRegister reg, uint64_t value);
         uint64_t ReadRegister(PRegister reg);
-        void     EndPollCycle();
+        void EndPollCycle();
 
         static void Register(TSerialDeviceFactory& factory);
     };

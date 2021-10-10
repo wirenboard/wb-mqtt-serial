@@ -21,13 +21,13 @@ namespace IEC
 
     std::vector<uint8_t> SetEvenParity(const uint8_t* buf, size_t count);
 
-    size_t ReadFrame(TPort&                           port,
-                     uint8_t*                         buf,
-                     size_t                           count,
+    size_t ReadFrame(TPort& port,
+                     uint8_t* buf,
+                     size_t count,
                      const std::chrono::microseconds& responseTimeout,
                      const std::chrono::microseconds& frameTimeout,
-                     TPort::TFrameCompletePred        frame_complete,
-                     const std::string&               logPrefix);
+                     TPort::TFrameCompletePred frame_complete,
+                     const std::string& logPrefix);
 
     void WriteBytes(TPort& port, const uint8_t* buf, size_t count, const std::string& logPrefix);
     void WriteBytes(TPort& port, const std::string& str, const std::string& logPrefix);
@@ -80,10 +80,10 @@ public:
                          IEC::TCrcFn crcFn);
 
     uint64_t ReadRegister(PRegister reg) override;
-    void     WriteRegister(PRegister reg, uint64_t value) override;
-    void     EndPollCycle() override;
-    void     EndSession() override;
-    void     Prepare() override;
+    void WriteRegister(PRegister reg, uint64_t value) override;
+    void EndPollCycle() override;
+    void EndSession() override;
+    void Prepare() override;
 
 protected:
     /**
@@ -101,10 +101,10 @@ private:
     std::unordered_map<std::string, std::string> CmdResultCache;
 
     std::string GetCachedResponse(const std::string& paramAddress);
-    void        SwitchToProgMode();
-    void        SendPassword();
-    void        SendEndSession();
-    size_t      ReadFrameProgMode(uint8_t* buffer, size_t size, uint8_t startByte);
-    void        WriteBytes(const std::vector<uint8_t>& data);
-    void        WriteBytes(const std::string& str);
+    void SwitchToProgMode();
+    void SendPassword();
+    void SendEndSession();
+    size_t ReadFrameProgMode(uint8_t* buffer, size_t size, uint8_t startByte);
+    void WriteBytes(const std::vector<uint8_t>& data);
+    void WriteBytes(const std::string& str);
 };

@@ -24,7 +24,7 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
       Config(portConfig),
       PublishPolicy(publishPolicy)
 {
-    Description  = Config->Port->GetDescription(false);
+    Description = Config->Port->GetDescription(false);
     SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port, Config->OpenCloseSettings, metrics));
 }
 
@@ -51,7 +51,7 @@ void TSerialPortDriver::SetUpDevices()
             // init channels' registers
             for (auto& channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
                 try {
-                    auto channel     = std::make_shared<TDeviceChannel>(device, channelConfig);
+                    auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
                     channel->Control = mqttDevice->CreateControl(tx, From(channel)).GetValue();
                     for (auto& reg: channel->Registers) {
                         RegisterToChannelStateMap.emplace(
@@ -187,7 +187,7 @@ void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState
     const auto& registers = channel->Registers;
 
     it->second.ErrorState = errorState;
-    size_t errorMask      = 0;
+    size_t errorMask = 0;
     for (auto r: registers) {
         auto error = RegErrorState(r);
         if (error <= TRegisterHandler::ReadWriteError) {

@@ -54,7 +54,7 @@ void GenerateDeviceTemplate(const std::string& appName, const std::string& desti
             {"generate", GENERATE_TEMPLATE}};
 
         TDeviceTemplateGenerationMode mode;
-        auto                          modeIt = generationModes.find(params[0]);
+        auto modeIt = generationModes.find(params[0]);
         if (modeIt != generationModes.end()) {
             mode = modeIt->second;
         } else {
@@ -73,7 +73,7 @@ void GenerateDeviceTemplate(const std::string& appName, const std::string& desti
         auto port = std::make_shared<TSerialPort>(portSettings);
 
         auto protocolParams = WBMQTT::StringSplit(params[3], ":");
-        auto slaveId        = (protocolParams.size() == 1) ? std::string() : protocolParams[1];
+        auto slaveId = (protocolParams.size() == 1) ? std::string() : protocolParams[1];
 
         params.erase(params.begin(), params.begin() + REQUIRED_PARAMS_COUNT);
         if (protocolParams[0] == "dlms_hdlc") {

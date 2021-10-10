@@ -19,15 +19,15 @@ using namespace BinUtils;
 
 namespace Modbus // modbus protocol declarations
 {
-    const int MAX_READ_BITS  = 2000;
+    const int MAX_READ_BITS = 2000;
     const int MAX_WRITE_BITS = 1968;
 
-    const int MAX_READ_REGISTERS     = 125;
-    const int MAX_WRITE_REGISTERS    = 123;
+    const int MAX_READ_REGISTERS = 125;
+    const int MAX_WRITE_REGISTERS = 123;
     const int MAX_RW_WRITE_REGISTERS = 121;
 
     const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
-    const size_t WRITE_RESPONSE_PDU_SIZE     = 5;
+    const size_t WRITE_RESPONSE_PDU_SIZE = 5;
 
     enum Error : uint8_t
     {
@@ -54,7 +54,7 @@ namespace Modbus // modbus protocol declarations
     };
 
     class TModbusRegisterRange;
-    void   ComposeReadRequestPDU(uint8_t* pdu, TModbusRegisterRange& range, int shift);
+    void ComposeReadRequestPDU(uint8_t* pdu, TModbusRegisterRange& range, int shift);
     size_t InferReadResponsePDUSize(TModbusRegisterRange& range);
 
     class TModbusRegisterRange: public TRegisterRange
@@ -183,13 +183,13 @@ namespace Modbus // modbus protocol common utilities
         }
 
         auto it = regs.begin();
-        Start   = GetUint32RegisterAddress((*it)->GetAddress());
+        Start = GetUint32RegisterAddress((*it)->GetAddress());
         int end = Start + (*it)->Get16BitWidth();
         while (++it != regs.end()) {
             if ((*it)->Type != Type())
                 throw std::runtime_error("registers of different type in the same range");
-            auto addr    = GetUint32RegisterAddress((*it)->GetAddress());
-            int  new_end = addr + (*it)->Get16BitWidth();
+            auto addr = GetUint32RegisterAddress((*it)->GetAddress());
+            int new_end = addr + (*it)->Get16BitWidth();
             if (new_end > end)
                 end = new_end;
         }
@@ -447,7 +447,7 @@ namespace Modbus // modbus protocol common utilities
     // fills pdu with read request data according to Modbus specification
     void ComposeReadRequestPDU(uint8_t* pdu, TRegister& reg, int shift)
     {
-        pdu[0]    = GetFunction(reg, OperationType::OP_READ);
+        pdu[0] = GetFunction(reg, OperationType::OP_READ);
         auto addr = GetUint32RegisterAddress(reg.GetAddress());
         WriteAs2Bytes(pdu + 1, addr + shift);
         WriteAs2Bytes(pdu + 3, GetQuantity(reg));
@@ -468,9 +468,9 @@ namespace Modbus // modbus protocol common utilities
 
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
-        auto       addr        = GetUint32RegisterAddress(reg.GetAddress());
-        auto       baseAddress = addr + shift;
-        const auto bitWidth    = reg.GetBitWidth();
+        auto addr = GetUint32RegisterAddress(reg.GetAddress());
+        auto baseAddress = addr + shift;
+        const auto bitWidth = reg.GetBitWidth();
 
         auto bitsToAllocate = bitWidth;
 
@@ -528,8 +528,8 @@ namespace Modbus // modbus protocol common utilities
 
         TAddress address;
 
-        address.Type    = reg.Type;
-        auto addr       = GetUint32RegisterAddress(reg.GetAddress());
+        address.Type = reg.Type;
+        auto addr = GetUint32RegisterAddress(reg.GetAddress());
         address.Address = addr + shift + wordIndex;
 
         uint16_t cachedValue;
@@ -575,13 +575,13 @@ namespace Modbus // modbus protocol common utilities
         }
 
         auto start = pdu + 2;
-        auto end   = start + byte_count;
+        auto end = start + byte_count;
         if (IsSingleBitType(range.Type())) {
             auto destination = range.GetBits();
-            auto coil_count  = range.GetCount();
+            auto coil_count = range.GetCount();
             while (start != end) {
                 std::bitset<8> coils(*start++);
-                auto           coils_in_byte = std::min(coil_count, 8);
+                auto coils_in_byte = std::min(coil_count, 8);
                 for (int i = 0; i < coils_in_byte; ++i) {
                     destination[i] = coils[i];
                 }
@@ -607,13 +607,13 @@ namespace Modbus // modbus protocol common utilities
         }
 
         for (auto reg: range.RegisterList()) {
-            int  w        = reg->Get16BitWidth();
+            int w = reg->Get16BitWidth();
             auto bitWidth = reg->GetBitWidth();
 
             uint64_t r = 0;
 
-            auto addr             = GetUint32RegisterAddress(reg->GetAddress());
-            int  wordIndex        = (addr - range.GetStart());
+            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            int wordIndex = (addr - range.GetStart());
             auto reverseWordIndex = w - 1;
 
             uint8_t bitsWritten = 0;
@@ -663,8 +663,8 @@ namespace Modbus // modbus protocol common utilities
         if (reg_list.empty())
             return r;
 
-        std::list<PRegister>      l;
-        int                       prev_start = -1, prev_type = -1, prev_end = -1;
+        std::list<PRegister> l;
+        int prev_start = -1, prev_type = -1, prev_end = -1;
         std::chrono::milliseconds prev_interval;
         int max_hole =
             enableHoles ? (IsSingleBitType(reg_list.front()->Type) ? deviceConfig.MaxBitHole : deviceConfig.MaxRegHole)
@@ -683,20 +683,20 @@ namespace Modbus // modbus protocol common utilities
 
         bool hasHoles = false;
         for (auto reg: reg_list) {
-            int addr    = GetUint32RegisterAddress(reg->GetAddress());
+            int addr = GetUint32RegisterAddress(reg->GetAddress());
             int new_end = addr + reg->Get16BitWidth();
             if (!(prev_end >= 0 && reg->Type == prev_type && addr >= prev_end && addr <= prev_end + max_hole &&
                   reg->PollInterval == prev_interval && new_end - prev_start <= max_regs))
             {
                 if (!l.empty()) {
                     auto range = std::make_shared<TModbusRegisterRange>(l, hasHoles);
-                    hasHoles   = false;
+                    hasHoles = false;
                     LOG(Debug) << "Adding range: " << *range;
                     r.push_back(range);
                     l.clear();
                 }
-                prev_start    = addr;
-                prev_type     = reg->Type;
+                prev_start = addr;
+                prev_type = reg->Type;
                 prev_interval = reg->PollInterval;
             }
             if (!l.empty()) {
@@ -730,7 +730,7 @@ namespace Modbus // modbus protocol common utilities
         if (res < 2) {
             throw TMalformedResponseError("Wrong PDU size: " + to_string(res));
         }
-        auto requestFunctionCode  = traits.GetPDU(request)[0];
+        auto requestFunctionCode = traits.GetPDU(request)[0];
         auto responseFunctionCode = traits.GetPDU(response)[0] & 127; // get actual function code even if exception
 
         if (requestFunctionCode != responseFunctionCode) {
@@ -752,7 +752,7 @@ namespace Modbus // modbus protocol common utilities
 
         // 1 byte - function code, 2 bytes - register address, 2 bytes - value
         const uint16_t WRITE_RESPONSE_PDU_SIZE = 5;
-        TResponse      response(traits.GetPacketSize(WRITE_RESPONSE_PDU_SIZE));
+        TResponse response(traits.GetPacketSize(WRITE_RESPONSE_PDU_SIZE));
 
         vector<TRequest> requests(InferWriteRequestsCount(reg));
 
@@ -799,7 +799,7 @@ namespace Modbus // modbus protocol common utilities
         TResponse response(range.GetResponseSize(traits));
         try {
             const auto& request = range.GetRequest(traits, slaveId, shift);
-            auto        pduSize = ProcessRequest(traits, port, request, response, *range.Device()->DeviceConfig());
+            auto pduSize = ProcessRequest(traits, port, request, response, *range.Device()->DeviceConfig());
             ParseReadResponse(traits.GetPDU(response), pduSize, range);
             range.SetStatus(ST_OK);
         } catch (const TMalformedResponseError&) {
@@ -848,11 +848,11 @@ namespace Modbus // modbus protocol common utilities
     std::list<PRegisterRange> SplitRangeByHoles(const std::list<PRegister>& regs, bool onlyAvailable)
     {
         std::list<PRegisterRange> newRanges;
-        std::list<PRegister>      l;
-        PRegister                 lastReg;
+        std::list<PRegister> l;
+        PRegister lastReg;
         for (auto& reg: regs) {
             if (!l.empty()) {
-                auto addr     = GetUint32RegisterAddress(reg->GetAddress());
+                auto addr = GetUint32RegisterAddress(reg->GetAddress());
                 auto lastAddr = GetUint32RegisterAddress(lastReg->GetAddress());
                 if (lastAddr + 1 != addr) {
                     newRanges.push_back(std::make_shared<Modbus::TModbusRegisterRange>(l, false));
@@ -1001,11 +1001,11 @@ namespace Modbus // modbus protocol common utilities
         WriteAs2Bytes(&request[request.size() - 2], CRC16::CalculateCRC16(request.data(), request.size() - 2));
     }
 
-    size_t TModbusRTUTraits::ReadFrame(TPort&                           port,
+    size_t TModbusRTUTraits::ReadFrame(TPort& port,
                                        const std::chrono::milliseconds& responseTimeout,
                                        const std::chrono::milliseconds& frameTimeout,
-                                       const TRequest&                  req,
-                                       TResponse&                       res) const
+                                       const TRequest& req,
+                                       TResponse& res) const
     {
         auto rc = port.ReadFrame(res.data(),
                                  res.size(),
@@ -1022,7 +1022,7 @@ namespace Modbus // modbus protocol common utilities
             throw TInvalidCRCError();
         }
 
-        auto requestSlaveId  = req[0];
+        auto requestSlaveId = req[0];
         auto responseSlaveId = res[0];
         if (requestSlaveId != responseSlaveId) {
             throw TSerialDeviceTransientErrorException("request and response slave id mismatch");
@@ -1076,11 +1076,11 @@ namespace Modbus // modbus protocol common utilities
         SetMBAP(request, *TransactionId, request.size() - MBAP_SIZE, slaveId);
     }
 
-    size_t TModbusTCPTraits::ReadFrame(TPort&                           port,
+    size_t TModbusTCPTraits::ReadFrame(TPort& port,
                                        const std::chrono::milliseconds& responseTimeout,
                                        const std::chrono::milliseconds& frameTimeout,
-                                       const TRequest&                  req,
-                                       TResponse&                       res) const
+                                       const TRequest& req,
+                                       TResponse& res) const
     {
         auto startTime = chrono::steady_clock::now();
         while (chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - startTime) <

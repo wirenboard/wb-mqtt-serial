@@ -10,16 +10,21 @@ size_t RegisterFormatByteWidth(RegisterFormat format)
     switch (format) {
         case S64:
         case U64:
-        case Double: return 8;
+        case Double:
+            return 8;
         case U32:
         case S32:
         case BCD32:
-        case Float: return 4;
+        case Float:
+            return 4;
         case U24:
         case S24:
-        case BCD24: return 3;
-        case Char8: return 1;
-        default: return 2;
+        case BCD24:
+            return 3;
+        case Char8:
+            return 1;
+        default:
+            return 2;
     }
 }
 
@@ -28,17 +33,17 @@ TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
     if (RegList.empty())
         throw std::runtime_error("cannot construct empty register range");
     PRegister first = regs.front();
-    RegDevice       = first->Device();
-    RegType         = first->Type;
-    RegTypeName     = first->TypeName;
+    RegDevice = first->Device();
+    RegType = first->Type;
+    RegTypeName = first->TypeName;
     RegPollInterval = first->PollInterval;
 }
 
 TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
 {
-    RegDevice       = reg->Device();
-    RegType         = reg->Type;
-    RegTypeName     = reg->TypeName;
+    RegDevice = reg->Device();
+    RegType = reg->Type;
+    RegTypeName = reg->TypeName;
     RegPollInterval = reg->PollInterval;
 }
 
@@ -87,7 +92,7 @@ TSimpleRegisterRange::TSimpleRegisterRange(PRegister reg): TRegisterRange(reg)
 
 EStatus TSimpleRegisterRange::GetStatus() const
 {
-    bool hasOk    = false;
+    bool hasOk = false;
     bool hasError = false;
     for (const auto& r: RegisterList()) {
         switch (r->GetError()) {
@@ -161,8 +166,8 @@ uint64_t TRegister::GetValue() const
 
 void TRegister::SetValue(uint64_t value)
 {
-    Value     = value;
-    Error     = ST_OK;
+    Value = value;
+    Error = ST_OK;
     Available = true;
 }
 
@@ -172,22 +177,22 @@ const std::string& TRegister::GetChannelName() const
 }
 
 std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;
-std::mutex                                                      TRegister::Mutex;
+std::mutex TRegister::Mutex;
 
-TRegisterConfig::TRegisterConfig(int                               type,
+TRegisterConfig::TRegisterConfig(int type,
                                  std::shared_ptr<IRegisterAddress> address,
-                                 RegisterFormat                    format,
-                                 double                            scale,
-                                 double                            offset,
-                                 double                            round_to,
-                                 bool                              poll,
-                                 bool                              readonly,
-                                 const std::string&                type_name,
-                                 std::unique_ptr<uint64_t>         error_value,
-                                 const EWordOrder                  word_order,
-                                 uint8_t                           bit_offset,
-                                 uint8_t                           bit_width,
-                                 std::unique_ptr<uint64_t>         unsupported_value)
+                                 RegisterFormat format,
+                                 double scale,
+                                 double offset,
+                                 double round_to,
+                                 bool poll,
+                                 bool readonly,
+                                 const std::string& type_name,
+                                 std::unique_ptr<uint64_t> error_value,
+                                 const EWordOrder word_order,
+                                 uint8_t bit_offset,
+                                 uint8_t bit_width,
+                                 std::unique_ptr<uint64_t> unsupported_value)
     : Address(address),
       Type(type),
       Format(format),
@@ -219,22 +224,22 @@ TRegisterConfig::TRegisterConfig(int                               type,
 
 TRegisterConfig::TRegisterConfig(const TRegisterConfig& config)
 {
-    Type         = config.Type;
-    Address      = config.Address;
-    Format       = config.Format;
-    Scale        = config.Scale;
-    Offset       = config.Offset;
-    RoundTo      = config.RoundTo;
-    Poll         = config.Poll;
-    ReadOnly     = config.ReadOnly;
-    TypeName     = config.TypeName;
+    Type = config.Type;
+    Address = config.Address;
+    Format = config.Format;
+    Scale = config.Scale;
+    Offset = config.Offset;
+    RoundTo = config.RoundTo;
+    Poll = config.Poll;
+    ReadOnly = config.ReadOnly;
+    TypeName = config.TypeName;
     PollInterval = config.PollInterval;
     if (config.ErrorValue) {
         ErrorValue = std::make_unique<uint64_t>(*config.ErrorValue);
     }
     WordOrder = config.WordOrder;
     BitOffset = config.BitOffset;
-    BitWidth  = config.BitWidth;
+    BitWidth = config.BitWidth;
     if (config.UnsupportedValue) {
         UnsupportedValue = std::make_unique<uint64_t>(*config.UnsupportedValue);
     }
@@ -302,9 +307,9 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         bool readonly,
                                         const std::string& type_name,
                                         std::unique_ptr<uint64_t> error_value,
-                                        const EWordOrder          word_order,
-                                        uint8_t                   bit_offset,
-                                        uint8_t                   bit_width,
+                                        const EWordOrder word_order,
+                                        uint8_t bit_offset,
+                                        uint8_t bit_width,
                                         std::unique_ptr<uint64_t> unsupported_value)
 {
     return Create(type,
@@ -429,7 +434,7 @@ uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value)
         return value;
     }
 
-    uint64_t result    = 0;
+    uint64_t result = 0;
     uint64_t cur_value = value;
 
     for (int i = 0; i < reg.Get16BitWidth(); ++i) {
@@ -449,7 +454,7 @@ template<> struct TConvertTraits<int64_t>
     static int64_t FromScaledTextValue(const TRegisterConfig& reg, const std::string& str, int base)
     {
         size_t pos;
-        auto   value = std::stoll(str.c_str(), &pos, base);
+        auto value = std::stoll(str.c_str(), &pos, base);
         if (pos == str.size()) {
             if (reg.Scale == 1 && reg.Offset == 0) {
                 return value;
@@ -465,7 +470,7 @@ template<> struct TConvertTraits<uint64_t>
     static uint64_t FromScaledTextValue(const TRegisterConfig& reg, const std::string& str, int base)
     {
         size_t pos;
-        auto   value = std::stoull(str.c_str(), &pos, base);
+        auto value = std::stoull(str.c_str(), &pos, base);
         if (pos == str.size()) {
             if (reg.Scale == 1 && reg.Offset == 0) {
                 return value;

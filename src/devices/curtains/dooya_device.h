@@ -21,7 +21,7 @@ namespace Dooya
     public:
         TDevice(PDeviceConfig config, PPort port, PProtocol protocol);
 
-        void     WriteRegister(PRegister reg, uint64_t value);
+        void WriteRegister(PRegister reg, uint64_t value);
         uint64_t ReadRegister(PRegister reg);
 
         static void Register(TSerialDeviceFactory& factory);

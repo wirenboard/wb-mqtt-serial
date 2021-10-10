@@ -60,8 +60,8 @@ TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTr
       TUInt32SlaveId(config->SlaveId),
       ModbusTraits(std::move(modbusTraits))
 {
-    auto SecondaryId     = GetSecondaryId(config->SlaveId);
-    Shift                = (((SecondaryId - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
+    auto SecondaryId = GetSecondaryId(config->SlaveId);
+    Shift = (((SecondaryId - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
     config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
 }
 

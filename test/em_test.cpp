@@ -8,24 +8,24 @@
 class TEMDeviceTest: public TSerialDeviceTest, public TMilurExpectations, public TMercury230Expectations
 {
 protected:
-    void                  SetUp();
-    void                  VerifyMilurQuery();
-    void                  VerifyMercuryParamQuery();
+    void SetUp();
+    void VerifyMilurQuery();
+    void VerifyMercuryParamQuery();
     virtual PDeviceConfig MilurConfig();
     virtual PDeviceConfig Mercury230Config();
-    PMilurDevice          MilurDev;
-    PMercury230Device     Mercury230Dev;
-    PRegister             MilurPhaseCVoltageReg;
-    PRegister             MilurPhaseCCurrentReg;
-    PRegister             MilurTotalConsumptionReg;
-    PRegister             MilurFrequencyReg;
-    PRegister             Mercury230TotalReactiveEnergyReg;
-    PRegister             Mercury230TotalConsumptionReg;
-    PRegister             Mercury230U1Reg;
-    PRegister             Mercury230I1Reg;
-    PRegister             Mercury230U2Reg;
-    PRegister             Mercury230TempReg;
-    PRegister             Mercury230PReg;
+    PMilurDevice MilurDev;
+    PMercury230Device Mercury230Dev;
+    PRegister MilurPhaseCVoltageReg;
+    PRegister MilurPhaseCCurrentReg;
+    PRegister MilurTotalConsumptionReg;
+    PRegister MilurFrequencyReg;
+    PRegister Mercury230TotalReactiveEnergyReg;
+    PRegister Mercury230TotalConsumptionReg;
+    PRegister Mercury230U1Reg;
+    PRegister Mercury230I1Reg;
+    PRegister Mercury230U2Reg;
+    PRegister Mercury230TempReg;
+    PRegister Mercury230PReg;
 };
 
 PDeviceConfig TEMDeviceTest::MilurConfig()
@@ -142,16 +142,16 @@ public:
 PDeviceConfig TEMCustomPasswordTest::MilurConfig()
 {
     PDeviceConfig device_config = TEMDeviceTest::MilurConfig();
-    device_config->Password     = {0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
-    device_config->AccessLevel  = 2;
+    device_config->Password = {0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+    device_config->AccessLevel = 2;
     return device_config;
 }
 
 PDeviceConfig TEMCustomPasswordTest::Mercury230Config()
 {
     PDeviceConfig device_config = TEMDeviceTest::Mercury230Config();
-    device_config->Password     = {0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
-    device_config->AccessLevel  = 2;
+    device_config->Password = {0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
+    device_config->AccessLevel = 2;
     return device_config;
 }
 

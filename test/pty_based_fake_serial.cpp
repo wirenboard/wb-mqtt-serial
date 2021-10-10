@@ -152,16 +152,16 @@ void TPtyBasedFakeSerial::Forward()
                 FlushCond.notify_one();
             }
         }
-        fd_set         rfds;
+        fd_set rfds;
         struct timeval tv, *tvp = 0;
 
         FD_ZERO(&rfds);
         FD_SET(Primary.MasterFd, &rfds);
         FD_SET(Secondary.MasterFd, &rfds);
 
-        tv.tv_sec  = SELECT_PERIOD_MS / 1000;
+        tv.tv_sec = SELECT_PERIOD_MS / 1000;
         tv.tv_usec = (SELECT_PERIOD_MS % 1000) * 1000;
-        tvp        = &tv;
+        tvp = &tv;
 
         int r = select(std::max(Primary.MasterFd, Secondary.MasterFd) + 1, &rfds, NULL, NULL, tvp);
         if (r < 0)
@@ -175,20 +175,20 @@ void TPtyBasedFakeSerial::Forward()
             if (!ForwardingFromPrimary)
                 FlushForwardingLogs();
             ForwardingFromPrimary = true;
-            read_from             = Primary.MasterFd;
-            write_to              = Secondary.MasterFd;
+            read_from = Primary.MasterFd;
+            write_to = Secondary.MasterFd;
         } else if (FD_ISSET(Secondary.MasterFd, &rfds)) {
             if (ForwardingFromPrimary)
                 FlushForwardingLogs();
             ForwardingFromPrimary = false;
-            read_from             = Secondary.MasterFd;
-            write_to              = Primary.MasterFd;
+            read_from = Secondary.MasterFd;
+            write_to = Primary.MasterFd;
         } else {
             continue; // should not happen
         }
 
         uint8_t b;
-        int     n = read(read_from, &b, 1);
+        int n = read(read_from, &b, 1);
         if (n < 0) {
             if (errno == EIO) // terminal closed
                 break;

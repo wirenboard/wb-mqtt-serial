@@ -22,7 +22,7 @@ void TEnergomeraIecWithFastReadDevice::Register(TSerialDeviceFactory& factory)
 
 namespace
 {
-    const int CodeUnsupportedParameter      = 12;
+    const int CodeUnsupportedParameter = 12;
     const int CodeUnsupportedParameterValue = 17;
 
     const size_t RESPONSE_BUF_LEN = 1000;
@@ -58,7 +58,7 @@ namespace
             });
 
             for (auto reg: sorted_reg_list) {
-                auto param_id  = GetParamId(reg);
+                auto param_id = GetParamId(reg);
                 auto value_num = GetValueNum(reg);
                 ParamMasks[param_id] |= (1 << (value_num - 1));
                 RegsByParam[param_id].push_back(reg);
@@ -157,7 +157,7 @@ namespace
 
             // consume param
             uint16_t resp_param_id;
-            int      ret = sscanf(presp, "%04hX%n", &resp_param_id, &nread);
+            int ret = sscanf(presp, "%04hX%n", &resp_param_id, &nread);
             if (ret < 1) {
                 throw TSerialDeviceTransientErrorException("param not found in the response");
             }
@@ -224,7 +224,7 @@ std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PR
         SendFastGroupReadRequest(*Port(), *range, SlaveId);
 
         uint8_t resp[RESPONSE_BUF_LEN] = {};
-        char*   presp                  = ReadResponse(*Port(), resp, RESPONSE_BUF_LEN, *DeviceConfig());
+        char* presp = ReadResponse(*Port(), resp, RESPONSE_BUF_LEN, *DeviceConfig());
 
         ProcessResponse(*range, presp);
     } catch (TSerialDeviceTransientErrorException& e) {

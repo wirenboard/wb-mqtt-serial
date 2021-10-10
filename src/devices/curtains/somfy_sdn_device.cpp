@@ -103,9 +103,9 @@ namespace
         if (!rh.isString()) {
             throw TConfigParserException("response_header: unsigned integer or '0x..' hex string expected");
         }
-        auto  str = rh.asString();
+        auto str = rh.asString();
         char* end;
-        auto  res = strtoul(str.c_str(), &end, 16);
+        auto res = strtoul(str.c_str(), &end, 16);
         if (*end == 0 && end != str.c_str()) {
             return res;
         }
@@ -125,11 +125,11 @@ namespace
                                           uint32_t stride,
                                           uint32_t registerByteWidth) const override
         {
-            auto          addr = LoadRegisterBitsAddress(regCfg);
+            auto addr = LoadRegisterBitsAddress(regCfg);
             TRegisterDesc res;
             res.BitOffset = addr.BitOffset;
-            res.BitWidth  = addr.BitWidth;
-            res.Address   = std::make_shared<TSomfyAddress>(addr.Address, GetResponseAddress(regCfg));
+            res.BitWidth = addr.BitWidth;
+            res.Address = std::make_shared<TSomfyAddress>(addr.Address, GetResponseAddress(regCfg));
             return res;
         }
     };
@@ -208,7 +208,7 @@ void Somfy::TDevice::WriteRegister(PRegister reg, uint64_t value)
     }
     if (reg->Type == COMMAND) {
         std::vector<uint8_t> data;
-        size_t               l = (value & 0xFF);
+        size_t l = (value & 0xFF);
         for (; l != 0; --l) {
             value >>= 8;
             data.push_back(value & 0xFF);
@@ -226,12 +226,12 @@ uint64_t Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
                                            size_t bitWidth)
 {
     uint64_t val;
-    auto     it = DataCache.find(requestHeader);
+    auto it = DataCache.find(requestHeader);
     if (it != DataCache.end()) {
         val = it->second;
     } else {
-        auto req                 = MakeRequest(requestHeader, SlaveId, NodeType);
-        val                      = ParseStatusReport(SlaveId, responseHeader, ExecCommand(req));
+        auto req = MakeRequest(requestHeader, SlaveId, NodeType);
+        val = ParseStatusReport(SlaveId, responseHeader, ExecCommand(req));
         DataCache[requestHeader] = val;
     }
     if (bitOffset || bitWidth) {
@@ -272,11 +272,11 @@ std::vector<uint8_t> Somfy::MakeRequest(uint8_t msg,
                                         const std::vector<uint8_t>& data)
 {
     std::vector<uint8_t> res{msg, 0x00, 0x00, 0xFF, 0xFF, 0x00};
-    res[2]  = (nodeType & 0x0F);
+    res[2] = (nodeType & 0x0F);
     auto it = std::back_inserter(res);
     Append(it, address, ADDRESS_SIZE);
     std::copy(data.begin(), data.end(), it);
-    res[1]   = (res.size() + CRC_SIZE) | 0x80; // MSB - ACK request
+    res[1] = (res.size() + CRC_SIZE) | 0x80; // MSB - ACK request
     auto crc = CalcCrc(res.begin(), res.end());
     res.push_back(crc >> 8);
     res.push_back(crc);

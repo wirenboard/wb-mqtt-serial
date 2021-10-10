@@ -29,8 +29,8 @@ void TEMDevice::WriteCommand(uint8_t cmd, uint8_t* payload, int len)
     while (len--)
         *p++ = *payload++;
     uint16_t crc = CRC16::CalculateCRC16(buf, p - buf);
-    *p++         = crc >> 8;
-    *p++         = crc & 0xff;
+    *p++ = crc >> 8;
+    *p++ = crc & 0xff;
     Port()->WriteBytes(buf, p - buf);
 }
 
@@ -54,7 +54,7 @@ bool TEMDevice::ReadResponse(int expectedByte1, uint8_t* payload, int len, TPort
     }
 
     const char* msg;
-    ErrorType   err = CheckForException(buf, nread, &msg);
+    ErrorType err = CheckForException(buf, nread, &msg);
     if (err == NO_OPEN_SESSION)
         return false;
     if (err == PERMANENT_ERROR)

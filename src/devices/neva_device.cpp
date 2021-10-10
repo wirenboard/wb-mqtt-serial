@@ -83,7 +83,7 @@ uint64_t TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& 
     if (v.size() < 3 || v.front() != '(' || v.back() != ')') {
         throw TSerialDeviceTransientErrorException("malformed response");
     }
-    std::string         value(v.substr(1, v.size() - 2));
+    std::string value(v.substr(1, v.size() - 2));
     std::vector<double> result(5);
     int ret = sscanf(value.c_str(), "%lf,%lf,%lf,%lf,%lf", &result[0], &result[1], &result[2], &result[3], &result[4]);
     result.resize(ret);

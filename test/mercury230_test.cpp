@@ -225,8 +225,8 @@ public:
 PDeviceConfig TMercury230CustomPasswordTest::GetDeviceConfig()
 {
     PDeviceConfig device_config = TMercury230Test::GetDeviceConfig();
-    device_config->Password     = {0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
-    device_config->AccessLevel  = 2;
+    device_config->Password = {0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
+    device_config->AccessLevel = 2;
     return device_config;
 }
 

@@ -19,11 +19,11 @@ public:
     void WriteBytes(const uint8_t* buf, int count) override;
 
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
-    size_t  ReadFrame(uint8_t*                         buf,
-                      size_t                           count,
-                      const std::chrono::microseconds& responseTimeout,
-                      const std::chrono::microseconds& frameTimeout,
-                      TFrameCompletePred               frameComplete = 0) override;
+    size_t ReadFrame(uint8_t* buf,
+                     size_t count,
+                     const std::chrono::microseconds& responseTimeout,
+                     const std::chrono::microseconds& frameTimeout,
+                     TFrameCompletePred frameComplete = 0) override;
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) override;
 
@@ -60,7 +60,7 @@ public:
                      size_t count,
                      const std::chrono::microseconds& responseTimeout,
                      const std::chrono::microseconds& frameTimeout,
-                     TFrameCompletePred               frame_complete = 0) override;
+                     TFrameCompletePred frame_complete = 0) override;
 
     void SkipNoise() override;
 

@@ -80,7 +80,7 @@ TEST(TMetricsTest, PollInterval)
     // No requests
     {
         Metrics::TPollIntervalMetric p;
-        auto                         h = p.GetHist();
+        auto h = p.GetHist();
         ASSERT_EQ(h.P50, std::chrono::milliseconds::zero());
         ASSERT_EQ(h.P95, std::chrono::milliseconds::zero());
     }
@@ -88,7 +88,7 @@ TEST(TMetricsTest, PollInterval)
     // One request
     {
         Metrics::TPollIntervalMetric p;
-        auto                         t = std::chrono::steady_clock::now();
+        auto t = std::chrono::steady_clock::now();
         p.Poll(t);
         auto h = p.GetHist();
         ASSERT_EQ(h.P50, std::chrono::milliseconds::zero());
@@ -98,7 +98,7 @@ TEST(TMetricsTest, PollInterval)
     // 2 intervals
     {
         Metrics::TPollIntervalMetric p;
-        auto                         t = std::chrono::steady_clock::now();
+        auto t = std::chrono::steady_clock::now();
         p.Poll(t);
         for (size_t i = 1; i <= 2; ++i) {
             t += std::chrono::milliseconds(i);
@@ -112,7 +112,7 @@ TEST(TMetricsTest, PollInterval)
     // 3 intervals
     {
         Metrics::TPollIntervalMetric p;
-        auto                         t = std::chrono::steady_clock::now();
+        auto t = std::chrono::steady_clock::now();
         p.Poll(t);
         for (size_t i = 1; i <= 3; ++i) {
             t += std::chrono::milliseconds(i);
@@ -126,7 +126,7 @@ TEST(TMetricsTest, PollInterval)
     // Many intervals
     {
         Metrics::TPollIntervalMetric p;
-        auto                         t = std::chrono::steady_clock::now();
+        auto t = std::chrono::steady_clock::now();
         p.Poll(t);
         for (size_t i = 1; i <= 20; ++i) {
             t += std::chrono::milliseconds(i);
@@ -140,7 +140,7 @@ TEST(TMetricsTest, PollInterval)
     // One interval more than 2 minutes
     {
         Metrics::TPollIntervalMetric p;
-        auto                         t = std::chrono::steady_clock::now();
+        auto t = std::chrono::steady_clock::now();
         p.Poll(t);
         t += std::chrono::milliseconds(180);
         p.Poll(t);
@@ -152,7 +152,7 @@ TEST(TMetricsTest, PollInterval)
     // Many intervals and last more than 2 minutes
     {
         Metrics::TPollIntervalMetric p;
-        auto                         t = std::chrono::steady_clock::now();
+        auto t = std::chrono::steady_clock::now();
         p.Poll(t);
         for (size_t i = 1; i <= 20; ++i) {
             t += std::chrono::milliseconds(i);

@@ -128,7 +128,7 @@ void TSerialDevice::OnCycleEnd(bool ok)
 
     if (ok) {
         LastSuccessfulCycle = std::chrono::steady_clock::now();
-        IsDisconnected      = false;
+        IsDisconnected = false;
         RemainingFailCycles = _DeviceConfig->DeviceMaxFailCycles;
     } else {
 
@@ -140,7 +140,7 @@ void TSerialDevice::OnCycleEnd(bool ok)
             RemainingFailCycles == 0 &&
             (!IsDisconnected || LastSuccessfulCycle == std::chrono::steady_clock::time_point()))
         {
-            IsDisconnected      = true;
+            IsDisconnected = true;
             LastSuccessfulCycle = std::chrono::steady_clock::now();
             LOG(Info) << "device " << ToString() << " is disconnected";
         }

@@ -6,10 +6,10 @@
 class TPulsarDeviceTest: public TSerialDeviceTest
 {
 protected:
-    void          SetUp();
+    void SetUp();
     PPulsarDevice Dev;
-    PRegister     Heat_TempIn;
-    PRegister     Heat_TempOut;
+    PRegister Heat_TempIn;
+    PRegister Heat_TempOut;
     // TODO: time register
 };
 
@@ -23,7 +23,7 @@ void TPulsarDeviceTest::SetUp()
         SerialPort,
         DeviceFactory.GetProtocol("pulsar"));
 
-    Heat_TempIn  = TRegister::Intern(Dev, TRegisterConfig::Create(0, 2, Float));
+    Heat_TempIn = TRegister::Intern(Dev, TRegisterConfig::Create(0, 2, Float));
     Heat_TempOut = TRegister::Intern(Dev, TRegisterConfig::Create(0, 3, Float));
 
     SerialPort->Open();

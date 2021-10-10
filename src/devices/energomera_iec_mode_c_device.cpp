@@ -105,7 +105,7 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
             // <STX>ET0PE(68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF><ETX>0x07
             // so we have here
             // 68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00
-            auto items     = WBMQTT::StringSplit(v, ")\r\n(");
+            auto items = WBMQTT::StringSplit(v, ")\r\n(");
             auto itemIndex = reg.Type - RegisterType::ITEM_1;
             if (items.size() > static_cast<unsigned int>(itemIndex)) {
                 return CopyDoubleToUint64(strtod(items[itemIndex].c_str(), nullptr));

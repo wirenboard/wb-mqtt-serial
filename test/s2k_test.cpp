@@ -7,8 +7,8 @@
 class TS2KDeviceTest: public TSerialDeviceTest, public TS2KDeviceExpectations
 {
 protected:
-    void       SetUp();
-    void       TearDown();
+    void SetUp();
+    void TearDown();
     PS2KDevice Dev;
 
     PRegister RelayReg1;

@@ -54,8 +54,10 @@ enum EStatus
 inline ::std::ostream& operator<<(::std::ostream& os, EWordOrder val)
 {
     switch (val) {
-        case EWordOrder::BigEndian: return os << "BigEndian";
-        case EWordOrder::LittleEndian: return os << "LittleEndian";
+        case EWordOrder::BigEndian:
+            return os << "BigEndian";
+        case EWordOrder::LittleEndian:
+            return os << "LittleEndian";
     }
 
     return os;
@@ -71,11 +73,11 @@ struct TRegisterType
                   bool readOnly = false,
                   EWordOrder defaultWordOrder = EWordOrder::BigEndian);
 
-    int            Index = 0;
-    std::string    Name, DefaultControlType;
-    RegisterFormat DefaultFormat    = U16;
-    EWordOrder     DefaultWordOrder = EWordOrder::BigEndian;
-    bool           ReadOnly         = false;
+    int Index = 0;
+    std::string Name, DefaultControlType;
+    RegisterFormat DefaultFormat = U16;
+    EWordOrder DefaultWordOrder = EWordOrder::BigEndian;
+    bool ReadOnly = false;
 };
 
 typedef std::vector<TRegisterType> TRegisterTypes;
@@ -288,38 +290,38 @@ struct TRegister: public TRegisterConfig
     void SetAvailable(bool available);
 
     EStatus GetError() const;
-    void    SetError(EStatus error);
+    void SetError(EStatus error);
 
     uint64_t GetValue() const;
-    void     SetValue(uint64_t value);
+    void SetValue(uint64_t value);
 
     //! Used for metrics
     const std::string& GetChannelName() const;
 
 private:
     std::weak_ptr<TSerialDevice> _Device;
-    bool                         Available = true;
-    EStatus                      Error     = ST_UNKNOWN_ERROR;
-    uint64_t                     Value;
-    std::string                  ChannelName;
+    bool Available = true;
+    EStatus Error = ST_UNKNOWN_ERROR;
+    uint64_t Value;
+    std::string ChannelName;
 
     // Intern() implementation for TRegister
 private:
     static std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> RegStorage;
-    static std::mutex                                                      Mutex;
+    static std::mutex Mutex;
 
 public:
     static PRegister Intern(PSerialDevice device,
                             PRegisterConfig config,
                             const std::string& channelName = std::string())
     {
-        std::unique_lock<std::mutex>               lock(Mutex); // thread-safe
+        std::unique_lock<std::mutex> lock(Mutex); // thread-safe
         std::tuple<PSerialDevice, PRegisterConfig> args(device, config);
 
         auto it = RegStorage.find(args);
 
         if (it == RegStorage.end()) {
-            auto ret                = std::make_shared<TRegister>(device, config, channelName);
+            auto ret = std::make_shared<TRegister>(device, config, channelName);
             return RegStorage[args] = ret;
         }
 
@@ -447,16 +449,16 @@ class TRegisterRange
 {
 public:
     typedef std::function<void(PRegister reg, uint64_t new_value)> TValueCallback;
-    typedef std::function<void(PRegister reg)>                     TErrorCallback;
+    typedef std::function<void(PRegister reg)> TErrorCallback;
 
     virtual ~TRegisterRange() = default;
 
     const std::list<PRegister>& RegisterList() const;
-    std::list<PRegister>&       RegisterList();
-    PSerialDevice               Device() const;
-    int                         Type() const;
-    std::string                 TypeName() const;
-    std::chrono::milliseconds   PollInterval() const;
+    std::list<PRegister>& RegisterList();
+    PSerialDevice Device() const;
+    int Type() const;
+    std::string TypeName() const;
+    std::chrono::milliseconds PollInterval() const;
 
     /**
      * @brief Set error to all registers in range
@@ -471,10 +473,10 @@ protected:
 
 private:
     std::weak_ptr<TSerialDevice> RegDevice;
-    int                          RegType;
-    std::string                  RegTypeName;
-    std::chrono::milliseconds    RegPollInterval = std::chrono::milliseconds(-1);
-    std::list<PRegister>         RegList;
+    int RegType;
+    std::string RegTypeName;
+    std::chrono::milliseconds RegPollInterval = std::chrono::milliseconds(-1);
+    std::list<PRegister> RegList;
 };
 
 typedef std::shared_ptr<TRegisterRange> PRegisterRange;
