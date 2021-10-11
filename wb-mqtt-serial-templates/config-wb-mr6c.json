@@ -513,11 +513,11 @@
         ],
         "translations": {
             "en": {
-                "WB-MR6C_template_title": "WB-MR6C (v.1, v.2), WB-MR6LV/x, WB-MR6HV/x (6-channel relay Modbus module)",
+                "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x (6-channel relay)",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MR6C_template_title": "WB-MR6C (v.1, v.2), WB-MR6LV/x, WB-MR6HV/x (6-канальный Modbus-модуль реле)",
+                "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x (6-канальный модуль реле)",
                 "Input 0": "Вход 0",
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
@@ -538,7 +538,7 @@
                 "latching switch": "переключатель с фиксацией",
                 "turn off all outputs": "отключить все выходы",
                 "control disabled": "управление отключено",
-                "operate according to mapping-matrix": "управлять согласно mapping-матрицы",
+                "operate according to mapping-matrix": "управлять по mapping-матрице",
                 "Input 0 Debounce (ms)": "Время защиты от дребезга входа 0 (мс)",
                 "Input 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",
                 "Input 2 Debounce (ms)": "Время защиты от дребезга входа 2 (мс)",
