@@ -197,12 +197,12 @@
         ],
         "translations": {
             "en": {
-                "WB-MAO4_template_title": "WB-MAO4 (4-channel analog outputs Modbus module)",
+                "WB-MAO4_template_title": "WB-MAO4 (4-channel analog outputs module)",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / Factor ",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MAO4_template_title": "WB-MAO4 (4-канальный Modbus-модуль аналоговых выходов)",
+                "WB-MAO4_template_title": "WB-MAO4 (4-канальный модуль аналогового вывода)",
                 "Inputs": "Входы",
                 "Outputs": "Выходы",
                 "Input 1": "Вход 1",
