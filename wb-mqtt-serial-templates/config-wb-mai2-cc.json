@@ -69,11 +69,11 @@
         ],
         "translations": {
             "en": {
-                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-channel current metering Modbus module)",
+                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-channel current metering module)",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-канальный Modbus-модуль измерения токового сигнала)",
+                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-канальный модуль измерения токового сигнала)",
                 "Inputs": "Входы",
                 "HW Info": "Данные модуля",
                 "Current input 1 (mA)": "Токовый вход 1 (мА)",
