@@ -228,10 +228,10 @@
                 "Serial": "Серийный номер",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
-                "Channel 1 Duty Cycle Raw": "Задание для канала 1",
-                "Channel 2 Duty Cycle Raw": "Задание для канала 2",
-                "Channel 3 Duty Cycle Raw": "Задание для канала 3",
-                "Channel 4 Duty Cycle Raw": "Задание для канала 4"
+                "Channel 1 Duty Cycle Raw": "Сырое задание для канала 1",
+                "Channel 2 Duty Cycle Raw": "Сырое задание для канала 2",
+                "Channel 3 Duty Cycle Raw": "Сырое задание для канала 3",
+                "Channel 4 Duty Cycle Raw": "Сырое задание для канала 4"
             }
         }
     }
