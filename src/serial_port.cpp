@@ -1,15 +1,15 @@
-#include "serial_exc.h"
 #include "serial_port.h"
-#include "log.h"
 #include "iec_common.h"
+#include "log.h"
+#include "serial_exc.h"
 
-#include <string.h>
-#include <fcntl.h>
-#include <iostream>
-#include <utility>
 #include <cmath>
+#include <fcntl.h>
 #include <iomanip>
+#include <iostream>
+#include <string.h>
 #include <unistd.h>
+#include <utility>
 
 #include <linux/serial.h>
 #include <sys/ioctl.h>

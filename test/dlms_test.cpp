@@ -1,8 +1,8 @@
+#include "devices/uniel_device.h"
+#include "fake_serial_port.h"
+#include "uniel_expectations.h"
 #include <string>
 #include <wblib/testing/testlog.h>
-#include "fake_serial_port.h"
-#include "devices/uniel_device.h"
-#include "uniel_expectations.h"
 
 class TDlmsDeviceExpectations: public virtual TExpectorProvider
 {

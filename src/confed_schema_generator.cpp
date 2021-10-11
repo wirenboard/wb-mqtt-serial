@@ -1,6 +1,6 @@
 #include "confed_schema_generator.h"
-#include "log.h"
 #include "json_common.h"
+#include "log.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 

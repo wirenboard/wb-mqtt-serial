@@ -1,16 +1,16 @@
 #pragma once
 
+#include <functional>
 #include <list>
 #include <memory>
-#include <functional>
 #include <unordered_map>
 
-#include "poll_plan.h"
-#include "serial_device.h"
-#include "register_handler.h"
 #include "binary_semaphore.h"
 #include "log.h"
 #include "metrics.h"
+#include "poll_plan.h"
+#include "register_handler.h"
+#include "serial_device.h"
 
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {

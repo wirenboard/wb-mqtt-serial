@@ -1,9 +1,9 @@
 #include "serial_device.h"
 
-#include <iostream>
-#include <unistd.h>
-#include <string.h>
 #include "log.h"
+#include <iostream>
+#include <string.h>
+#include <unistd.h>
 
 #define LOG(logger) logger.Log() << "[serial device] "
 

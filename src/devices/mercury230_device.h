@@ -1,12 +1,12 @@
 #pragma once
 
-#include <list>
-#include <vector>
-#include <string>
-#include <memory>
-#include <exception>
-#include <unordered_map>
 #include <cstdint>
+#include <exception>
+#include <list>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "em_device.h"
 #include "serial_config.h"

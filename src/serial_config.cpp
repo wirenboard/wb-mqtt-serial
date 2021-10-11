@@ -1,28 +1,32 @@
 #include "serial_config.h"
-#include "log.h"
 #include "file_utils.h"
+#include "log.h"
 
-#include <set>
-#include <fstream>
-#include <stdexcept>
+#include <cstdlib>
 #include <dirent.h>
-#include <unistd.h>
+#include <fstream>
+#include <memory>
+#include <set>
+#include <stdexcept>
+#include <string>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <string>
-#include <cstdlib>
-#include <memory>
+#include <unistd.h>
 
-#include "tcp_port_settings.h"
 #include "tcp_port.h"
+#include "tcp_port_settings.h"
 
-#include "serial_port_settings.h"
 #include "serial_port.h"
+#include "serial_port_settings.h"
 
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
 #include "file_utils.h"
 
+#include "devices/curtains/dooya_device.h"
+#include "devices/curtains/somfy_sdn_device.h"
+#include "devices/curtains/windeco_device.h"
+#include "devices/dlms_device.h"
 #include "devices/energomera_iec_device.h"
 #include "devices/energomera_iec_mode_c_device.h"
 #include "devices/ivtm_device.h"
@@ -36,10 +40,6 @@
 #include "devices/pulsar_device.h"
 #include "devices/s2k_device.h"
 #include "devices/uniel_device.h"
-#include "devices/dlms_device.h"
-#include "devices/curtains/dooya_device.h"
-#include "devices/curtains/somfy_sdn_device.h"
-#include "devices/curtains/windeco_device.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 

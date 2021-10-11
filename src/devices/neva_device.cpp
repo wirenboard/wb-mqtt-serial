@@ -1,7 +1,7 @@
 #include "neva_device.h"
 
-#include <string.h>
 #include <stddef.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "iec_common.h"

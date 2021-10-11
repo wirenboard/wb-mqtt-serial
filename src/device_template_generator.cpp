@@ -1,11 +1,11 @@
 #include "device_template_generator.h"
 
-#include <wblib/utils.h>
 #include <string.h>
+#include <wblib/utils.h>
 
+#include "devices/dlms_device.h"
 #include "log.h"
 #include "serial_port.h"
-#include "devices/dlms_device.h"
 
 using namespace std;
 

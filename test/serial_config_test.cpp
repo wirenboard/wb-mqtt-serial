@@ -1,13 +1,13 @@
 #include <wblib/testing/testlog.h>
 
-#include "serial_device.h"
-#include "serial_config.h"
+#include "confed_schema_generator.h"
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
-#include "confed_schema_generator.h"
-#include "file_utils.h"
-#include "test_utils.h"
 #include "fake_serial_device.h"
+#include "file_utils.h"
+#include "serial_config.h"
+#include "serial_device.h"
+#include "test_utils.h"
 
 using namespace std;
 using namespace WBMQTT;

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include <exception>
-#include <stdint.h>
-#include "serial_device.h"
 #include "serial_config.h"
+#include "serial_device.h"
+#include <exception>
+#include <memory>
+#include <stdint.h>
+#include <string>
 
 class TIVTMDevice: public TSerialDevice, public TUInt32SlaveId
 {

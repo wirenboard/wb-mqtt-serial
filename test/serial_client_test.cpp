@@ -1,18 +1,18 @@
-#include "serial_driver.h"
-#include "fake_serial_port.h"
 #include "fake_serial_device.h"
+#include "fake_serial_port.h"
 #include "log.h"
+#include "serial_driver.h"
 
+#include <wblib/driver_args.h>
 #include <wblib/testing/fake_driver.h>
 #include <wblib/testing/fake_mqtt.h>
-#include <wblib/driver_args.h>
 
-#include <string>
-#include <map>
-#include <memory>
 #include <algorithm>
 #include <cassert>
 #include <gtest/gtest.h>
+#include <map>
+#include <memory>
+#include <string>
 
 #include "tcp_port_settings.h"
 

@@ -2,8 +2,8 @@
 
 #include <fstream>
 #include <functional>
-#include <vector>
 #include <stdexcept>
+#include <vector>
 
 /**
  * @brief Try to open one of files listed in fnames.

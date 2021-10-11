@@ -1,6 +1,6 @@
 #include "fake_serial_port.h"
-#include "modbus_io_expectations.h"
 #include "modbus_common.h"
+#include "modbus_io_expectations.h"
 
 using namespace std;
 

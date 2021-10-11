@@ -1,7 +1,7 @@
 #pragma once
 
-#include "serial_device.h"
 #include "serial_config.h"
+#include "serial_device.h"
 
 class TLLSDevice: public TSerialDevice, public TUInt32SlaveId
 {

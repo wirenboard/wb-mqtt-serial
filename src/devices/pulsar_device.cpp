@@ -1,7 +1,7 @@
 /* vim: set ts=4 sw=4: */
 
-#include <cstring>
 #include <cstdlib>
+#include <cstring>
 
 #include "pulsar_device.h"
 

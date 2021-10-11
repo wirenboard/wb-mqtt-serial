@@ -1,6 +1,6 @@
 #include "dooya_device.h"
-#include "crc16.h"
 #include "bin_utils.h"
+#include "crc16.h"
 
 using namespace BinUtils;
 

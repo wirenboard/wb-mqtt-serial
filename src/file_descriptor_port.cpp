@@ -1,12 +1,12 @@
 #include "file_descriptor_port.h"
-#include "serial_exc.h"
 #include "binary_semaphore.h"
+#include "serial_exc.h"
 
-#include <unistd.h>
 #include <iomanip>
 #include <iostream>
-#include <sys/select.h>
 #include <sys/ioctl.h>
+#include <sys/select.h>
+#include <unistd.h>
 
 #include "log.h"
 

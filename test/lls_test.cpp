@@ -1,6 +1,6 @@
-#include <string>
-#include "fake_serial_port.h"
 #include "devices/lls_device.h"
+#include "fake_serial_port.h"
+#include <string>
 
 class TLLSIntegrationTest: public TSerialDeviceIntegrationTest
 {

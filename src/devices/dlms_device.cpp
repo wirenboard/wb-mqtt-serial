@@ -3,11 +3,11 @@
 
 #include <fstream>
 
-#include "GXDLMSTranslator.h"
 #include "GXDLMSConverter.h"
-#include "GXDLMSSapAssignment.h"
 #include "GXDLMSObject.h"
 #include "GXDLMSObjectFactory.h"
+#include "GXDLMSSapAssignment.h"
+#include "GXDLMSTranslator.h"
 
 #define LOG(logger) ::logger.Log() << "[" << DeviceConfig()->Name << " (" << ToString() << ")] "
 

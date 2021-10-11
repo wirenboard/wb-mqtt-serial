@@ -1,9 +1,9 @@
 #include "register.h"
-#include "serial_device.h"
 #include "bcd_utils.h"
-#include <wblib/utils.h>
+#include "serial_device.h"
 #include <string.h>
 #include <string>
+#include <wblib/utils.h>
 
 size_t RegisterFormatByteWidth(RegisterFormat format)
 {

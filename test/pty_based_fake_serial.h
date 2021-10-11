@@ -1,12 +1,12 @@
 #pragma once
-#include <thread>
-#include <deque>
-#include <vector>
-#include <string>
-#include <mutex>
-#include <memory>
-#include <condition_variable>
 #include "expector.h"
+#include <condition_variable>
+#include <deque>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
 #include <wblib/testing/testlog.h>
 
 class TPtyBasedFakeSerial: public TExpector

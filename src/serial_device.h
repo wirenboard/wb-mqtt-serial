@@ -1,19 +1,19 @@
 #pragma once
 
-#include <list>
-#include <set>
-#include <vector>
-#include <unordered_map>
-#include <string>
-#include <memory>
-#include <exception>
 #include <algorithm>
-#include <stdint.h>
+#include <exception>
 #include <iostream>
+#include <list>
+#include <memory>
+#include <set>
+#include <stdint.h>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
+#include "port.h"
 #include "register.h"
 #include "serial_exc.h"
-#include "port.h"
 
 typedef std::unordered_map<std::string, std::string> TTitleTranslations;
 

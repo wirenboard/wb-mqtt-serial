@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include <exception>
 #include <cstdint>
+#include <exception>
+#include <memory>
+#include <string>
 
 #include "em_device.h"
 #include "serial_config.h"

@@ -2,10 +2,10 @@
 
 #include <chrono>
 #include <deque>
-#include <vector>
-#include <string>
 #include <map>
 #include <mutex>
+#include <string>
+#include <vector>
 
 namespace Metrics
 {

@@ -1,8 +1,8 @@
+#include "log.h"
 #include <gtest/gtest.h>
+#include <wblib/log.h>
 #include <wblib/testing/testlog.h>
 #include <wblib/utils.h>
-#include <wblib/log.h>
-#include "log.h"
 
 using WBMQTT::Testing::TLoggedFixture;
 

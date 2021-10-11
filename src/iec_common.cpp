@@ -1,11 +1,11 @@
 #include "iec_common.h"
 
-#include <string.h>
-#include <sstream>
 #include <iomanip>
+#include <sstream>
+#include <string.h>
 
-#include "serial_exc.h"
 #include "log.h"
+#include "serial_exc.h"
 
 namespace IEC
 {

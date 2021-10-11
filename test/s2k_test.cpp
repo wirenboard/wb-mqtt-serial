@@ -1,8 +1,8 @@
+#include "devices/s2k_device.h"
+#include "fake_serial_port.h"
+#include "s2k_expectations.h"
 #include <string>
 #include <wblib/testing/testlog.h>
-#include "fake_serial_port.h"
-#include "devices/s2k_device.h"
-#include "s2k_expectations.h"
 
 class TS2KDeviceTest: public TSerialDeviceTest, public TS2KDeviceExpectations
 {

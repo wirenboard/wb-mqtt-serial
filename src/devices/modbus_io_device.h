@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
-#include <memory>
 #include <exception>
+#include <memory>
 #include <stdint.h>
+#include <string>
 
 #include "serial_device.h"
 

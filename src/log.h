@@ -1,7 +1,7 @@
 #pragma once
 
-#include <wblib/log.h>
 #include <functional>
+#include <wblib/log.h>
 
 extern WBMQTT::TLogger Error;
 extern WBMQTT::TLogger Warn;

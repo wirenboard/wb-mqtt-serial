@@ -1,5 +1,5 @@
-#include <cassert>
 #include "bcd_utils.h"
+#include <cassert>
 
 // Placing 1-4 bytes to integer in a way it reads
 // the same as original byte sequence:

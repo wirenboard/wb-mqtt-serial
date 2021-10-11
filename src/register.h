@@ -1,18 +1,17 @@
 #pragma once
-#include <map>
-#include <list>
-#include <mutex>
 #include <chrono>
-#include <vector>
-#include <memory>
-#include <sstream>
-#include <functional>
-#include <unordered_set>
-#include <unordered_map>
-#include <utility>
-#include <mutex>
-#include <tuple>
 #include <cmath>
+#include <functional>
+#include <list>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <sstream>
+#include <tuple>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 #include "serial_exc.h"
 

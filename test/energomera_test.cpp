@@ -1,6 +1,6 @@
-#include <string>
-#include "fake_serial_port.h"
 #include "devices/energomera_iec_device.h"
+#include "fake_serial_port.h"
+#include <string>
 
 namespace
 {

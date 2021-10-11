@@ -1,12 +1,12 @@
 #pragma once
 
 #include "port.h"
+#include "register.h"
 #include "serial_config.h"
 #include "serial_device.h"
-#include "register.h"
-#include <ostream>
-#include <bitset>
 #include <array>
+#include <bitset>
+#include <ostream>
 
 namespace Modbus // modbus protocol common utilities
 {

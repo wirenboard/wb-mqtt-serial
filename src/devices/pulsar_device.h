@@ -2,10 +2,10 @@
 
 #pragma once
 
+#include "serial_config.h"
+#include "serial_device.h"
 #include <memory>
 #include <stdint.h>
-#include "serial_device.h"
-#include "serial_config.h"
 
 class TPulsarDevice: public TSerialDevice, public TUInt32SlaveId
 {

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <vector>
-#include <memory>
 #include <deque>
+#include <memory>
+#include <vector>
 
+#include <wblib/map.h>
 #include <wblib/testing/fake_mqtt.h>
 #include <wblib/testing/testlog.h>
-#include <wblib/map.h>
 
 #include "expector.h"
 #include "serial_device.h"

@@ -1,8 +1,8 @@
 #pragma once
-#include <queue>
 #include <chrono>
-#include <memory>
 #include <functional>
+#include <memory>
+#include <queue>
 
 class TPollEntry
 {

@@ -1,6 +1,6 @@
 #include "config_merge_template.h"
-#include "serial_config.h"
 #include "log.h"
+#include "serial_config.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 

@@ -1,9 +1,9 @@
-#include <string>
-#include "fake_serial_port.h"
-#include "milur_expectations.h"
-#include "mercury230_expectations.h"
-#include "devices/milur_device.h"
 #include "devices/mercury230_device.h"
+#include "devices/milur_device.h"
+#include "fake_serial_port.h"
+#include "mercury230_expectations.h"
+#include "milur_expectations.h"
+#include <string>
 
 class TEMDeviceTest: public TSerialDeviceTest, public TMilurExpectations, public TMercury230Expectations
 {

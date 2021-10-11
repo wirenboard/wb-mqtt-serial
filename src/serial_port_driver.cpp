@@ -4,9 +4,9 @@
 #include <wblib/wbmqtt.h>
 
 #include <algorithm>
-#include <sstream>
-#include <iostream>
 #include <cassert>
+#include <iostream>
+#include <sstream>
 
 #include "serial_port.h"
 #include "tcp_port.h"

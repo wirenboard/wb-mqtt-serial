@@ -1,10 +1,10 @@
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/select.h>
-#include <stdexcept>
 #include <algorithm>
+#include <fcntl.h>
 #include <sstream>
+#include <stdexcept>
+#include <stdlib.h>
+#include <sys/select.h>
+#include <unistd.h>
 
 #include "pty_based_fake_serial.h"
 

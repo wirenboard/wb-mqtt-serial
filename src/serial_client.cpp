@@ -1,8 +1,8 @@
 #include "serial_client.h"
 
+#include <iostream>
 #include <unistd.h>
 #include <unordered_map>
-#include <iostream>
 
 #define LOG(logger) logger.Log() << "[serial client] "
 

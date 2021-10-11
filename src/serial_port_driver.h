@@ -1,7 +1,7 @@
 #pragma once
-#include "serial_config.h"
-#include "serial_client.h"
 #include "register_handler.h"
+#include "serial_client.h"
+#include "serial_config.h"
 
 #include <wblib/declarations.h>
 

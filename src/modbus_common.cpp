@@ -1,16 +1,16 @@
 #include "modbus_common.h"
-#include "serial_device.h"
+#include "bin_utils.h"
 #include "crc16.h"
 #include "log.h"
-#include "bin_utils.h"
+#include "serial_device.h"
 
-#include <cmath>
 #include <array>
 #include <cassert>
-#include <unistd.h>
-#include <string.h>
-#include <netinet/in.h>
+#include <cmath>
 #include <math.h>
+#include <netinet/in.h>
+#include <string.h>
+#include <unistd.h>
 
 using namespace std;
 using namespace BinUtils;

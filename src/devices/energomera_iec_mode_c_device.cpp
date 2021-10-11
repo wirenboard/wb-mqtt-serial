@@ -1,9 +1,9 @@
 #include "energomera_iec_mode_c_device.h"
 #include "energomera_iec_device.h"
 
-#include <string.h>
-#include <memory>
 #include "iec_common.h"
+#include <memory>
+#include <string.h>
 
 namespace
 {

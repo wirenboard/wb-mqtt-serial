@@ -1,13 +1,13 @@
 #pragma once
-#include <cmath>
-#include <mutex>
-#include <memory>
-#include <string>
-#include <wblib/utils.h>
+#include "bcd_utils.h"
+#include "binary_semaphore.h"
 #include "register.h"
 #include "serial_device.h"
-#include "binary_semaphore.h"
-#include "bcd_utils.h"
+#include <cmath>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <wblib/utils.h>
 
 using WBMQTT::StringFormat;
 

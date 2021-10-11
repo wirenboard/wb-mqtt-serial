@@ -1,18 +1,18 @@
 #include "tcp_port.h"
 #include "serial_exc.h"
 
+#include <iostream>
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <sstream>
-#include <iostream>
+#include <unistd.h>
 
-#include <netinet/in.h>
-#include <netdb.h>
 #include <fcntl.h>
-#include <sys/types.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 
 #include "log.h"
 

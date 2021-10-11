@@ -1,8 +1,8 @@
-#include <cassert>
-#include <iostream>
 #include "mercury230_device.h"
 #include "crc16.h"
 #include "serial_config.h"
+#include <cassert>
+#include <iostream>
 
 namespace
 {

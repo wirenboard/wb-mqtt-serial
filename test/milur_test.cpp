@@ -1,7 +1,7 @@
-#include <string>
+#include "devices/milur_device.h"
 #include "fake_serial_port.h"
 #include "milur_expectations.h"
-#include "devices/milur_device.h"
+#include <string>
 
 class TMilurTest: public TSerialDeviceTest, public TMilurExpectations
 {

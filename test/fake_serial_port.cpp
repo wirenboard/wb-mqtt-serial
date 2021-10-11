@@ -1,15 +1,15 @@
 #include "fake_serial_port.h"
 
-#include <wblib/driver.h>
 #include <wblib/backend.h>
+#include <wblib/driver.h>
 #include <wblib/driver_args.h>
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
 #include <stdexcept>
 
-#include "fake_serial_device.h"
 #include "config_schema_generator.h"
+#include "fake_serial_device.h"
 
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;

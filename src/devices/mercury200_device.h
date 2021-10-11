@@ -1,17 +1,17 @@
 #pragma once
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 
-#include <list>
 #include <array>
-#include <string>
-#include <memory>
 #include <exception>
+#include <list>
+#include <memory>
+#include <string>
 #include <unordered_map>
 
-#include "serial_device.h"
 #include "serial_config.h"
+#include "serial_device.h"
 
 class TMercury200Device: public TSerialDevice, public TUInt32SlaveId
 {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "serial_device.h"
-#include "serial_config.h"
 #include "device_template_generator.h"
+#include "serial_config.h"
+#include "serial_device.h"
 
 #include "GXDLMSSecureClient.h"
 

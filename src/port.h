@@ -4,8 +4,8 @@
 
 #include <chrono>
 #include <functional>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "serial_port_settings.h"
 

@@ -1,15 +1,15 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include <exception>
-#include <unordered_set>
-#include <functional>
 #include <cstdint>
 #include <cstring>
+#include <exception>
+#include <functional>
+#include <memory>
+#include <string>
+#include <unordered_set>
 
-#include "serial_device.h"
 #include "crc16.h"
+#include "serial_device.h"
 
 // Common device base for electricity meters
 class TEMDevice: public TSerialDevice, public TUInt32SlaveId

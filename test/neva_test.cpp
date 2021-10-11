@@ -1,6 +1,6 @@
-#include <string>
-#include "fake_serial_port.h"
 #include "devices/neva_device.h"
+#include "fake_serial_port.h"
+#include <string>
 
 namespace
 {

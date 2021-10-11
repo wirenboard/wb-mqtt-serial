@@ -1,19 +1,19 @@
+#include "log.h"
 #include "serial_device.h"
 #include "serial_driver.h"
-#include "log.h"
 
-#include <wblib/wbmqtt.h>
 #include <wblib/rpc.h>
 #include <wblib/signal_handling.h>
+#include <wblib/wbmqtt.h>
 
+#include <fstream>
 #include <getopt.h>
 #include <unistd.h>
-#include <fstream>
 
+#include "confed_config_generator.h"
+#include "confed_json_generator.h"
 #include "confed_schema_generator.h"
 #include "config_schema_generator.h"
-#include "confed_json_generator.h"
-#include "confed_config_generator.h"
 
 #include "device_template_generator.h"
 #include "serial_port.h"

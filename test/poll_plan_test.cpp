@@ -1,7 +1,7 @@
 #include <cmath>
+#include <gtest/gtest.h>
 #include <string>
 #include <vector>
-#include <gtest/gtest.h>
 
 #include "poll_plan.h"
 

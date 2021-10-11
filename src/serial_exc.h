@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <stdexcept>
+#include <string>
 
 std::string FormatErrno(int errnoValue);
 

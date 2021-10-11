@@ -1,8 +1,8 @@
-#include <gtest/gtest.h>
 #include <dirent.h>
+#include <gtest/gtest.h>
 
-#include <wblib/testing/testlog.h>
 #include "serial_config.h"
+#include <wblib/testing/testlog.h>
 
 using WBMQTT::Testing::TLoggedFixture;
 
