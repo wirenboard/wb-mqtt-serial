@@ -236,13 +236,13 @@
         ],
         "translations": {
             "en": {
-                "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-channel CV LED Modbus dimmer)",
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-channel CV LED dimmer)",
                 "Uptime": "Uptime (s)",
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / (Factor + 1)"
             },
             "ru": {
-                "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-канальный Modbus-диммер светодиодных лент)",
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-канальный диммер светодиодных лент)",
                 "Inputs": "Входы",
                 "HW Info": "Данные модуля",
                 "Inputs Mode": "Режим работы входов",
