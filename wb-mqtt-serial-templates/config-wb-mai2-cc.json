@@ -69,7 +69,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-channel current metering module)",
+                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-channel analog inputs module)",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
