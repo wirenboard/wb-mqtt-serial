@@ -1,4 +1,5 @@
 {
+    "title": "WB-MR6C_template_title",
     "device_type": "WB-MR6C",
     "device": {
         "name": "WB-MR6C",
@@ -69,12 +70,12 @@
                 "title": "Input 0 Mode",
                 "address": 16,
                 "reg_type": "holding",
-                "enum": [ 2, 3, 4 ],
+                "enum": [2, 3, 4],
                 "default": 2,
                 "enum_titles": [
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_0",
                 "order": 1
@@ -93,14 +94,14 @@
                 "title": "Input 1 Mode",
                 "address": 9,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_1",
                 "order": 1
@@ -119,14 +120,14 @@
                 "title": "Input 2 Mode",
                 "address": 10,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_2",
                 "order": 1
@@ -145,14 +146,14 @@
                 "title": "Input 3 Mode",
                 "address": 11,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_3",
                 "order": 1
@@ -171,14 +172,14 @@
                 "title": "Input 4 Mode",
                 "address": 12,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_4",
                 "order": 1
@@ -197,14 +198,14 @@
                 "title": "Input 5 Mode",
                 "address": 13,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_5",
                 "order": 1
@@ -223,14 +224,14 @@
                 "title": "Input 6 Mode",
                 "address": 14,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix"
+                    "operate according to mapping-matrix"
                 ],
                 "group": "input_6",
                 "order": 1
@@ -249,12 +250,9 @@
                 "title": "Restore Last Outputs State After Power On",
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [ 0, 1 ],
+                "enum": [0, 1],
                 "default": 0,
-                "enum_titles": [
-                    "no",
-                    "yes"
-                ],
+                "enum_titles": ["no", "yes"],
                 "group": "outputs",
                 "order": 1
             },
@@ -289,7 +287,7 @@
                 "address": 54,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_0"
@@ -314,7 +312,7 @@
                 "address": 40,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_1"
@@ -339,7 +337,7 @@
                 "address": 42,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_2"
@@ -364,7 +362,7 @@
                 "address": 44,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_3"
@@ -389,7 +387,7 @@
                 "address": 46,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_4"
@@ -414,7 +412,7 @@
                 "address": 48,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_5"
@@ -439,7 +437,7 @@
                 "address": 50,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_6"
@@ -512,7 +510,64 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]        
-
+        ],
+        "translations": {
+            "en": {
+                "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x (6-channel relay)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x (6-канальный модуль реле)",
+                "Input 0": "Вход 0",
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "Input 3": "Вход 3",
+                "Input 4": "Вход 4",
+                "Input 5": "Вход 5",
+                "Input 6": "Вход 6",
+                "Outputs": "Выходы",
+                "HW Info": "Данные модуля",
+                "Input 0 Mode": "Режим работы входа 0",
+                "Input 1 Mode": "Режим работы входа 1",
+                "Input 2 Mode": "Режим работы входа 2",
+                "Input 3 Mode": "Режим работы входа 3",
+                "Input 4 Mode": "Режим работы входа 4",
+                "Input 5 Mode": "Режим работы входа 5",
+                "Input 6 Mode": "Режим работы входа 6",
+                "push button": "кнопка без фиксации",
+                "latching switch": "переключатель с фиксацией",
+                "turn off all outputs": "отключить все выходы",
+                "control disabled": "управление отключено",
+                "operate according to mapping-matrix": "управлять по mapping-матрице",
+                "Input 0 Debounce (ms)": "Время защиты от дребезга входа 0 (мс)",
+                "Input 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",
+                "Input 2 Debounce (ms)": "Время защиты от дребезга входа 2 (мс)",
+                "Input 3 Debounce (ms)": "Время защиты от дребезга входа 3 (мс)",
+                "Input 4 Debounce (ms)": "Время защиты от дребезга входа 4 (мс)",
+                "Input 5 Debounce (ms)": "Время защиты от дребезга входа 5 (мс)",
+                "Input 6 Debounce (ms)": "Время защиты от дребезга входа 6 (мс)",
+                "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
+                "no": "нет",
+                "yes": "да",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "Input 0 counter": "Счетчик срабатываний входа 0",
+                "Input 1 counter": "Счетчик срабатываний входа 1",
+                "Input 2 counter": "Счетчик срабатываний входа 2",
+                "Input 3 counter": "Счетчик срабатываний входа 3",
+                "Input 4 counter": "Счетчик срабатываний входа 4",
+                "Input 5 counter": "Счетчик срабатываний входа 5",
+                "Input 6 counter": "Счетчик срабатываний входа 6",
+                "Input 0 freq": "Частота срабатываний входа 0",
+                "Input 1 freq": "Частота срабатываний входа 1",
+                "Input 2 freq": "Частота срабатываний входа 2",
+                "Input 3 freq": "Частота срабатываний входа 3",
+                "Input 4 freq": "Частота срабатываний входа 4",
+                "Input 5 freq": "Частота срабатываний входа 5",
+                "Input 6 freq": "Частота срабатываний входа 6",
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }
