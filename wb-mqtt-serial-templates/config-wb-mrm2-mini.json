@@ -207,7 +207,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MRM2-mini-NO_template_title": "WB-MRM2-mini/NO (2-channel relay module)",
+                "WB-MRM2-mini-NO_template_title": "WB-MRM2-mini/NO (2-channel relay)",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
