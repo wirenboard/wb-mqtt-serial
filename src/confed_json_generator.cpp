@@ -27,7 +27,6 @@ namespace
             }
             return res;
         }
-        res["poll_interval"] = static_cast<Json::Value::Int>(DefaultPollInterval.count());
         SetIfExists(res, "poll_interval", channelTemplate, "poll_interval");
         res["enabled"] = true;
         SetIfExists(res, "enabled", channelTemplate, "enabled");
@@ -42,7 +41,6 @@ namespace
 
         Json::Value res;
         res["name"] = channelConfig["name"];
-        res["poll_interval"] = static_cast<Json::Value::Int>(DefaultPollInterval.count());
         SetIfExists(res, "poll_interval", channelConfig, "poll_interval");
         res["enabled"] = true;
         SetIfExists(res, "enabled", channelConfig, "enabled");

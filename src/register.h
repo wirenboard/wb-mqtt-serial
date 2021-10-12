@@ -258,9 +258,10 @@ typedef std::shared_ptr<TRegister> PRegister;
 
 struct TRegister : public TRegisterConfig
 {
-    TRegister(PSerialDevice device, PRegisterConfig config)
+    TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName = std::string())
         : TRegisterConfig(*config)
         , _Device(device)
+        , ChannelName(channelName)
     {}
 
     ~TRegister()
@@ -285,11 +286,15 @@ struct TRegister : public TRegisterConfig
     uint64_t GetValue() const;
     void SetValue(uint64_t value);
 
+    //! Used for metrics
+    const std::string& GetChannelName() const;
+
 private:
     std::weak_ptr<TSerialDevice> _Device;
     bool Available = true;
     EStatus Error = ST_UNKNOWN_ERROR;
     uint64_t Value;
+    std::string ChannelName;
 
     // Intern() implementation for TRegister
 private:
@@ -297,7 +302,7 @@ private:
     static std::mutex Mutex;
 
 public:
-    static PRegister Intern(PSerialDevice device, PRegisterConfig config)
+    static PRegister Intern(PSerialDevice device, PRegisterConfig config, const std::string& channelName = std::string())
     {
         std::unique_lock<std::mutex> lock(Mutex); // thread-safe
         std::tuple<PSerialDevice, PRegisterConfig> args(device, config);
@@ -305,7 +310,7 @@ public:
         auto it = RegStorage.find(args);
 
         if (it == RegStorage.end()) {
-            auto ret = std::make_shared<TRegister>(device, config);
+            auto ret = std::make_shared<TRegister>(device, config, channelName);
             return RegStorage[args] = ret;
         }
 

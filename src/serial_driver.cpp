@@ -12,7 +12,28 @@ using namespace WBMQTT;
 
 #define LOG(logger) ::logger.Log() << "[serial] "
 
-TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config)
+namespace
+{
+    Json::Value MakeLoadItem(const Metrics::TPollItem& pollItem, const Metrics::TMetrics::TResult& value)
+    {
+        Json::Value item;
+        auto& names = item["names"];
+        if (pollItem.Controls.empty()) {
+            names.append(pollItem.Device);
+        } else {
+            for (const auto& c: pollItem.Controls) {
+                names.append(pollItem.Device + "/" + c);
+            }
+        }
+        item["bl"] = StringFormat("%.2f", value.BusLoad.Minute * 100.0);
+        item["bl15"] = StringFormat("%.2f", value.BusLoad.FifteenMinutes * 100.0);
+        item["i50"] = value.Histogram.P50.count();
+        item["i95"] = value.Histogram.P95.count();
+        return item;
+    }
+}
+
+TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config, WBMQTT::PMqttRpcServer rpc)
     : Active(false)
 {
     try {
@@ -23,7 +44,8 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
                 continue;
             }
 
-            PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters));
+            auto& m = Metrics[portConfig->Port->GetDescription()];
+            PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters, m));
             PortDrivers.back()->SetUpDevices();
         }
     } catch (const exception & e) {
@@ -37,6 +59,9 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
     }
 
     mqttDriver->On<TControlOnValueEvent>(&TSerialPortDriver::HandleControlOnValueEvent);
+    if (rpc) {
+        rpc->RegisterMethod("metrics", "Load", std::bind(&TMQTTSerialDriver::LoadMetrics, this, std::placeholders::_1));
+    }
 }
 
 void TMQTTSerialDriver::LoopOnce()
@@ -91,4 +116,23 @@ void TMQTTSerialDriver::Stop()
     }
 
     ClearDevices();
+}
+
+Json::Value TMQTTSerialDriver::LoadMetrics(const Json::Value& request)
+{
+    auto time = std::chrono::steady_clock::now();
+    Json::Value res(Json::arrayValue);
+    for (auto& port: Metrics) {
+        Json::Value item;
+        item["port"] = port.first;
+        Json::Value channels(Json::arrayValue);
+        for (const auto& channel: port.second.GetBusLoad(time)) {
+            channels.append(MakeLoadItem(channel.first, channel.second));
+        }
+        if (!channels.empty()) {
+            item["channels"].swap(channels);
+        }
+        res.append(std::move(item));
+    }
+    return res;
 }

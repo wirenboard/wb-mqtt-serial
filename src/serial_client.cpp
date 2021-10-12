@@ -20,11 +20,22 @@ namespace
         std::list<PRegisterRange> Ranges;
     };
     typedef std::shared_ptr<TSerialPollEntry> PSerialPollEntry;
+
+    Metrics::TPollItem ToMetricsPollItem(const std::string& device, const std::list<PRegister>& regs)
+    {
+        Metrics::TPollItem res;
+        res.Device = device;
+        for (const auto& reg: regs) {
+            res.Controls.push_back(reg->GetChannelName());
+        }
+        return res;
+    }
 };
 
 TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
                              PPort port,
-                             const TPortOpenCloseLogic::TSettings& openCloseSettings)
+                             const TPortOpenCloseLogic::TSettings& openCloseSettings,
+                             Metrics::TMetrics& metrics)
     : Port(port),
       Devices(devices),
       Active(false),
@@ -33,7 +44,8 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
       FlushNeeded(new TBinarySemaphore),
       Plan(std::make_shared<TPollPlan>([this]() { return Port->CurrentTime(); })),
       OpenCloseLogic(openCloseSettings),
-      ConnectLogger(std::chrono::minutes(5), "[serial client] ")
+      ConnectLogger(std::chrono::minutes(5), "[serial client] "),
+      Metrics(metrics)
 {}
 
 TSerialClient::~TSerialClient()
@@ -128,7 +140,9 @@ void TSerialClient::DoFlush()
         if (!handler->NeedToFlush())
             continue;
         PrepareToAccessDevice(handler->Device());
+        Metrics.StartPoll({handler->Device()->DeviceConfig()->Id, "Command"});
         auto flushRes = handler->Flush();
+        Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
         if (handler->CurrentErrorState() != TRegisterHandler::WriteError && handler->CurrentErrorState() != TRegisterHandler::ReadWriteError) {
             ReadCallback(reg, flushRes.ValueIsChanged);
         }
@@ -191,7 +205,9 @@ std::list<PRegisterRange> TSerialClient::PollRange(PRegisterRange range)
 {
     PSerialDevice dev = range->Device();
     PrepareToAccessDevice(dev);
+    Metrics.StartPoll(ToMetricsPollItem(dev->DeviceConfig()->Id, range->RegisterList()));
     std::list<PRegisterRange> newRanges = dev->ReadRegisterRange(range);
+    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
     for (auto& reg: range->RegisterList()) {
         bool changed;
         auto handler = Handlers[reg];
@@ -238,6 +254,7 @@ void TSerialClient::OpenPortCycle()
                     //       The whole EndSession/GetIsDisconnected logic should be revised
                     try {
                         if (LastAccessedDevice && LastAccessedDevice != device ) {
+                            Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "End session"});
                             LastAccessedDevice->EndSession();
                         }
                     } catch ( const TSerialDeviceException& e) {
@@ -248,6 +265,7 @@ void TSerialClient::OpenPortCycle()
                     // Force Prepare() (i.e. start session)
                     try {
                         LastAccessedDevice = device;
+                        Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "Start session"});
                         device->Prepare();
                     } catch ( const TSerialDeviceException& e) {
                         LOG(Debug) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
@@ -255,6 +273,7 @@ void TSerialClient::OpenPortCycle()
                     }
 
                     if (device->HasSetupItems()) {
+                        Metrics.StartPoll({device->DeviceConfig()->Id, "Setup items"});
                         auto wrote = device->WriteSetupRegisters();
                         statuses.insert(wrote ? ST_OK : ST_UNKNOWN_ERROR);
                     }
@@ -279,6 +298,8 @@ void TSerialClient::OpenPortCycle()
         MaybeFlushAvoidingPollStarvationButDontWait();
         pollEntry->Ranges.swap(newRanges);
     });
+
+    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
 
     UpdateFlushNeeded();
 
@@ -306,11 +327,13 @@ void TSerialClient::OpenPortCycle()
         p->EndPollCycle();
     }
 
+
     bool cycleFailed = std::all_of(Devices.begin(), Devices.end(),
         [](const PSerialDevice & device){ return device->GetIsDisconnected(); }
     );
 
     OpenCloseLogic.CloseIfNeeded(Port, cycleFailed);
+    Metrics.StartPoll(Metrics::BUS_IDLE);
 }
 
 void TSerialClient::ClosedPortCycle()
@@ -404,6 +427,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
     if (dev != LastAccessedDevice) {
         if (LastAccessedDevice) {
             try {
+                Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "End session"});
                 LastAccessedDevice->EndSession();
             } catch ( const TSerialDeviceException& e) {
                 auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
@@ -412,6 +436,7 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
         }
         LastAccessedDevice = dev;
         try {
+            Metrics.StartPoll({dev->DeviceConfig()->Id, "Start session"});
             dev->Prepare();
         } catch ( const TSerialDeviceException& e) {
             auto& logger = dev->GetIsDisconnected() ? Debug : Warn;

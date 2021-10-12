@@ -18,13 +18,14 @@ using namespace WBMQTT;
 
 TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver             mqttDriver,
                                      PPortConfig                       portConfig,
-                                     const WBMQTT::TPublishParameters& publishPolicy)
+                                     const WBMQTT::TPublishParameters& publishPolicy,
+                                     Metrics::TMetrics&                metrics)
     : MqttDriver(mqttDriver),
       Config(portConfig),
       PublishPolicy(publishPolicy)
 {
     Description = Config->Port->GetDescription(false);
-    SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port, Config->OpenCloseSettings));
+    SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port, Config->OpenCloseSettings, metrics));
 }
 
 const std::string& TSerialPortDriver::GetShortDescription() const

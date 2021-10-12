@@ -1,10 +1,37 @@
-wb-mqtt-serial (2.34.2) stable; urgency=medium
+wb-mqtt-serial (2.38.1) stable; urgency=medium
 
   * Fixed the description Poll interval
   * Changed the caption Enable poll
 
- -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Wed, 22 Sep 2021 23:27:00 +0400
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Tue, 12 Oct 2021 11:44:00 +0400
  
+=======
+wb-mqtt-serial (2.38.0) stable; urgency=medium
+
+  * Device template translations are made unique.
+    Translations from one template will not be used for strings from other template.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 05 Oct 2021 11:05:36 +0500
+
+wb-mqtt-serial (2.37.0) stable; urgency=medium
+
+  * RPC request for bus load and poll interval metrics is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 30 Sep 2021 15:58:07 +0500
+
+wb-mqtt-serial (2.36.0) stable; urgency=medium
+
+  * Update dependency on libwbmqtt1 to support fixed libmosquitto facade
+    (required for newer mosquitto backports)
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 21 Sep 2021 19:49:26 +0300
+
+wb-mqtt-serial (2.35.0) stable; urgency=medium
+
+  * Web-interface for channel's poll_interval editing is changed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 21 Sep 2021 15:03:51 +0500
+
 wb-mqtt-serial (2.34.1) stable; urgency=medium
 
   * Error message about duplicate device addresses is updated

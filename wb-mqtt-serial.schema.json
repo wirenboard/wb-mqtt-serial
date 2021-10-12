@@ -747,26 +747,39 @@
       "type": "object",
       "properties": {
         "name": {
+          "type": "string",
+          "options": {
+            "hidden": true
+          }
+        },
+        "title": {
           "title": "Parameter",
           "type": "string",
-          "readOnly": true
+          "_format": "info",
+          "propertyOrder": 2
         },
         "enabled": {
           "type": "boolean",
           "title": "Enable poll",
           "default": true,
-          "_format": "checkbox"
+          "_format": "checkbox",
+          "propertyOrder": 1
         },
         "poll_interval": {
           "type": "integer",
           "title": "Poll interval (ms)",
           "minimum": 0,
-          "default": 20,
+          "default": -1,
           "options": {
+            "inputAttributes": {
+              "placeholder": "inherited from device and port"
+            },
             "dependencies": {
               "enabled": true
             }
-          }
+          },
+          "_format": "siWb",
+          "propertyOrder": 3
         }
       }
     },
@@ -1544,7 +1557,7 @@
       "connection_timeout_description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
       "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
       "port_header_template": "{{if self.port_type==\"serial\"}}Serial port{{endif}}{{if self.port_type==undefined}}Serial port{{endif}}{{if self.port_type==\"tcp\"}}Port TCP{{endif}}{{if self.port_type==\"modbus tcp\"}}Port MODBUS TCP{{endif}} {{self.path}}{{self.address}} {{self.port}}",
-      "broadcast_description": "Requests are sent without specifing exact id of the device. Use the mode if only one device is connected",
+      "broadcast_description": "Requests are sent without specifying exact id of the device. Use the mode if only one device is connected",
       "frame_timeout_description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
       "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
       "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
@@ -1660,7 +1673,7 @@
       "OBIS code should contain 6 numbers separated by dots (X.X.X.X.X.X)": "Код OBIS должен состоять из 6 чисел, разделённых точками",
       "Custom channels": "Каналы, заданные пользователем",
       "DLMS client address": "Адрес клиента DLMS",
-      "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator": "16 - публичный клиент (по умолчанию), 32 - считыватель показаний СПОДЭС, 48 - конфигуратор СПОДЕС", 
+      "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator": "16 - публичный клиент (по умолчанию), 32 - считыватель показаний СПОДЭС, 48 - конфигуратор СПОДЭС", 
       "Unchanged value posting interval": "Интервал публикации неизменившихся значений",
       "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
       "List of ports": "Список портов",
@@ -1695,7 +1708,8 @@
       "plain PDU": "PDU без модификации",
       "Wi-SUN FAN mesh network": "Wi-SUN FAN mesh-сеть",
       "Device": "Устройство",
-      "Byte": "Байт"
+      "Byte": "Байт",
+      "inherited from device and port": "из настроек устройства и порта"
     }
   }
 }

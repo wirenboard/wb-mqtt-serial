@@ -230,19 +230,31 @@ class TConfedSchemaTest: public TLoggedFixture
         }
 };
 
-TEST_F(TConfedSchemaTest, MergeTranslations)
+TEST_F(TConfedSchemaTest, PreserveSchemaTranslations)
 {
-    TTemplateMap templateMap(GetDataFilePath("device-templates/"),
-                             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                                       ConfigSchema));
+    // Check that translations from wb-mqtt-serial.schema.json are not overwitten
+    TTemplateMap templateMap(GetDataFilePath("translation-templates/templates1"),
+                            LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
+                                                    ConfigSchema));
 
     ConfigSchema["translations"]["en"]["test translation"] = "test";
     ConfigSchema["translations"]["ru"]["test translation"] = "Тест";
 
     auto schema = MakeSchemaForConfed(ConfigSchema, templateMap, DeviceFactory);
     ASSERT_TRUE(IncludesParameters(schema["translations"], ConfigSchema["translations"]));
+}
 
-    auto deviceTemplate = WBMQTT::JSON::Parse(GetDataFilePath("device-templates/config-translations.json"));
-    ASSERT_FALSE(deviceTemplate["device"]["translations"].empty());
-    ASSERT_TRUE(IncludesParameters(schema["translations"], deviceTemplate["device"]["translations"]));
+TEST_F(TConfedSchemaTest, MergeTranslations)
+{
+    // Remove all translations from wb-mqtt-serial.schema.json to check only generated translations
+    ConfigSchema.removeMember("translations");
+    for (size_t i = 1; i <= 2; ++i) {
+        TTemplateMap templateMap(GetDataFilePath("translation-templates/templates" + to_string(i)),
+                                 LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
+                                                           ConfigSchema));
+        auto schema = MakeSchemaForConfed(ConfigSchema, templateMap, DeviceFactory);
+
+        auto tr(JSON::Parse(GetDataFilePath("translation-templates/tr" + to_string(i) + ".json")));
+        ASSERT_TRUE(JsonsMatch(schema["translations"], tr)) << i;
+    }
 }
