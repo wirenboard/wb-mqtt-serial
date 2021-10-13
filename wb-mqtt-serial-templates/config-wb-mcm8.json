@@ -388,11 +388,11 @@
         ],
         "translations": {
             "en": {
-                "WB-MCM8_template_title": "WB-MCM8 (8-channel pulse counter Modbus module)",
+                "WB-MCM8_template_title": "WB-MCM8 (8-channel pulse counter)",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MCM8_template_title": "WB-MCM8 (8-канальный Modbus-модуль счетных входов)",
+                "WB-MCM8_template_title": "WB-MCM8 (8-канальный модуль счетных входов)",
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
                 "Input 3": "Вход 3",
@@ -401,20 +401,8 @@
                 "Input 6": "Вход 6",
                 "Input 7": "Вход 7",
                 "Input 8": "Вход 8",
-                "General": "Общие настройки",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
-                "Input 0 Mode": "Режим работы входа 0",
-                "Input 1 Mode": "Режим работы входа 1",
-                "Input 2 Mode": "Режим работы входа 2",
-                "Input 3 Mode": "Режим работы входа 3",
-                "Input 4 Mode": "Режим работы входа 4",
-                "Input 5 Mode": "Режим работы входа 5",
-                "Input 6 Mode": "Режим работы входа 6",
-                "push button": "кнопка без фиксации",
-                "latching switch": "переключатель с фиксацией",
-                "turn off all outputs": "отключить все выходы",
-                "control disabled": "управление отключено",
-                "operate according to mapping-matrix": "управлять согласно mapping-матрицы",
                 "Input 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",
                 "Input 2 Debounce (ms)": "Время защиты от дребезга входа 2 (мс)",
                 "Input 3 Debounce (ms)": "Время защиты от дребезга входа 3 (мс)",
@@ -441,7 +429,7 @@
                 "Input 8 freq": "Частота срабатываний входа 8",
                 "Reset all counters": "Сбросить все счетчики",
                 "Serial": "Серийный номер",
-                "Supply Voltage": "Напряжение питания",
+                "Supply voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)"
             }
         }
