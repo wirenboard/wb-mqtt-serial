@@ -220,14 +220,14 @@
         ],
         "translations": {
             "en": {
-                "WB-M1W2_template_title": "WB-M1W2 (2-channel temperature measurement Modbus module)",
+                "WB-M1W2_template_title": "WB-M1W2 (2-channel temperature measurement module)",
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
                 "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-M1W2_template_title": "WB-M1W2 (2-канальный Modbus-преобразователь для термометров 1-Wire)",
-                "General": "Общие настройки",
+                "WB-M1W2_template_title": "WB-M1W2 (2-канальный преобразователь для термометров 1-Wire)",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
                 "temperature_readings_filter_deg_description": "Новое значение отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр",
@@ -235,10 +235,10 @@
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
                 "1-Wire": "Датчик 1-Wire",
-                "External Sensor 1": "Датчик температуры 1",
-                "External Sensor 1 OK": "Датчик температуры 1 исправен",
-                "External Sensor 2": "Датчик температуры 2",
-                "External Sensor 2 OK": "Датчик температуры 2 исправен",
+                "External Sensor 1": "Температура с датчика 1",
+                "External Sensor 1 OK": "Датчик 1 подключен",
+                "External Sensor 2": "Температура с датчика 2",
+                "External Sensor 2 OK": "Датчик 2 подключен",
                 "Discrete Input": "Дискретный вход",
                 "Discrete Input 1": "Дискретный вход 1",
                 "Counter 1": "Счетчик срабатываний входа 1",
