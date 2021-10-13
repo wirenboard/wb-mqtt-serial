@@ -485,11 +485,11 @@
         ],
         "translations": {
             "en": {
-                "WB-MWAC_template_title": "WB-MWAC (Water leak and meters controller)",
+                "WB-MWAC_template_title": "WB-MWAC (water leak and meters controller)",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MWAC_template_title": "WB-MWAC (Modbus-модуль контроля протечек и расхода воды )",
+                "WB-MWAC_template_title": "WB-MWAC (модуль контроля протечек и расхода воды )",
                 "Counters": "Счетчики",
                 "Input S1": "Вход S1",
                 "Input S2": "Вход S2",
@@ -498,7 +498,7 @@
                 "Input F2": "Вход F2",
                 "Input F3": "Вход F3",
                 "Outputs": "Выходы",
-                "HW Info": "Данные Модуля",
+                "HW Info": "Данные модуля",
                 "Input S1 Mode": "Режим работы входа S1",
                 "Input S2 Mode": "Режим работы входа S2",
                 "Input S3 Mode": "Режим работы входа S3",
@@ -509,8 +509,8 @@
                 "latching switch": "переключатель с фиксацией",
                 "turn off all outputs": "отключить все выходы",
                 "control disabled": "управление отключено",
-                "operate according to mapping-matrix": "управлять согласно mapping-матрицы",
-                "operate according to mapping-matrix, repeat action in 20 min if input still activated": "управлять согласно mapping-матрицы; повторить действие через 20 мин., если вход все еще активирован",
+                "operate according to mapping-matrix": "управлять по mapping-матрице",
+                "operate according to mapping-matrix, repeat action in 20 min if input still activated": "управлять по mapping-матрице; повторить действие через 20 мин., если вход все еще активирован",
                 "Input S1 Debounce (ms)": "Время защиты от дребезга входа S1 (мс)",
                 "Input S2 Debounce (ms)": "Время защиты от дребезга входа S2 (мс)",
                 "Input S3 Debounce (ms)": "Время защиты от дребезга входа S3 (мс)",
