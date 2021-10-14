@@ -4485,11 +4485,11 @@
         ],
         "translations": {
             "en": {
-                "WB-MAI11_template_title": "WB-MAI11 (11-channel analog input Modbus module)",
+                "WB-MAI11_template_title": "WB-MAI11 (11-channel analog input module)",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MAI11_template_title": "WB-MAI11 (11-канальный Modbus-модуль аналоговых входов)",
+                "WB-MAI11_template_title": "WB-MAI11 (11-канальный модуль аналоговых входов)",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Input 1": "Вход 1",
