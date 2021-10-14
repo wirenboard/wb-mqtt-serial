@@ -1,4 +1,5 @@
 {
+    "title": "WB-MAP3EV_template_title",
     "device_type": "WB-MAP3EV",
     "device": {
         "name": "WB-MAP3EV",
@@ -164,6 +165,25 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-MAP3EV_template_title": "WB-MAP3EV (3-phase voltmeter)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MAP3EV_template_title": "WB-MAP3EV (3-фазный вольтметр)",
+                "Measured Values": "Измеряемые параметры",
+                "HW Info": "Данные модуля",
+                "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
+                "Voltage angle L1": "Фазовый угол L1",
+                "Voltage angle L2": "Фазовый угол L2",
+                "Voltage angle L3": "Фазовый угол L3",
+                "Frequency": "Частота",
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }
