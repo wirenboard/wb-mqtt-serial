@@ -1,3 +1,15 @@
+wb-mqtt-serial (2.39.0) stable; urgency=medium
+
+  * Added templates for refrigerator controllers:
+    * Eliwell-IDPlus-9MRxx
+    * Carel PJ Easy and Carel PJ Basic
+    * Danfoss EKC 202B/D (via EKA 178A/WB-REF-DF-178A)
+    * Danfoss EKC 204A1/AK-CC 210 (via EKA 178A/WB-REF-DF-178A)
+    * Danfoss ERC 211/213/214 (via WB-REF-DF-ERC21)
+    * Danfoss FC 51
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 15 Oct 2021 16:34:15 +0300
+
 wb-mqtt-serial (2.38.1) stable; urgency=medium
 
   * Support for parameter description translation is added.
