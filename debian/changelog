@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.38.1) stable; urgency=medium
 
-  * Support for parameter description translation is added. It was broken in 2.38.0.
+  * Support for parameter description translation is added.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 07 Oct 2021 12:58:37 +0500
 
