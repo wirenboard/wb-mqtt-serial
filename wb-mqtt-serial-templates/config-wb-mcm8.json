@@ -1,4 +1,5 @@
 {
+    "title": "WB-MCM8_template_title",
     "device_type": "WB-MCM8",
     "device": {
         "name": "WB-MCM8",
@@ -384,6 +385,53 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-MCM8_template_title": "WB-MCM8 (8-channel pulse counter)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MCM8_template_title": "WB-MCM8 (8-канальный модуль счетных входов)",
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "Input 3": "Вход 3",
+                "Input 4": "Вход 4",
+                "Input 5": "Вход 5",
+                "Input 6": "Вход 6",
+                "Input 7": "Вход 7",
+                "Input 8": "Вход 8",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Input 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",
+                "Input 2 Debounce (ms)": "Время защиты от дребезга входа 2 (мс)",
+                "Input 3 Debounce (ms)": "Время защиты от дребезга входа 3 (мс)",
+                "Input 4 Debounce (ms)": "Время защиты от дребезга входа 4 (мс)",
+                "Input 5 Debounce (ms)": "Время защиты от дребезга входа 5 (мс)",
+                "Input 6 Debounce (ms)": "Время защиты от дребезга входа 6 (мс)",
+                "Input 7 Debounce (ms)": "Время защиты от дребезга входа 7 (мс)",
+                "Input 8 Debounce (ms)": "Время защиты от дребезга входа 8 (мс)",
+                "Input 1 counter": "Счетчик срабатываний входа 1",
+                "Input 2 counter": "Счетчик срабатываний входа 2",
+                "Input 3 counter": "Счетчик срабатываний входа 3",
+                "Input 4 counter": "Счетчик срабатываний входа 4",
+                "Input 5 counter": "Счетчик срабатываний входа 5",
+                "Input 6 counter": "Счетчик срабатываний входа 6",
+                "Input 7 counter": "Счетчик срабатываний входа 7",
+                "Input 8 counter": "Счетчик срабатываний входа 8",
+                "Input 1 freq": "Частота срабатываний входа 1",
+                "Input 2 freq": "Частота срабатываний входа 2",
+                "Input 3 freq": "Частота срабатываний входа 3",
+                "Input 4 freq": "Частота срабатываний входа 4",
+                "Input 5 freq": "Частота срабатываний входа 5",
+                "Input 6 freq": "Частота срабатываний входа 6",
+                "Input 7 freq": "Частота срабатываний входа 7",
+                "Input 8 freq": "Частота срабатываний входа 8",
+                "Reset all counters": "Сбросить все счетчики",
+                "Serial": "Серийный номер",
+                "Supply voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }
