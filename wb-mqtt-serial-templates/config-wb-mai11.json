@@ -1134,7 +1134,7 @@
                 }
             },
             {
-                "title": "IN_P: 4-20 mA sensor",
+                "title": "P: 4-20 mA sensor",
                 "device_type": "p_4_20ma",
                 "device": {
                     "channels": [
@@ -1163,7 +1163,7 @@
                 }
             },
             {
-                "title": "IN_P: 0-5 mA sensor",
+                "title": "P: 0-5 mA sensor",
                 "device_type": "p_0_5ma",
                 "device": {
                     "channels": [
@@ -1192,7 +1192,7 @@
                 }
             },
             {
-                "title": "IN_P: 0-20 mA sensor",
+                "title": "P: 0-20 mA sensor",
                 "device_type": "p_0_20ma",
                 "device": {
                     "channels": [
@@ -2220,7 +2220,7 @@
                 }
             },
             {
-                "title": "IN_P: dry contact sensor",
+                "title": "P: dry contact sensor",
                 "device_type": "p_dry_contact",
                 "device": {
                     "channels": [
@@ -2262,7 +2262,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                "title": "P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
                 "device_type": "p_2w_pt50",
                 "device": {
                     "channels": [
@@ -2304,7 +2304,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                "title": "P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
                 "device_type": "p_2w_pt100",
                 "device": {
                     "channels": [
@@ -2346,7 +2346,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                "title": "P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
                 "device_type": "p_2w_pt500",
                 "device": {
                     "channels": [
@@ -2388,7 +2388,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                "title": "P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
                 "device_type": "p_2w_pt1000",
                 "device": {
                     "channels": [
@@ -2430,7 +2430,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                "title": "P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)",
                 "device_type": "p_2w_50p",
                 "device": {
                     "channels": [
@@ -2472,7 +2472,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                "title": "P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)",
                 "device_type": "p_2w_100p",
                 "device": {
                     "channels": [
@@ -2514,7 +2514,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                "title": "P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)",
                 "device_type": "p_2w_500p",
                 "device": {
                     "channels": [
@@ -2556,7 +2556,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                "title": "P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
                 "device_type": "p_2w_1000p",
                 "device": {
                     "channels": [
@@ -2598,7 +2598,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                "title": "P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)",
                 "device_type": "p_2w_50m",
                 "device": {
                     "channels": [
@@ -2640,7 +2640,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                "title": "P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)",
                 "device_type": "p_2w_100m",
                 "device": {
                     "channels": [
@@ -2682,7 +2682,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                "title": "P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)",
                 "device_type": "p_2w_500m",
                 "device": {
                     "channels": [
@@ -2724,7 +2724,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                "title": "P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
                 "device_type": "p_2w_1000m",
                 "device": {
                     "channels": [
@@ -2766,7 +2766,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                "title": "P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
                 "device_type": "p_2w_ni100",
                 "device": {
                     "channels": [
@@ -2808,7 +2808,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                "title": "P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
                 "device_type": "p_2w_ni500",
                 "device": {
                     "channels": [
@@ -2850,7 +2850,7 @@
                 }
             },
             {
-                "title": "IN_P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+                "title": "P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
                 "device_type": "p_2w_ni1000",
                 "device": {
                     "channels": [
@@ -2892,7 +2892,7 @@
                 }
             },
             {
-                "title": "IN_P: two-wire resistance measurement",
+                "title": "P: two-wire resistance measurement",
                 "device_type": "p_generic_2w_resistance",
                 "device": {
                     "channels": [
@@ -3887,7 +3887,7 @@
                 }
             },
             {
-                "title": "IN_P: voltage measurement from ratiometric sensor",
+                "title": "P: voltage measurement from ratiometric sensor",
                 "device_type": "p_ratiometric",
                 "device": {
                     "channels": [
@@ -4109,7 +4109,7 @@
                 }
             },
             {
-                "title": "IN_P: single-ended voltage measurement from 0 to 2 V",
+                "title": "P: single-ended voltage measurement from 0 to 2 V",
                 "device_type": "p_generic_voltage",
                 "device": {
                     "channels": [
@@ -4136,7 +4136,7 @@
                 }
             },
             {
-                "title": "IN_P: 0-1V sensor",
+                "title": "P: 0-1V sensor",
                 "device_type": "p_0_1v",
                 "device": {
                     "channels": [
@@ -4400,7 +4400,7 @@
                 }
             },
             {
-                "title": "IN_P: resistance measurement using current measurement",
+                "title": "P: resistance measurement using current measurement",
                 "device_type": "p_generic_current_resistance",
                 "device": {
                     "channels": [
@@ -4427,7 +4427,7 @@
                 }
             },
             {
-                "title": "IN_P: NTC thermistor 10k (B = 3988 K)",
+                "title": "P: NTC thermistor 10k (B = 3988 K)",
                 "device_type": "p_ntc_10k",
                 "device": {
                     "channels": [
@@ -4454,7 +4454,7 @@
                 }
             },
             {
-                "title": "IN_P: current measurement",
+                "title": "P: current measurement",
                 "device_type": "p_generic_current",
                 "device": {
                     "channels": [
@@ -4486,32 +4486,45 @@
         "translations": {
             "en": {
                 "WB-MAI11_template_title": "WB-MAI11 (11-channel analog input module)",
+                "Input 1": "IN 1",
+                "Input 2": "IN 2",
+                "Input 3": "IN 3",
+                "Input 4": "IN 4",
+                "Input 5": "IN 5",
+                "Input 6": "IN 6",
+                "Input 7": "IN 7",
+                "Input 8": "IN 8",
+                "Input 9": "IN 9",
+                "Input 10": "IN 10",
+                "Input 11": "IN 11",
+                "IN_P": "P",
+                "IN_N": "N",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
                 "WB-MAI11_template_title": "WB-MAI11 (11-канальный модуль аналоговых входов)",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
-                "Input 1": "Вход 1",
-                "Input 2": "Вход 2",
-                "Input 3": "Вход 3",
-                "Input 4": "Вход 4",
-                "Input 5": "Вход 5",
-                "Input 6": "Вход 6",
-                "Input 7": "Вход 7",
-                "Input 8": "Вход 8",
-                "Input 9": "Вход 9",
-                "Input 10": "Вход 10",
-                "Input 11": "Вход 11",
+                "Input 1": "IN 1",
+                "Input 2": "IN 2",
+                "Input 3": "IN 3",
+                "Input 4": "IN 4",
+                "Input 5": "IN 5",
+                "Input 6": "IN 6",
+                "Input 7": "IN 7",
+                "Input 8": "IN 8",
+                "Input 9": "IN 9",
+                "Input 10": "IN 10",
+                "Input 11": "IN 11",
                 "disabled": "отключен",
                 "Thermocouple type K (ТХА)": "термопара типа K (ТХА)",
                 "NTC thermistor 10k (B = 3988 K)": "термистор NTC 10 кОм (B = 3988 K)",
                 "0-5 mA sensor": "измерение тока 0-5 мА",
                 "0-20 mA sensor": "измерение тока 0-20 мА",
                 "4-20 mA sensor": "измерение тока 4-20 мА",
-                "IN_P: 4-20 mA sensor": "P: измерение тока 4-20 мА",
-                "IN_P: 0-5 mA sensor": "P: измерение тока 0-5 мА",
-                "IN_P: 0-20 mA sensor": "P: измерение тока 0-20 мА",
+                "P: 4-20 mA sensor": "P: измерение тока 4-20 мА",
+                "P: 0-5 mA sensor": "P: измерение тока 0-5 мА",
+                "P: 0-20 mA sensor": "P: измерение тока 0-20 мА",
                 "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
                 "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
                 "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
@@ -4529,23 +4542,23 @@
                 "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "двухпроводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
                 "dry contact sensor": "датчик с выходом «сухой контакт»",
                 "two-wire resistance measurement": "двухпроводная схема измерения сопротивления",
-                "IN_P: dry contact sensor": "P: датчик с выходом «сухой контакт»",
-                "IN_P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
-                "IN_P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
-                "IN_P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
-                "IN_P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
-                "IN_P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
-                "IN_P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
-                "IN_P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
-                "IN_P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
-                "IN_P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
-                "IN_P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
-                "IN_P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
-                "IN_P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
-                "IN_P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
-                "IN_P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
-                "IN_P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
-                "IN_P: two-wire resistance measurement": "P: двухпроводная схема измерения сопротивления",
+                "P: dry contact sensor": "P: датчик с выходом «сухой контакт»",
+                "P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
+                "P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
+                "P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
+                "P: two-wire resistance measurement": "P: двухпроводная схема измерения сопротивления",
                 "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
                 "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
                 "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
@@ -4562,19 +4575,19 @@
                 "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "трехпроводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
                 "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "трехпроводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
                 "voltage measurement from ratiometric sensor": "измерение напряжения с ратиометрического датчика",
-                "IN_P: voltage measurement from ratiometric sensor": "P: измерение напряжения с ратиометрического датчика",
+                "P: voltage measurement from ratiometric sensor": "P: измерение напряжения с ратиометрического датчика",
                 "differential voltage measurement from ratiometric sensor": "дифф. режим измерения напряжения с ратиометрического датчика",
                 "single-ended voltage measurement from 0 to 2 V": "измерение положительного напряжения 0-2 В",
                 "0-1V sensor": "измерение напряжения 0-1 В",
-                "IN_P: single-ended voltage measurement from 0 to 2 V": "P: измерение положительного напряжения 0-2 В",
-                "IN_P: 0-1V sensor": "P: измерение напряжения 0-1 В",
+                "P: single-ended voltage measurement from 0 to 2 V": "P: измерение положительного напряжения 0-2 В",
+                "P: 0-1V sensor": "P: измерение напряжения 0-1 В",
                 "-50 to 50 mV sensor": "измерение напряжения от -50 до 50 мВ",
                 "voltage measurement in differential mode from -2 to 2 V": "дифф. режим измерения напряжения от -2 до 2 В",
                 "three-wire resistance measurement": "трехпроводная схема измерения сопротивления",
                 "resistance measurement using current measurement": "измерение сопротивления через измерение тока",
-                "IN_P: resistance measurement using current measurement": "P: измерение сопротивления через измерение тока",
-                "IN_P: NTC thermistor 10k (B = 3988 K)": "P: термистор NTC 10 кОм (B = 3988 K)",
-                "IN_P: current measurement": "P: измерение тока от 0 до 20 мА",
+                "P: resistance measurement using current measurement": "P: измерение сопротивления через измерение тока",
+                "P: NTC thermistor 10k (B = 3988 K)": "P: термистор NTC 10 кОм (B = 3988 K)",
+                "P: current measurement": "P: измерение тока от 0 до 20 мА",
                 "IN_P": "P",
                 "IN_N": "N",
                 "Data rate": "Количество измерений в секунду",
@@ -4591,7 +4604,7 @@
                 "Minimum value": "Максимальное пересчитанное значение",
                 "Maximum value": "Минимальное пересчитанное значение",
                 "Value": "Пересчитанное значение",
-                "5V Output": "Напряжение на клемме 5V",
+                "5V Output": "Напряжение на клеммах 5V",
                 "Internal Temperature": "Температура внутри модуля",
                 "Serial": "Серийный номер",
                 "Uptime": "Время работы с момента включения (с)"
