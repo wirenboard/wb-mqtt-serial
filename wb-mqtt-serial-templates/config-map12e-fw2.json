@@ -2047,7 +2047,7 @@
                 "Voltage angle L3": "Фазовый угол L3",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
-                "Supply voltage": "Напряжение питания",
+                "Supply voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее"
             }
