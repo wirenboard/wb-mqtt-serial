@@ -1,7 +1,7 @@
 #pragma once
 
-#include <gtest/gtest.h>
 #include "serial_exc.h"
+#include <gtest/gtest.h>
 #include <wblib/json_utils.h>
 
 ::testing::AssertionResult ArraysMatch(const std::vector<uint8_t>& v1, const std::vector<uint8_t>& v2);

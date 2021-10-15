@@ -1,24 +1,25 @@
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <thread>
 #include <chrono>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <thread>
 
+#include "pty_based_fake_serial.h"
 #include "serial_device.h"
 #include "serial_port.h"
-#include "pty_based_fake_serial.h"
 
-#include <wblib/testing/testlog.h>
 #include <wblib/promise.h>
+#include <wblib/testing/testlog.h>
 
 using namespace WBMQTT::Testing;
 
-class TImxFloodThread {
+class TImxFloodThread
+{
 public:
-    TImxFloodThread(PPort serial, std::chrono::milliseconds duration) : Serial(serial), Duration(duration)
+    TImxFloodThread(PPort serial, std::chrono::milliseconds duration): Serial(serial), Duration(duration)
     {}
 
-    void Run(WBMQTT::TPromise<void>& started) 
+    void Run(WBMQTT::TPromise<void>& started)
     {
         uint8_t buf[8] = {};
         memset(buf, 0xFF, sizeof(buf));
@@ -49,7 +50,7 @@ public:
             throw std::runtime_error("TImxFloodThread sent nothing");
         }
     }
-    
+
     bool IsExpired()
     {
         return Expired;
@@ -61,7 +62,7 @@ public:
             Expired = false;
             IsRunning = true;
             WBMQTT::TPromise<void> initialized;
-            FloodThread = std::thread([&]() {this->Run(initialized);});
+            FloodThread = std::thread([&]() { this->Run(initialized); });
             initialized.GetFuture().Wait();
         }
     }
@@ -73,7 +74,7 @@ public:
             FloodThread.join();
         }
     }
-    
+
     bool IsRunning = false;
     std::thread FloodThread;
     bool Expired = false;
@@ -81,14 +82,14 @@ public:
     std::chrono::milliseconds Duration;
 };
 
-class TSerialPortTestWrapper: public TSerialPort {
+class TSerialPortTestWrapper: public TSerialPort
+{
 public:
-    TSerialPortTestWrapper(const TSerialPortSettings& settings, TLoggedFixture& fixture, PPort other_port) 
-        : TSerialPort(settings)
-        , Fixture(fixture)
-        , OtherEndPort(other_port)
-        , FloodThread(OtherEndPort, std::chrono::milliseconds(3000))
-         {};
+    TSerialPortTestWrapper(const TSerialPortSettings& settings, TLoggedFixture& fixture, PPort other_port)
+        : TSerialPort(settings),
+          Fixture(fixture),
+          OtherEndPort(other_port),
+          FloodThread(OtherEndPort, std::chrono::milliseconds(3000)){};
 
     void SkipNoise() override
     {
@@ -112,6 +113,7 @@ public:
             }
         }
     }
+
 protected:
     void Reopen() override
     {
@@ -124,12 +126,14 @@ protected:
 
     TLoggedFixture& Fixture;
     PPort OtherEndPort;
+
 public:
     TImxFloodThread FloodThread;
     bool StopFloodOnReconnect = true;
 };
 
-class TSerialPortTest: public TLoggedFixture {
+class TSerialPortTest: public TLoggedFixture
+{
 protected:
     void SetUp();
     void TearDown();
@@ -149,12 +153,8 @@ void TSerialPortTest::SetUp()
 
     FakeSerial->StartForwarding();
     TSerialPortSettings secondary_settings(FakeSerial->GetSecondaryPtsName(), 9600, 'N', 8, 1);
-    SecondarySerial = std::shared_ptr<TSerialPortTestWrapper>(
-        new TSerialPortTestWrapper(
-            secondary_settings,
-            *this,
-            Serial
-        ));
+    SecondarySerial =
+        std::shared_ptr<TSerialPortTestWrapper>(new TSerialPortTestWrapper(secondary_settings, *this, Serial));
     SecondarySerial->Open();
 }
 
@@ -167,10 +167,9 @@ void TSerialPortTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
-
 TEST_F(TSerialPortTest, TestSkipNoise)
 {
-    uint8_t buf[] = {1,2,3};
+    uint8_t buf[] = {1, 2, 3};
     Serial->WriteBytes(buf, sizeof(buf));
     usleep(300);
     SecondarySerial->SkipNoise();
@@ -184,8 +183,8 @@ TEST_F(TSerialPortTest, TestSkipNoise)
     FakeSerial->Flush(); // shouldn't change anything here, but shouldn't hang either
 }
 
-/* on imx6, a glitch with precise timing can trigger a bug in UART IP. This will result 
-in continously reception of FF bytes until either UART is reset or a couple of valid UART frames 
+/* on imx6, a glitch with precise timing can trigger a bug in UART IP. This will result
+in continously reception of FF bytes until either UART is reset or a couple of valid UART frames
 are received */
 // !!!! The test is not stable on build server
 // TEST_F(TSerialPortTest, TestImxBug)

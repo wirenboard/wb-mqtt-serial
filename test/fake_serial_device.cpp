@@ -3,7 +3,7 @@
 
 using namespace std;
 
-namespace //utility
+namespace // utility
 {
     uint64_t GetValue(uint16_t* src, int width)
     {
@@ -22,20 +22,22 @@ namespace //utility
             value >>= 16;
         }
     }
-};  //utility
+}; // utility
 
 std::list<TFakeSerialDevice*> TFakeSerialDevice::Devices;
 
 void TFakeSerialDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("fake", TRegisterTypes({{ TFakeSerialDevice::REG_FAKE, "fake", "text", U16 }})),
-                             new TBasicDeviceFactory<TFakeSerialDevice>("#/definitions/simple_device_with_setup", 
-                                                                        "#/definitions/common_channel"));
+    factory.RegisterProtocol(
+        new TUint32SlaveIdProtocol("fake", TRegisterTypes({{TFakeSerialDevice::REG_FAKE, "fake", "text", U16}})),
+        new TBasicDeviceFactory<TFakeSerialDevice>("#/definitions/simple_device_with_setup",
+                                                   "#/definitions/common_channel"));
 }
 
 TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
-    , Connected(true)
+    : TSerialDevice(config, port, protocol),
+      TUInt32SlaveId(config->SlaveId),
+      Connected(true)
 {
     FakePort = dynamic_pointer_cast<TFakeSerialPort>(port);
     if (!FakePort) {
@@ -57,7 +59,7 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 
         auto addr = GetUint32RegisterAddress(reg->GetAddress());
 
-        if(Blockings[addr].first) {
+        if (Blockings[addr].first) {
             throw TSerialDeviceTransientErrorException("read blocked");
         }
 
@@ -71,11 +73,13 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
 
         auto value = GetValue(&Registers[addr], reg->Get16BitWidth());
 
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress() << "' value '" << value << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
+                                      << "' value '" << value << "'";
 
         return value;
-    } catch (const exception & e) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress() << "' failed: '" << e.what() << "'";
+    } catch (const exception& e) {
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
+                                      << "' failed: '" << e.what() << "'";
 
         throw;
     }
@@ -94,7 +98,7 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 
         auto addr = GetUint32RegisterAddress(reg->GetAddress());
 
-        if(Blockings[addr].second) {
+        if (Blockings[addr].second) {
             throw TSerialDeviceTransientErrorException("write blocked");
         }
 
@@ -108,9 +112,11 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 
         SetValue(&Registers[addr], reg->Get16BitWidth(), value);
 
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '" << reg->GetAddress() << "' value '" << value << "'";
-    } catch (const exception & e) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->GetAddress() << "' failed: '" << e.what() << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '"
+                                      << reg->GetAddress() << "' value '" << value << "'";
+    } catch (const exception& e) {
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->GetAddress()
+                                      << "' failed: '" << e.what() << "'";
 
         throw;
     }
@@ -118,7 +124,8 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 
 void TFakeSerialDevice::OnCycleEnd(bool ok)
 {
-    FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': " << (ok ? "Device cycle OK" : "Device cycle FAIL");
+    FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId
+                                  << "': " << (ok ? "Device cycle OK" : "Device cycle FAIL");
 
     bool wasDisconnected = GetIsDisconnected();
 
@@ -134,13 +141,15 @@ void TFakeSerialDevice::OnCycleEnd(bool ok)
 void TFakeSerialDevice::BlockReadFor(int addr, bool block)
 {
     Blockings[addr].first = block;
-    FakePort->GetFixture().Emit() << "fake_serial_device: " << (block ? "block" : "unblock") << " address '" << addr << "' for reading";
+    FakePort->GetFixture().Emit() << "fake_serial_device: " << (block ? "block" : "unblock") << " address '" << addr
+                                  << "' for reading";
 }
 
 void TFakeSerialDevice::BlockWriteFor(int addr, bool block)
 {
     Blockings[addr].second = block;
-    FakePort->GetFixture().Emit() << "fake_serial_device: " << (block ? "block" : "unblock") << " address '" << addr << "' for writing";
+    FakePort->GetFixture().Emit() << "fake_serial_device: " << (block ? "block" : "unblock") << " address '" << addr
+                                  << "' for writing";
 }
 
 uint32_t TFakeSerialDevice::Read2Registers(int addr)

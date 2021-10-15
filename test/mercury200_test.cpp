@@ -1,7 +1,7 @@
-#include <string>
+#include "devices/mercury200_device.h"
 #include "fake_serial_port.h"
 #include "mercury200_expectations.h"
-#include "devices/mercury200_device.h"
+#include <string>
 
 class TMercury200Test: public TSerialDeviceTest, public TMercury200Expectations
 {
@@ -32,16 +32,25 @@ PDeviceConfig TMercury200Test::GetDeviceConfig()
 void TMercury200Test::SetUp()
 {
     TSerialDeviceTest::SetUp();
-    Mercury200Dev = std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("mercury200"));
+    Mercury200Dev =
+        std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("mercury200"));
 
-    Mercury200RET1Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2700, BCD32));
-    Mercury200RET2Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2704, BCD32));
-    Mercury200RET3Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x2708, BCD32));
-    Mercury200RET4Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE32, 0x270C, BCD32));
-    Mercury200UReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x6300, BCD16));
-    Mercury200IReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x6302, BCD16));
-    Mercury200PReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE24, 0x6304, BCD24));
-    Mercury200BatReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create( TMercury200Device::REG_PARAM_VALUE16, 0x2900, BCD16));
+    Mercury200RET1Reg =
+        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2700, BCD32));
+    Mercury200RET2Reg =
+        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2704, BCD32));
+    Mercury200RET3Reg =
+        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2708, BCD32));
+    Mercury200RET4Reg =
+        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x270C, BCD32));
+    Mercury200UReg =
+        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x6300, BCD16));
+    Mercury200IReg =
+        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x6302, BCD16));
+    Mercury200PReg =
+        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE24, 0x6304, BCD24));
+    Mercury200BatReg =
+        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x2900, BCD16));
 
     SerialPort->Open();
 }
@@ -65,12 +74,11 @@ void TMercury200Test::VerifyParamQuery()
     Mercury200Dev->EndPollCycle();
 }
 
-
 TEST_F(TMercury200Test, EnergyQuery)
 {
     try {
         VerifyEnergyQuery();
-    } catch(const std::exception& e) {
+    } catch (const std::exception& e) {
         SerialPort->Close();
         throw e;
     }
@@ -81,7 +89,7 @@ TEST_F(TMercury200Test, ParamsQuery)
 {
     try {
         VerifyParamQuery();
-    } catch(const std::exception& e) {
+    } catch (const std::exception& e) {
         SerialPort->Close();
         throw e;
     }
@@ -96,14 +104,19 @@ TEST_F(TMercury200Test, BatteryVoltageQuery)
     SerialPort->Close();
 }
 
-
 class TMercury200IntegrationTest: public TSerialDeviceIntegrationTest, public TMercury200Expectations
 {
 protected:
     void SetUp();
     void TearDown();
-    const char* ConfigPath() const { return "configs/config-mercury200-test.json"; }
-    std::string GetTemplatePath() const override { return "../wb-mqtt-serial-templates"; }
+    const char* ConfigPath() const
+    {
+        return "configs/config-mercury200-test.json";
+    }
+    std::string GetTemplatePath() const override
+    {
+        return "../wb-mqtt-serial-templates";
+    }
 };
 
 void TMercury200IntegrationTest::SetUp()
@@ -118,7 +131,6 @@ void TMercury200IntegrationTest::TearDown()
     SerialPort->Close();
     TSerialDeviceIntegrationTest::TearDown();
 }
-
 
 TEST_F(TMercury200IntegrationTest, Poll)
 {

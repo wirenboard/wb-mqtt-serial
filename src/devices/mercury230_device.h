@@ -1,12 +1,12 @@
 #pragma once
 
-#include <list>
-#include <vector>
-#include <string>
-#include <memory>
-#include <exception>
-#include <unordered_map>
 #include <cstdint>
+#include <exception>
+#include <list>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "em_device.h"
 #include "serial_config.h"
@@ -14,7 +14,8 @@
 class TMercury230Device: public TEMDevice
 {
 public:
-    enum RegisterType {
+    enum RegisterType
+    {
         REG_VALUE_ARRAY = 0,
         REG_PARAM = 1,
         REG_PARAM_SIGN_ACT = 2,
@@ -35,11 +36,12 @@ protected:
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
 
 private:
-    struct TValueArray {
+    struct TValueArray
+    {
         uint32_t values[4];
     };
     const TValueArray& ReadValueArray(uint32_t address, int resp_len = 4);
-    uint32_t ReadParam( uint32_t address, unsigned resp_payload_len, RegisterType reg_type);
+    uint32_t ReadParam(uint32_t address, unsigned resp_payload_len, RegisterType reg_type);
 
     std::unordered_map<int, TValueArray> CachedValues;
 };

@@ -1,18 +1,18 @@
-#include "serial_driver.h"
-#include "fake_serial_port.h"
 #include "fake_serial_device.h"
+#include "fake_serial_port.h"
 #include "log.h"
+#include "serial_driver.h"
 
+#include <wblib/driver_args.h>
 #include <wblib/testing/fake_driver.h>
 #include <wblib/testing/fake_mqtt.h>
-#include <wblib/driver_args.h>
 
-#include <string>
-#include <map>
-#include <memory>
 #include <algorithm>
 #include <cassert>
 #include <gtest/gtest.h>
+#include <map>
+#include <memory>
+#include <string>
 
 #include "tcp_port_settings.h"
 
@@ -32,12 +32,25 @@ protected:
 
     void SetUp();
     void TearDown();
-    PRegister Reg(int addr, RegisterFormat fmt = U16, double scale = 1,
-        double offset = 0, double round_to = 0, EWordOrder word_order = EWordOrder::BigEndian) {
-        return TRegister::Intern(
-            Device, TRegisterConfig::Create(
-            TFakeSerialDevice::REG_FAKE, addr, fmt, scale, offset, round_to, true, false,
-            "fake", std::unique_ptr<uint64_t>(), word_order));
+    PRegister Reg(int addr,
+                  RegisterFormat fmt = U16,
+                  double scale = 1,
+                  double offset = 0,
+                  double round_to = 0,
+                  EWordOrder word_order = EWordOrder::BigEndian)
+    {
+        return TRegister::Intern(Device,
+                                 TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE,
+                                                         addr,
+                                                         fmt,
+                                                         scale,
+                                                         offset,
+                                                         round_to,
+                                                         true,
+                                                         false,
+                                                         "fake",
+                                                         std::unique_ptr<uint64_t>(),
+                                                         word_order));
     }
     PFakeSerialPort Port;
     PSerialClient SerialClient;
@@ -98,14 +111,12 @@ void TSerialClientTest::SetUp()
     SerialClient->SetModbusDebug(true);
 #endif
     SerialClient->SetReadCallback([this](PRegister reg, bool changed) {
-            Emit() << "Read Callback: <"
-                   << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress() << "> becomes "
-                   << SerialClient->GetTextValue(reg) << (changed ? "" : " [unchanged]");
-        });
-    SerialClient->SetErrorCallback(
-        [this](PRegister reg, TRegisterHandler::TErrorState errorState) {
-            const char* what;
-            switch (errorState) {
+        Emit() << "Read Callback: <" << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress()
+               << "> becomes " << SerialClient->GetTextValue(reg) << (changed ? "" : " [unchanged]");
+    });
+    SerialClient->SetErrorCallback([this](PRegister reg, TRegisterHandler::TErrorState errorState) {
+        const char* what;
+        switch (errorState) {
             case TRegisterHandler::WriteError:
                 what = "write error";
                 break;
@@ -117,9 +128,10 @@ void TSerialClientTest::SetUp()
                 break;
             default:
                 what = "no error";
-            }
-            Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress() << ">: " << what;
-        });
+        }
+        Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress()
+               << ">: " << what;
+    });
 }
 
 void TSerialClientTest::TearDown()
@@ -520,7 +532,6 @@ TEST_F(TSerialClientTest, WordSwap)
     EXPECT_EQ(0x00CC, Device->Registers[25]);
     EXPECT_EQ(0x00BB, Device->Registers[26]);
     EXPECT_EQ(0x00AA, Device->Registers[27]);
-
 }
 
 TEST_F(TSerialClientTest, U32)
@@ -566,7 +577,7 @@ TEST_F(TSerialClientTest, U32)
     EXPECT_EQ(0, Device->Registers[20]);
     EXPECT_EQ(0, Device->Registers[21]);
 
-    //boundaries check
+    // boundaries check
     EXPECT_EQ(123, Device->Registers[22]);
     EXPECT_EQ(123, Device->Registers[23]);
 }
@@ -601,7 +612,7 @@ TEST_F(TSerialClientTest, BCD32)
     EXPECT_EQ(0x0056, Device->Registers[20]);
     EXPECT_EQ(0x7890, Device->Registers[21]);
 
-    //boundaries check
+    // boundaries check
     EXPECT_EQ(123, Device->Registers[22]);
     EXPECT_EQ(123, Device->Registers[23]);
 }
@@ -628,7 +639,7 @@ TEST_F(TSerialClientTest, BCD24)
     EXPECT_EQ(0x0056, Device->Registers[20]);
     EXPECT_EQ(0x7890, Device->Registers[21]);
 
-    //boundaries check
+    // boundaries check
     EXPECT_EQ(123, Device->Registers[22]);
     EXPECT_EQ(123, Device->Registers[23]);
 }
@@ -652,7 +663,7 @@ TEST_F(TSerialClientTest, BCD16)
     EXPECT_EQ(to_string(1234), SerialClient->GetTextValue(reg20));
     EXPECT_EQ(0x1234, Device->Registers[20]);
 
-    //boundaries check
+    // boundaries check
     EXPECT_EQ(123, Device->Registers[21]);
 }
 
@@ -675,13 +686,13 @@ TEST_F(TSerialClientTest, BCD8)
     EXPECT_EQ(to_string(12), SerialClient->GetTextValue(reg20));
     EXPECT_EQ(0x12, Device->Registers[20]);
 
-    //boundaries check
+    // boundaries check
     EXPECT_EQ(123, Device->Registers[21]);
 }
 
 TEST_F(TSerialClientTest, Float32)
 {
-	// create scaled register
+    // create scaled register
     PRegister reg24 = Reg(24, Float, 100);
     SerialClient->AddRegister(reg24);
 
@@ -734,7 +745,7 @@ TEST_F(TSerialClientTest, Float32)
 
 TEST_F(TSerialClientTest, Double64)
 {
-	// create scaled register
+    // create scaled register
     PRegister reg24 = Reg(24, Double, 100);
     SerialClient->AddRegister(reg24);
 
@@ -842,7 +853,8 @@ TEST_F(TSerialClientTest, Round)
     EXPECT_EQ("12.4", SerialClient->GetTextValue(reg30_0_2));
     EXPECT_EQ("12.34", SerialClient->GetTextValue(reg32_0_01));
 
-    union {
+    union
+    {
         uint32_t words;
         float value;
     } data;
@@ -902,7 +914,6 @@ TEST_F(TSerialClientTest, Errors)
     Note() << "Cycle() [write, nothing blacklisted]";
     SerialClient->Cycle();
 
-
     reg20->ErrorValue = std::make_unique<uint64_t>(42);
     Note() << "Cycle() [read, set error value for register]";
     SerialClient->Cycle();
@@ -937,32 +948,34 @@ protected:
     void SetUp();
     void TearDown();
     void FilterConfig(const std::string& device_name);
-    void Publish(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
-    void PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
+    void Publish(const std::string& topic, const std::string& payload, uint8_t qos = 0, bool retain = true);
+    void PublishWaitOnValue(const std::string& topic, const std::string& payload, uint8_t qos = 0, bool retain = true);
 
     /** reconnect test functions **/
-    static void DeviceTimeoutOnly(const PSerialDevice & device, chrono::milliseconds timeout);
-    static void DeviceMaxFailCyclesOnly(const PSerialDevice & device, int cycleCount);
-    static void DeviceTimeoutAndMaxFailCycles(const PSerialDevice & device, chrono::milliseconds timeout, int cycleCount);
+    static void DeviceTimeoutOnly(const PSerialDevice& device, chrono::milliseconds timeout);
+    static void DeviceMaxFailCyclesOnly(const PSerialDevice& device, int cycleCount);
+    static void DeviceTimeoutAndMaxFailCycles(const PSerialDevice& device,
+                                              chrono::milliseconds timeout,
+                                              int cycleCount);
 
     PMQTTSerialDriver StartReconnectTest1Device(bool miss = false, bool pollIntervalTest = false);
     PMQTTSerialDriver StartReconnectTest2Devices();
 
-    void ReconnectTest1Device(function<void()> && thunk, bool pollIntervalTest = false);
-    void ReconnectTest2Devices(function<void()> && thunk);
+    void ReconnectTest1Device(function<void()>&& thunk, bool pollIntervalTest = false);
+    void ReconnectTest2Devices(function<void()>&& thunk);
 
     PFakeMqttBroker MqttBroker;
     PFakeMqttClient MqttClient;
-    PDeviceDriver   Driver;
+    PDeviceDriver Driver;
     PMQTTSerialDriver SerialDriver;
-    PHandlerConfig  Config;
+    PHandlerConfig Config;
 
-    static const char * const Name;
-    static const char * const OtherName;
+    static const char* const Name;
+    static const char* const OtherName;
 };
 
-const char * const TSerialClientIntegrationTest::Name = "serial-client-integration-test";
-const char * const TSerialClientIntegrationTest::OtherName = "serial-client-integration-test-other";
+const char* const TSerialClientIntegrationTest::Name = "serial-client-integration-test";
+const char* const TSerialClientIntegrationTest::OtherName = "serial-client-integration-test-other";
 
 void TSerialClientIntegrationTest::SetUp()
 {
@@ -973,13 +986,12 @@ void TSerialClientIntegrationTest::SetUp()
     MqttClient = MqttBroker->MakeClient(Name);
     auto backend = NewDriverBackend(MqttClient);
     Driver = NewDriver(TDriverArgs{}
-        .SetId(Name)
-        .SetBackend(backend)
-        .SetIsTesting(true)
-        .SetReownUnknownDevices(true)
-        .SetUseStorage(true)
-        .SetStoragePath("/tmp/wb-mqtt-serial-test.db")
-    );
+                           .SetId(Name)
+                           .SetBackend(backend)
+                           .SetIsTesting(true)
+                           .SetReownUnknownDevices(true)
+                           .SetUseStorage(true)
+                           .SetStoragePath("/tmp/wb-mqtt-serial-test.db"));
 
     Driver->StartLoop();
 
@@ -987,11 +999,11 @@ void TSerialClientIntegrationTest::SetUp()
     AddFakeDeviceType(configSchema);
     AddRegisterType(configSchema, "fake");
     TTemplateMap t;
-    Config = LoadConfig(GetDataFilePath("configs/config-test.json"), 
+    Config = LoadConfig(GetDataFilePath("configs/config-test.json"),
                         DeviceFactory,
                         configSchema,
                         t,
-                        [=](const Json::Value&) {return std::make_pair(Port, false);});
+                        [=](const Json::Value&) { return std::make_pair(Port, false); });
 }
 
 void TSerialClientIntegrationTest::TearDown()
@@ -1010,48 +1022,51 @@ void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
         port_config->Devices.erase(
             remove_if(port_config->Devices.begin(),
                       port_config->Devices.end(),
-                      [device_name](auto device) {
-                          return device->DeviceConfig()->Name != device_name;
-                      }),
+                      [device_name](auto device) { return device->DeviceConfig()->Name != device_name; }),
             port_config->Devices.end());
     }
-    Config->PortConfigs.erase(
-        remove_if(Config->PortConfigs.begin(),
-                  Config->PortConfigs.end(),
-                  [](PPortConfig port_config) {
-                      return port_config->Devices.empty();
-                  }),
-        Config->PortConfigs.end());
+    Config->PortConfigs.erase(remove_if(Config->PortConfigs.begin(),
+                                        Config->PortConfigs.end(),
+                                        [](PPortConfig port_config) { return port_config->Devices.empty(); }),
+                              Config->PortConfigs.end());
     ASSERT_FALSE(Config->PortConfigs.empty()) << "device not found: " << device_name;
 }
 
-void TSerialClientIntegrationTest::DeviceTimeoutOnly(const PSerialDevice & device, chrono::milliseconds timeout)
+void TSerialClientIntegrationTest::DeviceTimeoutOnly(const PSerialDevice& device, chrono::milliseconds timeout)
 {
     device->DeviceConfig()->DeviceTimeout = timeout;
     device->DeviceConfig()->DeviceMaxFailCycles = 0;
 }
 
-void TSerialClientIntegrationTest::DeviceMaxFailCyclesOnly(const PSerialDevice & device, int cycleCount)
+void TSerialClientIntegrationTest::DeviceMaxFailCyclesOnly(const PSerialDevice& device, int cycleCount)
 {
     device->DeviceConfig()->DeviceTimeout = chrono::milliseconds(0);
     device->DeviceConfig()->DeviceMaxFailCycles = cycleCount;
 }
 
-void TSerialClientIntegrationTest::DeviceTimeoutAndMaxFailCycles(const PSerialDevice & device, chrono::milliseconds timeout, int cycleCount)
+void TSerialClientIntegrationTest::DeviceTimeoutAndMaxFailCycles(const PSerialDevice& device,
+                                                                 chrono::milliseconds timeout,
+                                                                 int cycleCount)
 {
     device->DeviceConfig()->DeviceTimeout = timeout;
     device->DeviceConfig()->DeviceMaxFailCycles = cycleCount;
 }
 
-void TSerialClientIntegrationTest::Publish(const std::string & topic, const std::string & payload, uint8_t qos, bool retain)
+void TSerialClientIntegrationTest::Publish(const std::string& topic,
+                                           const std::string& payload,
+                                           uint8_t qos,
+                                           bool retain)
 {
     MqttBroker->Publish("em-test-other", {TMqttMessage{topic, payload, qos, retain}});
 }
 
-void TSerialClientIntegrationTest::PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos, bool retain)
+void TSerialClientIntegrationTest::PublishWaitOnValue(const std::string& topic,
+                                                      const std::string& payload,
+                                                      uint8_t qos,
+                                                      bool retain)
 {
     auto done = std::make_shared<WBMQTT::TPromise<void>>();
-    Driver->On<WBMQTT::TControlOnValueEvent>([=](const WBMQTT::TControlOnValueEvent & event) {
+    Driver->On<WBMQTT::TControlOnValueEvent>([=](const WBMQTT::TControlOnValueEvent& event) {
         if (!done->IsFulfilled()) {
             done->Complete();
         }
@@ -1105,7 +1120,6 @@ TEST_F(TSerialClientIntegrationTest, OffValue)
     SerialDriver->LoopOnce();
     ASSERT_EQ(200, device->Registers[0]);
 }
-
 
 TEST_F(TSerialClientIntegrationTest, OnValueError)
 {
@@ -1191,7 +1205,8 @@ TEST_F(TSerialClientIntegrationTest, Round)
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
-    union {
+    union
+    {
         uint32_t words;
         float value;
     } data;
@@ -1300,16 +1315,16 @@ TEST_F(TSerialClientIntegrationTest, ErrorValue)
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
-    device->Registers[0]  = 0x7FFF;
-    device->Registers[1]  = 0x7FFF;
-    device->Registers[2]  = 0x7F;
-    device->Registers[3]  = 0x7F;
-    device->Registers[4]  = 0x7F;
-    device->Registers[5]  = 0xFFFF;
-    device->Registers[6]  = 0x7F;
-    device->Registers[7]  = 0xFFFF;
-    device->Registers[8]  = 0x7FFF;
-    device->Registers[9]  = 0xFFFF;
+    device->Registers[0] = 0x7FFF;
+    device->Registers[1] = 0x7FFF;
+    device->Registers[2] = 0x7F;
+    device->Registers[3] = 0x7F;
+    device->Registers[4] = 0x7F;
+    device->Registers[5] = 0xFFFF;
+    device->Registers[6] = 0x7F;
+    device->Registers[7] = 0xFFFF;
+    device->Registers[8] = 0x7FFF;
+    device->Registers[9] = 0xFFFF;
     device->Registers[10] = 0x7FFF;
     device->Registers[11] = 0xFFFF;
     device->Registers[12] = 0x7FFF;
@@ -1359,37 +1374,36 @@ TEST_F(TSerialClientIntegrationTest, ErrorValue)
     SerialDriver->LoopOnce();
 }
 
-
 TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     TTemplateMap t;
 
-    EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test.json"), 
-                                        DeviceFactory,
-                                        configSchema,
-                                        t,
-                                        [=](const Json::Value&) {return std::make_pair(Port, false);}),
-                    TConfigParserException);
+    EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test.json"),
+                            DeviceFactory,
+                            configSchema,
+                            t,
+                            [=](const Json::Value&) { return std::make_pair(Port, false); }),
+                 TConfigParserException);
 
-    EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test2.json"), 
-                                        DeviceFactory,
-                                        configSchema,
-                                        t,
-                                        [=](const Json::Value&) {return std::make_pair(Port, false);}),
-                    TConfigParserException);
+    EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test2.json"),
+                            DeviceFactory,
+                            configSchema,
+                            t,
+                            [=](const Json::Value&) { return std::make_pair(Port, false); }),
+                 TConfigParserException);
 
-    EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"), 
-                                        DeviceFactory,
-                                        configSchema,
-                                        t,
-                                        [=](const Json::Value&) {return std::make_pair(Port, false);}));
+    EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"),
+                               DeviceFactory,
+                               configSchema,
+                               t,
+                               [=](const Json::Value&) { return std::make_pair(Port, false); }));
 
-    EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test2.json"), 
-                                        DeviceFactory,
-                                        configSchema,
-                                        t,
-                                        [=](const Json::Value&) {return std::make_pair(Port, false);}));
+    EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test2.json"),
+                               DeviceFactory,
+                               configSchema,
+                               t,
+                               [=](const Json::Value&) { return std::make_pair(Port, false); }));
 }
 
 /** Reconnect test cases **/
@@ -1411,21 +1425,22 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
     AddFakeDeviceType(configSchema);
     AddRegisterType(configSchema, "fake");
     TTemplateMap t;
-    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_1_device.json"), 
-                                            DeviceFactory,
-                                            configSchema,
-                                            t,
-                                            [=](const Json::Value&) {return std::make_pair(Port, false);});
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_1_device.json"),
+                        DeviceFactory,
+                        configSchema,
+                        t,
+                        [=](const Json::Value&) { return std::make_pair(Port, false); });
 
     if (pollIntervalTest) {
-        Config->PortConfigs[0]->Devices[0]->DeviceConfig()->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval = chrono::seconds(100);
+        Config->PortConfigs[0]->Devices[0]->DeviceConfig()->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval =
+            chrono::seconds(100);
     }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     auto device = TFakeSerialDevice::GetDevice("12");
 
-    {   // Test initial WriteInitValues
+    { // Test initial WriteInitValues
         Note() << "LoopOnce() [first start]";
         mqttDriver->LoopOnce();
 
@@ -1433,12 +1448,12 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
         EXPECT_EQ(24, device->Registers[2]);
     }
 
-    {   // Test read
+    { // Test read
         Note() << "LoopOnce()";
         mqttDriver->LoopOnce();
     }
 
-    {   // Device disconnected
+    { // Device disconnected
         Note() << "SimulateDisconnect(true)";
         device->SetIsConnected(false);
 
@@ -1460,7 +1475,8 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
                     while (std::chrono::steady_clock::now() - disconnectTimepoint < delay) {
                         Note() << "LoopOnce()";
                         mqttDriver->LoopOnce();
-                        usleep(std::chrono::duration_cast<std::chrono::microseconds>(delay).count() / device->DeviceConfig()->DeviceMaxFailCycles);
+                        usleep(std::chrono::duration_cast<std::chrono::microseconds>(delay).count() /
+                               device->DeviceConfig()->DeviceMaxFailCycles);
                     }
                 } else {
                     auto disconnectTimepoint = std::chrono::steady_clock::now();
@@ -1497,8 +1513,6 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
             }
         }
 
-
-
         // Final unsuccessful read after timeout, after this loop we expect device to be counted as disconnected
         Note() << "LoopOnce()";
         mqttDriver->LoopOnce();
@@ -1513,18 +1527,18 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
     AddFakeDeviceType(configSchema);
     AddRegisterType(configSchema, "fake");
     TTemplateMap t;
-    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_2_devices.json"), 
-                                            DeviceFactory,
-                                            configSchema,
-                                            t,
-                                            [=](const Json::Value&) {return std::make_pair(Port, false);});
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_2_devices.json"),
+                        DeviceFactory,
+                        configSchema,
+                        t,
+                        [=](const Json::Value&) { return std::make_pair(Port, false); });
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     auto dev1 = TFakeSerialDevice::GetDevice("12");
     auto dev2 = TFakeSerialDevice::GetDevice("13");
 
-    {   // Test initial setup
+    { // Test initial setup
         Note() << "LoopOnce() [first start]";
         mqttDriver->LoopOnce();
 
@@ -1535,12 +1549,12 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
         EXPECT_EQ(64, dev2->Registers[2]);
     }
 
-    {   // Test read
+    { // Test read
         Note() << "LoopOnce()";
         mqttDriver->LoopOnce();
     }
 
-    {   // Device disconnected
+    { // Device disconnected
         Note() << "SimulateDisconnect(true)";
         dev1->SetIsConnected(false);
 
@@ -1555,7 +1569,9 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                 while (std::chrono::steady_clock::now() - disconnectTimepoint < Device->DeviceConfig()->DeviceTimeout) {
                     Note() << "LoopOnce()";
                     mqttDriver->LoopOnce();
-                    usleep(std::chrono::duration_cast<std::chrono::microseconds>(Device->DeviceConfig()->DeviceTimeout).count() / Device->DeviceConfig()->DeviceMaxFailCycles);
+                    usleep(std::chrono::duration_cast<std::chrono::microseconds>(Device->DeviceConfig()->DeviceTimeout)
+                               .count() /
+                           Device->DeviceConfig()->DeviceMaxFailCycles);
                 }
             } else {
                 auto disconnectTimepoint = std::chrono::steady_clock::now();
@@ -1564,7 +1580,9 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                 while (std::chrono::steady_clock::now() - disconnectTimepoint < Device->DeviceConfig()->DeviceTimeout) {
                     Note() << "LoopOnce()";
                     mqttDriver->LoopOnce();
-                    usleep(std::chrono::duration_cast<std::chrono::microseconds>(Device->DeviceConfig()->DeviceTimeout).count() / 10);
+                    usleep(std::chrono::duration_cast<std::chrono::microseconds>(Device->DeviceConfig()->DeviceTimeout)
+                               .count() /
+                           10);
                 }
             }
         } else if (by_cycles) {
@@ -1595,22 +1613,22 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
     return mqttDriver;
 }
 
-void TSerialClientIntegrationTest::ReconnectTest1Device(function<void()> && thunk, bool pollIntervalTest)
+void TSerialClientIntegrationTest::ReconnectTest1Device(function<void()>&& thunk, bool pollIntervalTest)
 {
     auto observer = StartReconnectTest1Device(false, pollIntervalTest);
     auto device = TFakeSerialDevice::GetDevice("12");
 
-    device->Registers[1] = 0;   // reset those to make sure that setup section is wrote again
+    device->Registers[1] = 0; // reset those to make sure that setup section is wrote again
     device->Registers[2] = 0;
 
     thunk();
 
-    {   // Loop to check limited polling
+    { // Loop to check limited polling
         Note() << "LoopOnce() (limited polling expected)";
         observer->LoopOnce();
     }
 
-    {   // Device is connected back
+    { // Device is connected back
         Note() << "SimulateDisconnect(false)";
         device->SetIsConnected(true);
 
@@ -1622,27 +1640,27 @@ void TSerialClientIntegrationTest::ReconnectTest1Device(function<void()> && thun
     }
 }
 
-void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()> && thunk)
+void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()>&& thunk)
 {
     auto observer = StartReconnectTest2Devices();
 
     auto dev1 = TFakeSerialDevice::GetDevice("12");
     auto dev2 = TFakeSerialDevice::GetDevice("13");
 
-    dev1->Registers[1] = 0;   // reset those to make sure that setup section is wrote again
+    dev1->Registers[1] = 0; // reset those to make sure that setup section is wrote again
     dev1->Registers[2] = 0;
 
-    dev2->Registers[1] = 1;   // set control values to make sure that no setup section is written
+    dev2->Registers[1] = 1; // set control values to make sure that no setup section is written
     dev2->Registers[2] = 2;
 
     thunk();
 
-    {   // Loop to check limited polling
+    { // Loop to check limited polling
         Note() << "LoopOnce() (limited polling expected)";
         observer->LoopOnce();
     }
 
-    {   // Device is connected back
+    { // Device is connected back
         Note() << "SimulateDisconnect(false)";
         dev1->SetIsConnected(true);
 
@@ -1662,32 +1680,24 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()> && thu
 
 TEST_F(TSerialClientIntegrationTest, ReconnectTimeout)
 {
-    ReconnectTest1Device([&]{
-        DeviceTimeoutOnly(Device, DefaultDeviceTimeout);
-    });
+    ReconnectTest1Device([&] { DeviceTimeoutOnly(Device, DefaultDeviceTimeout); });
 }
 
 TEST_F(TSerialClientIntegrationTest, ReconnectCycles)
 {
-    ReconnectTest1Device([&]{
-        DeviceMaxFailCyclesOnly(Device, 10);
-    });
+    ReconnectTest1Device([&] { DeviceMaxFailCyclesOnly(Device, 10); });
 }
 
 TEST_F(TSerialClientIntegrationTest, ReconnectTimeoutAndCycles)
 {
-    ReconnectTest1Device([&]{
-        DeviceTimeoutAndMaxFailCycles(Device, DefaultDeviceTimeout, 10);
-    });
+    ReconnectTest1Device([&] { DeviceTimeoutAndMaxFailCycles(Device, DefaultDeviceTimeout, 10); });
 }
 
 TEST_F(TSerialClientIntegrationTest, ReconnectRegisterWithBigPollInterval)
 {
     auto t1 = chrono::steady_clock::now();
 
-    ReconnectTest1Device([&]{
-        DeviceTimeoutOnly(Device, DefaultDeviceTimeout);
-    }, true);
+    ReconnectTest1Device([&] { DeviceTimeoutOnly(Device, DefaultDeviceTimeout); }, true);
 
     auto time = chrono::steady_clock::now() - t1;
 
@@ -1696,9 +1706,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectRegisterWithBigPollInterval)
 
 TEST_F(TSerialClientIntegrationTest, Reconnect2)
 {
-    ReconnectTest2Devices([&]{
-        DeviceTimeoutOnly(Device, DefaultDeviceTimeout);
-    });
+    ReconnectTest2Devices([&] { DeviceTimeoutOnly(Device, DefaultDeviceTimeout); });
 }
 
 TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
@@ -1710,10 +1718,10 @@ TEST_F(TSerialClientIntegrationTest, ReconnectMiss)
         throw std::runtime_error("device not found");
     }
 
-    device->Registers[1] = 1;   // set control values to make sure that no setup section is written
+    device->Registers[1] = 1; // set control values to make sure that no setup section is written
     device->Registers[2] = 2;
 
-    {   // Device is connected back before timeout
+    { // Device is connected back before timeout
         Note() << "SimulateDisconnect(false)";
         device->SetIsConnected(true);
 
@@ -1733,11 +1741,11 @@ TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
     // The behavior is a result of bad hwconf setup
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     TTemplateMap t;
-    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_ebadf.json"), 
-                                            DeviceFactory,
-                                            configSchema,
-                                            t,
-                                            [=](const Json::Value&) {return std::make_pair(Port, false);});
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_ebadf.json"),
+                        DeviceFactory,
+                        configSchema,
+                        t,
+                        [=](const Json::Value&) { return std::make_pair(Port, false); });
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
@@ -1761,11 +1769,11 @@ TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
     // The test simulates EBADF error during register write after receiving a message from /on topic
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
     TTemplateMap t;
-    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_ebadf.json"), 
-                                            DeviceFactory,
-                                            configSchema,
-                                            t,
-                                            [=](const Json::Value&) {return std::make_pair(Port, false);});
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_ebadf.json"),
+                        DeviceFactory,
+                        configSchema,
+                        t,
+                        [=](const Json::Value&) { return std::make_pair(Port, false); });
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 

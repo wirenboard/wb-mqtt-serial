@@ -1,12 +1,12 @@
 #pragma once
 
-#include <string>
-#include <memory>
 #include <exception>
+#include <memory>
 #include <stdint.h>
+#include <string>
 
-#include "serial_device.h"
 #include "serial_config.h"
+#include "serial_device.h"
 
 class TS2KDevice: public TSerialDevice, public TUInt32SlaveId
 {
@@ -26,7 +26,8 @@ public:
     static void Register(TSerialDeviceFactory& factory);
 
 private:
-    uint8_t CrcS2K(const uint8_t *array, int size);
+    uint8_t CrcS2K(const uint8_t* array, int size);
+
     static uint8_t CrcTable[];
     uint8_t RelayState[5];
 };

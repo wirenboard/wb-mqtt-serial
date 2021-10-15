@@ -1,36 +1,35 @@
 #include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/select.h>
 #include <fcntl.h>
-#include <stdio.h>
-#include <termios.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/select.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <unistd.h>
 
 #include "s2k_device.h"
 
 namespace
 {
-    const TRegisterTypes RegisterTypes{
-        { TS2KDevice::REG_RELAY,         "relay",         "switch", U8 },
-        { TS2KDevice::REG_RELAY_MODE,    "relay_mode",    "value",  U8, true },
-        { TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value",  U8, true },
-        { TS2KDevice::REG_RELAY_DELAY,   "relay_delay",   "value",  U8, true }
-    };
+    const TRegisterTypes RegisterTypes{{TS2KDevice::REG_RELAY, "relay", "switch", U8},
+                                       {TS2KDevice::REG_RELAY_MODE, "relay_mode", "value", U8, true},
+                                       {TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value", U8, true},
+                                       {TS2KDevice::REG_RELAY_DELAY, "relay_delay", "value", U8, true}};
 }
 
 void TS2KDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("s2k", RegisterTypes),
-                             new TBasicDeviceFactory<TS2KDevice>("#/definitions/simple_device_with_setup",
-                                                                 "#/definitions/common_channel"));
+    factory.RegisterProtocol(
+        new TUint32SlaveIdProtocol("s2k", RegisterTypes),
+        new TBasicDeviceFactory<TS2KDevice>("#/definitions/simple_device_with_setup", "#/definitions/common_channel"));
 }
 
 TS2KDevice::TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
+    : TSerialDevice(config, port, protocol),
+      TUInt32SlaveId(config->SlaveId)
 {
     RelayState[1] = 2;
     RelayState[2] = 2;
@@ -38,6 +37,7 @@ TS2KDevice::TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     RelayState[4] = 2;
 }
 
+// clang-format off
 uint8_t TS2KDevice::CrcTable[] = {
         0x00,0x5E,0xBC,0xE2,0x61,0x3F,0xDD,0x83,0xC2,0x9C,0x7E,0x20,0xA3,0xFD,
         0x1F,0x41,0x9D,0xC3,0x21,0x7F,0xFC,0xA2,0x40,0x1E,0x5F,0x01,0xE3,0xBD,
@@ -59,8 +59,9 @@ uint8_t TS2KDevice::CrcTable[] = {
         0xF6,0xA8,0x74,0x2A,0xC8,0x96,0x15,0x4B,0xA9,0xF6,0xB6,0xFC,0x0A,0x54,
         0xD7,0x89,0x6B,0x35
 };
+// clang-format on
 
-uint8_t TS2KDevice::CrcS2K(const uint8_t *array, int size)
+uint8_t TS2KDevice::CrcS2K(const uint8_t* array, int size)
 {
     uint8_t crc = 0;
     for (int i = 0; i < size; i++) {
@@ -83,24 +84,18 @@ void TS2KDevice::WriteRegister(PRegister reg, uint64_t value)
     }
 
     Port()->CheckPortOpen();
-    uint8_t command[7] = {
-            /* Address = */(uint8_t)SlaveId,
-            /* Command length = */0x06,
-            /* Key = */0x00,
-            /* Command = */0x15,/* Relay control */
-            /* Relay No = */(uint8_t)addr,
-            /* Relay program = */(uint8_t)(value ? 0x1/* ON */ : 0x2/* OFF */),
-            /* CRC placeholder */0x0
-        };
+    uint8_t command[7] = {/* Address = */ (uint8_t)SlaveId,
+                          /* Command length = */ 0x06,
+                          /* Key = */ 0x00,
+                          /* Command = */ 0x15, /* Relay control */
+                          /* Relay No = */ (uint8_t)addr,
+                          /* Relay program = */ (uint8_t)(value ? 0x1 /* ON */ : 0x2 /* OFF */),
+                          /* CRC placeholder */ 0x0};
     command[6] = CrcS2K(command, 6);
     Port()->WriteBytes(command, 7);
     uint8_t response[256];
     int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
-    if (size != 6 ||
-       response[0] != (uint8_t)SlaveId ||
-       response[1] != 5 ||
-       response[2]!= 0x16)
-    {
+    if (size != 6 || response[0] != (uint8_t)SlaveId || response[1] != 5 || response[2] != 0x16) {
         throw TSerialDeviceTransientErrorException("incorrect response for 0x15 command");
     }
     if (response[5] != CrcS2K(response, 5)) {
@@ -117,42 +112,35 @@ uint64_t TS2KDevice::ReadRegister(PRegister reg)
     /* We have no way to get current relay state from device. Thats why we save last
        successful write to relay register and return it when regiter is read */
     switch (reg->Type) {
-    case REG_RELAY:
-        return RelayState[addr] != 0 && RelayState[addr] != 2;
-    case REG_RELAY_MODE:
-        return RelayState[addr];
-    case REG_RELAY_DEFAULT:
-    case REG_RELAY_DELAY:
-    {
-        Port()->CheckPortOpen();
-        /* Default state of relays is stored in configs 1-4,
-           Default delay for relays - in configs 5-8 */
-        uint8_t command[7] = {
-                /* Address = */(uint8_t)SlaveId,
-                /* Command length = */0x06,
-                /* Key = */0x00,
-                /* Command = */0x05,/* Read configutation */
-                /* Config No = */(uint8_t)(addr + (reg->Type == REG_RELAY_DELAY ? 4 : 0)),
-                /* Unused */0x0,
-                /* CRC placeholder */0x0
-            };
-        command[6] = CrcS2K(command, 6);
-        Port()->WriteBytes(command, 7);
-        uint8_t response[256];
-        int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
-        if (size != 6 ||
-           response[0] != (uint8_t)SlaveId ||
-           response[1] != 0x5 ||
-           response[2] != 0x6)
-        {
-            throw TSerialDeviceTransientErrorException("incorrect response for 0x5 command");
+        case REG_RELAY:
+            return RelayState[addr] != 0 && RelayState[addr] != 2;
+        case REG_RELAY_MODE:
+            return RelayState[addr];
+        case REG_RELAY_DEFAULT:
+        case REG_RELAY_DELAY: {
+            Port()->CheckPortOpen();
+            /* Default state of relays is stored in configs 1-4,
+               Default delay for relays - in configs 5-8 */
+            uint8_t command[7] = {/* Address = */ (uint8_t)SlaveId,
+                                  /* Command length = */ 0x06,
+                                  /* Key = */ 0x00,
+                                  /* Command = */ 0x05, /* Read configutation */
+                                  /* Config No = */ (uint8_t)(addr + (reg->Type == REG_RELAY_DELAY ? 4 : 0)),
+                                  /* Unused */ 0x0,
+                                  /* CRC placeholder */ 0x0};
+            command[6] = CrcS2K(command, 6);
+            Port()->WriteBytes(command, 7);
+            uint8_t response[256];
+            int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
+            if (size != 6 || response[0] != (uint8_t)SlaveId || response[1] != 0x5 || response[2] != 0x6) {
+                throw TSerialDeviceTransientErrorException("incorrect response for 0x5 command");
+            }
+            if (response[5] != CrcS2K(response, 5)) {
+                throw TSerialDeviceTransientErrorException("bad CRC for 0x5 command");
+            }
+            return response[4];
         }
-        if (response[5] != CrcS2K(response, 5)){
-            throw TSerialDeviceTransientErrorException("bad CRC for 0x5 command");
-        }
-        return response[4];
-    }
-    default:
-        throw TSerialDeviceException("S2K protocol: invalid register for reading");
+        default:
+            throw TSerialDeviceException("S2K protocol: invalid register for reading");
     }
 }

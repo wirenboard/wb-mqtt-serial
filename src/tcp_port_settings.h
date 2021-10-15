@@ -1,13 +1,11 @@
 #pragma once
 
-#include <string>
 #include <sstream>
+#include <string>
 
 struct TTcpPortSettings
 {
-    TTcpPortSettings(const std::string& address = "localhost", uint16_t port = 0)
-        : Address(address)
-        , Port(port)
+    TTcpPortSettings(const std::string& address = "localhost", uint16_t port = 0): Address(address), Port(port)
     {}
 
     std::string ToString() const
@@ -17,6 +15,6 @@ struct TTcpPortSettings
         return ss.str();
     }
 
-    std::string                 Address;
-    uint16_t                    Port;
+    std::string Address;
+    uint16_t Port;
 };

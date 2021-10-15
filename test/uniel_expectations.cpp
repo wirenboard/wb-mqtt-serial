@@ -22,7 +22,8 @@ void TUnielDeviceExpectations::EnqueueVoltageQueryResponse()
             0x0a, // addr
             0x00, // not used
             0xa9  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TUnielDeviceExpectations::EnqueueRelayOffQueryResponse()
@@ -47,7 +48,8 @@ void TUnielDeviceExpectations::EnqueueRelayOffQueryResponse()
             0x1b, // addr
             0x00, // not used
             0x20  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TUnielDeviceExpectations::EnqueueRelayOnQueryResponse()
@@ -72,7 +74,8 @@ void TUnielDeviceExpectations::EnqueueRelayOnQueryResponse()
             0x1b, // addr
             0x00, // not used
             0x1f  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TUnielDeviceExpectations::EnqueueThreshold0QueryResponse()
@@ -97,7 +100,8 @@ void TUnielDeviceExpectations::EnqueueThreshold0QueryResponse()
             0x02, // addr
             0x00, // not used
             0x77  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TUnielDeviceExpectations::EnqueueBrightnessQueryResponse()
@@ -122,7 +126,8 @@ void TUnielDeviceExpectations::EnqueueBrightnessQueryResponse()
             0x41, // addr
             0x00, // not used
             0x88  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TUnielDeviceExpectations::EnqueueSetRelayOnResponse()
@@ -147,7 +152,8 @@ void TUnielDeviceExpectations::EnqueueSetRelayOnResponse()
             0x1b, // addr
             0x00, // not used
             0x20  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TUnielDeviceExpectations::EnqueueSetRelayOffResponse()
@@ -172,7 +178,8 @@ void TUnielDeviceExpectations::EnqueueSetRelayOffResponse()
             0x1b, // addr
             0x00, // not used
             0x21  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TUnielDeviceExpectations::EnqueueSetLowThreshold0Response()
@@ -197,7 +204,8 @@ void TUnielDeviceExpectations::EnqueueSetLowThreshold0Response()
             0x02, // addr
             0x00, // not used
             0x78  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TUnielDeviceExpectations::EnqueueSetBrightnessResponse()
@@ -222,5 +230,6 @@ void TUnielDeviceExpectations::EnqueueSetBrightnessResponse()
             0x01, // addr
             0x00, // not used
             0x4d  // sum
-        }, __func__);
+        },
+        __func__);
 }

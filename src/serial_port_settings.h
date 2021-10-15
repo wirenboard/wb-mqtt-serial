@@ -1,19 +1,19 @@
 #pragma once
 
-#include <string>
 #include <sstream>
+#include <string>
 
 struct TSerialPortByteFormat
 {
     TSerialPortByteFormat(char parity, int dataBits, int stopBits)
-        : Parity(parity)
-        , DataBits(dataBits)
-        , StopBits(stopBits)
+        : Parity(parity),
+          DataBits(dataBits),
+          StopBits(stopBits)
     {}
 
-    char        Parity;
-    int         DataBits;
-    int         StopBits;
+    char Parity;
+    int DataBits;
+    int StopBits;
 };
 
 struct TSerialPortSettings: public TSerialPortByteFormat
@@ -36,5 +36,5 @@ struct TSerialPortSettings: public TSerialPortByteFormat
     }
 
     std::string Device;
-    int         BaudRate;
+    int BaudRate;
 };

@@ -1,10 +1,10 @@
-#include <cstdint>
 #include <chrono>
+#include <cstdint>
 
-#include "crc16.h"
-#include "serial_device.h"
-#include "mercury200_device.h"
 #include "bcd_utils.h"
+#include "crc16.h"
+#include "mercury200_device.h"
+#include "serial_device.h"
 
 namespace
 {
@@ -12,23 +12,22 @@ namespace
     const size_t REQUEST_LEN = 7;
     const ptrdiff_t HEADER_SZ = 5;
 
-    const TRegisterTypes RegisterTypes {
-        { TMercury200Device::REG_PARAM_VALUE16, "param8",  "value", U8,    true },
-        { TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true },
-        { TMercury200Device::REG_PARAM_VALUE24, "param24", "value", BCD24, true },
-        { TMercury200Device::REG_PARAM_VALUE32, "param32", "value", BCD32, true }
-    };
+    const TRegisterTypes RegisterTypes{{TMercury200Device::REG_PARAM_VALUE16, "param8", "value", U8, true},
+                                       {TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true},
+                                       {TMercury200Device::REG_PARAM_VALUE24, "param24", "value", BCD24, true},
+                                       {TMercury200Device::REG_PARAM_VALUE32, "param32", "value", BCD32, true}};
 }
 
 void TMercury200Device::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("mercury200", RegisterTypes),
-                             new TBasicDeviceFactory<TMercury200Device>("#/definitions/simple_device", 
-                                                                        "#/definitions/common_channel"));
+    factory.RegisterProtocol(
+        new TUint32SlaveIdProtocol("mercury200", RegisterTypes),
+        new TBasicDeviceFactory<TMercury200Device>("#/definitions/simple_device", "#/definitions/common_channel"));
 }
 
 TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
+    : TSerialDevice(config, port, protocol),
+      TUInt32SlaveId(config->SlaveId)
 {
     config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(6));
 }
@@ -45,7 +44,7 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
 
     uint8_t buf[100] = {0x00};
     auto readn = RequestResponse(SlaveId, cmd, buf);
-    if (readn < 4) { //fixme 4
+    if (readn < 4) { // fixme 4
         throw TSerialDeviceTransientErrorException("mercury200: read frame too short for command response");
     }
     if (IsBadHeader(SlaveId, cmd, buf)) {
@@ -60,7 +59,6 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-
 uint64_t TMercury200Device::ReadRegister(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
@@ -69,20 +67,20 @@ uint64_t TMercury200Device::ReadRegister(PRegister reg)
 
     WordSizes size;
     switch (reg->Type) {
-    case REG_PARAM_VALUE32:
-        size = WordSizes::W32_SZ;
-        break;
-    case REG_PARAM_VALUE24:
-        size = WordSizes::W24_SZ;
-        break;
-    case REG_PARAM_VALUE16:
-        size = WordSizes::W16_SZ;
-        break;
-    case REG_PARAM_VALUE8:
-        size = WordSizes::W8_SZ;
-        break;
-    default:
-        throw TSerialDeviceException("mercury200: invalid register type");
+        case REG_PARAM_VALUE32:
+            size = WordSizes::W32_SZ;
+            break;
+        case REG_PARAM_VALUE24:
+            size = WordSizes::W24_SZ;
+            break;
+        case REG_PARAM_VALUE16:
+            size = WordSizes::W16_SZ;
+            break;
+        case REG_PARAM_VALUE8:
+            size = WordSizes::W8_SZ;
+            break;
+        default:
+            throw TSerialDeviceException("mercury200: invalid register type");
     }
 
     auto result = ExecCommand(cmd);
@@ -106,11 +104,10 @@ void TMercury200Device::EndPollCycle()
 
 bool TMercury200Device::IsCrcValid(uint8_t* buf, int sz) const
 {
-    auto actual_crc = CRC16::CalculateCRC16(buf, static_cast<uint16_t >(sz));
-    uint16_t sent_crc = ((uint16_t) buf[sz] << 8) | ((uint16_t) buf[sz + 1]);
+    auto actual_crc = CRC16::CalculateCRC16(buf, static_cast<uint16_t>(sz));
+    uint16_t sent_crc = ((uint16_t)buf[sz] << 8) | ((uint16_t)buf[sz + 1]);
     return actual_crc != sent_crc;
 }
-
 
 int TMercury200Device::RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* response) const
 {
@@ -136,10 +133,8 @@ void TMercury200Device::FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) cons
 
 bool TMercury200Device::IsBadHeader(uint32_t slave_expected, uint8_t cmd_expected, uint8_t* response) const
 {
-    uint32_t actual_slave = ((uint32_t) response[0] << 24)
-                            | ((uint32_t) response[1] << 16)
-                            | ((uint32_t) response[2] << 8)
-                            | (uint32_t) response[3];
+    uint32_t actual_slave = ((uint32_t)response[0] << 24) | ((uint32_t)response[1] << 16) |
+                            ((uint32_t)response[2] << 8) | (uint32_t)response[3];
     if (actual_slave != slave_expected) {
         return true;
     }

@@ -3,12 +3,11 @@
 
 #include <wblib/driver.h>
 
-#include <thread>
 #include <iostream>
+#include <thread>
 
 using namespace std;
 using namespace WBMQTT;
-
 
 #define LOG(logger) ::logger.Log() << "[serial] "
 
@@ -37,8 +36,8 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
     : Active(false)
 {
     try {
-        for (const auto& portConfig : config->PortConfigs) {
-            
+        for (const auto& portConfig: config->PortConfigs) {
+
             if (portConfig->Devices.empty()) {
                 LOG(Warn) << "no devices defined for port " << portConfig->Port->GetDescription() << ". Skipping.";
                 continue;
@@ -48,7 +47,7 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
             PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters, m));
             PortDrivers.back()->SetUpDevices();
         }
-    } catch (const exception & e) {
+    } catch (const exception& e) {
         LOG(Error) << "unable to create port driver: '" << e.what() << "'. Cleaning.";
         ClearDevices();
         throw;
@@ -66,13 +65,13 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
 
 void TMQTTSerialDriver::LoopOnce()
 {
-    for (const auto & portDriver: PortDrivers)
+    for (const auto& portDriver: PortDrivers)
         portDriver->Cycle();
 }
 
 void TMQTTSerialDriver::ClearDevices()
 {
-    for (const auto & portDriver : PortDrivers) {
+    for (const auto& portDriver: PortDrivers) {
         portDriver->ClearDevices();
     }
 }
@@ -89,7 +88,7 @@ void TMQTTSerialDriver::Start()
     }
 
     for (const auto& portDriver: PortDrivers) {
-        PortLoops.emplace_back([&]{
+        PortLoops.emplace_back([&] {
             WBMQTT::SetThreadName(portDriver->GetShortDescription());
             while (Active) {
                 portDriver->Cycle();
@@ -109,7 +108,7 @@ void TMQTTSerialDriver::Stop()
         Active = false;
     }
 
-    for (auto & loopThread : PortLoops) {
+    for (auto& loopThread: PortLoops) {
         if (loopThread.joinable()) {
             loopThread.join();
         }

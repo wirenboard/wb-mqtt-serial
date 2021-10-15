@@ -11,8 +11,10 @@ void TMilurExpectations::EnqueueMilurIgnoredPacketWorkaround()
         {
             0xff, // dummy packet
         },
-        { //no response
-        }, __func__);
+        {
+            // no response
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurSessionSetupResponse()
@@ -38,7 +40,8 @@ void TMilurExpectations::EnqueueMilurSessionSetupResponse()
             0x01, // result
             0x87, // crc
             0xf0  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilur32SessionSetupResponse()
@@ -70,7 +73,8 @@ void TMilurExpectations::EnqueueMilur32SessionSetupResponse()
             0x01, // result
             0x82, // crc
             0xC6  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurAccessLevel2SessionSetupResponse()
@@ -97,55 +101,58 @@ void TMilurExpectations::EnqueueMilurAccessLevel2SessionSetupResponse()
             0x02, // result
             0xc7, // crc
             0xf1  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseAVoltageResponse()
 {
-	Expector()->Expect(
-		{
-			0xff, // unit id
-			0x01, // op
-			100, // register
-			0x41, // crc
-			0x8b  // crc
-		},
-		{
-			// Read response
-			0xff, // unit id
-			0x01, // op
-			100, // register
-			0x03, // len
-			0x6f, // data 1
-			0x94, // data 2
-			0x03, // data 3
-			0x7a, // crc
-			0x8e  // crc
-		}, __func__);
+    Expector()->Expect(
+        {
+            0xff, // unit id
+            0x01, // op
+            100,  // register
+            0x41, // crc
+            0x8b  // crc
+        },
+        {
+            // Read response
+            0xff, // unit id
+            0x01, // op
+            100,  // register
+            0x03, // len
+            0x6f, // data 1
+            0x94, // data 2
+            0x03, // data 3
+            0x7a, // crc
+            0x8e  // crc
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseBVoltageResponse()
 {
-	Expector()->Expect(
-		{
-			0xff, // unit id
-			0x01, // op
-			101, // register
-			0x80, // crc
-			0x4b  // crc
-		},
-		{
-			// Read response
-			0xff, // unit id
-			0x01, // op
-			101, // register
-			0x03, // len
-			0x6f, // data 1
-			0x94, // data 2
-			0x03, // data 3
-			0x47, // crc
-			0x4e  // crc
-		}, __func__);
+    Expector()->Expect(
+        {
+            0xff, // unit id
+            0x01, // op
+            101,  // register
+            0x80, // crc
+            0x4b  // crc
+        },
+        {
+            // Read response
+            0xff, // unit id
+            0x01, // op
+            101,  // register
+            0x03, // len
+            0x6f, // data 1
+            0x94, // data 2
+            0x03, // data 3
+            0x47, // crc
+            0x4e  // crc
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseCVoltageResponse()
@@ -154,7 +161,7 @@ void TMilurExpectations::EnqueueMilurPhaseCVoltageResponse()
         {
             0xff, // unit id
             0x01, // op
-            102, // register
+            102,  // register
             0xc0, // crc
             0x4a  // crc
         },
@@ -162,22 +169,24 @@ void TMilurExpectations::EnqueueMilurPhaseCVoltageResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            102, // register
+            102,  // register
             0x03, // len
             0x6f, // data 1
             0x94, // data 2
             0x03, // data 3
             0x03, // crc
             0x4e  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
-void TMilurExpectations::EnqueueMilurPhaseACurrentResponse() {
+void TMilurExpectations::EnqueueMilurPhaseACurrentResponse()
+{
     Expector()->Expect(
         {
             0xff, // unit id
             0x01, // op
-            103, // register
+            103,  // register
             0x01, // crc
             0x8a  // crc
         },
@@ -185,14 +194,15 @@ void TMilurExpectations::EnqueueMilurPhaseACurrentResponse() {
             // Read response
             0xff, // unit id
             0x01, // op
-            103, // register
+            103,  // register
             0x03, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
             0x3a, // crc
             0x21  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseBCurrentResponse()
@@ -201,7 +211,7 @@ void TMilurExpectations::EnqueueMilurPhaseBCurrentResponse()
         {
             0xff, // unit id
             0x01, // op
-            104, // register
+            104,  // register
             0x41, // crc
             0x8e  // crc
         },
@@ -209,14 +219,15 @@ void TMilurExpectations::EnqueueMilurPhaseBCurrentResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            104, // register
+            104,  // register
             0x03, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
             0x6e, // crc
             0x20  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseCCurrentResponse()
@@ -225,7 +236,7 @@ void TMilurExpectations::EnqueueMilurPhaseCCurrentResponse()
         {
             0xff, // unit id
             0x01, // op
-            105, // register
+            105,  // register
             0x80, // crc
             0x4e  // crc
         },
@@ -233,14 +244,15 @@ void TMilurExpectations::EnqueueMilurPhaseCCurrentResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            105, // register
+            105,  // register
             0x03, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
             0x53, // crc
             0xe0  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseAActivePowerResponse()
@@ -249,7 +261,7 @@ void TMilurExpectations::EnqueueMilurPhaseAActivePowerResponse()
         {
             0xff, // unit id
             0x01, // op
-            106, // register
+            106,  // register
             0xc0, // crc
             0x4f  // crc
         },
@@ -257,15 +269,16 @@ void TMilurExpectations::EnqueueMilurPhaseAActivePowerResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            106, // register
+            106,  // register
             0x04, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
-			0xff, // data 4
+            0xff, // data 4
             0x55, // crc
             0x8e  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseBActivePowerResponse()
@@ -274,7 +287,7 @@ void TMilurExpectations::EnqueueMilurPhaseBActivePowerResponse()
         {
             0xff, // unit id
             0x01, // op
-            107, // register
+            107,  // register
             0x01, // crc
             0x8f  // crc
         },
@@ -282,15 +295,16 @@ void TMilurExpectations::EnqueueMilurPhaseBActivePowerResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            107, // register
+            107,  // register
             0x04, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
-			0xff, // data 4
+            0xff, // data 4
             0x54, // crc
             0x5f  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseCActivePowerResponse()
@@ -299,7 +313,7 @@ void TMilurExpectations::EnqueueMilurPhaseCActivePowerResponse()
         {
             0xff, // unit id
             0x01, // op
-            108, // register
+            108,  // register
             0x40, // crc
             0x4d  // crc
         },
@@ -307,15 +321,16 @@ void TMilurExpectations::EnqueueMilurPhaseCActivePowerResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            108, // register
+            108,  // register
             0x04, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
-			0xff, // data 4
+            0xff, // data 4
             0x55, // crc
             0xe8  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurTotalActivePowerResponse()
@@ -324,7 +339,7 @@ void TMilurExpectations::EnqueueMilurTotalActivePowerResponse()
         {
             0xff, // unit id
             0x01, // op
-            109, // register
+            109,  // register
             0x81, // crc
             0x8d  // crc
         },
@@ -332,15 +347,16 @@ void TMilurExpectations::EnqueueMilurTotalActivePowerResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            109, // register
+            109,  // register
             0x04, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
-			0xff, // data 4
+            0xff, // data 4
             0x54, // crc
             0x39  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseAReactivePowerResponse()
@@ -349,7 +365,7 @@ void TMilurExpectations::EnqueueMilurPhaseAReactivePowerResponse()
         {
             0xff, // unit id
             0x01, // op
-            110, // register
+            110,  // register
             0xc1, // crc
             0x8c  // crc
         },
@@ -357,15 +373,16 @@ void TMilurExpectations::EnqueueMilurPhaseAReactivePowerResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            110, // register
+            110,  // register
             0x04, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
-			0xff, // data 4
+            0xff, // data 4
             0x54, // crc
             0x0a  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseBReactivePowerResponse()
@@ -374,7 +391,7 @@ void TMilurExpectations::EnqueueMilurPhaseBReactivePowerResponse()
         {
             0xff, // unit id
             0x01, // op
-            111, // register
+            111,  // register
             0x00, // crc
             0x4c  // crc
         },
@@ -382,15 +399,16 @@ void TMilurExpectations::EnqueueMilurPhaseBReactivePowerResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            111, // register
+            111,  // register
             0x04, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
-			0xff, // data 4
+            0xff, // data 4
             0x55, // crc
             0xdb  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurPhaseCReactivePowerResponse()
@@ -399,7 +417,7 @@ void TMilurExpectations::EnqueueMilurPhaseCReactivePowerResponse()
         {
             0xff, // unit id
             0x01, // op
-            112, // register
+            112,  // register
             0x41, // crc
             0x84  // crc
         },
@@ -407,15 +425,16 @@ void TMilurExpectations::EnqueueMilurPhaseCReactivePowerResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            112, // register
+            112,  // register
             0x04, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
-			0xff, // data 4
+            0xff, // data 4
             0x57, // crc
             0xb4  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurTotalReactivePowerResponse()
@@ -424,7 +443,7 @@ void TMilurExpectations::EnqueueMilurTotalReactivePowerResponse()
         {
             0xff, // unit id
             0x01, // op
-            113, // register
+            113,  // register
             0x80, // crc
             0x44  // crc
         },
@@ -432,15 +451,16 @@ void TMilurExpectations::EnqueueMilurTotalReactivePowerResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            113, // register
+            113,  // register
             0x04, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
-			0xff, // data 4
+            0xff, // data 4
             0x56, // crc
             0x65  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurTotalReactiveEnergyResponse()
@@ -449,7 +469,7 @@ void TMilurExpectations::EnqueueMilurTotalReactiveEnergyResponse()
         {
             0xff, // unit id
             0x01, // op
-            127, // register
+            127,  // register
             0x01, // crc
             0x80  // crc
         },
@@ -457,15 +477,16 @@ void TMilurExpectations::EnqueueMilurTotalReactiveEnergyResponse()
             // Read response
             0xff, // unit id
             0x01, // op
-            127, // register
+            127,  // register
             0x04, // len
             0xf0, // data 1
             0xd8, // data 2
             0xff, // data 3
-			0xff, // data 4
+            0xff, // data 4
             0x57, // crc
             0x4b  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurFrequencyResponse()
@@ -488,7 +509,8 @@ void TMilurExpectations::EnqueueMilurFrequencyResponse()
             0xC3, // data 2
             0xB3, // crc
             0xD9  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurTotalConsumptionResponse()
@@ -513,7 +535,8 @@ void TMilurExpectations::EnqueueMilurTotalConsumptionResponse()
             0x00, // data 4
             0xac, // crc
             0x6c  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilur32TotalConsumptionResponse()
@@ -544,7 +567,8 @@ void TMilurExpectations::EnqueueMilur32TotalConsumptionResponse()
             0x00, // data 4
             0x6F, // crc
             0xE4  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurNoSessionResponse()
@@ -565,7 +589,8 @@ void TMilurExpectations::EnqueueMilurNoSessionResponse()
             0x00, // service data
             0x67, // crc
             0xd8  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMilurExpectations::EnqueueMilurExceptionResponse()
@@ -586,8 +611,6 @@ void TMilurExpectations::EnqueueMilurExceptionResponse()
             0x00, // service data
             0x62, // crc
             0x28  // crc
-        }, __func__);
+        },
+        __func__);
 }
-
-
-

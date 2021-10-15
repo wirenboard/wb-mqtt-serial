@@ -2,16 +2,16 @@
 
 #include <chrono>
 #include <deque>
-#include <vector>
-#include <string>
 #include <map>
 #include <mutex>
+#include <string>
+#include <vector>
 
 namespace Metrics
 {
     struct TPollItem
     {
-        std::string              Device;
+        std::string Device;
         std::vector<std::string> Controls;
 
         TPollItem() = default;
@@ -21,8 +21,8 @@ namespace Metrics
         bool operator<(const TPollItem& item) const;
     };
 
-    const TPollItem BUS_IDLE              = { "idle" };
-    const TPollItem NON_BUS_POLLING_TASKS = { "wb-mqtt-serial" };
+    const TPollItem BUS_IDLE = {"idle"};
+    const TPollItem NON_BUS_POLLING_TASKS = {"wb-mqtt-serial"};
 
     struct TPollIntervalHist
     {
@@ -39,14 +39,14 @@ namespace Metrics
         //! Map: key - poll interval, value - number of such intervals in a time period
         typedef std::map<std::chrono::milliseconds, size_t> TPollIntervalsMap;
 
-        std::deque<TPollIntervalsMap>         Intervals;
+        std::deque<TPollIntervalsMap> Intervals;
         std::chrono::steady_clock::time_point IntervalStartTime;
         std::chrono::steady_clock::time_point LastPoll;
 
         void RotateChunks();
         void AddIntervals(TPollIntervalsMap& intervals, std::chrono::milliseconds interval, size_t count) const;
-    public:
 
+    public:
         TPollIntervalHist GetHist() const;
         void Poll(std::chrono::steady_clock::time_point time);
     };
@@ -65,15 +65,15 @@ namespace Metrics
         //! Map: key - channel name, value - bus time used by the channel
         typedef std::map<TPollItem, std::chrono::microseconds> TBusLoadMap;
 
-        std::deque<TBusLoadMap>               Intervals;
+        std::deque<TBusLoadMap> Intervals;
         std::chrono::steady_clock::time_point IntervalStartTime;
-        TPollItem                             PollItem;
+        TPollItem PollItem;
         std::chrono::steady_clock::time_point StartPollTime;
 
         void RotateChunks();
         void AddInterval(std::chrono::microseconds interval);
-    public:
 
+    public:
         void StartPoll(const TPollItem& pollItem, std::chrono::steady_clock::time_point time);
         std::map<TPollItem, TBusLoad> GetBusLoad(std::chrono::steady_clock::time_point time);
     };
@@ -81,16 +81,17 @@ namespace Metrics
     class TMetrics
     {
         std::map<TPollItem, TPollIntervalMetric> PollIntervals;
-        TBusLoadMetric                           BusLoad;
-        std::mutex                               Mutex;
+        TBusLoadMetric BusLoad;
+        std::mutex Mutex;
+
     public:
         struct TResult
         {
             TPollIntervalHist Histogram;
-            TBusLoad          BusLoad;
+            TBusLoad BusLoad;
         };
 
-        void StartPoll(const TPollItem&                      pollItem,
+        void StartPoll(const TPollItem& pollItem,
                        std::chrono::steady_clock::time_point time = std::chrono::steady_clock::now());
 
         std::map<TPollItem, TResult> GetBusLoad(std::chrono::steady_clock::time_point time);

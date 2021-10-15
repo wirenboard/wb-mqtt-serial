@@ -1,17 +1,22 @@
 #include "fake_serial_port.h"
-#include "modbus_io_expectations.h"
 #include "modbus_common.h"
+#include "modbus_io_expectations.h"
 
 using namespace std;
-
 
 class TModbusIOIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusIOExpectations
 {
 protected:
     void SetUp();
     void TearDown();
-    const char* ConfigPath() const override { return "configs/config-modbus-io-test.json"; }
-    std::string GetTemplatePath() const override { return "device-templates";}
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-io-test.json";
+    }
+    std::string GetTemplatePath() const override
+    {
+        return "device-templates";
+    }
 
     void ExpectPollQueries();
 
@@ -45,7 +50,6 @@ void TModbusIOIntegrationTest::ExpectPollQueries()
     }
     EnqueueCoilReadResponse(false);
 }
-
 
 TEST_F(TModbusIOIntegrationTest, Poll)
 {

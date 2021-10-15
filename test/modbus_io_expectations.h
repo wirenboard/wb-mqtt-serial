@@ -9,5 +9,3 @@ public:
     void EnqueueCoilReadResponse(bool firstModule);
     void EnqueueCoilWriteResponse(bool firstModule);
 };
-
-

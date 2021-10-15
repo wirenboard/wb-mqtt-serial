@@ -1,15 +1,16 @@
 #pragma once
-#include <thread>
-#include <deque>
-#include <vector>
-#include <string>
-#include <mutex>
-#include <memory>
-#include <condition_variable>
 #include "expector.h"
+#include <condition_variable>
+#include <deque>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
 #include <wblib/testing/testlog.h>
 
-class TPtyBasedFakeSerial: public TExpector {
+class TPtyBasedFakeSerial: public TExpector
+{
 public:
     TPtyBasedFakeSerial(WBMQTT::Testing::TLoggedFixture& fixture);
     ~TPtyBasedFakeSerial();
@@ -19,22 +20,29 @@ public:
     void StartExpecting();
     void StartForwarding();
     void Flush();
-    void SetDumpForwardingLogs(bool val) {DumpForwardingLogs = val;};
+    void SetDumpForwardingLogs(bool val)
+    {
+        DumpForwardingLogs = val;
+    };
+
 private:
-    struct PtyPair {
+    struct PtyPair
+    {
         ~PtyPair();
         void Init();
 
         int MasterFd = -1;
         std::string PtsName;
     };
-    struct Expectation {
+    struct Expectation
+    {
         Expectation(const std::vector<uint8_t> expectedRequest,
                     const std::vector<uint8_t> responseToSend,
-                    const char* func):
-            ExpectedRequest(expectedRequest),
-            ResponseToSend(responseToSend),
-            Func(func) {}
+                    const char* func)
+            : ExpectedRequest(expectedRequest),
+              ResponseToSend(responseToSend),
+              Func(func)
+        {}
         std::vector<uint8_t> ExpectedRequest, ResponseToSend;
         const char* Func;
     };

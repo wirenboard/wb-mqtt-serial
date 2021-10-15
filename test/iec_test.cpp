@@ -6,10 +6,10 @@
 
 namespace
 {
-    class TSerialPortMock: public TSerialPort {
+    class TSerialPortMock: public TSerialPort
+    {
     public:
-        TSerialPortMock(const TSerialPortSettings& settings) 
-            : TSerialPort(settings)
+        TSerialPortMock(const TSerialPortSettings& settings): TSerialPort(settings)
         {}
 
         uint8_t ReadByte(const std::chrono::microseconds& timeout) override
@@ -51,14 +51,17 @@ namespace
         ASSERT_EQ(iecPort->ReadByte(std::chrono::microseconds::zero()), expectReadByte);
         {
             std::vector<uint8_t> readBuf(expectReadArray.size(), 0);
-            iecPort->ReadFrame(readBuf.data(), readBuf.size(), std::chrono::microseconds::zero(), std::chrono::microseconds::zero());
+            iecPort->ReadFrame(readBuf.data(),
+                               readBuf.size(),
+                               std::chrono::microseconds::zero(),
+                               std::chrono::microseconds::zero());
             ASSERT_EQ(readBuf.size(), expectReadArray.size());
             for (size_t i = 0; i < readBuf.size(); ++i)
                 ASSERT_EQ(readBuf[i], expectReadArray[i]) << i;
         }
     }
 
-     void CheckSetSerialPortByteFormat(const TSerialPortSettings& portSettings)
+    void CheckSetSerialPortByteFormat(const TSerialPortSettings& portSettings)
     {
         auto port = std::make_shared<TSerialPortMock>(portSettings);
         auto iecPort = std::make_shared<TSerialPortWithIECHack>(port);

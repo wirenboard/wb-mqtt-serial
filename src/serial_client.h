@@ -1,16 +1,16 @@
 #pragma once
 
+#include <functional>
 #include <list>
 #include <memory>
-#include <functional>
 #include <unordered_map>
 
-#include "poll_plan.h"
-#include "serial_device.h"
-#include "register_handler.h"
 #include "binary_semaphore.h"
 #include "log.h"
 #include "metrics.h"
+#include "poll_plan.h"
+#include "register_handler.h"
+#include "serial_device.h"
 
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
@@ -54,7 +54,7 @@ private:
     void UpdateFlushNeeded();
 
     PPort Port;
-    std::list<PRegister>       RegList;
+    std::list<PRegister> RegList;
     std::vector<PSerialDevice> Devices; /* for EndPollCycle */
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
@@ -70,8 +70,8 @@ private:
     const int MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
 
     TPortOpenCloseLogic OpenCloseLogic;
-    TLoggerWithTimeout  ConnectLogger;
-    Metrics::TMetrics&  Metrics;
+    TLoggerWithTimeout ConnectLogger;
+    Metrics::TMetrics& Metrics;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

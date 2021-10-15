@@ -1,12 +1,12 @@
 #pragma once
 
-#include <vector>
-#include <memory>
 #include <deque>
+#include <memory>
+#include <vector>
 
+#include <wblib/map.h>
 #include <wblib/testing/fake_mqtt.h>
 #include <wblib/testing/testlog.h>
-#include <wblib/map.h>
 
 #include "expector.h"
 #include "serial_device.h"
@@ -14,7 +14,8 @@
 
 using WBMQTT::Testing::TLoggedFixture;
 
-class TFakeSerialPort: public TPort, public TExpector {
+class TFakeSerialPort: public TPort, public TExpector
+{
 public:
     enum TDisconnectType
     {
@@ -32,14 +33,15 @@ public:
     bool IsOpen() const;
     void WriteBytes(const uint8_t* buf, int count);
     uint8_t ReadByte(const std::chrono::microseconds& timeout);
-    size_t ReadFrame(uint8_t* buf, size_t count,
+    size_t ReadFrame(uint8_t* buf,
+                     size_t count,
                      const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
                      const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
                      TFrameCompletePred frame_complete = 0);
     void SkipNoise();
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
-    bool Wait(const PBinarySemaphore & semaphore, const TTimePoint & until) override;
+    bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
     TTimePoint CurrentTime() const override;
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) override;
@@ -72,7 +74,8 @@ private:
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
 
-class TSerialDeviceTest: public WBMQTT::Testing::TLoggedFixture, public virtual TExpectorProvider {
+class TSerialDeviceTest: public WBMQTT::Testing::TLoggedFixture, public virtual TExpectorProvider
+{
 protected:
     void SetUp();
     void TearDown();
@@ -82,18 +85,19 @@ protected:
     TSerialDeviceFactory DeviceFactory;
 };
 
-class TSerialDeviceIntegrationTest: public virtual TSerialDeviceTest {
+class TSerialDeviceIntegrationTest: public virtual TSerialDeviceTest
+{
 protected:
     void SetUp();
     void TearDown();
-    void Publish(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
-    void PublishWaitOnValue(const std::string & topic, const std::string & payload, uint8_t qos = 0, bool retain = true);
+    void Publish(const std::string& topic, const std::string& payload, uint8_t qos = 0, bool retain = true);
+    void PublishWaitOnValue(const std::string& topic, const std::string& payload, uint8_t qos = 0, bool retain = true);
     virtual const char* ConfigPath() const = 0;
     virtual std::string GetTemplatePath() const;
 
     WBMQTT::Testing::PFakeMqttBroker MqttBroker;
     WBMQTT::Testing::PFakeMqttClient MqttClient;
-    WBMQTT::PDeviceDriver            Driver;
+    WBMQTT::PDeviceDriver Driver;
 
     PMQTTSerialDriver SerialDriver;
     PHandlerConfig Config;

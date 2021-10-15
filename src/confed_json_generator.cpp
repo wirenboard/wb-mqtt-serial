@@ -9,7 +9,7 @@ using namespace std;
 using namespace WBMQTT::JSON;
 
 namespace
-    {
+{
     Json::Value MakeJsonFromChannelTemplate(const Json::Value& channelTemplate)
     {
         Json::Value res;
@@ -85,7 +85,7 @@ namespace
 
     void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, bool isSubdevice)
     {
-        for (Json::Value& device : devices) {
+        for (Json::Value& device: devices) {
             if (device.isMember("device_type")) {
                 device = MakeDeviceForConfed(device, templates, isSubdevice);
             }
@@ -99,36 +99,41 @@ namespace
         std::unordered_map<std::string, Json::Value*> channelsToGroups;
         for (const auto& channel: schema["channels"]) {
             try {
-                channelsToGroups.emplace(channel["name"].asString(), &channelsFromGroups.at(channel["group"].asString()));
-            } catch (...) {}
+                channelsToGroups.emplace(channel["name"].asString(),
+                                         &channelsFromGroups.at(channel["group"].asString()));
+            } catch (...) {
+            }
         }
         Json::Value originalChannels(Json::arrayValue);
         for (const auto& channel: config["channels"]) {
             try {
                 (*channelsToGroups.at(channel["name"].asString()))["channels"].append(channel);
-            } catch(...) {
+            } catch (...) {
                 originalChannels.append(channel);
             }
         }
         return originalChannels;
     }
 
-    std::vector<std::string> PartitionParametersByGroups(const Json::Value& config,
-                                                            const Json::Value& schema,
-                                                            std::unordered_map<std::string, Json::Value>& channelsFromGroups)
+    std::vector<std::string> PartitionParametersByGroups(
+        const Json::Value& config,
+        const Json::Value& schema,
+        std::unordered_map<std::string, Json::Value>& channelsFromGroups)
     {
         std::unordered_map<std::string, Json::Value*> parametersToGroups;
         for (Json::ValueConstIterator it = schema["parameters"].begin(); it != schema["parameters"].end(); ++it) {
             try {
                 parametersToGroups.emplace(it.name(), &channelsFromGroups.at((*it)["group"].asString()));
-            } catch(...) {}
+            } catch (...) {
+            }
         }
         std::vector<std::string> movedParameters;
         for (Json::ValueConstIterator it = config.begin(); it != config.end(); ++it) {
             try {
                 (*parametersToGroups.at(it.name()))[it.name()] = *it;
                 movedParameters.emplace_back(it.name());
-            } catch(...) {}
+            } catch (...) {
+            }
         }
         return movedParameters;
     }
@@ -243,7 +248,7 @@ namespace
             } else {
                 TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate.Type, schema);
                 MakeDevicesForConfed(standardChannels, subDeviceTemplates, true);
-            } 
+            }
             newDev["standard_channels"] = standardChannels;
         }
 
@@ -255,7 +260,8 @@ namespace
             }
             res[GetSubdeviceKey(dt)] = newDev;
         } else {
-            if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
+            if (!newDev.isMember("slave_id") ||
+                (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
                 newDev["slave_id"] = false;
             }
             if ((schema.isMember("parameters"))) {
@@ -272,19 +278,17 @@ namespace
     }
 }
 
-Json::Value MakeJsonForConfed(const std::string&    configFileName,
-                              const Json::Value&    baseConfigSchema,
-                              TTemplateMap&         templates,
+Json::Value MakeJsonForConfed(const std::string& configFileName,
+                              const Json::Value& baseConfigSchema,
+                              TTemplateMap& templates,
                               TSerialDeviceFactory& deviceFactory)
 {
     Json::Value root(Parse(configFileName));
-    auto configSchema = MakeSchemaForConfigValidation(baseConfigSchema,
-                                                      GetValidationDeviceTypes(root),
-                                                      templates,
-                                                      deviceFactory);
+    auto configSchema =
+        MakeSchemaForConfigValidation(baseConfigSchema, GetValidationDeviceTypes(root), templates, deviceFactory);
     Validate(root, configSchema);
-    for (Json::Value& port : root["ports"]) {
-        for (Json::Value& device : port["devices"]) {
+    for (Json::Value& port: root["ports"]) {
+        for (Json::Value& device: port["devices"]) {
             if (device.isMember("device_type")) {
                 device = MakeDeviceForConfed(device, templates, false);
             }

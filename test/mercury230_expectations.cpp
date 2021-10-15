@@ -1,6 +1,5 @@
 #include "mercury230_expectations.h"
 
-
 void TMercury230Expectations::EnqueueMercury230SessionSetupResponse()
 {
     Expector()->Expect(
@@ -23,7 +22,8 @@ void TMercury230Expectations::EnqueueMercury230SessionSetupResponse()
             0x00, // state
             0x01, // crc
             0xb0  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230AccessLevel2SessionSetupResponse()
@@ -48,7 +48,8 @@ void TMercury230Expectations::EnqueueMercury230AccessLevel2SessionSetupResponse(
             0x00, // state
             0x01, // crc
             0xb0  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230EnergyResponse1()
@@ -83,7 +84,8 @@ void TMercury230Expectations::EnqueueMercury230EnergyResponse1()
             0xff, // R-
             0x44, // crc
             0xab  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230EnergyResponse2()
@@ -118,7 +120,8 @@ void TMercury230Expectations::EnqueueMercury230EnergyResponse2()
             0xff, // R-
             0x45, // crc
             0xbb  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230PerPhaseEnergyResponse()
@@ -149,7 +152,8 @@ void TMercury230Expectations::EnqueueMercury230PerPhaseEnergyResponse()
             0x95, // Phase C
             0x50, // crc
             0x99  // crc
-        }, __func__);    
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230U1Response()
@@ -170,7 +174,8 @@ void TMercury230Expectations::EnqueueMercury230U1Response()
             0x5e, // U1
             0xb0, // crc
             0x1c  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230U2Response()
@@ -191,7 +196,8 @@ void TMercury230Expectations::EnqueueMercury230U2Response()
             0x5d, // U2
             0x8f, // crc
             0x2d  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230U3Response()
@@ -212,7 +218,8 @@ void TMercury230Expectations::EnqueueMercury230U3Response()
             0xc4, // U3
             0x4b, // crc
             0x27  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230I1Response()
@@ -233,7 +240,8 @@ void TMercury230Expectations::EnqueueMercury230I1Response()
             0x00, // I1
             0x32, // crc
             0xb4  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230I2Response()
@@ -254,7 +262,8 @@ void TMercury230Expectations::EnqueueMercury230I2Response()
             0x00, // I2
             0x28, // crc
             0x24  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230I3Response()
@@ -275,88 +284,93 @@ void TMercury230Expectations::EnqueueMercury230I3Response()
             0x00, // I3
             0x2b, // crc
             0x84  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230FrequencyResponse()
 {
-	Expector()->Expect(
-		{
-			0x00, // unit id (group)
-			0x08, // op
-			0x11, // addr
-			0x40, // addr
-			0x8c, // crc
-			0x46  // crc
-		},
-		{
-			0x00, // unit id (group)
-			0x00, // Freq
-			0x90, // Freq
-			0x00, // Freq
-			0x6c, // crc
-			0x24  // crc
-		}, __func__);
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x40, // addr
+            0x8c, // crc
+            0x46  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x00, // Freq
+            0x90, // Freq
+            0x00, // Freq
+            0x6c, // crc
+            0x24  // crc
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230KU1Response()
 {
-	Expector()->Expect(
-		{
-			0x00, // unit id (group)
-			0x08, // op
-			0x11, // addr
-			0x61, // addr
-			0x4c, // crc
-			0x5e  // crc
-		},
-		{
-			0x00, // unit id (group)
-			0x01, // KU1
-			0x90, // KU1
-			0x70, // crc
-			0x3c  // crc
-		}, __func__);
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x61, // addr
+            0x4c, // crc
+            0x5e  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x01, // KU1
+            0x90, // KU1
+            0x70, // crc
+            0x3c  // crc
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230KU2Response()
 {
-	Expector()->Expect(
-		{
-			0x00, // unit id (group)
-			0x08, // op
-			0x11, // addr
-			0x62, // addr
-			0x0c, // crc
-			0x5f  // crc
-		},
-		{
-			0x00, // unit id (group)
-			0x01, // KU2
-			0xfe, // KU2
-			0xf1, // crc
-			0xd0  // crc
-		}, __func__);
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x62, // addr
+            0x0c, // crc
+            0x5f  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x01, // KU2
+            0xfe, // KU2
+            0xf1, // crc
+            0xd0  // crc
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230KU3Response()
 {
-	Expector()->Expect(
-		{
-			0x00, // unit id (group)
-			0x08, // op
-			0x11, // addr
-			0x63, // addr
-			0xcd, // crc
-			0x9f  // crc
-		},
-		{
-			0x00, // unit id (group)
-			0x0c, // KU3
-			0x88, // KU3
-			0x74, // crc
-			0xa6  // crc
-		}, __func__);
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x63, // addr
+            0xcd, // crc
+            0x9f  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x0c, // KU3
+            0x88, // KU3
+            0x74, // crc
+            0xa6  // crc
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230TempResponse()
@@ -376,7 +390,8 @@ void TMercury230Expectations::EnqueueMercury230TempResponse()
             0x18, // temp
             0x71, // crc
             0xca  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230PResponse()
@@ -397,9 +412,9 @@ void TMercury230Expectations::EnqueueMercury230PResponse()
             0x70, // P value, 2nd byte
             0xe2, // crc
             0x26  // crc
-        }, __func__);
+        },
+        __func__);
 }
-
 
 void TMercury230Expectations::EnqueueMercury230P1Response()
 {
@@ -419,7 +434,8 @@ void TMercury230Expectations::EnqueueMercury230P1Response()
             0x70, // P value, 2nd byte
             0xe3, // crc
             0xce  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230P2Response()
@@ -440,7 +456,8 @@ void TMercury230Expectations::EnqueueMercury230P2Response()
             0x76, // P value, 2nd byte
             0x63, // crc
             0xcc  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230P3Response()
@@ -461,91 +478,96 @@ void TMercury230Expectations::EnqueueMercury230P3Response()
             0xbb, // P value, 2nd byte
             0xa2, // crc
             0x59  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230PFResponse()
 {
-	Expector()->Expect(
-		{
-			0x00, // unit id (group)
-			0x08, // op
-			0x11, // addr
-			0x30, // addr
-			0x8d, // crc
-			0xa2  // crc
-		},
-		{
-			0x00, // unit id (group)
-			0x88, // 2 bits direction (active negative) + 6 bits Q value
-			0x87, // PF value, 3rd byte
-			0x90, // PF value, 2nd byte
-			0xe3, // crc
-			0x92  // crc
-		}, __func__);
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x30, // addr
+            0x8d, // crc
+            0xa2  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x88, // 2 bits direction (active negative) + 6 bits Q value
+            0x87, // PF value, 3rd byte
+            0x90, // PF value, 2nd byte
+            0xe3, // crc
+            0x92  // crc
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230PF1Response()
 {
-	Expector()->Expect(
-		{
-			0x00, // unit id (group)
-			0x08, // op
-			0x11, // addr
-			0x31, // addr
-			0x4c, // crc
-			0x62  // crc
-		},
-		{
-			0x00, // unit id (group)
-			0x88, // 2 bits direction (active negative) + 6 bits Q value
-			0x87, // PF value, 3rd byte
-			0x88, // PF value, 2nd byte
-			0xe3, // crc
-			0x98  // crc
-		}, __func__);
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x31, // addr
+            0x4c, // crc
+            0x62  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x88, // 2 bits direction (active negative) + 6 bits Q value
+            0x87, // PF value, 3rd byte
+            0x88, // PF value, 2nd byte
+            0xe3, // crc
+            0x98  // crc
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230PF2Response()
 {
-	Expector()->Expect(
-		{
-			0x00, // unit id (group)
-			0x08, // op
-			0x11, // addr
-			0x32, // addr
-			0x0c, // crc
-			0x63  // crc
-		},
-		{
-			0x00, // unit id (group)
-			0x88, // 2 bits direction (active negative) + 6 bits Q value
-			0x87, // PF value, 3rd byte
-			0x58, // PF value, 2nd byte
-			0xe2, // crc
-			0x04  // crc
-		}, __func__);
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x32, // addr
+            0x0c, // crc
+            0x63  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x88, // 2 bits direction (active negative) + 6 bits Q value
+            0x87, // PF value, 3rd byte
+            0x58, // PF value, 2nd byte
+            0xe2, // crc
+            0x04  // crc
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230PF3Response()
 {
-	Expector()->Expect(
-		{
-			0x00, // unit id (group)
-			0x08, // op
-			0x11, // addr
-			0x33, // addr
-			0xcd, // crc
-			0xa3  // crc
-		},
-		{
-			0x00, // unit id (group)
-			0x88, // 2 bits direction (active negative) + 6 bits Q value
-			0x66, // PF value, 3rd byte
-			0x58, // PF value, 2nd byte
-			0xaa, // crc
-			0x54  // crc
-		}, __func__);
+    Expector()->Expect(
+        {
+            0x00, // unit id (group)
+            0x08, // op
+            0x11, // addr
+            0x33, // addr
+            0xcd, // crc
+            0xa3  // crc
+        },
+        {
+            0x00, // unit id (group)
+            0x88, // 2 bits direction (active negative) + 6 bits Q value
+            0x66, // PF value, 3rd byte
+            0x58, // PF value, 2nd byte
+            0xaa, // crc
+            0x54  // crc
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230QResponse()
@@ -566,7 +588,8 @@ void TMercury230Expectations::EnqueueMercury230QResponse()
             0x70, // Q value, 2nd byte
             0xe3, // crc
             0xce  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230Q1Response()
@@ -587,7 +610,8 @@ void TMercury230Expectations::EnqueueMercury230Q1Response()
             0x70, // Q value, 2nd byte
             0xe3, // crc
             0xce  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230Q2Response()
@@ -608,7 +632,8 @@ void TMercury230Expectations::EnqueueMercury230Q2Response()
             0x70, // Q value, 2nd byte
             0xe2, // crc
             0x1a  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230Q3Response()
@@ -629,7 +654,8 @@ void TMercury230Expectations::EnqueueMercury230Q3Response()
             0x70, // Q value, 2nd byte
             0xe2, // crc
             0x1a  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230NoSessionResponse()
@@ -648,7 +674,8 @@ void TMercury230Expectations::EnqueueMercury230NoSessionResponse()
             0x05, // error 5 = no session
             0xc1, // crc
             0xb3  // crc
-        }, __func__);
+        },
+        __func__);
 }
 
 void TMercury230Expectations::EnqueueMercury230InternalMeterErrorResponse()
@@ -667,5 +694,6 @@ void TMercury230Expectations::EnqueueMercury230InternalMeterErrorResponse()
             0x02, // error 2 = internal meter error
             0x80, // crc
             0x71  // crc
-        }, __func__);
+        },
+        __func__);
 }
