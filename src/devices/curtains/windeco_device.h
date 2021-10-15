@@ -4,7 +4,7 @@
 
 namespace WinDeco
 {
-    class TDevice : public TSerialDevice, public TUInt32SlaveId
+    class TDevice: public TSerialDevice, public TUInt32SlaveId
     {
         uint8_t ZoneId;
         uint8_t CurtainId;
@@ -26,6 +26,6 @@ namespace WinDeco
     };
 
     std::vector<uint8_t> MakeRequest(uint8_t zoneId, uint8_t curtainId, uint8_t command);
-    size_t               ParsePositionResponse(uint8_t zoneId, uint8_t curtainId, const std::vector<uint8_t>& bytes);
-    uint8_t              ParseStateResponse(uint8_t zoneId, uint8_t curtainId, const std::vector<uint8_t>& bytes);
+    size_t ParsePositionResponse(uint8_t zoneId, uint8_t curtainId, const std::vector<uint8_t>& bytes);
+    uint8_t ParseStateResponse(uint8_t zoneId, uint8_t curtainId, const std::vector<uint8_t>& bytes);
 }

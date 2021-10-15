@@ -1,13 +1,16 @@
 #include "config_merge_template.h"
-#include "serial_config.h"
 #include "log.h"
+#include "serial_config.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
 using namespace std;
 using namespace WBMQTT::JSON;
 
-void UpdateChannels(Json::Value& dst, const Json::Value& userConfig, ITemplateMap& channelTemplates, const std::string& logPrefix);
+void UpdateChannels(Json::Value& dst,
+                    const Json::Value& userConfig,
+                    ITemplateMap& channelTemplates,
+                    const std::string& logPrefix);
 
 void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config)
 {
@@ -50,7 +53,8 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config)
     }
 }
 
-void SetPropertyWithNotification(Json::Value& dst, Json::Value::const_iterator itProp, const std::string& logPrefix) {
+void SetPropertyWithNotification(Json::Value& dst, Json::Value::const_iterator itProp, const std::string& logPrefix)
+{
     if (dst.isMember(itProp.name()) && dst[itProp.name()] != *itProp) {
         LOG(Info) << logPrefix << " override property \"" << itProp.name() << "\"";
     }
@@ -69,11 +73,13 @@ void CheckDeviceType(Json::Value& templateConfig, const Json::Value& userConfig,
                 return;
             }
         }
-        throw TConfigParserException("'" + logPrefix + "' can't have type '" + userConfig["device_type"].asString() + "'");
+        throw TConfigParserException("'" + logPrefix + "' can't have type '" + userConfig["device_type"].asString() +
+                                     "'");
     }
     if (templateConfig.isMember("device_type")) {
         if (!userConfig.isMember("device_type") || (userConfig["device_type"] != templateConfig["device_type"])) {
-            throw TConfigParserException("'" + logPrefix + "' device_type must be '" + templateConfig["device_type"].asString() + "'");
+            throw TConfigParserException("'" + logPrefix + "' device_type must be '" +
+                                         templateConfig["device_type"].asString() + "'");
         }
         return;
     }
@@ -87,6 +93,7 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
 {
     CheckDeviceType(templateConfig, userConfig, logPrefix);
 
+    // clang-format off
     const std::vector<std::string> simpleChannelforbiddenOverrides({
         "id",
         "type",
@@ -107,10 +114,11 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
     const std::vector<std::string> subdeviceChannelforbiddenOverrides({
         "id",
         "oneOf"});
+    // clang-format on
 
-    const auto& forbiddenOverrides =   (templateConfig.isMember("device_type") || templateConfig.isMember("oneOf")) 
-                                     ? subdeviceChannelforbiddenOverrides
-                                     : simpleChannelforbiddenOverrides;
+    const auto& forbiddenOverrides = (templateConfig.isMember("device_type") || templateConfig.isMember("oneOf"))
+                                         ? subdeviceChannelforbiddenOverrides
+                                         : simpleChannelforbiddenOverrides;
 
     for (auto itProp = userConfig.begin(); itProp != userConfig.end(); ++itProp) {
         if (itProp.name() == "poll_interval" || itProp.name() == "enabled") {
@@ -118,7 +126,9 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
             continue;
         }
         if (itProp.name() == "readonly") {
-            if ((itProp ->asString() != "true") && (templateConfig.isMember(itProp.name())) && (templateConfig[itProp.name()].asString() == "true")) {
+            if ((itProp->asString() != "true") && (templateConfig.isMember(itProp.name())) &&
+                (templateConfig[itProp.name()].asString() == "true"))
+            {
                 LOG(Warn) << logPrefix << " \"readonly\" is already set to \"true\" in template";
                 continue;
             }
@@ -133,7 +143,8 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
             continue;
         }
 
-        if (std::find(forbiddenOverrides.begin(), forbiddenOverrides.end(), itProp.name()) != forbiddenOverrides.end()) {
+        if (std::find(forbiddenOverrides.begin(), forbiddenOverrides.end(), itProp.name()) != forbiddenOverrides.end())
+        {
             LOG(Warn) << logPrefix << " can't override property \"" << itProp.name() << "\"";
             continue;
         }
@@ -142,7 +153,9 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
     }
 }
 
-Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig, ITemplateMap& templates, const std::string& logPrefix)
+Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig,
+                                           ITemplateMap& templates,
+                                           const std::string& logPrefix)
 {
     if (!channelConfig.isMember("device_type")) {
         return channelConfig;
@@ -155,11 +168,17 @@ Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig, ITe
     SetIfExists(res, "stride", channelConfig, "stride");
     SetIfExists(res, "id", channelConfig, "id");
     AppendSetupItems(res, channelConfig);
-    UpdateChannels(res["channels"], channelConfig["channels"], templates, logPrefix + " " + channelConfig["name"].asString());
+    UpdateChannels(res["channels"],
+                   channelConfig["channels"],
+                   templates,
+                   logPrefix + " " + channelConfig["name"].asString());
     return res;
 }
 
-void UpdateChannels(Json::Value& channelsFromTemplate, const Json::Value& userChannels, ITemplateMap& channelTemplates, const std::string& logPrefix)
+void UpdateChannels(Json::Value& channelsFromTemplate,
+                    const Json::Value& userChannels,
+                    ITemplateMap& channelTemplates,
+                    const std::string& logPrefix)
 {
     std::unordered_map<std::string, Json::ArrayIndex> channelNames;
 
@@ -170,10 +189,13 @@ void UpdateChannels(Json::Value& channelsFromTemplate, const Json::Value& userCh
     for (const auto& elem: userChannels) {
         auto channelName(elem["name"].asString());
         if (channelNames.count(channelName)) {
-            MergeChannelProperties(channelsFromTemplate[channelNames[channelName]], elem, logPrefix + " channel \"" + channelName + "\"");
+            MergeChannelProperties(channelsFromTemplate[channelNames[channelName]],
+                                   elem,
+                                   logPrefix + " channel \"" + channelName + "\"");
         } else {
             if (elem.isMember("device_type")) {
-                throw TConfigParserException(logPrefix + " channel \"" + channelName + "\" can't contain \"device_type\" property");
+                throw TConfigParserException(logPrefix + " channel \"" + channelName +
+                                             "\" can't contain \"device_type\" property");
             }
             channelsFromTemplate.append(elem);
         }
@@ -211,7 +233,9 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
     }
 
     if (deviceData.isMember("protocol")) {
-        LOG(Warn) << "\"" << deviceName << "\" has \"protocol\" property set in config. It is ignored. Protocol from device template will be used.";
+        LOG(Warn)
+            << "\"" << deviceName
+            << "\" has \"protocol\" property set in config. It is ignored. Protocol from device template will be used.";
     }
 
     const std::unordered_set<std::string> specialProperties({"channels", "setup", "name", "protocol"});

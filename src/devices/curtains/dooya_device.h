@@ -7,10 +7,10 @@ namespace Dooya
     struct TRequest
     {
         std::vector<uint8_t> Data;
-        size_t               ResponseSize = 0;
+        size_t ResponseSize = 0;
     };
 
-    class TDevice : public TSerialDevice, public TUInt32SlaveId
+    class TDevice: public TSerialDevice, public TUInt32SlaveId
     {
         TRequest OpenCommand;
         TRequest CloseCommand;
@@ -28,5 +28,5 @@ namespace Dooya
     };
 
     std::vector<uint8_t> MakeRequest(uint16_t address, const std::vector<uint8_t>& data);
-    size_t               ParsePositionResponse(uint16_t address, uint8_t fn, uint8_t dataAddress, const std::vector<uint8_t>& bytes);
+    size_t ParsePositionResponse(uint16_t address, uint8_t fn, uint8_t dataAddress, const std::vector<uint8_t>& bytes);
 }

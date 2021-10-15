@@ -1,15 +1,15 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include <exception>
-#include <unordered_set>
-#include <functional>
 #include <cstdint>
 #include <cstring>
+#include <exception>
+#include <functional>
+#include <memory>
+#include <string>
+#include <unordered_set>
 
-#include "serial_device.h"
 #include "crc16.h"
+#include "serial_device.h"
 
 // Common device base for electricity meters
 class TEMDevice: public TSerialDevice, public TUInt32SlaveId
@@ -20,10 +20,11 @@ public:
     void WriteRegister(PRegister reg, uint64_t value) override;
 
 protected:
-    enum ErrorType {
+    enum ErrorType
+    {
         NO_ERROR,
         NO_OPEN_SESSION,
-		PERMANENT_ERROR,
+        PERMANENT_ERROR,
         OTHER_ERROR
     };
     const int MAX_LEN = 64;
@@ -36,8 +37,12 @@ protected:
 
     bool ReadResponse(int expectedByte1, uint8_t* payload, int len, TPort::TFrameCompletePred frame_complete = 0);
 
-    void Talk(uint8_t cmd, uint8_t* payload, int payload_len,
-              int expected_byte1, uint8_t* resp_payload, int resp_payload_len,
+    void Talk(uint8_t cmd,
+              uint8_t* payload,
+              int payload_len,
+              int expected_byte1,
+              uint8_t* resp_payload,
+              int resp_payload_len,
               TPort::TFrameCompletePred frame_complete = 0);
 
     uint8_t SlaveIdWidth = 1;

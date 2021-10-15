@@ -1,8 +1,8 @@
 #include "serial_client.h"
 
+#include <iostream>
 #include <unistd.h>
 #include <unordered_map>
-#include <iostream>
 
 #define LOG(logger) logger.Log() << "[serial client] "
 
@@ -10,11 +10,14 @@ namespace
 {
     const std::chrono::minutes PORT_OPEN_ERROR_NOTIFICATION_INTERVAL(5);
 
-    struct TSerialPollEntry: public TPollEntry {
-        TSerialPollEntry(PRegisterRange range) {
+    struct TSerialPollEntry: public TPollEntry
+    {
+        TSerialPollEntry(PRegisterRange range)
+        {
             Ranges.push_back(range);
         }
-        std::chrono::milliseconds PollInterval() const {
+        std::chrono::milliseconds PollInterval() const
+        {
             return Ranges.front()->PollInterval();
         }
         std::list<PRegisterRange> Ranges;
@@ -39,8 +42,8 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
     : Port(port),
       Devices(devices),
       Active(false),
-      ReadCallback([](PRegister, bool){}),
-      ErrorCallback([](PRegister, bool){}),
+      ReadCallback([](PRegister, bool) {}),
+      ErrorCallback([](PRegister, bool) {}),
       FlushNeeded(new TBinarySemaphore),
       Plan(std::make_shared<TPollPlan>([this]() { return Port->CurrentTime(); })),
       OpenCloseLogic(openCloseSettings),
@@ -98,8 +101,8 @@ void TSerialClient::PrepareRegisterRanges()
         bool at_end = it == RegList.end();
         if ((at_end || (*it)->Device() != last_device) && !cur_regs.empty()) {
             cur_regs.sort([](const PRegister& a, const PRegister& b) {
-                    return a->Type < b->Type || (a->Type == b->Type && a->GetAddress() < b->GetAddress());
-                });
+                return a->Type < b->Type || (a->Type == b->Type && a->GetAddress() < b->GetAddress());
+            });
             interval_map.clear();
 
             // Join multiple ranges with same poll period into a
@@ -143,7 +146,9 @@ void TSerialClient::DoFlush()
         Metrics.StartPoll({handler->Device()->DeviceConfig()->Id, "Command"});
         auto flushRes = handler->Flush();
         Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
-        if (handler->CurrentErrorState() != TRegisterHandler::WriteError && handler->CurrentErrorState() != TRegisterHandler::ReadWriteError) {
+        if (handler->CurrentErrorState() != TRegisterHandler::WriteError &&
+            handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
+        {
             ReadCallback(reg, flushRes.ValueIsChanged);
         }
         MaybeUpdateErrorState(reg, flushRes.Error);
@@ -242,24 +247,25 @@ void TSerialClient::OpenPortCycle()
         std::list<PRegisterRange> newRanges;
         for (auto range: pollEntry->Ranges) {
             auto device = range->Device();
-            auto & statuses = devicesRangesStatuses[device];
+            auto& statuses = devicesRangesStatuses[device];
 
             if (device->GetIsDisconnected()) {
                 // limited polling mode
                 if (statuses.empty()) {
                     // First interaction with disconnected device within this cycle: Try to reconnect
-                    
+
                     // TODO: Not a good solution as LastAccessedDevice can be disconnected too.
                     //       But we can't rely on GetIsDisconnected here because it updates only after full cycle.
                     //       The whole EndSession/GetIsDisconnected logic should be revised
                     try {
-                        if (LastAccessedDevice && LastAccessedDevice != device ) {
+                        if (LastAccessedDevice && LastAccessedDevice != device) {
                             Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "End session"});
                             LastAccessedDevice->EndSession();
                         }
-                    } catch ( const TSerialDeviceException& e) {
+                    } catch (const TSerialDeviceException& e) {
                         auto& logger = LastAccessedDevice->GetIsDisconnected() ? Debug : Warn;
-                        LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
+                        LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is "
+                                    << LastAccessedDevice->ToString() + "]";
                     }
 
                     // Force Prepare() (i.e. start session)
@@ -267,8 +273,9 @@ void TSerialClient::OpenPortCycle()
                         LastAccessedDevice = device;
                         Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "Start session"});
                         device->Prepare();
-                    } catch ( const TSerialDeviceException& e) {
-                        LOG(Debug) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << device->ToString() + "]";
+                    } catch (const TSerialDeviceException& e) {
+                        LOG(Debug) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is "
+                                   << device->ToString() + "]";
                         statuses.insert(ST_UNKNOWN_ERROR);
                     }
 
@@ -303,13 +310,13 @@ void TSerialClient::OpenPortCycle()
 
     UpdateFlushNeeded();
 
-    for (const auto & deviceRangesStatuses: devicesRangesStatuses) {
-        const auto & device = deviceRangesStatuses.first;
-        const auto & statuses = deviceRangesStatuses.second;
+    for (const auto& deviceRangesStatuses: devicesRangesStatuses) {
+        const auto& device = deviceRangesStatuses.first;
+        const auto& statuses = deviceRangesStatuses.second;
 
         if (statuses.empty()) {
             LOG(Debug) << "invariant violation: statuses empty @ " << __func__;
-            continue;   // this should not happen
+            continue; // this should not happen
         }
 
         bool deviceWasDisconnected = device->GetIsDisconnected(); // don't move after device->OnCycleEnd(...);
@@ -327,10 +334,9 @@ void TSerialClient::OpenPortCycle()
         p->EndPollCycle();
     }
 
-
-    bool cycleFailed = std::all_of(Devices.begin(), Devices.end(),
-        [](const PSerialDevice & device){ return device->GetIsDisconnected(); }
-    );
+    bool cycleFailed = std::all_of(Devices.begin(), Devices.end(), [](const PSerialDevice& device) {
+        return device->GetIsDisconnected();
+    });
 
     OpenCloseLogic.CloseIfNeeded(Port, cycleFailed);
     Metrics.StartPoll(Metrics::BUS_IDLE);
@@ -429,16 +435,17 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
             try {
                 Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "End session"});
                 LastAccessedDevice->EndSession();
-            } catch ( const TSerialDeviceException& e) {
+            } catch (const TSerialDeviceException& e) {
                 auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
-                LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is " << LastAccessedDevice->ToString() + "]";
+                LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is "
+                            << LastAccessedDevice->ToString() + "]";
             }
         }
         LastAccessedDevice = dev;
         try {
             Metrics.StartPoll({dev->DeviceConfig()->Id, "Start session"});
             dev->Prepare();
-        } catch ( const TSerialDeviceException& e) {
+        } catch (const TSerialDeviceException& e) {
             auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
             LOG(logger) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << dev->ToString() + "]";
         }
@@ -447,8 +454,8 @@ void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
 
 void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
 {
-	LOG(Info) << "device " << dev->ToString() << " is connected";
-    for(auto& reg: RegList) {
+    LOG(Info) << "device " << dev->ToString() << " is connected";
+    for (auto& reg: RegList) {
         if (reg->Device() == dev) {
             reg->SetAvailable(true);
         }

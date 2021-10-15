@@ -7,17 +7,16 @@
     }
     auto res = ::testing::AssertionFailure();
     std::stringstream ss;
-    for(auto i: v1) {
+    for (auto i: v1) {
         ss << std::hex << std::setw(2) << std::setfill('0') << int(i) << " ";
     }
     ss << "!= ";
-    for(auto i: v2) {
+    for (auto i: v2) {
         ss << std::hex << std::setw(2) << std::setfill('0') << int(i) << " ";
     }
     res << ss.str();
     return res;
 }
-
 
 ::testing::AssertionResult JsonsMatch(const Json::Value& v1, const Json::Value& v2)
 {

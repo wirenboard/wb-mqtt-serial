@@ -8,7 +8,7 @@ struct TConfigValidationOptions
 
 TConfigValidationOptions GetValidationDeviceTypes(const Json::Value& config);
 
-Json::Value MakeSchemaForConfigValidation(const Json::Value&              baseConfigSchema,
+Json::Value MakeSchemaForConfigValidation(const Json::Value& baseConfigSchema,
                                           const TConfigValidationOptions& options,
-                                          TTemplateMap&                   templates,
-                                          TSerialDeviceFactory&           deviceFactory);
+                                          TTemplateMap& templates,
+                                          TSerialDeviceFactory& deviceFactory);

@@ -1,16 +1,16 @@
-#include "fake_serial_port.h"
-#include "modbus_expectations.h"
 #include "devices/modbus_device.h"
+#include "fake_serial_port.h"
 #include "modbus_common.h"
+#include "modbus_expectations.h"
 
 #include <wblib/control.h>
 
 using namespace std;
 
-
 class TModbusTest: public TSerialDeviceTest, public TModbusExpectations
 {
     typedef shared_ptr<TModbusDevice> PModbusDevice;
+
 protected:
     void SetUp();
     set<int> VerifyQuery(list<PRegister> registerList = list<PRegister>());
@@ -45,8 +45,10 @@ void TModbusTest::SetUp()
 
     auto modbusRtuTraits = std::make_unique<Modbus::TModbusRTUTraits>();
 
-    ModbusDev = std::make_shared<TModbusDevice>(std::move(modbusRtuTraits), GetDeviceConfig(), SerialPort,
-                                DeviceFactory.GetProtocol("modbus"));
+    ModbusDev = std::make_shared<TModbusDevice>(std::move(modbusRtuTraits),
+                                                GetDeviceConfig(),
+                                                SerialPort,
+                                                DeviceFactory.GetProtocol("modbus"));
     ModbusCoil0 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 0, U8));
     ModbusCoil1 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 1, U8));
     ModbusDiscrete = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_DISCRETE, 20, U8));
@@ -67,9 +69,7 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
     std::list<PRegisterRange> ranges;
 
     if (registerList.empty()) {
-        registerList = {
-            ModbusCoil0, ModbusCoil1, ModbusDiscrete, ModbusHolding, ModbusInput, ModbusHoldingS64
-        };
+        registerList = {ModbusCoil0, ModbusCoil1, ModbusDiscrete, ModbusHolding, ModbusInput, ModbusHoldingS64};
 
         ranges = ModbusDev->SplitRegisterList(registerList);
 
@@ -103,26 +103,26 @@ set<int> TModbusTest::VerifyQuery(list<PRegister> registerList)
         auto value = to_string(registerValue.second);
 
         switch (address) {
-        case 0:
-            EXPECT_EQ(to_string(0x0), value);
-            break;
-        case 1:
-            EXPECT_EQ(to_string(0x1), value);
-            break;
-        case 20:
-            EXPECT_EQ(to_string(0x1), value);
-            break;
-        case 30:
-            EXPECT_EQ(to_string(0x0102030405060708), value);
-            break;
-        case 40:
-            EXPECT_EQ(to_string(0x66), value);
-            break;
-        case 70:
-            EXPECT_EQ(to_string(0x15), value);
-            break;
-        default:
-            throw runtime_error("register with wrong address " + to_string(address) + " in range");
+            case 0:
+                EXPECT_EQ(to_string(0x0), value);
+                break;
+            case 1:
+                EXPECT_EQ(to_string(0x1), value);
+                break;
+            case 20:
+                EXPECT_EQ(to_string(0x1), value);
+                break;
+            case 30:
+                EXPECT_EQ(to_string(0x0102030405060708), value);
+                break;
+            case 40:
+                EXPECT_EQ(to_string(0x66), value);
+                break;
+            case 70:
+                EXPECT_EQ(to_string(0x15), value);
+                break;
+            default:
+                throw runtime_error("register with wrong address " + to_string(address) + " in range");
         }
     }
 
@@ -164,7 +164,7 @@ TEST_F(TModbusTest, Errors)
     EnqueueInputReadU16Response();
     EnqueueHoldingReadS64Response();
 
-    set<int> expectedAddresses {0, 1, 20}; // errors in 2 coils and 1 input
+    set<int> expectedAddresses{0, 1, 20}; // errors in 2 coils and 1 input
     auto errorAddresses = VerifyQuery();
 
     ASSERT_EQ(expectedAddresses, errorAddresses);
@@ -175,7 +175,7 @@ TEST_F(TModbusTest, CRCError)
 {
     EnqueueInvalidCRCCoilReadResponse();
 
-    ModbusDev->ReadRegisterRange(ModbusDev->SplitRegisterList({ ModbusCoil0 }).front());
+    ModbusDev->ReadRegisterRange(ModbusDev->SplitRegisterList({ModbusCoil0}).front());
 
     SerialPort->Close();
 }
@@ -184,7 +184,7 @@ TEST_F(TModbusTest, WrongResponseDataSize)
 {
     EnqueueWrongDataSizeReadResponse();
 
-    ModbusDev->ReadRegisterRange(ModbusDev->SplitRegisterList({ ModbusCoil0 }).front());
+    ModbusDev->ReadRegisterRange(ModbusDev->SplitRegisterList({ModbusCoil0}).front());
 
     SerialPort->Close();
 }
@@ -193,7 +193,7 @@ TEST_F(TModbusTest, WrongSlaveId)
 {
     EnqueueWrongSlaveIdCoilReadResponse();
 
-    EXPECT_EQ(1, VerifyQuery({ ModbusCoil0 }).size());
+    EXPECT_EQ(1, VerifyQuery({ModbusCoil0}).size());
 
     SerialPort->Close();
 }
@@ -202,7 +202,7 @@ TEST_F(TModbusTest, WrongFunctionCode)
 {
     EnqueueWrongFunctionCodeCoilReadResponse();
 
-    EXPECT_EQ(1, VerifyQuery({ ModbusCoil0 }).size());
+    EXPECT_EQ(1, VerifyQuery({ModbusCoil0}).size());
 
     SerialPort->Close();
 }
@@ -211,7 +211,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWithException)
 {
     EnqueueWrongFunctionCodeCoilReadResponse(0x2);
 
-    EXPECT_EQ(1, VerifyQuery({ ModbusCoil0 }).size());
+    EXPECT_EQ(1, VerifyQuery({ModbusCoil0}).size());
 
     SerialPort->Close();
 }
@@ -223,7 +223,7 @@ TEST_F(TModbusTest, WrongSlaveIdWrite)
     try {
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
-    } catch (const TSerialDeviceTransientErrorException & e) {
+    } catch (const TSerialDeviceTransientErrorException& e) {
         EXPECT_EQ(string("Serial protocol error: request and response slave id mismatch"), e.what());
     }
 
@@ -237,7 +237,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWrite)
     try {
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
-    } catch (const TSerialDeviceTransientErrorException & e) {
+    } catch (const TSerialDeviceTransientErrorException& e) {
         EXPECT_EQ(string("Serial protocol error: request and response function code mismatch"), e.what());
     }
 
@@ -251,22 +251,29 @@ TEST_F(TModbusTest, WrongFunctionCodeWithExceptionWrite)
     try {
         ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
-    } catch (const TSerialDeviceTransientErrorException & e) {
+    } catch (const TSerialDeviceTransientErrorException& e) {
         EXPECT_EQ(string("Serial protocol error: request and response function code mismatch"), e.what());
     }
 
     SerialPort->Close();
 }
 
-
 class TModbusIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
 {
 protected:
-    enum TestMode {TEST_DEFAULT, TEST_HOLES, TEST_MAX_READ_REGISTERS};
+    enum TestMode
+    {
+        TEST_DEFAULT,
+        TEST_HOLES,
+        TEST_MAX_READ_REGISTERS
+    };
 
     void SetUp();
     void TearDown();
-    const char* ConfigPath() const override { return "configs/config-modbus-test.json"; }
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-test.json";
+    }
     void ExpectPollQueries(TestMode mode = TEST_DEFAULT);
     void InvalidateConfigPoll(TestMode mode = TEST_DEFAULT);
 };
@@ -287,16 +294,16 @@ void TModbusIntegrationTest::TearDown()
 void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 {
     switch (mode) {
-    case TEST_HOLES:
-        EnqueueHoldingPackHoles10ReadResponse();
-        break;
-    case TEST_MAX_READ_REGISTERS:
-        EnqueueHoldingPackMax3ReadResponse();
-        break;
-    case TEST_DEFAULT:
-    default:
-        EnqueueHoldingPackReadResponse();
-        break;
+        case TEST_HOLES:
+            EnqueueHoldingPackHoles10ReadResponse();
+            break;
+        case TEST_MAX_READ_REGISTERS:
+            EnqueueHoldingPackMax3ReadResponse();
+            break;
+        case TEST_DEFAULT:
+        default:
+            EnqueueHoldingPackReadResponse();
+            break;
     }
     // test different lengths and register types
     EnqueueHoldingReadS64Response();
@@ -331,7 +338,6 @@ void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 }
-
 
 TEST_F(TModbusIntegrationTest, Poll)
 {
@@ -379,7 +385,7 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueHoldingReadU16Response(0x6);
     EnqueueInputReadU16Response(0x8);
     EnqueueCoilReadResponse(0xa);
-    Enqueue10CoilsReadResponse(0x54);   // invalid exception code
+    Enqueue10CoilsReadResponse(0x54); // invalid exception code
     EnqueueDiscreteReadResponse(0xb);
     EnqueueHoldingSingleReadResponse(0x2);
     EnqueueHoldingMultiReadResponse(0x3);
@@ -450,8 +456,11 @@ TEST_F(TModbusIntegrationTest, GuardInterval)
 
 class TModbusReconnectTest: public TModbusIntegrationTest
 {
-    public:
-        const char* ConfigPath() const override { return "configs/config-modbus-reconnect.json"; }
+public:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-reconnect.json";
+    }
 };
 
 TEST_F(TModbusReconnectTest, Disconnect)
@@ -476,7 +485,10 @@ TEST_F(TModbusReconnectTest, Disconnect)
 class TModbusBitmasksIntegrationTest: public TModbusIntegrationTest
 {
 protected:
-    const char* ConfigPath() const override { return "configs/config-modbus-bitmasks-test.json"; }
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-bitmasks-test.json";
+    }
 
     void ExpectPollQueries(bool afterWrite = false, bool afterWriteMultiple = false);
 };
@@ -527,7 +539,10 @@ protected:
         TSerialDeviceIntegrationTest::TearDown();
     }
 
-    const char* ConfigPath() const override { return "configs/config-modbus-unavailable-registers-test.json"; }
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-unavailable-registers-test.json";
+    }
 };
 
 TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterOnBorder)
@@ -557,7 +572,7 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddl
     SerialDriver->LoopOnce();
     Note() << "LoopOnce() [one by one]";
     SerialDriver->LoopOnce();
-    Note() << "LoopOnce() [new range]"; 
+    Note() << "LoopOnce() [new range]";
     SerialDriver->LoopOnce();
 }
 
@@ -575,7 +590,8 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
     SerialDriver->LoopOnce();
 }
 
-class TModbusUnavailableRegistersAndHolesIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+class TModbusUnavailableRegistersAndHolesIntegrationTest: public TSerialDeviceIntegrationTest,
+                                                          public TModbusExpectations
 {
 protected:
     void SetUp()
@@ -591,7 +607,10 @@ protected:
         TSerialDeviceIntegrationTest::TearDown();
     }
 
-    const char* ConfigPath() const override { return "configs/config-modbus-unavailable-registers-and-holes-test.json"; }
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-unavailable-registers-and-holes-test.json";
+    }
 };
 
 TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)

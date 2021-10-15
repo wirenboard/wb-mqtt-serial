@@ -1,6 +1,6 @@
-#include <string>
-#include "fake_serial_port.h"
 #include "devices/energomera_iec_device.h"
+#include "fake_serial_port.h"
+#include <string>
 
 namespace
 {
@@ -16,7 +16,8 @@ namespace
         {
             Expector()->Expect(
                 ExpectVectorFromString("/?00000211!\x01R1\x02GROUP(400B(7)400D(1)5003(1))\x03\x68"),
-                ExpectVectorFromString("\x02""400B(E12)(118.8)(121.1)400D(50.01)5003(009114135064195)\x03\x1e"),
+                ExpectVectorFromString("\x02"
+                                       "400B(E12)(118.8)(121.1)400D(50.01)5003(009114135064195)\x03\x1e"),
                 __func__);
         }
     };

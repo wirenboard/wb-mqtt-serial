@@ -31,17 +31,16 @@ protected:
     bool Select(const std::chrono::microseconds& us);
     virtual void OnReadyEmptyFd();
 
-    int             Fd;
+    int Fd;
     std::chrono::time_point<std::chrono::steady_clock> LastInteraction;
+
 private:
     /**
      * @brief Reads data from port. Throws TSerialDeviceException on errors
-     * 
+     *
      * @param buf buffer to read to
      * @param max_read maximum bytes to read
      * @return size_t actual read bytes number
      */
     size_t ReadAvailableData(uint8_t* buf, size_t max_read);
 };
-
-

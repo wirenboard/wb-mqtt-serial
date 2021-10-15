@@ -1,28 +1,29 @@
-#include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/select.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <termios.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <cstdio>
 #include <cstring>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
 #include <string>
+#include <sys/ioctl.h>
+#include <sys/select.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <unistd.h>
 
 #include "ivtm_device.h"
 
 void TIVTMDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("ivtm", TRegisterTypes({{ 0, "default", "value", Float, true }})), 
-                             new TBasicDeviceFactory<TIVTMDevice>("#/definitions/simple_device", 
-                                                                  "#/definitions/common_channel"));
+    factory.RegisterProtocol(
+        new TUint32SlaveIdProtocol("ivtm", TRegisterTypes({{0, "default", "value", Float, true}})),
+        new TBasicDeviceFactory<TIVTMDevice>("#/definitions/simple_device", "#/definitions/common_channel"));
 }
 
 TIVTMDevice::TIVTMDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
+    : TSerialDevice(config, port, protocol),
+      TUInt32SlaveId(config->SlaveId)
 {}
 
 void TIVTMDevice::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len)
@@ -31,47 +32,45 @@ void TIVTMDevice::WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_l
     uint8_t buf[16];
     buf[0] = '$';
 
-    snprintf((char*) &buf[1], 3, "%02X", addr >> 8);
-    snprintf((char*) &buf[3], 3, "%02X", addr & 0xFF );
+    snprintf((char*)&buf[1], 3, "%02X", addr >> 8);
+    snprintf((char*)&buf[3], 3, "%02X", addr & 0xFF);
 
     buf[5] = 'R';
     buf[6] = 'R';
 
-    snprintf((char*) &buf[7], 3, "%02X", data_addr >> 8);
-    snprintf((char*) &buf[9], 3, "%02X", data_addr & 0xFF );
+    snprintf((char*)&buf[7], 3, "%02X", data_addr >> 8);
+    snprintf((char*)&buf[9], 3, "%02X", data_addr & 0xFF);
 
-    snprintf((char*) &buf[11], 3, "%02X", data_len);
+    snprintf((char*)&buf[11], 3, "%02X", data_len);
 
     uint8_t crc8 = 0;
-    for (size_t i=0; i < 13; ++i) {
+    for (size_t i = 0; i < 13; ++i) {
         crc8 += buf[i];
     }
 
-    snprintf((char*) &buf[13], 3, "%02X", crc8);
+    snprintf((char*)&buf[13], 3, "%02X", crc8);
     buf[15] = 0x0d;
-
 
     Port()->WriteBytes(buf, 16);
 }
 
 static const int MAX_LEN = 100;
 
-bool TIVTMDevice::DecodeASCIIBytes(uint8_t * buf, uint8_t* result, uint8_t len_bytes)
+bool TIVTMDevice::DecodeASCIIBytes(uint8_t* buf, uint8_t* result, uint8_t len_bytes)
 {
     for (size_t i = 0; i < len_bytes; ++i) {
-        result[i] = DecodeASCIIByte(buf + i*2);
+        result[i] = DecodeASCIIByte(buf + i * 2);
     }
     return true;
 }
 
-
-uint8_t TIVTMDevice::DecodeASCIIByte(uint8_t * buf)
+uint8_t TIVTMDevice::DecodeASCIIByte(uint8_t* buf)
 {
-    std::string s(buf, buf+2);
+    std::string s(buf, buf + 2);
     return stoul(s, nullptr, 16);
 }
 
-uint16_t TIVTMDevice::DecodeASCIIWord(uint8_t * buf)
+uint16_t TIVTMDevice::DecodeASCIIWord(uint8_t* buf)
 {
     uint8_t decoded_buf[2];
     DecodeASCIIBytes(buf, decoded_buf, 2);
@@ -83,19 +82,19 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 {
     uint8_t buf[MAX_LEN];
 
-    int nread = Port()->ReadFrame(
-        buf, MAX_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout,
-        [](uint8_t* buf, int size) {
-            return size > 0 && buf[size - 1] == '\r';
-        });
+    int nread = Port()->ReadFrame(buf,
+                                  MAX_LEN,
+                                  DeviceConfig()->ResponseTimeout,
+                                  DeviceConfig()->FrameTimeout,
+                                  [](uint8_t* buf, int size) { return size > 0 && buf[size - 1] == '\r'; });
     if (nread < 10)
         throw TSerialDeviceTransientErrorException("frame too short");
 
-    if ( (buf[0] != '!') || (buf[5] != 'R') || (buf[6] != 'R')) {
+    if ((buf[0] != '!') || (buf[5] != 'R') || (buf[6] != 'R')) {
         throw TSerialDeviceTransientErrorException("invalid response header");
     }
 
-    if (buf[nread-1] != 0x0D) {
+    if (buf[nread - 1] != 0x0D) {
         throw TSerialDeviceTransientErrorException("invalid response footer");
     }
 
@@ -104,11 +103,11 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     }
 
     uint8_t crc8 = 0;
-    for (size_t i=0; i < (size_t) nread - 3; ++i) {
+    for (size_t i = 0; i < (size_t)nread - 3; ++i) {
         crc8 += buf[i];
     }
 
-    uint8_t actualCrc = DecodeASCIIByte(&buf[nread-3]);
+    uint8_t actualCrc = DecodeASCIIByte(&buf[nread - 3]);
 
     if (crc8 != actualCrc)
         throw TSerialDeviceTransientErrorException("invalid crc");
@@ -120,9 +119,8 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
         len = actualPayloadSize / 2;
     }
 
-    DecodeASCIIBytes(buf+7, payload, len);
+    DecodeASCIIBytes(buf + 7, payload, len);
 }
-
 
 uint64_t TIVTMDevice::ReadRegister(PRegister reg)
 {
@@ -133,14 +131,11 @@ uint64_t TIVTMDevice::ReadRegister(PRegister reg)
     uint8_t response[4];
     ReadResponse(SlaveId, response, reg->GetByteWidth());
 
-    uint8_t * p = response;//&response[(address % 2) * 4];
+    uint8_t* p = response; //&response[(address % 2) * 4];
 
     // the response is little-endian. We inverse the byte order here to make it big-endian.
 
-    return (p[3] << 24) |
-           (p[2] << 16) |
-           (p[1] << 8) |
-           p[0];
+    return (p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0];
 }
 
 void TIVTMDevice::WriteRegister(PRegister, uint64_t)

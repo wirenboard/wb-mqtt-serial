@@ -1,6 +1,5 @@
 #include "s2k_expectations.h"
 
-
 void TS2KDeviceExpectations::EnqueueSetRelayOnResponse()
 {
     Expector()->Expect(
@@ -20,7 +19,8 @@ void TS2KDeviceExpectations::EnqueueSetRelayOnResponse()
             0x01, // relay No
             0x01, // relay ON
             0x4d  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TS2KDeviceExpectations::EnqueueSetRelay2On()
@@ -42,7 +42,8 @@ void TS2KDeviceExpectations::EnqueueSetRelay2On()
             0x02, // relay No
             0x01, // relay ON
             0x18  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TS2KDeviceExpectations::EnqueueSetRelay3On2()
@@ -64,7 +65,8 @@ void TS2KDeviceExpectations::EnqueueSetRelay3On2()
             0x03, // relay No
             0x01, // relay ON
             0xdc  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TS2KDeviceExpectations::EnqueueSetRelayOffResponse()
@@ -86,7 +88,8 @@ void TS2KDeviceExpectations::EnqueueSetRelayOffResponse()
             0x01, // relay No
             0x02, // relay OFF
             0xaf  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TS2KDeviceExpectations::EnqueueReadConfig1()
@@ -108,7 +111,8 @@ void TS2KDeviceExpectations::EnqueueReadConfig1()
             0x01, // config No
             0x02, // config val
             0xe5  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TS2KDeviceExpectations::EnqueueReadConfig2()
@@ -130,7 +134,8 @@ void TS2KDeviceExpectations::EnqueueReadConfig2()
             0x02, // config No
             0x02, // config val
             0xb0  // sum
-        }, __func__);
+        },
+        __func__);
 }
 void TS2KDeviceExpectations::EnqueueReadConfig3()
 {
@@ -151,7 +156,8 @@ void TS2KDeviceExpectations::EnqueueReadConfig3()
             0x03, // config No
             0x02, // config val
             0x74  // sum
-        }, __func__);
+        },
+        __func__);
 }
 void TS2KDeviceExpectations::EnqueueReadConfig4()
 {
@@ -172,7 +178,8 @@ void TS2KDeviceExpectations::EnqueueReadConfig4()
             0x04, // config No
             0x02, // config val
             0x1a  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TS2KDeviceExpectations::EnqueueReadConfig5()
@@ -194,7 +201,8 @@ void TS2KDeviceExpectations::EnqueueReadConfig5()
             0x05, // config No
             0x3c, // config val
             0x7f  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TS2KDeviceExpectations::EnqueueReadConfig6()
@@ -216,7 +224,8 @@ void TS2KDeviceExpectations::EnqueueReadConfig6()
             0x06, // config No
             0x05, // config val
             0x08  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TS2KDeviceExpectations::EnqueueReadConfig7()
@@ -238,7 +247,8 @@ void TS2KDeviceExpectations::EnqueueReadConfig7()
             0x07, // config No
             0x3c, // config val
             0xee  // sum
-        }, __func__);
+        },
+        __func__);
 }
 
 void TS2KDeviceExpectations::EnqueueReadConfig8()
@@ -260,5 +270,6 @@ void TS2KDeviceExpectations::EnqueueReadConfig8()
             0x08, // config No
             0x3c, // config val
             0xf6  // sum
-        }, __func__);
+        },
+        __func__);
 }

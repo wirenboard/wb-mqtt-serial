@@ -1,20 +1,21 @@
 #pragma once
-#include <cmath>
-#include <mutex>
-#include <memory>
-#include <string>
-#include <wblib/utils.h>
+#include "bcd_utils.h"
+#include "binary_semaphore.h"
 #include "register.h"
 #include "serial_device.h"
-#include "binary_semaphore.h"
-#include "bcd_utils.h"
+#include <cmath>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <wblib/utils.h>
 
 using WBMQTT::StringFormat;
 
 class TRegisterHandler
 {
 public:
-    enum TErrorState {
+    enum TErrorState
+    {
         NoError,
         WriteError,
         ReadError,
@@ -23,7 +24,10 @@ public:
         ErrorStateUnchanged
     };
     TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed);
-    PRegister Register() const { return Reg; }
+    PRegister Register() const
+    {
+        return Reg;
+    }
     bool NeedToPoll();
     TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
     bool NeedToFlush();
@@ -31,7 +35,7 @@ public:
     struct TFlushResult
     {
         TErrorState Error;
-        bool        ValueIsChanged;
+        bool ValueIsChanged;
     };
 
     /**
@@ -41,9 +45,18 @@ public:
     std::string TextValue() const;
 
     void SetTextValue(const std::string& v);
-    bool DidRead() const { return DidReadReg; }
-    TErrorState CurrentErrorState() const { return ErrorState; }
-    PSerialDevice Device() const { return Dev.lock(); }
+    bool DidRead() const
+    {
+        return DidReadReg;
+    }
+    TErrorState CurrentErrorState() const
+    {
+        return ErrorState;
+    }
+    PSerialDevice Device() const
+    {
+        return Dev.lock();
+    }
 
 private:
     TErrorState UpdateReadError(bool error);

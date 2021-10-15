@@ -8,15 +8,14 @@ namespace
 {
     const seconds IntervalDuration(60);
 
-    const size_t MaxBusLoadChunks       = 15;
+    const size_t MaxBusLoadChunks = 15;
     const size_t MaxPollIntervalsChunks = 2;
 }
 
 Metrics::TPollItem::TPollItem(const std::string& device): Device(device)
 {}
 
-Metrics::TPollItem::TPollItem(const std::string& device, const std::string& control)
-    : Device(device)
+Metrics::TPollItem::TPollItem(const std::string& device, const std::string& control): Device(device)
 {
     Controls.push_back(control);
 }
@@ -37,7 +36,9 @@ void Metrics::TPollIntervalMetric::RotateChunks()
     }
 }
 
-void Metrics::TPollIntervalMetric::AddIntervals(TPollIntervalsMap& intervals, std::chrono::milliseconds interval, size_t count) const
+void Metrics::TPollIntervalMetric::AddIntervals(TPollIntervalsMap& intervals,
+                                                std::chrono::milliseconds interval,
+                                                size_t count) const
 {
     auto res = intervals.emplace(interval, count);
     if (!res.second) {
@@ -64,11 +65,11 @@ Metrics::TPollIntervalHist Metrics::TPollIntervalMetric::GetHist() const
     for (; count < n / 20 && it != intervals.rend(); ++it) {
         count += it->second;
     }
-    res.P95 = (count == n / 20) ? it->first :  (it--)->first;
+    res.P95 = (count == n / 20) ? it->first : (it--)->first;
     for (; count < n / 2 && it != intervals.rend(); ++it) {
         count += it->second;
     }
-    res.P50 = (count == n / 2) ? it->first :  (it--)->first;
+    res.P50 = (count == n / 2) ? it->first : (it--)->first;
     return res;
 }
 
@@ -113,8 +114,8 @@ void Metrics::TBusLoadMetric::StartPoll(const TPollItem& pollItem, steady_clock:
     // First call
     if (IntervalStartTime == steady_clock::time_point()) {
         IntervalStartTime = time;
-        StartPollTime     = time;
-        PollItem          = pollItem;
+        StartPollTime = time;
+        PollItem = pollItem;
         Intervals.emplace_front();
         return;
     }
@@ -123,7 +124,7 @@ void Metrics::TBusLoadMetric::StartPoll(const TPollItem& pollItem, steady_clock:
     while (IntervalStartTime + IntervalDuration < time) {
         AddInterval(IntervalDuration - duration_cast<microseconds>(StartPollTime - IntervalStartTime));
         IntervalStartTime += IntervalDuration;
-        StartPollTime      = IntervalStartTime;
+        StartPollTime = IntervalStartTime;
         RotateChunks();
     }
 

@@ -14,9 +14,10 @@ namespace
 
 void TEnergomeraIecWithFastReadDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TIEC61107Protocol("energomera_iec", {{ 0, "group_single", "value", Double, true }}),
-                             new TBasicDeviceFactory<TEnergomeraIecWithFastReadDevice>("#/definitions/simple_device_with_broadcast", 
-                                                                                       "#/definitions/common_channel"));
+    factory.RegisterProtocol(
+        new TIEC61107Protocol("energomera_iec", {{0, "group_single", "value", Double, true}}),
+        new TBasicDeviceFactory<TEnergomeraIecWithFastReadDevice>("#/definitions/simple_device_with_broadcast",
+                                                                  "#/definitions/common_channel"));
 }
 
 namespace
@@ -26,12 +27,12 @@ namespace
 
     const size_t RESPONSE_BUF_LEN = 1000;
 
-    uint16_t GetParamId(const PRegister & reg)
+    uint16_t GetParamId(const PRegister& reg)
     {
         return ((GetUint32RegisterAddress(reg->GetAddress()) & 0xFFFF00) >> 8) & 0xFFFF;
     }
 
-    uint8_t GetValueNum(const PRegister & reg)
+    uint8_t GetValueNum(const PRegister& reg)
     {
         return GetUint32RegisterAddress(reg->GetAddress()) & 0xFF;
     }
@@ -39,19 +40,22 @@ namespace
     class TEnergomeraRegisterRange: public TSimpleRegisterRange
     {
     public:
-        TEnergomeraRegisterRange(const std::list<PRegister>& regs) : TSimpleRegisterRange(regs) {
+        TEnergomeraRegisterRange(const std::list<PRegister>& regs): TSimpleRegisterRange(regs)
+        {
             std::list<PRegister> sorted_reg_list = regs;
-            sorted_reg_list.sort(
-                [](const PRegister& a, const  PRegister& b) -> bool {
-                    if (GetParamId(a) < GetParamId(b)) return true;
-                    if (GetParamId(a) > GetParamId(b)) return false;
-
-                    if (GetValueNum(a) < GetValueNum(b)) return true;
-                    if (GetValueNum(a) > GetValueNum(b)) return false;
-
+            sorted_reg_list.sort([](const PRegister& a, const PRegister& b) -> bool {
+                if (GetParamId(a) < GetParamId(b))
+                    return true;
+                if (GetParamId(a) > GetParamId(b))
                     return false;
-                }
-            );
+
+                if (GetValueNum(a) < GetValueNum(b))
+                    return true;
+                if (GetValueNum(a) > GetValueNum(b))
+                    return false;
+
+                return false;
+            });
 
             for (auto reg: sorted_reg_list) {
                 auto param_id = GetParamId(reg);
@@ -60,84 +64,95 @@ namespace
                 RegsByParam[param_id].push_back(reg);
             };
         };
+
     public:
         std::map<uint16_t, uint16_t> ParamMasks;
 
         // x[Param] -> Regs (sorted by bit number)
-        std::map<uint16_t, std::list<PRegister> > RegsByParam;
+        std::map<uint16_t, std::list<PRegister>> RegsByParam;
     };
 
-    void CheckStripChecksum(uint8_t* resp, size_t len) 
+    void CheckStripChecksum(uint8_t* resp, size_t len)
     {
         if (len < 2) {
             throw TSerialDeviceTransientErrorException("empty response");
         }
-        uint8_t checksum = IEC::Get7BitSum(resp+1, len-2);
-        if (resp[len-1] != checksum) {
-            throw TSerialDeviceTransientErrorException("invalid response checksum (" + std::to_string(resp[len-1]) + " != " + std::to_string(checksum) + ")");
+        uint8_t checksum = IEC::Get7BitSum(resp + 1, len - 2);
+        if (resp[len - 1] != checksum) {
+            throw TSerialDeviceTransientErrorException("invalid response checksum (" + std::to_string(resp[len - 1]) +
+                                                       " != " + std::to_string(checksum) + ")");
         }
 
-        //replace checksum with null byte to make it C string
-        resp[len-1] = '\000';
+        // replace checksum with null byte to make it C string
+        resp[len - 1] = '\000';
     }
 
     size_t ReadFrameFastRead(TPort& port, uint8_t* buf, size_t size, TDeviceConfig& deviceConfig)
     {
-        return IEC::ReadFrame(port, buf, size, deviceConfig.ResponseTimeout, deviceConfig.FrameTimeout, 
+        return IEC::ReadFrame(
+            port,
+            buf,
+            size,
+            deviceConfig.ResponseTimeout,
+            deviceConfig.FrameTimeout,
             [](uint8_t* buf, int size) {
-                return ( size > 3  && buf[0] == IEC::STX && buf[size - 2] == IEC::ETX ); // <STX> ... <ETX><BCC>
-                    
-        }, LOG_PREFIX);
-    } 
+                return (size > 3 && buf[0] == IEC::STX && buf[size - 2] == IEC::ETX); // <STX> ... <ETX><BCC>
+            },
+            LOG_PREFIX);
+    }
 
     void SendFastGroupReadRequest(TPort& port, TEnergomeraRegisterRange& range, const std::string& slaveId)
     {
         // TODO: Exclude unavailable registers
         // request looks like this:
-        //  Write [Energomera]:/?00000211!<SOH>R1<STX>GROUP(1001(1)1004(1)1008(1)4001(7))<ETX>	
+        //  Write [Energomera]:/?00000211!<SOH>R1<STX>GROUP(1001(1)1004(1)1008(1)4001(7))<ETX>
 
         char buf[128] = {};
         // 4(header) + 1(crc)
         char cmd_part[sizeof(buf) - 5] = {};
         // 11 bytes of header
         char query_part[sizeof(cmd_part) - 11] = {};
-        for (const auto & kv : range.ParamMasks) {
-            snprintf(query_part + strlen(query_part), sizeof(query_part) - strlen(query_part), "%04hX(%hX)", kv.first, kv.second); 
+        for (const auto& kv: range.ParamMasks) {
+            snprintf(query_part + strlen(query_part),
+                     sizeof(query_part) - strlen(query_part),
+                     "%04hX(%hX)",
+                     kv.first,
+                     kv.second);
         }
 
         snprintf(cmd_part, sizeof(cmd_part), "R1\x02GROUP(%s)\x03", query_part);
         snprintf(buf, sizeof(buf), "/?%s!\x01%s", slaveId.data(), cmd_part);
         // place checksum in place of trailing null byte
-        buf[strlen(buf)] = IEC::Get7BitSum((uint8_t*) (&cmd_part[0]), strlen(cmd_part));
-        IEC::WriteBytes(port, (uint8_t*) buf, strlen(buf), LOG_PREFIX);
+        buf[strlen(buf)] = IEC::Get7BitSum((uint8_t*)(&cmd_part[0]), strlen(cmd_part));
+        IEC::WriteBytes(port, (uint8_t*)buf, strlen(buf), LOG_PREFIX);
     }
 
-    /* @returns: null-terminated char* string which is a part of the input buffer. 
+    /* @returns: null-terminated char* string which is a part of the input buffer.
         input buffer is modified in place */
     char* ReadResponse(TPort& port, uint8_t* buf, size_t buf_len, TDeviceConfig& deviceConfig)
     {
         auto len = ReadFrameFastRead(port, buf, buf_len, deviceConfig);
         CheckStripChecksum(buf, len);
 
-        //reply looks like this:
+        // reply looks like this:
         //  ReadFrame [Energomera]:<STX>1001(0.8797784)1004(1.63211)1008(0.085901)4001(0.135)(0.467)(256.546)<ETX>/
 
         // Proper response (inc. error) must start with STX, and end with ETX
-        if ((buf[0] != IEC::STX) || (buf[len-2] != IEC::ETX)) {
+        if ((buf[0] != IEC::STX) || (buf[len - 2] != IEC::ETX)) {
             throw TSerialDeviceTransientErrorException("malformed response");
         }
 
         // strip STX and ETX
         buf[len - 2] = '\000';
-        char* presp = (char*) buf + 1;
+        char* presp = (char*)buf + 1;
         return presp;
     }
 
     void ProcessResponse(TEnergomeraRegisterRange& range, char* presp)
     {
         int nread;
-        for (const auto & kv : range.RegsByParam) {
-            auto & regs = kv.second;
+        for (const auto& kv: range.RegsByParam) {
+            auto& regs = kv.second;
             auto param_id = kv.first;
 
             // consume param
@@ -170,12 +185,15 @@ namespace
                         if (reg->IsAvailable()) {
                             if (err_num == CodeUnsupportedParameter) {
                                 reg->SetAvailable(false);
-                                LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register " << reg->ToString() << " unsupported parameter";
+                                LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register "
+                                          << reg->ToString() << " unsupported parameter";
                             } else if (err_num == CodeUnsupportedParameterValue) {
                                 reg->SetAvailable(false);
-                                LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register " << reg->ToString() << " unsupported parameter value";
+                                LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register "
+                                          << reg->ToString() << " unsupported parameter value";
                             } else {
-                                LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register " << reg->ToString() << " error code: " + std::to_string(err_num);
+                                LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register "
+                                          << reg->ToString() << " error code: " + std::to_string(err_num);
                             }
                         }
                     } else {
@@ -194,7 +212,7 @@ TEnergomeraIecWithFastReadDevice::TEnergomeraIecWithFastReadDevice(PDeviceConfig
 
 std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract_range)
 {
-    auto range  = std::dynamic_pointer_cast<TEnergomeraRegisterRange>(abstract_range);
+    auto range = std::dynamic_pointer_cast<TEnergomeraRegisterRange>(abstract_range);
     if (!range) {
         throw std::runtime_error("TEnergomeraRegisterRange expected");
     }
@@ -212,9 +230,10 @@ std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PR
     } catch (TSerialDeviceTransientErrorException& e) {
         range->SetError(ST_UNKNOWN_ERROR);
         auto& logger = GetIsDisconnected() ? Debug : Warn;
-        LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is " << ToString() + "]";
+        LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
+                    << ToString() + "]";
     }
-    return { abstract_range };
+    return {abstract_range};
 }
 
 void TEnergomeraIecWithFastReadDevice::WriteRegister(PRegister, uint64_t)
@@ -222,31 +241,34 @@ void TEnergomeraIecWithFastReadDevice::WriteRegister(PRegister, uint64_t)
     throw TSerialDeviceException("Energomera protocol: writing register is not supported");
 }
 
-std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::SplitRegisterList(const std::list<PRegister> & reg_list, bool enableHoles) const
+std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::SplitRegisterList(const std::list<PRegister>& reg_list,
+                                                                              bool enableHoles) const
 {
     std::list<PRegisterRange> r;
     if (reg_list.empty())
         return r;
 
     std::list<PRegister> sorted_reg_list = reg_list;
-    
-    sorted_reg_list.sort(
-        [](const PRegister& a, const  PRegister& b) -> bool {
-            if (a->PollInterval < b->PollInterval) return true;
-            if (a->PollInterval > b->PollInterval) return false;
-            
-            if (GetParamId(a) < GetParamId(b)) return true;
-            if (GetParamId(a) > GetParamId(b)) return false;
 
+    sorted_reg_list.sort([](const PRegister& a, const PRegister& b) -> bool {
+        if (a->PollInterval < b->PollInterval)
+            return true;
+        if (a->PollInterval > b->PollInterval)
             return false;
-        }
-    );
+
+        if (GetParamId(a) < GetParamId(b))
+            return true;
+        if (GetParamId(a) > GetParamId(b))
+            return false;
+
+        return false;
+    });
 
     std::chrono::milliseconds prev_interval(-1);
 
     std::list<PRegister> cur_range;
     for (auto reg: sorted_reg_list) {
-        if ( (reg->PollInterval != prev_interval) || (cur_range.size() > 10)) {
+        if ((reg->PollInterval != prev_interval) || (cur_range.size() > 10)) {
             prev_interval = reg->PollInterval;
 
             if (!cur_range.empty()) {

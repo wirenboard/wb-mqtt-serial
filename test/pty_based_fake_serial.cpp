@@ -1,21 +1,22 @@
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/select.h>
-#include <stdexcept>
 #include <algorithm>
+#include <fcntl.h>
 #include <sstream>
+#include <stdexcept>
+#include <stdlib.h>
+#include <sys/select.h>
+#include <unistd.h>
 
 #include "pty_based_fake_serial.h"
 
-namespace {
+namespace
+{
     const int SELECT_PERIOD_MS = 50;
 }
 
 void TPtyBasedFakeSerial::PtyPair::Init()
 {
     MasterFd = posix_openpt(O_RDWR | O_NOCTTY);
-    if (MasterFd < 0){
+    if (MasterFd < 0) {
         std::stringstream ss;
         ss << "posix_openpt() failed: " << errno;
         throw std::runtime_error(ss.str());
@@ -57,8 +58,11 @@ TPtyBasedFakeSerial::PtyPair::~PtyPair()
     }
 }
 
-TPtyBasedFakeSerial::TPtyBasedFakeSerial(WBMQTT::Testing::TLoggedFixture& fixture):
-    Fixture(fixture), Stop(false), ForceFlush(false), ForwardingFromPrimary(false)
+TPtyBasedFakeSerial::TPtyBasedFakeSerial(WBMQTT::Testing::TLoggedFixture& fixture)
+    : Fixture(fixture),
+      Stop(false),
+      ForceFlush(false),
+      ForwardingFromPrimary(false)
 {
     Primary.Init();
 }
@@ -95,7 +99,7 @@ void TPtyBasedFakeSerial::Run()
 {
     for (;;) {
         std::unique_lock<std::mutex> lk(Mutex);
-        Cond.wait(lk, [this]{ return Stop || !Expectations.empty(); });
+        Cond.wait(lk, [this] { return Stop || !Expectations.empty(); });
 
         if (Stop)
             break;
@@ -180,7 +184,7 @@ void TPtyBasedFakeSerial::Forward()
             read_from = Secondary.MasterFd;
             write_to = Primary.MasterFd;
         } else {
-            continue; //should not happen
+            continue; // should not happen
         }
 
         uint8_t b;

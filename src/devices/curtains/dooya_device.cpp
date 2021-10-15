@@ -1,6 +1,6 @@
 #include "dooya_device.h"
-#include "crc16.h"
 #include "bin_utils.h"
+#include "crc16.h"
 
 using namespace BinUtils;
 
@@ -14,22 +14,22 @@ namespace
     };
 
     const TRegisterTypes RegTypes{
-        { POSITION, "position", "value", U8 },
-        { PARAM,    "param",    "value", U8 },
-        { COMMAND,  "command",  "value", U8 },
+        {POSITION, "position", "value", U8},
+        {PARAM, "param", "value", U8},
+        {COMMAND, "command", "value", U8},
     };
 
     enum TCommands
     {
-        READ    = 1,
-        WRITE   = 2,
+        READ = 1,
+        WRITE = 2,
         CONTROL = 3
     };
 
     enum TControlCommandDataAddresses
     {
-        OPEN         = 1,
-        CLOSE        = 2,
+        OPEN = 1,
+        CLOSE = 2,
         SET_POSITION = 4
     };
 
@@ -70,7 +70,8 @@ namespace
         if (Get<uint16_t>(bytes.cend() - CRC_SIZE, bytes.cend()) != CalcCrc(&bytes[0], bytes.size() - CRC_SIZE)) {
             throw TSerialDeviceTransientErrorException("Bad CRC");
         }
-        if (Get<uint16_t>(bytes.cbegin() + ADDRESS_POSITION, bytes.cbegin() + ADDRESS_POSITION + ADDRESS_SIZE) != address) {
+        if (Get<uint16_t>(bytes.cbegin() + ADDRESS_POSITION, bytes.cbegin() + ADDRESS_POSITION + ADDRESS_SIZE) !=
+            address) {
             throw TSerialDeviceTransientErrorException("Bad address");
         }
         if ((bytes[3] != fn) || (bytes[4] != dataAddress)) {
@@ -87,11 +88,11 @@ namespace
 
 void Dooya::TDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("dooya", RegTypes), 
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("dooya", RegTypes),
                              new TBasicDeviceFactory<Dooya::TDevice>("#/definitions/simple_device_no_channels"));
 }
 
-Dooya::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol) 
+Dooya::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
       OpenCommand{MakeRequest(SlaveId, {CONTROL, OPEN}), CONTROL_RESPONSE_SIZE},
@@ -105,15 +106,17 @@ std::vector<uint8_t> Dooya::TDevice::ExecCommand(const TRequest& request)
 {
     Port()->WriteBytes(request.Data);
     std::vector<uint8_t> respBytes(request.ResponseSize);
-    auto bytesRead = Port()->ReadFrame(respBytes.data(), respBytes.size(), DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
+    auto bytesRead = Port()->ReadFrame(respBytes.data(),
+                                       respBytes.size(),
+                                       DeviceConfig()->ResponseTimeout,
+                                       DeviceConfig()->FrameTimeout);
     respBytes.resize(bytesRead);
     return respBytes;
 }
 
 void Dooya::TDevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    switch (reg->Type)
-    {
+    switch (reg->Type) {
         case POSITION: {
             if (value == 0) {
                 if (CloseCommand.Data != ExecCommand(CloseCommand)) {
@@ -124,7 +127,10 @@ void Dooya::TDevice::WriteRegister(PRegister reg, uint64_t value)
                     throw TSerialDeviceTransientErrorException("Bad response");
                 }
             } else {
-                ParsePositionResponse(SlaveId, CONTROL, SET_POSITION, ExecCommand(MakeSetPositionRequest(SlaveId, value)));
+                ParsePositionResponse(SlaveId,
+                                      CONTROL,
+                                      SET_POSITION,
+                                      ExecCommand(MakeSetPositionRequest(SlaveId, value)));
             }
             return;
         }
@@ -153,8 +159,7 @@ void Dooya::TDevice::WriteRegister(PRegister reg, uint64_t value)
 
 uint64_t Dooya::TDevice::ReadRegister(PRegister reg)
 {
-    switch (reg->Type)
-    {
+    switch (reg->Type) {
         case POSITION: {
             return ParsePositionResponse(SlaveId, READ, GET_POSITION_DATA_LENGTH, ExecCommand(GetPositionCommand));
         }
@@ -182,7 +187,10 @@ std::vector<uint8_t> Dooya::MakeRequest(uint16_t address, const std::vector<uint
     return res;
 }
 
-size_t Dooya::ParsePositionResponse(uint16_t address, uint8_t fn, uint8_t dataAddress, const std::vector<uint8_t>& bytes)
+size_t Dooya::ParsePositionResponse(uint16_t address,
+                                    uint8_t fn,
+                                    uint8_t dataAddress,
+                                    const std::vector<uint8_t>& bytes)
 {
     Check(address, RESPONSE_SIZE, fn, dataAddress, bytes);
     if (bytes[DATA_POSITION] == 0xFF) {
