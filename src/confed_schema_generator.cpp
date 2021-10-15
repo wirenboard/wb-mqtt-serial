@@ -120,7 +120,7 @@ namespace
     //      "minimum": MIN,
     //      "maximum": MAX,
     //      "enum": [ ... ],
-    //      "description": DESCRIPTION,
+    //      "description": DESCRIPTION_HASH,
     //      "propertyOrder": INDEX
     //      "options": {
     //          "enumTitles" : [ ... ],
@@ -135,7 +135,9 @@ namespace
         SetIfExists(r, "enum",    setupRegister, "enum");
         SetIfExists(r, "minimum", setupRegister, "min");
         SetIfExists(r, "maximum", setupRegister, "max");
-        SetIfExists(r, "description", setupRegister, "description");
+        if (setupRegister.isMember("description")) {
+            r["description"] = context.AddHashedTranslation(setupRegister["description"].asString());
+        }
         r["propertyOrder"] = index;
         if (setupRegister.isMember("enum_titles")) {
             auto& titles = MakeArray("enum_titles", r["options"]);

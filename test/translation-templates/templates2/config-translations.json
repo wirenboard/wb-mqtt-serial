@@ -18,7 +18,8 @@
                 "title": "p22",
                 "address": 9992,
                 "enum": [1, 2],
-                "enum_titles": ["one", "two" ]
+                "enum_titles": ["one", "two" ],
+                "description": "desc"
             }
         },
         "groups": [
@@ -46,7 +47,8 @@
         "translations": {
             "en": {
                 "with translations": "English title translation",
-                "English temperature": "English temperature tr"
+                "English temperature": "English temperature tr",
+                "desc": "Description"
             },
             "ru": {
                 "with translations": "Перевод",
@@ -54,7 +56,8 @@
                 "p22": "Параметр",
                 "one": "Один",
                 "Group 1": "Группа 1",
-                "Sub1": "Часть 1"
+                "Sub1": "Часть 1",
+                "desc": "Описание"
             }
         }
     }
