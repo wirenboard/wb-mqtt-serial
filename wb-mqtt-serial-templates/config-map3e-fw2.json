@@ -1,4 +1,5 @@
 {
+    "title": "WB-MAP3E-fw2_template_title",
     "device_type": "WB-MAP3E fw2",
     "device": {
         "name": "WB-MAP3E fw2",
@@ -624,6 +625,51 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase enegry meter)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-фазный счетчик электроэнергии)",
+                "Total": "Показатели по трем фазам",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Turns L1": "Коэффициент трансформации L1",
+                "Phi L1": "Фазовая задержка L1",
+                "Actual Phase L1": "Фаза транформатора L1",
+                "Turns L2": "Коэффициент трансформации L2",
+                "Phi L2": "Фазовая задержка L2",
+                "Actual Phase L2": "Фаза транформатора L2",
+                "Turns L3": "Коэффициент трансформации L3",
+                "Phi L3": "Фазовая задержка L3",
+                "Actual Phase L3": "Фаза транформатора L3",
+                "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
+                "Voltage angle L1": "Фазовый угол L1",
+                "AP energy L1": "Энергия AP L1",
+                "RP energy L1": "Энергия RP L1",
+                "Phase angle L1": "Угол фазового сдвига L1",
+                "Voltage angle L2": "Фазовый угол L2",
+                "AP energy L2": "Энергия AP L2",
+                "RP energy L2": "Энергия RP L2",
+                "Phase angle L2": "Угол фазового сдвига L2",
+                "Voltage angle L3": "Фазовый угол L3",
+                "AP energy L3": "Энергия AP L3",
+                "RP energy L3": "Энергия RP L3",
+                "Phase angle L3": "Угол фазового сдвига L3",
+                "Total P": "P по трем фазам",
+                "Total Q": "Q по трем фазам",
+                "Total S": "S по трем фазам",
+                "Total PF": "PF по трем фазам",
+                "Total AP energy": "Энергия AP по трем фазам",
+                "Total RP energy": "Энергия RP по трем фазам",
+                "Frequency": "Частота",
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение 5 В",
+                "Uptime": "Время работы с момента включения (с)",
+                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее"
+            }
+        }
     }
 }
