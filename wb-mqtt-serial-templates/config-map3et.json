@@ -539,6 +539,7 @@
         "translations": {
             "en": {
                 "WB-MAP3ET_template_title": "WB-MAP3ET (3-phase enegry meter)",
+                "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
             "ru": {

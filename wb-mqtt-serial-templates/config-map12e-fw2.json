@@ -1983,6 +1983,7 @@
         "translations": {
             "en": {
                 "WB-MAP12E-fw2_template_title": "WB-MAP12E fw2 (multi-channel enegry meter)",
+                "Supply voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
             "ru": {

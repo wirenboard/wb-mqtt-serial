@@ -169,6 +169,7 @@
         "translations": {
             "en": {
                 "WB-MAP3EV_template_title": "WB-MAP3EV (3-phase voltmeter)",
+                "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
