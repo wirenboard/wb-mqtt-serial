@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.40.0) stable; urgency=medium
 
-  * Added Russian translation for Wiren Board Modbus peripherals:
+  * Added Russian translation for Wiren Board Modbus peripherals templates:
     * WB-M1W2
     * WB-MAI11
     * WB-MAI2-CC
