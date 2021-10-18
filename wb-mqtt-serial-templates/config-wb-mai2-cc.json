@@ -1,8 +1,9 @@
 {
-    "device_type": "WB-MAI2-mini/CC", 
+    "title": "WB-MAI2-mini_template_title",
+    "device_type": "WB-MAI2-mini/CC",
     "device": {
-        "name": "WB-MAI2-mini/CC", 
-        "id": "wb-mai2-mini", 
+        "name": "WB-MAI2-mini/CC",
+        "id": "wb-mai2-mini",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
@@ -22,38 +23,38 @@
 
         "channels": [
             {
-                "name": "Current input 1 (mA)", 
-                "type": "value", 
-                "reg_type": "input", 
-                "address": "246", 
-                "format": "s16", 
-                "scale": 3.125e-02,
+                "name": "Current input 1 (mA)",
+                "type": "value",
+                "reg_type": "input",
+                "address": "246",
+                "format": "s16",
+                "scale": 3.125e-2,
                 "group": "inputs"
-            }, 
+            },
             {
-                "name": "Current input 2 (mA)", 
-                "type": "value", 
-                "reg_type": "input", 
-                "address": "247", 
-                "format": "s16", 
-                "scale": 3.125e-02,
+                "name": "Current input 2 (mA)",
+                "type": "value",
+                "reg_type": "input",
+                "address": "247",
+                "format": "s16",
+                "scale": 3.125e-2,
                 "group": "inputs"
-            }, 
+            },
             {
-                "name": "Input Voltage", 
+                "name": "Serial NO",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "Input Voltage",
                 "reg_type": "input",
                 "address": 121,
                 "type": "voltage",
                 "scale": 0.001,
                 "enabled": false,
-                "group": "hw_info"
-            }, 
-            {
-                "name": "Serial NO", 
-                "reg_type": "input",
-                "address": 270,
-                "type": "text",
-                "format": "u32",
                 "group": "hw_info"
             },
             {
@@ -65,8 +66,22 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
-        
+        ],
+        "translations": {
+            "en": {
+                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-channel analog inputs module)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-канальный модуль измерения токового сигнала)",
+                "Inputs": "Входы",
+                "HW Info": "Данные модуля",
+                "Current input 1 (mA)": "Токовый вход 1 (мА)",
+                "Current input 2 (mA)": "Токовый вход 2 (мА)",
+                "Serial NO": "Серийный номер",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }
-

@@ -1,3 +1,33 @@
+wb-mqtt-serial (2.40.0) stable; urgency=medium
+
+  * Added Russian translation for Wiren Board Modbus peripherals templates:
+    * WB-M1W2
+    * WB-MAI11
+    * WB-MAI2-CC
+    * WB-MAO4
+    * WB-MAP12E (fw2)
+    * WB-MAP3E (fw2)
+    * WB-MAP3ET
+    * WB-MAP3EV
+    * WB-MAP6S (fw2)
+    * WB-MCM8
+    * WB-MDM3
+    * WB-MIR-v2
+    * WB-MR3
+    * WB-MR6C
+    * WB-MR6C/NC
+    * WB-MR6CU
+    * WB-MRGBW-D
+    * WB-MRM2-mini
+    * WB-MRM2-mini-nc
+    * WB-MS v.2
+    * WB-MSW v.3
+    * WB-MWAC
+  * Channels "MCU Temperature" and "MCU Voltage" were added into templates
+    of relay modules
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Fri, 15 Oct 2021 18:56:40 +0300
+
 wb-mqtt-serial (2.39.0) stable; urgency=medium
 
   * Added templates for refrigerator controllers:

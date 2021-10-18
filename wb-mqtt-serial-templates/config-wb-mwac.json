@@ -1,4 +1,5 @@
 {
+    "title": "WB-MWAC_template_title",
     "device_type": "WB-MWAC",
     "device": {
         "name": "WB-MWAC",
@@ -69,15 +70,15 @@
                 "title": "Input S1 Mode",
                 "address": 9,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 4,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
+                    "operate according to mapping-matrix",
+                    "operate according to mapping-matrix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_s1",
                 "order": 1
@@ -96,15 +97,15 @@
                 "title": "Input S2 Mode",
                 "address": 10,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 4,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
+                    "operate according to mapping-matrix",
+                    "operate according to mapping-matrix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_s2",
                 "order": 1
@@ -123,15 +124,15 @@
                 "title": "Input S3 Mode",
                 "address": 11,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 4,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
+                    "operate according to mapping-matrix",
+                    "operate according to mapping-matrix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_s3",
                 "order": 1
@@ -150,15 +151,15 @@
                 "title": "Input F1 Mode",
                 "address": 12,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 5,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
+                    "operate according to mapping-matrix",
+                    "operate according to mapping-matrix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_f1",
                 "order": 1
@@ -177,15 +178,15 @@
                 "title": "Input F2 Mode",
                 "address": 13,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 5,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
+                    "operate according to mapping-matrix",
+                    "operate according to mapping-matrix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_f2",
                 "order": 1
@@ -204,15 +205,15 @@
                 "title": "Input F3 Mode",
                 "address": 14,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4, 5 ],
+                "enum": [0, 1, 2, 3, 4, 5],
                 "default": 5,
                 "enum_titles": [
                     "push button",
                     "latching switch",
                     "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matix",
-                    "operate according to mapping-matix, repeat action in 20 min if input still activated"
+                    "operate according to mapping-matrix",
+                    "operate according to mapping-matrix, repeat action in 20 min if input still activated"
                 ],
                 "group": "input_f3",
                 "order": 1
@@ -231,12 +232,9 @@
                 "title": "Restore Last Outputs State After Power On",
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [ 0, 1 ],
+                "enum": [0, 1],
                 "default": 0,
-                "enum_titles": [
-                    "no",
-                    "yes"
-                ],
+                "enum_titles": ["no", "yes"],
                 "group": "outputs",
                 "order": 1
             },
@@ -250,7 +248,7 @@
             }
         },
 
-        "channels": [  
+        "channels": [
             {
                 "name": "P1 Counter",
                 "reg_type": "input",
@@ -265,6 +263,7 @@
                 "address": 312,
                 "type": "value",
                 "format": "u32",
+                "min": 0,
                 "enabled": false,
                 "group": "counters"
             },
@@ -282,6 +281,7 @@
                 "address": 314,
                 "type": "value",
                 "format": "u32",
+                "min": 0,
                 "enabled": false,
                 "group": "counters"
             },
@@ -305,7 +305,7 @@
                 "address": 40,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_s1"
@@ -316,7 +316,6 @@
                 "address": 1,
                 "type": "switch",
                 "group": "input_s2"
-                
             },
             {
                 "name": "S2 Counter",
@@ -331,7 +330,7 @@
                 "address": 42,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_s2"
@@ -342,7 +341,6 @@
                 "address": 2,
                 "type": "switch",
                 "group": "input_s3"
-                
             },
             {
                 "name": "S3 Counter",
@@ -357,7 +355,7 @@
                 "address": 44,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_s3"
@@ -382,7 +380,7 @@
                 "address": 46,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_f1"
@@ -407,7 +405,7 @@
                 "address": 48,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_f2"
@@ -432,7 +430,7 @@
                 "address": 50,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_f3"
@@ -484,7 +482,66 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
-        
+        ],
+        "translations": {
+            "en": {
+                "WB-MWAC_template_title": "WB-MWAC (water leak and meters controller)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MWAC_template_title": "WB-MWAC (модуль контроля протечек и расхода воды )",
+                "Counters": "Счетчики",
+                "Input S1": "Вход S1",
+                "Input S2": "Вход S2",
+                "Input S3": "Вход S3",
+                "Input F1": "Вход F1",
+                "Input F2": "Вход F2",
+                "Input F3": "Вход F3",
+                "Outputs": "Выходы",
+                "HW Info": "Данные модуля",
+                "Input S1 Mode": "Режим работы входа S1",
+                "Input S2 Mode": "Режим работы входа S2",
+                "Input S3 Mode": "Режим работы входа S3",
+                "Input F1 Mode": "Режим работы входа F1",
+                "Input F2 Mode": "Режим работы входа F2",
+                "Input F3 Mode": "Режим работы входа F3",
+                "push button": "кнопка без фиксации",
+                "latching switch": "переключатель с фиксацией",
+                "turn off all outputs": "отключить все выходы",
+                "control disabled": "управление отключено",
+                "operate according to mapping-matrix": "управлять по mapping-матрице",
+                "operate according to mapping-matrix, repeat action in 20 min if input still activated": "управлять по mapping-матрице; повторить действие через 20 мин., если вход все еще активирован",
+                "Input S1 Debounce (ms)": "Время защиты от дребезга входа S1 (мс)",
+                "Input S2 Debounce (ms)": "Время защиты от дребезга входа S2 (мс)",
+                "Input S3 Debounce (ms)": "Время защиты от дребезга входа S3 (мс)",
+                "Input F1 Debounce (ms)": "Время защиты от дребезга входа F1 (мс)",
+                "Input F2 Debounce (ms)": "Время защиты от дребезга входа F2 (мс)",
+                "Input F3 Debounce (ms)": "Время защиты от дребезга входа F3 (мс)",
+                "Restore Last Outputs State After Power On": "Восстанавливать cостояния выходов при включении",
+                "no": "нет",
+                "yes": "да",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "P1 Counter": "Счетчик P1",
+                "P1 Counter Offset": "Начальное значение счетчика P1",
+                "P2 Counter": "Счетчик P2",
+                "P2 Counter Offset": "Начальное значение счетчика P2",
+                "S1 Counter": "Счетчик срабатываний входа S1",
+                "S2 Counter": "Счетчик срабатываний входа S2",
+                "S3 Counter": "Счетчик срабатываний входа S3",
+                "F1 Counter": "Счетчик срабатываний входа F1",
+                "F2 Counter": "Счетчик срабатываний входа F2",
+                "F3 Counter": "Счетчик срабатываний входа F3",
+                "S1 Freq": "Частота срабатываний входа S1",
+                "S2 Freq": "Частота срабатываний входа S2",
+                "S3 Freq": "Частота срабатываний входа S3",
+                "F1 Freq": "Частота срабатываний входа F1",
+                "F2 Freq": "Частота срабатываний входа F2",
+                "F3 Freq": "Частота срабатываний входа F3",
+                "Alarm": "Авария",
+                "Serial": "Серийный номер",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }

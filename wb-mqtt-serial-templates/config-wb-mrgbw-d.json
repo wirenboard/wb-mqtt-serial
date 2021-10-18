@@ -1,4 +1,5 @@
 {
+    "title": "WB-MRGBW-D_template_title",
     "device_type": "WB-MRGBW-D",
     "device": {
         "name": "WB-MRGBW-D",
@@ -82,10 +83,7 @@
             {
                 "name": "Channels",
                 "id": "",
-                "oneOf": [
-                    "rgb_w",
-                    "independent_channels"
-                ],
+                "oneOf": ["rgb_w", "independent_channels"],
                 "device_type": "rgb_w"
             },
             {
@@ -123,7 +121,8 @@
                 "device": {
                     "parameters": {
                         "pwm_frequency_factor": {
-                            "title": "PWM Frequency Factor: 24 kHz / (value + 1)",
+                            "title": "pwm_frequency_factor_title",
+                            "description": "pwm_frequency_factor_description",
                             "address": 9,
                             "reg_type": "holding",
                             "min": 0,
@@ -132,7 +131,7 @@
                             "order": 1
                         },
                         "on_off_time_ms": {
-                            "title": "On/Off Time (ms)",
+                            "title": "Soft On/Off Time (ms)",
                             "address": 13,
                             "reg_type": "holding",
                             "scale": 10,
@@ -178,7 +177,8 @@
                 "device": {
                     "parameters": {
                         "pwm_frequency_factor": {
-                            "title": "PWM Frequency Factor: 24 kHz / (value + 1)",
+                            "title": "pwm_frequency_factor_title",
+                            "description": "pwm_frequency_factor_description",
                             "address": 9,
                             "reg_type": "holding",
                             "min": 0,
@@ -187,7 +187,7 @@
                             "order": 1
                         },
                         "on_off_time_ms": {
-                            "title": "On/Off Time (ms)",
+                            "title": "Soft On/Off Time (ms)",
                             "address": 13,
                             "reg_type": "holding",
                             "scale": 10,
@@ -233,6 +233,41 @@
                     ]
                 }
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-channel CV LED dimmer)",
+                "Uptime": "Uptime (s)",
+                "pwm_frequency_factor_title": "PWM Frequency Factor",
+                "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / (Factor + 1)"
+            },
+            "ru": {
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-канальный диммер светодиодных лент)",
+                "Inputs": "Входы",
+                "HW Info": "Данные модуля",
+                "Inputs Mode": "Режим работы входов",
+                "control enabled": "управление отключено",
+                "control disabled": "управление включено",
+                "Button 1": "Вход 1",
+                "Button 2": "Вход 2",
+                "Button 3": "Вход 3",
+                "Button 1 counter": "Счетчик срабатываний входа 1",
+                "Button 2 counter": "Счетчик срабатываний входа 2",
+                "Button 3 counter": "Счетчик срабатываний входа 3",
+                "Channels": "Каналы",
+                "Independent Channels": "Независимые каналы",
+                "pwm_frequency_factor_title": "Делитель частоты ШИМ",
+                "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / (Делитель + 1)",
+                "Soft On/Off Time (ms)": "Время плавного включения/выключения (мс)",
+                "Serial NO": "Серийный номер",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "White": "Белый",
+                "Channel B": "Канал B",
+                "Channel R": "Канал R",
+                "Channel G": "Канал G",
+                "Channel W": "Канал W"
+            }
+        }
     }
 }
