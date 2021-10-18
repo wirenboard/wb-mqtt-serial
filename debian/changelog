@@ -18,7 +18,8 @@ wb-mqtt-serial (2.40.0) stable; urgency=medium
     * WB-MR6C/NC
     * WB-MR6CU
     * WB-MRGBW-D
-    * WB-MRM2-mini (NO and NC)
+    * WB-MRM2-mini
+    * WB-MRM2-mini-nc
     * WB-MS v.2
     * WB-MSW v.3
     * WB-MWAC
