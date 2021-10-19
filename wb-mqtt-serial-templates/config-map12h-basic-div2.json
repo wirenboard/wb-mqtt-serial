@@ -1,4 +1,5 @@
 {
+    "title": "template_title",
     "device_type": "WB-MAP12H (basic div2)",
     "device": {
         "name": "WB-MAP12H (basic div2)",
@@ -1580,6 +1581,41 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "template_title": "WB-MAP12H (basic div2) - out of production",
+                "Supply voltage": "5V Supply",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "template_title": "WB-MAP12H (basic div2) - не производится",
+                "Channel 1 L1": "Канал 1 L1",
+                "Channel 1 L2": "Канал 1 L2",
+                "Channel 1 L3": "Канал 1 L3",
+                "Channel 1 Total": "Канал 1 Показатели по трем фазам",
+                "Channel 2 L1": "Канал 2 L1",
+                "Channel 2 L2": "Канал 2 L2",
+                "Channel 2 L3": "Канал 2 L3",
+                "Channel 2 Total": "Канал 2 Показатели по трем фазам",
+                "Channel 3 L1": "Канал 3 L1",
+                "Channel 3 L2": "Канал 3 L2",
+                "Channel 3 L3": "Канал 3 L3",
+                "Channel 3 Total": "Канал 3 Показатели по трем фазам",
+                "Channel 4 L1": "Канал 4 L1",
+                "Channel 4 L2": "Канал 4 L2",
+                "Channel 4 L3": "Канал 4 L3",
+                "Channel 4 Total": "Канал 4 Показатели по трем фазам",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Voltage angle L1": "Фазовый угол L1",
+                "Voltage angle L2": "Фазовый угол L2",
+                "Voltage angle L3": "Фазовый угол L3",
+                "Frequency": "Частота",
+                "Serial": "Серийный номер",
+                "Supply voltage": "Напряжение 5 В",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }

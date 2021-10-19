@@ -1,4 +1,5 @@
 {
+    "title": "template-title",
     "device_type": "WB-MAP6S",
     "device": {
         "name": "WB-MAP6S",
@@ -590,6 +591,46 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "template-title": "WB-MAP6S - legacy template",
+                "Supply voltage": "5V Supply",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "template-title": "WB-MAP6S - устаревший шаблон",
+                "Channel 1": "Канал 1",
+                "Channel 2": "Канал 2",
+                "Channel 3": "Канал 3",
+                "Channel 4": "Канал 4",
+                "Channel 5": "Канал 5",
+                "Channel 6": "Канал 6",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "AP energy 1": "Энергия AP 1",
+                "RP energy 1": "Энергия RP 1",
+                "Phase angle 1": "Угол фазового сдвига 1",
+                "AP energy 2": "Энергия AP 2",
+                "RP energy 2": "Энергия RP 2",
+                "Phase angle 2": "Угол фазового сдвига 2",
+                "AP energy 3": "Энергия AP 3",
+                "RP energy 3": "Энергия RP 3",
+                "Phase angle 3": "Угол фазового сдвига 3",
+                "AP energy 4": "Энергия AP 4",
+                "RP energy 4": "Энергия RP 4",
+                "Phase angle 4": "Угол фазового сдвига 4",
+                "AP energy 5": "Энергия AP 5",
+                "RP energy 5": "Энергия RP 5",
+                "Phase angle 5": "Угол фазового сдвига 5",
+                "AP energy 6": "Энергия AP 6",
+                "RP energy 6": "Энергия RP 6",
+                "Phase angle 6": "Угол фазового сдвига 6",
+                "Frequency": "Частота",
+                "Serial": "Серийный номер",
+                "Supply voltage": "Напряжение 5 В",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }
