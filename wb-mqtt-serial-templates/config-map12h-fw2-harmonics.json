@@ -1,5 +1,5 @@
 {
-    "title": "template_title",
+    "title": "_WB-MAP12H-fw2-harmonics-template-title",
     "device_type": "WB-MAP12H fw2 (+ harmonics)",
     "device": {
         "name": "WB-MAP12H fw2 (+ harmonics)",
@@ -5021,12 +5021,12 @@
         ],
         "translations": {
             "en": {
-                "template_title": "WB-MAP12H fw2 (+ harmonics) - out of production",
+                "_WB-MAP12H-fw2-harmonics-template-title": "WB-MAP12H fw2 (+ harmonics) - until 2021",
                 "Supply voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "template_title": "WB-MAP12H fw2 (+ harmonics) - не производится",
+                "_WB-MAP12H-fw2-harmonics-template-title": "WB-MAP12H fw2 (+ harmonics) - до 2021 г.",
                 "Channel 1 L1": "Канал 1 L1",
                 "Channel 1 L2": "Канал 1 L2",
                 "Channel 1 L3": "Канал 1 L3",

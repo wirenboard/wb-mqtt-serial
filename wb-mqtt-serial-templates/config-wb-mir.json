@@ -1,4 +1,5 @@
 {
+    "title": "_WB-MIR-template-title",
     "device_type": "WB-MIR",
     "device": {
         "name": "WB-MIR",
@@ -201,6 +202,14 @@
                 "format": "u32",
                 "enabled": false
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "_WB-MIR-template-title": "WB-MIR - until 2017"
+            },
+            "ru": {
+                "_WB-MIR-template-title": "WB-MIR - до 2017 г."
+            }
+        }
     }
 }

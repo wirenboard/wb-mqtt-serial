@@ -1,5 +1,5 @@
 {
-    "title": "template-title",
+    "title": "_WB-MAP3H-harmonics-template-title",
     "device_type": "WB-MAP3H (+ harmonics)",
     "device": {
         "name": "WB-MAP3H (+ harmonics)",
@@ -1508,12 +1508,12 @@
         ],
         "translations": {
             "en": {
-                "template-title": "WB-MAP3H (+ harmonics) - out of production",
+                "_WB-MAP3H-harmonics-template-title": "WB-MAP3H (+ harmonics) - until 2019",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "template-title": "WB-MAP3H (+ harmonics) - не производится",
+                "_WB-MAP3H-harmonics-template-title": "WB-MAP3H (+ harmonics) - до 2019 г.",
                 "Total": "Показатели по трем фазам",
                 "General": "Общее",
                 "HW Info": "Данные модуля",

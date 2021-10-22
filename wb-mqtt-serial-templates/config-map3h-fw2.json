@@ -1,5 +1,5 @@
 {
-    "title": "template_title",
+    "title": "_WB-MAP3H-fw2-template-title",
     "device_type": "WB-MAP3H fw2",
     "device": {
         "name": "WB-MAP3H fw2",
@@ -1037,12 +1037,12 @@
         ],
         "translations": {
             "en": {
-                "template_title": "WB-MAP3H fw2 - out of production",
+                "_WB-MAP3H-fw2-template-title": "WB-MAP3H fw2 - until 2021",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "template_title": "WB-MAP3H fw2 - не производится",
+                "_WB-MAP3H-fw2-template-title": "WB-MAP3H fw2 - до 2021 г.",
                 "Total": "Показатели по трем фазам",
                 "General": "Общее",
                 "HW Info": "Данные модуля",

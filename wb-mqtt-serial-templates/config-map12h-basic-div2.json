@@ -1,5 +1,5 @@
 {
-    "title": "template_title",
+    "title": "_WB-MAP12H-basic-div2-template-title",
     "device_type": "WB-MAP12H (basic div2)",
     "device": {
         "name": "WB-MAP12H (basic div2)",
@@ -1584,12 +1584,12 @@
         ],
         "translations": {
             "en": {
-                "template_title": "WB-MAP12H (basic div2) - out of production",
+                "_WB-MAP12H-basic-div2-template-title": "WB-MAP12H (basic div2) - until 2019",
                 "Supply voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "template_title": "WB-MAP12H (basic div2) - не производится",
+                "_WB-MAP12H-basic-div2-template-title": "WB-MAP12H (basic div2) - до 2019 г.",
                 "Channel 1 L1": "Канал 1 L1",
                 "Channel 1 L2": "Канал 1 L2",
                 "Channel 1 L3": "Канал 1 L3",

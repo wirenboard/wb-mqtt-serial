@@ -1,4 +1,5 @@
 {
+    "title": "_WB-MR11-template-title",
     "device_type": "WB-MR11",
     "device": {
         "name": "WB-MR11",
@@ -225,6 +226,14 @@
                 "format": "u32",
                 "enabled": false
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "_WB-MR11-template-title": "WB-MR11 - until 2017"
+            },
+            "ru": {
+                "_WB-MR11-template-title": "WB-MR11 - до 2017 г."
+            }
+        }
     }
 }

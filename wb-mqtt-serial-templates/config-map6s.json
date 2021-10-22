@@ -1,5 +1,5 @@
 {
-    "title": "template-title",
+    "title": "_WB-MAP6S-template-title",
     "device_type": "WB-MAP6S",
     "device": {
         "name": "WB-MAP6S",
@@ -594,12 +594,12 @@
         ],
         "translations": {
             "en": {
-                "template-title": "WB-MAP6S - legacy template",
+                "_WB-MAP6S-template-title": "WB-MAP6S - legacy template",
                 "Supply voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "template-title": "WB-MAP6S - устаревший шаблон",
+                "_WB-MAP6S-template-title": "WB-MAP6S - устаревший шаблон",
                 "Channel 1": "Канал 1",
                 "Channel 2": "Канал 2",
                 "Channel 3": "Канал 3",

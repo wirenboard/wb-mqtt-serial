@@ -1,5 +1,6 @@
 // Configuration options
 {
+    "title": "_WB-MS-THLS-template-title",
     "device_type": "WB-MS-THLS",
     "device": {
         "name": "WB-MS-THLS",
@@ -52,6 +53,14 @@
                 "format": "u32",
                 "enabled": false
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "_WB-MS-THLS-template-title": "WB-MS-THLS - until 2017"
+            },
+            "ru": {
+                "_WB-MS-THLS-template-title": "WB-MS-THLS - до 2017 г."
+            }
+        }
     }
 }
