@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.40.0-wb1) stable; urgency=medium
+
+  * Fix grammar in WB-MAI2-mini and WB-MAO4 templates
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 26 Oct 2021 11:18:51 +0300
+
 wb-mqtt-serial (2.40.0) stable; urgency=medium
 
   * Added Russian translation for Wiren Board Modbus peripherals templates:

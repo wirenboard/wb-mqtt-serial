@@ -197,7 +197,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MAO4_template_title": "WB-MAO4 (4-channel analog outputs module)",
+                "WB-MAO4_template_title": "WB-MAO4 (4-channel analog output module)",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / Factor ",
                 "Uptime": "Uptime (s)"
             },
