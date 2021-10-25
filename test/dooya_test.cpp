@@ -1,7 +1,9 @@
 #include "devices/curtains/dooya_device.h"
 #include "test_utils.h"
+#include <wblib/testing/common.h>
 
 using namespace Dooya;
+using namespace WBMQTT::Testing;
 
 TEST(TDooyaTest, MakeRequest)
 {
