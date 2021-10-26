@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.40.2) stable; urgency=medium
+
+  * Fix grammar in WB-MAI2-mini and WB-MAO4 templates
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 26 Oct 2021 11:18:51 +0300
+
 wb-mqtt-serial (2.40.1) stable; urgency=medium
 
   * Port to libwbmqtt1 3.3.0
