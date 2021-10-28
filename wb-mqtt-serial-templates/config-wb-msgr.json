@@ -1,4 +1,5 @@
 {
+    "title": "_WB-MSGR-template-title",
     "device_type": "WB-MSGR",
     "device": {
         "name": "WB-MSGR",
@@ -68,6 +69,14 @@
                 "format": "u32",
                 "enabled": false
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "_WB-MSGR-template-title": "WB-MSGR - until 2019"
+            },
+            "ru": {
+                "_WB-MSGR-template-title": "WB-MSGR - до 2019 г."
+            }
+        }
     }
 }
