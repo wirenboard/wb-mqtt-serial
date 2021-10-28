@@ -1,3 +1,22 @@
+wb-mqtt-serial (2.40.3) stable; urgency=medium
+
+  * Added Russian translation for Wiren Board Modbus legacy peripherals
+    templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 28 Oct 2021 13:59:31 +0300
+
+wb-mqtt-serial (2.40.2) stable; urgency=medium
+
+  * Fix grammar in WB-MAI2-mini and WB-MAO4 templates
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 26 Oct 2021 11:18:51 +0300
+
+wb-mqtt-serial (2.40.1) stable; urgency=medium
+
+  * Port to libwbmqtt1 3.3.0
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 25 Oct 2021 19:11:41 +0500
+
 wb-mqtt-serial (2.40.0) stable; urgency=medium
 
   * Added Russian translation for Wiren Board Modbus peripherals templates:
