@@ -1,6 +1,11 @@
 wb-mqtt-serial (2.40.0-wb1) stable; urgency=medium
 
-  * Fix grammar in WB-MAI2-mini and WB-MAO4 templates
+  * Translation backports:
+    * Fix grammar in WB-MAI2-mini and WB-MAO4 templates
+    * Added Russian translation for Wiren Board Modbus legacy energy
+      meters templates
+    * End of production date was added in titles of Wiren Board Modbus
+      legacy templates
 
  -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 26 Oct 2021 11:18:51 +0300
 

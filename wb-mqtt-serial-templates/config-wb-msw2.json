@@ -1,4 +1,5 @@
 {
+    "title": "_WB-MSW2-template-title",
     "device_type": "WB-MSW2",
     "device": {
         "name": "WB-MSW2",
@@ -117,6 +118,14 @@
                 "format": "u32",
                 "enabled": false
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "_WB-MSW2-template-title": "WB-MSW2 - until 2017"
+            },
+            "ru": {
+                "_WB-MSW2-template-title": "WB-MSW2 - до 2017 г."
+            }
+        }
     }
 }

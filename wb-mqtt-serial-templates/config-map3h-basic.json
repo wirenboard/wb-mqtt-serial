@@ -1,4 +1,5 @@
 {
+    "title": "_WB-MAP3H-basic-template-title",
     "device_type": "WB-MAP3H (basic)",
     "device": {
         "name": "WB-MAP3H (basic)",
@@ -506,6 +507,41 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "_WB-MAP3H-basic-template-title": "WB-MAP3H (basic) - until 2019",
+                "Supply Voltage": "5V Supply",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "_WB-MAP3H-basic-template-title": "WB-MAP3H (basic) - до 2019 г.",
+                "Total": "Показатели по трем фазам",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Voltage angle L1": "Фазовый угол L1",
+                "AP energy L1": "Энергия AP L1",
+                "RP energy L1": "Энергия RP L1",
+                "Phase angle L1": "Угол фазового сдвига L1",
+                "Voltage angle L2": "Фазовый угол L2",
+                "AP energy L2": "Энергия AP L2",
+                "RP energy L2": "Энергия RP L2",
+                "Phase angle L2": "Угол фазового сдвига L2",
+                "Voltage angle L3": "Фазовый угол L3",
+                "AP energy L3": "Энергия AP L3",
+                "RP energy L3": "Энергия RP L3",
+                "Phase angle L3": "Угол фазового сдвига L3",
+                "Total P": "P по трем фазам",
+                "Total Q": "Q по трем фазам",
+                "Total S": "S по трем фазам",
+                "Total PF": "PF по трем фазам",
+                "Total AP energy": "Энергия AP по трем фазам",
+                "Total RP energy": "Энергия RP по трем фазам",
+                "Frequency": "Частота",
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение 5 В",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
     }
 }
