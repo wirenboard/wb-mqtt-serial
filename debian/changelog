@@ -1,9 +1,11 @@
 wb-mqtt-serial (2.40.3) stable; urgency=medium
 
-  * Added Russian translation for Wiren Board Modbus legacy peripherals
-    templates
+  * Added Russian translation for Wiren Board Modbus legacy energy
+    meters templates
+  * End of production date was added in titles of Wiren Board Modbus
+    legacy templates
 
- -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 28 Oct 2021 13:59:31 +0300
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 28 Oct 2021 14:21:35 +0300
 
 wb-mqtt-serial (2.40.2) stable; urgency=medium
 
