@@ -1,7 +1,7 @@
 {
     "type": "object",
     "title": "Serial Device Driver Configuration",
-    "description": "Configuration of devices connected to serial ports (RS-485, TCP)",
+    "description": "Configuration of devices connected to serial ports (RS-485, TCP, UART)",
 
     "definitions": {
         "commonPortSettings": {
@@ -579,13 +579,6 @@
                     "type": "boolean",
                     "propertyOrder": 12
                 },
-                // For compatibility with old configs
-                "channel_readonly": {
-                    "type": "boolean",
-                    "options": {
-                        "hidden": true
-                    }
-                },
                 "on_value": {
                     // TBD: only use on_value for 'switch' and 'wo-switch' types
                     "title": "'On' value",
@@ -727,13 +720,6 @@
                     "title": "Read-only",
                     "type": "boolean",
                     "propertyOrder": 5
-                },
-                // For compatibility with old configs
-                "channel_readonly": {
-                    "type": "boolean",
-                    "options": {
-                        "hidden": true
-                    }
                 },
                 "consists_of": {
                     "type": "array",
@@ -1919,7 +1905,7 @@
         },
         "ru": {
             "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
-            "Configuration of devices connected to serial ports (RS-485, TCP)": "Настройка устройств, подключенных к последовательным портам (RS-485, TCP)",
+            "Configuration of devices connected to serial ports (RS-485, TCP, UART)": "Настройка устройств, подключенных к последовательным портам (RS-485, TCP, UART)",
             "Enable port": "Включить порт",
             "Response timeout (ms)": "Таймаут ответа (мс)",
             "Zero means no timeout. If not set, the default timeout (500ms) is used.": "Ноль - без таймаута. Таймаут по умолчанию 500мс",
