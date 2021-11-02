@@ -1,2056 +1,1704 @@
 {
-    "type": "object",
-    "title": "Serial Device Driver Configuration",
-    "description": "Configuration of devices connected to serial ports (RS-485, TCP, UART)",
+  "type": "object",
+  "title": "Serial Device Driver Configuration",
+  "description": "Configuration of devices connected to serial ports (RS-485, TCP, UART)",
 
-    "definitions": {
-        "commonPortSettings": {
-            "properties": {
-                "enabled": {
-                    "type": "boolean",
-                    "title": "Enable port",
-                    "default": true,
-                    "_format": "checkbox",
-                    "propertyOrder": 2,
-                    "options": {
-                        "grid_columns": 12
-                    }
-                },
-                "response_timeout_ms": {
-                    "type": "integer",
-                    "title": "Response timeout (ms)",
-                    "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
-                    "minimum": 0,
-                    "default": 500,
-                    "propertyOrder": 8,
-                    "options": {
-                        "grid_columns": 4
-                    }
-                },
-                "guard_interval_us": {
-                    "type": "integer",
-                    "title": "Guard interval (us)",
-                    "description": "guard_interval_description",
-                    "minimum": 0,
-                    "default": 0,
-                    "propertyOrder": 9,
-                    "options": {
-                        "grid_columns": 4
-                    }
-                },
-                "poll_interval": {
-                    "type": "integer",
-                    "title": "Poll interval (ms)",
-                    "description": "poll_interval_description",
-                    "minimum": 0,
-                    "default": 20,
-                    "propertyOrder": 10,
-                    "options": {
-                        "grid_columns": 4
-                    }
-                },
-                "devices": {
-                    "type": "array",
-                    "title": "Devices attached to the port",
-                    "items": {
-                        "$ref": "#/definitions/device"
-                    },
-                    "propertyOrder": 11,
-                    "options": {
-                        "array_controls_top": true,
-                        "disable_array_delete_last_row": true,
-                        "wb": {
-                            "disable_panel": true
-                        }
-                    }
-                }
-            }
+  "definitions": {
+    "commonPortSettings": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable port",
+          "default": true,
+          "_format": "checkbox",
+          "propertyOrder": 2,
+          "options": {
+            "grid_columns": 12
+          }
         },
-        "serialPort": {
-            "title": "Serial port",
-            "type": "object",
-            "allOf": [
-                {
-                    "properties": {
-                        "port_type": {
-                            "type": "string",
-                            "title": "Port type",
-                            "enum": ["serial"],
-                            "default": "serial",
-                            "propertyOrder": 1,
-                            "options": {
-                                "hidden": true
-                            }
-                        },
-                        "path": {
-                            "type": "string",
-                            "title": "Path to device",
-                            "minLength": 1,
-                            "propertyOrder": 3,
-                            "options": {
-                                "grid_columns": 4
-                            }
-                        },
-                        "baud_rate": {
-                            "type": "integer",
-                            "title": "Baud rate",
-                            "enum": [
-                                110, 300, 600, 1200, 2400,
-                                4800, 9600, 19200, 38400,
-                                57600, 115200
-                            ],
-                            "default": 9600,
-                            "propertyOrder": 4,
-                            "options": {
-                                "grid_columns": 2
-                            }
-                        },
-                        "parity": {
-                            "type": "string",
-                            "title": "Parity",
-                            "enum": ["N", "E", "O"],
-                            "default": "N",
-                            "propertyOrder": 5,
-                            "options": {
-                                "grid_columns": 2
-                            }
-                        },
-                        "data_bits": {
-                            "type": "integer",
-                            "title": "Data bits",
-                            "enum": [5, 6, 7, 8],
-                            "default": 8,
-                            "propertyOrder": 6,
-                            "options": {
-                                "grid_columns": 2
-                            }
-                        },
-                        "stop_bits": {
-                            "type": "integer",
-                            "title": "Stop bits",
-                            "enum": [1, 2],
-                            "default": 1,
-                            "propertyOrder": 7,
-                            "options": {
-                                "grid_columns": 2
-                            }
-                        }
-                    },
-                    "required": ["path"]
-                },
-                {
-                    "$ref": "#/definitions/commonPortSettings"
-                }
-            ],
-            "defaultProperties": [
-                "port_type",
-                "path",
-                "baud_rate",
-                "parity",
-                "data_bits",
-                "stop_bits",
-                "devices",
-                "poll_interval"
-            ],
-            "_format": "grid",
-            "options": {
-                "wb": {
-                    "disable_panel": true
-                }
-            }
+        "response_timeout_ms": {
+          "type": "integer",
+          "title": "Response timeout (ms)",
+          "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
+          "minimum": 0,
+          "default": 500,
+          "propertyOrder": 8,
+          "options": {
+            "grid_columns": 4
+          }
         },
-        "commonTcpPortSettings": {
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "title": "IPv4 address or hostname of device",
-                    "minLength": 1,
-                    "propertyOrder": 3,
-                    "options": {
-                        "grid_columns": 10
-                    }
-                },
-                "port": {
-                    "type": "integer",
-                    "title": "TCP port number",
-                    "minimum": 1,
-                    "maximum": 65536,
-                    "propertyOrder": 4,
-                    "options": {
-                        "grid_columns": 2
-                    }
-                },
-                "connection_timeout_ms": {
-                    "type": "integer",
-                    "title": "Connection timeout (ms)",
-                    "description": "connection_timeout_description",
-                    "minimum": -1,
-                    "default": 5000,
-                    "propertyOrder": 5
-                },
-                "connection_max_fail_cycles": {
-                    "type": "integer",
-                    "title": "Connection max fail cycles",
-                    "description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
-                    "minimum": -1,
-                    "default": 2,
-                    "propertyOrder": 6
-                }
+        "guard_interval_us": {
+          "type": "integer",
+          "title": "Guard interval (us)",
+          "description": "guard_interval_description",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 9,
+          "options": {
+            "grid_columns": 4
+          }
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Poll interval (ms)",
+          "description" : "poll_interval_description",
+          "minimum": 0,
+          "default": 20,
+          "propertyOrder": 10,
+          "options": {
+            "grid_columns": 4
+          }
+        },
+        "devices": {
+          "type": "array",
+          "title": "Devices attached to the port",
+          "items": { "$ref": "#/definitions/device" },
+          "propertyOrder": 11,
+          "options": {
+            "array_controls_top": true,
+            "disable_array_delete_last_row": true,
+            "wb": {
+              "disable_panel": true
+            }
+          }
+        }
+      }
+    },
+    "serialPort": {
+      "title": "Serial port",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "port_type": {
+              "type": "string",
+              "title": "Port type",
+              "enum": ["serial"],
+              "default": "serial",
+              "propertyOrder": 1,
+              "options": {
+                "hidden": true
+              }
             },
-            "required": ["address", "port"]
-        },
-        "modbusTcpPort": {
-            "title": "MODBUS TCP",
-            "type": "object",
-            "properties": {
-                "port_type": {
-                    "type": "string",
-                    "title": "Port type",
-                    "enum": ["modbus tcp"],
-                    "default": "modbus tcp",
-                    "propertyOrder": 1,
-                    "options": {
-                        "hidden": true
-                    }
-                }
+            "path": {
+              "type": "string",
+              "title": "Path to device",
+              "minLength": 1,
+              "propertyOrder": 3,
+              "options": {
+                "grid_columns": 4
+              }    
             },
-            "required": ["port_type"],
-            "allOf": [
-                {
-                    "$ref": "#/definitions/commonTcpPortSettings"
-                },
-                {
-                    "$ref": "#/definitions/commonPortSettings"
-                }
-            ],
-            "defaultProperties": [
-                "port_type",
-                "address",
-                "port",
-                "enabled",
-                "devices",
-                "poll_interval"
-            ],
-            "_format": "grid",
-            "options": {
-                "wb": {
-                    "disable_panel": true
-                }
-            }
-        },
-        "tcpPort": {
-            "title": "Serial over TCP",
-            "type": "object",
-            "properties": {
-                "port_type": {
-                    "type": "string",
-                    "title": "Port type",
-                    "enum": ["tcp"],
-                    "default": "tcp",
-                    "propertyOrder": 1,
-                    "options": {
-                        "hidden": true
-                    }
-                }
+            "baud_rate": {
+              "type": "integer",
+              "title": "Baud rate",
+              "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200],
+              "default": 9600,
+              "propertyOrder": 4,
+              "options": {
+                "grid_columns": 2
+              }    
             },
-            "required": ["port_type"],
-            "allOf": [
-                {
-                    "$ref": "#/definitions/commonTcpPortSettings"
-                },
-                {
-                    "$ref": "#/definitions/commonPortSettings"
-                }
-            ],
-            "defaultProperties": [
-                "port_type",
-                "address",
-                "port",
-                "enabled",
-                "devices",
-                "poll_interval"
-            ],
-            "_format": "grid",
-            "options": {
-                "wb": {
-                    "disable_panel": true
-                }
+            "parity": {
+              "type": "string",
+              "title": "Parity",
+              "enum": ["N", "E", "O"],
+              "default": "N",
+              "propertyOrder": 5,
+              "options": {
+                "grid_columns": 2
+              }    
+            },
+            "data_bits": {
+              "type": "integer",
+              "title": "Data bits",
+              "enum": [5, 6, 7, 8],
+              "default": 8,
+              "propertyOrder": 6,
+              "options": {
+                "grid_columns": 2
+              }    
+            },
+            "stop_bits": {
+              "type": "integer",
+              "title": "Stop bits",
+              "enum": [1, 2],
+              "default": 1,
+              "propertyOrder": 7,
+              "options": {
+                "grid_columns": 2
+              }    
             }
+          },
+          "required": ["path"]
+        },
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
+      "defaultProperties": ["port_type", "path", "baud_rate", "parity", "data_bits", "stop_bits", "devices", "poll_interval"],
+      "_format": "grid",
+      "options": {
+        "wb": {
+          "disable_panel": true
+        }
+      }
+    },
+    "commonTcpPortSettings": {
+      "properties": {
+        "address": {
+          "type": "string",
+          "title": "IPv4 address or hostname of device",
+          "minLength": 1,
+          "propertyOrder": 3,
+          "options": {
+            "grid_columns": 10
+          }
         },
         "port": {
-            "headerTemplate": "port_header_template",
-            "title": "Port",
-            "oneOf": [
-                { "$ref": "#/definitions/serialPort" },
-                { "$ref": "#/definitions/tcpPort" },
-                { "$ref": "#/definitions/modbusTcpPort" }
-            ],
-            "options": {
-                "keep_oneof_values": false,
-                "disable_collapse": true,
-                "disable_edit_json": true
-            }
+          "type": "integer",
+          "title": "TCP port number",
+          "minimum": 1,
+          "maximum": 65536,
+          "propertyOrder": 4,
+          "options": {
+            "grid_columns": 2
+          }
         },
+        "connection_timeout_ms": {
+          "type": "integer",
+          "title": "Connection timeout (ms)",
+          "description": "connection_timeout_description",
+          "minimum": -1,
+          "default": 5000,
+          "propertyOrder": 5
+        },
+        "connection_max_fail_cycles": {
+          "type": "integer",
+          "title": "Connection max fail cycles",
+          "description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
+          "minimum": -1,
+          "default": 2,
+          "propertyOrder": 6
+        }
+      },
+      "required": ["address", "port"]
+    },
+    "modbusTcpPort": {
+      "title": "MODBUS TCP",
+      "type": "object",
+      "properties": {
+        "port_type": {
+          "type": "string",
+          "title": "Port type",
+          "enum": ["modbus tcp"],
+          "default": "modbus tcp",
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true
+          }
+        }
+      },
+      "required": ["port_type"],
+      "allOf": [
+        { "$ref" : "#/definitions/commonTcpPortSettings"},
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
+      "defaultProperties": ["port_type", "address", "port", "enabled", "devices", "poll_interval"],
+      "_format": "grid",
+      "options": {
+        "wb": {
+          "disable_panel": true
+        }
+      }
+    },
+    "tcpPort": {
+      "title": "Serial over TCP",
+      "type": "object",
+      "properties": {
+        "port_type": {
+          "type": "string",
+          "title": "Port type",
+          "enum": ["tcp"],
+          "default": "tcp",
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true
+          }
+        }
+      },
+      "required": ["port_type"],
+      "allOf": [
+        { "$ref" : "#/definitions/commonTcpPortSettings"},
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
+      "defaultProperties": ["port_type", "address", "port", "enabled", "devices", "poll_interval"],
+      "_format": "grid",
+      "options": {
+        "wb": {
+          "disable_panel": true
+        }
+      }
+    },
+    "port": {
+      "headerTemplate": "port_header_template",
+      "title": "Port",
+      "oneOf": [
+        { "$ref": "#/definitions/serialPort" },
+        { "$ref": "#/definitions/tcpPort" },
+        { "$ref": "#/definitions/modbusTcpPort" }
+      ],
+      "options": {
+        "keep_oneof_values": false,
+        "disable_collapse" : true,
+        "disable_edit_json": true
+      }
+    },
+    "slave_id": {
+      "properties": {
         "slave_id": {
-            "properties": {
-                "slave_id": {
-                    "title": "Slave id of the device",
-                    "propertyOrder": 2,
-                    "oneOf": [
-                        {
-                            "title": "decimal or hex",
-                            "type": "string",
-                            "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
-                            "options": {
-                                "inputAttributes": {
-                                    "placeholder": "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                                },
-                                "patternmessage": "Should be decimal or hex"
-                            }
-                        },
-                        {
-                            "title": "decimal",
-                            "type": "integer"
-                        }
-                    ],
-                    "options": {
-                        "keep_oneof_values": false
-                    }
-                }
-            }
-        },
-        "slave_id_broadcast": {
-            "properties": {
-                "slave_id": {
-                    "title": "Slave id of the device or broadcast mode",
-                    "propertyOrder": 2,
-                    "oneOf": [
-                        {
-                            "title": "decimal or hex slave id",
-                            "type": "string",
-                            "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-                            "options": {
-                                "inputAttributes": {
-                                    "placeholder": "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                                },
-                                "patternmessage": "Should be decimal or hex"
-                            }
-                        },
-                        {
-                            "title": "decimal slave id",
-                            "type": "integer"
-                        },
-                        {
-                            "title": "broadcast",
-                            "type": "boolean",
-                            "enum": [false],
-                            "default": false,
-                            "readOnly": true,
-                            "options": {
-                                "enum_titles": [
-                                    "broadcast_description"
-                                ]
-                            }
-                        }
-                    ],
-                    "options": {
-                        "keep_oneof_values": false
-                    }
-                }
-            }
-        },
-        "device_name": {
-            "description": "Device name to be displayed in UI",
-            "minLength": 1,
-            "type": "string"
-        },
-        "deviceProperties": {
-            "properties": {
-                "enabled": {
-                    "type": "boolean",
-                    "title": "Enable device",
-                    "default": true,
-                    "_format": "checkbox",
-                    "propertyOrder": 1
+          "title": "Slave id of the device",
+          "propertyOrder": 2,
+          "oneOf": [
+            {
+              "title": "decimal or hex",
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
+              "options": {
+                "inputAttributes": {
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
-                "name": {
-                    "$ref": "#/definitions/device_name",
-                    "title": "Device name",
-                    "propertyOrder": 3
-                },
-                "id": {
-                    "type": "string",
-                    "title": "MQTT id of the device",
-                    "description": "Used as part of the topic",
-                    "minLength": 1,
-                    "propertyOrder": 4
-                },
-                "poll_interval": {
-                    "type": "integer",
-                    "title": "Poll interval (ms)",
-                    "description": "poll_interval_description",
-                    "minimum": 0,
-                    "default": 20,
-                    "propertyOrder": 7
-                },
-                "password": {
-                    "type": "array",
-                    "title": "Password as a list of bytes",
-                    "items": {
-                        "$ref": "#/definitions/serial_int"
-                    },
-                    "_format": "table",
-                    "propertyOrder": 101,
-                    "options": {
-                        "disable_array_delete_last_row": true
-                    }
-                },
-                "access_level": {
-                    "type": "integer",
-                    "title": "Access level",
-                    "minimum": 0,
-                    "maximum": 2,
-                    "default": 1,
-                    "propertyOrder": 102
-                },
-                "max_reg_hole": {
-                    "type": "integer",
-                    "title": "Max dummy read register count",
-                    "minimum": 0,
-                    "default": 0,
-                    "propertyOrder": 103
-                },
-                "max_bit_hole": {
-                    "type": "integer",
-                    "title": "Max dummy read bit count",
-                    "minimum": 0,
-                    "default": 0,
-                    "propertyOrder": 104
-                },
-                "max_read_registers": {
-                    "type": "integer",
-                    "title": "Maximum number of registers in a single bulk read request",
-                    "minimum": 0,
-                    "default": 1,
-                    "propertyOrder": 105
-                },
-                "guard_interval_us": {
-                    "type": "integer",
-                    "title": "Additional delay before each writing to port (us)",
-                    "minimum": 0,
-                    "default": 0,
-                    "propertyOrder": 106
-                },
-                "frame_timeout_ms": {
-                    "type": "integer",
-                    "title": "Frame timeout (ms)",
-                    "description": "frame_timeout_description",
-                    "minimum": -1,
-                    "default": -1,
-                    "propertyOrder": 107
-                },
-                "response_timeout_ms": {
-                    "type": "integer",
-                    "title": "Response timeout (ms)",
-                    "description": "response_timeout_description",
-                    "minimum": -1,
-                    "default": -1,
-                    "propertyOrder": 108
-                },
-                "device_timeout_ms": {
-                    "type": "integer",
-                    "title": "Device timeout (ms)",
-                    "description": "device_timeout_description",
-                    "minimum": -1,
-                    "default": 3000,
-                    "propertyOrder": 109
-                },
-                "device_max_fail_cycles": {
-                    "type": "integer",
-                    "title": "Device max fail cycles",
-                    "description": "device_max_fail_cycles_desc",
-                    "minimum": -1,
-                    "default": 2,
-                    "propertyOrder": 110
-                }
-            }
-        },
-        "setup_cmd": {
-            "type": "object",
-            "title": "Setup command",
-            "headerTemplate": "{{self.title}}",
-            "properties": {
-                "title": {
-                    "type": "string",
-                    "title": "Command name",
-                    "description": "Used for logging/debugging purposes only",
-                    "propertyOrder": 1
-                },
-                "address": {
-                    "title": "Address",
-                    "description": "Register index (0-65535 in case of Modbus)",
-                    "propertyOrder": 2,
-                    "$ref": "#/definitions/address",
-                    "options": {
-                        "keep_oneof_values": false
-                    }
-                },
-                "value": {
-                    "title": "Value",
-                    "propertyOrder": 3,
-                    "$ref": "#/definitions/serial_int",
-                    "options": {
-                        "keep_oneof_values": false
-                    }
-                }
+                "patternmessage": "Should be decimal or hex"
+              }
             },
-            "options": {
-                "disable_collapse": true,
-                "disable_edit_json": true,
-                "disable_properties": true
-            },
-            "_format": "grid",
-            "required": ["address", "value"]
-        },
-        "register_channel_common": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean",
-                    "title": "Enabled",
-                    "default": true,
-                    "propertyOrder": 1,
-                    "_format": "checkbox"
-                },
-                "name": {
-                    "$ref": "#/definitions/channel_name",
-                    "propertyOrder": 2
-                },
-                "id": {
-                    "type": "string",
-                    "title": "MQTT id of the channel",
-                    "description": "Used as part of the topic",
-                    "propertyOrder": 3
-                },
-                "type": {
-                    "$ref": "#/definitions/control_type",
-                    "propertyOrder": 4
-                },
-                "reg_type": {
-                    "$ref": "#/definitions/reg_type",
-                    "propertyOrder": 5
-                },
-                "format": {
-                    "$ref": "#/definitions/format",
-                    "propertyOrder": 7
-                },
-                "max": {
-                    "title": "Maximum value",
-                    "$ref": "#/definitions/serial_int",
-                    "propertyOrder": 8,
-                    "options": {
-                        "keep_oneof_values": false
-                    }
-                },
-                "scale": {
-                    "type": "number",
-                    "title": "Scale (value multiplier)",
-                    "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
-                    "default": 1,
-                    "propertyOrder": 9
-                },
-                "offset": {
-                    "type": "number",
-                    "title": "Value offset",
-                    "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
-                    "default": 0,
-                    "propertyOrder": 10
-                },
-                "round_to": {
-                    "type": "number",
-                    "title": "Round to",
-                    "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
-                    "default": 1,
-                    "propertyOrder": 11,
-                    "minimum": 0
-                },
-                "readonly": {
-                    "title": "Read-only",
-                    "type": "boolean",
-                    "propertyOrder": 12
-                },
-                "on_value": {
-                    // TBD: only use on_value for 'switch' and 'wo-switch' types
-                    "title": "'On' value",
-                    "description": "Value corresponding to the 'On' state of the switch",
-                    "$ref": "#/definitions/serial_int",
-                    "propertyOrder": 13,
-                    "options": {
-                        "keep_oneof_values": false
-                    }
-                },
-                "off_value": {
-                    "title": "'Off' value",
-                    "description": "Value corresponding to the 'Off' state of the switch",
-                    "$ref": "#/definitions/serial_int",
-                    "propertyOrder": 14,
-                    "options": {
-                        "keep_oneof_values": false
-                    }
-                },
-                "poll_interval": {
-                    "type": "integer",
-                    "title": "Poll interval (ms)",
-                    "description": "poll_interval_description",
-                    "minimum": 0,
-                    "default": 20,
-                    "propertyOrder": 15
-                },
-                "error_value": {
-                    "title": "Error value",
-                    "description": "Value which should be treated as read error",
-                    "propertyOrder": 16,
-                    "oneOf": [
-                        {
-                            "title": "decimal or hex",
-                            "type": "string",
-                            "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-                            "options": {
-                                "inputAttributes": {
-                                    "placeholder": "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                                },
-                                "patternmessage": "Should be decimal or hex"
-                            }
-                        },
-                        {
-                            "title": "decimal",
-                            "type": "integer",
-                            "minimum": 0,
-                            "maximum": 4294967295
-                        }
-                    ]
-                },
-                "unsupported_value": {
-                    "title": "Unsupported register value",
-                    "description": "Value which should be treated as 'register is unsupported by device'",
-                    "propertyOrder": 17,
-                    "type": "string",
-                    "pattern": "^(0x[A-Fa-f\\d]+)$",
-                    "options": {
-                        "inputAttributes": {
-                            "placeholder": "hex with prefix '0x'"
-                        },
-                        "patternmessage": "Should be hex with prefix '0x'"
-                    }
-                },
-                "word_order": {
-                    "$ref": "#/definitions/word_order",
-                    "propertyOrder": 18
-                },
-                "consists_of": {
-                    "not": {},
-                    "options": { "hidden": true }
-                },
-                "device_type": {
-                    "not": {},
-                    "options": { "hidden": true }
-                }
-            },
-            // FIXME: require "reg_type" and "address" for non-templated devices
-            "required": ["name"],
-            "defaultProperties": [
-                "name",
-                "type",
-                "reg_type",
-                "address",
-                "format",
-                "scale",
-                "offset"
-            ],
-            "_format": "grid",
-            "options": {
-                "disable_collapse": true,
-                "disable_edit_json": true
+            {
+              "title": "decimal",
+              "type": "integer"
             }
-        },
-        "registerChannel": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/register_channel_common"
+          ],
+          "options": {
+            "keep_oneof_values": false
+          }
+        }
+      }
+    },
+    "slave_id_broadcast": {
+      "properties": {
+        "slave_id": {
+          "title": "Slave id of the device or broadcast mode",
+          "propertyOrder": 2,
+          "oneOf": [
+            {
+              "title": "decimal or hex slave id",
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+              "options": {
+                "inputAttributes": {
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
-                {
-                    "properties": {
-                        "address": {
-                            "$ref": "#/definitions/address",
-                            "propertyOrder": 6,
-                            "options": {
-                                "keep_oneof_values": false
-                            }
-                        }
-                    }
-                }
-            ]
-        },
-        "compoundRegisterChannel": {
-            "title": "Compound register",
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean",
-                    "title": "Enabled",
-                    "default": true,
-                    "propertyOrder": 1,
-                    "_format": "checkbox"
-                },
-                "name": {
-                    "$ref": "#/definitions/channel_name",
-                    "propertyOrder": 2
-                },
-                "id": {
-                    "type": "string",
-                    "title": "MQTT id of the channel",
-                    "description": "Used as part of the topic",
-                    "propertyOrder": 3
-                },
-                "type": {
-                    "$ref": "#/definitions/control_type",
-                    "propertyOrder": 4
-                },
-                "readonly": {
-                    "title": "Read-only",
-                    "type": "boolean",
-                    "propertyOrder": 5
-                },
-                "consists_of": {
-                    "type": "array",
-                    "title": "A list of subregisters",
-                    "items": {
-                        "$ref": "#/definitions/subreg"
-                    },
-                    "minItems": 1,
-                    "_format": "table",
-                    "propertyOrder": 6
-                },
-                "poll_interval": {
-                    "type": "integer",
-                    "title": "Poll interval (ms)",
-                    "description": "poll_interval_description",
-                    "minimum": 0,
-                    "default": 20,
-                    "propertyOrder": 7
-                }
+                "patternmessage": "Should be decimal or hex"
+              }
             },
-            "required": ["name", "consists_of"],
-            "defaultProperties": ["name", "consists_of"],
-            "options": {
-                "disable_collapse": true,
-                "disable_edit_json": true
-            }
-        },
-        "common_channel": {
-            "headerTemplate": "{{self.name}}",
-            "title": "Channel",
-            "oneOf": [
-                { "$ref": "#/definitions/registerChannel" },
-                {
-                    "$ref": "#/definitions/compoundRegisterChannel"
-                }
-            ],
-            "options": {
-                "keep_oneof_values": false
-            }
-        },
-        "channelSettings": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean",
-                    "title": "Enable poll",
-                    "default": true,
-                    "_format": "checkbox"
-                },
-                "poll_interval": {
-                    "type": "integer",
-                    "title": "Poll interval (ms)",
-                    "minimum": 0,
-                    "default": 20,
-                    "options": {
-                        "dependencies": {
-                            "enabled": true
-                        }
-                    }
-                }
+            {
+              "title": "decimal slave id",
+              "type": "integer"
             },
-            "options": {
-                "disable_collapse": true,
-                "disable_edit_json": true,
-                "disable_properties": true
+            {
+              "title": "broadcast",
+              "type": "boolean",
+              "enum": [ false ],
+              "default": false,
+              "readOnly": true,
+              "options": {
+                "enum_titles": ["broadcast_description"]
+              }
             }
+          ],
+          "options": {
+            "keep_oneof_values": false
+          }
+        }
+      }
+    },
+    "device_name": {
+      "description" : "Device name to be displayed in UI",
+      "minLength" : 1,
+      "type" : "string"
+    },
+    "deviceProperties": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable device",
+          "default": true,
+          "_format": "checkbox",
+          "propertyOrder": 1
         },
-        "tableChannelSettings": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "options": {
-                        "hidden": true
-                    }
-                },
-                "title": {
-                    "title": "Parameter",
-                    "type": "string",
-                    "_format": "info",
-                    "propertyOrder": 2
-                },
-                "enabled": {
-                    "type": "boolean",
-                    "title": "Enable poll",
-                    "default": true,
-                    "_format": "checkbox",
-                    "propertyOrder": 1
-                },
-                "poll_interval": {
-                    "type": "integer",
-                    "title": "Poll interval (ms)",
-                    "minimum": 0,
-                    "default": -1,
-                    "options": {
-                        "inputAttributes": {
-                            "placeholder": "inherited from device and port"
-                        },
-                        "dependencies": {
-                            "enabled": true
-                        }
-                    },
-                    "_format": "siWb",
-                    "propertyOrder": 3
-                }
-            }
+        "name" : {
+          "$ref" : "#/definitions/device_name",
+          "title" : "Device name",
+          "propertyOrder": 3
         },
-        "subreg": {
-            "type": "object",
-            "title": "Subregister",
-            "properties": {
-                "reg_type": {
-                    "$ref": "#/definitions/reg_type",
-                    "propertyOrder": 1
-                },
-                "address": {
-                    "$ref": "#/definitions/address",
-                    "propertyOrder": 2,
-                    "options": {
-                        "keep_oneof_values": false
-                    }
-                },
-                "format": {
-                    "$ref": "#/definitions/format",
-                    "propertyOrder": 3
-                },
-                "scale": {
-                    "type": "number",
-                    "title": "Scale (value multiplier)",
-                    "default": 1,
-                    "propertyOrder": 4
-                },
-                "offset": {
-                    "type": "number",
-                    "title": "Value offset",
-                    "default": 0,
-                    "propertyOrder": 5
-                },
-                "word_order": {
-                    "$ref": "#/definitions/word_order",
-                    "propertyOrder": 6
-                }
-            },
-            "required": ["reg_type", "address"],
-            "defaultProperties": ["reg_type", "address"]
+        "id": {
+          "type": "string",
+          "title": "MQTT id of the device",
+          "description": "Used as part of the topic",
+          "minLength": 1,
+          "propertyOrder": 4
         },
-        "channel_name": {
-            "type": "string",
-            "title": "Control name",
-            "description": "This name is displayed both in UI and used as part of MQTT topic",
-            "minLength": 1
+        "poll_interval": {
+          "type": "integer",
+          "title": "Poll interval (ms)",
+          "description" : "poll_interval_description",
+          "minimum": 0,
+          "default": 20,
+          "propertyOrder": 7
         },
-        "control_type": {
-            "type": "string",
-            "title": "Control type",
-            "description": "Defaults to 'switch' for coils and discrete inputs, 'text' for others",
-            "enum": [
-                "switch",
-                "wo-switch",
-                "pushbutton",
-                "range",
-                "rgb",
-                "text",
-                "value",
-                "temperature",
-                "rel_humidity",
-                "atmospheric_pressure",
-                "rainfall",
-                "wind_speed",
-                "power",
-                "power_consumption",
-                "voltage",
-                "water_flow",
-                "water_consumption",
-                "resistance",
-                "concentration",
-                "heat_energy",
-                "heat_power",
-                // FIXME: "dimmer", "lux" and "pressure" aren't present in
-                // conventions but is present in config-test.json in
-                // wb-mqtt-serial
-                "dimmer",
-                "lux",
-                "pressure",
-                "current",
-                "sound_level"
-            ]
+        "password": {
+          "type": "array",
+          "title": "Password as a list of bytes",
+          "items": { "$ref": "#/definitions/serial_int" },
+          "_format": "table",
+          "propertyOrder": 101,
+          "options": {
+            "disable_array_delete_last_row": true
+          }
         },
-        "reg_type": {
-            "type": "string",
-            "title": "Register type",
-            "enum": [
-                "coil",
-                "discrete",
-                "holding",
-                "holding_single",
-                "holding_multi",
-                "input",
-                "direct",
-                "relay",
-                "brightness",
-                "param",
-                "relay_mode",
-                "relay_default",
-                "relay_delay",
-                "energy",
-                "array",
-                "param_be",
-                "param_sign_active",
-                "param_sign_reactive",
-                "array12",
-                "default",
-                "param16",
-                "param24",
-                "param32",
-                "power",
-                "freq",
-                "power_factor",
-                "group_single",
-                "temperature",
-                "item_1",
-                "item_2",
-                "item_3",
-                "item_4",
-                "item_5",
-                "alarm",
-                "position",
-                "command",
-                "date",
-                "time",
-                // obis_* are deprecated, use item_*, temperature and power_factor
-                "obis_cdef",
-                "obis_cdef_pf",
-                "obis_cdef_temp",
-                "obis_cdef_1",
-                "obis_cdef_2",
-                "obis_cdef_3",
-                "obis_cdef_4",
-                "obis_cdef_5"
-            ]
+        "access_level": {
+          "type": "integer",
+          "title": "Access level",
+          "minimum": 0,
+          "maximum": 2,
+          "default": 1,
+          "propertyOrder": 102
         },
-        "format": {
-            "type": "string",
-            "title": "Format",
-            "enum": [
-                "s16",
-                "u16",
-                "s8",
-                "u8",
-                "s24",
-                "u24",
-                "s32",
-                "u32",
-                "s64",
-                "u64",
-                "bcd8",
-                "bcd16",
-                "bcd24",
-                "bcd32",
-                "float",
-                "double",
-                "char8"
-            ],
-            "options": {
-                "enum_titles": [
-                    "Signed 16-bit integer",
-                    "Unsigned 16-bit integer",
-                    "Signed 8-bit integer",
-                    "Unsigned 8-bit integer",
-                    "Signed 24-bit integer",
-                    "Unsigned 24-bit integer",
-                    "Signed 32-bit integer",
-                    "Unsigned 32-bit integer",
-                    "Signed 64-bit integer",
-                    "Unsigned 64-bit integer",
-                    "8-bit BCD",
-                    "16-bit BCD",
-                    "24-bit BCD",
-                    "32-bit BCD",
-                    "IEEE754 32-bit float",
-                    "IEEE754 64-bit float (double)",
-                    "8-bit ASCII char"
-                ]
-            }
+        "max_reg_hole": {
+          "type": "integer",
+          "title": "Max dummy read register count",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 103
         },
-        "word_order": {
-            "type": "string",
-            "title": "16-bit Word Order",
-            "enum": ["big_endian", "little_endian"],
-            "options": {
-                "enum_titles": [
-                    "Big-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD)",
-                    "Little-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB)"
-                ]
-            },
-            "default": "big_endian"
+        "max_bit_hole": {
+          "type": "integer",
+          "title": "Max dummy read bit count",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 104
+        },
+        "max_read_registers": {
+          "type": "integer",
+          "title": "Maximum number of registers in a single bulk read request",
+          "minimum": 0,
+          "default": 1,
+          "propertyOrder": 105
+        },
+        "guard_interval_us": {
+          "type": "integer",
+          "title": "Additional delay before each writing to port (us)",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 106
+        },
+        "frame_timeout_ms": {
+          "type": "integer",
+          "title": "Frame timeout (ms)",
+          "description": "frame_timeout_description",
+          "minimum": -1,
+          "default": -1,
+          "propertyOrder": 107
+        },
+        "response_timeout_ms": {
+          "type": "integer",
+          "title": "Response timeout (ms)",
+          "description": "response_timeout_description",
+          "minimum": -1,
+          "default": -1,
+          "propertyOrder": 108
+        },
+        "device_timeout_ms": {
+          "type": "integer",
+          "title": "Device timeout (ms)",
+          "description": "device_timeout_description",
+          "minimum": -1,
+          "default": 3000,
+          "propertyOrder": 109
+        },
+        "device_max_fail_cycles": {
+          "type": "integer",
+          "title": "Device max fail cycles",
+          "description": "device_max_fail_cycles_desc",
+          "minimum": -1,
+          "default": 2,
+          "propertyOrder": 110
+        }
+      }
+    },
+    "setup_cmd": {
+      "type": "object",
+      "title": "Setup command",
+      "headerTemplate": "{{self.title}}",
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Command name",
+          "description": "Used for logging/debugging purposes only",
+          "propertyOrder": 1
         },
         "address": {
-            "title": "Address",
-            "description": "Register index (0-65535 in case of Modbus)",
-            "oneOf": [
-                {
-                    "title": "decimal or hex",
-                    "type": "string",
-                    "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-                    "options": {
-                        "inputAttributes": {
-                            "placeholder": "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                        },
-                        "patternmessage": "Should be decimal or hex"
-                    }
-                },
-                {
-                    "title": "bits",
-                    "type": "string",
-                    "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$",
-                    "options": {
-                        "inputAttributes": {
-                            "placeholder": "address:offset:bitwidth"
-                        },
-                        "patternmessage": "Address should be decimal or hex, offset and bitwidth separated by ':'"
-                    }
-                },
-                {
-                    "title": "decimal",
-                    "type": "integer"
-                }
-            ],
-            "options": {
-                "keep_oneof_values": false
-            }
+          "title": "Address",
+          "description": "Register index (0-65535 in case of Modbus)",
+          "propertyOrder": 2,
+          "$ref": "#/definitions/address",
+          "options": {
+            "keep_oneof_values": false
+          }
         },
-        "serial_int": {
-            "oneOf": [
-                {
-                    "title": "decimal or hex",
-                    "type": "string",
-                    "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-                    "options": {
-                        "patternmessage": "Should be decimal or hex"
-                    }
-                },
-                {
-                    "title": "decimal",
-                    "type": "integer"
-                }
-            ]
-        },
-
-        "no_setup": {
-            "properties": {
-                "setup": {
-                    "not": {},
-                    "options": { "hidden": true }
-                }
-            }
-        },
-
-        "dlms_address": {
-            "properties": {
-                "address": {
-                    "title": "OBIS code",
-                    "type": "string",
-                    "pattern": "^(\\d+\\.\\d+\\.\\d+\\.\\d+\\.\\d+\\.\\d+)$",
-                    "propertyOrder": 6,
-                    "options": {
-                        "inputAttributes": {
-                            "placeholder": "X.X.X.X.X.X"
-                        },
-                        "patternmessage": "OBIS code should contain 6 numbers separated by dots (X.X.X.X.X.X)"
-                    }
-                }
-            },
-            "required": ["address"]
-        },
-        "dlms_channel": {
-            "headerTemplate": "{{self.name}}",
-            "title": "Channel",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/register_channel_common"
-                },
-                { "$ref": "#/definitions/dlms_address" }
-            ]
-        },
-        "dlms_channels": {
-            "properties": {
-                "channels": {
-                    "type": "array",
-                    "title": "Custom channels",
-                    "items": {
-                        "$ref": "#/definitions/dlms_channel"
-                    },
-                    "propertyOrder": 99,
-                    "_format": "tabs",
-                    "options": {
-                        "disable_array_delete_last_row": true
-                    }
-                }
-            }
-        },
-        "dlms_device_properties": {
-            "properties": {
-                "dlms_client_address": {
-                    "title": "DLMS client address",
-                    "description": "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator",
-                    "type": "integer",
-                    "minimum": 0,
-                    "default": 16,
-                    "propertyOrder": 9
-                },
-                "dlms_auth": {
-                    "title": "DLMS authentication mode",
-                    "type": "integer",
-                    "enum": [0, 1, 2, 3, 4, 5, 6, 7],
-                    "options": {
-                        "enum_titles": [
-                            "no authentication",
-                            "low",
-                            "high",
-                            "high, password is hashed with MD5",
-                            "high, password is hashed with SHA1",
-                            "high, password is hashed with GMAC",
-                            "high, password is hashed with SHA-256",
-                            "high, password is hashed with ECDSA"
-                        ]
-                    },
-                    "default": 0,
-                    "propertyOrder": 12
-                },
-                "dlms_interface": {
-                    "title": "DLMS interface",
-                    "type": "integer",
-                    "enum": [0, 1, 2, 3, 5, 6, 7, 8, 9],
-                    "options": {
-                        "enum_titles": [
-                            "HDLC",
-                            "TCP/IP or UDP wrapper, can be used with devices that support IEC 62056-47",
-                            "plain PDU",
-                            "Wireless M-Bus",
-                            "PLC",
-                            "PLC HDLC",
-                            "LowPower Wide Area Networks (LPWAN)",
-                            "Wi-SUN FAN mesh network",
-                            "OFDM PLC PRIME"
-                        ]
-                    },
-                    "default": 0,
-                    "propertyOrder": 13
-                }
-            }
-        },
-        "dlms_device": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                {
-                    "$ref": "#/definitions/dlms_device_properties"
-                },
-                { "$ref": "#/definitions/dlms_channels" },
-                { "$ref": "#/definitions/slave_id" },
-                { "$ref": "#/definitions/no_setup" }
-            ]
-        },
-        "dlms_device_no_channels": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                {
-                    "$ref": "#/definitions/dlms_device_properties"
-                },
-                { "$ref": "#/definitions/slave_id" },
-                { "$ref": "#/definitions/no_setup" }
-            ]
-        },
-
-        "somfy_device_properties": {
-            "properties": {
-                "node_type": {
-                    "title": "Motor type",
-                    "type": "integer",
-                    "enum": [2, 5, 6, 7, 8, 9],
-                    "options": {
-                        "enum_titles": [
-                            "Sonesse 30 DC",
-                            "RTS transmitter",
-                            "Glydea",
-                            "Sonesse 50 AC",
-                            "Sonesse 50 DC",
-                            "Sonesse 40 AC"
-                        ]
-                    },
-                    "default": 2,
-                    "propertyOrder": 12
-                }
-            }
-        },
-        "somfy_device_no_channels": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                {
-                    "$ref": "#/definitions/somfy_device_properties"
-                },
-                { "$ref": "#/definitions/slave_id" },
-                { "$ref": "#/definitions/no_setup" }
-            ]
-        },
-
-        "string_address": {
-            "properties": {
-                "address": {
-                    "title": "Parameter",
-                    "type": "string",
-                    "propertyOrder": 6
-                }
-            },
-            "required": ["address"]
-        },
-        "channel_with_string_address": {
-            "headerTemplate": "{{self.name}}",
-            "title": "Channel",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/register_channel_common"
-                },
-                { "$ref": "#/definitions/string_address" }
-            ]
-        },
-        "channels_with_string_addresses": {
-            "properties": {
-                "channels": {
-                    "type": "array",
-                    "title": "Custom channels",
-                    "items": {
-                        "$ref": "#/definitions/channel_with_string_address"
-                    },
-                    "propertyOrder": 99,
-                    "_format": "tabs",
-                    "options": {
-                        "disable_array_delete_last_row": true
-                    }
-                }
-            }
-        },
-
-        "common_channels": {
-            "properties": {
-                "channels": {
-                    "type": "array",
-                    "title": "Custom channels",
-                    "items": {
-                        "$ref": "#/definitions/common_channel"
-                    },
-                    "propertyOrder": 99,
-                    "_format": "tabs",
-                    "options": {
-                        "disable_array_delete_last_row": true
-                    }
-                }
-            }
-        },
-        "common_setup": {
-            "properties": {
-                "setup": {
-                    "type": "array",
-                    "title": "Custom setup commands",
-                    "items": {
-                        "$ref": "#/definitions/setup_cmd"
-                    },
-                    "propertyOrder": 100,
-                    "_format": "tabs",
-                    "options": {
-                        "disable_array_delete_last_row": true
-                    }
-                }
-            }
-        },
-
-        "simple_device": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                { "$ref": "#/definitions/no_setup" },
-                { "$ref": "#/definitions/common_channels" },
-                { "$ref": "#/definitions/slave_id" }
-            ]
-        },
-        "simple_device_no_channels": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                { "$ref": "#/definitions/slave_id" },
-                { "$ref": "#/definitions/no_setup" }
-            ]
-        },
-
-        "enrgomera_iec_mode_c_device": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                { "$ref": "#/definitions/no_setup" },
-                {
-                    "$ref": "#/definitions/channels_with_string_addresses"
-                },
-                {
-                    "$ref": "#/definitions/slave_id_broadcast"
-                }
-            ]
-        },
-        "enrgomera_iec_mode_c_device_no_channels": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                { "$ref": "#/definitions/no_setup" },
-                {
-                    "$ref": "#/definitions/slave_id_broadcast"
-                }
-            ]
-        },
-
-        "simple_device_with_broadcast": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                { "$ref": "#/definitions/no_setup" },
-                { "$ref": "#/definitions/common_channels" },
-                {
-                    "$ref": "#/definitions/slave_id_broadcast"
-                }
-            ]
-        },
-        "simple_device_with_broadcast_no_channels": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                { "$ref": "#/definitions/no_setup" },
-                {
-                    "$ref": "#/definitions/slave_id_broadcast"
-                }
-            ]
-        },
-
-        "simple_device_with_setup_no_channels": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                { "$ref": "#/definitions/common_setup" },
-                { "$ref": "#/definitions/slave_id" }
-            ]
-        },
-        "simple_device_with_setup": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/deviceProperties"
-                },
-                { "$ref": "#/definitions/common_channels" },
-                { "$ref": "#/definitions/common_setup" },
-                { "$ref": "#/definitions/slave_id" }
-            ]
-        },
-
-        "device": {
-            "title": "Device",
-            "headerTemplate": "",
-            "oneOf": [
-                {
-                    "title": "Custom DLMS device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/dlms_device_properties"
-                        },
-                        {
-                            "$ref": "#/definitions/dlms_channels"
-                        },
-                        {
-                            "$ref": "#/definitions/slave_id"
-                        },
-                        { "$ref": "#/definitions/no_setup" }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["dlms"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol", "slave_id"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom UNIEL device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        {
-                            "$ref": "#/definitions/slave_id"
-                        },
-                        { "$ref": "#/definitions/no_setup" }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["uniel"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol", "slave_id"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom Milur device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/no_setup"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        { "$ref": "#/definitions/slave_id" }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["milur"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol", "slave_id"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom Mercury 230 device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/no_setup"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        {
-                            "$ref": "#/definitions/slave_id_broadcast"
-                        }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["mercury230"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom IVTM device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/no_setup"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        { "$ref": "#/definitions/slave_id" }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["ivtm"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol", "slave_id"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom S2K device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/no_setup"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        { "$ref": "#/definitions/slave_id" }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["s2k"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol", "slave_id"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom Pulsar device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/no_setup"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        { "$ref": "#/definitions/slave_id" }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["pulsar"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol", "slave_id"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom Mercury 200 device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/no_setup"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        { "$ref": "#/definitions/slave_id" }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["mercury200"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol", "slave_id"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom LLS device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/no_setup"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        { "$ref": "#/definitions/slave_id" }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["lls"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol", "slave_id"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom Neva device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/no_setup"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        {
-                            "$ref": "#/definitions/slave_id_broadcast"
-                        }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["neva"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom Energomera device with IEC 61107 fast read support",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/no_setup"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        {
-                            "$ref": "#/definitions/slave_id_broadcast"
-                        }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["energomera_iec"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom Energomera device with IEC 61107 Mode C protocol",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/no_setup"
-                        },
-                        {
-                            "$ref": "#/definitions/channels_with_string_addresses"
-                        },
-                        {
-                            "$ref": "#/definitions/slave_id_broadcast"
-                        }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": [
-                                "energomera_iec_mode_c"
-                            ],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom Modbus device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        {
-                            "$ref": "#/definitions/common_setup"
-                        },
-                        { "$ref": "#/definitions/slave_id" }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["modbus"],
-                            "default": "modbus",
-                            "options": {
-                                "hidden": true
-                            }
-                        },
-                        "device_type": {
-                            "not": {},
-                            "options": { "hidden": true }
-                        }
-                    },
-                    "required": ["slave_id"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                },
-                {
-                    "title": "Custom Modbus IO device",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/deviceProperties"
-                        },
-                        {
-                            "$ref": "#/definitions/common_channels"
-                        },
-                        {
-                            "$ref": "#/definitions/common_setup"
-                        },
-                        { "$ref": "#/definitions/slave_id" }
-                    ],
-                    "properties": {
-                        "protocol": {
-                            "type": "string",
-                            "enum": ["modbus_io"],
-                            "options": {
-                                "hidden": true
-                            }
-                        }
-                    },
-                    "required": ["protocol", "slave_id"],
-                    "defaultProperties": [
-                        "slave_id",
-                        "channels",
-                        "protocol"
-                    ]
-                }
-            ],
-            "options": {
-                "disable_edit_json": true,
-                "disable_collapse": true,
-                "keep_oneof_values": false,
-                "wb": {
-                    "disable_panel": true
-                }
-            }
+        "value": {
+          "title": "Value",
+          "propertyOrder": 3,
+          "$ref": "#/definitions/serial_int",
+          "options": {
+            "keep_oneof_values": false
+          }
         }
+      },
+      "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true,
+        "disable_properties": true
+      },
+      "_format": "grid",
+      "required": ["address", "value"]
     },
-
-    "properties": {
-        "debug": {
-            "type": "boolean",
-            "title": "Enable debug logging",
-            "default": false,
-            "_format": "checkbox",
-            "propertyOrder": 1
+    "register_channel_common": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "default" : true,
+          "propertyOrder": 1,
+          "_format": "checkbox"
         },
-        "ports": {
-            "type": "array",
-            "title": "List of ports",
-            "items": { "$ref": "#/definitions/port" },
-            "minItems": 1,
-            "_format": "tabs",
-            "propertyOrder": 2,
-            "options": {
-                "disable_collapse": true,
-                "disable_array_delete_last_row": true
+        "name": {
+          "$ref": "#/definitions/channel_name",
+          "propertyOrder": 2
+        },
+        "id": {
+          "type": "string",
+          "title": "MQTT id of the channel",
+          "description": "Used as part of the topic",
+          "propertyOrder": 3
+        },
+        "type": {
+          "$ref": "#/definitions/control_type",
+          "propertyOrder": 4
+        },
+        "reg_type": {
+          "$ref": "#/definitions/reg_type",
+          "propertyOrder": 5
+        },
+        "format": {
+          "$ref": "#/definitions/format",
+          "propertyOrder": 7
+        },
+        "max": {
+          "title": "Maximum value",
+          "$ref": "#/definitions/serial_int",
+          "propertyOrder": 8,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
+        "scale": {
+          "type": "number",
+          "title": "Scale (value multiplier)",
+          "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
+          "default" : 1,
+          "propertyOrder": 9
+        },
+        "offset": {
+          "type": "number",
+          "title": "Value offset",
+          "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
+          "default" : 0,
+          "propertyOrder": 10
+        },
+        "round_to": {
+          "type": "number",
+          "title": "Round to",
+          "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
+          "default" : 1,
+          "propertyOrder": 11,
+          "minimum": 0
+        },
+        "readonly": {
+          "title": "Read-only",
+          "type": "boolean",
+          "propertyOrder": 12
+        },
+        // For compatibility with old configs
+        "channel_readonly": {
+          "type": "boolean",
+          "options": {
+            "hidden": true
+          }
+        },
+        "on_value": {
+          // TBD: only use on_value for 'switch' and 'wo-switch' types
+          "title": "'On' value",
+          "description": "Value corresponding to the 'On' state of the switch",
+          "$ref": "#/definitions/serial_int",
+          "propertyOrder": 13,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
+        "off_value": {
+          "title": "'Off' value",
+          "description": "Value corresponding to the 'Off' state of the switch",
+          "$ref": "#/definitions/serial_int",
+          "propertyOrder": 14,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Poll interval (ms)",
+          "description" : "poll_interval_description",
+          "minimum": 0,
+          "default": 20,
+          "propertyOrder": 15
+        },
+        "error_value": {
+          "title": "Error value",
+          "description": "Value which should be treated as read error",
+          "propertyOrder": 16,
+          "oneOf": [
+            {
+              "title": "decimal or hex",
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+              "options": {
+                "inputAttributes": {
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
+                },
+                "patternmessage": "Should be decimal or hex"
+              }
+            },
+            {
+              "title": "decimal",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
             }
+          ]
         },
-        "max_unchanged_interval": {
-            "type": "integer",
-            "title": "Unchanged value posting interval",
-            "description": "max_unchanged_interval_desc",
-            "default": -1,
-            "propertyOrder": 3
+        "unsupported_value": {
+          "title": "Unsupported register value",
+          "description": "Value which should be treated as 'register is unsupported by device'",
+          "propertyOrder": 17,
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+)$",
+          "options": {
+            "inputAttributes": {
+              "placeholder":  "hex with prefix '0x'"
+            },
+            "patternmessage": "Should be hex with prefix '0x'"
+          }
+        },
+        "word_order": {
+          "$ref": "#/definitions/word_order",
+          "propertyOrder": 18
+        },
+        "consists_of": {
+          "not": {},
+          "options": { "hidden": true }
+        },
+        "device_type": {
+          "not": {},
+          "options": { "hidden": true }
         }
-    },
-
-    "required": ["ports"],
-
-    "options": {
+      },
+      // FIXME: require "reg_type" and "address" for non-templated devices
+      "required": ["name"],
+      "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale", "offset"],
+      "_format": "grid",
+      "options": {
+        "disable_collapse": true,
         "disable_edit_json": true
+      }
     },
-
-    "configFile": {
-        "path": "/etc/wb-mqtt-serial.conf",
-        "service": "wb-mqtt-serial",
-        "toJSON": ["wb-mqtt-serial", "-j"],
-        "fromJSON": ["wb-mqtt-serial", "-J"],
-        "validate": false
-    },
-
-    "translations": {
-        "en": {
-            "poll_interval_description": "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
-            "guard_interval_description": "Specifies the delay in microseconds before writing to the port",
-            "connection_timeout_description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
-            "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
-            "port_header_template": "{{if self.port_type==\"serial\"}}Serial port{{endif}}{{if self.port_type==undefined}}Serial port{{endif}}{{if self.port_type==\"tcp\"}}Port TCP{{endif}}{{if self.port_type==\"modbus tcp\"}}Port MODBUS TCP{{endif}} {{self.path}}{{self.address}} {{self.port}}",
-            "broadcast_description": "Requests are sent without specifying exact id of the device. Use the mode if only one device is connected",
-            "frame_timeout_description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
-            "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
-            "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
-            "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
-            "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior."
-        },
-        "ru": {
-            "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
-            "Configuration of devices connected to serial ports (RS-485, TCP, UART)": "Настройка устройств, подключенных к последовательным портам (RS-485, TCP, UART)",
-            "Enable port": "Включить порт",
-            "Response timeout (ms)": "Таймаут ответа (мс)",
-            "Zero means no timeout. If not set, the default timeout (500ms) is used.": "Ноль - без таймаута. Таймаут по умолчанию 500мс",
-            "Guard interval (us)": "Задержка перед записью в порт (мкс)",
-            "guard_interval_description": "",
-            "Poll interval (ms)": "Период опроса (мс)",
-            "poll_interval_description": "Задаёт задержку в микросекундах между последовательными опросами канала. Не влияет на запись в порт. Запись производится сразу как только возможно",
-            "Devices attached to the port": "Устройства, подключенные к порту",
-            "Serial port": "Последовательный порт",
-            "Port type": "Тип порта",
-            "serial": "последовательный",
-            "Path to device": "Путь до устройства",
-            "Baud rate": "Скорость обмена",
-            "Parity": "Контроль чётности",
-            "Data bits": "Число бит данных",
-            "Stop bits": "Стоп биты",
-            "IPv4 address or hostname of device": "IPv4 адрес или доменное имя устройства",
-            "TCP port number": "Номер TCP порта",
-            "Connection timeout (ms)": "Таймаут подключения (мс)",
-            "connection_timeout_description": "Используется для определения потери связи. По умолчанию 5000мс. -1 запрещает автоматическое переподключение при потере связи.",
-            "Connection max fail cycles": "Максимальное число неудачных переподключений",
-            "connection_max_fail_description": "Задаёт максимальное число неудачных переподключений для всех устройств, после которого будет произведён сброс соединения. По умолчанию 2. -1 запрещает переподключения.",
-            "Serial over TCP": "Передача пакетов через TCP",
-            "port_header_template": "{{if self.port_type==\"serial\"}}Последовательный порт{{endif}}{{if self.port_type==undefined}}Последовательный порт{{endif}}{{if self.port_type==\"tcp\"}}Порт TCP{{endif}}{{if self.port_type==\"modbus tcp\"}}Порт MODBUS TCP{{endif}} {{self.path}}{{self.address}} {{self.port}}",
-            "Port": "Порт",
-            "Slave id of the device": "Адрес устройства",
-            "decimal or hex": "десятичное или шестнадцатеричное значение",
-            "decimal (e.g. 123) or hex (e.g. 0xAF)": "десятичное (например, 123) или шестнадцатеричное (например, 0xAF)",
-            "Should be decimal or hex": "Должно быть задано десятичное или шестнадцатеричное значение",
-            "decimal": "десятичное значение",
-            "Slave id of the device or broadcast mode": "Адрес устройства или широковещательный режим",
-            "decimal or hex slave id": "адрес в десятичном или шестнадцатеричном виде",
-            "decimal slave id": "адрес в десятичном виде",
-            "broadcast": "широковещательные сообщения",
-            "broadcast_description": "Запросы будут отправляться без указания адреса устройства. Используйте этот режим, если подключено только одно устройство",
-            "Device name to be displayed in UI": "",
-            "Device name": "Название устройства",
-            "Enable device": "Опрашивать устройство",
-            "MQTT id of the device": "Идентификатор устройства в MQTT",
-            "Used as part of the topic": "Используется как часть топика в MQTT",
-            "Password as a list of bytes": "Пароль в виде массива байт",
-            "Access level": "Уровень доступа",
-            "Max dummy read register count": "Максимальное число считываемых промежуточных регистров",
-            "Max dummy read bit count": "Максимальное число считываемых промежуточных бит",
-            "Maximum number of registers in a single bulk read request": "Максимальное число регистров, считываемых за один запрос",
-            "Additional delay before each writing to port (us)": "Дополнительная задержка перед записью в порт (мкс)",
-            "Frame timeout (ms)": "Задержка между сообщениями (мс)",
-            "Device timeout (ms)": "Время ожидания устройства (мс)",
-            "Device max fail cycles": "Максимальное число неудачных циклов опроса",
-            "frame_timeout_description": "Задаёт минимальную задержку между сообщениями. В некоторых протоколах это значение используется для определения границ сообщений.",
-            "response_timeout_description": "Задаёт максимальное время ответа устройства. По умолчанию 500 мс. Если соответствующий параметр порта больше, то используется значение порта.",
-            "device_timeout_description": "Задаёт время ожидания устройства. По умолчанию 3000 мс. Запрещает переподключение, если установлено -1.",
-            "device_max_fail_cycles_desc": "Число неудачных циклов опроса устройства после которых оно считается отключенным. По умолчанию 2. Запрещает переподключение, если установлено -1.",
-            "Setup command": "Команда настройки",
-            "Command name": "Название команды",
-            "Used for logging/debugging purposes only": "Используется только для диагностических сообщений",
-            "Address": "Адрес",
-            "Register index (0-65535 in case of Modbus)": "Номер регистра (0-65535 для Modbus)",
-            "Value": "Значение",
-            "Enabled": "Включено",
-            "MQTT id of the channel": " Идентификатор канала в MQTT",
-            "Scale (value multiplier)": "Множитель",
-            "Value offset": "Смещение",
-            "Round to": "Точность",
-            "Read-only": "Только для чтения",
-            "'On' value": "Значение включенного состояния",
-            "Value corresponding to the 'On' state of the switch": "Значение, которое соответствует включенному состоянию переключателя",
-            "'Off' value": "Значение выключенного состояния",
-            "Value corresponding to the 'Off' state of the switch": "Значение, которое соответствует выключенному состоянию переключателя",
-            "Value displayed = round((value read * scale) + offset) / round_to) * round_to": "Отображаемое значение = округление((прочитанное значение * множитель) + смещение) / точность) * точность",
-            "Error value": "Значение ошибки",
-            "Value which should be treated as read error": "Значение, которое сигнализирует об ошибке в устройстве",
-            "Unsupported register value": "Признак неподдерживаемого регистра",
-            "Value which should be treated as 'register is unsupported by device'": "Значение сигнализирующее о том, что устройство не поддерживает данный регистр",
-            "Compound register": "Составной регистр",
-            "A list of subregisters": "Список вложенных регистров",
-            "Channel": "Канал",
-            "Channels": "Каналы",
-            "Enable poll": "Включить опрос",
-            "Parameter": "Параметр",
-            "Subregister": "Вложенный регистр",
-            "Control name": "Название канала",
-            "This name is displayed both in UI and used as part of MQTT topic": "Отображается в интерфейсе и используется как часть топика в MQTT",
-            "Control type": "Тип канала",
-            "Defaults to 'switch' for coils and discrete inputs, 'text' for others": "По умолчанию используется switch для дискретных выходов и входов, для остальных - текст",
-            "Register type": "Тип регистра",
-            "Format": "Формат",
-            "Signed 16-bit integer": "16-битное целое со знаком",
-            "Unsigned 16-bit integer": "16-битное целое без знака",
-            "Signed 8-bit integer": "8-битное целое со знаком",
-            "Unsigned 8-bit integer": "8-битное целое без знака",
-            "Signed 24-bit integer": "24-битное целое со знаком",
-            "Unsigned 24-bit integer": "24-битное целое без знака",
-            "Signed 32-bit integer": "32-битное целое со знаком",
-            "Unsigned 32-bit integer": "32-битное целое без знака",
-            "Signed 64-bit integer": "64-битное целое со знаком",
-            "Unsigned 64-bit integer": "64-битное целое без знака",
-            "IEEE754 32-bit float": "32-битное число с плавающей запятой (IEEE754)",
-            "IEEE754 64-bit float (double)": "64-битное число с плавающей запятой (IEEE754)",
-            "8-bit ASCII char": "8-битный символ ASCII",
-            "16-bit Word Order": "Порядок 16-битных слов",
-            "bits": "биты",
-            "address:offset:bitwidth": "адрес:смещение:число бит",
-            "Address should be decimal or hex, offset and bitwidth separated by ':'": "Адрес должен быть задан в десятичном или шестнадцатеричном виде. Смещение и число бит отделены двоеточием",
-            "OBIS code": "Код OBIS",
-            "OBIS code should contain 6 numbers separated by dots (X.X.X.X.X.X)": "Код OBIS должен состоять из 6 чисел, разделённых точками",
-            "Custom channels": "Каналы, заданные пользователем",
-            "DLMS client address": "Адрес клиента DLMS",
-            "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator": "16 - публичный клиент (по умолчанию), 32 - считыватель показаний СПОДЭС, 48 - конфигуратор СПОДЭС",
-            "Unchanged value posting interval": "Интервал публикации неизменившихся значений",
-            "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
-            "List of ports": "Список портов",
-            "Enable debug logging": "Включить отладочные сообщения",
-            "Custom Modbus IO device": "Произвольное устройство с протоколом Modbus IO",
-            "Custom Modbus device": "Произвольное устройство с протоколом Modbus",
-            "Custom Energomera device with IEC 61107 Mode C protocol": "Произвольный счётчик Энергомера с протоколом IEC 61107 Mode C",
-            "Custom Energomera device with IEC 61107 fast read support": "Произвольный счётчик Энергомера с поддержкой быстрого чтения по протоколу IEC 61107",
-            "Custom Neva device": "Произвольный счётчик Нева",
-            "Custom LLS device": "Произвольное устройство с протоколом LLS",
-            "Custom Mercury 200 device": "Произвольное устройство с протоколом счётчика Меркурий 200",
-            "Custom Pulsar device": "Произвольное устройство с протоколом Пульсар",
-            "Custom S2K device": "Произвольное устройство с протоколом С2000",
-            "Custom IVTM device": "Произвольное устройство с протоколом ИВТМ",
-            "Custom Mercury 230 device": "Произвольное устройство с протоколом счётчика Меркурий 230",
-            "Custom Milur device": "Произвольное устройство с протоколом счётчика Милур",
-            "Custom UNIEL device": "Произвольное устройство с протоколом UNIEL",
-            "Custom DLMS device": "Произвольное устройство с протоколом DLMS/СПОДЭС",
-            "Custom setup commands": "Произвольные команды настройки",
-            "Motor type": "Тип двигателя",
-            "DLMS authentication mode": "Режим аутентификации DLMS",
-            "no authentication": "без аутентификации",
-            "low": "слабый",
-            "high": "сильный",
-            "high, password is hashed with MD5": "сильный с хэшированием MD5",
-            "high, password is hashed with SHA1": "сильный с хэшированием SHA1",
-            "high, password is hashed with GMAC": "сильный с хэшированием GMAC",
-            "high, password is hashed with SHA-256": "сильный с хэшированием SHA-256",
-            "high, password is hashed with ECDSA": "сильный с хэшированием ECDSA",
-            "DLMS interface": "Интерфейс DLMS",
-            "TCP/IP or UDP wrapper, can be used with devices that support IEC 62056-47": "TCP/IP или UDP, может использоваться с устройствами, поддерживающими IEC 62056-47",
-            "plain PDU": "PDU без модификации",
-            "Wi-SUN FAN mesh network": "Wi-SUN FAN mesh-сеть",
-            "Device": "Устройство",
-            "Byte": "Байт",
-            "inherited from device and port": "из настроек устройства и порта"
+    "registerChannel": {
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        {
+          "properties": {
+            "address": {
+              "$ref": "#/definitions/address",
+              "propertyOrder": 6,
+              "options": {
+                "keep_oneof_values": false
+              }
+            }
+          }
         }
+      ]
+    },
+    "compoundRegisterChannel": {
+      "title": "Compound register",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "default" : true,
+          "propertyOrder": 1,
+          "_format": "checkbox"
+        },
+        "name": {
+          "$ref": "#/definitions/channel_name",
+          "propertyOrder": 2
+        },
+        "id": {
+          "type": "string",
+          "title": "MQTT id of the channel",
+          "description": "Used as part of the topic",
+          "propertyOrder": 3
+        },
+        "type": {
+          "$ref": "#/definitions/control_type",
+          "propertyOrder": 4
+        },
+        "readonly": {
+          "title": "Read-only",
+          "type": "boolean",
+          "propertyOrder": 5
+        },
+        // For compatibility with old configs
+        "channel_readonly": {
+          "type": "boolean",
+          "options": {
+            "hidden": true
+          }
+        },
+        "consists_of": {
+          "type": "array",
+          "title": "A list of subregisters",
+          "items": { "$ref": "#/definitions/subreg" },
+          "minItems": 1,
+          "_format": "table",
+          "propertyOrder": 6
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Poll interval (ms)",
+          "description" : "poll_interval_description",
+          "minimum": 0,
+          "default": 20,
+          "propertyOrder": 7
+        }
+      },
+      "required": ["name", "consists_of"],
+      "defaultProperties": ["name", "consists_of"],
+      "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true
+      }
+    },
+    "common_channel": {
+      "headerTemplate": "{{self.name}}",
+      "title": "Channel",
+      "oneOf": [
+        { "$ref": "#/definitions/registerChannel" },
+        { "$ref": "#/definitions/compoundRegisterChannel" }
+      ],
+      "options": {
+        "keep_oneof_values": false
+      }
+    },
+    "channelSettings": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable poll",
+          "default": true,
+          "_format": "checkbox"
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Poll interval (ms)",
+          "minimum": 0,
+          "default": 20,
+          "options": {
+            "dependencies": {
+              "enabled": true
+            }
+          }
+        }
+      },
+      "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true,
+        "disable_properties": true
+      }
+    },
+    "tableChannelSettings": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Parameter",
+          "type": "string",
+          "readOnly": true
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable poll",
+          "default": true,
+          "_format": "checkbox"
+        },
+        "poll_interval": {
+          "type": "integer",
+          "title": "Poll interval (ms)",
+          "minimum": 0,
+          "default": 20,
+          "options": {
+            "dependencies": {
+              "enabled": true
+            }
+          }
+        }
+      }
+    },
+    "subreg": {
+      "type": "object",
+      "title": "Subregister",
+      "properties": {
+        "reg_type": {
+          "$ref": "#/definitions/reg_type",
+          "propertyOrder": 1
+        },
+        "address": {
+          "$ref": "#/definitions/address",
+          "propertyOrder": 2,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
+        "format": {
+          "$ref": "#/definitions/format",
+          "propertyOrder": 3
+        },
+        "scale": {
+          "type": "number",
+          "title": "Scale (value multiplier)",
+          "default" : 1,
+          "propertyOrder": 4
+        },
+        "offset": {
+          "type": "number",
+          "title": "Value offset",
+          "default" : 0,
+          "propertyOrder": 5
+        },
+        "word_order": {
+          "$ref": "#/definitions/word_order",
+          "propertyOrder": 6
+        }
+      },
+      "required": ["reg_type", "address"],
+      "defaultProperties":  ["reg_type", "address"]
+    },
+    "channel_name": {
+      "type": "string",
+      "title": "Control name",
+      "description": "This name is displayed both in UI and used as part of MQTT topic",
+      "minLength": 1
+    },
+    "control_type": {
+      "type": "string",
+      "title": "Control type",
+      "description": "Defaults to 'switch' for coils and discrete inputs, 'text' for others",
+      "enum": [
+        "switch", "wo-switch", "pushbutton", "range", "rgb", "text",
+        "value", "temperature", "rel_humidity",
+        "atmospheric_pressure", "rainfall", "wind_speed", "power",
+        "power_consumption", "voltage", "water_flow",
+        "water_consumption", "resistance", "concentration",
+        "heat_energy", "heat_power",
+        // FIXME: "dimmer", "lux" and "pressure" aren't present in
+        // conventions but is present in config-test.json in
+        // wb-mqtt-serial
+        "dimmer", "lux", "pressure", "current", "sound_level"
+      ]
+    },
+    "reg_type": {
+      "type": "string",
+      "title": "Register type",
+      "enum": ["coil", "discrete", "holding", "holding_single", "holding_multi", "input", "direct", "relay", 
+               "brightness", "param", "relay_mode", "relay_default", "relay_delay", "energy", "array",
+               "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
+               "param24", "param32", "power", "freq", "power_factor", "group_single", 
+               "temperature", "item_1", "item_2", "item_3", "item_4", "item_5", 
+               "alarm", "position", "command", "date", "time",
+               // obis_* are deprecated, use item_*, temperature and power_factor
+               "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5"]
+    },
+    "format": {
+      "type": "string",
+      "title": "Format",
+      "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"],
+      "options": {
+        "enum_titles" : [ "Signed 16-bit integer", "Unsigned 16-bit integer", "Signed 8-bit integer", "Unsigned 8-bit integer",
+                          "Signed 24-bit integer", "Unsigned 24-bit integer", "Signed 32-bit integer", "Unsigned 32-bit integer",
+                          "Signed 64-bit integer", "Unsigned 64-bit integer",
+                          "8-bit BCD", "16-bit BCD","24-bit BCD", "32-bit BCD", "IEEE754 32-bit float", "IEEE754 64-bit float (double)",
+                          "8-bit ASCII char"]
+      }
+    },
+    "word_order": {
+      "type": "string",
+      "title": "16-bit Word Order",
+      "enum": ["big_endian", "little_endian"],
+      "options": {
+        "enum_titles" : [ "Big-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD)",
+                          "Little-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB)"]
+      },
+      "default" : "big_endian"
+    },
+    "address": {
+      "title": "Address",
+      "description": "Register index (0-65535 in case of Modbus)",
+      "oneOf": [
+        {
+          "title": "decimal or hex",
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+          "options": {
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
+            },
+            "patternmessage": "Should be decimal or hex"
+          }
+        },
+        {
+          "title": "bits",
+          "type": "string",
+          "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$",
+          "options": {
+            "inputAttributes": {
+              "placeholder":  "address:offset:bitwidth"
+            },
+            "patternmessage": "Address should be decimal or hex, offset and bitwidth separated by ':'"
+          }
+        },
+        {
+          "title": "decimal",
+          "type": "integer"
+        }
+      ],
+      "options": {
+        "keep_oneof_values": false
+      }
+    },
+    "serial_int": {
+      "oneOf": [
+        {
+          "title": "decimal or hex",
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+          "options": {
+            "patternmessage": "Should be decimal or hex"
+          }
+        },
+        {
+          "title": "decimal",
+          "type": "integer"
+        }
+      ]
+    },
+
+    "no_setup": {
+      "properties": {
+        "setup": {
+          "not": {},
+          "options": { "hidden": true }
+        }
+      }
+    },
+
+    "dlms_address": {
+      "properties": {
+        "address": {
+          "title": "OBIS code",
+          "type": "string",
+          "pattern": "^(\\d+\\.\\d+\\.\\d+\\.\\d+\\.\\d+\\.\\d+)$",
+          "propertyOrder": 6,
+          "options": {
+            "inputAttributes": {
+              "placeholder":  "X.X.X.X.X.X"
+            },
+            "patternmessage": "OBIS code should contain 6 numbers separated by dots (X.X.X.X.X.X)"
+          }
+        }
+      },
+      "required": ["address"]
+    },
+    "dlms_channel": {
+      "headerTemplate": "{{self.name}}",
+      "title": "Channel",
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        { "$ref": "#/definitions/dlms_address" }
+      ]
+    },
+    "dlms_channels": {
+      "properties": {
+        "channels": {
+          "type": "array",
+          "title": "Custom channels",
+          "items": { "$ref": "#/definitions/dlms_channel" },
+          "propertyOrder": 99,
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
+        }
+      }
+    },
+    "dlms_device_properties": {
+      "properties": {
+        "dlms_client_address": {
+          "title": "DLMS client address",
+          "description": "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator",
+          "type": "integer",
+          "minimum": 0,
+          "default": 16,
+          "propertyOrder": 9
+        },
+        "dlms_auth": {
+          "title": "DLMS authentication mode",
+          "type": "integer",
+          "enum": [0, 1, 2, 3, 4, 5, 6, 7],
+          "options": {
+            "enum_titles": [
+              "no authentication",
+              "low",
+              "high",
+              "high, password is hashed with MD5",
+              "high, password is hashed with SHA1",
+              "high, password is hashed with GMAC",
+              "high, password is hashed with SHA-256",
+              "high, password is hashed with ECDSA"
+            ]
+          },
+          "default": 0,
+          "propertyOrder": 12
+        },
+        "dlms_interface": {
+          "title": "DLMS interface",
+          "type": "integer",
+          "enum": [0, 1, 2, 3, 5, 6, 7, 8, 9],
+          "options": {
+            "enum_titles": [
+              "HDLC",
+              "TCP/IP or UDP wrapper, can be used with devices that support IEC 62056-47",
+              "plain PDU",
+              "Wireless M-Bus",
+              "PLC",
+              "PLC HDLC",
+              "LowPower Wide Area Networks (LPWAN)",
+              "Wi-SUN FAN mesh network",
+              "OFDM PLC PRIME"
+            ]
+          },
+          "default": 0,
+          "propertyOrder": 13
+        }
+      }
+    },
+    "dlms_device": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/dlms_device_properties" },
+        { "$ref": "#/definitions/dlms_channels" },
+        { "$ref": "#/definitions/slave_id" },
+        { "$ref": "#/definitions/no_setup" }
+      ]
+    },
+    "dlms_device_no_channels": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/dlms_device_properties" },
+        { "$ref": "#/definitions/slave_id" },
+        { "$ref": "#/definitions/no_setup" }
+      ]
+    },
+
+    "somfy_device_properties": {
+      "properties": {
+        "node_type": {
+          "title": "Motor type",
+          "type": "integer",
+          "enum": [2, 5, 6, 7, 8, 9],
+          "options": {
+            "enum_titles": [
+              "Sonesse 30 DC",
+              "RTS transmitter",
+              "Glydea",
+              "Sonesse 50 AC",
+              "Sonesse 50 DC",
+              "Sonesse 40 AC"
+            ]
+          },
+          "default": 2,
+          "propertyOrder": 12
+        }
+      }
+    },
+    "somfy_device_no_channels": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/somfy_device_properties" },
+        { "$ref": "#/definitions/slave_id" },
+        { "$ref": "#/definitions/no_setup" }
+      ]
+    },
+
+    "string_address": {
+      "properties": {
+        "address": {
+          "title": "Parameter",
+          "type": "string",
+          "propertyOrder": 6
+        }
+      },
+      "required": ["address"]
+    },
+    "channel_with_string_address": {
+      "headerTemplate": "{{self.name}}",
+      "title": "Channel",
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        { "$ref": "#/definitions/string_address" }
+      ]
+    },
+    "channels_with_string_addresses": {
+      "properties": {
+        "channels": {
+          "type": "array",
+          "title": "Custom channels",
+          "items": { "$ref": "#/definitions/channel_with_string_address" },
+          "propertyOrder": 99,
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
+        }
+      }
+    },
+
+    "common_channels": {
+      "properties": {
+        "channels": {
+          "type": "array",
+          "title": "Custom channels",
+          "items": { "$ref": "#/definitions/common_channel" },
+          "propertyOrder": 99,
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
+        }
+      }
+    },
+    "common_setup": {
+      "properties": {
+        "setup": {
+          "type": "array",
+          "title": "Custom setup commands",
+          "items": { "$ref": "#/definitions/setup_cmd" },
+          "propertyOrder": 100,
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
+        }
+      }
+    },
+
+    "simple_device": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/common_channels" },
+        { "$ref": "#/definitions/slave_id" }
+      ]
+    },
+    "simple_device_no_channels": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/slave_id" },
+        { "$ref": "#/definitions/no_setup" }
+      ]
+    },
+
+    "enrgomera_iec_mode_c_device": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/channels_with_string_addresses" },
+        { "$ref": "#/definitions/slave_id_broadcast" }
+      ]
+    },
+    "enrgomera_iec_mode_c_device_no_channels": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/slave_id_broadcast" }
+      ]
+    },
+
+    "simple_device_with_broadcast": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/common_channels" },
+        { "$ref": "#/definitions/slave_id_broadcast" }
+      ]
+    },
+    "simple_device_with_broadcast_no_channels": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/no_setup" },
+        { "$ref": "#/definitions/slave_id_broadcast" }
+      ]
+    },
+
+    "simple_device_with_setup_no_channels": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/common_setup" },
+        { "$ref": "#/definitions/slave_id" }
+      ]
+    },
+    "simple_device_with_setup": {
+      "allOf": [
+        { "$ref": "#/definitions/deviceProperties" },
+        { "$ref": "#/definitions/common_channels" },
+        { "$ref": "#/definitions/common_setup" },
+        { "$ref": "#/definitions/slave_id" }
+      ]
+    },
+
+    "device": {
+      "title": "Device",
+      "headerTemplate": "",
+      "oneOf": [
+        {
+          "title": "Custom DLMS device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/dlms_device_properties" },
+            { "$ref": "#/definitions/dlms_channels" },
+            { "$ref": "#/definitions/slave_id" },
+            { "$ref": "#/definitions/no_setup" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["dlms"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol", "slave_id"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom UNIEL device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/slave_id" },
+            { "$ref": "#/definitions/no_setup" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["uniel"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol", "slave_id"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Milur device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/slave_id" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["milur"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol", "slave_id"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Mercury 230 device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/slave_id_broadcast" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["mercury230"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom IVTM device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/slave_id" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["ivtm"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol", "slave_id"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom S2K device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/slave_id" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["s2k"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol", "slave_id"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Pulsar device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/slave_id" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["pulsar"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol", "slave_id"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Mercury 200 device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/slave_id" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["mercury200"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol", "slave_id"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom LLS device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/slave_id" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["lls"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol", "slave_id"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Neva device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/slave_id_broadcast" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["neva"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Energomera device with IEC 61107 fast read support",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/slave_id_broadcast" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["energomera_iec"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Energomera device with IEC 61107 Mode C protocol",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/no_setup" },
+            { "$ref": "#/definitions/channels_with_string_addresses" },
+            { "$ref": "#/definitions/slave_id_broadcast" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["energomera_iec_mode_c"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Modbus device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/common_setup" },
+            { "$ref": "#/definitions/slave_id" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["modbus"],
+              "default": "modbus",
+              "options": {
+                "hidden": true
+              }
+            },
+            "device_type": {
+              "not": {},
+              "options": { "hidden": true }
+            }
+          },
+          "required": ["slave_id"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        },
+        {
+          "title": "Custom Modbus IO device",
+          "allOf": [
+            { "$ref": "#/definitions/deviceProperties" },
+            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/common_setup" },
+            { "$ref": "#/definitions/slave_id" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["modbus_io"],
+              "options": {
+                "hidden": true
+              }
+            }
+          },
+          "required": ["protocol", "slave_id"],
+          "defaultProperties": ["slave_id", "channels", "protocol"]
+        }
+      ],
+      "options": {
+        "disable_edit_json": true,
+        "disable_collapse": true,
+        "keep_oneof_values": false,
+        "wb": {
+          "disable_panel": true
+        }
+      }
     }
+
+  },
+
+  "properties": {
+    "debug": {
+      "type": "boolean",
+      "title": "Enable debug logging",
+      "default": false,
+      "_format": "checkbox",
+      "propertyOrder": 1
+    },
+    "ports": {
+      "type": "array",
+      "title": "List of ports",
+      "items": { "$ref": "#/definitions/port" },
+      "minItems": 1,
+      "_format": "tabs",
+      "propertyOrder": 2,
+      "options" : {
+          "disable_collapse" : true,
+          "disable_array_delete_last_row": true
+      }
+    },
+    "max_unchanged_interval" : {
+      "type" : "integer",
+      "title" : "Unchanged value posting interval",
+      "description" : "max_unchanged_interval_desc",
+      "default" : -1,
+      "propertyOrder" : 3
+    }
+  },
+
+  "required": ["ports"],
+
+  "options": {
+    "disable_edit_json": true
+  },
+
+  "configFile": {
+    "path": "/etc/wb-mqtt-serial.conf",
+    "service": "wb-mqtt-serial",
+    "toJSON": ["wb-mqtt-serial", "-j"],
+    "fromJSON": ["wb-mqtt-serial", "-J"],
+    "validate": false
+  },
+
+  "translations": {
+    "en": {
+      "poll_interval_description": "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
+      "guard_interval_description": "Specifies the delay in microseconds before writing to the port",
+      "connection_timeout_description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
+      "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
+      "port_header_template": "{{if self.port_type==\"serial\"}}Serial port{{endif}}{{if self.port_type==undefined}}Serial port{{endif}}{{if self.port_type==\"tcp\"}}Port TCP{{endif}}{{if self.port_type==\"modbus tcp\"}}Port MODBUS TCP{{endif}} {{self.path}}{{self.address}} {{self.port}}",
+      "broadcast_description": "Requests are sent without specifing exact id of the device. Use the mode if only one device is connected",
+      "frame_timeout_description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
+      "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
+      "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
+      "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
+      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
+    },
+    "ru": {
+      "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
+      "Configuration of devices connected to serial ports (RS-485, TCP, UART)": "Настройка устройств, подключенных к последовательным портам (RS-485, TCP, UART)",  
+      "Enable port": "Включить порт",
+      "Response timeout (ms)": "Таймаут ответа (мс)",
+      "Zero means no timeout. If not set, the default timeout (500ms) is used.": "Ноль - без таймаута. Таймаут по умолчанию 500мс",
+      "Guard interval (us)": "Задержка перед записью в порт (мкс)",
+      "guard_interval_description": "",
+      "Poll interval (ms)": "Период опроса (мс)",
+      "poll_interval_description": "Задаёт задержку в микросекундах между последовательными опросами канала. Не влияет на запись в порт. Запись производится сразу как только возможно",
+      "Devices attached to the port": "Устройства, подключенные к порту",
+      "Serial port": "Последовательный порт",
+      "Port type": "Тип порта",
+      "serial": "последовательный",
+      "Path to device": "Путь до устройства",
+      "Baud rate": "Скорость обмена",
+      "Parity": "Контроль чётности",
+      "Data bits": "Число бит данных",
+      "Stop bits": "Стоп биты",
+      "IPv4 address or hostname of device": "IPv4 адрес или доменное имя устройства",
+      "TCP port number": "Номер TCP порта",
+      "Connection timeout (ms)": "Таймаут подключения (мс)",
+      "connection_timeout_description": "Используется для определения потери связи. По умолчанию 5000мс. -1 запрещает автоматическое переподключение при потере связи.",
+      "Connection max fail cycles": "Максимальное число неудачных переподключений",
+      "connection_max_fail_description": "Задаёт максимальное число неудачных переподключений для всех устройств, после которого будет произведён сброс соединения. По умолчанию 2. -1 запрещает переподключения.",
+      "Serial over TCP": "Передача пакетов через TCP",
+      "port_header_template": "{{if self.port_type==\"serial\"}}Последовательный порт{{endif}}{{if self.port_type==undefined}}Последовательный порт{{endif}}{{if self.port_type==\"tcp\"}}Порт TCP{{endif}}{{if self.port_type==\"modbus tcp\"}}Порт MODBUS TCP{{endif}} {{self.path}}{{self.address}} {{self.port}}",
+      "Port": "Порт",
+      "Slave id of the device": "Адрес устройства",
+      "decimal or hex": "десятичное или шестнадцатеричное значение",
+      "decimal (e.g. 123) or hex (e.g. 0xAF)": "десятичное (например, 123) или шестнадцатеричное (например, 0xAF)",
+      "Should be decimal or hex": "Должно быть задано десятичное или шестнадцатеричное значение",
+      "decimal": "десятичное значение",
+      "Slave id of the device or broadcast mode": "Адрес устройства или широковещательный режим",
+      "decimal or hex slave id": "адрес в десятичном или шестнадцатеричном виде",
+      "decimal slave id": "адрес в десятичном виде",
+      "broadcast": "широковещательные сообщения",
+      "broadcast_description": "Запросы будут отправляться без указания адреса устройства. Используйте этот режим, если подключено только одно устройство",
+      "Device name to be displayed in UI": "",
+      "Device name": "Название устройства",
+      "Enable device": "Опрашивать устройство",
+      "MQTT id of the device": "Идентификатор устройства в MQTT",
+      "Used as part of the topic": "Используется как часть топика в MQTT",
+      "Password as a list of bytes": "Пароль в виде массива байт",
+      "Access level": "Уровень доступа",
+      "Max dummy read register count": "Максимальное число считываемых промежуточных регистров",
+      "Max dummy read bit count": "Максимальное число считываемых промежуточных бит",
+      "Maximum number of registers in a single bulk read request": "Максимальное число регистров, считываемых за один запрос",
+      "Additional delay before each writing to port (us)": "Дополнительная задержка перед записью в порт (мкс)",
+      "Frame timeout (ms)": "Задержка между сообщениями (мс)",
+      "Device timeout (ms)": "Время ожидания устройства (мс)",
+      "Device max fail cycles": "Максимальное число неудачных циклов опроса",
+      "frame_timeout_description": "Задаёт минимальную задержку между сообщениями. В некоторых протоколах это значение используется для определения границ сообщений.",
+      "response_timeout_description": "Задаёт максимальное время ответа устройства. По умолчанию 500 мс. Если соответствующий параметр порта больше, то используется значение порта.",
+      "device_timeout_description": "Задаёт время ожидания устройства. По умолчанию 3000 мс. Запрещает переподключение, если установлено -1.",
+      "device_max_fail_cycles_desc": "Число неудачных циклов опроса устройства после которых оно считается отключенным. По умолчанию 2. Запрещает переподключение, если установлено -1.",
+      "Setup command": "Команда настройки",
+      "Command name": "Название команды",
+      "Used for logging/debugging purposes only": "Используется только для диагностических сообщений",
+      "Address": "Адрес",
+      "Register index (0-65535 in case of Modbus)": "Номер регистра (0-65535 для Modbus)",
+      "Value": "Значение",
+      "Enabled": "Включено",
+      "MQTT id of the channel": " Идентификатор канала в MQTT",
+      "Scale (value multiplier)": "Множитель",
+      "Value offset": "Смещение",
+      "Round to": "Точность",
+      "Read-only": "Только для чтения",
+      "'On' value": "Значение включенного состояния",
+      "Value corresponding to the 'On' state of the switch": "Значение, которое соответствует включенному состоянию переключателя",
+      "'Off' value": "Значение выключенного состояния",
+      "Value corresponding to the 'Off' state of the switch": "Значение, которое соответствует выключенному состоянию переключателя",
+      "Value displayed = round((value read * scale) + offset) / round_to) * round_to": "Отображаемое значение = округление((прочитанное значение * множитель) + смещение) / точность) * точность",
+      "Error value": "Значение ошибки",
+      "Value which should be treated as read error": "Значение, которое сигнализирует об ошибке в устройстве",
+      "Unsupported register value": "Признак неподдерживаемого регистра",
+      "Value which should be treated as 'register is unsupported by device'": "Значение сигнализирующее о том, что устройство не поддерживает данный регистр",
+      "Compound register": "Составной регистр",
+      "A list of subregisters": "Список вложенных регистров",
+      "Channel": "Канал",
+      "Channels": "Каналы",
+      "Enable poll": "Включить опрос",
+      "Parameter": "Параметр",
+      "Subregister": "Вложенный регистр",
+      "Control name": "Название канала",
+      "This name is displayed both in UI and used as part of MQTT topic": "Отображается в интерфейсе и используется как часть топика в MQTT",
+      "Control type": "Тип канала",
+      "Defaults to 'switch' for coils and discrete inputs, 'text' for others": "По умолчанию используется switch для дискретных выходов и входов, для остальных - текст",
+      "Register type": "Тип регистра",
+      "Format": "Формат",
+      "Signed 16-bit integer": "16-битное целое со знаком",
+      "Unsigned 16-bit integer": "16-битное целое без знака", 
+      "Signed 8-bit integer": "8-битное целое со знаком",
+      "Unsigned 8-bit integer": "8-битное целое без знака",
+      "Signed 24-bit integer": "24-битное целое со знаком",
+      "Unsigned 24-bit integer": "24-битное целое без знака",
+      "Signed 32-bit integer": "32-битное целое со знаком",
+      "Unsigned 32-bit integer": "32-битное целое без знака",
+      "Signed 64-bit integer": "64-битное целое со знаком",
+      "Unsigned 64-bit integer": "64-битное целое без знака",
+      "IEEE754 32-bit float": "32-битное число с плавающей запятой (IEEE754)",
+      "IEEE754 64-bit float (double)": "64-битное число с плавающей запятой (IEEE754)",
+      "8-bit ASCII char": "8-битный символ ASCII",
+      "16-bit Word Order": "Порядок 16-битных слов",
+      "bits": "биты",
+      "address:offset:bitwidth": "адрес:смещение:число бит",
+      "Address should be decimal or hex, offset and bitwidth separated by ':'": "Адрес должен быть задан в десятичном или шестнадцатеричном виде. Смещение и число бит отделены двоеточием",
+      "OBIS code": "Код OBIS",
+      "OBIS code should contain 6 numbers separated by dots (X.X.X.X.X.X)": "Код OBIS должен состоять из 6 чисел, разделённых точками",
+      "Custom channels": "Каналы, заданные пользователем",
+      "DLMS client address": "Адрес клиента DLMS",
+      "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator": "16 - публичный клиент (по умолчанию), 32 - считыватель показаний СПОДЭС, 48 - конфигуратор СПОДЕС", 
+      "Unchanged value posting interval": "Интервал публикации неизменившихся значений",
+      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
+      "List of ports": "Список портов",
+      "Enable debug logging": "Включить отладочные сообщения",
+      "Custom Modbus IO device": "Произвольное устройство с протоколом Modbus IO",
+      "Custom Modbus device": "Произвольное устройство с протоколом Modbus",
+      "Custom Energomera device with IEC 61107 Mode C protocol": "Произвольный счётчик Энергомера с протоколом IEC 61107 Mode C",
+      "Custom Energomera device with IEC 61107 fast read support": "Произвольный счётчик Энергомера с поддержкой быстрого чтения по протоколу IEC 61107",
+      "Custom Neva device": "Произвольный счётчик Нева",
+      "Custom LLS device": "Произвольное устройство с протоколом LLS",
+      "Custom Mercury 200 device": "Произвольное устройство с протоколом счётчика Меркурий 200",
+      "Custom Pulsar device": "Произвольное устройство с протоколом Пульсар",
+      "Custom S2K device": "Произвольное устройство с протоколом С2000",
+      "Custom IVTM device": "Произвольное устройство с протоколом ИВТМ",
+      "Custom Mercury 230 device": "Произвольное устройство с протоколом счётчика Меркурий 230",
+      "Custom Milur device": "Произвольное устройство с протоколом счётчика Милур",
+      "Custom UNIEL device": "Произвольное устройство с протоколом UNIEL",
+      "Custom DLMS device": "Произвольное устройство с протоколом DLMS/СПОДЭС",
+      "Custom setup commands": "Произвольные команды настройки",
+      "Motor type": "Тип двигателя",
+      "DLMS authentication mode": "Режим аутентификации DLMS",
+      "no authentication": "без аутентификации",
+      "low": "слабый",
+      "high": "сильный",
+      "high, password is hashed with MD5": "сильный с хэшированием MD5",
+      "high, password is hashed with SHA1": "сильный с хэшированием SHA1",
+      "high, password is hashed with GMAC": "сильный с хэшированием GMAC",
+      "high, password is hashed with SHA-256": "сильный с хэшированием SHA-256",
+      "high, password is hashed with ECDSA": "сильный с хэшированием ECDSA",
+      "DLMS interface": "Интерфейс DLMS",
+      "TCP/IP or UDP wrapper, can be used with devices that support IEC 62056-47": "TCP/IP или UDP, может использоваться с устройствами, поддерживающими IEC 62056-47",
+      "plain PDU": "PDU без модификации",
+      "Wi-SUN FAN mesh network": "Wi-SUN FAN mesh-сеть",
+      "Device": "Устройство",
+      "Byte": "Байт"
+    }
+  }
 }
