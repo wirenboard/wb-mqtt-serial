@@ -147,7 +147,7 @@ namespace
         bool readonly = val.asBool();
         if (templateReadonly && !readonly) {
             LOG(Warn) << override_error_message_prefix << " unable to make register of type \"" << register_type
-                    << "\" writable";
+                      << "\" writable";
             return true;
         }
         return readonly;
