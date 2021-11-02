@@ -535,13 +535,6 @@
           "type": "boolean",
           "propertyOrder": 12
         },
-        // For compatibility with old configs
-        "channel_readonly": {
-          "type": "boolean",
-          "options": {
-            "hidden": true
-          }
-        },
         "on_value": {
           // TBD: only use on_value for 'switch' and 'wo-switch' types
           "title": "'On' value",
@@ -673,13 +666,6 @@
           "title": "Read-only",
           "type": "boolean",
           "propertyOrder": 5
-        },
-        // For compatibility with old configs
-        "channel_readonly": {
-          "type": "boolean",
-          "options": {
-            "hidden": true
-          }
         },
         "consists_of": {
           "type": "array",

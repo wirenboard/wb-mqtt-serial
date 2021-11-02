@@ -137,13 +137,18 @@ namespace
                                       const std::string& override_error_message_prefix,
                                       const std::string& register_type)
     {
-        bool readonly = templateReadonly;
-        if (Get(register_data, key, readonly)) {
-            if (templateReadonly && !readonly) {
-                LOG(Warn) << override_error_message_prefix << " unable to make register of type \"" << register_type
-                          << "\" writable";
-                return true;
-            }
+        if (!register_data.isMember(key)) {
+            return templateReadonly;
+        }
+        auto& val = register_data[key];
+        if (!val.isConvertibleTo(Json::booleanValue)) {
+            return templateReadonly;
+        }
+        bool readonly = val.asBool();
+        if (templateReadonly && !readonly) {
+            LOG(Warn) << override_error_message_prefix << " unable to make register of type \"" << register_type
+                      << "\" writable";
+            return true;
         }
         return readonly;
     }
@@ -213,7 +218,7 @@ namespace
                                                      regType.ReadOnly,
                                                      readonly_override_error_message_prefix,
                                                      regType.Name);
-        // For comptibility with old configs
+        // For compatibility with old configs
         readonly = ReadChannelsReadonlyProperty(register_data,
                                                 "channel_readonly",
                                                 readonly,
