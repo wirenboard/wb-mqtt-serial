@@ -1,6 +1,7 @@
 {
   "type": "object",
   "title": "Serial Device Driver Configuration",
+  "description": "Configuration of devices connected to serial ports (RS-485, TCP, UART)",
 
   "definitions": {
     "commonPortSettings": {
@@ -1565,6 +1566,8 @@
       "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
     },
     "ru": {
+      "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
+      "Configuration of devices connected to serial ports (RS-485, TCP, UART)": "Настройка устройств, подключенных к последовательным портам (RS-485, TCP, UART)",  
       "Enable port": "Включить порт",
       "Response timeout (ms)": "Таймаут ответа (мс)",
       "Zero means no timeout. If not set, the default timeout (500ms) is used.": "Ноль - без таймаута. Таймаут по умолчанию 500мс",

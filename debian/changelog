@@ -6,6 +6,7 @@ wb-mqtt-serial (2.40.0-wb1) stable; urgency=medium
       meters templates
     * End of production date was added in titles of Wiren Board Modbus
       legacy templates
+    * MQTT serial schema title translation to Russian
 
  -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 26 Oct 2021 11:18:51 +0300
 
