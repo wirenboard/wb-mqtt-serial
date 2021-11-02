@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.40.5) stable; urgency=medium
+
+  * MQTT serial schema title translation to Russian
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 02 Nov 2021 14:18:58 +0300
+
 wb-mqtt-serial (2.40.4) stable; urgency=medium
 
   * Deprecated "channel_readonly" config property parsing is fixed
