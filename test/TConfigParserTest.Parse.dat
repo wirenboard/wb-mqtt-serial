@@ -871,7 +871,7 @@ Ports:
                 UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
-            Name: Sub2 c1
+            Name: c1
             Type: value
             MqttId: c1
             DeviceId: with subdevice_22
@@ -896,7 +896,7 @@ Ports:
                 UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
-            Name: Sub2 c2 c12
+            Name: c2 c12
             Type: value
             MqttId: id sub id
             DeviceId: with subdevice_22
@@ -921,8 +921,8 @@ Ports:
                 UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
-            Name: Sub2 c2 c22
-            Name ru: Sub2 c2 русский c22
+            Name: c2 c22
+            Name ru: c2 русский c22
             Type: value
             MqttId: id c22
             DeviceId: with subdevice_22
@@ -947,8 +947,8 @@ Ports:
                 UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
-            Name: Sub2 c3 c22
-            Name ru: Sub2 c3 русский c22
+            Name: c3 c22
+            Name ru: c3 русский c22
             Type: value
             MqttId: c3 c22
             DeviceId: with subdevice_22

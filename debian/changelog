@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.41.0) stable; urgency=medium
+
+  * If a channel has an id set to empty string, it's name will be omitted in translation
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 02 Nov 2021 13:20:51 +0500
+
 wb-mqtt-serial (2.40.3) stable; urgency=medium
 
   * Added Russian translation for Wiren Board Modbus legacy energy

@@ -163,7 +163,10 @@ namespace
 
     struct TLoadingContext
     {
+        // Full path to loaded item composed from device and channels names
         std::string name_prefix;
+
+        // MQTT topic prefix. It could be different from name_prefix
         std::string mqtt_prefix;
         const std::string& device_template_title;
         const IDeviceFactory& factory;
@@ -422,17 +425,25 @@ namespace
 
         TLoadingContext newContext(context.device_template_title, context.factory, *baseAddress);
         newContext.translations = context.translations;
-        newContext.name_prefix = channel_data["name"].asString();
+        auto name = channel_data["name"].asString();
+        newContext.name_prefix = name;
         if (!context.name_prefix.empty()) {
             newContext.name_prefix = context.name_prefix + " " + newContext.name_prefix;
         }
 
-        newContext.mqtt_prefix = channel_data["name"].asString();
+        newContext.mqtt_prefix = name;
         bool idIsDefined = false;
         if (channel_data.isMember("id")) {
             newContext.mqtt_prefix = channel_data["id"].asString();
             idIsDefined = true;
         }
+
+        // Empty id is used if we don't want to add channel name to resulting MQTT topic name
+        // This case we also don't add translation to resulting translated channel name
+        if (!(idIsDefined && newContext.mqtt_prefix.empty())) {
+            newContext.translated_name_prefixes = Translate(name, idIsDefined, context);
+        }
+
         if (!context.mqtt_prefix.empty()) {
             if (newContext.mqtt_prefix.empty()) {
                 newContext.mqtt_prefix = context.mqtt_prefix;
@@ -448,7 +459,6 @@ namespace
         }
 
         if (channel_data.isMember("channels")) {
-            newContext.translated_name_prefixes = Translate(channel_data["name"].asString(), idIsDefined, context);
             for (const auto& ch: channel_data["channels"]) {
                 LoadChannel(device_config, ch, newContext);
             }
