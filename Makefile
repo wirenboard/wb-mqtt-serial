@@ -87,7 +87,6 @@ clean :
 	rm -f $(SERIAL_BIN)
 
 install:
-	install -d $(DESTDIR)/usr/share/wb-mqtt-confed/schemas
 	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
 	install -d $(DESTDIR)/etc/wb-mqtt-serial.conf.d/templates
 

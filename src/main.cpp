@@ -36,7 +36,7 @@ const auto USER_TEMPLATES_DIR = "/etc/wb-mqtt-serial.conf.d/templates";
 const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json";
 const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
-const auto CONFED_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json";
+const auto CONFED_JSON_SCHEMA_FULL_FILE_PATH = "/var/lib/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json";
 
 const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(60);
 

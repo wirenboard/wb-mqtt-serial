@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.41.0) stable; urgency=medium
+
+  * Schema for wb-mqtt-homeui is moved to /var/lib/wb-mqtt-confed/schemas
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 02 Nov 2021 14:51:20 +0500
+
 wb-mqtt-serial (2.40.3) stable; urgency=medium
 
   * Added Russian translation for Wiren Board Modbus legacy energy
