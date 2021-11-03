@@ -1,4 +1,5 @@
 {
+    "title": "_WB-M1W2-DI-template-title",
     "device_type": "WB-M1W2 DI",
     "device": {
         "name": "WB-M1W2",
@@ -10,16 +11,16 @@
             "in1_mode": {
                 "title": "Input 1 mode",
                 "address": 275,
-                "enum": [ 0, 1 ],
+                "enum": [0, 1],
                 "default": 0,
-                "enum_titles": [ "1-Wire", "discrete input"]
+                "enum_titles": ["1-Wire", "discrete input"]
             },
             "in2_mode": {
                 "title": "Input 2 mode",
                 "address": 276,
-                "enum": [ 0, 1 ],
+                "enum": [0, 1],
                 "default": 0,
-                "enum_titles": [ "1-Wire", "discrete input"]
+                "enum_titles": ["1-Wire", "discrete input"]
             }
         },
         "channels": [
@@ -96,6 +97,14 @@
                 "format": "u32",
                 "enabled": false
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "_WB-M1W2-DI-template-title": "WB-M1W2 DI - legacy template"
+            },
+            "ru": {
+                "_WB-M1W2-DI-template-title": "WB-M1W2 DI - устаревший шаблон"
+            }
+        }
     }
 }

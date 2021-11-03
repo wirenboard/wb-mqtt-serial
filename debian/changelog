@@ -1,3 +1,16 @@
+wb-mqtt-serial (2.40.0-wb1) stable; urgency=medium
+
+  * Translation backports:
+    * Fix grammar in WB-MAI2-mini and WB-MAO4 templates
+    * Added Russian translation for Wiren Board Modbus legacy energy
+      meters templates
+    * End of production date was added in titles of Wiren Board Modbus
+      legacy templates
+    * MQTT serial schema title translation to Russian
+    * If a channel has an id set to empty string, it's name will be omitted in translation
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 26 Oct 2021 11:18:51 +0300
+
 wb-mqtt-serial (2.40.0) stable; urgency=medium
 
   * Added Russian translation for Wiren Board Modbus peripherals templates:

@@ -1,4 +1,5 @@
 {
+    "title": "_WB-MR3LV-template-title",
     "device_type": "WB-MR3LV",
     "device": {
         "name": "WB-MR3LV",
@@ -54,7 +55,7 @@
                 "title": "Input 0 Mode",
                 "address": 16,
                 "reg_type": "holding",
-                "enum": [ 2, 3, 4 ],
+                "enum": [2, 3, 4],
                 "default": 2,
                 "enum_titles": [
                     "turn off all outputs",
@@ -78,7 +79,7 @@
                 "title": "Input 1 Mode",
                 "address": 9,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
@@ -104,7 +105,7 @@
                 "title": "Input 2 Mode",
                 "address": 10,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
@@ -130,7 +131,7 @@
                 "title": "Input 3 Mode",
                 "address": 11,
                 "reg_type": "holding",
-                "enum": [ 0, 1, 2, 3, 4 ],
+                "enum": [0, 1, 2, 3, 4],
                 "default": 0,
                 "enum_titles": [
                     "push button",
@@ -152,16 +153,13 @@
                 "group": "input_3",
                 "order": 2
             },
-             "outputs_restore_state": {
+            "outputs_restore_state": {
                 "title": "Restore Last Outputs State After Power On",
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [ 0, 1 ],
+                "enum": [0, 1],
                 "default": 0,
-                "enum_titles": [
-                    "no",
-                    "yes"
-                ],
+                "enum_titles": ["no", "yes"],
                 "group": "outputs",
                 "order": 1
             },
@@ -196,7 +194,7 @@
                 "address": 54,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_0"
@@ -221,7 +219,7 @@
                 "address": 40,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_1"
@@ -246,7 +244,7 @@
                 "address": 42,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_2"
@@ -271,7 +269,7 @@
                 "address": 44,
                 "type": "value",
                 "format": "u32",
-                "scale": 1.52588e-05,
+                "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
                 "group": "input_3"
@@ -323,7 +321,14 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ]        
-
+        ],
+        "translations": {
+            "en": {
+                "_WB-MR3LV-template-title": "WB-MR3LV - legacy template"
+            },
+            "ru": {
+                "_WB-MR3LV-template-title": "WB-MR3LV - устаревший шаблон"
+            }
+        }
     }
 }
