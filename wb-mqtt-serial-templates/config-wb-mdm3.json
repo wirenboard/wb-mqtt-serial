@@ -378,16 +378,14 @@
                 "group": "inputs"
             },
             {
-                "name": "K1_name",
-                "id": "K1",
+                "name": "K1",
                 "reg_type": "coil",
                 "address": 0,
                 "type": "switch",
                 "group": "channel_1"
             },
             {
-                "name": "Channel1_name",
-                "id": "Channel 1",
+                "name": "Channel 1",
                 "reg_type": "holding",
                 "address": 0,
                 "type": "range",
@@ -395,16 +393,14 @@
                 "group": "channel_1"
             },
             {
-                "name": "K2_name",
-                "id": "K2",
+                "name": "K2",
                 "reg_type": "coil",
                 "address": 1,
                 "type": "switch",
                 "group": "channel_2"
             },
             {
-                "name": "Channel2_name",
-                "id": "Channel 2",
+                "name": "Channel 2",
                 "reg_type": "holding",
                 "address": 1,
                 "type": "range",
@@ -412,16 +408,14 @@
                 "group": "channel_2"
             },
             {
-                "name": "K3_name",
-                "id": "K3",
+                "name": "K3",
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
                 "group": "channel_3"
             },
             {
-                "name": "Channel3_name",
-                "id": "Channel 3",
+                "name": "Channel 3",
                 "reg_type": "holding",
                 "address": 2,
                 "type": "range",
@@ -505,12 +499,6 @@
                 "WB-MDM3_template_title": "WB-MDM3 (3-channel MOSFET dimmer)",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
-                "K1_name": "Channel 1 State",
-                "K2_name": "Channel 2 State",
-                "K3_name": "Channel 3 State",
-                "Channel1_name": "Channel 1 Setpoint (%)",
-                "Channel2_name": "Channel 2 Setpoint (%)",
-                "Channel3_name": "Channel 3 Setpoint (%)",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -568,12 +556,6 @@
                 "Input 4 counter": "Счетчик срабатываний входа 4",
                 "Input 5 counter": "Счетчик срабатываний входа 5",
                 "Input 6 counter": "Счетчик срабатываний входа 6",
-                "K1_name": "Состояние канала 1",
-                "K2_name": "Состояние канала 2",
-                "K3_name": "Состояние канала 3",
-                "Channel1_name": "Задание для канала 1 (%)",
-                "Channel2_name": "Задание для канала 2 (%)",
-                "Channel3_name": "Задание для канала 3 (%)",
                 "Serial": "Серийный номер",
                 "Supply voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
