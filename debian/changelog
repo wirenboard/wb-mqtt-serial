@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.41.2) stable; urgency=medium
+
+  * WB-MAI11 template min/max values translation correction
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 05 Nov 2021 14:09:27 +0300
+
 wb-mqtt-serial (2.41.0) stable; urgency=medium
 
   * If a channel has an id set to empty string, it's name will be omitted in translation
