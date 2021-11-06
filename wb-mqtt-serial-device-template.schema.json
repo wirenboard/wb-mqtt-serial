@@ -119,7 +119,10 @@
           "type": "integer"
         }
       },
-      "required": ["device_type", "name"]
+      "anyOf": [
+        { "required": ["device_type", "name"] },
+        { "required": ["oneOf", "name"] }
+      ]
     },
 
     "subdevice_device": {
@@ -234,19 +237,17 @@
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/no_setup" },
             { "$ref": "#/definitions/channels_with_string_addresses" },
-            { "$ref": "#/definitions/groups" },
-            {
-              "properties": {
-                "protocol": {
-                  "type": "string",
-                  "enum": ["energomera_iec_mode_c"]
-                },
-                "parameters": { "not" : {} },
-                "subdevices": { "not" : {} }
-              },
-              "required": ["protocol"]
-            }
-          ]
+            { "$ref": "#/definitions/groups" }
+          ],
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": ["energomera_iec_mode_c"]
+            },
+            "parameters": { "not" : {} },
+            "subdevices": { "not" : {} }
+          },
+          "required": ["protocol"]
         },
 
         {
@@ -289,7 +290,7 @@
         {
           "allOf": [
             {
-              "anyOf": [
+              "oneOf": [
                 {
                   "not": {
                     "required": ["protocol"]
