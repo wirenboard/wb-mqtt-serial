@@ -634,7 +634,8 @@
                 "keep_oneof_values": false
               }
             }
-          }
+          },
+          "required": ["address"]
         }
       ]
     },
