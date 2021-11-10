@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.42.1) stable; urgency=medium
+
+  * Fixed the description Poll interval
+  * Changed the caption Enable poll
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Wed, 10 Nov 2021 10:30:40 +0500
+
 wb-mqtt-serial (2.42.0) stable; urgency=medium
 
   * Schema for wb-mqtt-homeui is moved to /var/lib/wb-mqtt-confed/schemas
