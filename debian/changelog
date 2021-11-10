@@ -1,8 +1,45 @@
-wb-mqtt-serial (2.41.0) stable; urgency=medium
+wb-mqtt-serial (2.42.0) stable; urgency=medium
 
   * Schema for wb-mqtt-homeui is moved to /var/lib/wb-mqtt-confed/schemas
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 02 Nov 2021 14:51:20 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 10 Nov 2021 10:22:45 +0500
+
+wb-mqtt-serial (2.41.3) stable; urgency=medium
+
+  * Register address validation is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Sat, 06 Nov 2021 11:49:53 +0500
+
+wb-mqtt-serial (2.41.2) stable; urgency=medium
+
+  * WB-MAI11 template min/max values translation correction
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 05 Nov 2021 14:09:27 +0300
+
+wb-mqtt-serial (2.41.1) stable; urgency=medium
+
+  * Names of channels in WB-MDM3 template were returned back for
+    backward compatibility
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 05 Nov 2021 13:52:35 +0300
+
+wb-mqtt-serial (2.41.0) stable; urgency=medium
+
+  * If a channel has an id set to empty string, it's name will be omitted in translation
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 03 Nov 2021 14:00:22 +0500
+
+wb-mqtt-serial (2.40.5) stable; urgency=medium
+
+  * MQTT serial schema title translation to Russian
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 02 Nov 2021 14:18:58 +0300
+
+wb-mqtt-serial (2.40.4) stable; urgency=medium
+
+  * Deprecated "channel_readonly" config property parsing is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 02 Nov 2021 12:09:11 +0500
 
 wb-mqtt-serial (2.40.3) stable; urgency=medium
 

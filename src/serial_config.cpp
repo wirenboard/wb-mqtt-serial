@@ -137,13 +137,18 @@ namespace
                                       const std::string& override_error_message_prefix,
                                       const std::string& register_type)
     {
-        bool readonly = templateReadonly;
-        if (Get(register_data, key, readonly)) {
-            if (templateReadonly && !readonly) {
-                LOG(Warn) << override_error_message_prefix << " unable to make register of type \"" << register_type
-                          << "\" writable";
-                return true;
-            }
+        if (!register_data.isMember(key)) {
+            return templateReadonly;
+        }
+        auto& val = register_data[key];
+        if (!val.isConvertibleTo(Json::booleanValue)) {
+            return templateReadonly;
+        }
+        bool readonly = val.asBool();
+        if (templateReadonly && !readonly) {
+            LOG(Warn) << override_error_message_prefix << " unable to make register of type \"" << register_type
+                      << "\" writable";
+            return true;
         }
         return readonly;
     }
@@ -163,7 +168,10 @@ namespace
 
     struct TLoadingContext
     {
+        // Full path to loaded item composed from device and channels names
         std::string name_prefix;
+
+        // MQTT topic prefix. It could be different from name_prefix
         std::string mqtt_prefix;
         const std::string& device_template_title;
         const IDeviceFactory& factory;
@@ -213,7 +221,7 @@ namespace
                                                      regType.ReadOnly,
                                                      readonly_override_error_message_prefix,
                                                      regType.Name);
-        // For comptibility with old configs
+        // For compatibility with old configs
         readonly = ReadChannelsReadonlyProperty(register_data,
                                                 "channel_readonly",
                                                 readonly,
@@ -422,17 +430,25 @@ namespace
 
         TLoadingContext newContext(context.device_template_title, context.factory, *baseAddress);
         newContext.translations = context.translations;
-        newContext.name_prefix = channel_data["name"].asString();
+        auto name = channel_data["name"].asString();
+        newContext.name_prefix = name;
         if (!context.name_prefix.empty()) {
             newContext.name_prefix = context.name_prefix + " " + newContext.name_prefix;
         }
 
-        newContext.mqtt_prefix = channel_data["name"].asString();
+        newContext.mqtt_prefix = name;
         bool idIsDefined = false;
         if (channel_data.isMember("id")) {
             newContext.mqtt_prefix = channel_data["id"].asString();
             idIsDefined = true;
         }
+
+        // Empty id is used if we don't want to add channel name to resulting MQTT topic name
+        // This case we also don't add translation to resulting translated channel name
+        if (!(idIsDefined && newContext.mqtt_prefix.empty())) {
+            newContext.translated_name_prefixes = Translate(name, idIsDefined, context);
+        }
+
         if (!context.mqtt_prefix.empty()) {
             if (newContext.mqtt_prefix.empty()) {
                 newContext.mqtt_prefix = context.mqtt_prefix;
@@ -448,7 +464,6 @@ namespace
         }
 
         if (channel_data.isMember("channels")) {
-            newContext.translated_name_prefixes = Translate(channel_data["name"].asString(), idIsDefined, context);
             for (const auto& ch: channel_data["channels"]) {
                 LoadChannel(device_config, ch, newContext);
             }
