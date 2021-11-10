@@ -10,8 +10,8 @@ Package: wb-mqtt-serial
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ucf, bsdutils (>= 2.29), libwbmqtt1-3 (>= 3.3.0)
 Replaces: wb-homa-modbus (<< 1.14.1)
-Recommends: wb-mqtt-confed (>= 1.4.0)
-Breaks: wb-homa-modbus (<< 1.14.1), wb-mqtt-confed (<< 1.2.5), wb-mqtt-homeui (<< 2.16.0)
+Recommends: wb-mqtt-confed (>= 1.7.0)
+Breaks: wb-homa-modbus (<< 1.14.1), wb-mqtt-confed (<< 1.7.0), wb-mqtt-homeui (<< 2.16.0)
 Description: Wiren Board Smart Home MQTT serial protocol driver
  wb-mqtt-serial is a service which communicates with devices on RS-485
  via Modbus or other supported protocols. Modbus TCP is also supported.

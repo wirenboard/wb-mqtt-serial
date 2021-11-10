@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.42.0) stable; urgency=medium
+
+  * Schema for wb-mqtt-homeui is moved to /var/lib/wb-mqtt-confed/schemas
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 10 Nov 2021 10:22:45 +0500
+
 wb-mqtt-serial (2.41.3) stable; urgency=medium
 
   * Register address validation is fixed
