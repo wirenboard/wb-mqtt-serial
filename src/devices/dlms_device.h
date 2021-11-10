@@ -1,8 +1,8 @@
 #pragma once
 
-#include "serial_device.h"
-#include "serial_config.h"
 #include "device_template_generator.h"
+#include "serial_config.h"
+#include "serial_device.h"
 
 #include "GXDLMSSecureClient.h"
 
@@ -10,20 +10,20 @@ const int PUBLIC_CLIENT_ADDRESS = 16;
 
 struct TDlmsDeviceConfig
 {
-    PDeviceConfig       DeviceConfig;
-    int                 LogicalDeviceAddress = 1;
-    int                 ClientAddress        = PUBLIC_CLIENT_ADDRESS;
+    PDeviceConfig DeviceConfig;
+    int LogicalDeviceAddress = 1;
+    int ClientAddress = PUBLIC_CLIENT_ADDRESS;
 
-    DLMS_SECURITY             Security                  = DLMS_SECURITY_NONE;
-    DLMS_AUTHENTICATION       Authentication            = DLMS_AUTHENTICATION_NONE;
-    DLMS_INTERFACE_TYPE       InterfaceType             = DLMS_INTERFACE_TYPE_HDLC;
-    std::chrono::milliseconds DisconnectRetryTimeout    = std::chrono::milliseconds::zero();
+    DLMS_SECURITY Security = DLMS_SECURITY_NONE;
+    DLMS_AUTHENTICATION Authentication = DLMS_AUTHENTICATION_NONE;
+    DLMS_INTERFACE_TYPE InterfaceType = DLMS_INTERFACE_TYPE_HDLC;
+    std::chrono::milliseconds DisconnectRetryTimeout = std::chrono::milliseconds::zero();
 };
 
 class TDlmsDevice: public TSerialDevice, public TUInt32SlaveId
 {
     std::unique_ptr<CGXDLMSSecureClient> Client;
-    std::chrono::milliseconds            DisconnectRetryTimeout;
+    std::chrono::milliseconds DisconnectRetryTimeout;
 
     void InitializeConnection();
     void SendData(const uint8_t* data, size_t size);
@@ -37,8 +37,8 @@ class TDlmsDevice: public TSerialDevice, public TUInt32SlaveId
     void Disconnect();
 
     void CheckCycle(std::function<int(std::vector<CGXByteBuffer>&)> requestsGenerator,
-                    std::function<int(CGXReplyData&)>               responseParser,
-                    const std::string&                              errorMsg);
+                    std::function<int(CGXReplyData&)> responseParser,
+                    const std::string& errorMsg);
 
 public:
     TDlmsDevice(const TDlmsDeviceConfig& config, PPort port, PProtocol protocol);
@@ -57,9 +57,9 @@ public:
 namespace DLMS
 {
     void PrintDeviceTemplateGenerationOptionsUsage();
-    void GenerateDeviceTemplate(TDeviceTemplateGenerationMode   mode, 
-                                PPort                           port,
-                                const std::string&              phisycalDeviceAddress,
-                                const std::string&              destinationDir, 
+    void GenerateDeviceTemplate(TDeviceTemplateGenerationMode mode,
+                                PPort port,
+                                const std::string& phisycalDeviceAddress,
+                                const std::string& destinationDir,
                                 const std::vector<std::string>& options);
 }

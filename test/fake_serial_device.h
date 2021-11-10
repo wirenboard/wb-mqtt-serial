@@ -1,7 +1,7 @@
 #pragma once
 
-#include "serial_device.h"
 #include "serial_config.h"
+#include "serial_device.h"
 
 #include <map>
 
@@ -11,7 +11,10 @@ using PFakeSerialPort = std::shared_ptr<TFakeSerialPort>;
 class TFakeSerialDevice: public TSerialDevice, public TUInt32SlaveId
 {
 public:
-    enum RegisterType {REG_FAKE = 123};
+    enum RegisterType
+    {
+        REG_FAKE = 123
+    };
 
     TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     uint64_t ReadRegister(PRegister reg) override;
@@ -24,7 +27,7 @@ public:
     void SetIsConnected(bool);
     ~TFakeSerialDevice();
 
-    uint16_t Registers[256] {};
+    uint16_t Registers[256]{};
 
     static TFakeSerialDevice* GetDevice(const std::string& slaveId);
     static void ClearDevices();

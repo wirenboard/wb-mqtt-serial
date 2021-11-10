@@ -5,7 +5,7 @@ void TPort::Reopen()
 {
     if (IsOpen()) {
         Close();
-        Open(); 
+        Open();
     }
 }
 
@@ -27,8 +27,7 @@ std::chrono::milliseconds TPort::GetSendTime(double bytesNumber)
 void TPort::SetSerialPortByteFormat(const TSerialPortByteFormat* params)
 {}
 
-TPortOpenCloseLogic::TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings)
-    : Settings(settings)
+TPortOpenCloseLogic::TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings): Settings(settings)
 {}
 
 void TPortOpenCloseLogic::OpenIfAllowed(PPort port)
@@ -74,7 +73,7 @@ void TPortOpenCloseLogic::CloseIfNeeded(PPort port, bool allPreviousDataExchange
     }
 
     if ((currentTime - LastSuccessfulCycle > Settings.MaxFailTime) && RemainingFailCycles == 0) {
-        Warn.Log() << port->GetDescription() <<  ": closed due to repetetive errors";
+        Warn.Log() << port->GetDescription() << ": closed due to repetetive errors";
         port->Close();
     }
 }

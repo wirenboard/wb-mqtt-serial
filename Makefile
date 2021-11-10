@@ -28,7 +28,7 @@ GURUX_INCLUDE = thirdparty/gurux/development/include
 COMMON_SRCS := $(shell find $(SRC_DIR) $(GURUX_SRC) \( -name *.cpp -or -name *.c \) -and -not -name main.cpp)
 COMMON_OBJS := $(COMMON_SRCS:%=$(BUILD_DIR)/%.o)
 
-LDFLAGS = -lpthread -lwbmqtt1
+LDFLAGS = -lpthread -lwbmqtt1 -lstdc++fs
 CXXFLAGS = -std=c++14 -Wall -Werror -I$(SRC_DIR) -I$(GURUX_INCLUDE) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)" -Wno-psabi
 CFLAGS = -Wall -I$(SRC_DIR) -I$(GURUX_INCLUDE)
 
@@ -87,7 +87,6 @@ clean :
 	rm -f $(SERIAL_BIN)
 
 install:
-	install -d $(DESTDIR)/usr/share/wb-mqtt-confed/schemas
 	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
 	install -d $(DESTDIR)/etc/wb-mqtt-serial.conf.d/templates
 

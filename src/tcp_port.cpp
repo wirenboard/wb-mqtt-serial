@@ -1,18 +1,18 @@
 #include "tcp_port.h"
 #include "serial_exc.h"
 
+#include <iostream>
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <sstream>
-#include <iostream>
+#include <unistd.h>
 
-#include <netinet/in.h>
-#include <netdb.h>
 #include <fcntl.h>
-#include <sys/types.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 
 #include "log.h"
 
@@ -20,17 +20,17 @@
 
 using namespace std;
 
-namespace {
+namespace
+{
     const int CONNECTION_TIMEOUT_S = 5;
 
     // Additional timeout for reading from tcp port. It is caused by intermediate hardware and internal Linux processing
     // Values are taken from old default timeouts
     const std::chrono::microseconds ResponseTCPLag = std::chrono::microseconds(500000);
-    const std::chrono::microseconds FrameTCPLag    = std::chrono::microseconds(150000);
+    const std::chrono::microseconds FrameTCPLag = std::chrono::microseconds(150000);
 }
 
-TTcpPort::TTcpPort(const TTcpPortSettings& settings)
-    : Settings(settings)
+TTcpPort::TTcpPort(const TTcpPortSettings& settings): Settings(settings)
 {}
 
 void TTcpPort::Open()
@@ -50,9 +50,9 @@ void TTcpPort::Open()
     }
 
     struct sockaddr_in serv_addr;
-    bzero((char *) &serv_addr, sizeof(serv_addr));
+    bzero((char*)&serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
+    bcopy((char*)server->h_addr, (char*)&serv_addr.sin_addr.s_addr, server->h_length);
     serv_addr.sin_port = htons(Settings.Port);
 
     // set socket to non-blocking state
@@ -61,7 +61,7 @@ void TTcpPort::Open()
     fcntl(Fd, F_SETFL, arg);
 
     try {
-        if (connect(Fd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) {
+        if (connect(Fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
             if (errno != EINPROGRESS) {
                 throw std::runtime_error("connect error: " + FormatErrno(errno));
             }
@@ -103,7 +103,7 @@ void TTcpPort::OnReadyEmptyFd()
     throw TSerialDeviceTransientErrorException("socket closed");
 }
 
-void TTcpPort::WriteBytes(const uint8_t * buf, int count)
+void TTcpPort::WriteBytes(const uint8_t* buf, int count)
 {
     if (IsOpen()) {
         Base::WriteBytes(buf, count);
@@ -117,14 +117,18 @@ uint8_t TTcpPort::ReadByte(const std::chrono::microseconds& timeout)
     return Base::ReadByte(timeout + ResponseTCPLag);
 }
 
-size_t TTcpPort::ReadFrame(uint8_t * buf, 
-                           size_t count, 
-                           const std::chrono::microseconds & responseTimeout,
+size_t TTcpPort::ReadFrame(uint8_t* buf,
+                           size_t count,
+                           const std::chrono::microseconds& responseTimeout,
                            const std::chrono::microseconds& frameTimeout,
                            TFrameCompletePred frame_complete)
 {
     if (IsOpen()) {
-        return Base::ReadFrame(buf, count, responseTimeout + ResponseTCPLag, frameTimeout + FrameTCPLag, frame_complete);
+        return Base::ReadFrame(buf,
+                               count,
+                               responseTimeout + ResponseTCPLag,
+                               frameTimeout + FrameTCPLag,
+                               frame_complete);
     }
     LOG(Debug) << "Attempt to read from not open port";
     return 0;

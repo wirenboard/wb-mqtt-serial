@@ -1,11 +1,121 @@
-wb-mqtt-serial (2.38.1) stable; urgency=medium
+wb-mqtt-serial (2.42.1) stable; urgency=medium
 
   * Fixed the description Poll interval
   * Changed the caption Enable poll
 
- -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Tue, 12 Oct 2021 11:44:00 +0400
- 
-=======
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Wed, 10 Nov 2021 10:30:40 +0500
+
+wb-mqtt-serial (2.42.0) stable; urgency=medium
+
+  * Schema for wb-mqtt-homeui is moved to /var/lib/wb-mqtt-confed/schemas
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 10 Nov 2021 10:22:45 +0500
+
+wb-mqtt-serial (2.41.3) stable; urgency=medium
+
+  * Register address validation is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Sat, 06 Nov 2021 11:49:53 +0500
+
+wb-mqtt-serial (2.41.2) stable; urgency=medium
+
+  * WB-MAI11 template min/max values translation correction
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 05 Nov 2021 14:09:27 +0300
+
+wb-mqtt-serial (2.41.1) stable; urgency=medium
+
+  * Names of channels in WB-MDM3 template were returned back for
+    backward compatibility
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 05 Nov 2021 13:52:35 +0300
+
+wb-mqtt-serial (2.41.0) stable; urgency=medium
+
+  * If a channel has an id set to empty string, it's name will be omitted in translation
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 03 Nov 2021 14:00:22 +0500
+
+wb-mqtt-serial (2.40.5) stable; urgency=medium
+
+  * MQTT serial schema title translation to Russian
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 02 Nov 2021 14:18:58 +0300
+
+wb-mqtt-serial (2.40.4) stable; urgency=medium
+
+  * Deprecated "channel_readonly" config property parsing is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 02 Nov 2021 12:09:11 +0500
+
+wb-mqtt-serial (2.40.3) stable; urgency=medium
+
+  * Added Russian translation for Wiren Board Modbus legacy energy
+    meters templates
+  * End of production date was added in titles of Wiren Board Modbus
+    legacy templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 28 Oct 2021 14:21:35 +0300
+
+wb-mqtt-serial (2.40.2) stable; urgency=medium
+
+  * Fix grammar in WB-MAI2-mini and WB-MAO4 templates
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 26 Oct 2021 11:18:51 +0300
+
+wb-mqtt-serial (2.40.1) stable; urgency=medium
+
+  * Port to libwbmqtt1 3.3.0
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 25 Oct 2021 19:11:41 +0500
+
+wb-mqtt-serial (2.40.0) stable; urgency=medium
+
+  * Added Russian translation for Wiren Board Modbus peripherals templates:
+    * WB-M1W2
+    * WB-MAI11
+    * WB-MAI2-CC
+    * WB-MAO4
+    * WB-MAP12E (fw2)
+    * WB-MAP3E (fw2)
+    * WB-MAP3ET
+    * WB-MAP3EV
+    * WB-MAP6S (fw2)
+    * WB-MCM8
+    * WB-MDM3
+    * WB-MIR-v2
+    * WB-MR3
+    * WB-MR6C
+    * WB-MR6C/NC
+    * WB-MR6CU
+    * WB-MRGBW-D
+    * WB-MRM2-mini
+    * WB-MRM2-mini-nc
+    * WB-MS v.2
+    * WB-MSW v.3
+    * WB-MWAC
+  * Channels "MCU Temperature" and "MCU Voltage" were added into templates
+    of relay modules
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Fri, 15 Oct 2021 18:56:40 +0300
+
+wb-mqtt-serial (2.39.0) stable; urgency=medium
+
+  * Added templates for refrigerator controllers:
+    * Eliwell-IDPlus-9xx
+    * Carel PJ Easy and Carel PJ Basic
+    * Danfoss EKC 202B/D (via EKA 178A/WB-REF-DF-178A)
+    * Danfoss EKC 204A1/AK-CC 210 (via EKA 178A/WB-REF-DF-178A)
+    * Danfoss ERC 211/213/214 (via WB-REF-DF-ERC21)
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 15 Oct 2021 16:34:15 +0300
+
+wb-mqtt-serial (2.38.1) stable; urgency=medium
+
+  * Support for parameter description translation is added.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 07 Oct 2021 12:58:37 +0500
+
 wb-mqtt-serial (2.38.0) stable; urgency=medium
 
   * Device template translations are made unique.

@@ -4,29 +4,29 @@
 
 void TLLSDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("lls", TRegisterTypes({{ 0, "default", "value", Float, true }})), 
-                             new TBasicDeviceFactory<TLLSDevice>("#/definitions/simple_device", 
-                                                                 "#/definitions/common_channel"));
+    factory.RegisterProtocol(
+        new TUint32SlaveIdProtocol("lls", TRegisterTypes({{0, "default", "value", Float, true}})),
+        new TBasicDeviceFactory<TLLSDevice>("#/definitions/simple_device", "#/definitions/common_channel"));
 }
 
 TLLSDevice::TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
+    : TSerialDevice(config, port, protocol),
+      TUInt32SlaveId(config->SlaveId)
 {
     auto timeout = port->GetSendTime(3.5) + std::chrono::milliseconds(1);
     config->FrameTimeout = std::max(config->FrameTimeout, timeout);
 }
 
-static unsigned char dallas_crc8(const unsigned char * data, const unsigned int size)
+static unsigned char dallas_crc8(const unsigned char* data, const unsigned int size)
 {
     unsigned char crc = 0;
-    for ( unsigned int i = 0; i < size; ++i )
-    {
+    for (unsigned int i = 0; i < size; ++i) {
         unsigned char inbyte = data[i];
-        for ( unsigned char j = 0; j < 8; ++j )
-        {
+        for (unsigned char j = 0; j < 8; ++j) {
             unsigned char mix = (crc ^ inbyte) & 0x01;
             crc >>= 1;
-            if ( mix ) crc ^= 0x8C;
+            if (mix)
+                crc ^= 0x8C;
             inbyte >>= 1;
         }
     }
@@ -63,7 +63,7 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     buf[0] = REQUEST_PREFIX;
     buf[1] = SlaveId;
     buf[2] = cmd;
-    buf[3] = dallas_crc8(buf, REQUEST_LEN -1);
+    buf[3] = dallas_crc8(buf, REQUEST_LEN - 1);
     Port()->WriteBytes(buf, REQUEST_LEN);
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
 
@@ -77,7 +77,7 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     if (buf[2] != cmd) {
         throw TSerialDeviceTransientErrorException("invalid response cmd");
     }
-    if (buf[len-1] != dallas_crc8(buf, len-1)) {
+    if (buf[len - 1] != dallas_crc8(buf, len - 1)) {
         throw TSerialDeviceTransientErrorException("invalid response crc");
     }
 
@@ -90,20 +90,17 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
 uint64_t TLLSDevice::ReadRegister(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
-    uint8_t cmd    = (addr & 0xFF00) >> 8;
-    auto    result = ExecCommand(cmd);
+    uint8_t cmd = (addr & 0xFF00) >> 8;
+    auto result = ExecCommand(cmd);
 
     int result_buf[8] = {};
     uint8_t offset = (addr & 0x00FF);
 
-    for (int i=0; i< reg->GetByteWidth(); ++i) {
-        result_buf[i] = result[offset+i];
+    for (int i = 0; i < reg->GetByteWidth(); ++i) {
+        result_buf[i] = result[offset + i];
     }
-    
-    return (result_buf[3] << 24) | 
-           (result_buf[2] << 16) | 
-           (result_buf[1] << 8) |
-           result_buf[0];
+
+    return (result_buf[3] << 24) | (result_buf[2] << 16) | (result_buf[1] << 8) | result_buf[0];
 }
 
 void TLLSDevice::WriteRegister(PRegister, uint64_t)

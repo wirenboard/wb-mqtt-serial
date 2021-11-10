@@ -1,15 +1,16 @@
 #include "file_utils.h"
 
+#include <algorithm>
 #include <cstring>
 #include <dirent.h>
 #include <iomanip>
-#include <algorithm>
 
-TNoDirError::TNoDirError(const std::string& msg) : std::runtime_error(msg) {}
+TNoDirError::TNoDirError(const std::string& msg): std::runtime_error(msg)
+{}
 
 bool TryOpen(const std::vector<std::string>& fnames, std::ifstream& file)
 {
-    for (auto& fname : fnames) {
+    for (auto& fname: fnames) {
         file.open(fname);
         if (file.is_open()) {
             return true;
@@ -34,8 +35,8 @@ void IterateDir(const std::string& dirName, std::function<bool(const std::string
         throw TNoDirError("Can't open directory: " + dirName);
     }
 
-    dirent*                                 ent;
-    auto                                    closeFn = [](DIR* d) { closedir(d); };
+    dirent* ent;
+    auto closeFn = [](DIR* d) { closedir(d); };
     std::unique_ptr<DIR, decltype(closeFn)> dirPtr(dir, closeFn);
     while ((ent = readdir(dirPtr.get())) != NULL) {
         if (fn(ent->d_name)) {
@@ -44,10 +45,10 @@ void IterateDir(const std::string& dirName, std::function<bool(const std::string
     }
 }
 
-std::string IterateDirByPattern(const std::string&                      dirName,
-                                const std::string&                      pattern,
+std::string IterateDirByPattern(const std::string& dirName,
+                                const std::string& pattern,
                                 std::function<bool(const std::string&)> fn,
-                                bool                                    sort)
+                                bool sort)
 {
     if (sort) {
         std::vector<std::string> files;

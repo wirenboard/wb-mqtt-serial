@@ -1,5 +1,6 @@
 // Configuration options
 {
+    "title": "_WB-MRM2-old-template-title",
     "device_type": "WB-MRM2-old",
     "device": {
         "name": "WB-MRM2-old",
@@ -11,7 +12,7 @@
             "in_mode": {
                 "title": "Input mode",
                 "address": 5,
-                "enum": [ 0, 1, 255 ],
+                "enum": [0, 1, 255],
                 "default": 1,
                 "enum_titles": [
                     "push button",
@@ -74,6 +75,14 @@
                 "format": "u32",
                 "enabled": false
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "_WB-MRM2-old-template-title": "WB-MRM2-old - until 2017"
+            },
+            "ru": {
+                "_WB-MRM2-old-template-title": "WB-MRM2-old - до 2017 г."
+            }
+        }
     }
 }

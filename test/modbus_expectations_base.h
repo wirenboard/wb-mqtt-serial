@@ -7,7 +7,10 @@
 class TModbusExpectationsBase: public virtual TExpectorProvider
 {
 protected:
-    enum ModbusType {MODBUS_RTU};
+    enum ModbusType
+    {
+        MODBUS_RTU
+    };
 
     ModbusType GetSelectedModbusType() const;
     void SelectModbusType(ModbusType selectedModbusType);

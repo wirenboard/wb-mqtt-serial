@@ -1,9 +1,9 @@
 #include "energomera_iec_mode_c_device.h"
 #include "energomera_iec_device.h"
 
-#include <string.h>
-#include <memory>
 #include "iec_common.h"
+#include <memory>
+#include <string.h>
 
 namespace
 {
@@ -21,6 +21,7 @@ namespace
         TIME
     };
 
+    // clang-format off
     const TRegisterTypes RegisterTypes {
         { RegisterType::DEFAULT, "default", "value", Double, true },
         { RegisterType::ITEM_1,  "item_1",  "value", Double, true },
@@ -31,6 +32,7 @@ namespace
         { RegisterType::DATE,    "date",    "value", U32,    true },
         { RegisterType::TIME,    "time",    "value", U32,    true }
     };
+    // clang-format on
 
     class TEnergomeraIecModeCDeviceFactory: public IDeviceFactory
     {
@@ -42,9 +44,9 @@ namespace
         {}
 
         PSerialDevice CreateDevice(const Json::Value& data,
-                                   PDeviceConfig      deviceConfig,
-                                   PPort              port,
-                                   PProtocol          protocol) const override
+                                   PDeviceConfig deviceConfig,
+                                   PPort port,
+                                   PProtocol protocol) const override
         {
             auto dev = std::make_shared<TEnergomeraIecModeCDevice>(deviceConfig, port, protocol);
             dev->InitSetupItems();
@@ -71,28 +73,24 @@ std::string TEnergomeraIecModeCDevice::GetParameterRequest(const TRegister& reg)
 uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const std::string& value)
 {
     // Data in response starts from '(' and ends with ")\r\n"
-    if (value.size() < 5 || value.front() != '(' || !WBMQTT::StringHasSuffix(value, ")\r\n") ) {
+    if (value.size() < 5 || value.front() != '(' || !WBMQTT::StringHasSuffix(value, ")\r\n")) {
         throw TSerialDeviceTransientErrorException("malformed response");
     }
     // Remove '(' and ")\r\n"
     auto v(value.substr(1, value.size() - 4));
-    switch (reg.Type)
-    {
-        case RegisterType::DATE:
-        {
+    switch (reg.Type) {
+        case RegisterType::DATE: {
             // ww.dd.mm.yy
             v.erase(0, 3); // remove day of a week
             v.erase(std::remove(v.begin(), v.end(), '.'), v.end());
             return strtoull(v.c_str(), nullptr, 10);
         }
-        case RegisterType::TIME:
-        {
+        case RegisterType::TIME: {
             // HH:MM:SS
             v.erase(std::remove(v.begin(), v.end(), ':'), v.end());
             return strtoull(v.c_str(), nullptr, 10);
         }
-        case RegisterType::DEFAULT:
-        {
+        case RegisterType::DEFAULT: {
             if (reg.Format == U64) {
                 return strtoull(v.c_str(), nullptr, 10);
             }
@@ -102,8 +100,7 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
         case RegisterType::ITEM_2:
         case RegisterType::ITEM_3:
         case RegisterType::ITEM_4:
-        case RegisterType::ITEM_5:
-        {
+        case RegisterType::ITEM_5: {
             // An example of a response with a list of values
             // <STX>ET0PE(68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF><ETX>0x07
             // so we have here

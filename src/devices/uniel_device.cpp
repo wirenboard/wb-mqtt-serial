@@ -1,53 +1,54 @@
 #include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/select.h>
 #include <fcntl.h>
-#include <stdio.h>
-#include <termios.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/select.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <unistd.h>
 
-#include "uniel_device.h"
 #include "log.h"
+#include "uniel_device.h"
 
 #define LOG(logger) ::logger.Log() << "[uniel device] "
 
 namespace
 {
-    enum {
-        READ_CMD           = 0x05,
-        WRITE_CMD          = 0x06,
+    enum
+    {
+        READ_CMD = 0x05,
+        WRITE_CMD = 0x06,
         SET_BRIGHTNESS_CMD = 0x0a
     };
 
-    const TRegisterTypes RegisterTypes{
-        { TUnielDevice::REG_RELAY,      "relay",      "switch", U8 },
-        { TUnielDevice::REG_INPUT,      "input",      "value",  U8, true },
-        { TUnielDevice::REG_PARAM,      "param",      "value",  U8 },
-        // "value", not "range" because 'max' cannot be specified here.
-        { TUnielDevice::REG_BRIGHTNESS, "brightness", "value",  U8 }
-    };
+    const TRegisterTypes RegisterTypes{{TUnielDevice::REG_RELAY, "relay", "switch", U8},
+                                       {TUnielDevice::REG_INPUT, "input", "value", U8, true},
+                                       {TUnielDevice::REG_PARAM, "param", "value", U8},
+                                       // "value", not "range" because 'max' cannot be specified here.
+                                       {TUnielDevice::REG_BRIGHTNESS, "brightness", "value", U8}};
 }
 
 void TUnielDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("uniel", RegisterTypes), 
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("uniel", RegisterTypes),
                              new TBasicDeviceFactory<TUnielDevice>("#/definitions/simple_device_with_setup",
                                                                    "#/definitions/common_channel"));
 }
 
 TUnielDevice::TUnielDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol), TUInt32SlaveId(config->SlaveId)
+    : TSerialDevice(config, port, protocol),
+      TUInt32SlaveId(config->SlaveId)
 {}
 
 void TUnielDevice::WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3)
 {
     Port()->CheckPortOpen();
     uint8_t buf[8];
-    buf[0] = buf[1] = 0xff;
+    buf[0] = 0xff;
+    buf[1] = 0xff;
     buf[2] = cmd;
     buf[3] = mod;
     buf[4] = b1;

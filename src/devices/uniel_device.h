@@ -1,17 +1,18 @@
 #pragma once
 
-#include <string>
-#include <memory>
 #include <exception>
+#include <memory>
 #include <stdint.h>
+#include <string>
 
-#include "serial_device.h"
 #include "serial_config.h"
+#include "serial_device.h"
 
 class TUnielDevice: public TSerialDevice, public TUInt32SlaveId
 {
 public:
-    enum RegisterType {
+    enum RegisterType
+    {
         REG_RELAY = 0,
         REG_INPUT,
         REG_PARAM,

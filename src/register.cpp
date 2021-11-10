@@ -1,9 +1,9 @@
 #include "register.h"
-#include "serial_device.h"
 #include "bcd_utils.h"
-#include <wblib/utils.h>
+#include "serial_device.h"
 #include <string.h>
 #include <string>
+#include <wblib/utils.h>
 
 size_t RegisterFormatByteWidth(RegisterFormat format)
 {
@@ -84,37 +84,40 @@ void TRegisterRange::SetError(EStatus error)
     }
 }
 
-TSimpleRegisterRange::TSimpleRegisterRange(const std::list<PRegister>& regs): TRegisterRange(regs) {}
+TSimpleRegisterRange::TSimpleRegisterRange(const std::list<PRegister>& regs): TRegisterRange(regs)
+{}
 
-TSimpleRegisterRange::TSimpleRegisterRange(PRegister reg): TRegisterRange(reg) {}
+TSimpleRegisterRange::TSimpleRegisterRange(PRegister reg): TRegisterRange(reg)
+{}
 
 EStatus TSimpleRegisterRange::GetStatus() const
 {
     bool hasOk = false;
     bool hasError = false;
     for (const auto& r: RegisterList()) {
-        switch (r->GetError())
-        {
-        case ST_DEVICE_ERROR: return ST_DEVICE_ERROR;
-        case ST_OK: {
-            hasOk = true;
-            break;
-        }
-        case ST_UNKNOWN_ERROR:
-            hasError = true;
-            break;
+        switch (r->GetError()) {
+            case ST_DEVICE_ERROR:
+                return ST_DEVICE_ERROR;
+            case ST_OK: {
+                hasOk = true;
+                break;
+            }
+            case ST_UNKNOWN_ERROR:
+                hasError = true;
+                break;
         }
     }
     if (!hasError) {
         return ST_OK;
     }
-    if(!hasOk) {
+    if (!hasOk) {
         return ST_UNKNOWN_ERROR;
     }
     return ST_DEVICE_ERROR;
 }
 
-std::string TRegisterConfig::ToString() const {
+std::string TRegisterConfig::ToString() const
+{
     std::stringstream s;
     s << TypeName << ": " << GetAddress();
     if (BitOffset != 0 || BitWidth != 0) {
@@ -208,7 +211,7 @@ TRegisterConfig::TRegisterConfig(int type,
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
 
-    auto maxOffset = RegisterFormatByteWidth(Format)*8;
+    auto maxOffset = RegisterFormatByteWidth(Format) * 8;
 
     if (BitOffset >= maxOffset) {
         throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
@@ -263,24 +266,35 @@ uint8_t TRegisterConfig::GetBitWidth() const
     return GetByteWidth() * 8;
 }
 
-PRegisterConfig TRegisterConfig::Create(int                               type,
+PRegisterConfig TRegisterConfig::Create(int type,
                                         std::shared_ptr<IRegisterAddress> address,
-                                        RegisterFormat                    format,
-                                        double                            scale,
-                                        double                            offset,
-                                        double                            round_to,
-                                        bool                              poll,
-                                        bool                              readonly,
-                                        const std::string&                type_name,
-                                        std::unique_ptr<uint64_t>         error_value,
-                                        const EWordOrder                  word_order,
-                                        uint8_t                           bit_offset,
-                                        uint8_t                           bit_width,
-                                        std::unique_ptr<uint64_t>         unsupported_value)
+                                        RegisterFormat format,
+                                        double scale,
+                                        double offset,
+                                        double round_to,
+                                        bool poll,
+                                        bool readonly,
+                                        const std::string& type_name,
+                                        std::unique_ptr<uint64_t> error_value,
+                                        const EWordOrder word_order,
+                                        uint8_t bit_offset,
+                                        uint8_t bit_width,
+                                        std::unique_ptr<uint64_t> unsupported_value)
 {
-    return std::make_shared<TRegisterConfig>(type, address, format, scale, offset, round_to, poll, readonly,
-                                             type_name, std::move(error_value), word_order, bit_offset,
-                                             bit_width, std::move(unsupported_value));
+    return std::make_shared<TRegisterConfig>(type,
+                                             address,
+                                             format,
+                                             scale,
+                                             offset,
+                                             round_to,
+                                             poll,
+                                             readonly,
+                                             type_name,
+                                             std::move(error_value),
+                                             word_order,
+                                             bit_offset,
+                                             bit_width,
+                                             std::move(unsupported_value));
 }
 
 PRegisterConfig TRegisterConfig::Create(int type,
@@ -298,12 +312,23 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         uint8_t bit_width,
                                         std::unique_ptr<uint64_t> unsupported_value)
 {
-    return Create(type, std::make_shared<TUint32RegisterAddress>(address), format, scale, offset, round_to, poll, readonly,
-                  type_name, std::move(error_value), word_order, bit_offset,
-                  bit_width, std::move(unsupported_value));
+    return Create(type,
+                  std::make_shared<TUint32RegisterAddress>(address),
+                  format,
+                  scale,
+                  offset,
+                  round_to,
+                  poll,
+                  readonly,
+                  type_name,
+                  std::move(error_value),
+                  word_order,
+                  bit_offset,
+                  bit_width,
+                  std::move(unsupported_value));
 }
 
-TUint32RegisterAddress::TUint32RegisterAddress(uint32_t address) : Address(address)
+TUint32RegisterAddress::TUint32RegisterAddress(uint32_t address): Address(address)
 {}
 
 uint32_t TUint32RegisterAddress::Get() const
@@ -340,7 +365,7 @@ uint32_t GetUint32RegisterAddress(const IRegisterAddress& addr)
     return dynamic_cast<const TUint32RegisterAddress&>(addr).Get();
 }
 
-TStringRegisterAddress::TStringRegisterAddress(const std::string& addr) : Addr(addr)
+TStringRegisterAddress::TStringRegisterAddress(const std::string& addr): Addr(addr)
 {}
 
 std::string TStringRegisterAddress::ToString() const
@@ -367,7 +392,7 @@ TRegisterTypeMap::TRegisterTypeMap(const TRegisterTypes& types)
     if (types.empty()) {
         throw std::runtime_error("Register types are not defined");
     }
-    for (const auto& rt : types) {
+    for (const auto& rt: types) {
         RegTypes.insert(std::make_pair(rt.Name, rt));
     }
     DefaultType = types.front();
@@ -383,18 +408,18 @@ const TRegisterType& TRegisterTypeMap::GetDefaultType() const
     return DefaultType;
 }
 
-TRegisterType::TRegisterType(int                index, 
+TRegisterType::TRegisterType(int index,
                              const std::string& name,
                              const std::string& defaultControlType,
-                             RegisterFormat     defaultFormat,
-                             bool               readOnly, 
-                             EWordOrder         defaultWordOrder):
-        Index(index), 
-        Name(name), 
-        DefaultControlType(defaultControlType),
-        DefaultFormat(defaultFormat), 
-        DefaultWordOrder(defaultWordOrder), 
-        ReadOnly(readOnly)
+                             RegisterFormat defaultFormat,
+                             bool readOnly,
+                             EWordOrder defaultWordOrder)
+    : Index(index),
+      Name(name),
+      DefaultControlType(defaultControlType),
+      DefaultFormat(defaultFormat),
+      DefaultWordOrder(defaultWordOrder),
+      ReadOnly(readOnly)
 {}
 
 template<typename T> T RoundValue(T val, double round_to)
@@ -413,7 +438,7 @@ uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value)
     uint64_t cur_value = value;
 
     for (int i = 0; i < reg.Get16BitWidth(); ++i) {
-        uint16_t last_word = (((uint64_t) cur_value) & 0xFFFF);
+        uint16_t last_word = (((uint64_t)cur_value) & 0xFFFF);
         result <<= 16;
         result |= last_word;
         cur_value >>= 16;
@@ -452,7 +477,8 @@ template<> struct TConvertTraits<uint64_t>
             }
             auto res = llround((value - reg.Offset) / reg.Scale);
             if (res < 0) {
-                throw std::out_of_range("\"" + str + "\" after applying scale and offset is not an unsigned integer: " + std::to_string(res));
+                throw std::out_of_range("\"" + str + "\" after applying scale and offset is not an unsigned integer: " +
+                                        std::to_string(res));
             }
             return res;
         }
@@ -473,7 +499,8 @@ template<typename T> T FromScaledTextValue(const TRegisterConfig& reg, const std
     } catch (const std::invalid_argument&) {
         auto res = llround(FromScaledTextValue<double>(reg, str));
         if (std::is_unsigned<T>::value && (res < 0)) {
-            throw std::out_of_range("\"" + str + "\" after applying scale and offset is not an unsigned integer: " + std::to_string(res));
+            throw std::out_of_range(
+                "\"" + str + "\" after applying scale and offset is not an unsigned integer: " + std::to_string(res));
         }
         return res;
     }
@@ -494,52 +521,50 @@ template<> double FromScaledTextValue(const TRegisterConfig& reg, const std::str
 uint64_t GetRawValue(const TRegisterConfig& reg, const std::string& str)
 {
     switch (reg.Format) {
-    case S8:
-        return FromScaledTextValue<int64_t>(reg, str) & 0xff;
-    case S16:
-        return FromScaledTextValue<int64_t>(reg, str) & 0xffff;
-    case S24:
-        return FromScaledTextValue<int64_t>(reg, str) & 0xffffff;
-    case S32:
-        return FromScaledTextValue<int64_t>(reg, str) & 0xffffffff;
-    case S64:
-        return FromScaledTextValue<int64_t>(reg, str);
-    case U8:
-        return FromScaledTextValue<uint64_t>(reg, str) & 0xff;
-    case U16:
-        return FromScaledTextValue<uint64_t>(reg, str) & 0xffff;
-    case U24:
-        return FromScaledTextValue<uint64_t>(reg, str) & 0xffffff;
-    case U32:
-        return FromScaledTextValue<uint64_t>(reg, str) & 0xffffffff;
-    case U64:
-        return FromScaledTextValue<uint64_t>(reg, str);
-    case Float:
-        {
+        case S8:
+            return FromScaledTextValue<int64_t>(reg, str) & 0xff;
+        case S16:
+            return FromScaledTextValue<int64_t>(reg, str) & 0xffff;
+        case S24:
+            return FromScaledTextValue<int64_t>(reg, str) & 0xffffff;
+        case S32:
+            return FromScaledTextValue<int64_t>(reg, str) & 0xffffffff;
+        case S64:
+            return FromScaledTextValue<int64_t>(reg, str);
+        case U8:
+            return FromScaledTextValue<uint64_t>(reg, str) & 0xff;
+        case U16:
+            return FromScaledTextValue<uint64_t>(reg, str) & 0xffff;
+        case U24:
+            return FromScaledTextValue<uint64_t>(reg, str) & 0xffffff;
+        case U32:
+            return FromScaledTextValue<uint64_t>(reg, str) & 0xffffffff;
+        case U64:
+            return FromScaledTextValue<uint64_t>(reg, str);
+        case Float: {
             float v = FromScaledTextValue<double>(reg, str);
             uint64_t raw = 0;
             memcpy(&raw, &v, sizeof(v));
             return raw;
         }
-    case Double:
-        {
+        case Double: {
             double v = FromScaledTextValue<double>(reg, str);
             uint64_t raw = 0;
             memcpy(&raw, &v, sizeof(v));
             return raw;
         }
-    case Char8:
-        return str.empty() ? 0 : uint8_t(str[0]);
-    case BCD8:
-        return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFF, WordSizes::W8_SZ);
-    case BCD16:
-        return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFF, WordSizes::W16_SZ);
-    case BCD24:
-        return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFF, WordSizes::W24_SZ);
-    case BCD32:
-        return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ);
-    default:
-        return FromScaledTextValue<uint64_t>(reg, str);
+        case Char8:
+            return str.empty() ? 0 : uint8_t(str[0]);
+        case BCD8:
+            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFF, WordSizes::W8_SZ);
+        case BCD16:
+            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFF, WordSizes::W16_SZ);
+        case BCD24:
+            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFF, WordSizes::W24_SZ);
+        case BCD32:
+            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ);
+        default:
+            return FromScaledTextValue<uint64_t>(reg, str);
     }
 }
 
@@ -571,44 +596,41 @@ std::string ConvertFromRawValue(const TRegisterConfig& reg, uint64_t value)
 {
     value = InvertWordOrderIfNeeded(reg, value);
     switch (reg.Format) {
-    case S8:
-        return ToScaledTextValue(reg, int8_t(value & 0xff));
-    case S16:
-        return ToScaledTextValue(reg, int16_t(value & 0xffff));
-    case S24:
-        {
+        case S8:
+            return ToScaledTextValue(reg, int8_t(value & 0xff));
+        case S16:
+            return ToScaledTextValue(reg, int16_t(value & 0xffff));
+        case S24: {
             uint32_t v = value & 0xffffff;
             if (v & 0x800000)
                 v |= 0xff000000;
             return ToScaledTextValue(reg, int32_t(v));
         }
-    case S32:
-        return ToScaledTextValue(reg, int32_t(value & 0xffffffff));
-    case S64:
-        return ToScaledTextValue(reg, int64_t(value));
-    case BCD8:
-        return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W8_SZ));
-    case BCD16:
-        return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W16_SZ));
-    case BCD24:
-        return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W24_SZ));
-    case BCD32:
-        return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W32_SZ));
-    case Float:
-        {
+        case S32:
+            return ToScaledTextValue(reg, int32_t(value & 0xffffffff));
+        case S64:
+            return ToScaledTextValue(reg, int64_t(value));
+        case BCD8:
+            return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W8_SZ));
+        case BCD16:
+            return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W16_SZ));
+        case BCD24:
+            return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W24_SZ));
+        case BCD32:
+            return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W32_SZ));
+        case Float: {
             float v;
             memcpy(&v, &value, sizeof(v));
             return ToScaledTextValue(reg, v);
         }
-    case Double:
-        {
+        case Double: {
             double v;
             memcpy(&v, &value, sizeof(v));
             return ToScaledTextValue(reg, v);
         }
-    case Char8:
-        return std::string(1, value & 0xff);
-    default:
-        return ToScaledTextValue(reg, value);
+        case Char8:
+            return std::string(1, value & 0xff);
+        default:
+            return ToScaledTextValue(reg, value);
     }
 }

@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
 #include "metrics.h"
+#include <gtest/gtest.h>
 
 TEST(TMetricsTest, BusLoad)
 {

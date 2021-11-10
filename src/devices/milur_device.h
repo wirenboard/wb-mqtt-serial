@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include <exception>
 #include <cstdint>
+#include <exception>
+#include <memory>
+#include <string>
 
 #include "em_device.h"
 #include "serial_config.h"
@@ -11,7 +11,8 @@
 class TMilurDevice: public TEMDevice
 {
 public:
-    enum RegisterType {
+    enum RegisterType
+    {
         REG_PARAM = 0,
         REG_POWER,
         REG_ENERGY,
@@ -28,7 +29,7 @@ public:
 protected:
     bool ConnectionSetup();
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
-    uint64_t BuildIntVal(uint8_t *p, int sz) const;
+    uint64_t BuildIntVal(uint8_t* p, int sz) const;
     uint64_t BuildBCB32(uint8_t* psrc) const;
     int GetExpectedSize(int type) const;
 };

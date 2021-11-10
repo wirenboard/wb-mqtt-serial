@@ -1,5 +1,6 @@
 //Template config for wb-mrgb
 {
+    "title": "_WB-MRGB-template-title",
     "device_type": "WB-MRGB",
     "device": {
         "name": "WB-MRGB",
@@ -61,6 +62,14 @@
                 "format": "u32",
                 "enabled": false
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "_WB-MRGB-template-title": "WB-MRGB - until 2018"
+            },
+            "ru": {
+                "_WB-MRGB-template-title": "WB-MRGB - до 2018 г."
+            }
+        }
     }
 }

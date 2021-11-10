@@ -1,4 +1,5 @@
 {
+    "title": "WB-MDM3_template_title",
     "device_type": "WB-MDM3",
     "device": {
         "name": "WB-MDM3",
@@ -111,7 +112,7 @@
             },
             "channel1_min_value": {
                 "title": "Channel 1 Min Value (us)",
-                "description" : "Raw dimmer value corresponding to minimum brightness (1%)",
+                "description": "channel_min_value_description",
                 "address": 70,
                 "reg_type": "holding",
                 "min": 0,
@@ -122,7 +123,7 @@
             },
             "channel1_max_value": {
                 "title": "Channel 1 Max Value (us)",
-                "description" : "Raw dimmer value corresponding to maximum brightness (100%)",
+                "description": "channel_max_value_description",
                 "address": 80,
                 "reg_type": "holding",
                 "min": 0,
@@ -180,7 +181,7 @@
             },
             "channel2_min_value": {
                 "title": "Channel 2 Min Value (us)",
-                "description" : "Raw dimmer value corresponding to minimum brightness (1%)",
+                "description": "channel_min_value_description",
                 "address": 71,
                 "reg_type": "holding",
                 "min": 0,
@@ -191,7 +192,7 @@
             },
             "channel2_max_value": {
                 "title": "Channel 2 Max Value (us)",
-                "description" : "Raw dimmer value corresponding to maximum brightness (100%)",
+                "description": "channel_max_value_description",
                 "address": 81,
                 "reg_type": "holding",
                 "min": 0,
@@ -249,7 +250,7 @@
             },
             "channel3_min_value": {
                 "title": "Channel 3 Min Value (us)",
-                "description" : "Raw dimmer value corresponding to minimum brightness (1%)",
+                "description": "channel_min_value_description",
                 "address": 72,
                 "reg_type": "holding",
                 "min": 0,
@@ -260,7 +261,7 @@
             },
             "channel3_max_value": {
                 "title": "Channel 3 Max Value (us)",
-                "description" : "Raw dimmer value corresponding to maximum brightness (100%)",
+                "description": "channel_max_value_description",
                 "address": 82,
                 "reg_type": "holding",
                 "min": 0,
@@ -455,7 +456,7 @@
                 "group": "debug"
             },
             {
-                "name": " Channel 1 Raw Duty (us)",
+                "name": "Channel 1 Raw Duty (us)",
                 "reg_type": "holding",
                 "address": 90,
                 "readonly": true,
@@ -463,7 +464,7 @@
                 "group": "debug"
             },
             {
-                "name": " Channel 2 Raw Duty (us)",
+                "name": "Channel 2 Raw Duty (us)",
                 "reg_type": "holding",
                 "address": 91,
                 "readonly": true,
@@ -471,7 +472,7 @@
                 "group": "debug"
             },
             {
-                "name": " Channel 3 Raw Duty (us)",
+                "name": "Channel 3 Raw Duty (us)",
                 "reg_type": "holding",
                 "address": 92,
                 "readonly": true,
@@ -492,6 +493,79 @@
                 "enabled": false,
                 "group": "debug"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WB-MDM3_template_title": "WB-MDM3 (3-channel MOSFET dimmer)",
+                "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
+                "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MDM3_template_title": "WB-MDM3 (3-канальный диммер)",
+                "Inputs": "Входы",
+                "Channel 1": "Канал 1",
+                "Channel 2": "Канал 2",
+                "Channel 3": "Канал 3",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Inputs 1-2 Mode": "Режим работы входов 1-2",
+                "Inputs 3-4 Mode": "Режим работы входов 3-4",
+                "Inputs 5-6 Mode": "Режим работы входов 5-6",
+                "control disabled": "управление отключено",
+                "channel 1: 1-button control": "1-кнопочный режим",
+                "channel 1: 2-button control": "2-кнопочный режим",
+                "channel 2: 1-button control": "1-кнопочный режим",
+                "channel 2: 2-button control": "2-кнопочный режим",
+                "channel 3: 1-button control": "1-кнопочный режим",
+                "channel 3: 2-button control": "2-кнопочный режим",
+                "Channel 1 Dimming Curve": "Кривая диммирования канала 1",
+                "Channel 2 Dimming Curve": "Кривая диммирования канала 2",
+                "Channel 3 Dimming Curve": "Кривая диммирования канала 3",
+                "LED lamp or incandescent lamp (logarithmic)": "лампа светодиодная или накаливания (логарифмическая кривая яркости)",
+                "resistive load (linear)": "резистивная нагрузка (линейная кривая яркости)",
+                "switching mode (on/off)": "ключевой режим",
+                "Channel 1 Dimming Type": "Режим диммирования канала 1",
+                "Channel 2 Dimming Type": "Режим диммирования канала 2",
+                "Channel 3 Dimming Type": "Режим диммирования канала 3",
+                "leading edge (motors, fans, incandescent lamps)": "по переднему фронту (моторы, вентиляторы, лампы накаливания)",
+                "trailing edge (LED lamps)": "по заднему фронту (светодиодные лампы)",
+                "Channel 1 Min Value (us)": "Нижний порог диммирования канала 1 (мкс)",
+                "Channel 2 Min Value (us)": "Нижний порог диммирования канала 2 (мкс)",
+                "Channel 3 Min Value (us)": "Нижний порог диммирования канала 3 (мкс)",
+                "Channel 1 Max Value (us)": "Верхний порог диммирования канала 1 (мкс)",
+                "Channel 2 Max Value (us)": "Верхний порог диммирования канала 2 (мкс)",
+                "Channel 3 Max Value (us)": "Верхний порог диммирования канала 3 (мкс)",
+                "channel_min_value_description": "Сырое задание для канала, соответствующее минимальной яркости (1%)",
+                "channel_max_value_description": "Сырое задание для канала, соответствующее максимальной яркости (100%)",
+                "Channel 1 Increase Rate (ms/%)": "Скорость увеличения яркости канала 1 (мс/%)",
+                "Channel 2 Increase Rate (ms/%)": "Скорость увеличения яркости канала 2 (мс/%)",
+                "Channel 3 Increase Rate (ms/%)": "Скорость увеличения яркости канала 3 (мс/%)",
+                "Channel 1 Decrease Rate (ms/%)": "Скорость уменьшения яркости канала 1 (мс/%)",
+                "Channel 2 Decrease Rate (ms/%)": "Скорость уменьшения яркости канала 2 (мс/%)",
+                "Channel 3 Decrease Rate (ms/%)": "Скорость уменьшения яркости канала 3 (мс/%)",
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "Input 3": "Вход 3",
+                "Input 4": "Вход 4",
+                "Input 5": "Вход 5",
+                "Input 6": "Вход 6",
+                "Input 1 counter": "Счетчик срабатываний входа 1",
+                "Input 2 counter": "Счетчик срабатываний входа 2",
+                "Input 3 counter": "Счетчик срабатываний входа 3",
+                "Input 4 counter": "Счетчик срабатываний входа 4",
+                "Input 5 counter": "Счетчик срабатываний входа 5",
+                "Input 6 counter": "Счетчик срабатываний входа 6",
+                "Serial": "Серийный номер",
+                "Supply voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "AC on L-N": "Напряжение на клеммах L-N",
+                "Channel 1 Raw Duty (us)": "Сырое задание для канала 1 (мкс)",
+                "Channel 2 Raw Duty (us)": "Сырое задание для канала 2 (мкс)",
+                "Channel 3 Raw Duty (us)": "Сырое задание для канала 3 (мкс)",
+                "Zero-Сross Offset (us)": "Смещение от перехода напряжения через ноль (мкс)",
+                "Last AC Voltage Period (us)": "Длительность последнего периода переменного напряжения (мкс)"
+            }
+        }
     }
 }
