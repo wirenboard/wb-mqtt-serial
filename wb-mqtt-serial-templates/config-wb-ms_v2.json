@@ -400,8 +400,8 @@
                 "External Sensor 1": "Датчик температуры 1",
                 "External Sensor 2": "Датчик температуры 2",
                 "Discrete Input": "Дискретный вход",
-                "Input 1 Counter": "Счетчик срабатываний входа 1",
-                "Input 2 Counter": "Счетчик срабатываний входа 2"
+                "Input 1 Counter": "Счетчик 1",
+                "Input 2 Counter": "Счетчик 2"
             }
         }
     }
