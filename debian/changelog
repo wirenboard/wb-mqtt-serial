@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.41.3-wb1) stable; urgency=medium
+
+  * Backport of v2.42.1 changes:
+    * Fixed the description Poll interval
+    * Changed the caption Enable poll
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Wed, 10 Nov 2021 10:30:40 +0500
+
 wb-mqtt-serial (2.41.3) stable; urgency=medium
 
   * Register address validation is fixed
