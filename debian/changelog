@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.42.2) stable; urgency=medium
+
+  * Input X counter and Input X freq translation correction in templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 10 Nov 2021 17:21:12 +0300
+
 wb-mqtt-serial (2.42.1) stable; urgency=medium
 
   * Fixed the description Poll interval
