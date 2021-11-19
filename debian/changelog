@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.43.0) stable; urgency=medium
+
+  * Parameter editors in wb-mqtt-homeui are organized in 2 columns
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 17 Nov 2021 12:41:33 +0500
+
 wb-mqtt-serial (2.42.2) stable; urgency=medium
 
   * Parameter max_unchanged_interval description tarnslation was
