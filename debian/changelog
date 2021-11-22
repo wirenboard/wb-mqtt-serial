@@ -1,6 +1,13 @@
+wb-mqtt-serial (2.42.3) stable; urgency=medium
+
+  * Backward compatibility with previous device templates is improved.
+    Channels mentioned in config and not presented in template or not having addresses will be ignored with warning.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 22 Nov 2021 12:57:38 +0500
+
 wb-mqtt-serial (2.42.2) stable; urgency=medium
 
-  * Parameter max_unchanged_interval description tarnslation was
+  * Parameter max_unchanged_interval description translation was
     corrected
   * Input X counter and Input X freq translation correction in templates
 
