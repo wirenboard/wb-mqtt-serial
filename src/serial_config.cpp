@@ -364,9 +364,15 @@ namespace
                                                  device_config->DeviceType);
             }
         } else {
-            auto reg = LoadRegisterConfig(channel_data, *device_config, errorMsgPrefix, context);
-            default_type_str = reg.DefaultControlType;
-            registers.push_back(reg.RegisterConfig);
+            try {
+                auto reg = LoadRegisterConfig(channel_data, *device_config, errorMsgPrefix, context);
+                default_type_str = reg.DefaultControlType;
+                registers.push_back(reg.RegisterConfig);
+            } catch (const std::exception& e) {
+                LOG(Warn) << device_config->GetDescription() << " channel \"" + mqtt_channel_name
+                          << "\" is ignored: " << e.what();
+                return;
+            }
         }
 
         std::string type_str(Read(channel_data, "type", default_type_str));

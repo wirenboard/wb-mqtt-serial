@@ -74,7 +74,14 @@ namespace
         for (const Json::Value& ch: device["channels"]) {
             auto it = regs.find(ch["name"].asString());
             if (it != regs.end()) {
-                customChannels.append(it->second);
+                // Some configs have settings for channels from old templates.
+                // They don't have appropriate definitions and will be treated as custom channels without addresses.
+                // It could lead to json-editor confusing and wrong web UI generation
+                // Just drop such channels
+                // TODO: It is not a good solution and should be deleted after template versions implementation
+                if (it->second.isMember("address") || it->second.isMember("consists_of")) {
+                    customChannels.append(it->second);
+                }
             }
         }
 
