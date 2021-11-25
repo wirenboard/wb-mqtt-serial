@@ -36,7 +36,6 @@ protected:
             Emit() << "ConnSettings: " << port_config->Port->GetDescription();
             Emit() << "ConnectionMaxFailCycles: " << port_config->OpenCloseSettings.ConnectionMaxFailCycles;
             Emit() << "MaxFailTime: " << port_config->OpenCloseSettings.MaxFailTime.count();
-            Emit() << "PollInterval: " << port_config->PollInterval.count();
             Emit() << "GuardInterval: " << port_config->RequestDelay.count();
             Emit() << "Response timeout: " << port_config->ResponseTimeout.count();
 

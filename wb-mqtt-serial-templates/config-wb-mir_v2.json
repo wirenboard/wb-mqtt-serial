@@ -698,8 +698,7 @@
                             "address": "7",
                             "format": "s16",
                             "scale": 0.0625,
-                            "error_value": "0x7FFF",
-                            "poll_interval": 2000
+                            "error_value": "0x7FFF"
                         },
                         {
                             "name": "External Temperature Sensor OK",

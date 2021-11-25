@@ -7,7 +7,6 @@
             "parity": "N",
             "data_bits": 8,
             "stop_bits": 2,
-            "poll_interval": 10,
             "enabled": true,
             "devices" : [
                 {
@@ -103,7 +102,6 @@
             "parity": "N",
             "data_bits": 8,
             "stop_bits": 1,
-            "poll_interval": 100,
             "guard_interval_us": 105,
             "response_timeout_ms": 222,
             "enabled": true,
@@ -145,7 +143,6 @@
                     "name" : "WB-MRGB",
                     "id" : "wb-mrgb",
                     "slave_id" : 2,
-                    "poll_interval" : 101,
                     "max_read_registers": 0,
                     "channels" : [
                         {
@@ -155,8 +152,7 @@
                             "consists_of" : [
                                 {
                                     "reg_type" : "holding",
-                                    "address" : 1,
-                                    "poll_interval" : 103
+                                    "address" : 1
                                 },
                                 {
                                     "reg_type" : "holding",

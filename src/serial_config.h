@@ -100,7 +100,6 @@ struct TPortConfig
 {
     PPort Port;
     std::vector<PSerialDevice> Devices;
-    std::chrono::milliseconds PollInterval = DefaultPollInterval;
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
     TPortOpenCloseLogic::TSettings OpenCloseSettings;
 
@@ -243,7 +242,6 @@ struct TDeviceConfigLoadParams
     std::string DefaultId;
     std::chrono::microseconds DefaultRequestDelay;
     std::chrono::milliseconds PortResponseTimeout;
-    std::chrono::milliseconds DefaultPollInterval;
     std::string DeviceTemplateTitle;
     const Json::Value* Translations = nullptr;
 };

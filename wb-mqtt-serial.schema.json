@@ -40,13 +40,8 @@
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Poll interval (ms)",
-          "description" : "poll_interval_description",
-          "minimum": 0,
-          "default": 20,
-          "propertyOrder": 10,
           "options": {
-            "grid_columns": 4
+            "hidden": true
           }
         },
         "devices": {
@@ -134,7 +129,7 @@
         },
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
-      "defaultProperties": ["port_type", "path", "baud_rate", "parity", "data_bits", "stop_bits", "devices", "poll_interval"],
+      "defaultProperties": ["port_type", "path", "baud_rate", "parity", "data_bits", "stop_bits", "devices"],
       "_format": "grid",
       "options": {
         "wb": {
@@ -202,7 +197,7 @@
         { "$ref" : "#/definitions/commonTcpPortSettings"},
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
-      "defaultProperties": ["port_type", "address", "port", "enabled", "devices", "poll_interval"],
+      "defaultProperties": ["port_type", "address", "port", "enabled", "devices"],
       "_format": "grid",
       "options": {
         "wb": {
@@ -230,7 +225,7 @@
         { "$ref" : "#/definitions/commonTcpPortSettings"},
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
-      "defaultProperties": ["port_type", "address", "port", "enabled", "devices", "poll_interval"],
+      "defaultProperties": ["port_type", "address", "port", "enabled", "devices"],
       "_format": "grid",
       "options": {
         "wb": {
@@ -346,11 +341,9 @@
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Poll interval (ms)",
-          "description" : "poll_interval_description",
-          "minimum": 0,
-          "default": 20,
-          "propertyOrder": 7
+          "options": {
+            "hidden": true
+          }
         },
         "password": {
           "type": "array",

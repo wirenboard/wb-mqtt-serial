@@ -71,7 +71,6 @@ typedef std::shared_ptr<TDeviceSetupItemConfig> PDeviceSetupItemConfig;
 const int DEFAULT_ACCESS_LEVEL = 1;
 const int DEFAULT_DEVICE_FAIL_CYCLES = 2;
 
-const std::chrono::milliseconds DefaultPollInterval(20);
 const std::chrono::milliseconds DefaultFrameTimeout(20);
 const std::chrono::milliseconds DefaultResponseTimeout(500);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
