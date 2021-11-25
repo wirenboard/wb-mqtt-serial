@@ -58,9 +58,6 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
       RemainingFailCycles(config->DeviceMaxFailCycles)
 {}
 
-TSerialDevice::~TSerialDevice()
-{}
-
 std::string TSerialDevice::ToString() const
 {
     return Protocol()->GetName() + ":" + DeviceConfig()->SlaveId;
@@ -78,6 +75,9 @@ void TSerialDevice::Prepare()
 {
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
 }
+
+void TSerialDevice::EndSession()
+{}
 
 void TSerialDevice::EndPollCycle()
 {}
@@ -177,6 +177,21 @@ bool TSerialDevice::WriteSetupRegisters()
         }
     }
     return true;
+}
+
+PPort TSerialDevice::Port() const
+{
+    return SerialPort;
+}
+
+PDeviceConfig TSerialDevice::DeviceConfig() const
+{
+    return _DeviceConfig;
+}
+
+PProtocol TSerialDevice::Protocol() const
+{
+    return _Protocol;
 }
 
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)

@@ -163,7 +163,7 @@ void TSerialPort::Close()
     Base::Close();
 }
 
-std::chrono::milliseconds TSerialPort::GetSendTime(double bytesNumber)
+std::chrono::milliseconds TSerialPort::GetSendTime(double bytesNumber) const
 {
     size_t bitsPerByte = 1 + Settings.DataBits + Settings.StopBits;
     if (Settings.Parity != 'N') {
@@ -297,7 +297,7 @@ TTimePoint TSerialPortWithIECHack::CurrentTime() const
     return Port->CurrentTime();
 }
 
-std::chrono::milliseconds TSerialPortWithIECHack::GetSendTime(double bytesNumber)
+std::chrono::milliseconds TSerialPortWithIECHack::GetSendTime(double bytesNumber) const
 {
     return Port->GetSendTime(bytesNumber);
 }

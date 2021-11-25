@@ -60,7 +60,7 @@ public:
      *
      * @param bytesCount number of bytes
      */
-    virtual std::chrono::milliseconds GetSendTime(double bytesNumber);
+    virtual std::chrono::milliseconds GetSendTime(double bytesNumber) const;
 
     virtual std::string GetDescription(bool verbose = true) const = 0;
 

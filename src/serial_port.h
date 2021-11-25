@@ -25,7 +25,7 @@ public:
                      const std::chrono::microseconds& frameTimeout,
                      TFrameCompletePred frameComplete = 0) override;
 
-    std::chrono::milliseconds GetSendTime(double bytesNumber) override;
+    std::chrono::milliseconds GetSendTime(double bytesNumber) const override;
 
     std::string GetDescription(bool verbose = true) const override;
 
@@ -68,7 +68,7 @@ public:
     bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
     TTimePoint CurrentTime() const override;
 
-    std::chrono::milliseconds GetSendTime(double bytesNumber) override;
+    std::chrono::milliseconds GetSendTime(double bytesNumber) const override;
 
     std::string GetDescription(bool verbose = true) const override;
 

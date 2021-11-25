@@ -461,11 +461,13 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // fills pdu with write request data according to Modbus specification
-    void ComposeMultipleWriteRequestPDU(uint8_t* pdu, const TRegister& reg, uint64_t value, int shift)
+    void ComposeMultipleWriteRequestPDU(uint8_t* pdu,
+                                        const TRegister& reg,
+                                        uint64_t value,
+                                        int shift,
+                                        std::map<int64_t, uint16_t>& tmpCache,
+                                        const std::map<int64_t, uint16_t>& cache)
     {
-        auto& tmpCache = reg.Device()->ModbusTmpCache;
-        const auto& cache = reg.Device()->ModbusCache;
-
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
         auto addr = GetUint32RegisterAddress(reg.GetAddress());
@@ -515,11 +517,14 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    void ComposeSingleWriteRequestPDU(uint8_t* pdu, const TRegister& reg, uint16_t value, int shift, uint8_t wordIndex)
+    void ComposeSingleWriteRequestPDU(uint8_t* pdu,
+                                      const TRegister& reg,
+                                      uint16_t value,
+                                      int shift,
+                                      uint8_t wordIndex,
+                                      std::map<int64_t, uint16_t>& tmpCache,
+                                      const std::map<int64_t, uint16_t>& cache)
     {
-        auto& tmpCache = reg.Device()->ModbusTmpCache;
-        const auto& cache = reg.Device()->ModbusCache;
-
         if (reg.Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8 : 0x00;
         }
@@ -556,13 +561,15 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // parses modbus response and stores result
-    void ParseReadResponse(const uint8_t* pdu, size_t pduSize, TModbusRegisterRange& range)
+    void ParseReadResponse(const uint8_t* pdu,
+                           size_t pduSize,
+                           TModbusRegisterRange& range,
+                           std::map<int64_t, uint16_t>& cache)
     {
         TAddress address;
 
         address.Type = range.Type();
 
-        auto& cache = range.Device()->ModbusCache;
         auto baseAddress = range.GetStart();
 
         ThrowIfModbusException(GetExceptionCode(pdu));
@@ -739,13 +746,15 @@ namespace Modbus // modbus protocol common utilities
         return res;
     }
 
-    void WriteRegister(IModbusTraits& traits, TPort& port, uint8_t slaveId, TRegister& reg, uint64_t value, int shift)
+    void WriteRegister(IModbusTraits& traits,
+                       TPort& port,
+                       uint8_t slaveId,
+                       TRegister& reg,
+                       uint64_t value,
+                       std::map<int64_t, uint16_t>& cache,
+                       int shift)
     {
-        reg.Device()->DismissTmpCache();
-
-        std::unique_ptr<TRegister, std::function<void(TRegister*)>> tmpCacheGuard(&reg, [](TRegister* reg) {
-            reg->Device()->DismissTmpCache();
-        });
+        std::map<int64_t, uint16_t> tmpCache;
 
         LOG(Debug) << "write " << reg.Get16BitWidth() << " " << reg.TypeName << "(s) @ " << reg.GetAddress()
                    << " of device " << reg.Device()->ToString();
@@ -762,13 +771,15 @@ namespace Modbus // modbus protocol common utilities
 
             if (IsPacking(reg)) {
                 assert(requests.size() == 1 && "only one request is expected when using multiple write");
-                ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, value, shift);
+                ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, value, shift, tmpCache, cache);
             } else {
                 ComposeSingleWriteRequestPDU(traits.GetPDU(req),
                                              reg,
                                              static_cast<uint16_t>(value & 0xffff),
                                              shift,
-                                             requests.size() - i - 1);
+                                             requests.size() - i - 1,
+                                             tmpCache,
+                                             cache);
                 value >>= 16;
             }
 
@@ -789,10 +800,15 @@ namespace Modbus // modbus protocol common utilities
             }
         }
 
-        reg.Device()->ApplyTmpCache();
+        cache.insert(tmpCache.begin(), tmpCache.end());
     }
 
-    void ReadRange(IModbusTraits& traits, TModbusRegisterRange& range, TPort& port, uint8_t slaveId, int shift)
+    void ReadRange(IModbusTraits& traits,
+                   TModbusRegisterRange& range,
+                   TPort& port,
+                   uint8_t slaveId,
+                   int shift,
+                   std::map<int64_t, uint16_t>& cache)
     {
         range.SetStatus(ST_UNKNOWN_ERROR);
 
@@ -800,7 +816,7 @@ namespace Modbus // modbus protocol common utilities
         try {
             const auto& request = range.GetRequest(traits, slaveId, shift);
             auto pduSize = ProcessRequest(traits, port, request, response, *range.Device()->DeviceConfig());
-            ParseReadResponse(traits.GetPDU(response), pduSize, range);
+            ParseReadResponse(traits.GetPDU(response), pduSize, range, cache);
             range.SetStatus(ST_OK);
         } catch (const TMalformedResponseError&) {
             try {
@@ -874,11 +890,12 @@ namespace Modbus // modbus protocol common utilities
                                              Modbus::PModbusRegisterRange& range,
                                              TPort& port,
                                              uint8_t slaveId,
-                                             int shift)
+                                             int shift,
+                                             std::map<int64_t, uint16_t>& cache)
     {
         std::list<PRegisterRange> newRanges;
         try {
-            ReadRange(traits, *range, port, slaveId, shift);
+            ReadRange(traits, *range, port, slaveId, shift, cache);
             auto res = RemoveUnsupportedFromBorders(range->RegisterList());
             if (res.IsValid) {
                 if (!res.Regs.empty()) {
@@ -908,7 +925,8 @@ namespace Modbus // modbus protocol common utilities
                                            Modbus::PModbusRegisterRange& range,
                                            TPort& port,
                                            uint8_t slaveId,
-                                           int shift)
+                                           int shift,
+                                           std::map<int64_t, uint16_t>& cache)
     {
         range->SetStatus(ST_UNKNOWN_ERROR);
         std::list<Modbus::PModbusRegisterRange> subRanges;
@@ -917,7 +935,7 @@ namespace Modbus // modbus protocol common utilities
         }
         for (auto& r: subRanges) {
             try {
-                ReadRange(traits, *r, port, slaveId, shift);
+                ReadRange(traits, *r, port, slaveId, shift, cache);
             } catch (const TSerialDeviceTransientErrorException& e) {
                 ProcessRangeException(*range, e.what(), ST_UNKNOWN_ERROR);
                 return std::list<PRegisterRange>{range};
@@ -936,6 +954,7 @@ namespace Modbus // modbus protocol common utilities
                                                 TPort& port,
                                                 uint8_t slaveId,
                                                 PRegisterRange range,
+                                                std::map<int64_t, uint16_t>& cache,
                                                 int shift)
     {
         auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
@@ -946,9 +965,9 @@ namespace Modbus // modbus protocol common utilities
         LOG(Debug) << "read " << *modbus_range;
 
         if (modbus_range->ShouldReadOneByOne()) {
-            return ReadOneByOne(traits, modbus_range, port, slaveId, shift);
+            return ReadOneByOne(traits, modbus_range, port, slaveId, shift, cache);
         }
-        return ReadWholeRange(traits, modbus_range, port, slaveId, shift);
+        return ReadWholeRange(traits, modbus_range, port, slaveId, shift, cache);
     }
 
     void WarnFailedRegisterSetup(const PDeviceSetupItem& item, const char* msg)
@@ -960,11 +979,12 @@ namespace Modbus // modbus protocol common utilities
                              TPort& port,
                              uint8_t slaveId,
                              const std::vector<PDeviceSetupItem>& setupItems,
+                             std::map<int64_t, uint16_t>& cache,
                              int shift)
     {
         for (const auto& item: setupItems) {
             try {
-                WriteRegister(traits, port, slaveId, *item->Register, item->RawValue, shift);
+                WriteRegister(traits, port, slaveId, *item->Register, item->RawValue, cache, shift);
                 LOG(Info) << "Init: " << item->Name << ": setup register " << item->Register->ToString() << " <-- "
                           << item->HumanReadableValue << " (0x" << std::hex << item->RawValue << ")";
             } catch (const TSerialDevicePermanentRegisterException& e) {

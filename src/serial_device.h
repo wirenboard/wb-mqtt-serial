@@ -167,23 +167,27 @@ public:
     TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     TSerialDevice(const TSerialDevice&) = delete;
     TSerialDevice& operator=(const TSerialDevice&) = delete;
-    virtual ~TSerialDevice();
+    virtual ~TSerialDevice() = default;
+
     virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
                                                         bool enableHoles = true) const;
 
     // Prepare to access device (pauses for configured delay by default)
     // i.e. "StartSession". Called before any read/write/etc after communicating with another device
     virtual void Prepare();
+
     // Ends communication session with the device. Called before communicating with another device
-    virtual void EndSession()
-    { /*do nothing by default */
-    }
+    virtual void EndSession();
+
     // Read register value
     virtual uint64_t ReadRegister(PRegister reg);
+
     // Write register value
     virtual void WriteRegister(PRegister reg, uint64_t value) = 0;
+
     // Handle end of poll cycle e.g. by resetting values caches
     virtual void EndPollCycle();
+
     // Read multiple registers
     virtual std::list<PRegisterRange> ReadRegisterRange(PRegisterRange range);
 
@@ -194,34 +198,12 @@ public:
     bool HasSetupItems() const;
     virtual bool WriteSetupRegisters();
 
-    PPort Port() const
-    {
-        return SerialPort;
-    }
-    PDeviceConfig DeviceConfig() const
-    {
-        return _DeviceConfig;
-    }
-    PProtocol Protocol() const
-    {
-        return _Protocol;
-    }
+    PPort Port() const;
+    PDeviceConfig DeviceConfig() const;
+    PProtocol Protocol() const;
 
     virtual void OnCycleEnd(bool ok);
     bool GetIsDisconnected() const;
-
-    std::map<int64_t, uint16_t> ModbusCache, ModbusTmpCache;
-
-    void ApplyTmpCache()
-    {
-        ModbusCache.insert(ModbusTmpCache.begin(), ModbusTmpCache.end());
-        DismissTmpCache();
-    }
-
-    void DismissTmpCache()
-    {
-        ModbusTmpCache.clear();
-    }
 
 protected:
     std::vector<PDeviceSetupItem> SetupItems;
