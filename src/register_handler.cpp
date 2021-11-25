@@ -48,12 +48,6 @@ TRegisterHandler::TErrorState TRegisterHandler::UpdateWriteError(bool error)
     return ErrorState;
 }
 
-bool TRegisterHandler::NeedToPoll()
-{
-    std::lock_guard<std::mutex> lock(SetValueMutex);
-    return Reg->Poll;
-}
-
 TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed)
 {
     *changed = false;
@@ -154,4 +148,24 @@ void TRegisterHandler::SetTextValue(const std::string& v)
         ValueToSet = ConvertToRawValue(*Reg, v);
     }
     FlushNeeded->Signal();
+}
+
+PRegister TRegisterHandler::Register() const
+{
+    return Reg;
+}
+
+bool TRegisterHandler::DidRead() const
+{
+    return DidReadReg;
+}
+
+TRegisterHandler::TErrorState TRegisterHandler::CurrentErrorState() const
+{
+    return ErrorState;
+}
+
+PSerialDevice TRegisterHandler::Device() const
+{
+    return Dev.lock();
 }

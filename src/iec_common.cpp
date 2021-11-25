@@ -195,9 +195,9 @@ void TIEC61107Device::EndSession()
     TSerialDevice::EndSession();
 }
 
-void TIEC61107Device::Prepare()
+void TIEC61107Device::PrepareImpl()
 {
-    TSerialDevice::Prepare();
+    TSerialDevice::PrepareImpl();
     TSerialPortByteFormat bf('E', 7, 1);
     Port()->SetSerialPortByteFormat(&bf);
 }
@@ -230,9 +230,9 @@ TIEC61107ModeCDevice::TIEC61107ModeCDevice(PDeviceConfig device_config,
       LogPrefix(logPrefix)
 {}
 
-void TIEC61107ModeCDevice::Prepare()
+void TIEC61107ModeCDevice::PrepareImpl()
 {
-    TIEC61107Device::Prepare();
+    TIEC61107Device::PrepareImpl();
     uint8_t buf[IEC::RESPONSE_BUF_LEN] = {};
     size_t retryCount = 5;
     bool sessionIsOpen;
@@ -254,6 +254,7 @@ void TIEC61107ModeCDevice::Prepare()
             sessionIsOpen = true;
             SwitchToProgMode();
             SendPassword();
+            SetTransferResult(true);
             return;
         } catch (const TSerialDeviceTransientErrorException& e) {
             Debug.Log() << LogPrefix << "Session start error: " << e.what() << " [slave_id is " << ToString() + "]";
@@ -280,16 +281,11 @@ void TIEC61107ModeCDevice::EndPollCycle()
     TSerialDevice::EndPollCycle();
 }
 
-uint64_t TIEC61107ModeCDevice::ReadRegister(PRegister reg)
+uint64_t TIEC61107ModeCDevice::ReadRegisterImpl(PRegister reg)
 {
     Port()->SkipNoise();
     Port()->CheckPortOpen();
     return GetRegisterValue(*reg, GetCachedResponse(GetParameterRequest(*reg)));
-}
-
-void TIEC61107ModeCDevice::WriteRegister(PRegister, uint64_t)
-{
-    throw TSerialDeviceException("IEC61107 protocol: writing register is not supported");
 }
 
 std::string TIEC61107ModeCDevice::GetCachedResponse(const std::string& paramRequest)

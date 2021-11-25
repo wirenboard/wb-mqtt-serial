@@ -60,6 +60,7 @@ TEST_F(TEMIntegrationTest, Poll)
 
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 // TBD: test errors

@@ -26,7 +26,7 @@ namespace Modbus // modbus protocol common utilities
     class IModbusTraits
     {
     public:
-        virtual ~IModbusTraits();
+        virtual ~IModbusTraits() = default;
 
         virtual size_t GetPacketSize(size_t pduSize) const = 0;
 
@@ -118,7 +118,8 @@ namespace Modbus // modbus protocol common utilities
 
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
                                                 const TDeviceConfig& deviceConfig,
-                                                bool enableHoles);
+                                                bool enableHoles,
+                                                std::chrono::milliseconds pollLimit);
 
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,
@@ -128,14 +129,14 @@ namespace Modbus // modbus protocol common utilities
                        std::map<int64_t, uint16_t>& cache,
                        int shift = 0);
 
-    std::list<PRegisterRange> ReadRegisterRange(IModbusTraits& traits,
-                                                TPort& port,
-                                                uint8_t slaveId,
-                                                PRegisterRange range,
-                                                std::map<int64_t, uint16_t>& cache,
-                                                int shift = 0);
+    void ReadRegisterRange(IModbusTraits& traits,
+                           TPort& port,
+                           uint8_t slaveId,
+                           PRegisterRange range,
+                           std::map<int64_t, uint16_t>& cache,
+                           int shift = 0);
 
-    bool WriteSetupRegisters(IModbusTraits& traits,
+    void WriteSetupRegisters(IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
                              const std::vector<PDeviceSetupItem>& setupItems,

@@ -194,7 +194,7 @@ public:
     double Scale;
     double Offset;
     double RoundTo;
-    bool Poll;
+    bool WriteOnly = false;
     bool ReadOnly;
     std::string TypeName;
     std::chrono::milliseconds PollInterval = UndefinedPollInterval;
@@ -210,7 +210,6 @@ public:
                     double scale,
                     double offset,
                     double round_to,
-                    bool poll,
                     bool readonly,
                     const std::string& type_name,
                     std::unique_ptr<uint64_t> error_value,
@@ -235,7 +234,6 @@ public:
                                   double scale = 1,
                                   double offset = 0,
                                   double round_to = 0,
-                                  bool poll = true,
                                   bool readonly = false,
                                   const std::string& type_name = "",
                                   std::unique_ptr<uint64_t> error_value = std::unique_ptr<uint64_t>(),
@@ -251,7 +249,6 @@ public:
                                   double scale = 1,
                                   double offset = 0,
                                   double round_to = 0,
-                                  bool poll = true,
                                   bool readonly = false,
                                   const std::string& type_name = "",
                                   std::unique_ptr<uint64_t> error_value = std::unique_ptr<uint64_t>(),
@@ -268,6 +265,13 @@ typedef std::shared_ptr<TRegister> PRegister;
 
 struct TRegister: public TRegisterConfig
 {
+    enum TRegisterAvailability
+    {
+        UNKNOWN = 0,
+        AVAILABLE,
+        UNAVAILABLE
+    };
+
     TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName = std::string())
         : TRegisterConfig(*config),
           _Device(device),
@@ -285,10 +289,10 @@ struct TRegister: public TRegisterConfig
     }
 
     //! The register is available in the device. It is allowed to read or write it
-    bool IsAvailable() const;
+    TRegisterAvailability GetAvailable() const;
 
     //! Set register's availability
-    void SetAvailable(bool available);
+    void SetAvailable(TRegisterAvailability available);
 
     EStatus GetError() const;
     void SetError(EStatus error);
@@ -301,7 +305,7 @@ struct TRegister: public TRegisterConfig
 
 private:
     std::weak_ptr<TSerialDevice> _Device;
-    bool Available = true;
+    TRegisterAvailability Available = UNKNOWN;
     EStatus Error = ST_UNKNOWN_ERROR;
     uint64_t Value;
     std::string ChannelName;
@@ -431,7 +435,7 @@ inline RegisterFormat RegisterFormatFromName(const std::string& name)
     else if (name == "char8")
         return Char8;
     else
-        return U16; // FIXME!
+        return U16;
 }
 
 size_t RegisterFormatByteWidth(RegisterFormat format);
@@ -449,16 +453,11 @@ inline EWordOrder WordOrderFromName(const std::string& name)
 class TRegisterRange
 {
 public:
-    typedef std::function<void(PRegister reg, uint64_t new_value)> TValueCallback;
-    typedef std::function<void(PRegister reg)> TErrorCallback;
-
     virtual ~TRegisterRange() = default;
 
     const std::list<PRegister>& RegisterList() const;
     std::list<PRegister>& RegisterList();
     PSerialDevice Device() const;
-    int Type() const;
-    std::string TypeName() const;
     std::chrono::milliseconds PollInterval() const;
 
     /**
@@ -466,16 +465,12 @@ public:
      */
     void SetError(EStatus error);
 
-    virtual EStatus GetStatus() const = 0;
-
 protected:
     TRegisterRange(const std::list<PRegister>& regs);
     TRegisterRange(PRegister reg);
 
 private:
     std::weak_ptr<TSerialDevice> RegDevice;
-    int RegType;
-    std::string RegTypeName;
     std::chrono::milliseconds RegPollInterval = std::chrono::milliseconds(-1);
     std::list<PRegister> RegList;
 };
@@ -487,8 +482,6 @@ class TSimpleRegisterRange: public TRegisterRange
 public:
     TSimpleRegisterRange(const std::list<PRegister>& regs);
     TSimpleRegisterRange(PRegister reg);
-
-    EStatus GetStatus() const override;
 };
 
 typedef std::shared_ptr<TSimpleRegisterRange> PSimpleRegisterRange;

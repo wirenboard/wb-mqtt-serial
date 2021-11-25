@@ -34,16 +34,12 @@ TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
         throw std::runtime_error("cannot construct empty register range");
     PRegister first = regs.front();
     RegDevice = first->Device();
-    RegType = first->Type;
-    RegTypeName = first->TypeName;
     RegPollInterval = first->PollInterval;
 }
 
 TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
 {
     RegDevice = reg->Device();
-    RegType = reg->Type;
-    RegTypeName = reg->TypeName;
     RegPollInterval = reg->PollInterval;
 }
 
@@ -60,16 +56,6 @@ std::list<PRegister>& TRegisterRange::RegisterList()
 PSerialDevice TRegisterRange::Device() const
 {
     return RegDevice.lock();
-}
-
-int TRegisterRange::Type() const
-{
-    return RegType;
-}
-
-std::string TRegisterRange::TypeName() const
-{
-    return RegTypeName;
 }
 
 std::chrono::milliseconds TRegisterRange::PollInterval() const
@@ -89,32 +75,6 @@ TSimpleRegisterRange::TSimpleRegisterRange(const std::list<PRegister>& regs): TR
 
 TSimpleRegisterRange::TSimpleRegisterRange(PRegister reg): TRegisterRange(reg)
 {}
-
-EStatus TSimpleRegisterRange::GetStatus() const
-{
-    bool hasOk = false;
-    bool hasError = false;
-    for (const auto& r: RegisterList()) {
-        switch (r->GetError()) {
-            case ST_DEVICE_ERROR:
-                return ST_DEVICE_ERROR;
-            case ST_OK: {
-                hasOk = true;
-                break;
-            }
-            case ST_UNKNOWN_ERROR:
-                hasError = true;
-                break;
-        }
-    }
-    if (!hasError) {
-        return ST_OK;
-    }
-    if (!hasOk) {
-        return ST_UNKNOWN_ERROR;
-    }
-    return ST_DEVICE_ERROR;
-}
 
 std::string TRegisterConfig::ToString() const
 {
@@ -139,12 +99,12 @@ std::string TRegister::ToString() const
     return "<unknown device:" + TRegisterConfig::ToString() + ">";
 }
 
-bool TRegister::IsAvailable() const
+TRegister::TRegisterAvailability TRegister::GetAvailable() const
 {
     return Available;
 }
 
-void TRegister::SetAvailable(bool available)
+void TRegister::SetAvailable(TRegisterAvailability available)
 {
     Available = available;
 }
@@ -168,7 +128,7 @@ void TRegister::SetValue(uint64_t value)
 {
     Value = value;
     Error = ST_OK;
-    Available = true;
+    Available = AVAILABLE;
 }
 
 const std::string& TRegister::GetChannelName() const
@@ -185,7 +145,6 @@ TRegisterConfig::TRegisterConfig(int type,
                                  double scale,
                                  double offset,
                                  double round_to,
-                                 bool poll,
                                  bool readonly,
                                  const std::string& type_name,
                                  std::unique_ptr<uint64_t> error_value,
@@ -199,7 +158,6 @@ TRegisterConfig::TRegisterConfig(int type,
       Scale(scale),
       Offset(offset),
       RoundTo(round_to),
-      Poll(poll),
       ReadOnly(readonly),
       TypeName(type_name),
       ErrorValue(std::move(error_value)),
@@ -230,7 +188,7 @@ TRegisterConfig::TRegisterConfig(const TRegisterConfig& config)
     Scale = config.Scale;
     Offset = config.Offset;
     RoundTo = config.RoundTo;
-    Poll = config.Poll;
+    WriteOnly = config.WriteOnly;
     ReadOnly = config.ReadOnly;
     TypeName = config.TypeName;
     PollInterval = config.PollInterval;
@@ -272,7 +230,6 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         double scale,
                                         double offset,
                                         double round_to,
-                                        bool poll,
                                         bool readonly,
                                         const std::string& type_name,
                                         std::unique_ptr<uint64_t> error_value,
@@ -287,7 +244,6 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                              scale,
                                              offset,
                                              round_to,
-                                             poll,
                                              readonly,
                                              type_name,
                                              std::move(error_value),
@@ -303,7 +259,6 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         double scale,
                                         double offset,
                                         double round_to,
-                                        bool poll,
                                         bool readonly,
                                         const std::string& type_name,
                                         std::unique_ptr<uint64_t> error_value,
@@ -318,7 +273,6 @@ PRegisterConfig TRegisterConfig::Create(int type,
                   scale,
                   offset,
                   round_to,
-                  poll,
                   readonly,
                   type_name,
                   std::move(error_value),

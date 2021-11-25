@@ -3,14 +3,13 @@
 Open()
 Sleep(100000)
 fake_serial_device '1': read address '20' value '4660'
+fake_serial_device '1': transfer OK
+fake_serial_device '1': reconnected
 Error Callback: <fake:1:fake: 20>: no error
 Read Callback: <fake:1:fake: 20> becomes 1234
-fake_serial_device '1': Device cycle OK
-fake_serial_device '1': reconnected
 >>> client -> server: 1234
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '4660'
 Read Callback: <fake:1:fake: 20> becomes 1234 [unchanged]
 fake_serial_device '1': read address '20' value '4660'
 Read Callback: <fake:1:fake: 20> becomes 1234 [unchanged]
-fake_serial_device '1': Device cycle OK

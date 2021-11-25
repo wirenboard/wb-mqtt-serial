@@ -287,16 +287,6 @@ void TSerialPortWithIECHack::SleepSinceLastInteraction(const std::chrono::micros
     Port->SleepSinceLastInteraction(us);
 }
 
-bool TSerialPortWithIECHack::Wait(const PBinarySemaphore& semaphore, const TTimePoint& until)
-{
-    return Port->Wait(semaphore, until);
-}
-
-TTimePoint TSerialPortWithIECHack::CurrentTime() const
-{
-    return Port->CurrentTime();
-}
-
 std::chrono::milliseconds TSerialPortWithIECHack::GetSendTime(double bytesNumber) const
 {
     return Port->GetSendTime(bytesNumber);

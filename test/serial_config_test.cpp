@@ -100,7 +100,7 @@ protected:
                             Emit() << "Scale: " << reg->Scale;
                             Emit() << "Offset: " << reg->Offset;
                             Emit() << "RoundTo: " << reg->RoundTo;
-                            Emit() << "Poll: " << reg->Poll;
+                            Emit() << "Poll: " << !reg->WriteOnly;
                             Emit() << "ReadOnly: " << reg->ReadOnly;
                             Emit() << "TypeName: " << reg->TypeName;
                             Emit() << "PollInterval: " << reg->PollInterval.count();

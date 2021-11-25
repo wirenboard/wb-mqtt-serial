@@ -23,12 +23,11 @@ public:
         UnknownErrorState,
         ErrorStateUnchanged
     };
+
     TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed);
-    PRegister Register() const
-    {
-        return Reg;
-    }
-    bool NeedToPoll();
+
+    PRegister Register() const;
+
     TErrorState AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed);
     bool NeedToFlush();
 
@@ -42,21 +41,13 @@ public:
      * @brief Write pending register value. NeedToFlush must be checked before call.
      */
     TFlushResult Flush(TErrorState forcedError = NoError);
+
     std::string TextValue() const;
 
     void SetTextValue(const std::string& v);
-    bool DidRead() const
-    {
-        return DidReadReg;
-    }
-    TErrorState CurrentErrorState() const
-    {
-        return ErrorState;
-    }
-    PSerialDevice Device() const
-    {
-        return Dev.lock();
-    }
+    bool DidRead() const;
+    TErrorState CurrentErrorState() const;
+    PSerialDevice Device() const;
 
 private:
     TErrorState UpdateReadError(bool error);

@@ -182,13 +182,13 @@ namespace
                         presp += nread;
 
                         // just ignore error message if reg is unavailable
-                        if (reg->IsAvailable()) {
+                        if (reg->GetAvailable() == TRegister::UNKNOWN) {
                             if (err_num == CodeUnsupportedParameter) {
-                                reg->SetAvailable(false);
+                                reg->SetAvailable(TRegister::UNAVAILABLE);
                                 LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register "
                                           << reg->ToString() << " unsupported parameter";
                             } else if (err_num == CodeUnsupportedParameterValue) {
-                                reg->SetAvailable(false);
+                                reg->SetAvailable(TRegister::UNAVAILABLE);
                                 LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register "
                                           << reg->ToString() << " unsupported parameter value";
                             } else {
@@ -210,7 +210,7 @@ TEnergomeraIecWithFastReadDevice::TEnergomeraIecWithFastReadDevice(PDeviceConfig
     : TIEC61107Device(config, port, protocol)
 {}
 
-std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract_range)
+void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract_range)
 {
     auto range = std::dynamic_pointer_cast<TEnergomeraRegisterRange>(abstract_range);
     if (!range) {
@@ -233,16 +233,10 @@ std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PR
         LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                     << ToString() + "]";
     }
-    return {abstract_range};
-}
-
-void TEnergomeraIecWithFastReadDevice::WriteRegister(PRegister, uint64_t)
-{
-    throw TSerialDeviceException("Energomera protocol: writing register is not supported");
 }
 
 std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                                              bool enableHoles) const
+                                                                              std::chrono::milliseconds pollLimit) const
 {
     std::list<PRegisterRange> r;
     if (reg_list.empty())

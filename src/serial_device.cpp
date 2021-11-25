@@ -63,7 +63,8 @@ std::string TSerialDevice::ToString() const
     return Protocol()->GetName() + ":" + DeviceConfig()->SlaveId;
 }
 
-std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegister>& reg_list, bool) const
+std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegister>& reg_list,
+                                                           std::chrono::milliseconds pollLimit) const
 {
     std::list<PRegisterRange> r;
     for (auto reg: reg_list)
@@ -72,6 +73,20 @@ std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegi
 }
 
 void TSerialDevice::Prepare()
+{
+    bool deviceWasDisconnected = GetIsDisconnected();
+    try {
+        PrepareImpl();
+        if (deviceWasDisconnected && HasSetupItems()) {
+            WriteSetupRegisters();
+        }
+    } catch (const TSerialDeviceException& ex) {
+        SetTransferResult(false);
+        throw;
+    }
+}
+
+void TSerialDevice::PrepareImpl()
 {
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
 }
@@ -84,16 +99,44 @@ void TSerialDevice::EndPollCycle()
 
 uint64_t TSerialDevice::ReadRegister(PRegister reg)
 {
+    try {
+        auto res = ReadRegisterImpl(reg);
+        SetTransferResult(true);
+        return res;
+    } catch (const TSerialDeviceException& ex) {
+        SetTransferResult(false);
+        throw;
+    }
+}
+
+void TSerialDevice::WriteRegister(PRegister reg, uint64_t value)
+{
+    try {
+        WriteRegisterImpl(reg, value);
+        SetTransferResult(true);
+    } catch (const TSerialDeviceException& ex) {
+        SetTransferResult(false);
+        throw;
+    }
+}
+
+uint64_t TSerialDevice::ReadRegisterImpl(PRegister reg)
+{
     throw TSerialDeviceException("single register reading is not supported");
 }
 
-std::list<PRegisterRange> TSerialDevice::ReadRegisterRange(PRegisterRange range)
+void TSerialDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
+{
+    throw TSerialDeviceException(ToString() + ": register writing is not supported");
+}
+
+void TSerialDevice::ReadRegisterRange(PRegisterRange range)
 {
     PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
     if (!simple_range)
         throw std::runtime_error("simple range expected");
     for (auto reg: simple_range->RegisterList()) {
-        if (!reg->IsAvailable()) {
+        if (reg->GetAvailable() == TRegister::UNAVAILABLE) {
             continue;
         }
         try {
@@ -109,17 +152,16 @@ std::list<PRegisterRange> TSerialDevice::ReadRegisterRange(PRegisterRange range)
             LOG(logger) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                         << reg->Device()->ToString() + "]";
         } catch (const TSerialDevicePermanentRegisterException& e) {
-            reg->SetAvailable(false);
+            reg->SetAvailable(TRegister::UNAVAILABLE);
             reg->SetError(ST_DEVICE_ERROR);
             LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "] Register " << reg->ToString()
                       << " is now marked as unsupported";
         }
     }
-    return std::list<PRegisterRange>{range};
 }
 
-void TSerialDevice::OnCycleEnd(bool ok)
+void TSerialDevice::SetTransferResult(bool ok)
 {
     // disable reconnect functionality option
     if (_DeviceConfig->DeviceTimeout.count() < 0 || _DeviceConfig->DeviceMaxFailCycles < 0) {
@@ -128,6 +170,9 @@ void TSerialDevice::OnCycleEnd(bool ok)
 
     if (ok) {
         LastSuccessfulCycle = std::chrono::steady_clock::now();
+        if (!IsDisconnected) {
+            LOG(Info) << "device " << ToString() << " is connected";
+        }
         IsDisconnected = false;
         RemainingFailCycles = _DeviceConfig->DeviceMaxFailCycles;
     } else {
@@ -164,19 +209,15 @@ bool TSerialDevice::HasSetupItems() const
     return !_DeviceConfig->SetupItemConfigs.empty();
 }
 
-bool TSerialDevice::WriteSetupRegisters()
+void TSerialDevice::WriteSetupRegisters()
 {
     for (const auto& setup_item: SetupItems) {
-        try {
-            WriteRegister(setup_item->Register, setup_item->RawValue);
-            LOG(Info) << "Init: " << setup_item->Name << ": setup register " << setup_item->Register->ToString()
-                      << " <-- " << setup_item->HumanReadableValue << " (0x" << std::hex << setup_item->RawValue << ")";
-        } catch (const TSerialDeviceException& e) {
-            LOG(Warn) << "failed to write: " << setup_item->Register->ToString() << ": " << e.what();
-            return false;
-        }
+        WriteRegisterImpl(setup_item->Register, setup_item->RawValue);
+        LOG(Info) << "Init: " << setup_item->Name << ": setup register " << setup_item->Register->ToString() << " <-- "
+                  << setup_item->HumanReadableValue << " (0x" << std::hex << setup_item->RawValue << ")";
+        // TODO: More verbose exception
     }
-    return true;
+    SetTransferResult(true);
 }
 
 PPort TSerialDevice::Port() const

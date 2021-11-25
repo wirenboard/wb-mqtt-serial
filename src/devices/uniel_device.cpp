@@ -94,7 +94,7 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-uint64_t TUnielDevice::ReadRegister(PRegister reg)
+uint64_t TUnielDevice::ReadRegisterImpl(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     WriteCommand(READ_CMD, SlaveId, 0, uint8_t(addr), 0);
@@ -108,7 +108,7 @@ uint64_t TUnielDevice::ReadRegister(PRegister reg)
     return response[0];
 }
 
-void TUnielDevice::WriteRegister(PRegister reg, uint64_t value)
+void TUnielDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     uint8_t cmd;

@@ -25,12 +25,13 @@ public:
     };
 
     TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol);
-    virtual ~TMercury200Device();
-    virtual uint64_t ReadRegister(PRegister reg);
-    virtual void WriteRegister(PRegister reg, uint64_t value);
-    virtual void EndPollCycle();
+
+    void EndPollCycle() override;
 
     static void Register(TSerialDeviceFactory& factory);
+
+protected:
+    uint64_t ReadRegisterImpl(PRegister reg) override;
 
 private:
     std::vector<uint8_t> ExecCommand(uint8_t cmd);

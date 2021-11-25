@@ -44,10 +44,12 @@ public:
                   PProtocol protocol);
 
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                bool enableHoles = true) const override;
-    void WriteRegister(PRegister reg, uint64_t value) override;
-    std::list<PRegisterRange> ReadRegisterRange(PRegisterRange range) override;
-    bool WriteSetupRegisters() override;
+                                                std::chrono::milliseconds pollLimit) const override;
+    void ReadRegisterRange(PRegisterRange range) override;
+    void WriteSetupRegisters() override;
 
     static void Register(TSerialDeviceFactory& factory);
+
+protected:
+    void WriteRegisterImpl(PRegister reg, uint64_t value) override;
 };

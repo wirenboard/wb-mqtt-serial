@@ -408,7 +408,7 @@ void TDlmsDevice::ReadAttribute(const std::string& addr, int attribute, CGXDLMSO
                "Getting " + addr + ":" + std::to_string(attribute) + " failed");
 }
 
-uint64_t TDlmsDevice::ReadRegister(PRegister reg)
+uint64_t TDlmsDevice::ReadRegisterImpl(PRegister reg)
 {
     auto addr = ToTObisRegisterAddress(reg).GetLogicalName();
     auto obj = Client->GetObjects().FindByLN(DLMS_OBJECT_TYPE_REGISTER, addr);
@@ -446,12 +446,7 @@ uint64_t TDlmsDevice::ReadRegister(PRegister reg)
     return CopyDoubleToUint64(r->GetValue().ToDouble());
 }
 
-void TDlmsDevice::WriteRegister(PRegister reg, uint64_t value)
-{
-    throw TSerialDeviceException("DLMS protocol: writing to registers is not supported");
-}
-
-void TDlmsDevice::Prepare()
+void TDlmsDevice::PrepareImpl()
 {
     try {
         Disconnect();
@@ -464,6 +459,7 @@ void TDlmsDevice::Prepare()
         Disconnect();
     }
     InitializeConnection();
+    SetTransferResult(true);
 }
 
 void TDlmsDevice::Disconnect()

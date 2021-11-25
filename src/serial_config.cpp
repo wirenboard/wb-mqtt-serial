@@ -251,7 +251,6 @@ namespace
                                                      scale,
                                                      offset,
                                                      round_to,
-                                                     true,
                                                      readonly,
                                                      regType.Name,
                                                      std::move(error_value),
@@ -376,7 +375,7 @@ namespace
         if (type_str == "wo-switch") {
             type_str = "switch";
             for (auto& reg: registers)
-                reg->Poll = false;
+                reg->WriteOnly = true;
         }
 
         int order = device_config->NextOrderValue();

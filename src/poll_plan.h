@@ -1,89 +1,145 @@
 #pragma once
+
 #include <chrono>
-#include <functional>
 #include <memory>
 #include <queue>
 
-class TPollEntry
+template<class TEntry, typename ComparePredicate> class TPriorityQueueSchedule
 {
 public:
-    virtual ~TPollEntry()
-    {}
-    virtual std::chrono::milliseconds PollInterval() const = 0;
-};
+    struct TItem
+    {
+        TEntry Data;
+        std::chrono::steady_clock::time_point NextPollTime;
 
-typedef std::shared_ptr<TPollEntry> PPollEntry;
+        bool operator<(const TItem& item) const
+        {
+            if (NextPollTime > item.NextPollTime) {
+                return true;
+            }
+            if (NextPollTime == item.NextPollTime) {
+                return ComparePredicate()(Data, item.Data);
+            }
+            return false;
+        }
+    };
 
-class TPollPlan
-{
-public:
-    typedef std::chrono::steady_clock::time_point TTimePoint;
-    typedef std::function<TTimePoint()> TClockFunc;
-    typedef std::function<void(const PPollEntry& entry)> TCallback;
-    TPollPlan(TClockFunc clock_func = std::chrono::steady_clock::now);
-    void AddEntry(const PPollEntry& entry);
-    void ProcessPending(const TCallback& callback);
-    bool PollIsDue();
-    TTimePoint GetNextPollTimePoint();
-    void Reset();
+    bool IsEmpty() const
+    {
+        return Entries.empty();
+    }
+
+    void AddEntry(TEntry entry, std::chrono::steady_clock::time_point nextPollTime)
+    {
+        Entries.emplace(TItem{entry, nextPollTime});
+    }
+
+    std::chrono::steady_clock::time_point GetNextPollTime() const
+    {
+        if (Entries.empty()) {
+            return std::chrono::steady_clock::time_point::max();
+        }
+        return Entries.top().NextPollTime;
+    }
+
+    TItem GetNext()
+    {
+        TItem entry(Entries.top());
+        Entries.pop();
+        return entry;
+    }
+
+    const TItem& GetTop() const
+    {
+        return Entries.top();
+    }
 
 private:
-    struct TQueueItem
-    {
-        TQueueItem(TTimePoint* current_time,
-                   std::chrono::milliseconds* avg_request_duration,
-                   const PPollEntry& entry,
-                   int index)
-            : CurrentTime(current_time),
-              AvgRequestDuration(avg_request_duration),
-              Entry(entry),
-              PollInterval(entry->PollInterval()),
-              DueAt(*current_time),
-              Index(index)
-        {}
-        TTimePoint* CurrentTime;
-        std::chrono::milliseconds* AvgRequestDuration;
-        PPollEntry Entry;
-        std::chrono::milliseconds PollInterval;
-        std::chrono::milliseconds PollIntervalSum = std::chrono::milliseconds::zero();
-        std::chrono::milliseconds AvgPollInterval = std::chrono::milliseconds::zero();
-        std::chrono::milliseconds RequestDuration = std::chrono::milliseconds::zero();
-        TTimePoint DueAt;
-        TTimePoint LastPollAt;
-        int Index;
-        int PollCountAtLeast = 0;
-        // NOTE: PollIntervalAveragingWindow of 1 is not supported!
-        // (must alter TPollPlan::TQueueItem::Update() to support it)
-        static const int PollIntervalAveragingWindow = 10;
-
-        void Update(const std::chrono::milliseconds& new_interval, const std::chrono::milliseconds& request_duration);
-        int Importance() const;
-    };
-    typedef std::shared_ptr<TQueueItem> PQueueItem;
-    struct LaterThan
-    {
-        bool operator()(const PQueueItem& a, const PQueueItem& b) const
-        {
-            // Take Index into account to try to make sorting
-            // stable for more predictability (useful for testing)
-            return a->DueAt > b->DueAt || (a->DueAt == b->DueAt && a->Index > b->Index);
-        }
-    };
-    struct LessImportantThan
-    {
-        bool operator()(const PQueueItem& a, const PQueueItem& b) const
-        {
-            // Take Index into account to try to make sorting
-            // stable for more predictability (useful for testing)
-            return a->Importance() < b->Importance() || (a->Importance() == b->Importance() && a->Index > b->Index);
-        }
-    };
-
-    TClockFunc ClockFunc;
-    TTimePoint CurrentTime;
-    std::chrono::milliseconds AvgRequestDuration = std::chrono::milliseconds::zero();
-    std::priority_queue<PQueueItem, std::vector<PQueueItem>, LessImportantThan> PendingItems;
-    std::priority_queue<PQueueItem, std::vector<PQueueItem>, LaterThan> Queue;
+    std::priority_queue<TItem> Entries;
 };
 
-typedef std::shared_ptr<TPollPlan> PPollPlan;
+template<class TEntry, class ComparePredicate, class GroupPredicate> class TScheduler
+{
+public:
+    using TQueue = TPriorityQueueSchedule<TEntry, ComparePredicate>;
+    using TItem = typename TQueue::TItem;
+
+    TScheduler(std::chrono::microseconds forcedLowPriorityInterval = std::chrono::seconds(10))
+        : ForcedLowPriorityInterval(forcedLowPriorityInterval)
+    {
+        if (ForcedLowPriorityInterval <= std::chrono::microseconds::zero()) {
+            ForcedLowPriorityInterval = std::chrono::seconds(10);
+        }
+    }
+
+    void AddEntry(TEntry entry, std::chrono::steady_clock::time_point nextPollTime, bool highPriority)
+    {
+        if (highPriority) {
+            HighPriorityQueue.AddEntry(entry, nextPollTime);
+        } else {
+            LowPriorityQueue.AddEntry(entry, nextPollTime);
+        }
+    }
+
+    std::chrono::steady_clock::time_point GetNextPollTime() const
+    {
+        return std::min(LowPriorityQueue.GetNextPollTime(), HighPriorityQueue.GetNextPollTime());
+    }
+
+    struct TItemsGroup
+    {
+        std::vector<TItem> Items;
+        std::chrono::milliseconds PollLimit;
+        bool IsHighPriority = false;
+    };
+
+    TItemsGroup GetNext(std::chrono::steady_clock::time_point time)
+    {
+        // TODO: Check priority inversion in case of very long low priority polls
+        TItemsGroup res;
+        if (LastLowPriorityCall + ForcedLowPriorityInterval < time && HasReadyItems(HighPriorityQueue, time)) {
+            res.IsHighPriority = true;
+            res.Items.push_back(HighPriorityQueue.GetNext());
+            while (!HighPriorityQueue.IsEmpty() && CanGroup(HighPriorityQueue.GetTop(), res.Items.back())) {
+                res.Items.push_back(HighPriorityQueue.GetNext());
+            }
+            return res;
+        }
+        if (HasReadyItems(LowPriorityQueue, time)) {
+            LastLowPriorityCall = time;
+            res.Items.push_back(LowPriorityQueue.GetNext());
+            while (!LowPriorityQueue.IsEmpty() && CanGroup(LowPriorityQueue.GetTop(), res.Items.back())) {
+                res.Items.push_back(LowPriorityQueue.GetNext());
+            }
+            if (HighPriorityQueue.IsEmpty()) {
+                res.PollLimit = std::chrono::milliseconds::max();
+            } else {
+                res.PollLimit =
+                    std::chrono::duration_cast<std::chrono::milliseconds>(HighPriorityQueue.GetNextPollTime() - time);
+                if (res.PollLimit <= std::chrono::milliseconds(0)) {
+                    res.PollLimit = std::chrono::milliseconds(1);
+                }
+            }
+        }
+        return res;
+    }
+
+private:
+    TQueue LowPriorityQueue;
+    TQueue HighPriorityQueue;
+    std::chrono::microseconds ForcedLowPriorityInterval;
+    std::chrono::steady_clock::time_point LastLowPriorityCall;
+
+    bool HasReadyItems(const TQueue& q, std::chrono::steady_clock::time_point time) const
+    {
+        return !q.IsEmpty() && (q.GetNextPollTime() <= time);
+    }
+
+    bool CanGroup(const TItem& v1, const TItem& v2) const
+    {
+        if (v1.NextPollTime != v2.NextPollTime) {
+            return false;
+        }
+        return GroupPredicate()(v1.Data, v2.Data);
+    }
+};

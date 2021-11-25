@@ -49,22 +49,23 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
     config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
 }
 
-std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister>& reg_list, bool enableHoles) const
+std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister>& reg_list,
+                                                           std::chrono::milliseconds pollLimit) const
 {
-    return Modbus::SplitRegisterList(reg_list, *DeviceConfig(), enableHoles);
+    return Modbus::SplitRegisterList(reg_list, *DeviceConfig(), true, pollLimit);
 }
 
-void TModbusDevice::WriteRegister(PRegister reg, uint64_t value)
+void TModbusDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
 {
     Modbus::WriteRegister(*ModbusTraits, *Port(), SlaveId, *reg, value, ModbusCache);
 }
 
-std::list<PRegisterRange> TModbusDevice::ReadRegisterRange(PRegisterRange range)
+void TModbusDevice::ReadRegisterRange(PRegisterRange range)
 {
-    return Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, range, ModbusCache);
+    Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, range, ModbusCache);
 }
 
-bool TModbusDevice::WriteSetupRegisters()
+void TModbusDevice::WriteSetupRegisters()
 {
-    return Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache);
+    Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache);
 }

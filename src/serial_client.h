@@ -12,6 +12,15 @@
 #include "register_handler.h"
 #include "serial_device.h"
 
+struct TRegisterComparePredicate
+{
+    bool operator()(const PRegister& r1, const PRegister& r2) const;
+};
+
+struct TRegisterGroupPredicate
+{
+    bool operator()(const PRegister& r1, const PRegister& r2) const;
+};
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
@@ -43,27 +52,28 @@ private:
     void DoFlush();
     void WaitForPollAndFlush();
     void MaybeFlushAvoidingPollStarvationButDontWait();
-    std::list<PRegisterRange> PollRange(PRegisterRange range);
-    void SetReadError(PRegisterRange range);
+    void SetReadError(PRegister reg);
     PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
-    void PrepareToAccessDevice(PSerialDevice dev);
-    void OnDeviceReconnect(PSerialDevice dev);
+    bool PrepareToAccessDevice(PSerialDevice dev);
+    void SetRegistersAvailability(PSerialDevice dev, TRegister::TRegisterAvailability availability);
     void ClosedPortCycle();
     void OpenPortCycle();
     void UpdateFlushNeeded();
+    void ProcessPolledRegister(PRegister reg);
+    void ScheduleNextPoll(PRegister reg, bool isHighPriority, std::chrono::steady_clock::time_point now);
 
     PPort Port;
     std::list<PRegister> RegList;
-    std::vector<PSerialDevice> Devices; /* for EndPollCycle */
+    std::vector<PSerialDevice> Devices;
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
     bool Active;
     TReadCallback ReadCallback;
     TErrorCallback ErrorCallback;
-    PSerialDevice LastAccessedDevice = 0;
+    PSerialDevice LastAccessedDevice;
     PBinarySemaphore FlushNeeded;
-    PPollPlan Plan;
+    TScheduler<PRegister, TRegisterComparePredicate, TRegisterGroupPredicate> Scheduler;
 
     const int MAX_REGS = 65536;
     const int MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;

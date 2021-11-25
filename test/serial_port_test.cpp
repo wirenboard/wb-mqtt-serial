@@ -160,10 +160,14 @@ void TSerialPortTest::SetUp()
 
 void TSerialPortTest::TearDown()
 {
-    Serial->Close();
+    if (Serial) {
+        Serial->Close();
+    }
     Serial.reset();
     FakeSerial.reset();
-    SecondarySerial->Close();
+    if (SecondarySerial) {
+        SecondarySerial->Close();
+    }
     TLoggedFixture::TearDown();
 }
 
@@ -184,7 +188,7 @@ TEST_F(TSerialPortTest, TestSkipNoise)
 }
 
 /* on imx6, a glitch with precise timing can trigger a bug in UART IP. This will result
-in continously reception of FF bytes until either UART is reset or a couple of valid UART frames
+in continuosly reception of FF bytes until either UART is reset or a couple of valid UART frames
 are received */
 // !!!! The test is not stable on build server
 // TEST_F(TSerialPortTest, TestImxBug)

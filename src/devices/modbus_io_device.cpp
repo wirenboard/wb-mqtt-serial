@@ -66,22 +66,22 @@ TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTr
 }
 
 std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                             bool enableHoles) const
+                                                             std::chrono::milliseconds pollLimit) const
 {
-    return Modbus::SplitRegisterList(reg_list, *DeviceConfig(), enableHoles);
+    return Modbus::SplitRegisterList(reg_list, *DeviceConfig(), true, pollLimit);
 }
 
-void TModbusIODevice::WriteRegister(PRegister reg, uint64_t value)
+void TModbusIODevice::WriteRegisterImpl(PRegister reg, uint64_t value)
 {
     Modbus::WriteRegister(*ModbusTraits, *Port(), SlaveId, *reg, value, ModbusCache, Shift);
 }
 
-std::list<PRegisterRange> TModbusIODevice::ReadRegisterRange(PRegisterRange range)
+void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 {
-    return Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, range, ModbusCache, Shift);
+    Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, range, ModbusCache, Shift);
 }
 
-bool TModbusIODevice::WriteSetupRegisters()
+void TModbusIODevice::WriteSetupRegisters()
 {
-    return Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache, Shift);
+    Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache, Shift);
 }
