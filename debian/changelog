@@ -1,9 +1,15 @@
-wb-mqtt-serial (2.42.3) stable; urgency=medium
+wb-mqtt-serial (2.43.1) stable; urgency=medium
 
   * Backward compatibility with previous device templates is improved.
     Channels mentioned in config and not presented in template or not having addresses will be ignored with warning.
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 22 Nov 2021 12:57:38 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 25 Nov 2021 12:48:39 +0500
+
+wb-mqtt-serial (2.43.0) stable; urgency=medium
+
+  * Parameter editors in wb-mqtt-homeui are organized in 2 columns
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 17 Nov 2021 12:41:33 +0500
 
 wb-mqtt-serial (2.42.2) stable; urgency=medium
 

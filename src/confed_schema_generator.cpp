@@ -124,6 +124,7 @@ namespace
     //      "propertyOrder": INDEX
     //      "options": {
     //          "enumTitles" : [ ... ],
+    //          "grid_columns": 6
     //      },
     //  }
     Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index, TContext& context)
@@ -145,6 +146,7 @@ namespace
                 titles.append(context.AddHashedTranslation(title.asString()));
             }
         }
+        r["options"]["grid_columns"] = 6;
         return r;
     }
 
