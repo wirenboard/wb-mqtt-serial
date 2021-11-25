@@ -131,7 +131,21 @@ namespace
     //                  }
     //              }
     //          },
-    //          { "$ref": CUSTOM_CHANNEL_SCHEMA }
+    //          {
+    //              "oneOf": [
+    //                  { "$ref": CUSTOM_CHANNEL_SCHEMA },
+    //                  We have old configs with channels missing in new template versions
+    //                  Accept those configs and process errors by wb-mqtt-serial's code not by schema
+    //                  This is not a good solution. Should be deleted after template versions implementation
+    //                  {
+    //                      "properties": {
+    //                          "name": { "type": "string" },
+    //                          "address": { "not": {} },
+    //                          "consists_of": { "not": {} }
+    //                      }
+    //                  }
+    //              ]
+    //          }
     //      ]
     //  }
     Json::Value MakeCustomChannelsSchema(const std::vector<std::string>& names,
@@ -139,15 +153,24 @@ namespace
     {
         Json::Value n;
         n["not"]["properties"]["name"]["type"] = "string";
-
         auto& en = MakeArray("enum", n["not"]["properties"]["name"]);
         for (const auto& name: names) {
             en.append(name);
         }
+
+        Json::Value channelTypes;
+        auto& oneOf = MakeArray("oneOf", channelTypes);
+        oneOf.append(MakeObject("$ref", customChannelsSchemaRef));
+        Json::Value oldChannels;
+        oldChannels["properties"]["name"]["type"] = "string";
+        oldChannels["properties"]["address"]["not"] = Json::Value(Json::objectValue);
+        oldChannels["properties"]["consists_of"]["not"] = Json::Value(Json::objectValue);
+        oneOf.append(std::move(oldChannels));
+
         Json::Value r;
         auto& allOf = MakeArray("allOf", r);
-        allOf.append(n);
-        allOf.append(MakeObject("$ref", customChannelsSchemaRef));
+        allOf.append(std::move(n));
+        allOf.append(std::move(channelTypes));
         return r;
     }
 
