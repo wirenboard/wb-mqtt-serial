@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.43.2) stable; urgency=medium
+
+  * Custom templates titles translations were made shorter
+  * Several translations were added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 30 Nov 2021 15:32:49 +0300
+
 wb-mqtt-serial (2.43.1) stable; urgency=medium
 
   * Backward compatibility with previous device templates is improved.
