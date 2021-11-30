@@ -481,6 +481,7 @@
         },
         "name": {
           "$ref": "#/definitions/channel_name",
+          "title": "Name", 
           "propertyOrder": 2
         },
         "id": {
@@ -491,14 +492,17 @@
         },
         "type": {
           "$ref": "#/definitions/control_type",
+          "title": "Type", 
           "propertyOrder": 4
         },
         "reg_type": {
           "$ref": "#/definitions/reg_type",
+          "title": "Register type", 
           "propertyOrder": 5
         },
         "format": {
           "$ref": "#/definitions/format",
+          "title": "Format", 
           "propertyOrder": 7
         },
         "max": {
@@ -602,14 +606,17 @@
         },
         "word_order": {
           "$ref": "#/definitions/word_order",
+          "title": "Word order",
           "propertyOrder": 18
         },
         "consists_of": {
           "not": {},
+          "title": "Consist of",
           "options": { "hidden": true }
         },
         "device_type": {
           "not": {},
+          "title": "Device type",
           "options": { "hidden": true }
         }
       },
@@ -629,6 +636,7 @@
           "properties": {
             "address": {
               "$ref": "#/definitions/address",
+              "title": "Address",
               "propertyOrder": 6,
               "options": {
                 "keep_oneof_values": false
@@ -1448,6 +1456,7 @@
           "properties": {
             "protocol": {
               "type": "string",
+              "title": "Protocol",
               "enum": ["modbus"],
               "default": "modbus",
               "options": {
@@ -1456,6 +1465,7 @@
             },
             "device_type": {
               "not": {},
+              "title": "Device type",
               "options": { "hidden": true }
             }
           },
@@ -1699,7 +1709,14 @@
       "Wi-SUN FAN mesh network": "Wi-SUN FAN mesh-сеть",
       "Device": "Устройство",
       "Byte": "Байт",
-      "inherited from device and port": "из настроек устройства и порта"
+      "inherited from device and port": "из настроек устройства и порта",
+      "Word order": "Порядок слов",
+      "Device type": "Тип устройства",
+      "Consist of": "Состоит из",
+      "Name": "Имя",
+      "Type": "Тип",
+      "Maximum value": "Максимальное значение",
+      "Protocol": "Протокол"
     }
   }
 }
