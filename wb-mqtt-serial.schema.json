@@ -611,12 +611,10 @@
         },
         "consists_of": {
           "not": {},
-          "title": "Consist of",
           "options": { "hidden": true }
         },
         "device_type": {
           "not": {},
-          "title": "Device type",
           "options": { "hidden": true }
         }
       },
@@ -1456,7 +1454,6 @@
           "properties": {
             "protocol": {
               "type": "string",
-              "title": "Protocol",
               "enum": ["modbus"],
               "default": "modbus",
               "options": {
@@ -1465,7 +1462,6 @@
             },
             "device_type": {
               "not": {},
-              "title": "Device type",
               "options": { "hidden": true }
             }
           },
@@ -1711,12 +1707,9 @@
       "Byte": "Байт",
       "inherited from device and port": "из настроек устройства и порта",
       "Word order": "Порядок слов",
-      "Device type": "Тип устройства",
-      "Consist of": "Состоит из",
       "Name": "Имя",
       "Type": "Тип",
-      "Maximum value": "Максимальное значение",
-      "Protocol": "Протокол"
+      "Maximum value": "Максимальное значение"
     }
   }
 }
