@@ -481,6 +481,7 @@
         },
         "name": {
           "$ref": "#/definitions/channel_name",
+          "title": "Name", 
           "propertyOrder": 2
         },
         "id": {
@@ -491,14 +492,17 @@
         },
         "type": {
           "$ref": "#/definitions/control_type",
+          "title": "Type", 
           "propertyOrder": 4
         },
         "reg_type": {
           "$ref": "#/definitions/reg_type",
+          "title": "Register type", 
           "propertyOrder": 5
         },
         "format": {
           "$ref": "#/definitions/format",
+          "title": "Format", 
           "propertyOrder": 7
         },
         "max": {
@@ -602,6 +606,7 @@
         },
         "word_order": {
           "$ref": "#/definitions/word_order",
+          "title": "Word order",
           "propertyOrder": 18
         },
         "consists_of": {
@@ -629,6 +634,7 @@
           "properties": {
             "address": {
               "$ref": "#/definitions/address",
+              "title": "Address",
               "propertyOrder": 6,
               "options": {
                 "keep_oneof_values": false
@@ -1550,7 +1556,7 @@
       "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
       "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
       "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
-      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
+      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior."
     },
     "ru": {
       "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
@@ -1668,21 +1674,21 @@
       "max_unchanged_interval_desc": "Задает интервал публикации значений, если они не изменились. Ноль задает публикацию после каждого чтения данных из устройства. По умолчанию публикация происходит по изменению значения. Отрицательное число задает поведение по умолчанию",
       "List of ports": "Список портов",
       "Enable debug logging": "Включить отладочные сообщения",
-      "Custom Modbus IO device": "Произвольное устройство с протоколом Modbus IO",
-      "Custom Modbus device": "Произвольное устройство с протоколом Modbus",
-      "Custom Energomera device with IEC 61107 Mode C protocol": "Произвольный счётчик Энергомера с протоколом IEC 61107 Mode C",
-      "Custom Energomera device with IEC 61107 fast read support": "Произвольный счётчик Энергомера с поддержкой быстрого чтения по протоколу IEC 61107",
-      "Custom Neva device": "Произвольный счётчик Нева",
-      "Custom LLS device": "Произвольное устройство с протоколом LLS",
-      "Custom Mercury 200 device": "Произвольное устройство с протоколом счётчика Меркурий 200",
-      "Custom Pulsar device": "Произвольное устройство с протоколом Пульсар",
-      "Custom S2K device": "Произвольное устройство с протоколом С2000",
-      "Custom IVTM device": "Произвольное устройство с протоколом ИВТМ",
-      "Custom Mercury 230 device": "Произвольное устройство с протоколом счётчика Меркурий 230",
-      "Custom Milur device": "Произвольное устройство с протоколом счётчика Милур",
-      "Custom UNIEL device": "Произвольное устройство с протоколом UNIEL",
-      "Custom DLMS device": "Произвольное устройство с протоколом DLMS/СПОДЭС",
-      "Custom setup commands": "Произвольные команды настройки",
+      "Custom Modbus IO device": "Устройство с протоколом Modbus IO",
+      "Custom Modbus device": "Устройство с протоколом Modbus",
+      "Custom Energomera device with IEC 61107 Mode C protocol": "Счётчик Энергомера с протоколом IEC 61107 Mode C",
+      "Custom Energomera device with IEC 61107 fast read support": "Счётчик Энергомера с поддержкой быстрого чтения по протоколу IEC 61107",
+      "Custom Neva device": "Счётчик Нева",
+      "Custom LLS device": "Устройство с протоколом LLS",
+      "Custom Mercury 200 device": "Устройство с протоколом счётчика Меркурий 200",
+      "Custom Pulsar device": "Устройство с протоколом Пульсар",
+      "Custom S2K device": "Устройство с протоколом С2000",
+      "Custom IVTM device": "Устройство с протоколом ИВТМ",
+      "Custom Mercury 230 device": "Устройство с протоколом счётчика Меркурий 230",
+      "Custom Milur device": "Устройство с протоколом счётчика Милур",
+      "Custom UNIEL device": "Устройство с протоколом UNIEL",
+      "Custom DLMS device": "Устройство с протоколом DLMS/СПОДЭС",
+      "Custom setup commands": "Команды настройки",
       "Motor type": "Тип двигателя",
       "DLMS authentication mode": "Режим аутентификации DLMS",
       "no authentication": "без аутентификации",
@@ -1699,7 +1705,11 @@
       "Wi-SUN FAN mesh network": "Wi-SUN FAN mesh-сеть",
       "Device": "Устройство",
       "Byte": "Байт",
-      "inherited from device and port": "из настроек устройства и порта"
+      "inherited from device and port": "из настроек устройства и порта",
+      "Word order": "Порядок слов",
+      "Name": "Имя",
+      "Type": "Тип",
+      "Maximum value": "Максимальное значение"
     }
   }
 }
