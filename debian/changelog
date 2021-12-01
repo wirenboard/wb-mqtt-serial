@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.43.3) stable; urgency=medium
+
+  * WB-MRWM2 template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 01 Dec 2021 16:59:43 +0300
+
 wb-mqtt-serial (2.43.2) stable; urgency=medium
 
   * Custom templates titles translations were made shorter
