@@ -674,13 +674,65 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
+    struct TAddressRange
+    {
+        size_t StartAddr;
+        size_t EndAddr;
+        size_t LastAddr;
+
+        void StartRange(size_t addr, size_t size)
+        {
+            StartAddr = addr;
+            AddReg(addr, size);
+        }
+
+        void AddReg(size_t addr, size_t size)
+        {
+            LastAddr = addr;
+            EndAddr = addr + size;
+        }
+
+        size_t CalcLengthToEnd(size_t addr, size_t size) const
+        {
+            return addr + size - StartAddr;
+        }
+    };
+
+    // Very rough request-response cycle time calculation
+    // Only Modbus RTU
+    struct TExchangeTime
+    {
+        size_t ResponseBits;
+
+        void StartRange()
+        {
+            ResponseBits = 0;
+        }
+
+        void AddReg(size_t responseSizeBits)
+        {
+            ResponseBits += responseSizeBits;
+        }
+
+        std::chrono::milliseconds CalcTime(TPort& port, size_t responseSizeBits) const
+        {
+            int responseBytes = (responseSizeBits / 8);
+            if (responseBytes % 8) {
+                ++responseBytes;
+            }
+            // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
+            // Response 5 bytes except data: SlaveID, Operation, Size, CRC
+            return port.GetSendTime(responseBytes + 8 + 5);
+        }
+    };
+
     bool ShouldSplit(const std::list<PRegister>& regsForRange,
                      const TRegister& reg,
                      size_t addr,
-                     size_t lastAddr,
-                     size_t startAddr,
-                     size_t endAddr,
-                     const TDeviceConfig& deviceConfig)
+                     const TAddressRange& addrRange,
+                     const TExchangeTime& exchangeTime,
+                     const TDeviceConfig& deviceConfig,
+                     std::chrono::milliseconds pollLimit)
     {
         // Can read at once only registers of the same type
         if (regsForRange.front()->Type != reg.Type) {
@@ -688,14 +740,15 @@ namespace Modbus // modbus protocol common utilities
         }
 
         // Can read at once registers with the same address or successive registers
-        if (endAddr != addr && lastAddr != addr) {
+        if (addrRange.EndAddr != addr && addrRange.LastAddr != addr) {
             return true;
         }
 
-        auto newEndAddr = addr + reg.Get16BitWidth();
         if (regsForRange.back()->GetAvailable() == TRegister::UNKNOWN) {
-            if (IsSingleBitType(reg.Type)) {
-                return (newEndAddr - startAddr > 16); // Can read up to 16 UNKNOWN single bit registers at once
+            if (reg.GetAvailable() == TRegister::UNKNOWN && IsSingleBitType(regsForRange.back()->Type) &&
+                IsSingleBitType(reg.Type)) {
+                // Can read up to 16 UNKNOWN single bit registers at once
+                return regsForRange.size() >= 16;
             }
             return true; // Read UNKNOWN registers one by one to find availability
         }
@@ -708,7 +761,11 @@ namespace Modbus // modbus protocol common utilities
                 maxRegs = MAX_READ_REGISTERS;
             }
         }
-        return (newEndAddr - startAddr > maxRegs);
+        if (addrRange.CalcLengthToEnd(addr, reg.Get16BitWidth()) > maxRegs) {
+            return true;
+        }
+
+        return exchangeTime.CalcTime(*(reg.Device()->Port()), reg.GetBitWidth()) > pollLimit;
     }
 
     std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& registers,
@@ -716,31 +773,28 @@ namespace Modbus // modbus protocol common utilities
                                                 bool enableHoles,
                                                 std::chrono::milliseconds pollLimit)
     {
-        // TODO: respect pollLimit
         // TODO: implement holes feature
         std::list<PRegisterRange> res;
         std::list<PRegister> regsForRange;
-        auto startAddr = 0;
-        auto endAddr = 0;
-        auto lastAddr = 0;
+        TAddressRange addrRange;
+        TExchangeTime exchangeTime;
         for (auto reg: registers) {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
-
-            if (!regsForRange.empty() &&
-                ShouldSplit(regsForRange, *reg, addr, lastAddr, startAddr, endAddr, deviceConfig)) {
-                res.emplace_back(new TModbusRegisterRange(regsForRange, true));
-                regsForRange.clear();
-                startAddr = endAddr;
-                lastAddr = endAddr;
-            }
-
             if (reg->GetAvailable() != TRegister::UNAVAILABLE) {
+                auto addr = GetUint32RegisterAddress(reg->GetAddress());
+                if (!regsForRange.empty() &&
+                    ShouldSplit(regsForRange, *reg, addr, addrRange, exchangeTime, deviceConfig, pollLimit)) {
+                    res.emplace_back(new TModbusRegisterRange(regsForRange, true));
+                    regsForRange.clear();
+                }
+
                 regsForRange.push_back(reg);
                 if (regsForRange.empty()) {
-                    startAddr = addr;
+                    addrRange.StartRange(addr, reg->Get16BitWidth());
+                    exchangeTime.StartRange();
+                } else {
+                    addrRange.AddReg(addr, reg->Get16BitWidth());
                 }
-                lastAddr = addr;
-                endAddr = addr + reg->Get16BitWidth();
+                exchangeTime.AddReg(reg->GetBitWidth());
             }
         }
         if (!regsForRange.empty()) {
