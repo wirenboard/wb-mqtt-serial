@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.44.0) stable; urgency=medium
+
+  * Support for groups in subdevices is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 30 Dec 2021 14:56:21 +0500
+
 wb-mqtt-serial (2.43.6) stable; urgency=medium
 
   * Number editor in web-interface for slave_id is removed.

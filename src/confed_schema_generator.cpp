@@ -258,11 +258,16 @@ namespace
     //          }
     //      }
     //  }
-    Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channel, TContext& context)
+    Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channel, TContext& context, bool disableTitle)
     {
         Json::Value r;
         r["headerTemplate"] = context.AddHashedTranslation(channel["name"].asString());
-        r["options"]["wb"]["disable_title"] = true;
+        if (channel.isMember("ui_options")) {
+            r["options"] = channel["ui_options"];
+        }
+        if (disableTitle) {
+            r["options"]["wb"]["disable_title"] = true;
+        }
         auto& allOf = MakeArray("allOf", r);
         Append(allOf)["$ref"] =
             "#/definitions/" + GetSubdeviceSchemaKey(context.DeviceType, channel["device_type"].asString());
@@ -270,13 +275,13 @@ namespace
         return r;
     }
 
-    Json::Value MakeTabChannelSchema(const Json::Value& channel, TContext& context)
+    Json::Value MakeTabChannelSchema(const Json::Value& channel, TContext& context, bool inTabsContainer)
     {
         if (channel.isMember("oneOf")) {
             return MakeTabOneOfChannelSchema(channel, context);
         }
         if (channel.isMember("device_type")) {
-            return MakeTabSingleDeviceChannelSchema(channel, context);
+            return MakeTabSingleDeviceChannelSchema(channel, context, inTabsContainer);
         }
         return MakeTabSimpleChannelSchema(channel, context);
     }
@@ -347,21 +352,14 @@ namespace
             r["options"]["wb"]["disable_array_item_panel"] = true;
         } else {
             r["options"]["disable_edit_json"] = true;
+            r["options"]["disable_array_delete"] = true;
         }
         r["propertyOrder"] = propertyOrder;
 
+        std::string format(deviceTemplate["ui_options"].get("channels_format", "default").asString());
         bool tabs = deviceTemplate.isMember("groups");
-        std::string format("default");
-        if (deviceTemplate.isMember("ui_options")) {
-            Get(deviceTemplate["ui_options"], "channels_format", format);
-        }
         if (format == "default") {
-            for (const auto& channel: channels) {
-                if (IsSubdeviceChannel(channel)) {
-                    tabs = true;
-                    break;
-                }
-            }
+            tabs = std::any_of(channels.begin(), channels.end(), IsSubdeviceChannel);
         } else {
             tabs = true;
         }
@@ -369,7 +367,7 @@ namespace
         if (tabs) {
             auto& items = MakeArray("items", r);
             for (const auto& channel: channels) {
-                items.append(MakeTabChannelSchema(channel, context));
+                items.append(MakeTabChannelSchema(channel, context, format == "default"));
             }
             r["minItems"] = items.size();
             r["maxItems"] = items.size();
@@ -575,6 +573,13 @@ namespace
         if (!schema.isMember("subdevices")) {
             schema["subdevices"] = Json::Value(Json::arrayValue);
         }
+        Json::Value subdevicesFromGroups(Json::arrayValue);
+        for (auto& subdeviceSchema: schema["subdevices"]) {
+            TransformGroupsToSubdevices(subdeviceSchema["device"], subdevicesFromGroups);
+        }
+        for (auto& subdeviceSchema: subdevicesFromGroups) {
+            schema["subdevices"].append(subdeviceSchema);
+        }
         TransformGroupsToSubdevices(schema, schema["subdevices"]);
 
         auto set = GetDeviceKey(deviceTemplate.Type);
@@ -683,9 +688,18 @@ namespace
     {
         uint32_t Order;
         std::string Name;
+        std::string Id;
+        Json::Value Options;
 
-        TGroup(const Json::Value& group): Order(group.get("order", 1).asUInt()), Name(group["title"].asString())
-        {}
+        TGroup(const Json::Value& group)
+            : Order(group.get("order", 1).asUInt()),
+              Name(group["title"].asString()),
+              Id(group["id"].asString())
+        {
+            if (group.isMember("ui_options")) {
+                Options = group["ui_options"];
+            }
+        }
     };
 
     /**
@@ -706,7 +720,10 @@ namespace
             if (grIt->Order <= i) {
                 auto& item = Append(res);
                 item["name"] = grIt->Name;
-                item["device_type"] = grIt->Name;
+                item["device_type"] = grIt->Id;
+                if (!grIt->Options.empty()) {
+                    item["ui_options"] = grIt->Options;
+                }
                 ++grIt;
             } else {
                 res.append(**notGrIt);
@@ -717,7 +734,10 @@ namespace
         for (; grIt != groups.end(); ++grIt) {
             auto& item = Append(res);
             item["name"] = grIt->Name;
-            item["device_type"] = grIt->Name;
+            item["device_type"] = grIt->Id;
+            if (!grIt->Options.empty()) {
+                item["ui_options"] = grIt->Options;
+            }
         }
         for (; notGrIt != channelsNotInGroups.end(); ++notGrIt) {
             res.append(**notGrIt);
@@ -765,24 +785,30 @@ void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices)
     for (const auto& group: schema["groups"]) {
         Json::Value subdevice;
         subdevice["title"] = group["title"];
-        subdevice["device_type"] = group["title"];
+        subdevice["device_type"] = group["id"];
         subdevicesForGroups.emplace(group["id"].asString(), subdevice);
         groups.emplace_back(group);
     }
 
     std::stable_sort(groups.begin(), groups.end(), [](const auto& v1, const auto& v2) { return v1.Order < v2.Order; });
 
-    auto channelsNotInGroups(PartitionChannelsByGroups(schema, subdevicesForGroups));
-    auto newChannels(MergeChannels(channelsNotInGroups, groups));
-    if (newChannels.empty()) {
-        schema.removeMember("channels");
-    } else {
+    if (schema.isMember("channels")) {
+        auto channelsNotInGroups(PartitionChannelsByGroups(schema, subdevicesForGroups));
+        auto newChannels(MergeChannels(channelsNotInGroups, groups));
         schema["channels"].swap(newChannels);
+        if (schema["channels"].empty()) {
+            schema.removeMember("channels");
+        }
     }
 
-    auto movedParameters(PartitionParametersByGroups(schema, subdevicesForGroups));
-    for (const auto& param: movedParameters) {
-        schema["parameters"].removeMember(param);
+    if (schema.isMember("parameters")) {
+        auto movedParameters(PartitionParametersByGroups(schema, subdevicesForGroups));
+        for (const auto& param: movedParameters) {
+            schema["parameters"].removeMember(param);
+        }
+        if (schema["parameters"].empty()) {
+            schema.removeMember("parameters");
+        }
     }
 
     for (const auto& subdevice: subdevicesForGroups) {

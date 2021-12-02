@@ -94,6 +94,8 @@ public:
     const TDeviceTemplate& GetTemplate(const std::string& deviceType) override;
 
     std::vector<std::string> GetDeviceTypes() const override;
+
+    void AddSubdevices(const Json::Value& subdevicesArray);
 };
 
 struct TPortConfig
