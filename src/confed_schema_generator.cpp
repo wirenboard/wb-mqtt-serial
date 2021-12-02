@@ -262,7 +262,9 @@ namespace
     {
         Json::Value r;
         r["headerTemplate"] = context.AddHashedTranslation(channel["name"].asString());
-        r["options"]["wb"]["disable_title"] = true;
+        if (channel.isMember("ui_options")) {
+            r["options"] = channel["ui_options"];
+        }
         auto& allOf = MakeArray("allOf", r);
         Append(allOf)["$ref"] =
             "#/definitions/" + GetSubdeviceSchemaKey(context.DeviceType, channel["device_type"].asString());
@@ -575,6 +577,9 @@ namespace
         if (!schema.isMember("subdevices")) {
             schema["subdevices"] = Json::Value(Json::arrayValue);
         }
+        for (auto& subdeviceSchema: schema["subdevices"]) {
+            TransformGroupsToSubdevices(subdeviceSchema["device"], schema["subdevices"]);
+        }
         TransformGroupsToSubdevices(schema, schema["subdevices"]);
 
         auto set = GetDeviceKey(deviceTemplate.Type);
@@ -683,9 +688,14 @@ namespace
     {
         uint32_t Order;
         std::string Name;
+        Json::Value Options;
 
         TGroup(const Json::Value& group): Order(group.get("order", 1).asUInt()), Name(group["title"].asString())
-        {}
+        {
+            if (group.isMember("ui_options")) {
+                Options = group["ui_options"];
+            }
+        }
     };
 
     /**
@@ -707,6 +717,9 @@ namespace
                 auto& item = Append(res);
                 item["name"] = grIt->Name;
                 item["device_type"] = grIt->Name;
+                if (!grIt->Options.empty()) {
+                    item["ui_options"] = grIt->Options;
+                }
                 ++grIt;
             } else {
                 res.append(**notGrIt);
@@ -718,6 +731,9 @@ namespace
             auto& item = Append(res);
             item["name"] = grIt->Name;
             item["device_type"] = grIt->Name;
+            if (!grIt->Options.empty()) {
+                item["ui_options"] = grIt->Options;
+            }
         }
         for (; notGrIt != channelsNotInGroups.end(); ++notGrIt) {
             res.append(**notGrIt);

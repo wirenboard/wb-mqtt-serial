@@ -1141,7 +1141,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "4_20ma"
+                            "device_type": "4_20ma",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -1170,7 +1175,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "0_5ma"
+                            "device_type": "0_5ma",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -1199,7 +1209,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "0_20ma"
+                            "device_type": "0_20ma",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2227,7 +2242,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "dry_contact"
+                            "device_type": "dry_contact",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2269,7 +2289,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_pt50"
+                            "device_type": "2w_pt50",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2311,7 +2336,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_pt100"
+                            "device_type": "2w_pt100",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2353,7 +2383,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_pt500"
+                            "device_type": "2w_pt500",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2395,7 +2430,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_pt1000"
+                            "device_type": "2w_pt1000",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2437,7 +2477,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_50p"
+                            "device_type": "2w_50p",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2479,7 +2524,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_100p"
+                            "device_type": "2w_100p",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2521,7 +2571,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_500p"
+                            "device_type": "2w_500p",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2563,7 +2618,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_1000p"
+                            "device_type": "2w_1000p",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2605,7 +2665,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_50m"
+                            "device_type": "2w_50m",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2647,7 +2712,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_100m"
+                            "device_type": "2w_100m",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2689,7 +2759,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_500m"
+                            "device_type": "2w_500m",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2731,7 +2806,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_1000m"
+                            "device_type": "2w_1000m",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2773,7 +2853,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_ni100"
+                            "device_type": "2w_ni100",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2815,7 +2900,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_ni500"
+                            "device_type": "2w_ni500",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2857,7 +2947,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "2w_ni1000"
+                            "device_type": "2w_ni1000",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -2899,7 +2994,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "generic_resistance"
+                            "device_type": "generic_resistance",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -3894,7 +3994,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "ratiometric"
+                            "device_type": "ratiometric",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -4116,7 +4221,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "generic_voltage"
+                            "device_type": "generic_voltage",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -4143,7 +4253,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "0_1v"
+                            "device_type": "0_1v",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -4407,7 +4522,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "generic_current_resistance"
+                            "device_type": "generic_current_resistance",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -4434,7 +4554,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "ntc_10k"
+                            "device_type": "ntc_10k",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
@@ -4461,7 +4586,12 @@
                         {
                             "name": "IN_P",
                             "id": "P",
-                            "device_type": "generic_current"
+                            "device_type": "generic_current",
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
                         },
                         {
                             "stride": 1,
