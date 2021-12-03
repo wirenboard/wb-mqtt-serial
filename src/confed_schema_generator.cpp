@@ -577,8 +577,12 @@ namespace
         if (!schema.isMember("subdevices")) {
             schema["subdevices"] = Json::Value(Json::arrayValue);
         }
+        Json::Value subdevicesFromGroups(Json::arrayValue);
         for (auto& subdeviceSchema: schema["subdevices"]) {
-            TransformGroupsToSubdevices(subdeviceSchema["device"], schema["subdevices"]);
+            TransformGroupsToSubdevices(subdeviceSchema["device"], subdevicesFromGroups);
+        }
+        for (auto& subdeviceSchema: subdevicesFromGroups) {
+            schema["subdevices"].append(subdeviceSchema);
         }
         TransformGroupsToSubdevices(schema, schema["subdevices"]);
 
@@ -779,17 +783,23 @@ void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices)
 
     std::stable_sort(groups.begin(), groups.end(), [](const auto& v1, const auto& v2) { return v1.Order < v2.Order; });
 
-    auto channelsNotInGroups(PartitionChannelsByGroups(schema, subdevicesForGroups));
-    auto newChannels(MergeChannels(channelsNotInGroups, groups));
-    if (newChannels.empty()) {
-        schema.removeMember("channels");
-    } else {
+    if (schema.isMember("channels")) {
+        auto channelsNotInGroups(PartitionChannelsByGroups(schema, subdevicesForGroups));
+        auto newChannels(MergeChannels(channelsNotInGroups, groups));
         schema["channels"].swap(newChannels);
+        if (schema["channels"].empty()) {
+            schema.removeMember("channels");
+        }
     }
 
-    auto movedParameters(PartitionParametersByGroups(schema, subdevicesForGroups));
-    for (const auto& param: movedParameters) {
-        schema["parameters"].removeMember(param);
+    if (schema.isMember("parameters")) {
+        auto movedParameters(PartitionParametersByGroups(schema, subdevicesForGroups));
+        for (const auto& param: movedParameters) {
+            schema["parameters"].removeMember(param);
+        }
+        if (schema["parameters"].empty()) {
+            schema.removeMember("parameters");
+        }
     }
 
     for (const auto& subdevice: subdevicesForGroups) {

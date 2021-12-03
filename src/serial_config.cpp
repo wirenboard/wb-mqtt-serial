@@ -789,16 +789,7 @@ TSubDevicesTemplateMap::TSubDevicesTemplateMap(const std::string& deviceType, co
     : DeviceType(deviceType)
 {
     if (device.isMember("subdevices")) {
-        for (auto& dev: device["subdevices"]) {
-            auto deviceType = dev["device_type"].asString();
-            if (Templates.count(deviceType)) {
-                LOG(Warn) << "Device type '" << DeviceType << "'. Duplicate subdevice type '" << deviceType << "'";
-            } else {
-                auto deviceTypeTitle = deviceType;
-                Get(dev, "title", deviceTypeTitle);
-                Templates.insert({deviceType, {deviceType, deviceTypeTitle, dev["device"]}});
-            }
-        }
+        AddSubdevices(device["subdevices"]);
 
         // Check that channels refer to valid subdevices
         for (const auto& subdeviceTemplate: Templates) {
@@ -812,6 +803,20 @@ TSubDevicesTemplateMap::TSubDevicesTemplateMap(const std::string& deviceType, co
                     }
                 }
             }
+        }
+    }
+}
+
+void TSubDevicesTemplateMap::AddSubdevices(const Json::Value& subdevicesArray)
+{
+    for (auto& dev: subdevicesArray) {
+        auto deviceType = dev["device_type"].asString();
+        if (Templates.count(deviceType)) {
+            LOG(Warn) << "Device type '" << DeviceType << "'. Duplicate subdevice type '" << deviceType << "'";
+        } else {
+            auto deviceTypeTitle = deviceType;
+            Get(dev, "title", deviceTypeTitle);
+            Templates.insert({deviceType, {deviceType, deviceTypeTitle, dev["device"]}});
         }
     }
 }
