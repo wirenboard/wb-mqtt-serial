@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.43.3) stable; urgency=medium
+
+  * WB-MRGBW-D fw3 template was added
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 17 Dec 2021 10:35:35 +0300
+
 wb-mqtt-serial (2.43.2) stable; urgency=medium
 
   * Custom templates titles translations were made shorter
