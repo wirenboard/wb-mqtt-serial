@@ -159,7 +159,7 @@ namespace
         for (const auto& group: schema["groups"]) {
             Json::Value item;
             item["name"] = group["title"];
-            item["device_type"] = group["title"];
+            item["device_type"] = group["id"];
             channelsFromGroups.emplace(group["id"].asString(), item);
         }
 
