@@ -76,7 +76,7 @@ test: $(TEST_DIR)/$(TEST_BIN)
 			exit 1; \
 		else $(TEST_DIR)/abt.sh show; exit 1; fi; \
     else \
-        $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { exit 1; } \
+        $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
 	fi
 
 clean :
