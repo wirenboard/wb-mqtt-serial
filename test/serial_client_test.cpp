@@ -105,7 +105,7 @@ void TSerialClientTest::SetUp()
     Device->InitSetupItems();
     std::vector<PSerialDevice> devices;
     devices.push_back(Device);
-    SerialClient = std::make_shared<TSerialClient>(devices, Port, PortOpenCloseSettings, Metrics);
+    SerialClient = std::make_shared<TSerialClient>(devices, Port, PortOpenCloseSettings, Metrics, 10ms);
 #if 0
     SerialClient->SetModbusDebug(true);
 #endif
@@ -1008,6 +1008,9 @@ void TSerialClientIntegrationTest::SetUp()
                         configSchema,
                         t,
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
+    for (auto& portConfig: Config->PortConfigs) {
+        portConfig->LowPriorityPollInterval = 10ms;
+    }
 }
 
 void TSerialClientIntegrationTest::TearDown()
@@ -1436,6 +1439,9 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
                         configSchema,
                         t,
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
+    for (auto& portConfig: Config->PortConfigs) {
+        portConfig->LowPriorityPollInterval = 10ms;
+    }
 
     if (pollIntervalTest) {
         Config->PortConfigs[0]->Devices[0]->DeviceConfig()->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval =
@@ -1538,6 +1544,9 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                         configSchema,
                         t,
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
+    for (auto& portConfig: Config->PortConfigs) {
+        portConfig->LowPriorityPollInterval = 10ms;
+    }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
@@ -1546,6 +1555,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
 
     { // Test initial setup
         Note() << "LoopOnce() [first start]";
+        mqttDriver->LoopOnce();
         mqttDriver->LoopOnce();
 
         EXPECT_EQ(42, dev1->Registers[1]);
@@ -1557,6 +1567,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
 
     { // Test read
         Note() << "LoopOnce()";
+        mqttDriver->LoopOnce();
         mqttDriver->LoopOnce();
     }
 
@@ -1575,6 +1586,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                 while (std::chrono::steady_clock::now() - disconnectTimepoint < Device->DeviceConfig()->DeviceTimeout) {
                     Note() << "LoopOnce()";
                     mqttDriver->LoopOnce();
+                    mqttDriver->LoopOnce();
                     usleep(std::chrono::duration_cast<std::chrono::microseconds>(Device->DeviceConfig()->DeviceTimeout)
                                .count() /
                            Device->DeviceConfig()->DeviceMaxFailCycles);
@@ -1585,6 +1597,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                 // Couple of unsuccessful reads
                 while (std::chrono::steady_clock::now() - disconnectTimepoint < Device->DeviceConfig()->DeviceTimeout) {
                     Note() << "LoopOnce()";
+                    mqttDriver->LoopOnce();
                     mqttDriver->LoopOnce();
                     usleep(std::chrono::duration_cast<std::chrono::microseconds>(Device->DeviceConfig()->DeviceTimeout)
                                .count() /
@@ -1598,6 +1611,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
             while (remainingCycles--) {
                 Note() << "LoopOnce()";
                 mqttDriver->LoopOnce();
+                mqttDriver->LoopOnce();
             }
         } else {
             auto disconnectTimepoint = std::chrono::steady_clock::now();
@@ -1607,12 +1621,14 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
             while (std::chrono::steady_clock::now() - disconnectTimepoint < delay) {
                 Note() << "LoopOnce()";
                 mqttDriver->LoopOnce();
+                mqttDriver->LoopOnce();
                 usleep(std::chrono::duration_cast<std::chrono::microseconds>(delay).count() / 10);
             }
         }
 
         // Final unsuccessful read after timeout, after this loop we expect device to be counted as disconnected
         Note() << "LoopOnce()";
+        mqttDriver->LoopOnce();
         mqttDriver->LoopOnce();
     }
 
@@ -1664,6 +1680,7 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()>&& thun
     { // Loop to check limited polling
         Note() << "LoopOnce() (limited polling expected)";
         observer->LoopOnce();
+        observer->LoopOnce();
     }
     { // Device is connected back
         Note() << "SimulateDisconnect(false)";
@@ -1671,6 +1688,7 @@ void TSerialClientIntegrationTest::ReconnectTest2Devices(function<void()>&& thun
 
         Note() << "LoopOnce()";
         auto future = MqttBroker->WaitForPublish("/devices/reconnect-test-1/controls/I2/meta/error");
+        observer->LoopOnce();
         observer->LoopOnce();
 
         EXPECT_EQ(42, dev1->Registers[1]);
@@ -1749,6 +1767,9 @@ TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
                         configSchema,
                         t,
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
+    for (auto& portConfig: Config->PortConfigs) {
+        portConfig->LowPriorityPollInterval = 10ms;
+    }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
@@ -1777,6 +1798,10 @@ TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
                         configSchema,
                         t,
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
+
+    for (auto& portConfig: Config->PortConfigs) {
+        portConfig->LowPriorityPollInterval = 10ms;
+    }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 

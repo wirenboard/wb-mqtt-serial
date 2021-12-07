@@ -30,7 +30,6 @@ public:
 
     static void Register(TSerialDeviceFactory& factory);
 
-protected:
     uint64_t ReadRegisterImpl(PRegister reg) override;
 
 private:

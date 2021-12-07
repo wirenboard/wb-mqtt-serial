@@ -168,8 +168,13 @@ public:
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice() = default;
 
-    virtual std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                        std::chrono::milliseconds timeLimit) const;
+    /**
+     * @brief Create a Register Range object
+     *
+     * @param reg
+     * @return PRegisterRange nullptr - if device doesn't support reading ranges
+     */
+    virtual PRegisterRange CreateRegisterRange(PRegister reg) const;
 
     // Prepare to access device (pauses for configured delay by default)
     // i.e. "StartSession". Called before any read/write/etc after communicating with another device
@@ -179,7 +184,7 @@ public:
     virtual void EndSession();
 
     // Read register value
-    uint64_t ReadRegister(PRegister reg);
+    void ReadRegister(PRegister reg);
 
     // Write register value
     void WriteRegister(PRegister reg, uint64_t value);

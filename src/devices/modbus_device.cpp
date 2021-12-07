@@ -49,10 +49,9 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
     config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
 }
 
-std::list<PRegisterRange> TModbusDevice::SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                           std::chrono::milliseconds pollLimit) const
+PRegisterRange TModbusDevice::CreateRegisterRange(PRegister reg) const
 {
-    return Modbus::SplitRegisterList(reg_list, *DeviceConfig(), true, pollLimit);
+    return Modbus::CreateRegisterRange(reg, true);
 }
 
 void TModbusDevice::WriteRegisterImpl(PRegister reg, uint64_t value)

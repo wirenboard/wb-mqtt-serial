@@ -102,6 +102,7 @@ struct TPortConfig
     std::vector<PSerialDevice> Devices;
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
     TPortOpenCloseLogic::TSettings OpenCloseSettings;
+    std::chrono::milliseconds LowPriorityPollInterval = std::chrono::seconds(10);
 
     /**
      * @brief Maximum allowed time from request to response for any device connected to the port.

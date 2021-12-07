@@ -21,8 +21,7 @@ public:
                     PPort port,
                     PProtocol protocol);
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                std::chrono::milliseconds pollInterval) const override;
+    PRegisterRange CreateRegisterRange(PRegister reg) const override;
     void ReadRegisterRange(PRegisterRange range) override;
     void WriteSetupRegisters() override;
 

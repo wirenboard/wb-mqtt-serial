@@ -28,19 +28,9 @@ size_t RegisterFormatByteWidth(RegisterFormat format)
     }
 }
 
-TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
-{
-    if (RegList.empty())
-        throw std::runtime_error("cannot construct empty register range");
-    PRegister first = regs.front();
-    RegDevice = first->Device();
-    RegPollInterval = first->PollInterval;
-}
-
 TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
 {
     RegDevice = reg->Device();
-    RegPollInterval = reg->PollInterval;
 }
 
 const std::list<PRegister>& TRegisterRange::RegisterList() const
@@ -58,11 +48,6 @@ PSerialDevice TRegisterRange::Device() const
     return RegDevice.lock();
 }
 
-std::chrono::milliseconds TRegisterRange::PollInterval() const
-{
-    return RegPollInterval;
-}
-
 void TRegisterRange::SetError(EStatus error)
 {
     for (auto& r: RegList) {
@@ -70,11 +55,10 @@ void TRegisterRange::SetError(EStatus error)
     }
 }
 
-TSimpleRegisterRange::TSimpleRegisterRange(const std::list<PRegister>& regs): TRegisterRange(regs)
-{}
-
-TSimpleRegisterRange::TSimpleRegisterRange(PRegister reg): TRegisterRange(reg)
-{}
+bool TRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
+{
+    return false;
+}
 
 std::string TRegisterConfig::ToString() const
 {

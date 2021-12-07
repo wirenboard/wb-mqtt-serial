@@ -67,17 +67,17 @@ $(BUILD_DIR)/test/%.o: test/%.cpp
 $(TEST_DIR)/$(TEST_BIN): $(COMMON_OBJS) $(TEST_OBJS)
 	${CXX} $^ ${LDFLAGS} $(TEST_LDFLAGS) -o $@ -fno-lto
 
-# test: $(TEST_DIR)/$(TEST_BIN)
-# 	rm -f $(TEST_DIR)/*.dat.out
-# 	if [ "$(shell arch)" != "armv7l" ] && [ "$(CROSS_COMPILE)" = "" ] || [ "$(CROSS_COMPILE)" = "x86_64-linux-gnu-" ]; then \
-# 		valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
-# 		if [ $$? = 180 ]; then \
-# 			echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
-# 			exit 1; \
-# 		else $(TEST_DIR)/abt.sh show; exit 1; fi; \
-#     else \
-#         $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
-# 	fi
+test: $(TEST_DIR)/$(TEST_BIN)
+	rm -f $(TEST_DIR)/*.dat.out
+	if [ "$(shell arch)" != "armv7l" ] && [ "$(CROSS_COMPILE)" = "" ] || [ "$(CROSS_COMPILE)" = "x86_64-linux-gnu-" ]; then \
+		valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
+		if [ $$? = 180 ]; then \
+			echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
+			exit 1; \
+		else $(TEST_DIR)/abt.sh show; exit 1; fi; \
+    else \
+        $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { exit 1; } \
+	fi
 
 clean :
 	rm -rf build/release

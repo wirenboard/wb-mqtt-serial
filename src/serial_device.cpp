@@ -63,13 +63,9 @@ std::string TSerialDevice::ToString() const
     return Protocol()->GetName() + ":" + DeviceConfig()->SlaveId;
 }
 
-std::list<PRegisterRange> TSerialDevice::SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                           std::chrono::milliseconds pollLimit) const
+PRegisterRange TSerialDevice::CreateRegisterRange(PRegister reg) const
 {
-    std::list<PRegisterRange> r;
-    for (auto reg: reg_list)
-        r.push_back(std::make_shared<TSimpleRegisterRange>(reg));
-    return r;
+    return nullptr;
 }
 
 void TSerialDevice::Prepare()
@@ -97,15 +93,32 @@ void TSerialDevice::EndSession()
 void TSerialDevice::EndPollCycle()
 {}
 
-uint64_t TSerialDevice::ReadRegister(PRegister reg)
+void TSerialDevice::ReadRegister(PRegister reg)
 {
+    if (reg->GetAvailable() == TRegister::UNAVAILABLE) {
+        return;
+    }
     try {
-        auto res = ReadRegisterImpl(reg);
+        Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
+        reg->SetValue(ReadRegisterImpl(reg));
         SetTransferResult(true);
-        return res;
-    } catch (const TSerialDeviceException& ex) {
+    } catch (const TSerialDeviceInternalErrorException& e) {
+        reg->SetError(ST_DEVICE_ERROR);
+        LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
+                  << reg->Device()->ToString() + "]";
+        SetTransferResult(true);
+    } catch (const TSerialDevicePermanentRegisterException& e) {
+        reg->SetAvailable(TRegister::UNAVAILABLE);
+        reg->SetError(ST_DEVICE_ERROR);
+        LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
+                  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now marked as unsupported";
+        SetTransferResult(true);
+    } catch (const TSerialDeviceException& e) {
+        reg->SetError(ST_UNKNOWN_ERROR);
+        auto& logger = GetIsDisconnected() ? Debug : Warn;
+        LOG(logger) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
+                    << reg->Device()->ToString() + "]";
         SetTransferResult(false);
-        throw;
     }
 }
 
@@ -114,6 +127,9 @@ void TSerialDevice::WriteRegister(PRegister reg, uint64_t value)
     try {
         WriteRegisterImpl(reg, value);
         SetTransferResult(true);
+    } catch (const TSerialDevicePermanentRegisterException& e) {
+        SetTransferResult(true);
+        throw;
     } catch (const TSerialDeviceException& ex) {
         SetTransferResult(false);
         throw;
@@ -132,33 +148,7 @@ void TSerialDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
 
 void TSerialDevice::ReadRegisterRange(PRegisterRange range)
 {
-    PSimpleRegisterRange simple_range = std::dynamic_pointer_cast<TSimpleRegisterRange>(range);
-    if (!simple_range)
-        throw std::runtime_error("simple range expected");
-    for (auto reg: simple_range->RegisterList()) {
-        if (reg->GetAvailable() == TRegister::UNAVAILABLE) {
-            continue;
-        }
-        try {
-            Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
-            reg->SetValue(ReadRegister(reg));
-        } catch (const TSerialDeviceInternalErrorException& e) {
-            reg->SetError(ST_DEVICE_ERROR);
-            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
-                      << reg->Device()->ToString() + "]";
-        } catch (const TSerialDeviceTransientErrorException& e) {
-            reg->SetError(ST_UNKNOWN_ERROR);
-            auto& logger = GetIsDisconnected() ? Debug : Warn;
-            LOG(logger) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
-                        << reg->Device()->ToString() + "]";
-        } catch (const TSerialDevicePermanentRegisterException& e) {
-            reg->SetAvailable(TRegister::UNAVAILABLE);
-            reg->SetError(ST_DEVICE_ERROR);
-            LOG(Warn) << "TSerialDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
-                      << reg->Device()->ToString() + "] Register " << reg->ToString()
-                      << " is now marked as unsupported";
-        }
-    }
+    throw std::runtime_error(ToString() + " range reading is not supported");
 }
 
 void TSerialDevice::SetTransferResult(bool ok)
@@ -170,7 +160,7 @@ void TSerialDevice::SetTransferResult(bool ok)
 
     if (ok) {
         LastSuccessfulCycle = std::chrono::steady_clock::now();
-        if (!IsDisconnected) {
+        if (IsDisconnected) {
             LOG(Info) << "device " << ToString() << " is connected";
         }
         IsDisconnected = false;

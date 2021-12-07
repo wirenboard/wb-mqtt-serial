@@ -30,10 +30,11 @@ public:
 
     static void Register(TSerialDeviceFactory& factory);
 
+    uint64_t ReadRegisterImpl(PRegister reg) override;
+
 protected:
     bool ConnectionSetup();
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
-    uint64_t ReadRegisterImpl(PRegister reg) override;
 
 private:
     struct TValueArray

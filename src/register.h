@@ -458,7 +458,8 @@ public:
     const std::list<PRegister>& RegisterList() const;
     std::list<PRegister>& RegisterList();
     PSerialDevice Device() const;
-    std::chrono::milliseconds PollInterval() const;
+
+    virtual bool Add(PRegister reg, std::chrono::milliseconds pollLimit);
 
     /**
      * @brief Set error to all registers in range
@@ -466,25 +467,14 @@ public:
     void SetError(EStatus error);
 
 protected:
-    TRegisterRange(const std::list<PRegister>& regs);
     TRegisterRange(PRegister reg);
 
 private:
     std::weak_ptr<TSerialDevice> RegDevice;
-    std::chrono::milliseconds RegPollInterval = std::chrono::milliseconds(-1);
     std::list<PRegister> RegList;
 };
 
 typedef std::shared_ptr<TRegisterRange> PRegisterRange;
-
-class TSimpleRegisterRange: public TRegisterRange
-{
-public:
-    TSimpleRegisterRange(const std::list<PRegister>& regs);
-    TSimpleRegisterRange(PRegister reg);
-};
-
-typedef std::shared_ptr<TSimpleRegisterRange> PSimpleRegisterRange;
 
 uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value);
 

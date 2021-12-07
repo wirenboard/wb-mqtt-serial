@@ -55,13 +55,16 @@ namespace Modbus // modbus protocol declarations
 
     class TModbusRegisterRange;
     void ComposeReadRequestPDU(uint8_t* pdu, TModbusRegisterRange& range, int shift);
-    size_t InferReadResponsePDUSize(TModbusRegisterRange& range);
+    size_t InferReadResponsePDUSize(int type, size_t registerCount);
 
     class TModbusRegisterRange: public TRegisterRange
     {
     public:
-        TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles);
+        TModbusRegisterRange(PRegister reg, bool hasHoles);
         ~TModbusRegisterRange();
+
+        bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
+
         int GetStart() const;
         int GetCount() const;
         uint8_t* GetBits();
@@ -70,25 +73,16 @@ namespace Modbus // modbus protocol declarations
         const std::string& TypeName() const;
         int Type() const;
 
-        // Read each register separately
-        bool ShouldReadOneByOne() const;
-        void SetReadOneByOne(bool readOneByOne);
-
-        const TRequest& GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift);
+        TRequest GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift);
         size_t GetResponseSize(IModbusTraits& traits);
 
     private:
-        bool ReadOneByOne = false;
         bool HasHolesFlg = false;
-        int Start;
-        int Count;
+        uint32_t Start;
+        size_t Count;
         uint8_t* Bits = 0;
         uint16_t* Words = 0;
-        TRequest Request;
-        size_t ResponseSize = 0;
     };
-
-    using PModbusRegisterRange = std::shared_ptr<TModbusRegisterRange>;
 }
 
 namespace // general utilities
@@ -132,13 +126,8 @@ namespace Modbus // modbus protocol common utilities
         {}
     };
 
-    TModbusRegisterRange::TModbusRegisterRange(const std::list<PRegister>& regs, bool hasHoles)
-        : TRegisterRange(regs),
-          HasHolesFlg(hasHoles)
+    TModbusRegisterRange::TModbusRegisterRange(PRegister reg, bool hasHoles): TRegisterRange(reg), HasHolesFlg(hasHoles)
     {
-        if (regs.empty()) // shouldn't happen
-            throw std::runtime_error("cannot construct empty register range");
-
         if (IsSingleBitType(Type())) {
             for (auto reg: RegisterList()) {
                 if (reg->Get16BitWidth() != 1)
@@ -146,21 +135,8 @@ namespace Modbus // modbus protocol common utilities
                                                  reg->TypeName);
             }
         }
-
-        auto it = regs.begin();
-        Start = GetUint32RegisterAddress((*it)->GetAddress());
-        int end = Start + (*it)->Get16BitWidth();
-        while (++it != regs.end()) {
-            if ((*it)->Type != Type())
-                throw std::runtime_error("registers of different type in the same range");
-            auto addr = GetUint32RegisterAddress((*it)->GetAddress());
-            int new_end = addr + (*it)->Get16BitWidth();
-            if (new_end > end)
-                end = new_end;
-        }
-        Count = end - Start;
-        if (Count > (IsSingleBitType(Type()) ? MAX_READ_BITS : MAX_READ_REGISTERS))
-            throw std::runtime_error("Modbus register range too large");
+        Start = GetUint32RegisterAddress(reg->GetAddress());
+        Count = reg->Get16BitWidth();
     }
 
     TModbusRegisterRange::~TModbusRegisterRange()
@@ -169,6 +145,69 @@ namespace Modbus // modbus protocol common utilities
             delete[] Bits;
         if (Words)
             delete[] Words;
+    }
+
+    bool TModbusRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
+    {
+        if (reg->GetAvailable() == TRegister::UNAVAILABLE) {
+            return true;
+        }
+
+        // TODO: implement holes feature
+        if (reg->Device() != RegisterList().front()->Device() || (RegisterList().front()->Type != reg->Type)) {
+            return false;
+        }
+
+        auto addr = GetUint32RegisterAddress(reg->GetAddress());
+
+        // Can read at once registers with the same address or successive registers
+        if (Start > addr || Start + Count < addr) {
+            return false;
+        }
+
+        auto& deviceConfig = *(reg->Device()->DeviceConfig());
+        if (RegisterList().back()->GetAvailable() == TRegister::UNKNOWN) {
+            if (IsSingleBitType(reg->Type)) {
+                // Can read up to 16 UNKNOWN single bit registers at once
+                size_t maxRegs = 16;
+                if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= MAX_READ_REGISTERS)) {
+                    maxRegs = deviceConfig.MaxReadRegisters;
+                }
+                if (reg->GetAvailable() == TRegister::UNKNOWN && (RegisterList().size() >= maxRegs)) {
+                    return false;
+                }
+            } else {
+                return false; // Read UNKNOWN registers one by one to find availability
+            }
+        } else {
+            // Don't mix available and unavailable registers
+            if (reg->GetAvailable() == TRegister::UNKNOWN) {
+                return false;
+            }
+        }
+
+        size_t maxRegs = IsSingleBitType(reg->Type) ? MAX_READ_BITS : MAX_READ_REGISTERS;
+        if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= MAX_READ_REGISTERS)) {
+            maxRegs = deviceConfig.MaxReadRegisters;
+        }
+        if (addr + reg->Get16BitWidth() - Start > maxRegs) {
+            return false;
+        }
+
+        auto newPduSize = InferReadResponsePDUSize(Type(), GetCount() + reg->Get16BitWidth());
+        // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
+        // Response 5 bytes except data: SlaveID, Operation, Size, CRC
+        auto newPollTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+            reg->Device()->Port()->GetSendTime(newPduSize + 8 + 5) + deviceConfig.ResponseTimeout +
+            deviceConfig.RequestDelay + 2 * deviceConfig.FrameTimeout);
+        if (newPollTime > pollLimit) {
+            return false;
+        }
+        if (Start + Count <= addr) {
+            Count += reg->Get16BitWidth();
+        }
+        RegisterList().push_back(reg);
+        return true;
     }
 
     uint8_t* TModbusRegisterRange::GetBits()
@@ -204,36 +243,21 @@ namespace Modbus // modbus protocol common utilities
         return HasHolesFlg;
     }
 
-    // Read each register separately
-    bool TModbusRegisterRange::ShouldReadOneByOne() const
+    TRequest TModbusRegisterRange::GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift)
     {
-        return ReadOneByOne;
-    }
+        TRequest request;
+        // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
+        const uint16_t REQUEST_PDU_SIZE = 5;
 
-    void TModbusRegisterRange::SetReadOneByOne(bool readOneByOne)
-    {
-        ReadOneByOne = readOneByOne;
-    }
-
-    const TRequest& TModbusRegisterRange::GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift)
-    {
-        if (Request.empty()) {
-            // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
-            const uint16_t REQUEST_PDU_SIZE = 5;
-
-            Request.resize(traits.GetPacketSize(REQUEST_PDU_SIZE));
-            Modbus::ComposeReadRequestPDU(traits.GetPDU(Request), *this, shift);
-            traits.FinalizeRequest(Request, slaveId);
-        }
-        return Request;
+        request.resize(traits.GetPacketSize(REQUEST_PDU_SIZE));
+        Modbus::ComposeReadRequestPDU(traits.GetPDU(request), *this, shift);
+        traits.FinalizeRequest(request, slaveId);
+        return request;
     }
 
     size_t TModbusRegisterRange::GetResponseSize(IModbusTraits& traits)
     {
-        if (ResponseSize == 0) {
-            ResponseSize = traits.GetPacketSize(InferReadResponsePDUSize(*this));
-        }
-        return ResponseSize;
+        return traits.GetPacketSize(InferReadResponsePDUSize(Type(), GetCount()));
     }
 
     const std::string& TModbusRegisterRange::TypeName() const
@@ -433,14 +457,12 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // returns number of bytes needed to hold response
-    size_t InferReadResponsePDUSize(TModbusRegisterRange& range)
+    size_t InferReadResponsePDUSize(int type, size_t registerCount)
     {
-        auto count = range.GetCount();
-
-        if (IsSingleBitType(range.Type())) {
-            return 2 + std::ceil(static_cast<float>(count) / 8); // coil values are packed into bytes as bitset
+        if (IsSingleBitType(type)) {
+            return 2 + std::ceil(static_cast<float>(registerCount) / 8); // coil values are packed into bytes as bitset
         } else {
-            return 2 + count * 2; // count is for uint16_t, we need byte count
+            return 2 + registerCount * 2; // count is for uint16_t, we need byte count
         }
     }
 
@@ -674,133 +696,9 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    struct TAddressRange
+    PRegisterRange CreateRegisterRange(PRegister reg, bool enableHoles)
     {
-        size_t StartAddr;
-        size_t EndAddr;
-        size_t LastAddr;
-
-        void StartRange(size_t addr, size_t size)
-        {
-            StartAddr = addr;
-            AddReg(addr, size);
-        }
-
-        void AddReg(size_t addr, size_t size)
-        {
-            LastAddr = addr;
-            EndAddr = addr + size;
-        }
-
-        size_t CalcLengthToEnd(size_t addr, size_t size) const
-        {
-            return addr + size - StartAddr;
-        }
-    };
-
-    // Very rough request-response cycle time calculation
-    // Only Modbus RTU
-    struct TExchangeTime
-    {
-        size_t ResponseBits;
-
-        void StartRange()
-        {
-            ResponseBits = 0;
-        }
-
-        void AddReg(size_t responseSizeBits)
-        {
-            ResponseBits += responseSizeBits;
-        }
-
-        std::chrono::milliseconds CalcTime(TPort& port, size_t responseSizeBits) const
-        {
-            int responseBytes = (responseSizeBits / 8);
-            if (responseBytes % 8) {
-                ++responseBytes;
-            }
-            // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
-            // Response 5 bytes except data: SlaveID, Operation, Size, CRC
-            return port.GetSendTime(responseBytes + 8 + 5);
-        }
-    };
-
-    bool ShouldSplit(const std::list<PRegister>& regsForRange,
-                     const TRegister& reg,
-                     size_t addr,
-                     const TAddressRange& addrRange,
-                     const TExchangeTime& exchangeTime,
-                     const TDeviceConfig& deviceConfig,
-                     std::chrono::milliseconds pollLimit)
-    {
-        // Can read at once only registers of the same type
-        if (regsForRange.front()->Type != reg.Type) {
-            return true;
-        }
-
-        // Can read at once registers with the same address or successive registers
-        if (addrRange.EndAddr != addr && addrRange.LastAddr != addr) {
-            return true;
-        }
-
-        if (regsForRange.back()->GetAvailable() == TRegister::UNKNOWN) {
-            if (reg.GetAvailable() == TRegister::UNKNOWN && IsSingleBitType(regsForRange.back()->Type) &&
-                IsSingleBitType(reg.Type)) {
-                // Can read up to 16 UNKNOWN single bit registers at once
-                return regsForRange.size() >= 16;
-            }
-            return true; // Read UNKNOWN registers one by one to find availability
-        }
-
-        size_t maxRegs = MAX_READ_BITS;
-        if (!IsSingleBitType(reg.Type)) {
-            if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= MAX_READ_REGISTERS)) {
-                maxRegs = deviceConfig.MaxReadRegisters;
-            } else {
-                maxRegs = MAX_READ_REGISTERS;
-            }
-        }
-        if (addrRange.CalcLengthToEnd(addr, reg.Get16BitWidth()) > maxRegs) {
-            return true;
-        }
-
-        return exchangeTime.CalcTime(*(reg.Device()->Port()), reg.GetBitWidth()) > pollLimit;
-    }
-
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& registers,
-                                                const TDeviceConfig& deviceConfig,
-                                                bool enableHoles,
-                                                std::chrono::milliseconds pollLimit)
-    {
-        // TODO: implement holes feature
-        std::list<PRegisterRange> res;
-        std::list<PRegister> regsForRange;
-        TAddressRange addrRange;
-        TExchangeTime exchangeTime;
-        for (auto reg: registers) {
-            if (reg->GetAvailable() != TRegister::UNAVAILABLE) {
-                auto addr = GetUint32RegisterAddress(reg->GetAddress());
-                if (!regsForRange.empty() &&
-                    ShouldSplit(regsForRange, *reg, addr, addrRange, exchangeTime, deviceConfig, pollLimit)) {
-                    res.emplace_back(new TModbusRegisterRange(regsForRange, true));
-                    regsForRange.clear();
-                }
-
-                regsForRange.push_back(reg);
-                if (regsForRange.empty()) {
-                    addrRange.StartRange(addr, reg->Get16BitWidth());
-                    exchangeTime.StartRange();
-                } else {
-                    addrRange.AddReg(addr, reg->Get16BitWidth());
-                }
-                exchangeTime.AddReg(reg->GetBitWidth());
-            }
-        }
-        if (!regsForRange.empty()) {
-            res.emplace_back(new TModbusRegisterRange(regsForRange, true));
-        }
-        return res;
+        return std::make_shared<TModbusRegisterRange>(reg, true);
     }
 
     size_t ProcessRequest(IModbusTraits& traits,
@@ -913,7 +811,7 @@ namespace Modbus // modbus protocol common utilities
 
         auto& logger = range.Device()->GetIsDisconnected() ? Debug : Warn;
         LOG(logger) << "failed to read " << range << ": " << msg;
-        range.Device()->SetTransferResult(true);
+        range.Device()->SetTransferResult(false);
     }
 
     void ReadRegisterRange(IModbusTraits& traits,

@@ -116,10 +116,7 @@ namespace Modbus // modbus protocol common utilities
         std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) override;
     };
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                const TDeviceConfig& deviceConfig,
-                                                bool enableHoles,
-                                                std::chrono::milliseconds pollLimit);
+    PRegisterRange CreateRegisterRange(PRegister reg, bool enableHoles);
 
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,

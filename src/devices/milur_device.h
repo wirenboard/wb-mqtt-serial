@@ -24,9 +24,10 @@ public:
 
     static void Register(TSerialDeviceFactory& factory);
 
+    uint64_t ReadRegisterImpl(PRegister reg) override;
+
 protected:
     void PrepareImpl() override;
-    uint64_t ReadRegisterImpl(PRegister reg) override;
     bool ConnectionSetup();
     ErrorType CheckForException(uint8_t* frame, int len, const char** message);
     uint64_t BuildIntVal(uint8_t* p, int sz) const;

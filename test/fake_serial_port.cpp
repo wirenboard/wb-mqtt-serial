@@ -14,6 +14,7 @@
 
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
+using namespace std::literals;
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture),
@@ -322,6 +323,9 @@ void TSerialDeviceIntegrationTest::SetUp()
                         CommonConfigSchema,
                         it->second,
                         [=](const Json::Value&) { return std::make_pair(SerialPort, false); });
+    for (auto& portConfig: Config->PortConfigs) {
+        portConfig->LowPriorityPollInterval = 10ms;
+    }
 
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient("em-test");

@@ -17,10 +17,36 @@ struct TRegisterComparePredicate
     bool operator()(const PRegister& r1, const PRegister& r2) const;
 };
 
-struct TRegisterGroupPredicate
+class TRegisterReader
 {
-    bool operator()(const PRegister& r1, const PRegister& r2) const;
+    PRegisterRange RegisterRange;
+    std::chrono::steady_clock::time_point PollStart;
+    std::list<PRegister> Regs;
+    Metrics::TMetrics& Metrics;
+    bool DeviceWasDisconnected = false;
+    PSerialDevice LastAccessedDevice;
+    bool DeviceIsConnected = false;
+
+public:
+    TRegisterReader(std::chrono::steady_clock::time_point pollStart,
+                    PSerialDevice lastAccessedDevice,
+                    Metrics::TMetrics& metrics);
+
+    bool operator()(const PRegister& reg, std::chrono::milliseconds pollLimit);
+    void Read();
+    std::list<PRegister>& GetRegisters();
+    bool GetDeviceWasDisconnected() const;
 };
+
+class TClosedPortRegisterReader
+{
+    std::list<PRegister> Regs;
+
+public:
+    bool operator()(const PRegister& reg, std::chrono::milliseconds pollLimit);
+    std::list<PRegister>& GetRegisters();
+};
+
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
@@ -30,7 +56,8 @@ public:
     TSerialClient(const std::vector<PSerialDevice>& devices,
                   PPort port,
                   const TPortOpenCloseLogic::TSettings& openCloseSettings,
-                  Metrics::TMetrics& metrics);
+                  Metrics::TMetrics& metrics,
+                  std::chrono::milliseconds lowPriorityPollInterval);
     TSerialClient(const TSerialClient& client) = delete;
     TSerialClient& operator=(const TSerialClient&) = delete;
     ~TSerialClient();
@@ -55,7 +82,6 @@ private:
     void SetReadError(PRegister reg);
     PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
-    bool PrepareToAccessDevice(PSerialDevice dev);
     void SetRegistersAvailability(PSerialDevice dev, TRegister::TRegisterAvailability availability);
     void ClosedPortCycle();
     void OpenPortCycle();
@@ -73,14 +99,12 @@ private:
     TErrorCallback ErrorCallback;
     PSerialDevice LastAccessedDevice;
     PBinarySemaphore FlushNeeded;
-    TScheduler<PRegister, TRegisterComparePredicate, TRegisterGroupPredicate> Scheduler;
-
-    const int MAX_REGS = 65536;
-    const int MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
+    TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
     Metrics::TMetrics& Metrics;
+    std::chrono::milliseconds LowPriorityPollInterval;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;
