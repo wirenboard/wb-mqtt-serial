@@ -1,3 +1,13 @@
+wb-mqtt-serial (2.44.0) stable; urgency=medium
+
+  * New poll scheduler.
+    Channels with defined poll_interval are marked as high priority.
+    The service will try to pool them in desired time.
+    Channels without poll_interval will be polled in remaining time.
+    poll_interval for ports and devices is deprecated.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 09 Dec 2021 16:40:29 +0500
+
 wb-mqtt-serial (2.43.1) stable; urgency=medium
 
   * Backward compatibility with previous device templates is improved.
