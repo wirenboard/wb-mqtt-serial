@@ -149,7 +149,7 @@ namespace Modbus // modbus protocol common utilities
 
     bool TModbusRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
     {
-        if (reg->GetAvailable() == TRegister::UNAVAILABLE) {
+        if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
             return true;
         }
 
@@ -166,14 +166,14 @@ namespace Modbus // modbus protocol common utilities
         }
 
         auto& deviceConfig = *(reg->Device()->DeviceConfig());
-        if (RegisterList().back()->GetAvailable() == TRegister::UNKNOWN) {
+        if (RegisterList().back()->GetAvailable() == TRegisterAvailability::UNKNOWN) {
             if (IsSingleBitType(reg->Type)) {
                 // Can read up to 16 UNKNOWN single bit registers at once
                 size_t maxRegs = 16;
                 if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= MAX_READ_REGISTERS)) {
                     maxRegs = deviceConfig.MaxReadRegisters;
                 }
-                if (reg->GetAvailable() == TRegister::UNKNOWN && (RegisterList().size() >= maxRegs)) {
+                if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN && (RegisterList().size() >= maxRegs)) {
                     return false;
                 }
             } else {
@@ -181,7 +181,7 @@ namespace Modbus // modbus protocol common utilities
             }
         } else {
             // Don't mix available and unavailable registers
-            if (reg->GetAvailable() == TRegister::UNKNOWN) {
+            if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
                 return false;
             }
         }
@@ -499,8 +499,8 @@ namespace Modbus // modbus protocol common utilities
                                         const TRegister& reg,
                                         uint64_t value,
                                         int shift,
-                                        std::map<int64_t, uint16_t>& tmpCache,
-                                        const std::map<int64_t, uint16_t>& cache)
+                                        Modbus::TRegisterCache& tmpCache,
+                                        const Modbus::TRegisterCache& cache)
     {
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
@@ -556,8 +556,8 @@ namespace Modbus // modbus protocol common utilities
                                       uint16_t value,
                                       int shift,
                                       uint8_t wordIndex,
-                                      std::map<int64_t, uint16_t>& tmpCache,
-                                      const std::map<int64_t, uint16_t>& cache)
+                                      Modbus::TRegisterCache& tmpCache,
+                                      const Modbus::TRegisterCache& cache)
     {
         if (reg.Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8 : 0x00;
@@ -598,7 +598,7 @@ namespace Modbus // modbus protocol common utilities
     void ParseReadResponse(const uint8_t* pdu,
                            size_t pduSize,
                            TModbusRegisterRange& range,
-                           std::map<int64_t, uint16_t>& cache)
+                           Modbus::TRegisterCache& cache)
     {
         TAddress address;
 
@@ -677,7 +677,7 @@ namespace Modbus // modbus protocol common utilities
             }
             if ((reg->UnsupportedValue) && (*reg->UnsupportedValue == r)) {
                 reg->SetError(ST_DEVICE_ERROR);
-                reg->SetAvailable(TRegister::UNAVAILABLE);
+                reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
             } else {
                 reg->SetValue(r);
             }
@@ -729,10 +729,10 @@ namespace Modbus // modbus protocol common utilities
                        uint8_t slaveId,
                        TRegister& reg,
                        uint64_t value,
-                       std::map<int64_t, uint16_t>& cache,
+                       Modbus::TRegisterCache& cache,
                        int shift)
     {
-        std::map<int64_t, uint16_t> tmpCache;
+        Modbus::TRegisterCache tmpCache;
 
         LOG(Debug) << "write " << reg.Get16BitWidth() << " " << reg.TypeName << "(s) @ " << reg.GetAddress()
                    << " of device " << reg.Device()->ToString();
@@ -786,7 +786,7 @@ namespace Modbus // modbus protocol common utilities
                    TPort& port,
                    uint8_t slaveId,
                    int shift,
-                   std::map<int64_t, uint16_t>& cache)
+                   Modbus::TRegisterCache& cache)
     {
         TResponse response(range.GetResponseSize(traits));
         try {
@@ -818,7 +818,7 @@ namespace Modbus // modbus protocol common utilities
                            TPort& port,
                            uint8_t slaveId,
                            PRegisterRange range,
-                           std::map<int64_t, uint16_t>& cache,
+                           Modbus::TRegisterCache& cache,
                            int shift)
     {
         auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
@@ -830,7 +830,7 @@ namespace Modbus // modbus protocol common utilities
             modbus_range->Device()->SetTransferResult(true);
         } catch (const TSerialDevicePermanentRegisterException& e) {
             for (auto& reg: modbus_range->RegisterList()) {
-                reg->SetAvailable(TRegister::UNAVAILABLE);
+                reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
             }
             ProcessRangeException(*modbus_range, e.what(), ST_DEVICE_ERROR);
         } catch (const TSerialDeviceException& e) {
@@ -847,7 +847,7 @@ namespace Modbus // modbus protocol common utilities
                              TPort& port,
                              uint8_t slaveId,
                              const std::vector<PDeviceSetupItem>& setupItems,
-                             std::map<int64_t, uint16_t>& cache,
+                             Modbus::TRegisterCache& cache,
                              int shift)
     {
         for (const auto& item: setupItems) {

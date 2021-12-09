@@ -103,7 +103,7 @@ void TSerialClient::PrepareRegisterRanges()
     auto now = std::chrono::steady_clock::now();
     for (auto& reg: RegList) {
         if (!reg->WriteOnly) {
-            Scheduler.AddEntry(reg, now, reg->PollInterval > std::chrono::milliseconds(-1));
+            Scheduler.AddEntry(reg, now, reg->PollInterval > UndefinedPollInterval);
         }
     }
 }
@@ -226,7 +226,7 @@ void TSerialClient::Cycle()
 
 void TSerialClient::ScheduleNextPoll(PRegister reg, bool isHighPriority, std::chrono::steady_clock::time_point now)
 {
-    if (reg->GetAvailable() != TRegister::UNAVAILABLE) {
+    if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
         Scheduler.AddEntry(reg, now + (isHighPriority ? reg->PollInterval : LowPriorityPollInterval), isHighPriority);
     }
 }
@@ -299,7 +299,7 @@ PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
     return it->second;
 }
 
-void TSerialClient::SetRegistersAvailability(PSerialDevice dev, TRegister::TRegisterAvailability availability)
+void TSerialClient::SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability)
 {
     for (auto& reg: RegList) {
         if (reg->Device() == dev) {
@@ -335,7 +335,7 @@ void TSerialClient::OpenPortCycle()
     UpdateFlushNeeded();
 
     if (!reader.GetDeviceWasDisconnected() && device->GetIsDisconnected()) {
-        SetRegistersAvailability(device, TRegister::UNKNOWN);
+        SetRegistersAvailability(device, TRegisterAvailability::UNKNOWN);
     }
 
     OpenCloseLogic.CloseIfNeeded(Port, device->GetIsDisconnected());

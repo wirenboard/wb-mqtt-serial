@@ -13,7 +13,7 @@ class TModbusIODevice: public TSerialDevice, public TUInt32SlaveId
 {
     std::unique_ptr<Modbus::IModbusTraits> ModbusTraits;
     int Shift = 0;
-    std::map<int64_t, uint16_t> ModbusCache;
+    Modbus::TRegisterCache ModbusCache;
 
 public:
     TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,

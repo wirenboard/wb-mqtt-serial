@@ -263,14 +263,15 @@ public:
 struct TRegister;
 typedef std::shared_ptr<TRegister> PRegister;
 
+enum class TRegisterAvailability
+{
+    UNKNOWN = 0,
+    AVAILABLE,
+    UNAVAILABLE
+};
+
 struct TRegister: public TRegisterConfig
 {
-    enum TRegisterAvailability
-    {
-        UNKNOWN = 0,
-        AVAILABLE,
-        UNAVAILABLE
-    };
 
     TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName = std::string())
         : TRegisterConfig(*config),
@@ -305,7 +306,7 @@ struct TRegister: public TRegisterConfig
 
 private:
     std::weak_ptr<TSerialDevice> _Device;
-    TRegisterAvailability Available = UNKNOWN;
+    TRegisterAvailability Available = TRegisterAvailability::UNKNOWN;
     EStatus Error = ST_UNKNOWN_ERROR;
     uint64_t Value;
     std::string ChannelName;

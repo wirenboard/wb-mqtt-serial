@@ -95,7 +95,7 @@ void TSerialDevice::EndPollCycle()
 
 void TSerialDevice::ReadRegister(PRegister reg)
 {
-    if (reg->GetAvailable() == TRegister::UNAVAILABLE) {
+    if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
         return;
     }
     try {
@@ -108,7 +108,7 @@ void TSerialDevice::ReadRegister(PRegister reg)
                   << reg->Device()->ToString() + "]";
         SetTransferResult(true);
     } catch (const TSerialDevicePermanentRegisterException& e) {
-        reg->SetAvailable(TRegister::UNAVAILABLE);
+        reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
         reg->SetError(ST_DEVICE_ERROR);
         LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
                   << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now marked as unsupported";

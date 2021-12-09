@@ -82,7 +82,7 @@ private:
     void SetReadError(PRegister reg);
     PRegisterHandler GetHandler(PRegister) const;
     void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
-    void SetRegistersAvailability(PSerialDevice dev, TRegister::TRegisterAvailability availability);
+    void SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability);
     void ClosedPortCycle();
     void OpenPortCycle();
     void UpdateFlushNeeded();

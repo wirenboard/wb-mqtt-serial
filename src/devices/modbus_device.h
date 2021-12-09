@@ -35,7 +35,7 @@ public:
 class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
 {
     std::unique_ptr<Modbus::IModbusTraits> ModbusTraits;
-    std::map<int64_t, uint16_t> ModbusCache;
+    Modbus::TRegisterCache ModbusCache;
 
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,

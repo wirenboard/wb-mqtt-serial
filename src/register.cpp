@@ -83,7 +83,7 @@ std::string TRegister::ToString() const
     return "<unknown device:" + TRegisterConfig::ToString() + ">";
 }
 
-TRegister::TRegisterAvailability TRegister::GetAvailable() const
+TRegisterAvailability TRegister::GetAvailable() const
 {
     return Available;
 }
@@ -112,7 +112,7 @@ void TRegister::SetValue(uint64_t value)
 {
     Value = value;
     Error = ST_OK;
-    Available = AVAILABLE;
+    Available = TRegisterAvailability::AVAILABLE;
 }
 
 const std::string& TRegister::GetChannelName() const

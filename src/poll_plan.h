@@ -47,11 +47,6 @@ public:
         return Entries.top();
     }
 
-    const TItem& GetTop()
-    {
-        return Entries.top();
-    }
-
     void Pop()
     {
         Entries.pop();
@@ -72,11 +67,11 @@ public:
     using TQueue = TPriorityQueueSchedule<TEntry, TComparePredicate>;
     using TItem = typename TQueue::TItem;
 
-    TScheduler(std::chrono::microseconds forcedLowPriorityInterval = std::chrono::seconds(10))
+    TScheduler(std::chrono::microseconds forcedLowPriorityInterval)
         : ForcedLowPriorityInterval(forcedLowPriorityInterval)
     {
         if (ForcedLowPriorityInterval <= std::chrono::microseconds::zero()) {
-            ForcedLowPriorityInterval = std::chrono::seconds(10);
+            throw std::runtime_error("poll interval must be greater than zero ms");
         }
     }
 
@@ -96,7 +91,7 @@ public:
 
     template<class TAccumulator> bool GetNext(std::chrono::steady_clock::time_point time, TAccumulator& accumulator)
     {
-        if ((LastSelectedWasFromLowPriorityQueue || LastLowPriorityCall + ForcedLowPriorityInterval < time) &&
+        if ((LastSelectedWasFromLowPriorityQueue || (LastLowPriorityCall + ForcedLowPriorityInterval < time)) &&
             HighPriorityQueue.HasReadyItems(time))
         {
             while (HighPriorityQueue.HasReadyItems(time) &&

@@ -50,7 +50,7 @@ namespace
                 return false;
             }
 
-            if (reg->GetAvailable() != TRegister::UNAVAILABLE) {
+            if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
                 RegisterList().push_back(reg);
             }
             return true;
@@ -197,13 +197,13 @@ namespace
                         presp += nread;
 
                         // just ignore error message if reg is unavailable
-                        if (reg->GetAvailable() == TRegister::UNKNOWN) {
+                        if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
                             if (err_num == CodeUnsupportedParameter) {
-                                reg->SetAvailable(TRegister::UNAVAILABLE);
+                                reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
                                 LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register "
                                           << reg->ToString() << " unsupported parameter";
                             } else if (err_num == CodeUnsupportedParameterValue) {
-                                reg->SetAvailable(TRegister::UNAVAILABLE);
+                                reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
                                 LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register "
                                           << reg->ToString() << " unsupported parameter value";
                             } else {

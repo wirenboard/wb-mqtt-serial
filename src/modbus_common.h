@@ -22,6 +22,7 @@ namespace Modbus // modbus protocol common utilities
 
     typedef std::vector<uint8_t> TRequest;
     typedef std::vector<uint8_t> TResponse;
+    typedef std::map<int64_t, uint16_t> TRegisterCache;
 
     class IModbusTraits
     {
@@ -123,21 +124,21 @@ namespace Modbus // modbus protocol common utilities
                        uint8_t slaveId,
                        TRegister& reg,
                        uint64_t value,
-                       std::map<int64_t, uint16_t>& cache,
+                       TRegisterCache& cache,
                        int shift = 0);
 
     void ReadRegisterRange(IModbusTraits& traits,
                            TPort& port,
                            uint8_t slaveId,
                            PRegisterRange range,
-                           std::map<int64_t, uint16_t>& cache,
+                           TRegisterCache& cache,
                            int shift = 0);
 
     void WriteSetupRegisters(IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
                              const std::vector<PDeviceSetupItem>& setupItems,
-                             std::map<int64_t, uint16_t>& cache,
+                             TRegisterCache& cache,
                              int shift = 0);
 
     class TMalformedResponseError: public TSerialDeviceTransientErrorException
