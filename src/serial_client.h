@@ -87,7 +87,7 @@ private:
     void OpenPortCycle();
     void UpdateFlushNeeded();
     void ProcessPolledRegister(PRegister reg);
-    void ScheduleNextPoll(PRegister reg, bool isHighPriority, std::chrono::steady_clock::time_point now);
+    void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point now);
 
     PPort Port;
     std::list<PRegister> RegList;

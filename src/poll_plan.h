@@ -89,7 +89,7 @@ public:
         return std::min(LowPriorityQueue.GetNextPollTime(), HighPriorityQueue.GetNextPollTime());
     }
 
-    template<class TAccumulator> bool GetNext(std::chrono::steady_clock::time_point time, TAccumulator& accumulator)
+    template<class TAccumulator> void GetNext(std::chrono::steady_clock::time_point time, TAccumulator& accumulator)
     {
         if ((LastSelectedWasFromLowPriorityQueue || (LastLowPriorityCall + ForcedLowPriorityInterval < time)) &&
             HighPriorityQueue.HasReadyItems(time))
@@ -100,7 +100,7 @@ public:
                 HighPriorityQueue.Pop();
                 LastSelectedWasFromLowPriorityQueue = false;
             }
-            return true;
+            return;
         }
         if (LowPriorityQueue.HasReadyItems(time)) {
             LastLowPriorityCall = time;
@@ -117,7 +117,6 @@ public:
                 LowPriorityQueue.Pop();
             }
         }
-        return false;
     }
 
 private:

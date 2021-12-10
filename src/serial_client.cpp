@@ -41,6 +41,11 @@ namespace
             return false;
         }
     }
+
+    bool IsHighPriority(const TRegister& reg)
+    {
+        return reg.PollInterval > UndefinedPollInterval;
+    }
 };
 
 TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
@@ -103,7 +108,10 @@ void TSerialClient::PrepareRegisterRanges()
     auto now = std::chrono::steady_clock::now();
     for (auto& reg: RegList) {
         if (!reg->WriteOnly) {
-            Scheduler.AddEntry(reg, now, reg->PollInterval > UndefinedPollInterval);
+            // All registers are marked as high priority with poll time set to now.
+            // So they will be polled as soon as possible after service start.
+            // During next polls registers will be divided to low or high priority according to poll interval
+            Scheduler.AddEntry(reg, now, true);
         }
     }
 }
@@ -224,9 +232,10 @@ void TSerialClient::Cycle()
     }
 }
 
-void TSerialClient::ScheduleNextPoll(PRegister reg, bool isHighPriority, std::chrono::steady_clock::time_point now)
+void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point now)
 {
     if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
+        bool isHighPriority = IsHighPriority(*reg);
         Scheduler.AddEntry(reg, now + (isHighPriority ? reg->PollInterval : LowPriorityPollInterval), isHighPriority);
     }
 }
@@ -248,10 +257,10 @@ void TSerialClient::ClosedPortCycle()
     }
     now = std::chrono::steady_clock::now();
     TClosedPortRegisterReader reader;
-    bool isHighPriority = Scheduler.GetNext(std::chrono::steady_clock::now(), reader);
+    Scheduler.GetNext(std::chrono::steady_clock::now(), reader);
     for (auto& reg: reader.GetRegisters()) {
         SetReadError(reg);
-        ScheduleNextPoll(reg, isHighPriority, now);
+        ScheduleNextPoll(reg, now);
         reg->Device()->SetTransferResult(false);
     }
 }
@@ -315,7 +324,7 @@ void TSerialClient::OpenPortCycle()
 
     auto now = std::chrono::steady_clock::now();
     TRegisterReader reader(now, LastAccessedDevice, Metrics);
-    bool isHighPriority = Scheduler.GetNext(now, reader);
+    Scheduler.GetNext(now, reader);
     if (reader.GetRegisters().empty()) {
         return;
     }
@@ -327,7 +336,7 @@ void TSerialClient::OpenPortCycle()
 
     for (auto& reg: reader.GetRegisters()) {
         ProcessPolledRegister(reg);
-        ScheduleNextPoll(reg, isHighPriority, now);
+        ScheduleNextPoll(reg, now);
     }
 
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
