@@ -111,7 +111,7 @@ void TSerialClient::PrepareRegisterRanges()
             // All registers are marked as high priority with poll time set to now.
             // So they will be polled as soon as possible after service start.
             // During next polls registers will be divided to low or high priority according to poll interval
-            Scheduler.AddEntry(reg, now, true);
+            Scheduler.AddHighPriorityEntry(reg, now);
         }
     }
 }
@@ -235,8 +235,11 @@ void TSerialClient::Cycle()
 void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point now)
 {
     if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
-        bool isHighPriority = IsHighPriority(*reg);
-        Scheduler.AddEntry(reg, now + (isHighPriority ? reg->PollInterval : LowPriorityPollInterval), isHighPriority);
+        if (IsHighPriority(*reg)) {
+            Scheduler.AddHighPriorityEntry(reg, now + reg->PollInterval);
+        } else {
+            Scheduler.AddLowPriorityEntry(reg);
+        }
     }
 }
 
@@ -330,6 +333,8 @@ void TSerialClient::OpenPortCycle()
     }
     reader.Read();
 
+    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
+
     auto device = reader.GetRegisters().back()->Device();
     LastAccessedDevice = device;
     device->EndPollCycle();
@@ -338,8 +343,6 @@ void TSerialClient::OpenPortCycle()
         ProcessPolledRegister(reg);
         ScheduleNextPoll(reg, now);
     }
-
-    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
 
     UpdateFlushNeeded();
 

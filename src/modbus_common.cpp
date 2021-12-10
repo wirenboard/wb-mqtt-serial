@@ -790,7 +790,7 @@ namespace Modbus // modbus protocol common utilities
     {
         TResponse response(range.GetResponseSize(traits));
         try {
-            const auto& request = range.GetRequest(traits, slaveId, shift);
+            auto request = range.GetRequest(traits, slaveId, shift);
             auto pduSize = ProcessRequest(traits, port, request, response, *range.Device()->DeviceConfig());
             ParseReadResponse(traits.GetPDU(response), pduSize, range, cache);
         } catch (const TMalformedResponseError&) {

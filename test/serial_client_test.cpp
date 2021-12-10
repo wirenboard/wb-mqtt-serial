@@ -1008,9 +1008,6 @@ void TSerialClientIntegrationTest::SetUp()
                         configSchema,
                         t,
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
-    for (auto& portConfig: Config->PortConfigs) {
-        portConfig->LowPriorityPollInterval = 10ms;
-    }
 }
 
 void TSerialClientIntegrationTest::TearDown()
@@ -1439,9 +1436,6 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
                         configSchema,
                         t,
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
-    for (auto& portConfig: Config->PortConfigs) {
-        portConfig->LowPriorityPollInterval = 10ms;
-    }
 
     if (pollIntervalTest) {
         Config->PortConfigs[0]->Devices[0]->DeviceConfig()->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval =
@@ -1544,9 +1538,6 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                         configSchema,
                         t,
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
-    for (auto& portConfig: Config->PortConfigs) {
-        portConfig->LowPriorityPollInterval = 10ms;
-    }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
@@ -1767,9 +1758,6 @@ TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
                         configSchema,
                         t,
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
-    for (auto& portConfig: Config->PortConfigs) {
-        portConfig->LowPriorityPollInterval = 10ms;
-    }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
@@ -1798,10 +1786,6 @@ TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
                         configSchema,
                         t,
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
-
-    for (auto& portConfig: Config->PortConfigs) {
-        portConfig->LowPriorityPollInterval = 10ms;
-    }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
