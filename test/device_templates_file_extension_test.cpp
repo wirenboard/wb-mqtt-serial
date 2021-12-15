@@ -39,8 +39,12 @@ protected:
                      ITemplateMap& templates,
                      size_t level)
     {
+        std::map<std::string, Json::Value> channels; // Sort channels for stable test results
         for (const auto& subChannel: deviceTemplate["channels"]) {
-            PrintChannel(subChannel, mqttPrefix, templates, level);
+            channels.emplace(subChannel["name"].asString(), subChannel);
+        }
+        for (const auto& subChannel: channels) {
+            PrintChannel(subChannel.second, mqttPrefix, templates, level);
         }
     }
 
@@ -95,6 +99,8 @@ TEST_F(TDeviceTemplatesTest, Validate)
         LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                   configSchema));
     TTemplateMap templates(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-templates"), templatesSchema, false);
+    auto deviceTypes = templates.GetDeviceTypes();
+    std::sort(deviceTypes.begin(), deviceTypes.end()); // For stable test results
     for (const auto& deviceType: templates.GetDeviceTypes()) {
         auto& dt = templates.GetTemplate(deviceType);
         TSubDevicesTemplateMap subdeviceTemplates(dt.Type, dt.Schema);
