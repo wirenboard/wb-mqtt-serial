@@ -173,7 +173,7 @@ namespace
     //      "default": {
     //        "name": CHANNEL_NAME,
     //        "enabled": CHANNEL_ENABLED,
-    //        "poll_interval": CHANNEL_POLL_INTERVAL
+    //        "read_rate_limit": CHANNEL_READ_RATE_LIMIT
     //      }
     //  }
     Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate, TContext& context)
@@ -187,7 +187,9 @@ namespace
         r["options"]["wb"]["disable_title"] = true;
         r["default"]["enabled"] = true;
         SetIfExists(r["default"], "enabled", channelTemplate, "enabled");
-        SetIfExists(r["default"], "poll_interval", channelTemplate, "poll_interval");
+        // poll_interval is deprecated, but still read it
+        SetIfExists(r["default"], "read_rate_limit", channelTemplate, "poll_interval");
+        SetIfExists(r["default"], "read_rate_limit", channelTemplate, "read_rate_limit");
         return r;
     }
 
@@ -322,7 +324,8 @@ namespace
     //          {
     //              "name": CHANNEL1_NAME,
     //              "enabled": CHANNEL_ENABLED,
-    //              "poll_interval": CHANNEL_POLL_INTERVAL
+    //              "read_rate_limit": CHANNEL_READ_RATE_LIMIT,
+    //              "read_period": CHANNEL_READ_PERIOD
     //          },
     //          ...
     //      ],
@@ -347,6 +350,7 @@ namespace
             r["options"]["wb"]["disable_array_item_panel"] = true;
         } else {
             r["options"]["disable_edit_json"] = true;
+            r["options"]["disable_array_delete"] = true;
         }
         r["propertyOrder"] = propertyOrder;
 
@@ -383,7 +387,10 @@ namespace
                 v["title"] = context.AddHashedTranslation(channel["name"].asString());
                 v["enabled"] = true;
                 SetIfExists(v, "enabled", channel, "enabled");
-                SetIfExists(v, "poll_interval", channel, "poll_interval");
+                // poll_interval is deprecated, but still read it
+                SetIfExists(v, "read_rate_limit", channel, "poll_interval");
+                SetIfExists(v, "read_rate_limit", channel, "read_rate_limit");
+                SetIfExists(v, "read_period", channel, "read_period");
             }
             r["minItems"] = defaults.size();
             r["maxItems"] = defaults.size();

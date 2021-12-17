@@ -1,6 +1,7 @@
 #pragma once
 #include <chrono>
 #include <cmath>
+#include <experimental/optional>
 #include <functional>
 #include <list>
 #include <map>
@@ -14,8 +15,6 @@
 #include <vector>
 
 #include "serial_exc.h"
-
-const std::chrono::milliseconds UndefinedPollInterval(-1);
 
 enum RegisterFormat
 {
@@ -197,12 +196,17 @@ public:
     bool WriteOnly = false;
     bool ReadOnly;
     std::string TypeName;
-    std::chrono::milliseconds PollInterval = UndefinedPollInterval;
-    std::unique_ptr<uint64_t> ErrorValue;
+
+    // Minimal interval between register reads, if ReadPeriod is not set
+    std::experimental::optional<std::chrono::milliseconds> ReadRateLimit;
+
+    // Desired interval between register reads
+    std::experimental::optional<std::chrono::milliseconds> ReadPeriod;
+    std::experimental::optional<uint64_t> ErrorValue;
     EWordOrder WordOrder;
     uint8_t BitOffset;
     uint8_t BitWidth;
-    std::unique_ptr<uint64_t> UnsupportedValue;
+    std::experimental::optional<uint64_t> UnsupportedValue;
 
     TRegisterConfig(int type,
                     std::shared_ptr<IRegisterAddress> address,
@@ -212,13 +216,9 @@ public:
                     double round_to,
                     bool readonly,
                     const std::string& type_name,
-                    std::unique_ptr<uint64_t> error_value,
                     const EWordOrder word_order,
                     uint8_t bit_offset,
-                    uint8_t bit_width,
-                    std::unique_ptr<uint64_t> unsupported_value);
-
-    TRegisterConfig(const TRegisterConfig& config);
+                    uint8_t bit_width);
 
     uint8_t GetBitWidth() const;
     uint8_t GetByteWidth() const;
@@ -236,11 +236,9 @@ public:
                                   double round_to = 0,
                                   bool readonly = false,
                                   const std::string& type_name = "",
-                                  std::unique_ptr<uint64_t> error_value = std::unique_ptr<uint64_t>(),
                                   const EWordOrder word_order = EWordOrder::BigEndian,
                                   uint8_t bit_offset = 0,
-                                  uint8_t bit_width = 0,
-                                  std::unique_ptr<uint64_t> unsupported_value = std::unique_ptr<uint64_t>());
+                                  uint8_t bit_width = 0);
 
     //! Create register with TUint32RegisterAddress
     static PRegisterConfig Create(int type = 0,
@@ -251,11 +249,9 @@ public:
                                   double round_to = 0,
                                   bool readonly = false,
                                   const std::string& type_name = "",
-                                  std::unique_ptr<uint64_t> error_value = std::unique_ptr<uint64_t>(),
                                   const EWordOrder word_order = EWordOrder::BigEndian,
                                   uint8_t bit_offset = 0,
-                                  uint8_t bit_width = 0,
-                                  std::unique_ptr<uint64_t> unsupported_value = std::unique_ptr<uint64_t>());
+                                  uint8_t bit_width = 0);
 
     const IRegisterAddress& GetAddress() const;
 };

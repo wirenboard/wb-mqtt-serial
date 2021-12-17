@@ -131,11 +131,9 @@ TRegisterConfig::TRegisterConfig(int type,
                                  double round_to,
                                  bool readonly,
                                  const std::string& type_name,
-                                 std::unique_ptr<uint64_t> error_value,
                                  const EWordOrder word_order,
                                  uint8_t bit_offset,
-                                 uint8_t bit_width,
-                                 std::unique_ptr<uint64_t> unsupported_value)
+                                 uint8_t bit_width)
     : Address(address),
       Type(type),
       Format(format),
@@ -144,11 +142,9 @@ TRegisterConfig::TRegisterConfig(int type,
       RoundTo(round_to),
       ReadOnly(readonly),
       TypeName(type_name),
-      ErrorValue(std::move(error_value)),
       WordOrder(word_order),
       BitOffset(bit_offset),
-      BitWidth(bit_width),
-      UnsupportedValue(std::move(unsupported_value))
+      BitWidth(bit_width)
 {
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
@@ -161,29 +157,6 @@ TRegisterConfig::TRegisterConfig(int type,
 
     if (!Address) {
         throw TSerialDeviceException("register address is not defined");
-    }
-}
-
-TRegisterConfig::TRegisterConfig(const TRegisterConfig& config)
-{
-    Type = config.Type;
-    Address = config.Address;
-    Format = config.Format;
-    Scale = config.Scale;
-    Offset = config.Offset;
-    RoundTo = config.RoundTo;
-    WriteOnly = config.WriteOnly;
-    ReadOnly = config.ReadOnly;
-    TypeName = config.TypeName;
-    PollInterval = config.PollInterval;
-    if (config.ErrorValue) {
-        ErrorValue = std::make_unique<uint64_t>(*config.ErrorValue);
-    }
-    WordOrder = config.WordOrder;
-    BitOffset = config.BitOffset;
-    BitWidth = config.BitWidth;
-    if (config.UnsupportedValue) {
-        UnsupportedValue = std::make_unique<uint64_t>(*config.UnsupportedValue);
     }
 }
 
@@ -216,11 +189,9 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         double round_to,
                                         bool readonly,
                                         const std::string& type_name,
-                                        std::unique_ptr<uint64_t> error_value,
                                         const EWordOrder word_order,
                                         uint8_t bit_offset,
-                                        uint8_t bit_width,
-                                        std::unique_ptr<uint64_t> unsupported_value)
+                                        uint8_t bit_width)
 {
     return std::make_shared<TRegisterConfig>(type,
                                              address,
@@ -230,11 +201,9 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                              round_to,
                                              readonly,
                                              type_name,
-                                             std::move(error_value),
                                              word_order,
                                              bit_offset,
-                                             bit_width,
-                                             std::move(unsupported_value));
+                                             bit_width);
 }
 
 PRegisterConfig TRegisterConfig::Create(int type,
@@ -245,11 +214,9 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         double round_to,
                                         bool readonly,
                                         const std::string& type_name,
-                                        std::unique_ptr<uint64_t> error_value,
                                         const EWordOrder word_order,
                                         uint8_t bit_offset,
-                                        uint8_t bit_width,
-                                        std::unique_ptr<uint64_t> unsupported_value)
+                                        uint8_t bit_width)
 {
     return Create(type,
                   std::make_shared<TUint32RegisterAddress>(address),
@@ -259,11 +226,9 @@ PRegisterConfig TRegisterConfig::Create(int type,
                   round_to,
                   readonly,
                   type_name,
-                  std::move(error_value),
                   word_order,
                   bit_offset,
-                  bit_width,
-                  std::move(unsupported_value));
+                  bit_width);
 }
 
 TUint32RegisterAddress::TUint32RegisterAddress(uint32_t address): Address(address)

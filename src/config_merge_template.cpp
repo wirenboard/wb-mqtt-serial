@@ -121,7 +121,7 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
                                          : simpleChannelforbiddenOverrides;
 
     for (auto itProp = userConfig.begin(); itProp != userConfig.end(); ++itProp) {
-        if (itProp.name() == "poll_interval" || itProp.name() == "enabled") {
+        if (itProp.name() == "enabled") {
             SetPropertyWithNotification(templateConfig, itProp, logPrefix);
             continue;
         }

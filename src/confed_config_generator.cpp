@@ -52,16 +52,44 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
     return true;
 }
 
+/**
+ * @brief  Compare "read_rate_limit" property with template.
+ *         Remove it from ch if it is equal to specified in template.
+ *
+ * @return true channel has "read_rate_limit" property different from template's value
+ * @return false channel has "read_rate_limit" property same as in template
+ */
+bool TryToTransformReadRateLimit(Json::Value& ch, const Json::Value& channelTemplate)
+{
+    if (!ch.isMember("read_rate_limit")) {
+        return false;
+    }
+    if (channelTemplate.isMember("poll_interval") &&
+        ch["read_rate_limit"].asInt() == channelTemplate["poll_interval"].asInt())
+    {
+        ch.removeMember("read_rate_limit");
+        return false;
+    }
+    if (channelTemplate.isMember("read_rate_limit") &&
+        (ch["read_rate_limit"].asInt() == channelTemplate["read_rate_limit"].asInt()))
+    {
+        ch.removeMember("read_rate_limit");
+        return false;
+    }
+    return true;
+}
+
+/**
+ * @brief  Compare parameters with template.
+ *         Add channel to resulting config file if:
+ *         - it has "read_rate_limit", deprecated "poll_interval" or "enabled" property
+ *           different from that specified in template
+ *         - it has "read_period" property
+ *         Remove properies equal to specified in template
+ */
 bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemplate)
 {
-    bool ok = false;
-    if (ch.isMember("poll_interval")) {
-        if (!channelTemplate.isMember("poll_interval") ||
-            (ch["poll_interval"].asInt() != channelTemplate["poll_interval"].asInt()))
-        {
-            ok = true;
-        }
-    }
+    bool ok = TryToTransformReadRateLimit(ch, channelTemplate);
     if (ch.isMember("enabled")) {
         bool enabledInTemplate = true;
         Get(channelTemplate, "enabled", enabledInTemplate);
@@ -71,7 +99,7 @@ bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemp
             ok = true;
         }
     }
-    return ok;
+    return ok || ch.isMember("read_period");
 }
 
 Json::Value FilterStandardChannels(const Json::Value& device,

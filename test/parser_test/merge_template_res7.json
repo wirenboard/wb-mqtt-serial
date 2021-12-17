@@ -23,7 +23,7 @@
                                                         "address" : "0x0502",
                                                         "format" : "s32",
                                                         "name" : "c12",
-                                                        "poll_interval" : 100,
+                                                        "read_period" : 100,
                                                         "reg_type" : "input"
                                                 },
                                                 {

@@ -41,7 +41,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: 300
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -66,7 +65,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: 10000
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -91,7 +89,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -128,7 +125,7 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                PollInterval: -1
+                ReadPeriod: 1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -165,7 +162,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                PollInterval: -1
                 ErrorValue: 65535
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -190,7 +186,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                PollInterval: -1
                 ErrorValue: 4294967295
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -215,7 +210,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                PollInterval: -1
                 ErrorValue: 4294967295
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -240,7 +234,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                PollInterval: -1
                 ErrorValue: 4294967295
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -265,7 +258,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                PollInterval: -1
                 ErrorValue: 18446744073709551615
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -290,7 +282,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                PollInterval: -1
                 ErrorValue: 18446744073709551615
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -334,7 +325,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: coil
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -359,7 +349,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: coil
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -384,7 +373,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: coil
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -409,7 +397,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: discrete
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -446,7 +433,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                PollInterval: 102
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -459,7 +445,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                PollInterval: 102
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -472,7 +457,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                PollInterval: 102
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -497,7 +481,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: holding
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -534,7 +517,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -571,7 +553,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -608,7 +589,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: 300
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -633,7 +613,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: holding
-                PollInterval: 10000
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -658,7 +637,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: holding
-                PollInterval: 1000
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -696,7 +674,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: holding
-                PollInterval: -1
                 ErrorValue: 11
                 UnsupportedValue: 170
                 WordOrder: LittleEndian
@@ -734,7 +711,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -760,7 +736,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -786,7 +761,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -812,7 +786,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -838,7 +811,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -864,7 +836,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -889,7 +860,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -914,7 +884,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -940,7 +909,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian
@@ -966,7 +934,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian

@@ -1,0 +1,822 @@
+Debug: 0
+PublishParams: 0 0
+Ports:
+    ------
+    ConnSettings: </dev/ttyNSC0 9600 8 N 2>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
+    ReadRateLimit: 10
+    GuardInterval: 0
+    Response timeout: -1
+    DeviceConfigs:
+        ------
+        Id: msu34tlp_2
+        Name: MSU34+TLP 2
+        SlaveId: 2
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 20000
+        DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temp 1
+            Type: temperature
+            MqttId: Temp 1
+            DeviceId: msu34tlp_2
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 200
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Illuminance
+            Type: lux
+            MqttId: Illuminance
+            DeviceId: msu34tlp_2
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 300
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Pressure
+            Type: pressure
+            MqttId: Pressure
+            DeviceId: msu34tlp_2
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 0.075
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 200
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Temp 2
+            Type: temperature
+            MqttId: Temp 2
+            DeviceId: msu34tlp_2
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 200
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+        ------
+        Id: msu34tlp_1
+        Name: MSU34+TLP 1
+        SlaveId: 1
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 20000
+        DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temp 1
+            Type: temperature
+            MqttId: Temp 1
+            DeviceId: msu34tlp_1
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 10
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Illuminance
+            Type: lux
+            MqttId: Illuminance
+            DeviceId: msu34tlp_1
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 10
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Pressure
+            Type: pressure
+            MqttId: Pressure
+            DeviceId: msu34tlp_1
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 0.075
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 10
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Temp 2
+            Type: temperature
+            MqttId: Temp 2
+            DeviceId: msu34tlp_1
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 10
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+    ------
+    ConnSettings: </dev/ttyNSC1 9600 8 N 1>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
+    ReadRateLimit: 101
+    GuardInterval: 0
+    Response timeout: -1
+    DeviceConfigs:
+        ------
+        Id: msu34tlp_2
+        Name: MSU34+TLP 2
+        SlaveId: 2
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 20000
+        DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temp 1
+            Type: temperature
+            MqttId: Temp 1
+            DeviceId: msu34tlp_2
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 201
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Illuminance
+            Type: lux
+            MqttId: Illuminance
+            DeviceId: msu34tlp_2
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 301
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Pressure
+            Type: pressure
+            MqttId: Pressure
+            DeviceId: msu34tlp_2
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 0.075
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 201
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Temp 2
+            Type: temperature
+            MqttId: Temp 2
+            DeviceId: msu34tlp_2
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 201
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+        ------
+        Id: msu34tlp_1
+        Name: MSU34+TLP 1
+        SlaveId: 1
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 20000
+        DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temp 1
+            Type: temperature
+            MqttId: Temp 1
+            DeviceId: msu34tlp_1
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 101
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Illuminance
+            Type: lux
+            MqttId: Illuminance
+            DeviceId: msu34tlp_1
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 101
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Pressure
+            Type: pressure
+            MqttId: Pressure
+            DeviceId: msu34tlp_1
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 0.075
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 101
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Temp 2
+            Type: temperature
+            MqttId: Temp 2
+            DeviceId: msu34tlp_1
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 101
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+    ------
+    ConnSettings: </dev/ttyNSC2 9600 8 N 1>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
+    ReadRateLimit: 102
+    GuardInterval: 0
+    Response timeout: -1
+    DeviceConfigs:
+        ------
+        Id: msu34tlp_2
+        Name: MSU34+TLP 2
+        SlaveId: 2
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 20000
+        DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temp 1
+            Type: temperature
+            MqttId: Temp 1
+            DeviceId: msu34tlp_2
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 202
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Illuminance
+            Type: lux
+            MqttId: Illuminance
+            DeviceId: msu34tlp_2
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 302
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Pressure
+            Type: pressure
+            MqttId: Pressure
+            DeviceId: msu34tlp_2
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 0.075
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 202
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Temp 2
+            Type: temperature
+            MqttId: Temp 2
+            DeviceId: msu34tlp_2
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 202
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+    ------
+    ConnSettings: </dev/ttyNSC2 9600 8 N 1>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
+    ReadRateLimit: 103
+    GuardInterval: 0
+    Response timeout: -1
+    DeviceConfigs:
+        ------
+        Id: msu34tlp_2
+        Name: MSU34+TLP 2
+        SlaveId: 2
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 20000
+        DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temp 1
+            Type: temperature
+            MqttId: Temp 1
+            DeviceId: msu34tlp_2
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 203
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Illuminance
+            Type: lux
+            MqttId: Illuminance
+            DeviceId: msu34tlp_2
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 303
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Pressure
+            Type: pressure
+            MqttId: Pressure
+            DeviceId: msu34tlp_2
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 0.075
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 203
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Temp 2
+            Type: temperature
+            MqttId: Temp 2
+            DeviceId: msu34tlp_2
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ReadRateLimit: 203
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+    ------
+    ConnSettings: </dev/ttyNSC4 9600 8 N 1>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
+    GuardInterval: 0
+    Response timeout: -1
+    DeviceConfigs:
+        ------
+        Id: msu34tlp_2
+        Name: MSU34+TLP 2
+        SlaveId: 2
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        GuardInterval: 20000
+        DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temp 1
+            Type: temperature
+            MqttId: Temp 1
+            DeviceId: msu34tlp_2
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 0
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Illuminance
+            Type: lux
+            MqttId: Illuminance
+            DeviceId: msu34tlp_2
+            Order: 2
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1
+                Format: U16
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Pressure
+            Type: pressure
+            MqttId: Pressure
+            DeviceId: msu34tlp_2
+            Order: 3
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 2
+                Format: U16
+                Scale: 0.075
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+            ------
+            Name: Temp 2
+            Type: temperature
+            MqttId: Temp 2
+            DeviceId: msu34tlp_2
+            Order: 4
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 3
+                Format: S8
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian

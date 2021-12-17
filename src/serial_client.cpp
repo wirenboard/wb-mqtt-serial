@@ -44,7 +44,7 @@ namespace
 
     bool IsHighPriority(const TRegister& reg)
     {
-        return reg.PollInterval > UndefinedPollInterval;
+        return bool(reg.ReadPeriod);
     }
 };
 
@@ -85,7 +85,7 @@ void TSerialClient::AddRegister(PRegister reg)
         throw TSerialDeviceException("duplicate register");
     auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg, FlushNeeded);
     RegList.push_back(reg);
-    LOG(Debug) << "AddRegister: " << reg << " PollInterval: " << reg->PollInterval.count();
+    LOG(Debug) << "AddRegister: " << reg;
 }
 
 void TSerialClient::Activate()
@@ -111,7 +111,7 @@ void TSerialClient::PrepareRegisterRanges()
             // All registers are marked as high priority with poll time set to now.
             // So they will be polled as soon as possible after service start.
             // During next polls registers will be divided to low or high priority according to poll interval
-            Scheduler.AddHighPriorityEntry(reg, now);
+            Scheduler.AddEntry(reg, now, TPriority::High);
         }
     }
 }
@@ -234,13 +234,18 @@ void TSerialClient::Cycle()
 
 void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point now)
 {
-    if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
-        if (IsHighPriority(*reg)) {
-            Scheduler.AddHighPriorityEntry(reg, now + reg->PollInterval);
-        } else {
-            Scheduler.AddLowPriorityEntry(reg);
-        }
+    if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
+        return;
     }
+    if (IsHighPriority(*reg)) {
+        Scheduler.AddEntry(reg, now + *(reg->ReadPeriod), TPriority::High);
+        return;
+    }
+    if (reg->ReadRateLimit) {
+        Scheduler.AddEntry(reg, now + *(reg->ReadRateLimit), TPriority::Low);
+        return;
+    }
+    Scheduler.AddEntry(reg, now, TPriority::Low);
 }
 
 void TSerialClient::ClosedPortCycle()

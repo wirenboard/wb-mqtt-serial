@@ -16,7 +16,7 @@
                     [
                         {
                             "name" : "c12",
-                            "poll_interval" : 100
+                            "read_period" : 100
                         },
                         {
                             "enabled" : false,

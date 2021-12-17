@@ -41,7 +41,6 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian

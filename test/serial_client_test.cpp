@@ -48,7 +48,6 @@ protected:
                                                          round_to,
                                                          false,
                                                          "fake",
-                                                         std::unique_ptr<uint64_t>(),
                                                          word_order));
     }
     PFakeSerialPort Port;
@@ -146,10 +145,10 @@ TEST_F(TSerialClientTest, PortOpenError)
     // TSerialClient must try to open port during every cycle and set /meta/error for controls
 
     PRegister reg0 = Reg(0, U8);
-    reg0->PollInterval = 1ms;
+    reg0->ReadPeriod = 1ms;
 
     PRegister reg1 = Reg(1, U8);
-    reg1->PollInterval = 1ms;
+    reg1->ReadPeriod = 1ms;
 
     SerialClient->AddRegister(reg0);
     SerialClient->AddRegister(reg1);
@@ -918,7 +917,7 @@ TEST_F(TSerialClientTest, Errors)
     Note() << "Cycle() [write, nothing blacklisted]";
     SerialClient->Cycle();
 
-    reg20->ErrorValue = std::make_unique<uint64_t>(42);
+    reg20->ErrorValue = 42;
     Note() << "Cycle() [read, set error value for register]";
     SerialClient->Cycle();
     SerialClient->GetTextValue(reg20);
@@ -1438,8 +1437,8 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
                         [=](const Json::Value&) { return std::make_pair(Port, false); });
 
     if (pollIntervalTest) {
-        Config->PortConfigs[0]->Devices[0]->DeviceConfig()->DeviceChannelConfigs[0]->RegisterConfigs[0]->PollInterval =
-            chrono::seconds(100);
+        Config->PortConfigs[0]->Devices[0]->DeviceConfig()->DeviceChannelConfigs[0]->RegisterConfigs[0]->ReadPeriod =
+            100s;
     }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);

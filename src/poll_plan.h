@@ -61,6 +61,12 @@ private:
     std::priority_queue<TItem> Entries;
 };
 
+enum class TPriority
+{
+    High,
+    Low
+};
+
 template<class TEntry, class TComparePredicate> class TScheduler
 {
 public:
@@ -76,41 +82,35 @@ public:
         ForcedLowPriorityCallTime = std::chrono::steady_clock::now() + ForcedLowPriorityInterval;
     }
 
-    void AddHighPriorityEntry(TEntry entry, std::chrono::steady_clock::time_point nextPollTime)
+    void AddEntry(TEntry entry, std::chrono::steady_clock::time_point nextPollTime, TPriority priority)
     {
-        HighPriorityQueue.AddEntry(entry, nextPollTime);
-    }
-
-    void AddLowPriorityEntry(TEntry entry)
-    {
-        LowPriorityQueue.emplace(entry);
+        if (priority == TPriority::Low) {
+            LowPriorityQueue.AddEntry(entry, nextPollTime);
+        } else {
+            HighPriorityQueue.AddEntry(entry, nextPollTime);
+        }
     }
 
     std::chrono::steady_clock::time_point GetNextPollTime() const
     {
-        if (LowPriorityQueue.empty()) {
-            return HighPriorityQueue.GetNextPollTime();
-        }
-        return std::chrono::steady_clock::now();
+        return std::min(HighPriorityQueue.GetNextPollTime(), LowPriorityQueue.GetNextPollTime());
     }
 
     template<class TAccumulator> void GetNext(std::chrono::steady_clock::time_point time, TAccumulator& accumulator)
     {
+        auto pollLimit = std::chrono::milliseconds::max();
         if (HighPriorityQueue.HasReadyItems(time) &&
-            (LastSelectedWasFromLowPriorityQueue || (ForcedLowPriorityCallTime > time) || LowPriorityQueue.empty()))
+            (LastSelectedWasFromLowPriorityQueue || (ForcedLowPriorityCallTime > time) || LowPriorityQueue.IsEmpty()))
         {
-            while (HighPriorityQueue.HasReadyItems(time) &&
-                   accumulator(HighPriorityQueue.GetTop().Data, std::chrono::milliseconds::max()))
-            {
+            while (HighPriorityQueue.HasReadyItems(time) && accumulator(HighPriorityQueue.GetTop().Data, pollLimit)) {
                 HighPriorityQueue.Pop();
                 LastSelectedWasFromLowPriorityQueue = false;
             }
             return;
         }
-        if (!LowPriorityQueue.empty()) {
+        if (LowPriorityQueue.HasReadyItems(time)) {
             ForcedLowPriorityCallTime = time + ForcedLowPriorityInterval;
             LastSelectedWasFromLowPriorityQueue = true;
-            auto pollLimit = std::chrono::milliseconds::max();
             if (!HighPriorityQueue.IsEmpty()) {
                 pollLimit =
                     std::chrono::duration_cast<std::chrono::milliseconds>(HighPriorityQueue.GetNextPollTime() - time);
@@ -118,14 +118,14 @@ public:
                     pollLimit = std::chrono::milliseconds(1);
                 }
             }
-            while (!LowPriorityQueue.empty() && accumulator(LowPriorityQueue.front(), pollLimit)) {
-                LowPriorityQueue.pop();
+            while (LowPriorityQueue.HasReadyItems(time) && accumulator(LowPriorityQueue.GetTop().Data, pollLimit)) {
+                LowPriorityQueue.Pop();
             }
         }
     }
 
 private:
-    std::queue<TEntry> LowPriorityQueue;
+    TQueue LowPriorityQueue;
     TQueue HighPriorityQueue;
     std::chrono::microseconds ForcedLowPriorityInterval;
     std::chrono::steady_clock::time_point ForcedLowPriorityCallTime = std::chrono::steady_clock::time_point::min();

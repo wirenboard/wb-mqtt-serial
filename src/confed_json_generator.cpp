@@ -10,6 +10,15 @@ using namespace WBMQTT::JSON;
 
 namespace
 {
+    // poll_interval is deprecated, we convert it to read_rate_limit
+    void ConvertPollIntervalToReadRateLimit(Json::Value& node)
+    {
+        if (node.isMember("poll_interval")) {
+            node["read_rate_limit"] = node["poll_interval"];
+            node.removeMember("poll_interval");
+        }
+    }
+
     Json::Value MakeJsonFromChannelTemplate(const Json::Value& channelTemplate)
     {
         Json::Value res;
@@ -27,7 +36,8 @@ namespace
             }
             return res;
         }
-        SetIfExists(res, "poll_interval", channelTemplate, "poll_interval");
+        SetIfExists(res, "read_rate_limit", channelTemplate, "poll_interval");
+        SetIfExists(res, "read_rate_limit", channelTemplate, "read_rate_limit");
         res["enabled"] = true;
         SetIfExists(res, "enabled", channelTemplate, "enabled");
         return res;
@@ -41,7 +51,9 @@ namespace
 
         Json::Value res;
         res["name"] = channelConfig["name"];
-        SetIfExists(res, "poll_interval", channelConfig, "poll_interval");
+        SetIfExists(res, "read_rate_limit", channelConfig, "poll_interval");
+        SetIfExists(res, "read_rate_limit", channelConfig, "read_rate_limit");
+        SetIfExists(res, "read_period", channelConfig, "read_period");
         res["enabled"] = true;
         SetIfExists(res, "enabled", channelConfig, "enabled");
         return res;
@@ -237,6 +249,7 @@ namespace
         }
 
         Json::Value newDev(config);
+        ConvertPollIntervalToReadRateLimit(newDev);
         JoinChannelsToGroups(newDev, schema);
         newDev.removeMember("device_type");
 
@@ -295,6 +308,7 @@ Json::Value MakeJsonForConfed(const std::string& configFileName,
         MakeSchemaForConfigValidation(baseConfigSchema, GetValidationDeviceTypes(root), templates, deviceFactory);
     Validate(root, configSchema);
     for (Json::Value& port: root["ports"]) {
+        ConvertPollIntervalToReadRateLimit(port);
         for (Json::Value& device: port["devices"]) {
             if (device.isMember("device_type")) {
                 device = MakeDeviceForConfed(device, templates, false);
