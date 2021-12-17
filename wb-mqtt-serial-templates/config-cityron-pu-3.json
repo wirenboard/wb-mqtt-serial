@@ -53,7 +53,7 @@
         },
         "channels": [
             {
-                "name": "Panel On",
+                "name": "Panel Status",
                 "address": 2,
                 "reg_type": "holding",
                 "type": "switch",
@@ -87,6 +87,7 @@
                 "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
+                "round_to": 0.1,
                 "group": "parameters"
             },
             {
@@ -109,7 +110,7 @@
                 "max": 5
             },
             {
-                "name": "Selected Mode",
+                "name": "Mode",
                 "address": 3,
                 "reg_type": "holding",
                 "type": "range",
@@ -127,7 +128,7 @@
                 "group": "parameters"
             },
             {
-                "name": "Cooling Mode Allowed",
+                "name": "Cooling Allowed",
                 "address": "17:1:1",
                 "reg_type": "holding",
                 "type": "switch",
@@ -135,7 +136,7 @@
                 "group": "parameters"
             },
             {
-                "name": "Heating Mode Allowed",
+                "name": "Heating Allowed",
                 "address": "17:2:1",
                 "reg_type": "holding",
                 "type": "switch",
@@ -143,7 +144,7 @@
                 "group": "parameters"
             },
             {
-                "name": "Ventilation Mode Allowed",
+                "name": "Ventilation Allowed",
                 "address": "17:3:1",
                 "reg_type": "holding",
                 "type": "switch",
@@ -151,7 +152,7 @@
                 "group": "parameters"
             },
             {
-                "name": "Filter Alarm",
+                "name": "Replace Filter",
                 "address": 7,
                 "reg_type": "holding",
                 "type": "switch",
@@ -380,18 +381,18 @@
                 "Data Storage": "Хранилище данных",
                 "Minimum Temperature Setpoint": "Минимальная уставка температуры",
                 "Maximum Temperature Setpoint": "Максимальная уставка температуры",
-                "Panel On": "Панель включена",
+                "Panel Status": "Статус панели",
                 "Temperature Setpoint": "Уставка температуры",
                 "Main Temperature": "Основная температура",
                 "Additional Temperature": "Дополнительная температура",
                 "Humidity": "Влажность",
                 "Fan Speed": "Скорость вентилятора",
-                "Selected Mode": "Выбранный режим",
-                "Auto Mode Allowed": "Автоматический режим разрешен",
-                "Cooling Mode Allowed": "Режим охлаждения разрешен",
-                "Heating Mode Allowed": "Режим нагрева разрешен",
-                "Ventilation Mode Allowed": "Режим вентиляции разрешен",
-                "Filter Alarm": "Ошибка фильтра",
+                "Mode": "Режим",
+                "Auto Mode Allowed": "Режим авто разрешен",
+                "Cooling Allowed": "Охлаждение разрешено",
+                "Heating Allowed": "Нагрев разрешен",
+                "Ventilation Allowed": "Вентиляция разрешена",
+                "Replace Filter": "Заменить фильтр",
                 "Alarm Code": "Код ошибки",
                 "Hour": "Час",
                 "Minute": "Минута",
