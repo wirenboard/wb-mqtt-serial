@@ -4,9 +4,7 @@
     "device": {
         "name": "Cityron ПУ-3",
         "id": "cityron-pu-3",
-        "max_read_registers": 1,
         "response_timeout_ms": 100,
-        "frame_timeout_ms": 10,
         "guard_interval_us": 5000,
         "groups": [
             {
@@ -174,7 +172,7 @@
                 "address": 20,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "s16",
+                "format": "u16",
                 "group": "general"
             },
             {
@@ -182,7 +180,7 @@
                 "address": 21,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "s16",
+                "format": "u16",
                 "group": "general"
             },
             {
@@ -190,7 +188,7 @@
                 "address": 22,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "s16",
+                "format": "u16",
                 "group": "general"
             },
             {
@@ -198,7 +196,7 @@
                 "address": 300,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
@@ -207,7 +205,7 @@
                 "address": 301,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
@@ -216,7 +214,7 @@
                 "address": 302,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
@@ -225,7 +223,7 @@
                 "address": 303,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
@@ -234,7 +232,7 @@
                 "address": 304,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
@@ -243,7 +241,7 @@
                 "address": 305,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
@@ -252,7 +250,7 @@
                 "address": 306,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
@@ -261,7 +259,7 @@
                 "address": 307,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
@@ -270,7 +268,7 @@
                 "address": 308,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
@@ -279,7 +277,7 @@
                 "address": 309,
                 "reg_type": "holding",
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
