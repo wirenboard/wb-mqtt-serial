@@ -6284,7 +6284,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Continuous hue changing",
+                            "name": "Continuous HUE changing",
                             "address": 10,
                             "type": "switch",
                             "reg_type": "coil"
@@ -6350,7 +6350,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Continuous hue changing time, ms per 1°",
+                            "name": "Continuous HUE changing time, ms per 1°",
                             "address": 2017,
                             "reg_type": "holding",
                             "min": 3,
@@ -7496,13 +7496,13 @@
             "en": {
                 "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 (4-channel CV LED dimmer fw 3.0)",
 
-                "sp_title": "Single press",
+                "sp_title": "Short press",
                 "lp_title": "Long press",
                 "dp_title": "Double press",
                 "slp_title": "Shortlong press",
 
-                "fader_inc_title": "Fader for enabling (increasing), ms",
-                "fader_dec_title": "Fader for disabling (decreasing), ms",
+                "fader_inc_title": "Time to increase the value from 0 to 100%, ms",
+                "fader_dec_title": "Time to decrease the value from 0 to 100%, ms",
 
                 "no_act_title": "Nothing",
                 "off_ch1_act_title": "Disable channel 1 (B)",
@@ -7573,21 +7573,21 @@
                 "inc_r_act_title": "Increase brightness of red",
                 "inc_g_act_title": "Increase brightness of green",
                 "inc_b_act_title": "Increase brightness of blue",
-                "inc_h_act_title": "Increase hue of RGB strip (circular, HSV-H)",
+                "inc_h_act_title": "Increase HUE of RGB strip (circular, HSV-H)",
                 "inc_s_act_title": "Increase saturation of RGB strip (HSV-S)",
                 "inc_v_act_title": "Increase brightness of RGB strip (HSV-V)",
                 "inc_hue_ch_time_act_title": "Increase HUE changing time",
                 "dec_r_act_title": "Decrease brightness of red",
                 "dec_g_act_title": "Decrease brightness of green",
                 "dec_b_act_title": "Decrease brightness of blue",
-                "dec_h_act_title": "Decrease hue of RGB strip (circular, HSV-H)",
+                "dec_h_act_title": "Decrease HUE of RGB strip (circular, HSV-H)",
                 "dec_s_act_title": "Decrease saturation of RGB strip (HSV-S)",
                 "dec_v_act_title": "Decrease brightness of RGB strip (HSV-V)",
                 "dec_hue_ch_time_act_title": "Decrease HUE changing time",
                 "inc_dec_r_act_title": "Increase/decrease brightness of red",
                 "inc_dec_g_act_title": "Increase/decrease brightness of green",
                 "inc_dec_b_act_title": "Increase/decrease brightness of blue",
-                "inc_dec_h_act_title": "Increase/decrease hue of RGB strip (circular, HSV-H)",
+                "inc_dec_h_act_title": "Increase/decrease HUE of RGB strip (circular, HSV-H)",
                 "inc_dec_s_act_title": "Increase/decrease saturation of RGB strip (HSV-S)",
                 "inc_dec_v_act_title": "Increase/decrease brightness of RGB strip (HSV-V)",
                 "inc_dec_hue_ch_time_act_title": "Increase/decrease HUE changing time",
@@ -7600,17 +7600,17 @@
                 "inc_dec_ch1234_act_title": "Increase/decrease brightness of channels 1, 2, 3, 4",
 
                 "lp_hold_time_title": "Hold time for long press detection, ms",
-                "lp_repeat_time_title": "Period of repetition of events when long pressed and holding, ms",
+                "lp_repeat_time_title": "The rate of change of the parameter when holding the button, ms/unit",
                 "dp_time_title": "Double press time, ms",
                 "debounce_time_title": "Debounce time, ms",
 
                 "pwm_frequency_factor_title": "PWM frequency factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
 
-                "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
-                "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
+                "channel_min_value_description": "Raw PWM value corresponding to minimum brightness (1%)",
+                "channel_max_value_description": "Raw PWM value corresponding to maximum brightness (100%)",
 
-                "hue_fader_description": "Time for changing hue by 360°. Please note that the hue is changing by the shortest path (f.e. 10° -> 0° -> 350°).",
+                "hue_fader_description": "Time for changing HUE by 360°. Please note that the HUE is changing by the shortest path (f.e. 10° -> 0° -> 350°).",
 
                 "Uptime": "Uptime (s)"
             },
@@ -7618,12 +7618,12 @@
                 "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 (4-канальный диммер светодиодных лент с прошивкой 3.0)",
 
                 "sp_title": "Короткое нажатие",
-                "lp_title": "Долгое нажатие",
+                "lp_title": "Длинное нажатие",
                 "dp_title": "Двойное нажатие",
-                "slp_title": "Короткое, затем долгое нажатие",
+                "slp_title": "Короткое, затем длинное нажатие",
 
-                "fader_inc_title": "Время включения (увеличения значения) канала (мс/100%)",
-                "fader_dec_title": "Время выключения (уменьшения значения) канала (мс/100%)",
+                "fader_inc_title": "Время увеличения значения c 0 до 100% в мс",
+                "fader_dec_title": "Время уменьшения значения с 0 до 100% в мс",
 
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
@@ -7663,16 +7663,16 @@
                 "inc_dec_ch3_act_title": "Увеличить/уменьшить яркость канала 3 (G)",
                 "inc_dec_ch4_act_title": "Увеличить/уменьшить яркость канала 4 (W)",
 
-                "off_ch12_act_title": "Выключить каналов 1 и 2 (B_R)",
-                "on_ch12_act_title": "Включить каналов 1 и 2 (B_R)",
-                "tg_ch12_act_title": "Переключить каналов 1 и 2 (B_R)",
+                "off_ch12_act_title": "Выключить каналы 1 и 2 (B_R)",
+                "on_ch12_act_title": "Включить каналы 1 и 2 (B_R)",
+                "tg_ch12_act_title": "Переключить каналы 1 и 2 (B_R)",
                 "inc_ch12_act_title": "Увеличить яркость каналов 1 и 2 (B_R)",
                 "dec_ch12_act_title": "Уменьшить яркость каналов 1 и 2 (B_R)",
                 "inc_dec_ch12_act_title": "Увеличить/уменьшить яркость каналов 1 и 2 (B_R)",
 
-                "off_ch34_act_title": "Выключить каналов 3 и 4 (G_W)",
-                "on_ch34_act_title": "Включить каналов 3 и 4 (G_W)",
-                "tg_ch34_act_title": "Переключить каналов 3 и 4 (G_W)",
+                "off_ch34_act_title": "Выключить каналы 3 и 4 (G_W)",
+                "on_ch34_act_title": "Включить каналы 3 и 4 (G_W)",
+                "tg_ch34_act_title": "Переключить каналы 3 и 4 (G_W)",
                 "inc_ch34_act_title": "Увеличить яркость каналов 3 и 4 (G_W)",
                 "dec_ch34_act_title": "Уменьшить яркость каналов 3 и 4 (G_W)",
                 "inc_dec_ch34_act_title": "Увеличить/уменьшить яркость каналов 3 и 4 (G_W)",
@@ -7741,7 +7741,7 @@
                 "CCT1 (channels 1, 2)": "Лента CCT1 (каналы 1, 2)",
                 "CCT2 (channels 3, 4)": "Лента CCT2 (каналы 3, 4)",
                 "RGB (channels 1, 2, 3)": "Лента RGB (каналы 1, 2, 3)",
-                "Continuous hue changing": "Изменение цвета RGB ленты",
+                "Continuous HUE changing": "Изменение цвета RGB ленты",
                 "Channels 1, 2, 3, 4": "Каналы 1, 2, 3, 4",
 
                 "Channel 1 (B) brightness": "Яркость канала 1 (B)",
@@ -7758,13 +7758,13 @@
                 "Hue of RGB strip": "Цвет RGB ленты (H)",
                 "Saturation of RGB strip": "Насыщенность цвета RGB ленты (S)",
                 "Value (brightness) of RGB strip": "Яркость RGB ленты (V)",
-                "Continuous hue changing time, ms per 1°": "Время изменения HUE на 1°",
+                "Continuous HUE changing time, ms per 1°": "Время изменения HUE на 1°",
                 "Channels 1, 2, 3, 4 brightness": "Яркость каналов 1, 2, 3, 4",
 
-                "Channel 1 (B) raw PWM": "Сырое задание для канала 1 (B)",
-                "Channel 2 (R) raw PWM": "Сырое задание для канала 2 (R)",
-                "Channel 3 (G) raw PWM": "Сырое задание для канала 3 (G)",
-                "Channel 4 (W) raw PWM": "Сырое задание для канала 4 (W)",
+                "Channel 1 (B) raw PWM": "Прямое управление ШИМ канала 1 (B)",
+                "Channel 2 (R) raw PWM": "Прямое управление ШИМ канала 2 (R)",
+                "Channel 3 (G) raw PWM": "Прямое управление ШИМ канала 3 (G)",
+                "Channel 4 (W) raw PWM": "Прямое управление ШИМ канала 4 (W)",
 
                 "Input 1 counter": "Счетчик замыканий входа 1",
                 "Input 2 counter": "Счетчик замыканий входа 2",
@@ -7786,7 +7786,7 @@
                 "Mode": "Режим работы",
 
                 "lp_hold_time_title": "Время удержания кнопки для фиксации долгого нажатия, мс",
-                "lp_repeat_time_title": "Период генерации событий при удержании кнопки после фиксации долгого нажатия, мс",
+                "lp_repeat_time_title": "Скорость изменения параметра при удержании кнопки, мс/ед",
                 "dp_time_title": "Время двойного нажатия, мс",
                 "debounce_time_title": "Время подавления дребезга, мс",
 
@@ -7802,8 +7802,8 @@
                 "pwm_frequency_factor_title": "Делитель частоты ШИМ",
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / делитель",
 
-                "channel_min_value_description": "Сырое задание для канала, соответствующее минимальной яркости (1%)",
-                "channel_max_value_description": "Сырое задание для канала, соответствующее максимальной яркости (100%)",
+                "channel_min_value_description": "Значение ШИМ для канала, соответствующее минимальной яркости (1%)",
+                "channel_max_value_description": "Значение ШИМ для канала, соответствующее максимальной яркости (100%)",
 
                 "hue_fader_description": "Время изменения цвета (hue) на 360°. Учтите, что цвет изменяется по кратчайшему пути (например, 10° -> 0° -> 350°).",
 
