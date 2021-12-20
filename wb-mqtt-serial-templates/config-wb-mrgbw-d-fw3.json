@@ -7772,20 +7772,20 @@
                 "Input 1 single press counter": "Счетчик коротких нажатий входа 1",
                 "Input 2 single press counter": "Счетчик коротких нажатий входа 2",
                 "Input 3 single press counter": "Счетчик коротких нажатий входа 3",
-                "Input 1 long press counter": "Счетчик долгих нажатий входа 1",
-                "Input 2 long press counter": "Счетчик долгих нажатий входа 2",
-                "Input 3 long press counter": "Счетчик долгих нажатий входа 3",
+                "Input 1 long press counter": "Счетчик длинных нажатий входа 1",
+                "Input 2 long press counter": "Счетчик длинных нажатий входа 2",
+                "Input 3 long press counter": "Счетчик длинных нажатий входа 3",
                 "Input 1 double press counter": "Счетчик двойных нажатий входа 1",
                 "Input 2 double press counter": "Счетчик двойных нажатий входа 2",
                 "Input 3 double press counter": "Счетчик двойных нажатий входа 3",
-                "Input 1 shortlong press counter": "Счетчик коротких, а затем долгих нажатий входа 1",
-                "Input 2 shortlong press counter": "Счетчик коротких, а затем долгих нажатий входа 2",
-                "Input 3 shortlong press counter": "Счетчик коротких, а затем долгих нажатий входа 3",
+                "Input 1 shortlong press counter": "Счетчик коротких, а затем длинных нажатий входа 1",
+                "Input 2 shortlong press counter": "Счетчик коротких, а затем длинных нажатий входа 2",
+                "Input 3 shortlong press counter": "Счетчик коротких, а затем длинных нажатий входа 3",
 
 
                 "Mode": "Режим работы",
 
-                "lp_hold_time_title": "Время удержания кнопки для фиксации долгого нажатия, мс",
+                "lp_hold_time_title": "Время удержания кнопки для фиксации длинного нажатия, мс",
                 "lp_repeat_time_title": "Скорость изменения параметра при удержании кнопки, мс/ед",
                 "dp_time_title": "Время двойного нажатия, мс",
                 "debounce_time_title": "Время подавления дребезга, мс",
@@ -7805,7 +7805,7 @@
                 "channel_min_value_description": "Значение ШИМ для канала, соответствующее минимальной яркости (1%)",
                 "channel_max_value_description": "Значение ШИМ для канала, соответствующее максимальной яркости (100%)",
 
-                "hue_fader_description": "Время изменения цвета (hue) на 360°. Учтите, что цвет изменяется по кратчайшему пути (например, 10° -> 0° -> 350°).",
+                "hue_fader_description": "Время изменения цвета (HUE) на 360°. Учтите, что цвет изменяется по кратчайшему пути (например, 10° -> 0° -> 350°).",
 
                 "Serial": "Серийный номер",
                 "Supply voltage": "Напряжение питания",
