@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.43.3) stable; urgency=medium
+
+  * Cityron ПУ-3 template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 16 Dec 2021 10:03:59 +0300
+
 wb-mqtt-serial (2.43.2) stable; urgency=medium
 
   * Custom templates titles translations were made shorter
