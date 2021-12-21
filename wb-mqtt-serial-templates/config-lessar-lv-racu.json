@@ -46,7 +46,7 @@
         "reg_type": "input",
         "address": "0x0",
         "type": "temperature",
-        "format": "u8",
+        "format": "s16",
         "scale": 0.1
       },
       {
@@ -54,7 +54,7 @@
         "reg_type": "input",
         "address": "0x6",
         "type": "temperature",
-        "format": "u8",
+        "format": "s16",
         "scale": 0.1
       },
       {
@@ -62,7 +62,7 @@
         "reg_type": "input",
         "address": "0x3",
         "type": "temperature",
-        "format": "u8",
+        "format": "s16",
         "scale": 0.1
       },
       {
