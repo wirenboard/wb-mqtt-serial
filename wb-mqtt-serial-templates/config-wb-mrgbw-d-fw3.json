@@ -451,9 +451,9 @@
                 "order": 4,
                 "address": 1160,
                 "reg_type": "hw_params",
-                "default": 500,
-                "min": 100,
-                "max": 2000
+                "default": 50,
+                "min": 5,
+                "max": 200
             },
             "in2_debounce_time": {
                 "group": "input_2",
@@ -461,9 +461,9 @@
                 "order": 4,
                 "address": 1161,
                 "reg_type": "hw_params",
-                "default": 500,
-                "min": 100,
-                "max": 2000
+                "default": 50,
+                "min": 5,
+                "max": 200
             },
             "in3_debounce_time": {
                 "group": "input_3",
@@ -471,9 +471,9 @@
                 "order": 4,
                 "address": 1162,
                 "reg_type": "hw_params",
-                "default": 500,
-                "min": 100,
-                "max": 2000
+                "default": 50,
+                "min": 5,
+                "max": 200
             }
         },
 
