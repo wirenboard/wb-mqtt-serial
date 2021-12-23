@@ -6053,7 +6053,7 @@
                     "channels": [
                         {
                             "group": "rgb_w_ch",
-                            "name": "RGB (channels 1, 2, 3)",
+                            "name": "RGB strip",
                             "address": 9,
                             "type": "switch",
                             "reg_type": "coil"
@@ -6067,7 +6067,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Continuous HUE changing",
+                            "name": "HUE changing rate (ms)",
                             "address": 10,
                             "type": "switch",
                             "reg_type": "coil"
@@ -6113,7 +6113,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Value (brightness) of RGB strip",
+                            "name": "Brightness of RGB strip",
                             "address": 2016,
                             "type": "range",
                             "reg_type": "holding",
@@ -6133,7 +6133,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Continuous HUE changing time, ms per 1°",
+                            "name": "HUE changing rate (ms)",
                             "address": 2017,
                             "reg_type": "holding",
                             "min": 3,
@@ -6753,7 +6753,7 @@
                         },
                         "fader_inc_rgb_v": {
                             "group": "rgb_w_fader_inc",
-                            "title": "Value (brightness) of RGB strip",
+                            "title": "Brightness of RGB strip",
                             "order": 2,
                             "address": 3013,
                             "reg_type": "holding",
@@ -6784,7 +6784,7 @@
                         },
                         "fader_dec_rgb_v": {
                             "group": "rgb_w_fader_dec",
-                            "title": "Value (brightness) of RGB strip",
+                            "title": "Brightness of RGB strip",
                             "order": 2,
                             "address": 3113,
                             "reg_type": "holding",
@@ -7317,8 +7317,8 @@
                 "dec_ch1234_act_title": "Decrease brightness of channels 1_2_3_4",
                 "inc_dec_ch1234_act_title": "Increase/decrease brightness of channels 1_2_3_4",
 
-                "lp_hold_time_title": "Hold time for long press detection, ms",
-                "lp_repeat_time_title": "The rate of change of the parameter when holding the button, ms/unit",
+                "lp_hold_time_title": "Long press time (ms)",
+                "lp_repeat_time_title": "Parameter change rate while holding input (ms/unit)",
                 "dp_time_title": "Double press time (ms)",
                 "debounce_time_title": "Debounce time (ms)",
 
@@ -7476,8 +7476,8 @@
                 "RGB palette": "Палитра RGB",
                 "Hue of RGB strip": "Цвет RGB ленты (H)",
                 "Saturation of RGB strip": "Насыщенность цвета RGB ленты (S)",
-                "Value (brightness) of RGB strip": "Яркость RGB ленты (V)",
-                "Continuous HUE changing time, ms per 1°": "Время изменения HUE на 1°",
+                "Brightness of RGB strip": "Яркость RGB ленты (V)",
+                "HUE changing rate (ms)": "Время изменения HUE на 1°",
                 "Channels 1_2_3_4 brightness": "Яркость каналов 1_2_3_4",
 
                 "Channel 1 (B) raw PWM": "Прямое управление ШИМ канала 1 (B)",
@@ -7504,7 +7504,7 @@
 
                 "Mode": "Режим работы",
 
-                "lp_hold_time_title": "Время удержания кнопки для фиксации длинного нажатия, мс",
+                "lp_hold_time_title": "Время длинного нажатия (мс)",
                 "lp_repeat_time_title": "Скорость изменения параметра при удержании кнопки, мс/ед",
                 "dp_time_title": "Время двойного нажатия, мс",
                 "debounce_time_title": "Время подавления дребезга, мс",
