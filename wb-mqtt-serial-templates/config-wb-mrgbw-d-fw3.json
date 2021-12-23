@@ -873,8 +873,7 @@
                                 8192, 8193, 8194, 8195,
                                 12288, 12289, 12290, 12291,
                                 36864, 36865, 36866, 36867,
-                                40960, 40961, 40962, 40963,
-                                45056, 45057, 45058, 45059
+                                40960, 40961, 40962, 40963
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -897,11 +896,7 @@
                                 "dec_ch1_act_title",
                                 "dec_ch2_act_title",
                                 "dec_ch3_act_title",
-                                "dec_ch4_act_title",
-                                "inc_dec_ch1_act_title",
-                                "inc_dec_ch2_act_title",
-                                "inc_dec_ch3_act_title",
-                                "inc_dec_ch4_act_title"
+                                "dec_ch4_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -917,8 +912,7 @@
                                 8192, 8193, 8194, 8195,
                                 12288, 12289, 12290, 12291,
                                 36864, 36865, 36866, 36867,
-                                40960, 40961, 40962, 40963,
-                                45056, 45057, 45058, 45059
+                                40960, 40961, 40962, 40963
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -941,11 +935,7 @@
                                 "dec_ch1_act_title",
                                 "dec_ch2_act_title",
                                 "dec_ch3_act_title",
-                                "dec_ch4_act_title",
-                                "inc_dec_ch1_act_title",
-                                "inc_dec_ch2_act_title",
-                                "inc_dec_ch3_act_title",
-                                "inc_dec_ch4_act_title"
+                                "dec_ch4_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -961,8 +951,7 @@
                                 8192, 8193, 8194, 8195,
                                 12288, 12289, 12290, 12291,
                                 36864, 36865, 36866, 36867,
-                                40960, 40961, 40962, 40963,
-                                45056, 45057, 45058, 45059
+                                40960, 40961, 40962, 40963
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -985,11 +974,7 @@
                                 "dec_ch1_act_title",
                                 "dec_ch2_act_title",
                                 "dec_ch3_act_title",
-                                "dec_ch4_act_title",
-                                "inc_dec_ch1_act_title",
-                                "inc_dec_ch2_act_title",
-                                "inc_dec_ch3_act_title",
-                                "inc_dec_ch4_act_title"
+                                "dec_ch4_act_title"
                             ]
                         },
 
@@ -1546,8 +1531,7 @@
                                 8196, 8194, 8195,
                                 12292, 12290, 12291,
                                 36868, 36866, 36867,
-                                40964, 40962, 40963,
-                                45060, 45058, 45059
+                                40964, 40962, 40963
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -1565,10 +1549,7 @@
                                 "inc_ch4_act_title",
                                 "dec_ch12_act_title",
                                 "dec_ch3_act_title",
-                                "dec_ch4_act_title",
-                                "inc_dec_ch12_act_title",
-                                "inc_dec_ch3_act_title",
-                                "inc_dec_ch4_act_title"
+                                "dec_ch4_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -1584,8 +1565,7 @@
                                 8196, 8194, 8195,
                                 12292, 12290, 12291,
                                 36868, 36866, 36867,
-                                40964, 40962, 40963,
-                                45060, 45058, 45059
+                                40964, 40962, 40963
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -1603,10 +1583,7 @@
                                 "inc_ch4_act_title",
                                 "dec_ch12_act_title",
                                 "dec_ch3_act_title",
-                                "dec_ch4_act_title",
-                                "inc_dec_ch12_act_title",
-                                "inc_dec_ch3_act_title",
-                                "inc_dec_ch4_act_title"
+                                "dec_ch4_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -1622,8 +1599,7 @@
                                 8196, 8194, 8195,
                                 12292, 12290, 12291,
                                 36868, 36866, 36867,
-                                40964, 40962, 40963,
-                                45060, 45058, 45059
+                                40964, 40962, 40963
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -1641,10 +1617,7 @@
                                 "inc_ch4_act_title",
                                 "dec_ch12_act_title",
                                 "dec_ch3_act_title",
-                                "dec_ch4_act_title",
-                                "inc_dec_ch12_act_title",
-                                "inc_dec_ch3_act_title",
-                                "inc_dec_ch4_act_title"
+                                "dec_ch4_act_title"
                             ]
                         },
 
@@ -2189,8 +2162,7 @@
                                 8199, 8194, 8195,
                                 12295, 12290, 12291,
                                 36871, 36872, 36866, 36867,
-                                40967, 40968, 40962, 40963,
-                                45063, 45064, 45058, 45059
+                                40967, 40968, 40962, 40963
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -2210,11 +2182,7 @@
                                 "dec_temp_cct1_act_title",
                                 "dec_br_cct1_act_title",
                                 "dec_ch3_act_title",
-                                "dec_ch4_act_title",
-                                "inc_dec_temp_cct1_act_title",
-                                "inc_dec_br_cct1_act_title",
-                                "inc_dec_ch3_act_title",
-                                "inc_dec_ch4_act_title"
+                                "dec_ch4_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -2230,8 +2198,7 @@
                                 8199, 8194, 8195,
                                 12295, 12290, 12291,
                                 36871, 36872, 36866, 36867,
-                                40967, 40968, 40962, 40963,
-                                45063, 45064, 45058, 45059
+                                40967, 40968, 40962, 40963
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -2251,11 +2218,7 @@
                                 "dec_temp_cct1_act_title",
                                 "dec_br_cct1_act_title",
                                 "dec_ch3_act_title",
-                                "dec_ch4_act_title",
-                                "inc_dec_temp_cct1_act_title",
-                                "inc_dec_br_cct1_act_title",
-                                "inc_dec_ch3_act_title",
-                                "inc_dec_ch4_act_title"
+                                "dec_ch4_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -2271,8 +2234,7 @@
                                 8199, 8194, 8195,
                                 12295, 12290, 12291,
                                 36871, 36872, 36866, 36867,
-                                40967, 40968, 40962, 40963,
-                                45063, 45064, 45058, 45059
+                                40967, 40968, 40962, 40963
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -2292,11 +2254,7 @@
                                 "dec_temp_cct1_act_title",
                                 "dec_br_cct1_act_title",
                                 "dec_ch3_act_title",
-                                "dec_ch4_act_title",
-                                "inc_dec_temp_cct1_act_title",
-                                "inc_dec_br_cct1_act_title",
-                                "inc_dec_ch3_act_title",
-                                "inc_dec_ch4_act_title"
+                                "dec_ch4_act_title"
                             ]
                         },
 
@@ -2846,8 +2804,7 @@
                                 8192, 8193, 8197,
                                 12288, 12289, 12293,
                                 36864, 36865, 36869,
-                                40960, 40961, 40965,
-                                45056, 45057, 45061
+                                40960, 40961, 40965
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -2865,10 +2822,7 @@
                                 "inc_ch34_act_title",
                                 "dec_ch1_act_title",
                                 "dec_ch2_act_title",
-                                "dec_ch34_act_title",
-                                "inc_dec_ch1_act_title",
-                                "inc_dec_ch2_act_title",
-                                "inc_dec_ch34_act_title"
+                                "dec_ch34_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -2884,8 +2838,7 @@
                                 8192, 8193, 8197,
                                 12288, 12289, 12293,
                                 36864, 36865, 36869,
-                                40960, 40961, 40965,
-                                45056, 45057, 45061
+                                40960, 40961, 40965
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -2903,10 +2856,7 @@
                                 "inc_ch34_act_title",
                                 "dec_ch1_act_title",
                                 "dec_ch2_act_title",
-                                "dec_ch34_act_title",
-                                "inc_dec_ch1_act_title",
-                                "inc_dec_ch2_act_title",
-                                "inc_dec_ch34_act_title"
+                                "dec_ch34_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -2922,8 +2872,7 @@
                                 8192, 8193, 8197,
                                 12288, 12289, 12293,
                                 36864, 36865, 36869,
-                                40960, 40961, 40965,
-                                45056, 45057, 45061
+                                40960, 40961, 40965
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -2941,10 +2890,7 @@
                                 "inc_ch34_act_title",
                                 "dec_ch1_act_title",
                                 "dec_ch2_act_title",
-                                "dec_ch34_act_title",
-                                "inc_dec_ch1_act_title",
-                                "inc_dec_ch2_act_title",
-                                "inc_dec_ch34_act_title"
+                                "dec_ch34_act_title"
                             ]
                         },
 
@@ -3414,8 +3360,7 @@
                                 8196, 8197,
                                 12292, 12293,
                                 36868, 36869,
-                                40964, 40965,
-                                45060, 45061
+                                40964, 40965
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -3428,9 +3373,7 @@
                                 "inc_ch12_act_title",
                                 "inc_ch34_act_title",
                                 "dec_ch12_act_title",
-                                "dec_ch34_act_title",
-                                "inc_dec_ch12_act_title",
-                                "inc_dec_ch34_act_title"
+                                "dec_ch34_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -3446,8 +3389,7 @@
                                 8196, 8197,
                                 12292, 12293,
                                 36868, 36869,
-                                40964, 40965,
-                                45060, 45061
+                                40964, 40965
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -3460,9 +3402,7 @@
                                 "inc_ch12_act_title",
                                 "inc_ch34_act_title",
                                 "dec_ch12_act_title",
-                                "dec_ch34_act_title",
-                                "inc_dec_ch12_act_title",
-                                "inc_dec_ch34_act_title"
+                                "dec_ch34_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -3478,8 +3418,7 @@
                                 8196, 8197,
                                 12292, 12293,
                                 36868, 36869,
-                                40964, 40965,
-                                45060, 45061
+                                40964, 40965
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -3492,9 +3431,7 @@
                                 "inc_ch12_act_title",
                                 "inc_ch34_act_title",
                                 "dec_ch12_act_title",
-                                "dec_ch34_act_title",
-                                "inc_dec_ch12_act_title",
-                                "inc_dec_ch34_act_title"
+                                "dec_ch34_act_title"
                             ]
                         },
 
@@ -3951,8 +3888,7 @@
                                 8199, 8197,
                                 12295, 12293,
                                 36871, 36872, 36869,
-                                40967, 40968, 40965,
-                                45063, 45064, 45061
+                                40967, 40968, 40965
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -3967,10 +3903,7 @@
                                 "inc_ch34_act_title",
                                 "dec_temp_cct1_act_title",
                                 "dec_br_cct1_act_title",
-                                "dec_ch34_act_title",
-                                "inc_dec_temp_cct1_act_title",
-                                "inc_dec_br_cct1_act_title",
-                                "inc_dec_ch34_act_title"
+                                "dec_ch34_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -3986,8 +3919,7 @@
                                 8199, 8197,
                                 12295, 12293,
                                 36871, 36872, 36869,
-                                40967, 40968, 40965,
-                                45063, 45064, 45061
+                                40967, 40968, 40965
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -4002,10 +3934,7 @@
                                 "inc_ch34_act_title",
                                 "dec_temp_cct1_act_title",
                                 "dec_br_cct1_act_title",
-                                "dec_ch34_act_title",
-                                "inc_dec_temp_cct1_act_title",
-                                "inc_dec_br_cct1_act_title",
-                                "inc_dec_ch34_act_title"
+                                "dec_ch34_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -4021,8 +3950,7 @@
                                 8199, 8197,
                                 12295, 12293,
                                 36871, 36872, 36869,
-                                40967, 40968, 40965,
-                                45063, 45064, 45061
+                                40967, 40968, 40965
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -4037,10 +3965,7 @@
                                 "inc_ch34_act_title",
                                 "dec_temp_cct1_act_title",
                                 "dec_br_cct1_act_title",
-                                "dec_ch34_act_title",
-                                "inc_dec_temp_cct1_act_title",
-                                "inc_dec_br_cct1_act_title",
-                                "inc_dec_ch34_act_title"
+                                "dec_ch34_act_title"
                             ]
                         },
 
@@ -4577,8 +4502,7 @@
                                 8192, 8193, 8200,
                                 12288, 12289, 12296,
                                 36864, 36865, 36873, 36874,
-                                40960, 40961, 40969, 40970,
-                                45056, 45057, 45065, 45066
+                                40960, 40961, 40969, 40970
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -4598,11 +4522,7 @@
                                 "dec_ch1_act_title",
                                 "dec_ch2_act_title",
                                 "dec_temp_cct2_act_title",
-                                "dec_br_cct2_act_title",
-                                "inc_dec_ch1_act_title",
-                                "inc_dec_ch2_act_title",
-                                "inc_dec_temp_cct2_act_title",
-                                "inc_dec_br_cct2_act_title"
+                                "dec_br_cct2_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -4618,8 +4538,7 @@
                                 8192, 8193, 8200,
                                 12288, 12289, 12296,
                                 36864, 36865, 36873, 36874,
-                                40960, 40961, 40969, 40970,
-                                45056, 45057, 45065, 45066
+                                40960, 40961, 40969, 40970
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -4639,11 +4558,7 @@
                                 "dec_ch1_act_title",
                                 "dec_ch2_act_title",
                                 "dec_temp_cct2_act_title",
-                                "dec_br_cct2_act_title",
-                                "inc_dec_ch1_act_title",
-                                "inc_dec_ch2_act_title",
-                                "inc_dec_temp_cct2_act_title",
-                                "inc_dec_br_cct2_act_title"
+                                "dec_br_cct2_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -4659,8 +4574,7 @@
                                 8192, 8193, 8200,
                                 12288, 12289, 12296,
                                 36864, 36865, 36873, 36874,
-                                40960, 40961, 40969, 40970,
-                                45056, 45057, 45065, 45066
+                                40960, 40961, 40969, 40970
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -4680,11 +4594,7 @@
                                 "dec_ch1_act_title",
                                 "dec_ch2_act_title",
                                 "dec_temp_cct2_act_title",
-                                "dec_br_cct2_act_title",
-                                "inc_dec_ch1_act_title",
-                                "inc_dec_ch2_act_title",
-                                "inc_dec_temp_cct2_act_title",
-                                "inc_dec_br_cct2_act_title"
+                                "dec_br_cct2_act_title"
                             ]
                         },
 
@@ -5208,8 +5118,7 @@
                                 8196, 8200,
                                 12292, 12296,
                                 36868, 36873, 36874,
-                                40964, 40969, 40970,
-                                45060, 45065, 45066
+                                40964, 40969, 40970
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -5224,10 +5133,7 @@
                                 "inc_br_cct2_act_title",
                                 "dec_ch12_act_title",
                                 "dec_temp_cct2_act_title",
-                                "dec_br_cct2_act_title",
-                                "inc_dec_ch12_act_title",
-                                "inc_dec_temp_cct2_act_title",
-                                "inc_dec_br_cct2_act_title"
+                                "dec_br_cct2_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -5243,8 +5149,7 @@
                                 8196, 8200,
                                 12292, 12296,
                                 36868, 36873, 36874,
-                                40964, 40969, 40970,
-                                45060, 45065, 45066
+                                40964, 40969, 40970
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -5259,10 +5164,7 @@
                                 "inc_br_cct2_act_title",
                                 "dec_ch12_act_title",
                                 "dec_temp_cct2_act_title",
-                                "dec_br_cct2_act_title",
-                                "inc_dec_ch12_act_title",
-                                "inc_dec_temp_cct2_act_title",
-                                "inc_dec_br_cct2_act_title"
+                                "dec_br_cct2_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -5278,8 +5180,7 @@
                                 8196, 8200,
                                 12292, 12296,
                                 36868, 36873, 36874,
-                                40964, 40969, 40970,
-                                45060, 45065, 45066
+                                40964, 40969, 40970
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -5294,10 +5195,7 @@
                                 "inc_br_cct2_act_title",
                                 "dec_ch12_act_title",
                                 "dec_temp_cct2_act_title",
-                                "dec_br_cct2_act_title",
-                                "inc_dec_ch12_act_title",
-                                "inc_dec_temp_cct2_act_title",
-                                "inc_dec_br_cct2_act_title"
+                                "dec_br_cct2_act_title"
                             ]
                         },
 
@@ -5808,8 +5706,7 @@
                                 8199, 8200,
                                 12295, 12296,
                                 36871, 36872, 36873, 36874,
-                                40967, 40968, 40969, 40970,
-                                45063, 45064, 45065, 45066
+                                40967, 40968, 40969, 40970
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -5826,11 +5723,7 @@
                                 "dec_temp_cct1_act_title",
                                 "dec_br_cct1_act_title",
                                 "dec_temp_cct2_act_title",
-                                "dec_br_cct2_act_title",
-                                "inc_dec_temp_cct1_act_title",
-                                "inc_dec_br_cct1_act_title",
-                                "inc_dec_temp_cct2_act_title",
-                                "inc_dec_br_cct2_act_title"
+                                "dec_br_cct2_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -5846,8 +5739,7 @@
                                 8199, 8200,
                                 12295, 12296,
                                 36871, 36872, 36873, 36874,
-                                40967, 40968, 40969, 40970,
-                                45063, 45064, 45065, 45066
+                                40967, 40968, 40969, 40970
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -5864,11 +5756,7 @@
                                 "dec_temp_cct1_act_title",
                                 "dec_br_cct1_act_title",
                                 "dec_temp_cct2_act_title",
-                                "dec_br_cct2_act_title",
-                                "inc_dec_temp_cct1_act_title",
-                                "inc_dec_br_cct1_act_title",
-                                "inc_dec_temp_cct2_act_title",
-                                "inc_dec_br_cct2_act_title"
+                                "dec_br_cct2_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -5884,8 +5772,7 @@
                                 8199, 8200,
                                 12295, 12296,
                                 36871, 36872, 36873, 36874,
-                                40967, 40968, 40969, 40970,
-                                45063, 45064, 45065, 45066
+                                40967, 40968, 40969, 40970
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -5902,11 +5789,7 @@
                                 "dec_temp_cct1_act_title",
                                 "dec_br_cct1_act_title",
                                 "dec_temp_cct2_act_title",
-                                "dec_br_cct2_act_title",
-                                "inc_dec_temp_cct1_act_title",
-                                "inc_dec_br_cct1_act_title",
-                                "inc_dec_temp_cct2_act_title",
-                                "inc_dec_br_cct2_act_title"
+                                "dec_br_cct2_act_title"
                             ]
                         },
 
@@ -6560,8 +6443,7 @@
                                 8201, 8195, 8202,
                                 12297, 12291, 12298,
                                 36875, 36876, 36877, 36878, 36879, 36880, 36867, 36881,
-                                40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977,
-                                45067, 45068, 45069, 45070, 45071, 45072, 45059, 45073
+                                40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -6589,15 +6471,7 @@
                                 "dec_s_act_title",
                                 "dec_v_act_title",
                                 "dec_ch4_act_title",
-                                "dec_hue_ch_time_act_title",
-                                "inc_dec_r_act_title",
-                                "inc_dec_g_act_title",
-                                "inc_dec_b_act_title",
-                                "inc_dec_h_act_title",
-                                "inc_dec_s_act_title",
-                                "inc_dec_v_act_title",
-                                "inc_dec_ch4_act_title",
-                                "inc_dec_hue_ch_time_act_title"
+                                "dec_hue_ch_time_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -6613,8 +6487,7 @@
                                 8201, 8195, 8202,
                                 12297, 12291, 12298,
                                 36875, 36876, 36877, 36878, 36879, 36880, 36867, 36881,
-                                40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977,
-                                45067, 45068, 45069, 45070, 45071, 45072, 45059, 45073
+                                40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -6642,15 +6515,7 @@
                                 "dec_s_act_title",
                                 "dec_v_act_title",
                                 "dec_ch4_act_title",
-                                "dec_hue_ch_time_act_title",
-                                "inc_dec_r_act_title",
-                                "inc_dec_g_act_title",
-                                "inc_dec_b_act_title",
-                                "inc_dec_h_act_title",
-                                "inc_dec_s_act_title",
-                                "inc_dec_v_act_title",
-                                "inc_dec_ch4_act_title",
-                                "inc_dec_hue_ch_time_act_title"
+                                "dec_hue_ch_time_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -6666,8 +6531,7 @@
                                 8201, 8195, 8202,
                                 12297, 12291, 12298,
                                 36875, 36876, 36877, 36878, 36879, 36880, 36867, 36881,
-                                40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977,
-                                45067, 45068, 45069, 45070, 45071, 45072, 45059, 45073
+                                40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -6695,15 +6559,7 @@
                                 "dec_s_act_title",
                                 "dec_v_act_title",
                                 "dec_ch4_act_title",
-                                "dec_hue_ch_time_act_title",
-                                "inc_dec_r_act_title",
-                                "inc_dec_g_act_title",
-                                "inc_dec_b_act_title",
-                                "inc_dec_h_act_title",
-                                "inc_dec_s_act_title",
-                                "inc_dec_v_act_title",
-                                "inc_dec_ch4_act_title",
-                                "inc_dec_hue_ch_time_act_title"
+                                "dec_hue_ch_time_act_title"
                             ]
                         },
 
@@ -7180,8 +7036,7 @@
                                 8198,
                                 12294,
                                 36870,
-                                40966,
-                                45062
+                                40966
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -7189,8 +7044,7 @@
                                 "on_ch1234_act_title",
                                 "tg_ch1234_act_title",
                                 "inc_ch1234_act_title",
-                                "dec_ch1234_act_title",
-                                "inc_dec_ch1234_act_title"
+                                "dec_ch1234_act_title"
                             ]
                         },
                         "in2_dp": {
@@ -7206,8 +7060,7 @@
                                 8198,
                                 12294,
                                 36870,
-                                40966,
-                                45062
+                                40966
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -7215,8 +7068,7 @@
                                 "on_ch1234_act_title",
                                 "tg_ch1234_act_title",
                                 "inc_ch1234_act_title",
-                                "dec_ch1234_act_title",
-                                "inc_dec_ch1234_act_title"
+                                "dec_ch1234_act_title"
                             ]
                         },
                         "in3_dp": {
@@ -7232,8 +7084,7 @@
                                 8198,
                                 12294,
                                 36870,
-                                40966,
-                                45062
+                                40966
                             ],
                             "enum_titles": [
                                 "no_act_title",
@@ -7241,8 +7092,7 @@
                                 "on_ch1234_act_title",
                                 "tg_ch1234_act_title",
                                 "inc_ch1234_act_title",
-                                "dec_ch1234_act_title",
-                                "inc_dec_ch1234_act_title"
+                                "dec_ch1234_act_title"
                             ]
                         },
 
