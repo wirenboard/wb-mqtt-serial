@@ -50,7 +50,7 @@
                 "group": "input_1"
             },
             {
-                "name": "Input 1 counter",
+                "name": "Input 1 Counter",
                 "reg_type": "input",
                 "address": 32,
                 "type": "value",
@@ -64,7 +64,7 @@
                 "group": "input_2"
             },
             {
-                "name": "Input 2 counter",
+                "name": "Input 2 Counter",
                 "reg_type": "input",
                 "address": 33,
                 "type": "value",
@@ -78,14 +78,14 @@
                 "group": "input_3"
             },
             {
-                "name": "Input 3 counter",
+                "name": "Input 3 Counter",
                 "reg_type": "input",
                 "address": 34,
                 "type": "value",
                 "group": "input_3"
             },
             {
-                "name": "Input 1 single press counter",
+                "name": "Input 1 Single Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 464,
@@ -93,7 +93,7 @@
                 "group": "input_1"
             },
             {
-                "name": "Input 2 single press counter",
+                "name": "Input 2 Single Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 465,
@@ -101,7 +101,7 @@
                 "group": "input_2"
             },
             {
-                "name": "Input 3 single press counter",
+                "name": "Input 3 Single Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 466,
@@ -109,7 +109,7 @@
                 "group": "input_3"
             },
             {
-                "name": "Input 1 long press counter",
+                "name": "Input 1 Long Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 480,
@@ -117,7 +117,7 @@
                 "group": "input_1"
             },
             {
-                "name": "Input 2 long press counter",
+                "name": "Input 2 Long Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 481,
@@ -125,7 +125,7 @@
                 "group": "input_2"
             },
             {
-                "name": "Input 3 long press counter",
+                "name": "Input 3 Long Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 482,
@@ -133,7 +133,7 @@
                 "group": "input_3"
             },
             {
-                "name": "Input 1 double press counter",
+                "name": "Input 1 Double Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 496,
@@ -141,7 +141,7 @@
                 "group": "input_1"
             },
             {
-                "name": "Input 2 double press counter",
+                "name": "Input 2 Double Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 497,
@@ -149,7 +149,7 @@
                 "group": "input_2"
             },
             {
-                "name": "Input 3 double press counter",
+                "name": "Input 3 Double Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 498,
@@ -157,7 +157,7 @@
                 "group": "input_3"
             },
             {
-                "name": "Input 1 shortlong press counter",
+                "name": "Input 1 Shortlong Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 512,
@@ -165,7 +165,7 @@
                 "group": "input_1"
             },
             {
-                "name": "Input 2 shortlong press counter",
+                "name": "Input 2 Shortlong Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 513,
@@ -173,7 +173,7 @@
                 "group": "input_2"
             },
             {
-                "name": "Input 3 shortlong press counter",
+                "name": "Input 3 Shortlong Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": 514,
@@ -199,7 +199,7 @@
                 "device_type": "rgb_w"
             },
             {
-                "name": "Channel 1 (B) raw PWM",
+                "name": "Channel 1 (B) Raw PWM",
                 "reg_type": "holding",
                 "address": 90,
                 "min": 0,
@@ -208,7 +208,7 @@
                 "group": "debug"
             },
             {
-                "name": "Channel 2 (R) raw PWM",
+                "name": "Channel 2 (R) Raw PWM",
                 "reg_type": "holding",
                 "address": 91,
                 "min": 0,
@@ -217,7 +217,7 @@
                 "group": "debug"
             },
             {
-                "name": "Channel 3 (G) raw PWM",
+                "name": "Channel 3 (G) Raw PWM",
                 "reg_type": "holding",
                 "address": 92,
                 "min": 0,
@@ -226,7 +226,7 @@
                 "group": "debug"
             },
             {
-                "name": "Channel 4 (W) raw PWM",
+                "name": "Channel 4 (W) Raw PWM",
                 "reg_type": "holding",
                 "address": 93,
                 "min": 0,
@@ -243,7 +243,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Supply voltage",
+                "name": "Supply Voltage",
                 "reg_type": "input",
                 "address": 121,
                 "type": "voltage",
@@ -264,7 +264,7 @@
 
         "parameters": {
             "ch1_min": {
-                "title": "Channel 1 (B) minimum value",
+                "title": "Channel 1 (B) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 1,
                 "group": "outputs",
@@ -275,7 +275,7 @@
                 "max": 2000
             },
             "ch1_max": {
-                "title": "Channel 1 (B) maximum value",
+                "title": "Channel 1 (B) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 2,
                 "group": "outputs",
@@ -286,7 +286,7 @@
                 "max": 2048
             },
             "ch2_min": {
-                "title": "Channel 2 (R) minimum value",
+                "title": "Channel 2 (R) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 3,
                 "group": "outputs",
@@ -297,7 +297,7 @@
                 "max": 2000
             },
             "ch2_max": {
-                "title": "Channel 2 (R) maximum value",
+                "title": "Channel 2 (R) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 4,
                 "group": "outputs",
@@ -308,7 +308,7 @@
                 "max": 2048
             },
             "ch3_min": {
-                "title": "Channel 3 (G) minimum value",
+                "title": "Channel 3 (G) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 5,
                 "group": "outputs",
@@ -319,7 +319,7 @@
                 "max": 2000
             },
             "ch3_max": {
-                "title": "Channel 3 (G) maximum value",
+                "title": "Channel 3 (G) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 6,
                 "group": "outputs",
@@ -330,7 +330,7 @@
                 "max": 2048
             },
             "ch4_min": {
-                "title": "Channel 4 (W) minimum value",
+                "title": "Channel 4 (W) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 7,
                 "group": "outputs",
@@ -341,7 +341,7 @@
                 "max": 2000
             },
             "ch4_max": {
-                "title": "Channel 4 (W) maximum value",
+                "title": "Channel 4 (W) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 8,
                 "group": "outputs",
@@ -503,17 +503,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "w_w_w_w_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "w_w_w_w_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "w_w_w_w_in_3",
                             "order": 3
                         },
@@ -569,7 +569,7 @@
                         },
                         {
                             "group": "w_w_w_w_ch",
-                            "name": "Channel 1 (B) brightness",
+                            "name": "Channel 1 (B) Brightness",
                             "address": 2000,
                             "type": "range",
                             "reg_type": "holding",
@@ -579,7 +579,7 @@
                         },
                         {
                             "group": "w_w_w_w_ch",
-                            "name": "Channel 2 (R) brightness",
+                            "name": "Channel 2 (R) Brightness",
                             "address": 2001,
                             "type": "range",
                             "reg_type": "holding",
@@ -589,7 +589,7 @@
                         },
                         {
                             "group": "w_w_w_w_ch",
-                            "name": "Channel 3 (G) brightness",
+                            "name": "Channel 3 (G) Brightness",
                             "address": 2002,
                             "type": "range",
                             "reg_type": "holding",
@@ -599,7 +599,7 @@
                         },
                         {
                             "group": "w_w_w_w_ch",
-                            "name": "Channel 4 (W) brightness",
+                            "name": "Channel 4 (W) Brightness",
                             "address": 2003,
                             "type": "range",
                             "reg_type": "holding",
@@ -1113,7 +1113,7 @@
 
                         "fader_inc_w1": {
                             "group": "w_w_w_w_fader_inc",
-                            "title": "Channel 1 (B) brightness",
+                            "title": "Channel 1 (B) Brightness",
                             "order": 1,
                             "address": 3000,
                             "reg_type": "holding",
@@ -1123,7 +1123,7 @@
                         },
                         "fader_inc_w2": {
                             "group": "w_w_w_w_fader_inc",
-                            "title": "Channel 2 (R) brightness",
+                            "title": "Channel 2 (R) Brightness",
                             "order": 2,
                             "address": 3001,
                             "reg_type": "holding",
@@ -1133,7 +1133,7 @@
                         },
                         "fader_inc_w3": {
                             "group": "w_w_w_w_fader_inc",
-                            "title": "Channel 3 (G) brightness",
+                            "title": "Channel 3 (G) Brightness",
                             "order": 3,
                             "address": 3002,
                             "reg_type": "holding",
@@ -1143,7 +1143,7 @@
                         },
                         "fader_inc_w4": {
                             "group": "w_w_w_w_fader_inc",
-                            "title": "Channel 4 (W) brightness",
+                            "title": "Channel 4 (W) Brightness",
                             "order": 16,
                             "address": 3003,
                             "reg_type": "holding",
@@ -1154,7 +1154,7 @@
 
                         "fader_dec_w1": {
                             "group": "w_w_w_w_fader_dec",
-                            "title": "Channel 1 (B) brightness",
+                            "title": "Channel 1 (B) Brightness",
                             "order": 1,
                             "address": 3100,
                             "reg_type": "holding",
@@ -1164,7 +1164,7 @@
                         },
                         "fader_dec_w2": {
                             "group": "w_w_w_w_fader_dec",
-                            "title": "Channel 2 (R) brightness",
+                            "title": "Channel 2 (R) Brightness",
                             "order": 2,
                             "address": 3101,
                             "reg_type": "holding",
@@ -1174,7 +1174,7 @@
                         },
                         "fader_dec_w3": {
                             "group": "w_w_w_w_fader_dec",
-                            "title": "Channel 3 (G) brightness",
+                            "title": "Channel 3 (G) Brightness",
                             "order": 3,
                             "address": 3102,
                             "reg_type": "holding",
@@ -1184,7 +1184,7 @@
                         },
                         "fader_dec_w4": {
                             "group": "w_w_w_w_fader_dec",
-                            "title": "Channel 4 (W) brightness",
+                            "title": "Channel 4 (W) Brightness",
                             "order": 4,
                             "address": 3103,
                             "reg_type": "holding",
@@ -1211,17 +1211,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "w2_w_w_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "w2_w_w_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "w2_w_w_in_3",
                             "order": 3
                         },
@@ -1270,7 +1270,7 @@
                         },
                         {
                             "group": "w2_w_w_ch",
-                            "name": "Channels 1_2 (B_R) brightness",
+                            "name": "Channels 1_2 (B_R) Brightness",
                             "address": 2004,
                             "type": "range",
                             "reg_type": "holding",
@@ -1280,7 +1280,7 @@
                         },
                         {
                             "group": "w2_w_w_ch",
-                            "name": "Channel 3 (G) brightness",
+                            "name": "Channel 3 (G) Brightness",
                             "address": 2002,
                             "type": "range",
                             "reg_type": "holding",
@@ -1290,7 +1290,7 @@
                         },
                         {
                             "group": "w2_w_w_ch",
-                            "name": "Channel 4 (W) brightness",
+                            "name": "Channel 4 (W) Brightness",
                             "address": 2003,
                             "type": "range",
                             "reg_type": "holding",
@@ -1739,7 +1739,7 @@
 
                         "fader_inc_w1_w2": {
                             "group": "w2_w_w_fader_inc",
-                            "title": "Channels 1_2 (B_R) brightness",
+                            "title": "Channels 1_2 (B_R) Brightness",
                             "order": 1,
                             "address": 3004,
                             "reg_type": "holding",
@@ -1749,7 +1749,7 @@
                         },
                         "fader_inc_w3": {
                             "group": "w2_w_w_fader_inc",
-                            "title": "Channel 3 (G) brightness",
+                            "title": "Channel 3 (G) Brightness",
                             "order": 2,
                             "address": 3002,
                             "reg_type": "holding",
@@ -1759,7 +1759,7 @@
                         },
                         "fader_inc_w4": {
                             "group": "w2_w_w_fader_inc",
-                            "title": "Channel 4 (W) brightness",
+                            "title": "Channel 4 (W) Brightness",
                             "order": 3,
                             "address": 3003,
                             "reg_type": "holding",
@@ -1770,7 +1770,7 @@
 
                         "fade_dec_w1_w2": {
                             "group": "w2_w_w_fader_dec",
-                            "title": "Channels 1_2 (B_R) brightness",
+                            "title": "Channels 1_2 (B_R) Brightness",
                             "order": 1,
                             "address": 3104,
                             "reg_type": "holding",
@@ -1780,7 +1780,7 @@
                         },
                         "fade_dec_w3": {
                             "group": "w2_w_w_fader_dec",
-                            "title": "Channel 3 (G) brightness",
+                            "title": "Channel 3 (G) Brightness",
                             "order": 2,
                             "address": 3102,
                             "reg_type": "holding",
@@ -1790,7 +1790,7 @@
                         },
                         "fade_dec_w4": {
                             "group": "w2_w_w_fader_dec",
-                            "title": "Channel 4 (W) brightness",
+                            "title": "Channel 4 (W) Brightness",
                             "order": 3,
                             "address": 3103,
                             "reg_type": "holding",
@@ -1817,17 +1817,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "cct_w_w_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "cct_w_w_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "cct_w_w_in_3",
                             "order": 3
                         },
@@ -1876,7 +1876,7 @@
                         },
                         {
                             "group": "cct_w_w_ch",
-                            "name": "CCT1 temperature",
+                            "name": "CCT1 Temperature",
                             "address": 2007,
                             "type": "range",
                             "reg_type": "holding",
@@ -1886,7 +1886,7 @@
                         },
                         {
                             "group": "cct_w_w_ch",
-                            "name": "CCT1 brightness",
+                            "name": "CCT1 Brightness",
                             "address": 2008,
                             "type": "range",
                             "reg_type": "holding",
@@ -1896,7 +1896,7 @@
                         },
                         {
                             "group": "cct_w_w_ch",
-                            "name": "Channel 3 (G) brightness",
+                            "name": "Channel 3 (G) Brightness",
                             "address": 2002,
                             "type": "range",
                             "reg_type": "holding",
@@ -1906,7 +1906,7 @@
                         },
                         {
                             "group": "cct_w_w_ch",
-                            "name": "Channel 4 (W) brightness",
+                            "name": "Channel 4 (W) Brightness",
                             "address": 2003,
                             "type": "range",
                             "reg_type": "holding",
@@ -2385,7 +2385,7 @@
 
                         "fader_inc_cct1_t": {
                             "group": "cct_w_w_fader_inc",
-                            "title": "CCT1 temperature",
+                            "title": "CCT1 Temperature",
                             "order": 1,
                             "address": 3007,
                             "reg_type": "holding",
@@ -2395,7 +2395,7 @@
                         },
                         "fader_inc_cct1_v": {
                             "group": "cct_w_w_fader_inc",
-                            "title": "CCT1 brightness",
+                            "title": "CCT1 Brightness",
                             "order": 2,
                             "address": 3008,
                             "reg_type": "holding",
@@ -2405,7 +2405,7 @@
                         },
                         "fader_inc_w3": {
                             "group": "cct_w_w_fader_inc",
-                            "title": "Channel 3 (G) brightness",
+                            "title": "Channel 3 (G) Brightness",
                             "order": 3,
                             "address": 3002,
                             "reg_type": "holding",
@@ -2415,7 +2415,7 @@
                         },
                         "fader_inc_w4": {
                             "group": "cct_w_w_fader_inc",
-                            "title": "Channel 4 (W) brightness",
+                            "title": "Channel 4 (W) Brightness",
                             "order": 4,
                             "address": 3003,
                             "reg_type": "holding",
@@ -2426,7 +2426,7 @@
 
                         "fader_dec_cct1_t": {
                             "group": "cct_w_w_fader_dec",
-                            "title": "CCT1 temperature",
+                            "title": "CCT1 Temperature",
                             "order": 1,
                             "address": 3107,
                             "reg_type": "holding",
@@ -2436,7 +2436,7 @@
                         },
                         "fader_dec_cct1_v": {
                             "group": "cct_w_w_fader_dec",
-                            "title": "CCT1 brightness",
+                            "title": "CCT1 Brightness",
                             "order": 2,
                             "address": 3108,
                             "reg_type": "holding",
@@ -2446,7 +2446,7 @@
                         },
                         "fader_dec_w3": {
                             "group": "cct_w_w_fader_dec",
-                            "title": "Channel 3 (G) brightness",
+                            "title": "Channel 3 (G) Brightness",
                             "order": 3,
                             "address": 3102,
                             "reg_type": "holding",
@@ -2456,7 +2456,7 @@
                         },
                         "fader_dec_w4": {
                             "group": "cct_w_w_fader_dec",
-                            "title": "Channel 4 (W) brightness",
+                            "title": "Channel 4 (W) Brightness",
                             "order": 4,
                             "address": 3103,
                             "reg_type": "holding",
@@ -2484,17 +2484,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "w_w_w2_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "w_w_w2_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "w_w_w2_in_3",
                             "order": 3
                         },
@@ -2543,7 +2543,7 @@
                         },
                         {
                             "group": "w_w_w2_ch",
-                            "name": "Channel 1 (B) brightness",
+                            "name": "Channel 1 (B) Brightness",
                             "address": 2000,
                             "type": "range",
                             "reg_type": "holding",
@@ -2553,7 +2553,7 @@
                         },
                         {
                             "group": "w_w_w2_ch",
-                            "name": "Channel 2 (R) brightness",
+                            "name": "Channel 2 (R) Brightness",
                             "address": 2001,
                             "type": "range",
                             "reg_type": "holding",
@@ -2563,7 +2563,7 @@
                         },
                         {
                             "group": "w_w_w2_ch",
-                            "name": "Channels 3_4 (G_W) brightness",
+                            "name": "Channels 3_4 (G_W) Brightness",
                             "address": 2005,
                             "type": "range",
                             "reg_type": "holding",
@@ -3012,7 +3012,7 @@
 
                         "fader_inc_w1": {
                             "group": "w_w_w2_fader_inc",
-                            "title": "Channel 1 (B) brightness",
+                            "title": "Channel 1 (B) Brightness",
                             "order": 1,
                             "address": 3000,
                             "reg_type": "holding",
@@ -3022,7 +3022,7 @@
                         },
                         "fader_inc_w2": {
                             "group": "w_w_w2_fader_inc",
-                            "title": "Channel 2 (R) brightness",
+                            "title": "Channel 2 (R) Brightness",
                             "order": 2,
                             "address": 3001,
                             "reg_type": "holding",
@@ -3032,7 +3032,7 @@
                         },
                         "fader_inc_w3_w4": {
                             "group": "w_w_w2_fader_inc",
-                            "title": "Channels 3_4 (G_W) brightness",
+                            "title": "Channels 3_4 (G_W) Brightness",
                             "order": 3,
                             "address": 3005,
                             "reg_type": "holding",
@@ -3043,7 +3043,7 @@
 
                         "fader_dec_w1": {
                             "group": "w_w_w2_fader_dec",
-                            "title": "Channel 1 (B) brightness",
+                            "title": "Channel 1 (B) Brightness",
                             "order": 1,
                             "address": 3100,
                             "reg_type": "holding",
@@ -3053,7 +3053,7 @@
                         },
                         "fader_dec_w2": {
                             "group": "w_w_w2_fader_dec",
-                            "title": "Channel 2 (R) brightness",
+                            "title": "Channel 2 (R) Brightness",
                             "order": 2,
                             "address": 3101,
                             "reg_type": "holding",
@@ -3063,7 +3063,7 @@
                         },
                         "fader_dec_w3_w4": {
                             "group": "w_w_w2_fader_dec",
-                            "title": "Channels 3_4 (G_W) brightness",
+                            "title": "Channels 3_4 (G_W) Brightness",
                             "order": 3,
                             "address": 3105,
                             "reg_type": "holding",
@@ -3090,17 +3090,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "w2_w2_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "w2_w2_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "w2_w2_in_3",
                             "order": 3
                         },
@@ -3142,7 +3142,7 @@
                         },
                         {
                             "group": "w2_w2_ch",
-                            "name": "Channels 1_2 (B_R) brightness",
+                            "name": "Channels 1_2 (B_R) Brightness",
                             "address": 2004,
                             "type": "range",
                             "reg_type": "holding",
@@ -3152,7 +3152,7 @@
                         },
                         {
                             "group": "w2_w2_ch",
-                            "name": "Channels 3_4 (G_W) brightness",
+                            "name": "Channels 3_4 (G_W) Brightness",
                             "address": 2005,
                             "type": "range",
                             "reg_type": "holding",
@@ -3535,7 +3535,7 @@
 
                         "fader_inc_w1_w2": {
                             "group": "w2_w2_fader_inc",
-                            "title": "Channels 1_2 (B_R) brightness",
+                            "title": "Channels 1_2 (B_R) Brightness",
                             "order": 1,
                             "address": 3004,
                             "reg_type": "holding",
@@ -3545,7 +3545,7 @@
                         },
                         "fader_inc_w3_w4": {
                             "group": "w2_w2_fader_inc",
-                            "title": "Channels 3_4 (G_W) brightness",
+                            "title": "Channels 3_4 (G_W) Brightness",
                             "order": 2,
                             "address": 3005,
                             "reg_type": "holding",
@@ -3556,7 +3556,7 @@
 
                         "fader_dec_w1_w2": {
                             "group": "w2_w2_fader_dec",
-                            "title": "Channels 1_2 (B_R) brightness",
+                            "title": "Channels 1_2 (B_R) Brightness",
                             "order": 1,
                             "address": 3104,
                             "reg_type": "holding",
@@ -3566,7 +3566,7 @@
                         },
                         "fader_dec_w3_w4": {
                             "group": "w2_w2_fader_dec",
-                            "title": "Channels 3_4 (G_W) brightness",
+                            "title": "Channels 3_4 (G_W) Brightness",
                             "order": 2,
                             "address": 3105,
                             "reg_type": "holding",
@@ -3593,17 +3593,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "cct_w2_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "cct_w2_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "cct_w2_in_3",
                             "order": 3
                         },
@@ -3645,7 +3645,7 @@
                         },
                         {
                             "group": "cct_w2_ch",
-                            "name": "CCT1 temperature",
+                            "name": "CCT1 Temperature",
                             "address": 2007,
                             "type": "range",
                             "reg_type": "holding",
@@ -3655,7 +3655,7 @@
                         },
                         {
                             "group": "cct_w2_ch",
-                            "name": "CCT1 brightness",
+                            "name": "CCT1 Brightness",
                             "address": 2008,
                             "type": "range",
                             "reg_type": "holding",
@@ -3665,7 +3665,7 @@
                         },
                         {
                             "group": "cct_w2_ch",
-                            "name": "Channels 3_4 (G_W) brightness",
+                            "name": "Channels 3_4 (G_W) Brightness",
                             "address": 2005,
                             "type": "range",
                             "reg_type": "holding",
@@ -4078,7 +4078,7 @@
 
                         "fader_inc_cct1_t": {
                             "group": "cct_w2_fader_inc",
-                            "title": "CCT1 temperature",
+                            "title": "CCT1 Temperature",
                             "order": 1,
                             "address": 3007,
                             "reg_type": "holding",
@@ -4088,7 +4088,7 @@
                         },
                         "fader_inc_cct1_v": {
                             "group": "cct_w2_fader_inc",
-                            "title": "CCT1 brightness",
+                            "title": "CCT1 Brightness",
                             "order": 2,
                             "address": 3008,
                             "reg_type": "holding",
@@ -4098,7 +4098,7 @@
                         },
                         "fader_inc_w3_w4": {
                             "group": "cct_w2_fader_inc",
-                            "title": "Channels 3_4 (G_W) brightness",
+                            "title": "Channels 3_4 (G_W) Brightness",
                             "order": 3,
                             "address": 3005,
                             "reg_type": "holding",
@@ -4109,7 +4109,7 @@
 
                         "fader_dec_cct1_t": {
                             "group": "cct_w2_fader_dec",
-                            "title": "CCT1 temperature",
+                            "title": "CCT1 Temperature",
                             "order": 1,
                             "address": 3107,
                             "reg_type": "holding",
@@ -4119,7 +4119,7 @@
                         },
                         "fader_dec_cct1_v": {
                             "group": "cct_w2_fader_dec",
-                            "title": "CCT1 brightness",
+                            "title": "CCT1 Brightness",
                             "order": 2,
                             "address": 3108,
                             "reg_type": "holding",
@@ -4157,17 +4157,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "w_w_cct_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "w_w_cct_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "w_w_cct_in_3",
                             "order": 3
                         },
@@ -4216,7 +4216,7 @@
                         },
                         {
                             "group": "w_w_cct_ch",
-                            "name": "Channel 1 (B) brightness",
+                            "name": "Channel 1 (B) Brightness",
                             "address": 2000,
                             "type": "range",
                             "reg_type": "holding",
@@ -4226,7 +4226,7 @@
                         },
                         {
                             "group": "w_w_cct_ch",
-                            "name": "Channel 2 (R) brightness",
+                            "name": "Channel 2 (R) Brightness",
                             "address": 2001,
                             "type": "range",
                             "reg_type": "holding",
@@ -4236,7 +4236,7 @@
                         },
                         {
                             "group": "w_w_cct_ch",
-                            "name": "CCT2 temperature",
+                            "name": "CCT2 Temperature",
                             "address": 2009,
                             "type": "range",
                             "reg_type": "holding",
@@ -4246,7 +4246,7 @@
                         },
                         {
                             "group": "w_w_cct_ch",
-                            "name": "CCT2 brightness",
+                            "name": "CCT2 Brightness",
                             "address": 2010,
                             "type": "range",
                             "reg_type": "holding",
@@ -4725,7 +4725,7 @@
 
                         "fader_inc_w1": {
                             "group": "w_w_cct_fader_inc",
-                            "title": "Channel 1 (B) brightness",
+                            "title": "Channel 1 (B) Brightness",
                             "order": 1,
                             "address": 3000,
                             "reg_type": "holding",
@@ -4735,7 +4735,7 @@
                         },
                         "fader_inc_w2": {
                             "group": "w_w_cct_fader_inc",
-                            "title": "Channel 2 (R) brightness",
+                            "title": "Channel 2 (R) Brightness",
                             "order": 2,
                             "address": 3001,
                             "reg_type": "holding",
@@ -4745,7 +4745,7 @@
                         },
                         "fader_inc_cct2_t": {
                             "group": "w_w_cct_fader_inc",
-                            "title": "CCT2 temperature",
+                            "title": "CCT2 Temperature",
                             "order": 3,
                             "address": 3009,
                             "reg_type": "holding",
@@ -4755,7 +4755,7 @@
                         },
                         "fader_inc_cct2_v": {
                             "group": "w_w_cct_fader_inc",
-                            "title": "CCT2 brightness",
+                            "title": "CCT2 Brightness",
                             "order": 4,
                             "address": 3010,
                             "reg_type": "holding",
@@ -4766,7 +4766,7 @@
 
                         "fader_dec_w1": {
                             "group": "w_w_cct_fader_dec",
-                            "title": "Channel 1 (B) brightness",
+                            "title": "Channel 1 (B) Brightness",
                             "order": 1,
                             "address": 3100,
                             "reg_type": "holding",
@@ -4776,7 +4776,7 @@
                         },
                         "fader_dec_w2": {
                             "group": "w_w_cct_fader_dec",
-                            "title": "Channel 2 (R) brightness",
+                            "title": "Channel 2 (R) Brightness",
                             "order": 2,
                             "address": 3101,
                             "reg_type": "holding",
@@ -4786,7 +4786,7 @@
                         },
                         "fader_dec_cct2_t": {
                             "group": "w_w_cct_fader_dec",
-                            "title": "CCT2 temperature",
+                            "title": "CCT2 Temperature",
                             "order": 3,
                             "address": 3109,
                             "reg_type": "holding",
@@ -4796,7 +4796,7 @@
                         },
                         "fader_dec_cct2_v": {
                             "group": "w_w_cct_fader_dec",
-                            "title": "CCT2 brightness",
+                            "title": "CCT2 Brightness",
                             "order": 4,
                             "address": 3110,
                             "reg_type": "holding",
@@ -4823,17 +4823,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "w2_cct_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "w2_cct_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "w2_cct_in_3",
                             "order": 3
                         },
@@ -4875,7 +4875,7 @@
                         },
                         {
                             "group": "w2_cct_ch",
-                            "name": "Channels 1_2 (B_R) brightness",
+                            "name": "Channels 1_2 (B_R) Brightness",
                             "address": 2004,
                             "type": "range",
                             "reg_type": "holding",
@@ -4885,7 +4885,7 @@
                         },
                         {
                             "group": "w2_cct_ch",
-                            "name": "CCT2 temperature",
+                            "name": "CCT2 Temperature",
                             "address": 2009,
                             "type": "range",
                             "reg_type": "holding",
@@ -4895,7 +4895,7 @@
                         },
                         {
                             "group": "w2_cct_ch",
-                            "name": "CCT2 brightness",
+                            "name": "CCT2 Brightness",
                             "address": 2010,
                             "type": "range",
                             "reg_type": "holding",
@@ -5308,7 +5308,7 @@
 
                         "fader_inc_B_R": {
                             "group": "w2_cct_fader_inc",
-                            "title": "Channels 1_2 (B_R) brightness",
+                            "title": "Channels 1_2 (B_R) Brightness",
                             "order": 1,
                             "address": 3004,
                             "reg_type": "holding",
@@ -5318,7 +5318,7 @@
                         },
                         "fader_inc_CCT_T": {
                             "group": "w2_cct_fader_inc",
-                            "title": "CCT2 temperature",
+                            "title": "CCT2 Temperature",
                             "order": 2,
                             "address": 3009,
                             "reg_type": "holding",
@@ -5328,7 +5328,7 @@
                         },
                         "fader_inc_CCT_V": {
                             "group": "w2_cct_fader_inc",
-                            "title": "CCT2 brightness",
+                            "title": "CCT2 Brightness",
                             "order": 3,
                             "address": 3010,
                             "reg_type": "holding",
@@ -5339,7 +5339,7 @@
 
                         "fader_dec_B_R": {
                             "group": "w2_cct_fader_dec",
-                            "title": "Channels 1_2 (B_R) brightness",
+                            "title": "Channels 1_2 (B_R) Brightness",
                             "order": 1,
                             "address": 3104,
                             "reg_type": "holding",
@@ -5349,7 +5349,7 @@
                         },
                         "fader_dec_CCT_T": {
                             "group": "w2_cct_fader_dec",
-                            "title": "CCT2 temperature",
+                            "title": "CCT2 Temperature",
                             "order": 2,
                             "address": 3109,
                             "reg_type": "holding",
@@ -5359,7 +5359,7 @@
                         },
                         "fader_dec_CCT_V": {
                             "group": "w2_cct_fader_dec",
-                            "title": "CCT2 brightness",
+                            "title": "CCT2 Brightness",
                             "order": 3,
                             "address": 3110,
                             "reg_type": "holding",
@@ -5386,17 +5386,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "cct_cct_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "cct_cct_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "cct_cct_in_3",
                             "order": 3
                         },
@@ -5438,7 +5438,7 @@
                         },
                         {
                             "group": "cct_cct_ch",
-                            "name": "CCT1 temperature",
+                            "name": "CCT1 Temperature",
                             "address": 2007,
                             "type": "range",
                             "reg_type": "holding",
@@ -5448,7 +5448,7 @@
                         },
                         {
                             "group": "cct_cct_ch",
-                            "name": "CCT1 brightness",
+                            "name": "CCT1 Brightness",
                             "address": 2008,
                             "type": "range",
                             "reg_type": "holding",
@@ -5458,7 +5458,7 @@
                         },
                         {
                             "group": "cct_cct_ch",
-                            "name": "CCT2 temperature",
+                            "name": "CCT2 Temperature",
                             "address": 2009,
                             "type": "range",
                             "reg_type": "holding",
@@ -5468,7 +5468,7 @@
                         },
                         {
                             "group": "cct_cct_ch",
-                            "name": "CCT2 brightness",
+                            "name": "CCT2 Brightness",
                             "address": 2010,
                             "type": "range",
                             "reg_type": "holding",
@@ -5911,7 +5911,7 @@
 
                         "fader_inc_cct1_t": {
                             "group": "cct_cct_fader_inc",
-                            "title": "CCT1 temperature",
+                            "title": "CCT1 Temperature",
                             "order": 1,
                             "address": 3007,
                             "reg_type": "holding",
@@ -5921,7 +5921,7 @@
                         },
                         "fader_inc_cct1_v": {
                             "group": "cct_cct_fader_inc",
-                            "title": "CCT1 brightness",
+                            "title": "CCT1 Brightness",
                             "order": 2,
                             "address": 3008,
                             "reg_type": "holding",
@@ -5931,7 +5931,7 @@
                         },
                         "fader_inc_cct2_t": {
                             "group": "cct_cct_fader_inc",
-                            "title": "CCT2 temperature",
+                            "title": "CCT2 Temperature",
                             "order": 3,
                             "address": 3009,
                             "reg_type": "holding",
@@ -5941,7 +5941,7 @@
                         },
                         "fader_inc_cct2_v": {
                             "group": "cct_cct_fader_inc",
-                            "title": "CCT2 brightness",
+                            "title": "CCT2 Brightness",
                             "order": 4,
                             "address": 3010,
                             "reg_type": "holding",
@@ -5952,7 +5952,7 @@
 
                         "fader_dec_cct1_t": {
                             "group": "cct_cct_fader_dec",
-                            "title": "CCT1 temperature",
+                            "title": "CCT1 Temperature",
                             "order": 1,
                             "address": 3107,
                             "reg_type": "holding",
@@ -5962,7 +5962,7 @@
                         },
                         "fader_dec_cct1_v": {
                             "group": "cct_cct_fader_dec",
-                            "title": "CCT1 brightness",
+                            "title": "CCT1 Brightness",
                             "order": 2,
                             "address": 3108,
                             "reg_type": "holding",
@@ -5972,7 +5972,7 @@
                         },
                         "fader_dec_cct2_t": {
                             "group": "cct_cct_fader_dec",
-                            "title": "CCT2 temperature",
+                            "title": "CCT2 Temperature",
                             "order": 3,
                             "address": 3109,
                             "reg_type": "holding",
@@ -5982,7 +5982,7 @@
                         },
                         "fader_dec_cct2_v": {
                             "group": "cct_cct_fader_dec",
-                            "title": "CCT2 brightness",
+                            "title": "CCT2 Brightness",
                             "order": 4,
                             "address": 3110,
                             "reg_type": "holding",
@@ -6010,17 +6010,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "rgb_w_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "rgb_w_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "rgb_w_in_3",
                             "order": 3
                         },
@@ -6053,7 +6053,7 @@
                     "channels": [
                         {
                             "group": "rgb_w_ch",
-                            "name": "RGB strip",
+                            "name": "RGB Strip",
                             "address": 9,
                             "type": "switch",
                             "reg_type": "coil"
@@ -6067,14 +6067,14 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "HUE changing rate (ms)",
+                            "name": "HUE Changing Rate (ms)",
                             "address": 10,
                             "type": "switch",
                             "reg_type": "coil"
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "RGB palette",
+                            "name": "RGB Palette",
                             "type": "rgb",
                             "consists_of": [
                                 {
@@ -6093,7 +6093,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Hue of RGB strip",
+                            "name": "Hue of RGB Strip",
                             "address": 2014,
                             "type": "range",
                             "reg_type": "holding",
@@ -6103,7 +6103,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Saturation of RGB strip",
+                            "name": "Saturation of RGB Strip",
                             "address": 2015,
                             "type": "range",
                             "reg_type": "holding",
@@ -6113,7 +6113,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Brightness of RGB strip",
+                            "name": "Brightness of RGB Strip",
                             "address": 2016,
                             "type": "range",
                             "reg_type": "holding",
@@ -6123,7 +6123,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Channel 4 (W) brightness",
+                            "name": "Channel 4 (W) Brightness",
                             "address": 2003,
                             "type": "range",
                             "reg_type": "holding",
@@ -6133,7 +6133,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "HUE changing rate (ms)",
+                            "name": "HUE Changing Rate (ms)",
                             "address": 2017,
                             "reg_type": "holding",
                             "min": 3,
@@ -6731,7 +6731,7 @@
 
                         "fade_rgb_h": {
                             "group": "rgb_w_fader_hue",
-                            "title": "Hue of RGB strip",
+                            "title": "Hue of RGB Strip",
                             "description": "hue_fader_description",
                             "order": 1,
                             "address": 3011,
@@ -6743,7 +6743,7 @@
 
                         "fader_inc_rgb_s": {
                             "group": "rgb_w_fader_inc",
-                            "title": "Saturation of RGB strip",
+                            "title": "Saturation of RGB Strip",
                             "order": 1,
                             "address": 3012,
                             "reg_type": "holding",
@@ -6753,7 +6753,7 @@
                         },
                         "fader_inc_rgb_v": {
                             "group": "rgb_w_fader_inc",
-                            "title": "Brightness of RGB strip",
+                            "title": "Brightness of RGB Strip",
                             "order": 2,
                             "address": 3013,
                             "reg_type": "holding",
@@ -6763,7 +6763,7 @@
                         },
                         "fader_inc_w4": {
                             "group": "rgb_w_fader_inc",
-                            "title": "Channel 4 (W) brightness",
+                            "title": "Channel 4 (W) Brightness",
                             "order": 3,
                             "address": 3003,
                             "reg_type": "holding",
@@ -6774,7 +6774,7 @@
 
                         "fader_dec_rgb_s": {
                             "group": "rgb_w_fader_dec",
-                            "title": "Saturation of RGB strip",
+                            "title": "Saturation of RGB Strip",
                             "order": 1,
                             "address": 3112,
                             "reg_type": "holding",
@@ -6784,7 +6784,7 @@
                         },
                         "fader_dec_rgb_v": {
                             "group": "rgb_w_fader_dec",
-                            "title": "Brightness of RGB strip",
+                            "title": "Brightness of RGB Strip",
                             "order": 2,
                             "address": 3113,
                             "reg_type": "holding",
@@ -6794,7 +6794,7 @@
                         },
                         "fader_dec_W": {
                             "group": "rgb_w_fader_dec",
-                            "title": "Channel 4 (W) brightness",
+                            "title": "Channel 4 (W) Brightness",
                             "order": 3,
                             "address": 3103,
                             "reg_type": "holding",
@@ -6821,17 +6821,17 @@
                     ],
                     "groups": [
                         {
-                            "title": "Input 1 actions",
+                            "title": "Input 1 Actions",
                             "id": "w4_in_1",
                             "order": 1
                         },
                         {
-                            "title": "Input 2 actions",
+                            "title": "Input 2 Actions",
                             "id": "w4_in_2",
                             "order": 2
                         },
                         {
-                            "title": "Input 3 actions",
+                            "title": "Input 3 Actions",
                             "id": "w4_in_3",
                             "order": 3
                         },
@@ -6866,7 +6866,7 @@
                         },
                         {
                             "group": "w4_ch",
-                            "name": "Channels 1_2_3_4 brightness",
+                            "name": "Channels 1_2_3_4 Brightness",
                             "address": 2006,
                             "type": "range",
                             "reg_type": "holding",
@@ -7183,7 +7183,7 @@
 
                         "fader_inc_w4": {
                             "group": "w4_fader_inc",
-                            "title": "Channels 1_2_3_4 brightness",
+                            "title": "Channels 1_2_3_4 Brightness",
                             "order": 1,
                             "address": 3006,
                             "reg_type": "holding",
@@ -7193,7 +7193,7 @@
                         },
                         "fader_dec_w4": {
                             "group": "w4_fader_dec",
-                            "title": "Channels 1_2_3_4 brightness",
+                            "title": "Channels 1_2_3_4 Brightness",
                             "order": 1,
                             "address": 3106,
                             "reg_type": "holding",
@@ -7211,16 +7211,16 @@
 
         "translations": {
             "en": {
-                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 (4-channel CV LED dimmer fw 3.0)",
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 (4-channel CV LED Dimmer fw 3.0)",
 
-                "sp_title": "Short press",
-                "lp_title": "Long press",
-                "dp_title": "Double press",
-                "slp_title": "Shortlong press",
+                "sp_title": "Short Press",
+                "lp_title": "Long Press",
+                "dp_title": "Double Press",
+                "slp_title": "Shortlong Press",
 
-                "fader_inc_title": "Time to increase the value from 0 to 100% (ms)",
-                "fader_dec_title": "Time to decrease the value from 0 to 100% (ms)",
-                "fader_hue_title": "Time to increase/decrease HUE from 0 to 360°",
+                "fader_inc_title": "Time to Increase Value from 0 to 100% (ms)",
+                "fader_dec_title": "Time to Decrease Value from 0 to 100% (ms)",
+                "fader_hue_title": "Time to Increase/Decrease HUE from 0 to 360°",
 
                 "no_act_title": "Nothing",
                 "off_ch1_act_title": "Disable channel 1 (B)",
@@ -7317,16 +7317,16 @@
                 "dec_ch1234_act_title": "Decrease brightness of channels 1_2_3_4",
                 "inc_dec_ch1234_act_title": "Increase/decrease brightness of channels 1_2_3_4",
 
-                "lp_hold_time_title": "Long press time (ms)",
-                "lp_repeat_time_title": "Parameter change rate while holding input (ms/unit)",
-                "dp_time_title": "Double press time (ms)",
-                "debounce_time_title": "Debounce time (ms)",
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "lp_repeat_time_title": "Parameter Change Rate While Holding Input (ms/unit)",
+                "dp_time_title": "Double Press Time (ms)",
+                "debounce_time_title": "Debounce Time (ms)",
 
-                "pwm_frequency_factor_title": "PWM frequency factor",
+                "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
 
-                "channel_min_value_description": "Raw PWM value corresponding to minimum brightness (1%)",
-                "channel_max_value_description": "Raw PWM value corresponding to maximum brightness (100%)",
+                "channel_min_value_description": "Raw PWM Value Corresponding to Minimum Brightness (1%)",
+                "channel_max_value_description": "Raw PWM Value Corresponding to Maximum Brightness (100%)",
 
                 "hue_fader_description": "Time for changing HUE by 360°. Please note that the HUE is changing by the shortest path (f.e. 10° -> 0° -> 350°).",
 
@@ -7348,9 +7348,9 @@
                 "Input 2": "Вход 2",
                 "Input 3": "Вход 3",
 
-                "Input 1 actions": "Действия для входа 1",
-                "Input 2 actions": "Действия для входа 2",
-                "Input 3 actions": "Действия для входа 3",
+                "Input 1 Actions": "Действия для входа 1",
+                "Input 2 Actions": "Действия для входа 2",
+                "Input 3 Actions": "Действия для входа 3",
 
                 "Outputs": "Выходы",
                 "HW Info": "Данные модуля",
@@ -7459,47 +7459,47 @@
                 "Channels 3_4 (G_W)": "Каналы 3_4 (G_W)",
                 "CCT1 (channels 1_2)": "Лента CCT1 (каналы 1_2)",
                 "CCT2 (channels 3_4)": "Лента CCT2 (каналы 3_4)",
-                "RGB strip": "Лента RGB (каналы 1_2, 3)",
-                "HUE changing": "Изменение цвета RGB ленты",
+                "RGB Strip": "Лента RGB (каналы 1_2, 3)",
+                "HUE Changing": "Изменение цвета RGB ленты",
                 "Channels 1_2_3_4": "Каналы 1_2_3_4",
 
-                "Channel 1 (B) brightness": "Яркость канала 1 (B)",
-                "Channel 2 (R) brightness": "Яркость канала 2 (R)",
-                "Channel 3 (G) brightness": "Яркость канала 3 (G)",
-                "Channel 4 (W) brightness": "Яркость канала 4 (W)",
-                "Channels 1_2 (B_R) brightness": "Яркость каналов 1_2 (B_R)",
-                "Channels 3_4 (G_W) brightness": "Яркость каналов 3_4 (G_W)",
-                "CCT1 temperature": "Цветовая температура ленты CCT1",
-                "CCT1 brightness": "Яркость ленты CCT1",
-                "CCT2 temperature": "Цветовая температура ленты CCT2",
-                "CCT2 brightness": "Яркость ленты CCT2",
-                "RGB palette": "Палитра RGB",
-                "Hue of RGB strip": "Цвет RGB ленты (H)",
-                "Saturation of RGB strip": "Насыщенность цвета RGB ленты (S)",
-                "Brightness of RGB strip": "Яркость RGB ленты (V)",
-                "HUE changing rate (ms)": "Время изменения HUE на 1°",
-                "Channels 1_2_3_4 brightness": "Яркость каналов 1_2_3_4",
+                "Channel 1 (B) Brightness": "Яркость канала 1 (B)",
+                "Channel 2 (R) Brightness": "Яркость канала 2 (R)",
+                "Channel 3 (G) Brightness": "Яркость канала 3 (G)",
+                "Channel 4 (W) Brightness": "Яркость канала 4 (W)",
+                "Channels 1_2 (B_R) Brightness": "Яркость каналов 1_2 (B_R)",
+                "Channels 3_4 (G_W) Brightness": "Яркость каналов 3_4 (G_W)",
+                "CCT1 Temperature": "Цветовая температура ленты CCT1",
+                "CCT1 Brightness": "Яркость ленты CCT1",
+                "CCT2 Temperature": "Цветовая температура ленты CCT2",
+                "CCT2 Brightness": "Яркость ленты CCT2",
+                "RGB Palette": "Палитра RGB",
+                "Hue of RGB Strip": "Цвет RGB ленты (H)",
+                "Saturation of RGB Strip": "Насыщенность цвета RGB ленты (S)",
+                "Brightness of RGB Strip": "Яркость RGB ленты (V)",
+                "HUE Changing Rate (ms)": "Время изменения HUE на 1°",
+                "Channels 1_2_3_4 Brightness": "Яркость каналов 1_2_3_4",
 
-                "Channel 1 (B) raw PWM": "Прямое управление ШИМ канала 1 (B)",
-                "Channel 2 (R) raw PWM": "Прямое управление ШИМ канала 2 (R)",
-                "Channel 3 (G) raw PWM": "Прямое управление ШИМ канала 3 (G)",
-                "Channel 4 (W) raw PWM": "Прямое управление ШИМ канала 4 (W)",
+                "Channel 1 (B) Raw PWM": "Прямое управление ШИМ канала 1 (B)",
+                "Channel 2 (R) Raw PWM": "Прямое управление ШИМ канала 2 (R)",
+                "Channel 3 (G) Raw PWM": "Прямое управление ШИМ канала 3 (G)",
+                "Channel 4 (W) Raw PWM": "Прямое управление ШИМ канала 4 (W)",
 
-                "Input 1 counter": "Счетчик замыканий входа 1",
-                "Input 2 counter": "Счетчик замыканий входа 2",
-                "Input 3 counter": "Счетчик замыканий входа 3",
-                "Input 1 single press counter": "Счетчик коротких нажатий входа 1",
-                "Input 2 single press counter": "Счетчик коротких нажатий входа 2",
-                "Input 3 single press counter": "Счетчик коротких нажатий входа 3",
-                "Input 1 long press counter": "Счетчик длинных нажатий входа 1",
-                "Input 2 long press counter": "Счетчик длинных нажатий входа 2",
-                "Input 3 long press counter": "Счетчик длинных нажатий входа 3",
-                "Input 1 double press counter": "Счетчик двойных нажатий входа 1",
-                "Input 2 double press counter": "Счетчик двойных нажатий входа 2",
-                "Input 3 double press counter": "Счетчик двойных нажатий входа 3",
-                "Input 1 shortlong press counter": "Счетчик коротких, а затем длинных нажатий входа 1",
-                "Input 2 shortlong press counter": "Счетчик коротких, а затем длинных нажатий входа 2",
-                "Input 3 shortlong press counter": "Счетчик коротких, а затем длинных нажатий входа 3",
+                "Input 1 Counter": "Счетчик замыканий входа 1",
+                "Input 2 Counter": "Счетчик замыканий входа 2",
+                "Input 3 Counter": "Счетчик замыканий входа 3",
+                "Input 1 Single Press Counter": "Счетчик коротких нажатий входа 1",
+                "Input 2 Single Press Counter": "Счетчик коротких нажатий входа 2",
+                "Input 3 Single Press Counter": "Счетчик коротких нажатий входа 3",
+                "Input 1 Long Press Counter": "Счетчик длинных нажатий входа 1",
+                "Input 2 Long Press Counter": "Счетчик длинных нажатий входа 2",
+                "Input 3 Long Press Counter": "Счетчик длинных нажатий входа 3",
+                "Input 1 Double Press Counter": "Счетчик двойных нажатий входа 1",
+                "Input 2 Double Press Counter": "Счетчик двойных нажатий входа 2",
+                "Input 3 Double Press Counter": "Счетчик двойных нажатий входа 3",
+                "Input 1 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 1",
+                "Input 2 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 2",
+                "Input 3 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 3",
 
 
                 "Mode": "Режим работы",
@@ -7509,14 +7509,14 @@
                 "dp_time_title": "Время двойного нажатия, мс",
                 "debounce_time_title": "Время подавления дребезга, мс",
 
-                "Channel 1 (B) minimum value": "Нижний порог диммирования канала 1 (B)",
-                "Channel 2 (R) minimum value": "Нижний порог диммирования канала 2 (R)",
-                "Channel 3 (G) minimum value": "Нижний порог диммирования канала 3 (G)",
-                "Channel 4 (W) minimum value": "Нижний порог диммирования канала 4 (W)",
-                "Channel 1 (B) maximum value": "Верхний порог диммирования канала 1 (B)",
-                "Channel 2 (R) maximum value": "Верхний порог диммирования канала 2 (R)",
-                "Channel 3 (G) maximum value": "Верхний порог диммирования канала 3 (G)",
-                "Channel 4 (W) maximum value": "Верхний порог диммирования канала 4 (W)",
+                "Channel 1 (B) Minimum Value": "Нижний порог диммирования канала 1 (B)",
+                "Channel 2 (R) Minimum Value": "Нижний порог диммирования канала 2 (R)",
+                "Channel 3 (G) Minimum Value": "Нижний порог диммирования канала 3 (G)",
+                "Channel 4 (W) Minimum Value": "Нижний порог диммирования канала 4 (W)",
+                "Channel 1 (B) Maximum Value": "Верхний порог диммирования канала 1 (B)",
+                "Channel 2 (R) Maximum Value": "Верхний порог диммирования канала 2 (R)",
+                "Channel 3 (G) Maximum Value": "Верхний порог диммирования канала 3 (G)",
+                "Channel 4 (W) Maximum Value": "Верхний порог диммирования канала 4 (W)",
 
                 "pwm_frequency_factor_title": "Делитель частоты ШИМ",
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / делитель",
@@ -7527,7 +7527,7 @@
                 "hue_fader_description": "Время изменения цвета (HUE) на 360°. Учтите, что цвет изменяется по кратчайшему пути (например, 10° -> 0° -> 350°).",
 
                 "Serial": "Серийный номер",
-                "Supply voltage": "Напряжение питания",
+                "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)"
             }
         }
