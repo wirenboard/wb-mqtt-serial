@@ -462,7 +462,7 @@
                 "title": "debounce_time_title",
                 "order": 4,
                 "address": 1160,
-                "reg_type": "hw_params",
+                "reg_type": "holding",
                 "default": 50,
                 "min": 5,
                 "max": 200
@@ -472,7 +472,7 @@
                 "title": "debounce_time_title",
                 "order": 4,
                 "address": 1161,
-                "reg_type": "hw_params",
+                "reg_type": "holding",
                 "default": 50,
                 "min": 5,
                 "max": 200
@@ -482,7 +482,7 @@
                 "title": "debounce_time_title",
                 "order": 4,
                 "address": 1162,
-                "reg_type": "hw_params",
+                "reg_type": "holding",
                 "default": 50,
                 "min": 5,
                 "max": 200
