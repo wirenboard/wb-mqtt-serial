@@ -548,27 +548,6 @@
                         },
                         {
                             "group": "w_w_w_w_ch",
-                            "name": "Channel 2 (R)",
-                            "address": 1,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w_w_w_w_ch",
-                            "name": "Channel 3 (G)",
-                            "address": 2,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w_w_w_w_ch",
-                            "name": "Channel 4 (W)",
-                            "address": 3,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w_w_w_w_ch",
                             "name": "Channel 1 (B) Brightness",
                             "address": 2000,
                             "type": "range",
@@ -576,6 +555,13 @@
                             "min": 0,
                             "max": 100,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "w_w_w_w_ch",
+                            "name": "Channel 2 (R)",
+                            "address": 1,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "w_w_w_w_ch",
@@ -589,6 +575,13 @@
                         },
                         {
                             "group": "w_w_w_w_ch",
+                            "name": "Channel 3 (G)",
+                            "address": 2,
+                            "type": "switch",
+                            "reg_type": "coil"
+                        },
+                        {
+                            "group": "w_w_w_w_ch",
                             "name": "Channel 3 (G) Brightness",
                             "address": 2002,
                             "type": "range",
@@ -596,6 +589,13 @@
                             "min": 0,
                             "max": 100,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "w_w_w_w_ch",
+                            "name": "Channel 4 (W)",
+                            "address": 3,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "w_w_w_w_ch",
@@ -1256,20 +1256,6 @@
                         },
                         {
                             "group": "w2_w_w_ch",
-                            "name": "Channel 3 (G)",
-                            "address": 2,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w2_w_w_ch",
-                            "name": "Channel 4 (W)",
-                            "address": 3,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w2_w_w_ch",
                             "name": "Channels 1_2 (B_R) Brightness",
                             "address": 2004,
                             "type": "range",
@@ -1280,6 +1266,13 @@
                         },
                         {
                             "group": "w2_w_w_ch",
+                            "name": "Channel 3 (G)",
+                            "address": 2,
+                            "type": "switch",
+                            "reg_type": "coil"
+                        },
+                        {
+                            "group": "w2_w_w_ch",
                             "name": "Channel 3 (G) Brightness",
                             "address": 2002,
                             "type": "range",
@@ -1287,6 +1280,13 @@
                             "min": 0,
                             "max": 100,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "w2_w_w_ch",
+                            "name": "Channel 4 (W)",
+                            "address": 3,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "w2_w_w_ch",
@@ -1862,20 +1862,6 @@
                         },
                         {
                             "group": "cct_w_w_ch",
-                            "name": "Channel 3 (G)",
-                            "address": 2,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "cct_w_w_ch",
-                            "name": "Channel 4 (W)",
-                            "address": 3,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "cct_w_w_ch",
                             "name": "CCT1 Temperature",
                             "address": 2007,
                             "type": "range",
@@ -1896,6 +1882,13 @@
                         },
                         {
                             "group": "cct_w_w_ch",
+                            "name": "Channel 3 (G)",
+                            "address": 2,
+                            "type": "switch",
+                            "reg_type": "coil"
+                        },
+                        {
+                            "group": "cct_w_w_ch",
                             "name": "Channel 3 (G) Brightness",
                             "address": 2002,
                             "type": "range",
@@ -1903,6 +1896,13 @@
                             "min": 0,
                             "max": 100,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "cct_w_w_ch",
+                            "name": "Channel 4 (W)",
+                            "address": 3,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "cct_w_w_ch",
@@ -2529,20 +2529,6 @@
                         },
                         {
                             "group": "w_w_w2_ch",
-                            "name": "Channel 2 (R)",
-                            "address": 1,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w_w_w2_ch",
-                            "name": "Channels 3_4 (G_W)",
-                            "address": 5,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w_w_w2_ch",
                             "name": "Channel 1 (B) Brightness",
                             "address": 2000,
                             "type": "range",
@@ -2553,6 +2539,13 @@
                         },
                         {
                             "group": "w_w_w2_ch",
+                            "name": "Channel 2 (R)",
+                            "address": 1,
+                            "type": "switch",
+                            "reg_type": "coil"
+                        },
+                        {
+                            "group": "w_w_w2_ch",
                             "name": "Channel 2 (R) Brightness",
                             "address": 2001,
                             "type": "range",
@@ -2560,6 +2553,13 @@
                             "min": 0,
                             "max": 100,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "w_w_w2_ch",
+                            "name": "Channels 3_4 (G_W)",
+                            "address": 5,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "w_w_w2_ch",
@@ -3135,13 +3135,6 @@
                         },
                         {
                             "group": "w2_w2_ch",
-                            "name": "Channels 3_4 (G_W)",
-                            "address": 5,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w2_w2_ch",
                             "name": "Channels 1_2 (B_R) Brightness",
                             "address": 2004,
                             "type": "range",
@@ -3149,6 +3142,13 @@
                             "min": 0,
                             "max": 100,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "w2_w2_ch",
+                            "name": "Channels 3_4 (G_W)",
+                            "address": 5,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "w2_w2_ch",
@@ -3638,13 +3638,6 @@
                         },
                         {
                             "group": "cct_w2_ch",
-                            "name": "Channels 3_4 (G_W)",
-                            "address": 5,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "cct_w2_ch",
                             "name": "CCT1 Temperature",
                             "address": 2007,
                             "type": "range",
@@ -3662,6 +3655,13 @@
                             "min": 0,
                             "max": 100,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "cct_w2_ch",
+                            "name": "Channels 3_4 (G_W)",
+                            "address": 5,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "cct_w2_ch",
@@ -4202,20 +4202,6 @@
                         },
                         {
                             "group": "w_w_cct_ch",
-                            "name": "Channel 2 (R)",
-                            "address": 1,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w_w_cct_ch",
-                            "name": "CCT2 (channels 3_4)",
-                            "address": 8,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w_w_cct_ch",
                             "name": "Channel 1 (B) Brightness",
                             "address": 2000,
                             "type": "range",
@@ -4226,6 +4212,13 @@
                         },
                         {
                             "group": "w_w_cct_ch",
+                            "name": "Channel 2 (R)",
+                            "address": 1,
+                            "type": "switch",
+                            "reg_type": "coil"
+                        },
+                        {
+                            "group": "w_w_cct_ch",
                             "name": "Channel 2 (R) Brightness",
                             "address": 2001,
                             "type": "range",
@@ -4233,6 +4226,13 @@
                             "min": 0,
                             "max": 100,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "w_w_cct_ch",
+                            "name": "CCT2 (channels 3_4)",
+                            "address": 8,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "w_w_cct_ch",
@@ -4868,13 +4868,6 @@
                         },
                         {
                             "group": "w2_cct_ch",
-                            "name": "CCT2 (channels 3_4)",
-                            "address": 8,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "w2_cct_ch",
                             "name": "Channels 1_2 (B_R) Brightness",
                             "address": 2004,
                             "type": "range",
@@ -4882,6 +4875,13 @@
                             "min": 0,
                             "max": 100,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "w2_cct_ch",
+                            "name": "CCT2 (channels 3_4)",
+                            "address": 8,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "w2_cct_ch",
@@ -5431,13 +5431,6 @@
                         },
                         {
                             "group": "cct_cct_ch",
-                            "name": "CCT2 (channels 3_4)",
-                            "address": 8,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "cct_cct_ch",
                             "name": "CCT1 Temperature",
                             "address": 2007,
                             "type": "range",
@@ -5455,6 +5448,13 @@
                             "min": 0,
                             "max": 100,
                             "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "cct_cct_ch",
+                            "name": "CCT2 (channels 3_4)",
+                            "address": 8,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "cct_cct_ch",
@@ -6060,20 +6060,6 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Channel 4 (W)",
-                            "address": 3,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "rgb_w_ch",
-                            "name": "HUE Changing Rate (ms)",
-                            "address": 10,
-                            "type": "switch",
-                            "reg_type": "coil"
-                        },
-                        {
-                            "group": "rgb_w_ch",
                             "name": "RGB Palette",
                             "type": "rgb",
                             "consists_of": [
@@ -6123,13 +6109,10 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Channel 4 (W) Brightness",
-                            "address": 2003,
-                            "type": "range",
-                            "reg_type": "holding",
-                            "min": 0,
-                            "max": 100,
-                            "error_value": "0xFFFF"
+                            "name": "HUE Changing",
+                            "address": 10,
+                            "type": "switch",
+                            "reg_type": "coil"
                         },
                         {
                             "group": "rgb_w_ch",
@@ -6138,6 +6121,23 @@
                             "reg_type": "holding",
                             "min": 3,
                             "max": 10000,
+                            "error_value": "0xFFFF"
+                        },
+                        {
+                            "group": "rgb_w_ch",
+                            "name": "Channel 4 (W)",
+                            "address": 3,
+                            "type": "switch",
+                            "reg_type": "coil"
+                        },
+                        {
+                            "group": "rgb_w_ch",
+                            "name": "Channel 4 (W) Brightness",
+                            "address": 2003,
+                            "type": "range",
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
                             "error_value": "0xFFFF"
                         }
                     ],
@@ -7459,7 +7459,7 @@
                 "Channels 3_4 (G_W)": "Каналы 3_4 (G_W)",
                 "CCT1 (channels 1_2)": "Лента CCT1 (каналы 1_2)",
                 "CCT2 (channels 3_4)": "Лента CCT2 (каналы 3_4)",
-                "RGB Strip": "Лента RGB (каналы 1_2, 3)",
+                "RGB Strip": "Лента RGB",
                 "HUE Changing": "Изменение цвета RGB ленты",
                 "Channels 1_2_3_4": "Каналы 1_2_3_4",
 
