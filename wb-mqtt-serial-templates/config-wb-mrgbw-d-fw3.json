@@ -6025,19 +6025,24 @@
                             "order": 3
                         },
                         {
+                            "title": "fader_hue_title",
+                            "id": "rgb_w_fader_hue",
+                            "order": 4
+                        },
+                        {
                             "title": "fader_inc_title",
                             "id": "rgb_w_fader_inc",
-                            "order": 4
+                            "order": 5
                         },
                         {
                             "title": "fader_dec_title",
                             "id": "rgb_w_fader_dec",
-                            "order": 5
+                            "order": 6
                         },
                         {
                             "title": "Channels",
                             "id": "rgb_w_ch",
-                            "order": 6,
+                            "order": 7,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -6725,7 +6730,7 @@
 
 
                         "fade_rgb_h": {
-                            "group": "rgb_w_fader_inc",
+                            "group": "rgb_w_fader_hue",
                             "title": "Hue of RGB strip",
                             "description": "hue_fader_description",
                             "order": 1,
@@ -6739,7 +6744,7 @@
                         "fader_inc_rgb_s": {
                             "group": "rgb_w_fader_inc",
                             "title": "Saturation of RGB strip",
-                            "order": 2,
+                            "order": 1,
                             "address": 3012,
                             "reg_type": "holding",
                             "default": 1000,
@@ -6749,7 +6754,7 @@
                         "fader_inc_rgb_v": {
                             "group": "rgb_w_fader_inc",
                             "title": "Value (brightness) of RGB strip",
-                            "order": 3,
+                            "order": 2,
                             "address": 3013,
                             "reg_type": "holding",
                             "default": 1000,
@@ -6759,7 +6764,7 @@
                         "fader_inc_w4": {
                             "group": "rgb_w_fader_inc",
                             "title": "Channel 4 (W) brightness",
-                            "order": 4,
+                            "order": 3,
                             "address": 3003,
                             "reg_type": "holding",
                             "default": 1000,
@@ -7215,6 +7220,7 @@
 
                 "fader_inc_title": "Time to increase the value from 0 to 100% (ms)",
                 "fader_dec_title": "Time to decrease the value from 0 to 100% (ms)",
+                "fader_hue_title": "Time to increase/decrease HUE from 0 to 360°",
 
                 "no_act_title": "Nothing",
                 "off_ch1_act_title": "Disable channel 1 (B)",
@@ -7336,6 +7342,7 @@
 
                 "fader_inc_title": "Время увеличения значения c 0 до 100% в мс",
                 "fader_dec_title": "Время уменьшения значения с 0 до 100% в мс",
+                "fader_hue_title": "Время увеличения/уменьшения оттенка (HUE) с 0 до 360°",
 
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
